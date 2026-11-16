@@ -113,6 +113,7 @@ def main() -> int:
     ap.add_argument("--python", default="3.12")
     ap.add_argument("--timeout", type=float, default=1200)
     a = ap.parse_args()
+    a.wheel = str(Path(a.wheel).resolve())
     spec = json.loads(a.spec) if a.spec.strip().startswith("{") else json.loads(Path(a.spec).read_text())
     if a.index is not None:
         spec = spec["candidates"][a.index]

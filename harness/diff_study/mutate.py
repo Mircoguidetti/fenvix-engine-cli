@@ -128,6 +128,7 @@ def main() -> int:
     ap.add_argument("--python", default="3.12")
     ap.add_argument("--budget", type=float, default=2400, help="seconds for the mutant loop")
     a = ap.parse_args()
+    a.wheel = str(Path(a.wheel).resolve())
     import time
     t_start = time.monotonic()
     key = f"{a.repo}-s{a.shard}"
