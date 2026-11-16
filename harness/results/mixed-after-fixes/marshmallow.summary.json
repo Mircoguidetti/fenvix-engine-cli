@@ -1,0 +1,53 @@
+{
+  "name": "marshmallow",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/marshmallow-code/marshmallow",
+  "commit": "777ff66039fd",
+  "commit_date": "2026-11-13",
+  "python": "3.13",
+  "install": "-e . --group tests",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 9,
+  "baseline_mean_s": 1.5347639783333322,
+  "det_mean_s": 3.292303937499999,
+  "slowdown_pct": 114.51532509091442,
+  "precompile_first_s": 7.198,
+  "precompile_rest_median_s": 0.306,
+  "tests": 1210,
+  "unstable_baseline": 18,
+  "unstable_det": 0,
+  "became_stable": 18,
+  "outcome_changed_by_det": 2,
+  "covered": 1191,
+  "not_covered": 1,
+  "reproduced": 0,
+  "never_fails_under_det": 18,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 20,
+  "exploration_runs": 20,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "entropy": 1
+  },
+  "pass_fail_reasons": {},
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:None->passed": [
+      "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[00:00:00 2025-01-01]",
+      "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[01-01-2025 00:00:00]"
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "name": "packaging",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/pypa/packaging",
+  "commit": "5a7d3386d277",
+  "commit_date": "2026-11-13",
+  "python": "3.13",
+  "install": "-e . --group test pretend",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 59.93892195999999,
+  "det_mean_s": 63.5323548183,
+  "slowdown_pct": 5.9951576384674965,
+  "precompile_first_s": 8.395,
+  "precompile_rest_median_s": 0.474,
+  "tests": 63798,
+  "unstable_baseline": 1,
+  "unstable_det": 0,
+  "became_stable": 1,
+  "outcome_changed_by_det": 0,
+  "covered": 63798,
+  "not_covered": 0,
+  "reproduced": 1,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    10
+  ],
+  "seeds_explored": 10,
+  "exploration_runs": 19,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "random": 1
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "reproduced": [
+      "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi (seed 10): event #0: random.state @ <end> returned different values: \"2ffb785c663ab72ff1c64635f3a721f3\" vs \"deb91b4d89637b25611424dbbc067c88\""
+    ]
+  }
+}

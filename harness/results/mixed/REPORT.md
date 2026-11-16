@@ -40,6 +40,24 @@ Tests with unstable ids (excluded above, MEASURED): 18 — marshmallow: 18.
 
 A test that runs in every baseline run but in no `--det` run is worse than a false failure. **3205 tests** (MEASURED) — faker: 385, anyio: 2820. Tests present only under `--det` (an id that differs between modes): 10.
 
+## Before / after the Level 0 fixes (MEASURED)
+
+The repositories affected by L0 bugs were re-measured with the same protocol after the fixes (https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43919160305 + 43931114732 (easypy, after the lock fix)). Totals: broken by `--det` **108 → 10**; tests missing under `--det` **3205 → 0**.
+
+| repo | broken before | broken after | missing before | missing after | unstable before | unstable after | reproduced before | reproduced after |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| anyio | 39 | 2 | 2820 | 0 | 17 | 16 | 0 | 6 |
+| boltons | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| faker | 1 | 0 | 385 | 0 | 0 | 0 | 0 | 0 |
+| idoft-coinbase-commerce-python | 3 | 1 | 0 | 0 | 7 | 8 | 7 | 8 |
+| idoft-easypy | 4 | 1 | 0 | 0 | 44 | 44 | 40 | 43 |
+| idoft-freezegun | 2 | 0 | 0 | 0 | 8 | 8 | 6 | 7 |
+| idoft-pymq | 5 | 2 | 0 | 0 | 1 | 1 | 0 | 0 |
+| networkx | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| requests | 7 | 4 | 0 | 0 | 0 | 0 | 0 | 0 |
+| rich | 1 | 0 | 0 | 0 | 5 | 5 | 5 | 5 |
+| structlog | 43 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
 ## Tests broken by Level 0
 
 A test is *broken by `--det`* when it fails in at least one fixed-order `--det` run but in at most one baseline run (and less often than under `--det`). These are false failures. **108 tests** (MEASURED), of which 106 fail in every `--det` run.

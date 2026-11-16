@@ -1,5 +1,5 @@
 {
-  "run": "https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43919160305",
+  "run": "https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43919160305 + 43931114732 (easypy, after the lock fix)",
   "rows": [
     {
       "repo": "anyio",
@@ -51,10 +51,10 @@
       "missing_under_det_before": 0,
       "unstable_strict_before": 44,
       "reproduced_strict_before": 40,
-      "broken_after": 2,
+      "broken_after": 1,
       "missing_under_det_after": 0,
       "unstable_strict_after": 44,
-      "reproduced_strict_after": 24
+      "reproduced_strict_after": 43
     },
     {
       "repo": "idoft-freezegun",
@@ -128,9 +128,9 @@
     "missing_under_det_before": 3205,
     "unstable_strict_before": 82,
     "reproduced_strict_before": 58,
-    "broken_after": 11,
+    "broken_after": 10,
     "missing_under_det_after": 0,
     "unstable_strict_after": 82,
-    "reproduced_strict_after": 50
+    "reproduced_strict_after": 69
   }
 }

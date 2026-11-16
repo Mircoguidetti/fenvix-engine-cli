@@ -1,0 +1,71 @@
+{
+  "name": "idoft-coinbase-commerce-python",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/coinbase/coinbase-commerce-python",
+  "commit": "d306fc562309",
+  "commit_date": "2020-04-29",
+  "python": "3.9",
+  "install": "-e . -r requirements.txt",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 0.5647549390000023,
+  "det_mean_s": 1.0684263715999975,
+  "slowdown_pct": 89.18406866734692,
+  "precompile_first_s": 1.374,
+  "precompile_rest_median_s": 0.443,
+  "tests": 79,
+  "unstable_baseline": 8,
+  "unstable_det": 0,
+  "became_stable": 8,
+  "outcome_changed_by_det": 0,
+  "covered": 79,
+  "not_covered": 0,
+  "reproduced": 8,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    1,
+    2
+  ],
+  "seeds_explored": 2,
+  "exploration_runs": 20,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "random": 8
+  },
+  "broken_by_det": 1,
+  "broken_always": 1,
+  "broken_causes": {
+    "fixed-order (fails without --det too) | AssertionError": 1
+  },
+  "broken_examples": {
+    "fixed-order (fails without --det too) | AssertionError": [
+      "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list: AssertionError: False is not true (first diverging source: random)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 8,
+  "known_present": 8,
+  "known_unstable_baseline": 8,
+  "known_reproduced": 8,
+  "known_categories": {
+    "OD-Vic": 8
+  },
+  "examples": {
+    "reproduced": [
+      "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create (seed fixed): event #0: random.state @ <end> returned different values: \"52422558b36ba163141df9eacbbb70b8\" vs \"5191e7f274431c3884425a361fe004a0\"",
+      "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list (seed fixed): event #0: random.state @ <end> returned different values: \"87a288056d8da1508e511d58475c2d21\" vs \"f703bb9f13c9d102a21238b11c508812\"",
+      "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping (seed fixed): event #0: random.state @ <end> returned different values: \"c7ed20cf8223cda99fd5354fa4499f0b\" vs \"ebd3c47c316f2c025cd2aefdbbf1ce45\""
+    ]
+  }
+}

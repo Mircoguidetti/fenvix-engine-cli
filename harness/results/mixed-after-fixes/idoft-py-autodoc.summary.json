@@ -1,0 +1,77 @@
+{
+  "name": "idoft-py-autodoc",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/heavenshell/py-autodoc",
+  "commit": "001d5ff03d41",
+  "commit_date": "2020-05-12",
+  "python": "3.9",
+  "install": "-e . -r requirements.txt",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 0.5576237282999997,
+  "det_mean_s": 0.9935463308999999,
+  "slowdown_pct": 78.17504537136111,
+  "precompile_first_s": 1.216,
+  "precompile_rest_median_s": 0.371,
+  "tests": 27,
+  "unstable_baseline": 15,
+  "unstable_det": 0,
+  "became_stable": 15,
+  "outcome_changed_by_det": 0,
+  "covered": 26,
+  "not_covered": 1,
+  "reproduced": 15,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    0,
+    0,
+    0,
+    7,
+    0,
+    15,
+    5,
+    0,
+    2,
+    9,
+    0,
+    0,
+    2,
+    1,
+    6
+  ],
+  "seeds_explored": 15,
+  "exploration_runs": 78,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "fs": 1
+  },
+  "pass_fail_reasons": {
+    "time": 3,
+    "random": 10,
+    "fs": 2
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 15,
+  "known_present": 15,
+  "known_unstable_baseline": 15,
+  "known_reproduced": 15,
+  "known_categories": {
+    "OD-Vic": 7,
+    "NOD": 8
+  },
+  "examples": {
+    "reproduced": [
+      "examples/test_gen_each_case.py::TestUnittest::test_foo_bar (seed fixed): event #0: [random] random.state @ <end> = 0a6c4f851ad1d61d24f48f21a9579590  <>  [time] time.time @ <site>/webtest/app.py:617 = 1000",
+      "examples/test_gen_each_case.py::TestUnittest::test_get (seed fixed): event #0: [random] random.state @ <end> = 7da5b0b654dcabf5cf7b83fc6f0371b9  <>  [time] time.time @ <site>/webtest/app.py:617 = 1000",
+      "examples/test_gen_each_case.py::TestUnittest::test_post (seed fixed): event #0: [random] random.state @ <end> = 2337c25aaadfd962521112cbec6e3a57  <>  [time] time.time @ <site>/webtest/app.py:617 = 1000"
+    ]
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "name": "idoft-devtracker",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/ConSou/devtracker",
+  "commit": "ea892d6d48aa",
+  "commit_date": "2019-03-27",
+  "python": "3.9",
+  "install": "-e .",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 5.345679665299999,
+  "det_mean_s": 0.6229862472000022,
+  "slowdown_pct": -88.34598617564114,
+  "precompile_first_s": 0.882,
+  "precompile_rest_median_s": 0.236,
+  "tests": 19,
+  "unstable_baseline": 6,
+  "unstable_det": 0,
+  "became_stable": 6,
+  "outcome_changed_by_det": 2,
+  "covered": 19,
+  "not_covered": 0,
+  "reproduced": 6,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    1,
+    1,
+    2,
+    1,
+    2,
+    1
+  ],
+  "seeds_explored": 2,
+  "exploration_runs": 20,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "random": 6
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 9,
+  "known_present": 9,
+  "known_unstable_baseline": 6,
+  "known_reproduced": 6,
+  "known_categories": {
+    "OD-Vic": 3,
+    "OD-Brit": 1,
+    "NIO": 2,
+    "NOD": 3
+  },
+  "examples": {
+    "reproduced": [
+      "devtracker/test_devtracker.py::test_add_start (seed 1): event #2: random.state @ <end> returned different values: \"efc7b1a6c898e9b7182bc7d7cd4b0433\" vs \"067467d2ab3c84d82ab39001485743e8\"",
+      "devtracker/test_devtracker.py::test_current_status (seed 1): event #0: random.state @ <end> returned different values: \"3194d2f82b9c2e1b6a6caeff737d55b9\" vs \"c3124761c51b5328f2036470de83c5c3\"",
+      "devtracker/test_devtracker.py::test_make_project_csv (seed 2): event #0: random.state @ <end> returned different values: \"65259b1e64b1079052830b284a78db1b\" vs \"76055a5938ad548973525aa01190b5fa\""
+    ],
+    "changed:failed->passed": [
+      "devtracker/test_devtracker.py::test_end_time_total",
+      "devtracker/test_devtracker.py::test_full_report"
+    ]
+  }
+}

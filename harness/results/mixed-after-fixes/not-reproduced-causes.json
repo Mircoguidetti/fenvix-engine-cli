@@ -1,0 +1,399 @@
+{
+  "counts": {
+    "a": 31,
+    "c": 11,
+    "d": 5,
+    "b": 1
+  },
+  "by_pool": {
+    "popular": {
+      "a": 28
+    },
+    "flaky": {
+      "c": 11,
+      "d": 5,
+      "a": 3,
+      "b": 1
+    }
+  },
+  "examples": {
+    "a": [
+      "anyio: `tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+uvloop]` (test source uses Thread(, async def, await ; also socket.)",
+      "anyio: `tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]` (test source uses Thread(, async def, await ; also socket.)",
+      "anyio: `tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]` (test source uses Thread(, async def, await ; also socket.)",
+      "anyio: `tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]` (test source uses Thread(, async def, await , timeout; also socket.)",
+      "anyio: `tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]` (test source uses Thread(, async def, await , timeout; also socket.)",
+      "anyio: `tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]` (test source uses async def, await )"
+    ],
+    "c": [
+      "idoft-centreon-sdk-python: `tests/test_command.py::TestCommands::test_command_add` (IDoFT category OD-Brit (order/state dependent) not reproduced by the explored seeds (brittle: fails when its state-setter did not run first; in the baseline xdist can place them on different workers, which a permutation of the full suite never does))",
+      "idoft-centreon-sdk-python: `tests/test_command.py::TestCommands::test_command_delete` (IDoFT category OD-Brit (order/state dependent) not reproduced by the explored seeds (brittle: fails when its state-setter did not run first; in the baseline xdist can place them on different workers, which a permutation of the full suite never does))",
+      "idoft-centreon-sdk-python: `tests/test_command.py::TestCommands::test_command_list` (IDoFT category OD-Brit (order/state dependent) not reproduced by the explored seeds (brittle: fails when its state-setter did not run first; in the baseline xdist can place them on different workers, which a permutation of the full suite never does))",
+      "idoft-centreon-sdk-python: `tests/test_command.py::TestCommands::test_command_not_exist` (IDoFT category OD-Brit (order/state dependent) not reproduced by the explored seeds (brittle: fails when its state-setter did not run first; in the baseline xdist can place them on different workers, which a permutation of the full suite never does))",
+      "idoft-centreon-sdk-python: `tests/test_command.py::TestCommands::test_command_setparam` (IDoFT category OD-Brit (order/state dependent) not reproduced by the explored seeds (brittle: fails when its state-setter did not run first; in the baseline xdist can place them on different workers, which a permutation of the full suite never does))",
+      "idoft-crom: `tests/test_add_classification.py::TestAddClassification::test_add_classification` (IDoFT category OD-Vic (order/state dependent) not reproduced by the explored seeds)"
+    ],
+    "d": [
+      "idoft-domain2idna: `tests/test_cli.py::TestCLI::test_domain_output` (fails in every baseline run; only the failing phase changes (error+teardown-error, failed+teardown-error): not flaky in outcome)",
+      "idoft-domain2idna: `tests/test_cli.py::TestCLI::test_empty_domain` (fails in every baseline run; only the failing phase changes (error+teardown-error, failed+teardown-error): not flaky in outcome)",
+      "idoft-domain2idna: `tests/test_cli.py::TestCLI::test_file_output` (fails in every baseline run; only the failing phase changes (error+teardown-error, failed+teardown-error): not flaky in outcome)",
+      "idoft-eppy: `eppy/tests/test_parse_error.py::test_capture_real_error` (fails in every baseline run; only the failing phase changes (error, failed): not flaky in outcome)",
+      "idoft-panamah-sdk-python: `tests/test_processor.py::TestStream::test_expiration_by_max_length` (IDoFT category NOD, no concurrency/external marker found)"
+    ],
+    "b": [
+      "idoft-panamah-sdk-python: `tests/test_processor.py::TestStream::test_expiration_by_max_size` (exception OSError / diverging event -)"
+    ]
+  },
+  "idoft": [
+    {
+      "repo": "idoft-accessify",
+      "commit": "6b7cf8657ffe",
+      "python": "3.9",
+      "xdist": true,
+      "known": 12,
+      "present": 12,
+      "flaky_in_baseline": 7,
+      "reproduced": 7,
+      "categories": {
+        "OD-Vic": 12
+      },
+      "unstable_baseline_all": 7
+    },
+    {
+      "repo": "idoft-breathe",
+      "commit": "4600818e24f4",
+      "python": "3.9",
+      "xdist": true,
+      "known": 11,
+      "present": 11,
+      "flaky_in_baseline": 8,
+      "reproduced": 8,
+      "categories": {
+        "OD-Brit": 9,
+        "OD-Vic": 2
+      },
+      "unstable_baseline_all": 8
+    },
+    {
+      "repo": "idoft-centreon-sdk-python",
+      "commit": "9f207d5458af",
+      "python": "3.9",
+      "xdist": true,
+      "known": 41,
+      "present": 41,
+      "flaky_in_baseline": 41,
+      "reproduced": 36,
+      "categories": {
+        "OD-Brit": 41
+      },
+      "unstable_baseline_all": 41
+    },
+    {
+      "repo": "idoft-cloudnetpy",
+      "commit": "26f2607b8906",
+      "python": "3.9",
+      "xdist": true,
+      "known": 52,
+      "present": 52,
+      "flaky_in_baseline": 27,
+      "reproduced": 27,
+      "categories": {
+        "OD-Vic": 48,
+        "OD-Brit": 3,
+        "NIO": 1
+      },
+      "unstable_baseline_all": 27
+    },
+    {
+      "repo": "idoft-coinbase-commerce-python",
+      "commit": "d306fc562309",
+      "python": "3.9",
+      "xdist": true,
+      "known": 8,
+      "present": 8,
+      "flaky_in_baseline": 8,
+      "reproduced": 8,
+      "categories": {
+        "OD-Vic": 8
+      },
+      "unstable_baseline_all": 8
+    },
+    {
+      "repo": "idoft-crom",
+      "commit": "98bb6be4e32b",
+      "python": "3.9",
+      "xdist": true,
+      "known": 38,
+      "present": 38,
+      "flaky_in_baseline": 13,
+      "reproduced": 11,
+      "categories": {
+        "OD-Vic": 38
+      },
+      "unstable_baseline_all": 13
+    },
+    {
+      "repo": "idoft-devtracker",
+      "commit": "ea892d6d48aa",
+      "python": "3.9",
+      "xdist": true,
+      "known": 9,
+      "present": 9,
+      "flaky_in_baseline": 6,
+      "reproduced": 6,
+      "categories": {
+        "OD-Vic": 3,
+        "OD-Brit": 1,
+        "NIO": 2,
+        "NOD": 3
+      },
+      "unstable_baseline_all": 6
+    },
+    {
+      "repo": "idoft-django-beam",
+      "commit": "43b2111f5c65",
+      "python": "3.9",
+      "xdist": true,
+      "known": 11,
+      "present": 11,
+      "flaky_in_baseline": 0,
+      "reproduced": 0,
+      "categories": {
+        "NOD": 11
+      },
+      "unstable_baseline_all": 0
+    },
+    {
+      "repo": "idoft-domain2idna",
+      "commit": "39a1c4e1ebb8",
+      "python": "3.9",
+      "xdist": true,
+      "known": 12,
+      "present": 12,
+      "flaky_in_baseline": 12,
+      "reproduced": 12,
+      "categories": {
+        "OD-Vic": 12
+      },
+      "unstable_baseline_all": 15
+    },
+    {
+      "repo": "idoft-easypy",
+      "commit": "9501c3ee03dc",
+      "python": "3.9",
+      "xdist": true,
+      "known": 44,
+      "present": 44,
+      "flaky_in_baseline": 44,
+      "reproduced": 43,
+      "categories": {
+        "OD-Vic": 44
+      },
+      "unstable_baseline_all": 44
+    },
+    {
+      "repo": "idoft-eppy",
+      "commit": "98e58583dce6",
+      "python": "3.9",
+      "xdist": true,
+      "known": 87,
+      "present": 87,
+      "flaky_in_baseline": 66,
+      "reproduced": 66,
+      "categories": {
+        "NIO": 3,
+        "OD-Vic": 83,
+        "OD-Brit": 1
+      },
+      "unstable_baseline_all": 67
+    },
+    {
+      "repo": "idoft-flask-multi-redis",
+      "commit": "fa781d359844",
+      "python": "3.9",
+      "xdist": true,
+      "known": 26,
+      "present": 26,
+      "flaky_in_baseline": 14,
+      "reproduced": 14,
+      "categories": {
+        "OD-Vic": 26
+      },
+      "unstable_baseline_all": 14
+    },
+    {
+      "repo": "idoft-freezegun",
+      "commit": "b46da782a7a0",
+      "python": "3.9",
+      "xdist": true,
+      "known": 15,
+      "present": 15,
+      "flaky_in_baseline": 6,
+      "reproduced": 6,
+      "categories": {
+        "OD-Vic": 15
+      },
+      "unstable_baseline_all": 8
+    },
+    {
+      "repo": "idoft-krllint",
+      "commit": "2f9376cdae14",
+      "python": "3.9",
+      "xdist": true,
+      "known": 9,
+      "present": 9,
+      "flaky_in_baseline": 3,
+      "reproduced": 2,
+      "categories": {
+        "OD-Vic": 9
+      },
+      "unstable_baseline_all": 3
+    },
+    {
+      "repo": "idoft-ljson",
+      "commit": "1d3dc13001d9",
+      "python": "3.9",
+      "xdist": true,
+      "known": 8,
+      "present": 8,
+      "flaky_in_baseline": 4,
+      "reproduced": 4,
+      "categories": {
+        "OD-Vic": 7,
+        "NIO": 1
+      },
+      "unstable_baseline_all": 4
+    },
+    {
+      "repo": "idoft-mdutils",
+      "commit": "2ef859ecc1e4",
+      "python": "3.9",
+      "xdist": true,
+      "known": 8,
+      "present": 8,
+      "flaky_in_baseline": 8,
+      "reproduced": 8,
+      "categories": {
+        "OD-Vic": 8
+      },
+      "unstable_baseline_all": 8
+    },
+    {
+      "repo": "idoft-odinweb",
+      "commit": "198424133584",
+      "python": "3.9",
+      "xdist": true,
+      "known": 14,
+      "present": 14,
+      "flaky_in_baseline": 12,
+      "reproduced": 12,
+      "categories": {
+        "OD-Vic": 14
+      },
+      "unstable_baseline_all": 12
+    },
+    {
+      "repo": "idoft-panamah-sdk-python",
+      "commit": "746f3fb7ebcf",
+      "python": "3.9",
+      "xdist": true,
+      "known": 8,
+      "present": 8,
+      "flaky_in_baseline": 4,
+      "reproduced": 0,
+      "categories": {
+        "NOD": 7,
+        "OD-Vic": 1
+      },
+      "unstable_baseline_all": 4
+    },
+    {
+      "repo": "idoft-py-autodoc",
+      "commit": "001d5ff03d41",
+      "python": "3.9",
+      "xdist": true,
+      "known": 15,
+      "present": 15,
+      "flaky_in_baseline": 15,
+      "reproduced": 15,
+      "categories": {
+        "OD-Vic": 7,
+        "NOD": 8
+      },
+      "unstable_baseline_all": 15
+    },
+    {
+      "repo": "idoft-pykicad",
+      "commit": "cdebcaeb4ab6",
+      "python": "3.9",
+      "xdist": true,
+      "known": 28,
+      "present": 28,
+      "flaky_in_baseline": 28,
+      "reproduced": 28,
+      "categories": {
+        "OD-Vic": 28
+      },
+      "unstable_baseline_all": 28
+    },
+    {
+      "repo": "idoft-pymq",
+      "commit": "101857bca2b7",
+      "python": "3.9",
+      "xdist": true,
+      "known": 20,
+      "present": 20,
+      "flaky_in_baseline": 1,
+      "reproduced": 0,
+      "categories": {
+        "OD-Vic": 16,
+        "NOD": 4
+      },
+      "unstable_baseline_all": 1
+    },
+    {
+      "repo": "idoft-supertunnel",
+      "commit": "4c64e2fedda3",
+      "python": "3.9",
+      "xdist": true,
+      "known": 9,
+      "present": 9,
+      "flaky_in_baseline": 9,
+      "reproduced": 9,
+      "categories": {
+        "OD-Brit": 9
+      },
+      "unstable_baseline_all": 9
+    },
+    {
+      "repo": "idoft-todo-sync",
+      "commit": "32915e9a1509",
+      "python": "3.9",
+      "xdist": true,
+      "known": 11,
+      "present": 11,
+      "flaky_in_baseline": 10,
+      "reproduced": 9,
+      "categories": {
+        "OD-Brit": 11
+      },
+      "unstable_baseline_all": 10
+    },
+    {
+      "repo": "idoft-tunacell",
+      "commit": "837d57e1e6ca",
+      "python": "3.9",
+      "xdist": true,
+      "known": 13,
+      "present": 13,
+      "flaky_in_baseline": 10,
+      "reproduced": 10,
+      "categories": {
+        "OD-Vic": 11,
+        "NIO": 1,
+        "OD-Brit": 1
+      },
+      "unstable_baseline_all": 10
+    }
+  ]
+}
