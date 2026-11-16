@@ -164,17 +164,45 @@ def stmt_index(text: str):
     return spans
 
 
-def changed_old_lines(old: list[str], new: list[str]) -> tuple[set, list]:
-    """Old-side line numbers that were replaced/deleted plus the lines around each insertion, and the opcodes."""
+def _code_line(text: str) -> bool:
+    t = text.strip()
+    return bool(t) and not t.startswith("#")
+
+
+def changed_old_lines(old: list[str], new: list[str], full_spans=None) -> tuple[set, list]:
+    """Old-side line numbers that were replaced/deleted, plus, for each insertion, what control must have
+    executed to reach the inserted code: the previous and next code lines (blank and comment lines skipped)
+    and the first line of every statement that encloses the previous code line (a loop or ``if`` whose nested
+    block ends just before the insertion). Returns (lines, opcodes)."""
     sm = difflib.SequenceMatcher(None, old, new, autojunk=False)
     ops = sm.get_opcodes()
     out = set()
     for tag, i1, i2, _j1, _j2 in ops:
         if tag in ("replace", "delete"):
             out.update(range(i1 + 1, i2 + 1))
-        elif tag == "insert":
-            out.update((i1, i1 + 1))
+        if tag in ("insert", "replace"):
+            p = i1  # 1-based number of the old line just before the insertion point
+            while p >= 1 and not _code_line(old[p - 1]):
+                p -= 1
+            q = (i2 if tag == "replace" else i1) + 1
+            while q <= len(old) and not _code_line(old[q - 1]):
+                q += 1
+            if p >= 1:
+                out.add(p)
+                for a, b in full_spans or ():
+                    if a <= p <= b:
+                        out.add(a)
+            if q <= len(old):
+                out.add(q)
     return out, ops
+
+
+def full_spans(text: str):
+    try:
+        tree = ast.parse(text)
+    except SyntaxError:
+        return None
+    return [(n.lineno, n.end_lineno or n.lineno) for n in ast.walk(tree) if isinstance(n, ast.stmt)]
 
 
 def map_lines(ops, lines) -> set:
@@ -288,7 +316,7 @@ def name_level(old: str, new: str):
 
 class FileChange:
     __slots__ = ("path", "status", "lines", "stmt_lines", "module_level", "ast_equal", "ops", "hard", "soft_lines",
-                 "doc_changed", "why", "body_lines")
+                 "doc_changed", "why", "body_lines", "import_lines")
 
     def __init__(self, path, status, old, new):
         self.path, self.status = path, status
@@ -296,18 +324,24 @@ class FileChange:
         self.module_level, self.ast_equal = True, False
         self.hard, self.soft_lines, self.doc_changed, self.why = True, set(), True, status
         self.body_lines = None
+        self.import_lines = None
         if status == "M" and old is not None and new is not None:
             ol, nl = old.splitlines(), new.splitlines()
-            self.lines, self.ops = changed_old_lines(ol, nl)
+            self.lines, self.ops = changed_old_lines(ol, nl, full_spans(old))
             spans = stmt_index(old)
-            if spans is not None:
-                st = set()
-                for ln in self.lines:
+            core = changed_old_lines(ol, nl)[0]  # without enclosing headers: for the import-time check
+
+            def to_stmts(lines):
+                st = set(lines)
+                for ln in lines:
                     for s, e, rep in spans:
                         if s <= ln <= e:
                             st.add(rep)
                             st.add(s)
-                self.stmt_lines = st | self.lines
+                return st
+            if spans is not None:
+                self.stmt_lines = to_stmts(self.lines)
+                self.import_lines = to_stmts(core)
             else:
                 self.stmt_lines = None  # unparsable: treat every executed line as hit
             so, sn = skeleton(old), skeleton(new)
@@ -477,7 +511,7 @@ def decide(m: DepMap, nid: str, fcs: dict, data_changed: set, list_changed: set,
             if it:
                 if fc.stmt_lines is None or (nameguard and fc.body_lines is None):
                     return "import-guard"
-                lines = fc.stmt_lines & fc.body_lines if nameguard else fc.stmt_lines
+                lines = fc.import_lines & fc.body_lines if nameguard else fc.import_lines
                 if not it.isdisjoint(lines):
                     return "import-guard"
             if nameguard and fc.doc_changed and nid.split("::")[0] == f:
