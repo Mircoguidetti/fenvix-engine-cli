@@ -1,0 +1,50 @@
+name: l1-async
+
+# L1 study (docs/L1-ASYNCIO.md): prototype tests on CPython 3.10-3.13 and the
+# async flaky-test measurement, one job per corpus project.
+# This workflow: prototype tests. Measurement: l1-measure.yml.
+
+on:
+  push:
+    branches: [claude/l1-asyncio-study]
+    paths: ["python/**", "crates/**", "tests/**", ".github/workflows/l1-async.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: l1-async-tests
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: "1"
+  UV_PYTHON_PREFERENCE: managed
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ matrix.python }}"}
+      - run: cargo test -p detpy-core
+      - name: plugin tests
+        run: |
+          python -m venv .venv && . .venv/bin/activate
+          pip install maturin pytest numpy requests pytest-benchmark pytest-asyncio anyio
+          maturin develop --release
+          python -m pytest tests -q -p no:randomly -rf 2>&1 | tee tests.log
+      - name: race tests without the prototype (expected to fail)
+        run: |
+          . .venv/bin/activate
+          DETPY_ASYNC_FLAGS="--det" python -m pytest tests/test_aio.py -q -p no:randomly \
+            -k "reproducible or explore or fingerprint" -rf 2>&1 | tee without.log || true
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: "tests-${{ matrix.python }}", path: "*.log", if-no-files-found: ignore}
+

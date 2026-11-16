@@ -1,0 +1,12 @@
+[project]
+name = "l1-async-repro"
+version = "0.0.0"
+description = "Minimal reproductions of classic asyncio races (detpy L1 study corpus)"
+requires-python = ">=3.10"
+dependencies = ["pytest>=7"]
+
+[tool.setuptools]
+packages = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

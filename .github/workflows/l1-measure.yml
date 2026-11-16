@@ -1,0 +1,100 @@
+name: l1-measure
+
+# L1 study measurement (harness/l1_async.py), one job per corpus project.
+# Triggered by a push that changes harness/l1/run.json (the run parameters):
+# the default branch of this repository is another session's branch, so
+# workflow_dispatch of a workflow that only exists here is not available.
+
+on:
+  push:
+    branches: [claude/l1-asyncio-study]
+    paths: ["harness/l1/run.json"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: l1-measure
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  UV_PYTHON_PREFERENCE: managed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: pip install maturin
+      - run: maturin build --release --compatibility linux -o dist
+      - uses: actions/upload-artifact@v4
+        with: {name: wheel, path: dist/*.whl}
+
+  corpus:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.c.outputs.matrix }}
+      args: ${{ steps.c.outputs.args }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: c
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, subprocess
+          cfg = json.load(open("harness/l1/run.json"))
+          names = json.loads(subprocess.check_output(["python3", "harness/l1_async.py", "--list"]))
+          only = cfg.get("projects") or names
+          print("matrix=" + json.dumps([n for n in names if n in only]))
+          print("args=" + " ".join(f"--{k.replace('_', '-')} {v}" for k, v in cfg.items() if k in ("runs", "seeds", "confirm", "timing_runs")))
+          PY
+
+  measure:
+    needs: [build, corpus]
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        project: ${{ fromJSON(needs.corpus.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/download-artifact@v4
+        with: {name: wheel, path: dist}
+      - run: pip install pytest
+      - name: measure
+        run: >
+          python harness/l1_async.py --project "${{ matrix.project }}" --wheel "$(ls dist/*.whl)"
+          --work /tmp/l1work --out out ${{ needs.corpus.outputs.args }} --executor "GitHub Actions"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: "l1-${{ matrix.project }}", path: out/, if-no-files-found: ignore}
+
+  aggregate:
+    if: ${{ !cancelled() && needs.measure.result != 'skipped' }}
+    needs: [corpus, measure]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {pattern: "l1-*", path: art}
+      - name: report
+        run: >
+          python3 harness/l1_async.py --aggregate art --out harness/l1/results ${{ needs.corpus.outputs.args }}
+          --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      - run: cp -r art harness/l1/results/raw
+      - uses: actions/upload-artifact@v4
+        with: {name: l1-results, path: harness/l1/results/}
+      - name: commit results to the branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add harness/l1/results
+          git commit -m "L1 study results from Actions run ${{ github.run_id }}" || exit 0
+          for i in 1 2 3 4; do git pull --rebase -q origin claude/l1-asyncio-study && git push -q origin HEAD:claude/l1-asyncio-study && break; sleep $((i * 5)); done
