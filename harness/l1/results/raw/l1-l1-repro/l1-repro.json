@@ -1,0 +1,32 @@
+{
+ "name": "l1-repro",
+ "url": "",
+ "source": "minimal reproductions (this study)",
+ "tests": {
+  "tests/test_races.py::test_sleep_as_sync_with_executor": "repro",
+  "tests/test_races.py::test_tight_timeout_on_thread": "repro",
+  "tests/test_races.py::test_executor_results_in_submission_order": "repro",
+  "tests/test_races.py::test_as_completed_first_is_first_submitted": "repro",
+  "tests/test_races.py::test_thread_signal_before_timeout": "repro",
+  "tests/test_races.py::test_server_sees_clients_in_order": "repro",
+  "tests/test_races.py::test_cancel_before_job_finishes": "repro",
+  "tests/test_races.py::test_first_completed_job_beats_timer": "repro",
+  "tests/test_races.py::test_subprocess_answers_quickly": "repro",
+  "tests/test_races.py::test_queue_fed_by_thread": "repro",
+  "tests/test_races.py::test_rate_limiter_window": "repro",
+  "tests/test_races.py::test_ordered_appends_after_work": "repro",
+  "tests/test_races.py::test_readers_see_writes_in_order": "repro",
+  "tests/test_races.py::test_lock_order_with_thread_work": "repro"
+ },
+ "executor": "GitHub Actions",
+ "runner": "runnervmccnms",
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "local",
+ "status": "install-failed",
+ "detail": "install with python 3.13: error: Distribution not found at: file:///tmp/l1work/src/l1-repro/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+ "python": "",
+ "install": "",
+ "collected": 0
+}

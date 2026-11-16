@@ -1,0 +1,35 @@
+{
+ "name": "anyio",
+ "url": "https://github.com/agronholm/anyio",
+ "source": "25+25 round (popular pool, run 43892303433)",
+ "tests": {
+  "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+uvloop]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[asyncio+uvloop]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]": "round-flaky",
+  "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]": "round-flaky",
+  "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]": "round-flaky",
+  "tests/test_taskgroups.py::test_host_exception[asyncio+uvloop]": "round-flaky"
+ },
+ "executor": "GitHub Actions",
+ "runner": "runnervmccnms",
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "9df02f0b8362e9f4a1fc3a4404052d0d7016e4f0",
+ "status": "install-failed",
+ "detail": "install with python 3.13: error: Distribution not found at: file:///tmp/l1work/src/anyio/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+ "python": "",
+ "install": "",
+ "collected": 0
+}

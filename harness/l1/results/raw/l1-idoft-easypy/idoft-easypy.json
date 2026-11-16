@@ -1,0 +1,21 @@
+{
+ "name": "idoft-easypy",
+ "url": "https://github.com/weka-io/easypy",
+ "source": "25+25 round (IDoFT pool) + IDoFT",
+ "tests": {
+  "tests/test_signals.py::test_async": "round-flaky",
+  "tests/test_signals.py::test_priorities_async": "round-flaky"
+ },
+ "executor": "GitHub Actions",
+ "runner": "runnervmccnms",
+ "python_requested": [
+  "3.10",
+  "3.9"
+ ],
+ "commit": "9501c3ee03dcb1630e58cbb73b1647056907bcea",
+ "status": "install-failed",
+ "detail": "install with python 3.9: error: Distribution not found at: file:///tmp/l1work/src/idoft-easypy/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+ "python": "",
+ "install": "",
+ "collected": 0
+}

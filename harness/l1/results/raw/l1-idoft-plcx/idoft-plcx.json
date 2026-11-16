@@ -1,0 +1,26 @@
+{
+ "name": "idoft-plcx",
+ "url": "https://github.com/Cognexa/plcx",
+ "source": "IDoFT (asyncio)",
+ "tests": {
+  "plcx/tests/comm/test_client.py::test_clientx[123]": "OD-Vic",
+  "plcx/tests/comm/test_client.py::test_clientx[1]": "OD-Vic",
+  "plcx/tests/comm/test_client.py::test_clientx[hola]": "OD-Vic",
+  "plcx/tests/comm/test_client.py::test_clientx_context[111]": "OD-Vic",
+  "plcx/tests/comm/test_client.py::test_clientx_context[321]": "OD-Vic",
+  "plcx/tests/comm/test_client.py::test_clientx_context[hi]": "OD-Vic",
+  "plcx/tests/comm/test_client.py::test_clientx_error": "OD-Vic"
+ },
+ "executor": "GitHub Actions",
+ "runner": "runnervmccnms",
+ "python_requested": [
+  "3.10",
+  "3.9"
+ ],
+ "commit": "2756c0ba78c4c9e572d95ba002708957bc55d4fa",
+ "status": "install-failed",
+ "detail": "install with python 3.9: error: Distribution not found at: file:///tmp/l1work/src/idoft-plcx/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+ "python": "",
+ "install": "",
+ "collected": 0
+}
