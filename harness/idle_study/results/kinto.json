@@ -1,0 +1,751 @@
+{
+ "name": "kinto",
+ "repo": "Kinto/kinto",
+ "ref": "207191e071676e80cbe34368cf48f7e393e32652",
+ "status": "ok",
+ "setup_s": 19,
+ "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
+ "config": {
+  "repo": "Kinto/kinto",
+  "ref": "207191e071676e80cbe34368cf48f7e393e32652",
+  "app": "python",
+  "suite": "integration: pytest on Postgres + Redis + memcached",
+  "services": "Postgres, Redis, memcached",
+  "python": "3.13",
+  "runs": 6,
+  "parser": "junit"
+ },
+ "run_id": "43945303458",
+ "measured_at": "2026-11-16T20:10:13Z",
+ "baseline_cores": 0.0157,
+ "n_runs": 6,
+ "runs": [
+  {
+   "run": 1,
+   "rc": 0,
+   "wall_s": 84.7,
+   "busy_cpu_s": 321.82,
+   "cores_mean": 3.799,
+   "idle_share_raw": -2.7994,
+   "idle_share_net": -2.7836,
+   "quiet_share": 0.0059,
+   "share_ge1core": 0.9706,
+   "iowait_s": 4.49,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.41,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.61,
+   "cpu_other_s": 319.21,
+   "containers": {
+    "postgres [postgres]": 2.429,
+    "redis [redis]": 0.169,
+    "memcached [memcached]": 0.016
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     309.06
+    ],
+    [
+     "host",
+     "py.test",
+     3.77
+    ],
+    [
+     "host",
+     "provjobd1035742",
+     2.01
+    ],
+    [
+     "container",
+     "postgres",
+     1.64
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.63
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.41
+    ],
+    [
+     "host",
+     "python3",
+     0.38
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.36
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.2
+    ],
+    [
+     "container",
+     "redis-server",
+     0.17
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.06
+    ],
+    [
+     "host",
+     "ext4lazyinit",
+     0.06
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.03
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.02
+    ],
+    [
+     "host",
+     "kworker/u16:1-ext4-rsv-conversion",
+     0.02
+    ]
+   ],
+   "n_tests": 2468,
+   "n_pass": 2468,
+   "n_fail": 0,
+   "n_skip": 0,
+   "series_1s": [
+    0.04,
+    0.61,
+    2.24,
+    3.65,
+    3.89,
+    2.9,
+    3.46,
+    3.65,
+    3.76,
+    3.58,
+    2.79,
+    2.88,
+    3.47,
+    3.67,
+    3.6,
+    3.36,
+    3.38,
+    3.89,
+    3.91,
+    3.87,
+    3.61,
+    3.96,
+    3.97,
+    3.86,
+    4.0,
+    3.91,
+    2.96,
+    2.91,
+    3.74,
+    3.9,
+    3.99,
+    4.0,
+    4.0,
+    4.0,
+    3.99,
+    4.0,
+    3.99,
+    4.0,
+    3.99,
+    3.99,
+    4.01,
+    4.0,
+    4.0,
+    3.99,
+    3.99,
+    4.02,
+    3.99,
+    4.01,
+    3.99,
+    4.01,
+    3.99,
+    3.99,
+    4.01,
+    3.99,
+    4.01,
+    3.98,
+    4.01,
+    3.98,
+    4.0,
+    4.0,
+    4.0,
+    3.99,
+    4.0,
+    3.99,
+    4.01,
+    4.0,
+    4.0,
+    4.0,
+    3.98,
+    4.01,
+    3.99,
+    4.01,
+    3.98,
+    4.0,
+    4.0,
+    4.01,
+    4.0,
+    4.0,
+    4.0,
+    4.01,
+    3.98,
+    4.01,
+    3.99,
+    4.0,
+    3.99,
+    2.29
+   ]
+  },
+  {
+   "run": 2,
+   "rc": 0,
+   "wall_s": 79.92,
+   "busy_cpu_s": 309.5,
+   "cores_mean": 3.873,
+   "idle_share_raw": -2.8728,
+   "idle_share_net": -2.857,
+   "quiet_share": 0.0063,
+   "share_ge1core": 0.9875,
+   "iowait_s": 0.29,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.38,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.63,
+   "cpu_other_s": 306.87,
+   "containers": {
+    "postgres [postgres]": 2.45,
+    "redis [redis]": 0.163,
+    "memcached [memcached]": 0.015
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     293.01
+    ],
+    [
+     "host",
+     "py.test",
+     3.2
+    ],
+    [
+     "host",
+     "provjobd1035742",
+     2.01
+    ],
+    [
+     "container",
+     "postgres",
+     1.66
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.65
+    ],
+    [
+     "host",
+     "python3",
+     0.36
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.31
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.22
+    ],
+    [
+     "container",
+     "redis-server",
+     0.16
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.11
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.06
+    ],
+    [
+     "host",
+     "dockerd",
+     0.03
+    ],
+    [
+     "host",
+     "containerd",
+     0.03
+    ],
+    [
+     "host",
+     "chronyd",
+     0.03
+    ],
+    [
+     "container",
+     "memcached",
+     0.02
+    ]
+   ],
+   "n_tests": 2468,
+   "n_pass": 2468,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 3,
+   "rc": 0,
+   "wall_s": 79.82,
+   "busy_cpu_s": 309.05,
+   "cores_mean": 3.872,
+   "idle_share_raw": -2.872,
+   "idle_share_net": -2.8562,
+   "quiet_share": 0.0063,
+   "share_ge1core": 0.9875,
+   "iowait_s": 0.19,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.39,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.61,
+   "cpu_other_s": 306.45,
+   "containers": {
+    "postgres [postgres]": 2.427,
+    "redis [redis]": 0.165,
+    "memcached [memcached]": 0.015
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     292.03
+    ],
+    [
+     "host",
+     "py.test",
+     3.22
+    ],
+    [
+     "host",
+     "provjobd1035742",
+     2.06
+    ],
+    [
+     "container",
+     "postgres",
+     1.62
+    ],
+    [
+     "host",
+     "python3",
+     1.06
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.66
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.32
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.19
+    ],
+    [
+     "container",
+     "redis-server",
+     0.16
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.09
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.08
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.04
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.02
+    ],
+    [
+     "host",
+     "kworker/2:1-events",
+     0.02
+    ],
+    [
+     "host",
+     "containerd",
+     0.02
+    ]
+   ],
+   "n_tests": 2468,
+   "n_pass": 2468,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 4,
+   "rc": 0,
+   "wall_s": 77.95,
+   "busy_cpu_s": 301.75,
+   "cores_mean": 3.871,
+   "idle_share_raw": -2.871,
+   "idle_share_net": -2.8552,
+   "quiet_share": 0.0127,
+   "share_ge1core": 0.9809,
+   "iowait_s": 0.19,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.37,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.71,
+   "cpu_other_s": 299.04,
+   "containers": {
+    "postgres [postgres]": 2.527,
+    "redis [redis]": 0.165,
+    "memcached [memcached]": 0.016
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     284.63
+    ],
+    [
+     "host",
+     "py.test",
+     3.23
+    ],
+    [
+     "host",
+     "provjobd1035742",
+     2.0
+    ],
+    [
+     "container",
+     "postgres",
+     1.71
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.65
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.41
+    ],
+    [
+     "host",
+     "python3",
+     0.35
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.3
+    ],
+    [
+     "container",
+     "redis-server",
+     0.17
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.15
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.06
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.04
+    ],
+    [
+     "host",
+     "containerd",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/3:0-events",
+     0.02
+    ],
+    [
+     "host",
+     "chronyd",
+     0.02
+    ]
+   ],
+   "n_tests": 2468,
+   "n_pass": 2468,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 5,
+   "rc": 0,
+   "wall_s": 80.56,
+   "busy_cpu_s": 312.19,
+   "cores_mean": 3.875,
+   "idle_share_raw": -2.875,
+   "idle_share_net": -2.8593,
+   "quiet_share": 0.0062,
+   "share_ge1core": 0.9815,
+   "iowait_s": 0.18,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.38,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.7,
+   "cpu_other_s": 309.5,
+   "containers": {
+    "postgres [postgres]": 2.518,
+    "redis [redis]": 0.164,
+    "memcached [memcached]": 0.014
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     300.9
+    ],
+    [
+     "host",
+     "py.test",
+     3.19
+    ],
+    [
+     "host",
+     "provjobd1035742",
+     2.07
+    ],
+    [
+     "container",
+     "postgres",
+     1.69
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.64
+    ],
+    [
+     "host",
+     "python3",
+     0.35
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.3
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.21
+    ],
+    [
+     "container",
+     "redis-server",
+     0.16
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.12
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.07
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.04
+    ],
+    [
+     "host",
+     "chronyd",
+     0.03
+    ],
+    [
+     "host",
+     "containerd",
+     0.02
+    ],
+    [
+     "host",
+     "dockerd",
+     0.01
+    ]
+   ],
+   "n_tests": 2468,
+   "n_pass": 2468,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 6,
+   "rc": 0,
+   "wall_s": 80.38,
+   "busy_cpu_s": 311.4,
+   "cores_mean": 3.874,
+   "idle_share_raw": -2.8739,
+   "idle_share_net": -2.8581,
+   "quiet_share": 0.0062,
+   "share_ge1core": 0.9876,
+   "iowait_s": 0.19,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.38,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.56,
+   "cpu_other_s": 308.84,
+   "containers": {
+    "postgres [postgres]": 2.384,
+    "redis [redis]": 0.162,
+    "memcached [memcached]": 0.014
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     300.81
+    ],
+    [
+     "host",
+     "py.test",
+     3.18
+    ],
+    [
+     "host",
+     "provjobd1035742",
+     2.09
+    ],
+    [
+     "container",
+     "postgres",
+     1.58
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.66
+    ],
+    [
+     "host",
+     "python3",
+     0.36
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.31
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.2
+    ],
+    [
+     "container",
+     "redis-server",
+     0.15
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.06
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.06
+    ],
+    [
+     "host",
+     "containerd",
+     0.03
+    ],
+    [
+     "host",
+     "dockerd",
+     0.02
+    ],
+    [
+     "host",
+     "hosted-compute-",
+     0.02
+    ],
+    [
+     "host",
+     "systemd",
+     0.02
+    ]
+   ],
+   "n_tests": 2468,
+   "n_pass": 2468,
+   "n_fail": 0,
+   "n_skip": 0
+  }
+ ],
+ "idle": {
+  "median_idle_share_raw": -2.8724,
+  "median_idle_share_net": -2.8566,
+  "median_quiet_share": 0.0063,
+  "median_cores_mean": 3.8725,
+  "median_wall_s": 80.15,
+  "median_busy_cpu_s": 310.45
+ },
+ "tests": {
+  "n_distinct": 2468,
+  "n_flaky": 0,
+  "n_consistent_fail": 0,
+  "flaky": [],
+  "consistent_fail_sample": []
+ }
+}
