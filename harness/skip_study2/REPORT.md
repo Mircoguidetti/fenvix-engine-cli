@@ -156,9 +156,10 @@ running; "config (strict)" = commits touching a strict-config file):
   commits edit the module every test reads, so the changed names are really read. A v2 of the name rule
   (signature changes act only on callers, dunders only on users of the class, guarded imports as
   bindings) is queued (run r7); this table will be replaced by its results.
-* toolz: the time share is dominated by one slow test file whose determinism is unknown (always rerun);
-  by count `line` skips a median 64% there. The first study's toolz `line` value was 59% / 48%: the
-  difference is under investigation.
+* toolz: 94% of its test time (MEASURED) is in tests absent from the first study's determinism table
+  (`harness/results/mixed/toolz.csv`), which every variant must rerun; by count `line` skips a median 64%.
+  This rerun therefore under-states toolz for every rule alike (first study: `line` 59% / 48%); the
+  comparison between rules on the same library is unaffected.
 
 ## 5. Setting 4: time to green and reruns
 
