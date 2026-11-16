@@ -1,6 +1,6 @@
 {
  "meta": {
-  "run_url": "https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43920396238",
+  "run_url": "https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43925910072",
   "protocol": "Per project: 10 baseline / --det / --det --det-async (seed 0) runs of the corpus tests, interleaved, serial, fixed collection order; exploration with --det-async-seed=1..20 (test order fixed); 10/10 confirmation of the first failing seed; 3 timed runs of the full suite per mode."
  },
  "projects": [
@@ -16,7 +16,7 @@
   {
    "name": "idoft-aiopylimit",
    "status": "collect-failed",
-   "detail": "collect with python 3.10: ad\n    def acquire(self):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=================================================================== short test summary info ====================================================================\nERROR aiopylimit/tests/test_aiopylimit.py\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nno tests collected, 1 error in 0.05s\n",
+   "detail": "collect with python 3.10: ad\n    def acquire(self):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=================================================================== short test summary info ====================================================================\nERROR aiopylimit/tests/test_aiopylimit.py\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nno tests collected, 1 error in 0.08s\n",
    "python": "",
    "commit": "b4075a8ac30dbbef59a2243f618a35a2f54b590c",
    "collected": 0,
@@ -796,7 +796,7 @@
    "passing_seed": null,
    "reproducible": false,
    "fingerprint": "diverged",
-   "divergence": "event #4: os.urandom @ tests/utils.py:14 returned different values: \"16:294031772ea18197be087ae2f76f0ef9\" vs \"16:59745be3b604e8c1a8e8c42357f50ca7\""
+   "divergence": "event #4: os.urandom @ tests/utils.py:14 returned different values: \"16:8af1c227a4f7ded85d5a4429dec35589\" vs \"16:e9321af8e10a90b93668124f220317aa\""
   },
   {
    "project": "idoft-webssh",
@@ -823,7 +823,7 @@
    "passing_seed": null,
    "reproducible": false,
    "fingerprint": "diverged",
-   "divergence": "event #34: [entropy] os.urandom @ <site>/paramiko/transport.py:2283 = 16:ecf78a204586a7c68d97078079bdf3d0 (thread 4)  <>  [time] time.time @ <site>/paramiko/transport.py:1819 = 3048631622 (thread 2)"
+   "divergence": "event #33: [time] time.time @ <site>/paramiko/transport.py:1819 = 2048631622 (thread 4)  <>  [time] time.time @ <site>/paramiko/transport.py:1819 = 2048631622 (thread 2)"
   },
   {
    "project": "idoft-webssh",
@@ -919,7 +919,7 @@
    "flaky_any": false,
    "loaded_calm": "failed=10",
    "loaded_calm_stable": true,
-   "det": "failed=6;passed=4",
+   "det": "failed=8;passed=2",
    "det_stable": false,
    "calm": "failed=10",
    "calm_stable": true,
@@ -931,7 +931,7 @@
    "passing_seed": null,
    "reproducible": false,
    "fingerprint": "diverged",
-   "divergence": "event #30: [time] time.time @ <site>/paramiko/transport.py:1819 = 262209406 (thread 4)  <>  [time] time.time @ <site>/paramiko/transport.py:1819 = 262209406 (thread 2)"
+   "divergence": "event #23: [time] time.time @ <site>/paramiko/packet.py:331 = 2113406 (thread 2)  <>  [time] time.time @ <site>/paramiko/transport.py:654 = 2113406 (thread 1)"
   },
   {
    "project": "idoft-webssh",
@@ -985,7 +985,7 @@
    "passing_seed": null,
    "reproducible": false,
    "fingerprint": "diverged",
-   "divergence": "event #34: os.urandom @ <site>/paramiko/transport.py:2283 returned different values: \"16:073c0528fe481c854418e7ea42390911\" vs \"16:18b005fd5df43e5995236d7fd7350b0e\""
+   "divergence": "event #23: [time] time.time @ <site>/paramiko/packet.py:331 = 2579952 (thread 2)  <>  [time] time.time @ <site>/paramiko/transport.py:654 = 2579952 (thread 1)"
   },
   {
    "project": "idoft-webssh",
@@ -1054,8 +1054,8 @@
    "flaky_any": false,
    "loaded_calm": "passed=10",
    "loaded_calm_stable": true,
-   "det": "passed=10",
-   "det_stable": true,
+   "det": "failed=1;passed=9",
+   "det_stable": false,
    "calm": "passed=10",
    "calm_stable": true,
    "explore": "passed=20",
@@ -1120,7 +1120,7 @@
    "passing_seed": null,
    "reproducible": false,
    "fingerprint": "diverged",
-   "divergence": "event #35: [time] time.time @ <site>/paramiko/transport.py:1819 = 4049004711 (thread 4)  <>  [time] time.time @ <site>/paramiko/packet.py:122 = 4049004711 (thread 4)"
+   "divergence": "event #35: [time] time.time @ <site>/paramiko/transport.py:1819 = 4049004711 (thread 3)  <>  [time] time.time @ <site>/paramiko/packet.py:122 = 4049004711 (thread 4)"
   },
   {
    "project": "idoft-webssh",
@@ -1187,14 +1187,14 @@
    "loaded": "passed=10",
    "loaded_flaky": false,
    "flaky_any": false,
-   "loaded_calm": "failed=9;passed=1",
+   "loaded_calm": "failed=8;passed=2",
    "loaded_calm_stable": false,
    "det": "failed=1;passed=9",
    "det_stable": false,
    "calm": "failed=3;passed=7",
    "calm_stable": false,
-   "explore": "failed=7;passed=13",
-   "seeds_failing": 7,
+   "explore": "failed=2;passed=18",
+   "seeds_failing": 2,
    "repro_seed": 1,
    "confirm": "4/10",
    "reproduced": false,
@@ -1390,7 +1390,7 @@
    "passing_seed": null,
    "reproducible": false,
    "fingerprint": "diverged",
-   "divergence": "event #11: first diverging scheduling choice: sched.io 0/2:<asyncio>:io fd16 r:BaseAsyncIOLoop._handle_events @ <asyncio>:io fd16 r:BaseAsyncIOLoop._handle_events  <>  sched.io 0/2:<asyncio>:io fd17 r:BaseAsyncIOLoop._handle_events @ <asyncio>:io fd17 r:BaseAsyncIOLoop._handle_events"
+   "divergence": "event #0: [random] random.choice @ tests/test_app.py:98 = n=2  <>  [time] time.time @ <site>/paramiko/transport.py:1817 = 1000 (thread 1)"
   },
   {
    "project": "idoft-webssh",
@@ -1403,21 +1403,21 @@
    "loaded": "passed=10",
    "loaded_flaky": false,
    "flaky_any": false,
-   "loaded_calm": "failed=7;passed=3",
+   "loaded_calm": "failed=1;passed=9",
    "loaded_calm_stable": false,
    "det": "passed=10",
    "det_stable": true,
-   "calm": "failed=3;passed=7",
-   "calm_stable": false,
-   "explore": "failed=7;passed=13",
-   "seeds_failing": 7,
-   "repro_seed": 1,
-   "confirm": "4/10",
+   "calm": "passed=10",
+   "calm_stable": true,
+   "explore": "passed=20",
+   "seeds_failing": 0,
+   "repro_seed": null,
+   "confirm": "",
    "reproduced": false,
-   "passing_seed": 2,
+   "passing_seed": null,
    "reproducible": false,
-   "fingerprint": "diverged",
-   "divergence": "event #0: [random] random.choice @ tests/test_app.py:98 = n=2  <>  [time] time.time @ <site>/paramiko/packet.py:620 = 1000 (thread 1)"
+   "fingerprint": "",
+   "divergence": ""
   },
   {
    "project": "idoft-webssh",
@@ -1430,21 +1430,21 @@
    "loaded": "passed=10",
    "loaded_flaky": false,
    "flaky_any": false,
-   "loaded_calm": "failed=5;passed=5",
-   "loaded_calm_stable": false,
+   "loaded_calm": "passed=10",
+   "loaded_calm_stable": true,
    "det": "passed=10",
    "det_stable": true,
-   "calm": "failed=3;passed=7",
-   "calm_stable": false,
-   "explore": "failed=7;passed=13",
-   "seeds_failing": 7,
-   "repro_seed": 1,
-   "confirm": "4/10",
+   "calm": "passed=10",
+   "calm_stable": true,
+   "explore": "passed=20",
+   "seeds_failing": 0,
+   "repro_seed": null,
+   "confirm": "",
    "reproduced": false,
-   "passing_seed": 2,
+   "passing_seed": null,
    "reproducible": false,
-   "fingerprint": "diverged",
-   "divergence": "event #8: [sched] sched.executor @ <site>/tornado/platform/asyncio.py:202 = 0/1:<site>/tornado/platform/asyncio.py:202#1  <>  [time] time.time @ <site>/paramiko/packet.py:620 = 7000 (thread 1)"
+   "fingerprint": "",
+   "divergence": ""
   },
   {
    "project": "idoft-webssh",
@@ -1457,21 +1457,21 @@
    "loaded": "passed=10",
    "loaded_flaky": false,
    "flaky_any": false,
-   "loaded_calm": "failed=4;passed=6",
-   "loaded_calm_stable": false,
+   "loaded_calm": "passed=10",
+   "loaded_calm_stable": true,
    "det": "passed=10",
    "det_stable": true,
-   "calm": "failed=3;passed=7",
-   "calm_stable": false,
-   "explore": "failed=7;passed=13",
-   "seeds_failing": 7,
-   "repro_seed": 1,
-   "confirm": "4/10",
+   "calm": "passed=10",
+   "calm_stable": true,
+   "explore": "passed=20",
+   "seeds_failing": 0,
+   "repro_seed": null,
+   "confirm": "",
    "reproduced": false,
-   "passing_seed": 2,
+   "passing_seed": null,
    "reproducible": false,
-   "fingerprint": "diverged",
-   "divergence": "event #11: first diverging scheduling choice: sched.io 0/2:<asyncio>:io fd16 r:BaseAsyncIOLoop._handle_events @ <asyncio>:io fd16 r:BaseAsyncIOLoop._handle_events  <>  sched.io 0/2:<asyncio>:io fd17 r:BaseAsyncIOLoop._handle_events @ <asyncio>:io fd17 r:BaseAsyncIOLoop._handle_events"
+   "fingerprint": "",
+   "divergence": ""
   },
   {
    "project": "l1-repro",
@@ -1481,13 +1481,13 @@
    "baseline": "passed=10",
    "baseline_flaky": false,
    "baseline_fail_rate": 0.0,
-   "loaded": "failed=1;passed=9",
-   "loaded_flaky": true,
-   "flaky_any": true,
+   "loaded": "passed=10",
+   "loaded_flaky": false,
+   "flaky_any": false,
    "loaded_calm": "passed=10",
    "loaded_calm_stable": true,
-   "det": "failed=9;passed=1",
-   "det_stable": false,
+   "det": "failed=10",
+   "det_stable": true,
    "calm": "passed=10",
    "calm_stable": true,
    "explore": "passed=20",
@@ -1505,12 +1505,12 @@
    "nodeid": "tests/test_races.py::test_tight_timeout_on_thread",
    "category": "repro",
    "uvloop": false,
-   "baseline": "failed=10",
-   "baseline_flaky": false,
-   "baseline_fail_rate": 1.0,
+   "baseline": "failed=4;passed=6",
+   "baseline_flaky": true,
+   "baseline_fail_rate": 0.4,
    "loaded": "failed=10",
    "loaded_flaky": false,
-   "flaky_any": false,
+   "flaky_any": true,
    "loaded_calm": "passed=10",
    "loaded_calm_stable": true,
    "det": "failed=10",
@@ -1535,7 +1535,7 @@
    "baseline": "passed=10",
    "baseline_flaky": false,
    "baseline_fail_rate": 0.0,
-   "loaded": "failed=2;passed=8",
+   "loaded": "failed=5;passed=5",
    "loaded_flaky": true,
    "flaky_any": true,
    "loaded_calm": "passed=10",
@@ -1562,7 +1562,7 @@
    "baseline": "passed=10",
    "baseline_flaky": false,
    "baseline_fail_rate": 0.0,
-   "loaded": "failed=4;passed=6",
+   "loaded": "failed=6;passed=4",
    "loaded_flaky": true,
    "flaky_any": true,
    "loaded_calm": "passed=10",
@@ -1613,22 +1613,22 @@
    "nodeid": "tests/test_races.py::test_server_sees_clients_in_order",
    "category": "repro",
    "uvloop": false,
-   "baseline": "failed=5;passed=5",
+   "baseline": "failed=6;passed=4",
    "baseline_flaky": true,
-   "baseline_fail_rate": 0.5,
-   "loaded": "failed=3;passed=7",
+   "baseline_fail_rate": 0.6,
+   "loaded": "failed=2;passed=8",
    "loaded_flaky": true,
    "flaky_any": true,
-   "loaded_calm": "failed=3;passed=7",
+   "loaded_calm": "failed=1;passed=9",
    "loaded_calm_stable": false,
-   "det": "failed=3;passed=7",
+   "det": "failed=4;passed=6",
    "det_stable": false,
-   "calm": "failed=2;passed=8",
+   "calm": "failed=3;passed=7",
    "calm_stable": false,
-   "explore": "failed=9;passed=11",
-   "seeds_failing": 9,
-   "repro_seed": 2,
-   "confirm": "6/10",
+   "explore": "failed=8;passed=12",
+   "seeds_failing": 8,
+   "repro_seed": 5,
+   "confirm": "5/10",
    "reproduced": false,
    "passing_seed": 1,
    "reproducible": false,
@@ -1643,8 +1643,8 @@
    "baseline": "failed=10",
    "baseline_flaky": false,
    "baseline_fail_rate": 1.0,
-   "loaded": "failed=1;passed=9",
-   "loaded_flaky": true,
+   "loaded": "passed=10",
+   "loaded_flaky": false,
    "flaky_any": true,
    "loaded_calm": "passed=10",
    "loaded_calm_stable": true,
@@ -1700,8 +1700,8 @@
    "loaded": "failed=9;passed=1",
    "loaded_flaky": true,
    "flaky_any": true,
-   "loaded_calm": "failed=9;passed=1",
-   "loaded_calm_stable": false,
+   "loaded_calm": "passed=10",
+   "loaded_calm_stable": true,
    "det": "passed=10",
    "det_stable": true,
    "calm": "passed=10",
@@ -1724,13 +1724,13 @@
    "baseline": "passed=10",
    "baseline_flaky": false,
    "baseline_fail_rate": 0.0,
-   "loaded": "failed=7;passed=3",
+   "loaded": "failed=5;passed=5",
    "loaded_flaky": true,
    "flaky_any": true,
    "loaded_calm": "passed=10",
    "loaded_calm_stable": true,
-   "det": "failed=1;passed=9",
-   "det_stable": false,
+   "det": "passed=10",
+   "det_stable": true,
    "calm": "passed=10",
    "calm_stable": true,
    "explore": "passed=20",
@@ -1832,7 +1832,7 @@
    "baseline": "passed=10",
    "baseline_flaky": false,
    "baseline_fail_rate": 0.0,
-   "loaded": "failed=5;passed=5",
+   "loaded": "failed=4;passed=6",
    "loaded_flaky": true,
    "flaky_any": true,
    "loaded_calm": "passed=10",
@@ -1855,12 +1855,12 @@
  "timing": [
   {
    "project": "anyio",
-   "det_median_s": 83.31,
-   "det_async_median_s": 89.96,
-   "det_async_s1_median_s": 89.43,
+   "det_median_s": 87.7,
+   "det_async_median_s": 95.02,
+   "det_async_s1_median_s": 95.13,
    "runs": 3,
-   "slowdown_calm_pct": 8.0,
-   "slowdown_s1_pct": 7.4,
+   "slowdown_calm_pct": 8.3,
+   "slowdown_s1_pct": 8.5,
    "suite_counts": {
     "det": {
      "passed": 3568,
@@ -1884,12 +1884,12 @@
   },
   {
    "project": "idoft-easypy",
-   "det_median_s": 12.21,
-   "det_async_median_s": 12.13,
-   "det_async_s1_median_s": 12.18,
+   "det_median_s": 12.97,
+   "det_async_median_s": 12.87,
+   "det_async_s1_median_s": 12.9,
    "runs": 3,
-   "slowdown_calm_pct": -0.6,
-   "slowdown_s1_pct": -0.2,
+   "slowdown_calm_pct": -0.8,
+   "slowdown_s1_pct": -0.6,
    "suite_counts": {
     "det": {
      "passed": 163,
@@ -1910,11 +1910,11 @@
   },
   {
    "project": "idoft-python-dugong",
-   "det_median_s": 44.58,
-   "det_async_median_s": 44.59,
-   "det_async_s1_median_s": 44.58,
+   "det_median_s": 44.3,
+   "det_async_median_s": 44.33,
+   "det_async_s1_median_s": 44.31,
    "runs": 3,
-   "slowdown_calm_pct": 0.0,
+   "slowdown_calm_pct": 0.1,
    "slowdown_s1_pct": 0.0,
    "suite_counts": {
     "det": {
@@ -1930,12 +1930,12 @@
   },
   {
    "project": "idoft-tornado-swirl",
-   "det_median_s": 1.17,
-   "det_async_median_s": 1.16,
-   "det_async_s1_median_s": 1.15,
+   "det_median_s": 0.9,
+   "det_async_median_s": 0.91,
+   "det_async_s1_median_s": 0.91,
    "runs": 3,
-   "slowdown_calm_pct": -0.5,
-   "slowdown_s1_pct": -1.4,
+   "slowdown_calm_pct": 1.7,
+   "slowdown_s1_pct": 1.7,
    "suite_counts": {
     "det": {
      "passed": 43
@@ -1950,47 +1950,47 @@
   },
   {
    "project": "idoft-webssh",
-   "det_median_s": 19.34,
-   "det_async_median_s": 19.65,
-   "det_async_s1_median_s": 20.05,
+   "det_median_s": 17.4,
+   "det_async_median_s": 20.18,
+   "det_async_s1_median_s": 19.07,
    "runs": 3,
-   "slowdown_calm_pct": 1.6,
-   "slowdown_s1_pct": 3.7,
+   "slowdown_calm_pct": 16.0,
+   "slowdown_s1_pct": 9.6,
    "suite_counts": {
     "det": {
-     "passed": 69,
-     "failed": 20
+     "passed": 71,
+     "failed": 18
     },
     "det-async": {
      "passed": 68,
      "failed": 21
     },
     "det-async-s1": {
-     "passed": 69,
-     "failed": 20
+     "passed": 70,
+     "failed": 19
     }
    }
   },
   {
    "project": "l1-repro",
-   "det_median_s": 1.1,
-   "det_async_median_s": 1.08,
-   "det_async_s1_median_s": 1.12,
+   "det_median_s": 0.89,
+   "det_async_median_s": 0.88,
+   "det_async_s1_median_s": 0.89,
    "runs": 3,
-   "slowdown_calm_pct": -2.2,
-   "slowdown_s1_pct": 1.4,
+   "slowdown_calm_pct": -0.8,
+   "slowdown_s1_pct": 0.3,
    "suite_counts": {
     "det": {
      "failed": 5,
      "passed": 9
     },
     "det-async": {
-     "passed": 13,
-     "failed": 1
+     "passed": 12,
+     "failed": 2
     },
     "det-async-s1": {
-     "passed": 7,
-     "failed": 7
+     "passed": 6,
+     "failed": 8
     }
    }
   }

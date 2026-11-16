@@ -79,7 +79,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.093,
+   "duration_s": 9.708,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -151,7 +151,7 @@
     "--det"
    ],
    "exit": 1,
-   "duration_s": 5.66,
+   "duration_s": 4.438,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -164,7 +164,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_ip_not_matched": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_with_no_port": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_wrong_id": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_timeout": "passed",
@@ -224,7 +224,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 2.843,
+   "duration_s": 3.949,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -245,7 +245,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -253,9 +253,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "calm",
@@ -295,7 +295,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.189,
+   "duration_s": 9.727,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -367,7 +367,7 @@
     "--det"
    ],
    "exit": 1,
-   "duration_s": 4.506,
+   "duration_s": 3.771,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -378,9 +378,9 @@
     "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_multipart_form": "passed",
     "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_urlencoded_form": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_ip_not_matched": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_with_no_port": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_wrong_id": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_timeout": "passed",
@@ -440,7 +440,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 4.771,
+   "duration_s": 3.961,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -511,7 +511,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.065,
+   "duration_s": 9.695,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -583,7 +583,7 @@
     "--det"
    ],
    "exit": 1,
-   "duration_s": 4.479,
+   "duration_s": 3.718,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -656,7 +656,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 2.871,
+   "duration_s": 3.985,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -677,7 +677,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -685,9 +685,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "calm",
@@ -727,7 +727,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.193,
+   "duration_s": 9.744,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -799,7 +799,7 @@
     "--det"
    ],
    "exit": 1,
-   "duration_s": 4.576,
+   "duration_s": 3.65,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -815,7 +815,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_with_no_port": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_wrong_id": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_timeout": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_timeout": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_bar": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
@@ -872,7 +872,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 4.863,
+   "duration_s": 1.943,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -893,7 +893,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -943,7 +943,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.104,
+   "duration_s": 9.814,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1015,7 +1015,7 @@
     "--det"
    ],
    "exit": 1,
-   "duration_s": 4.557,
+   "duration_s": 3.735,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1088,7 +1088,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 4.756,
+   "duration_s": 1.915,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1109,7 +1109,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -1159,7 +1159,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.007,
+   "duration_s": 10.02,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1231,7 +1231,7 @@
     "--det"
    ],
    "exit": 1,
-   "duration_s": 2.651,
+   "duration_s": 1.738,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1242,9 +1242,9 @@
     "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_multipart_form": "passed",
     "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_urlencoded_form": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_ip_not_matched": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_with_no_port": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_wrong_id": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_timeout": "passed",
@@ -1304,7 +1304,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 2.857,
+   "duration_s": 4.081,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1325,7 +1325,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -1333,9 +1333,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "calm",
@@ -1375,7 +1375,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.173,
+   "duration_s": 9.707,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1447,7 +1447,7 @@
     "--det"
    ],
    "exit": 1,
-   "duration_s": 4.634,
+   "duration_s": 3.791,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1520,7 +1520,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 4.743,
+   "duration_s": 3.928,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1591,7 +1591,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.22,
+   "duration_s": 9.823,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1663,7 +1663,7 @@
     "--det"
    ],
    "exit": 1,
-   "duration_s": 4.621,
+   "duration_s": 3.624,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1674,9 +1674,9 @@
     "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_multipart_form": "passed",
     "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_urlencoded_form": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_ip_not_matched": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_with_no_port": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_wrong_id": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_timeout": "passed",
@@ -1736,7 +1736,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 4.773,
+   "duration_s": 4.046,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1807,7 +1807,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.165,
+   "duration_s": 9.803,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1879,7 +1879,7 @@
     "--det"
    ],
    "exit": 1,
-   "duration_s": 4.62,
+   "duration_s": 3.605,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -1890,7 +1890,7 @@
     "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_multipart_form": "passed",
     "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_urlencoded_form": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_ip_not_matched": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_with_no_port": "passed",
@@ -1952,7 +1952,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 4.826,
+   "duration_s": 4.121,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2023,7 +2023,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.125,
+   "duration_s": 9.641,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2095,7 +2095,7 @@
     "--det"
    ],
    "exit": 1,
-   "duration_s": 4.61,
+   "duration_s": 3.821,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2168,7 +2168,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 4.824,
+   "duration_s": 1.971,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2189,7 +2189,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -2239,7 +2239,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 11.004,
+   "duration_s": 10.416,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2312,7 +2312,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 4.874,
+   "duration_s": 3.449,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2383,7 +2383,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 11.075,
+   "duration_s": 10.39,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2456,7 +2456,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 6.273,
+   "duration_s": 3.759,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2477,7 +2477,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -2527,7 +2527,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 11.013,
+   "duration_s": 10.38,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2600,7 +2600,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 4.934,
+   "duration_s": 5.376,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2621,7 +2621,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -2629,7 +2629,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
@@ -2671,7 +2671,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.969,
+   "duration_s": 10.284,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2744,7 +2744,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 5.173,
+   "duration_s": 3.888,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2774,8 +2774,8 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "loaded-calm",
@@ -2815,7 +2815,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 11.21,
+   "duration_s": 10.199,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2888,7 +2888,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 5.351,
+   "duration_s": 3.555,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -2917,8 +2917,8 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
@@ -2959,7 +2959,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 11.064,
+   "duration_s": 10.48,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3032,7 +3032,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 4.998,
+   "duration_s": 3.721,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3061,7 +3061,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
@@ -3103,7 +3103,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 11.392,
+   "duration_s": 10.105,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3176,7 +3176,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 4.647,
+   "duration_s": 3.409,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3247,7 +3247,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.608,
+   "duration_s": 10.232,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3320,7 +3320,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 5.168,
+   "duration_s": 4.058,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3349,9 +3349,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "loaded-calm",
@@ -3391,7 +3391,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 11.305,
+   "duration_s": 10.255,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3464,7 +3464,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 5.863,
+   "duration_s": 5.713,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3485,7 +3485,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -3493,9 +3493,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "loaded-calm",
@@ -3535,7 +3535,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port"
    ],
    "exit": 0,
-   "duration_s": 10.928,
+   "duration_s": 10.327,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3608,7 +3608,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 5.519,
+   "duration_s": 3.508,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3637,9 +3637,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "loaded-calm",
@@ -3682,7 +3682,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 2.867,
+   "duration_s": 1.962,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3711,9 +3711,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "explore",
@@ -3756,7 +3756,7 @@
     "--det-async-seed=2"
    ],
    "exit": 1,
-   "duration_s": 4.803,
+   "duration_s": 3.898,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3830,7 +3830,7 @@
     "--det-async-seed=3"
    ],
    "exit": 1,
-   "duration_s": 4.777,
+   "duration_s": 3.953,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3904,7 +3904,7 @@
     "--det-async-seed=4"
    ],
    "exit": 1,
-   "duration_s": 4.747,
+   "duration_s": 3.913,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3978,7 +3978,7 @@
     "--det-async-seed=5"
    ],
    "exit": 1,
-   "duration_s": 2.828,
+   "duration_s": 4.103,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -3999,7 +3999,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -4007,9 +4007,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "explore",
@@ -4052,7 +4052,7 @@
     "--det-async-seed=6"
    ],
    "exit": 1,
-   "duration_s": 2.928,
+   "duration_s": 4.046,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -4073,7 +4073,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -4081,9 +4081,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "explore",
@@ -4126,7 +4126,7 @@
     "--det-async-seed=7"
    ],
    "exit": 1,
-   "duration_s": 4.81,
+   "duration_s": 4.107,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -4200,7 +4200,7 @@
     "--det-async-seed=8"
    ],
    "exit": 1,
-   "duration_s": 4.763,
+   "duration_s": 4.22,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -4274,7 +4274,7 @@
     "--det-async-seed=9"
    ],
    "exit": 1,
-   "duration_s": 4.873,
+   "duration_s": 1.998,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -4295,7 +4295,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -4348,7 +4348,7 @@
     "--det-async-seed=10"
    ],
    "exit": 1,
-   "duration_s": 2.792,
+   "duration_s": 4.055,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -4369,7 +4369,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -4377,9 +4377,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "explore",
@@ -4422,7 +4422,7 @@
     "--det-async-seed=11"
    ],
    "exit": 1,
-   "duration_s": 4.836,
+   "duration_s": 4.06,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -4496,7 +4496,7 @@
     "--det-async-seed=12"
    ],
    "exit": 1,
-   "duration_s": 2.939,
+   "duration_s": 4.068,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -4517,7 +4517,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -4525,9 +4525,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "explore",
@@ -4570,7 +4570,7 @@
     "--det-async-seed=13"
    ],
    "exit": 1,
-   "duration_s": 4.682,
+   "duration_s": 4.141,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -4644,7 +4644,7 @@
     "--det-async-seed=14"
    ],
    "exit": 1,
-   "duration_s": 4.788,
+   "duration_s": 4.048,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -4718,7 +4718,7 @@
     "--det-async-seed=15"
    ],
    "exit": 1,
-   "duration_s": 4.823,
+   "duration_s": 4.067,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -4792,7 +4792,7 @@
     "--det-async-seed=16"
    ],
    "exit": 1,
-   "duration_s": 4.86,
+   "duration_s": 4.062,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -4866,7 +4866,7 @@
     "--det-async-seed=17"
    ],
    "exit": 1,
-   "duration_s": 4.703,
+   "duration_s": 4.113,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -4940,7 +4940,7 @@
     "--det-async-seed=18"
    ],
    "exit": 1,
-   "duration_s": 4.782,
+   "duration_s": 3.963,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -5014,7 +5014,7 @@
     "--det-async-seed=19"
    ],
    "exit": 1,
-   "duration_s": 2.817,
+   "duration_s": 4.04,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -5035,7 +5035,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -5043,9 +5043,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "explore",
@@ -5088,7 +5088,7 @@
     "--det-async-seed=20"
    ],
    "exit": 1,
-   "duration_s": 2.816,
+   "duration_s": 4.065,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -5109,7 +5109,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -5117,9 +5117,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "explore",
@@ -5162,7 +5162,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 4.785,
+   "duration_s": 3.999,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -5236,7 +5236,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 4.781,
+   "duration_s": 4.072,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -5310,7 +5310,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 4.879,
+   "duration_s": 1.94,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -5331,7 +5331,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -5384,7 +5384,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 2.793,
+   "duration_s": 4.062,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -5405,7 +5405,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -5413,9 +5413,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "confirm",
@@ -5458,7 +5458,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 2.838,
+   "duration_s": 2.101,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -5487,9 +5487,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "confirm",
@@ -5532,7 +5532,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 4.705,
+   "duration_s": 3.958,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -5606,7 +5606,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 4.674,
+   "duration_s": 1.913,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -5627,7 +5627,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -5680,7 +5680,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 4.756,
+   "duration_s": 3.987,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -5754,7 +5754,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 2.944,
+   "duration_s": 4.058,
    "timed_out": false,
    "outcomes": {
     "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "passed",
@@ -5775,7 +5775,7 @@
     "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "passed",
-    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "failed",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "passed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "failed",
@@ -5783,9 +5783,9 @@
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "failed",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "failed",
-    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "failed"
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "passed",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "passed"
    },
    "tail": "",
    "mode": "confirm",
@@ -5801,7 +5801,7 @@
    "reproduced": true,
    "passing_seed": null,
    "fingerprint": "diverged",
-   "divergence": "event #4: os.urandom @ tests/utils.py:14 returned different values: \"16:294031772ea18197be087ae2f76f0ef9\" vs \"16:59745be3b604e8c1a8e8c42357f50ca7\""
+   "divergence": "event #4: os.urandom @ tests/utils.py:14 returned different values: \"16:8af1c227a4f7ded85d5a4429dec35589\" vs \"16:e9321af8e10a90b93668124f220317aa\""
   },
   "tests/test_app.py::TestAppBasic::test_app_auth_with_valid_pubkey_by_urlencoded_form": {
    "seed": 1,
@@ -5810,7 +5810,7 @@
    "reproduced": true,
    "passing_seed": null,
    "fingerprint": "diverged",
-   "divergence": "event #34: [entropy] os.urandom @ <site>/paramiko/transport.py:2283 = 16:ecf78a204586a7c68d97078079bdf3d0 (thread 4)  <>  [time] time.time @ <site>/paramiko/transport.py:1819 = 3048631622 (thread 2)"
+   "divergence": "event #33: [time] time.time @ <site>/paramiko/transport.py:1819 = 2048631622 (thread 4)  <>  [time] time.time @ <site>/paramiko/transport.py:1819 = 2048631622 (thread 2)"
   },
   "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": {
    "seed": 1,
@@ -5819,7 +5819,7 @@
    "reproduced": true,
    "passing_seed": null,
    "fingerprint": "diverged",
-   "divergence": "event #30: [time] time.time @ <site>/paramiko/transport.py:1819 = 262209406 (thread 4)  <>  [time] time.time @ <site>/paramiko/transport.py:1819 = 262209406 (thread 2)"
+   "divergence": "event #23: [time] time.time @ <site>/paramiko/packet.py:331 = 2113406 (thread 2)  <>  [time] time.time @ <site>/paramiko/transport.py:654 = 2113406 (thread 1)"
   },
   "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": {
    "seed": 1,
@@ -5828,7 +5828,7 @@
    "reproduced": true,
    "passing_seed": null,
    "fingerprint": "diverged",
-   "divergence": "event #34: os.urandom @ <site>/paramiko/transport.py:2283 returned different values: \"16:073c0528fe481c854418e7ea42390911\" vs \"16:18b005fd5df43e5995236d7fd7350b0e\""
+   "divergence": "event #23: [time] time.time @ <site>/paramiko/packet.py:331 = 2579952 (thread 2)  <>  [time] time.time @ <site>/paramiko/transport.py:654 = 2579952 (thread 1)"
   },
   "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_bar": {
    "seed": 1,
@@ -5846,7 +5846,7 @@
    "reproduced": true,
    "passing_seed": null,
    "fingerprint": "diverged",
-   "divergence": "event #35: [time] time.time @ <site>/paramiko/transport.py:1819 = 4049004711 (thread 4)  <>  [time] time.time @ <site>/paramiko/packet.py:122 = 4049004711 (thread 4)"
+   "divergence": "event #35: [time] time.time @ <site>/paramiko/transport.py:1819 = 4049004711 (thread 3)  <>  [time] time.time @ <site>/paramiko/packet.py:122 = 4049004711 (thread 4)"
   },
   "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": {
    "seed": 1,
@@ -5918,53 +5918,26 @@
    "reproduced": true,
    "passing_seed": null,
    "fingerprint": "diverged",
-   "divergence": "event #11: first diverging scheduling choice: sched.io 0/2:<asyncio>:io fd16 r:BaseAsyncIOLoop._handle_events @ <asyncio>:io fd16 r:BaseAsyncIOLoop._handle_events  <>  sched.io 0/2:<asyncio>:io fd17 r:BaseAsyncIOLoop._handle_events @ <asyncio>:io fd17 r:BaseAsyncIOLoop._handle_events"
-  },
-  "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": {
-   "seed": 1,
-   "fails": 4,
-   "runs": 10,
-   "reproduced": false,
-   "passing_seed": 2,
-   "fingerprint": "diverged",
-   "divergence": "event #0: [random] random.choice @ tests/test_app.py:98 = n=2  <>  [time] time.time @ <site>/paramiko/packet.py:620 = 1000 (thread 1)"
-  },
-  "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": {
-   "seed": 1,
-   "fails": 4,
-   "runs": 10,
-   "reproduced": false,
-   "passing_seed": 2,
-   "fingerprint": "diverged",
-   "divergence": "event #8: [sched] sched.executor @ <site>/tornado/platform/asyncio.py:202 = 0/1:<site>/tornado/platform/asyncio.py:202#1  <>  [time] time.time @ <site>/paramiko/packet.py:620 = 7000 (thread 1)"
-  },
-  "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": {
-   "seed": 1,
-   "fails": 4,
-   "runs": 10,
-   "reproduced": false,
-   "passing_seed": 2,
-   "fingerprint": "diverged",
-   "divergence": "event #11: first diverging scheduling choice: sched.io 0/2:<asyncio>:io fd16 r:BaseAsyncIOLoop._handle_events @ <asyncio>:io fd16 r:BaseAsyncIOLoop._handle_events  <>  sched.io 0/2:<asyncio>:io fd17 r:BaseAsyncIOLoop._handle_events @ <asyncio>:io fd17 r:BaseAsyncIOLoop._handle_events"
+   "divergence": "event #0: [random] random.choice @ tests/test_app.py:98 = n=2  <>  [time] time.time @ <site>/paramiko/transport.py:1817 = 1000 (thread 1)"
   }
  },
  "timing": [
   {
    "mode": "det",
    "run": 0,
-   "duration_s": 19.335,
+   "duration_s": 19.905,
    "exit": 1,
    "timed_out": false,
    "counts": {
-    "passed": 69,
-    "failed": 20
+    "passed": 71,
+    "failed": 18
    },
    "tail": ""
   },
   {
    "mode": "det-async",
    "run": 0,
-   "duration_s": 20.422,
+   "duration_s": 20.181,
    "exit": 1,
    "timed_out": false,
    "counts": {
@@ -5976,19 +5949,19 @@
   {
    "mode": "det-async-s1",
    "run": 0,
-   "duration_s": 19.916,
+   "duration_s": 18.822,
    "exit": 1,
    "timed_out": false,
    "counts": {
-    "passed": 69,
-    "failed": 20
+    "passed": 70,
+    "failed": 19
    },
    "tail": ""
   },
   {
    "mode": "det",
    "run": 1,
-   "duration_s": 18.322,
+   "duration_s": 16.595,
    "exit": 1,
    "timed_out": false,
    "counts": {
@@ -6000,60 +5973,60 @@
   {
    "mode": "det-async",
    "run": 1,
-   "duration_s": 19.651,
-   "exit": 1,
-   "timed_out": false,
-   "counts": {
-    "passed": 69,
-    "failed": 20
-   },
-   "tail": ""
-  },
-  {
-   "mode": "det-async-s1",
-   "run": 1,
-   "duration_s": 20.851,
-   "exit": 1,
-   "timed_out": false,
-   "counts": {
-    "passed": 69,
-    "failed": 20
-   },
-   "tail": ""
-  },
-  {
-   "mode": "det",
-   "run": 2,
-   "duration_s": 20.236,
-   "exit": 1,
-   "timed_out": false,
-   "counts": {
-    "passed": 69,
-    "failed": 20
-   },
-   "tail": ""
-  },
-  {
-   "mode": "det-async",
-   "run": 2,
-   "duration_s": 18.496,
-   "exit": 1,
-   "timed_out": false,
-   "counts": {
-    "passed": 64,
-    "failed": 25
-   },
-   "tail": ""
-  },
-  {
-   "mode": "det-async-s1",
-   "run": 2,
-   "duration_s": 20.052,
+   "duration_s": 20.277,
    "exit": 1,
    "timed_out": false,
    "counts": {
     "passed": 68,
     "failed": 21
+   },
+   "tail": ""
+  },
+  {
+   "mode": "det-async-s1",
+   "run": 1,
+   "duration_s": 19.073,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 71,
+    "failed": 18
+   },
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 17.399,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 70,
+    "failed": 19
+   },
+   "tail": ""
+  },
+  {
+   "mode": "det-async",
+   "run": 2,
+   "duration_s": 19.966,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 68,
+    "failed": 21
+   },
+   "tail": ""
+  },
+  {
+   "mode": "det-async-s1",
+   "run": 2,
+   "duration_s": 20.582,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 69,
+    "failed": 20
    },
    "tail": ""
   }

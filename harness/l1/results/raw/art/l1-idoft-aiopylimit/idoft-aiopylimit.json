@@ -6,14 +6,14 @@
   "aiopylimit/tests/test_aiopylimit.py::TestPyLimit::test_exception": "OD-Vic"
  },
  "executor": "GitHub Actions",
- "runner": "ip-10-0-138-95",
+ "runner": "runnervmccnms",
  "python_requested": [
   "3.9",
   "3.10"
  ],
  "commit": "b4075a8ac30dbbef59a2243f618a35a2f54b590c",
  "status": "collect-failed",
- "detail": "collect with python 3.10: ad\n    def acquire(self):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=================================================================== short test summary info ====================================================================\nERROR aiopylimit/tests/test_aiopylimit.py\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nno tests collected, 1 error in 0.05s\n",
+ "detail": "collect with python 3.10: ad\n    def acquire(self):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=================================================================== short test summary info ====================================================================\nERROR aiopylimit/tests/test_aiopylimit.py\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nno tests collected, 1 error in 0.08s\n",
  "python": "",
  "install": "-e .",
  "collected": 0
