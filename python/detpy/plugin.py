@@ -88,9 +88,18 @@ def _controls(ns) -> frozenset:
     return frozenset(CONTROLS) - off
 
 
+_PLUGIN_PACKAGES: set = set()
+
+
 def _skip_module(name: str, mod) -> bool:
-    """Modules whose references to real clock objects must not be rebound."""
-    if name.split(".", 1)[0] in _INFRA_PREFIXES:
+    """Modules whose references to real clock objects must not be rebound.
+
+    Besides the standard library and pytest itself, third-party pytest plugins
+    are test infrastructure (pytest-benchmark, pytest-timeout, ...): they keep
+    real timers, otherwise time-calibrated loops would spin on virtual time.
+    """
+    top = name.split(".", 1)[0]
+    if top in _INFRA_PREFIXES or top.startswith("pytest_") or top in _PLUGIN_PACKAGES:
         return True
     f = getattr(mod, "__file__", None)
     if not f:
@@ -168,6 +177,11 @@ def _install(config, ns, controls) -> None:
             S.disabled_plugins.append(name)
     if "seeds" in controls:
         seeds.install(_PATCHER, cfg.control_urandom)
+    for plugin in pm.get_plugins():
+        modname = getattr(plugin, "__name__", None)
+        if isinstance(modname, str) and modname not in ("__main__",) and hasattr(plugin, "__file__"):
+            _PLUGIN_PACKAGES.add(modname.split(".", 1)[0])
+    _PLUGIN_PACKAGES.discard("conftest")
     if "time" in controls:
         S.rebound = clock.install(_PATCHER, cfg.epoch_ns, cfg.tick_ns, _skip_module)
     if "fs" in controls:

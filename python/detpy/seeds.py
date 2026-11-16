@@ -20,7 +20,7 @@ import random
 import sys
 
 from . import _core, _state
-from ._patch import Patcher
+from ._patch import Patcher, disguise
 
 _real_seed = random.Random.seed
 _real_urandom = os.urandom
@@ -51,10 +51,9 @@ def _wrap_numeric(name, fn):
         _state.record("random", f"random.{name}", repr(value))
         return value
 
-    wrapper.__name__ = name
     wrapper.__doc__ = fn.__doc__
     wrapper.__wrapped__ = fn
-    return wrapper
+    return disguise(wrapper, "random", name)
 
 
 def _wrap_sequence(name, fn):
@@ -64,10 +63,9 @@ def _wrap_sequence(name, fn):
         _state.record("random", f"random.{name}", f"n={n}")
         return value
 
-    wrapper.__name__ = name
     wrapper.__doc__ = fn.__doc__
     wrapper.__wrapped__ = fn
-    return wrapper
+    return disguise(wrapper, "random", name)
 
 
 def _module_seed(fn):
@@ -79,7 +77,7 @@ def _module_seed(fn):
         return fn(a, version)
 
     seed.__wrapped__ = fn
-    return seed
+    return disguise(seed, "random", "seed")
 
 
 def _urandom(n):
@@ -109,9 +107,9 @@ def install(patcher: Patcher, control_urandom: bool) -> None:
             _state.record("random", "random.randbytes", _core.digest(data))
             return data
 
-        patcher.set(random, "randbytes", randbytes)
+        patcher.set(random, "randbytes", disguise(randbytes, "random", "randbytes"))
     patcher.set(random, "seed", _module_seed(inst.seed))
-    patcher.set(os, "urandom", _urandom)
+    patcher.set(os, "urandom", disguise(_urandom, "os", "urandom"))
     patcher.set(random, "_urandom", _urandom)  # SystemRandom / secrets
     if control_urandom:
         _urandom_rng = random.Random()
@@ -139,7 +137,7 @@ def _numpy_default_rng(real):
         return real(seed)
 
     default_rng.__wrapped__ = real
-    return default_rng
+    return disguise(default_rng, "numpy.random", "default_rng")
 
 
 _numpy_patched: list = []

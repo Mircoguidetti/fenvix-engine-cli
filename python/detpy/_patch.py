@@ -23,6 +23,30 @@ class Patcher:
         setattr(obj, name, value)
         return previous
 
+    def set_type_attr(self, tp: type, name: str, value: Any) -> Any:
+        """Set an attribute on a built-in (C, immutable) type such as ``datetime.datetime``.
+
+        Uses the type's underlying dict and ``PyType_Modified`` (CPython only):
+        identity, ``isinstance`` and subclassing of the type are unaffected.
+        """
+        import ctypes
+        import gc
+
+        d = gc.get_referents(tp.__dict__)[0]
+        previous = d.get(name, _MISSING)
+        d[name] = value
+        ctypes.pythonapi.PyType_Modified(ctypes.py_object(tp))
+
+        def undo() -> None:
+            if previous is _MISSING:
+                d.pop(name, None)
+            else:
+                d[name] = previous
+            ctypes.pythonapi.PyType_Modified(ctypes.py_object(tp))
+
+        self._undo.append((undo, None, None))
+        return previous
+
     def wrap(self, obj: Any, name: str, factory: Callable[[Any], Any]) -> Any:
         """Replace ``obj.name`` with ``factory(original)``."""
         original = getattr(obj, name)
@@ -33,7 +57,9 @@ class Patcher:
         while self._undo:
             obj, name, original = self._undo.pop()
             try:
-                if original is _MISSING:
+                if name is None:
+                    obj()
+                elif original is _MISSING:
                     delattr(obj, name)
                 else:
                     setattr(obj, name, original)
@@ -42,6 +68,17 @@ class Patcher:
 
     def __len__(self) -> int:
         return len(self._undo)
+
+
+def disguise(fn: Any, module: str, name: str) -> Any:
+    """Make a replacement function pickle (by reference) as ``module.name``."""
+    try:
+        fn.__module__ = module
+        fn.__qualname__ = name
+        fn.__name__ = name
+    except (AttributeError, TypeError):  # pragma: no cover
+        pass
+    return fn
 
 
 def rebind_module_references(

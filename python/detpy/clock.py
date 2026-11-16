@@ -23,7 +23,7 @@ import time as _time
 import warnings
 
 from . import _state
-from ._patch import Patcher, rebind_module_references
+from ._patch import Patcher, disguise, rebind_module_references
 
 NS = 1_000_000_000
 
@@ -201,81 +201,32 @@ def clock_gettime(clk_id):
     return real_clock_gettime(clk_id)
 
 
-# Fake datetime classes ---------------------------------------------------------
-class _FakeMeta(type):
-    """isinstance/issubclass against the fakes behave like the real classes."""
-
-    def __instancecheck__(cls, obj):
-        real = cls.__dict__.get("_detpy_real")
-        if real is not None:
-            return isinstance(obj, real)
-        return type.__instancecheck__(cls, obj)
-
-    def __subclasscheck__(cls, sub):
-        real = cls.__dict__.get("_detpy_real")
-        if real is not None:
-            return issubclass(sub, real)
-        return type.__subclasscheck__(cls, sub)
+# datetime ---------------------------------------------------------------------
+# The real C types are patched in place (see Patcher.set_type_attr): identity,
+# isinstance, subclasses, pickling and libraries such as freezegun keep working.
+_real_dt_now = real_datetime.__dict__["now"]
+_real_dt_utcnow = real_datetime.__dict__["utcnow"]
+_real_date_today = real_date.__dict__["today"]
 
 
-class FakeDate(real_date, metaclass=_FakeMeta):
-    _detpy_real = real_date
-
-    def __new__(cls, *args, **kwargs):
-        if cls is FakeDate:
-            # Hand out real instances: C extensions often require the exact type.
-            return real_date(*args, **kwargs)
-        return real_date.__new__(cls, *args, **kwargs)
-
-    @classmethod
-    def today(cls):
-        t = _wall_secs("date.today")
-        if cls is FakeDate:
-            return real_date.fromtimestamp(t)
-        return super().fromtimestamp(t)
+def _dt_now(cls, tz=None):
+    return cls.fromtimestamp(_wall_secs("datetime.now"), tz)
 
 
-class FakeDatetime(real_datetime, metaclass=_FakeMeta):
-    _detpy_real = real_datetime
-
-    def __new__(cls, *args, **kwargs):
-        if cls is FakeDatetime:
-            return real_datetime(*args, **kwargs)
-        return real_datetime.__new__(cls, *args, **kwargs)
-
-    @classmethod
-    def now(cls, tz=None):
-        t = _wall_secs("datetime.now")
-        if cls is FakeDatetime:
-            return real_datetime.fromtimestamp(t, tz)
-        return super().fromtimestamp(t, tz)
-
-    @classmethod
-    def today(cls):
-        t = _wall_secs("datetime.today")
-        if cls is FakeDatetime:
-            return real_datetime.fromtimestamp(t)
-        return super().fromtimestamp(t)
-
-    @classmethod
-    def utcnow(cls):
-        if sys.version_info >= (3, 12):
-            warnings.warn(
-                "datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. "
-                "Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        t = _wall_secs("datetime.utcnow")
-        aware = real_datetime.fromtimestamp(t, _dt.timezone.utc).replace(tzinfo=None)
-        if cls is FakeDatetime:
-            return aware
-        return super().fromtimestamp(t, _dt.timezone.utc).replace(tzinfo=None)
+def _dt_utcnow(cls):
+    if sys.version_info >= (3, 12):
+        warnings.warn(
+            "datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. "
+            "Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+    return cls.fromtimestamp(_wall_secs("datetime.utcnow"), _dt.timezone.utc).replace(tzinfo=None)
 
 
-for _cls, _name in ((FakeDate, "date"), (FakeDatetime, "datetime")):
-    _cls.__name__ = _cls.__qualname__ = _name
-    _cls.__module__ = "datetime"
+def _date_today(cls):
+    # Also serves datetime.today(), which C inherits from date.
+    return cls.fromtimestamp(_wall_secs("date.today"))
 
 
 # Wait primitives -----------------------------------------------------------------
@@ -317,12 +268,11 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module) -> list[
         fakes["clock_gettime_ns"] = clock_gettime_ns
     replacements = {}
     for name, fake in fakes.items():
-        real = patcher.set(_time, name, fake)
+        real = patcher.set(_time, name, disguise(fake, "time", name))
         replacements[id(real)] = (real, fake)
-    patcher.set(_dt, "datetime", FakeDatetime)
-    patcher.set(_dt, "date", FakeDate)
-    replacements[id(real_datetime)] = (real_datetime, FakeDatetime)
-    replacements[id(real_date)] = (real_date, FakeDate)
+    patcher.set_type_attr(real_datetime, "now", classmethod(_dt_now))
+    patcher.set_type_attr(real_datetime, "utcnow", classmethod(_dt_utcnow))
+    patcher.set_type_attr(real_date, "today", classmethod(_date_today))
     patcher.set(threading.Condition, "wait", _condition_wait)
     # asyncio's event loop must keep real time: its selector waits for real.
     import asyncio.base_events

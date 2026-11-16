@@ -13,7 +13,7 @@ import os
 import pathlib
 
 from . import _sites, _state
-from ._patch import Patcher
+from ._patch import Patcher, disguise
 
 _real_listdir = os.listdir
 _real_scandir = os.scandir
@@ -106,10 +106,10 @@ def path_rglob(self, *args, **kwargs):
 
 
 def install(patcher: Patcher) -> None:
-    patcher.set(os, "listdir", listdir)
-    patcher.set(os, "scandir", scandir)
-    patcher.set(glob, "glob", glob_glob)
-    patcher.set(glob, "iglob", glob_iglob)
+    patcher.set(os, "listdir", disguise(listdir, "os", "listdir"))
+    patcher.set(os, "scandir", disguise(scandir, "os", "scandir"))
+    patcher.set(glob, "glob", disguise(glob_glob, "glob", "glob"))
+    patcher.set(glob, "iglob", disguise(glob_iglob, "glob", "iglob"))
     # Python 3.13+: pathlib globbing binds os.scandir at class creation.
     globber = getattr(glob, "_StringGlobber", None)
     if globber is not None and "scandir" in vars(globber):

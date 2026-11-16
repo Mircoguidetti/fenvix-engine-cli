@@ -30,7 +30,7 @@ def test_monotonic_never_goes_back():
 
 def test_types_and_isinstance():
     now = datetime.datetime.now()
-    assert type(now) is datetime.datetime.__mro__[1]  # a *real* datetime
+    assert type(now) is datetime.datetime and datetime.datetime.__module__ == "datetime"
     assert isinstance(now, datetime.datetime) and isinstance(now, datetime.date)
     assert issubclass(datetime.datetime, datetime.date)
     d = datetime.datetime(2020, 1, 2, 3, 4)
@@ -40,7 +40,24 @@ def test_types_and_isinstance():
         pass
     assert type(Sub.now()) is Sub
     with pytest.warns(DeprecationWarning):
-        datetime.datetime.utcnow()
+        assert datetime.datetime.utcnow().year == 2025
+    assert type(datetime.datetime.today()) is datetime.datetime
+    assert type(datetime.date.today()) is datetime.date
+
+def test_pickling_of_patched_functions():
+    import pickle, random, os
+    assert pickle.loads(pickle.dumps(random.choice)) is random.choice
+    assert pickle.loads(pickle.dumps(time.time)) is time.time
+    assert pickle.loads(pickle.dumps(os.listdir)) is os.listdir
+
+def test_freezegun_style_subclass_with_metaclass():
+    class Meta(type):
+        pass
+    class FakeDate(datetime.date, metaclass=Meta):
+        pass
+    class FakeDatetime(datetime.datetime, metaclass=Meta):
+        pass
+    assert FakeDatetime.now().year in (2024, 2025)
 
 def test_timeouts_advance_the_clock():
     t0 = time.monotonic()
@@ -66,7 +83,7 @@ def test_clock_behaviour(pytester, run_det):
     pytester.makepyfile(test_clock=CLOCK_TESTS)
     t0 = time.monotonic()
     result, _ = run_det("-W", "error::pytest.PytestUnraisableExceptionWarning")
-    result.assert_outcomes(passed=7)
+    result.assert_outcomes(passed=9)
     assert time.monotonic() - t0 < 60  # nothing really slept for an hour
 
 
@@ -97,18 +114,25 @@ def test_time_values_are_identical_between_runs(pytester, run_det):
 
 
 def test_modules_imported_before_install_are_rebound(pytester, run_det):
-    # A plugin module imported before detpy installs its controls, holding
-    # direct references to the real functions.
+    # A library imported (by a plugin) before detpy installs its controls,
+    # holding direct references to the real functions.
     pytester.makepyfile(
-        early_plugin="""
+        early_lib="""
         from time import time as early_time
-        from datetime import datetime as early_datetime
+        from time import perf_counter
+        """,
+        early_plugin="""
+        import early_lib
+        from time import perf_counter as plugin_timer
         """,
         test_x="""
-        import early_plugin
+        import early_lib, early_plugin
+        from detpy import clock
         def test_x():
-            assert 1735689600 <= early_plugin.early_time() < 1735689601
-            assert early_plugin.early_datetime.now().year in (2024, 2025)
+            assert 1735689600 <= early_lib.early_time() < 1735689601
+            assert early_lib.perf_counter is not clock.real_perf_counter
+            # pytest plugins are infrastructure: they keep the real clock
+            assert early_plugin.plugin_timer is clock.real_perf_counter
         """,
     )
     result, _ = run_det("-p", "early_plugin")
