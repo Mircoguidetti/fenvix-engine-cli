@@ -99,7 +99,7 @@ jobs:
       - name: Python verifier reads a Node trace
         run: |
           pip install --no-deps dist/*.whl
-          cd node/test/.tmp/vitest/seeds && python3 -m detpy verify .detjs/trace.jsonl .detjs/trace.jsonl.1
+          cd node/test/.tmp/vitest/time && python3 -m detpy verify .detjs/trace.jsonl .detjs/trace.jsonl.1
 
   candidates:
     needs: [config]
