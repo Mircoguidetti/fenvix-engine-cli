@@ -99,8 +99,9 @@ for ((i = 1; i <= RUNS; i++)); do
   sleep 0.6
   T0=$(date +%s.%N)
   (
-    echo "$BASHPID" | sudo tee /sys/fs/cgroup/idle_test/cgroup.procs >/dev/null 2>"$RD/cg.err"
-    { echo "tee_rc=$? pid=$BASHPID"; cat /proc/self/cgroup; cat "$RD/cg.err"; } >"$RD/cg.txt" 2>&1
+    me=$BASHPID   # (inside a pipeline $BASHPID would be the pipeline child's pid)
+    echo "$me" | sudo tee /sys/fs/cgroup/idle_test/cgroup.procs >/dev/null 2>"$RD/cg.err"
+    { echo "tee_rc=$? pid=$me"; cat /proc/self/cgroup; cat "$RD/cg.err"; } >"$RD/cg.txt" 2>&1
     exec timeout -k 30 "${RUN_TIMEOUT_MIN}m" bash -c "set -o pipefail; source '$IS/lib/helpers.sh'; source '$CFG'; export PLAYWRIGHT_JUNIT_OUTPUT_FILE='$JUNIT_DIR/playwright.xml'; cd '$W'; run_tests"
   ) >"$RD/test.log" 2>&1
   rc=$?

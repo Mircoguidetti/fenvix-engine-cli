@@ -5,7 +5,7 @@
 # so its CPU is attributed to "services" rather than to the runner.
 svc_bg() {
   local log=$1; shift
-  ( echo "$BASHPID" | sudo tee /sys/fs/cgroup/idle_svc/cgroup.procs >/dev/null; exec "$@" ) >"$log" 2>&1 &
+  ( me=$BASHPID; echo "$me" | sudo tee /sys/fs/cgroup/idle_svc/cgroup.procs >/dev/null || true; exec "$@" ) >"$log" 2>&1 &
   echo $! >>"$IDLE_OUT/svc.pids"
 }
 
