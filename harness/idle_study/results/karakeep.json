@@ -1,0 +1,40 @@
+{
+ "name": "karakeep",
+ "repo": "karakeep-app/karakeep",
+ "ref": "bcc4b90a2ae89f4b96ec23ce395ee9d3d1df6a72",
+ "status": "setup_failed",
+ "setup_s": 84,
+ "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
+ "config": {
+  "repo": "karakeep-app/karakeep",
+  "ref": "bcc4b90a2ae89f4b96ec23ce395ee9d3d1df6a72",
+  "app": "node",
+  "suite": "e2e: vitest against the app stack in docker compose",
+  "services": "web, workers, Meilisearch, headless Chrome, sandbox (compose)",
+  "node": "24",
+  "runs": 6,
+  "parser": "junit",
+  "free_disk": true
+ },
+ "run_id": "43945303458",
+ "measured_at": "2026-11-16T20:12:32Z",
+ "baseline_cores": null,
+ "n_runs": 0,
+ "runs": [],
+ "idle": {
+  "median_idle_share_raw": null,
+  "median_idle_share_net": null,
+  "median_quiet_share": null,
+  "median_cores_mean": null,
+  "median_wall_s": null,
+  "median_busy_cpu_s": null
+ },
+ "tests": {
+  "n_distinct": 0,
+  "n_flaky": 0,
+  "n_consistent_fail": 0,
+  "flaky": [],
+  "consistent_fail_sample": []
+ },
+ "setup_log_tail": "#58 exporting config sha256:dc8866dbc3ba6cbfed75484c11a61aa4bb7489ffb04c111dcf32f026f899adfa done\n#58 exporting attestation manifest sha256:28540facc1fc6fe7476b88ca39298ea5475706231142a2c3b5ecd471c823f5e8 0.0s done\n#58 exporting manifest list sha256:2f3582adf8e0105cb0c1980e55b6b9f385f7f9ee5cbd0490377cc285a82c5521 done\n#58 naming to docker.io/library/e2e_tests-web:latest done\n#58 unpacking to docker.io/library/e2e_tests-web:latest\n#58 unpacking to docker.io/library/e2e_tests-web:latest 23.6s done\n#58 DONE 23.7s\n\n#57 [sandbox] exporting to image\n#57 unpacking to docker.io/library/e2e_tests-sandbox:latest 23.6s done\n#57 DONE 23.7s\n\n#56 [web-remote] exporting to image\n#56 unpacking to docker.io/library/e2e_tests-web-remote:latest 23.6s done\n#56 DONE 23.7s\n\n#59 [web] resolving provenance for metadata file\n#59 ...\n\n#60 [sandbox] resolving provenance for metadata file\n#60 DONE 0.5s\n\n#59 [web] resolving provenance for metadata file\n#59 DONE 0.5s\n\n#61 [web-remote] resolving provenance for metadata file\n#61 DONE 0.0s\n Image e2e_tests-sandbox Built \n Image e2e_tests-web Built \n Image e2e_tests-web-remote Built \n web Skipped No image to be pulled\n Image ghcr.io/karakeep-app/karakeep-chrome:157.0.8103.78-r1 Skipped Image can be built\n sandbox Skipped No image to be pulled\n web-remote Skipped No image to be pulled\n Image getmeili/meilisearch:v1.55.0 Pulling \n Image ghcr.io/copilotkit/aimock:latest Pulling \n Image nginx:alpine Pulling \n Image dxflrs/garage:v2.3.0 Pulling \n Image dxflrs/garage:v2.3.0 Pulled \n Image nginx:alpine Pulled \n Image ghcr.io/copilotkit/aimock:latest Pulled \n Image getmeili/meilisearch:v1.55.0 Pulled \nghcr.io/karakeep-app/karakeep-chrome:157.0.8103.78-r1\nScope: all 26 workspace projects\n? Verifying lockfile against supply-chain policies (2900 entries)...\nLockfile is up to date, resolution step is skipped\nPackages: +2906\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 0, reused 0, downloaded 1, added 0\nPackages are hard linked from the content-addressable store to the virtual store.\n  Content-addressable store is at: /home/runner/.local/share/pnpm/store/v11\n  Virtual store is at:             node_modules/.pnpm\nProgress: resolved 0, reused 0, downloaded 94, added 4\nProgress: resolved 0, reused 0, downloaded 142, added 8\nProgress: resolved 0, reused 0, downloaded 168, added 8\nProgress: resolved 0, reused 0, downloaded 238, added 16\nProgress: resolved 0, reused 0, downloaded 297, added 20\nProgress: resolved 0, reused 0, downloaded 350, added 28\nProgress: resolved 0, reused 0, downloaded 417, added 32\nProgress: resolved 0, reused 0, downloaded 492, added 37\nProgress: resolved 0, reused 0, downloaded 630, added 48\nProgress: resolved 0, reused 0, downloaded 719, added 56\nProgress: resolved 0, reused 0, downloaded 831, added 64\nProgress: resolved 0, reused 0, downloaded 980, added 78\nProgress: resolved 0, reused 0, downloaded 1071, added 86\nProgress: resolved 0, reused 0, downloaded 1179, added 94\nProgress: resolved 0, reused 0, downloaded 1269, added 98\n[WARN] Request took 11169ms: https://registry.npmjs.org/@docusaurus%2Fcore\nProgress: resolved 0, reused 0, downloaded 1485, added 115\nProgress: resolved 0, reused 0, downloaded 1651, added 128\nProgress: resolved 0, reused 0, downloaded 1846, added 144\nProgress: resolved 0, reused 0, downloaded 2031, added 159\nProgress: resolved 0, reused 0, downloaded 2283, added 184\nProgress: resolved 0, reused 0, downloaded 2563, added 223\nProgress: resolved 0, reused 0, downloaded 2633, added 375\nProgress: resolved 0, reused 0, downloaded 2635, added 863\nProgress: resolved 0, reused 0, downloaded 2635, added 921\nProgress: resolved 0, reused 0, downloaded 2635, added 1354\n[WARN] Request took 22184ms: https://registry.npmjs.org/@lexical%2Freact\nProgress: resolved 0, reused 0, downloaded 2635, added 1684\nProgress: resolved 0, reused 0, downloaded 2635, added 1955\nProgress: resolved 0, reused 0, downloaded 2635, added 2299\nProgress: resolved 0, reused 0, downloaded 2635, added 2650\nProgress: resolved 0, reused 0, downloaded 2635, added 2906\nProgress: resolved 0, reused 0, downloaded 2635, added 2906, done\n[WARN] Request took 14301ms: https://registry.npmjs.org/drizzle-orm\n\u2713 Lockfile passes supply-chain policies (2900 entries in 35.7s)\nnode_modules/@swc/core postinstall$ node postinstall.js\nnode_modules/@swc/core postinstall: Done\nnode_modules/@sentry/cli postinstall$ node ./scripts/install.js\nnode_modules/esbuild postinstall$ node install.js\n.../core-utils/node_modules/esbuild postinstall$ node install.js\nnode_modules/esbuild postinstall: Done\nnode_modules/@sentry/cli postinstall: Done\n.../drizzle-kit/node_modules/esbuild postinstall$ node install.js\n.../core-utils/node_modules/esbuild postinstall: Done\nnode_modules/re2 install$ install-from-cache --artifact build/Release/re2.node --host-var RE2_DOWNLOAD_MIRROR --skip-path-var RE2_DOWNLOAD_SKIP_PATH --skip-ver-var RE2_DOWNLOAD_SKIP_VER --force-build-var RE2_DOWNLOAD_FORCE_BUILD || node-gyp -j max rebuild\n.../drizzle-kit/node_modules/esbuild postinstall: Done\nnode_modules/tesseract.js postinstall$ opencollective-postinstall || true\nnode_modules/re2 install: Trying https://github.com/uhop/node-re2/releases/download/1.26.1/linux-x64-137.br ...\nnode_modules/tesseract.js postinstall: Done\nnode_modules/re2 install: Writing to build/Release/re2.node ...\nnode_modules/re2 install: Done.\nnode_modules/re2 install: Done\n\ndevDependencies:\n+ @types/node 24.10.3\n+ husky 9.1.7\n+ oxfmt 0.72.0\n+ oxlint 1.87.0\n+ sherif 1.6.1\n+ turbo 2.10.13\n\n. prepare$ husky\n. prepare: Done\nDone in 38.6s using pnpm v11.28.9\nBEWARE: your OS is not officially supported by Playwright; installing dependencies for ubuntu26.04-x64 as a fallback.\nCannot install dependencies for ubuntu26.04-x64 with Playwright 1.59.1!\nFailed to install browsers\nError: ERROR: Playwright does not support chromium on ubuntu26.04-x64"
+}
