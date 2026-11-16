@@ -56,12 +56,15 @@ async function main(argv) {
   if (process.env.NODE_ENV == null) process.env.NODE_ENV = 'test';
   const run = session.prepare(opts, root, 'jest');
   process.env.DETJS_JEST_RUNNERS = JSON.stringify(runners);
-  const extra = ['--runInBand', '--maxConcurrency=1',
+  // --forceExit: in band, a handle left open by the suite keeps this process
+  // alive forever (react-testing-library), where Jest's worker mode would kill
+  // the workers; exit once the results are reported, as the workers do.
+  const extra = ['--runInBand', '--forceExit', '--maxConcurrency=1',
     `--testSequencer=${path.join(__dirname, 'sequencer.js')}`,
     `--testRunner=${path.join(__dirname, 'runner.js')}`];
   const help = spawnSync(process.execPath, [jest.bin, '--help'], { encoding: 'utf8', env: { ...process.env, DETJS: '0' } });
   if (/--randomize/.test(help.stdout || '')) extra.push('--no-randomize');
-  const isolation = 'jest --runInBand: one test file at a time in the main process, each in its own vm context; maxConcurrency=1';
+  const isolation = 'jest --runInBand --forceExit: one test file at a time in the main process, each in its own vm context; maxConcurrency=1';
   let finished = false;
   const finalize = () => {
     if (finished) return;
@@ -71,7 +74,7 @@ async function main(argv) {
     const { lines } = session.finish(run, opts, files, {
       runner: 'jest', runner_version: jest.pkg.version, isolation, serial: true, projects, cli_args: rest,
     });
-    for (const l of lines) process.stdout.write(`${l}\n`);
+    for (const l of lines) fs.writeSync(1, `${l}\n`); // sync: the runner may be exiting
   };
   process.on('exit', finalize);
   for (const l of session.header(run, opts, { runner: 'jest', runnerVersion: jest.pkg.version, isolation: 'runInBand' })) {

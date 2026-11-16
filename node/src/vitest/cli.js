@@ -101,7 +101,7 @@ async function main(argv) {
       runner: 'vitest', runner_version: pkg.version, isolation, serial: true,
       pool: info.pool, isolate: info.isolate, projects: info.projects, cli_args: args,
     });
-    for (const l of lines) process.stdout.write(`${l}\n`);
+    for (const l of lines) fs.writeSync(1, `${l}\n`); // sync: the runner may be exiting
   };
   process.on('exit', finalize);
   for (const l of session.header(run, opts, { runner: 'vitest', runnerVersion: pkg.version, isolation: 'one worker, files in sequence' })) {
