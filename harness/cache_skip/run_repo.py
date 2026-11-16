@@ -33,6 +33,11 @@ ROOT = HERE.parent.parent
 sys.path.insert(0, str(HERE.parent))
 from detpy_harness import detect_install, clean_env  # noqa: E402
 
+# Study-local pytest arguments: tests that hang in a serial run (each would cost the full --timeout per run).
+EXTRA_ARGS = {
+    # waits on a watchdog reload that never comes in a serial run (not deterministic under --det either)
+    "werkzeug": ["--deselect", "tests/test_serving.py::test_reloader_sys_path[watchdog]"],
+}
 DEP_SPEC_NAMES = ("pyproject.toml", "setup.py", "setup.cfg", "uv.lock", "poetry.lock", "Pipfile.lock",
                   "pdm.lock", "tox.ini")
 
@@ -90,7 +95,7 @@ def install(repo: dict, src: Path, venv: Path, logf: Path) -> tuple[bool, str]:
 
 def pytest_args(repo: dict, py: str, src: Path, env: dict) -> tuple[list, int, str]:
     has = lambda mod: sh([py, "-c", f"import {mod}"], env=env)[0] == 0  # noqa: E731
-    args = list(repo.get("pytest_args", [])) + ["-p", "no:cacheprovider", "-p", "no:randomly", "-p", "capture_plugin",
+    args = list(repo.get("pytest_args", [])) + EXTRA_ARGS.get(repo["name"], []) + ["-p", "no:cacheprovider", "-p", "no:randomly", "-p", "capture_plugin",
                                                 "-q", "-rN", "--tb=no"]
     if has("xdist"):
         args += ["-n", "0"]

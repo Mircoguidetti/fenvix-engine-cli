@@ -58,7 +58,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-VARIANTS = ("closure", "file", "line", "file+guard", "line+guard")
+VARIANTS = ("closure", "file", "line", "file+guard", "line+guard", "file+nameguard", "line+nameguard")
 CONFIG_MODES = ("strict", "relaxed")
 
 DEP_BASENAMES = {"uv.lock", "poetry.lock", "Pipfile", "Pipfile.lock", "pdm.lock", "pylock.toml"}
@@ -190,13 +190,112 @@ def map_lines(ops, lines) -> set:
     return out
 
 
+
+def _is_doc(node) -> bool:
+    return isinstance(node, ast.Expr) and isinstance(getattr(node, "value", None), ast.Constant) \
+        and isinstance(node.value.value, str)
+
+
+class _NoAnn(ast.NodeTransformer):
+    def visit_arg(self, node):
+        node.annotation = None
+        return node
+
+
+def _items(body, ns, out):
+    if body and _is_doc(body[0]):
+        out[("doc", ns)] = body[0].value.value
+        body = body[1:]
+    stmts = []
+    for node in body:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            out[("def", ns + node.name)] = node
+        elif isinstance(node, ast.ClassDef):
+            out[("class", ns + node.name)] = node
+            _items(node.body, ns + node.name + ".", out)
+        else:
+            stmts.append(ast.dump(node))
+    out[("stmts", ns)] = stmts
+
+
+def _fparts(n):
+    hard = ast.dump(ast.Module(body=list(n.decorator_list) + ([n.returns] if n.returns else []) + [
+        a.annotation for a in (n.args.posonlyargs + n.args.args + n.args.kwonlyargs
+                               + [x for x in (n.args.vararg, n.args.kwarg) if x]) if a.annotation],
+        type_ignores=[])) + type(n).__name__
+    soft = ast.dump(_NoAnn().visit(ast.parse(ast.unparse(n.args).join(("def f(", "): pass")))))
+    doc = n.body[0].value.value if n.body and _is_doc(n.body[0]) else None
+    return hard, soft, doc
+
+
+def name_level(old: str, new: str):
+    """Name-level comparison of the module-level structure.
+
+    Returns (hard, soft_lines, doc_changed, why):
+    * hard: a change whose effect is not confined to callers of a function: module or class body statements
+      (assignments, imports, class attributes, ``__all__``...), class headers, decorators, annotations, added
+      decorated functions, added methods (they can override), added module-level names the old module referenced;
+    * soft_lines: old line span of every function whose argument list / defaults changed (only callers, who
+      execute its body, can observe that);
+    * doc_changed: a docstring changed (doctests of the module, introspection).
+    """
+    try:
+        to, tn = ast.parse(old), ast.parse(new)
+    except SyntaxError:
+        return True, set(), True, "syntax"
+    io, inn = {}, {}
+    _items(to.body, "", io)
+    _items(tn.body, "", inn)
+    soft, doc, why = set(), False, []
+    old_names = {n.id for n in ast.walk(to) if isinstance(n, ast.Name)} | {
+        a.name for n in ast.walk(to) if isinstance(n, ast.ImportFrom) for a in n.names if a.name == "*"}
+    for key in set(io) | set(inn):
+        kind, q = key
+        a, b = io.get(key), inn.get(key)
+        if kind == "stmts":
+            if (a or []) != (b or []):
+                why.append("stmts:" + (q or "<module>"))
+        elif kind == "doc":
+            if a != b:
+                doc = True
+        elif kind == "class":
+            if a is None or b is None:
+                why.append(("added" if a is None else "removed") + " class " + q)
+            else:
+                ha = ast.dump(ast.Module(body=a.bases + [k.value for k in a.keywords] + a.decorator_list, type_ignores=[]))
+                hb = ast.dump(ast.Module(body=b.bases + [k.value for k in b.keywords] + b.decorator_list, type_ignores=[]))
+                if ha != hb or [k.arg for k in a.keywords] != [k.arg for k in b.keywords]:
+                    why.append("class header " + q)
+        elif kind == "def":
+            if a is None:
+                if b.decorator_list:
+                    why.append("added decorated def " + q)
+                elif "." in q:
+                    why.append("added method " + q)
+                elif q in old_names or "*" in old_names:
+                    why.append("added def shadows a name " + q)
+            elif b is not None:
+                (ha, sa, da), (hb, sb, db) = _fparts(a), _fparts(b)
+                if ha != hb:
+                    why.append("def header " + q)
+                elif sa != sb:
+                    soft.update(range(a.lineno, (a.end_lineno or a.lineno) + 1))
+                if da != db:
+                    doc = True
+            # removed def: its lines are changed lines, callers executed them
+    return bool(why), soft, doc, ";".join(sorted(why))[:300]
+
+
 class FileChange:
-    __slots__ = ("path", "status", "lines", "stmt_lines", "module_level", "ast_equal", "ops")
+    __slots__ = ("path", "status", "lines", "stmt_lines", "module_level", "ast_equal", "ops", "hard", "soft_lines",
+                 "doc_changed", "why", "body_lines")
 
     def __init__(self, path, status, old, new):
         self.path, self.status = path, status
         self.lines, self.stmt_lines, self.ops = set(), set(), None
         self.module_level, self.ast_equal = True, False
+        self.hard, self.soft_lines, self.doc_changed, self.why = True, set(), True, status
+        self.body_lines = None
         if status == "M" and old is not None and new is not None:
             ol, nl = old.splitlines(), new.splitlines()
             self.lines, self.ops = changed_old_lines(ol, nl)
@@ -214,11 +313,23 @@ class FileChange:
             so, sn = skeleton(old), skeleton(new)
             self.module_level = so is None or sn is None or so != sn
             self.ast_equal = so is not None and ast_dump(old) == ast_dump(new)
+            self.hard, self.soft_lines, self.doc_changed, self.why = name_level(old, new)
+            try:
+                self.body_lines = set()
+                for n in ast.walk(ast.parse(old)):
+                    if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
+                        b = n.body if isinstance(n.body, list) else [n.body]
+                        self.body_lines.update(range(b[0].lineno, (n.end_lineno or b[0].lineno) + 1))
+            except SyntaxError:
+                self.body_lines = None
+            if self.stmt_lines is not None:
+                self.soft_lines = self.soft_lines | self.stmt_lines
 
-    def hits(self, linesets) -> bool:
+    def hits(self, linesets, extra=False) -> bool:
         if self.status != "M" or self.stmt_lines is None:
             return True
-        return any(not s.isdisjoint(self.stmt_lines) for s in linesets)
+        lines = self.soft_lines if extra else self.stmt_lines
+        return any(not s.isdisjoint(lines) for s in linesets)
 
 
 # ---------------------------------------------------------------------------
@@ -241,6 +352,7 @@ class DepMap:
                 for f, lines in bl:
                     self.importtime.setdefault(f, set()).update(lines)
         self.cov: dict[str, dict[str, list]] = {}
+        self.run: dict[str, dict[str, list]] = {}  # lines executed while the test ran (no collection context)
         self.opens: dict[str, set] = {}
         self.lists: dict[str, set] = {}
         self.unprovable: dict[str, str] = {}
@@ -248,15 +360,19 @@ class DepMap:
         for nid, rec in self.tests.items():
             ctxs = ["t|" + nid, "c|" + nid.split("::")[0]] + rec.get("fixtures", [])
             per: dict[str, list] = {}
+            run: dict[str, list] = {}
             op, li = set(), set()
             for c in ctxs:
                 for f, lines in ctx.get(c, ()):
                     per.setdefault(f, []).append(lines)
+                    if not c.startswith("c|"):
+                        run.setdefault(f, []).append(lines)
                 d = fs.get(c)
                 if d:
                     op.update(d.get("open", ()))
                     li.update(d.get("list", ()))
             self.cov[nid] = per
+            self.run[nid] = run
             self.opens[nid], self.lists[nid] = op, li
             for f in per:
                 self.inv.setdefault(f, set()).add(nid)
@@ -285,6 +401,7 @@ class DepMap:
             return cache[key]
 
         new.cov = {nid: {f: [mv(f, s) for s in ls] for f, ls in per.items()} for nid, per in self.cov.items()}
+        new.run = {nid: {f: [mv(f, s) for s in ls] for f, ls in per.items()} for nid, per in self.run.items()}
         new.importtime = {f: set(mv(f, frozenset(s))) for f, s in self.importtime.items()}
         return new
 
@@ -332,7 +449,8 @@ def listing_changes(src, a, b, changes) -> set:
     return out
 
 
-def decide(m: DepMap, nid: str, fcs: dict, data_changed: set, list_changed: set, variant: str) -> str | None:
+def decide(m: DepMap, nid: str, fcs: dict, data_changed: set, list_changed: set, variant: str,
+           scope: dict | None = None) -> str | None:
     """Reason the test must run, or None if skippable (given shared rules already passed)."""
     if not m.opens[nid].isdisjoint(data_changed):
         return "data-file"
@@ -340,21 +458,30 @@ def decide(m: DepMap, nid: str, fcs: dict, data_changed: set, list_changed: set,
         return "dir-listing"
     per = m.cov[nid]
     guard = variant.endswith("+guard")
+    nameguard = variant.endswith("+nameguard")
     for f, fc in fcs.items():
         executed = f in per
         if variant == "closure":
-            if executed or m.loaded_before(f, nid):
+            if executed or (m.loaded_before(f, nid) and not (scope and f in scope and nid.split("::")[0] not in scope[f])):
                 return "source"
             continue
         if executed:
-            if variant.startswith("file") or fc.hits(per[f]):
+            if variant.startswith("file") or fc.hits(per[f], extra=nameguard):
                 return "source"
-        if guard and (executed or m.loaded_before(f, nid)):
-            if fc.module_level or fc.status != "M":
+        if scope and f in scope and nid.split("::")[0] not in scope[f] and not executed:
+            continue  # a test module is loaded by the collector: only its own tests and its importers depend on it
+        if (guard or nameguard) and (executed or m.loaded_before(f, nid)):
+            if fc.status != "M" or (fc.module_level if guard else fc.hard):
                 return "import-guard"
             it = m.importtime.get(f)
-            if it and (fc.stmt_lines is None or not it.isdisjoint(fc.stmt_lines)):
-                return "import-guard"
+            if it:
+                if fc.stmt_lines is None or (nameguard and fc.body_lines is None):
+                    return "import-guard"
+                lines = fc.stmt_lines & fc.body_lines if nameguard else fc.stmt_lines
+                if not it.isdisjoint(lines):
+                    return "import-guard"
+            if nameguard and fc.doc_changed and nid.split("::")[0] == f:
+                return "docstring"
     return None
 
 
@@ -444,6 +571,17 @@ def analyze(repo: str, work: Path, refresh: int) -> dict:
         row["py_changed"] = len(fcs)
         row["py_formatting_only"] = sum(1 for fc in fcs.values() if fc.ast_equal)
         row["py_module_level"] = sum(1 for fc in fcs.values() if fc.module_level)
+        row["py_hard"] = sum(1 for fc in fcs.values() if fc.hard)
+        row["py_why"] = {p: fc.why for p, fc in fcs.items() if fc.hard}
+        test_files = {n.split("::")[0] for n in m.tests}
+        scope = {}
+        for p in fcs:
+            if p in test_files:
+                base = p.rsplit("/", 1)[-1][:-3]
+                hits = git(src, "grep", "-l", "-E", rf"^\s*(from|import)\s.*\b{base}\b", prev["sha"], "--", "*.py",
+                           check=False).splitlines()
+                scope[p] = {p} | {h.split(":", 1)[1] for h in hits if ":" in h}
+        row["test_file_scope"] = {p: len(v) for p, v in scope.items()}
         data_changed = {p for st, p in ch if not p.endswith(".py")}
         list_changed = listing_changes(src, prev["sha"], cur["sha"], ch)
 
@@ -472,7 +610,7 @@ def analyze(repo: str, work: Path, refresh: int) -> dict:
                 skip, reasons = [], {}
                 for nid in cur_tests:
                     r = base_reason.get(nid) or ("config" if hit else None) or decide(m, nid, fcs, data_changed,
-                                                                                       list_changed, v)
+                                                                                       list_changed, v, scope)
                     if r:
                         reasons[nid] = r
                     else:
@@ -495,24 +633,26 @@ def analyze(repo: str, work: Path, refresh: int) -> dict:
             ops = {p: fc.ops for p, fc in fcs.items() if fc.status == "M"}
             ops.update({p: None for p, fc in fcs.items() if fc.status == "D"})
             moved = m.remap(ops) if ops else m
-            for key in ("strict/closure", "strict/line+guard", "strict/line", "strict/file"):
+            for key in ("strict/closure", "strict/line+guard", "strict/line+nameguard", "strict/line", "strict/file"):
                 cm, v = key.split("/")
                 hit = strict_hit
-                diff, checked, examples = 0, 0, []
+                diff, checked, examples, ids = 0, 0, [], []
                 for nid in cur_tests:
-                    if base_reason.get(nid) or hit or decide(m, nid, fcs, data_changed, list_changed, v):
+                    if base_reason.get(nid) or hit or decide(m, nid, fcs, data_changed, list_changed, v, scope):
                         continue
                     checked += 1
-                    a = {f: frozenset().union(*ls) for f, ls in moved.cov[nid].items()}
-                    b = {f: frozenset().union(*ls) for f, ls in mc.cov.get(nid, {}).items()}
+                    a = {f: frozenset().union(*ls) for f, ls in moved.run[nid].items()}
+                    b = {f: frozenset().union(*ls) for f, ls in mc.run.get(nid, {}).items()}
                     if a != b:
                         diff += 1
+                        ids.append(nid)
                         if len(examples) < 3:
                             fd = sorted(f for f in set(a) | set(b) if a.get(f) != b.get(f))
                             examples.append({"test": nid, "files": fd[:3]})
                 res[key]["path_changed"] = diff
                 res[key]["path_checked"] = checked
                 res[key]["path_changed_examples"] = examples
+                res[key]["path_changed_ids"] = ids
         # stale map (last refresh point)
         r0 = ((i - 1) // refresh) * refresh
         if r0 != i - 1 and r0 in stems:
@@ -532,17 +672,17 @@ def analyze(repo: str, work: Path, refresh: int) -> dict:
                     sops[p] = stale_cache_ops[key]
             ms_moved = ms.remap(sops) if sops else ms
             stale = {}
-            for v in ("file", "line", "file+guard", "line+guard"):
+            for v in ("file", "line", "file+guard", "line+guard", "line+nameguard"):
                 unsafe = wasted = 0
                 unsafe_t = 0.0
                 for nid in cur_tests:
                     if base_reason.get(nid) or strict_hit:
                         continue
-                    fresh_run = decide(m, nid, fcs, data_changed, list_changed, v) is not None
+                    fresh_run = decide(m, nid, fcs, data_changed, list_changed, v, scope) is not None
                     if nid not in ms_moved.tests:
                         stale_run = True
                     else:
-                        stale_run = decide(ms_moved, nid, fcs, data_changed, list_changed, v) is not None
+                        stale_run = decide(ms_moved, nid, fcs, data_changed, list_changed, v, scope) is not None
                     if fresh_run and not stale_run:
                         unsafe += 1
                         unsafe_t += cur_tests[nid]["dur"]
@@ -600,7 +740,7 @@ def summarize(transitions, steps) -> dict:
     s["stale"] = {v: {"transitions": len(st), "unsafe_tests": sum(t["stale"][v]["unsafe"] for t in st),
                       "transitions_with_unsafe": sum(1 for t in st if t["stale"][v]["unsafe"]),
                       "wasted_tests": sum(t["stale"][v]["wasted"] for t in st)}
-                  for v in ("file", "line", "file+guard", "line+guard")} if st else {}
+                  for v in ("file", "line", "file+guard", "line+guard", "line+nameguard")} if st else {}
     oks = [x for x in steps if x.get("status") == "ok"]
     s["overhead"] = _stats([x["cap_wall"] / x["time_wall"] - 1 for x in oks if x.get("time_wall")])
     s["plain_wall"] = _stats([x["time_wall"] for x in oks])
