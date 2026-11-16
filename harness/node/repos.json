@@ -178,6 +178,30 @@
   {
    "name": "uuid",
    "url": "https://github.com/uuidjs/uuid"
+  },
+  {
+   "name": "shiki",
+   "url": "https://github.com/shikijs/shiki"
+  },
+  {
+   "name": "unocss",
+   "url": "https://github.com/unocss/unocss"
+  },
+  {
+   "name": "mermaid",
+   "url": "https://github.com/mermaid-js/mermaid"
+  },
+  {
+   "name": "urql",
+   "url": "https://github.com/urql-graphql/urql"
+  },
+  {
+   "name": "vitepress",
+   "url": "https://github.com/vuejs/vitepress"
+  },
+  {
+   "name": "pixijs",
+   "url": "https://github.com/pixijs/pixijs"
   }
  ],
  "_comment_playwright": "'playwright': projects with Playwright end-to-end suites, measured (not built on) at HEAD: baseline = the project's own parallelism, --retries=0, Chromium only; --det = --workers=1 plus the Level 0 controls inside the Playwright worker processes (node/src/register.js); the browser and the web servers are not controlled. Keys as for the other pools, plus pw_dir (directory of playwright.config.*).",
@@ -229,6 +253,22 @@
   {
    "name": "pw-solid-start",
    "url": "https://github.com/solidjs/solid-start"
+  },
+  {
+   "name": "pw-ariakit",
+   "url": "https://github.com/ariakit/ariakit"
+  },
+  {
+   "name": "pw-starlight",
+   "url": "https://github.com/withastro/starlight"
+  },
+  {
+   "name": "pw-swr",
+   "url": "https://github.com/vercel/swr"
+  },
+  {
+   "name": "pw-remix",
+   "url": "https://github.com/remix-run/remix"
   }
  ]
 }

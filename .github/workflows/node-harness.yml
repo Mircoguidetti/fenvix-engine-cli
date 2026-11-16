@@ -24,7 +24,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: node-harness
+  group: node-harness-${{ github.sha }}
   cancel-in-progress: false
 
 env:
@@ -46,6 +46,10 @@ jobs:
       timing: ${{ steps.c.outputs.timing }}
       result_set: ${{ steps.c.outputs.result_set }}
       repo_budget: ${{ steps.c.outputs.repo_budget }}
+      candidates: ${{ steps.c.outputs.candidates }}
+      per_flaky: ${{ steps.c.outputs.per_flaky }}
+      per_popular: ${{ steps.c.outputs.per_popular }}
+      per_playwright: ${{ steps.c.outputs.per_playwright }}
     steps:
       - uses: actions/checkout@v4
       - id: c
@@ -55,7 +59,8 @@ jobs:
           python3 - <<'PY'
           import json, os
           d = {"runs": 10, "seeds": 20, "confirm": 10, "per_pool": 25, "flaky_candidates": 60, "popular_candidates": 44,
-               "max_first_run": 180, "only": "", "timing": "true", "result_set": "node", "repo_budget": 5400}
+               "max_first_run": 180, "only": "", "timing": "true", "result_set": "node", "repo_budget": 5400,
+               "candidates": "", "per_flaky": -1, "per_popular": -1, "per_playwright": 6}
           try:
               d.update(json.load(open("harness/node/RUN")))
           except Exception as e:
@@ -109,7 +114,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: c
-        run: python3 harness/node/ci.py candidates --flaky ${{ needs.config.outputs.flaky_candidates }} --popular ${{ needs.config.outputs.popular_candidates }} --playwright 12
+        run: python3 harness/node/ci.py candidates --flaky ${{ needs.config.outputs.flaky_candidates }} --popular ${{ needs.config.outputs.popular_candidates }} --playwright 12 --names "${{ needs.config.outputs.candidates }}"
 
   prepare:
     if: ${{ needs.config.outputs.only == '' }}
@@ -155,7 +160,7 @@ jobs:
             python3 -c "import json,sys; m=[x.strip() for x in sys.argv[1].split(',') if x.strip()]; print(json.dumps({'selected': m, 'discarded': []}))" "${{ needs.config.outputs.only }}" > selection.json
             echo "matrix=$(python3 -c "import json; print(json.dumps(json.load(open('selection.json'))['selected']))")" >> "$GITHUB_OUTPUT"
           else
-            python3 harness/node/ci.py select --dir art --per-pool ${{ needs.config.outputs.per_pool }} --selection selection.json
+            python3 harness/node/ci.py select --dir art --per-pool ${{ needs.config.outputs.per_pool }} --per-flaky ${{ needs.config.outputs.per_flaky }} --per-popular ${{ needs.config.outputs.per_popular }} --playwright ${{ needs.config.outputs.per_playwright }} --selection selection.json
           fi
           mkdir -p "harness/node/results/${{ needs.config.outputs.result_set }}"
           cp selection.json "harness/node/results/${{ needs.config.outputs.result_set }}/selection.json"

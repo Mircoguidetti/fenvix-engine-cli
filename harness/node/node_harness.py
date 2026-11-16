@@ -152,6 +152,7 @@ class Prepared(H.Prepared):
     documented: dict = field(default_factory=dict)  # file or test-name hint -> category
     source: str = ""
     pw_dir: str = ""
+    repo_root: str = ""
 
 
 def git(args, cwd, timeout=900):
@@ -229,6 +230,11 @@ def install(p: Prepared, repo: dict) -> bool:
         lock = (src / "pnpm-lock.yaml").read_text()[:200] if (src / "pnpm-lock.yaml").exists() else ""
         m = re.search(r"lockfileVersion:\s*'?(\d+)", lock)
         pnpm = "pnpm@9" if not m or int(m.group(1)) >= 9 else "pnpm@8" if int(m.group(1)) >= 6 else "pnpm@7"
+        pm_ver = re.match(r"pnpm@(\d+[\w.\-]*)", pm_field)
+        if pm_ver:
+            pnpm = f"pnpm@{pm_ver.group(1).split('+')[0]}"
+        elif pnpm == "pnpm@9":
+            pnpm = "pnpm@10"
         cmds = [["pnpm", "install", "--frozen-lockfile"], ["npx", "-y", pnpm, "install", "--frozen-lockfile"],
                 ["npx", "-y", pnpm, "install", "--no-frozen-lockfile"]]
     elif (src / "yarn.lock").exists() or pm_field.startswith("yarn"):
@@ -292,7 +298,10 @@ def detect_playwright(p: Prepared, repo: dict) -> bool:
         return False
     info = json.loads(out.strip().splitlines()[-1])
     p.runner, p.runner_version, p.runner_bin = "playwright", info["v"], info["bin"]
-    code, out, dur, _ = sh([f"{p.node_bin}/node", p.runner_bin, "install", "--with-deps", "chromium"], cwd=d,
+    # System dependencies through the latest Playwright (older ones do not know the runner's OS
+    # release), then the project's own browser build.
+    sh(["npx", "-y", "playwright@latest", "install-deps", "chromium"], cwd=d, env=node_env(p), timeout=1200)
+    code, out, dur, _ = sh([f"{p.node_bin}/node", p.runner_bin, "install", "chromium"], cwd=d,
                            env=node_env(p), timeout=1200)
     log(f"{p.name}: playwright install chromium exit={code} {dur:.0f}s")
     if code != 0:
@@ -309,28 +318,51 @@ def detect_runner(p: Prepared, repo: dict) -> bool:
         p.status, p.detail = "no-runner", "no package.json at the repository root"
         return False
     req = f"require('module').createRequire(process.cwd() + '/x.js')"
-    for runner in ([repo["runner"]] if repo.get("runner") else ["vitest", "jest"]):
-        code, out, _, _ = sh([f"{p.node_bin}/node", "-e",
-                              f"const r={req}; const f=r.resolve('{runner}/package.json'); const j=require(f);"
-                              f"const b=typeof j.bin==='string'?j.bin:j.bin['{runner}'];"
-                              f"console.log(JSON.stringify({{v:j.version, bin:require('path').join(require('path').dirname(f), b)}}))"],
-                             cwd=src, env=node_env(p))
-        if code == 0:
+    # The repository root first; then directories with a runner config (monorepos
+    # whose tests run from a package: ids and paths are then relative to it).
+    dirs = [src] + ([src / repo["test_dir"]] if repo.get("test_dir") else []) + config_dirs(src)
+    for d in dirs:
+        for runner in ([repo["runner"]] if repo.get("runner") else ["vitest", "jest"]):
+            code, out, _, _ = sh([f"{p.node_bin}/node", "-e",
+                                  f"const r={req}; const f=r.resolve('{runner}/package.json'); const j=require(f);"
+                                  f"const b=typeof j.bin==='string'?j.bin:j.bin['{runner}'];"
+                                  f"console.log(JSON.stringify({{v:j.version, bin:require('path').join(require('path').dirname(f), b)}}))"],
+                                 cwd=d, env=node_env(p))
+            if code != 0:
+                continue
             info = json.loads(out.strip().splitlines()[-1])
             p.runner, p.runner_version, p.runner_bin = runner, info["v"], info["bin"]
+            if d != src:
+                p.repo_root = p.src
+                p.src = str(d)
+                log(f"{p.name}: tests run from {os.path.relpath(d, src)}")
             major, minor = (int(x) for x in info["v"].split(".")[:2])
             if runner == "jest" and major < 27:
                 p.status, p.detail = "unsupported", f"jest {info['v']} (detjs needs jest-circus, the default runner since Jest 27)"
                 return False
             if runner == "jest":
-                _, helptext, _, _ = sh([f"{p.node_bin}/node", info["bin"], "--help"], cwd=src, env=node_env(p), timeout=120)
+                _, helptext, _, _ = sh([f"{p.node_bin}/node", info["bin"], "--help"], cwd=d, env=node_env(p), timeout=120)
                 p.random_order = "--randomize" in helptext
             if runner == "vitest" and (major, minor) < (1, 4):
                 p.status, p.detail = "unsupported", f"vitest {info['v']} (detjs needs >= 1.4)"
                 return False
             return True
-    p.status, p.detail = "no-runner", "neither vitest nor jest resolvable from the repository root"
+    p.status, p.detail = "no-runner", "neither vitest nor jest resolvable from the repository root or a package with a runner config"
     return False
+
+
+def config_dirs(src: Path) -> list:
+    """Directories (depth <= 3, outside node_modules) holding a vitest or jest config, shallowest first."""
+    out = []
+    for pat in ("vitest.config.*", "vitest.workspace.*", "jest.config.*"):
+        for f in src.rglob(pat):
+            rel = f.relative_to(src).parts
+            if "node_modules" in rel or len(rel) > 4 or any(x.startswith(".") for x in rel[:-1]):
+                continue
+            if f.parent != src and f.parent not in out:
+                out.append(f.parent)
+    out.sort(key=lambda d: (len(d.parts), str(d)))
+    return out[:6]
 
 
 def prepare(repo: dict, work: Path, _wheel, _default, max_first_run: float) -> Prepared:
@@ -379,9 +411,9 @@ def parse_report(path: Path, root: str) -> tuple[dict, dict]:
             exceptions[nid] = _exc(msg, "collect")
         for a in results:
             anc = a.get("ancestorTitles") or []
-            anc = [" ".join(map(str, x)) if isinstance(x, list) else str(x) for x in anc]
+            anc = [" ".join(map(str, x)) if isinstance(x, list) else ("" if x is None else str(x)) for x in anc]
             title = a.get("title", "")
-            title = " ".join(map(str, title)) if isinstance(title, list) else str(title)
+            title = " ".join(map(str, title)) if isinstance(title, list) else ("" if title is None else str(title))
             nid = "::".join([fid, *anc, title])
             o = norm.get(a.get("status"), a.get("status") or "unknown")
             prev = outcomes.get(nid)
@@ -525,7 +557,7 @@ def analyze(p: Prepared, results, explore, outdir: Path) -> dict:
     for hint, cat in p.documented.items():
         for nid in ids:
             fid = nid.split("::", 1)[0]
-            if fid == hint or fid.endswith("/" + hint) or (len(hint) > 6 and hint in nid):
+            if fid == hint or fid.endswith("/" + hint) or hint.endswith("/" + fid) or (len(hint) > 6 and hint in nid):
                 known[nid] = cat
     p.known_flaky = known
     s = _orig_analyze(p, results, explore, outdir)
@@ -642,9 +674,10 @@ def first_run(p: Prepared, args, rundir: Path):
         r = run_node(p, rundir, "normal", 0, args.run_timeout)
     min_tests = 10 if p.runner == "playwright" else args.min_tests
     if len(r.outcomes) < min_tests or sum(H.is_fail(o) for o in r.outcomes.values()) > 0.5 * max(1, len(r.outcomes)):
-        scripts = json.loads((Path(p.src) / "package.json").read_text()).get("scripts", {})
+        bdir = Path(p.repo_root or p.src)
+        scripts = json.loads((bdir / "package.json").read_text()).get("scripts", {})
         if "build" in scripts:
-            code, out, dur, _ = sh(["npm", "run", "build"], cwd=p.src, env=node_env(p), timeout=1800)
+            code, out, dur, _ = sh(["npm", "run", "build"], cwd=bdir, env=node_env(p), timeout=1800)
             log(f"{p.name}: first run unusable ({len(r.outcomes)} outcomes): `npm run build` exit={code} {dur:.0f}s")
             if code == 0:
                 p.install_cmd += " && npm run build"

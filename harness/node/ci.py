@@ -39,6 +39,9 @@ def pools():
 
 def candidates(args) -> None:
     flaky, popular, pw = pools()
+    if args.names:
+        emit("matrix", [n.strip() for n in args.names.split(",") if n.strip()])
+        return
     emit("matrix", [c["name"] for c in flaky[: args.flaky]] + [c["name"] for c in popular[: args.popular]]
          + [c["name"] for c in pw[: args.playwright]])
 
@@ -55,7 +58,8 @@ def select(args) -> None:
     flaky, popular, pw = pools()
     res = {r["name"]: r for r in load(Path(args.dir), "*.prepare.result.json")}
     chosen, discarded, used = [], [], set()
-    for kind, pool, quota in (("flaky", flaky, args.per_pool), ("popular", popular, args.per_pool),
+    for kind, pool, quota in (("flaky", flaky, args.per_flaky if args.per_flaky >= 0 else args.per_pool),
+                              ("popular", popular, args.per_popular if args.per_popular >= 0 else args.per_pool),
                               ("playwright", pw, args.playwright)):
         n = 0
         for c in pool:
@@ -356,10 +360,13 @@ def main() -> None:
     c.add_argument("--flaky", type=int, default=60)
     c.add_argument("--popular", type=int, default=60)
     c.add_argument("--playwright", type=int, default=12)
+    c.add_argument("--names", default="")
     s = sub.add_parser("select")
     s.add_argument("--dir", required=True)
     s.add_argument("--per-pool", type=int, default=25)
     s.add_argument("--playwright", type=int, default=6)
+    s.add_argument("--per-flaky", type=int, default=-1)
+    s.add_argument("--per-popular", type=int, default=-1)
     s.add_argument("--selection", required=True)
     t = sub.add_parser("timing-pick")
     t.add_argument("--dir", required=True)
