@@ -1,0 +1,75 @@
+{
+  "test": "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 21,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+  ],
+  "order": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: '<scratch>/hw/src/idoft-py-autodoc/var/test_foo_bar.rst'",
+    "<scratch>/hw/src/idoft-py-autodoc/autodoc/__init__.py:171"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "5ee12939499bdd339d0d907c0e68e540"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = 9e81c0cbfdc0b012d9408a3faf22abbe  <>  [time] time.time @ <site>/webtest/app.py:617 = 1000",
+    "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "9e81c0cbfdc0b012d9408a3faf22abbe"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "<site>/webtest/app.py:617",
+      "v": "1000"
+    },
+    "fingerprints": [
+      "1b1126a7f0d577ac53065bc31f853338",
+      "5ee12939499bdd339d0d907c0e68e540"
+    ]
+  },
+  "runs": 19,
+  "seconds": 26.09,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "<scratch>/hw/venvs/idoft-py-autodoc/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=<scratch>/hw/block2/idoft-py-autodoc/detpy/bundles/test_foo_bar-a082d284/order.txt -n 0",
+  "replay_command": "detpy replay <scratch>/hw/block2/idoft-py-autodoc/detpy/bundles/test_foo_bar-a082d284",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "<scratch>/hw/block2/idoft-py-autodoc/detpy/bundles/test_foo_bar-a082d284"
+}

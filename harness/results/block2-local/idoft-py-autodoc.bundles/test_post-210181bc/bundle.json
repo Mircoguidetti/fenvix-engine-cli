@@ -1,0 +1,75 @@
+{
+  "test": "examples/test_unittest.py::TestUnittest::test_post",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 20,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+  ],
+  "order": [
+    "examples/test_unittest.py::TestUnittest::test_post"
+  ],
+  "outcome": "passed+teardown-error",
+  "exception": [
+    "FileNotFoundError",
+    "teardown",
+    "FileNotFoundError: [Errno 2] No such file or directory: '<scratch>/hw/src/idoft-py-autodoc/var/test_unittest.rst'",
+    "<scratch>/hw/src/idoft-py-autodoc/autodoc/__init__.py:171"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "d7e91b1fb0858faebe377d29d8c9842f"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 4,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs passed+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed+teardown-error"
+    },
+    "fingerprints": [
+      "03a30e0f53b2a0636dbac9e92f23e44e",
+      "d7e91b1fb0858faebe377d29d8c9842f"
+    ]
+  },
+  "runs": 21,
+  "seconds": 28.99,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "<scratch>/hw/venvs/idoft-py-autodoc/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=<scratch>/hw/block2/idoft-py-autodoc/detpy/bundles/test_post-210181bc/order.txt -n 0",
+  "replay_command": "detpy replay <scratch>/hw/block2/idoft-py-autodoc/detpy/bundles/test_post-210181bc",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "<scratch>/hw/block2/idoft-py-autodoc/detpy/bundles/test_post-210181bc"
+}
