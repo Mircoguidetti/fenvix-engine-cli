@@ -1,0 +1,282 @@
+{
+  "meta": {
+    "set": "validate",
+    "runs": 10,
+    "jobs": 3,
+    "detpy": "0.1.0",
+    "date": "2026-11-16 13:54 UTC",
+    "command": "python harness/detpy_harness.py --set validate --runs 10 --jobs 3",
+    "order": [
+      "itsdangerous",
+      "cachetools",
+      "humanize",
+      "tenacity"
+    ]
+  },
+  "totals": {
+    "tests": 1806,
+    "unstable_normal": 0,
+    "unstable_det": 0,
+    "became_stable": 0,
+    "became_unstable": 0,
+    "outcome_changed_by_det": 0,
+    "covered": 1806,
+    "not_covered": 0
+  },
+  "reasons": {},
+  "repos": [
+    {
+      "name": "itsdangerous",
+      "status": "ok",
+      "url": "https://github.com/pallets/itsdangerous",
+      "commit": "672971d66a2e",
+      "install": "-e . --group dev --group tests",
+      "pytest_args": [],
+      "runs": 10,
+      "normal_mean_s": 0.8517897891000757,
+      "normal_stdev_s": 0.06104725235699412,
+      "det_mean_s": 1.030859099999907,
+      "det_stdev_s": 0.04191599960194044,
+      "slowdown_pct": 21.022711611631273,
+      "timeouts": 0,
+      "normal_exit_codes": [
+        0
+      ],
+      "det_exit_codes": [
+        0
+      ],
+      "tests": 297,
+      "unstable_normal": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "became_unstable": 0,
+      "outcome_changed_by_det": 0,
+      "covered": 297,
+      "not_covered": 0,
+      "reasons": {},
+      "examples": {},
+      "det_header": {
+        "adjustments": [],
+        "aslr_disabled": true,
+        "controls": [
+          "fs",
+          "hashseed",
+          "net",
+          "order",
+          "seeds",
+          "time"
+        ],
+        "detpy": "0.1.0",
+        "disabled_plugins": [],
+        "epoch_ns": 1735689600000000000,
+        "fresh_bytecode": false,
+        "hashseed": "0",
+        "implementation": "CPython",
+        "network": "block",
+        "order_digest": "8f639a1b804c4b1692dff07b934883f7",
+        "platform": "linux",
+        "pytest": "9.2.0",
+        "python": "3.13.18",
+        "rebound_references": 0,
+        "reexec": "ok",
+        "seed": 0,
+        "shuffle": false,
+        "sleep": "virtual",
+        "tick_ns": 1000,
+        "urandom_controlled": false
+      }
+    },
+    {
+      "name": "cachetools",
+      "status": "ok",
+      "url": "https://github.com/tkem/cachetools",
+      "commit": "1fd6e4a1a3fd",
+      "install": "-e .",
+      "pytest_args": [],
+      "runs": 10,
+      "normal_mean_s": 0.5733489889000793,
+      "normal_stdev_s": 0.033483574570180974,
+      "det_mean_s": 0.8215239813999687,
+      "det_stdev_s": 0.0390560972563631,
+      "slowdown_pct": 43.285153947160836,
+      "timeouts": 0,
+      "normal_exit_codes": [
+        0
+      ],
+      "det_exit_codes": [
+        0
+      ],
+      "tests": 416,
+      "unstable_normal": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "became_unstable": 0,
+      "outcome_changed_by_det": 0,
+      "covered": 416,
+      "not_covered": 0,
+      "reasons": {},
+      "examples": {},
+      "det_header": {
+        "adjustments": [],
+        "aslr_disabled": true,
+        "controls": [
+          "fs",
+          "hashseed",
+          "net",
+          "order",
+          "seeds",
+          "time"
+        ],
+        "detpy": "0.1.0",
+        "disabled_plugins": [],
+        "epoch_ns": 1735689600000000000,
+        "fresh_bytecode": false,
+        "hashseed": "0",
+        "implementation": "CPython",
+        "network": "block",
+        "order_digest": "abe0b2231c197b56431b10245eb2b2d6",
+        "platform": "linux",
+        "pytest": "9.2.0",
+        "python": "3.13.18",
+        "rebound_references": 0,
+        "reexec": "ok",
+        "seed": 0,
+        "shuffle": false,
+        "sleep": "virtual",
+        "tick_ns": 1000,
+        "urandom_controlled": false
+      }
+    },
+    {
+      "name": "humanize",
+      "status": "ok",
+      "url": "https://github.com/python-humanize/humanize",
+      "commit": "a95004512dde",
+      "install": "-e .[tests] freezegun",
+      "pytest_args": [
+        "--benchmark-disable"
+      ],
+      "runs": 10,
+      "normal_mean_s": 1.7787103314000432,
+      "normal_stdev_s": 0.048105690950508075,
+      "det_mean_s": 2.0916578810999455,
+      "det_stdev_s": 0.09377022166848625,
+      "slowdown_pct": 17.594070500145897,
+      "timeouts": 0,
+      "normal_exit_codes": [
+        0
+      ],
+      "det_exit_codes": [
+        0
+      ],
+      "tests": 908,
+      "unstable_normal": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "became_unstable": 0,
+      "outcome_changed_by_det": 0,
+      "covered": 908,
+      "not_covered": 0,
+      "reasons": {},
+      "examples": {},
+      "det_header": {
+        "adjustments": [],
+        "aslr_disabled": true,
+        "controls": [
+          "fs",
+          "hashseed",
+          "net",
+          "order",
+          "seeds",
+          "time"
+        ],
+        "detpy": "0.1.0",
+        "disabled_plugins": [],
+        "epoch_ns": 1735689600000000000,
+        "fresh_bytecode": false,
+        "hashseed": "0",
+        "implementation": "CPython",
+        "network": "block",
+        "order_digest": "9ff796c50c575bd82ee0014a66b7e6e1",
+        "platform": "linux",
+        "pytest": "9.2.0",
+        "python": "3.13.18",
+        "rebound_references": 0,
+        "reexec": "ok",
+        "seed": 0,
+        "shuffle": false,
+        "sleep": "virtual",
+        "tick_ns": 1000,
+        "urandom_controlled": false
+      }
+    },
+    {
+      "name": "tenacity",
+      "status": "ok",
+      "url": "https://github.com/jd/tenacity",
+      "commit": "aac059c90617",
+      "install": "-e .[test] --group dev tornado typeguard",
+      "pytest_args": [],
+      "runs": 10,
+      "normal_mean_s": 2.5853038485999607,
+      "normal_stdev_s": 0.035539832179538336,
+      "det_mean_s": 1.8354171823999876,
+      "det_stdev_s": 0.11511053980789576,
+      "slowdown_pct": -29.005745943791673,
+      "timeouts": 0,
+      "normal_exit_codes": [
+        0
+      ],
+      "det_exit_codes": [
+        0
+      ],
+      "tests": 185,
+      "unstable_normal": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "became_unstable": 0,
+      "outcome_changed_by_det": 0,
+      "covered": 185,
+      "not_covered": 0,
+      "reasons": {},
+      "examples": {},
+      "det_header": {
+        "adjustments": [],
+        "aslr_disabled": true,
+        "controls": [
+          "fs",
+          "hashseed",
+          "net",
+          "order",
+          "seeds",
+          "time"
+        ],
+        "detpy": "0.1.0",
+        "disabled_plugins": [],
+        "epoch_ns": 1735689600000000000,
+        "fresh_bytecode": false,
+        "hashseed": "0",
+        "implementation": "CPython",
+        "network": "block",
+        "order_digest": "afea92e11e5512a4f92729a59bd64017",
+        "platform": "linux",
+        "pytest": "9.2.0",
+        "python": "3.13.18",
+        "rebound_references": 0,
+        "reexec": "ok",
+        "seed": 0,
+        "shuffle": false,
+        "sleep": "virtual",
+        "tick_ns": 1000,
+        "urandom_controlled": false
+      }
+    }
+  ],
+  "skipped": [
+    {
+      "name": "filelock",
+      "status": "too-slow",
+      "detail": "first normal run took 291s"
+    }
+  ]
+}
