@@ -36,13 +36,14 @@ jobs:
           for n in only:
               c = repos[n]
               inc.append({"name": n, "python": c.get("python", ""), "node": c.get("node", ""),
-                          "bun": c.get("bun", ""), "free_disk": bool(c.get("free_disk"))})
+                          "bun": c.get("bun", ""), "free_disk": bool(c.get("free_disk")),
+                          "os": c.get("os", "ubuntu-latest")})
           print("matrix=" + json.dumps({"include": inc}))
           EOF
 
   study:
     needs: plan
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 330
     strategy:
       fail-fast: false
