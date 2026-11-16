@@ -402,6 +402,12 @@ def ablate(p: Prepared, results: list[RunResult], rundir: Path, timeout: float, 
     if args.no_ablation or not broken_by_det(results):
         return {}
     runs = {}
+    # Reference: same fixed order, serial, without --det. A test failing here is
+    # broken by the fixed order / serial execution, not by a Level 0 control.
+    ref = run_pytest(p, rundir, "serial", 0, timeout)
+    log(f"{p.name}: ablation reference (serial, fixed order, no --det) {ref.duration:.1f}s exit={ref.exit_code}")
+    if ref.completed:
+        runs["no-det-serial"] = ref
     for c in ABLATE_CONTROLS:
         r = run_pytest(p, rundir, "ablate", 0, timeout, disable=c)
         log(f"{p.name}: ablation --det-disable={c} {r.duration:.1f}s exit={r.exit_code}")
@@ -627,8 +633,14 @@ def analyze(p: Prepared, results: list[RunResult], explore: dict, outdir: Path) 
             "broken_cause": "",
         }
         if nid in broken:
-            fixed_by = [c for c, r in ablation.items() if r.outcomes.get(nid) == "passed"]
-            cause = "+".join(fixed_by) if fixed_by else ("unexplained" if ablation else "not-ablated")
+            ref = ablation.get("no-det-serial")
+            fixed_by = [c for c, r in ablation.items() if c != "no-det-serial" and r.outcomes.get(nid) == "passed"]
+            if ref is not None and is_fail(ref.outcomes.get(nid)):
+                cause = "fixed-order (fails without --det too)"
+            elif fixed_by:
+                cause = "+".join(fixed_by)
+            else:
+                cause = "unexplained" if ablation else "not-ablated"
             row["broken_cause"] = cause
             src = pdiv.get("reason") or fdiv.get("reason") or "-"
             key = f"{cause} | {row['det_exception'] or '?'}"
@@ -822,8 +834,9 @@ def write_report(outdir: Path, meta: dict) -> Path:
              + (f" Before the L0 fixes: **{before.get('broken_by_det')}** (MEASURED, {before.get('date')})."
                 if before else "") + "\n")
     if causes:
-        L.append("Cause = the controls whose `--det-disable` makes the test pass again (one ablation run per control); "
-                 "`unexplained` = no single control does.\n")
+        L.append("Cause: `fixed-order` = the test also fails in a serial fixed-order run *without* `--det` (the baseline "
+                 "hides it with random order and xdist: not a Level 0 failure); otherwise the controls whose "
+                 "`--det-disable` makes it pass again (one ablation run per control); `unexplained` = none does.\n")
         L.append("| cause (controls) &#124; exception | tests | examples |")
         L.append("|---|---:|---|")
         for k, n in causes.most_common(15):
