@@ -71,7 +71,11 @@ def select(args) -> None:
                 n += 1
             else:
                 discarded.append({"name": c["name"], "kind": kind, "status": r.get("status"), "detail": str(r.get("detail", ""))[-300:]})
-    Path(args.selection).write_text(json.dumps({"selected": chosen, "discarded": discarded}, indent=1))
+    for name, r in res.items():
+        print(f"{name:28} {r.get('status', '?'):18} {r.get('runner', '')} {r.get('runner_version', '')} "
+              f"tests={r.get('tests', '')} first={r.get('first_run_s', '')} {str(r.get('detail', ''))[-160:]!r}")
+    Path(args.selection).write_text(json.dumps({"selected": chosen, "discarded": discarded,
+                                                "prepare": {n: {k: r.get(k) for k in ("status", "runner", "runner_version", "tests", "first_run_s", "node", "commit", "detail")} for n, r in res.items()}}, indent=1))
     emit("matrix", chosen)
 
 

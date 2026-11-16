@@ -54,12 +54,11 @@ async function main(argv) {
   }
   const run = session.prepare(opts, root, 'jest');
   process.env.DETJS_JEST_RUNNERS = JSON.stringify(runners);
-  const major = Number(jest.pkg.version.split('.')[0]);
-  const minor = Number(jest.pkg.version.split('.')[1]);
   const extra = ['--runInBand', '--maxConcurrency=1',
     `--testSequencer=${path.join(__dirname, 'sequencer.js')}`,
     `--testRunner=${path.join(__dirname, 'runner.js')}`];
-  if (major > 29 || (major === 29 && minor >= 2)) extra.push('--no-randomize');
+  const help = spawnSync(process.execPath, [jest.bin, '--help'], { encoding: 'utf8', env: { ...process.env, DETJS: '0' } });
+  if (/--randomize/.test(help.stdout || '')) extra.push('--no-randomize');
   const isolation = 'jest --runInBand: one test file at a time in the main process, each in its own vm context; maxConcurrency=1';
   let finished = false;
   const finalize = () => {

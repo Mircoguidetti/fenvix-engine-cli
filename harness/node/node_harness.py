@@ -222,10 +222,14 @@ def install(p: Prepared, repo: dict) -> bool:
     if repo.get("install"):
         cmds = [repo["install"]]
     elif (src / "pnpm-lock.yaml").exists() or pm_field.startswith("pnpm"):
-        cmds = [["pnpm", "install", "--frozen-lockfile"], ["pnpm", "install", "--no-frozen-lockfile"]]
+        lock = (src / "pnpm-lock.yaml").read_text()[:200] if (src / "pnpm-lock.yaml").exists() else ""
+        m = re.search(r"lockfileVersion:\s*'?(\d+)", lock)
+        pnpm = "pnpm@9" if not m or int(m.group(1)) >= 9 else "pnpm@8" if int(m.group(1)) >= 6 else "pnpm@7"
+        cmds = [["pnpm", "install", "--frozen-lockfile"], ["npx", "-y", pnpm, "install", "--frozen-lockfile"],
+                ["npx", "-y", pnpm, "install", "--no-frozen-lockfile"]]
     elif (src / "yarn.lock").exists() or pm_field.startswith("yarn"):
         if (src / ".yarnrc.yml").exists():
-            cmds = [["yarn", "install", "--immutable"], ["yarn", "install"]]
+            cmds = [["yarn", "install", "--immutable"], ["yarn", "install"], ["npx", "-y", "@yarnpkg/cli-dist", "install"]]
         else:
             cmds = [["npx", "-y", "yarn@1", "install", "--frozen-lockfile", "--ignore-engines"],
                     ["npx", "-y", "yarn@1", "install", "--ignore-engines"]]
@@ -267,8 +271,12 @@ def detect_runner(p: Prepared, repo: dict) -> bool:
             info = json.loads(out.strip().splitlines()[-1])
             p.runner, p.runner_version, p.runner_bin = runner, info["v"], info["bin"]
             major, minor = (int(x) for x in info["v"].split(".")[:2])
+            if runner == "jest" and major < 27:
+                p.status, p.detail = "unsupported", f"jest {info['v']} (detjs needs jest-circus, the default runner since Jest 27)"
+                return False
             if runner == "jest":
-                p.random_order = major > 29 or (major == 29 and minor >= 2)
+                _, helptext, _, _ = sh([f"{p.node_bin}/node", info["bin"], "--help"], cwd=src, env=node_env(p), timeout=120)
+                p.random_order = "--randomize" in helptext
             if runner == "vitest" and (major, minor) < (1, 4):
                 p.status, p.detail = "unsupported", f"vitest {info['v']} (detjs needs >= 1.4)"
                 return False
@@ -322,7 +330,11 @@ def parse_report(path: Path, root: str) -> tuple[dict, dict]:
             msg = (f.get("message") or f.get("failureMessage") or "").strip()
             exceptions[nid] = _exc(msg, "collect")
         for a in results:
-            nid = "::".join([fid, *a.get("ancestorTitles", []), a.get("title", "")])
+            anc = a.get("ancestorTitles") or []
+            anc = [" ".join(map(str, x)) if isinstance(x, list) else str(x) for x in anc]
+            title = a.get("title", "")
+            title = " ".join(map(str, title)) if isinstance(title, list) else str(title)
+            nid = "::".join([fid, *anc, title])
             o = norm.get(a.get("status"), a.get("status") or "unknown")
             prev = outcomes.get(nid)
             if prev is None or (o == "failed" and prev != "failed"):
