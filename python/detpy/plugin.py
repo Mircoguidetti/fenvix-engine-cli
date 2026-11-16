@@ -401,6 +401,34 @@ class _Outcomes:
         return {}
 
 
+def _keep_django_groups(config, ordered):
+    """Re-apply pytest-django's grouping to detpy's order, in place.
+
+    pytest-django stable-sorts the items like Django's runner: TestCase (rollback)
+    tests first, then transactional tests (TransactionTestCase, transaction=True,
+    which flush the database), then tests without a database. Running a flushing
+    test before TestCase tests deletes the rows created by data migrations, so the
+    TestCase tests fail under --det although they pass normally. The grouping is a
+    stable sort, a pure function of its input: calling pytest-django's own hook on
+    detpy's (fixed or seeded) order keeps the group order as a constraint, keeps
+    detpy's order inside each group, and stays deterministic. Returns True when
+    the grouping moved a test."""
+    plugin = config.pluginmanager.get_plugin("django")
+    hook = getattr(plugin, "pytest_collection_modifyitems", None)
+    if hook is None:
+        return False
+    grouped = list(ordered)
+    try:
+        hook(items=grouped)
+    except Exception:  # pragma: no cover - never break collection on a pytest-django change
+        return False
+    if sorted(map(id, grouped)) != sorted(map(id, ordered)):  # pragma: no cover - not a pure reorder
+        return False
+    changed = any(a is not b for a, b in zip(grouped, ordered))
+    ordered[:] = grouped
+    return changed
+
+
 class _DetSession(_Outcomes):
     """Hooks of the --det session, bound to the config that activated Level 0."""
 
@@ -443,6 +471,11 @@ class _DetSession(_Outcomes):
         if cfg.shuffle:
             perm = _core.shuffle_order([i.nodeid for i in ordered], cfg.seed)
             ordered = [ordered[p] for p in perm]
+        if _keep_django_groups(config, ordered):
+            note = "pytest-django: test groups kept (TestCase, then transactional, then non-db)"
+            if note not in S.adjustments:
+                S.adjustments.append(note)
+        # An explicit order (replay bundle) is run exactly as listed.
         order_file = config.getoption("det_order", None)
         if order_file:
             ordered = _explicit_order(config, ordered, order_file)
