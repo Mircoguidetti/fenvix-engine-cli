@@ -81,27 +81,68 @@ once): the default of `--det-async` alone, meant to make a suite reproducible
 without exploring. Seeds ≥ 1 explore (`--det-async-seed=N`, default
 `--det-seed`).
 
-### Recording, fingerprint, verifier
+### Recording, fingerprint, verifier (shared event vocabulary)
 
-Every iteration that delivered an external event, fired a timer or jumped the
-clock records one event:
+Every choice is one event in the shared vocabulary (fenvix-brain-cli
+ARCHITECTURE.md, "Shared event vocabulary"; encoding version 2):
+
+| op | when | chosen index / set size |
+|---|---|---|
+| `sched.io` | a ready file object is delivered | index in the canonical (fd-ordered) set of ready objects still undelivered, including the deferred ones |
+| `sched.ready` | a foreign `call_soon_threadsafe` callback is delivered | index in the canonical order of the batch still undelivered |
+| `sched.executor` | an executor result is delivered | `0/n`, n = results due together (order = virtual completion time) |
+| `sched.timer` | a timer fires | `0/n`, n = timers due together (order = deadline) |
+
+value = `<chosen index>/<set size>:<stable id>`; the stable id is the creation
+site of the callback (first user frame when the timer, reader/writer, executor
+job or threadsafe call was created; `path:line` relative to the root) plus a
+per-site counter, e.g. `sched.io 1/3:tests/test_x.py:39#2`. The event's site is
+the same creation site. Points whose timing the scheduler does not control are
+recorded as `other` events `asyncio.uncontrolled` (`grace-wakeup`,
+`blocked-wakeup`, `executor-unsettled=<job>`). Events of executor workers are
+recorded at the delivery point of their job, so worker threads do not perturb
+the fingerprint. The Rust core has `Source::Sched` (tag 9), `Reason::Sched`,
+`ENCODING_VERSION = 2` and refuses to compare traces of different encodings.
+`detpy verify` reports, e.g.:
 
 ```
-source=sched  op=asyncio.step  site=<loop K>  value="it=12 jump=1170740ns executor=[job#5] io=[io fd9 r:_read_ready(EchoProtocol)] timers=[_set_result_unless_cancelled->task #2 worker:31]"
+NOT-COVERED test_races.py::test_io_threads  [sched]
+    runs 0 vs 1: event #4: first diverging scheduling choice: sched.io 1/3:test_races.py:39#2 @ test_races.py:39  <>  sched.io 2/3:test_races.py:39#3 @ test_races.py:39
 ```
 
-Labels are address-free: callback qualnames, per-test task ordinals plus the
-line where the coroutine is suspended, fd numbers, executor job numbers. The
-Rust core has a new `Source::Sched` (tag 9, appended: existing fingerprints are
-unchanged, `ENCODING_VERSION` stays 1) and a `Reason::Sched`, so `detpy verify`
-reports, e.g.:
+## 4. Mapping onto Node's event loop (design only)
+
+The Node L1 can reuse the same model and the same vocabulary; only the
+interception points differ. Node's loop is libuv plus V8's microtask queue:
 
 ```
-NOT-COVERED test_races.py::test_executor_results  [sched]
-    runs 0 vs 1: event #1: first diverging scheduling choice at <loop 0>: it=3 jump=5030000ns executor=[job#1] <> it=3 jump=2685762ns executor=[job#2]
+timers -> pending callbacks -> idle/prepare -> poll (I/O) -> check (setImmediate) -> close callbacks
+          after every macrotask callback: process.nextTick queue, then the promise (microtask) queue, until both are empty
 ```
 
-## 4. Approaches compared
+| asyncio concept (this prototype) | Node / libuv equivalent | choice point and `sched` op |
+|---|---|---|
+| `_ready` FIFO of callbacks scheduled by callbacks | `process.nextTick` queue and promise jobs (microtasks): FIFO, drained completely after each macrotask | **not a choice** (FIFO is guaranteed by the language, like `call_soon`). Exactly as here, reordering them would create impossible executions. |
+| microtasks vs. macrotasks | V8 microtask checkpoint vs. libuv phases | the order is fixed by the spec; `sched.microtask` is reserved for the one real freedom: *which macrotask* runs next when several are runnable (e.g. `setImmediate` vs. an expired `setTimeout(0)` scheduled from the main module, whose order depends on loop start time) |
+| timers + virtual clock with jumps | timers phase (`setTimeout`/`setInterval`, libuv timer heap, `uv_now` updated once per iteration) | `sched.timer`: virtual `uv_now` with the same cost model and jumps; timers due together fire in deadline order (`0/n`) |
+| I/O readiness, deferral, seeded order | poll phase (epoll/kqueue), `pending callbacks` phase for deferred I/O errors | `sched.io`: poll with timeout 0, deliver or defer each ready handle, seeded order among delivered |
+| executor jobs (`run_in_executor`) | libuv threadpool (`fs.*`, `dns.lookup`, `crypto.pbkdf2`, `zlib`), worker threads' `postMessage` | `sched.executor`: wait for the work request, deliver its completion at `submit + virtual duration + seeded cost` |
+| foreign `call_soon_threadsafe` | `uv_async_send` from other threads (worker_threads messages, N-API thread-safe functions) | `sched.ready`: batch, FIFO per sender, seeded interleaving |
+| `call_soon` from the loop | `setImmediate` (check phase) | FIFO within the check phase; the choice is check-before/after-timers only at loop start |
+| `shutdown_default_executor` race | process exit with pending handles (`unref`ed timers) | deterministic drain at test end |
+
+Where to intercept in Node: timers and `setImmediate` in JS (the
+`internal/timers` lists, or a loader that wraps the globals as the Node L0
+already does for `Date`), `process.hrtime`/`performance.now` for the clock;
+I/O and the threadpool are in C (libuv), so a Node L1 that controls `sched.io`
+and `sched.executor` needs either a patched `libuv` (a custom Node build or a
+`LD_PRELOAD` shim of `uv_run`/`uv__io_poll`/`uv_queue_work`) or, at JS level,
+wrappers of `fs`/`net`/`dns` callbacks that defer delivery through the
+scheduler (cheaper, partial: native addons and streams' internal reads escape
+it). The Rust core needs nothing new: the same `Source::Sched` ops and value
+format, stable ids from source-mapped `.ts` sites.
+
+## 5. Approaches compared
 
 | | A. custom loop + event loop policy | **B. instrument `BaseEventLoop` internals** (chosen) | C. selector shim |
 |---|---|---|---|
@@ -123,7 +164,7 @@ private internals; it is contained in one module and covered by tests on
 later (uvloop is not a `BaseEventLoop`), via a policy that swaps uvloop for a
 scheduled selector loop under `--det-async`.
 
-## 5. Limits of the prototype
+## 6. Limits of the prototype
 
 * **Foreign threads are not scheduled.** Callbacks and I/O caused by
   threads the test starts itself are delivered in seeded order *within a
@@ -146,7 +187,7 @@ scheduled selector loop under `--det-async`.
 * **uvloop and trio** are not covered (not `BaseEventLoop`).
 * CPython only; 3.14 not checked.
 
-## 6. Files
+## 7. Files
 
 * `python/detpy/aio.py` — scheduler, patched loop methods.
 * `python/detpy/plugin.py` — `--det-async`, `--det-async-seed`, `--det-async-grace`,

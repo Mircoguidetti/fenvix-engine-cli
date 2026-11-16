@@ -183,7 +183,7 @@ def test_fingerprint_names_first_diverging_choice(races, tmp_path):
     d = diff["tests"][0]["divergence"]
     assert d["reason"] == "sched"
     assert "first diverging scheduling choice" in d["description"]
-    assert "executor=[" in d["description"]
+    assert "sched.executor" in d["description"]
 
 
 # ---------------------------------------------------------------------------
@@ -350,6 +350,30 @@ def test_pytest_asyncio_and_anyio(pytester):
     pytester.makepyfile(test_plugins=PLUGINS)
     result = pytester.runpytest_subprocess(*FLAGS, "--det-seed=4", "-p", "no:cacheprovider")
     result.assert_outcomes(passed=2)
+
+
+def test_trace_header_and_vocabulary(pytester, tmp_path):
+    if WITHOUT_PROTOTYPE:
+        pytest.skip("only with --det-async")
+    from detpy import _core
+
+    pytester.makepyfile(test_a="""
+import asyncio
+def test_a():
+    async def main():
+        await asyncio.sleep(0.01)
+    asyncio.run(main())
+""")
+    t = str(tmp_path / "t.jsonl")
+    pytester.runpytest_subprocess(*FLAGS, "--det-async-seed=2", f"--det-trace={t}", "-p", "no:cacheprovider")
+    lines = [json.loads(x) for x in open(t)]
+    meta = lines[0]["meta"]
+    assert lines[0]["encoding"] == _core.ENCODING_VERSION == 2
+    assert meta["runtime"] == "python" and meta["runner"] == "pytest" and meta["runtime_version"]
+    assert "async" in meta["controls"] and meta["seed"] == 0
+    ev = [e for e in lines[1]["events"] if e["s"] == "sched"]
+    assert ev and ev[0]["o"] == "sched.timer"
+    assert ev[0]["at"] == "test_a.py:4" and ev[0]["v"] == "0/1:test_a.py:4#1"
 
 
 def test_header_reports_seed(pytester):

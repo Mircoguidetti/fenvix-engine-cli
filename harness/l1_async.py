@@ -329,6 +329,8 @@ def main(argv=None) -> None:
                          f"(test order fixed); {a.confirm}/{a.confirm} confirmation of the first failing seed; "
                          f"{a.timing_runs} timed runs of the full suite per mode.")})
         return
+    if a.wheel:
+        a.wheel = str(Path(a.wheel).resolve())  # installs run with the project as cwd
     project = next(p for p in corpus if p["name"] == a.project)
     res = measure(project, a)
     Path(a.out).mkdir(parents=True, exist_ok=True)

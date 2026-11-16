@@ -33,6 +33,8 @@ from __future__ import annotations
 
 import asyncio
 import asyncio.base_events as _be
+import asyncio.selector_events as _se
+import collections
 import asyncio.events as _ev
 import asyncio.futures as _af
 import concurrent.futures
@@ -41,7 +43,7 @@ import os
 import threading
 import weakref
 
-from . import _core, _state
+from . import _core, _sites, _state
 
 NS = 1_000_000_000
 _M64 = (1 << 64) - 1
@@ -189,7 +191,7 @@ def _io_label(key, mask) -> str:
 
 # ---------------------------------------------------------------------------
 class Job:
-    __slots__ = ("n", "label", "submit_vt", "vsleep", "cf", "afut", "due", "interactive", "events")
+    __slots__ = ("n", "label", "submit_vt", "vsleep", "cf", "afut", "due", "interactive", "events", "sid")
 
     def __init__(self, n: int, label: str, submit_vt: float) -> None:
         self.n = n
@@ -201,6 +203,7 @@ class Job:
         self.due = None  # virtual delivery time, known once the job finished
         self.interactive = False
         self.events: list = []  # events recorded by the worker thread while it ran the job
+        self.sid = ""  # stable id: run_in_executor call site + counter
 
 
 class Scheduler:
@@ -221,6 +224,9 @@ class Scheduler:
         self.noisy = False
         self.index = 0
         self.wakeup = threading.Condition(self.lock)
+        self.ids = weakref.WeakKeyDictionary()  # handle -> stable id
+        self.io_ids: dict = {}  # (fd, "r"|"w") -> stable id of the registration
+        self.site_n = collections.Counter()
         self._reset_for_test()
         # Timers scheduled before the scheduler was attached used real time.
         offset = self.vt - _real_monotonic()
@@ -240,6 +246,7 @@ class Scheduler:
         self.rng = Rng(_core.derive_seed(CFG.seed, f"{nodeid or '<session>'}\0asyncio\0{self.index}"))
         self.noisy = CFG.seed != 0
         self.iteration = 0
+        self.site_n = collections.Counter()
         _TASK_IDS.clear()
         _TASK_N["n"] = 0
 
@@ -349,38 +356,40 @@ class Scheduler:
         # Choose which ready external events are delivered now and in which order.
         io_now, io_later = self._choose(io, busy or due_timers or due_jobs)
         fg_now = self._merge(foreign)
+        # Deliver, recording each choice in the shared vocabulary:
+        # op sched.*, value "<chosen index>/<set size>:<stable id>".
+        for why in rec:  # points whose timing is not controlled (see docs/L1-ASYNCIO.md)
+            _state.record_at("other", "asyncio.uncontrolled", f"<loop {self.index}>", why)
         if io_now:
+            remaining = sorted(io_now + io_later, key=lambda x: (x[1].fd, x[2]))
+            for x in io_now:
+                i = remaining.index(x)
+                self._choice("sched.io", i, len(remaining), self._io_id(x[1], x[2]))
+                remaining.pop(i)
             loop._process_events([(k, m) for (_, k, m) in io_now])
-        for h in fg_now:
-            loop._ready.append(h)
-        for _, _, job in due_jobs:
+        if fg_now:
+            batch = list(fg_now)
+            canon = sorted(batch, key=lambda h: self.ids.get(h, ""))
+            for h in fg_now:
+                i = canon.index(h)
+                self._choice("sched.ready", i, len(canon), self.ids.get(h) or "<thread>#?")
+                canon.pop(i)
+                loop._ready.append(h)
+        for k, (_, _, job) in enumerate(due_jobs):
+            self._choice("sched.executor", 0, len(due_jobs) - k, job.sid)
             loop._ready.append(_ev.Handle(_deliver_job, (job,), loop, None))
             for ev in job.events:  # events of the worker thread, at a deterministic point
-                _state.record_at(ev[0], ev[1] + " [executor]", ev[2], ev[3])
+                _state.record_at(ev[0], ev[1], ev[2], ev[3])
         end_time = self.vt + loop._clock_resolution
         fired = []
         while loop._scheduled and loop._scheduled[0]._when < end_time:
             h = heapq.heappop(loop._scheduled)
             h._scheduled = False
             loop._ready.append(h)
-            fired.append(h)
-
-        if io_now or io_later or fg_now or due_jobs or fired or jump:
-            parts = [f"it={self.iteration}"]
-            if jump:
-                parts.append(f"jump={int(round(jump * NS))}ns")
-            if io_now:
-                parts.append("io=[" + ", ".join(lbl for (lbl, _, _) in io_now) + "]")
-            if io_later:
-                parts.append("deferred=[" + ", ".join(lbl for (lbl, _, _) in io_later) + "]")
-            if due_jobs:
-                parts.append("executor=[" + ", ".join(j.label for (_, _, j) in due_jobs) + "]")
-            if fg_now:
-                parts.append("threadsafe=[" + ", ".join(_handle_label(h) for h in fg_now) + "]")
-            if fired:
-                parts.append("timers=[" + ", ".join(_handle_label(h) for h in fired if not h._cancelled) + "]")
-            parts.extend(rec)
-            _state.record_at("sched", "asyncio.step", f"<loop {self.index}>", " ".join(parts))
+            if not h._cancelled:
+                fired.append(h)
+        for k, h in enumerate(fired):
+            self._choice("sched.timer", 0, len(fired) - k, self.ids.get(h) or "<asyncio>:" + _handle_label(h))
 
         ntodo = len(loop._ready)
         for _ in range(ntodo):
@@ -401,6 +410,23 @@ class Scheduler:
                 h._run()
                 self.vt += self.cost()
         h = None
+
+    # -- stable ids and recording -------------------------------------------
+    def stable_id(self, depth: int) -> str:
+        """Creation site of a callback (first user frame) plus a per-site counter."""
+        site = _sites.resolve(depth + 1) or "<asyncio>"
+        with self.lock:
+            self.site_n[site] += 1
+            n = self.site_n[site]
+        return f"{site}#{n}"
+
+    def _io_id(self, key, mask) -> str:
+        kind = "r" if mask & 1 else "w"
+        return self.io_ids.get((key.fd, kind)) or f"<asyncio>:{_io_label(key, mask)}"
+
+    def _choice(self, op: str, chosen: int, size: int, sid: str) -> None:
+        site = sid.rsplit("#", 1)[0]
+        _state.record_at("sched", op, site, f"{chosen}/{size}:{sid}")
 
     # -- pieces --------------------------------------------------------------
     def _poll(self, timeout) -> list:
@@ -610,6 +636,7 @@ def _call_soon_threadsafe(self, callback, *args, context=None):
     handle = _ev.Handle(callback, args, self, context)
     if handle._source_traceback:
         del handle._source_traceback[-1]
+    s.ids[handle] = s.stable_id(1)
     s.post(handle)
     self._write_to_self()
     return handle
@@ -662,6 +689,7 @@ def _run_in_executor(self, executor, func, *args):
             self._default_executor = executor
     s.job_n += 1
     job = Job(s.job_n, f"{_fn_label(func)}#{s.job_n}", s.vt)
+    job.sid = s.stable_id(1)
     threaded = isinstance(executor, concurrent.futures.ThreadPoolExecutor)
     job.cf = executor.submit(_JobRunner(job, func) if threaded else func, *args)
     job.afut = self.create_future()
@@ -686,6 +714,30 @@ async def _shutdown_default_executor(self, *args, **kwargs):
         executor.shutdown(wait=True)
 
 
+def _call_at(self, when, callback, *args, context=None):
+    timer = _orig["call_at"](self, when, callback, *args, context=context)
+    s = self.__dict__.get("_detpy_sched")
+    if s is not None:
+        s.ids[timer] = s.stable_id(1)
+    return timer
+
+
+def _io_patch(name, kind):
+    def method(self, fd, callback, *args):
+        res = _orig[name](self, fd, callback, *args)
+        s = self.__dict__.get("_detpy_sched")
+        if s is not None:
+            try:
+                fileno = fd if isinstance(fd, int) else fd.fileno()
+            except Exception:
+                return res
+            s.io_ids[(fileno, kind)] = s.stable_id(1)
+        return res
+
+    method.__name__ = name
+    return method
+
+
 def install(patcher, seed: int, grace: float, wait: float, settle: float) -> None:
     CFG.enabled = True
     CFG.seed = seed
@@ -696,6 +748,12 @@ def install(patcher, seed: int, grace: float, wait: float, settle: float) -> Non
                      ("shutdown_default_executor", _shutdown_default_executor)):
         _orig[name] = B.__dict__[name] if name != "time" else (lambda self: _real_monotonic())
         patcher.set(B, name, fn)
+    _orig["call_at"] = B.__dict__["call_at"]
+    patcher.set(B, "call_at", _call_at)
+    S = _se.BaseSelectorEventLoop
+    for name, kind in (("_add_reader", "r"), ("_add_writer", "w")):
+        _orig[name] = S.__dict__[name]
+        patcher.set(S, name, _io_patch(name, kind))
     from . import clock
 
     clock._on_sleep = on_sleep

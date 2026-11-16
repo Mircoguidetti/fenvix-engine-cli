@@ -305,9 +305,12 @@ def pytest_collection_finish(session):
     cfg = _state.STATE.config
     meta = {
         "detpy": __version__,
+        "runtime": "python",
+        "runtime_version": platform.python_version(),
+        "runner": "pytest",
         "seed": cfg.seed,
         "shuffle": cfg.shuffle,
-        "controls": sorted(cfg.controls),
+        "controls": sorted(cfg.controls | ({"async"} if aio.CFG.enabled else set())),
         "hashseed": os.environ.get("PYTHONHASHSEED"),
         "reexec": S.reexec_status,
         "aslr_disabled": reexec.aslr_disabled(),
