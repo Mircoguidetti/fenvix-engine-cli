@@ -2,8 +2,8 @@
  "name": "outline",
  "repo": "outline/outline",
  "ref": "5e6cc0f191c8d4db857ab0c00f12a576a03d2f6e",
- "status": "setup_failed",
- "setup_s": 27,
+ "status": "ok",
+ "setup_s": 30,
  "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
  "config": {
   "repo": "outline/outline",
@@ -15,25 +15,670 @@
   "runs": 6,
   "parser": "junit"
  },
- "run_id": "43945303458",
- "measured_at": "2026-11-16T20:01:53Z",
- "baseline_cores": null,
- "n_runs": 0,
- "runs": [],
+ "run_id": "43945715530",
+ "measured_at": "2026-11-16T20:17:19Z",
+ "baseline_cores": 0.0474,
+ "n_runs": 6,
+ "runs": [
+  {
+   "run": 1,
+   "rc": 0,
+   "wall_s": 41.38,
+   "busy_cpu_s": 115.75,
+   "cores_mean": 2.797,
+   "idle_share_raw": -1.7969,
+   "idle_share_net": -1.7495,
+   "quiet_share": 0.0119,
+   "share_ge1core": 0.9643,
+   "iowait_s": 0.23,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.28,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 115.75,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     98.42
+    ],
+    [
+     "host",
+     "postgres",
+     5.41
+    ],
+    [
+     "host",
+     "provjobd3446623",
+     1.51
+    ],
+    [
+     "host",
+     "python3",
+     0.26
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.21
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.07
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.05
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.04
+    ],
+    [
+     "host",
+     "kworker/u16:1-events_power_efficient",
+     0.03
+    ],
+    [
+     "host",
+     "containerd",
+     0.03
+    ],
+    [
+     "host",
+     "jbd2/sda1-8",
+     0.02
+    ],
+    [
+     "host",
+     "chronyd",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/2:1-events",
+     0.01
+    ],
+    [
+     "host",
+     "hosted-compute-",
+     0.01
+    ],
+    [
+     "host",
+     "ksoftirqd/1",
+     0.01
+    ]
+   ],
+   "n_tests": 1160,
+   "n_pass": 1159,
+   "n_fail": 0,
+   "n_skip": 1,
+   "series_1s": [
+    0.02,
+    1.27,
+    3.06,
+    3.52,
+    2.52,
+    2.02,
+    2.34,
+    2.86,
+    2.0,
+    2.34,
+    3.1,
+    2.81,
+    3.89,
+    3.82,
+    3.74,
+    3.78,
+    3.4,
+    3.15,
+    2.72,
+    2.13,
+    2.86,
+    2.14,
+    3.04,
+    3.48,
+    3.54,
+    3.58,
+    3.82,
+    3.72,
+    3.73,
+    3.83,
+    3.83,
+    3.8,
+    3.34,
+    3.11,
+    2.19,
+    2.75,
+    1.21,
+    1.31,
+    1.22,
+    1.23,
+    1.16,
+    1.18,
+    0.66
+   ]
+  },
+  {
+   "run": 2,
+   "rc": 0,
+   "wall_s": 40.6,
+   "busy_cpu_s": 114.76,
+   "cores_mean": 2.826,
+   "idle_share_raw": -1.8265,
+   "idle_share_net": -1.779,
+   "quiet_share": 0.0,
+   "share_ge1core": 0.9756,
+   "iowait_s": 0.16,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.27,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 114.76,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     99.17
+    ],
+    [
+     "host",
+     "postgres",
+     5.98
+    ],
+    [
+     "host",
+     "provjobd3446623",
+     1.23
+    ],
+    [
+     "host",
+     "python3",
+     0.24
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.17
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.13
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.06
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.06
+    ],
+    [
+     "host",
+     "containerd",
+     0.02
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.02
+    ],
+    [
+     "host",
+     "kworker/u16:1-events_power_efficient",
+     0.01
+    ],
+    [
+     "host",
+     "chronyd",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/1:1-events",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/0:1-events",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/u16:5-writeback",
+     0.01
+    ]
+   ],
+   "n_tests": 1160,
+   "n_pass": 1159,
+   "n_fail": 0,
+   "n_skip": 1
+  },
+  {
+   "run": 3,
+   "rc": 0,
+   "wall_s": 41.3,
+   "busy_cpu_s": 116.41,
+   "cores_mean": 2.819,
+   "idle_share_raw": -1.8185,
+   "idle_share_net": -1.7711,
+   "quiet_share": 0.0119,
+   "share_ge1core": 0.9643,
+   "iowait_s": 0.16,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.28,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 116.41,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     98.33
+    ],
+    [
+     "host",
+     "postgres",
+     6.0
+    ],
+    [
+     "host",
+     "provjobd3446623",
+     1.19
+    ],
+    [
+     "host",
+     "python3",
+     0.25
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.17
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.16
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.07
+    ],
+    [
+     "host",
+     "containerd",
+     0.03
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.03
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.03
+    ],
+    [
+     "host",
+     "hosted-compute-",
+     0.02
+    ],
+    [
+     "host",
+     "kworker/2:1-mm_percpu_wq",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/0:1-events",
+     0.01
+    ],
+    [
+     "host",
+     "chronyd",
+     0.01
+    ],
+    [
+     "host",
+     "php-fpm8.5",
+     0.01
+    ]
+   ],
+   "n_tests": 1160,
+   "n_pass": 1159,
+   "n_fail": 0,
+   "n_skip": 1
+  },
+  {
+   "run": 4,
+   "rc": 0,
+   "wall_s": 41.09,
+   "busy_cpu_s": 115.09,
+   "cores_mean": 2.801,
+   "idle_share_raw": -1.8006,
+   "idle_share_net": -1.7532,
+   "quiet_share": 0.012,
+   "share_ge1core": 0.9759,
+   "iowait_s": 0.18,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.27,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 115.09,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     98.27
+    ],
+    [
+     "host",
+     "postgres",
+     6.22
+    ],
+    [
+     "host",
+     "provjobd3446623",
+     1.24
+    ],
+    [
+     "host",
+     "python3",
+     0.25
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.18
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.16
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.06
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.05
+    ],
+    [
+     "host",
+     "containerd",
+     0.03
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.03
+    ],
+    [
+     "host",
+     "chronyd",
+     0.02
+    ],
+    [
+     "host",
+     "kworker/0:2-events",
+     0.02
+    ],
+    [
+     "host",
+     "multipathd",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/u16:0-iou_exit",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/2:1-events",
+     0.01
+    ]
+   ],
+   "n_tests": 1160,
+   "n_pass": 1159,
+   "n_fail": 0,
+   "n_skip": 1
+  },
+  {
+   "run": 5,
+   "rc": 0,
+   "wall_s": 40.6,
+   "busy_cpu_s": 114.9,
+   "cores_mean": 2.83,
+   "idle_share_raw": -1.8304,
+   "idle_share_net": -1.7829,
+   "quiet_share": 0.0122,
+   "share_ge1core": 0.9756,
+   "iowait_s": 0.17,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.27,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 114.9,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     98.87
+    ],
+    [
+     "host",
+     "postgres",
+     6.45
+    ],
+    [
+     "host",
+     "provjobd3446623",
+     1.58
+    ],
+    [
+     "host",
+     "python3",
+     0.27
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.16
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.06
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.05
+    ],
+    [
+     "host",
+     "package-data-do",
+     0.04
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.03
+    ],
+    [
+     "host",
+     "containerd",
+     0.02
+    ],
+    [
+     "host",
+     "systemd",
+     0.02
+    ],
+    [
+     "host",
+     "bash",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/u16:1-events_unbound",
+     0.01
+    ],
+    [
+     "host",
+     "chronyd",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/2:1-mm_percpu_wq",
+     0.01
+    ]
+   ],
+   "n_tests": 1160,
+   "n_pass": 1159,
+   "n_fail": 0,
+   "n_skip": 1
+  },
+  {
+   "run": 6,
+   "rc": 0,
+   "wall_s": 41.3,
+   "busy_cpu_s": 116.26,
+   "cores_mean": 2.815,
+   "idle_share_raw": -1.815,
+   "idle_share_net": -1.7676,
+   "quiet_share": 0.0119,
+   "share_ge1core": 0.9643,
+   "iowait_s": 0.21,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.28,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 116.26,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     96.85
+    ],
+    [
+     "host",
+     "postgres",
+     6.27
+    ],
+    [
+     "host",
+     "provjobd3446623",
+     1.61
+    ],
+    [
+     "host",
+     "python3",
+     0.75
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.2
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.17
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.07
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.05
+    ],
+    [
+     "host",
+     "containerd",
+     0.03
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/u16:3-events_unbound",
+     0.01
+    ],
+    [
+     "host",
+     "dockerd",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/0:2-events",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/u16:1-iou_exit",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/2:1-events",
+     0.01
+    ]
+   ],
+   "n_tests": 1160,
+   "n_pass": 1159,
+   "n_fail": 0,
+   "n_skip": 1
+  }
+ ],
  "idle": {
-  "median_idle_share_raw": null,
-  "median_idle_share_net": null,
-  "median_quiet_share": null,
-  "median_cores_mean": null,
-  "median_wall_s": null,
-  "median_busy_cpu_s": null
+  "median_idle_share_raw": -1.8167,
+  "median_idle_share_net": -1.7693,
+  "median_quiet_share": 0.0119,
+  "median_cores_mean": 2.817,
+  "median_wall_s": 41.195,
+  "median_busy_cpu_s": 115.42
  },
  "tests": {
-  "n_distinct": 0,
+  "n_distinct": 1160,
   "n_flaky": 0,
   "n_consistent_fail": 0,
   "flaky": [],
   "consistent_fail_sample": []
- },
- "setup_log_tail": "localhost:5432 - accepting connections\nALTER ROLE\n\u001b[94m\u27a4\u001b[39m YN0000: \u00b7 Yarn 4.18.0\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u250c Resolution step\n::group::Resolution step\n::endgroup::\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2514 Completed in 0s 281ms\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u250c Post-resolution validation\n::group::Post-resolution validation\n\u001b[93m\u27a4\u001b[39m YN0060: \u2502 \u001b[38;5;173mkatex\u001b[39m is listed by your project with version \u001b[38;5;111m0.18.2\u001b[39m (\u001b[38;5;111mp5b1f2c\u001b[39m), which doesn't satisfy what \u001b[38;5;166m@benrbray/\u001b[39m\u001b[38;5;173mprosemirror-math\u001b[39m requests (\u001b[38;5;37m~0.13.0\u001b[39m).\n\u001b[93m\u27a4\u001b[39m YN0060: \u2502 \u001b[38;5;173mreact\u001b[39m is listed by your project with version \u001b[38;5;111m19.3.1\u001b[39m (\u001b[38;5;111mp0392ab\u001b[39m), which doesn't satisfy what \u001b[38;5;173moutline-icons\u001b[39m and other dependencies request (\u001b[91mbut they have non-overlapping ranges!\u001b[39m).\n\u001b[93m\u27a4\u001b[39m YN0002: \u2502 \u001b[38;5;173moutline\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mworkspace:.\u001b[39m doesn't provide \u001b[38;5;173msocket.io-adapter\u001b[39m (\u001b[38;5;111mpc4af4f\u001b[39m), requested by \u001b[38;5;166m@socket.io/\u001b[39m\u001b[38;5;173mredis-adapter\u001b[39m.\n\u001b[93m\u27a4\u001b[39m YN0086: \u2502 Some peer dependencies are incorrectly met by your project; run \u001b[38;5;111myarn explain peer-requirements <hash>\u001b[39m for details, where \u001b[38;5;111m<hash>\u001b[39m is the six-letter p-prefixed code.\n\u001b[93m\u27a4\u001b[39m YN0086: \u2502 Some peer dependencies are incorrectly met by dependencies; run \u001b[38;5;111myarn explain peer-requirements\u001b[39m for details.\n::endgroup::\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2514 Completed\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u250c Fetch step\n::group::Fetch step\n\u001b[94m\u27a4\u001b[39m YN0013: \u2502 \u001b[38;5;220m1695\u001b[39m packages were added to the project (\u001b[38;5;160m+ 832.98 MiB\u001b[39m).\n::endgroup::\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2514 Completed in 8s 784ms\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u250c Link step\n::group::Link step\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;166m@swc/\u001b[39m\u001b[38;5;173mcore\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:1.16.22 [ed920]\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173maws-crt\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:1.32.2\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173mcore-js\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:3.41.0\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173mcore-js\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:3.51.0\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173mesbuild\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:0.25.12\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173mmsgpackr-extract\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:3.0.3\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173mmsw\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:2.15.0 [ed920]\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173munix-dgram\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:2.0.7\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[94m\u27a4\u001b[39m YN0007: \u2502 \u001b[38;5;173moutline\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mworkspace:.\u001b[39m must be built because it never has been before or the last one failed\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2502 \u001b[38;5;173moutline\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mworkspace:.\u001b[39m \u001b[32mSTDOUT\u001b[39m patch-package 8.0.1\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2502 \u001b[38;5;173moutline\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mworkspace:.\u001b[39m \u001b[32mSTDOUT\u001b[39m Applying patches...\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2502 \u001b[38;5;173moutline\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mworkspace:.\u001b[39m \u001b[32mSTDOUT\u001b[39m @benrbray/prosemirror-math@0.2.2 \u2714\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2502 \u001b[38;5;173moutline\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mworkspace:.\u001b[39m \u001b[32mSTDOUT\u001b[39m y-prosemirror@1.3.7 \u2714\n::endgroup::\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2514 Completed in 11s 557ms\n\u001b[93m\u27a4\u001b[39m YN0000: \u00b7 Done with warnings in 20s 894ms\n\u001b[1m\u001b[38;2;140;35;50m\u2620 [MISSING_ENV_FILE] missing file (.env). fix: [https://github.com/dotenvx/dotenvx/issues/484]\u001b[39m\u001b[22m\n\n\u001b[4mSequelize CLI [Node: 24.22.2, CLI: 6.6.5, ORM: 6.37.8]\u001b[24m\n\nLoaded configuration file \"server/config/database.js\".\nUsing environment \"development\".\n\n\u001b[31mERROR:\u001b[39m SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string\n"
+ }
 }
