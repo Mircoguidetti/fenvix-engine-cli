@@ -1,0 +1,2203 @@
+{
+ "analysis": {
+  "broken_cause_controls": [
+   "time"
+  ],
+  "failing_configs": [
+   "det-fixed",
+   "det-seed-1",
+   "det-seed-2",
+   "det-seed-3",
+   "epoch-leapday",
+   "epoch-yearend",
+   "epoch-dst",
+   "epoch-y2038"
+  ],
+  "replay_config": "det-fixed",
+  "replay_reproduces": true,
+  "replay_rewards": [
+   false,
+   false
+  ]
+ },
+ "baseline_reward_stable": true,
+ "baseline_rewards": [
+  true,
+  true,
+  true
+ ],
+ "broken_by_det": true,
+ "det_reward_stable": true,
+ "det_rewards": {
+  "det-fixed": false,
+  "det-seed-1": false,
+  "det-seed-2": false,
+  "det-seed-3": false,
+  "epoch-dst": false,
+  "epoch-leapday": false,
+  "epoch-y2038": false,
+  "epoch-yearend": false
+ },
+ "gold_apply": "git apply --verbose",
+ "hidden_instability": false,
+ "image": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23314:latest",
+ "instance_id": "matplotlib__matplotlib-23314",
+ "n_fail_to_pass": 1,
+ "n_pass_to_pass": 862,
+ "official_plain_rewards": [
+  true,
+  true,
+  true
+ ],
+ "official_reward_stable": true,
+ "pull_s": 44.5,
+ "pytest": "8.3.4",
+ "pytest_before": "8.3.4",
+ "python": "3.11.11",
+ "repo": "matplotlib/matplotlib",
+ "run_timeout_s": 367,
+ "runs": {
+  "ablate-disable-bytecode": {
+   "args": "--det-disable=bytecode",
+   "dur": 59.8,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n================= 68 failed, 796 passed, 63 skipped in 58.95s ==================\n",
+   "timed_out": false
+  },
+  "ablate-disable-fs": {
+   "args": "--det-disable=fs",
+   "dur": 65.1,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n================= 68 failed, 796 passed, 63 skipped in 59.98s ==================\n",
+   "timed_out": false
+  },
+  "ablate-disable-hashseed": {
+   "args": "--det-disable=hashseed",
+   "dur": 61.1,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=None (not-needed); ASLR on; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n============ 68 failed, 796 passed, 63 skipped in 60.38s (0:01:00) =============\n",
+   "timed_out": false
+  },
+  "ablate-disable-net": {
+   "args": "--det-disable=net",
+   "dur": 66.2,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=None; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n============ 68 failed, 796 passed, 63 skipped in 61.17s (0:01:01) =============\n",
+   "timed_out": false
+  },
+  "ablate-disable-order": {
+   "args": "--det-disable=order",
+   "dur": 65.7,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n============ 68 failed, 796 passed, 63 skipped in 60.74s (0:01:00) =============\n",
+   "timed_out": false
+  },
+  "ablate-disable-seeds": {
+   "args": "--det-disable=seeds",
+   "dur": 67.4,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n============ 68 failed, 796 passed, 63 skipped in 62.48s (0:01:02) =============\n",
+   "timed_out": false
+  },
+  "ablate-disable-time": {
+   "args": "--det-disable=time",
+   "dur": 61.6,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "det-fixed": {
+   "args": "",
+   "dur": 68.1,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n================= 68 failed, 796 passed, 63 skipped in 59.71s ==================\n",
+   "timed_out": false
+  },
+  "det-seed-1": {
+   "args": "--det-seed=1",
+   "dur": 68.4,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order shuffled with seed 1",
+    "detpy: PYTHONHASHSEED=1 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "::test_contour_colorbar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf] - Type...\nFAILED lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf] - T...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_markevery[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\n============ 68 failed, 796 passed, 63 skipped in 60.05s (0:01:00) =============\n",
+   "timed_out": false
+  },
+  "det-seed-2": {
+   "args": "--det-seed=2",
+   "dur": 66.9,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order shuffled with seed 2",
+    "detpy: PYTHONHASHSEED=2 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "ts/test_axes.py::test_arc_ellipse[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_boxplot[pdf] - TypeError: perf...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist2d[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf] - TypeErr...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\n================= 68 failed, 796 passed, 63 skipped in 58.59s ==================\n",
+   "timed_out": false
+  },
+  "det-seed-3": {
+   "args": "--det-seed=3",
+   "dur": 65.9,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order shuffled with seed 3",
+    "detpy: PYTHONHASHSEED=3 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "t_axes.py::test_nonfinite_limits[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_pcolormesh_small[eps] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf] - Type...\nFAILED lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_markevery[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_boxplot[pdf] - TypeError: perf...\nFAILED lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf] - TypeErr...\nFAILED lib/matplotlib/tests/test_axes.py::test_canonical[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_stackplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_errorbar[pdf] - TypeError: per...\n================= 68 failed, 796 passed, 63 skipped in 57.63s ==================\n",
+   "timed_out": false
+  },
+  "epoch-dst": {
+   "args": "--det-epoch=2025-03-09T06:59:59+00:00",
+   "dur": 65.3,
+   "env": {
+    "TZ": "EST5EDT,M3.2.0,M11.1.0"
+   },
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n============ 68 failed, 796 passed, 63 skipped in 60.38s (0:01:00) =============\n",
+   "timed_out": false
+  },
+  "epoch-leapday": {
+   "args": "--det-epoch=2024-02-29T23:59:59+00:00",
+   "dur": 63.7,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n================= 68 failed, 796 passed, 63 skipped in 58.87s ==================\n",
+   "timed_out": false
+  },
+  "epoch-y2038": {
+   "args": "--det-epoch=2038-01-19T03:14:07+00:00",
+   "dur": 68.0,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n============ 68 failed, 796 passed, 63 skipped in 63.06s (0:01:03) =============\n",
+   "timed_out": false
+  },
+  "epoch-yearend": {
+   "args": "--det-epoch=2025-12-31T23:59:59+00:00",
+   "dur": 64.5,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n================= 68 failed, 796 passed, 63 skipped in 59.59s ==================\n",
+   "timed_out": false
+  },
+  "plain-1": {
+   "dur": 61.2,
+   "failing": [],
+   "kind": "plain",
+   "n_failing": 0,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "plain-2": {
+   "dur": 55.8,
+   "failing": [],
+   "kind": "plain",
+   "n_failing": 0,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "plain-3": {
+   "dur": 53.4,
+   "failing": [],
+   "kind": "plain",
+   "n_failing": 0,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "replay-1-det-fixed": {
+   "args": "",
+   "dur": 65.5,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n============ 68 failed, 796 passed, 63 skipped in 60.52s (0:01:00) =============\n",
+   "timed_out": false
+  },
+  "replay-2-det-fixed": {
+   "args": "",
+   "dur": 64.2,
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_nonfinite_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_imshow_clip[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_polycollection_joinstyle[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_decreasing[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_fill_between_interpolate_nan[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_symlog2[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_pcolormesh_alpha[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_canonical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_arc_ellipse[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_line[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_zoomed[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_log_scales[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_polar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_markevery_linear_scales_nans[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_marker_edges[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_bar_hatches[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_log[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_hatching[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_contour_colorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist2d_transpose[pdf]",
+    "lib/matplotlib/tests/test_axes.py::TestScatter::test_scatter_plot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_stackplot_baseline[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_boxplot_rc_parameters[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_cycle_ecolor[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_limits[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_errorbar_every[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_offset[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_weighted[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_hist_stacked_stepfilled_alpha[pdf]"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 67,
+   "n_parsed": 866,
+   "n_required": 863,
+   "rc": 1,
+   "reward": false,
+   "tail": "s.py::test_hist_stacked_stepfilled_alpha[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_step[pdf] - TypeE...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_density[pdf] - Ty...\nFAILED lib/matplotlib/tests/test_axes.py::test_hist_stacked_bar[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_transparent_markers[pdf] - Typ...\nFAILED lib/matplotlib/tests/test_axes.py::test_rgba_markers[pdf] - TypeError:...\nFAILED lib/matplotlib/tests/test_axes.py::test_mollweide_grid[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_alpha[pdf] - TypeError: perf_c...\nFAILED lib/matplotlib/tests/test_axes.py::test_eventplot[pdf] - TypeError: pe...\nFAILED lib/matplotlib/tests/test_axes.py::test_eb_line_zorder[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_loglog[pdf] - TypeError...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline[pdf] - TypeError: perf_...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_axline_transaxes_panzoom[pdf]\nFAILED lib/matplotlib/tests/test_axes.py::test_step_linestyle[pdf] - TypeErro...\nFAILED lib/matplotlib/tests/test_axes.py::test_mixed_collection[pdf] - TypeEr...\nFAILED lib/matplotlib/tests/test_axes.py::test_dash_offset[pdf] - TypeError: ...\nFAILED lib/matplotlib/tests/test_axes.py::test_2dcolor_plot[pdf] - TypeError:...\n================= 68 failed, 796 passed, 63 skipped in 59.23s ==================\n",
+   "timed_out": false
+  }
+ },
+ "seeds_planned": 3,
+ "seeds_run": 3,
+ "setup_rc": 0,
+ "setup_s": 3.9,
+ "started": "2026-11-16T19:57:45Z",
+ "status": "measured",
+ "task_s": 1335.8,
+ "test_cmd": "pytest -rA lib/matplotlib/tests/test_axes.py lib/mpl_toolkits/tests/test_mplot3d.py",
+ "version": "3.5",
+ "visible_instability": false
+}
