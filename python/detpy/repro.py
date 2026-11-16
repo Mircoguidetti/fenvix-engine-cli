@@ -74,6 +74,8 @@ class Runner:
     python: str = sys.executable
     pytest_args: list = field(default_factory=list)
     timeout: float = 1800
+    env: dict | None = None
+    keep_traces: bool = True
     runs: int = 0
     seconds: float = 0.0
     log: list = field(default_factory=list)
@@ -99,7 +101,7 @@ class Runner:
         timed_out = False
         try:
             p = subprocess.run(self._cmd(config, extra), cwd=self.cwd, capture_output=True, text=True,
-                               timeout=self.timeout)
+                               timeout=self.timeout, env=self.env)
             code = p.returncode
         except subprocess.TimeoutExpired:
             code, timed_out = -9, True
@@ -119,6 +121,11 @@ class Runner:
                          "exit": code})
         return r
 
+    def drop_traces(self) -> None:
+        """Delete the traces of finished runs (large suites: one trace per run adds up)."""
+        for f in self.workdir.glob("*.jsonl"):
+            f.unlink(missing_ok=True)
+
     def collect(self) -> list:
         out = self.workdir / "collect.json"
         self.workdir.mkdir(parents=True, exist_ok=True)
@@ -126,7 +133,7 @@ class Runner:
         cmd = self._cmd(FIXED, ["--collect-only", f"--det-outcomes={out}",
                                 f"--det-trace={self.workdir / 'collect.jsonl'}"])
         t0 = time.monotonic()
-        p = subprocess.run(cmd, cwd=self.cwd, capture_output=True, text=True, timeout=self.timeout)
+        p = subprocess.run(cmd, cwd=self.cwd, capture_output=True, text=True, timeout=self.timeout, env=self.env)
         self.seconds += time.monotonic() - t0
         if not out.exists():
             raise RuntimeError("collection failed:\n" + (p.stdout + p.stderr)[-2000:])
@@ -233,7 +240,11 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
     # 1. search ----------------------------------------------------------------
     passing: list = list(known_pass or [])
     found = None
-    configs = [known_fail] if known_fail else [FIXED] + [str(s) for s in range(1, seeds + 1)]
+    configs = [FIXED] + [str(s) for s in range(1, seeds + 1)]
+    if known_fail:
+        # The configuration that failed in a full run first; if its prefix does not
+        # fail (state from a later test, or a non-L0 source), keep searching.
+        configs = [known_fail] + [c for c in configs if c != known_fail]
     searched = 0
     for config in configs:
         order = prefix_through(order_for(collected, config), target)
@@ -330,6 +341,8 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
         result["pytest_args"] = args
         result["bundle"] = str(b)
         (b / "bundle.json").write_text(json.dumps(result, indent=2))
+    if not runner.keep_traces:
+        runner.drop_traces()
     return result
 
 
@@ -345,7 +358,7 @@ def replay(bundle: Path, runs: int, python: str = sys.executable) -> dict:
 
 
 def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, confirm: int = 10,
-            targets: set | None = None, repro: bool = True, max_runs: int = 400) -> dict:
+            targets: set | None = None, repro: bool = True, max_runs: int = 400, fallback_seeds: int = 5) -> dict:
     """Seeds 1..N within the budget; one bundle per failing test (flaky only)."""
     t0 = time.monotonic()
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -355,6 +368,8 @@ def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, c
         if time.monotonic() - t0 > budget_s:
             break
         r = runner.run(str(s), None, f"seed-{s}")
+        if not runner.keep_traces:
+            Path(r.trace).unlink(missing_ok=True)
         failing = sorted(n for n, o in r.outcomes.items() if is_fail(o))
         seeds_log.append({"seed": s, "seconds": round(r.duration, 3), "tests": len(r.outcomes),
                           "failing": failing, "exit": r.exit_code, "timed_out": r.timed_out})
@@ -370,15 +385,19 @@ def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, c
     flaky = sorted(n for n in fail_cfg if n not in always)
     bundles, skipped = [], []
     if repro:
-        todo = [n for n in flaky if targets is None or n in targets]
+        # With targets (measurement), a target that failed under every seed is
+        # reproduced too: it was flaky in the baseline even if not here.
+        todo = flaky if targets is None else [n for n in sorted(fail_cfg) if n in targets]
         for n in todo:
             if time.monotonic() - t0 > budget_s:
                 skipped.append(n)
                 continue
             b = reproduce(runner, n, collected=collected, known_fail=fail_cfg[n], known_pass=pass_cfg.get(n, []),
-                          confirm=confirm, out_dir=out_dir / "bundles", max_runs=max_runs)
+                          confirm=confirm, out_dir=out_dir / "bundles", max_runs=max_runs, seeds=fallback_seeds)
             b["first_failing_seed"] = int(fail_cfg[n])
             bundles.append(b)
+            if not runner.keep_traces:
+                runner.drop_traces()
     # Deduplication: by failing test (one bundle each), then families by first
     # diverging event and by polluter set.
     fam_div, fam_pol = {}, {}

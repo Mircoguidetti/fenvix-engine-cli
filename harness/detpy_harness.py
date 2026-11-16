@@ -579,6 +579,85 @@ def baseline_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
     return res
 
 
+def block2_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
+    """Block 2 measurement on one repository (P-010 items 3 and 4).
+
+    detpy:    ``detpy explore`` with seeds 1..--seeds (whole suite per seed), then
+              ``repro`` (minimise, bundle, --confirm replays) for every Block 1
+              target that failed under some seed.
+    randomly: the free alternative, no detpy: ``pytest --randomly-seed=S`` serially
+              for the same seeds; every target that failed is re-run --confirm times
+              with its first failing seed (same command, nothing else controlled).
+    Both record the seconds of every run, so the cost of each K can be computed.
+    """
+    from detpy import repro as R
+
+    targets = json.loads(Path(args.block2_targets).read_text()).get(p.name, [])
+    rundir = work / "block2" / p.name / args.tool
+    shutil.rmtree(rundir, ignore_errors=True)
+    rundir.mkdir(parents=True)
+    env = clean_env(p.python, p.env)
+    serial = ["-n", "0"] if p.has_xdist else []
+    t0 = time.monotonic()
+    res = {"name": p.name, "kind": p.kind, "status": "ok", "python": p.python_version, "tool": args.tool,
+           "seeds": args.seeds, "confirm": args.confirm, "targets": targets, "runner": runner_info()}
+    if args.tool == "detpy":
+        runner = R.Runner(cwd=Path(p.src), workdir=rundir / ".work", python=p.python,
+                          pytest_args=[*p.pytest_args, *serial], timeout=args.run_timeout, env=env, keep_traces=False)
+        summary = R.explore(runner, budget_s=args.repo_budget, max_seeds=args.seeds, out_dir=rundir,
+                            confirm=args.confirm, targets=set(targets), max_runs=args.max_repro_runs)
+        res.update({k: summary[k] for k in ("seeds_log", "always_failing", "flaky_failing", "bundles",
+                                            "not_reproduced_budget", "families_by_divergence",
+                                            "families_by_polluter", "collected")})
+        res["seconds"] = summary["seconds"]
+        bdir = rundir / "bundles"
+        if bdir.exists():
+            dest = outdir / f"{p.name}.bundles"
+            shutil.rmtree(dest, ignore_errors=True)
+            shutil.copytree(bdir, dest, ignore=shutil.ignore_patterns("*.jsonl"))
+    else:
+        seeds_log, first_fail = [], {}
+        for s in range(1, args.seeds + 1):
+            if time.monotonic() - t0 > args.repo_budget:
+                break
+            out = rundir / f"seed-{s}.json"
+            cmd = [p.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", f"--det-outcomes={out}",
+                   *p.pytest_args, f"--randomly-seed={s}", *serial]
+            code, _, dur, to = sh(cmd, cwd=p.src, env=env, timeout=args.run_timeout)
+            oc = json.loads(out.read_text())["outcomes"] if out.exists() else {}
+            failing = sorted(n for n, o in oc.items() if is_fail(o))
+            seeds_log.append({"seed": s, "seconds": round(dur, 3), "tests": len(oc), "failing": failing,
+                              "exit": code, "timed_out": to})
+            for n in failing:
+                first_fail.setdefault(n, s)
+            log(f"{p.name}: randomly seed {s} {dur:.1f}s {len(failing)} failing")
+        replays = {}
+        by_seed = collections.defaultdict(list)
+        for n in targets:
+            if n in first_fail:
+                by_seed[first_fail[n]].append(n)
+        for s, nids in sorted(by_seed.items()):
+            counts = {n: 0 for n in nids}
+            secs = []
+            for i in range(args.confirm):
+                if time.monotonic() - t0 > args.repo_budget:
+                    break
+                out = rundir / f"replay-{s}-{i}.json"
+                cmd = [p.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", f"--det-outcomes={out}",
+                       *p.pytest_args, f"--randomly-seed={s}", *serial]
+                code, _, dur, to = sh(cmd, cwd=p.src, env=env, timeout=args.run_timeout)
+                secs.append(round(dur, 3))
+                oc = json.loads(out.read_text())["outcomes"] if out.exists() else {}
+                for n in nids:
+                    counts[n] += is_fail(oc.get(n))
+            for n in nids:
+                replays[n] = {"seed": s, "runs": len(secs), "fails": counts[n], "seconds": secs}
+        res.update(seeds_log=seeds_log, first_fail={n: first_fail[n] for n in first_fail}, replays=replays,
+                   seconds=round(time.monotonic() - t0, 2))
+    (outdir / f"{p.name}.{args.tool}.block2.json").write_text(json.dumps(res, indent=1))
+    return res
+
+
 def runner_info() -> dict:
     info = {"cpus": os.cpu_count(), "platform": sys.platform}
     for k in ("RUNNER_NAME", "RUNNER_OS", "RUNNER_ARCH", "RUNNER_ENVIRONMENT", "ImageOS", "ImageVersion"):
@@ -1214,14 +1293,18 @@ def main(argv=None) -> int:
     ap.add_argument("--repo-budget", type=float, default=2700,
                     help="seconds per repository after which the exploration stops")
     ap.add_argument("--report-only", action="store_true")
-    ap.add_argument("--mode", choices=("round", "prepare", "timing", "orderonly", "baseline"), default="round",
+    ap.add_argument("--mode", choices=("round", "prepare", "timing", "orderonly", "baseline", "block2"), default="round",
                     help="round: full protocol; prepare: install/collect/first-run filters only (CI selection); "
                          "timing: quiet timing pass; orderonly: re-run reproduced tests with every Level 0 "
                          "control disabled except the order (--targets); baseline: --runs baseline runs only, "
                          "with the installed package versions")
+    ap.add_argument("--tool", choices=("detpy", "randomly"), default="detpy",
+                    help="block2: which seed search to measure")
+    ap.add_argument("--block2-targets", default=str(HERE / "block2_targets.json"))
     ap.add_argument("--targets", default=str(HERE / "order_only_targets.json"),
                     help="orderonly: JSON {repo: {seed or 'fixed': [nodeid, ...]}}")
     ap.add_argument("--timing-runs", type=int, default=3)
+    ap.add_argument("--max-repro-runs", type=int, default=300, help="block2: pytest runs per repro (search + ddmin)")
     ap.add_argument("--no-ablation", action="store_true", help="skip the per-control ablation of broken tests")
     ap.add_argument("--no-xdist", action="store_true", help="serial baseline (no pytest-xdist) even when supported")
     ap.add_argument("--executor", default="local", help="free text recorded in the report (e.g. GitHub Actions)")
@@ -1327,6 +1410,8 @@ def main(argv=None) -> int:
                     r = order_only_pass(p, args, outdir, work)
                 elif args.mode == "baseline":
                     r = baseline_pass(p, args, outdir, work)
+                elif args.mode == "block2":
+                    r = block2_pass(p, args, outdir, work)
                 else:
                     r = measure(p, args, outdir, work)
             except Exception as e:  # pragma: no cover
