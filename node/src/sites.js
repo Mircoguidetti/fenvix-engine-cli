@@ -5,7 +5,7 @@
 // the pytest/detpy frames in the Python shell.
 const path = require('node:path');
 
-const SHELL_DIR = path.resolve(__dirname, '..') + path.sep;
+const SHELL_DIR = path.resolve(__dirname) + path.sep; // node/src/
 const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format)[\\/]/;
 const DEPS = /^(.*[\\/]node_modules[\\/])((?:@[^\\/]+[\\/])?[^\\/]+)[\\/](.*)$/;
 
@@ -27,7 +27,7 @@ function fileOf(cs) {
 /** Machine-independent form of a path. */
 function normPath(p) {
   if (p === undefined || p === null) return '<none>';
-  let s = typeof p === 'string' ? p : Buffer.isBuffer(p) ? p.toString('utf8') : p instanceof URL ? p.pathname : String(p);
+  let s = typeof p === 'string' ? p : Buffer.isBuffer(p) ? p.toString('utf8') : p && typeof p === 'object' && typeof p.href === 'string' && p.protocol === 'file:' ? require('node:url').fileURLToPath(p.href) : String(p);
   if (!path.isAbsolute(s)) s = path.resolve(s);
   const m = DEPS.exec(s);
   if (m) return `<deps>/${m[2].replace(/\\/g, '/')}/${m[3].replace(/\\/g, '/')}`;

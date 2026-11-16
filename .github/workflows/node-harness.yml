@@ -1,0 +1,275 @@
+name: node-harness
+
+# detjs (Node / TypeScript) measurement round as a matrix, one repository per runner.
+#   config     -> parameters from harness/node/RUN (JSON) or the dispatch inputs
+#   build      -> detjs native core (napi-rs) + detpy wheel (the Python binding of the same verifier)
+#   tests      -> Rust core tests and the detjs shell tests (Vitest and Jest)
+#   candidates -> flaky pool (documented flaky tests) then popular pool
+#   prepare    -> selection filters per candidate (clone, pin, install, first baseline run)
+#   select     -> first N candidates per pool that pass (pools disjoint by repository)
+#   round      -> full protocol per repository; each job commits its own results (partial results)
+#   timing     -> quiet timing pass on up to 10 measured repositories
+#   aggregate  -> harness/node/results/<set>/REPORT.md, committed to the branch
+# Started by a push that changes harness/node/RUN, or manually.
+
+on:
+  workflow_dispatch:
+    inputs:
+      config: {description: "JSON parameters (see harness/node/RUN)", default: "{}"}
+  push:
+    branches: [claude/node-l0]
+    paths: [harness/node/RUN]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: node-harness
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  DETJS_HARNESS_CACHE: /tmp/detjs-cache
+
+jobs:
+  config:
+    runs-on: ubuntu-latest
+    outputs:
+      runs: ${{ steps.c.outputs.runs }}
+      seeds: ${{ steps.c.outputs.seeds }}
+      confirm: ${{ steps.c.outputs.confirm }}
+      per_pool: ${{ steps.c.outputs.per_pool }}
+      flaky_candidates: ${{ steps.c.outputs.flaky_candidates }}
+      popular_candidates: ${{ steps.c.outputs.popular_candidates }}
+      max_first_run: ${{ steps.c.outputs.max_first_run }}
+      only: ${{ steps.c.outputs.only }}
+      timing: ${{ steps.c.outputs.timing }}
+      result_set: ${{ steps.c.outputs.result_set }}
+      repo_budget: ${{ steps.c.outputs.repo_budget }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: c
+        env:
+          DISPATCH: ${{ inputs.config }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          d = {"runs": 10, "seeds": 20, "confirm": 10, "per_pool": 25, "flaky_candidates": 60, "popular_candidates": 44,
+               "max_first_run": 180, "only": "", "timing": "true", "result_set": "node", "repo_budget": 5400}
+          try:
+              d.update(json.load(open("harness/node/RUN")))
+          except Exception as e:
+              print("RUN:", e)
+          d.update(json.loads(os.environ.get("DISPATCH") or "{}"))
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              for k, v in d.items():
+                  f.write(f"{k}={v}\n")
+          print(d)
+          PY
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: cargo build -p detpy-node --release
+      - run: cp target/release/libdetpy_node.so node/detjs.linux-x64.node
+      - run: pip install maturin && maturin build --release --compatibility linux -o dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: detjs
+          path: |
+            node/detjs.linux-x64.node
+            dist/*.whl
+
+  tests:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - uses: actions/download-artifact@v4
+        with: {name: detjs, path: .}
+      - run: cargo test -p detpy-core
+      - run: cd node && npm ci && npm test
+      - name: Python verifier reads a Node trace
+        run: |
+          pip install --no-deps dist/*.whl
+          cd node/test/.tmp/vitest/seeds && python3 -m detpy verify .detjs/trace.jsonl .detjs/trace.jsonl.1
+
+  candidates:
+    needs: [config]
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.c.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: c
+        run: python3 harness/node/ci.py candidates --flaky ${{ needs.config.outputs.flaky_candidates }} --popular ${{ needs.config.outputs.popular_candidates }}
+
+  prepare:
+    if: ${{ needs.config.outputs.only == '' }}
+    needs: [config, build, candidates]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        repo: ${{ fromJSON(needs.candidates.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - uses: actions/download-artifact@v4
+        with: {name: detjs, path: .}
+      - name: selection filters
+        run: >
+          python harness/node/node_harness.py --set "${{ matrix.repo }}" --mode prepare
+          --out out --work /tmp/work --max-first-run ${{ needs.config.outputs.max_first_run }} --run-timeout 900
+          --executor "GitHub Actions"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: "prepare-${{ matrix.repo }}", path: out/, if-no-files-found: ignore}
+
+  select:
+    if: ${{ !cancelled() && needs.candidates.result == 'success' }}
+    needs: [config, candidates, prepare]
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.s.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        if: ${{ needs.config.outputs.only == '' }}
+        with: {pattern: "prepare-*", path: art}
+      - id: s
+        run: |
+          if [ -n "${{ needs.config.outputs.only }}" ]; then
+            python3 -c "import json,sys; m=[x.strip() for x in sys.argv[1].split(',') if x.strip()]; print(json.dumps({'selected': m, 'discarded': []}))" "${{ needs.config.outputs.only }}" > selection.json
+            echo "matrix=$(python3 -c "import json; print(json.dumps(json.load(open('selection.json'))['selected']))")" >> "$GITHUB_OUTPUT"
+          else
+            python3 harness/node/ci.py select --dir art --per-pool ${{ needs.config.outputs.per_pool }} --selection selection.json
+          fi
+          mkdir -p "harness/node/results/${{ needs.config.outputs.result_set }}"
+          cp selection.json "harness/node/results/${{ needs.config.outputs.result_set }}/selection.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add harness/node/results && git commit -qm "Node harness: selection (${{ needs.config.outputs.result_set }}) from run ${{ github.run_id }}" || exit 0
+          for i in 1 2 3 4 5 6; do git pull --rebase -q && git push -q && break; sleep $((i * 7)); done
+      - uses: actions/upload-artifact@v4
+        with: {name: selection, path: selection.json}
+
+  round:
+    if: ${{ !cancelled() && needs.select.result == 'success' }}
+    needs: [config, build, select]
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        repo: ${{ fromJSON(needs.select.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - uses: actions/download-artifact@v4
+        with: {name: detjs, path: .}
+      - run: pip install --no-deps dist/*.whl
+      - name: round
+        timeout-minutes: 160
+        run: >
+          python harness/node/node_harness.py --set "${{ matrix.repo }}" --mode round
+          --runs ${{ needs.config.outputs.runs }} --seeds ${{ needs.config.outputs.seeds }} --confirm ${{ needs.config.outputs.confirm }}
+          --out out --work /tmp/work --max-first-run 100000 --repo-budget ${{ needs.config.outputs.repo_budget }}
+          --run-timeout 1200 --executor "GitHub Actions"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: "round-${{ matrix.repo }}", path: out/, if-no-files-found: ignore}
+      - name: commit this repository's results (partial results)
+        if: always()
+        run: |
+          d="harness/node/results/${{ needs.config.outputs.result_set }}"
+          mkdir -p "$d"
+          cp out/*.csv out/*.json "$d"/ 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$d" && git commit -qm "Node harness: ${{ matrix.repo }} (${{ needs.config.outputs.result_set }}) from run ${{ github.run_id }}" || exit 0
+          for i in 1 2 3 4 5 6 7 8; do git pull --rebase -q && git push -q && break; sleep $((i * 5 + RANDOM % 7)); done
+
+  timing-pick:
+    if: ${{ !cancelled() && needs.config.outputs.timing == 'true' && needs.round.result != 'skipped' }}
+    needs: [config, round]
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.t.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {pattern: "round-*", path: art}
+      - uses: actions/download-artifact@v4
+        with: {name: selection, path: .}
+      - id: t
+        run: python3 harness/node/ci.py timing-pick --dir art --selection selection.json -n 10
+
+  timing:
+    if: ${{ !cancelled() && needs.timing-pick.result == 'success' && needs.timing-pick.outputs.matrix != '[]' }}
+    needs: [build, timing-pick]
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        repo: ${{ fromJSON(needs.timing-pick.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - uses: actions/download-artifact@v4
+        with: {name: detjs, path: .}
+      - name: quiet timing pass
+        run: >
+          python harness/node/node_harness.py --set "${{ matrix.repo }}" --mode timing --timing-runs 3
+          --out out --work /tmp/work --max-first-run 100000 --run-timeout 1800 --executor "GitHub Actions"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: "timing-${{ matrix.repo }}", path: out/, if-no-files-found: ignore}
+
+  aggregate:
+    if: ${{ !cancelled() && needs.select.result == 'success' }}
+    needs: [config, select, round, timing]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {pattern: "round-*", path: art}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with: {pattern: "timing-*", path: art}
+      - uses: actions/download-artifact@v4
+        with: {name: selection, path: .}
+      - name: build report
+        run: >
+          python3 harness/node/ci.py aggregate --dir art --out "harness/node/results/${{ needs.config.outputs.result_set }}"
+          --selection selection.json --set "${{ needs.config.outputs.result_set }}"
+          --runs ${{ needs.config.outputs.runs }} --seeds ${{ needs.config.outputs.seeds }} --confirm ${{ needs.config.outputs.confirm }}
+          --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      - name: commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "harness/node/results/${{ needs.config.outputs.result_set }}"
+          git commit -qm "Node harness: report (${{ needs.config.outputs.result_set }}) from run ${{ github.run_id }}" || exit 0
+          for i in 1 2 3 4 5 6; do git pull --rebase -q && git push -q && break; sleep $((i * 7)); done

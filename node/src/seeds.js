@@ -95,7 +95,9 @@ const real = {
 };
 
 function getRandomValues(arr) {
-  if (!ArrayBuffer.isView(arr) || arr instanceof Float32Array || arr instanceof Float64Array || arr instanceof DataView) {
+  // Tag check, not instanceof: Jest test files run in another realm.
+  const tag = Object.prototype.toString.call(arr);
+  if (!ArrayBuffer.isView(arr) || /Float(16|32|64)Array|DataView/.test(tag)) {
     return real.getRandomValues(arr); // native TypeError / TypeMismatchError
   }
   if (arr.byteLength > 65536) return real.getRandomValues(arr); // native QuotaExceededError

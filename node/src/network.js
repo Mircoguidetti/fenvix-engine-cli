@@ -139,7 +139,7 @@ let inTlsConnect = 0;
 // Recording -------------------------------------------------------------------
 function toBuf(chunk, enc) {
   if (Buffer.isBuffer(chunk)) return chunk;
-  if (chunk instanceof Uint8Array) return Buffer.from(chunk.buffer, chunk.byteOffset, chunk.byteLength);
+  if (ArrayBuffer.isView(chunk)) return Buffer.from(chunk.buffer, chunk.byteOffset, chunk.byteLength);
   return Buffer.from(String(chunk), typeof enc === 'string' && enc !== 'buffer' ? enc : 'utf8');
 }
 
@@ -249,7 +249,8 @@ function blockSocket(sock, host, port) {
 
 function connect(...args) {
   if (POLICY === null) return real.connect.apply(this, args);
-  const normalized = net._normalizeArgs(args);
+  // net.connect() passes an already normalized [options, cb] array.
+  const normalized = Array.isArray(args[0]) ? args[0] : net._normalizeArgs(args);
   const options = normalized[0] || {};
   const cb = normalized[1];
   if (options.path || options.port === undefined) return real.connect.apply(this, args);

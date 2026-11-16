@@ -34,6 +34,9 @@ function installProcess() {
   if (c.controls.has('time')) clock.installProcess(PATCHER, c);
   if (c.controls.has('fs')) fsorder.installProcess(PATCHER, c);
   if (c.controls.has('net')) STATE.netMode = network.installProcess(PATCHER, c);
+  // ESM named imports of builtins (`import { readdirSync } from 'node:fs'`)
+  // are separate bindings: bring them in line with the patched objects.
+  require('node:module').syncBuiltinESMExports();
   STATE.installed.push(`process:${process.pid}`);
   return true;
 }

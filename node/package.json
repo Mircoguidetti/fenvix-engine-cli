@@ -5,6 +5,15 @@
   "description": "Deterministic execution of JavaScript/TypeScript tests (Level 0) for Vitest and Jest",
   "license": "MIT",
   "main": "src/index.js",
-  "bin": {"detjs": "bin/detjs.js"},
-  "scripts": {"build": "node scripts/build.js", "test": "node --test test/"}
+  "bin": {
+    "detjs": "bin/detjs.js"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js"
+  },
+  "devDependencies": {
+    "jest": "^30.5.2",
+    "vitest": "^5.1.0"
+  }
 }
