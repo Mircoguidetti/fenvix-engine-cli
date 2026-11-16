@@ -1,0 +1,435 @@
+{
+ "analysis": {
+  "divergences": {
+   "tests/test_self.py::TestRunTC::test_regression_recursive": {
+    "divergence": {
+     "description": "event #3: [random] random.state @ <end> = be30d969267154f2c7524682e506dee1  <>  [fs] os.scandir @ <site>/astroid/modutils.py:436 = tests/regrtest_data/directory/subdirectory/subsubdirectory|1|25071213d5bfccf0325e95f4e1fd735b",
+     "event_a": {
+      "at": "<end>",
+      "o": "random.state",
+      "s": "random",
+      "t": 0,
+      "v": "be30d969267154f2c7524682e506dee1"
+     },
+     "event_b": {
+      "at": "<site>/astroid/modutils.py:436",
+      "o": "os.scandir",
+      "s": "fs",
+      "t": 0,
+      "v": "tests/regrtest_data/directory/subdirectory/subsubdirectory|1|25071213d5bfccf0325e95f4e1fd735b"
+     },
+     "index": 3,
+     "reason": "fs",
+     "run_a": 0,
+     "run_b": 1,
+     "window": null
+    },
+    "outcomes": [
+     "passed",
+     "failed"
+    ],
+    "status": "diverged"
+   },
+   "tests/test_self.py::TestRunTC::test_regression_recursive_current_dir": {
+    "divergence": {
+     "description": "event #2: random.state @ <end> returned different values: \"2e5702d5b9930ababb38ecfcc634e568\" vs \"a22bc59f112e5ce6243dde69cf988bb8\"",
+     "event_a": {
+      "at": "<end>",
+      "o": "random.state",
+      "s": "random",
+      "t": 0,
+      "v": "2e5702d5b9930ababb38ecfcc634e568"
+     },
+     "event_b": {
+      "at": "<end>",
+      "o": "random.state",
+      "s": "random",
+      "t": 0,
+      "v": "a22bc59f112e5ce6243dde69cf988bb8"
+     },
+     "index": 2,
+     "reason": "random",
+     "run_a": 0,
+     "run_b": 1,
+     "window": null
+    },
+    "outcomes": [
+     "passed",
+     "passed"
+    ],
+    "status": "diverged"
+   }
+  },
+  "failing_configs": [
+   "det-seed-3"
+  ],
+  "no_order_fails": false,
+  "order_len": 125,
+  "order_only_fails": true,
+  "order_positions": {
+   "det-fixed": {
+    "tests/test_self.py::TestRunTC::test_regression_recursive": 99,
+    "tests/test_self.py::TestRunTC::test_regression_recursive_current_dir": 106
+   },
+   "det-seed-3": {
+    "tests/test_self.py::TestRunTC::test_regression_recursive": 54,
+    "tests/test_self.py::TestRunTC::test_regression_recursive_current_dir": 37
+   }
+  },
+  "replay_config": "det-seed-3",
+  "replay_reproduces": true,
+  "replay_rewards": [
+   false,
+   false
+  ],
+  "verify_pair": [
+   "det-fixed",
+   "det-seed-3"
+  ],
+  "verify_summary": {
+   "diverged": 125,
+   "missing": 0,
+   "order_identical": false,
+   "outcome_unstable": 1,
+   "reasons": {
+    "fs": 1,
+    "random": 122,
+    "thread": 2
+   },
+   "runs": 2,
+   "stable": 0,
+   "tests": 125
+  }
+ },
+ "baseline_reward_stable": true,
+ "baseline_rewards": [
+  true,
+  true,
+  true
+ ],
+ "broken_by_det": false,
+ "det_reward_stable": false,
+ "det_rewards": {
+  "det-fixed": true,
+  "det-seed-1": true,
+  "det-seed-2": true,
+  "det-seed-3": false,
+  "epoch-dst": true,
+  "epoch-leapday": true,
+  "epoch-y2038": true,
+  "epoch-yearend": true
+ },
+ "gold_apply": "git apply --verbose",
+ "hidden_instability": true,
+ "image": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-7080:latest",
+ "instance_id": "pylint-dev__pylint-7080",
+ "n_fail_to_pass": 1,
+ "n_pass_to_pass": 120,
+ "official_plain_rewards": [
+  true,
+  true,
+  true
+ ],
+ "official_reward_stable": true,
+ "pull_s": 16.6,
+ "pytest": "7.4.4",
+ "pytest_before": "7.4.4",
+ "python": "3.9.20",
+ "repo": "pylint-dev/pylint",
+ "run_timeout_s": 300,
+ "runs": {
+  "ablate-no-order-det-seed-3": {
+   "args": "--det-seed=3 --det-disable=order",
+   "dur": 20.6,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,seeds,time; order shuffled with seed 3",
+    "detpy: PYTHONHASHSEED=3 (ok); ASLR off; network=block; sleep=virtual",
+    "detpy: adjusted: pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": true,
+   "timed_out": false
+  },
+  "ablate-order-only-det-seed-3": {
+   "args": "--det-seed=3 --det-disable=seeds,hashseed,bytecode,time,fs,net",
+   "dur": 17.6,
+   "exceptions": {
+    "tests/test_self.py::TestRunTC::test_regression_recursive": [
+     "AssertionError",
+     "call",
+     "AssertionError: assert 'No such file or directory' in ''",
+     "/testbed/tests/test_self.py:170"
+    ]
+   },
+   "failing": [
+    "tests/test_self.py::TestRunTC::test_regression_recursive"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=order; order shuffled with seed 3",
+    "detpy: PYTHONHASHSEED=None (not-needed); ASLR on; network=None; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 1,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": false,
+   "tail": "les:]\nPASSED tests/test_self.py::TestCallbackOptions::test_help_msg[args0-:unreachable (W0101)-False]\nPASSED tests/test_self.py::TestCallbackOptions::test_errors_only\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command5-Pylint global options and switches]\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command1-Enabled messages:]\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command4-pylint.extensions.empty_comment]\nPASSED tests/test_self.py::TestCallbackOptions::test_generate_config_disable_symbolic_names\nPASSED tests/test_self.py::TestCallbackOptions::test_help_msg[args1-No such message id-False]\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command2-nonascii-checker]\nPASSED tests/test_self.py::TestCallbackOptions::test_generate_rcfile\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command3-Confidence(name='HIGH', description=]\nPASSED tests/test_self.py::TestCallbackOptions::test_enable_all_extensions\nXFAIL tests/test_self.py::TestRunTC::test_abbreviations_are_not_supported\nFAILED tests/test_self.py::TestRunTC::test_regression_recursive - AssertionEr...\nFAILED tests/test_self.py::TestCallbackOptions::test_generate_toml_config_disable_symbolic_names\nFAILED tests/test_self.py::TestCallbackOptions::test_generate_toml_config - a...\n============= 3 failed, 121 passed, 1 xfailed, 1 warning in 15.56s =============\n",
+   "timed_out": false
+  },
+  "det-fixed": {
+   "args": "",
+   "dur": 22.8,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual",
+    "detpy: adjusted: pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": true,
+   "timed_out": false
+  },
+  "det-seed-1": {
+   "args": "--det-seed=1",
+   "dur": 23.0,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order shuffled with seed 1",
+    "detpy: PYTHONHASHSEED=1 (ok); ASLR off; network=block; sleep=virtual",
+    "detpy: adjusted: pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": true,
+   "timed_out": false
+  },
+  "det-seed-2": {
+   "args": "--det-seed=2",
+   "dur": 22.7,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order shuffled with seed 2",
+    "detpy: PYTHONHASHSEED=2 (ok); ASLR off; network=block; sleep=virtual",
+    "detpy: adjusted: pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": true,
+   "timed_out": false
+  },
+  "det-seed-3": {
+   "args": "--det-seed=3",
+   "dur": 22.5,
+   "exceptions": {
+    "tests/test_self.py::TestRunTC::test_regression_recursive": [
+     "AssertionError",
+     "call",
+     "AssertionError: assert 'No such file or directory' in ''",
+     "/testbed/tests/test_self.py:170"
+    ]
+   },
+   "failing": [
+    "tests/test_self.py::TestRunTC::test_regression_recursive"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order shuffled with seed 3",
+    "detpy: PYTHONHASHSEED=3 (ok); ASLR off; network=block; sleep=virtual",
+    "detpy: adjusted: pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)"
+   ],
+   "kind": "det",
+   "n_failing": 1,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": false,
+   "tail": "les:]\nPASSED tests/test_self.py::TestCallbackOptions::test_help_msg[args0-:unreachable (W0101)-False]\nPASSED tests/test_self.py::TestCallbackOptions::test_errors_only\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command5-Pylint global options and switches]\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command1-Enabled messages:]\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command4-pylint.extensions.empty_comment]\nPASSED tests/test_self.py::TestCallbackOptions::test_generate_config_disable_symbolic_names\nPASSED tests/test_self.py::TestCallbackOptions::test_help_msg[args1-No such message id-False]\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command2-nonascii-checker]\nPASSED tests/test_self.py::TestCallbackOptions::test_generate_rcfile\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command3-Confidence(name='HIGH', description=]\nPASSED tests/test_self.py::TestCallbackOptions::test_enable_all_extensions\nXFAIL tests/test_self.py::TestRunTC::test_abbreviations_are_not_supported\nFAILED tests/test_self.py::TestRunTC::test_regression_recursive - AssertionEr...\nFAILED tests/test_self.py::TestCallbackOptions::test_generate_toml_config_disable_symbolic_names\nFAILED tests/test_self.py::TestCallbackOptions::test_generate_toml_config - a...\n============= 3 failed, 121 passed, 1 xfailed, 1 warning in 15.93s =============\n",
+   "timed_out": false
+  },
+  "epoch-dst": {
+   "args": "--det-epoch=2025-03-09T06:59:59+00:00",
+   "dur": 21.0,
+   "env": {
+    "TZ": "EST5EDT,M3.2.0,M11.1.0"
+   },
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual",
+    "detpy: adjusted: pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": true,
+   "timed_out": false
+  },
+  "epoch-leapday": {
+   "args": "--det-epoch=2024-02-29T23:59:59+00:00",
+   "dur": 21.1,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual",
+    "detpy: adjusted: pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": true,
+   "timed_out": false
+  },
+  "epoch-y2038": {
+   "args": "--det-epoch=2038-01-19T03:14:07+00:00",
+   "dur": 21.2,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual",
+    "detpy: adjusted: pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": true,
+   "timed_out": false
+  },
+  "epoch-yearend": {
+   "args": "--det-epoch=2025-12-31T23:59:59+00:00",
+   "dur": 20.9,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual",
+    "detpy: adjusted: pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": true,
+   "timed_out": false
+  },
+  "plain-1": {
+   "dur": 18.3,
+   "failing": [],
+   "kind": "plain",
+   "n_failing": 0,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": true,
+   "timed_out": false
+  },
+  "plain-2": {
+   "dur": 18.1,
+   "failing": [],
+   "kind": "plain",
+   "n_failing": 0,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": true,
+   "timed_out": false
+  },
+  "plain-3": {
+   "dur": 18.2,
+   "failing": [],
+   "kind": "plain",
+   "n_failing": 0,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": true,
+   "timed_out": false
+  },
+  "replay-1-det-seed-3": {
+   "args": "--det-seed=3",
+   "dur": 21.3,
+   "exceptions": {
+    "tests/test_self.py::TestRunTC::test_regression_recursive": [
+     "AssertionError",
+     "call",
+     "AssertionError: assert 'No such file or directory' in ''",
+     "/testbed/tests/test_self.py:170"
+    ]
+   },
+   "failing": [
+    "tests/test_self.py::TestRunTC::test_regression_recursive"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order shuffled with seed 3",
+    "detpy: PYTHONHASHSEED=3 (ok); ASLR off; network=block; sleep=virtual",
+    "detpy: adjusted: pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)"
+   ],
+   "kind": "det",
+   "n_failing": 1,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": false,
+   "tail": "les:]\nPASSED tests/test_self.py::TestCallbackOptions::test_help_msg[args0-:unreachable (W0101)-False]\nPASSED tests/test_self.py::TestCallbackOptions::test_errors_only\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command5-Pylint global options and switches]\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command1-Enabled messages:]\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command4-pylint.extensions.empty_comment]\nPASSED tests/test_self.py::TestCallbackOptions::test_generate_config_disable_symbolic_names\nPASSED tests/test_self.py::TestCallbackOptions::test_help_msg[args1-No such message id-False]\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command2-nonascii-checker]\nPASSED tests/test_self.py::TestCallbackOptions::test_generate_rcfile\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command3-Confidence(name='HIGH', description=]\nPASSED tests/test_self.py::TestCallbackOptions::test_enable_all_extensions\nXFAIL tests/test_self.py::TestRunTC::test_abbreviations_are_not_supported\nFAILED tests/test_self.py::TestRunTC::test_regression_recursive - AssertionEr...\nFAILED tests/test_self.py::TestCallbackOptions::test_generate_toml_config_disable_symbolic_names\nFAILED tests/test_self.py::TestCallbackOptions::test_generate_toml_config - a...\n============= 3 failed, 121 passed, 1 xfailed, 1 warning in 16.35s =============\n",
+   "timed_out": false
+  },
+  "replay-2-det-seed-3": {
+   "args": "--det-seed=3",
+   "dur": 20.9,
+   "exceptions": {
+    "tests/test_self.py::TestRunTC::test_regression_recursive": [
+     "AssertionError",
+     "call",
+     "AssertionError: assert 'No such file or directory' in ''",
+     "/testbed/tests/test_self.py:170"
+    ]
+   },
+   "failing": [
+    "tests/test_self.py::TestRunTC::test_regression_recursive"
+   ],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order shuffled with seed 3",
+    "detpy: PYTHONHASHSEED=3 (ok); ASLR off; network=block; sleep=virtual",
+    "detpy: adjusted: pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)"
+   ],
+   "kind": "det",
+   "n_failing": 1,
+   "n_parsed": 125,
+   "n_required": 121,
+   "rc": 1,
+   "reward": false,
+   "tail": "les:]\nPASSED tests/test_self.py::TestCallbackOptions::test_help_msg[args0-:unreachable (W0101)-False]\nPASSED tests/test_self.py::TestCallbackOptions::test_errors_only\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command5-Pylint global options and switches]\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command1-Enabled messages:]\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command4-pylint.extensions.empty_comment]\nPASSED tests/test_self.py::TestCallbackOptions::test_generate_config_disable_symbolic_names\nPASSED tests/test_self.py::TestCallbackOptions::test_help_msg[args1-No such message id-False]\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command2-nonascii-checker]\nPASSED tests/test_self.py::TestCallbackOptions::test_generate_rcfile\nPASSED tests/test_self.py::TestCallbackOptions::test_output_of_callback_options[command3-Confidence(name='HIGH', description=]\nPASSED tests/test_self.py::TestCallbackOptions::test_enable_all_extensions\nXFAIL tests/test_self.py::TestRunTC::test_abbreviations_are_not_supported\nFAILED tests/test_self.py::TestRunTC::test_regression_recursive - AssertionEr...\nFAILED tests/test_self.py::TestCallbackOptions::test_generate_toml_config_disable_symbolic_names\nFAILED tests/test_self.py::TestCallbackOptions::test_generate_toml_config - a...\n============= 3 failed, 121 passed, 1 xfailed, 1 warning in 16.01s =============\n",
+   "timed_out": false
+  }
+ },
+ "seeds_planned": 3,
+ "seeds_run": 3,
+ "setup_rc": 0,
+ "setup_s": 1.7,
+ "started": "2026-11-16T19:57:31Z",
+ "status": "measured",
+ "task_s": 334.6,
+ "test_cmd": "pytest -rA tests/test_self.py",
+ "version": "2.15",
+ "visible_instability": false
+}
