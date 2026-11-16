@@ -26,6 +26,9 @@ pub enum Reason {
     Entropy,
     Syscall,
     Other,
+    /// First differing event is a scheduling choice of the Level 1 runtime
+    /// (`--det-async`): the runs delivered asyncio events in a different order.
+    Sched,
     /// The differing events come from different threads or from a non-main
     /// thread: scheduling is not controlled by Level 0.
     Thread,
@@ -49,6 +52,7 @@ impl Reason {
             Reason::Entropy => "entropy",
             Reason::Syscall => "syscall",
             Reason::Other => "other",
+            Reason::Sched => "sched",
             Reason::Thread => "thread",
             Reason::OutcomeOnly => "outcome-only",
             Reason::BeyondTrace => "beyond-trace",
@@ -66,6 +70,7 @@ impl Reason {
             Source::Syscall => Reason::Syscall,
             Source::Outcome => Reason::OutcomeOnly,
             Source::Other => Reason::Other,
+            Source::Sched => Reason::Sched,
         }
     }
 }
@@ -251,6 +256,10 @@ fn describe(i: u64, a: Option<&Event>, b: Option<&Event>) -> String {
              the cause is a source Level 0 does not observe",
             ea.value, eb.value
         ),
+        (Some(ea), Some(eb)) if ea.source == Source::Sched && eb.source == Source::Sched => format!(
+            "event #{i}: first diverging scheduling choice at {}: {} <> {}",
+            ea.site, ea.value, eb.value
+        ),
         (Some(ea), Some(eb)) if ea.op == eb.op && ea.site == eb.site && ea.thread == eb.thread => format!(
             "event #{i}: {} @ {} returned different values: {:?} vs {:?}",
             ea.op, ea.site, ea.value, eb.value
@@ -422,6 +431,16 @@ mod tests {
 
     fn t(v: &str) -> Event {
         Event::new(Source::Time, "time.time", "t.py:1", v)
+    }
+
+    #[test]
+    fn sched_divergence_is_named() {
+        let a = Event::new(Source::Sched, "asyncio.step", "<loop 0>", "it=3 io=[x]");
+        let b = Event::new(Source::Sched, "asyncio.step", "<loop 0>", "it=3 io=[y]");
+        assert_eq!(classify(Some(&a), Some(&b)), Reason::Sched);
+        let d = describe(4, Some(&a), Some(&b));
+        assert!(d.contains("first diverging scheduling choice at <loop 0>"), "{d}");
+        assert!(d.contains("io=[x]") && d.contains("io=[y]"), "{d}");
     }
 
     #[test]

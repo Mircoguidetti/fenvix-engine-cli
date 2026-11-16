@@ -113,6 +113,7 @@ class VirtualClock:
 
 
 CLOCK: VirtualClock | None = None
+_on_sleep = None  # set by detpy.aio
 
 
 def _rel(e: int) -> str:
@@ -172,6 +173,8 @@ def sleep(secs: float) -> None:
     CLOCK.other_event()  # a sleep is not a read: it ends a run of reads
     _state.record("time", "time.sleep", str(ns))
     CLOCK.advance(ns)
+    if _on_sleep is not None:
+        _on_sleep(ns)  # --det-async: charge the sleep to the executor job running it
     if _state.STATE.config.sleep == "real" or _other_threads_alive():
         # Another thread may need this time to make progress (code that sleeps
         # to "let the worker finish"): wait for real as well. Scheduling is not
