@@ -1,0 +1,89 @@
+{
+ "baseline_rewards": [
+  false,
+  false,
+  false
+ ],
+ "gold_apply": "git apply --verbose",
+ "image": "swebench/sweb.eval.x86_64.psf_1776_requests-2317:latest",
+ "instance_id": "psf__requests-2317",
+ "n_fail_to_pass": 8,
+ "n_pass_to_pass": 133,
+ "official_plain_rewards": [
+  false,
+  false,
+  false
+ ],
+ "pull_s": 19.0,
+ "pytest": "7.4.4",
+ "pytest_before": "7.4.4",
+ "python": "3.9.20",
+ "reason": "reference reward 0 in all 3 plain runs (environment does not reproduce the gold result)",
+ "repo": "psf/requests",
+ "run_timeout_s": 2400,
+ "runs": {
+  "plain-1": {
+   "dur": 409.2,
+   "failing": [
+    "test_requests.py::RequestsTestCase::test_POSTBIN_GET_POST_FILES_WITH_DATA",
+    "test_requests.py::RequestsTestCase::test_requests_history_is_saved",
+    "test_requests.py::RequestsTestCase::test_auth_is_stripped_on_redirect_off_host",
+    "test_requests.py::RequestsTestCase::test_mixed_case_scheme_acceptable",
+    "test_requests.py::RequestsTestCase::test_pyopenssl_redirect",
+    "test_requests.py::TestTimeout::test_stream_timeout"
+   ],
+   "kind": "plain",
+   "n_failing": 6,
+   "n_parsed": 143,
+   "n_required": 141,
+   "rc": 1,
+   "reward": false,
+   "tail": ".py::TestMorselToCookieMaxAge::test_max_age_invalid_str\nPASSED test_requests.py::TestMorselToCookieMaxAge::test_max_age_valid_int\nPASSED test_requests.py::TestTimeout::test_invalid_timeout\nPASSED test_requests.py::TestTimeout::test_none_timeout\nPASSED test_requests.py::TestTimeout::test_read_timeout\nPASSED test_requests.py::TestTimeout::test_connect_timeout\nPASSED test_requests.py::TestTimeout::test_total_timeout_connect\nPASSED test_requests.py::TestTimeout::test_encoded_methods\nPASSED test_requests.py::TestRedirects::test_requests_are_updated_each_time\nPASSED test_requests.py::test_data_argument_accepts_tuples\nPASSED test_requests.py::test_prepared_request_empty_copy\nPASSED test_requests.py::test_prepared_request_no_cookies_copy\nPASSED test_requests.py::test_prepared_request_complete_copy\nPASSED test_requests.py::test_prepare_unicode_url\nFAILED test_requests.py::RequestsTestCase::test_POSTBIN_GET_POST_FILES_WITH_DATA\nFAILED test_requests.py::RequestsTestCase::test_auth_is_stripped_on_redirect_off_host\nFAILED test_requests.py::RequestsTestCase::test_conflicting_post_params - Typ...\nFAILED test_requests.py::RequestsTestCase::test_mixed_case_scheme_acceptable\nFAILED test_requests.py::RequestsTestCase::test_pyopenssl_redirect - requests...\nFAILED test_requests.py::RequestsTestCase::test_requests_history_is_saved - r...\nFAILED test_requests.py::TestTimeout::test_stream_timeout - requests.exceptio...\n============ 7 failed, 136 passed, 3 warnings in 408.79s (0:06:48) =============\n",
+   "timed_out": false
+  },
+  "plain-2": {
+   "dur": 409.7,
+   "failing": [
+    "test_requests.py::RequestsTestCase::test_requests_history_is_saved",
+    "test_requests.py::RequestsTestCase::test_auth_is_stripped_on_redirect_off_host",
+    "test_requests.py::RequestsTestCase::test_mixed_case_scheme_acceptable",
+    "test_requests.py::RequestsTestCase::test_pyopenssl_redirect",
+    "test_requests.py::TestTimeout::test_stream_timeout"
+   ],
+   "kind": "plain",
+   "n_failing": 5,
+   "n_parsed": 143,
+   "n_required": 141,
+   "rc": 1,
+   "reward": false,
+   "tail": "quests.py::TestMorselToCookieExpires::test_expires_valid_str\nPASSED test_requests.py::TestMorselToCookieMaxAge::test_max_age_invalid_str\nPASSED test_requests.py::TestMorselToCookieMaxAge::test_max_age_valid_int\nPASSED test_requests.py::TestTimeout::test_invalid_timeout\nPASSED test_requests.py::TestTimeout::test_none_timeout\nPASSED test_requests.py::TestTimeout::test_read_timeout\nPASSED test_requests.py::TestTimeout::test_connect_timeout\nPASSED test_requests.py::TestTimeout::test_total_timeout_connect\nPASSED test_requests.py::TestTimeout::test_encoded_methods\nPASSED test_requests.py::TestRedirects::test_requests_are_updated_each_time\nPASSED test_requests.py::test_data_argument_accepts_tuples\nPASSED test_requests.py::test_prepared_request_empty_copy\nPASSED test_requests.py::test_prepared_request_no_cookies_copy\nPASSED test_requests.py::test_prepared_request_complete_copy\nPASSED test_requests.py::test_prepare_unicode_url\nFAILED test_requests.py::RequestsTestCase::test_auth_is_stripped_on_redirect_off_host\nFAILED test_requests.py::RequestsTestCase::test_conflicting_post_params - Typ...\nFAILED test_requests.py::RequestsTestCase::test_mixed_case_scheme_acceptable\nFAILED test_requests.py::RequestsTestCase::test_pyopenssl_redirect - requests...\nFAILED test_requests.py::RequestsTestCase::test_requests_history_is_saved - r...\nFAILED test_requests.py::TestTimeout::test_stream_timeout - requests.exceptio...\n============ 6 failed, 137 passed, 3 warnings in 409.30s (0:06:49) =============\n",
+   "timed_out": false
+  },
+  "plain-3": {
+   "dur": 409.4,
+   "failing": [
+    "test_requests.py::RequestsTestCase::test_POSTBIN_GET_POST_FILES_WITH_DATA",
+    "test_requests.py::RequestsTestCase::test_requests_history_is_saved",
+    "test_requests.py::RequestsTestCase::test_auth_is_stripped_on_redirect_off_host",
+    "test_requests.py::RequestsTestCase::test_mixed_case_scheme_acceptable",
+    "test_requests.py::RequestsTestCase::test_pyopenssl_redirect",
+    "test_requests.py::TestTimeout::test_stream_timeout"
+   ],
+   "kind": "plain",
+   "n_failing": 6,
+   "n_parsed": 143,
+   "n_required": 141,
+   "rc": 1,
+   "reward": false,
+   "tail": ".py::TestMorselToCookieMaxAge::test_max_age_invalid_str\nPASSED test_requests.py::TestMorselToCookieMaxAge::test_max_age_valid_int\nPASSED test_requests.py::TestTimeout::test_invalid_timeout\nPASSED test_requests.py::TestTimeout::test_none_timeout\nPASSED test_requests.py::TestTimeout::test_read_timeout\nPASSED test_requests.py::TestTimeout::test_connect_timeout\nPASSED test_requests.py::TestTimeout::test_total_timeout_connect\nPASSED test_requests.py::TestTimeout::test_encoded_methods\nPASSED test_requests.py::TestRedirects::test_requests_are_updated_each_time\nPASSED test_requests.py::test_data_argument_accepts_tuples\nPASSED test_requests.py::test_prepared_request_empty_copy\nPASSED test_requests.py::test_prepared_request_no_cookies_copy\nPASSED test_requests.py::test_prepared_request_complete_copy\nPASSED test_requests.py::test_prepare_unicode_url\nFAILED test_requests.py::RequestsTestCase::test_POSTBIN_GET_POST_FILES_WITH_DATA\nFAILED test_requests.py::RequestsTestCase::test_auth_is_stripped_on_redirect_off_host\nFAILED test_requests.py::RequestsTestCase::test_conflicting_post_params - Typ...\nFAILED test_requests.py::RequestsTestCase::test_mixed_case_scheme_acceptable\nFAILED test_requests.py::RequestsTestCase::test_pyopenssl_redirect - requests...\nFAILED test_requests.py::RequestsTestCase::test_requests_history_is_saved - r...\nFAILED test_requests.py::TestTimeout::test_stream_timeout - requests.exceptio...\n============ 7 failed, 136 passed, 3 warnings in 408.98s (0:06:48) =============\n",
+   "timed_out": false
+  }
+ },
+ "setup_rc": 0,
+ "setup_s": 1.6,
+ "started": "2026-11-16T19:57:23Z",
+ "status": "discarded",
+ "task_s": 1253.3,
+ "test_cmd": "pytest -rA test_requests.py",
+ "version": "2.4"
+}
