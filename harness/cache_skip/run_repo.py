@@ -4,9 +4,13 @@ repository and, at every commit, run its pytest suite twice:
 
 1. ``time``: plain serial run (fixed collection order, no coverage) -> per-test
    durations and outcomes, wall time;
-2. ``capture``: the same run under ``coverage run`` with the capture plugin ->
-   per-test executed lines, data files opened, directories listed,
-   subprocesses, sockets, module first-load index; wall time.
+2. ``capture``: the same run with the capture plugin, executed lines recorded
+   under ``coverage run`` (``--tracer coverage``, as in the study) or by the
+   plugin's ``sys.monitoring`` tracer (``--tracer sysmon``, Python 3.12+; the
+   default when available) -> per-test executed lines, data files opened,
+   directories listed, subprocesses, sockets, module first-load index; wall
+   time. ``--tracer both`` runs both (sys.monitoring files as ``<stem>.sm.*``)
+   for equivalence checks (``analyze.py --tag .sm``, ``compare_skips.py``).
 
 Everything is written below ``<work>/<repo>/caps/<i>-<sha>.*``; ``analyze.py``
 turns it into skip decisions.

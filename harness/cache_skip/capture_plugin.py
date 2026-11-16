@@ -5,9 +5,10 @@ Environment:
 * ``CACHE_SKIP_OUT``  JSON file written at the end of the session.
 * ``CACHE_SKIP_ROOT`` repository root (only paths below it are recorded).
 * ``CACHE_SKIP_MODE`` ``time`` (durations and outcomes only) or ``capture``
-  (also per-test dependency capture). In ``capture`` mode the session must run
-  under ``coverage run`` so that ``coverage.Coverage.current()`` exists; the
-  plugin switches the coverage *dynamic context* so that every executed line is
+  (also per-test dependency capture). In ``capture`` mode executed lines are
+  recorded by a tracer (``CACHE_SKIP_TRACER`` below: coverage.py under
+  ``coverage run``, or the plugin's own ``sys.monitoring`` tracer), and the
+  plugin switches the tracer's *context* so that every executed line is
   attributed to:
 
   - ``t|<nodeid>``: the test (setup, call, teardown, function-scoped fixtures);
