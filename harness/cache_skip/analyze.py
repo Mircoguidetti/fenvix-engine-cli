@@ -509,9 +509,10 @@ def decide(m: DepMap, nid: str, fcs: dict, data_changed: set, list_changed: set,
                 return "import-guard"
             it = m.importtime.get(f)
             if it:
-                if fc.stmt_lines is None or (nameguard and fc.body_lines is None):
+                if fc.stmt_lines is None or fc.body_lines is None:
                     return "import-guard"
-                lines = fc.import_lines & fc.body_lines if nameguard else fc.import_lines
+                # module-level code is compared structurally above; this catches function bodies run at import
+                lines = fc.import_lines & fc.body_lines
                 if not it.isdisjoint(lines):
                     return "import-guard"
             if nameguard and fc.doc_changed and nid.split("::")[0] == f:
