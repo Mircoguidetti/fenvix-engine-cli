@@ -1,0 +1,667 @@
+{
+ "name": "documenso",
+ "repo": "documenso/documenso",
+ "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+ "status": "ok",
+ "setup_s": 308,
+ "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
+ "config": {
+  "repo": "documenso/documenso",
+  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+  "app": "node",
+  "suite": "e2e: Playwright api + license projects and ui shard 1/6, against the Remix server on Postgres + Inbucket + MinIO",
+  "services": "Remix server, Postgres, Inbucket, MinIO, browser",
+  "node": "24",
+  "runs": 5,
+  "parser": "junit",
+  "free_disk": true
+ },
+ "run_id": "43945303458",
+ "measured_at": "2026-11-16T20:43:46Z",
+ "baseline_cores": 0.0377,
+ "n_runs": 5,
+ "runs": [
+  {
+   "run": 1,
+   "rc": 1,
+   "wall_s": 52.16,
+   "busy_cpu_s": 130.0,
+   "cores_mean": 2.493,
+   "idle_share_raw": -1.4925,
+   "idle_share_net": -1.4548,
+   "quiet_share": 0.0095,
+   "share_ge1core": 0.8571,
+   "iowait_s": 2.64,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.34,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.0,
+   "cpu_other_s": 128.0,
+   "containers": {
+    "database [postgres:15]": 1.378,
+    "mailserver [inbucket/inbucket]": 0.318,
+    "gotenberg [documenso-dev-gotenberg:latest]": 0.225,
+    "redis [redis:8-alpine]": 0.084
+   },
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     82.1
+    ],
+    [
+     "host",
+     "chrome-headless",
+     17.6
+    ],
+    [
+     "host",
+     "provjobd5273154",
+     7.88
+    ],
+    [
+     "host",
+     "ffmpeg-linux",
+     3.42
+    ],
+    [
+     "host",
+     "esbuild",
+     1.17
+    ],
+    [
+     "host",
+     "npm run start",
+     0.67
+    ],
+    [
+     "host",
+     "npm run with:en",
+     0.66
+    ],
+    [
+     "container",
+     "postgres",
+     0.63
+    ],
+    [
+     "host",
+     "kswapd0",
+     0.42
+    ],
+    [
+     "host",
+     "kcompactd0",
+     0.34
+    ],
+    [
+     "host",
+     "python3",
+     0.31
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.3
+    ],
+    [
+     "host",
+     "npm run test:e2",
+     0.28
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.17
+    ],
+    [
+     "host",
+     "dockerd",
+     0.12
+    ]
+   ],
+   "n_tests": 731,
+   "n_pass": 10,
+   "n_fail": 2,
+   "n_skip": 719,
+   "series_1s": [
+    0.16,
+    1.49,
+    1.75,
+    1.37,
+    1.65,
+    1.43,
+    1.53,
+    1.4,
+    1.4,
+    1.71,
+    3.94,
+    4.0,
+    4.0,
+    4.0,
+    3.99,
+    4.0,
+    3.99,
+    4.01,
+    4.0,
+    3.99,
+    3.98,
+    4.0,
+    3.93,
+    3.67,
+    3.9,
+    3.98,
+    3.97,
+    3.99,
+    4.01,
+    4.0,
+    4.01,
+    3.96,
+    1.36,
+    1.93,
+    1.06,
+    0.66,
+    1.6,
+    1.33,
+    1.46,
+    0.93,
+    0.23,
+    1.46,
+    1.51,
+    0.89,
+    1.32,
+    1.37,
+    1.76,
+    1.99,
+    0.98,
+    1.74,
+    2.22,
+    1.05,
+    1.28,
+    0.26
+   ]
+  },
+  {
+   "run": 2,
+   "rc": 1,
+   "wall_s": 566.37,
+   "busy_cpu_s": 998.97,
+   "cores_mean": 1.764,
+   "idle_share_raw": -0.7638,
+   "idle_share_net": -0.7261,
+   "quiet_share": 0.137,
+   "share_ge1core": 0.7358,
+   "iowait_s": 18.63,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 3.15,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 20.15,
+   "cpu_other_s": 978.82,
+   "containers": {
+    "database [postgres:15]": 13.384,
+    "mailserver [inbucket/inbucket]": 3.796,
+    "gotenberg [documenso-dev-gotenberg:latest]": 2.061,
+    "redis [redis:8-alpine]": 0.912
+   },
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     438.13
+    ],
+    [
+     "host",
+     "MainThread",
+     348.88
+    ],
+    [
+     "host",
+     "provjobd5273154",
+     53.02
+    ],
+    [
+     "host",
+     "ffmpeg-linux",
+     32.71
+    ],
+    [
+     "container",
+     "postgres",
+     9.31
+    ],
+    [
+     "host",
+     "docker-proxy",
+     4.4
+    ],
+    [
+     "host",
+     "python3",
+     3.13
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     1.51
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     1.44
+    ],
+    [
+     "host",
+     "dockerd",
+     1.23
+    ],
+    [
+     "host",
+     "containerd",
+     1.21
+    ],
+    [
+     "host",
+     "containerd-shim",
+     1.1
+    ],
+    [
+     "container",
+     "redis-server",
+     0.91
+    ],
+    [
+     "host",
+     "npm run start",
+     0.71
+    ],
+    [
+     "container",
+     "inbucket",
+     0.71
+    ]
+   ],
+   "n_tests": 731,
+   "n_pass": 193,
+   "n_fail": 1,
+   "n_skip": 537
+  },
+  {
+   "run": 3,
+   "rc": 1,
+   "wall_s": 47.81,
+   "busy_cpu_s": 120.31,
+   "cores_mean": 2.516,
+   "idle_share_raw": -1.5165,
+   "idle_share_net": -1.4787,
+   "quiet_share": 0.0312,
+   "share_ge1core": 0.8854,
+   "iowait_s": 1.26,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.31,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 1.85,
+   "cpu_other_s": 118.46,
+   "containers": {
+    "database [postgres:15]": 1.262,
+    "mailserver [inbucket/inbucket]": 0.326,
+    "gotenberg [documenso-dev-gotenberg:latest]": 0.187,
+    "redis [redis:8-alpine]": 0.078
+   },
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     77.57
+    ],
+    [
+     "host",
+     "chrome-headless",
+     17.18
+    ],
+    [
+     "host",
+     "provjobd5273154",
+     7.67
+    ],
+    [
+     "host",
+     "ffmpeg-linux",
+     3.36
+    ],
+    [
+     "host",
+     "npm run start",
+     0.69
+    ],
+    [
+     "container",
+     "postgres",
+     0.62
+    ],
+    [
+     "host",
+     "npm run with:en",
+     0.55
+    ],
+    [
+     "host",
+     "python3",
+     0.29
+    ],
+    [
+     "host",
+     "npm run test:e2",
+     0.26
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.24
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.15
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.15
+    ],
+    [
+     "host",
+     "containerd",
+     0.11
+    ],
+    [
+     "host",
+     "dockerd",
+     0.1
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.1
+    ]
+   ],
+   "n_tests": 731,
+   "n_pass": 5,
+   "n_fail": 2,
+   "n_skip": 724
+  },
+  {
+   "run": 4,
+   "rc": 1,
+   "wall_s": 528.32,
+   "busy_cpu_s": 850.28,
+   "cores_mean": 1.609,
+   "idle_share_raw": -0.6094,
+   "idle_share_net": -0.5717,
+   "quiet_share": 0.1465,
+   "share_ge1core": 0.7174,
+   "iowait_s": 10.78,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 2.81,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 18.11,
+   "cpu_other_s": 832.17,
+   "containers": {
+    "database [postgres:15]": 11.347,
+    "mailserver [inbucket/inbucket]": 3.945,
+    "gotenberg [documenso-dev-gotenberg:latest]": 1.965,
+    "redis [redis:8-alpine]": 0.849
+   },
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     386.31
+    ],
+    [
+     "host",
+     "MainThread",
+     286.42
+    ],
+    [
+     "host",
+     "provjobd5273154",
+     43.63
+    ],
+    [
+     "host",
+     "ffmpeg-linux",
+     21.12
+    ],
+    [
+     "container",
+     "postgres",
+     7.59
+    ],
+    [
+     "host",
+     "docker-proxy",
+     3.66
+    ],
+    [
+     "host",
+     "python3",
+     2.79
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     1.28
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     1.28
+    ],
+    [
+     "host",
+     "dockerd",
+     1.19
+    ],
+    [
+     "host",
+     "containerd",
+     1.16
+    ],
+    [
+     "host",
+     "containerd-shim",
+     1.02
+    ],
+    [
+     "container",
+     "inbucket",
+     1.02
+    ],
+    [
+     "container",
+     "redis-server",
+     0.84
+    ],
+    [
+     "host",
+     "npm run start",
+     0.71
+    ]
+   ],
+   "n_tests": 731,
+   "n_pass": 141,
+   "n_fail": 1,
+   "n_skip": 589
+  },
+  {
+   "run": 5,
+   "rc": 1,
+   "wall_s": 570.33,
+   "busy_cpu_s": 1001.13,
+   "cores_mean": 1.755,
+   "idle_share_raw": -0.7554,
+   "idle_share_net": -0.7176,
+   "quiet_share": 0.1369,
+   "share_ge1core": 0.7341,
+   "iowait_s": 11.12,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 3.11,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 21.44,
+   "cpu_other_s": 979.69,
+   "containers": {
+    "database [postgres:15]": 13.846,
+    "mailserver [inbucket/inbucket]": 4.478,
+    "gotenberg [documenso-dev-gotenberg:latest]": 2.192,
+    "redis [redis:8-alpine]": 0.925
+   },
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     433.32
+    ],
+    [
+     "host",
+     "MainThread",
+     354.1
+    ],
+    [
+     "host",
+     "provjobd5273154",
+     44.66
+    ],
+    [
+     "host",
+     "ffmpeg-linux",
+     31.54
+    ],
+    [
+     "container",
+     "postgres",
+     9.57
+    ],
+    [
+     "host",
+     "docker-proxy",
+     4.4
+    ],
+    [
+     "host",
+     "python3",
+     3.08
+    ],
+    [
+     "container",
+     "inbucket",
+     1.33
+    ],
+    [
+     "host",
+     "dockerd",
+     1.31
+    ],
+    [
+     "host",
+     "containerd",
+     1.24
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     1.17
+    ],
+    [
+     "host",
+     "containerd-shim",
+     1.11
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     1.1
+    ],
+    [
+     "container",
+     "redis-server",
+     0.93
+    ],
+    [
+     "host",
+     "npm run start",
+     0.69
+    ]
+   ],
+   "n_tests": 731,
+   "n_pass": 195,
+   "n_fail": 1,
+   "n_skip": 535
+  }
+ ],
+ "idle": {
+  "median_idle_share_raw": -0.7638,
+  "median_idle_share_net": -0.7261,
+  "median_quiet_share": 0.1369,
+  "median_cores_mean": 1.764,
+  "median_wall_s": 528.32,
+  "median_busy_cpu_s": 850.28
+ },
+ "tests": {
+  "n_distinct": 731,
+  "n_flaky": 4,
+  "n_consistent_fail": 0,
+  "flaky": [
+   {
+    "id": "ui|admin/email-transports/email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims",
+    "pass_runs": 3,
+    "fail_runs": 2,
+    "fail_in": [
+     1,
+     3
+    ],
+    "messages": [
+     "locator.click: Element is outside of the viewport\n\n  [ui] \u203a admin/email-transports/email-transport-claims.spec.ts:2:4327 \u203a [ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims \n\n    Error: locator.click: Element is outside of the viewport\n    Call log:\n      - waiting for getByRole('option', { name: 'e2e-transport-backport-jlgAynWJkfe6mwyfMOdj3' })\n        - locator resolved to <div role=\"option\" tabindex=\"-1\" aria-selected=\"false\" data-state=\"unchecked\" data-radix-collection-item=\"\" aria-labelledby=\"radix-_r_2g_\" class=\"relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50\">\u2026</div>\n      - attempting click action\n        - scrolling into view if needed\n        - done scrolling\n\n\n      1 | import { encryptEmailTransportConfig } from '@documenso/lib/server-only/email/email-transport-config';\n    > 2 | import { generateDatabaseId, nanoid } from '@documenso/lib/universal/id';\n        |                                                                                          "
+    ]
+   },
+   {
+    "id": "api|api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401",
+    "pass_runs": 4,
+    "fail_runs": 1,
+    "fail_in": [
+     3
+    ],
+    "messages": [
+     "apiRequestContext.get: read ECONNRESET\n\n  [api] \u203a api/trpc/admin/admin-find-documents.spec.ts:2:1027 \u203a [ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401 \n\n    Error: apiRequestContext.get: read ECONNRESET\n    Call log:\n      - \u2192 GET http://localhost:3000/api/trpc/admin.document.find?input=%7B%22json%22%3A%7B%22query%22%3A%22recipient%3Aanything%22%2C%22page%22%3A1%2C%22perPage%22%3A20%7D%7D\n        - user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36\n        - accept: */*\n        - accept-encoding: gzip,deflate,br\n        - cookie: __disable_animations=true; csrfToken=x5b65vuxgdjghxzhlwehjonkwywuidy6.VlnDndTckPRL%2FIrd7b2LWo99aSvNu84ER3LpRoQR0gE%3D; sessionId=jmoe26dbzaxsm7eifbpmhp3t3u2bnsah.z0xniRvWVQaAXX6f4gEPC6fsd6QFbMGr21rsFAC68ZI%3D; lang=ImVuIg%3D%3D; preferred-team-url=personal_xmzkrnbbrzuvoirc\n\n\n      1 | import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';\n    > 2 | import { seedPendingDocument } from '@documenso/prisma/seed/documents';\n        |                                                                                                                ^\n      3 "
+    ]
+   },
+   {
+    "id": "api|api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with numeric value matches by exact recipient ID",
+    "pass_runs": 3,
+    "fail_runs": 1,
+    "fail_in": [
+     1
+    ],
+    "messages": [
+     "apiRequestContext.get: read ECONNRESET\n\n  [api] \u203a api/trpc/admin/admin-find-documents.spec.ts:2:4794 \u203a [ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with numeric value matches by exact recipient ID \n\n    Error: apiRequestContext.get: read ECONNRESET\n    Call log:\n      - \u2192 GET http://localhost:3000/api/trpc/admin.document.find?input=%7B%22json%22%3A%7B%22query%22%3A%22recipient%3A2227%22%2C%22page%22%3A1%2C%22perPage%22%3A20%7D%7D\n        - user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36\n        - accept: */*\n        - accept-encoding: gzip,deflate,br\n        - cookie: __disable_animations=true; csrfToken=b3h73xho3lc3yg3pu73uh3xpgsm3lxcq.BMaGf2aI%2F2JJZtqMOrGHH%2FfvE%2BXZzf9t8nY%2FbLbI%2FwY%3D; sessionId=hvg52zfdvwdtcpjgt2ev6m6nz6jwrxdg.D7sjv6z7vmDkRdzi2GvQtrCwjY3RBZjNQx8Sks8K%2Fzk%3D; lang=ImVuIg%3D%3D; preferred-team-url=personal_hhxvubziaiyvlekk\n\n\n      1 | import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';\n    > 2 | import { seedPendingDocument } from '@documenso/prisma/seed/documents';\n        |                                                                                      "
+    ]
+   },
+   {
+    "id": "api|api/trpc/admin/admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: non-admin authenticated user is rejected with 401",
+    "pass_runs": 3,
+    "fail_runs": 1,
+    "fail_in": [
+     4
+    ],
+    "messages": [
+     "apiRequestContext.get: read ECONNRESET\n\n  [api] \u203a api/trpc/admin/admin-search.spec.ts:2:1341 \u203a [ADMIN][TRPC][SEARCH]: non-admin authenticated user is rejected with 401 \n\n    Error: apiRequestContext.get: read ECONNRESET\n    Call log:\n      - \u2192 GET http://localhost:3000/api/trpc/admin.search?input=%7B%22json%22%3A%7B%22query%22%3A%22anything%22%7D%7D\n        - user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36\n        - accept: */*\n        - accept-encoding: gzip,deflate,br\n        - cookie: __disable_animations=true; csrfToken=eh5hwubgokvarnkruxoo34edv3cjcfmj.ZJDSyOzow6WipXmUuhkIqplMOwdw%2FS4Pkox3H0XZlSw%3D; sessionId=o6sbsep6njpaxldsf2elilsl72pvkt63.kHLna1kSI1r5h3XQ%2FdaURBvZc5AsDKRsOaydnKqdlCI%3D; lang=ImVuIg%3D%3D; preferred-team-url=personal_zowauszraodkrbiu\n\n\n      1 | import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';\n    > 2 | import { seedPendingDocument } from '@documenso/prisma/seed/documents';\n        |                                                                                                                ^\n      3 | import { seedUser } from '@documenso/prisma/seed/users'"
+    ]
+   }
+  ],
+  "consistent_fail_sample": []
+ }
+}
