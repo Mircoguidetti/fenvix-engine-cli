@@ -45,7 +45,7 @@ jobs:
             python - <<'PY'
           import re, sys
           log = open("tests.log").read()
-          failed = re.findall(r"^FAILED (\S+)", log, re.M)
+          failed = re.findall(r"^FAILED (tests/\S+)", log, re.M)
           allowed = {"tests/test_clock.py::test_clock_behaviour"} if sys.version_info < (3, 12) else set()
           print("failed:", failed)
           sys.exit(0 if failed and set(failed) <= allowed else 1)
