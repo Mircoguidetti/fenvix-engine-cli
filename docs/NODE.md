@@ -114,7 +114,7 @@ Found by the shell tests (**T**), by the harness (**H**) or by design (**D**).
 | J6 | `Date.now()` has millisecond resolution: with the 1 µs tick it advances by 1 ms every 1000 reads (or faster under the adaptive tick). | D |
 | J7 | Network replay: a replayed socket is a Unix socket (`remoteAddress`/`remotePort` undefined); request bytes that differ from the recording are reported (`replay.mismatch`), not rejected; TLS replay does not negotiate ALPN `h2`; `new dns.Resolver()` instances are not guarded (connections are). | T,D |
 | J8 | Only the order of directory enumeration is normalised; libraries that issue several asynchronous `readdir` calls in parallel (fast-glob) still merge results in completion order. | D |
-| J9 | A file run by two projects of a Vitest workspace / Jest multi-project config yields two parts with the same test ids; the verifier then keeps one. | D |
+| J9 | (Vitest projects get the detjs runner and ordering on every resolved project, found by the harness on date-fns: before the fix project configs ignored them.) A file run by two projects of a Vitest workspace / Jest multi-project config yields two parts with the same test ids; the verifier then keeps one. | D |
 | J11 | Playwright Test is measured only (`node/src/register.js`, enabled with `NODE_OPTIONS=--require` in the worker processes): controls without per-test brackets or traces; the browser and web servers are not controlled. | D |
 | J10 | With Vitest `isolate: false`, several files can be collected before the first runs: the module-level seed of later files is approximate. | D |
 

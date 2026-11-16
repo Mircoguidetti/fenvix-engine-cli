@@ -50,7 +50,7 @@ async function main(argv) {
   const options = parsed.options || {};
 
   const executed = [];
-  const info = { pool: null, isolate: null };
+  const info = { pool: null, isolate: null, projects: [] };
   const cfg = run.cfg;
   class DetSequencer extends nodeApi.BaseSequencer {
     async sort(files) {
@@ -88,10 +88,10 @@ async function main(argv) {
   const finalize = () => {
     if (finished) return;
     finished = true;
-    const isolation = `vitest pool=${info.pool || 'default'} isolate=${info.isolate}; maxWorkers=1, fileParallelism=false, maxConcurrency=1`;
+    const isolation = `vitest pool=${info.pool || 'default'} isolate=${info.isolate}; projects=${(info.projects || []).join(',')}; maxWorkers=1, fileParallelism=false, maxConcurrency=1`;
     const { lines } = session.finish(run, opts, executed, {
       runner: 'vitest', runner_version: pkg.version, isolation, serial: true,
-      pool: info.pool, isolate: info.isolate, cli_args: args,
+      pool: info.pool, isolate: info.isolate, projects: info.projects, cli_args: args,
     });
     for (const l of lines) process.stdout.write(`${l}\n`);
   };
@@ -99,10 +99,35 @@ async function main(argv) {
   for (const l of session.header(run, opts, { runner: 'vitest', runnerVersion: pkg.version, isolation: 'one worker, files in sequence' })) {
     process.stdout.write(`${l}\n`);
   }
+  // createVitest + start (instead of startVitest) so that the detjs runner and
+  // the ordering options can be set on every resolved project: project
+  // configs (Vitest workspaces / `projects`) do not inherit them from the CLI.
   const ctx = major >= 5
-    ? await nodeApi.startVitest(filters, options)
-    : await nodeApi.startVitest('test', filters, options);
-  if (ctx && typeof ctx.close === 'function' && !ctx.closingPromise) await ctx.close();
+    ? await nodeApi.createVitest(options)
+    : await nodeApi.createVitest('test', options);
+  const projects = ctx.projects || ctx.getProjects?.() || [];
+  const pools = new Set();
+  for (const pr of projects) {
+    const c = pr.config || pr.getConfig?.();
+    if (!c) continue;
+    c.runner = options.runner;
+    c.maxConcurrency = 1;
+    c.sequence = { ...(c.sequence || {}), shuffle: false, concurrent: false, sequencer: DetSequencer };
+    pools.add(`${c.name || 'root'}:${c.browser && c.browser.enabled ? 'browser' : c.pool}`);
+  }
+  info.projects = [...pools];
+  try {
+    await ctx.start(filters);
+  } catch (e) {
+    if (!(e && e.code === 'VITEST_FILES_NOT_FOUND')) throw e;
+    process.exitCode = 1;
+  }
+  const files = ctx.state && ctx.state.getFiles ? ctx.state.getFiles() : [];
+  const failed = files.some((f) => f.result && f.result.state === 'fail')
+    || (ctx.state && ctx.state.getCountOfFailedTests && ctx.state.getCountOfFailedTests() > 0)
+    || (ctx.state && ctx.state.errorsSet && ctx.state.errorsSet.size > 0);
+  if (failed) process.exitCode = 1;
+  if (!ctx.closingPromise) await ctx.close();
   finalize();
   return process.exitCode ?? 0;
 }
