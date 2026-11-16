@@ -26,7 +26,7 @@ for p in sorted(glob.glob(os.path.join(rdir, "*.json"))):
     if os.path.basename(p) in ("flaky.json", "summary.json"):
         continue
     d = json.load(open(p))
-    res[d.get("name") or os.path.basename(p)[:-5]] = d
+    res[os.path.basename(p)[:-5]] = d   # <name>.json, or <name>--serial.json for the serial variant
 
 
 def pct(x):
@@ -97,6 +97,34 @@ if summary:
             line(f"  {k} apps ({len(sub)}): idle clamped", [s["idle_clamped"] for s in sub])
     print(f"- median mean-busy-cores: {stx.median(s['cores'] for s in v):.2f}")
     print(f"- test executions: {sum(s['tests'] * s['runs'] for s in v)}; distinct tests {sum(s['tests'] for s in v)}; flaky {sum(s['flaky'] for s in v)}")
+
+ser = {k[:-len("--serial")]: d for k, d in res.items() if k.endswith("--serial") and d.get("status") == "ok" and d.get("runs")}
+if ser:
+    print("\nSerial variant (the project's own test parallelism switched off):\n")
+    print("| Repository | Runs | Wall (s) | CPU-busy (s) | Mean busy cores | Idle share 1 - B/W | All-blocked share (lower bound) | Wall vs parallel | Tests |")
+    print("|---|---|---|---|---|---|---|---|---|")
+    vals = []
+    for name, d in ser.items():
+        runs = d["runs"]
+        raw = stx.median(1 - r["busy_cpu_s"] / r["wall_s"] for r in runs)
+        ib = stx.median(r["idle_interval_bound"] for r in runs)
+        w = stx.median(r["wall_s"] for r in runs)
+        par = summary.get(name, {}).get("wall_s")
+        vals.append((name, max(0.0, raw), ib))
+        summary[name + "--serial"] = {"idle_raw": raw, "idle_clamped": max(0.0, raw), "interval_bound": ib, "wall_s": w,
+                                      "busy_s": stx.median(r["busy_cpu_s"] for r in runs), "runs": len(runs),
+                                      "tests": d["tests"]["n_distinct"], "flaky": d["tests"]["n_flaky"]}
+        print(f"| {name} | {len(runs)} | {w:.0f} | {stx.median(r['busy_cpu_s'] for r in runs):.0f} | "
+              f"{stx.median(r['busy_cpu_s'] / r['wall_s'] for r in runs):.2f} | {100 * raw:.0f}% | {pct(ib)} | "
+              f"{'x%.1f' % (w / par) if par else '-'} | {d['tests']['n_distinct']} |")
+    print(f"\n- serial variant: median idle share {pct(stx.median(v[1] for v in vals))}, median all-blocked {pct(stx.median(v[2] for v in vals))}")
+    # one value per repository: the serial variant where measured, else the project's own configuration
+    best = {n: (summary[n + "--serial"] if n + "--serial" in summary else s) for n, s in summary.items() if "--" not in n}
+    xs = sorted(s["idle_clamped"] for s in best.values())
+    print(f"- per repository, serial where measured else as configured ({len(xs)}): median idle share {pct(stx.median(xs))}, "
+          f"quartiles {pct(xs[len(xs)//4])} / {pct(xs[(3*len(xs))//4])}")
+    xs = sorted(s["interval_bound"] for s in best.values())
+    print(f"  all-blocked: median {pct(stx.median(xs))}, quartiles {pct(xs[len(xs)//4])} / {pct(xs[(3*len(xs))//4])}")
 
 flaky = []
 for name, d in res.items():
