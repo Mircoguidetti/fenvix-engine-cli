@@ -1,0 +1,39 @@
+{
+ "name": "outline",
+ "repo": "outline/outline",
+ "ref": "5e6cc0f191c8d4db857ab0c00f12a576a03d2f6e",
+ "status": "setup_failed",
+ "setup_s": 27,
+ "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
+ "config": {
+  "repo": "outline/outline",
+  "ref": "5e6cc0f191c8d4db857ab0c00f12a576a03d2f6e",
+  "app": "node",
+  "suite": "integration: vitest server projects (shard 1/3) on Postgres",
+  "services": "Postgres (runner's system service)",
+  "node": "24",
+  "runs": 6,
+  "parser": "junit"
+ },
+ "run_id": "43945303458",
+ "measured_at": "2026-11-16T20:01:53Z",
+ "baseline_cores": null,
+ "n_runs": 0,
+ "runs": [],
+ "idle": {
+  "median_idle_share_raw": null,
+  "median_idle_share_net": null,
+  "median_quiet_share": null,
+  "median_cores_mean": null,
+  "median_wall_s": null,
+  "median_busy_cpu_s": null
+ },
+ "tests": {
+  "n_distinct": 0,
+  "n_flaky": 0,
+  "n_consistent_fail": 0,
+  "flaky": [],
+  "consistent_fail_sample": []
+ },
+ "setup_log_tail": "localhost:5432 - accepting connections\nALTER ROLE\n\u001b[94m\u27a4\u001b[39m YN0000: \u00b7 Yarn 4.18.0\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u250c Resolution step\n::group::Resolution step\n::endgroup::\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2514 Completed in 0s 281ms\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u250c Post-resolution validation\n::group::Post-resolution validation\n\u001b[93m\u27a4\u001b[39m YN0060: \u2502 \u001b[38;5;173mkatex\u001b[39m is listed by your project with version \u001b[38;5;111m0.18.2\u001b[39m (\u001b[38;5;111mp5b1f2c\u001b[39m), which doesn't satisfy what \u001b[38;5;166m@benrbray/\u001b[39m\u001b[38;5;173mprosemirror-math\u001b[39m requests (\u001b[38;5;37m~0.13.0\u001b[39m).\n\u001b[93m\u27a4\u001b[39m YN0060: \u2502 \u001b[38;5;173mreact\u001b[39m is listed by your project with version \u001b[38;5;111m19.3.1\u001b[39m (\u001b[38;5;111mp0392ab\u001b[39m), which doesn't satisfy what \u001b[38;5;173moutline-icons\u001b[39m and other dependencies request (\u001b[91mbut they have non-overlapping ranges!\u001b[39m).\n\u001b[93m\u27a4\u001b[39m YN0002: \u2502 \u001b[38;5;173moutline\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mworkspace:.\u001b[39m doesn't provide \u001b[38;5;173msocket.io-adapter\u001b[39m (\u001b[38;5;111mpc4af4f\u001b[39m), requested by \u001b[38;5;166m@socket.io/\u001b[39m\u001b[38;5;173mredis-adapter\u001b[39m.\n\u001b[93m\u27a4\u001b[39m YN0086: \u2502 Some peer dependencies are incorrectly met by your project; run \u001b[38;5;111myarn explain peer-requirements <hash>\u001b[39m for details, where \u001b[38;5;111m<hash>\u001b[39m is the six-letter p-prefixed code.\n\u001b[93m\u27a4\u001b[39m YN0086: \u2502 Some peer dependencies are incorrectly met by dependencies; run \u001b[38;5;111myarn explain peer-requirements\u001b[39m for details.\n::endgroup::\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2514 Completed\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u250c Fetch step\n::group::Fetch step\n\u001b[94m\u27a4\u001b[39m YN0013: \u2502 \u001b[38;5;220m1695\u001b[39m packages were added to the project (\u001b[38;5;160m+ 832.98 MiB\u001b[39m).\n::endgroup::\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2514 Completed in 8s 784ms\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u250c Link step\n::group::Link step\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;166m@swc/\u001b[39m\u001b[38;5;173mcore\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:1.16.22 [ed920]\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173maws-crt\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:1.32.2\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173mcore-js\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:3.41.0\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173mcore-js\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:3.51.0\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173mesbuild\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:0.25.12\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173mmsgpackr-extract\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:3.0.3\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173mmsw\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:2.15.0 [ed920]\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[93m\u27a4\u001b[39m YN0004: \u2502 \u001b[38;5;173munix-dgram\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mnpm:2.0.7\u001b[39m lists build scripts, but all build scripts have been disabled.\n\u001b[94m\u27a4\u001b[39m YN0007: \u2502 \u001b[38;5;173moutline\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mworkspace:.\u001b[39m must be built because it never has been before or the last one failed\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2502 \u001b[38;5;173moutline\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mworkspace:.\u001b[39m \u001b[32mSTDOUT\u001b[39m patch-package 8.0.1\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2502 \u001b[38;5;173moutline\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mworkspace:.\u001b[39m \u001b[32mSTDOUT\u001b[39m Applying patches...\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2502 \u001b[38;5;173moutline\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mworkspace:.\u001b[39m \u001b[32mSTDOUT\u001b[39m @benrbray/prosemirror-math@0.2.2 \u2714\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2502 \u001b[38;5;173moutline\u001b[39m\u001b[38;5;111m@\u001b[39m\u001b[38;5;111mworkspace:.\u001b[39m \u001b[32mSTDOUT\u001b[39m y-prosemirror@1.3.7 \u2714\n::endgroup::\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2514 Completed in 11s 557ms\n\u001b[93m\u27a4\u001b[39m YN0000: \u00b7 Done with warnings in 20s 894ms\n\u001b[1m\u001b[38;2;140;35;50m\u2620 [MISSING_ENV_FILE] missing file (.env). fix: [https://github.com/dotenvx/dotenvx/issues/484]\u001b[39m\u001b[22m\n\n\u001b[4mSequelize CLI [Node: 24.22.2, CLI: 6.6.5, ORM: 6.37.8]\u001b[24m\n\nLoaded configuration file \"server/config/database.js\".\nUsing environment \"development\".\n\n\u001b[31mERROR:\u001b[39m SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string\n"
+}
