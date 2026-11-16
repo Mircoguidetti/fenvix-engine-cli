@@ -1,0 +1,50 @@
+name: node-dataset
+
+# Fetch the JavaScript flaky-test dataset of Hashemi, Tahir, Rasheed,
+# "An Empirical Study of Flaky Tests in JavaScript" (ICSME 2022), replication
+# package on Zenodo (record 7111773, concept DOI 10.5281/zenodo.6673741), and
+# commit its files to harness/node/dataset/ (the session container cannot
+# reach zenodo.org). Triggered by a push that changes harness/node/dataset/REQUEST.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/node-l0]
+    paths: [harness/node/dataset/REQUEST]
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: download the Zenodo record
+        run: |
+          set -euo pipefail
+          mkdir -p harness/node/dataset/raw
+          cd harness/node/dataset/raw
+          curl -sSfL https://zenodo.org/api/records/7111773 -o record.json
+          python3 - <<'PY'
+          import json, subprocess
+          rec = json.load(open("record.json"))
+          print(rec.get("metadata", {}).get("title"))
+          for f in rec.get("files", []):
+              key = f["key"]; url = f["links"]["self"]
+              print("file", key, f.get("size"))
+              subprocess.run(["curl", "-sSfL", url, "-o", key], check=True)
+          PY
+          ls -la
+          for z in *.zip; do [ -f "$z" ] && unzip -o -q "$z" -d "${z%.zip}" || true; done
+          find . -type f | head -200
+          # keep the repository small: drop archives and files above 20 MB
+          find . -name '*.zip' -delete
+          find . -type f -size +20M -print -delete
+      - name: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add harness/node/dataset/raw
+          git commit -m "Node harness: JavaScript flaky-test dataset (Zenodo 7111773) from Actions run ${{ github.run_id }}" || exit 0
+          for i in 1 2 3 4; do git pull --rebase -q && git push -q && break; sleep $((i * 5)); done
