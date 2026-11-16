@@ -38,14 +38,14 @@ What `--det` controls:
 | # | control | how |
 |---|---|---|
 | 1 | test order | collection order, re-imposed after other plugins (pytest-randomly & co. are switched off); `--det-seed=N` shuffles modules → classes → tests reproducibly (Rust SplitMix64). The executed order and its digest are written in the trace. |
-| 2 | seeds | `random` reseeded per test with `derive_seed(seed, nodeid)`; unseeded `Random()` and `numpy.random.default_rng()` get derived seeds; numpy's global state reseeded; `PYTHONHASHSEED` fixed by re-executing the interpreter (Linux: ASLR disabled in the same exec). |
-| 3 | virtual clock | `time.time/time_ns/monotonic/perf_counter(_ns)/clock_gettime/localtime/gmtime/ctime/strftime`, `datetime.now/utcnow/today`, `date.today` read a virtual clock: wall time starts at `--det-epoch` (2025-01-01Z) for every test, every read advances `--det-tick` ns, `time.sleep` advances without waiting; timed-out `Condition/Event/Queue` waits advance it by their timeout. |
+| 2 | seeds | `random` reseeded per test with `derive_seed(seed, nodeid)`; unseeded `Random()` and `numpy.random.default_rng()` get derived seeds; numpy's global state reseeded; `PYTHONHASHSEED` fixed by re-executing the interpreter (Linux: ASLR disabled in the same exec); bytecode precompiled under the fixed hash seed so set literals iterate identically in every run. |
+| 3 | virtual clock | `time.time/time_ns/monotonic/perf_counter(_ns)/clock_gettime/localtime/gmtime/ctime/strftime`, `datetime.now/utcnow/today`, `date.today` read a virtual clock: wall time starts at `--det-epoch` (2025-01-01Z) for every test, every read advances `--det-tick` ns (doubling after `--det-tick-adapt` consecutive reads with no other event, so time-calibrated loops such as pytest-benchmark terminate), `time.sleep` advances without waiting; timed-out `Condition/Event/Queue` waits advance it by their timeout. |
 | 4 | filesystem order | `os.listdir`, `os.scandir` (so `os.walk`, `shutil`), `glob.glob/iglob`, `Path.iterdir/glob/rglob` return sorted results. |
 | 5 | closed network | connections/DNS/UDP to non-local hosts raise `detpy.NetworkBlockedError` (or `socket.gaierror` for DNS) with an explicit message; loopback and `AF_UNIX` allowed; local HTTP proxies count as external. `--det-record` records per-test byte streams (plaintext above TLS) and later runs replay them. |
 | 6 | fingerprint | every interaction above (plus OS entropy reads, which are observed but not controlled) becomes an event `(thread, source, op, call site, value)`; the Rust core chains them with BLAKE3 and stores the trace. |
 
-Other options: `--det-disable=time,fs,...`, `--det-sleep=real`, `--det-urandom`
-(make `os.urandom`/`uuid4` deterministic — beyond Level 0), `--det-fresh-bytecode`,
+Other options: `--det-disable=time,fs,bytecode,...`, `--det-sleep=real`, `--det-urandom`
+(make `os.urandom`/`uuid4` deterministic — beyond Level 0), `--det-tick-adapt=N`,
 `--det-allow-host=H`, `--det-max-events=N`, `--det-keep-aslr`, `--det-no-reexec`,
 `--det-outcomes=PATH` (outcome map, also without `--det`). See `pytest --help`.
 
@@ -59,8 +59,9 @@ maturin develop && pytest tests   # plugin (runs pytest in subprocesses via pyte
 ## Harness
 
 ```bash
+python harness/select_flaky.py idoft/py-data.csv                    # flaky pool from IDoFT
 python harness/detpy_harness.py --set validate --runs 10            # 5 repositories
-python harness/detpy_harness.py --set all --limit 50 --runs 10 --jobs 3
+python harness/detpy_harness.py --set mixed --per-pool 25 --runs 10 --jobs 2   # 25 IDoFT + 25 popular
 ```
 
 See [docs/HARNESS.md](docs/HARNESS.md) for what is measured and the CSV columns.
