@@ -103,6 +103,7 @@ class VirtualClock:
                 self.elapsed += ns
 
     def start_test(self) -> None:
+        _EXTERNAL["started"] = False
         with self._lock:
             self.streak = 0
             self.tick_ns = self.base_tick_ns
@@ -217,7 +218,7 @@ def sleep(secs: float) -> None:
     _state.record("time", "time.sleep", str(ns))
     CLOCK.advance(ns)
     if (_state.STATE.config.sleep == "real" or _other_threads_alive() or _in_event_loop()
-            or _children_alive()):
+            or _EXTERNAL["started"] or _children_alive()):
         # Someone observes real time: another thread or a child process may need
         # this time to make progress ("wait until the server is up"), or an
         # asyncio loop (which keeps real time) is running here and its
@@ -226,6 +227,26 @@ def sleep(secs: float) -> None:
         real_sleep(secs)
     else:
         real_sleep(0)  # still yield the GIL / scheduler
+
+
+# Set when the running test starts another process (subprocess, fork, spawn):
+# from then on, until the test ends, sleeps also wait for real, because the
+# external work advances in real time even after it detached (daemons).
+_EXTERNAL = {"started": False}
+
+
+def _mark_external(real):
+    def wrapper(*args, **kwargs):
+        _EXTERNAL["started"] = True
+        return real(*args, **kwargs)
+
+    wrapper.__wrapped__ = real
+    for attr in ("__name__", "__qualname__", "__doc__"):
+        try:
+            setattr(wrapper, attr, getattr(real, attr))
+        except (AttributeError, TypeError):
+            pass
+    return wrapper
 
 
 def _children_alive() -> bool:
@@ -322,7 +343,6 @@ def clock_gettime(clk_id):
 # isinstance, subclasses, pickling and libraries such as freezegun keep working.
 _real_dt_now = real_datetime.__dict__["now"]
 _real_dt_utcnow = real_datetime.__dict__["utcnow"]
-_real_date_today = real_date.__dict__["today"]
 
 
 def _dt_now(cls, tz=None):
@@ -340,9 +360,9 @@ def _dt_utcnow(cls):
     return cls.fromtimestamp(_wall_secs("datetime.utcnow"), _dt.timezone.utc).replace(tzinfo=None)
 
 
-def _date_today(cls):
-    # Also serves datetime.today(), which C inherits from date.
-    return cls.fromtimestamp(_wall_secs("date.today"))
+# date.today() / datetime.today() are not replaced: CPython's implementation
+# calls time.time() through the time module, i.e. the virtual time() below (or
+# whatever a library such as freezegun patched in), with no extra Python frame.
 
 
 # Wait primitives -----------------------------------------------------------------
@@ -406,8 +426,13 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
         replacements[id(real)] = (real, fake)
     patcher.set_type_attr(real_datetime, "now", classmethod(_dt_now))
     patcher.set_type_attr(real_datetime, "utcnow", classmethod(_dt_utcnow))
-    patcher.set_type_attr(real_date, "today", classmethod(_date_today))
     patcher.set(threading.Condition, "wait", _condition_wait)
+    import subprocess
+
+    patcher.set(subprocess.Popen, "__init__", _mark_external(subprocess.Popen.__init__))
+    for name in ("fork", "forkpty", "posix_spawn", "posix_spawnp", "spawnv", "spawnve", "system"):
+        if hasattr(os, name):
+            patcher.set(os, name, _mark_external(getattr(os, name)))
     import selectors
 
     for name in ("SelectSelector", "PollSelector", "EpollSelector", "DevpollSelector", "KqueueSelector"):

@@ -58,3 +58,28 @@ def test_deselection_is_respected(pytester, run_det):
     r, t = run_det("-k", "test_k1")
     r.assert_outcomes(passed=3)
     assert executed(t) == [f"test_m{m}.py::TestK::test_k1" for m in range(3)]
+
+
+def test_conflicting_plugins_are_blocked_before_loading(pytester, run_det):
+    """Regression (faker + pytest-randomly, 3 tests): unregistering pytest-randomly
+    after it loaded left its autouse fixtures active (pytest replays the historic
+    plugin_registered hook for the fixture manager)."""
+    pytester.makepyfile(
+        fake_randomly="""
+        import pytest
+        @pytest.fixture(autouse=True)
+        def randomly_autouse_fixture():
+            raise RuntimeError("pytest-randomly fixture still active under --det")
+        """,
+        test_x="def test_x():\n    pass\n",
+    )
+    # Installed like a real plugin: an entry point in the pytest11 group.
+    dist = pytester.path / "fake_randomly-1.0.dist-info"
+    dist.mkdir()
+    (dist / "METADATA").write_text("Metadata-Version: 2.1\nName: fake-randomly\nVersion: 1.0\n")
+    (dist / "entry_points.txt").write_text("[pytest11]\nrandomly = fake_randomly\n")
+    normal = pytester.runpytest_subprocess("-p", "no:cacheprovider")
+    normal.assert_outcomes(errors=1)  # the stand-in is active without --det
+    result, (header, _, _) = run_det()
+    result.assert_outcomes(passed=1)
+    assert "randomly" in header["meta"]["disabled_plugins"]
