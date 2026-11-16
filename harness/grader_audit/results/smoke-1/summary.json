@@ -1,0 +1,231 @@
+{
+ "broken": [
+  {
+   "causes": [
+    "time"
+   ],
+   "exceptions": {
+    "lib/matplotlib/tests/test_axes.py::test_autoscale_tiny_range[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axhspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_axvspan_epoch[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_basic_annotate[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_single_point[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ],
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]": [
+     "TypeError",
+     "call",
+     "TypeError: perf_counter() takes 0 positional arguments but 1 was given",
+     "/opt/miniconda3/envs/testbed/lib/python3.11/site-packages/fontTools/misc/loggingTools.py:304"
+    ]
+   },
+   "failing": [
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_vertical[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_horizontal[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_label_loc_rc[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_formatter_ticker[pdf]",
+    "lib/matplotlib/tests/test_axes.py::test_twin_axis_locators_formatters[pdf]"
+   ],
+   "instance_id": "matplotlib__matplotlib-23314",
+   "pytest": "8.3.4"
+  }
+ ],
+ "broken_by_det": 1,
+ "discarded": [
+  {
+   "instance_id": "psf__requests-2317",
+   "reason": "reference reward 0 in all 3 plain runs (environment does not reproduce the gold result)"
+  },
+  {
+   "instance_id": "pytest-dev__pytest-5262",
+   "reason": "reference reward 0 in all 3 plain runs (environment does not reproduce the gold result)"
+  }
+ ],
+ "discarded_runtime": 2,
+ "discarded_runtime_reasons": {
+  "reference reward 0 in all 3 plain runs (environment does not reproduce the gold result)": 2
+ },
+ "hidden": [
+  {
+   "configs": [
+    "det-seed-3"
+   ],
+   "divergences": {
+    "tests/test_self.py::TestRunTC::test_regression_recursive": "event #3: [random] random.state @ <end> = be30d969267154f2c7524682e506dee1  <>  [fs] os.scandir @ <site>/astroid/modutils.py:436 = tests/regrtest_data/directory/subdirectory/subsubdirectory|1|25071213d5bfccf0325e95f4e1fd735b",
+    "tests/test_self.py::TestRunTC::test_regression_recursive_current_dir": "event #2: random.state @ <end> returned different values: \"2e5702d5b9930ababb38ecfcc634e568\" vs \"a22bc59f112e5ce6243dde69cf988bb8\""
+   },
+   "exceptions": {
+    "tests/test_self.py::TestRunTC::test_regression_recursive": [
+     "AssertionError",
+     "call",
+     "AssertionError: assert 'No such file or directory' in ''",
+     "/testbed/tests/test_self.py:170"
+    ]
+   },
+   "failing": [
+    "tests/test_self.py::TestRunTC::test_regression_recursive"
+   ],
+   "instance_id": "pylint-dev__pylint-7080",
+   "kinds": [
+    "seed"
+   ],
+   "no_order_fails": false,
+   "order_only_fails": true,
+   "reasons": {
+    "tests/test_self.py::TestRunTC::test_regression_recursive": "fs",
+    "tests/test_self.py::TestRunTC::test_regression_recursive_current_dir": "random"
+   },
+   "replay_reproduces": true
+  },
+  {
+   "configs": [
+    "det-seed-2",
+    "det-seed-3"
+   ],
+   "divergences": {
+    "tests/test_ext_viewcode.py::test_viewcode_epub_default": "event #505: [fs] os.listdir @ sphinx/theming.py:221 = sphinx/themes|13|4d57e2d8404dbb3c3845954eef371b5c  <>  [time] time.time @ sphinx/util/logging.py:126 = 7942000"
+   },
+   "exceptions": {
+    "tests/test_ext_viewcode.py::test_viewcode_epub_default": [
+     "AssertionError",
+     "call",
+     "AssertionError: assert not True",
+     "/testbed/tests/test_ext_viewcode.py:56"
+    ]
+   },
+   "failing": [
+    "tests/test_ext_viewcode.py::test_viewcode_epub_default"
+   ],
+   "instance_id": "sphinx-doc__sphinx-8721",
+   "kinds": [
+    "seed"
+   ],
+   "no_order_fails": false,
+   "order_only_fails": true,
+   "reasons": {
+    "tests/test_ext_viewcode.py::test_viewcode_epub_default": "fs"
+   },
+   "replay_reproduces": true
+  }
+ ],
+ "hidden_instability": 2,
+ "hidden_share_of_measured": 0.2857,
+ "hidden_share_of_plain_stable": 0.2857,
+ "measured": 7,
+ "per_repo": {
+  "astropy/astropy": {
+   "broken": 0,
+   "hidden": 0,
+   "measured": 1,
+   "results": 1,
+   "visible": 0
+  },
+  "matplotlib/matplotlib": {
+   "broken": 1,
+   "hidden": 0,
+   "measured": 1,
+   "results": 1,
+   "visible": 0
+  },
+  "mwaskom/seaborn": {
+   "broken": 0,
+   "hidden": 0,
+   "measured": 1,
+   "results": 1,
+   "visible": 0
+  },
+  "psf/requests": {
+   "discarded": 1,
+   "results": 1
+  },
+  "pydata/xarray": {
+   "broken": 0,
+   "hidden": 0,
+   "measured": 1,
+   "results": 1,
+   "visible": 0
+  },
+  "pylint-dev/pylint": {
+   "broken": 0,
+   "hidden": 1,
+   "measured": 1,
+   "results": 1,
+   "visible": 0
+  },
+  "pytest-dev/pytest": {
+   "discarded": 1,
+   "results": 1
+  },
+  "sphinx-doc/sphinx": {
+   "broken": 0,
+   "hidden": 1,
+   "measured": 1,
+   "results": 1,
+   "visible": 0
+  },
+  "sympy/sympy": {
+   "broken": 0,
+   "hidden": 0,
+   "measured": 1,
+   "results": 1,
+   "visible": 0
+  }
+ },
+ "plain_stable_pass": 7,
+ "planned": 9,
+ "results": 9,
+ "run_id": "smoke-1",
+ "seeds_run": {
+  "3": 7
+ },
+ "visible": [],
+ "visible_instability_baseline": 0,
+ "visible_instability_official": 0
+}
