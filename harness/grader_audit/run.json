@@ -1,0 +1,17 @@
+{
+ "run_id": "smoke-1",
+ "tasks": [
+  "astropy__astropy-12907",
+  "psf__requests-2317",
+  "sympy__sympy-20590",
+  "pytest-dev__pytest-5262",
+  "sphinx-doc__sphinx-8721",
+  "pydata__xarray-4094",
+  "matplotlib__matplotlib-23314",
+  "pylint-dev__pylint-7080",
+  "mwaskom__seaborn-3069",
+  "scikit-learn__scikit-learn-25500"
+ ],
+ "batches": 10,
+ "config": {"seeds": 3, "task_budget_s": 1800, "job_budget_s": 7200}
+}

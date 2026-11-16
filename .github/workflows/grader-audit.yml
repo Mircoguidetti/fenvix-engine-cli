@@ -1,0 +1,96 @@
+name: grader-audit
+
+# Reward-certification audit of SWE-bench Verified (harness/grader_audit/).
+# Triggered by a push that changes harness/grader_audit/run.json.
+#   build     -> detpy wheel from engine commit 0aef0ae (manylinux2014, abi3: runs in the SWE-bench images)
+#   plan      -> task list and batches from run.json (dataset from Hugging Face)
+#   audit     -> one job per batch: per task, SWE-bench's own evaluation image, plain reruns and --det configurations;
+#                each task result is committed to harness/grader_audit/results/<run_id>/
+#   aggregate -> results/<run_id>/summary.json
+
+on:
+  push:
+    branches: [claude/loving-maxwell-58mv2w]
+    paths: [harness/grader_audit/run.json]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: grader-audit
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  ENGINE_SHA: 0aef0aeee3bfe6a3adfd921712bfec5d625009bf
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: "${{ env.ENGINE_SHA }}"}
+      - uses: PyO3/maturin-action@v1
+        with:
+          command: build
+          args: --release -o dist
+          manylinux: "2014"
+      - uses: actions/upload-artifact@v4
+        with: {name: wheel, path: dist/*.whl}
+
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.p.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install -q "swebench==4.0.4"
+      - id: p
+        run: |
+          git config user.name "grader-audit-bot"
+          git config user.email "grader-audit-bot@users.noreply.github.com"
+          python harness/grader_audit/audit.py plan --write
+
+  audit:
+    needs: [build, plan]
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        batch: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          docker system prune -af || true
+          df -h /
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - uses: actions/download-artifact@v4
+        with: {name: wheel, path: wheel}
+      - run: |
+          pip install -q "swebench==4.0.4"
+          pip install -q wheel/*.whl
+      - name: Audit batch
+        run: |
+          git config user.name "grader-audit-bot"
+          git config user.email "grader-audit-bot@users.noreply.github.com"
+          python harness/grader_audit/audit.py batch --index ${{ matrix.batch }} --wheel "$(ls wheel/*.whl | head -1)"
+
+  aggregate:
+    needs: [audit]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: |
+          git config user.name "grader-audit-bot"
+          git config user.email "grader-audit-bot@users.noreply.github.com"
+          python harness/grader_audit/audit.py aggregate --commit
