@@ -15,59 +15,60 @@
       "The FlaPy dataset (Gruber et al.) is published on Zenodo, which the development environment cannot reach (HTTP 403 from the network proxy): the 'flaky' pool uses the Python section of IDoFT, each project pinned at the commit where its flaky tests were detected."
     ],
     "order": [
-      "idoft-flask-multi-redis",
       "idoft-crom",
-      "idoft-krllint",
+      "idoft-cloudnetpy",
+      "idoft-flask-multi-redis",
       "idoft-freezegun",
+      "idoft-krllint",
       "idoft-django-beam"
     ]
   },
   "totals": {
     "all": {
-      "tests": 325,
-      "unstable_baseline": 76,
+      "tests": 764,
+      "unstable_baseline": 104,
       "unstable_det": 0,
-      "became_stable": 76,
-      "outcome_changed_by_det": 0,
-      "covered": 279,
-      "not_covered": 46,
-      "reproduced": 67,
+      "became_stable": 104,
+      "outcome_changed_by_det": 1,
+      "covered": 717,
+      "not_covered": 47,
+      "reproduced": 95,
       "never_fails_under_det": 8,
       "always_fails_under_det": 1,
       "fails_sometimes_under_det": 0,
-      "known_flaky": 99,
-      "known_present": 99,
-      "known_unstable_baseline": 71,
-      "known_reproduced": 66,
+      "known_flaky": 151,
+      "known_present": 151,
+      "known_unstable_baseline": 99,
+      "known_reproduced": 94,
       "broken_by_det": 0,
       "broken_always": 0
     },
     "flaky": {
-      "tests": 325,
-      "unstable_baseline": 76,
+      "tests": 764,
+      "unstable_baseline": 104,
       "unstable_det": 0,
-      "became_stable": 76,
-      "outcome_changed_by_det": 0,
-      "covered": 279,
-      "not_covered": 46,
-      "reproduced": 67,
+      "became_stable": 104,
+      "outcome_changed_by_det": 1,
+      "covered": 717,
+      "not_covered": 47,
+      "reproduced": 95,
       "never_fails_under_det": 8,
       "always_fails_under_det": 1,
       "fails_sometimes_under_det": 0,
-      "known_flaky": 99,
-      "known_present": 99,
-      "known_unstable_baseline": 71,
-      "known_reproduced": 66,
+      "known_flaky": 151,
+      "known_present": 151,
+      "known_unstable_baseline": 99,
+      "known_reproduced": 94,
       "broken_by_det": 0,
       "broken_always": 0
     },
     "popular": {}
   },
   "reasons": {
-    "entropy": 46
+    "entropy": 47
   },
   "pass_fail_reasons": {
-    "random": 43,
+    "random": 71,
     "entropy": 20,
     "fs": 1,
     "time": 3
@@ -75,6 +76,176 @@
   "broken_causes": {},
   "timings": [],
   "repos": [
+    {
+      "name": "idoft-crom",
+      "kind": "flaky",
+      "status": "ok",
+      "url": "https://github.com/thegetty/crom",
+      "commit": "98bb6be4e32b",
+      "commit_date": "2020-07-31",
+      "python": "3.9",
+      "install": "-e . -r requirements.txt",
+      "pytest_args": [],
+      "xdist": false,
+      "runs": 10,
+      "baseline_mean_s": 0.5528026501000568,
+      "det_mean_s": 1.2204914083993572,
+      "slowdown_pct": 120.7824814476648,
+      "precompile_first_s": 0.763,
+      "precompile_rest_median_s": 0.469,
+      "tests": 84,
+      "unstable_baseline": 22,
+      "unstable_det": 0,
+      "became_stable": 22,
+      "outcome_changed_by_det": 0,
+      "covered": 63,
+      "not_covered": 21,
+      "reproduced": 17,
+      "never_fails_under_det": 5,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [
+        6,
+        9,
+        0,
+        9,
+        9,
+        9,
+        1,
+        0,
+        1,
+        5,
+        5,
+        5,
+        6,
+        5,
+        5,
+        5,
+        5
+      ],
+      "seeds_explored": 20,
+      "exploration_runs": 56,
+      "exploration_budget_hit": false,
+      "reasons": {
+        "entropy": 21
+      },
+      "pass_fail_reasons": {
+        "random": 7,
+        "entropy": 9,
+        "fs": 1
+      },
+      "broken_by_det": 0,
+      "broken_always": 0,
+      "broken_causes": {},
+      "broken_examples": {},
+      "ablation_runs": 0,
+      "known_flaky": 38,
+      "known_present": 38,
+      "known_unstable_baseline": 22,
+      "known_reproduced": 17,
+      "known_categories": {
+        "OD-Vic": 38
+      },
+      "examples": {
+        "reproduced": [
+          "tests/test_model.py::TestAutoIdentifiers::test_no_ident (seed 6): event #0: random.state @ <end> returned different values: \"075f80dd7e0d7c1bb4a49e1cc1b1c929\" vs \"332fdd49aa859c4e2d5572375b4496d5\"",
+          "tests/test_model.py::TestBaseResource::test_allows_multiple (seed 9): event #0: [entropy] os.urandom @ cromulent/model.py:279 = 16:eaea579dbcca883623e010e633ec8582  <>  [random] random.state @ <end> = f551fa9f9b5ceab5a3e2891c92bbf",
+          "tests/test_model.py::TestBaseResource::test_check_reference (seed fixed): event #0: random.state @ <end> returned different values: \"09776900dd766c779c47b9bdcb51513e\" vs \"04583cdb6cb4146840d331b4e458ce71\""
+        ]
+      }
+    },
+    {
+      "name": "idoft-cloudnetpy",
+      "kind": "flaky",
+      "status": "ok",
+      "url": "https://github.com/tukiains/cloudnetpy",
+      "commit": "26f2607b8906",
+      "commit_date": "2020-01-14",
+      "python": "3.9",
+      "install": "-e . -r requirements.txt",
+      "pytest_args": [],
+      "xdist": false,
+      "runs": 10,
+      "baseline_mean_s": 9.374027720500271,
+      "det_mean_s": 10.451463903799777,
+      "slowdown_pct": 11.49384464634382,
+      "precompile_first_s": 4.037,
+      "precompile_rest_median_s": 1.242,
+      "tests": 439,
+      "unstable_baseline": 28,
+      "unstable_det": 0,
+      "became_stable": 28,
+      "outcome_changed_by_det": 1,
+      "covered": 438,
+      "not_covered": 1,
+      "reproduced": 28,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [
+        4,
+        5,
+        1,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        1,
+        1,
+        3,
+        2,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        1,
+        1,
+        1,
+        2,
+        1,
+        2,
+        2
+      ],
+      "seeds_explored": 5,
+      "exploration_runs": 50,
+      "exploration_budget_hit": false,
+      "reasons": {
+        "entropy": 1
+      },
+      "pass_fail_reasons": {
+        "random": 28
+      },
+      "broken_by_det": 0,
+      "broken_always": 0,
+      "broken_causes": {},
+      "broken_examples": {},
+      "ablation_runs": 0,
+      "known_flaky": 52,
+      "known_present": 52,
+      "known_unstable_baseline": 28,
+      "known_reproduced": 28,
+      "known_categories": {
+        "OD-Vic": 48,
+        "OD-Brit": 3,
+        "NIO": 1
+      },
+      "examples": {
+        "reproduced": [
+          "tests/unit/test_classify.py::TestFindRain::test_1 (seed 4): event #0: random.state @ <end> returned different values: \"731f8f4ab16f0339146b7918fe167799\" vs \"2b5949b057e54df418a949dd507097b7\"",
+          "tests/unit/test_classify.py::TestFindRain::test_3 (seed 5): event #0: random.state @ <end> returned different values: \"1a773f4c853df7bb9c5d4db6c840e77b\" vs \"3bd966476b60af7a38f5f466614e9f0f\"",
+          "tests/unit/test_drizzle.py::test_calc_beta_z_ratio (seed 1): event #0: random.state @ <end> returned different values: \"1935621bf6fb549b38ce8dcf4cef970c\" vs \"3ff61bd4e1d08f06d7b80ab9bb70ebf0\""
+        ],
+        "changed:failed->passed": [
+          "tests/unit/test_drizzle.py::test_init_variables[mu]"
+        ]
+      }
+    },
     {
       "name": "idoft-flask-multi-redis",
       "kind": "flaky",
@@ -162,142 +333,6 @@
       }
     },
     {
-      "name": "idoft-crom",
-      "kind": "flaky",
-      "status": "ok",
-      "url": "https://github.com/thegetty/crom",
-      "commit": "98bb6be4e32b",
-      "commit_date": "2020-07-31",
-      "python": "3.9",
-      "install": "-e . -r requirements.txt",
-      "pytest_args": [],
-      "xdist": false,
-      "runs": 10,
-      "baseline_mean_s": 0.5528026501000568,
-      "det_mean_s": 1.2204914083993572,
-      "slowdown_pct": 120.7824814476648,
-      "precompile_first_s": 0.763,
-      "precompile_rest_median_s": 0.469,
-      "tests": 84,
-      "unstable_baseline": 22,
-      "unstable_det": 0,
-      "became_stable": 22,
-      "outcome_changed_by_det": 0,
-      "covered": 63,
-      "not_covered": 21,
-      "reproduced": 17,
-      "never_fails_under_det": 5,
-      "always_fails_under_det": 0,
-      "fails_sometimes_under_det": 0,
-      "seeds_needed": [
-        6,
-        9,
-        0,
-        9,
-        9,
-        9,
-        1,
-        0,
-        1,
-        5,
-        5,
-        5,
-        6,
-        5,
-        5,
-        5,
-        5
-      ],
-      "seeds_explored": 20,
-      "exploration_runs": 56,
-      "exploration_budget_hit": false,
-      "reasons": {
-        "entropy": 21
-      },
-      "pass_fail_reasons": {
-        "random": 7,
-        "entropy": 9,
-        "fs": 1
-      },
-      "broken_by_det": 0,
-      "broken_always": 0,
-      "broken_causes": {},
-      "broken_examples": {},
-      "ablation_runs": 0,
-      "known_flaky": 38,
-      "known_present": 38,
-      "known_unstable_baseline": 22,
-      "known_reproduced": 17,
-      "known_categories": {
-        "OD-Vic": 38
-      },
-      "examples": {
-        "reproduced": [
-          "tests/test_model.py::TestAutoIdentifiers::test_no_ident (seed 6): event #0: random.state @ <end> returned different values: \"075f80dd7e0d7c1bb4a49e1cc1b1c929\" vs \"332fdd49aa859c4e2d5572375b4496d5\"",
-          "tests/test_model.py::TestBaseResource::test_allows_multiple (seed 9): event #0: [entropy] os.urandom @ cromulent/model.py:279 = 16:eaea579dbcca883623e010e633ec8582  <>  [random] random.state @ <end> = f551fa9f9b5ceab5a3e2891c92bbf",
-          "tests/test_model.py::TestBaseResource::test_check_reference (seed fixed): event #0: random.state @ <end> returned different values: \"09776900dd766c779c47b9bdcb51513e\" vs \"04583cdb6cb4146840d331b4e458ce71\""
-        ]
-      }
-    },
-    {
-      "name": "idoft-krllint",
-      "kind": "flaky",
-      "status": "ok",
-      "url": "https://github.com/d4nuu8/krllint",
-      "commit": "2f9376cdae14",
-      "commit_date": "2019-03-02",
-      "python": "3.9",
-      "install": "-e . -r dev-requirements.txt -r requirements.txt",
-      "pytest_args": [],
-      "xdist": false,
-      "runs": 10,
-      "baseline_mean_s": 0.27242025840023415,
-      "det_mean_s": 1.125833092100038,
-      "slowdown_pct": 313.2706938578655,
-      "precompile_first_s": 1.168,
-      "precompile_rest_median_s": 0.585,
-      "tests": 16,
-      "unstable_baseline": 2,
-      "unstable_det": 0,
-      "became_stable": 2,
-      "outcome_changed_by_det": 0,
-      "covered": 16,
-      "not_covered": 0,
-      "reproduced": 2,
-      "never_fails_under_det": 0,
-      "always_fails_under_det": 0,
-      "fails_sometimes_under_det": 0,
-      "seeds_needed": [
-        20,
-        18
-      ],
-      "seeds_explored": 20,
-      "exploration_runs": 38,
-      "exploration_budget_hit": false,
-      "reasons": {},
-      "pass_fail_reasons": {
-        "random": 2
-      },
-      "broken_by_det": 0,
-      "broken_always": 0,
-      "broken_causes": {},
-      "broken_examples": {},
-      "ablation_runs": 0,
-      "known_flaky": 9,
-      "known_present": 9,
-      "known_unstable_baseline": 2,
-      "known_reproduced": 2,
-      "known_categories": {
-        "OD-Vic": 9
-      },
-      "examples": {
-        "reproduced": [
-          "tests/test_extraneous_whitespace.py::ExtraneousWhiteSpaceTestCase::test_rule_without_fix (seed 20): event #0: random.state @ <end> returned different values: \"43808a5a1de749f14f0b612832178aa6\" vs \"9af2410abc887ff69e002f7aed8f457b\"",
-          "tests/test_trailing_white_space_rule.py::TrailingWhiteSpaceTestCase::test_rule_without_fix (seed 18): event #0: random.state @ <end> returned different values: \"4220c41585bbaa476abde0a57e085ff4\" vs \"974868580687505dbfe07df1b484142f\""
-        ]
-      }
-    },
-    {
       "name": "idoft-freezegun",
       "kind": "flaky",
       "status": "ok",
@@ -363,6 +398,64 @@
           "tests/test_class_import.py::test_can_ignore_email_module (seed 10): event #0: [time] datetime.now @ <site>/dateutil/parser/_parser.py:637 = 1000  <>  [time] time.time @ freezegun/api.py:186 = 1000",
           "tests/test_class_import.py::test_fake_uses_real_when_ignored (seed 10): event #0: [time] time.time @ tests/test_class_import.py:85 = 1000  <>  [time] time.time @ freezegun/api.py:186 = 1000",
           "tests/test_class_import.py::test_import_after_start (seed 2): event #1: random.state @ <end> returned different values: \"a710d13fb7e46e56ea84c2f658407add\" vs \"1e559fe66da9d0fc53cb4ee068c307b6\""
+        ]
+      }
+    },
+    {
+      "name": "idoft-krllint",
+      "kind": "flaky",
+      "status": "ok",
+      "url": "https://github.com/d4nuu8/krllint",
+      "commit": "2f9376cdae14",
+      "commit_date": "2019-03-02",
+      "python": "3.9",
+      "install": "-e . -r dev-requirements.txt -r requirements.txt",
+      "pytest_args": [],
+      "xdist": false,
+      "runs": 10,
+      "baseline_mean_s": 0.27242025840023415,
+      "det_mean_s": 1.125833092100038,
+      "slowdown_pct": 313.2706938578655,
+      "precompile_first_s": 1.168,
+      "precompile_rest_median_s": 0.585,
+      "tests": 16,
+      "unstable_baseline": 2,
+      "unstable_det": 0,
+      "became_stable": 2,
+      "outcome_changed_by_det": 0,
+      "covered": 16,
+      "not_covered": 0,
+      "reproduced": 2,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [
+        20,
+        18
+      ],
+      "seeds_explored": 20,
+      "exploration_runs": 38,
+      "exploration_budget_hit": false,
+      "reasons": {},
+      "pass_fail_reasons": {
+        "random": 2
+      },
+      "broken_by_det": 0,
+      "broken_always": 0,
+      "broken_causes": {},
+      "broken_examples": {},
+      "ablation_runs": 0,
+      "known_flaky": 9,
+      "known_present": 9,
+      "known_unstable_baseline": 2,
+      "known_reproduced": 2,
+      "known_categories": {
+        "OD-Vic": 9
+      },
+      "examples": {
+        "reproduced": [
+          "tests/test_extraneous_whitespace.py::ExtraneousWhiteSpaceTestCase::test_rule_without_fix (seed 20): event #0: random.state @ <end> returned different values: \"43808a5a1de749f14f0b612832178aa6\" vs \"9af2410abc887ff69e002f7aed8f457b\"",
+          "tests/test_trailing_white_space_rule.py::TrailingWhiteSpaceTestCase::test_rule_without_fix (seed 18): event #0: random.state @ <end> returned different values: \"4220c41585bbaa476abde0a57e085ff4\" vs \"974868580687505dbfe07df1b484142f\""
         ]
       }
     },
