@@ -40,12 +40,8 @@ function setRealmError(E) {
 
 const FRAME = /^\s*at (?:.*? \()?(.+?):(\d+):\d+\)?$/;
 
-/**
- * Site of the caller of the patched API: `path:line` relative to the root
- * (source mapped when the realm maps stacks), or null when the event comes
- * from runner infrastructure.
- */
-function resolve() {
+/** Source-mapped site for a stack, from the realm's formatted stack (slow path). */
+function resolveFormatted() {
   const E = realmError || Error;
   const prevLimit = E.stackTraceLimit;
   E.stackTraceLimit = 30;
@@ -70,7 +66,68 @@ function resolve() {
     if (INFRA.test(f)) return null;
     return `${normPath(f)}:${m[2]}`;
   }
-  return '<node>'; // only Node internals on the stack (async continuation of a core module)
+  return '<node>';
+}
+
+const structured = (_e, cs) => cs;
+const CACHE = new Map(); // raw "file:line:column" of the first relevant frame -> site (or null)
+const CACHE_MAX = 200000;
+
+function rawFile(cs) {
+  let f = cs.getFileName() || '';
+  if (f.startsWith('file://')) {
+    try { f = require('node:url').fileURLToPath(f); } catch { /* keep */ }
+  }
+  const q = f.indexOf('?');
+  return q >= 0 ? f.slice(0, q) : f;
+}
+
+/**
+ * Site of the caller of the patched API: `path:line` relative to the root,
+ * source mapped when the realm maps stacks (Vitest, Jest), or null when the
+ * event comes from runner infrastructure. One structured stack capture per
+ * call; the source-mapped formatting runs once per distinct raw position.
+ */
+function resolve() {
+  // undefined = no decision within the captured frames; null = infrastructure.
+  let site = resolveDepth(8);
+  if (site === undefined) site = resolveDepth(30);
+  return site === undefined ? '<node>' : site;
+}
+
+/** undefined when no decision within `depth` frames. */
+function resolveDepth(depth) {
+  // Raw positions through the host Error (its prepareStackTrace hook is honoured
+  // whatever realm the frames belong to); source mapping on cache misses only.
+  const E = Error;
+  const prevPrepare = E.prepareStackTrace;
+  const prevLimit = E.stackTraceLimit;
+  E.prepareStackTrace = structured;
+  E.stackTraceLimit = depth;
+  const holder = {};
+  try {
+    E.captureStackTrace(holder, resolveDepth);
+    // eslint-disable-next-line no-unused-expressions
+    holder.stack;
+  } finally {
+    E.prepareStackTrace = prevPrepare;
+    E.stackTraceLimit = prevLimit;
+  }
+  const frames = holder.stack;
+  if (!Array.isArray(frames)) return resolveFormatted();
+  for (const cs of frames) {
+    const f = rawFile(cs);
+    if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || !f.includes('/')) continue;
+    if (INFRA.test(f)) return null;
+    const key = `${f}:${cs.getLineNumber()}:${cs.getColumnNumber()}`;
+    let site = CACHE.get(key);
+    if (site === undefined) {
+      site = resolveFormatted();
+      if (CACHE.size < CACHE_MAX) CACHE.set(key, site);
+    }
+    return site;
+  }
+  return frames.length < depth ? '<node>' : undefined;
 }
 
 module.exports = { resolve, normPath, setRoot, setRealmError, SHELL_DIR };
