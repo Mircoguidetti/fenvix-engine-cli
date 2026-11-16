@@ -1,0 +1,61 @@
+{
+  "name": "cachetools",
+  "status": "ok",
+  "url": "https://github.com/tkem/cachetools",
+  "commit": "1fd6e4a1a3fd",
+  "install": "-e .",
+  "pytest_args": [],
+  "runs": 10,
+  "normal_mean_s": 0.5733489889000793,
+  "normal_stdev_s": 0.033483574570180974,
+  "det_mean_s": 0.8215239813999687,
+  "det_stdev_s": 0.0390560972563631,
+  "slowdown_pct": 43.285153947160836,
+  "timeouts": 0,
+  "normal_exit_codes": [
+    0
+  ],
+  "det_exit_codes": [
+    0
+  ],
+  "tests": 416,
+  "unstable_normal": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "became_unstable": 0,
+  "outcome_changed_by_det": 0,
+  "covered": 416,
+  "not_covered": 0,
+  "reasons": {},
+  "examples": {},
+  "det_header": {
+    "adjustments": [],
+    "aslr_disabled": true,
+    "controls": [
+      "fs",
+      "hashseed",
+      "net",
+      "order",
+      "seeds",
+      "time"
+    ],
+    "detpy": "0.1.0",
+    "disabled_plugins": [],
+    "epoch_ns": 1735689600000000000,
+    "fresh_bytecode": false,
+    "hashseed": "0",
+    "implementation": "CPython",
+    "network": "block",
+    "order_digest": "abe0b2231c197b56431b10245eb2b2d6",
+    "platform": "linux",
+    "pytest": "9.2.0",
+    "python": "3.13.18",
+    "rebound_references": 0,
+    "reexec": "ok",
+    "seed": 0,
+    "shuffle": false,
+    "sleep": "virtual",
+    "tick_ns": 1000,
+    "urandom_controlled": false
+  }
+}

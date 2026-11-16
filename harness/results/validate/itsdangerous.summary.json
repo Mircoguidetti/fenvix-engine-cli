@@ -1,0 +1,61 @@
+{
+  "name": "itsdangerous",
+  "status": "ok",
+  "url": "https://github.com/pallets/itsdangerous",
+  "commit": "672971d66a2e",
+  "install": "-e . --group dev --group tests",
+  "pytest_args": [],
+  "runs": 10,
+  "normal_mean_s": 0.8517897891000757,
+  "normal_stdev_s": 0.06104725235699412,
+  "det_mean_s": 1.030859099999907,
+  "det_stdev_s": 0.04191599960194044,
+  "slowdown_pct": 21.022711611631273,
+  "timeouts": 0,
+  "normal_exit_codes": [
+    0
+  ],
+  "det_exit_codes": [
+    0
+  ],
+  "tests": 297,
+  "unstable_normal": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "became_unstable": 0,
+  "outcome_changed_by_det": 0,
+  "covered": 297,
+  "not_covered": 0,
+  "reasons": {},
+  "examples": {},
+  "det_header": {
+    "adjustments": [],
+    "aslr_disabled": true,
+    "controls": [
+      "fs",
+      "hashseed",
+      "net",
+      "order",
+      "seeds",
+      "time"
+    ],
+    "detpy": "0.1.0",
+    "disabled_plugins": [],
+    "epoch_ns": 1735689600000000000,
+    "fresh_bytecode": false,
+    "hashseed": "0",
+    "implementation": "CPython",
+    "network": "block",
+    "order_digest": "8f639a1b804c4b1692dff07b934883f7",
+    "platform": "linux",
+    "pytest": "9.2.0",
+    "python": "3.13.18",
+    "rebound_references": 0,
+    "reexec": "ok",
+    "seed": 0,
+    "shuffle": false,
+    "sleep": "virtual",
+    "tick_ns": 1000,
+    "urandom_controlled": false
+  }
+}
