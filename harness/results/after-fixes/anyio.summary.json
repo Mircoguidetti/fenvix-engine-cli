@@ -1,0 +1,80 @@
+{
+  "name": "anyio",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/agronholm/anyio",
+  "commit": "9df02f0b8362",
+  "commit_date": "2026-11-16",
+  "python": "3.13",
+  "install": "-e . --group test",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 45.0526725164,
+  "det_mean_s": 102.66611255479997,
+  "slowdown_pct": 127.88018295125028,
+  "precompile_first_s": 8.214,
+  "precompile_rest_median_s": 0.33,
+  "tests": 4852,
+  "unstable_baseline": 16,
+  "unstable_det": 0,
+  "became_stable": 16,
+  "outcome_changed_by_det": 8,
+  "covered": 4567,
+  "not_covered": 285,
+  "reproduced": 6,
+  "never_fails_under_det": 10,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "seeds_explored": 3,
+  "exploration_runs": 12,
+  "exploration_budget_hit": true,
+  "reasons": {
+    "time": 267,
+    "entropy": 7,
+    "thread": 11
+  },
+  "pass_fail_reasons": {
+    "time": 6
+  },
+  "broken_by_det": 2,
+  "broken_always": 2,
+  "broken_causes": {
+    "net | gaierror": 2
+  },
+  "broken_examples": {
+    "net | gaierror": [
+      "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]: socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network) (first diverging source: -)",
+      "tests/test_sockets.py::test_getaddrinfo[asyncio]: socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network) (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "reproduced": [
+      "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12] (seed 2): event #1: [random] random.state @ <end> = a60d519535921996b6cdefc96d6a3e03  <>  [time] time.perf_counter @ <site>/hypothesis/internal/conjecture/junkdrawer.py:4",
+      "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13] (seed 2): event #1: [random] random.state @ <end> = 24cca6a3aa5e823e2a199c9dcd80720b  <>  [time] time.perf_counter @ <site>/hypothesis/internal/conjecture/junkdrawer.py:4",
+      "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12] (seed 2): event #39: [time] time.monotonic @ src/anyio/_backends/_asyncio.py:2438 = 470000  <>  [time] time.monotonic @ src/anyio/_backends/_asyncio.py:2320 = 470000"
+    ],
+    "changed:passed->failed": [
+      "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+      "tests/test_sockets.py::test_getaddrinfo[asyncio]"
+    ],
+    "changed:failed->passed": [
+      "tests/test_to_process.py::test_entrypoint_main_module[asyncio+eager]",
+      "tests/test_to_process.py::test_entrypoint_main_module[asyncio+uvloop]"
+    ]
+  }
+}
