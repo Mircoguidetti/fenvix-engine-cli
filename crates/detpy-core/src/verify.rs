@@ -257,8 +257,8 @@ fn describe(i: u64, a: Option<&Event>, b: Option<&Event>) -> String {
             ea.value, eb.value
         ),
         (Some(ea), Some(eb)) if ea.source == Source::Sched && eb.source == Source::Sched => format!(
-            "event #{i}: first diverging scheduling choice at {}: {} <> {}",
-            ea.site, ea.value, eb.value
+            "event #{i}: first diverging scheduling choice: {} {} @ {}  <>  {} {} @ {}",
+            ea.op, ea.value, ea.site, eb.op, eb.value, eb.site
         ),
         (Some(ea), Some(eb)) if ea.op == eb.op && ea.site == eb.site && ea.thread == eb.thread => format!(
             "event #{i}: {} @ {} returned different values: {:?} vs {:?}",
@@ -367,7 +367,24 @@ pub fn verify_paths<P: AsRef<Path>>(paths: &[P]) -> Result<Report, TraceError> {
         traces.push(read_trace(p.as_ref())?);
         labels.push(p.as_ref().display().to_string());
     }
+    check_compatible(&traces, &labels)?;
     Ok(verify(&traces, &labels))
+}
+
+/// Traces with different event encodings are never compared: their
+/// fingerprints differ by construction, which is not a divergence.
+pub fn check_compatible(traces: &[Trace], labels: &[String]) -> Result<(), TraceError> {
+    let Some(first) = traces.first() else { return Ok(()) };
+    let base = first.header.encoding;
+    for (t, l) in traces.iter().zip(labels).skip(1) {
+        if t.header.encoding != base {
+            return Err(TraceError::Incompatible(format!(
+                "{} uses event encoding {} but {} uses {}; re-run both with the same detpy version",
+                labels[0], base, l, t.header.encoding
+            )));
+        }
+    }
+    Ok(())
 }
 
 /// Human-readable rendering of a report.
@@ -435,12 +452,24 @@ mod tests {
 
     #[test]
     fn sched_divergence_is_named() {
-        let a = Event::new(Source::Sched, "asyncio.step", "<loop 0>", "it=3 io=[x]");
-        let b = Event::new(Source::Sched, "asyncio.step", "<loop 0>", "it=3 io=[y]");
+        let a = Event::new(Source::Sched, "sched.io", "tests/t.py:7", "0/2:tests/t.py:7#1");
+        let b = Event::new(Source::Sched, "sched.io", "tests/t.py:7", "1/2:tests/t.py:7#2");
         assert_eq!(classify(Some(&a), Some(&b)), Reason::Sched);
         let d = describe(4, Some(&a), Some(&b));
-        assert!(d.contains("first diverging scheduling choice at <loop 0>"), "{d}");
-        assert!(d.contains("io=[x]") && d.contains("io=[y]"), "{d}");
+        assert!(d.starts_with("event #4: first diverging scheduling choice: sched.io 0/2:"), "{d}");
+        assert!(d.contains("1/2:tests/t.py:7#2"), "{d}");
+    }
+
+    #[test]
+    fn different_encodings_are_not_compared() {
+        let mut a = trace(vec![]);
+        let b = trace(vec![]);
+        a.header.encoding = 1;
+        let labels = vec!["old.jsonl".to_string(), "new.jsonl".to_string()];
+        let err = check_compatible(&[a, b], &labels).unwrap_err();
+        assert!(matches!(err, TraceError::Incompatible(_)));
+        assert!(err.to_string().contains("old.jsonl uses event encoding 1 but new.jsonl uses 2"), "{err}");
+        assert!(check_compatible(&[trace(vec![]), trace(vec![])], &labels).is_ok());
     }
 
     #[test]
