@@ -765,6 +765,47 @@ SUM_KEYS = ("tests", "unstable_baseline", "unstable_det", "became_stable", "outc
             "known_reproduced", "broken_by_det", "broken_always")
 
 
+def _hist_of(text: str) -> dict:
+    return {k: int(v) for k, v in (kv.split("=") for kv in text.split(";") if "=" in kv)}
+
+
+def csv_metrics(outdir: Path, name: str) -> dict:
+    """Metrics recomputed from <repo>.csv (P-008 definitions).
+
+    * id-unstable: a test absent from some completed baseline runs; its id is built
+      from run-dependent values (time, random). It is not a flaky test.
+    * missing under --det: ran in every baseline run, absent from every --det run.
+    * only under --det: absent from every baseline run, present in --det runs (the
+      other side of an id that differs between modes).
+    """
+    m = collections.Counter()
+    by_cat = collections.defaultdict(collections.Counter)
+    by_src = collections.Counter()
+    path = outdir / f"{name}.csv"
+    if not path.exists():
+        return {"counts": m, "by_category": by_cat, "by_source": by_src}
+    for r in csv.DictReader(open(path)):
+        b, d = _hist_of(r["baseline_outcomes"]), _hist_of(r["det_outcomes"])
+        if r["baseline_unstable"] == "True" and "missing" in b:
+            m["id_unstable"] += 1
+            continue
+        if "missing" not in b and set(d) == {"missing"}:
+            m["missing_under_det"] += 1
+        if set(b) == {"missing"} and "missing" not in d:
+            m["only_under_det"] += 1
+        if r["baseline_unstable"] == "True":
+            m["unstable_strict"] += 1
+            cat = r.get("idoft_category") or "not in IDoFT"
+            by_cat[cat]["unstable"] += 1
+            if r["reproduced"] == "True":
+                m["reproduced_strict"] += 1
+                by_cat[cat]["reproduced"] += 1
+                by_src[r.get("pass_fail_reason") or "none"] += 1
+        if r.get("broken_by_det") == "True":
+            m["broken"] += 1
+    return {"counts": m, "by_category": by_cat, "by_source": by_src}
+
+
 def write_report(outdir: Path, meta: dict) -> Path:
     summaries = [json.loads(f.read_text()) for f in sorted(outdir.glob("*.summary.json"))]
     timings = [json.loads(f.read_text()) for f in sorted(outdir.glob("*.timing.json"))]
@@ -788,6 +829,19 @@ def write_report(outdir: Path, meta: dict) -> Path:
         seeds += x["seeds_needed"]
     T = tot["all"]
     med = statistics.median
+    strict = {kind: collections.Counter() for kind in ("all", "flaky", "popular")}
+    by_cat = collections.defaultdict(collections.Counter)
+    by_src = collections.Counter()
+    per_repo_csv = {}
+    for x in ok:
+        cm = csv_metrics(outdir, x["name"])
+        per_repo_csv[x["name"]] = cm["counts"]
+        for kind in {"all", x["kind"]}:
+            strict[kind].update(cm["counts"])
+        for k, v in cm["by_category"].items():
+            by_cat[k if x["kind"] == "flaky" else "popular pool (no IDoFT label)"].update(v)
+        by_src.update(cm["by_source"])
+    S_ = strict["all"]
     L = [f"# detpy Level 0: measurement report (`{meta.get('set')}`)\n",
          f"Generated {meta.get('date')} with detpy {meta.get('detpy')}. Per repository: {meta.get('runs')} baseline runs "
          f"(random order from pytest-randomly with a different seed per run, pytest-xdist `-n 2` where the suite "
@@ -796,8 +850,10 @@ def write_report(outdir: Path, meta: dict) -> Path:
          f"{meta.get('confirm')} confirmation of the seed that makes it fail. Executor: {meta.get('executor', 'local')}."
          f" Labels: MEASURED (by this harness), ESTIMATED, DECLARED (with source), UNKNOWN; NOISY = shared host.\n",
          "## Main metric\n",
-         f"**Baseline-unstable tests made reproducible: {T['reproduced']}/{T['unstable_baseline']} = "
-         f"{_pct(T['reproduced'], T['unstable_baseline'])}** (MEASURED). A test counts as reproduced when some "
+         f"**Baseline-unstable tests made reproducible: {S_['reproduced_strict']}/{S_['unstable_strict']} = "
+         f"{_pct(S_['reproduced_strict'], S_['unstable_strict'])}** (MEASURED). Tests whose id changes between runs "
+         f"(ids built from time or random values: {S_['id_unstable']}) are not flaky tests and are excluded; "
+         f"including them the figure was {T['reproduced']}/{T['unstable_baseline']}. A test counts as reproduced when some "
          f"`--det-seed` (or the fixed `--det` order) makes it fail {meta.get('confirm')} times out of "
          f"{meta.get('confirm')} AND some `--det` configuration makes it pass; a test that fails under every `--det` "
          f"configuration is broken by Level 0, not reproduced.\n",
@@ -805,13 +861,31 @@ def write_report(outdir: Path, meta: dict) -> Path:
          "always fail under --det | fail sometimes under --det |",
          "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for kind, label in (("flaky", "IDoFT dataset"), ("popular", "popular"), ("all", "total")):
-        t = tot[kind]
+        t, st = tot[kind], strict[kind]
         n = len([x for x in ok if kind == "all" or x["kind"] == kind])
         if n:
-            L.append(f"| {label} | {n} | {t['tests']} | {t['unstable_baseline']} | {t['reproduced']} | "
-                     f"{_pct(t['reproduced'], t['unstable_baseline'])} | {t['never_fails_under_det']} | "
+            L.append(f"| {label} | {n} | {t['tests']} | {st['unstable_strict']} | {st['reproduced_strict']} | "
+                     f"{_pct(st['reproduced_strict'], st['unstable_strict'])} | "
+                     f"{t['never_fails_under_det'] - st['id_unstable']} | "
                      f"{t['always_fails_under_det']} | {t['fails_sometimes_under_det']} |")
     L.append("")
+    L.append(f"Tests with unstable ids (excluded above, MEASURED): {S_['id_unstable']}"
+             + (" — " + ", ".join(f"{k}: {v['id_unstable']}" for k, v in per_repo_csv.items() if v['id_unstable'])
+                if S_['id_unstable'] else "") + ".\n")
+    if by_cat:
+        L.append("**Reproduced share by IDoFT category** (MEASURED). Most IDoFT flaky tests are order-dependent and "
+                 "were found by order shuffling, so reproducing them with a seeded order is the easy part; the "
+                 "NOD/NIO rows and the popular pool are the hard part.\n")
+        L.append("| category | unstable in baseline | reproduced | % |")
+        L.append("|---|---:|---:|---:|")
+        for k in sorted(by_cat, key=lambda c: (c.startswith("popular"), c == "not in IDoFT", c)):
+            v = by_cat[k]
+            L.append(f"| {k} | {v['unstable']} | {v['reproduced']} | {_pct(v['reproduced'], v['unstable'])} |")
+        L.append("")
+    if by_src:
+        L.append("**Reproduced tests by first diverging source** (passing vs failing `--det` fingerprint, MEASURED): "
+                 + ", ".join(f"`{k}` {v} ({_pct(v, sum(by_src.values()))})" for k, v in by_src.most_common())
+                 + ".\n")
     if seeds:
         b = collections.Counter(_bucket(v) for v in seeds)
         L.append("**(a, b) Seeds explored before the reproducing seed was found** (reproduced tests, MEASURED): "
@@ -827,6 +901,14 @@ def write_report(outdir: Path, meta: dict) -> Path:
         L.append("|---:|---:|---:|---:|")
         L.append(f"| {tf['known_flaky']} | {tf['known_present']} | {tf['known_unstable_baseline']} | "
                  f"{tf['known_reproduced']} |\n")
+    L.append("## Tests that do not run under --det\n")
+    L.append(f"A test that runs in every baseline run but in no `--det` run is worse than a false failure. "
+             f"**{S_['missing_under_det']} tests** (MEASURED)"
+             + (" — " + ", ".join(f"{k}: {v['missing_under_det']}" for k, v in per_repo_csv.items()
+                                  if v['missing_under_det']) if S_['missing_under_det'] else "")
+             + f". Tests present only under `--det` (an id that differs between modes): {S_['only_under_det']}."
+             + (f" Before the L0 fixes: **{before.get('missing_under_det')}** (MEASURED)." if before and
+                'missing_under_det' in before else "") + "\n")
     L.append("## Tests broken by Level 0\n")
     L.append(f"A test is *broken by `--det`* when it fails in at least one fixed-order `--det` run but in at most one "
              f"baseline run (and less often than under `--det`). These are false failures. **{T['broken_by_det']} tests** "
@@ -980,7 +1062,7 @@ def main(argv=None) -> int:
         pools = {"flaky": flaky, "popular": popular}
         quota = {"flaky": args.per_pool, "popular": args.per_pool}
     else:
-        names = [n.strip() for n in args.set.split(",") if n.strip()]
+        names = [n.strip() for n in args.set.split(",") if n.strip() and n.strip() in by_name]
         pools = {"custom": [by_name[n] for n in names]}
         quota = {"custom": len(names)}
     outdir = Path(args.out or HERE / "results" / (args.set if args.set in ("validate", "mixed") else "custom"))

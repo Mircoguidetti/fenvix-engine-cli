@@ -4,13 +4,27 @@ Generated 2026-11-16 16:34 UTC with detpy 0.1.0. Per repository: 10 baseline run
 
 ## Main metric
 
-**Baseline-unstable tests made reproducible: 347/406 = 85.5%** (MEASURED). A test counts as reproduced when some `--det-seed` (or the fixed `--det` order) makes it fail 10 times out of 10 AND some `--det` configuration makes it pass; a test that fails under every `--det` configuration is broken by Level 0, not reproduced.
+**Baseline-unstable tests made reproducible: 347/388 = 89.4%** (MEASURED). Tests whose id changes between runs (ids built from time or random values: 18) are not flaky tests and are excluded; including them the figure was 347/406. A test counts as reproduced when some `--det-seed` (or the fixed `--det` order) makes it fail 10 times out of 10 AND some `--det` configuration makes it pass; a test that fails under every `--det` configuration is broken by Level 0, not reproduced.
 
 | pool | repositories | tests | unstable in baseline | reproduced | % | never fail under --det | always fail under --det | fail sometimes under --det |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | IDoFT dataset | 24 | 2568 | 361 | 337 | 93.4% | 16 | 8 | 0 |
-| popular | 25 | 117082 | 45 | 10 | 22.2% | 35 | 0 | 0 |
-| total | 49 | 119650 | 406 | 347 | 85.5% | 51 | 8 | 0 |
+| popular | 25 | 117082 | 27 | 10 | 37.0% | 17 | 0 | 0 |
+| total | 49 | 119650 | 388 | 347 | 89.4% | 33 | 8 | 0 |
+
+Tests with unstable ids (excluded above, MEASURED): 18 — marshmallow: 18.
+
+**Reproduced share by IDoFT category** (MEASURED). Most IDoFT flaky tests are order-dependent and were found by order shuffling, so reproducing them with a seeded order is the easy part; the NOD/NIO rows and the popular pool are the hard part.
+
+| category | unstable in baseline | reproduced | % |
+|---|---:|---:|---:|
+| NOD | 15 | 10 | 66.7% |
+| OD-Brit | 72 | 66 | 91.7% |
+| OD-Vic | 268 | 261 | 97.4% |
+| not in IDoFT | 6 | 0 | 0.0% |
+| popular pool (no IDoFT label) | 27 | 10 | 37.0% |
+
+**Reproduced tests by first diverging source** (passing vs failing `--det` fingerprint, MEASURED): `random` 270 (77.8%), `time` 62 (17.9%), `thread` 5 (1.4%), `entropy` 5 (1.4%), `fs` 5 (1.4%).
 
 **(a, b) Seeds explored before the reproducing seed was found** (reproduced tests, MEASURED): 0 (fixed order): 64, 1: 82, 2-5: 154, 6-10: 43, 11-20: 4; median 2.
 
@@ -21,6 +35,10 @@ Generated 2026-11-16 16:34 UTC with detpy 0.1.0. Per repository: 10 baseline run
 | known flaky tests (IDoFT, measured projects) | present in the collected suite | flaky in our baseline | reproduced |
 |---:|---:|---:|---:|
 | 509 | 509 | 355 | 337 |
+
+## Tests that do not run under --det
+
+A test that runs in every baseline run but in no `--det` run is worse than a false failure. **3205 tests** (MEASURED) — faker: 385, anyio: 2820. Tests present only under `--det` (an id that differs between modes): 10.
 
 ## Tests broken by Level 0
 
