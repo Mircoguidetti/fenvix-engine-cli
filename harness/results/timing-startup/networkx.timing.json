@@ -1,0 +1,45 @@
+{
+  "name": "networkx",
+  "kind": "popular",
+  "status": "ok",
+  "python": "3.13",
+  "serial_s": [
+    141.361834591,
+    137.00545680700003,
+    142.76653069499991
+  ],
+  "det_s": [
+    159.999285097,
+    153.81568401700002,
+    153.50018668799999
+  ],
+  "precompile_s": [
+    10.542,
+    0.722,
+    0.727
+  ],
+  "tests": 10191,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000008670",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 7763 64-Core Processor"
+  },
+  "startup_normal_s": [
+    0.37729109599990807,
+    0.36872462999997424,
+    0.3788967179999645
+  ],
+  "startup_det_s": [
+    1.472584771999891,
+    1.458442691000073,
+    1.522408913999925
+  ],
+  "startup_cost_s": 1.095293675999983,
+  "slowdown_pct": 8.8099093097034
+}

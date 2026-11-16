@@ -1,0 +1,45 @@
+{
+  "name": "idoft-eppy",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "serial_s": [
+    6.086988542,
+    5.880814985999997,
+    6.236175736999996
+  ],
+  "det_s": [
+    7.595952140000001,
+    6.7452507270000055,
+    6.744448488000003
+  ],
+  "precompile_s": [
+    1.306,
+    0.38,
+    0.384
+  ],
+  "tests": 218,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000008668",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+  },
+  "startup_normal_s": [
+    0.1290080979999999,
+    0.1313601619999929,
+    0.13176378
+  ],
+  "startup_det_s": [
+    0.6022482759999974,
+    0.5953120239999947,
+    0.5934127390000015
+  ],
+  "startup_cost_s": 0.4639518620000018,
+  "slowdown_pct": 10.81425043694464
+}
