@@ -1,0 +1,823 @@
+{
+ "name": "mealie",
+ "repo": "mealie-recipes/mealie",
+ "ref": "3d639dd5ea8eca729da641f1ddb2f18500d7323a",
+ "status": "ok",
+ "setup_s": 39,
+ "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
+ "config": {
+  "repo": "mealie-recipes/mealie",
+  "ref": "3d639dd5ea8eca729da641f1ddb2f18500d7323a",
+  "app": "python",
+  "suite": "integration: pytest -n auto (FastAPI) on Postgres + LDAP",
+  "services": "Postgres, OpenLDAP",
+  "python": "3.12",
+  "runs": 6,
+  "parser": "junit"
+ },
+ "run_id": "43945303458",
+ "measured_at": "2026-11-16T20:19:39Z",
+ "baseline_cores": 0.0144,
+ "n_runs": 6,
+ "runs": [
+  {
+   "run": 1,
+   "rc": 0,
+   "wall_s": 162.54,
+   "busy_cpu_s": 403.23,
+   "cores_mean": 2.481,
+   "idle_share_raw": -1.4808,
+   "idle_share_net": -1.4664,
+   "quiet_share": 0.0,
+   "share_ge1core": 0.9231,
+   "iowait_s": 19.53,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.91,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 61.41,
+   "cpu_other_s": 341.83,
+   "containers": {
+    "postgres [postgres]": 61.194,
+    "ldap [rroemhild/test-openldap]": 0.212
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     297.92
+    ],
+    [
+     "container",
+     "postgres",
+     52.38
+    ],
+    [
+     "host",
+     "docker-proxy",
+     24.7
+    ],
+    [
+     "host",
+     "pytest",
+     12.65
+    ],
+    [
+     "host",
+     "provjobd3665315",
+     8.9
+    ],
+    [
+     "host",
+     "python3",
+     0.89
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.53
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.35
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.17
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.15
+    ],
+    [
+     "host",
+     "containerd",
+     0.12
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.08
+    ],
+    [
+     "host",
+     "dockerd",
+     0.07
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.06
+    ],
+    [
+     "host",
+     "uuidd",
+     0.05
+    ]
+   ],
+   "n_tests": 3895,
+   "n_pass": 3885,
+   "n_fail": 0,
+   "n_skip": 10,
+   "series_1s": [
+    0.24,
+    0.81,
+    1.02,
+    0.88,
+    1.05,
+    1.28,
+    1.03,
+    0.93,
+    2.96,
+    4.0,
+    3.99,
+    4.0,
+    3.76,
+    3.53,
+    4.0,
+    3.75,
+    3.97,
+    3.95,
+    3.85,
+    3.57,
+    3.65,
+    3.6,
+    3.55,
+    3.21,
+    3.26,
+    3.29,
+    3.21,
+    3.2,
+    3.63,
+    3.11,
+    2.85,
+    2.68,
+    3.15,
+    3.3,
+    2.61,
+    2.68,
+    3.2,
+    3.21,
+    2.9,
+    3.2,
+    3.17,
+    3.12,
+    2.94,
+    3.09,
+    2.62,
+    2.55,
+    2.42,
+    2.59,
+    2.41,
+    1.63,
+    2.49,
+    2.82,
+    1.95,
+    2.05,
+    3.16,
+    3.23,
+    3.23,
+    2.07,
+    1.43,
+    1.95,
+    1.31,
+    2.46,
+    2.14,
+    2.16,
+    2.83,
+    3.3,
+    3.31,
+    3.46,
+    3.28,
+    3.17,
+    2.27,
+    2.74,
+    2.9,
+    2.45,
+    2.45,
+    2.12,
+    2.66,
+    2.73,
+    1.86,
+    2.29,
+    2.99,
+    3.2,
+    2.34,
+    3.19,
+    1.8,
+    1.93,
+    1.58,
+    2.01,
+    2.15,
+    3.1,
+    2.92,
+    2.46,
+    3.04,
+    2.44,
+    3.24,
+    3.21,
+    3.16,
+    2.97,
+    2.66,
+    3.01,
+    2.89,
+    3.06,
+    3.49,
+    3.11,
+    3.14,
+    3.23,
+    2.9,
+    3.19,
+    3.3,
+    3.41,
+    3.5,
+    3.43,
+    3.4,
+    3.16,
+    3.39,
+    2.81,
+    2.85,
+    3.33,
+    3.43,
+    3.56,
+    3.93,
+    2.98,
+    2.07,
+    1.31,
+    0.97,
+    1.11,
+    1.1,
+    1.13,
+    1.12,
+    1.1,
+    1.13,
+    1.11,
+    1.14,
+    0.89,
+    1.1,
+    1.07,
+    1.08,
+    1.11,
+    1.11,
+    1.1,
+    1.11,
+    1.03,
+    1.03,
+    0.92,
+    1.12,
+    1.0,
+    0.81,
+    0.69,
+    1.0,
+    1.07,
+    1.05,
+    1.06,
+    2.46,
+    4.0,
+    3.99,
+    3.99,
+    3.99,
+    2.53,
+    1.05,
+    1.03,
+    1.13,
+    1.03,
+    1.07,
+    0.6
+   ]
+  },
+  {
+   "run": 2,
+   "rc": 0,
+   "wall_s": 138.86,
+   "busy_cpu_s": 388.34,
+   "cores_mean": 2.797,
+   "idle_share_raw": -1.7966,
+   "idle_share_net": -1.7822,
+   "quiet_share": 0.0072,
+   "share_ge1core": 0.9712,
+   "iowait_s": 5.62,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.79,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 62.42,
+   "cpu_other_s": 325.93,
+   "containers": {
+    "postgres [postgres]": 62.263,
+    "ldap [rroemhild/test-openldap]": 0.153
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     283.32
+    ],
+    [
+     "container",
+     "postgres",
+     53.28
+    ],
+    [
+     "host",
+     "docker-proxy",
+     24.3
+    ],
+    [
+     "host",
+     "pytest",
+     8.62
+    ],
+    [
+     "host",
+     "provjobd3665315",
+     8.51
+    ],
+    [
+     "host",
+     "python3",
+     1.24
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.47
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.4
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.13
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.12
+    ],
+    [
+     "host",
+     "containerd",
+     0.12
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.1
+    ],
+    [
+     "host",
+     "dockerd",
+     0.07
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.06
+    ],
+    [
+     "host",
+     "chronyd",
+     0.04
+    ]
+   ],
+   "n_tests": 3895,
+   "n_pass": 3885,
+   "n_fail": 0,
+   "n_skip": 10
+  },
+  {
+   "run": 3,
+   "rc": 0,
+   "wall_s": 143.86,
+   "busy_cpu_s": 394.46,
+   "cores_mean": 2.742,
+   "idle_share_raw": -1.742,
+   "idle_share_net": -1.7276,
+   "quiet_share": 0.0035,
+   "share_ge1core": 0.9617,
+   "iowait_s": 7.05,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.8,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 63.51,
+   "cpu_other_s": 330.96,
+   "containers": {
+    "postgres [postgres]": 63.311,
+    "ldap [rroemhild/test-openldap]": 0.194
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     288.0
+    ],
+    [
+     "container",
+     "postgres",
+     53.31
+    ],
+    [
+     "host",
+     "docker-proxy",
+     24.96
+    ],
+    [
+     "host",
+     "provjobd3665315",
+     8.88
+    ],
+    [
+     "host",
+     "pytest",
+     7.58
+    ],
+    [
+     "host",
+     "python3",
+     0.77
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.45
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.3
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.13
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.12
+    ],
+    [
+     "host",
+     "containerd",
+     0.1
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.08
+    ],
+    [
+     "host",
+     "dockerd",
+     0.06
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.05
+    ],
+    [
+     "host",
+     "kworker/0:3-events",
+     0.04
+    ]
+   ],
+   "n_tests": 3895,
+   "n_pass": 3885,
+   "n_fail": 0,
+   "n_skip": 10
+  },
+  {
+   "run": 4,
+   "rc": 0,
+   "wall_s": 141.55,
+   "busy_cpu_s": 383.56,
+   "cores_mean": 2.71,
+   "idle_share_raw": -1.7097,
+   "idle_share_net": -1.6953,
+   "quiet_share": 0.0035,
+   "share_ge1core": 0.9647,
+   "iowait_s": 9.51,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.77,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 62.36,
+   "cpu_other_s": 321.21,
+   "containers": {
+    "postgres [postgres]": 62.169,
+    "ldap [rroemhild/test-openldap]": 0.188
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     282.1
+    ],
+    [
+     "container",
+     "postgres",
+     53.44
+    ],
+    [
+     "host",
+     "docker-proxy",
+     24.46
+    ],
+    [
+     "host",
+     "pytest",
+     7.8
+    ],
+    [
+     "host",
+     "provjobd3665315",
+     7.46
+    ],
+    [
+     "host",
+     "python3",
+     0.74
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.47
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.31
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.12
+    ],
+    [
+     "host",
+     "containerd",
+     0.11
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.1
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.09
+    ],
+    [
+     "host",
+     "dockerd",
+     0.06
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.04
+    ],
+    [
+     "host",
+     "systemd-resolve",
+     0.03
+    ]
+   ],
+   "n_tests": 3895,
+   "n_pass": 3885,
+   "n_fail": 0,
+   "n_skip": 10
+  },
+  {
+   "run": 5,
+   "rc": 0,
+   "wall_s": 132.43,
+   "busy_cpu_s": 367.71,
+   "cores_mean": 2.777,
+   "idle_share_raw": -1.7767,
+   "idle_share_net": -1.7623,
+   "quiet_share": 0.0038,
+   "share_ge1core": 0.9547,
+   "iowait_s": 4.45,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.74,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 59.86,
+   "cpu_other_s": 307.85,
+   "containers": {
+    "postgres [postgres]": 59.708,
+    "ldap [rroemhild/test-openldap]": 0.15
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     268.5
+    ],
+    [
+     "container",
+     "postgres",
+     50.92
+    ],
+    [
+     "host",
+     "docker-proxy",
+     24.18
+    ],
+    [
+     "host",
+     "pytest",
+     8.66
+    ],
+    [
+     "host",
+     "provjobd3665315",
+     7.07
+    ],
+    [
+     "host",
+     "python3",
+     0.72
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.42
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.4
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.13
+    ],
+    [
+     "host",
+     "containerd",
+     0.1
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.07
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.07
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.06
+    ],
+    [
+     "host",
+     "dockerd",
+     0.05
+    ],
+    [
+     "host",
+     "chronyd",
+     0.03
+    ]
+   ],
+   "n_tests": 3895,
+   "n_pass": 3885,
+   "n_fail": 0,
+   "n_skip": 10
+  },
+  {
+   "run": 6,
+   "rc": 0,
+   "wall_s": 133.18,
+   "busy_cpu_s": 377.61,
+   "cores_mean": 2.835,
+   "idle_share_raw": -1.8354,
+   "idle_share_net": -1.8211,
+   "quiet_share": 0.0038,
+   "share_ge1core": 0.9662,
+   "iowait_s": 4.92,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.73,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 62.54,
+   "cpu_other_s": 315.07,
+   "containers": {
+    "postgres [postgres]": 62.354,
+    "ldap [rroemhild/test-openldap]": 0.19
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     275.01
+    ],
+    [
+     "container",
+     "postgres",
+     54.37
+    ],
+    [
+     "host",
+     "docker-proxy",
+     24.73
+    ],
+    [
+     "host",
+     "provjobd3665315",
+     8.26
+    ],
+    [
+     "host",
+     "pytest",
+     7.72
+    ],
+    [
+     "host",
+     "python3",
+     0.71
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.4
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.28
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.12
+    ],
+    [
+     "host",
+     "containerd",
+     0.09
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.08
+    ],
+    [
+     "host",
+     "dockerd",
+     0.07
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.07
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.07
+    ],
+    [
+     "host",
+     "chronyd",
+     0.04
+    ]
+   ],
+   "n_tests": 3895,
+   "n_pass": 3885,
+   "n_fail": 0,
+   "n_skip": 10
+  }
+ ],
+ "idle": {
+  "median_idle_share_raw": -1.7593,
+  "median_idle_share_net": -1.745,
+  "median_quiet_share": 0.0037,
+  "median_cores_mean": 2.7595,
+  "median_wall_s": 140.205,
+  "median_busy_cpu_s": 385.95
+ },
+ "tests": {
+  "n_distinct": 3895,
+  "n_flaky": 0,
+  "n_consistent_fail": 0,
+  "flaky": [],
+  "consistent_fail_sample": []
+ }
+}
