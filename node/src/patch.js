@@ -1,29 +1,52 @@
 'use strict';
-// Reversible patching of object properties.
+// Reversible patching of object properties. Never throws: a property that
+// cannot be replaced (non-configurable, read-only) is reported and left alone.
 class Patcher {
   constructor() {
     this.saved = [];
+    this.failed = [];
   }
 
-  /** Replace obj[key] by value (keeps the original descriptor for undo). */
+  /** Replace obj[key] by value; returns true when the property now holds value. */
   set(obj, key, value) {
     const desc = Object.getOwnPropertyDescriptor(obj, key);
-    this.saved.push([obj, key, desc]);
-    if (desc && !desc.writable && !desc.set && desc.configurable) {
-      Object.defineProperty(obj, key, { ...desc, value, writable: true });
-    } else if (!desc || desc.writable || desc.set) {
-      obj[key] = value;
-      if (obj[key] !== value) Object.defineProperty(obj, key, { value, writable: true, configurable: true, enumerable: desc ? desc.enumerable : true });
-    } else {
-      Object.defineProperty(obj, key, { value, writable: true, configurable: true, enumerable: desc.enumerable });
+    try {
+      if (!desc) {
+        obj[key] = value;
+        if (obj[key] !== value) {
+          Object.defineProperty(obj, key, { value, writable: true, configurable: true, enumerable: true });
+        }
+      } else if ('value' in desc) {
+        if (desc.writable) obj[key] = value;
+        else if (desc.configurable) Object.defineProperty(obj, key, { value, writable: true, configurable: true, enumerable: desc.enumerable });
+      } else if (desc.set) {
+        obj[key] = value;
+        if (obj[key] !== value && desc.configurable) {
+          Object.defineProperty(obj, key, { value, writable: true, configurable: true, enumerable: desc.enumerable });
+        }
+      } else if (desc.configurable) {
+        Object.defineProperty(obj, key, { value, writable: true, configurable: true, enumerable: desc.enumerable });
+      }
+    } catch { /* reported below */ }
+    if (obj[key] !== value) {
+      this.failed.push(String(key));
+      return false;
     }
-    return desc ? desc.value : undefined;
+    this.saved.push([obj, key, desc]);
+    return true;
   }
 
   /** Define an own property (shadows a prototype method such as performance.now). */
   define(obj, key, value) {
-    this.saved.push([obj, key, Object.getOwnPropertyDescriptor(obj, key)]);
-    Object.defineProperty(obj, key, { value, writable: true, configurable: true, enumerable: false });
+    const desc = Object.getOwnPropertyDescriptor(obj, key);
+    try {
+      Object.defineProperty(obj, key, { value, writable: true, configurable: true, enumerable: false });
+    } catch {
+      this.failed.push(String(key));
+      return false;
+    }
+    this.saved.push([obj, key, desc]);
+    return true;
   }
 
   undoAll() {

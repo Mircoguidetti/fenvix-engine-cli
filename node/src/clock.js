@@ -398,11 +398,14 @@ function wrapPerformance(hostPerf) {
   for (const k of ['mark', 'measure', 'clearMarks', 'clearMeasures', 'getEntries', 'getEntriesByName',
     'getEntriesByType', 'toJSON', 'timerify', 'eventLoopUtilization', 'markResourceTiming',
     'clearResourceTimings', 'setResourceTimingBufferSize', 'addEventListener', 'removeEventListener', 'dispatchEvent']) {
-    if (typeof hostPerf[k] === 'function') out[k] = hostPerf[k].bind(hostPerf);
+    if (typeof hostPerf[k] === 'function') {
+      // defineProperty: on some Node versions the prototype methods are read-only
+      Object.defineProperty(out, k, { value: hostPerf[k].bind(hostPerf), writable: true, configurable: true });
+    }
   }
   Object.defineProperty(out, 'timeOrigin', { get: () => hostPerf.timeOrigin, enumerable: true });
   Object.defineProperty(out, 'nodeTiming', { get: () => hostPerf.nodeTiming });
-  out.now = performanceNow;
+  Object.defineProperty(out, 'now', { value: performanceNow, writable: true, configurable: true, enumerable: true });
   return out;
 }
 

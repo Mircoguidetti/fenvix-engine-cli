@@ -282,12 +282,13 @@ def detect_playwright(p: Prepared, repo: dict) -> bool:
         return False
     p.pw_dir = str(d)
     code, out, _, _ = sh([f"{p.node_bin}/node", "-e",
-                          "const r=require('module').createRequire(process.cwd()+'/x.js');"
-                          "const f=r.resolve('@playwright/test/package.json');const j=require(f);"
-                          "const cli=require('path').join(require('path').dirname(r.resolve('playwright/package.json',{paths:[require('path').dirname(f)]})),'cli.js');"
+                          "const r=require('module').createRequire(process.cwd()+'/x.js');const path=require('path');"
+                          "let f;try{f=r.resolve('@playwright/test/package.json')}catch{f=r.resolve('playwright/package.json')}"
+                          "const j=require(f);let cli;try{cli=path.join(path.dirname(r.resolve('playwright/package.json',{paths:[path.dirname(f)]})),'cli.js')}"
+                          "catch{cli=path.join(path.dirname(f),'cli.js')}"
                           "console.log(JSON.stringify({v:j.version,bin:cli}))"], cwd=d, env=node_env(p))
     if code != 0:
-        p.status, p.detail = "no-runner", "@playwright/test not resolvable: " + out[-200:]
+        p.status, p.detail = "no-runner", "@playwright/test / playwright not resolvable: " + out[-200:]
         return False
     info = json.loads(out.strip().splitlines()[-1])
     p.runner, p.runner_version, p.runner_bin = "playwright", info["v"], info["bin"]

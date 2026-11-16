@@ -113,6 +113,15 @@ function header(run, opts, extra) {
 }
 
 /** Ids of the tests recorded in a part, in execution order. */
+function partNotes(file) {
+  try {
+    const first = fs.readFileSync(file, 'utf8').split('\n', 1)[0];
+    return (JSON.parse(first).meta || {}).notes || [];
+  } catch {
+    return [];
+  }
+}
+
 function partIds(file) {
   const ids = [];
   let text;
@@ -150,6 +159,7 @@ function finish(run, opts, files, meta) {
     platform: process.platform,
     files: files.map((f) => f.fileId),
     unordered_parts: extra.length,
+    notes: [...new Set(all.flatMap(partNotes))],
   };
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
   fs.rmSync(run.dir, { recursive: true, force: true });

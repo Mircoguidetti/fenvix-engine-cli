@@ -48,8 +48,16 @@ function installRealm(g, { sameRealm }) {
   sites.setRealmError(g.Error);
   if (realms.has(g)) return;
   realms.add(g);
-  if (c.controls.has('seeds')) seeds.installRealm(PATCHER, g, c, { sameRealm });
-  if (c.controls.has('time')) clock.installRealm(PATCHER, g, c, { sameRealm });
+  // Fail-soft: a realm whose globals cannot be replaced keeps them (noted).
+  for (const [name, mod] of [['seeds', seeds], ['time', clock]]) {
+    if (!c.controls.has(name)) continue;
+    try {
+      mod.installRealm(PATCHER, g, c, { sameRealm });
+    } catch (e) {
+      STATE.notes.push(`${name}: realm installation failed: ${e && e.message}`);
+    }
+  }
+  if (PATCHER.failed.length) STATE.notes.push(`not replaceable: ${[...new Set(PATCHER.failed)].join(',')}`);
 }
 
 function stableName(s) {
@@ -68,7 +76,8 @@ function openFile(fileId, project) {
   if (c.dir) {
     const part = path.join(c.dir, 'parts', `${stableName(label)}.jsonl`);
     const rec = new native.Recorder(c.maxEvents);
-    const meta = { file: fileId, project: project || null, pid: process.pid, threadId: require('node:worker_threads').threadId };
+    const meta = { file: fileId, project: project || null, pid: process.pid, threadId: require('node:worker_threads').threadId,
+      notes: [...new Set(STATE.notes)] };
     rec.open(part, JSON.stringify(meta), []);
     STATE.recorder = rec;
   } else {
