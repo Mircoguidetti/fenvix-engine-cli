@@ -11,12 +11,12 @@
  "executor": "GitHub Actions",
  "runner": "runnervmccnms",
  "python_requested": [
-  "3.10",
-  "3.9"
+  "3.9",
+  "3.10"
  ],
  "commit": "ec485c84db55227c9283319a9c58401e294a06ff",
  "status": "install-failed",
- "detail": "install with python 3.9: ild backend returned an error\n  cause: Call to `setuptools.build_meta:__legacy__.get_requires_for_build_wheel` failed (exit status: 1)\n\n         [stderr]\n         error in booby-ng setup command: use_2to3 is invalid.\n\nhint: `booby-ng` (v0.8.4) was included because `aiotasks` (v1.0.0a2) depends on `booby-ng`\n\nhint: Build failures usually indicate a problem with the package or the build environment\n",
+ "detail": "install with python 3.10: ild backend returned an error\n  cause: Call to `setuptools.build_meta:__legacy__.get_requires_for_build_wheel` failed (exit status: 1)\n\n         [stderr]\n         error in booby-ng setup command: use_2to3 is invalid.\n\nhint: `booby-ng` (v0.8.4) was included because `aiotasks` (v1.0.0a2) depends on `booby-ng`\n\nhint: Build failures usually indicate a problem with the package or the build environment\n",
  "python": "",
  "install": "",
  "collected": 0

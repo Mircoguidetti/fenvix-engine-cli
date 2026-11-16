@@ -14,12 +14,12 @@
  "executor": "GitHub Actions",
  "runner": "runnervmccnms",
  "python_requested": [
-  "3.10",
-  "3.9"
+  "3.9",
+  "3.10"
  ],
  "commit": "2756c0ba78c4c9e572d95ba002708957bc55d4fa",
  "status": "install-failed",
- "detail": "install with python 3.9: error: No solution found when resolving dependencies\n  cause: Because only plcx==0.8 is available and plcx==0.8 depends on pytest==5.2.2, we can conclude that all versions of plcx depend on pytest==5.2.2.\n         And because you require pytest>=7,<8 and plcx, we can conclude that your requirements are unsatisfiable.\n",
+ "detail": "install with python 3.10: error: No solution found when resolving dependencies\n  cause: Because only plcx==0.8 is available and plcx==0.8 depends on pytest==5.2.2, we can conclude that all versions of plcx depend on pytest==5.2.2.\n         And because you require pytest>=7,<8 and plcx, we can conclude that your requirements are unsatisfiable.\n",
  "python": "",
  "install": "",
  "collected": 0

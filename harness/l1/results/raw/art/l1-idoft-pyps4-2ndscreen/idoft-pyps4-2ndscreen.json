@@ -8,12 +8,12 @@
  "executor": "GitHub Actions",
  "runner": "runnervmccnms",
  "python_requested": [
-  "3.10",
-  "3.9"
+  "3.9",
+  "3.10"
  ],
  "commit": "457dc9c3f04017569d52bae7390ea2fc54e96ce5",
  "status": "install-failed",
- "detail": "install with python 3.9: 2ndscreen/pyps4_2ndscreen/ps4.py\", line 8, in <module>\n             from .connection import LegacyConnection, AsyncConnection, DEFAULT_LOGIN_DELAY\n           File \"/tmp/l1work/src/idoft-pyps4-2ndscreen/pyps4_2ndscreen/connection.py\", line 11, in <module>\n             from construct import (Bytes, Const, Int32ul, Padding, Struct, Container)\n         ModuleNotFoundError: No module named 'construct'\n",
+ "detail": "install with python 3.10: 2ndscreen/pyps4_2ndscreen/ps4.py\", line 8, in <module>\n             from .connection import LegacyConnection, AsyncConnection, DEFAULT_LOGIN_DELAY\n           File \"/tmp/l1work/src/idoft-pyps4-2ndscreen/pyps4_2ndscreen/connection.py\", line 11, in <module>\n             from construct import (Bytes, Const, Int32ul, Padding, Struct, Container)\n         ModuleNotFoundError: No module named 'construct'\n",
  "python": "",
  "install": "",
  "collected": 0
