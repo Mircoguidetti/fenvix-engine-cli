@@ -932,6 +932,54 @@ def csv_metrics(outdir: Path, name: str) -> dict:
     return {"counts": m, "by_category": by_cat, "by_source": by_src}
 
 
+def _runner_desc(r: dict) -> str:
+    """One runner: CPU model, vCPUs and image (each runner of a pass can differ)."""
+    image = " ".join(x for x in (r.get("ImageOS") or r.get("platform", ""), r.get("ImageVersion", "")) if x)
+    return f"{r.get('cpu_model') or 'unknown CPU'}, {r.get('cpus', '?')} vCPU, {image or 'unknown image'}"
+
+
+def timing_section(timings: list[dict], meta: dict) -> list[str]:
+    """Lines of the Timing section (quiet timing pass). Every runner is described
+    on its own row: CPU, vCPUs and image may differ between runners (review N5)."""
+    med = statistics.median
+    L: list[str] = []
+    sl = [t["slowdown_pct"] for t in timings if t.get("slowdown_pct") is not None]
+    runners = collections.Counter(_runner_desc(t.get("runner") or {}) for t in timings)
+    hosted = any((t.get("runner") or {}).get("RUNNER_ENVIRONMENT") for t in timings)
+    shared = "GitHub-hosted runner" if hosted else "local host"
+    desc = "; ".join(f"{c} ({n} {'repository' if n == 1 else 'repositories'})" for c, n in runners.most_common())
+    L.append(f"Quiet timing pass: {len(timings)} repositories, one per {shared}, {meta.get('timing_runs', 3)} serial "
+             f"fixed-order normal runs vs {meta.get('timing_runs', 3)} `--det` runs interleaved on the same machine; "
+             f"median per repository. Every ratio compares two runs on the same runner, but the runners differ: "
+             f"{len(runners)} distinct {'runner' if len(runners) == 1 else 'runners'} (CPU, vCPUs, image) — {desc}. "
+             f"Labelled **DECLARED-NOISY**: hosted runners are virtual machines on shared hardware.\n")
+    L.append(f"**Slowdown of `--det` (MEASURED, DECLARED-NOISY): median {_fmt(med(sl) if sl else None)}%**, "
+             f"min {_fmt(min(sl) if sl else None)}%, max {_fmt(max(sl) if sl else None)}%.\n")
+    big = [t["slowdown_pct"] for t in timings if t.get("slowdown_pct") is not None and med(t["serial_s"]) >= 1.0]
+    small = [t["name"] for t in timings if t.get("slowdown_pct") is not None and med(t["serial_s"]) < 1.0]
+    startup = [t["startup_cost_s"] for t in timings if t.get("startup_cost_s") is not None]
+    extra = [med(t["det_s"]) - med(t["serial_s"]) for t in timings]
+    L.append(f"* Without the suites that run in under 1 s ({', '.join(small) or 'none'}): median "
+             f"{_fmt(med(big) if big else None)}% over {len(big)} repositories (MEASURED, DECLARED-NOISY).")
+    L.append(f"* Absolute extra time of `--det` per suite run: median {_fmt(med(extra) if extra else None, 2)} s "
+             f"(MEASURED, DECLARED-NOISY)." + (
+                 f" Fixed start-up cost (one-test suite, same venv, warm caches): median "
+                 f"{_fmt(med(startup), 2)} s, min {_fmt(min(startup), 2)} s, max {_fmt(max(startup), 2)} s "
+                 f"(MEASURED, DECLARED-NOISY)." if startup else " Fixed start-up cost: not measured in this pass "
+                 "(UNKNOWN)."))
+    L.append("")
+    L.append("| repo | tests | runner (CPU, vCPUs, image) | normal serial s (median) | --det s (median) | slowdown % | "
+             "start-up cost s | precompile s (per run) |")
+    L.append("|---|---:|---|---:|---:|---:|---:|---|")
+    for t in timings:
+        pre = ", ".join(_fmt(v, 2) for v in t.get("precompile_s", []))
+        L.append(f"| {t['name']} | {t['tests']} | {_runner_desc(t.get('runner') or {})} | {_fmt(med(t['serial_s']), 2)} | "
+                 f"{_fmt(med(t['det_s']), 2)} | {_fmt(t.get('slowdown_pct'))} | "
+                 f"{_fmt(t.get('startup_cost_s'), 2)} | {pre} |")
+    L.append("")
+    return L
+
+
 def write_report(outdir: Path, meta: dict) -> Path:
     summaries = [json.loads(f.read_text()) for f in sorted(outdir.glob("*.summary.json"))]
     timings = [json.loads(f.read_text()) for f in sorted(outdir.glob("*.timing.json"))]
@@ -1069,43 +1117,7 @@ def write_report(outdir: Path, meta: dict) -> Path:
         L.append("")
     L.append("## Timing\n")
     if timings:
-        sl = [t["slowdown_pct"] for t in timings if t.get("slowdown_pct") is not None]
-        cpus = collections.Counter((t.get("runner") or {}).get("cpu_model") or "unknown CPU" for t in timings)
-        runner0 = timings[0].get("runner", {})
-        shared = "GitHub-hosted runner" if runner0.get("RUNNER_ENVIRONMENT") else "local host"
-        cpu_desc = "; ".join(f"{c} ({n} {'repository' if n == 1 else 'repositories'})" for c, n in cpus.most_common())
-        L.append(f"Quiet timing pass: {len(timings)} repositories, one per {shared}, {meta.get('timing_runs', 3)} serial "
-                 f"fixed-order normal runs vs {meta.get('timing_runs', 3)} `--det` runs interleaved on the same machine; "
-                 f"median per repository. Every ratio compares two runs on the same runner, but the runners differ: "
-                 f"{len(cpus)} CPU {'model' if len(cpus) == 1 else 'models'} — {cpu_desc}; "
-                 f"{runner0.get('cpus', '?')} vCPUs, {runner0.get('ImageOS', runner0.get('platform', ''))} "
-                 f"{runner0.get('ImageVersion', '')}. Labelled **DECLARED-NOISY**: hosted runners are virtual "
-                 f"machines on shared hardware.\n")
-        L.append(f"**Slowdown of `--det` (MEASURED, DECLARED-NOISY): median {_fmt(med(sl) if sl else None)}%**, "
-                 f"min {_fmt(min(sl) if sl else None)}%, max {_fmt(max(sl) if sl else None)}%.\n")
-        big = [t["slowdown_pct"] for t in timings if t.get("slowdown_pct") is not None and med(t["serial_s"]) >= 1.0]
-        small = [t["name"] for t in timings if t.get("slowdown_pct") is not None and med(t["serial_s"]) < 1.0]
-        startup = [t["startup_cost_s"] for t in timings if t.get("startup_cost_s") is not None]
-        extra = [med(t["det_s"]) - med(t["serial_s"]) for t in timings]
-        L.append(f"* Without the suites that run in under 1 s ({', '.join(small) or 'none'}): median "
-                 f"{_fmt(med(big) if big else None)}% over {len(big)} repositories (MEASURED, DECLARED-NOISY).")
-        L.append(f"* Absolute extra time of `--det` per suite run: median {_fmt(med(extra) if extra else None, 2)} s "
-                 f"(MEASURED, DECLARED-NOISY)." + (
-                     f" Fixed start-up cost (one-test suite, same venv, warm caches): median "
-                     f"{_fmt(med(startup), 2)} s, min {_fmt(min(startup), 2)} s, max {_fmt(max(startup), 2)} s "
-                     f"(MEASURED, DECLARED-NOISY)." if startup else " Fixed start-up cost: not measured in this pass "
-                     "(UNKNOWN)."))
-        L.append("")
-        L.append("| repo | tests | runner CPU | normal serial s (median) | --det s (median) | slowdown % | "
-                 "start-up cost s | precompile s (per run) |")
-        L.append("|---|---:|---|---:|---:|---:|---:|---|")
-        for t in timings:
-            pre = ", ".join(_fmt(v, 2) for v in t.get("precompile_s", []))
-            cpu = (t.get("runner") or {}).get("cpu_model") or "unknown CPU"
-            L.append(f"| {t['name']} | {t['tests']} | {cpu} | {_fmt(med(t['serial_s']), 2)} | "
-                     f"{_fmt(med(t['det_s']), 2)} | {_fmt(t.get('slowdown_pct'))} | "
-                     f"{_fmt(t.get('startup_cost_s'), 2)} | {pre} |")
-        L.append("")
+        L.extend(timing_section(timings, meta))
     else:
         L.append("Quiet timing pass: not run yet (UNKNOWN).\n")
     slow = [x["slowdown_pct"] for x in ok if x["slowdown_pct"] == x["slowdown_pct"]]

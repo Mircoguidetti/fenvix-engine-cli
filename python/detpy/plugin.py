@@ -58,6 +58,23 @@ def pytest_addoption(parser, pluginmanager):
                 help="write {nodeid: outcome} as JSON (works without --det; used by the harness)")
 
 
+_BLOCKED_BY_REEXEC: list[str] | None = None
+
+
+def _blocked_from_env() -> list[str]:
+    """Plugins the re-exec blocked, read once and removed from os.environ.
+
+    The variable is meant for this process only: left in the environment it
+    reached every pytest the tests start, which then accepted the blocked
+    plugin's options instead of rejecting them (review R-001 recheck, N3).
+    """
+    global _BLOCKED_BY_REEXEC
+    if _BLOCKED_BY_REEXEC is None:
+        raw = os.environ.pop(reexec.BLOCKED_ENV, "")
+        _BLOCKED_BY_REEXEC = [n for n in raw.split(",") if n]
+    return _BLOCKED_BY_REEXEC
+
+
 def _accept_blocked_plugin_options(parser, pluginmanager) -> None:
     """Keep the options of plugins blocked by the re-exec (pytest-randomly...) valid.
 
@@ -68,7 +85,7 @@ def _accept_blocked_plugin_options(parser, pluginmanager) -> None:
     defines, by calling its own ``pytest_addoption``: they parse and do nothing,
     because none of the plugin's hooks or fixtures is registered.
     """
-    names = [n for n in os.environ.get(reexec.BLOCKED_ENV, "").split(",") if n]
+    names = _blocked_from_env()
     if not names:
         return
     import inspect
@@ -234,7 +251,7 @@ def _install(config, ns, controls) -> None:
     # undo Level 0: switch them off.
     pm = config.pluginmanager
     # Normally blocked with -p no:<name> by the re-exec, before they load.
-    S.disabled_plugins.extend(n for n in os.environ.get(reexec.BLOCKED_ENV, "").split(",") if n)
+    S.disabled_plugins.extend(_blocked_from_env())
     for name in _CONFLICTING_PLUGINS:
         if pm.get_plugin(name) is not None:
             # Fallback without re-exec: hooks are removed, but fixtures the

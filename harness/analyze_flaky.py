@@ -122,6 +122,16 @@ FS_WRITE = re.compile(r"\b(shutil\.rmtree|rmtree\(|os\.remove|os\.unlink|os\.mak
 FS_TEMP = re.compile(r"\b(tmp_path|tmpdir|tempfile|mkdtemp|TemporaryDirectory|tmp_path_factory)")
 
 
+_BEST_SEED = re.compile(r"seed\s*(\d+)\s*:\s*(\d+)\s*/\s*(\d+)")
+
+
+def _seed_failures(row: dict) -> int:
+    """Failures in the serial --det seed runs (best_attempt "seed S:k/n"): a failure
+    there happened in one process, so it is not a cross-process race (N4)."""
+    m = _BEST_SEED.search(row.get("best_attempt", "") or "")
+    return int(m.group(2)) if m else 0
+
+
 TIME_IN_ID = re.compile(r"\[[^\]]*\d{1,4}[-/:]\d{1,2}[-/:]\d{1,4}[^\]]*\]")
 
 
@@ -133,8 +143,8 @@ def classify(row: dict, src: str) -> tuple[str, str]:
     if hist and all(k.startswith(("failed", "error")) for k in hist):
         return "d", ("fails in every baseline run; only the failing phase changes "
                      f"({', '.join(sorted(hist))}): not flaky in outcome")
-    shared_fs = (row.get("_xdist") and row.get("_never_under_det") and FS_WRITE.search(src)
-                 and not FS_TEMP.search(src))
+    shared_fs = (row.get("_xdist") and row.get("_never_under_det") and not _seed_failures(row)
+                 and FS_WRITE.search(src) and not FS_TEMP.search(src))
     if shared_fs and not (cat.startswith("OD") or cat == "NIO"):
         hits = sorted(set(m.group(0) for m in FS_WRITE.finditer(src)))
         return "b", ("filesystem state in a fixed (non-temporary) directory, written by the test or its "
@@ -186,6 +196,7 @@ def main() -> None:
             src = test_source(repo_dir, r["nodeid"]) if repo_dir else ""
             never = all(not o.startswith(("failed", "error")) for o in
                         [x.split("=")[0] for x in r["det_outcomes"].split(";")])
+            never = never and not _seed_failures(r)
             cls, why = classify({**r, "_xdist": bool(s.get("xdist")), "_never_under_det": never}, src)
             out_rows.append({"repo": name, "pool": s["kind"], "nodeid": r["nodeid"], "class": cls, "evidence": why,
                              "idoft_category": r.get("idoft_category", ""), "under_det": "never fails" if never

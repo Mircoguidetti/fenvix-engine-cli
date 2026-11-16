@@ -21,25 +21,25 @@ A test is *broken by `--det`* when it fails in at least one fixed-order `--det` 
 
 ## Timing
 
-Quiet timing pass: 10 repositories, one per GitHub-hosted runner, 3 serial fixed-order normal runs vs 3 `--det` runs interleaved on the same machine; median per repository. Every ratio compares two runs on the same runner, but the runners differ: 6 CPU models — AMD EPYC 7763 64-Core Processor (4 repositories); AMD EPYC 9V74 80-Core Processor (2 repositories); Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz (1 repository); Intel(R) Xeon(R) 6975P-C (1 repository); Intel(R) Xeon(R) 6973P-C (1 repository); AMD EPYC 9V45 96-Core Processor (1 repository); 4 vCPUs, ubuntu26 20261111.196.1. Labelled **DECLARED-NOISY**: hosted runners are virtual machines on shared hardware.
+Quiet timing pass: 10 repositories, one per GitHub-hosted runner, 3 serial fixed-order normal runs vs 3 `--det` runs interleaved on the same machine; median per repository. Every ratio compares two runs on the same runner, but the runners differ: 6 distinct runners (CPU, vCPUs, image) — AMD EPYC 7763 64-Core Processor, 4 vCPU, ubuntu26 20261111.196.1 (4 repositories); AMD EPYC 9V74 80-Core Processor, 4 vCPU, ubuntu26 20261111.196.1 (2 repositories); Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz, 4 vCPU, ubuntu26 20261111.196.1 (1 repository); Intel(R) Xeon(R) 6975P-C, 4 vCPU, ubuntu26 20261111.82.6 (1 repository); Intel(R) Xeon(R) 6973P-C, 4 vCPU, ubuntu26 20261111.196.1 (1 repository); AMD EPYC 9V45 96-Core Processor, 4 vCPU, ubuntu26 20261111.196.1 (1 repository). Labelled **DECLARED-NOISY**: hosted runners are virtual machines on shared hardware.
 
 **Slowdown of `--det` (MEASURED, DECLARED-NOISY): median 16.8%**, min -2.8%, max 198.7%.
 
 * Without the suites that run in under 1 s (idoft-centreon-sdk-python, idoft-crom): median 9.8% over 8 repositories (MEASURED, DECLARED-NOISY).
 * Absolute extra time of `--det` per suite run: median 1.16 s (MEASURED, DECLARED-NOISY). Fixed start-up cost (one-test suite, same venv, warm caches): median 0.72 s, min 0.46 s, max 1.10 s (MEASURED, DECLARED-NOISY).
 
-| repo | tests | runner CPU | normal serial s (median) | --det s (median) | slowdown % | start-up cost s | precompile s (per run) |
+| repo | tests | runner (CPU, vCPUs, image) | normal serial s (median) | --det s (median) | slowdown % | start-up cost s | precompile s (per run) |
 |---|---:|---|---:|---:|---:|---:|---|
-| attrs | 1412 | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz | 8.67 | 11.12 | 28.3 | 1.03 | 8.13, 0.34, 0.34 |
-| idoft-centreon-sdk-python | 44 | AMD EPYC 9V74 80-Core Processor | 0.33 | 0.87 | 161.8 | 0.51 | 1.17, 0.36, 0.35 |
-| idoft-cloudnetpy | 439 | Intel(R) Xeon(R) 6975P-C | 6.23 | 6.30 | 1.2 | 0.84 | 2.62, 0.67, 0.67 |
-| idoft-crom | 84 | AMD EPYC 7763 64-Core Processor | 0.40 | 1.19 | 198.7 | 0.73 | 1.48, 0.52, 0.53 |
-| idoft-easypy | 212 | Intel(R) Xeon(R) 6973P-C | 12.27 | 11.92 | -2.8 | 0.50 | 1.10, 0.37, 0.37 |
-| idoft-eppy | 218 | AMD EPYC 9V45 96-Core Processor | 6.09 | 6.75 | 10.8 | 0.46 | 1.31, 0.38, 0.38 |
-| networkx | 10191 | AMD EPYC 7763 64-Core Processor | 141.36 | 153.82 | 8.8 | 1.10 | 10.54, 0.72, 0.73 |
-| pygments | 5346 | AMD EPYC 7763 64-Core Processor | 19.48 | 21.09 | 8.3 | 0.71 | 7.37, 0.59, 0.59 |
-| rich | 981 | AMD EPYC 9V74 80-Core Processor | 4.95 | 6.49 | 31.1 | 0.64 | 8.62, 0.40, 0.41 |
-| werkzeug | 1016 | AMD EPYC 7763 64-Core Processor | 9.35 | 11.49 | 22.8 | 0.73 | 7.08, 0.45, 0.46 |
+| attrs | 1412 | Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz, 4 vCPU, ubuntu26 20261111.196.1 | 8.67 | 11.12 | 28.3 | 1.03 | 8.13, 0.34, 0.34 |
+| idoft-centreon-sdk-python | 44 | AMD EPYC 9V74 80-Core Processor, 4 vCPU, ubuntu26 20261111.196.1 | 0.33 | 0.87 | 161.8 | 0.51 | 1.17, 0.36, 0.35 |
+| idoft-cloudnetpy | 439 | Intel(R) Xeon(R) 6975P-C, 4 vCPU, ubuntu26 20261111.82.6 | 6.23 | 6.30 | 1.2 | 0.84 | 2.62, 0.67, 0.67 |
+| idoft-crom | 84 | AMD EPYC 7763 64-Core Processor, 4 vCPU, ubuntu26 20261111.196.1 | 0.40 | 1.19 | 198.7 | 0.73 | 1.48, 0.52, 0.53 |
+| idoft-easypy | 212 | Intel(R) Xeon(R) 6973P-C, 4 vCPU, ubuntu26 20261111.196.1 | 12.27 | 11.92 | -2.8 | 0.50 | 1.10, 0.37, 0.37 |
+| idoft-eppy | 218 | AMD EPYC 9V45 96-Core Processor, 4 vCPU, ubuntu26 20261111.196.1 | 6.09 | 6.75 | 10.8 | 0.46 | 1.31, 0.38, 0.38 |
+| networkx | 10191 | AMD EPYC 7763 64-Core Processor, 4 vCPU, ubuntu26 20261111.196.1 | 141.36 | 153.82 | 8.8 | 1.10 | 10.54, 0.72, 0.73 |
+| pygments | 5346 | AMD EPYC 7763 64-Core Processor, 4 vCPU, ubuntu26 20261111.196.1 | 19.48 | 21.09 | 8.3 | 0.71 | 7.37, 0.59, 0.59 |
+| rich | 981 | AMD EPYC 9V74 80-Core Processor, 4 vCPU, ubuntu26 20261111.196.1 | 4.95 | 6.49 | 31.1 | 0.64 | 8.62, 0.40, 0.41 |
+| werkzeug | 1016 | AMD EPYC 7763 64-Core Processor, 4 vCPU, ubuntu26 20261111.196.1 | 9.35 | 11.49 | 22.8 | 0.73 | 7.08, 0.45, 0.46 |
 
 * Round timings, serial `--det` vs the random-order xdist `-n 2` baseline: median n/a% — **NOT COMPARABLE** (different parallelism and order; reported only for completeness).
 * Deterministic bytecode precompilation, first `--det` run of each repository: median n/a s, max n/a s; later runs (incremental check): median n/a s (MEASURED, NOISY).
