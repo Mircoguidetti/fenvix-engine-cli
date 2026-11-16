@@ -80,6 +80,12 @@ def walk_summary(shards, spec):
         if co.get("sum_plain"):
             ovh.append(co["sum_traced"] / co["sum_plain"])
     ratio = statistics.median(ovh) if ovh else None
+    if lang != "go":
+        # unit cost: test durations, or the unit's wall time minus the fixed process start-up (5th percentile of
+        # unit walls), whichever is larger: per-file imports and transforms are paid in CI too
+        walls = sorted(c["wall"] for c in units.values() if c.get("wall"))
+        base = walls[max(0, int(len(walls) * 0.05) - 1)] if walls else 0.0
+        units = {u: dict(c, test=max(c["test"], c.get("wall", 0.0) - base)) for u, c in units.items()}
     per_rule = {r: {"time": [], "count": [], "ttg_after": []} for r in rules}
     ttg_before, inval_all, inval_why, verify = [], 0, Counter(), Counter()
     wrong, flaky_v = [], []

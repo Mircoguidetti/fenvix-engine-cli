@@ -49,6 +49,6 @@
   "workers": 4,
   "source": ".github/workflows/tests.yml: one ubuntu-latest job per Node version, pnpm test (vitest run)"
  },
- "ci_cmd": "pnpm test --reporter=default --reporter=json --outputFile={report}",
+ "ci_cmd": "pnpm run test --reporter=default --reporter=json --outputFile={report}",
  "ci_report": "vitest"
 }
