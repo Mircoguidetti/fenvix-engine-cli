@@ -1,0 +1,72 @@
+{
+  "name": "idoft-crom",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/thegetty/crom",
+  "commit": "98bb6be4e32b",
+  "commit_date": "2020-07-31",
+  "python": "3.9",
+  "install": "-e . -r requirements.txt",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 0.4547191814999906,
+  "det_mean_s": 0.766698582699999,
+  "slowdown_pct": 68.60924585826274,
+  "precompile_first_s": 0.958,
+  "precompile_rest_median_s": 0.27,
+  "tests": 84,
+  "unstable_baseline": 13,
+  "unstable_det": 0,
+  "became_stable": 13,
+  "outcome_changed_by_det": 0,
+  "covered": 63,
+  "not_covered": 21,
+  "reproduced": 11,
+  "never_fails_under_det": 2,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    6,
+    9,
+    0,
+    9,
+    9,
+    9,
+    1,
+    0,
+    1,
+    5,
+    6
+  ],
+  "seeds_explored": 20,
+  "exploration_runs": 56,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "entropy": 21
+  },
+  "pass_fail_reasons": {
+    "random": 5,
+    "entropy": 5,
+    "fs": 1
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 38,
+  "known_present": 38,
+  "known_unstable_baseline": 13,
+  "known_reproduced": 11,
+  "known_categories": {
+    "OD-Vic": 38
+  },
+  "examples": {
+    "reproduced": [
+      "tests/test_model.py::TestAutoIdentifiers::test_no_ident (seed 6): event #0: random.state @ <end> returned different values: \"075f80dd7e0d7c1bb4a49e1cc1b1c929\" vs \"332fdd49aa859c4e2d5572375b4496d5\"",
+      "tests/test_model.py::TestBaseResource::test_allows_multiple (seed 9): event #0: [entropy] os.urandom @ cromulent/model.py:279 = 16:7eb532facb5e5e73184e4884a196258d  <>  [random] random.state @ <end> = f551fa9f9b5ceab5a3e2891c92bbf",
+      "tests/test_model.py::TestBaseResource::test_check_reference (seed fixed): event #0: random.state @ <end> returned different values: \"09776900dd766c779c47b9bdcb51513e\" vs \"04583cdb6cb4146840d331b4e458ce71\""
+    ]
+  }
+}

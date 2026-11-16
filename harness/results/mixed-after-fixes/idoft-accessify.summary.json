@@ -1,0 +1,64 @@
+{
+  "name": "idoft-accessify",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/dmytrostriletskyi/accessify",
+  "commit": "6b7cf8657ffe",
+  "commit_date": "2019-04-17",
+  "python": "3.9",
+  "install": "-e .",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 0.4054001366999994,
+  "det_mean_s": 0.7901673712999997,
+  "slowdown_pct": 94.9104846712798,
+  "precompile_first_s": 1.053,
+  "precompile_rest_median_s": 0.326,
+  "tests": 41,
+  "unstable_baseline": 7,
+  "unstable_det": 0,
+  "became_stable": 7,
+  "outcome_changed_by_det": 0,
+  "covered": 41,
+  "not_covered": 0,
+  "reproduced": 7,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+  ],
+  "seeds_explored": 5,
+  "exploration_runs": 14,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "random": 7
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 12,
+  "known_present": 12,
+  "known_unstable_baseline": 7,
+  "known_reproduced": 7,
+  "known_categories": {
+    "OD-Vic": 12
+  },
+  "examples": {
+    "reproduced": [
+      "tests/interfaces/test_implements.py::test_implements_no_implementation_getter (seed 5): event #0: random.state @ <end> returned different values: \"1417f489176d67ad2a64ae3d5aeb7ad2\" vs \"bee022abf3b8728b98a194f006ea40ea\"",
+      "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method (seed 5): event #0: random.state @ <end> returned different values: \"13a768f27413c610bb0a21f98dd81560\" vs \"aa2ac29d46859a6282d917ea696c41a8\"",
+      "tests/interfaces/test_implements.py::test_implements_not_self_convention (seed 5): event #0: random.state @ <end> returned different values: \"fe85e40d1b3c3c449f46b2497a968c74\" vs \"41d31fada0bf5f56f5d53082f697456b\""
+    ]
+  }
+}

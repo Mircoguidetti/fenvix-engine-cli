@@ -1,0 +1,60 @@
+{
+  "name": "rich",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/Textualize/rich",
+  "commit": "3a109ccdffe5",
+  "commit_date": "2026-11-07",
+  "python": "3.13",
+  "install": "-e . --group dev attrs",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 3.7731529060999973,
+  "det_mean_s": 7.223350404200001,
+  "slowdown_pct": 91.44070182054173,
+  "precompile_first_s": 9.07,
+  "precompile_rest_median_s": 0.406,
+  "tests": 981,
+  "unstable_baseline": 5,
+  "unstable_det": 0,
+  "became_stable": 5,
+  "outcome_changed_by_det": 0,
+  "covered": 981,
+  "not_covered": 0,
+  "reproduced": 5,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "seeds_explored": 1,
+  "exploration_runs": 10,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "random": 5
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "reproduced": [
+      "tests/test_box.py::test_get_row (seed 1): event #0: random.state @ <end> returned different values: \"9384f52fb3ae5dbacb666e842473575e\" vs \"313af12c70c973b544159e2293d09e75\"",
+      "tests/test_rule_in_table.py::test_rule_in_expanded_table (seed 1): event #0: random.state @ <end> returned different values: \"d63faa3842a6d4533e4b8b8ef86639f9\" vs \"818857d8e31104e3e69ecb540a01c547\"",
+      "tests/test_rule_in_table.py::test_rule_in_ratio_table (seed 1): event #0: random.state @ <end> returned different values: \"d3a5cb7055b40d5f9c55f775bbfa9823\" vs \"2850cefa2a7f56776ead58e8903b9513\""
+    ]
+  }
+}
