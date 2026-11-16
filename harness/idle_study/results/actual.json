@@ -1,0 +1,847 @@
+{
+ "name": "actual",
+ "repo": "actualbudget/actual",
+ "ref": "abe8ea7851518a88245fd78b53b427b54eba734e",
+ "status": "ok",
+ "setup_s": 100,
+ "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
+ "config": {
+  "repo": "actualbudget/actual",
+  "ref": "abe8ea7851518a88245fd78b53b427b54eba734e",
+  "app": "node",
+  "suite": "e2e: Playwright against the built web client (shard 1/3)",
+  "services": "static server, browser",
+  "node": "24.22.1",
+  "runs": 6,
+  "parser": "junit"
+ },
+ "run_id": "43945303458",
+ "measured_at": "2026-11-16T20:25:08Z",
+ "baseline_cores": 0.0165,
+ "n_runs": 6,
+ "runs": [
+  {
+   "run": 1,
+   "rc": 0,
+   "wall_s": 204.67,
+   "busy_cpu_s": 768.38,
+   "cores_mean": 3.754,
+   "idle_share_raw": -2.7543,
+   "idle_share_net": -2.7378,
+   "quiet_share": 0.005,
+   "share_ge1core": 0.9777,
+   "iowait_s": 11.04,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 1.2,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 768.38,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     643.3
+    ],
+    [
+     "host",
+     "MainThread",
+     45.16
+    ],
+    [
+     "host",
+     "provjobd4924144",
+     25.73
+    ],
+    [
+     "host",
+     "python3",
+     1.68
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.73
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.44
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.29
+    ],
+    [
+     "host",
+     "npm exec playwr",
+     0.21
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.2
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.14
+    ],
+    [
+     "host",
+     "kworker/2:1H-kblockd",
+     0.09
+    ],
+    [
+     "host",
+     "npm",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/1:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/0:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/3:1H-kblockd",
+     0.08
+    ]
+   ],
+   "n_tests": 74,
+   "n_pass": 74,
+   "n_fail": 0,
+   "n_skip": 0,
+   "series_1s": [
+    0.04,
+    1.06,
+    1.37,
+    0.32,
+    1.95,
+    2.96,
+    0.26,
+    0.1,
+    3.03,
+    3.99,
+    3.99,
+    3.96,
+    3.99,
+    3.77,
+    3.29,
+    3.7,
+    3.94,
+    3.96,
+    3.98,
+    4.01,
+    4.0,
+    3.98,
+    3.99,
+    3.99,
+    3.91,
+    3.95,
+    3.96,
+    3.98,
+    4.01,
+    3.95,
+    3.94,
+    3.95,
+    3.98,
+    3.97,
+    3.98,
+    3.98,
+    3.9,
+    3.99,
+    3.96,
+    3.95,
+    3.99,
+    3.94,
+    3.97,
+    3.98,
+    3.93,
+    3.97,
+    3.97,
+    3.94,
+    3.82,
+    3.81,
+    3.98,
+    3.95,
+    3.93,
+    3.98,
+    3.99,
+    3.9,
+    3.82,
+    3.72,
+    3.82,
+    3.87,
+    3.92,
+    3.99,
+    3.93,
+    3.89,
+    3.84,
+    3.98,
+    3.98,
+    3.95,
+    3.98,
+    3.93,
+    3.94,
+    3.91,
+    3.88,
+    3.97,
+    3.99,
+    4.0,
+    3.96,
+    3.98,
+    3.96,
+    3.95,
+    3.97,
+    3.99,
+    3.95,
+    3.94,
+    3.83,
+    3.97,
+    3.95,
+    3.71,
+    3.93,
+    3.91,
+    3.97,
+    3.97,
+    3.94,
+    3.92,
+    3.93,
+    3.93,
+    3.94,
+    3.98,
+    3.9,
+    3.88,
+    3.88,
+    3.98,
+    3.89,
+    4.0,
+    3.96,
+    3.98,
+    3.99,
+    3.94,
+    3.83,
+    3.83,
+    3.81,
+    3.9,
+    3.94,
+    4.0,
+    3.98,
+    3.95,
+    3.96,
+    3.92,
+    3.89,
+    3.76,
+    3.85,
+    3.9,
+    4.0,
+    3.95,
+    3.95,
+    3.98,
+    3.95,
+    3.9,
+    3.98,
+    3.9,
+    3.91,
+    3.92,
+    3.93,
+    3.98,
+    3.96,
+    3.88,
+    3.84,
+    3.96,
+    3.93,
+    3.94,
+    3.96,
+    3.97,
+    3.88,
+    3.94,
+    3.94,
+    3.84,
+    3.95,
+    3.94,
+    3.98,
+    3.97,
+    3.92,
+    3.89,
+    3.96,
+    3.9,
+    3.94,
+    3.82,
+    3.89,
+    3.96,
+    3.99,
+    3.91,
+    3.98,
+    3.87,
+    3.75,
+    3.92,
+    3.94,
+    3.98,
+    3.97,
+    3.98,
+    3.92,
+    3.46,
+    3.91,
+    3.84,
+    3.91,
+    3.96,
+    3.94,
+    3.91,
+    3.93,
+    3.9,
+    3.78,
+    3.87,
+    3.87,
+    3.94,
+    3.94,
+    3.98,
+    3.97,
+    3.98,
+    3.84,
+    3.82,
+    3.85,
+    3.96,
+    3.96,
+    3.89,
+    3.94,
+    3.58,
+    3.12,
+    3.47,
+    3.78,
+    3.73,
+    3.72,
+    2.54,
+    2.75,
+    2.24,
+    2.47,
+    1.86,
+    1.22,
+    1.58
+   ]
+  },
+  {
+   "run": 2,
+   "rc": 0,
+   "wall_s": 200.46,
+   "busy_cpu_s": 759.45,
+   "cores_mean": 3.788,
+   "idle_share_raw": -2.7885,
+   "idle_share_net": -2.772,
+   "quiet_share": 0.0025,
+   "share_ge1core": 0.9848,
+   "iowait_s": 0.44,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 1.13,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 759.45,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     642.61
+    ],
+    [
+     "host",
+     "MainThread",
+     43.81
+    ],
+    [
+     "host",
+     "provjobd4924144",
+     18.66
+    ],
+    [
+     "host",
+     "python3",
+     1.11
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.71
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.57
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.28
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.24
+    ],
+    [
+     "host",
+     "npm exec playwr",
+     0.21
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.13
+    ],
+    [
+     "host",
+     "kworker/3:1H-kblockd",
+     0.09
+    ],
+    [
+     "host",
+     "kworker/1:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/2:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/0:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "npm",
+     0.07
+    ]
+   ],
+   "n_tests": 74,
+   "n_pass": 74,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 3,
+   "rc": 0,
+   "wall_s": 201.4,
+   "busy_cpu_s": 759.92,
+   "cores_mean": 3.773,
+   "idle_share_raw": -2.7732,
+   "idle_share_net": -2.7567,
+   "quiet_share": 0.0025,
+   "share_ge1core": 0.9849,
+   "iowait_s": 0.48,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 1.15,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 759.92,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     640.75
+    ],
+    [
+     "host",
+     "MainThread",
+     43.03
+    ],
+    [
+     "host",
+     "provjobd4924144",
+     19.52
+    ],
+    [
+     "host",
+     "python3",
+     1.12
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.71
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.44
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.29
+    ],
+    [
+     "host",
+     "npm exec playwr",
+     0.21
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.12
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.1
+    ],
+    [
+     "host",
+     "kworker/1:1H-kblockd",
+     0.09
+    ],
+    [
+     "host",
+     "kworker/2:1H-kblockd",
+     0.09
+    ],
+    [
+     "host",
+     "npm",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/0:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/3:1H-kblockd",
+     0.08
+    ]
+   ],
+   "n_tests": 74,
+   "n_pass": 74,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 4,
+   "rc": 0,
+   "wall_s": 199.65,
+   "busy_cpu_s": 756.34,
+   "cores_mean": 3.788,
+   "idle_share_raw": -2.7882,
+   "idle_share_net": -2.7718,
+   "quiet_share": 0.0025,
+   "share_ge1core": 0.9848,
+   "iowait_s": 0.49,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 1.13,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 756.34,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     639.61
+    ],
+    [
+     "host",
+     "MainThread",
+     42.38
+    ],
+    [
+     "host",
+     "provjobd4924144",
+     19.3
+    ],
+    [
+     "host",
+     "python3",
+     1.11
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.7
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.43
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.28
+    ],
+    [
+     "host",
+     "npm exec playwr",
+     0.2
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.14
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.13
+    ],
+    [
+     "host",
+     "npm",
+     0.09
+    ],
+    [
+     "host",
+     "kworker/3:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/2:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/1:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/0:1H-kblockd",
+     0.08
+    ]
+   ],
+   "n_tests": 74,
+   "n_pass": 74,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 5,
+   "rc": 0,
+   "wall_s": 201.32,
+   "busy_cpu_s": 760.2,
+   "cores_mean": 3.776,
+   "idle_share_raw": -2.7761,
+   "idle_share_net": -2.7596,
+   "quiet_share": 0.005,
+   "share_ge1core": 0.985,
+   "iowait_s": 0.52,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 1.14,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 760.2,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     644.66
+    ],
+    [
+     "host",
+     "MainThread",
+     43.63
+    ],
+    [
+     "host",
+     "provjobd4924144",
+     19.44
+    ],
+    [
+     "host",
+     "python3",
+     1.12
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.69
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.59
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.29
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.24
+    ],
+    [
+     "host",
+     "npm exec playwr",
+     0.21
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.12
+    ],
+    [
+     "host",
+     "kworker/2:1H-kblockd",
+     0.09
+    ],
+    [
+     "host",
+     "kworker/1:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/0:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/3:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "npm",
+     0.07
+    ]
+   ],
+   "n_tests": 74,
+   "n_pass": 74,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 6,
+   "rc": 0,
+   "wall_s": 200.75,
+   "busy_cpu_s": 758.93,
+   "cores_mean": 3.78,
+   "idle_share_raw": -2.7804,
+   "idle_share_net": -2.7639,
+   "quiet_share": 0.0025,
+   "share_ge1core": 0.9849,
+   "iowait_s": 0.51,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 1.14,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 758.93,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     637.42
+    ],
+    [
+     "host",
+     "MainThread",
+     42.89
+    ],
+    [
+     "host",
+     "provjobd4924144",
+     21.03
+    ],
+    [
+     "host",
+     "python3",
+     1.12
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.67
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.43
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.29
+    ],
+    [
+     "host",
+     "npm exec playwr",
+     0.2
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.13
+    ],
+    [
+     "host",
+     "npm",
+     0.09
+    ],
+    [
+     "host",
+     "kworker/3:1H-kblockd",
+     0.09
+    ],
+    [
+     "host",
+     "kworker/2:1H-kblockd",
+     0.09
+    ],
+    [
+     "host",
+     "kworker/1:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/0:1H-kblockd",
+     0.08
+    ],
+    [
+     "host",
+     "containerd",
+     0.07
+    ]
+   ],
+   "n_tests": 74,
+   "n_pass": 74,
+   "n_fail": 0,
+   "n_skip": 0
+  }
+ ],
+ "idle": {
+  "median_idle_share_raw": -2.7782,
+  "median_idle_share_net": -2.7618,
+  "median_quiet_share": 0.0025,
+  "median_cores_mean": 3.778,
+  "median_wall_s": 201.035,
+  "median_busy_cpu_s": 759.685
+ },
+ "tests": {
+  "n_distinct": 74,
+  "n_flaky": 0,
+  "n_consistent_fail": 0,
+  "flaky": [],
+  "consistent_fail_sample": []
+ }
+}
