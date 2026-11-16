@@ -99,7 +99,8 @@ def main():
         env.pop("PYTHONPATH", None)  # no study hooks: the plain CI step
         env.update(spec.get("ci_env", {}))
         if spec["lang"] == "go":
-            env["GOFLAGS"] = spec.get("goflags", "-mod=mod")
+            if spec.get("goflags"):
+                env["GOFLAGS"] = spec["goflags"]
         code, out, wall = walk.sh(cmd, cwd=w.src, env=env, timeout=spec.get("ci_timeout", 3 * 3600), shell=True)
         fails, n, err = failures(spec["ci_report"], report, out)
         res.update(status="ok", exit=code, test_wall_s=wall, tests=n, failed_tests=(fails or [])[:200],

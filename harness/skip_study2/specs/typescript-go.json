@@ -1,0 +1,30 @@
+{
+ "name": "typescript-go",
+ "url": "https://github.com/microsoft/typescript-go",
+ "lang": "go",
+ "seq": {
+  "kind": "first-parent",
+  "n": 51
+ },
+ "install_files": [
+  "go.mod",
+  "go.sum"
+ ],
+ "build": [
+  "git submodule update --init --depth 1 --recursive > /dev/null 2>&1 || true"
+ ],
+ "units": {
+  "patterns": [
+   "./..."
+  ],
+  "sample": 1.0
+ },
+ "go_args": [
+  "-short"
+ ],
+ "verify": 0.15,
+ "ci": {
+  "workers": 4,
+  "source": "go test ./... (hereby test) on one ubuntu-latest job"
+ }
+}

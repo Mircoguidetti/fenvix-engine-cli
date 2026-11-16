@@ -112,5 +112,34 @@ tf["ci_report"] = "go"
 prom["ci_cmd"] = "go test -json ./... > {report}"
 prom["ci_report"] = "go"
 
-for d in (ha, saleor, vue, docu, tf, prom):
+oai = {
+    "name": "openai-agents-python", "url": GH + "openai/openai-agents-python", "lang": "pytest",
+    "seq": {"kind": "first-parent", "n": 51},
+    "install": ["test -x {py} || uv venv -q --python 3.12 {venv}",
+                "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --all-extras --all-packages --group dev"],
+    "install_files": ["uv.lock", "pyproject.toml"],
+    "units": {"include": ["tests/**/test_*.py"], "sample": 1.0},
+    "cmd": ["{py}", "-m", "pytest", "-q", "-n", "0", "-p", "no:cacheprovider", "-p", "s2_report", "{unit}"],
+    "env": {"OPENAI_API_KEY": "fake-for-tests"},
+    "unit_timeout": 600, "verify": 0.15,
+    "ci": {"workers": 4, "source": ".github/workflows/tests.yml: make tests (pytest -n auto --dist worksteal "
+                                   "plus a serial pass) on one ubuntu-latest job"},
+}
+mcp = {
+    "name": "github-mcp-server", "url": GH + "github/github-mcp-server", "lang": "go",
+    "seq": {"kind": "first-parent", "n": 51},
+    "install_files": ["go.mod", "go.sum"],
+    "units": {"patterns": ["./..."], "sample": 1.0}, "go_args": [], "verify": 0.15,
+    "ci": {"workers": 4, "source": "go test ./... on one ubuntu-latest job"},
+}
+tsgo = {
+    "name": "typescript-go", "url": GH + "microsoft/typescript-go", "lang": "go",
+    "seq": {"kind": "first-parent", "n": 51},
+    "install_files": ["go.mod", "go.sum"],
+    "build": ["git submodule update --init --depth 1 --recursive > /dev/null 2>&1 || true"],
+    "units": {"patterns": ["./..."], "sample": 1.0}, "go_args": ["-short"], "verify": 0.15,
+    "ci": {"workers": 4, "source": "go test ./... (hereby test) on one ubuntu-latest job"},
+}
+
+for d in (ha, saleor, vue, docu, tf, prom, oai, mcp, tsgo):
     (HERE / f"{d['name']}.json").write_text(json.dumps(d, indent=1) + "\n")

@@ -31,6 +31,10 @@ jobs:
       flaky: ${{ steps.p.outputs.flaky }}
       has_walk: ${{ steps.p.outputs.has_walk }}
       has_flaky: ${{ steps.p.outputs.has_flaky }}
+      finer: ${{ steps.p.outputs.finer }}
+      agent: ${{ steps.p.outputs.agent }}
+      has_agent: ${{ steps.p.outputs.has_agent }}
+      has_finer: ${{ steps.p.outputs.has_finer }}
     steps:
       - uses: actions/checkout@v4
       - id: p
@@ -80,6 +84,54 @@ jobs:
             --out "harness/skip_study2/results/${{ needs.plan.outputs.run_id }}/walk/${{ matrix.name }}-${shard_tag}.json.gz" \
             --shard "${{ matrix.shard }}" --budget-min "${{ matrix.budget }}" --run-id "${{ needs.plan.outputs.run_id }}"
 
+  agent:
+    needs: plan
+    if: ${{ needs.plan.outputs.has_agent == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.agent) }}
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          df -h / | tail -1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v6
+      - if: ${{ matrix.lang == 'go' }}
+        uses: actions/setup-go@v5
+        with: {go-version: stable, cache: false}
+      - if: ${{ matrix.node != '' }}
+        uses: actions/setup-node@v4
+        with: {node-version: "${{ matrix.node }}"}
+      - name: System packages and services
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq strace ${{ matrix.apt }} > /dev/null
+          for s in ${{ matrix.services }}; do
+            case $s in
+              postgres) docker run -d --name pg -p 5432:5432 -e POSTGRES_USER=saleor -e POSTGRES_PASSWORD=saleor postgres:15-alpine ;;
+              valkey) docker run -d --name vk -p 6379:6379 valkey/valkey:8.1-alpine ;;
+            esac
+          done
+          strace -V | head -1
+      - name: Walk agent pull requests
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "skip-study2-bot"
+          git config user.email "skip-study2-bot@users.noreply.github.com"
+          extra=""
+          if [ -n "${{ matrix.sample }}" ]; then extra="--sample ${{ matrix.sample }}"; fi
+          python3 harness/skip_study2/agent_walk.py --spec "${{ matrix.spec }}" --query "${{ matrix.query }}" \
+            --label "${{ matrix.label }}" --max-prs "${{ matrix.max_prs }}" $extra --work "$RUNNER_TEMP/w" \
+            --budget-min "${{ matrix.budget }}" \
+            --out "harness/skip_study2/results/${{ needs.plan.outputs.run_id }}/agent/${{ matrix.name }}-${{ matrix.label }}.json.gz"
+
   flaky:
     needs: plan
     if: ${{ needs.plan.outputs.has_flaky == 'true' }}
@@ -122,3 +174,32 @@ jobs:
           python3 harness/skip_study2/flaky.py --spec "${{ matrix.spec }}" --sha "${{ matrix.sha }}" \
             --group "${{ matrix.group }}" --rep "${{ matrix.rep }}" --work "$RUNNER_TEMP/f" \
             --out "harness/skip_study2/results/${{ needs.plan.outputs.run_id }}/flaky/${{ matrix.name }}-g${g}-r${{ matrix.rep }}.json"
+
+  finer:
+    needs: plan
+    if: ${{ needs.plan.outputs.has_finer == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 7
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.finer) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v6
+      - name: Capture (51 commits) and analysis with the name-read rule
+        run: |
+          git config user.name "skip-study2-bot"
+          git config user.email "skip-study2-bot@users.noreply.github.com"
+          python3 -m venv "$RUNNER_TEMP/drv" && "$RUNNER_TEMP/drv/bin/pip" install -q coverage
+          out="harness/skip_study2/results/${{ needs.plan.outputs.run_id }}/finer"
+          "$RUNNER_TEMP/drv/bin/python" harness/skip_study2/finer/run_repo.py --repo "${{ matrix.name }}" \
+            --work "$RUNNER_TEMP/w" --commits 51 --sha "${{ matrix.sha }}" > "$RUNNER_TEMP/collect.log" 2>&1 || true
+          tail -60 "$RUNNER_TEMP/collect.log"
+          "$RUNNER_TEMP/drv/bin/python" harness/skip_study2/finer/analyze.py --repo "${{ matrix.name }}" \
+            --work "$RUNNER_TEMP/w" --out "$out" | tail -60
+          gzip -9 -f "$out/${{ matrix.name }}.json"
+          python3 -c "import sys; sys.path.insert(0, 'harness/skip_study2'); import walk, pathlib; walk.commit_results([pathlib.Path('$out/${{ matrix.name }}.json.gz')], 'Skip study 2 (finer rule): ${{ matrix.name }}')"

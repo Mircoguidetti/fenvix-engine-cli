@@ -1,10 +1,29 @@
-{"run_id": "r1",
+{"run_id": "r2",
  "walk": [
-  {"spec": "home-assistant", "shards": 4, "budget_min": 330},
-  {"spec": "saleor", "shards": 2, "budget_min": 330},
-  {"spec": "vue-core", "shards": 1, "budget_min": 330},
-  {"spec": "docusaurus", "shards": 1, "budget_min": 330},
   {"spec": "terraform", "shards": 1, "budget_min": 330},
   {"spec": "prometheus", "shards": 1, "budget_min": 330}
+ ],
+ "finer": [
+  {"repo": "arrow", "sha": "2224255c4acc"},
+  {"repo": "attrs", "sha": "2a1fb86d4481"},
+  {"repo": "boltons", "sha": "d31d821d56c8"},
+  {"repo": "click", "sha": "08b803cf32ce"},
+  {"repo": "flask", "sha": "49943b5a9441"},
+  {"repo": "isort", "sha": "eb62da318ea5"},
+  {"repo": "jinja", "sha": "5ef70112a1ff"},
+  {"repo": "marshmallow", "sha": "777ff66039fd"},
+  {"repo": "more-itertools", "sha": "ceafee8ce96f"},
+  {"repo": "pygments", "sha": "156d85fdd18d"},
+  {"repo": "sqlparse", "sha": "09dbe1eec31e"},
+  {"repo": "structlog", "sha": "81779f0abe59"},
+  {"repo": "toolz", "sha": "451af60dec59"},
+  {"repo": "werkzeug", "sha": "0f43c6ebd426"}
+ ],
+ "flaky": [
+  {"spec": "vue-core", "reps": 10},
+  {"spec": "docusaurus", "reps": 10},
+  {"spec": "terraform", "reps": 10},
+  {"spec": "prometheus", "reps": 10},
+  {"spec": "saleor", "reps": 10}
  ]
 }

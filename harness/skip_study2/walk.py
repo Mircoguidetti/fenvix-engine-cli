@@ -207,6 +207,8 @@ class Walker:
                        "cpus": os.cpu_count(), "commits": [], "transitions": [], "units": {}, "notes": []}
         self.dist_listing = {}  # commit idx -> site-packages names (python)
         self.added_cache = {}
+        self._last_dep = None
+        self.push = True
 
     # -- environment -------------------------------------------------------
     def env(self):
@@ -550,7 +552,6 @@ class Walker:
             f"{commits[0][:10]}..{commits[-1][:10]}")
         if self.lang == "go":
             return self.walk_go(commits)
-        last_dep = None
         verify = self.spec.get("verify", 0.1)
         for i, sha in enumerate(commits):
             if time.time() - T_START > self.budget:
@@ -562,17 +563,17 @@ class Walker:
             self.checkout(sha)
             row = {"i": i, "sha": sha, "date": git(self.src, "show", "-s", "--format=%cI", sha).strip()}
             dh = self.dep_hash()
-            if dh != last_dep:
+            if dh != self._last_dep:
                 ok, why = self.install()
                 row["installed"] = True
                 if not ok:
                     row["status"] = "install-failed"
                     row["detail"] = why[-800:]
                     self.result["commits"].append(row)
-                    last_dep = None
+                    self._last_dep = None
                     self.flush()
                     continue
-                last_dep = dh
+                self._last_dep = dh
             if not self.build():
                 row["status"] = "build-failed"
                 self.result["commits"].append(row)
@@ -674,10 +675,10 @@ class Walker:
         (including subprocesses) to each package's test binary."""
         env = self.env()
         env["GOCACHE"] = str(self.work / "gocache")
-        env["GOFLAGS"] = self.spec.get("goflags", "-mod=mod")
+        if self.spec.get("goflags"):
+            env["GOFLAGS"] = self.spec["goflags"]
         verify = self.spec.get("verify", 0.1)
         pkgrec = {}
-        last_dep = None
         for i, sha in enumerate(commits):
             if time.time() - T_START > self.budget:
                 self.result["notes"].append(f"budget reached before commit {i}")
@@ -687,9 +688,9 @@ class Walker:
             self.checkout(sha)
             row = {"i": i, "sha": sha, "date": git(self.src, "show", "-s", "--format=%cI", sha).strip()}
             dh = self.dep_hash()
-            if dh != last_dep:
+            if dh != self._last_dep:
                 sh(["go", "mod", "download"], cwd=self.src, env=env, timeout=1800)
-                last_dep = dh
+                self._last_dep = dh
             if not self.build():
                 row["status"] = "build-failed"
                 self.result["commits"].append(row)
@@ -719,6 +720,9 @@ class Walker:
             res = self.parse_go_json(out)
             row["wall"] = wall
             row["go_exit"] = code
+            if not res:
+                row["go_tail"] = out[-2500:]
+                log(f"go test produced no results (exit {code}):\n{out[-2500:]}")
             # map strace groups (cwd of the test binary) to packages
             modpath = self.go_module_dirs(env)
             groups = deps.get("groups", {}) if isinstance(deps, dict) else {}
@@ -842,7 +846,7 @@ class Walker:
             data = gzip.compress(data, 9)
         tmp.write_bytes(data)
         tmp.replace(self.out)
-        if push and os.environ.get("S2_COMMIT"):
+        if push and self.push and os.environ.get("S2_COMMIT"):
             commit_results([self.out], f"Skip study 2: {self.spec['name']} shard {self.shard} "
                                        f"({len(self.result['commits'])} commits)")
 

@@ -1,0 +1,25 @@
+{
+ "name": "github-mcp-server",
+ "url": "https://github.com/github/github-mcp-server",
+ "lang": "go",
+ "seq": {
+  "kind": "first-parent",
+  "n": 51
+ },
+ "install_files": [
+  "go.mod",
+  "go.sum"
+ ],
+ "units": {
+  "patterns": [
+   "./..."
+  ],
+  "sample": 1.0
+ },
+ "go_args": [],
+ "verify": 0.15,
+ "ci": {
+  "workers": 4,
+  "source": "go test ./... on one ubuntu-latest job"
+ }
+}

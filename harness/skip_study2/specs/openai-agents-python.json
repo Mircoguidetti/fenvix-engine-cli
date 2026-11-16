@@ -1,0 +1,45 @@
+{
+ "name": "openai-agents-python",
+ "url": "https://github.com/openai/openai-agents-python",
+ "lang": "pytest",
+ "seq": {
+  "kind": "first-parent",
+  "n": 51
+ },
+ "install": [
+  "test -x {py} || uv venv -q --python 3.12 {venv}",
+  "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --all-extras --all-packages --group dev"
+ ],
+ "install_files": [
+  "uv.lock",
+  "pyproject.toml"
+ ],
+ "units": {
+  "include": [
+   "tests/**/test_*.py"
+  ],
+  "sample": 1.0
+ },
+ "cmd": [
+  "{py}",
+  "-m",
+  "pytest",
+  "-q",
+  "-n",
+  "0",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "{unit}"
+ ],
+ "env": {
+  "OPENAI_API_KEY": "fake-for-tests"
+ },
+ "unit_timeout": 600,
+ "verify": 0.15,
+ "ci": {
+  "workers": 4,
+  "source": ".github/workflows/tests.yml: make tests (pytest -n auto --dist worksteal plus a serial pass) on one ubuntu-latest job"
+ }
+}

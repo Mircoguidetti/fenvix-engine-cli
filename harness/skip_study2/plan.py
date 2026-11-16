@@ -44,7 +44,15 @@ def main():
             for g in range(groups):
                 flaky.append(entry(f["spec"], {"rep": rep, "group": f"{g + 1}/{groups}", "sha": sha,
                                                "budget": str(f.get("budget_min", 200))}))
-    out = {"run_id": run["run_id"], "walk": json.dumps(walk or [{"name": "none"}]),
+    finer = [{"name": f["repo"], "sha": f["sha"]} for f in run.get("finer", [])]
+    agent = []
+    for g in run.get("agent", []):
+        e = entry(g["spec"], {"query": g["query"], "label": g["label"], "max_prs": str(g.get("max_prs", 8)),
+                              "sample": str(g.get("sample", "")), "budget": str(g.get("budget_min", 330))})
+        agent.append(e)
+    out = {"run_id": run["run_id"], "finer": json.dumps(finer or [{"name": "none"}]),
+           "agent": json.dumps(agent or [{"name": "none"}]), "has_agent": str(bool(agent)).lower(),
+           "has_finer": str(bool(finer)).lower(), "walk": json.dumps(walk or [{"name": "none"}]),
            "flaky": json.dumps(flaky or [{"name": "none"}]), "has_walk": str(bool(walk)).lower(),
            "has_flaky": str(bool(flaky)).lower()}
     for k, v in out.items():
