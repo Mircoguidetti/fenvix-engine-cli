@@ -26,6 +26,10 @@ def pytest_addoption(parser, pluginmanager):
     g.addoption("--det", action="store_true", default=False, help="enable deterministic execution (Level 0)")
     g.addoption("--det-seed", type=int, default=None, metavar="N",
                 help="reproducible shuffle of the test order and seed of every generator (default: fixed order, seed 0)")
+    g.addoption("--det-order", default=None, metavar="FILE",
+                help="run exactly the test ids listed in FILE (one per line), in that order; other tests are "
+                     "deselected. With --det-seed the seed still drives every generator, not the order "
+                     "(replay bundles written by `detpy repro`)")
     g.addoption("--det-trace", default=None, metavar="PATH",
                 help="where to write the execution trace (default: <rootdir>/.detpy/trace.jsonl)")
     g.addoption("--det-compare", default=None, metavar="TRACE",
@@ -125,6 +129,7 @@ class _Session:
         self.trace_path = None
         self.config = None
         self.fingerprints: dict[str, str] = {}
+        self.order_missing: list[str] = []
         self.compare_report = None
         self.net_mode = None
         self.disabled_plugins: list[str] = []
@@ -232,7 +237,7 @@ def pytest_load_initial_conftests(early_config, parser, args):
 def _install(config, ns, controls) -> None:
     cfg = _state.Config(
         seed=ns.det_seed or 0,
-        shuffle=ns.det_seed is not None,
+        shuffle=ns.det_seed is not None and not getattr(ns, "det_order", None),
         epoch_ns=_parse_epoch(ns.det_epoch),
         tick_ns=max(0, ns.det_tick),
         tick_adapt=max(0, ns.det_tick_adapt),
@@ -343,6 +348,23 @@ def _exception_of(report) -> list:
     return [etype, report.when, first[:200], where]
 
 
+def _explicit_order(config, items: list, path: str) -> list:
+    """``--det-order``: the listed ids in the listed order; the rest is deselected."""
+    with open(path) as f:
+        wanted = [line.rstrip("\n") for line in f if line.strip() and not line.startswith("#")]
+    by_id = {i.nodeid: i for i in items}
+    chosen = [by_id[n] for n in wanted if n in by_id]
+    missing = [n for n in wanted if n not in by_id]
+    keep = {id(i) for i in chosen}
+    dropped = [i for i in items if id(i) not in keep]
+    if dropped:
+        config.hook.pytest_deselected(items=dropped)
+    S.order_missing = missing
+    if missing:
+        S.adjustments.append(f"--det-order: {len(missing)} listed test ids not collected")
+    return chosen
+
+
 class _Outcomes:
     """Per-config collector of test outcomes (``--det-outcomes``), with or without --det.
 
@@ -373,7 +395,10 @@ class _Outcomes:
         os.makedirs(os.path.dirname(os.path.abspath(self.path)), exist_ok=True)
         with open(self.path, "w") as f:
             json.dump({"outcomes": self.outcomes, "exceptions": self.exceptions, "exitstatus": int(exitstatus),
-                       "order": [i.nodeid for i in getattr(session, "items", [])]}, f)
+                       "order": [i.nodeid for i in getattr(session, "items", [])], **self.extra()}, f)
+
+    def extra(self) -> dict:
+        return {}
 
 
 class _DetSession(_Outcomes):
@@ -382,6 +407,11 @@ class _DetSession(_Outcomes):
     def __init__(self, config, outcomes_path):
         super().__init__(outcomes_path)
         self.config = config
+
+    def extra(self) -> dict:
+        cfg = _state.STATE.config
+        return {"fingerprints": dict(S.fingerprints), "seed": cfg.seed, "shuffle": cfg.shuffle,
+                "controls": sorted(cfg.controls), "trace": S.trace_path, "order_missing": S.order_missing}
 
     def pytest_report_header(self, config):
         cfg = _state.STATE.config
@@ -413,6 +443,9 @@ class _DetSession(_Outcomes):
         if cfg.shuffle:
             perm = _core.shuffle_order([i.nodeid for i in ordered], cfg.seed)
             ordered = [ordered[p] for p in perm]
+        order_file = config.getoption("det_order", None)
+        if order_file:
+            ordered = _explicit_order(config, ordered, order_file)
         items[:] = ordered
 
     def pytest_collection_finish(self, session):
