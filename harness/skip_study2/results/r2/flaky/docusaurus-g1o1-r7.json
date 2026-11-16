@@ -1,0 +1,20 @@
+{
+ "name": "docusaurus",
+ "sha": "4c4ec4aaabc6d70288d53e10203c6d271f0cac7a",
+ "group": 1,
+ "groups": 1,
+ "rep": 7,
+ "runner": "GitHub Actions 1000008863",
+ "cpus": 4,
+ "install_s": 35.39452767372131,
+ "build_s": 6.5967018604278564,
+ "status": "ok",
+ "exit": 2,
+ "test_wall_s": 0.06013681600001064,
+ "tests": 0,
+ "failed_tests": [],
+ "n_failed": 0,
+ "report_error": "report unreadable: [Errno 2] No such file or directory: '/home/runner/work/_temp/f/report-1.out'",
+ "tail": "error: invalid value 'json' for '--reporter <REPORTER>'\n  [possible values: default, append-only, ndjson, silent]\n\n  tip: a similar value exists: 'ndjson'\n\nFor more information, try '--help'.\n",
+ "job_s": 49.03406858444214
+}
