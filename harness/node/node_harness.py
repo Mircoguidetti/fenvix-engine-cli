@@ -151,6 +151,7 @@ class Prepared(H.Prepared):
     random_order: bool = True
     documented: dict = field(default_factory=dict)  # file or test-name hint -> category
     source: str = ""
+    pw_dir: str = ""
 
 
 def git(args, cwd, timeout=900):
@@ -258,7 +259,47 @@ def install(p: Prepared, repo: dict) -> bool:
     return True
 
 
+def find_pw_dir(src: Path, repo: dict) -> Path | None:
+    if repo.get("pw_dir"):
+        return src / repo["pw_dir"]
+    found = []
+    for pat in ("playwright.config.ts", "playwright.config.js", "playwright.config.mjs", "playwright.config.cjs", "playwright.config.mts"):
+        for f in src.rglob(pat):
+            if "node_modules" not in f.parts:
+                found.append(f)
+    found.sort(key=lambda f: len(f.parts))
+    return found[0].parent if found else None
+
+
+def detect_playwright(p: Prepared, repo: dict) -> bool:
+    src = Path(p.src)
+    d = find_pw_dir(src, repo)
+    if d is None:
+        p.status, p.detail = "no-runner", "no playwright.config.* found"
+        return False
+    p.pw_dir = str(d)
+    code, out, _, _ = sh([f"{p.node_bin}/node", "-e",
+                          "const r=require('module').createRequire(process.cwd()+'/x.js');"
+                          "const f=r.resolve('@playwright/test/package.json');const j=require(f);"
+                          "const cli=require('path').join(require('path').dirname(r.resolve('playwright/package.json',{paths:[require('path').dirname(f)]})),'cli.js');"
+                          "console.log(JSON.stringify({v:j.version,bin:cli}))"], cwd=d, env=node_env(p))
+    if code != 0:
+        p.status, p.detail = "no-runner", "@playwright/test not resolvable: " + out[-200:]
+        return False
+    info = json.loads(out.strip().splitlines()[-1])
+    p.runner, p.runner_version, p.runner_bin = "playwright", info["v"], info["bin"]
+    code, out, dur, _ = sh([f"{p.node_bin}/node", p.runner_bin, "install", "--with-deps", "chromium"], cwd=d,
+                           env=node_env(p), timeout=1200)
+    log(f"{p.name}: playwright install chromium exit={code} {dur:.0f}s")
+    if code != 0:
+        p.status, p.detail = "browser-install-failed", out[-300:]
+        return False
+    return True
+
+
 def detect_runner(p: Prepared, repo: dict) -> bool:
+    if repo.get("runner") == "playwright":
+        return detect_playwright(p, repo)
     src = Path(p.src)
     req = f"require('module').createRequire(process.cwd() + '/x.js')"
     for runner in ([repo["runner"]] if repo.get("runner") else ["vitest", "jest"]):
@@ -290,7 +331,7 @@ def prepare(repo: dict, work: Path, _wheel, _default, max_first_run: float) -> P
     p = Prepared(name=repo["name"], url=repo["url"], kind=repo.get("kind", "popular"))
     p.max_run_seconds = max_first_run
     p.env = repo.get("env", {})
-    p.pytest_args = list(repo.get("args", []))
+    p.pytest_args = list(repo.get("args", ["--project=chromium"] if repo.get("runner") == "playwright" else []))
     if not checkout(p, repo, work):
         return p
     major = pick_node(Path(p.src), p.commit_date, repo.get("node"))
@@ -344,6 +385,39 @@ def parse_report(path: Path, root: str) -> tuple[dict, dict]:
     return outcomes, exceptions
 
 
+def parse_playwright(path: Path, root: str) -> tuple[dict, dict]:
+    """Playwright JSON reporter -> outcomes, exceptions (id = file::describe::test [project])."""
+    outcomes, exceptions = {}, {}
+    try:
+        data = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return outcomes, exceptions
+    rootdir = data.get("config", {}).get("rootDir") or root
+
+    def walk(suite, titles, file):
+        file = suite.get("file") or file
+        for spec in suite.get("specs", []):
+            for t in spec.get("tests", []):
+                fid = os.path.relpath(os.path.join(rootdir, spec.get("file") or file or ""), root).replace(os.sep, "/")
+                nid = "::".join([fid, *titles, spec.get("title", "")]) + (f" [{t.get('projectName')}]" if t.get("projectName") else "")
+                res = t.get("results") or []
+                st = res[-1].get("status") if res else ("skipped" if t.get("status") == "skipped" else "unknown")
+                o = {"passed": "passed", "failed": "failed", "timedOut": "failed", "interrupted": "error",
+                     "skipped": "skipped"}.get(st, st)
+                outcomes[nid] = o
+                if o in ("failed", "error") and res:
+                    err = (res[-1].get("error") or {}).get("message") or ""
+                    exceptions[nid] = _exc(err, "call")
+        for sub in suite.get("suites", []):
+            walk(sub, titles + ([sub["title"]] if sub.get("title") and not sub.get("file") else []), file)
+
+    for top in data.get("suites", []):
+        walk(top, [], top.get("file"))
+    for e in data.get("errors", []):
+        exceptions.setdefault("<run>", _exc(e.get("message", ""), "collect"))
+    return outcomes, exceptions
+
+
 _ANSI = re.compile(r"\x1b\[[0-9;]*m")
 
 
@@ -364,6 +438,11 @@ def _exc(msg: str, phase: str) -> list:
 
 def command(p: Prepared, mode: str, index: int, seed, disable, report: Path, trace: Path | None) -> list:
     node = f"{p.node_bin}/node"
+    if p.runner == "playwright":
+        base = [node, p.runner_bin, "test", "--reporter=json", "--retries=0", *p.pytest_args]
+        if mode == "normal":
+            return base  # the project's own parallelism (fullyParallel / workers)
+        return [*base, "--workers=1"]
     if p.runner == "vitest":
         rep = ["--reporter=json", f"--outputFile={report}"]
         major = int(p.runner_version.split(".")[0])
@@ -401,9 +480,22 @@ def run_node(p: Prepared, rundir: Path, mode: str, index: int, timeout: float, s
     trace = rundir / f"{tag}.jsonl" if mode not in ("normal", "timing-serial") else None
     report.unlink(missing_ok=True)
     cmd = command(p, mode, index, seed, disable, report, trace)
-    code, out, dur, to = sh(cmd, cwd=p.src, env=node_env(p), timeout=timeout)
+    extra = {}
+    cwd = p.src
+    if p.runner == "playwright":
+        cwd = p.pw_dir
+        extra["PLAYWRIGHT_JSON_OUTPUT_NAME"] = str(report)
+        if mode not in ("normal", "timing-serial"):
+            off = set(NODE_CONTROLS) if mode == "serial" else set()
+            if disable:
+                off.add(disable)
+            extra.update({"DETJS": "1", "DETJS_SEED": str(seed or 0), "DETJS_SHUFFLE": "0", "DETJS_ROOT": p.src,
+                          "DETJS_DISABLE": ",".join(sorted(off)), "DETJS_NET_MODE": "block",
+                          "NODE_OPTIONS": f"--require {ROOT / 'node' / 'src' / 'register.js'} --max-old-space-size=6144"})
+        trace = None
+    code, out, dur, to = sh(cmd, cwd=cwd, env=node_env(p, extra), timeout=timeout)
     (rundir / f"{tag}.log").write_text(out[-20000:])
-    outcomes, exceptions = parse_report(report, p.src)
+    outcomes, exceptions = (parse_playwright(report, p.src) if p.runner == "playwright" else parse_report(report, p.src))
     return H.RunResult(mode, index, seed, dur, code, to, outcomes,
                        str(trace) if trace and trace.exists() else None, None, exceptions)
 
@@ -528,18 +620,38 @@ def timing_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
     return res
 
 
+def first_run(p: Prepared, args, rundir: Path):
+    """First baseline run; when it is unusable (too few outcomes or mostly failing) and the project has a
+    `build` script, build once and run again (many monorepos test their built packages)."""
+    r = run_node(p, rundir, "normal", 0, args.run_timeout)
+    if p.runner == "playwright" and not r.outcomes and "--project=chromium" in p.pytest_args:
+        p.pytest_args = [a for a in p.pytest_args if a != "--project=chromium"]  # no project of that name
+        r = run_node(p, rundir, "normal", 0, args.run_timeout)
+    min_tests = 10 if p.runner == "playwright" else args.min_tests
+    if len(r.outcomes) < min_tests or sum(H.is_fail(o) for o in r.outcomes.values()) > 0.5 * max(1, len(r.outcomes)):
+        scripts = json.loads((Path(p.src) / "package.json").read_text()).get("scripts", {})
+        if "build" in scripts:
+            code, out, dur, _ = sh(["npm", "run", "build"], cwd=p.src, env=node_env(p), timeout=1800)
+            log(f"{p.name}: first run unusable ({len(r.outcomes)} outcomes): `npm run build` exit={code} {dur:.0f}s")
+            if code == 0:
+                p.install_cmd += " && npm run build"
+                r = run_node(p, rundir, "normal", 0, args.run_timeout)
+    return r
+
+
 def prepare_check(p: Prepared, args, outdir: Path, work: Path) -> dict:
     rundir = work / "runs" / p.name
     shutil.rmtree(rundir, ignore_errors=True)
     rundir.mkdir(parents=True)
-    r = run_node(p, rundir, "normal", 0, args.run_timeout)
+    r = first_run(p, args, rundir)
+    min_tests = 10 if p.runner == "playwright" else args.min_tests
     res = {"name": p.name, "kind": p.kind, "status": "ok", "node": p.python_version, "runner": p.runner,
            "runner_version": p.runner_version, "tests": len(r.outcomes), "first_run_s": r.duration,
            "commit": p.commit, "detail": ""}
     failing = sum(H.is_fail(o) for o in r.outcomes.values())
     if r.timed_out or r.duration > p.max_run_seconds:
         res.update(status="too-slow", detail=f"first baseline run took {r.duration:.0f}s")
-    elif len(r.outcomes) < args.min_tests:
+    elif len(r.outcomes) < min_tests:
         tail = (rundir / "normal_0.log").read_text()[-300:] if (rundir / "normal_0.log").exists() else ""
         res.update(status="baseline-broken" if not r.outcomes else "too-few-tests",
                    detail=f"{len(r.outcomes)} test outcomes (exit {r.exit_code}): {tail}")
@@ -550,7 +662,8 @@ def prepare_check(p: Prepared, args, outdir: Path, work: Path) -> dict:
 
 
 def load_pools(cfg: dict) -> tuple[list, list]:
-    popular = [dict(r, kind="popular") for r in cfg["popular"]]
+    popular = [dict(r, kind="popular") for r in cfg["popular"]] + \
+        [dict(r, kind="playwright", runner="playwright") for r in cfg.get("playwright", [])]
     flaky = []
     cand = HERE / cfg.get("flaky_candidates", "flaky_candidates.json")
     if cand.exists():
@@ -597,8 +710,15 @@ def main(argv=None) -> int:
             elif args.mode == "prepare":
                 r = prepare_check(p, args, outdir, work)
             elif args.mode == "timing":
+                pre = work / "runs" / f"{p.name}-first"
+                pre.mkdir(parents=True, exist_ok=True)
+                first_run(p, args, pre)
                 r = timing_pass(p, args, outdir, work)
             else:
+                pre = work / "runs" / f"{p.name}-first"
+                shutil.rmtree(pre, ignore_errors=True)
+                pre.mkdir(parents=True)
+                first_run(p, args, pre)  # same build decision as the selection stage
                 r = H.measure(p, args, outdir, work)
                 if r.get("status") != "ok":
                     r.setdefault("detail", "")

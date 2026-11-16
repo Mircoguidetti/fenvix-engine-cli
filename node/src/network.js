@@ -197,7 +197,7 @@ function startReplayServer(segments, isTls, label) {
         if (s.dir === 'recv') { conn.write(s.data); i++; continue; }
         if (pending.length >= s.data.length || (idle === 'expired' && pending.length > 0)) {
           const got = pending.subarray(0, Math.min(pending.length, s.data.length));
-          if (!got.equals(s.data)) STATE.recordAt('net', 'replay.mismatch', '<detjs>', `${label} segment ${i}`);
+          if (!got.equals(s.data)) STATE.recordAt('net', 'net.connect', '<detjs>', `replay-mismatch ${label} segment ${i}`);
           pending = pending.subarray(got.length);
           idle = null;
           i++;
@@ -341,10 +341,10 @@ function dnsCheck(host) {
   if (isLocalName(h) || net.isIP(h) || POLICY.allow.has(h.toLowerCase().replace(/\.$/, ''))) return undefined;
   if (POLICY.mode === 'record') return undefined;
   if (POLICY.mode === 'replay' && POLICY.hasRecording(h)) {
-    STATE.record('net', 'dns', `${h} replay`);
+    STATE.record('net', 'dns.lookup', `${h} replay`);
     return POLICY.fakeIp(h);
   }
-  STATE.record('net', 'dns', `${h} blocked`);
+  STATE.record('net', 'dns.lookup', `${h} blocked`);
   const err = new NetworkBlockedError(`${h} (DNS)`, 'ENOTFOUND');
   err.hostname = h;
   throw err;
@@ -404,7 +404,7 @@ function guardResolve(obj, name, promises) {
 function dnsCheckNoFake(hostname) {
   const h = String(hostname);
   if (isLocalName(h) || net.isIP(h) || POLICY.allow.has(h.toLowerCase())) return;
-  STATE.record('net', 'dns', `${h} blocked`);
+  STATE.record('net', 'dns.resolve', `${h} blocked`);
   const err = new NetworkBlockedError(`${h} (DNS)`, 'ENOTFOUND');
   err.hostname = h;
   throw err;

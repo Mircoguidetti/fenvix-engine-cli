@@ -109,7 +109,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: c
-        run: python3 harness/node/ci.py candidates --flaky ${{ needs.config.outputs.flaky_candidates }} --popular ${{ needs.config.outputs.popular_candidates }}
+        run: python3 harness/node/ci.py candidates --flaky ${{ needs.config.outputs.flaky_candidates }} --popular ${{ needs.config.outputs.popular_candidates }} --playwright 12
 
   prepare:
     if: ${{ needs.config.outputs.only == '' }}

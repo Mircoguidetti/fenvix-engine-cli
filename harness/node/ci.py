@@ -34,12 +34,13 @@ def emit(name: str, value) -> None:
 def pools():
     cfg = json.loads((HERE / "repos.json").read_text())
     flaky = json.loads((HERE / cfg["flaky_candidates"]).read_text())["candidates"]
-    return flaky, cfg["popular"]
+    return flaky, cfg["popular"], cfg.get("playwright", [])
 
 
 def candidates(args) -> None:
-    flaky, popular = pools()
-    emit("matrix", [c["name"] for c in flaky[: args.flaky]] + [c["name"] for c in popular[: args.popular]])
+    flaky, popular, pw = pools()
+    emit("matrix", [c["name"] for c in flaky[: args.flaky]] + [c["name"] for c in popular[: args.popular]]
+         + [c["name"] for c in pw[: args.playwright]])
 
 
 def load(d: Path, pattern: str) -> list:
@@ -51,18 +52,19 @@ def repo_of(c: dict) -> str:
 
 
 def select(args) -> None:
-    flaky, popular = pools()
+    flaky, popular, pw = pools()
     res = {r["name"]: r for r in load(Path(args.dir), "*.prepare.result.json")}
     chosen, discarded, used = [], [], set()
-    for kind, pool in (("flaky", flaky), ("popular", popular)):
+    for kind, pool, quota in (("flaky", flaky, args.per_pool), ("popular", popular, args.per_pool),
+                              ("playwright", pw, args.playwright)):
         n = 0
         for c in pool:
             r = res.get(c["name"])
             if r is None:
                 continue
-            if n >= args.per_pool:
+            if n >= quota:
                 break
-            if repo_of(c) in used:
+            if repo_of(c) in used and kind != "playwright":
                 discarded.append({"name": c["name"], "kind": kind, "status": "duplicate", "detail": "repository already in the flaky pool"})
                 continue
             if r.get("status") == "ok":
@@ -85,8 +87,9 @@ def timing_pick(args) -> None:
     picked = [n for n in sel if n in ok]
     # alternate pools so that both are represented
     flaky = {c["name"] for c in pools()[0]}
+    pwn = {c["name"] for c in pools()[2]}
     a = [n for n in picked if n in flaky]
-    b = [n for n in picked if n not in flaky]
+    b = [n for n in picked if n not in flaky and n not in pwn]
     out = []
     while (a or b) and len(out) < args.n:
         for q in (a, b):
@@ -122,7 +125,8 @@ def write_report(out: Path, meta: dict) -> Path:
     timings = [json.loads(p.read_text()) for p in sorted(out.glob("*.timing.json"))]
     sel = meta.get("selection", {})
     order = sel.get("selected", [])
-    ok = sorted([s for s in summaries if s.get("status") == "ok"],
+    pw = [s for s in summaries if s.get("status") == "ok" and s.get("kind") == "playwright"]
+    ok = sorted([s for s in summaries if s.get("status") == "ok" and s.get("kind") != "playwright"],
                 key=lambda s: (s["kind"] != "flaky", order.index(s["name"]) if s["name"] in order else 1e9))
     failed_rounds = [r for r in meta.get("rounds", []) if r.get("status") != "ok"]
     tot = {k: collections.Counter() for k in ("all", "flaky", "popular")}
@@ -274,6 +278,33 @@ def write_report(out: Path, meta: dict) -> Path:
             det = re.sub(r"\s+", " ", d.get("detail", ""))[-200:].replace("|", "/")
             L.append(f"| {d['name']} | {d.get('kind', '')} | {d.get('status')} | {det} |")
         L.append("")
+    L.append("## Playwright end-to-end suites (measured, not built on)\n")
+    if pw:
+        P = collections.Counter()
+        for s_ in pw:
+            for k in SUM:
+                P[k] += s_.get(k, 0)
+        L.append(f"{len(pw)} projects at HEAD, Chromium only, `--retries=0`. Baseline: the project's own parallel workers. "
+                 "`--det`: `--workers=1` and the Level 0 controls inside the Playwright worker processes (seeds, clock, "
+                 "timers, fs order, closed network for the test process; `node/src/register.js`). The browser and the "
+                 "web servers are separate processes and are not controlled; Playwright has no test shuffle, so "
+                 "`--det-seed` only changes the seeds. No per-test fingerprints (no hook into the Playwright runner).\n")
+        L.append(f"**Baseline-unstable browser tests: {P['unstable_baseline']} of {P['tests']} "
+                 f"({_pct(P['unstable_baseline'], P['tests'])})** (MEASURED); of these, never fail under `--det`: "
+                 f"{P['never_fails_under_det']}, fail sometimes under `--det`: {P['fails_sometimes_under_det']}, "
+                 f"always fail under `--det`: {P['always_fails_under_det']}, reproduced {P['reproduced']}. Tests broken by "
+                 f"`--det`: {P['broken_by_det']}.\n")
+        L.append("| repo | runner | tests | unstable baseline | unstable --det | became stable | broken by --det |")
+        L.append("|---|---|---:|---:|---:|---:|---:|")
+        for s_ in pw:
+            L.append(f"| [{s_['name']}]({s_['url']}) | {s_.get('runner', '')} | {s_['tests']} | {s_['unstable_baseline']} | "
+                     f"{s_['unstable_det']} | {s_['became_stable']} | {s_.get('broken_by_det', 0)} |")
+        L.append("")
+        allu = T["unstable_baseline"] + P["unstable_baseline"]
+        L.append(f"Share of the baseline-unstable tests of this round that are browser tests: {P['unstable_baseline']}/{allu} "
+                 f"= {_pct(P['unstable_baseline'], allu)} (MEASURED, not weighted by project size).\n")
+    else:
+        L.append("No Playwright project measured (UNKNOWN).\n")
     L.append("## Notes\n")
     for n in meta.get("notes", []):
         L.append(f"* {n}")
@@ -324,9 +355,11 @@ def main() -> None:
     c = sub.add_parser("candidates")
     c.add_argument("--flaky", type=int, default=60)
     c.add_argument("--popular", type=int, default=60)
+    c.add_argument("--playwright", type=int, default=12)
     s = sub.add_parser("select")
     s.add_argument("--dir", required=True)
     s.add_argument("--per-pool", type=int, default=25)
+    s.add_argument("--playwright", type=int, default=6)
     s.add_argument("--selection", required=True)
     t = sub.add_parser("timing-pick")
     t.add_argument("--dir", required=True)

@@ -115,8 +115,8 @@ function makeDate(RealDate) {
     if (callerIsInfra()) {
       return new.target ? Reflect.construct(RealDate, args, new.target) : RealDate();
     }
-    if (!new.target) return new RealDate(CLOCK.wallMs(readFor('Date()'))).toString();
-    if (args.length === 0) return Reflect.construct(RealDate, [Math.floor(CLOCK.wallMs(readFor('new Date')))], new.target);
+    if (!new.target) return new RealDate(CLOCK.wallMs(readFor('Date'))).toString();
+    if (args.length === 0) return Reflect.construct(RealDate, [Math.floor(CLOCK.wallMs(readFor('Date')))], new.target);
     return Reflect.construct(RealDate, args, new.target);
   }
   Date.prototype = RealDate.prototype;
@@ -280,13 +280,13 @@ class Driver {
       this.fastFired += 1;
       if (this.fastFired > this.budget && !this.budgetHit) {
         this.budgetHit = true;
-        STATE.recordAt('time', 'timers.budget-exhausted', '<detjs>', String(this.budget));
+        STATE.recordAt('time', 'setTimeout', '<detjs>', `budget-exhausted:${this.budget}`);
       }
     }
     t._active = false;
     CLOCK.advanceTo(t._due);
     CLOCK.otherEvent();
-    STATE.recordAt('time', t._repeat ? 'setInterval.fire' : 'setTimeout.fire', t._site, CLOCK.rel(t._due));
+    STATE.recordAt('time', t._repeat ? 'setInterval' : 'setTimeout', t._site, `fire:${CLOCK.rel(t._due)}`);
     if (!t._repeat) BY_ID.delete(t.id); // intervals are rescheduled after the callback
     try {
       t._fn.apply(undefined, t._args);
@@ -339,7 +339,7 @@ function makeSetTimeout(repeat) {
     const delay = normDelay(ms);
     const t = new Timeout(fn, args, delay, repeat, site);
     CLOCK.otherEvent();
-    STATE.record('time', op, String(delay * NS_PER_MS));
+    STATE.record('time', op, `schedule:${delay * NS_PER_MS}`);
     DRIVER.schedule(t);
     return t;
   };

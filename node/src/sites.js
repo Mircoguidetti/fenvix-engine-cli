@@ -6,22 +6,13 @@
 const path = require('node:path');
 
 const SHELL_DIR = path.resolve(__dirname) + path.sep; // node/src/
-const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format)[\\/]/;
+const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|playwright|playwright-core|@playwright|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format)[\\/]/;
 const DEPS = /^(.*[\\/]node_modules[\\/])((?:@[^\\/]+[\\/])?[^\\/]+)[\\/](.*)$/;
 
 let root = process.cwd();
 
 function setRoot(r) {
   root = path.resolve(r);
-}
-
-function fileOf(cs) {
-  let f = cs.getFileName() || cs.getScriptNameOrSourceURL?.() || '';
-  if (f.startsWith('file://')) {
-    try { f = require('node:url').fileURLToPath(f); } catch { /* keep */ }
-  }
-  const q = f.indexOf('?');
-  return q >= 0 ? f.slice(0, q) : f;
 }
 
 /** Machine-independent form of a path. */
@@ -38,30 +29,48 @@ function normPath(p) {
   return '<abs>/' + path.basename(s);
 }
 
-const prepare = (_e, stack) => stack;
+// The Error constructor of the test realm (set by the shells): Vitest and Jest
+// install source-map support on it, so its formatted stack gives the original
+// .ts/.tsx file and line, which the shared event vocabulary requires.
+let realmError = null;
+
+function setRealmError(E) {
+  realmError = typeof E === 'function' ? E : null;
+}
+
+const FRAME = /^\s*at (?:.*? \()?(.+?):(\d+):\d+\)?$/;
 
 /**
- * Site of the caller of the patched API: `path:line`, or null when the
- * event comes from runner infrastructure. `skip` = frames to drop first.
+ * Site of the caller of the patched API: `path:line` relative to the root
+ * (source mapped when the realm maps stacks), or null when the event comes
+ * from runner infrastructure.
  */
 function resolve() {
-  const prevPrepare = Error.prepareStackTrace;
-  const prevLimit = Error.stackTraceLimit;
-  Error.prepareStackTrace = prepare;
-  Error.stackTraceLimit = 24;
-  const holder = {};
-  Error.captureStackTrace(holder, resolve);
-  const stack = holder.stack;
-  Error.prepareStackTrace = prevPrepare;
-  Error.stackTraceLimit = prevLimit;
-  if (!Array.isArray(stack)) return '<unknown>';
-  for (const cs of stack) {
-    const f = fileOf(cs);
-    if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR)) continue;
+  const E = realmError || Error;
+  const prevLimit = E.stackTraceLimit;
+  E.stackTraceLimit = 30;
+  let stack;
+  try {
+    stack = new E().stack;
+  } finally {
+    E.stackTraceLimit = prevLimit;
+  }
+  if (typeof stack !== 'string') return '<unknown>';
+  const lines = stack.split('\n');
+  for (let i = 1; i < lines.length; i++) {
+    const m = FRAME.exec(lines[i]);
+    if (!m) continue;
+    let f = m[1];
+    if (f.startsWith('file://')) {
+      try { f = require('node:url').fileURLToPath(f); } catch { /* keep */ }
+    }
+    const q = f.indexOf('?');
+    if (q >= 0) f = f.slice(0, q);
+    if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || f === 'native' || !f.includes('/')) continue;
     if (INFRA.test(f)) return null;
-    return `${normPath(f)}:${cs.getLineNumber() || 0}`;
+    return `${normPath(f)}:${m[2]}`;
   }
   return '<node>'; // only Node internals on the stack (async continuation of a core module)
 }
 
-module.exports = { resolve, normPath, setRoot, SHELL_DIR };
+module.exports = { resolve, normPath, setRoot, setRealmError, SHELL_DIR };

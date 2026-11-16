@@ -178,7 +178,7 @@ for (const runner of RUNNERS) {
       const { b2, d1 } = goldenCheck(runner, dir);
       assert.ok(failed(b2).some((n) => n.includes('longer than the test timeout')));
       const iv = d1.trace.tests.find((t) => t.nodeid.includes('setInterval'));
-      assert.ok(iv.events.some((e) => e.o === 'setInterval.fire'));
+      assert.ok(iv.events.some((e) => e.o === 'setInterval' && e.v.startsWith('fire:')));
       assert.ok(Date.now() - t0 < 120000);
     });
 

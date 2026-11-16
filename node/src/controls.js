@@ -44,7 +44,9 @@ function installProcess() {
 /** Install the realm controls (globals of one realm: Math, Date, timers, crypto). */
 function installRealm(g, { sameRealm }) {
   const c = cfg();
-  if (!c.active || realms.has(g)) return;
+  if (!c.active) return;
+  sites.setRealmError(g.Error);
+  if (realms.has(g)) return;
   realms.add(g);
   if (c.controls.has('seeds')) seeds.installRealm(PATCHER, g, c, { sameRealm });
   if (c.controls.has('time')) clock.installRealm(PATCHER, g, c, { sameRealm });

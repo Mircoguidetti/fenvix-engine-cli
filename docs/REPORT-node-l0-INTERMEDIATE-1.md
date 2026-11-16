@@ -3,12 +3,12 @@
 Session: node-l0, 2026-11-16. Repository fenvix-engine-cli, branch `claude/node-l0`
 (created from `claude/gracious-rubin-eyswxd`).
 
-> Delivery note: this file belongs in fenvix-brain-cli `sessions/2026-11-16-node-l0/`.
-> Attaching fenvix-brain-cli to this session was refused twice by the session's
-> permission system, so it is committed here, at the same relative path, and
-> CLAUDE.md, NOW.md, ROADMAP.md, ARCHITECTURE.md, DECISIONS.md and prompts/COMMON.md
-> could not be read. Conventions followed instead: those of this repository
-> (README, docs/, harness/) and of the Python L0 work.
+> Delivery note: attaching fenvix-brain-cli was refused twice by the session's
+> permission system, so the brain documents could not be read; per the
+> coordinator's fallback this report lives in fenvix-engine-cli
+> `docs/REPORT-node-l0-INTERMEDIATE-1.md` (branch `claude/node-l0`). The rules
+> relayed by the coordinator (English, labelled numbers, shared event
+> vocabulary, report paths) are applied.
 
 ## Step 1 — Node bindings (DONE, MEASURED by tests)
 
@@ -44,6 +44,29 @@ Session: node-l0, 2026-11-16. Repository fenvix-engine-cli, branch `claude/node-
 Runner infrastructure keeps real time: patched calls whose first non-Node,
 non-detjs frame is vitest/vite/tinypool/jest-* get the real functions (the
 Python rule for pytest plugins).
+
+## Shared event vocabulary (applied after the coordinator's addendum)
+
+* The core is bound, not edited: `event.rs` and the encoding are untouched
+  (owned by the L1 study session; `Source::Sched` / encoding 2 arrive with it).
+  The only core changes are additive helpers in `order.rs` and `trace.rs`.
+* `op` = Node API names, unprefixed: `Date.now`, `Date`, `performance.now`,
+  `process.hrtime`, `process.hrtime.bigint`, `setTimeout`/`setInterval`
+  (value `schedule:<ns>` or `fire:<ns>`), `setImmediate`, `Math.random`,
+  `crypto.randomUUID`, `crypto.getRandomValues`, `crypto.randomBytes`,
+  `fs.readdirSync`, `fs.readdir`, `fs.promises.readdir`, `fs.opendirSync`,
+  `fs.promises.opendir`, `net.connect`, `tls.connect`, `dns.lookup`,
+  `dns.resolve`. HTTP/HTTPS/fetch are intercepted at `net.connect` /
+  `tls.connect` (the byte stream is what is recorded and replayed).
+* `site` = `path:line` relative to the repository root, POSIX separators,
+  from the stack of the test realm's `Error`, which Vitest and Jest source-map:
+  original `.ts` line (MEASURED on a Vitest `.ts` file: `tests/a.test.ts:4`,
+  the original line, not the transformed one; Jest TypeScript projects rely on
+  Jest's own source-map support, not measured here). `<node>` when only Node
+  internals are on the stack.
+* `thread` = 0 (worker threads created by tests are not controlled, J1).
+* Header `meta`: `runtime=node`, `runtime_version`, `runner` (vitest|jest),
+  `runner_version`, `seed`, `controls`, plus isolation, pool, epoch, tick.
 
 ## Step 3 — tests (DONE, MEASURED in this container)
 

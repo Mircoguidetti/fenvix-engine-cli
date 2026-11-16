@@ -71,6 +71,14 @@ node/src/jest/        cli.js (in-process jest-cli), sequencer.js, runner.js (wra
 4. At the end the wrapper merges the parts in execution order (Rust
    `merge_traces`) into `.detjs/trace.jsonl`.
 
+Events follow the shared event vocabulary: `op` = unprefixed Node API name
+(`Date.now`, `fs.readdir`, `crypto.randomUUID`, `net.connect`, …; timers use
+`setTimeout` with value `schedule:<ns>`/`fire:<ns>`), `site` = source-mapped
+original file and line relative to the repository root (the stack of the
+test realm's `Error`, which Vitest and Jest source-map), header `meta` with
+`runtime=node`, `runtime_version`, `runner`, `seed`, `controls`. `event.rs`
+and the encoding are not modified by detjs.
+
 Test ids: `<file relative to the root>::<describe>::…::<test name>`; a
 duplicated name in a file gets ` #2`, ` #3` (in declaration order).
 
@@ -107,6 +115,7 @@ Found by the shell tests (**T**), by the harness (**H**) or by design (**D**).
 | J7 | Network replay: a replayed socket is a Unix socket (`remoteAddress`/`remotePort` undefined); request bytes that differ from the recording are reported (`replay.mismatch`), not rejected; TLS replay does not negotiate ALPN `h2`; `new dns.Resolver()` instances are not guarded (connections are). | T,D |
 | J8 | Only the order of directory enumeration is normalised; libraries that issue several asynchronous `readdir` calls in parallel (fast-glob) still merge results in completion order. | D |
 | J9 | A file run by two projects of a Vitest workspace / Jest multi-project config yields two parts with the same test ids; the verifier then keeps one. | D |
+| J11 | Playwright Test is measured only (`node/src/register.js`, enabled with `NODE_OPTIONS=--require` in the worker processes): controls without per-test brackets or traces; the browser and web servers are not controlled. | D |
 | J10 | With Vitest `isolate: false`, several files can be collected before the first runs: the module-level seed of later files is approximate. | D |
 
 The harness results (`harness/node/results/`) add the limits found on real

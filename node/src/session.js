@@ -134,6 +134,8 @@ function finish(run, opts, files, meta) {
   const order = all.flatMap(partIds);
   const full = {
     ...meta,
+    runtime: 'node',
+    runtime_version: process.versions.node,
     detjs: VERSION,
     seed: Number(run.cfg.seed),
     shuffle: run.cfg.shuffle,
