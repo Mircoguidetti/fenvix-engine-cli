@@ -126,6 +126,8 @@ pub enum TraceError {
     Io(io::Error),
     Parse { line: usize, msg: String },
     Format(String),
+    /// Traces produced with different event encodings: never compared.
+    Incompatible(String),
 }
 
 impl std::fmt::Display for TraceError {
@@ -134,6 +136,7 @@ impl std::fmt::Display for TraceError {
             TraceError::Io(e) => write!(f, "I/O error: {e}"),
             TraceError::Parse { line, msg } => write!(f, "parse error at line {line}: {msg}"),
             TraceError::Format(m) => write!(f, "invalid trace: {m}"),
+            TraceError::Incompatible(m) => write!(f, "traces not comparable: {m}"),
         }
     }
 }
