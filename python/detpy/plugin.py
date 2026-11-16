@@ -66,9 +66,7 @@ class _Session:
         self.order: list[str] = []
         self.order_digest = None
         self.trace_path = None
-        self.outcomes: dict[str, str] = {}
-        self.parts: dict[str, dict] = {}
-        self.exceptions: dict[str, list] = {}
+        self.config = None
         self.fingerprints: dict[str, str] = {}
         self.compare_report = None
         self.net_mode = None
@@ -135,6 +133,11 @@ def pytest_load_initial_conftests(early_config, parser, args):
     ns = early_config.known_args_namespace
     if not getattr(ns, "det", False):
         return
+    if S.active:
+        # A pytest session nested in-process inside a --det session (pytester
+        # inline runs, pytest.main() from a test) runs under the outer controls.
+        warnings.warn("detpy: nested in-process pytest session: it runs under the outer --det session")
+        return
     controls = _controls(ns)
     want_bytecode = "bytecode" in controls
     if "hashseed" in controls:
@@ -185,6 +188,7 @@ def _install(config, ns, controls) -> None:
     _state.STATE.config = cfg
     _sites.refresh(str(config.rootpath) if hasattr(config, "rootpath") else None)
     S.active = True
+    S.config = config
     # Plugins that reorder tests or reseed `random` with their own seed would
     # undo Level 0: switch them off.
     pm = config.pluginmanager
@@ -205,10 +209,21 @@ def _install(config, ns, controls) -> None:
         fsorder.install(_PATCHER)
 
 
+def _owner(config) -> bool:
+    return S.active and config is S.config
+
+
 @pytest.hookimpl(trylast=True)
 def pytest_configure(config):
-    if not S.active:
-        return
+    out = config.getoption("det_outcomes", None)
+    if _owner(config):
+        config.pluginmanager.register(_DetSession(config, out), "detpy-session")
+        _configure_det(config)
+    elif out:
+        config.pluginmanager.register(_Outcomes(out), "detpy-outcomes")
+
+
+def _configure_det(config) -> None:
     if config.pluginmanager.get_plugin("dsession") is not None or getattr(config.option, "numprocesses", None):
         warnings.warn("detpy: pytest-xdist is not supported under --det (order is only fixed per worker)")
     root = str(config.rootpath)
@@ -230,7 +245,7 @@ def pytest_configure(config):
 
 def pytest_unconfigure(config):
     reexec.SESSION_DEPTH = max(0, reexec.SESSION_DEPTH - 1)
-    if S.active:
+    if _owner(config):
         _PATCHER.undo_all()
         clock.uninstall()
         seeds.uninstall()
@@ -239,112 +254,7 @@ def pytest_unconfigure(config):
         _state.STATE.nodeid = None
         _sites.set_basetemp_provider(None)
         S.active = False
-
-
-def pytest_report_header(config):
-    if not S.active:
-        return None
-    cfg = _state.STATE.config
-    order = f"shuffled with seed {cfg.seed}" if cfg.shuffle else "fixed (collection order)"
-    lines = [
-        f"detpy {__version__}: Level 0 active; controls={','.join(sorted(cfg.controls))}; order {order}",
-        f"detpy: PYTHONHASHSEED={os.environ.get('PYTHONHASHSEED')} ({S.reexec_status}); "
-        f"ASLR {'off' if reexec.aslr_disabled() else 'on'}; network={S.net_mode}; sleep={cfg.sleep}",
-    ]
-    if S.disabled_plugins:
-        lines.append(f"detpy: disabled conflicting plugins: {', '.join(S.disabled_plugins)}")
-    if S.adjustments:
-        lines.append(f"detpy: adjusted: {'; '.join(S.adjustments)}")
-    return lines
-
-
-# ---------------------------------------------------------------------------
-# Ordering
-@pytest.hookimpl(hookwrapper=True)
-def pytest_collection_modifyitems(session, config, items):
-    original = list(items)
-    yield
-    if not S.active or "order" not in _state.STATE.config.controls:
-        return
-    # Undo reorderings done by other plugins, keep their deselection.
-    remaining = {id(i) for i in items}
-    ordered = [i for i in original if id(i) in remaining]
-    known = {id(i) for i in ordered}
-    ordered += [i for i in items if id(i) not in known]
-    cfg = _state.STATE.config
-    if cfg.shuffle:
-        perm = _core.shuffle_order([i.nodeid for i in ordered], cfg.seed)
-        ordered = [ordered[p] for p in perm]
-    items[:] = ordered
-
-
-def pytest_collection_finish(session):
-    if not S.active:
-        return
-    S.order = [i.nodeid for i in session.items]
-    S.order_digest = _core.order_digest(S.order)
-    cfg = _state.STATE.config
-    meta = {
-        "detpy": __version__,
-        "seed": cfg.seed,
-        "shuffle": cfg.shuffle,
-        "controls": sorted(cfg.controls),
-        "hashseed": os.environ.get("PYTHONHASHSEED"),
-        "reexec": S.reexec_status,
-        "aslr_disabled": reexec.aslr_disabled(),
-        "bytecode": ("precompiled" if reexec.bytecode_active(_hashseed_value()) else "default"),
-        "precompile_s": (float(os.environ[reexec.PRECOMPILE_ENV]) if reexec.PRECOMPILE_ENV in os.environ
-                         else None),
-        "tick_adapt": cfg.tick_adapt,
-        "epoch_ns": cfg.epoch_ns,
-        "tick_ns": cfg.tick_ns,
-        "sleep": cfg.sleep,
-        "network": S.net_mode,
-        "urandom_controlled": cfg.control_urandom,
-        "python": platform.python_version(),
-        "implementation": platform.python_implementation(),
-        "platform": sys.platform,
-        "pytest": pytest.__version__,
-        "disabled_plugins": S.disabled_plugins,
-        "adjustments": S.adjustments,
-        "rebound_references": len(S.rebound),
-        "order_digest": S.order_digest,
-    }
-    _state.STATE.recorder.open(S.trace_path, json.dumps(meta), S.order)
-
-
-# ---------------------------------------------------------------------------
-# Per-test control
-@pytest.hookimpl(hookwrapper=True, tryfirst=True)
-def pytest_runtest_protocol(item, nextitem):
-    if not S.active:
-        yield
-        return
-    st = _state.STATE
-    controls = st.config.controls
-    st.recorder.begin_test(item.nodeid, S.index)
-    S.index += 1
-    _state.reset_threads()
-    if "time" in controls:
-        clock.start_test()
-    st.nodeid = item.nodeid
-    if "seeds" in controls:
-        seeds.start_test(_PATCHER, item.nodeid)
-    if "net" in controls:
-        network.start_test()
-    try:
-        yield
-    finally:
-        if "seeds" in controls:
-            seeds.end_test()
-        if "net" in controls:
-            network.end_test()
-        st.nodeid = None
-        outcome = S.outcomes.get(item.nodeid, "unknown")
-        fp = st.recorder.end_test(outcome)
-        if fp is not None:
-            S.fingerprints[item.nodeid] = fp
-            item.user_properties.append(("detpy_fingerprint", fp))
+        S.config = None
 
 
 def _final_outcome(parts: dict) -> str:
@@ -360,20 +270,6 @@ def _final_outcome(parts: dict) -> str:
     return main
 
 
-def pytest_runtest_logreport(report):
-    if not (S.active or _OUTCOMES_PATH):
-        return
-    if hasattr(report, "wasxfail"):
-        o = "xfailed" if report.skipped else "xpassed"
-    else:
-        o = report.outcome
-    parts = S.parts.setdefault(report.nodeid, {})
-    parts[report.when] = o
-    S.outcomes[report.nodeid] = _final_outcome(parts)
-    if report.failed and report.nodeid not in S.exceptions:
-        S.exceptions[report.nodeid] = _exception_of(report)
-
-
 def _exception_of(report) -> list:
     """[exception type, phase, first line of the message, crash path:line] of a failed report."""
     crash = getattr(getattr(report, "longrepr", None), "reprcrash", None)
@@ -385,65 +281,178 @@ def _exception_of(report) -> list:
     return [etype, report.when, first[:200], where]
 
 
-_OUTCOMES_PATH: list = []
+class _Outcomes:
+    """Per-config collector of test outcomes (``--det-outcomes``), with or without --det.
 
+    Registered on one config's plugin manager only, so a pytest session nested
+    in the same process never mixes its reports into ours.
+    """
 
-@pytest.hookimpl(tryfirst=True)
-def pytest_sessionstart(session):
-    p = session.config.getoption("det_outcomes", None)
-    if p:
-        _OUTCOMES_PATH[:] = [p]
+    def __init__(self, path):
+        self.path = path
+        self.outcomes: dict[str, str] = {}
+        self.parts: dict[str, dict] = {}
+        self.exceptions: dict[str, list] = {}
 
+    def pytest_runtest_logreport(self, report):
+        if hasattr(report, "wasxfail"):
+            o = "xfailed" if report.skipped else "xpassed"
+        else:
+            o = report.outcome
+        parts = self.parts.setdefault(report.nodeid, {})
+        parts[report.when] = o
+        self.outcomes[report.nodeid] = _final_outcome(parts)
+        if report.failed and report.nodeid not in self.exceptions:
+            self.exceptions[report.nodeid] = _exception_of(report)
 
-def pytest_sessionfinish(session, exitstatus):
-    if _OUTCOMES_PATH and hasattr(session.config, "workerinput"):
-        _OUTCOMES_PATH.clear()  # xdist worker: the controller writes the file
-    if _OUTCOMES_PATH:
-        path = _OUTCOMES_PATH[0]
-        os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
-        with open(path, "w") as f:
-            json.dump({"outcomes": S.outcomes, "exceptions": S.exceptions, "exitstatus": int(exitstatus),
+    def pytest_sessionfinish(self, session, exitstatus):
+        if not self.path or hasattr(session.config, "workerinput"):
+            return  # xdist worker: the controller writes the file
+        os.makedirs(os.path.dirname(os.path.abspath(self.path)), exist_ok=True)
+        with open(self.path, "w") as f:
+            json.dump({"outcomes": self.outcomes, "exceptions": self.exceptions, "exitstatus": int(exitstatus),
                        "order": [i.nodeid for i in getattr(session, "items", [])]}, f)
-        _OUTCOMES_PATH.clear()
-    if not S.active:
-        return
-    st = _state.STATE
-    if st.recorder is not None:
-        if not S.order_digest:  # collection failed before the trace was opened
-            st.recorder.open(S.trace_path, json.dumps({"detpy": __version__, "collection": "failed"}), [])
-        st.recorder.close()
-    if S.net_mode == "record":
-        S.saved_cassette = network.save_recordings(st.config.cassette_path)
-    baseline = session.config.getoption("det_compare")
-    if baseline:
+
+
+class _DetSession(_Outcomes):
+    """Hooks of the --det session, bound to the config that activated Level 0."""
+
+    def __init__(self, config, outcomes_path):
+        super().__init__(outcomes_path)
+        self.config = config
+
+    def pytest_report_header(self, config):
+        cfg = _state.STATE.config
+        order = f"shuffled with seed {cfg.seed}" if cfg.shuffle else "fixed (collection order)"
+        lines = [
+            f"detpy {__version__}: Level 0 active; controls={','.join(sorted(cfg.controls))}; order {order}",
+            f"detpy: PYTHONHASHSEED={os.environ.get('PYTHONHASHSEED')} ({S.reexec_status}); "
+            f"ASLR {'off' if reexec.aslr_disabled() else 'on'}; network={S.net_mode}; sleep={cfg.sleep}",
+        ]
+        if S.disabled_plugins:
+            lines.append(f"detpy: disabled conflicting plugins: {', '.join(S.disabled_plugins)}")
+        if S.adjustments:
+            lines.append(f"detpy: adjusted: {'; '.join(S.adjustments)}")
+        return lines
+
+    # Ordering ---------------------------------------------------------------
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_collection_modifyitems(self, session, config, items):
+        original = list(items)
+        yield
+        if "order" not in _state.STATE.config.controls:
+            return
+        # Undo reorderings done by other plugins, keep their deselection.
+        remaining = {id(i) for i in items}
+        ordered = [i for i in original if id(i) in remaining]
+        known = {id(i) for i in ordered}
+        ordered += [i for i in items if id(i) not in known]
+        cfg = _state.STATE.config
+        if cfg.shuffle:
+            perm = _core.shuffle_order([i.nodeid for i in ordered], cfg.seed)
+            ordered = [ordered[p] for p in perm]
+        items[:] = ordered
+
+    def pytest_collection_finish(self, session):
+        S.order = [i.nodeid for i in session.items]
+        S.order_digest = _core.order_digest(S.order)
+        cfg = _state.STATE.config
+        meta = {
+            "detpy": __version__,
+            "seed": cfg.seed,
+            "shuffle": cfg.shuffle,
+            "controls": sorted(cfg.controls),
+            "hashseed": os.environ.get("PYTHONHASHSEED"),
+            "reexec": S.reexec_status,
+            "aslr_disabled": reexec.aslr_disabled(),
+            "bytecode": ("precompiled" if reexec.bytecode_active(_hashseed_value()) else "default"),
+            "precompile_s": (float(os.environ[reexec.PRECOMPILE_ENV]) if reexec.PRECOMPILE_ENV in os.environ
+                             else None),
+            "tick_adapt": cfg.tick_adapt,
+            "epoch_ns": cfg.epoch_ns,
+            "tick_ns": cfg.tick_ns,
+            "sleep": cfg.sleep,
+            "network": S.net_mode,
+            "urandom_controlled": cfg.control_urandom,
+            "python": platform.python_version(),
+            "implementation": platform.python_implementation(),
+            "platform": sys.platform,
+            "pytest": pytest.__version__,
+            "disabled_plugins": S.disabled_plugins,
+            "adjustments": S.adjustments,
+            "rebound_references": len(S.rebound),
+            "order_digest": S.order_digest,
+        }
+        _state.STATE.recorder.open(S.trace_path, json.dumps(meta), S.order)
+
+    # Per-test control ---------------------------------------------------------
+    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    def pytest_runtest_protocol(self, item, nextitem):
+        st = _state.STATE
+        rec = st.recorder
+        if rec is None:  # pragma: no cover - defensive: never break the session
+            yield
+            return
+        controls = st.config.controls
+        rec.begin_test(item.nodeid, S.index)
+        S.index += 1
+        _state.reset_threads()
+        if "time" in controls:
+            clock.start_test()
+        st.nodeid = item.nodeid
+        if "seeds" in controls:
+            seeds.start_test(_PATCHER, item.nodeid)
+        if "net" in controls:
+            network.start_test()
         try:
-            S.compare_report = json.loads(_core.verify([baseline, S.trace_path]))
-        except Exception as e:  # report, do not crash the session
-            S.compare_report = {"error": str(e)}
+            yield
+        finally:
+            if "seeds" in controls:
+                seeds.end_test()
+            if "net" in controls:
+                network.end_test()
+            st.nodeid = None
+            fp = rec.end_test(self.outcomes.get(item.nodeid, "unknown"))
+            if fp is not None:
+                S.fingerprints[item.nodeid] = fp
+                item.user_properties.append(("detpy_fingerprint", fp))
 
+    def pytest_sessionfinish(self, session, exitstatus):
+        super().pytest_sessionfinish(session, exitstatus)
+        st = _state.STATE
+        if st.recorder is not None:
+            if not S.order_digest:  # collection failed before the trace was opened
+                st.recorder.open(S.trace_path, json.dumps({"detpy": __version__, "collection": "failed"}), [])
+            st.recorder.close()
+        if S.net_mode == "record":
+            S.saved_cassette = network.save_recordings(st.config.cassette_path)
+        baseline = session.config.getoption("det_compare")
+        if baseline:
+            try:
+                S.compare_report = json.loads(_core.verify([baseline, S.trace_path]))
+            except Exception as e:  # report, do not crash the session
+                S.compare_report = {"error": str(e)}
 
-def pytest_terminal_summary(terminalreporter, exitstatus, config):
-    if not S.active:
-        return
-    tr = terminalreporter
-    tr.section("detpy (Level 0)")
-    cfg = _state.STATE.config
-    tr.write_line(f"trace: {S.trace_path}  order digest: {S.order_digest}  seed: {cfg.seed}"
-                  f"{' (shuffled)' if cfg.shuffle else ''}")
-    if S.saved_cassette:
-        tr.write_line(f"network: recorded {S.saved_cassette} test(s) into {cfg.cassette_path}")
-    rep = S.compare_report
-    if rep is None:
-        return
-    if "error" in rep:
-        tr.write_line(f"compare: failed: {rep['error']}", red=True)
-        return
-    s = rep["summary"]
-    tr.write_line(f"compare with {rep['labels'][0]}: covered={s['stable']} not-covered={s['diverged']} "
-                  f"missing={s['missing']} outcome-unstable={s['outcome_unstable']}"
-                  f"{'' if s['order_identical'] else ' (ORDER DIFFERS)'}")
-    for t in rep["tests"]:
-        d = t.get("divergence")
-        if d and t["status"] == "diverged":
-            tr.write_line(f"NOT COVERED by Level 0: {t['nodeid']} [{d['reason']}]", yellow=True)
-            tr.write_line(f"    {d['description']}")
+    def pytest_terminal_summary(self, terminalreporter, exitstatus, config):
+        tr = terminalreporter
+        tr.section("detpy (Level 0)")
+        cfg = _state.STATE.config
+        tr.write_line(f"trace: {S.trace_path}  order digest: {S.order_digest}  seed: {cfg.seed}"
+                      f"{' (shuffled)' if cfg.shuffle else ''}")
+        if S.saved_cassette:
+            tr.write_line(f"network: recorded {S.saved_cassette} test(s) into {cfg.cassette_path}")
+        rep = S.compare_report
+        if rep is None:
+            return
+        if "error" in rep:
+            tr.write_line(f"compare: failed: {rep['error']}", red=True)
+            return
+        s = rep["summary"]
+        tr.write_line(f"compare with {rep['labels'][0]}: covered={s['stable']} not-covered={s['diverged']} "
+                      f"missing={s['missing']} outcome-unstable={s['outcome_unstable']}"
+                      f"{'' if s['order_identical'] else ' (ORDER DIFFERS)'}")
+        for t in rep["tests"]:
+            d = t.get("divergence")
+            if d and t["status"] == "diverged":
+                tr.write_line(f"NOT COVERED by Level 0: {t['nodeid']} [{d['reason']}]", yellow=True)
+                tr.write_line(f"    {d['description']}")

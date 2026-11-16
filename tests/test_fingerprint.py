@@ -192,3 +192,28 @@ def test_outcomes_file_without_det(pytester):
     assert data["exitstatus"] == 1
     assert data["exceptions"]["test_x.py::test_bad"][:2] == ["AssertionError", "call"]
     assert data["exceptions"]["test_x.py::test_err"][:2] == ["RuntimeError", "setup"]
+
+
+def test_nested_inprocess_session_does_not_break_the_outer_one(pytester, run_det):
+    """Regression (faker tests/pytest/test_unique_clear.py, anyio): a test that runs
+    pytest in-process tore down the outer --det session (INTERNALERROR, exit 3)."""
+    pytester.makeconftest("pytest_plugins = ['pytester']")
+    pytester.makepyfile(
+        test_a="""
+        import time
+        def test_nested(pytester):
+            pytester.makepyfile(test_inner="def test_inner():\\n    assert True\\n")
+            pytester.runpytest_inprocess("-p", "no:cacheprovider").assert_outcomes(passed=1)
+
+        def test_after():
+            # the outer controls are still installed after the nested session
+            assert 1735689600 <= time.time() < 1735689601
+        """
+    )
+    out = pytester.path / "outcomes.json"
+    result, (_, tests, footer) = run_det("-p", "no:randomly", f"--det-outcomes={out}")
+    assert result.ret == 0, result.stdout.str()[-2000:]
+    result.assert_outcomes(passed=2)
+    assert set(tests) == {"test_a.py::test_nested", "test_a.py::test_after"}
+    assert footer["n_tests"] == 2
+    assert set(json.loads(out.read_text())["outcomes"]) == {"test_a.py::test_nested", "test_a.py::test_after"}
