@@ -1,0 +1,776 @@
+{
+ "name": "immich",
+ "repo": "immich-app/immich",
+ "ref": "f932212299988b2cbada1687cb4015ff894efb31",
+ "status": "ok",
+ "setup_s": 189,
+ "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
+ "config": {
+  "repo": "immich-app/immich",
+  "ref": "f932212299988b2cbada1687cb4015ff894efb31",
+  "app": "node",
+  "suite": "e2e: vitest server + CLI e2e against docker compose stack",
+  "services": "immich-server, Postgres (vectorchord), Redis",
+  "node": "26.13.0",
+  "runs": 6,
+  "parser": "junit",
+  "submodules": true,
+  "free_disk": true
+ },
+ "run_id": "43945303458",
+ "measured_at": "2026-11-16T20:22:06Z",
+ "baseline_cores": 0.1122,
+ "n_runs": 6,
+ "runs": [
+  {
+   "run": 1,
+   "rc": 0,
+   "wall_s": 101.82,
+   "busy_cpu_s": 198.11,
+   "cores_mean": 1.946,
+   "idle_share_raw": -0.9456,
+   "idle_share_net": -0.8334,
+   "quiet_share": 0.0049,
+   "share_ge1core": 0.8382,
+   "iowait_s": 7.35,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.57,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 151.12,
+   "cpu_other_s": 46.99,
+   "containers": {
+    "immich-e2e-server [immich-server:latest]": 133.603,
+    "immich-e2e-postgres [ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23]": 15.831,
+    "immich-e2e-redis [ghcr.io/valkey-io/valkey:9@sha256:3add1a336a920ea54770a001ab6feb3da5fceea96a40373a3a2cd469b815f0b7]": 1.362,
+    "immich-e2e-auth-server [immich-e2e-e2e-auth-server]": 0.325
+   },
+   "top_comm": [
+    [
+     "container",
+     "immich",
+     84.6
+    ],
+    [
+     "container",
+     "immich-api",
+     17.56
+    ],
+    [
+     "host",
+     "provjobd6900835",
+     16.91
+    ],
+    [
+     "container",
+     "postgres",
+     9.16
+    ],
+    [
+     "container",
+     "perl",
+     8.92
+    ],
+    [
+     "host",
+     "node-MainThread",
+     7.6
+    ],
+    [
+     "container",
+     "immich_admin_cl",
+     4.8
+    ],
+    [
+     "container",
+     "ffmpeg",
+     1.51
+    ],
+    [
+     "container",
+     "valkey-server",
+     1.25
+    ],
+    [
+     "host",
+     "dockerd",
+     0.87
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.73
+    ],
+    [
+     "container",
+     "MainThread",
+     0.68
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.64
+    ],
+    [
+     "host",
+     "containerd",
+     0.57
+    ],
+    [
+     "host",
+     "python3",
+     0.55
+    ]
+   ],
+   "n_tests": 374,
+   "n_pass": 371,
+   "n_fail": 0,
+   "n_skip": 3,
+   "series_1s": [
+    0.08,
+    0.79,
+    1.53,
+    2.4,
+    3.24,
+    3.84,
+    2.45,
+    1.57,
+    3.18,
+    1.34,
+    1.69,
+    1.55,
+    2.12,
+    1.94,
+    1.62,
+    2.06,
+    2.2,
+    1.92,
+    2.68,
+    1.08,
+    2.05,
+    2.21,
+    3.99,
+    4.01,
+    4.0,
+    3.99,
+    4.0,
+    1.52,
+    1.95,
+    1.5,
+    2.74,
+    2.09,
+    1.94,
+    2.91,
+    2.17,
+    2.47,
+    2.16,
+    1.69,
+    2.7,
+    1.66,
+    1.95,
+    1.84,
+    1.67,
+    1.87,
+    1.74,
+    1.8,
+    1.77,
+    3.04,
+    3.17,
+    2.2,
+    0.54,
+    2.41,
+    2.1,
+    1.4,
+    1.51,
+    1.74,
+    2.28,
+    2.18,
+    3.08,
+    3.71,
+    4.0,
+    3.98,
+    3.77,
+    3.52,
+    2.25,
+    0.98,
+    0.8,
+    0.64,
+    0.52,
+    0.72,
+    0.72,
+    0.67,
+    1.11,
+    1.47,
+    1.53,
+    1.28,
+    1.52,
+    1.58,
+    1.27,
+    1.06,
+    0.63,
+    1.07,
+    0.9,
+    2.11,
+    1.27,
+    1.47,
+    2.22,
+    0.88,
+    1.28,
+    1.34,
+    1.34,
+    1.36,
+    1.54,
+    1.38,
+    1.49,
+    1.32,
+    1.36,
+    1.36,
+    1.34,
+    1.45,
+    1.51,
+    1.55,
+    1.42
+   ]
+  },
+  {
+   "run": 2,
+   "rc": 0,
+   "wall_s": 94.97,
+   "busy_cpu_s": 181.61,
+   "cores_mean": 1.912,
+   "idle_share_raw": -0.9122,
+   "idle_share_net": -0.8,
+   "quiet_share": 0.0105,
+   "share_ge1core": 0.8325,
+   "iowait_s": 4.81,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.52,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 140.84,
+   "cpu_other_s": 40.77,
+   "containers": {
+    "immich-e2e-server [immich-server:latest]": 125.407,
+    "immich-e2e-postgres [ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23]": 13.933,
+    "immich-e2e-redis [ghcr.io/valkey-io/valkey:9@sha256:3add1a336a920ea54770a001ab6feb3da5fceea96a40373a3a2cd469b815f0b7]": 1.262,
+    "immich-e2e-auth-server [immich-e2e-e2e-auth-server]": 0.24
+   },
+   "top_comm": [
+    [
+     "container",
+     "immich",
+     81.57
+    ],
+    [
+     "container",
+     "immich-api",
+     14.11
+    ],
+    [
+     "host",
+     "provjobd6900835",
+     12.16
+    ],
+    [
+     "container",
+     "postgres",
+     8.54
+    ],
+    [
+     "container",
+     "perl",
+     6.96
+    ],
+    [
+     "container",
+     "immich_admin_cl",
+     6.94
+    ],
+    [
+     "host",
+     "node-MainThread",
+     6.48
+    ],
+    [
+     "container",
+     "ffmpeg",
+     2.53
+    ],
+    [
+     "container",
+     "valkey-server",
+     1.15
+    ],
+    [
+     "host",
+     "dockerd",
+     0.77
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.68
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.6
+    ],
+    [
+     "host",
+     "containerd",
+     0.51
+    ],
+    [
+     "host",
+     "python3",
+     0.48
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.28
+    ]
+   ],
+   "n_tests": 374,
+   "n_pass": 371,
+   "n_fail": 0,
+   "n_skip": 3
+  },
+  {
+   "run": 3,
+   "rc": 0,
+   "wall_s": 92.05,
+   "busy_cpu_s": 178.29,
+   "cores_mean": 1.937,
+   "idle_share_raw": -0.9369,
+   "idle_share_net": -0.8247,
+   "quiet_share": 0.0108,
+   "share_ge1core": 0.8432,
+   "iowait_s": 2.55,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.49,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 139.26,
+   "cpu_other_s": 39.03,
+   "containers": {
+    "immich-e2e-server [immich-server:latest]": 124.184,
+    "immich-e2e-postgres [ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23]": 13.685,
+    "immich-e2e-redis [ghcr.io/valkey-io/valkey:9@sha256:3add1a336a920ea54770a001ab6feb3da5fceea96a40373a3a2cd469b815f0b7]": 1.196,
+    "immich-e2e-auth-server [immich-e2e-e2e-auth-server]": 0.193
+   },
+   "top_comm": [
+    [
+     "container",
+     "immich",
+     81.16
+    ],
+    [
+     "container",
+     "immich-api",
+     14.46
+    ],
+    [
+     "host",
+     "provjobd6900835",
+     11.81
+    ],
+    [
+     "container",
+     "postgres",
+     8.7
+    ],
+    [
+     "host",
+     "node-MainThread",
+     6.97
+    ],
+    [
+     "container",
+     "perl",
+     6.89
+    ],
+    [
+     "container",
+     "immich_admin_cl",
+     3.55
+    ],
+    [
+     "container",
+     "ffmpeg",
+     3.06
+    ],
+    [
+     "container",
+     "MainThread",
+     1.71
+    ],
+    [
+     "container",
+     "valkey-server",
+     1.09
+    ],
+    [
+     "host",
+     "dockerd",
+     0.75
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.69
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.56
+    ],
+    [
+     "host",
+     "containerd",
+     0.5
+    ],
+    [
+     "host",
+     "python3",
+     0.47
+    ]
+   ],
+   "n_tests": 374,
+   "n_pass": 371,
+   "n_fail": 0,
+   "n_skip": 3
+  },
+  {
+   "run": 4,
+   "rc": 0,
+   "wall_s": 95.21,
+   "busy_cpu_s": 184.92,
+   "cores_mean": 1.942,
+   "idle_share_raw": -0.9422,
+   "idle_share_net": -0.83,
+   "quiet_share": 0.0157,
+   "share_ge1core": 0.8429,
+   "iowait_s": 3.86,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.54,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 144.59,
+   "cpu_other_s": 40.34,
+   "containers": {
+    "immich-e2e-server [immich-server:latest]": 128.423,
+    "immich-e2e-postgres [ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23]": 14.65,
+    "immich-e2e-redis [ghcr.io/valkey-io/valkey:9@sha256:3add1a336a920ea54770a001ab6feb3da5fceea96a40373a3a2cd469b815f0b7]": 1.27,
+    "immich-e2e-auth-server [immich-e2e-e2e-auth-server]": 0.244
+   },
+   "top_comm": [
+    [
+     "container",
+     "immich",
+     82.2
+    ],
+    [
+     "container",
+     "immich-api",
+     14.6
+    ],
+    [
+     "host",
+     "provjobd6900835",
+     12.14
+    ],
+    [
+     "container",
+     "postgres",
+     9.13
+    ],
+    [
+     "container",
+     "perl",
+     8.88
+    ],
+    [
+     "host",
+     "node-MainThread",
+     6.79
+    ],
+    [
+     "container",
+     "immich_admin_cl",
+     4.65
+    ],
+    [
+     "container",
+     "ffmpeg",
+     2.9
+    ],
+    [
+     "container",
+     "valkey-server",
+     1.16
+    ],
+    [
+     "host",
+     "dockerd",
+     0.79
+    ],
+    [
+     "container",
+     "MainThread",
+     0.75
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.71
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.63
+    ],
+    [
+     "host",
+     "containerd",
+     0.52
+    ],
+    [
+     "host",
+     "python3",
+     0.51
+    ]
+   ],
+   "n_tests": 374,
+   "n_pass": 371,
+   "n_fail": 0,
+   "n_skip": 3
+  },
+  {
+   "run": 5,
+   "rc": 0,
+   "wall_s": 92.69,
+   "busy_cpu_s": 178.97,
+   "cores_mean": 1.931,
+   "idle_share_raw": -0.931,
+   "idle_share_net": -0.8188,
+   "quiet_share": 0.0215,
+   "share_ge1core": 0.8548,
+   "iowait_s": 2.73,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.51,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 139.79,
+   "cpu_other_s": 39.19,
+   "containers": {
+    "immich-e2e-server [immich-server:latest]": 124.266,
+    "immich-e2e-postgres [ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23]": 14.103,
+    "immich-e2e-redis [ghcr.io/valkey-io/valkey:9@sha256:3add1a336a920ea54770a001ab6feb3da5fceea96a40373a3a2cd469b815f0b7]": 1.237,
+    "immich-e2e-auth-server [immich-e2e-e2e-auth-server]": 0.182
+   },
+   "top_comm": [
+    [
+     "container",
+     "immich",
+     80.72
+    ],
+    [
+     "container",
+     "immich-api",
+     13.9
+    ],
+    [
+     "host",
+     "provjobd6900835",
+     11.51
+    ],
+    [
+     "container",
+     "postgres",
+     8.79
+    ],
+    [
+     "container",
+     "perl",
+     7.22
+    ],
+    [
+     "host",
+     "node-MainThread",
+     6.78
+    ],
+    [
+     "container",
+     "immich_admin_cl",
+     6.31
+    ],
+    [
+     "container",
+     "ffmpeg",
+     1.56
+    ],
+    [
+     "container",
+     "valkey-server",
+     1.11
+    ],
+    [
+     "host",
+     "dockerd",
+     0.77
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.65
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.61
+    ],
+    [
+     "host",
+     "containerd",
+     0.52
+    ],
+    [
+     "host",
+     "python3",
+     0.49
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.27
+    ]
+   ],
+   "n_tests": 374,
+   "n_pass": 371,
+   "n_fail": 0,
+   "n_skip": 3
+  },
+  {
+   "run": 6,
+   "rc": 0,
+   "wall_s": 92.97,
+   "busy_cpu_s": 182.38,
+   "cores_mean": 1.962,
+   "idle_share_raw": -0.9618,
+   "idle_share_net": -0.8496,
+   "quiet_share": 0.0107,
+   "share_ge1core": 0.8663,
+   "iowait_s": 3.31,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.51,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 141.93,
+   "cpu_other_s": 40.46,
+   "containers": {
+    "immich-e2e-server [immich-server:latest]": 125.243,
+    "immich-e2e-postgres [ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23]": 15.245,
+    "immich-e2e-redis [ghcr.io/valkey-io/valkey:9@sha256:3add1a336a920ea54770a001ab6feb3da5fceea96a40373a3a2cd469b815f0b7]": 1.253,
+    "immich-e2e-auth-server [immich-e2e-e2e-auth-server]": 0.186
+   },
+   "top_comm": [
+    [
+     "container",
+     "immich",
+     81.18
+    ],
+    [
+     "container",
+     "immich-api",
+     13.98
+    ],
+    [
+     "host",
+     "provjobd6900835",
+     12.23
+    ],
+    [
+     "container",
+     "postgres",
+     9.81
+    ],
+    [
+     "container",
+     "perl",
+     6.81
+    ],
+    [
+     "host",
+     "node-MainThread",
+     6.65
+    ],
+    [
+     "container",
+     "immich_admin_cl",
+     4.46
+    ],
+    [
+     "container",
+     "ffmpeg",
+     2.08
+    ],
+    [
+     "container",
+     "MainThread",
+     1.43
+    ],
+    [
+     "container",
+     "valkey-server",
+     1.12
+    ],
+    [
+     "host",
+     "dockerd",
+     0.76
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.69
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.62
+    ],
+    [
+     "host",
+     "containerd",
+     0.52
+    ],
+    [
+     "host",
+     "python3",
+     0.48
+    ]
+   ],
+   "n_tests": 374,
+   "n_pass": 371,
+   "n_fail": 0,
+   "n_skip": 3
+  }
+ ],
+ "idle": {
+  "median_idle_share_raw": -0.9395,
+  "median_idle_share_net": -0.8274,
+  "median_quiet_share": 0.0107,
+  "median_cores_mean": 1.9395,
+  "median_wall_s": 93.97,
+  "median_busy_cpu_s": 181.995
+ },
+ "tests": {
+  "n_distinct": 374,
+  "n_flaky": 0,
+  "n_consistent_fail": 0,
+  "flaky": [],
+  "consistent_fail_sample": []
+ }
+}
