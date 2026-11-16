@@ -268,6 +268,17 @@ def main():
            "failures": {r["key"]: (r["status"], r.get("detail", "")[-200:]) for r in allprs if r["status"] != "ok"}}
     res.update(pr_numbers(chosen))
     res["extra"] = extra_numbers(chosen)
+    pp = res["per_pr"]
+    if pp:
+        share = {v: [1 - p[f"div_{v}"] / p["common"] for p in pp if p["common"]] for v in VARIANTS}
+        res["per_pr_stats"] = {
+            "median_identical_share": {v: round(statistics.median(x), 4) for v, x in share.items()},
+            "min_identical_share": {v: round(min(x), 4) for v, x in share.items()},
+            "prs_zero_div": {v: sum(1 for p in pp if p[f"div_{v}"] == 0) for v in VARIANTS},
+            "prs_zero_stable_div_line": sum(1 for p in pp if p["changed_stable"] == 0),
+            "prs_with_stable_rets_change": sum(1 for p in pp if p["rets_changed_stable"] > 0),
+            "largest_pr": max(pp, key=lambda p: p["common"])["key"],
+            "largest_pr_tests": max(p["common"] for p in pp)}
     res["mutants"] = mutant_numbers(load(root / "mutants")) if (root / "mutants").exists() else {}
     rc = load(root / "mutants", "recheck-*.json.gz", skip="")
     res["recheck"] = recheck_numbers(rc) if rc else {}

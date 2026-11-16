@@ -1021,6 +1021,10 @@
    "changed-file": 21,
    "stdlib": 2
   },
+  "loc_stable_func_ord": {
+   "site-packages": 7,
+   "end-random-state": 74
+  },
   "first_event_source": {
    "entropy": 114,
    "time": 396,
@@ -1032,7 +1036,41 @@
    "func_ord": "1/15",
    "func": "1/15",
    "nosite": "1/15"
+  },
+  "refactor_zero_stable_div": {
+   "line": "10/15",
+   "func_ord": "14/15",
+   "func": "14/15",
+   "nosite": "14/15"
+  },
+  "refactor_zero_stable_probe": {
+   "rets": "9/15",
+   "calls": "9/15"
   }
+ },
+ "per_pr_stats": {
+  "median_identical_share": {
+   "line": 0.9988,
+   "func_ord": 0.9989,
+   "func": 0.9989,
+   "nosite": 0.9989
+  },
+  "min_identical_share": {
+   "line": 0.7696,
+   "func_ord": 0.8057,
+   "func": 0.8057,
+   "nosite": 0.8057
+  },
+  "prs_zero_div": {
+   "line": 13,
+   "func_ord": 13,
+   "func": 13,
+   "nosite": 13
+  },
+  "prs_zero_stable_div_line": 31,
+  "prs_with_stable_rets_change": 19,
+  "largest_pr": "packaging-1542",
+  "largest_pr_tests": 63809
  },
  "mutants": {
   "status": {
@@ -1499,6 +1537,232 @@
       "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
      },
      "loc": "unchanged-test-file"
+    }
+   }
+  ]
+ },
+ "recheck": {
+  "repos": {
+   "arrow": {
+    "controls": 3,
+    "control_status": [
+     "survived",
+     "survived",
+     "survived"
+    ],
+    "control_flagged": {
+     "det": 0,
+     "rets": 0,
+     "calls": 0,
+     "files": 0
+    },
+    "mutants": 27,
+    "status": {
+     "survived": 27
+    },
+    "flagged": {
+     "det": 0,
+     "rets": 0,
+     "calls": 0,
+     "files": 0
+    }
+   },
+   "boltons": {
+    "controls": 3,
+    "control_status": [
+     "survived",
+     "survived",
+     "survived"
+    ],
+    "control_flagged": {
+     "det": 0,
+     "rets": 4,
+     "calls": 0,
+     "files": 0
+    },
+    "mutants": 52,
+    "status": {
+     "survived": 52
+    },
+    "flagged": {
+     "det": 2,
+     "rets": 7,
+     "calls": 6,
+     "files": 0
+    }
+   },
+   "click": {
+    "controls": 3,
+    "control_status": [
+     "survived",
+     "survived",
+     "survived"
+    ],
+    "control_flagged": {
+     "det": 0,
+     "rets": 0,
+     "calls": 0,
+     "files": 0
+    },
+    "mutants": 45,
+    "status": {
+     "survived": 45
+    },
+    "flagged": {
+     "det": 0,
+     "rets": 7,
+     "calls": 4,
+     "files": 1
+    }
+   },
+   "marshmallow": {
+    "controls": 3,
+    "control_status": [
+     "survived",
+     "survived",
+     "survived"
+    ],
+    "control_flagged": {
+     "det": 0,
+     "rets": 0,
+     "calls": 0,
+     "files": 0
+    },
+    "mutants": 16,
+    "status": {
+     "survived": 16
+    },
+    "flagged": {
+     "det": 0,
+     "rets": 4,
+     "calls": 4,
+     "files": 2
+    }
+   },
+   "sqlparse": {
+    "controls": 3,
+    "control_status": [
+     "survived",
+     "survived",
+     "survived"
+    ],
+    "control_flagged": {
+     "det": 0,
+     "rets": 0,
+     "calls": 0,
+     "files": 0
+    },
+    "mutants": 30,
+    "status": {
+     "survived": 30
+    },
+    "flagged": {
+     "det": 0,
+     "rets": 11,
+     "calls": 6,
+     "files": 0
+    }
+   },
+   "toolz": {
+    "controls": 3,
+    "control_status": [
+     "survived",
+     "survived",
+     "survived"
+    ],
+    "control_flagged": {
+     "det": 0,
+     "rets": 0,
+     "calls": 0,
+     "files": 0
+    },
+    "mutants": 22,
+    "status": {
+     "survived": 22
+    },
+    "flagged": {
+     "det": 0,
+     "rets": 2,
+     "calls": 2,
+     "files": 0
+    }
+   }
+  },
+  "survivors": 192,
+  "status": {
+   "survived": 192
+  },
+  "flagged": {
+   "det": 2,
+   "rets": 31,
+   "calls": 22,
+   "files": 3,
+   "det_or_rets": 31,
+   "any_probe": 31
+  },
+  "flagged_raw": {
+   "det": 2,
+   "rets": 76,
+   "calls": 22,
+   "files": 3
+  },
+  "det_sources": {
+   "time": 2
+  },
+  "det_locs": {
+   "unchanged-source-file": 2
+  },
+  "examples": [
+   {
+    "repo": "boltons",
+    "file": "boltons/listutils.py",
+    "line": 171,
+    "op": "and->or",
+    "tests": [
+     "tests/test_socketutils.py::test_socketutils_netstring_timeout"
+    ],
+    "first": {
+     "base": {
+      "t": 1,
+      "s": "time",
+      "o": "time.time",
+      "at": "boltons/socketutils.py:459",
+      "v": "20010000"
+     },
+     "mutant": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "boltons/socketutils.py:389",
+      "v": "20010000"
+     },
+     "loc": "unchanged-source-file"
+    }
+   },
+   {
+    "repo": "boltons",
+    "file": "boltons/strutils.py",
+    "line": 998,
+    "op": ">->>=",
+    "tests": [
+     "tests/test_socketutils.py::test_socketutils_netstring_timeout"
+    ],
+    "first": {
+     "base": {
+      "t": 1,
+      "s": "time",
+      "o": "time.time",
+      "at": "boltons/socketutils.py:459",
+      "v": "20010000"
+     },
+     "mutant": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "boltons/socketutils.py:389",
+      "v": "20010000"
+     },
+     "loc": "unchanged-source-file"
     }
    }
   ]
