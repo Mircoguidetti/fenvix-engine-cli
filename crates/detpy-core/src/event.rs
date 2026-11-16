@@ -35,10 +35,14 @@ pub enum Source {
     Syscall,
     /// Anything else a backend wants to report.
     Other,
+    /// Scheduling choices of the Level 1 runtime (`--det-async`: which ready
+    /// external events an asyncio loop iteration delivered, timers fired,
+    /// clock jumps). Appended after `Other` so existing tags are unchanged.
+    Sched,
 }
 
 impl Source {
-    pub const ALL: [Source; 8] = [
+    pub const ALL: [Source; 9] = [
         Source::Time,
         Source::Random,
         Source::Fs,
@@ -47,6 +51,7 @@ impl Source {
         Source::Outcome,
         Source::Syscall,
         Source::Other,
+        Source::Sched,
     ];
 
     pub fn as_str(self) -> &'static str {
@@ -59,6 +64,7 @@ impl Source {
             Source::Outcome => "outcome",
             Source::Syscall => "syscall",
             Source::Other => "other",
+            Source::Sched => "sched",
         }
     }
 
@@ -73,6 +79,7 @@ impl Source {
             "entropy" => Source::Entropy,
             "outcome" => Source::Outcome,
             "syscall" => Source::Syscall,
+            "sched" => Source::Sched,
             _ => Source::Other,
         }
     }
@@ -87,6 +94,7 @@ impl Source {
             Source::Outcome => 6,
             Source::Syscall => 7,
             Source::Other => 8,
+            Source::Sched => 9,
         }
     }
 }
