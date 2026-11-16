@@ -21,6 +21,7 @@ on:
       only: {description: "comma separated repositories: skip selection, measure only these", default: ""}
       timing: {description: "run the quiet timing pass", default: "true"}
       result_set: {description: "results directory name under harness/results", default: "mixed"}
+      timing_only: {description: "with `only`: run just the quiet timing pass on those repositories", default: "false"}
 
 permissions:
   contents: write
@@ -117,7 +118,7 @@ jobs:
         with: {name: selection, path: selection.json}
 
   round:
-    if: ${{ !cancelled() && needs.select.result == 'success' }}
+    if: ${{ !cancelled() && needs.select.result == 'success' && inputs.timing_only != 'true' }}
     needs: [build, select]
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -162,15 +163,15 @@ jobs:
         run: python harness/ci.py timing-pick --dir art --selection selection.json -n 10
 
   timing:
-    if: ${{ !cancelled() && needs.timing-pick.result == 'success' && needs.timing-pick.outputs.matrix != '[]' }}
-    needs: [build, timing-pick]
+    if: ${{ !cancelled() && (inputs.timing_only == 'true' || (needs.timing-pick.result == 'success' && needs.timing-pick.outputs.matrix != '[]')) }}
+    needs: [build, select, timing-pick]
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
       fail-fast: false
       max-parallel: 10
       matrix:
-        repo: ${{ fromJSON(needs.timing-pick.outputs.matrix) }}
+        repo: ${{ fromJSON(inputs.timing_only == 'true' && needs.select.outputs.matrix || needs.timing-pick.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -200,6 +201,7 @@ jobs:
         with: {name: wheel, path: dist}
       - run: pip install --no-deps dist/*.whl
       - uses: actions/download-artifact@v4
+        continue-on-error: true
         with: {pattern: "round-*", path: art}
       - uses: actions/download-artifact@v4
         continue-on-error: true
