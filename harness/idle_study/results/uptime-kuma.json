@@ -1,0 +1,927 @@
+{
+ "name": "uptime-kuma",
+ "repo": "louislam/uptime-kuma",
+ "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
+ "status": "ok",
+ "setup_s": 68,
+ "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
+ "config": {
+  "repo": "louislam/uptime-kuma",
+  "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
+  "app": "node",
+  "suite": "e2e: Playwright against the app server",
+  "services": "app server (SQLite), browser",
+  "node": "26",
+  "runs": 6,
+  "parser": "junit"
+ },
+ "run_id": "43945303458",
+ "measured_at": "2026-11-16T20:32:08Z",
+ "baseline_cores": 0.0105,
+ "n_runs": 6,
+ "runs": [
+  {
+   "run": 1,
+   "rc": 0,
+   "wall_s": 284.34,
+   "busy_cpu_s": 189.3,
+   "cores_mean": 0.666,
+   "idle_share_raw": 0.3343,
+   "idle_share_net": 0.3447,
+   "quiet_share": 0.3838,
+   "share_ge1core": 0.368,
+   "iowait_s": 4.56,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 1.15,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 189.3,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     100.06
+    ],
+    [
+     "host",
+     "uptime-kuma",
+     18.79
+    ],
+    [
+     "host",
+     "node-MainThread",
+     16.16
+    ],
+    [
+     "host",
+     "provjobd3970501",
+     7.37
+    ],
+    [
+     "host",
+     "python3",
+     1.51
+    ],
+    [
+     "host",
+     "esbuild",
+     0.89
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.78
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.52
+    ],
+    [
+     "host",
+     "npm exec playwr",
+     0.3
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.25
+    ],
+    [
+     "host",
+     "containerd",
+     0.19
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.17
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.15
+    ],
+    [
+     "host",
+     "fstrim",
+     0.12
+    ],
+    [
+     "host",
+     "chronyd",
+     0.08
+    ]
+   ],
+   "n_tests": 71,
+   "n_pass": 71,
+   "n_fail": 0,
+   "n_skip": 0,
+   "series_1s": [
+    0.04,
+    1.14,
+    1.67,
+    1.5,
+    1.43,
+    1.72,
+    0.95,
+    0.21,
+    1.72,
+    1.69,
+    1.17,
+    1.49,
+    0.02,
+    0.49,
+    0.94,
+    0.03,
+    0.82,
+    0.09,
+    0.03,
+    1.49,
+    0.31,
+    0.03,
+    0.05,
+    0.08,
+    1.22,
+    0.02,
+    0.3,
+    1.41,
+    0.03,
+    0.19,
+    1.53,
+    0.02,
+    0.24,
+    1.48,
+    0.03,
+    0.03,
+    0.01,
+    0.19,
+    1.31,
+    0.02,
+    0.18,
+    1.3,
+    0.58,
+    0.01,
+    1.09,
+    1.29,
+    0.34,
+    0.02,
+    0.89,
+    0.95,
+    0.53,
+    0.19,
+    0.02,
+    1.18,
+    0.87,
+    0.46,
+    0.4,
+    0.38,
+    0.62,
+    0.51,
+    0.58,
+    0.55,
+    0.51,
+    0.48,
+    0.13,
+    0.21,
+    0.14,
+    1.16,
+    1.2,
+    0.03,
+    0.29,
+    1.5,
+    0.5,
+    0.01,
+    0.83,
+    1.26,
+    0.63,
+    0.12,
+    0.02,
+    0.05,
+    0.02,
+    0.72,
+    0.63,
+    0.01,
+    0.66,
+    0.65,
+    0.02,
+    0.68,
+    0.85,
+    0.02,
+    0.41,
+    0.98,
+    0.02,
+    0.45,
+    1.28,
+    0.11,
+    0.03,
+    1.41,
+    0.05,
+    0.02,
+    0.03,
+    0.01,
+    1.29,
+    1.08,
+    0.43,
+    0.02,
+    0.03,
+    0.02,
+    0.94,
+    1.09,
+    0.4,
+    0.03,
+    1.19,
+    1.29,
+    0.41,
+    0.03,
+    1.18,
+    1.42,
+    1.26,
+    0.25,
+    0.01,
+    1.23,
+    0.28,
+    0.03,
+    1.1,
+    0.86,
+    0.15,
+    0.46,
+    1.17,
+    0.27,
+    0.02,
+    1.07,
+    0.9,
+    0.03,
+    0.56,
+    1.41,
+    0.9,
+    0.03,
+    0.57,
+    1.39,
+    1.55,
+    0.36,
+    0.01,
+    1.02,
+    0.3,
+    0.02,
+    1.12,
+    1.2,
+    1.17,
+    0.03,
+    0.55,
+    0.42,
+    0.02,
+    0.84,
+    1.24,
+    1.0,
+    0.01,
+    0.74,
+    1.35,
+    0.8,
+    0.01,
+    0.72,
+    1.35,
+    1.5,
+    0.19,
+    0.05,
+    1.24,
+    1.43,
+    1.19,
+    0.01,
+    0.41,
+    1.41,
+    1.13,
+    0.69,
+    0.01,
+    0.43,
+    0.99,
+    0.78,
+    0.19,
+    0.66,
+    0.02,
+    0.43,
+    1.21,
+    1.53,
+    0.81,
+    0.03,
+    0.88,
+    1.38,
+    1.34,
+    0.02,
+    0.24,
+    1.42,
+    0.1,
+    0.17,
+    1.51,
+    0.13,
+    0.11,
+    1.46,
+    1.14,
+    0.09,
+    0.55,
+    1.32,
+    0.96,
+    0.03,
+    0.81,
+    0.93,
+    0.76,
+    0.03,
+    0.84,
+    1.48,
+    1.02,
+    0.41,
+    0.01,
+    0.96,
+    1.51,
+    0.74,
+    0.03,
+    0.42,
+    1.43,
+    1.26,
+    1.23,
+    0.88,
+    0.03,
+    0.56,
+    1.05,
+    1.45,
+    0.93,
+    0.47,
+    0.03,
+    0.98,
+    1.09,
+    1.42,
+    0.72,
+    0.03,
+    0.87,
+    0.97,
+    0.9,
+    0.89,
+    0.85,
+    0.02,
+    0.87,
+    1.08,
+    0.02,
+    0.62,
+    0.7,
+    0.03,
+    0.88,
+    1.05,
+    0.02,
+    0.49,
+    1.25,
+    0.03,
+    0.14,
+    0.02,
+    0.25,
+    1.14,
+    0.07,
+    0.32,
+    1.31,
+    1.55,
+    0.13,
+    0.02,
+    1.5,
+    1.37,
+    0.57,
+    0.02,
+    0.9,
+    1.51,
+    1.32,
+    0.67,
+    0.01,
+    0.96,
+    1.0,
+    1.33,
+    1.28,
+    0.6,
+    1.03,
+    0.05,
+    2.03,
+    1.5,
+    0.02,
+    0.38,
+    1.32,
+    1.36,
+    1.47,
+    1.34
+   ]
+  },
+  {
+   "run": 2,
+   "rc": 0,
+   "wall_s": 279.66,
+   "busy_cpu_s": 191.31,
+   "cores_mean": 0.684,
+   "idle_share_raw": 0.3159,
+   "idle_share_net": 0.3264,
+   "quiet_share": 0.3667,
+   "share_ge1core": 0.3775,
+   "iowait_s": 0.63,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 1.11,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 191.31,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     98.18
+    ],
+    [
+     "host",
+     "uptime-kuma",
+     18.32
+    ],
+    [
+     "host",
+     "node-MainThread",
+     16.2
+    ],
+    [
+     "host",
+     "provjobd3970501",
+     7.68
+    ],
+    [
+     "host",
+     "python3",
+     1.08
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.76
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.55
+    ],
+    [
+     "host",
+     "npm exec playwr",
+     0.31
+    ],
+    [
+     "host",
+     "containerd",
+     0.19
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.18
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.17
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.16
+    ],
+    [
+     "host",
+     "chronyd",
+     0.09
+    ],
+    [
+     "host",
+     "kworker/1:1-events",
+     0.04
+    ],
+    [
+     "host",
+     "kworker/2:1-events",
+     0.04
+    ]
+   ],
+   "n_tests": 71,
+   "n_pass": 71,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 3,
+   "rc": 0,
+   "wall_s": 278.62,
+   "busy_cpu_s": 194.4,
+   "cores_mean": 0.698,
+   "idle_share_raw": 0.3023,
+   "idle_share_net": 0.3127,
+   "quiet_share": 0.3734,
+   "share_ge1core": 0.3986,
+   "iowait_s": 0.73,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 1.13,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 194.4,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     105.94
+    ],
+    [
+     "host",
+     "uptime-kuma",
+     18.66
+    ],
+    [
+     "host",
+     "node-MainThread",
+     16.86
+    ],
+    [
+     "host",
+     "provjobd3970501",
+     7.87
+    ],
+    [
+     "host",
+     "python3",
+     1.1
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.77
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.45
+    ],
+    [
+     "host",
+     "npm exec playwr",
+     0.3
+    ],
+    [
+     "host",
+     "containerd",
+     0.2
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.17
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.16
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.14
+    ],
+    [
+     "host",
+     "chronyd",
+     0.08
+    ],
+    [
+     "host",
+     "systemd-resolve",
+     0.05
+    ],
+    [
+     "host",
+     "kworker/0:1-events",
+     0.04
+    ]
+   ],
+   "n_tests": 71,
+   "n_pass": 71,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 4,
+   "rc": 0,
+   "wall_s": 278.33,
+   "busy_cpu_s": 194.05,
+   "cores_mean": 0.697,
+   "idle_share_raw": 0.3028,
+   "idle_share_net": 0.3133,
+   "quiet_share": 0.3687,
+   "share_ge1core": 0.3687,
+   "iowait_s": 0.41,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 1.08,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 194.05,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     104.86
+    ],
+    [
+     "host",
+     "uptime-kuma",
+     19.12
+    ],
+    [
+     "host",
+     "node-MainThread",
+     16.4
+    ],
+    [
+     "host",
+     "provjobd3970501",
+     7.65
+    ],
+    [
+     "host",
+     "python3",
+     1.07
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.74
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.57
+    ],
+    [
+     "host",
+     "npm exec playwr",
+     0.32
+    ],
+    [
+     "host",
+     "containerd",
+     0.21
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.19
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.17
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.17
+    ],
+    [
+     "host",
+     "chronyd",
+     0.09
+    ],
+    [
+     "host",
+     "kworker/0:0-events",
+     0.07
+    ],
+    [
+     "host",
+     "systemd-resolve",
+     0.05
+    ]
+   ],
+   "n_tests": 71,
+   "n_pass": 71,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 5,
+   "rc": 0,
+   "wall_s": 277.49,
+   "busy_cpu_s": 191.16,
+   "cores_mean": 0.689,
+   "idle_share_raw": 0.3111,
+   "idle_share_net": 0.3216,
+   "quiet_share": 0.3712,
+   "share_ge1core": 0.382,
+   "iowait_s": 0.51,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 1.1,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 191.16,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     100.74
+    ],
+    [
+     "host",
+     "uptime-kuma",
+     18.67
+    ],
+    [
+     "host",
+     "node-MainThread",
+     15.96
+    ],
+    [
+     "host",
+     "provjobd3970501",
+     7.63
+    ],
+    [
+     "host",
+     "python3",
+     1.08
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.74
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.61
+    ],
+    [
+     "host",
+     "npm exec playwr",
+     0.31
+    ],
+    [
+     "host",
+     "containerd",
+     0.2
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.15
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.15
+    ],
+    [
+     "host",
+     "chronyd",
+     0.09
+    ],
+    [
+     "host",
+     "kworker/0:0-events",
+     0.06
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.06
+    ],
+    [
+     "host",
+     "systemd-resolve",
+     0.05
+    ]
+   ],
+   "n_tests": 71,
+   "n_pass": 71,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 6,
+   "rc": 0,
+   "wall_s": 278.13,
+   "busy_cpu_s": 193.27,
+   "cores_mean": 0.695,
+   "idle_share_raw": 0.3051,
+   "idle_share_net": 0.3156,
+   "quiet_share": 0.3669,
+   "share_ge1core": 0.3849,
+   "iowait_s": 0.17,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 1.12,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 193.27,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     97.17
+    ],
+    [
+     "host",
+     "uptime-kuma",
+     18.31
+    ],
+    [
+     "host",
+     "node-MainThread",
+     16.13
+    ],
+    [
+     "host",
+     "provjobd3970501",
+     8.08
+    ],
+    [
+     "host",
+     "python3",
+     1.09
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.72
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.41
+    ],
+    [
+     "host",
+     "npm exec playwr",
+     0.3
+    ],
+    [
+     "host",
+     "containerd",
+     0.2
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.19
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.17
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.09
+    ],
+    [
+     "host",
+     "chronyd",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/0:0-events",
+     0.05
+    ],
+    [
+     "host",
+     "systemd-resolve",
+     0.05
+    ]
+   ],
+   "n_tests": 71,
+   "n_pass": 71,
+   "n_fail": 0,
+   "n_skip": 0
+  }
+ ],
+ "idle": {
+  "median_idle_share_raw": 0.3081,
+  "median_idle_share_net": 0.3186,
+  "median_quiet_share": 0.37,
+  "median_cores_mean": 0.692,
+  "median_wall_s": 278.475,
+  "median_busy_cpu_s": 192.29
+ },
+ "tests": {
+  "n_distinct": 71,
+  "n_flaky": 0,
+  "n_consistent_fail": 0,
+  "flaky": [],
+  "consistent_fail_sample": []
+ }
+}
