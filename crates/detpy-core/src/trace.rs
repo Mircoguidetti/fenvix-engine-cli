@@ -179,6 +179,36 @@ pub fn read_trace_from<R: BufRead>(reader: R) -> Result<Trace, TraceError> {
     Ok(Trace { header, tests, footer })
 }
 
+/// Concatenate partial traces into one trace with `header`.
+///
+/// Used by producers that run tests in several processes or realms one after
+/// the other (the Node shells write one part per test file, possibly from a
+/// fresh worker each time): the parts are given in execution order, their
+/// test lines are re-indexed in that order and a footer is written. Parts
+/// that cannot be read are skipped and reported in the returned list.
+pub fn merge_traces<P: AsRef<Path>>(
+    parts: &[P],
+    out: &Path,
+    header: &Header,
+) -> io::Result<(Footer, Vec<String>)> {
+    let mut w = TraceWriter::create(out, header)?;
+    let mut skipped = Vec::new();
+    let mut index = 0u64;
+    for p in parts {
+        match read_trace(p.as_ref()) {
+            Ok(t) => {
+                for mut rec in t.tests {
+                    rec.index = index;
+                    index += 1;
+                    w.write_test(&rec)?;
+                }
+            }
+            Err(e) => skipped.push(format!("{}: {e}", p.as_ref().display())),
+        }
+    }
+    Ok((w.finish()?, skipped))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -233,6 +263,32 @@ mod tests {
         assert!(matches!(err, TraceError::Format(_)));
         let bad = r#"{"type":"header","format":"other","version":1,"encoding":1}"#;
         assert!(matches!(read_trace_from(io::Cursor::new(bad)).unwrap_err(), TraceError::Format(_)));
+    }
+
+    #[test]
+    fn merge_concatenates_and_reindexes() {
+        let dir = tempfile::tempdir().unwrap();
+        let mk = |name: &str, ids: &[&str]| {
+            let p = dir.path().join(name);
+            let mut w = TraceWriter::create(&p, &Header::new(serde_json::Value::Null, vec![])).unwrap();
+            for id in ids {
+                w.write_test(&record(id, 0, 2)).unwrap();
+            }
+            drop(w); // a part may lack its footer
+            p
+        };
+        let a = mk("a.jsonl", &["f1::x", "f1::y"]);
+        let b = mk("b.jsonl", &["f2::z"]);
+        let missing = dir.path().join("nope.jsonl");
+        let out = dir.path().join("all.jsonl");
+        let header = Header::new(serde_json::json!({"k": 1}), vec!["f1::x".into(), "f1::y".into(), "f2::z".into()]);
+        let (footer, skipped) = merge_traces(&[a, b, missing], &out, &header).unwrap();
+        assert_eq!(footer.n_tests, 3);
+        assert_eq!(skipped.len(), 1);
+        let t = read_trace(&out).unwrap();
+        assert_eq!(t.executed_order(), vec!["f1::x", "f1::y", "f2::z"]);
+        assert_eq!(t.tests.iter().map(|r| r.index).collect::<Vec<_>>(), vec![0, 1, 2]);
+        assert_eq!(t.header.meta["k"], 1);
     }
 
     #[test]
