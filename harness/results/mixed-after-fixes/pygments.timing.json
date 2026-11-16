@@ -4,31 +4,31 @@
   "status": "ok",
   "python": "3.13",
   "serial_s": [
-    12.37371203400005,
-    12.032363492999991,
-    12.076767594999978
+    19.265146097,
+    18.90512964,
+    19.143653465
   ],
   "det_s": [
-    20.80501221899999,
-    13.810309152999992,
-    13.880783518999976
+    27.334151988000002,
+    20.982753019,
+    21.017591608999993
   ],
   "precompile_s": [
-    7.211,
-    0.296,
-    0.305
+    6.842,
+    0.631,
+    0.583
   ],
   "tests": 5346,
   "runner": {
     "cpus": 4,
     "platform": "linux",
-    "RUNNER_NAME": "GitHub Actions 1000007988",
+    "RUNNER_NAME": "GitHub Actions 1000008437",
     "RUNNER_OS": "Linux",
     "RUNNER_ARCH": "X64",
     "RUNNER_ENVIRONMENT": "github-hosted",
     "ImageOS": "ubuntu26",
-    "ImageVersion": "20261111.82.6",
-    "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 7763 64-Core Processor"
   },
-  "slowdown_pct": 14.937903787656692
+  "slowdown_pct": 9.788821906048817
 }

@@ -153,33 +153,33 @@
       "status": "ok",
       "python": "3.13",
       "serial_s": [
-        6.26760667500001,
-        5.404195831999999,
-        5.5109209470000025
+        8.743142892999991,
+        7.5610958920000115,
+        7.490117939000001
       ],
       "det_s": [
-        11.769718756000003,
-        6.918642309000006,
-        6.827712222000002
+        15.756535737999997,
+        9.611905235999998,
+        9.528517446999999
       ],
       "precompile_s": [
-        5.149,
-        0.213,
-        0.221
+        6.325,
+        0.31,
+        0.306
       ],
       "tests": 1412,
       "runner": {
         "cpus": 4,
         "platform": "linux",
-        "RUNNER_NAME": "GitHub Actions 1000007987",
+        "RUNNER_NAME": "GitHub Actions 1000008431",
         "RUNNER_OS": "Linux",
         "RUNNER_ARCH": "X64",
         "RUNNER_ENVIRONMENT": "github-hosted",
         "ImageOS": "ubuntu26",
         "ImageVersion": "20261111.196.1",
-        "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+        "cpu_model": "AMD EPYC 9V74 80-Core Processor"
       },
-      "slowdown_pct": 25.54421258331294
+      "slowdown_pct": 27.123175969370237
     },
     {
       "name": "idoft-centreon-sdk-python",
@@ -187,161 +187,25 @@
       "status": "ok",
       "python": "3.9",
       "serial_s": [
-        0.3216881150000006,
-        0.3229200630000051,
-        0.31432973100000083
+        0.40591035799999986,
+        0.4064380270000072,
+        0.40653688099999385
       ],
       "det_s": [
-        1.5210885809999937,
-        0.784301567,
-        0.7830081570000047
+        2.102332028999996,
+        1.0996395339999907,
+        1.1045792359999922
       ],
       "precompile_s": [
-        1.024,
-        0.298,
-        0.298
+        1.476,
+        0.476,
+        0.491
       ],
       "tests": 44,
       "runner": {
         "cpus": 4,
         "platform": "linux",
-        "RUNNER_NAME": "GitHub Actions 1000007982",
-        "RUNNER_OS": "Linux",
-        "RUNNER_ARCH": "X64",
-        "RUNNER_ENVIRONMENT": "github-hosted",
-        "ImageOS": "ubuntu26",
-        "ImageVersion": "20261111.82.6",
-        "cpu_model": "Intel(R) Xeon(R) 6975P-C"
-      },
-      "slowdown_pct": 143.80806452858806
-    },
-    {
-      "name": "idoft-cloudnetpy",
-      "kind": "flaky",
-      "status": "ok",
-      "python": "3.9",
-      "serial_s": [
-        6.462913318999995,
-        6.235137137999999,
-        6.180598875000015
-      ],
-      "det_s": [
-        8.003840768000003,
-        6.125441617000007,
-        6.1367533570000035
-      ],
-      "precompile_s": [
-        2.501,
-        0.67,
-        0.662
-      ],
-      "tests": 439,
-      "runner": {
-        "cpus": 4,
-        "platform": "linux",
-        "RUNNER_NAME": "GitHub Actions 1000007980",
-        "RUNNER_OS": "Linux",
-        "RUNNER_ARCH": "X64",
-        "RUNNER_ENVIRONMENT": "github-hosted",
-        "ImageOS": "ubuntu26",
-        "ImageVersion": "20261111.82.6",
-        "cpu_model": "Intel(R) Xeon(R) 6975P-C"
-      },
-      "slowdown_pct": -1.577892816509141
-    },
-    {
-      "name": "idoft-crom",
-      "kind": "flaky",
-      "status": "ok",
-      "python": "3.9",
-      "serial_s": [
-        0.2958947340000009,
-        0.2961978180000031,
-        0.296186953000003
-      ],
-      "det_s": [
-        1.5970214889999994,
-        0.8387581619999978,
-        0.8307647959999969
-      ],
-      "precompile_s": [
-        1.09,
-        0.344,
-        0.341
-      ],
-      "tests": 84,
-      "runner": {
-        "cpus": 4,
-        "platform": "linux",
-        "RUNNER_NAME": "GitHub Actions 1000007979",
-        "RUNNER_OS": "Linux",
-        "RUNNER_ARCH": "X64",
-        "RUNNER_ENVIRONMENT": "github-hosted",
-        "ImageOS": "ubuntu26",
-        "ImageVersion": "20261111.196.1",
-        "cpu_model": "AMD EPYC 9V74 80-Core Processor"
-      },
-      "slowdown_pct": 183.18538460402385
-    },
-    {
-      "name": "idoft-easypy",
-      "kind": "flaky",
-      "status": "ok",
-      "python": "3.9",
-      "serial_s": [
-        13.076607572,
-        12.981052722000001,
-        12.982121304000003
-      ],
-      "det_s": [
-        5.811749081000002,
-        4.8292298159999945,
-        4.813604084999994
-      ],
-      "precompile_s": [
-        1.427,
-        0.486,
-        0.487
-      ],
-      "tests": 212,
-      "runner": {
-        "cpus": 4,
-        "platform": "linux",
-        "RUNNER_NAME": "GitHub Actions 1000007983",
-        "RUNNER_OS": "Linux",
-        "RUNNER_ARCH": "X64",
-        "RUNNER_ENVIRONMENT": "github-hosted",
-        "ImageOS": "ubuntu26",
-        "ImageVersion": "20261111.196.1",
-        "cpu_model": "AMD EPYC 7763 64-Core Processor"
-      },
-      "slowdown_pct": -62.80091902613767
-    },
-    {
-      "name": "idoft-eppy",
-      "kind": "flaky",
-      "status": "ok",
-      "python": "3.9",
-      "serial_s": [
-        6.542685234999993,
-        6.499484836999997,
-        6.477257726999994
-      ],
-      "det_s": [
-        8.903631403000006,
-        7.724704080999999,
-        7.812744691000006
-      ],
-      "precompile_s": [
-        1.887,
-        0.716,
-        0.738
-      ],
-      "tests": 218,
-      "runner": {
-        "cpus": 4,
-        "platform": "linux",
-        "RUNNER_NAME": "GitHub Actions 1000007981",
+        "RUNNER_NAME": "GitHub Actions 1000008438",
         "RUNNER_OS": "Linux",
         "RUNNER_ARCH": "X64",
         "RUNNER_ENVIRONMENT": "github-hosted",
@@ -349,101 +213,33 @@
         "ImageVersion": "20261111.196.1",
         "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C"
       },
-      "slowdown_pct": 20.205599165705213
+      "slowdown_pct": 171.77064216975265
     },
     {
-      "name": "networkx",
-      "kind": "popular",
+      "name": "idoft-cloudnetpy",
+      "kind": "flaky",
       "status": "ok",
-      "python": "3.13",
+      "python": "3.9",
       "serial_s": [
-        135.192096602,
-        134.616912486,
-        134.30737875
+        7.13115062,
+        6.7260895309999995,
+        6.972963861000004
       ],
       "det_s": [
-        158.35392356199998,
-        148.38491897200004,
-        147.76162931700003
+        9.414494052000002,
+        7.235638091999995,
+        7.2291239789999935
       ],
       "precompile_s": [
-        10.743,
-        0.714,
-        0.716
+        2.928,
+        0.862,
+        0.842
       ],
-      "tests": 10181,
+      "tests": 439,
       "runner": {
         "cpus": 4,
         "platform": "linux",
-        "RUNNER_NAME": "GitHub Actions 1000007985",
-        "RUNNER_OS": "Linux",
-        "RUNNER_ARCH": "X64",
-        "RUNNER_ENVIRONMENT": "github-hosted",
-        "ImageOS": "ubuntu26",
-        "ImageVersion": "20261111.196.1",
-        "cpu_model": "AMD EPYC 7763 64-Core Processor"
-      },
-      "slowdown_pct": 10.227545879446541
-    },
-    {
-      "name": "pygments",
-      "kind": "popular",
-      "status": "ok",
-      "python": "3.13",
-      "serial_s": [
-        12.37371203400005,
-        12.032363492999991,
-        12.076767594999978
-      ],
-      "det_s": [
-        20.80501221899999,
-        13.810309152999992,
-        13.880783518999976
-      ],
-      "precompile_s": [
-        7.211,
-        0.296,
-        0.305
-      ],
-      "tests": 5346,
-      "runner": {
-        "cpus": 4,
-        "platform": "linux",
-        "RUNNER_NAME": "GitHub Actions 1000007988",
-        "RUNNER_OS": "Linux",
-        "RUNNER_ARCH": "X64",
-        "RUNNER_ENVIRONMENT": "github-hosted",
-        "ImageOS": "ubuntu26",
-        "ImageVersion": "20261111.82.6",
-        "cpu_model": "Intel(R) Xeon(R) 6975P-C"
-      },
-      "slowdown_pct": 14.937903787656692
-    },
-    {
-      "name": "rich",
-      "kind": "popular",
-      "status": "ok",
-      "python": "3.13",
-      "serial_s": [
-        5.370859626000005,
-        4.935627314999998,
-        5.052047385000009
-      ],
-      "det_s": [
-        11.478044144999998,
-        3.9225758369999966,
-        3.9128220220000003
-      ],
-      "precompile_s": [
-        7.59,
-        0.401,
-        0.41
-      ],
-      "tests": 981,
-      "runner": {
-        "cpus": 4,
-        "platform": "linux",
-        "RUNNER_NAME": "GitHub Actions 1000007986",
+        "RUNNER_NAME": "GitHub Actions 1000008432",
         "RUNNER_OS": "Linux",
         "RUNNER_ARCH": "X64",
         "RUNNER_ENVIRONMENT": "github-hosted",
@@ -451,33 +247,67 @@
         "ImageVersion": "20261111.196.1",
         "cpu_model": "AMD EPYC 9V74 80-Core Processor"
       },
-      "slowdown_pct": -22.356709308656065
+      "slowdown_pct": 3.767038467948125
     },
     {
-      "name": "werkzeug",
-      "kind": "popular",
+      "name": "idoft-crom",
+      "kind": "flaky",
       "status": "ok",
-      "python": "3.13",
+      "python": "3.9",
       "serial_s": [
-        7.0823275789999975,
-        6.683993487000002,
-        6.662387281000001
+        0.36676552100000137,
+        0.3816604689999963,
+        0.37604183000000546
       ],
       "det_s": [
-        12.552397741,
-        7.3301465560000025,
-        7.636410086999987
+        2.036060039999999,
+        1.136196734000002,
+        1.1299726140000033
       ],
       "precompile_s": [
-        5.463,
-        0.254,
-        0.252
+        1.418,
+        0.522,
+        0.509
       ],
-      "tests": 1016,
+      "tests": 84,
       "runner": {
         "cpus": 4,
         "platform": "linux",
-        "RUNNER_NAME": "GitHub Actions 1000007984",
+        "RUNNER_NAME": "GitHub Actions 1000008439",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 7763 64-Core Processor"
+      },
+      "slowdown_pct": 202.1463686632909
+    },
+    {
+      "name": "idoft-easypy",
+      "kind": "flaky",
+      "status": "ok",
+      "python": "3.9",
+      "serial_s": [
+        11.040852455999996,
+        11.042145677000008,
+        11.02323787200001
+      ],
+      "det_s": [
+        11.009119666000004,
+        10.416365500000012,
+        10.394194373000005
+      ],
+      "precompile_s": [
+        0.807,
+        0.224,
+        0.215
+      ],
+      "tests": 212,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008430",
         "RUNNER_OS": "Linux",
         "RUNNER_ARCH": "X64",
         "RUNNER_ENVIRONMENT": "github-hosted",
@@ -485,7 +315,177 @@
         "ImageVersion": "20261111.196.1",
         "cpu_model": "AMD EPYC 9V45 96-Core Processor"
       },
-      "slowdown_pct": 14.24921496186946
+      "slowdown_pct": -5.656148005678818
+    },
+    {
+      "name": "idoft-eppy",
+      "kind": "flaky",
+      "status": "ok",
+      "python": "3.9",
+      "serial_s": [
+        6.920093248999933,
+        6.883870506999983,
+        6.882208171000002
+      ],
+      "det_s": [
+        9.60161056100003,
+        8.459676950000016,
+        8.444337932000053
+      ],
+      "precompile_s": [
+        1.947,
+        0.802,
+        0.756
+      ],
+      "tests": 218,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008433",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 7763 64-Core Processor"
+      },
+      "slowdown_pct": 22.89128538077012
+    },
+    {
+      "name": "networkx",
+      "kind": "popular",
+      "status": "ok",
+      "python": "3.13",
+      "serial_s": [
+        82.46362873199999,
+        82.89621862999996,
+        82.57982676099999
+      ],
+      "det_s": [
+        97.10630590099998,
+        89.88284826300003,
+        88.09459207799995
+      ],
+      "precompile_s": [
+        7.2,
+        0.361,
+        0.35
+      ],
+      "tests": 10191,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008434",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+      },
+      "slowdown_pct": 8.843590242852194
+    },
+    {
+      "name": "pygments",
+      "kind": "popular",
+      "status": "ok",
+      "python": "3.13",
+      "serial_s": [
+        19.265146097,
+        18.90512964,
+        19.143653465
+      ],
+      "det_s": [
+        27.334151988000002,
+        20.982753019,
+        21.017591608999993
+      ],
+      "precompile_s": [
+        6.842,
+        0.631,
+        0.583
+      ],
+      "tests": 5346,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008437",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 7763 64-Core Processor"
+      },
+      "slowdown_pct": 9.788821906048817
+    },
+    {
+      "name": "rich",
+      "kind": "popular",
+      "status": "ok",
+      "python": "3.13",
+      "serial_s": [
+        6.158049664999993,
+        5.635353094999999,
+        5.631905367000002
+      ],
+      "det_s": [
+        15.61818912999999,
+        7.588813743000003,
+        7.54134151400001
+      ],
+      "precompile_s": [
+        8.659,
+        0.573,
+        0.57
+      ],
+      "tests": 981,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008435",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 7763 64-Core Processor"
+      },
+      "slowdown_pct": 34.66438775119918
+    },
+    {
+      "name": "werkzeug",
+      "kind": "popular",
+      "status": "ok",
+      "python": "3.13",
+      "serial_s": [
+        10.29759373799999,
+        10.393654155000036,
+        9.758113881000043
+      ],
+      "det_s": [
+        28.062147407999987,
+        21.053970425999978,
+        21.516016055000023
+      ],
+      "precompile_s": [
+        7.961,
+        0.477,
+        0.465
+      ],
+      "tests": 1016,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008436",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 7763 64-Core Processor"
+      },
+      "slowdown_pct": 108.94217234072867
     }
   ],
   "repos": [

@@ -56,22 +56,22 @@ Cause: `fixed-order` = the test also fails in a serial fixed-order run *without*
 
 ## Timing
 
-Quiet timing pass: 10 repositories, one per GitHub-hosted runner, one repository per runner, 3 serial fixed-order normal runs vs 3 `--det` runs interleaved on the same machine; median per repository. Runner: cpus=4, platform=linux, RUNNER_NAME=GitHub Actions 1000007987, RUNNER_OS=Linux, RUNNER_ARCH=X64, RUNNER_ENVIRONMENT=github-hosted, ImageOS=ubuntu26, ImageVersion=20261111.196.1, cpu_model=AMD EPYC 9V45 96-Core Processor. Labelled **DECLARED-NOISY**: hosted runners are virtual machines on shared hardware.
+Quiet timing pass: 10 repositories, one per GitHub-hosted runner, one repository per runner, 3 serial fixed-order normal runs vs 3 `--det` runs interleaved on the same machine; median per repository. Runner: cpus=4, platform=linux, RUNNER_NAME=GitHub Actions 1000008431, RUNNER_OS=Linux, RUNNER_ARCH=X64, RUNNER_ENVIRONMENT=github-hosted, ImageOS=ubuntu26, ImageVersion=20261111.196.1, cpu_model=AMD EPYC 9V74 80-Core Processor. Labelled **DECLARED-NOISY**: hosted runners are virtual machines on shared hardware.
 
-**Slowdown of `--det` (MEASURED, DECLARED-NOISY): median 14.6%**, min -62.8%, max 183.2%.
+**Slowdown of `--det` (MEASURED, DECLARED-NOISY): median 25.0%**, min -5.7%, max 202.1%.
 
 | repo | tests | normal serial s (median) | --det s (median) | slowdown % | precompile s (per run) |
 |---|---:|---:|---:|---:|---|
-| attrs | 1412 | 5.51 | 6.92 | 25.5 | 5.15, 0.21, 0.22 |
-| idoft-centreon-sdk-python | 44 | 0.32 | 0.78 | 143.8 | 1.02, 0.30, 0.30 |
-| idoft-cloudnetpy | 439 | 6.24 | 6.14 | -1.6 | 2.50, 0.67, 0.66 |
-| idoft-crom | 84 | 0.30 | 0.84 | 183.2 | 1.09, 0.34, 0.34 |
-| idoft-easypy | 212 | 12.98 | 4.83 | -62.8 | 1.43, 0.49, 0.49 |
-| idoft-eppy | 218 | 6.50 | 7.81 | 20.2 | 1.89, 0.72, 0.74 |
-| networkx | 10181 | 134.62 | 148.38 | 10.2 | 10.74, 0.71, 0.72 |
-| pygments | 5346 | 12.08 | 13.88 | 14.9 | 7.21, 0.30, 0.30 |
-| rich | 981 | 5.05 | 3.92 | -22.4 | 7.59, 0.40, 0.41 |
-| werkzeug | 1016 | 6.68 | 7.64 | 14.2 | 5.46, 0.25, 0.25 |
+| attrs | 1412 | 7.56 | 9.61 | 27.1 | 6.33, 0.31, 0.31 |
+| idoft-centreon-sdk-python | 44 | 0.41 | 1.10 | 171.8 | 1.48, 0.48, 0.49 |
+| idoft-cloudnetpy | 439 | 6.97 | 7.24 | 3.8 | 2.93, 0.86, 0.84 |
+| idoft-crom | 84 | 0.38 | 1.14 | 202.1 | 1.42, 0.52, 0.51 |
+| idoft-easypy | 212 | 11.04 | 10.42 | -5.7 | 0.81, 0.22, 0.21 |
+| idoft-eppy | 218 | 6.88 | 8.46 | 22.9 | 1.95, 0.80, 0.76 |
+| networkx | 10191 | 82.58 | 89.88 | 8.8 | 7.20, 0.36, 0.35 |
+| pygments | 5346 | 19.14 | 21.02 | 9.8 | 6.84, 0.63, 0.58 |
+| rich | 981 | 5.64 | 7.59 | 34.7 | 8.66, 0.57, 0.57 |
+| werkzeug | 1016 | 10.30 | 21.52 | 108.9 | 7.96, 0.48, 0.47 |
 
 * Round timings, serial `--det` vs the random-order xdist `-n 2` baseline: median 82.4% — **NOT COMPARABLE** (different parallelism and order; reported only for completeness).
 * Deterministic bytecode precompilation, first `--det` run of each repository: median 5.37 s, max 15.69 s; later runs (incremental check): median 0.41 s (MEASURED, NOISY).
