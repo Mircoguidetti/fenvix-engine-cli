@@ -237,7 +237,13 @@ def main(argv):
                 s = walk_summary([r], dict(spec, units=dict(spec.get("units", {}), sample=1.0)))
                 s["pr"] = pr["pr"]
                 prs.append(s)
-            summary["agent"][key] = prs
+            pooled = {}
+            for r in rules_for(spec["lang"]):
+                pooled[r] = stats([row.get(r) for p in prs for row in p["rows"]])
+            summary["agent"][key] = {"prs": prs, "pooled_time": pooled,
+                                     "pushes": sum(len(p["rows"]) for p in prs),
+                                     "verify": dict(sum((Counter(p["verify"]) for p in prs), Counter())),
+                                     "wrong": [w for p in prs for w in p["wrong_hits"]]}
         for p in sorted((base / "finer").glob("*.json*")) if (base / "finer").exists() else []:
             d = load(p)
             summary["finer"][d["repo"]] = finer_summary(d)
@@ -284,8 +290,12 @@ def print_tables(s):
         print(f"  invalidate all: {w['invalidate_all']} {w['invalidate_all_why']}  verify {w['verify']}")
     for name, f in s["flaky"].items():
         print(f"\n== reruns {name}: {f}")
-    for k, prs in s["agent"].items():
-        print(f"\n== agent {k}: {len(prs)} PRs")
+    for k, ag in s["agent"].items():
+        prs = ag["prs"]
+        print(f"\n== agent {k}: {len(prs)} PRs, {ag['pushes']} pushes, verify {ag['verify']}")
+        for r, st in ag["pooled_time"].items():
+            if st:
+                print(f"  pooled {r:16s} time median {pct(st['median'])} mean {pct(st['mean'])}")
         for p in prs:
             c = p.get("closure") or {}
             print(f"  PR {p['pr']['number']} commits {p['transitions']} closure time median "

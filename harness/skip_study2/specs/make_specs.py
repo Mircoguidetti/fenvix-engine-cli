@@ -38,15 +38,17 @@ saleor = {
     "install": ["test -x {py} || uv venv -q --python 3.12 {venv}",
                 "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --locked || UV_PROJECT_ENVIRONMENT={venv} uv sync -q"],
     "install_files": ["uv.lock", "pyproject.toml"],
-    "build": ["{py} -m pytest -q -p no:cacheprovider -n 0 --create-db saleor/core/tests/test_core.py "
-              "-k nothing_matches_this > /dev/null 2>&1 || true"],
+    # the test database is (re)created once per commit from that commit's migrations; units reuse it one at a
+    # time (concurrent processes on one test database interfere)
+    "build": ["{py} -m pytest -q -p no:cacheprovider -p no:randomly -n 0 --create-db "
+              "saleor/core/tests/test_core.py -x > /dev/null 2>&1 || true"],
     "env": {"DATABASE_URL": "postgres://saleor:saleor@localhost:5432/saleor", "CACHE_URL": "redis://localhost:6379/0",
             "SECRET_KEY": "ci-test"},
     "db_inputs": ["saleor/**/migrations/*.py"],
-    "units": {"include": ["saleor/**/test_*.py"], "sample": 0.35, "seed": "s2"},
+    "units": {"include": ["saleor/**/test_*.py"], "sample": 0.15, "seed": "s2"},
     "cmd": ["{py}", "-m", "pytest", "-q", "-n", "0", "--reuse-db", "-p", "no:cacheprovider", "-p", "s2_report",
             "{unit}"],
-    "unit_timeout": 900, "verify": 0.08, "workers": 3,
+    "unit_timeout": 900, "verify": 0.08, "workers": 1,
     "ci": {"workers": 4, "source": ".github/workflows/tests.yaml unit_tests: one ubuntu-latest job, "
                                    "pytest -n=auto --dist=loadgroup"},
 }
