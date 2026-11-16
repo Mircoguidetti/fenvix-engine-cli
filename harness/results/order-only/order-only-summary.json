@@ -1,0 +1,117 @@
+{
+  "tests": 358,
+  "verdicts": {
+    "order alone": 358
+  },
+  "by_pass_fail_reason": {
+    "time": {
+      "order alone": 70
+    },
+    "random": {
+      "order alone": 272
+    },
+    "entropy": {
+      "order alone": 5
+    },
+    "fs": {
+      "order alone": 5
+    },
+    "thread": {
+      "order alone": 6
+    }
+  },
+  "by_idoft_category": {
+    "-": {
+      "order alone": 17
+    },
+    "OD-Vic": {
+      "order alone": 265
+    },
+    "OD-Brit": {
+      "order alone": 66
+    },
+    "NOD": {
+      "order alone": 10
+    }
+  },
+  "per_repo": {
+    "anyio": {
+      "order alone": 6
+    },
+    "arrow": {
+      "order alone": 2
+    },
+    "idoft-accessify": {
+      "order alone": 7
+    },
+    "idoft-breathe": {
+      "order alone": 8
+    },
+    "idoft-centreon-sdk-python": {
+      "order alone": 36
+    },
+    "idoft-cloudnetpy": {
+      "order alone": 27
+    },
+    "idoft-coinbase-commerce-python": {
+      "order alone": 8
+    },
+    "idoft-crom": {
+      "order alone": 11
+    },
+    "idoft-devtracker": {
+      "order alone": 6
+    },
+    "idoft-domain2idna": {
+      "order alone": 12
+    },
+    "idoft-easypy": {
+      "order alone": 43
+    },
+    "idoft-eppy": {
+      "order alone": 66
+    },
+    "idoft-flask-multi-redis": {
+      "order alone": 14
+    },
+    "idoft-freezegun": {
+      "order alone": 7
+    },
+    "idoft-krllint": {
+      "order alone": 2
+    },
+    "idoft-ljson": {
+      "order alone": 4
+    },
+    "idoft-mdutils": {
+      "order alone": 8
+    },
+    "idoft-odinweb": {
+      "order alone": 12
+    },
+    "idoft-py-autodoc": {
+      "order alone": 15
+    },
+    "idoft-pykicad": {
+      "order alone": 28
+    },
+    "idoft-supertunnel": {
+      "order alone": 9
+    },
+    "idoft-todo-sync": {
+      "order alone": 9
+    },
+    "idoft-tunacell": {
+      "order alone": 10
+    },
+    "jsonschema": {
+      "order alone": 2
+    },
+    "packaging": {
+      "order alone": 1
+    },
+    "rich": {
+      "order alone": 5
+    }
+  }
+}
