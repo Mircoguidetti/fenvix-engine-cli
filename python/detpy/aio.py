@@ -100,7 +100,9 @@ NOISY_JOB_MEAN = 300e-6
 NOISY_DEFER_P = 0.35  # probability that a ready external event waits one more iteration
 
 _DEBUG = bool(os.environ.get("DETPY_AIO_DEBUG"))
-_tl = threading.local()  # .job: the executor job running in this worker thread
+_tl = threading.local()
+_POOL_WORK = {"n": 0}  # thread-pool work items submitted and not finished (any executor)
+_POOL_LOCK = threading.Lock()  # .job: the executor job running in this worker thread
 _orig = {}
 _loop_counter = {"nodeid": None, "n": 0}
 
@@ -301,7 +303,7 @@ class Scheduler:
 
     def _external_possible(self) -> bool:
         """Can something outside this thread still wake the loop up?"""
-        if self.jobs:
+        if self.jobs or _POOL_WORK["n"]:
             return True
         me = threading.current_thread()
         for t in threading.enumerate():
@@ -338,7 +340,12 @@ class Scheduler:
             nxt = self._next_deadline()
             if nxt is not None:
                 if self._external_possible():
-                    io, foreign = self._wait_real(min(max(nxt - self.vt, 0.0), CFG.grace))
+                    # An executor job still running is real work the timer races
+                    # with: let the timer's whole delay elapse for real first (as
+                    # in reality); otherwise wait at most the grace period.
+                    delay = max(nxt - self.vt, 0.0)
+                    busy_pool = bool(self.jobs) or _POOL_WORK["n"] > 0
+                    io, foreign = self._wait_real(delay if busy_pool else min(delay, CFG.grace))
                     if io or foreign:
                         rec.append("grace-wakeup")
                 if not io and not foreign:
@@ -804,6 +811,21 @@ def _io_patch(name, kind):
     return method
 
 
+def _pool_done(_f) -> None:
+    with _POOL_LOCK:
+        _POOL_WORK["n"] -= 1
+
+
+def _submit(self, fn, /, *args, **kwargs):
+    """ThreadPoolExecutor.submit that counts in-flight work (executors used directly,
+    e.g. tornado's run_on_executor, finish through call_soon_threadsafe)."""
+    f = _orig["submit"](self, fn, *args, **kwargs)
+    with _POOL_LOCK:
+        _POOL_WORK["n"] += 1
+    f.add_done_callback(_pool_done)
+    return f
+
+
 def install(patcher, seed: int, grace: float, wait: float, settle: float, rootdir=None) -> None:
     refresh_prefixes(rootdir)
     CFG.enabled = True
@@ -817,6 +839,9 @@ def install(patcher, seed: int, grace: float, wait: float, settle: float, rootdi
         patcher.set(B, name, fn)
     _orig["call_at"] = B.__dict__["call_at"]
     patcher.set(B, "call_at", _call_at)
+    T = concurrent.futures.ThreadPoolExecutor
+    _orig["submit"] = T.__dict__["submit"]
+    patcher.set(T, "submit", _submit)
     S = _se.BaseSelectorEventLoop
     for name, kind in (("_add_reader", "r"), ("_add_writer", "w")):
         _orig[name] = S.__dict__[name]
