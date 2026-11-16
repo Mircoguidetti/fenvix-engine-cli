@@ -172,10 +172,20 @@ def sleep(secs: float) -> None:
     CLOCK.other_event()  # a sleep is not a read: it ends a run of reads
     _state.record("time", "time.sleep", str(ns))
     CLOCK.advance(ns)
-    if _state.STATE.config.sleep == "real":
+    if _state.STATE.config.sleep == "real" or _other_threads_alive():
+        # Another thread may need this time to make progress (code that sleeps
+        # to "let the worker finish"): wait for real as well. Scheduling is not
+        # controlled by Level 0 anyway once several threads run.
         real_sleep(secs)
     else:
         real_sleep(0)  # still yield the GIL / scheduler
+
+
+def _other_threads_alive() -> bool:
+    for t in threading.enumerate():
+        if t is not threading.current_thread() and not t.name.startswith("detpy-"):
+            return True
+    return False
 
 
 def _wall_secs(op: str) -> float:

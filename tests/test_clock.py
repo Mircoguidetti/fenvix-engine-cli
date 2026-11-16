@@ -224,3 +224,29 @@ def test_real_pytest_benchmark(pytester, run_det):
     assert time.monotonic() - t0 < 60
     again, (_, tests2, _) = run_det("-p", "no:randomly")
     assert tests["test_bench.py::test_fib"]["fingerprint"] == tests2["test_bench.py::test_fib"]["fingerprint"]
+
+
+def test_sleep_lets_other_threads_run(pytester, run_det):
+    """Regression (easypy, test_tag_along_thread / concurrent_find_proper_shutdown):
+    code that sleeps to let *other threads* make progress must keep working.
+    A purely virtual sleep returned at once and the other thread never ran."""
+    pytester.makepyfile(
+        test_t="""
+        import threading, time
+        def test_wait_for_worker():
+            done = []
+            t = threading.Thread(target=lambda: (time.sleep(0.2), done.append(1)))
+            t.start()
+            time.sleep(0.5)          # "wait for stragglers"
+            assert done
+            t.join()
+
+        def test_single_thread_sleep_is_still_virtual():
+            from detpy import clock
+            t0 = clock.real_monotonic()
+            time.sleep(30)
+            assert clock.real_monotonic() - t0 < 5
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=2)
