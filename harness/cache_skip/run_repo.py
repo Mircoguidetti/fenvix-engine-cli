@@ -32,6 +32,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 sys.path.insert(0, str(HERE.parent))
 from detpy_harness import detect_install, clean_env  # noqa: E402
+from sysmon_capture import fold_file  # noqa: E402  (same directory as this script)
 
 # Study-local pytest arguments: tests that hang in a serial run (each would cost the full --timeout per run).
 EXTRA_ARGS = {
@@ -284,7 +285,14 @@ def main(argv=None) -> int:
                     step[f"extract_s{tag}"] = time.perf_counter() - t1
                 covdata.unlink(missing_ok=True)
             else:
+                raw = Path(f"{stem}{tag}.smraw")
+                env_c["CACHE_SKIP_SMRAW"] = str(raw)
                 code, out2, wall_c = sh([py, "-m", "pytest", *args], cwd=src, env=env_c, timeout=a.timeout)
+                if raw.exists():
+                    t1 = time.perf_counter()
+                    fold_file(str(raw), f"{stem}{tag}.cov.pkl.gz")
+                    step[f"extract_s{tag}"] = time.perf_counter() - t1
+                raw.unlink(missing_ok=True)
             step[f"cap_exit{tag}"], step[f"cap_wall{tag}"] = code, wall_c
             step[f"cap_tracer{tag}"] = tracer
             outs.append(out2)

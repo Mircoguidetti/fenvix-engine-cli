@@ -30,6 +30,9 @@ Environment:
   not under coverage, else ``coverage``.
 * ``CACHE_SKIP_COV`` (``sysmon`` tracer) output file for the executed lines, in
   the compact pickle format of ``run_repo.extract_coverage``.
+* ``CACHE_SKIP_SMRAW`` (``sysmon`` tracer) if set, the raw capture is written
+  there instead and ``CACHE_SKIP_COV`` is not written: the caller folds it with
+  ``sysmon_capture.fold_file`` outside the test process.
 """
 
 from __future__ import annotations
@@ -65,7 +68,8 @@ if TRACER == "sysmon":
     # repository code run at startup is recorded in the "" context, as under ``coverage run``
     from sysmon_capture import SysmonCapture
 
-    _sysmon = SysmonCapture(ROOT, os.environ.get("CACHE_SKIP_COV", OUT + ".cov.pkl.gz"))
+    _raw = os.environ.get("CACHE_SKIP_SMRAW", "")
+    _sysmon = SysmonCapture(ROOT, _raw or os.environ.get("CACHE_SKIP_COV", OUT + ".cov.pkl.gz"), raw=bool(_raw))
     _sysmon.start()
 _fs: dict[str, dict[str, set]] = {}  # ctx -> {"open": set, "list": set}
 _spawn: dict[str, int] = {}

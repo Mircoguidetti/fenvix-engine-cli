@@ -26,9 +26,13 @@ callback per execution:
   so each line is seen again (once) in the new context. A switch with nothing
   recorded since the previous restart skips it.
 
-The array is folded at interpreter exit into the compact form
-``run_repo.extract_coverage`` produces from a coverage.py data file:
-``{"files", "blobs", "ctx"}``.
+At interpreter exit the raw data (file names, context boundaries, the array
+as bytes) is written as one uncompressed pickle; ``fold`` turns it, outside
+the test process, into the compact form ``run_repo.extract_coverage``
+produces from a coverage.py data file: ``{"files", "blobs", "ctx"}`` (as
+coverage.py writes its data file at exit and ``extract_coverage`` reads it
+afterwards). With ``raw=False`` the process folds and writes the compact form
+itself.
 
 Measured alternatives (see the capture-overhead report): re-arming only the
 code objects with disabled lines (``set_local_events`` off and on) instead of
@@ -83,10 +87,11 @@ def entry_line(code) -> int | None:
 
 
 class SysmonCapture:
-    def __init__(self, root: str, out: str):
+    def __init__(self, root: str, out: str, raw: bool = False):
         self.root = os.path.realpath(root)
         self.root_sep = self.root + os.sep
         self.out = out
+        self.raw = raw
         self.buf = array("Q")
         self.segs: list[tuple[str, int]] = [("", 0)]  # (context, start index in buf)
         self.ctx = ""
@@ -223,53 +228,75 @@ class SysmonCapture:
             _mon.free_tool_id(self.tool)
             self.tool = None
 
-    def data(self) -> dict[str, dict[str, set]]:
-        """{context: {path relative to the root: set(lines)}} (contexts with no line are left out)."""
-        buf = self.buf
-        by_ctx: dict[str, set] = {}
-        segs = self.segs + [("", len(buf))]
-        for (c, a), (_, b) in zip(segs, segs[1:]):
-            if b > a:
-                by_ctx.setdefault(c, set()).update(buf[a:b])
+    def raw_data(self) -> dict:
         rel = []
         for fn in self._fnames:
             p = os.path.realpath(os.path.abspath(fn))
             rel.append(p[len(self.root_sep):] if p.startswith(self.root_sep) else p)
-        out: dict[str, dict[str, set]] = {}
-        mask = _MASK.__and__
-        for c, vals in by_ctx.items():
-            v = sorted(vals)
-            per = out[c] = {}
-            i, n = 0, len(v)
-            while i < n:
-                f = v[i] >> _SHIFT
-                j = bisect_left(v, (f + 1) << _SHIFT, i)
-                # one file may appear under several co_filename spellings: merge per relative path
-                per.setdefault(rel[f], set()).update(map(mask, v[i:j]))
-                i = j
-        return out
-
-    def compact(self) -> dict:
-        """Same layout as ``run_repo.extract_coverage``: {"files", "blobs", "ctx"}; paths relative to the root."""
-        data = self.data()
-        files = sorted({f for per in data.values() for f in per})
-        fi_of = {f: i for i, f in enumerate(files)}
-        blobs, ctx = [], {}
-        blob_ix: dict = {}
-        for c, per in data.items():
-            for f, lines in sorted(per.items()):
-                key = (fi_of[f], tuple(sorted(lines)))
-                b = blob_ix.get(key)
-                if b is None:
-                    b = blob_ix[key] = len(blobs)
-                    blobs.append(key)
-                ctx.setdefault(c, []).append(b)
-        return {"files": files, "blobs": blobs, "ctx": ctx}
+        return {"format": "sysmon-raw-1", "files": rel, "segs": self.segs, "buf": self.buf.tobytes()}
 
     def save(self) -> None:
         if self._saved:
             return
         self._saved = True
         self.stop()
-        with gzip.open(self.out, "wb", compresslevel=3) as fh:
-            pickle.dump(self.compact(), fh, protocol=pickle.HIGHEST_PROTOCOL)
+        raw = self.raw_data()
+        if self.raw:
+            with open(self.out, "wb") as fh:
+                pickle.dump(raw, fh, protocol=pickle.HIGHEST_PROTOCOL)
+        else:
+            with gzip.open(self.out, "wb", compresslevel=3) as fh:
+                pickle.dump(fold(raw), fh, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+def fold(raw: dict) -> dict:
+    """Raw data -> {"files", "blobs", "ctx"} (layout of ``run_repo.extract_coverage``, paths relative to the root).
+
+    ``ctx`` maps every context with at least one line to blob ids; a blob is (file index, sorted lines).
+    """
+    buf = array("Q")
+    buf.frombytes(raw["buf"])
+    by_ctx: dict[str, set] = {}
+    segs = list(raw["segs"]) + [("", len(buf))]
+    for (c, a), (_, b) in zip(segs, segs[1:]):
+        if b > a:
+            by_ctx.setdefault(c, set()).update(buf[a:b])
+    rel = raw["files"]
+    files = sorted(set(rel))
+    fi_of = [files.index(r) for r in rel]  # one file may appear under several co_filename spellings
+    mask = _MASK.__and__
+    blobs: list = []
+    blob_ix: dict = {}
+    ctx: dict[str, list] = {}
+    for c, vals in by_ctx.items():
+        v = sorted(vals)
+        per: dict[int, tuple] = {}
+        i, n = 0, len(v)
+        while i < n:
+            f = v[i] >> _SHIFT
+            j = bisect_left(v, (f + 1) << _SHIFT, i)
+            fi = fi_of[f]
+            lines = tuple(map(mask, v[i:j]))
+            per[fi] = tuple(sorted(set(per[fi] + lines))) if fi in per else lines
+            i = j
+        ids = ctx[c] = []
+        for fi in sorted(per):
+            key = (fi, per[fi])
+            b = blob_ix.get(key)
+            if b is None:
+                b = blob_ix[key] = len(blobs)
+                blobs.append(key)
+            ids.append(b)
+    return {"files": files, "blobs": blobs, "ctx": ctx}
+
+
+def fold_file(raw_path: str, out_path: str) -> None:
+    """Read a raw capture, write the compact form gzip-pickled (``<stem>.cov.pkl.gz``)."""
+    with open(raw_path, "rb") as fh:
+        raw = pickle.load(fh)
+    with gzip.open(out_path, "wb", compresslevel=3) as fh:
+        pickle.dump(fold(raw), fh, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+if __name__ == "__main__":  # python sysmon_capture.py <raw> <out.cov.pkl.gz>
+    fold_file(sys.argv[1], sys.argv[2])
