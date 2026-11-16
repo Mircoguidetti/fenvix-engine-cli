@@ -48,11 +48,30 @@ real_date = _dt.date
 _MONO_BASE_NS = 1_000 * NS  # arbitrary, positive, process-independent
 
 
+MAX_TICK_NS = NS  # the adaptive tick never exceeds one second per read
+
+
 class VirtualClock:
-    def __init__(self, epoch_ns: int, tick_ns: int) -> None:
+    """Deterministic clock.
+
+    Adaptive tick: once ``adapt_after`` consecutive clock reads happened with no
+    other event in between (no random draw, filesystem listing, network access,
+    sleep...), every further read of that run doubles the tick, up to
+    ``MAX_TICK_NS``; any other event or the start of a test restores the base
+    tick. Doubling on every read (rather than every N reads) is what makes
+    calibration loops that double their own work per measurement terminate. Code that only watches the clock
+    (time-calibrated loops such as pytest-benchmark's) therefore sees time
+    move faster and terminates, while the sequence of values stays a pure
+    function of the sequence of events.
+    """
+
+    def __init__(self, epoch_ns: int, tick_ns: int, adapt_after: int = 0) -> None:
         self._lock = threading.Lock()
         self.epoch_ns = epoch_ns
+        self.base_tick_ns = tick_ns
         self.tick_ns = tick_ns
+        self.adapt_after = adapt_after
+        self.streak = 0
         self.elapsed = 0  # ns since installation
         self.wall_offset = epoch_ns
         self.test_start = 0
@@ -61,7 +80,16 @@ class VirtualClock:
         """Advance by one tick and return the elapsed counter."""
         with self._lock:
             self.elapsed += self.tick_ns
+            if self.adapt_after:
+                self.streak += 1
+                if self.streak >= self.adapt_after:
+                    self.tick_ns = min(max(1, self.tick_ns) * 2, MAX_TICK_NS)
             return self.elapsed
+
+    def other_event(self) -> None:
+        if self.streak or self.tick_ns != self.base_tick_ns:
+            self.streak = 0
+            self.tick_ns = self.base_tick_ns
 
     def advance(self, ns: int) -> None:
         if ns > 0:
@@ -70,6 +98,8 @@ class VirtualClock:
 
     def start_test(self) -> None:
         with self._lock:
+            self.streak = 0
+            self.tick_ns = self.base_tick_ns
             self.test_start = self.elapsed
             self.wall_offset = self.epoch_ns - self.elapsed
 
@@ -139,6 +169,7 @@ def sleep(secs: float) -> None:
     if secs < 0:
         raise ValueError("sleep length must be non-negative")
     ns = int(secs * NS)
+    CLOCK.other_event()  # a sleep is not a read: it ends a run of reads
     _state.record("time", "time.sleep", str(ns))
     CLOCK.advance(ns)
     if _state.STATE.config.sleep == "real":
@@ -247,7 +278,7 @@ _PRELOAD = ("threading", "queue", "subprocess", "sched", "socketserver", "select
             "concurrent.futures", "multiprocessing", "multiprocessing.connection", "logging", "tempfile")
 
 
-def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module) -> list[str]:
+def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_after: int = 0) -> list[str]:
     global CLOCK
     import importlib
 
@@ -256,7 +287,9 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module) -> list[
             importlib.import_module(name)
         except Exception:  # pragma: no cover - optional modules
             pass
-    CLOCK = VirtualClock(epoch_ns, tick_ns)
+    CLOCK = VirtualClock(epoch_ns, tick_ns, adapt_after)
+    if adapt_after:
+        _state._on_other_event = CLOCK.other_event
     fakes = {
         "time": time, "time_ns": time_ns, "monotonic": monotonic, "monotonic_ns": monotonic_ns,
         "perf_counter": perf_counter, "perf_counter_ns": perf_counter_ns, "sleep": sleep,
@@ -284,6 +317,7 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module) -> list[
 def uninstall() -> None:
     global CLOCK
     CLOCK = None
+    _state._on_other_event = None
 
 
 def start_test() -> None:

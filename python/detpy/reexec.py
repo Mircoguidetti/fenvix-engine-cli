@@ -1,4 +1,5 @@
-"""Re-launch the interpreter with a fixed PYTHONHASHSEED (and ASLR disabled).
+"""Re-launch the interpreter with a fixed PYTHONHASHSEED, deterministic bytecode
+and ASLR disabled.
 
 ``PYTHONHASHSEED`` is read once at interpreter start-up, so when it does not
 have the wanted value the only way to fix str/bytes hashing (and therefore set
@@ -6,15 +7,30 @@ iteration order) is to ``exec`` the same command line again with the variable
 set. On Linux the same exec also disables address-space layout randomisation
 (``personality(ADDR_NO_RANDOMIZE)``), which makes ``id()``-based hashes and
 ``repr`` addresses reproducible too. ``DETPY_REEXEC=1`` prevents loops.
+
+Bytecode: a ``.pyc`` stores constants such as set literals (as ``frozenset``)
+in the iteration order of the process that compiled them, and loading it can
+yield a different set layout than compiling from source. To make every run
+read the *same* bytecode, before the exec detpy precompiles the standard
+library, site-packages and the project with ``compileall`` *under the fixed
+hash seed* into a private cache (``PYTHONPYCACHEPREFIX``), and the exec'd
+interpreter runs with ``PYTHONDONTWRITEBYTECODE=1``: modules are then either
+loaded from that deterministic cache or (if not precompiled, e.g. pytest's
+assertion-rewritten test modules) always compiled from source.
 """
 
 from __future__ import annotations
 
 import os
+import subprocess
 import sys
+import sysconfig
+import time
 
 ADDR_NO_RANDOMIZE = 0x0040000
 MARKER = "DETPY_REEXEC"
+PRECOMPILE_ENV = "DETPY_PRECOMPILE_S"
+_EXCLUDE = r"[/\\](\.git|\.hg|\.tox|\.nox|node_modules|\.venv|venv|\.eggs|\.mypy_cache|\.detpy)[/\\]"
 
 # Number of pytest sessions currently configured in this process. A nested,
 # in-process session (``pytest.main()`` from a test, pytester inline runs)
@@ -46,16 +62,39 @@ def _disable_aslr_for_exec() -> bool:
         return False
 
 
-def fresh_bytecode_active() -> bool:
-    return bool(sys.flags.dont_write_bytecode and sys.pycache_prefix and "detpy-nopyc" in sys.pycache_prefix)
+def pyc_cache_dir(hashseed: str) -> str:
+    base = os.environ.get("DETPY_PYC_CACHE") or os.path.join(
+        os.environ.get("XDG_CACHE_HOME") or os.path.join(os.path.expanduser("~"), ".cache"), "detpy", "pyc"
+    )
+    return os.path.join(base, f"{sys.implementation.cache_tag}-hashseed{hashseed}")
 
 
-def plan(want_hashseed: str, want_no_aslr: bool, want_fresh_bytecode: bool = False) -> dict:
+def bytecode_active(hashseed: str) -> bool:
+    prefix = sys.pycache_prefix
+    return bool(sys.flags.dont_write_bytecode and prefix
+                and os.path.realpath(prefix) == os.path.realpath(pyc_cache_dir(hashseed)))
+
+
+def plan(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True) -> dict:
     """What a re-exec would fix: {'hashseed': bool, 'aslr': bool, 'bytecode': bool}."""
     need_hash = os.environ.get("PYTHONHASHSEED") != want_hashseed
     need_aslr = want_no_aslr and aslr_disabled() is False
-    need_bytecode = want_fresh_bytecode and not fresh_bytecode_active()
+    need_bytecode = want_bytecode and not bytecode_active(want_hashseed)
     return {"hashseed": need_hash, "aslr": need_aslr, "bytecode": need_bytecode}
+
+
+def _argv() -> list[str] | None:
+    orig = getattr(sys, "orig_argv", None)
+    if orig:
+        return [sys.executable] + list(orig[1:])
+    # Python < 3.10: rebuild the command line (interpreter flags are lost).
+    main = sys.modules.get("__main__")
+    spec = getattr(main, "__spec__", None)
+    if spec is not None and spec.name in ("pytest", "pytest.__main__"):
+        return [sys.executable, "-m", "pytest", *sys.argv[1:]]
+    if sys.argv and sys.argv[0]:
+        return [sys.executable, *sys.argv]
+    return None
 
 
 def can_reexec() -> tuple[bool, str]:
@@ -65,25 +104,49 @@ def can_reexec() -> tuple[bool, str]:
         return False, "nested in-process pytest session"
     if os.name != "posix":
         return False, "exec is only supported on POSIX"
-    if not getattr(sys, "orig_argv", None):
-        return False, "sys.orig_argv unavailable (Python < 3.10)"
+    if _argv() is None:
+        return False, "cannot reconstruct the command line"
     return True, ""
 
 
-def reexec(want_hashseed: str, want_no_aslr: bool, want_fresh_bytecode: bool = False) -> None:
+def precompile_dirs(rootdir: str | None) -> list[str]:
+    paths = sysconfig.get_paths()
+    dirs = []
+    for key in ("stdlib", "purelib", "platlib"):
+        p = paths.get(key)
+        if p and os.path.isdir(p) and os.path.realpath(p) not in map(os.path.realpath, dirs):
+            dirs.append(p)
+    if rootdir and os.path.isdir(rootdir):
+        dirs.append(rootdir)
+    return dirs
+
+
+def precompile(hashseed: str, rootdir: str | None) -> float:
+    """Compile every reachable module under the fixed hash seed; returns seconds.
+
+    Incremental: ``compileall`` skips modules whose cached ``.pyc`` is up to date.
+    """
+    prefix = pyc_cache_dir(hashseed)
+    os.makedirs(prefix, exist_ok=True)
+    env = dict(os.environ)
+    env.update(PYTHONHASHSEED=hashseed, PYTHONPYCACHEPREFIX=prefix)
+    env.pop("PYTHONDONTWRITEBYTECODE", None)
+    cmd = [sys.executable, "-m", "compileall", "-qq", "-j", "0", "-x", _EXCLUDE, *precompile_dirs(rootdir)]
+    t0 = time.perf_counter()
+    subprocess.run(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return time.perf_counter() - t0
+
+
+def reexec(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True, rootdir: str | None = None) -> None:
     """Exec the current command line again. Does not return on success."""
-    need = plan(want_hashseed, want_no_aslr, want_fresh_bytecode)
+    need = plan(want_hashseed, want_no_aslr, want_bytecode)
     env = dict(os.environ)
     env["PYTHONHASHSEED"] = want_hashseed
     env[MARKER] = "1"
-    if want_fresh_bytecode:
-        # Never read nor write .pyc files: constants such as set literals are
-        # then always built from source (a .pyc stores a frozenset in the
-        # iteration order of the process that compiled it).
-        import tempfile
-
+    if want_bytecode:
+        env[PRECOMPILE_ENV] = f"{precompile(want_hashseed, rootdir):.3f}"
+        env["PYTHONPYCACHEPREFIX"] = pyc_cache_dir(want_hashseed)
         env["PYTHONDONTWRITEBYTECODE"] = "1"
-        env["PYTHONPYCACHEPREFIX"] = os.path.join(tempfile.gettempdir(), "detpy-nopyc-empty")
     if need["aslr"]:
         _disable_aslr_for_exec()
     for stream in (sys.stdout, sys.stderr):
@@ -91,4 +154,4 @@ def reexec(want_hashseed: str, want_no_aslr: bool, want_fresh_bytecode: bool = F
             stream.flush()
         except Exception:
             pass
-    os.execve(sys.executable, list(sys.orig_argv), env)
+    os.execve(sys.executable, _argv(), env)

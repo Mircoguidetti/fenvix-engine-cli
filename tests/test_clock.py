@@ -166,18 +166,61 @@ def test_time_control_can_be_disabled(pytester, run_det):
     result.assert_outcomes(passed=1)
 
 
-def test_benchmark_plugins_are_disabled(pytester, run_det):
-    # Stand-in for pytest-benchmark (registered under the name "benchmark").
+def test_adaptive_tick_unblocks_calibration(pytester, run_det):
+    # pytest-benchmark style: a run of consecutive timer reads (precision
+    # estimation) followed by a calibration loop that doubles the work until a
+    # call "lasts" long enough. With a fixed tick it would never end.
     pytester.makepyfile(
-        benchmark="""
-        def pytest_addoption(parser):
-            parser.addoption("--benchmark-disable", action="store_true")
-        """,
-        test_b="""
-        def test_b(request):
-            assert request.config.getoption("benchmark_disable")
-        """,
+        test_cal="""
+        import time
+        def calibrate(timer):
+            # no warm-up reads: the loop doubles its work on every measurement
+            loops = 1
+            while True:
+                t0 = timer()
+                for _ in range(loops):
+                    pass
+                if timer() - t0 >= 10e-6:
+                    return loops
+                loops *= 10  # pytest-benchmark grows 10x per measurement
+                assert loops <= 10 ** 6, "calibration does not terminate"
+
+        def test_calibration():
+            assert calibrate(time.perf_counter) <= 10 ** 6
+
+        def test_other_events_restore_the_tick():
+            import random
+            for _ in range(200):
+                time.monotonic()
+            a = time.monotonic(); b = time.monotonic()
+            random.random()
+            c = time.monotonic(); d = time.monotonic()
+            assert b - a > 1.5e-6           # 200 consecutive reads: the tick grew
+            assert abs((d - c) - 1e-6) < 1e-9  # a random draw restored the base tick
+        """
     )
-    result, (header, _, _) = run_det("-p", "benchmark")
+    result, _ = run_det()
+    result.assert_outcomes(passed=2)
+    fixed, _ = run_det("--det-tick-adapt=0", "-k", "other_events")
+    fixed.assert_outcomes(failed=1)
+
+
+def test_real_pytest_benchmark(pytester, run_det):
+    pytest = __import__("pytest")
+    pytest.importorskip("pytest_benchmark")
+    pytester.makepyfile(
+        test_bench="""
+        def fib(n):
+            return n if n < 2 else fib(n - 1) + fib(n - 2)
+        def test_fib(benchmark):
+            assert benchmark(fib, 12) == 144
+            assert benchmark.stats.stats.rounds >= 1
+        """
+    )
+    t0 = time.monotonic()
+    result, (header, tests, _) = run_det("-p", "no:randomly")
     result.assert_outcomes(passed=1)
-    assert header["meta"]["adjustments"] == ["pytest-benchmark: --benchmark-disable"]
+    assert header["meta"]["adjustments"] == ["pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)"]
+    assert time.monotonic() - t0 < 60
+    again, (_, tests2, _) = run_det("-p", "no:randomly")
+    assert tests["test_bench.py::test_fib"]["fingerprint"] == tests2["test_bench.py::test_fib"]["fingerprint"]

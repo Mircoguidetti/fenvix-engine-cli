@@ -28,8 +28,15 @@ def run_det(pytester):
     return run
 
 
+@pytest.fixture(scope="session")
+def pyc_cache(tmp_path_factory):
+    return str(tmp_path_factory.mktemp("detpy-pyc"))
+
+
 @pytest.fixture(autouse=True)
-def _clean_env(monkeypatch):
+def _clean_env(monkeypatch, pyc_cache):
+    # pytester points HOME at each test's directory: share the bytecode cache.
+    monkeypatch.setenv("DETPY_PYC_CACHE", pyc_cache)
     # The subprocesses must decide about re-exec themselves.
     monkeypatch.delenv("DETPY_REEXEC", raising=False)
     monkeypatch.delenv("PYTHONHASHSEED", raising=False)

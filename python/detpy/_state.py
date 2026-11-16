@@ -18,6 +18,7 @@ class Config:
     shuffle: bool = False
     epoch_ns: int = 1_735_689_600 * 1_000_000_000  # 2025-01-01T00:00:00Z
     tick_ns: int = 1_000
+    tick_adapt: int = 8
     sleep: str = "virtual"  # virtual | real
     controls: frozenset = frozenset({"order", "seeds", "time", "fs", "net"})
     record_net: bool = False
@@ -39,6 +40,7 @@ class State:
 
 
 STATE = State()
+_on_other_event = None  # set by the clock when the adaptive tick is on
 
 
 def reset_threads() -> None:
@@ -52,6 +54,8 @@ def record(source: str, op: str, value: str, depth: int = 1) -> None:
     ``depth`` is the number of frames between the caller of this function and
     the frame that called the patched API (1 = our wrapper called us directly).
     """
+    if source != "time" and _on_other_event is not None:
+        _on_other_event()  # breaks the clock's run of consecutive reads
     rec = STATE.recorder
     if rec is None or STATE.nodeid is None or getattr(_tls, "busy", False):
         return

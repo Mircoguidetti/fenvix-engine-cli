@@ -14,7 +14,7 @@ import pytest
 from . import __version__, _core, _sites, _state, clock, fsorder, network, reexec, seeds
 from ._patch import Patcher
 
-CONTROLS = ("order", "seeds", "hashseed", "time", "fs", "net")
+CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net")
 _PATCHER = Patcher()
 _INFRA_PREFIXES = ("_pytest", "pytest", "pluggy", "detpy", "_hypothesis_pytestplugin", "xdist", "execnet")
 _CONFLICTING_PLUGINS = ("randomly", "random_order", "pytest_randomly", "random-order")
@@ -39,6 +39,8 @@ def pytest_addoption(parser):
                 help="wall-clock value at the start of every test")
     g.addoption("--det-tick", type=int, default=1000, metavar="NS",
                 help="nanoseconds the virtual clock advances on every read (default 1000)")
+    g.addoption("--det-tick-adapt", type=int, default=8, metavar="N",
+                help="double the tick after N consecutive clock reads with no other event (0 = fixed tick)")
     g.addoption("--det-sleep", choices=("virtual", "real"), default="virtual",
                 help="virtual: time.sleep only advances the clock; real: it also waits")
     g.addoption("--det-disable", default="", metavar="LIST",
@@ -47,8 +49,6 @@ def pytest_addoption(parser):
                 help="also make os.urandom/uuid4/secrets deterministic (beyond Level 0; NOT for crypto tests)")
     g.addoption("--det-keep-aslr", action="store_true", default=False,
                 help="do not disable address space randomisation when re-executing")
-    g.addoption("--det-fresh-bytecode", action="store_true", default=False,
-                help="ignore .pyc caches (slower start): set-literal order then never depends on cache state")
     g.addoption("--det-no-reexec", action="store_true", default=False,
                 help="never re-exec the interpreter to fix PYTHONHASHSEED")
     g.addoption("--det-max-events", type=int, default=10_000, metavar="N",
@@ -124,6 +124,10 @@ def _hashseed(ns) -> str:
     return str((ns.det_seed or 0) % 4294967296)
 
 
+def _hashseed_value() -> str:
+    return str(_state.STATE.config.seed % 4294967296)
+
+
 @pytest.hookimpl(tryfirst=True)
 def pytest_load_initial_conftests(early_config, parser, args):
     reexec.SESSION_DEPTH += 1
@@ -131,8 +135,9 @@ def pytest_load_initial_conftests(early_config, parser, args):
     if not getattr(ns, "det", False):
         return
     controls = _controls(ns)
+    want_bytecode = "bytecode" in controls
     if "hashseed" in controls:
-        need = reexec.plan(_hashseed(ns), not ns.det_keep_aslr, ns.det_fresh_bytecode)
+        need = reexec.plan(_hashseed(ns), not ns.det_keep_aslr, want_bytecode)
         if any(need.values()):
             ok, why = reexec.can_reexec()
             if ok and not ns.det_no_reexec:
@@ -141,7 +146,8 @@ def pytest_load_initial_conftests(early_config, parser, args):
                 capman = early_config.pluginmanager.getplugin("capturemanager")
                 if capman is not None:
                     capman.stop_global_capturing()
-                reexec.reexec(_hashseed(ns), not ns.det_keep_aslr, ns.det_fresh_bytecode)  # no return
+                rootdir = str(early_config.rootpath) if hasattr(early_config, "rootpath") else os.getcwd()
+                reexec.reexec(_hashseed(ns), not ns.det_keep_aslr, want_bytecode, rootdir)  # no return
             reason = "--det-no-reexec" if ns.det_no_reexec else why
             if need["hashseed"]:
                 S.reexec_status = f"PYTHONHASHSEED not fixed ({reason})"
@@ -151,16 +157,13 @@ def pytest_load_initial_conftests(early_config, parser, args):
         else:
             S.reexec_status = "ok"
     if "time" in controls:
-        # Benchmarks calibrate loop counts on elapsed time: under a virtual
-        # clock a call always "lasts" one tick and calibration never ends.
-        # Their numbers are wall-clock measurements anyway: run them once.
+        # pytest-benchmark: the adaptive tick lets calibration terminate, but the
+        # number of rounds is then max_time / (virtual) duration, unrelated to
+        # CPU cost. Keep benchmarks running, with the minimum number of rounds.
         pm = early_config.pluginmanager
-        if pm.hasplugin("benchmark") and "--benchmark-disable" not in args:
-            args.append("--benchmark-disable")
-            S.adjustments.append("pytest-benchmark: --benchmark-disable")
-        if pm.hasplugin("codspeed") and "--codspeed" in args:
-            args.remove("--codspeed")
-            S.adjustments.append("pytest-codspeed: disabled")
+        if pm.hasplugin("benchmark") and not any(a.startswith("--benchmark-max-time") for a in args):
+            args.append("--benchmark-max-time=0.000001")
+            S.adjustments.append("pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)")
     _install(early_config, ns, controls)
 
 
@@ -170,6 +173,7 @@ def _install(config, ns, controls) -> None:
         shuffle=ns.det_seed is not None,
         epoch_ns=_parse_epoch(ns.det_epoch),
         tick_ns=max(0, ns.det_tick),
+        tick_adapt=max(0, ns.det_tick_adapt),
         sleep=ns.det_sleep,
         controls=controls,
         record_net=ns.det_record,
@@ -195,7 +199,7 @@ def _install(config, ns, controls) -> None:
             _PLUGIN_PACKAGES.add(modname.split(".", 1)[0])
     _PLUGIN_PACKAGES.discard("conftest")
     if "time" in controls:
-        S.rebound = clock.install(_PATCHER, cfg.epoch_ns, cfg.tick_ns, _skip_module)
+        S.rebound = clock.install(_PATCHER, cfg.epoch_ns, cfg.tick_ns, _skip_module, cfg.tick_adapt)
     if "fs" in controls:
         fsorder.install(_PATCHER)
 
@@ -287,7 +291,10 @@ def pytest_collection_finish(session):
         "hashseed": os.environ.get("PYTHONHASHSEED"),
         "reexec": S.reexec_status,
         "aslr_disabled": reexec.aslr_disabled(),
-        "fresh_bytecode": reexec.fresh_bytecode_active(),
+        "bytecode": ("precompiled" if reexec.bytecode_active(_hashseed_value()) else "default"),
+        "precompile_s": (float(os.environ[reexec.PRECOMPILE_ENV]) if reexec.PRECOMPILE_ENV in os.environ
+                         else None),
+        "tick_adapt": cfg.tick_adapt,
         "epoch_ns": cfg.epoch_ns,
         "tick_ns": cfg.tick_ns,
         "sleep": cfg.sleep,
@@ -375,6 +382,8 @@ def pytest_sessionstart(session):
 
 
 def pytest_sessionfinish(session, exitstatus):
+    if _OUTCOMES_PATH and hasattr(session.config, "workerinput"):
+        _OUTCOMES_PATH.clear()  # xdist worker: the controller writes the file
     if _OUTCOMES_PATH:
         path = _OUTCOMES_PATH[0]
         os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)

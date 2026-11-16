@@ -1,0 +1,2042 @@
+{
+ "source": "IDoFT py-data.csv, TestingResearchIllinois/idoft@4903dc9233eead4e4191c66f9ed0b14eea091052 (2026-05-03)",
+ "rows": 1618,
+ "candidates": [
+  {
+   "name": "idoft-reframe",
+   "url": "https://github.com/eth-cscs/reframe",
+   "sha": "576eb3f1dcc015d1e6d7a10602c748d4f810da68",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "unittests/test_check_filters.py::TestCheckFilters::test_have_cpu_only": "OD-Brit",
+    "unittests/test_check_filters.py::TestCheckFilters::test_have_gpu_only": "OD-Brit",
+    "unittests/test_check_filters.py::TestCheckFilters::test_have_name": "OD-Brit",
+    "unittests/test_check_filters.py::TestCheckFilters::test_have_not_name": "OD-Brit",
+    "unittests/test_check_filters.py::TestCheckFilters::test_have_prgenv": "OD-Brit",
+    "unittests/test_check_filters.py::TestCheckFilters::test_have_tags": "OD-Brit",
+    "unittests/test_check_filters.py::TestCheckFilters::test_invalid_regex": "OD-Brit",
+    "unittests/test_check_filters.py::TestCheckFilters::test_partition": "OD-Brit",
+    "unittests/test_cli.py::test_check_success": "NOD",
+    "unittests/test_cli.py::test_performance_check_failure": "NOD",
+    "unittests/test_cli.py::test_skip_system_check_option": "NOD",
+    "unittests/test_config.py::test_convert_old_config": "NIO",
+    "unittests/test_dependencies.py::test_build_deps_unknown_test": "NOD",
+    "unittests/test_dependencies.py::test_toposort_subgraph": "NOD",
+    "unittests/test_environments.py::TestEnvironment::test_environ_snapshot": "OD-Brit",
+    "unittests/test_environments.py::TestEnvironment::test_immutability": "OD-Brit",
+    "unittests/test_environments.py::TestEnvironment::test_load_non_overlapping": "OD-Brit",
+    "unittests/test_environments.py::TestEnvironment::test_load_overlapping": "OD-Brit",
+    "unittests/test_environments.py::TestEnvironment::test_load_restore": "OD-Brit",
+    "unittests/test_environments.py::TestEnvironment::test_setup": "OD-Brit",
+    "unittests/test_loader.py::TestRegressionCheckLoader::test_conflicted_checks": "OD-Brit",
+    "unittests/test_loader.py::TestRegressionCheckLoader::test_load_all": "OD-Brit",
+    "unittests/test_loader.py::TestRegressionCheckLoader::test_load_bad_init": "OD-Brit",
+    "unittests/test_loader.py::TestRegressionCheckLoader::test_load_file_absolute": "OD-Brit",
+    "unittests/test_loader.py::TestRegressionCheckLoader::test_load_file_relative": "OD-Brit",
+    "unittests/test_loader.py::TestRegressionCheckLoader::test_load_new_syntax": "OD-Brit",
+    "unittests/test_loader.py::TestRegressionCheckLoader::test_load_recursive": "OD-Brit",
+    "unittests/test_logging.py::TestLogger::test_check_logger": "OD-Brit",
+    "unittests/test_logging.py::TestLogger::test_custom_handler_levels": "OD-Brit",
+    "unittests/test_logging.py::TestLogger::test_custom_loglevels": "OD-Brit",
+    "unittests/test_logging.py::TestLogger::test_handler_types": "OD-Brit",
+    "unittests/test_logging.py::TestLogger::test_invalid_loglevel": "OD-Brit",
+    "unittests/test_logging.py::TestLogger::test_logger_levels": "OD-Brit",
+    "unittests/test_logging.py::TestLogger::test_rfc3339_timezone_extension": "OD-Brit",
+    "unittests/test_logging.py::TestLogger::test_rfc3339_timezone_wrong_directive": "OD-Brit",
+    "unittests/test_pipeline.py::test_environ_setup": "OD-Brit",
+    "unittests/test_pipeline.py::test_hellocheck_local": "OD-Brit",
+    "unittests/test_pipeline.py::test_hellocheck_local_prepost_run": "OD-Brit",
+    "unittests/test_pipeline.py::test_name_compileonly_test": "OD-Brit",
+    "unittests/test_pipeline.py::test_name_runonly_test": "OD-Brit",
+    "unittests/test_pipeline.py::test_name_user_inheritance": "OD-Brit",
+    "unittests/test_pipeline.py::test_registration_of_tests": "OD-Brit",
+    "unittests/test_pipeline.py::test_regression_test_name": "OD-Brit",
+    "unittests/test_pipeline.py::test_strange_test_names": "OD-Brit",
+    "unittests/test_pipeline.py::test_supports_environ": "OD-Brit",
+    "unittests/test_pipeline.py::test_supports_system": "OD-Brit",
+    "unittests/test_policies.py::test_concurrency_limited": "OD-Vic",
+    "unittests/test_policies.py::test_concurrency_unlimited": "NOD",
+    "unittests/test_policies.py::test_dependencies[AsynchronousExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_dependencies[SerialExecutionPolicy]": "OD-Brit",
+    "unittests/test_policies.py::test_dependencies_with_retries[AsynchronousExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_dependencies_with_retries[SerialExecutionPolicy]": "OD-Brit",
+    "unittests/test_policies.py::test_kbd_interrupt_in_wait_with_concurrency": "NOD",
+    "unittests/test_policies.py::test_pass_in_retries[AsynchronousExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_pass_in_retries[SerialExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_retries_bad_check[AsynchronousExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_retries_bad_check[SerialExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_runall[AsynchronousExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_runall[SerialExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_runall_skip_performance_check[AsynchronousExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_runall_skip_performance_check[SerialExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_runall_skip_prgenv_check[AsynchronousExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_runall_skip_prgenv_check[SerialExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_runall_skip_sanity_check[AsynchronousExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_runall_skip_sanity_check[SerialExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_runall_skip_system_check[AsynchronousExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_runall_skip_system_check[SerialExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_sigterm_handling[AsynchronousExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_strict_performance_check[AsynchronousExecutionPolicy]": "NOD",
+    "unittests/test_policies.py::test_strict_performance_check[SerialExecutionPolicy]": "NOD",
+    "unittests/test_schedulers.py::test_cancel[local]": "OD-Brit",
+    "unittests/test_schedulers.py::test_cancel_before_submit[local]": "OD-Brit",
+    "unittests/test_schedulers.py::test_cancel_before_submit[pbs]": "OD-Brit",
+    "unittests/test_schedulers.py::test_cancel_before_submit[slurm]": "OD-Brit",
+    "unittests/test_schedulers.py::test_cancel_before_submit[squeue]": "OD-Brit",
+    "unittests/test_schedulers.py::test_cancel_before_submit[torque]": "OD-Brit",
+    "unittests/test_schedulers.py::test_cancel_term_ignore[local]": "OD-Brit",
+    "unittests/test_schedulers.py::test_cancel_with_grace[local]": "OD-Brit",
+    "unittests/test_schedulers.py::test_combined_access_constraint[slurm]": "OD-Brit",
+    "unittests/test_schedulers.py::test_combined_access_constraint[squeue]": "OD-Brit",
+    "unittests/test_schedulers.py::test_combined_access_multiple_constraints[slurm]": "OD-Brit",
+    "unittests/test_schedulers.py::test_combined_access_verbatim_constraint[slurm]": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_constraint_idle": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_default_partition_all": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_enough_nodes_constraint_partition": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_exclude_nodes_cmd": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_exclude_nodes_opt": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_invalid_constraint": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_invalid_partition_opt": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_maintenance_nodes": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_nodes_negative": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_nodes_positive": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_not_enough_idle_nodes": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_not_enough_nodes_constraint_partition": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_no_num_tasks_per_node": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_partition_idle": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_sched_access_idle": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_sched_access_idle_sequence_view": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_sched_access_partition": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_valid_constraint_opt": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_valid_constraint_partition": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_valid_multiple_constraints": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_valid_multiple_partitions": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_valid_partition_cmd": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_valid_partition_opt": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_valid_reservation_cmd": "OD-Brit",
+    "unittests/test_schedulers.py::test_flex_alloc_valid_reservation_option": "OD-Brit",
+    "unittests/test_schedulers.py::test_guess_num_tasks[slurm]": "OD-Brit",
+    "unittests/test_schedulers.py::test_guess_num_tasks[squeue]": "OD-Brit",
+    "unittests/test_schedulers.py::test_guess_num_tasks[torque]": "OD-Brit",
+    "unittests/test_schedulers.py::test_no_empty_lines_in_preamble[pbs]": "OD-Brit",
+    "unittests/test_schedulers.py::test_no_empty_lines_in_preamble[slurm]": "OD-Brit",
+    "unittests/test_schedulers.py::test_no_empty_lines_in_preamble[squeue]": "OD-Brit",
+    "unittests/test_schedulers.py::test_no_empty_lines_in_preamble[torque]": "OD-Brit",
+    "unittests/test_schedulers.py::test_poll_before_submit[local]": "OD-Brit",
+    "unittests/test_schedulers.py::test_poll_before_submit[pbs]": "OD-Brit",
+    "unittests/test_schedulers.py::test_poll_before_submit[slurm]": "OD-Brit",
+    "unittests/test_schedulers.py::test_poll_before_submit[squeue]": "OD-Brit",
+    "unittests/test_schedulers.py::test_poll_before_submit[torque]": "OD-Brit",
+    "unittests/test_schedulers.py::test_prepare[local]": "OD-Brit",
+    "unittests/test_schedulers.py::test_prepare[pbs]": "OD-Brit",
+    "unittests/test_schedulers.py::test_prepare[slurm]": "OD-Brit",
+    "unittests/test_schedulers.py::test_prepare[squeue]": "OD-Brit",
+    "unittests/test_schedulers.py::test_prepare[torque]": "OD-Brit",
+    "unittests/test_schedulers.py::test_prepare_no_exclusive[slurm]": "OD-Brit",
+    "unittests/test_schedulers.py::test_prepare_no_exclusive[squeue]": "OD-Brit",
+    "unittests/test_schedulers.py::test_prepare_no_smt[squeue]": "OD-Brit",
+    "unittests/test_schedulers.py::test_prepare_without_smt[squeue]": "OD-Brit",
+    "unittests/test_schedulers.py::test_prepare_with_smt[slurm]": "OD-Brit",
+    "unittests/test_schedulers.py::test_prepare_with_smt[squeue]": "OD-Brit",
+    "unittests/test_schedulers.py::test_submit[local]": "OD-Brit",
+    "unittests/test_schedulers.py::test_submit_timelimit[local]": "OD-Brit",
+    "unittests/test_schedulers.py::test_wait_before_submit[local]": "OD-Brit",
+    "unittests/test_schedulers.py::test_wait_before_submit[pbs]": "OD-Brit",
+    "unittests/test_schedulers.py::test_wait_before_submit[slurm]": "OD-Brit",
+    "unittests/test_schedulers.py::test_wait_before_submit[squeue]": "OD-Brit",
+    "unittests/test_schedulers.py::test_wait_before_submit[torque]": "OD-Brit"
+   },
+   "categories": {
+    "OD-Brit": 109,
+    "NOD": 26,
+    "NIO": 1,
+    "OD-Vic": 1
+   }
+  },
+  {
+   "name": "idoft-eppy",
+   "url": "https://github.com/santoshphilip/eppy",
+   "sha": "98e58583dce6c0fcec9c7b1ff1142bae0a67ddc7",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "eppy/tests/EPlusInterfaceFunctions_tests/test_iddgroups.py::test_group2commlst": "NIO",
+    "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_getreferingobjs": "OD-Vic",
+    "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_get_referenced_object": "OD-Vic",
+    "eppy/tests/test_case_insensitive.py::test_contains[BUILDING]": "OD-Vic",
+    "eppy/tests/test_case_insensitive.py::test_contains[BuIlDiNg]": "OD-Vic",
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]": "OD-Vic",
+    "eppy/tests/test_case_insensitive.py::test_contains[building]": "OD-Vic",
+    "eppy/tests/test_case_insensitive.py::test_del[BUILDING]": "OD-Vic",
+    "eppy/tests/test_case_insensitive.py::test_del[BuIlDiNg]": "OD-Vic",
+    "eppy/tests/test_case_insensitive.py::test_del[Building]": "OD-Vic",
+    "eppy/tests/test_case_insensitive.py::test_del[building]": "OD-Vic",
+    "eppy/tests/test_case_insensitive.py::test_get_and_set[BUILDING]": "OD-Vic",
+    "eppy/tests/test_case_insensitive.py::test_get_and_set[BuIlDiNg]": "OD-Vic",
+    "eppy/tests/test_case_insensitive.py::test_get_and_set[Building]": "OD-Vic",
+    "eppy/tests/test_case_insensitive.py::test_get_and_set[building]": "OD-Vic",
+    "eppy/tests/test_examples.py::test_addobject": "NIO",
+    "eppy/tests/test_examples.py::test_pythonic": "OD-Vic",
+    "eppy/tests/test_fanpower.py::testfanpower_bhp": "OD-Vic",
+    "eppy/tests/test_fanpower.py::testfanpower_watts": "OD-Vic",
+    "eppy/tests/test_fanpower.py::test_fan_maxcfm": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_componentsintobranch": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_connectcomponents": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_getbranchcomponents": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_getfieldnamesendswith": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_getnodefieldname": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_initinletoutlet": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_makecondenserloop": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_makeductbranch": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_makeductcomponent": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_makepipebranch": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_makepipecomponent": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_makeplantloop": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_renamenodes": "OD-Vic",
+    "eppy/tests/test_hvacbuilder.py::test_replacebranch": "OD-Vic",
+    "eppy/tests/test_IDF.py::TestIDF::test_popidfobject": "OD-Vic",
+    "eppy/tests/test_IDF.py::TestIDF::test_removeidfobject": "OD-Vic",
+    "eppy/tests/test_idfreader.py::test_convertallfields": "NIO",
+    "eppy/tests/test_idf_helpers.py::test_copyidfintoidf": "OD-Vic",
+    "eppy/tests/test_idf_helpers.py::test_getanymentions": "OD-Vic",
+    "eppy/tests/test_idf_helpers.py::test_getidfkeyswithnodes": "OD-Vic",
+    "eppy/tests/test_idf_helpers.py::test_getidfobjectlist": "OD-Vic",
+    "eppy/tests/test_idf_helpers.py::test_getobjectswithnode": "OD-Vic",
+    "eppy/tests/test_idf_helpers.py::test_getobject_use_prevfield": "OD-Vic",
+    "eppy/tests/test_idf_helpers.py::test_idfobjectkeys": "OD-Vic",
+    "eppy/tests/test_idf_helpers.py::test_name2idfobject": "OD-Vic",
+    "eppy/tests/test_json_functions.py::test_updateidf": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_getallobjlists": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_getiddgroupdict": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_getrefnames": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_idd_index": "OD-Brit",
+    "eppy/tests/test_modeleditor.py::test_idfinmsequence": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_idfstr": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_initread": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_initreadtxt": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_new": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_newidfobject": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_newidfobject_warning": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_refname2key": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_rename": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_save": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_saveas": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_savecopy": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_save_with_lineendings_and_encodings": "OD-Vic",
+    "eppy/tests/test_modeleditor.py::test_zonearea_zonevolume": "OD-Vic",
+    "eppy/tests/test_simpleread.py::test_idfreadtest": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_1_layer_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_2_layer_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_airgap_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_infraredtransparent_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_material": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_nomass_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_roofvegetation_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_1_layer_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_2_layer_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_airgap_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_fails": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_infraredtransparent_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_material": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_nomass_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_roofvegetation_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_1_layer_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_2_layer_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_airgap_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_infraredtransparent_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_material": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_nomass_construction": "OD-Vic",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_roofvegetation_construction": "OD-Vic"
+   },
+   "categories": {
+    "NIO": 3,
+    "OD-Vic": 83,
+    "OD-Brit": 1
+   }
+  },
+  {
+   "name": "idoft-butter.mas.pythonapi",
+   "url": "https://github.com/bennymeg/Butter.MAS.PythonAPI",
+   "sha": "f86ebe75df3826f62a268645cdbe4400b43fab07",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testGetAvailableAnimations": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testGetAvailableHandlers": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testGetAvailableMotorRegisters": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testGetAvailableSounds": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testGetMotorRegister": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testGetMotorRegisterRange": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testMoveMotorInDirection": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testMoveMotorInTime": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testMoveMotorToPosition": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testPauseAnimation": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testPauseAudio": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testPlayAnimation": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testPlayAudio": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testResumeAnimation": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testResumeAudio": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testSetMotorRegister": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testStopAnimation": "NOD",
+    "butter/mas/tests/clients/client_http_test.py::TestHttpClientApiMethods::testStopAudio": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testGetAvailableAnimations": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testGetAvailableHandlers": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testGetAvailableMotorRegisters": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testGetAvailableSounds": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testGetMotorRegister": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testGetMotorRegisterRange": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testMoveMotorInDirection": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testMoveMotorInTime": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testMoveMotorToPosition": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testPauseAnimation": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testPauseAudio": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testPlayAnimation": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testPlayAudio": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testResumeAnimation": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testResumeAudio": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testSetMotorRegister": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testStopAnimation": "NOD",
+    "butter/mas/tests/clients/client_tcp_test.py::TestTcpClientApiMethods::testStopAudio": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testGetAvailableAnimations": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testGetAvailableHandlers": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testGetAvailableMotorRegisters": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testGetAvailableSounds": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testGetMotorRegister": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testMoveMotorInDirection": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testMoveMotorInTime": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testMoveMotorToPosition": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testPauseAnimation": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testPauseAudio": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testPlayAnimation": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testPlayAudio": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testResumeAnimation": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testResumeAudio": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testSetMotorRegister": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testStopAnimation": "NOD",
+    "butter/mas/tests/clients/client_udp_test.py::TestUdpClientApiMethods::testStopAudio": "NOD"
+   },
+   "categories": {
+    "NOD": 53
+   }
+  },
+  {
+   "name": "idoft-cloudnetpy",
+   "url": "https://github.com/tukiains/cloudnetpy",
+   "sha": "26f2607b890630146469cfa410fce99438ceee3f",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/unit/test_classify.py::TestFindRain::test_1": "OD-Vic",
+    "tests/unit/test_classify.py::TestFindRain::test_3": "OD-Brit",
+    "tests/unit/test_drizzle.py::test_append_data[beta_corr]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[Do]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[Do_bias]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[Do_error]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[drizzle_lwc]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[drizzle_lwc_bias]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[drizzle_lwc_error]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[drizzle_lwf]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[drizzle_lwf_bias]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[drizzle_lwf_error]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[drizzle_N]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[drizzle_N_bias]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[drizzle_N_error]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[mu]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[mu_error]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[S]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[S_error]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[v_air]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[v_drizzle]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[v_drizzle_bias]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_append_data[v_drizzle_error]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_calc_beta_z_ratio": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_calc_density": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_lwc]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_lwf]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_N]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_calc_derived_products[v_air]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_calc_derived_products[v_drizzle]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_calc_dia": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_calc_fall_velocity": "OD-Brit",
+    "tests/unit/test_drizzle.py::test_calc_lwc": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_calc_lwf": "OD-Brit",
+    "tests/unit/test_drizzle.py::test_calc_v_air": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_find_indices": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_find_lut_indices": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_init_variables[beta_corr]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_init_variables[Do]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_init_variables[mu]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_init_variables[S]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_is_converged": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_screen_rain": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_update_result_tables[Do-10]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_update_result_tables[mu--1]": "OD-Vic",
+    "tests/unit/test_drizzle.py::test_update_result_tables[S-93.7247943]": "OD-Vic",
+    "tests/unit/test_lwc.py::test_init_status[0]": "OD-Vic",
+    "tests/unit/test_lwc.py::test_remove_good_profiles": "OD-Vic",
+    "tests/unit/test_lwc.py::test_update_status[0]": "OD-Vic",
+    "tests/unit/test_lwc.py::test_update_status[1]": "OD-Vic",
+    "tests/unit/test_meta_for_old_files.py::test_fix_old_data_2": "NIO",
+    "tests/unit/test_rpg.py::TestReduceHeader::test_1": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 48,
+    "OD-Brit": 3,
+    "NIO": 1
+   }
+  },
+  {
+   "name": "idoft-easypy",
+   "url": "https://github.com/weka-io/easypy",
+   "sha": "9501c3ee03dcb1630e58cbb73b1647056907bcea",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_caching.py::test_resilient_between_timecaches": "OD-Vic",
+    "tests/test_concurrency.py::test_concurrent_done_status[False]": "OD-Vic",
+    "tests/test_concurrency.py::test_concurrent_done_status[True]": "OD-Vic",
+    "tests/test_concurrency.py::test_multiexception_api[concurrent]": "OD-Vic",
+    "tests/test_concurrency.py::test_multiexception_api[nonconcurrent]": "OD-Vic",
+    "tests/test_concurrency.py::test_multiexception_pickling": "OD-Vic",
+    "tests/test_concurrency.py::test_multiexception_types": "OD-Vic",
+    "tests/test_concurrency.py::test_multiobject_1": "OD-Vic",
+    "tests/test_concurrency.py::test_multiobject_exceptions": "OD-Vic",
+    "tests/test_concurrency.py::test_multiobject_logging": "OD-Vic",
+    "tests/test_concurrency.py::test_thread_contexts_counters": "OD-Vic",
+    "tests/test_concurrency.py::test_thread_context_stacks": "OD-Vic",
+    "tests/test_concurrency.py::test_thread_stacks": "OD-Vic",
+    "tests/test_exceptions.py::test_pickle_texception": "OD-Vic",
+    "tests/test_logging.py::test_indent_around_ctx": "OD-Vic",
+    "tests/test_logging.py::test_indent_around_function": "OD-Vic",
+    "tests/test_logging.py::test_indent_around_generator": "OD-Vic",
+    "tests/test_rwlock.py::test_rwlock": "OD-Vic",
+    "tests/test_signals.py::test_async": "OD-Vic",
+    "tests/test_signals.py::test_ctx": "OD-Vic",
+    "tests/test_signals.py::test_ctx_with_identifier": "OD-Vic",
+    "tests/test_signals.py::test_priorities": "OD-Vic",
+    "tests/test_signals.py::test_priorities_async": "OD-Vic",
+    "tests/test_signals.py::test_registration_context": "OD-Vic",
+    "tests/test_signals.py::test_signal_weakref": "OD-Vic",
+    "tests/test_signals.py::test_signal_weakref_complex_descriptors": "OD-Vic",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_after": "OD-Vic",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_after_with_identifier": "OD-Vic",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_during": "OD-Vic",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_during_with_identifier": "OD-Vic",
+    "tests/test_signals.py::test_signal_weakref_with_identifier": "OD-Vic",
+    "tests/test_signals.py::test_simple_signal_object_identifier": "OD-Vic",
+    "tests/test_signals.py::test_simple_signal_object_identifier_attribute": "OD-Vic",
+    "tests/test_signals.py::test_simple_signal_object_registration": "OD-Vic",
+    "tests/test_signals.py::test_simple_signal_object_wo_identifier": "OD-Vic",
+    "tests/test_signals.py::test_simple_signal_registration": "OD-Vic",
+    "tests/test_sync.py::test_logged_condition": "OD-Vic",
+    "tests/test_sync.py::test_logged_condition_exception": "OD-Vic",
+    "tests/test_sync.py::test_logged_condition_waited_for": "OD-Vic",
+    "tests/test_sync.py::test_logged_lock": "OD-Vic",
+    "tests/test_sync.py::test_synchronization_coordinator_failing_context_manager": "OD-Vic",
+    "tests/test_sync.py::test_synchronization_coordinator_timeout": "OD-Vic",
+    "tests/test_sync.py::test_synchronization_coordinator_with_multiobject_exception": "OD-Vic",
+    "tests/test_sync.py::test_wait_log_predicate": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 44
+   }
+  },
+  {
+   "name": "idoft-centreon-sdk-python",
+   "url": "https://github.com/guillaumewatteeux/centreon-sdk-python",
+   "sha": "9f207d5458afc3304e24f16988069467b19eab81",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_command.py::TestCommands::test_command_add": "OD-Brit",
+    "tests/test_command.py::TestCommands::test_command_delete": "OD-Brit",
+    "tests/test_command.py::TestCommands::test_command_list": "OD-Brit",
+    "tests/test_command.py::TestCommands::test_command_not_exist": "OD-Brit",
+    "tests/test_command.py::TestCommands::test_command_setparam": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_addcontact": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_addcontactgroupt": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_addparent": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_addtemplate": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_applytemplate": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_deletecontact": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_deletecontactgroup": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_deletehostgroup": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_delmacro": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_deteletemplate": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_disable": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_enable": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_getcontact": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_getcontactgroup": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_gethostgroup": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_getmacro": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_getparents": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_gettemplate": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_setcontact": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_setcontactgroup": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_setinstance": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_setmacro": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_setparam": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_setparent": "OD-Brit",
+    "tests/test_hosts.py::TestHost::test_host_settemplate": "OD-Brit",
+    "tests/test_hosts.py::TestHosts::test_hosts_add": "OD-Brit",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete": "OD-Brit",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj": "OD-Brit",
+    "tests/test_hosts.py::TestHosts::test_hosts_list": "OD-Brit",
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist": "OD-Brit",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add": "OD-Brit",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line": "OD-Brit",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete": "OD-Brit",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one": "OD-Brit",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist": "OD-Brit",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam": "OD-Brit"
+   },
+   "categories": {
+    "OD-Brit": 41
+   }
+  },
+  {
+   "name": "idoft-crom",
+   "url": "https://github.com/thegetty/crom",
+   "sha": "98bb6be4e32b4c81eb7e0b5e841a915b015abaf0",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_add_classification.py::TestAddClassification::test_add_classification": "OD-Vic",
+    "tests/test_currency.py::TestCurrencyExtraction::test_extract_est": "OD-Vic",
+    "tests/test_currency.py::TestCurrencyExtraction::test_extract_price_with_citation": "OD-Vic",
+    "tests/test_currency.py::TestCurrencyExtraction::test_extract_start": "OD-Vic",
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident": "OD-Vic",
+    "tests/test_model.py::TestBaseResource::test_allows_multiple": "OD-Vic",
+    "tests/test_model.py::TestBaseResource::test_check_prop": "OD-Vic",
+    "tests/test_model.py::TestBaseResource::test_check_reference": "OD-Vic",
+    "tests/test_model.py::TestBaseResource::test_init_params": "OD-Vic",
+    "tests/test_model.py::TestBaseResource::test_list_my_props": "OD-Vic",
+    "tests/test_model.py::TestBaseResource::test_multiplicity": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_breadth": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_collapse_json": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_ordering": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_pipe_scoped": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_production_mode": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_recursion": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_string_list": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_toFile": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_normal": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_toString": "OD-Vic",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast": "OD-Vic",
+    "tests/test_model.py::TestMagicMethods::test_not_multiple_instance": "OD-Vic",
+    "tests/test_model.py::TestMagicMethods::test_validate_multiplicity": "OD-Vic",
+    "tests/test_model.py::TestMagicMethods::test_validate_profile_off": "OD-Vic",
+    "tests/test_model.py::TestMagicMethods::test_validation_wrong_type": "OD-Vic",
+    "tests/test_model.py::TestPropertyCache::test_cache_hierarchy": "OD-Vic",
+    "tests/test_reader.py::TestReader::test_read": "OD-Vic",
+    "tests/test_reader.py::TestReader::test_vocab_collision": "OD-Vic",
+    "tests/test_vocab.py::TestClassBuilder::test_aa_check": "OD-Vic",
+    "tests/test_vocab.py::TestClassBuilder::test_boundary_setter": "OD-Vic",
+    "tests/test_vocab.py::TestClassBuilder::test_conceptual_parts": "OD-Vic",
+    "tests/test_vocab.py::TestClassBuilder::test_linguistic_object_boundary": "OD-Vic",
+    "tests/test_vocab.py::TestClassBuilder::test_metatype": "OD-Vic",
+    "tests/test_vocab.py::TestClassBuilder::test_multitype": "OD-Vic",
+    "tests/test_vocab.py::TestClassBuilder::test_procurement_boundary": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 38
+   }
+  },
+  {
+   "name": "idoft-webssh",
+   "url": "https://github.com/huashengdun/webssh",
+   "sha": "51d527fe75a62aed239126a6697749a30baecb30",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_auth_with_pubkey_cannot_be_decoded_by_multipart_form": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_auth_with_pubkey_exceeds_key_max_size": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_auth_with_valid_pubkey_by_multipart_form": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_auth_with_valid_pubkey_by_urlencoded_form": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_multipart_form": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_urlencoded_form": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_ip_not_matched": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_with_no_port": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_wrong_id": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_timeout": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_bar": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_empty_passcode": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "NOD"
+   },
+   "categories": {
+    "NOD": 20,
+    "OD-Vic": 9
+   }
+  },
+  {
+   "name": "idoft-pykicad",
+   "url": "https://github.com/dvc94ch/pykicad",
+   "sha": "cdebcaeb4ab6c8903ebecfd0748f826ea406923f",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_module.py::CurveTests::test_curve": "OD-Vic",
+    "tests/test_module.py::DrillTests::test_drill": "OD-Vic",
+    "tests/test_module.py::DrillTests::test_drill_offset": "OD-Vic",
+    "tests/test_module.py::DrillTests::test_drill_oval": "OD-Vic",
+    "tests/test_module.py::LineTests::test_line": "OD-Vic",
+    "tests/test_module.py::ModelTests::test_model": "OD-Vic",
+    "tests/test_module.py::ModuleTests::test_module": "OD-Vic",
+    "tests/test_module.py::NetTests::test_net_auto_numbering": "OD-Vic",
+    "tests/test_module.py::PadTests::test_pad": "OD-Vic",
+    "tests/test_module.py::PadTests::test_pad_with_drill": "OD-Vic",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers": "OD-Vic",
+    "tests/test_module.py::PolygonTests::test_polygon": "OD-Vic",
+    "tests/test_module.py::TextTests::test_text": "OD-Vic",
+    "tests/test_module.py::TextTests::test_text_with_hide": "OD-Vic",
+    "tests/test_module.py::TextTests::test_text_with_justify": "OD-Vic",
+    "tests/test_module.py::TextTests::test_text_with_rotation": "OD-Vic",
+    "tests/test_module.py::TextTests::test_text_with_thickness": "OD-Vic",
+    "tests/test_pcb.py::NetClassTests::test_parse": "OD-Vic",
+    "tests/test_pcb.py::NetClassTests::test_without_net": "OD-Vic",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets": "OD-Vic",
+    "tests/test_pcb.py::NetClassTests::test_with_net": "OD-Vic",
+    "tests/test_pcb.py::PcbTests::test_comment": "OD-Vic",
+    "tests/test_pcb.py::PcbTests::test_layers": "OD-Vic",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb": "OD-Vic",
+    "tests/test_pcb.py::PcbTests::test_num_nets": "OD-Vic",
+    "tests/test_pcb.py::PcbTests::test_page": "OD-Vic",
+    "tests/test_pcb.py::PcbTests::test_single_module": "OD-Vic",
+    "tests/test_pcb.py::ZoneTests::test_parse": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 28
+   }
+  },
+  {
+   "name": "idoft-flask-multi-redis",
+   "url": "https://github.com/max-k/flask-multi-redis",
+   "sha": "fa781d3598448a6429309a686de9a8adb53f9f34",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "test/integration/test_flask_multi_redis.py::test_aggregated_delitem_method": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_aggregated_getitem_method": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_aggregated_setitem_method": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_aggregator_delete_method": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_aggregator_get_method": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_aggregator_keys_method": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_aggregator_keys_method_with_empty_nodes": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_aggregator_scan_iter_method": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_aggregator_set_method": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_aggregator_strategy": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_attributes_transmission_from_aggregated_node": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_attributes_transmission_from_loadbalanced_node": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_attributes_transmission_if_aggregated_has_no_host": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_constructor": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_custom_default_config": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_custom_default_ssl": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_custom_node": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_custom_prefix": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_extension_registration_if_app_has_no_extensions": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_init_app": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_loadbalanced_delitem_method": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_loadbalanced_getitem_method": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_loadbalanced_setitem_method": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_methods_transmission_from_aggregator": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_methods_transmission_from_redis": "OD-Vic",
+    "test/integration/test_flask_multi_redis.py::test_task_runner": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 26
+   }
+  },
+  {
+   "name": "idoft-pymq",
+   "url": "https://github.com/thrau/pymq",
+   "sha": "101857bca2b705c328d3bda3b26797b51e8ffb70",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_collection_types": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_complex_types": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_nowait_timeout": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_primitive_types": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_put_get": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcRpcTest::test_echo_command_response_function": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcRpcTest::test_error_function": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcRpcTest::test_remote_decorator": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcRpcTest::test_simple_function": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcRpcTest::test_simple_list_param_function": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcRpcTest::test_simple_multiple_param_default_function": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcRpcTest::test_simple_multiple_param_function": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcRpcTest::test_stateful_rpc": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcRpcTest::test_timeout": "OD-Vic",
+    "tests/test_provider_ipc.py::IpcRpcTest::test_void_function_error": "OD-Vic",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "NOD",
+    "tests/test_provider_simple.py::SimplePubSubTest::test_event_serialization": "NOD",
+    "tests/test_provider_simple.py::SimplePubSubTest::test_topic": "NOD",
+    "tests/test_provider_simple.py::SimpleRpcTest::test_stateful_rpc": "NOD"
+   },
+   "categories": {
+    "OD-Vic": 16,
+    "NOD": 4
+   }
+  },
+  {
+   "name": "idoft-pygraph",
+   "url": "https://github.com/Rickecr/PyGraph",
+   "sha": "e81c3a0f543f5bfcda1a603c6dcecde13d582c57",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_add_vertex": "NIO",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_delete_vertex": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_duplicated_edge": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_edge_exists": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_false_cycle_graph": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_false_regular_graph": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_is_terminal": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_list_graph_edges": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_list_graph_vertices": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_num_edges": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_num_vertex": "OD-Vic",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_show_edge": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_true_cycle_graph": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_vertex_degree": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_vertex_exists": "OD-Brit",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_vertex_neighbors": "NIO",
+    "__tests__/test_simple_graph.py::TestSimpleGraph::test_vertices_adjacency": "OD-Brit"
+   },
+   "categories": {
+    "NIO": 2,
+    "OD-Brit": 14,
+    "OD-Vic": 1
+   }
+  },
+  {
+   "name": "idoft-flask-smorest",
+   "url": "https://github.com/marshmallow-code/flask-smorest",
+   "sha": "02e9e84def5ace80522c76b830fbef9930a28771",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_pagination.py::TestPagination::test_pagination_max_page_size[app_fixture0-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_max_page_size[app_fixture1-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_max_page_size[app_fixture2-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_max_page_size[app_fixture3-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_max_page_size[app_fixture4-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_max_page_size[app_fixture5-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_max_page_size[app_fixture6-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_max_page_size[app_fixture7-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_min_page_page_size[app_fixture0-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_min_page_page_size[app_fixture1-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_min_page_page_size[app_fixture2-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_min_page_page_size[app_fixture3-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_min_page_page_size[app_fixture4-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_min_page_page_size[app_fixture5-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_min_page_page_size[app_fixture6-AppConfig-1000]": "OD-Vic",
+    "tests/test_pagination.py::TestPagination::test_pagination_min_page_page_size[app_fixture7-AppConfig-1000]": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 16
+   }
+  },
+  {
+   "name": "idoft-pyradigm",
+   "url": "https://github.com/raamana/pyradigm",
+   "sha": "01d47cf34a9af4bb104e2891559059a522221b4d",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "pyradigm/tests/test_BaseDataset_common_behaviours.py::test_sanity_checks": "NIO",
+    "pyradigm/tests/test_BaseDataset_common_behaviours.py::test_save_load": "OD-Vic",
+    "pyradigm/tests/test_classify_dataset.py::test_add": "OD-Vic",
+    "pyradigm/tests/test_classify_dataset.py::test_cant_write_to_nonexisting_dir": "OD-Vic",
+    "pyradigm/tests/test_classify_dataset.py::test_init_with_dict": "OD-Vic",
+    "pyradigm/tests/test_classify_dataset.py::test_num_targets": "OD-Vic",
+    "pyradigm/tests/test_classify_dataset.py::test_return_data_labels": "OD-Vic",
+    "pyradigm/tests/test_old_pyradigm.py::test_add": "OD-Vic",
+    "pyradigm/tests/test_old_pyradigm.py::test_init_with_dict": "OD-Vic",
+    "pyradigm/tests/test_old_pyradigm.py::test_num_classes": "OD-Vic",
+    "pyradigm/tests/test_old_pyradigm.py::test_return_data_labels": "OD-Vic",
+    "pyradigm/tests/test_regress_dataset.py::test_add": "OD-Vic",
+    "pyradigm/tests/test_regress_dataset.py::test_cant_write_to_nonexisting_dir": "OD-Vic",
+    "pyradigm/tests/test_regress_dataset.py::test_init_with_dict": "OD-Vic",
+    "pyradigm/tests/test_regress_dataset.py::test_num_targets": "OD-Vic",
+    "pyradigm/tests/test_regress_dataset.py::test_return_data_labels": "OD-Vic"
+   },
+   "categories": {
+    "NIO": 1,
+    "OD-Vic": 15
+   }
+  },
+  {
+   "name": "idoft-py-autodoc",
+   "url": "https://github.com/heavenshell/py-autodoc",
+   "sha": "001d5ff03d41a5d714075eb08e666c413d50f0ac",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar": "OD-Vic",
+    "examples/test_gen_each_case.py::TestUnittest::test_get": "NOD",
+    "examples/test_gen_each_case.py::TestUnittest::test_post": "OD-Vic",
+    "examples/test_pytest.py::test_index": "OD-Vic",
+    "examples/test_pytest.py::test_post": "NOD",
+    "examples/test_requests.py::TestUnittest::test_foo_bar": "NOD",
+    "examples/test_requests.py::TestUnittest::test_get": "NOD",
+    "examples/test_requests.py::TestUnittest::test_post": "NOD",
+    "examples/test_unittest.py::TestUnittest::test_foo_bar": "NOD",
+    "examples/test_unittest.py::TestUnittest::test_get": "NOD",
+    "examples/test_unittest.py::TestUnittest::test_post": "NOD",
+    "tests/test_autodoc.py::TestAutodoc::test_create_document": "OD-Vic",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response": "OD-Vic",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses": "OD-Vic",
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 7,
+    "NOD": 8
+   }
+  },
+  {
+   "name": "idoft-freezegun",
+   "url": "https://github.com/spulec/freezegun",
+   "sha": "b46da782a7a051081fd51577749cfc0074db0cc6",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_class_import.py::test_can_ignore_email_module": "OD-Vic",
+    "tests/test_class_import.py::test_fake_uses_real_when_ignored": "OD-Vic",
+    "tests/test_class_import.py::test_import_after_start": "OD-Vic",
+    "tests/test_datetimes.py::test_context_manager": "OD-Vic",
+    "tests/test_datetimes.py::test_min_and_max": "OD-Vic",
+    "tests/test_datetimes.py::test_nested_context_manager": "OD-Vic",
+    "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets": "OD-Vic",
+    "tests/test_datetimes.py::test_simple_api": "OD-Vic",
+    "tests/test_datetimes.py::test_time_localtime": "OD-Vic",
+    "tests/test_datetimes.py::test_time_ns": "OD-Vic",
+    "tests/test_errors.py::test_ignore_errors_in_start[ImportError]": "OD-Vic",
+    "tests/test_errors.py::test_ignore_errors_in_start[TypeError]": "OD-Vic",
+    "tests/test_uuid.py::test_uuid1_future": "OD-Vic",
+    "tests/test_warnings.py::test_ignore_warnings_in_start": "OD-Vic",
+    "tests/test_warnings.py::test_ignore_warnings_in_stop": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 15
+   }
+  },
+  {
+   "name": "idoft-mythx-cli",
+   "url": "https://github.com/dmuhs/mythx-cli",
+   "sha": "f6b3d20d51ca1cfaed3cd45226bd1074388d42b9",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_report.py::test_report_json": "OD-Vic",
+    "tests/test_report.py::test_report_json_blacklist": "OD-Vic",
+    "tests/test_report.py::test_report_json_pretty": "OD-Vic",
+    "tests/test_report.py::test_report_json_pretty_blacklist": "OD-Vic",
+    "tests/test_report.py::test_report_json_pretty_whitelist": "OD-Vic",
+    "tests/test_report.py::test_report_json_whitelist": "OD-Vic",
+    "tests/test_report.py::test_report_simple": "OD-Vic",
+    "tests/test_report.py::test_report_simple_blacklist": "OD-Vic",
+    "tests/test_report.py::test_report_simple_whitelist": "OD-Vic",
+    "tests/test_report.py::test_report_sonar_blacklist": "OD-Vic",
+    "tests/test_report.py::test_report_sonar_whitelist": "OD-Vic",
+    "tests/test_report.py::test_report_tabular": "OD-Vic",
+    "tests/test_report.py::test_report_tabular_blacklist": "OD-Vic",
+    "tests/test_report.py::test_report_tabular_whitelist": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 14
+   }
+  },
+  {
+   "name": "idoft-odinweb",
+   "url": "https://github.com/python-odin/odinweb",
+   "sha": "198424133584acc18cb41c8d18d91f803abc810f",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]": "OD-Vic",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 14
+   }
+  },
+  {
+   "name": "idoft-tunacell",
+   "url": "https://github.com/LeBarbouze/tunacell",
+   "sha": "837d57e1e6caeddf2e6bcdd2db2986fb456dd605",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tunacell/tests/test_experiment.py::test_counts": "OD-Vic",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath": "OD-Vic",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes": "OD-Vic",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype": "OD-Vic",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container": "OD-Vic",
+    "tunacell/tests/test_experiment.py::test_experiment_iter": "OD-Vic",
+    "tunacell/tests/test_experiment.py::test_experiment_label": "OD-Vic",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata": "OD-Vic",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container": "OD-Vic",
+    "tunacell/tests/test_experiment.py::test_load_experiment": "OD-Vic",
+    "tunacell/tests/test_filters.py::test_cell_any": "OD-Vic",
+    "tunacell/tests/test_filters.py::test_unroll": "NIO",
+    "tunacell/tests/test_observable.py::test_observable_str": "OD-Brit"
+   },
+   "categories": {
+    "OD-Vic": 11,
+    "NIO": 1,
+    "OD-Brit": 1
+   }
+  },
+  {
+   "name": "idoft-flask-jwt-router",
+   "url": "https://github.com/joegasewicz/Flask-JWT-Router",
+   "sha": "0fb1e256c81409be6f08d8be12f07e5f58b4f914",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_routing.py::TestRouting::test_api_named_routes": "NOD",
+    "tests/test_routing.py::TestRouting::test_before_middleware": "NOD",
+    "tests/test_routing.py::TestRouting::test_dynamic_params": "OD-Vic",
+    "tests/test_routing.py::TestRouting::test_handle_pre_flight_request": "NOD",
+    "tests/test_routing.py::TestRouting::test_ignored_routes": "OD-Vic",
+    "tests/test_routing.py::TestRouting::test_ignored_route_path": "NOD",
+    "tests/test_routing.py::TestRouting::test_jwt_route[jwt_router_client0-None-200]": "OD-Vic",
+    "tests/test_routing.py::TestRouting::test_jwt_route[jwt_router_client1-None-401]": "NOD",
+    "tests/test_routing.py::TestRouting::test_jwt_route[jwt_router_client2-None-401]": "NOD",
+    "tests/test_routing.py::TestRouting::test_jwt_route[jwt_router_client3-None-401]": "OD-Vic",
+    "tests/test_routing.py::TestRouting::test_static_client": "NOD",
+    "tests/test_routing.py::TestRouting::test_static_routes": "NOD",
+    "tests/test_routing.py::TestRouting::test_sub_paths": "NOD"
+   },
+   "categories": {
+    "NOD": 9,
+    "OD-Vic": 4
+   }
+  },
+  {
+   "name": "idoft-domain2idna",
+   "url": "https://github.com/PyFunceble/domain2idna",
+   "sha": "39a1c4e1ebb877ed511e53b618fbe437a685c970",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_cli.py::TestCLI::test_domain": "OD-Vic",
+    "tests/test_cli.py::TestCLI::test_file": "OD-Vic",
+    "tests/test_converter.py::TestConverter::test_commented_line": "OD-Vic",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format": "OD-Vic",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple": "OD-Vic",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls": "OD-Vic",
+    "tests/test_converter.py::TestConverter::test_to_idna_single": "OD-Vic",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist": "OD-Vic",
+    "tests/test_helpers.py::TestFile::test_read_delete": "OD-Vic",
+    "tests/test_helpers.py::TestFile::test_write_delete": "OD-Vic",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete": "OD-Vic",
+    "tests/test_init.py::TestInit::test_get": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 12
+   }
+  },
+  {
+   "name": "idoft-accessify",
+   "url": "https://github.com/dmytrostriletskyi/accessify",
+   "sha": "6b7cf8657ffe18cd6a43c6cfb73b071084f0331e",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/interfaces/test_implements.py::test_implements_not_cls_convention": "OD-Vic",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention": "OD-Vic",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter": "OD-Vic",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_getter": "OD-Vic",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter": "OD-Vic",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_deleter": "OD-Vic",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_getter": "OD-Vic",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_instance_method": "OD-Vic",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_setter": "OD-Vic",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method": "OD-Vic",
+    "tests/interfaces/test_implements.py::test_not_implements_private_access": "OD-Vic",
+    "tests/interfaces/test_implements.py::test_not_implements_protected_access": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 12
+   }
+  },
+  {
+   "name": "idoft-config-better",
+   "url": "https://github.com/kade-robertson/config-better",
+   "sha": "c14638da3fe95a669a04db2602e1f6ea15591c36",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test___init__.py::TestLinuxNoXDG::test_noxdg_cache": "OD-Vic",
+    "tests/test___init__.py::TestLinuxNoXDG::test_noxdg_config": "OD-Vic",
+    "tests/test___init__.py::TestLinuxNoXDG::test_noxdg_data": "OD-Vic",
+    "tests/test___init__.py::TestMacForceUnix::test_noxdg_cache": "OD-Vic",
+    "tests/test___init__.py::TestMacForceUnix::test_noxdg_config": "OD-Vic",
+    "tests/test___init__.py::TestMacForceUnix::test_noxdg_data": "OD-Vic",
+    "tests/test___init__.py::TestMacNoXDG::test_noxdg_cache": "OD-Vic",
+    "tests/test___init__.py::TestMacNoXDG::test_noxdg_config": "OD-Vic",
+    "tests/test___init__.py::TestMacNoXDG::test_noxdg_data": "OD-Vic",
+    "tests/test___init__.py::TestWindowsNoXDG::test_noxdg_cache": "OD-Vic",
+    "tests/test___init__.py::TestWindowsNoXDG::test_noxdg_config": "OD-Vic",
+    "tests/test___init__.py::TestWindowsNoXDG::test_noxdg_data": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 12
+   }
+  },
+  {
+   "name": "idoft-saga",
+   "url": "https://github.com/saga-vcs/saga",
+   "sha": "7beaae8831696ce813aa85620387e416719198db",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_excel.py::test_merge[tests/merges/xlsx/change_rows]": "OD-Vic",
+    "tests/test_excel.py::test_merge[tests/merges/xlsx/existing_file]": "OD-Vic",
+    "tests/test_excel.py::test_merge[tests/merges/xlsx/new_row_init_empty]": "OD-Vic",
+    "tests/test_excel.py::test_merge[tests/merges/xlsx/new_string]": "OD-Vic",
+    "tests/test_excel.py::test_merge[tests/merges/xlsx/shift]": "OD-Vic",
+    "tests/test_excel.py::test_merge[tests/merges/xlsx/single_element]": "OD-Vic",
+    "tests/test_excel.py::test_merge[tests/merges/xlsx/string_and_number]": "OD-Vic",
+    "tests/test_text.py::test_merge[tests/merges/txt/add_in_both]": "OD-Vic",
+    "tests/test_text.py::test_merge[tests/merges/txt/add_in_middle]": "OD-Vic",
+    "tests/test_text.py::test_merge[tests/merges/txt/add_line]": "OD-Vic",
+    "tests/test_text.py::test_merge[tests/merges/txt/remove_in_both]": "OD-Vic",
+    "tests/test_text.py::test_merge[tests/merges/txt/remove_line]": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 12
+   }
+  },
+  {
+   "name": "idoft-django-beam",
+   "url": "https://github.com/django-beam/django-beam",
+   "sha": "43b2111f5c65937aa1e2cc9704b59796e982a805",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_contrib_reversion.py::test_revision_is_visible_in_list": "NOD",
+    "tests/test_contrib_reversion.py::test_show_detail_from_previous_version": "NOD",
+    "tests/test_views.py::test_delete": "NOD",
+    "tests/test_views.py::test_delete_protected_not_allowed": "NOD",
+    "tests/test_views.py::test_delete_shows_related": "NOD",
+    "tests/test_views.py::test_detail": "NOD",
+    "tests/test_views.py::test_list": "NOD",
+    "tests/test_views.py::test_list_search": "NOD",
+    "tests/test_views.py::test_list_sort": "NOD",
+    "tests/test_views.py::test_only_popup_param_is_preserved_in_detail_links": "NOD",
+    "tests/test_views.py::test_update": "NOD"
+   },
+   "categories": {
+    "NOD": 11
+   }
+  },
+  {
+   "name": "idoft-breathe",
+   "url": "https://github.com/mrob95/Breathe",
+   "sha": "4600818e24f4156cd7bb8cc0f43886b27323968e",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_command_context.py::test_manual_context_noccr": "OD-Brit",
+    "tests/test_loading.py::test_loading": "OD-Brit",
+    "tests/test_loading.py::test_loading_failure": "OD-Vic",
+    "tests/test_loading.py::test_reloading": "OD-Brit",
+    "tests/test_merger.py::test_context_commands": "OD-Brit",
+    "tests/test_merger.py::test_core_commands": "OD-Vic",
+    "tests/test_merger.py::test_grammar_numbers": "OD-Brit",
+    "tests/test_merger.py::test_invalid": "OD-Brit",
+    "tests/test_merger.py::test_noccr_commands": "OD-Brit",
+    "tests/test_top_level.py::test_recognition": "OD-Brit",
+    "tests/test_top_level.py::test_top_level_command_failure": "OD-Brit"
+   },
+   "categories": {
+    "OD-Brit": 9,
+    "OD-Vic": 2
+   }
+  },
+  {
+   "name": "idoft-todo-sync",
+   "url": "https://github.com/tmurph/todo-sync",
+   "sha": "32915e9a1509aa2c4083613e256cb0d502c441aa",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node0-expected_node0]": "OD-Brit",
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node1-expected_node1]": "OD-Brit",
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node10-expected_node10]": "OD-Brit",
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node2-expected_node2]": "OD-Brit",
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node3-expected_node3]": "OD-Brit",
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node4-expected_node4]": "OD-Brit",
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node5-expected_node5]": "OD-Brit",
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node6-expected_node6]": "OD-Brit",
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node7-expected_node7]": "OD-Brit",
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node8-expected_node8]": "OD-Brit",
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node9-expected_node9]": "OD-Brit"
+   },
+   "categories": {
+    "OD-Brit": 11
+   }
+  },
+  {
+   "name": "idoft-fooof",
+   "url": "https://github.com/voytekresearch/fooof",
+   "sha": "7a520c4f8ac3a44f4f18dc025b5e5d40049c9f2b",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "fooof/tests/core/test_io.py::test_load_file_contents": "OD-Brit",
+    "fooof/tests/core/test_io.py::test_load_jsonlines": "OD-Brit",
+    "fooof/tests/core/test_io.py::test_load_json_fobj": "OD-Brit",
+    "fooof/tests/core/test_io.py::test_load_json_str": "OD-Brit",
+    "fooof/tests/objs/test_fit.py::test_fooof_fit_knee": "OD-Vic",
+    "fooof/tests/objs/test_fit.py::test_fooof_fit_nk": "OD-Vic",
+    "fooof/tests/objs/test_fit.py::test_fooof_load": "OD-Brit",
+    "fooof/tests/objs/test_group.py::test_fg_load": "OD-Brit",
+    "fooof/tests/utils/test_download.py::test_check_data_file": "OD-Brit",
+    "fooof/tests/utils/test_io.py::test_load_fooof": "OD-Brit",
+    "fooof/tests/utils/test_io.py::test_load_fooofgroup": "OD-Brit"
+   },
+   "categories": {
+    "OD-Brit": 9,
+    "OD-Vic": 2
+   }
+  },
+  {
+   "name": "idoft-cloud-validation-framework",
+   "url": "https://github.com/prancer-io/cloud-validation-framework",
+   "sha": "94522590d9881a5125d81da701a65f7f63383c0d",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/processor/connector/test_snapshot_azure.py::test_get_node_happy": "NOD",
+    "tests/processor/connector/test_snapshot_azure.py::test_get_version_for_type": "NOD",
+    "tests/processor/helper/config/test_config_utils.py::test_framework_config": "NOD",
+    "tests/processor/helper/config/test_config_utils.py::test_framework_dir": "NOD",
+    "tests/processor/helper/config/test_config_utils.py::test_get_config_data": "NOD",
+    "tests/processor/helper/config/test_config_utils.py::test_get_solution_dir": "NOD",
+    "tests/processor/helper/config/test_config_utils.py::test_get_test_json_dir": "NOD",
+    "tests/processor/helper/config/test_rundata_utils.py::test_init_config": "NOD",
+    "tests/processor/helper/httpapi/test_restapi_azure.py::test_web_client_data": "NOD",
+    "tests/processor/template_processor/base/test_base_template_processor.py::test_populate_template_snapshot_false": "NOD"
+   },
+   "categories": {
+    "NOD": 10
+   }
+  },
+  {
+   "name": "idoft-devtracker",
+   "url": "https://github.com/ConSou/devtracker",
+   "sha": "ea892d6d48aa5d4627b429469b59ae3f0ce7f10f",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "devtracker/test_devtracker.py::test_add_start": "OD-Vic",
+    "devtracker/test_devtracker.py::test_current_status": "OD-Brit",
+    "devtracker/test_devtracker.py::test_end_time_total": "NIO",
+    "devtracker/test_devtracker.py::test_full_report": "NOD",
+    "devtracker/test_devtracker.py::test_make_project_csv": "OD-Vic",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize": "NOD",
+    "devtracker/test_devtracker.py::test_remove": "NIO",
+    "devtracker/test_devtracker.py::test_start_time": "NOD",
+    "devtracker/test_devtracker.py::test_today_report_err_one": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 3,
+    "OD-Brit": 1,
+    "NIO": 2,
+    "NOD": 3
+   }
+  },
+  {
+   "name": "idoft-supertunnel",
+   "url": "https://github.com/alexrudy/supertunnel",
+   "sha": "4c64e2fedda3382b809a2c3d01c711ec4961f933",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "supertunnel/ssh/continuous_test.py::test_backoff": "OD-Brit",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr": "OD-Brit",
+    "supertunnel/ssh/continuous_test.py::test_run": "OD-Brit",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous": "OD-Brit",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang": "OD-Brit",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise": "OD-Brit",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]": "OD-Brit",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]": "OD-Brit",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]": "OD-Brit"
+   },
+   "categories": {
+    "OD-Brit": 9
+   }
+  },
+  {
+   "name": "idoft-h5nav",
+   "url": "https://github.com/clapeyre/h5nav",
+   "sha": "595040c2f9b65196ceaf18d1c2c58d848466a22c",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_cli.py::test_cat_star": "OD-Vic",
+    "tests/test_cli.py::test_cd_group": "OD-Vic",
+    "tests/test_cli.py::test_dump": "OD-Vic",
+    "tests/test_cli.py::test_get_whitespace_name": "OD-Vic",
+    "tests/test_cli.py::test_ls_simple": "OD-Vic",
+    "tests/test_cli.py::test_ls_star": "OD-Vic",
+    "tests/test_cli.py::test_pdf": "OD-Vic",
+    "tests/test_cli.py::test_stats": "OD-Vic",
+    "tests/test_cli.py::test_txt_dump": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 9
+   }
+  },
+  {
+   "name": "idoft-krllint",
+   "url": "https://github.com/d4nuu8/krllint",
+   "sha": "2f9376cdae14c201364d9c31b4c19a8ff2f708d2",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_extraneous_whitespace.py::ExtraneousWhiteSpaceTestCase::test_rule_without_fix": "OD-Vic",
+    "tests/test_extraneous_whitespace.py::ExtraneousWhiteSpaceTestCase::test_rule_with_fix": "OD-Vic",
+    "tests/test_indentation_checker.py::IndentationCheckerTestCase::test_rule_with_fix": "OD-Vic",
+    "tests/test_lower_or_mixed_case_built_in_type.py::LowerOrMixedCaseBuiltInTestCase::test_rule_without_fix": "OD-Vic",
+    "tests/test_lower_or_mixed_case_built_in_type.py::LowerOrMixedCaseBuiltInTestCase::test_rule_with_fix": "OD-Vic",
+    "tests/test_open_task.py::OpenTaskTestCase::test_rule_without_fix": "OD-Vic",
+    "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix": "OD-Vic",
+    "tests/test_trailing_white_space_rule.py::TrailingWhiteSpaceTestCase::test_rule_without_fix": "OD-Vic",
+    "tests/test_trailing_white_space_rule.py::TrailingWhiteSpaceTestCase::test_rule_with_fix": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 9
+   }
+  },
+  {
+   "name": "idoft-dynamic-conf",
+   "url": "https://github.com/jnoortheen/dynamic-conf",
+   "sha": "42257f06a66765ac4f5de1c6a4637f4db779c5ab",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_conf.py::test_cofig_writing[.env-ARG1=VAL1\\nARG2=VAL2]": "OD-Vic",
+    "tests/test_conf.py::test_cofig_writing[env.py-ARG1 = 'VAL1'\\nARG2 = 'VAL2']": "OD-Vic",
+    "tests/test_conf.py::test_cofig_writing_with_dump[.env-ARG1=VAL1\\nARG3=3\\nARG2=VAL2]": "OD-Vic",
+    "tests/test_conf.py::test_cofig_writing_with_dump[env.py-ARG1 = 'VAL1'\\nARG3 = 3\\nARG2 = 'VAL2']": "OD-Vic",
+    "tests/test_conf.py::test_cofig_writing_with_filter_prefix[.env-ARG1=VAL1\\nARG2=VAL2]": "OD-Vic",
+    "tests/test_conf.py::test_cofig_writing_with_filter_prefix[env.py-ARG1 = 'VAL1'\\nARG2 = 'VAL2']": "OD-Vic",
+    "tests/test_conf.py::test_config_reading[.env]": "OD-Vic",
+    "tests/test_conf.py::test_config_reading[env.py]": "OD-Vic",
+    "tests/test_conf.py::test_singleton": "NIO"
+   },
+   "categories": {
+    "OD-Vic": 8,
+    "NIO": 1
+   }
+  },
+  {
+   "name": "idoft-qer",
+   "url": "https://github.com/sputt/qer",
+   "sha": "c77e6777967ee660447beb9522c867a7233ef78d",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/repos/test_pypi.py::test_no_candidates": "OD-Vic",
+    "tests/repos/test_pypi.py::test_pypi_500": "OD-Vic",
+    "tests/repos/test_pypi.py::test_python_requires_wheel_tags[https://pypi.org/numpy-1.16.3-cp37-cp37m-manylinux1_x86_64.whl#sha256=HASH]": "OD-Vic",
+    "tests/repos/test_pypi.py::test_python_requires_wheel_tags[https://pypi.org/numpy-1.16.3-cp37-cp37m-win_amd64.whl#sha256=HASH]": "OD-Vic",
+    "tests/repos/test_pypi.py::test_python_requires_wheel_tags[https://pypi.org/numpy-1.16.3.zip#sha256=HASH]": "OD-Vic",
+    "tests/repos/test_pypi.py::test_successful_numpy": "OD-Vic",
+    "tests/test_extractor.py::test_extractor[mock_targz]": "OD-Vic",
+    "tests/test_extractor.py::test_extractor[mock_zip0]": "OD-Vic",
+    "tests/test_extractor.py::test_extractor[mock_zip1]": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 9
+   }
+  },
+  {
+   "name": "idoft-req-compile",
+   "url": "https://github.com/sputt/req-compile",
+   "sha": "c77e6777967ee660447beb9522c867a7233ef78d",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/repos/test_pypi.py::test_no_candidates": "OD-Vic",
+    "tests/repos/test_pypi.py::test_pypi_500": "OD-Vic",
+    "tests/repos/test_pypi.py::test_python_requires_wheel_tags[https://pypi.org/numpy-1.16.3-cp37-cp37m-manylinux1_x86_64.whl#sha256=HASH]": "OD-Vic",
+    "tests/repos/test_pypi.py::test_python_requires_wheel_tags[https://pypi.org/numpy-1.16.3-cp37-cp37m-win_amd64.whl#sha256=HASH]": "OD-Vic",
+    "tests/repos/test_pypi.py::test_python_requires_wheel_tags[https://pypi.org/numpy-1.16.3.zip#sha256=HASH]": "OD-Vic",
+    "tests/repos/test_pypi.py::test_successful_numpy": "OD-Vic",
+    "tests/test_extractor.py::test_extractor[mock_targz]": "OD-Vic",
+    "tests/test_extractor.py::test_extractor[mock_zip0]": "OD-Vic",
+    "tests/test_extractor.py::test_extractor[mock_zip1]": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 9
+   }
+  },
+  {
+   "name": "idoft-panamah-sdk-python",
+   "url": "https://github.com/casamagalhaes/panamah-sdk-python",
+   "sha": "746f3fb7ebcf01810917bf9afa8e7ff5a4efad21",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_processor.py::TestStream::test_expiration_by_max_age": "NOD",
+    "tests/test_processor.py::TestStream::test_expiration_by_max_length": "NOD",
+    "tests/test_processor.py::TestStream::test_expiration_by_max_size": "NOD",
+    "tests/test_processor.py::TestStream::test_get_pending_resources": "NOD",
+    "tests/test_processor.py::TestStream::test_initialization_and_accumulation": "OD-Vic",
+    "tests/test_processor.py::TestStream::test_recover_failures": "NOD",
+    "tests/test_processor.py::TestStream::test_requesting_pending_resources": "NOD",
+    "tests/test_stream.py::TestStream::test_events": "NOD"
+   },
+   "categories": {
+    "NOD": 7,
+    "OD-Vic": 1
+   }
+  },
+  {
+   "name": "idoft-coinbase-commerce-python",
+   "url": "https://github.com/coinbase/coinbase-commerce-python",
+   "sha": "d306fc562309edb909c8ace501c63327a7635975",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create": "OD-Vic",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list": "OD-Vic",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping": "OD-Vic",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping": "OD-Vic",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping": "OD-Vic",
+    "tests/test_api_client.py::TestApiClient::test_authentication_error": "OD-Vic",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error": "OD-Vic",
+    "tests/test_api_client.py::TestApiClient::test_resource_not_found_error": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 8
+   }
+  },
+  {
+   "name": "idoft-ljson",
+   "url": "https://github.com/daknuett/ljson",
+   "sha": "1d3dc13001d9d2f61bcfbf9d5c5b16d44fb8076e",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "test/test_ljson_disk.py::test_contains": "OD-Vic",
+    "test/test_ljson_disk.py::test_delete": "OD-Vic",
+    "test/test_ljson_disk.py::test_edit": "OD-Vic",
+    "test/test_ljson_disk.py::test_read": "OD-Vic",
+    "test/test_ljson_disk.py::test_unique_check": "OD-Vic",
+    "test/test_ljson_mem.py::test_contains": "OD-Vic",
+    "test/test_ljson_mem.py::test_edit": "OD-Vic",
+    "test/test_ljson_mem.py::test_unique_check": "NIO"
+   },
+   "categories": {
+    "OD-Vic": 7,
+    "NIO": 1
+   }
+  },
+  {
+   "name": "idoft-mdutils",
+   "url": "https://github.com/didix21/mdutils",
+   "sha": "2ef859ecc1e4f1a3e24f4150c96f61180bc57ceb",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_mdutils.py::TestMdUtils::test_create_md_file": "OD-Vic",
+    "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_checked_list": "OD-Vic",
+    "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_list": "OD-Vic",
+    "tests/test_mdutils.py::TestMdUtils::test_new_header": "OD-Vic",
+    "tests/test_mdutils.py::TestMdUtils::test_new_list": "OD-Vic",
+    "tests/test_mdutils.py::TestMdUtils::test_new_reference_image_markdown_data": "OD-Vic",
+    "tests/test_mdutils.py::TestMdUtils::test_new_table_of_contents": "OD-Vic",
+    "tests/test_mdutils.py::TestMdUtils::test_references_placed_in_markdown_file": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 8
+   }
+  },
+  {
+   "name": "idoft-knack",
+   "url": "https://github.com/microsoft/knack",
+   "sha": "dc7b7d857ce3c11b2a3155b81f2470b3b579e7c9",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_cli_scenarios.py::TestCLIScenarios::test_case_insensitive_command_path": "OD-Vic",
+    "tests/test_command_with_configured_defaults.py::TestCommandWithConfiguredDefaults::test_no_configured_default_on_required_arg": "OD-Vic",
+    "tests/test_deprecation.py::TestArgumentDeprecation::test_deprecate_arguments_execute_expired": "OD-Vic",
+    "tests/test_deprecation.py::TestArgumentDeprecation::test_deprecate_options_execute_expired": "OD-Vic",
+    "tests/test_deprecation.py::TestCommandDeprecation::test_deprecate_command_expired_execute": "OD-Vic",
+    "tests/test_deprecation.py::TestCommandDeprecation::test_deprecate_command_expired_execute_no_color": "OD-Vic",
+    "tests/test_help.py::TestHelp::test_help_extra_params": "OD-Vic",
+    "tests/test_help.py::TestHelp::test_help_missing_params": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 8
+   }
+  },
+  {
+   "name": "idoft-riemann",
+   "url": "https://github.com/summa-tx/riemann",
+   "sha": "0fda32e783487572c869aaabc6af7adba01cbd00",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "riemann/tests/encoding/test_addresses.py::TestAddresses::test_make_p2pkh_address": "NOD",
+    "riemann/tests/encoding/test_addresses.py::TestAddresses::test_make_p2sh_address_msig": "OD-Vic",
+    "riemann/tests/encoding/test_addresses.py::TestAddresses::test_make_p2wsh_address": "NOD",
+    "riemann/tests/test_simple.py::TestSimple::test_output": "NOD",
+    "riemann/tests/test_simple.py::TestSimple::test_unsigned_legacy_tx": "NOD",
+    "riemann/tests/test_simple.py::TestSimple::test_unsigned_witness_tx": "OD-Vic",
+    "riemann/tests/tx/test_tx_builder.py::TestTxBuilder::test_make_p2wpkh_output_script": "NOD",
+    "riemann/tests/tx/test_tx_builder.py::TestTxBuilder::test_make_pkh_output_script": "OD-Vic"
+   },
+   "categories": {
+    "NOD": 5,
+    "OD-Vic": 3
+   }
+  },
+  {
+   "name": "idoft-multiindex",
+   "url": "https://github.com/sushobhit27/multiindex",
+   "sha": "b631e60bd47558eca9067a0dc87f0e713cddc6f2",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "multiindex/tests/test_multiindex.py multiindex/tests/test_multiindex_hashed_non_unique.py": "unknown",
+    "multiindex/tests/test_multiindex.py::test_insert": "OD-Vic",
+    "multiindex/tests/test_multiindex.py::test_insert_overwrite": "OD-Vic",
+    "multiindex/tests/test_multiindex.py::test_modify": "NIO",
+    "multiindex/tests/test_multiindex.py::test_remove": "OD-Brit",
+    "multiindex/tests/test_multiindex_hashed_non_unique.py::test_insert": "OD-Vic",
+    "multiindex/tests/test_multiindex_hashed_non_unique.py::test_modify": "NIO",
+    "multiindex/tests/test_multiindex_hashed_non_unique.py::test_remove": "NIO"
+   },
+   "categories": {
+    "unknown": 1,
+    "OD-Vic": 3,
+    "NIO": 3,
+    "OD-Brit": 1
+   }
+  },
+  {
+   "name": "idoft-plcx",
+   "url": "https://github.com/Cognexa/plcx",
+   "sha": "2756c0ba78c4c9e572d95ba002708957bc55d4fa",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "plcx/tests/comm/test_client.py::test_clientx[123]": "OD-Vic",
+    "plcx/tests/comm/test_client.py::test_clientx[1]": "OD-Vic",
+    "plcx/tests/comm/test_client.py::test_clientx[hola]": "OD-Vic",
+    "plcx/tests/comm/test_client.py::test_clientx_context[111]": "OD-Vic",
+    "plcx/tests/comm/test_client.py::test_clientx_context[321]": "OD-Vic",
+    "plcx/tests/comm/test_client.py::test_clientx_context[hi]": "OD-Vic",
+    "plcx/tests/comm/test_client.py::test_clientx_error": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 7
+   }
+  },
+  {
+   "name": "idoft-python-httpproblem",
+   "url": "https://github.com/cbornet/python-httpproblem",
+   "sha": "0b08139277e9cba02339eeb0996c0910d047274a",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_problem.py::test_exception_to_http_response": "OD-Vic",
+    "tests/test_problem.py::test_exception_to_http_response_with_global_traceback": "OD-Vic",
+    "tests/test_problem.py::test_exception_to_http_response_with_traceback_param": "OD-Vic",
+    "tests/test_problem.py::test_problem_http_response[1000-test_title-test_detail-test_type-test_instance-headers0-kwargs0-expected_body0-expected_headers0]": "OD-Vic",
+    "tests/test_problem.py::test_problem_http_response[None-None-None-None-None-headers2-kwargs2-expected_body2-expected_headers2]": "OD-Vic",
+    "tests/test_problem.py::test_problem_http_response[None-None-None-None-None-headers3-kwargs3-expected_body3-expected_headers3]": "OD-Vic",
+    "tests/test_problem.py::test_problem_http_response[None-None-None-None-None-None-kwargs1-expected_body1-expected_headers1]": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 7
+   }
+  },
+  {
+   "name": "idoft-json-storage-manager",
+   "url": "https://github.com/hefnawi/json-storage-manager",
+   "sha": "c7521fc4a576cf23a8c2454106bed6fb8c951b8d",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_main.py::test_get_item": "OD-Brit",
+    "tests/test_main.py::test_get_no_item": "OD-Vic",
+    "tests/test_main.py::test_read_json": "OD-Vic",
+    "tests/test_main.py::test_set_item": "OD-Vic",
+    "tests/test_main.py::test_set_item_fail": "OD-Brit",
+    "tests/test_main.py::test_update_item": "OD-Brit",
+    "tests/test_main.py::test_write_json": "OD-Vic"
+   },
+   "categories": {
+    "OD-Brit": 3,
+    "OD-Vic": 4
+   }
+  },
+  {
+   "name": "idoft-linux_aio",
+   "url": "https://github.com/isac322/linux_aio",
+   "sha": "007d033b42703e9bb4d7cd99ca50e54108215d46",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "test/test_non_vector_rw.py::TestRW::test_02_read": "OD-Brit",
+    "test/test_non_vector_rw.py::TestRW::test_02_read_2_str": "OD-Brit",
+    "test/test_non_vector_rw.py::TestRW::test_02_read_replace_file": "OD-Brit",
+    "test/test_non_vector_rw.py::TestRW::test_02_read_w_io_priority": "OD-Brit",
+    "test/test_non_vector_rw.py::TestRW::test_02_read_w_non_zero_offset": "OD-Brit",
+    "test/test_non_vector_rw.py::TestRW::test_02_read_w_non_zero_offset test/test_non_vector_rw.py::TestRW::test_02_read_2_str test/test_non_vector_rw.py::TestRW::test_02_read": "unknown",
+    "test/test_non_vector_rw.py::TestRW::test_02_read_w_rw_flags": "OD-Brit"
+   },
+   "categories": {
+    "OD-Brit": 6,
+    "unknown": 1
+   }
+  },
+  {
+   "name": "idoft-pyswarms",
+   "url": "https://github.com/ljvmiranda921/pyswarms",
+   "sha": "08756526f39699eef28e515cac2ead17cef55710",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/optimizers/test_local_best.py::TestLocalBestOptimizer::test_obj_with_kwargs": "NOD",
+    "tests/optimizers/test_tolerance.py::TestToleranceOptions::test_ftol_effect[GeneralOptimizerPSO]": "OD-Vic",
+    "tests/optimizers/test_tolerance.py::TestToleranceOptions::test_ftol_effect[GlobalBestPSO]": "OD-Vic",
+    "tests/optimizers/test_tolerance.py::TestToleranceOptions::test_ftol_effect[LocalBestPSO]": "OD-Vic",
+    "tests/optimizers/test_tolerance.py::TestToleranceOptions::test_no_ftol[GeneralOptimizerPSO]": "OD-Vic",
+    "tests/optimizers/test_tolerance.py::TestToleranceOptions::test_no_ftol[GlobalBestPSO]": "OD-Vic",
+    "tests/optimizers/test_tolerance.py::TestToleranceOptions::test_no_ftol[LocalBestPSO]": "OD-Vic"
+   },
+   "categories": {
+    "NOD": 1,
+    "OD-Vic": 6
+   }
+  },
+  {
+   "name": "idoft-yamicache",
+   "url": "https://github.com/mtik00/yamicache",
+   "sha": "1109d08b18be94bdee55e113309f7be29f25d840",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_class.py::test_cached": "OD-Vic",
+    "tests/test_class.py::test_keyed_cached": "OD-Vic",
+    "tests/test_class.py::test_utility": "OD-Vic",
+    "tests/test_collide.py::test_avoid_collision": "NIO",
+    "tests/test_gc.py::test_deco_timeout": "NOD",
+    "tests/test_noclass.py::test_main": "OD-Vic",
+    "tests/test_serialization.py::test_serialization": "NIO"
+   },
+   "categories": {
+    "OD-Vic": 4,
+    "NIO": 2,
+    "NOD": 1
+   }
+  },
+  {
+   "name": "idoft-clu",
+   "url": "https://github.com/nir0s/clu",
+   "sha": "77da967a4577ca4cf100cfe34e87b39ad88bf21c",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_ghost.py::TestCLI::test_fail_init_two_stashes_passphrase_file_exists": "OD-Vic",
+    "tests/test_ghost.py::TestCLI::test_init_already_initialized": "OD-Brit",
+    "tests/test_ghost.py::TestCLI::test_init_permission_denied_on_passphrase": "OD-Brit",
+    "tests/test_ghost.py::TestSQLAlchemyStorage::test_is_initialized": "OD-Vic",
+    "tests/test_ghost.py::TestStash::test_broken_is_initialized": "OD-Brit",
+    "tests/test_ghost.py::TestTinyDBStorage::test_init_stash_in_current_dir": "OD-Vic",
+    "tests/test_ghost.py::TestTinyDBStorage::test_is_initialized": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 4,
+    "OD-Brit": 3
+   }
+  },
+  {
+   "name": "idoft-dzonegit",
+   "url": "https://github.com/oskar456/dzonegit",
+   "sha": "8f952086aa41aee4ebb7432926ed8c6a9211ac9f",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "test_dzonegit.py::test_get_altered_files": "OD-Brit",
+    "test_dzonegit.py::test_get_file_contents": "OD-Brit",
+    "test_dzonegit.py::test_get_head": "OD-Vic",
+    "test_dzonegit.py::test_post_receive": "OD-Brit",
+    "test_dzonegit.py::test_pre_receive": "OD-Vic",
+    "test_dzonegit.py::test_template_config": "OD-Brit",
+    "test_dzonegit.py::test_update": "OD-Vic"
+   },
+   "categories": {
+    "OD-Brit": 4,
+    "OD-Vic": 3
+   }
+  },
+  {
+   "name": "idoft-python-fs",
+   "url": "https://github.com/chaosmail/python-fs",
+   "sha": "2567922ced9387e327e65f3244caff3b7af35684",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "fs/tests/test_addpath.py::test_addpath": "NIO",
+    "fs/tests/test_mkdir.py::test_mkdir": "OD-Vic",
+    "fs/tests/test_mkdir.py::test_mkdir_recursive": "NIO",
+    "fs/tests/test_rename.py::test_rename_directory": "NIO",
+    "fs/tests/test_rename.py::test_rename_file": "NIO",
+    "fs/tests/test_touch.py::test_touch_on_new_file": "NIO"
+   },
+   "categories": {
+    "NIO": 5,
+    "OD-Vic": 1
+   }
+  },
+  {
+   "name": "idoft-django-hug",
+   "url": "https://github.com/jounderwood/django-hug",
+   "sha": "778b16f568ce9fdb01f360b7bff89c9d8b6c2ef7",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_api.py::test_simple_post_ok": "OD-Vic",
+    "tests/test_api.py::test_whole_body_post_ok": "OD-Vic",
+    "tests/test_settings.py::test_camelcased_response_data_ok": "NIO",
+    "tests/test_settings.py::test_register_request_formatters_ok": "NIO",
+    "tests/test_settings.py::test_register_response_formatters_ok": "NIO",
+    "tests/test_settings.py::test_response_additional_headers_ok": "NIO"
+   },
+   "categories": {
+    "OD-Vic": 2,
+    "NIO": 4
+   }
+  },
+  {
+   "name": "idoft-engfmt",
+   "url": "https://github.com/kenkundert/engfmt",
+   "sha": "b908ef69aa7941e561019e24f969703f3234753b",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "test_constants.py::test_constants": "OD-Vic",
+    "test_format.py::test_format": "OD-Vic",
+    "test_misc.py::test_misc": "OD-Vic",
+    "test_namespace.py::test_namespace": "OD-Vic",
+    "test_quantity.py::test_number_recognition": "NIO",
+    "test_text_processing.py::test_text_processing": "NIO"
+   },
+   "categories": {
+    "OD-Vic": 4,
+    "NIO": 2
+   }
+  },
+  {
+   "name": "idoft-pdir2",
+   "url": "https://github.com/laike9m/pdir2",
+   "sha": "ef5e2200074d68e2ca3df4ee441a1b9ea6ca5abc",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_user_config.py::test_invalid_config_1": "OD-Brit",
+    "tests/test_user_config.py::test_invalid_config_2": "OD-Brit",
+    "tests/test_user_config.py::test_read_config": "OD-Brit",
+    "tests/test_user_config.py::test_read_config_from_custom_location": "OD-Brit",
+    "tests/test_user_config.py::test_set_env_without_config": "OD-Brit",
+    "tests/test_user_config.py::test_uniform_color": "OD-Brit"
+   },
+   "categories": {
+    "OD-Brit": 6
+   }
+  },
+  {
+   "name": "idoft-pyserverpilot",
+   "url": "https://github.com/opper/pyserverpilot",
+   "sha": "b6b896fea1155fa95febde84f74e0d2230523ab0",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_app.py::TestApp::test_add_ssl": "OD-Brit",
+    "tests/test_app.py::TestApp::test_enable_force_ssl": "OD-Brit",
+    "tests/test_app.py::TestApp::test_get_app": "OD-Brit",
+    "tests/test_app.py::TestApp::test_update_app_validation": "OD-Brit",
+    "tests/test_db.py::TestDb::test_get_db": "OD-Brit",
+    "tests/test_db.py::TestDb::test_update_db": "OD-Brit"
+   },
+   "categories": {
+    "OD-Brit": 6
+   }
+  },
+  {
+   "name": "idoft-basic_auth",
+   "url": "https://github.com/rorymurdock/basic_auth",
+   "sha": "622f2133c13988cec549f4ea55bed14e50f90876",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_basic.py::test_read_config": "NOD",
+    "tests/test_basic.py::test_verify_config": "OD-Brit",
+    "tests/test_general.py::test_file_data_arguments": "OD-Brit",
+    "tests/test_general.py::test_file_data_interactive": "OD-Brit",
+    "tests/test_wso.py::test_file_data_arguments": "OD-Brit",
+    "tests/test_wso.py::test_file_data_interactive": "OD-Brit"
+   },
+   "categories": {
+    "NOD": 1,
+    "OD-Brit": 5
+   }
+  },
+  {
+   "name": "idoft-securenative-python",
+   "url": "https://github.com/securenative/securenative-python",
+   "sha": "0eae99733b7565341487ad32f044be8dc51032cd",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/configuration_manager_test.py::ConfigurationManagerTest::test_default_values_for_invalid_enum_config_props": "OD-Vic",
+    "tests/configuration_manager_test.py::ConfigurationManagerTest::test_get_config_from_env_variables": "OD-Brit",
+    "tests/configuration_manager_test.py::ConfigurationManagerTest::test_ignore_unknown_config_in_properties_file": "OD-Vic",
+    "tests/configuration_manager_test.py::ConfigurationManagerTest::test_load_default_config": "OD-Brit",
+    "tests/configuration_manager_test.py::ConfigurationManagerTest::test_parse_config_file_correctly": "OD-Vic",
+    "tests/securenative_test.py::SecureNativeTest::test_get_sdk_instance_without_init_throws": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 4,
+    "OD-Brit": 2
+   }
+  },
+  {
+   "name": "idoft-aud",
+   "url": "https://github.com/zdhoward/aud",
+   "sha": "2dfc81dad3da78537e1b1c6f5cc5630ba5b837f9",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "aud/test_aud.py::test_afx_2": "NOD",
+    "aud/test_aud.py::test_afx_3": "NOD",
+    "aud/test_aud.py::test_config": "NOD",
+    "aud/test_aud.py::test_dir": "NOD",
+    "aud/test_aud.py::test_export": "NOD",
+    "aud/test_aud.py::test_name": "NOD"
+   },
+   "categories": {
+    "NOD": 6
+   }
+  },
+  {
+   "name": "idoft-flask-sqlalchemy-booster",
+   "url": "https://github.com/SuryaSankar/flask-sqlalchemy-booster",
+   "sha": "e43980e29a18e725d791b87ce1b677470bbaf22c",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_view_boosters/test_todo_list_api/test_api_endpoints.py::test_multi_users_creation": "NIO",
+    "tests/test_view_boosters/test_todo_list_api/test_api_endpoints.py::test_task_get": "OD-Brit",
+    "tests/test_view_boosters/test_todo_list_api/test_api_endpoints.py::test_task_updation": "OD-Brit",
+    "tests/test_view_boosters/test_todo_list_api/test_api_endpoints.py::test_user_creation": "NIO",
+    "tests/test_view_boosters/test_todo_list_api/test_relationship_updates.py::test_list_relationship_new_item": "NIO"
+   },
+   "categories": {
+    "NIO": 3,
+    "OD-Brit": 2
+   }
+  },
+  {
+   "name": "idoft-aiotasks",
+   "url": "https://github.com/cr0hn/aiotasks",
+   "sha": "ec485c84db55227c9283319a9c58401e294a06ff",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_add_task_non_coroutine_as_input": "OD-Vic",
+    "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_task_decorator_invalid_function": "OD-Vic",
+    "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_task_decorator_invalid_task_id_format": "OD-Vic",
+    "tests/unittesting/tasks/memory/test_subscribers.py::test_memory_subscribers_empty_topics": "OD-Vic",
+    "tests/unittesting/tasks/test_base_async.py::test_build_manager_invalid_prefix": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 5
+   }
+  },
+  {
+   "name": "idoft-utter-more",
+   "url": "https://github.com/crumpstrr33/Utter-More",
+   "sha": "418cf5f5ef337700bf0897e746eff8bb275e6da6",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "test/test_utter_more.py::test_ibu_aut": "NIO",
+    "test/test_utter_more.py::test_saving_utterances[alexa_test-csv-None]": "OD-Brit",
+    "test/test_utter_more.py::test_saving_utterances[csv_test-csv-None]": "OD-Brit",
+    "test/test_utter_more.py::test_saving_utterances[file_override_test-txt-csv]": "OD-Brit",
+    "test/test_utter_more.py::test_saving_utterances[txt_test-txt-None]": "OD-Brit"
+   },
+   "categories": {
+    "NIO": 1,
+    "OD-Brit": 4
+   }
+  },
+  {
+   "name": "idoft-grabbit",
+   "url": "https://github.com/grabbles/grabbit",
+   "sha": "83ff93df36019eaaee9d4e31f816a518e46cae07",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "grabbit/tests/test_core.py::TestLayout::test_init_with_exclude_arg[local]": "NOD",
+    "grabbit/tests/test_core.py::TestLayout::test_init_with_include_arg[local]": "NOD",
+    "grabbit/tests/test_core.py::TestLayout::test_natsort[local]": "NOD",
+    "grabbit/tests/test_core.py::TestLayout::test_querying[local]": "NOD",
+    "grabbit/tests/test_core.py::TestLayout::test_unique_and_count[local]": "NOD"
+   },
+   "categories": {
+    "NOD": 5
+   }
+  },
+  {
+   "name": "idoft-thundra-lambda-agent-python",
+   "url": "https://github.com/thundra-io/thundra-lambda-agent-python",
+   "sha": "fcd1c2b0b309721d89bd35511bd6645ebd62a5bc",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/plugins/log/test_log_plugin.py::test_log_plugin_with_initialization": "NIO",
+    "tests/plugins/trace/test_traceable.py::test_trace_args": "NIO",
+    "tests/plugins/trace/test_traceable.py::test_trace_error": "NIO",
+    "tests/plugins/trace/test_traceable.py::test_trace_return_values": "NIO",
+    "tests/plugins/trace/test_traceable.py::test_trace_with_default_configs": "NIO"
+   },
+   "categories": {
+    "NIO": 5
+   }
+  },
+  {
+   "name": "idoft-poly_decomp.py",
+   "url": "https://github.com/wsilva32/poly_decomp.py",
+   "sha": "cb1a47f218e076772b9df137c1928023882df5e5",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_poly_decomp.py::TestPoly_Decomp::test_not_polygonCanSee": "OD-Vic",
+    "tests/test_poly_decomp.py::TestPoly_Decomp::test_not_polygonIsReflex": "OD-Vic",
+    "tests/test_poly_decomp.py::TestPoly_Decomp::test_polygonAt": "OD-Vic",
+    "tests/test_poly_decomp.py::TestPoly_Decomp::test_polygonAt_negative_index": "OD-Vic",
+    "tests/test_poly_decomp.py::TestPoly_Decomp::test_polygonIsReflex": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 5
+   }
+  },
+  {
+   "name": "idoft-redisqueue",
+   "url": "https://github.com/DevKeh/redisqueue",
+   "sha": "feac4dfc30837e0ab1a55a8479443ea74b2793f2",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_redisqueue.py::test_mock_queue_connection": "NIO",
+    "tests/test_redisqueue.py::test_mock_queue_get_put_same_task": "OD-Brit",
+    "tests/test_redisqueue.py::test_mock_queue_put_get": "OD-Brit",
+    "tests/test_redisqueue.py::test_mock_queue_unique": "OD-Brit"
+   },
+   "categories": {
+    "NIO": 1,
+    "OD-Brit": 3
+   }
+  },
+  {
+   "name": "idoft-dotdot",
+   "url": "https://github.com/Gsllchb/DotDot",
+   "sha": "64c8c5b0523211f243eef5dc6ea7c22dec5383cc",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_dot.py::test_dot": "OD",
+    "tests/test_dotdot.py::test_dotdot": "OD",
+    "tests/test_dotdotdot.py::test_dotdotdot": "OD",
+    "tests/test_dotdotdotdot.py::test_dotdotdotdot": "OD"
+   },
+   "categories": {
+    "OD": 4
+   }
+  },
+  {
+   "name": "idoft-fanstatic-tools",
+   "url": "https://github.com/MiCHiLU/fanstatic-tools",
+   "sha": "c075a2195c8138d103b72ef8445ef08f2a865984",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "fanstatic/test_core.py::test_convenience_clear_not_initialized": "OD-Vic",
+    "fanstatic/test_core.py::test_convenience_need_not_initialized": "OD-Vic",
+    "fanstatic/test_core.py::test_inclusion_renderers": "OD-Vic",
+    "fanstatic/test_core.py::test_register_inclusion_renderer": "NIO"
+   },
+   "categories": {
+    "OD-Vic": 3,
+    "NIO": 1
+   }
+  },
+  {
+   "name": "idoft-limitediterables",
+   "url": "https://github.com/Poogles/limitediterables",
+   "sha": "3ce3bc28d5c4092db3d5499ad60339c007f4c0e0",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_iterables.py::test_actual_rate_slower_than_rate_limit": "OD-Vic",
+    "tests/test_iterables.py::test_rate_limit": "OD-Vic",
+    "tests/test_iterables.py::test_rate_limit_negative": "OD-Vic",
+    "tests/test_iterables.py::test_rate_limit_negative tests/test_iterables.py::test_rate_limit": "unknown"
+   },
+   "categories": {
+    "OD-Vic": 3,
+    "unknown": 1
+   }
+  },
+  {
+   "name": "idoft-pydbvolve",
+   "url": "https://github.com/Teamworksapp/pydbvolve",
+   "sha": "e18bb8cf98997c52de0cf30a8e106c480ba0bb57",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/unittests/test_00_initialization.py::test_09_get_migration_table_schema": "OD-Vic",
+    "tests/unittests/test_00_initialization.py::test_11_log_file": "NIO",
+    "tests/unittests/test_00_initialization.py::test_13_pre_config": "OD-Vic",
+    "tests/unittests/test_01_migration_table.py::test_02_check_migration_table_bad_structure": "OD-Brit"
+   },
+   "categories": {
+    "OD-Vic": 2,
+    "NIO": 1,
+    "OD-Brit": 1
+   }
+  },
+  {
+   "name": "idoft-bottle-neck",
+   "url": "https://github.com/agile4you/bottle-neck",
+   "sha": "ebc670a4b178255473d68e9b4122ba04e38f4810",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "test/test_handlers.py::test_handler_register_class_pass": "OD-Vic",
+    "test/test_routing.py::test_router_mount_pass": "OD-Brit",
+    "test/test_routing.py::test_router_register_handler_cbv_pass": "OD-Brit",
+    "test/test_routing.py::test_router_register_handler_fn_pass": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 2,
+    "OD-Brit": 2
+   }
+  },
+  {
+   "name": "idoft-logx",
+   "url": "https://github.com/djrobstep/logx",
+   "sha": "c53fabbc160fb8d70fa878684ea36f0c22fd5caa",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_logx.py::test_formatted_output": "OD-Vic",
+    "tests/test_logx.py::test_formatted_output tests/test_logx.py::test_plain_output": "unknown",
+    "tests/test_logx.py::test_plain_output": "OD-Vic",
+    "tests/test_logx.py::test_set_format": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 3,
+    "unknown": 1
+   }
+  },
+  {
+   "name": "idoft-tokendito",
+   "url": "https://github.com/dowjones/tokendito",
+   "sha": "f5d8e5171ddcca0c62925263ddb80535f51aded3",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/functional_test.py::test_package_exists": "NOD",
+    "tests/functional_test.py::test_version[runnable2]": "NOD",
+    "tests/unit_test.py::test_set_okta_password": "OD-Vic",
+    "tests/unit_test.py::test_set_okta_username": "OD-Vic"
+   },
+   "categories": {
+    "NOD": 2,
+    "OD-Vic": 2
+   }
+  },
+  {
+   "name": "idoft-yunomi",
+   "url": "https://github.com/dreid/yunomi",
+   "sha": "1aa3f166843613331b38e231264ffc3ac40e8094",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "yunomi/tests/test_metrics_registry.py::MetricsRegistryTests::test_count_calls_decorator": "OD-Vic",
+    "yunomi/tests/test_metrics_registry.py::MetricsRegistryTests::test_hist_calls_decorator": "OD-Vic",
+    "yunomi/tests/test_metrics_registry.py::MetricsRegistryTests::test_meter_calls_decorator": "OD-Vic",
+    "yunomi/tests/test_metrics_registry.py::MetricsRegistryTests::test_time_calls_decorator": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 4
+   }
+  },
+  {
+   "name": "idoft-uberdict",
+   "url": "https://github.com/eukaryote/uberdict",
+   "sha": "852b9d8b80ab032ce7eb5c439ea8084336b69d04",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_uberdict.py::test_pickle_dumpsloads_dotted": "OD-Vic",
+    "tests/test_uberdict.py::test_pickle_dumpsloads_nested": "OD-Vic",
+    "tests/test_uberdict.py::test_pickle_dumpsloads_nested_dotted": "OD-Vic",
+    "tests/test_uberdict.py::test_pickle_dumpsloads_simple": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 4
+   }
+  },
+  {
+   "name": "idoft-pook",
+   "url": "https://github.com/h2non/pook",
+   "sha": "2071da27701c82ce02b015e01e2aa6fd203e7bb5",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/unit/api_test.py::test_activate": "OD-Brit",
+    "tests/unit/api_test.py::test_mock_contructors": "OD-Vic",
+    "tests/unit/api_test.py::test_on": "OD-Brit",
+    "tests/unit/api_test.py::test_use": "OD-Brit"
+   },
+   "categories": {
+    "OD-Brit": 3,
+    "OD-Vic": 1
+   }
+  },
+  {
+   "name": "idoft-identixone-python",
+   "url": "https://github.com/identixone/identixone-python",
+   "sha": "232e5dfcf98ebe91a3ed433a265be161ee965a5e",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/api/test_api_client.py::TestAPIClient::test_no_token_raises_exception": "OD-Vic",
+    "tests/api/test_api_client.py::TestAPIClient::test_unsupported_version_raises_exception": "OD-Vic",
+    "tests/utils/test_environment.py::TestEnvironmentVar::test_dict_environ_invalid_without_prefix": "OD-Vic",
+    "tests/utils/test_environment.py::TestEnvironmentVar::test_os_environ_invalid_without_prefix": "OD-Vic"
+   },
+   "categories": {
+    "OD-Vic": 4
+   }
+  },
+  {
+   "name": "idoft-tale",
+   "url": "https://github.com/irmen/Tale",
+   "sha": "a2a26443465ab6978b32d9253e833471500e7b68",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_commands.py::TestCommandDecorators::test_cmd_decorator": "NIO",
+    "tests/test_commands.py::TestCommandDecorators::test_no_duplicates": "NIO",
+    "tests/test_pubsub.py::TestPubsub::test_idletime": "NOD",
+    "tests/test_pubsub.py::TestPubsub::test_unsubscribe_all": "OD-Vic"
+   },
+   "categories": {
+    "NIO": 2,
+    "NOD": 1,
+    "OD-Vic": 1
+   }
+  },
+  {
+   "name": "idoft-skelpy",
+   "url": "https://github.com/june3474/skelpy",
+   "sha": "0e64eccdc5211dbec664e7d3f9d07c6020651b63",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_helpers.py::test_remove_comment_line_in_file": "NIO",
+    "tests/test_package.py::test_create_package_dir": "NIO",
+    "tests/test_package.py::test_write_init": "NIO",
+    "tests/test_test.py::test_create_config_files": "NIO"
+   },
+   "categories": {
+    "NIO": 4
+   }
+  },
+  {
+   "name": "idoft-bluebees",
+   "url": "https://github.com/matheuswhite/bluebees",
+   "sha": "ca18ee6dae60393480bac3893038790957727748",
+   "dataset": "IDoFT",
+   "known_flaky": {
+    "tests/test_application_data.py::test_cleanup": "NOD",
+    "tests/test_file_helper.py::test_cleanup": "NOD",
+    "tests/test_network_data.py::test_cleanup": "NOD",
+    "tests/test_node_data.py::test_cleanup": "NOD"
+   },
+   "categories": {
+    "NOD": 4
+   }
+  }
+ ]
+}

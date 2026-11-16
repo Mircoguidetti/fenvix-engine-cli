@@ -24,11 +24,10 @@ def test_hash():
 
 def test_random_and_hash_seed_are_fixed(pytester, run_det):
     pytester.makepyfile(test_r=RANDOM_TESTS)
-    # Without --det-fresh-bytecode the first run (compiling from source) and
-    # later runs (loading the .pyc) may iterate set literals differently.
-    r1, t1 = run_det("-s", "--det-fresh-bytecode")
-    r2, _ = run_det("-s", "--det-fresh-bytecode")
-    assert t1[0]["meta"]["fresh_bytecode"]
+    r1, t1 = run_det("-s")
+    r2, _ = run_det("-s")
+    assert t1[0]["meta"]["bytecode"] == "precompiled"
+    assert t1[0]["meta"]["precompile_s"] >= 0
     for tag in ("VAL-a", "VAL-b", "VAL-hash"):
         v1, v2 = values(r1, tag), values(r2, tag)
         assert v1 and v1 == v2, tag
@@ -93,8 +92,20 @@ def test_without_det_nothing_is_fixed(pytester):
     assert values(a, "VAL-a") != values(b, "VAL-a")
 
 
-def test_bytecode_cache_changes_set_literal_order(pytester, run_det):
-    """Documents a limit: .pyc state influences set-literal iteration order."""
-    pytester.makepyfile(test_r=RANDOM_TESTS)
-    runs = [values(run_det("-s")[0], "VAL-hash") for _ in range(3)]
-    assert runs[1] == runs[2]  # once the .pyc exists, runs agree
+SET_MODULE = "def order():\n    return list({'x', 'y', 'z', 'w'})\n"
+
+
+def test_precompiled_bytecode_makes_first_run_agree(pytester, run_det):
+    """A set literal's order depends on whether its module was compiled from
+    source or loaded from a .pyc. With the deterministic precompilation every
+    run (the first one included) loads the same bytecode."""
+    pytester.makepyfile(setmod=SET_MODULE, test_s="import setmod\ndef test_s():\n    print('VAL-set', setmod.order())\n")
+    runs = [values(run_det("-s")[0], "VAL-set") for _ in range(3)]
+    assert runs[0] and runs[0] == runs[1] == runs[2]
+
+
+def test_without_precompilation_the_first_run_can_differ(pytester, run_det):
+    pytester.makepyfile(setmod=SET_MODULE, test_s="import setmod\ndef test_s():\n    print('VAL-set', setmod.order())\n")
+    runs = [values(run_det("-s", "--det-disable=bytecode")[0], "VAL-set") for _ in range(3)]
+    assert runs[1] == runs[2]
+    assert runs[0] != runs[1]  # compiled from source vs loaded from the .pyc written by run 1
