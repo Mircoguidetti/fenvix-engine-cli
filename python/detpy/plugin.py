@@ -20,7 +20,8 @@ _INFRA_PREFIXES = ("_pytest", "pytest", "pluggy", "detpy", "_hypothesis_pytestpl
 _CONFLICTING_PLUGINS = ("randomly", "random_order", "pytest_randomly", "random-order")
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser, pluginmanager):
+    _accept_blocked_plugin_options(parser, pluginmanager)
     g = parser.getgroup("detpy", "deterministic execution (Level 0)")
     g.addoption("--det", action="store_true", default=False, help="enable deterministic execution (Level 0)")
     g.addoption("--det-seed", type=int, default=None, metavar="N",
@@ -55,6 +56,45 @@ def pytest_addoption(parser):
                 help="events stored verbatim per test (the fingerprint always covers all of them)")
     g.addoption("--det-outcomes", default=None, metavar="PATH",
                 help="write {nodeid: outcome} as JSON (works without --det; used by the harness)")
+
+
+def _accept_blocked_plugin_options(parser, pluginmanager) -> None:
+    """Keep the options of plugins blocked by the re-exec (pytest-randomly...) valid.
+
+    The re-exec passes ``-p no:randomly`` so the plugin never loads, but a project
+    may name its options in addopts (``--randomly-seed=...``,
+    ``--randomly-dont-reorganize``): without the plugin pytest rejects them and no
+    test runs (review R-001). Register exactly the options the blocked plugin
+    defines, by calling its own ``pytest_addoption``: they parse and do nothing,
+    because none of the plugin's hooks or fixtures is registered.
+    """
+    names = [n for n in os.environ.get(reexec.BLOCKED_ENV, "").split(",") if n]
+    if not names:
+        return
+    import inspect
+
+    try:
+        from importlib.metadata import entry_points
+
+        eps = entry_points()
+        eps = eps.select(group="pytest11") if hasattr(eps, "select") else eps.get("pytest11", ())
+    except Exception:  # pragma: no cover - broken metadata
+        return
+    for ep in eps:
+        if ep.name not in names or not pluginmanager.is_blocked(ep.name):
+            continue
+        try:
+            mod = ep.load()
+            hook = getattr(mod, "pytest_addoption", None)
+            if hook is None:
+                continue
+            kwargs = {"parser": parser, "pluginmanager": pluginmanager}
+            params = inspect.signature(hook).parameters
+            hook(**{k: v for k, v in kwargs.items() if k in params})
+        except Exception as exc:  # the options stay unknown: pytest reports them
+            import warnings
+
+            warnings.warn(f"detpy: could not register the options of blocked plugin {ep.name!r}: {exc!r}")
 
 
 # ---------------------------------------------------------------------------

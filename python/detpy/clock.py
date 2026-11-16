@@ -430,7 +430,40 @@ class _TimedLock:
         return repr(self._lock)
 
 
+class _TimedLockMeta(type):
+    """Metaclass of the stand-in for a lock *type* (threading.Lock from Python 3.13).
+
+    ``isinstance(x, threading.Lock)`` stays true for real locks and for the
+    wrappers created under --det; ``issubclass`` follows the real type.
+    """
+
+    def __instancecheck__(cls, obj):
+        real = cls.__wrapped__
+        return isinstance(obj, real) or (type(obj) is _TimedLock and isinstance(obj._lock, real))
+
+    def __subclasscheck__(cls, sub):
+        return sub is cls or issubclass(sub, cls.__wrapped__)
+
+    def __repr__(cls):
+        return repr(cls.__wrapped__)
+
+
 def _timed_factory(real):
+    """Stand-in for ``threading.Lock`` / ``threading.RLock`` that returns a _TimedLock.
+
+    Where the real object is a function (Lock before 3.13, RLock) the stand-in is a
+    function; where it is a type (Lock from 3.13) the stand-in is a type too, so
+    ``isinstance(x, threading.Lock)`` keeps working (review R-001).
+    """
+    if isinstance(real, type):
+
+        def __new__(cls, *args, **kwargs):
+            return _TimedLock(real(*args, **kwargs))
+
+        ns = {"__new__": __new__, "__wrapped__": real, "__module__": real.__module__,
+              "__qualname__": real.__qualname__, "__doc__": real.__doc__, "__slots__": ()}
+        return _TimedLockMeta(real.__name__, (), ns)
+
     def factory(*args, **kwargs):
         return _TimedLock(real(*args, **kwargs))
 

@@ -193,11 +193,25 @@ def python_candidates(p: Prepared, repo: dict, default: str) -> list[str]:
     return ["3.12", "3.13"]
 
 
+_COLLECTED = re.compile(r"(?:^|\s)(\d+)(?:/\d+)? tests? collected|collected (\d+) items?")
+
+
 def _collect(py: str, src: Path, env: dict, args: list) -> tuple[bool, int, str]:
-    code, out, _, _ = sh([py, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider", "-p", "no:randomly",
-                          *args], cwd=src, env=env, timeout=600)
-    n = sum(1 for line in out.splitlines() if "::" in line and not line.startswith(("ERROR", "FAILED")))
-    return code == 0 and n > 0, n, out
+    """Collection check with the project's own configuration (addopts included).
+
+    The count comes from pytest's summary line, so it does not depend on the
+    verbosity the project sets in addopts (-v, --verbose). A non-zero exit with a
+    clean collection is accepted: plugins configured in addopts may fail the
+    session after collection (e.g. --cov-fail-under). Collection errors are not.
+    """
+    code, out, _, _ = sh([py, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider", *args],
+                         cwd=src, env=env, timeout=600)
+    n = 0
+    for m in _COLLECTED.finditer(out):
+        n = max(n, int(m.group(1) or m.group(2)))
+    n = max(n, sum(1 for line in out.splitlines() if "::" in line and not line.startswith(("ERROR", "FAILED"))))
+    errors = "errors during collection" in out or re.search(r"\d+ errors? in [\d.]+s", out) is not None
+    return (code == 0 or (n > 0 and not errors and code not in (2, 3, 4))) and n > 0, n, out
 
 
 def prepare(repo: dict, work: Path, wheel: str, default_python: str, max_first_run: float) -> Prepared:
@@ -250,11 +264,10 @@ def prepare(repo: dict, work: Path, wheel: str, default_python: str, max_first_r
             marker.write_text(json.dumps({"python_version": pyver, "install": p.install_cmd}))
         env = clean_env(str(py), p.env)
         base_args = list(repo.get("pytest_args", []))
-        for extra in ([], ["-o", "addopts="]):
-            ok, n, out = _collect(str(py), src, env, base_args + extra)
-            if ok:
-                p.pytest_args, p.collected = base_args + extra, n
-                break
+        # The project's addopts stay in force (no "-o addopts=" fallback: review R-001).
+        ok, n, out = _collect(str(py), src, env, base_args)
+        if ok:
+            p.pytest_args, p.collected = base_args, n
         else:
             last = f"collect with python {pyver}: " + out[-500:]
             (logs / f"{p.name}.collect.log").write_text(out)
@@ -307,7 +320,10 @@ def run_pytest(p: Prepared, rundir: Path, mode: str, index: int, timeout: float,
         if p.xdist:
             cmd += ["-n", "2"]
     elif mode == "serial":
-        cmd += ["-p", "no:randomly"]
+        # Fixed file order without disabling the plugin: the project's addopts may
+        # name randomly options (review R-001).
+        # pytest-randomly is installed in every harness venv.
+        cmd += ["--randomly-dont-reorganize", "--randomly-dont-reset-seed"]
         if p.has_xdist:
             cmd += ["-n", "0"]
     else:
