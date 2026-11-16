@@ -1,0 +1,8 @@
+{
+  "name": "pw-slate",
+  "kind": "playwright",
+  "status": "no-runner",
+  "detail": "@playwright/test / playwright not resolvable: t evalTypeScript (node:internal/process/execution:291:3)\n    at node:internal/main/eval_string:74:3 {\n  code: 'MODULE_NOT_FOUND',\n  requireStack: [ '/tmp/work/src/pw-slate/x.js' ]\n}\n\nNode.js v22.23.5\n",
+  "executor": "GitHub Actions",
+  "date": "2026-11-16T17:24:17.989821+00:00"
+}
