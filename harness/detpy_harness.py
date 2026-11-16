@@ -909,6 +909,22 @@ def write_report(outdir: Path, meta: dict) -> Path:
              + f". Tests present only under `--det` (an id that differs between modes): {S_['only_under_det']}."
              + (f" Before the L0 fixes: **{before.get('missing_under_det')}** (MEASURED)." if before and
                 'missing_under_det' in before else "") + "\n")
+    ba = json.loads((outdir / "before-after.json").read_text()) if (outdir / "before-after.json").exists() else None
+    if ba and ba.get("rows"):
+        t = ba["totals"]
+        L.append("## Before / after the Level 0 fixes (MEASURED)\n")
+        L.append(f"The repositories affected by L0 bugs were re-measured with the same protocol after the fixes"
+                 f"{' (' + ba['run'] + ')' if ba.get('run') else ''}. Totals: broken by `--det` "
+                 f"**{t['broken_before']} → {t['broken_after']}**; tests missing under `--det` "
+                 f"**{t['missing_under_det_before']} → {t['missing_under_det_after']}**.\n")
+        L.append("| repo | broken before | broken after | missing before | missing after | unstable before | "
+                 "unstable after | reproduced before | reproduced after |")
+        L.append("|---|---:|---:|---:|---:|---:|---:|---:|---:|")
+        for r in ba["rows"]:
+            L.append(f"| {r['repo']} | {r['broken_before']} | {r['broken_after']} | {r['missing_under_det_before']} | "
+                     f"{r['missing_under_det_after']} | {r['unstable_strict_before']} | {r['unstable_strict_after']} | "
+                     f"{r['reproduced_strict_before']} | {r['reproduced_strict_after']} |")
+        L.append("")
     L.append("## Tests broken by Level 0\n")
     L.append(f"A test is *broken by `--det`* when it fails in at least one fixed-order `--det` run but in at most one "
              f"baseline run (and less often than under `--det`). These are false failures. **{T['broken_by_det']} tests** "
