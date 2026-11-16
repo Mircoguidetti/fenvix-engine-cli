@@ -54,13 +54,66 @@ from types import CodeType, FunctionType
 
 _mon = getattr(sys, "monitoring", None)
 AVAILABLE = _mon is not None
-_DBG = os.environ.get("SYSMON_DBG", "")  # profiling knobs: "off" (tracer not started), "norestart"
+# profiling knobs: "off" (tracer not started), "restart" (DISABLE + restart_events strategy), "python" (no C recorder)
+_DBG = os.environ.get("SYSMON_DBG", "")
 _RESUME = opcode.opmap.get("RESUME", -1)
 # opcodes that may precede the first RESUME (cells, free variables, generator and coroutine creation)
 _PRELUDE = {opcode.opmap[n] for n in ("MAKE_CELL", "COPY_FREE_VARS", "RETURN_GENERATOR", "POP_TOP")
             if n in opcode.opmap}
 _SHIFT = 24  # recorded value: file id << _SHIFT | line
 _MASK = (1 << _SHIFT) - 1
+_HOT = int(os.environ.get("SYSMON_HOT", "16"))  # repeat hits of one location in one context before it is disabled
+
+
+_NATIVE_SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_sysmon_rec.c")
+
+
+def load_native(build: bool = True):
+    """The ``_sysmon_rec`` C recorder module, built on first use, or None (then the Python callbacks are used).
+
+    The shared object is cached per interpreter and source hash under ``$CACHE_SKIP_NATIVE_DIR`` (default
+    ``~/.cache/detpy/cache_skip``). ``CACHE_SKIP_NATIVE=0`` disables it. Building needs the C compiler and headers the
+    interpreter was built with (``sysconfig``); any failure falls back silently.
+    """
+    if os.environ.get("CACHE_SKIP_NATIVE", "1") == "0" or not AVAILABLE:
+        return None
+    try:
+        import hashlib
+        import importlib.machinery
+        import importlib.util
+        import sysconfig
+
+        with open(_NATIVE_SRC, "rb") as fh:
+            src = fh.read()
+        tag = f"{sys.implementation.cache_tag}-{hashlib.sha256(src).hexdigest()[:12]}"
+        d = os.environ.get("CACHE_SKIP_NATIVE_DIR") or os.path.join(
+            os.environ.get("XDG_CACHE_HOME") or os.path.expanduser("~/.cache"), "detpy", "cache_skip")
+        so = os.path.join(d, f"_sysmon_rec-{tag}{importlib.machinery.EXTENSION_SUFFIXES[0]}")
+        if not os.path.exists(so):
+            if not build:
+                return None
+            import shlex
+            import subprocess
+            import tempfile
+
+            os.makedirs(d, exist_ok=True)
+            cc = shlex.split(sysconfig.get_config_var("CC") or "cc")
+            cflags = shlex.split(sysconfig.get_config_var("CCSHARED") or "-fPIC")
+            ldshared = shlex.split(sysconfig.get_config_var("LDSHARED") or "cc -shared")
+            inc = sysconfig.get_paths()["include"]
+            with tempfile.TemporaryDirectory(dir=d) as tmp:
+                obj = os.path.join(tmp, "rec.o")
+                out = os.path.join(tmp, "rec.so")
+                subprocess.run([*cc, *cflags, "-O2", "-I", inc, "-c", _NATIVE_SRC, "-o", obj], check=True,
+                               capture_output=True, timeout=120)
+                subprocess.run([*ldshared, obj, "-o", out], check=True, capture_output=True, timeout=120)
+                os.replace(out, so)  # atomic: concurrent builders race harmlessly
+        spec = importlib.util.spec_from_file_location("_sysmon_rec", so)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+    except Exception:
+        return None
 
 
 def entry_line(code) -> int | None:
@@ -104,6 +157,12 @@ class SysmonCapture:
         self._armed: set[int] = set()
         self._keep: list = []  # armed code objects stay alive: their id() is never reused
         self._entry: dict[int, int] = {}  # id(code) -> entry line (see entry_line), recorded from PY_START
+        self._events: dict[int, int] = {}  # id(code) -> local events armed on it
+        self._seen: dict[int, int] = {}  # recorded value -> repeat hits in the current context ("count" strategy)
+        self._hot: dict = {}  # id -> code objects with a location disabled in the current context
+        self.restart = "restart" in _DBG
+        self.rec = None  # native recorder (``_sysmon_rec.Recorder``), set by start() when it can be loaded
+        self._len = self.buf.__len__
         self._saved = False
 
     # -- filtering -------------------------------------------------------------
@@ -142,11 +201,14 @@ class SysmonCapture:
             self._armed.add(id(c))
             self._keep.append(c)
             e = entry_line(c)
-            if e is None:
-                set_local(tool, c, LINE)
-            else:
+            ev = LINE
+            if e is not None:
                 self._entry[id(c)] = e
-                set_local(tool, c, LINE | START)
+                ev = LINE | START
+            self._events[id(c)] = ev
+            if self.rec is not None:
+                self.rec.add_code(c, self._fid[fn], -1 if e is None else e)
+            set_local(tool, c, ev)
             stack.extend(k for k in c.co_consts if isinstance(k, CodeType))
 
     def _audit(self, event, args):
@@ -175,17 +237,54 @@ class SysmonCapture:
             f = f.f_back
 
     def _make_callbacks(self):
-        """(LINE callback, PY_START callback): one array append each, then DISABLE until the next restart."""
+        """(LINE callback, PY_START callback).
+
+        Default ("count") strategy: the first hit of a location in the current context appends one integer to the
+        array; the next ``_HOT`` hits only count; past that the location is a loop body and is disabled, and its code
+        object is re-armed (``set_local_events`` off and on) at the next context switch. Most code objects are never
+        re-armed, so no re-instrumentation is paid for them. "restart" strategy (``SYSMON_DBG=restart``): DISABLE on
+        the first hit and ``restart_events()`` at every switch, which re-instruments every code object run afterwards.
+        """
         DISABLE = _mon.DISABLE
         app, fid, entry = self.buf.append, self._fid, self._entry
+        if self.restart:
+            def line(code, lineno):
+                app(fid[code.co_filename] | lineno)
+                return DISABLE
+
+            def start(code, offset):
+                app(fid[code.co_filename] | entry[id(code)])
+                return DISABLE
+
+            return line, start
+        seen = self._seen
+        get = seen.get
+        hot = self._hot
+        HOT = _HOT
 
         def line(code, lineno):
-            app(fid[code.co_filename] | lineno)
-            return DISABLE
+            k = fid[code.co_filename] | lineno
+            c = get(k)
+            if c is None:
+                seen[k] = 0
+                app(k)
+            elif c < HOT:
+                seen[k] = c + 1
+            else:
+                hot[id(code)] = code
+                return DISABLE
 
         def start(code, offset):
-            app(fid[code.co_filename] | entry[id(code)])
-            return DISABLE
+            k = fid[code.co_filename] | entry[id(code)]
+            c = get(k)
+            if c is None:
+                seen[k] = 0
+                app(k)
+            elif c < HOT:
+                seen[k] = c + 1
+            else:
+                hot[id(code)] = code
+                return DISABLE
 
         return line, start
 
@@ -200,7 +299,13 @@ class SysmonCapture:
         else:
             raise RuntimeError("sys.monitoring: no free tool id")
         _mon.use_tool_id(self.tool, "cache_skip_capture")
-        line, start = self._make_callbacks()
+        native = None if self.restart or "python" in _DBG else load_native()
+        if native is not None:
+            self.rec = native.Recorder(_mon.DISABLE, _HOT)
+            self._len = self.rec.__len__
+            line, start = self.rec.line, self.rec.start
+        else:
+            line, start = self._make_callbacks()
         _mon.register_callback(self.tool, _mon.events.LINE, line)
         _mon.register_callback(self.tool, _mon.events.PY_START, start)
         sys.addaudithook(self._audit)
@@ -211,15 +316,27 @@ class SysmonCapture:
         if ctx == self.ctx:
             return
         self.ctx = ctx
-        n = len(self.buf)
+        n = self._len()
         if self.segs[-1][1] == n:
             self.segs[-1] = (ctx, n)
         else:
             self.segs.append((ctx, n))
-        if n != self.mark:
-            self.mark = n
-            if "norestart" not in _DBG:
+        if self.restart:
+            if n != self.mark:
+                self.mark = n
                 _mon.restart_events()
+            return
+        if self.rec is not None:
+            hot = self.rec.switch()
+        else:
+            self._seen.clear()
+            hot = list(self._hot.values())
+            self._hot.clear()
+        if hot:
+            set_local, tool, ev = _mon.set_local_events, self.tool, self._events
+            for code in hot:
+                set_local(tool, code, 0)
+                set_local(tool, code, ev[id(code)])
 
     def stop(self) -> None:
         if self.tool is not None:
@@ -239,7 +356,7 @@ class SysmonCapture:
         for fn in self._fnames:
             p = os.path.realpath(os.path.abspath(fn))
             rel.append(p[len(self.root_sep):] if p.startswith(self.root_sep) else p)
-        return {"format": "sysmon-raw-1", "files": rel, "segs": self.segs, "buf": self.buf.tobytes()}
+        return {"format": "sysmon-raw-1", "files": rel, "segs": self.segs, "buf": self.rec.tobytes() if self.rec is not None else self.buf.tobytes()}
 
     def save(self) -> None:
         if self._saved:

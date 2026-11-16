@@ -73,7 +73,7 @@ def main(argv=None) -> int:
                     e.update(CACHE_SKIP_MODE="capture", CACHE_SKIP_TRACER="coverage")
                 else:
                     cmd = [py, "-m", "pytest", *args]
-                    tracer, _, dbg = v.partition(":")  # e.g. "sysmon:norestart" (profiling knobs, see sysmon_capture)
+                    tracer, _, dbg = v.partition(":")  # e.g. "sysmon:restart" (profiling knobs, see sysmon_capture)
                     e.update(CACHE_SKIP_MODE="capture", CACHE_SKIP_TRACER=tracer, SYSMON_DBG=dbg,
                              CACHE_SKIP_SMRAW=str(tmp / f"{v}.smraw"))
                     Path(e["CACHE_SKIP_SMRAW"]).unlink(missing_ok=True)
