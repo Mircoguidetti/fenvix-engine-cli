@@ -1,13 +1,18 @@
-{"run_id": "r6",
- "agent": [
-  {"spec": "home-assistant", "query": "head:codex/", "label": "codex", "max_prs": 8, "sample": 0.04, "budget_min": 340},
-  {"spec": "home-assistant", "query": "author:app/copilot-swe-agent", "label": "copilot", "max_prs": 8, "sample": 0.04, "budget_min": 340},
-  {"spec": "openai-agents-python", "query": "head:codex/", "label": "codex", "max_prs": 12, "budget_min": 340},
-  {"spec": "vue-core", "query": "head:codex/", "label": "codex", "max_prs": 12, "budget_min": 340},
-  {"spec": "github-mcp-server", "query": "author:app/copilot-swe-agent", "label": "copilot", "max_prs": 15, "budget_min": 340},
-  {"spec": "typescript-go", "query": "author:app/copilot-swe-agent", "label": "copilot", "max_prs": 8, "budget_min": 340}
- ],
- "flaky": [
-  {"spec": "home-assistant", "reps": 10, "only_groups": [2, 5, 9], "budget_min": 280}
+{"run_id": "r7",
+ "finer": [
+  {"repo": "arrow", "sha": "2224255c4acc"},
+  {"repo": "attrs", "sha": "2a1fb86d4481"},
+  {"repo": "boltons", "sha": "d31d821d56c8"},
+  {"repo": "click", "sha": "08b803cf32ce"},
+  {"repo": "flask", "sha": "49943b5a9441"},
+  {"repo": "isort", "sha": "eb62da318ea5"},
+  {"repo": "jinja", "sha": "5ef70112a1ff"},
+  {"repo": "marshmallow", "sha": "777ff66039fd"},
+  {"repo": "more-itertools", "sha": "ceafee8ce96f"},
+  {"repo": "pygments", "sha": "156d85fdd18d"},
+  {"repo": "sqlparse", "sha": "09dbe1eec31e"},
+  {"repo": "structlog", "sha": "81779f0abe59"},
+  {"repo": "toolz", "sha": "451af60dec59"},
+  {"repo": "werkzeug", "sha": "0f43c6ebd426"}
  ]
 }

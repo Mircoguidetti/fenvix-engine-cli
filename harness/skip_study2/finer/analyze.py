@@ -548,6 +548,14 @@ def decide(m: DepMap, nid: str, fcs: dict, data_changed: set, list_changed: set,
                     return "names-hard"
                 if (names_ctx or {}).get("mask", 0) & m.tmask.get(nid, -1):
                     return "names-read"
+                if executed and (nr["exec_spans"] or nr["touch_spans"]):
+                    for ls in per[f]:
+                        for a, b in nr["exec_spans"]:
+                            if any(a <= x <= b for x in ls):
+                                return "names-exec"
+                        for a, b in nr["touch_spans"]:
+                            if any(a <= x <= b for x in ls):
+                                return "names-class"
                 if nr["doc"] and nid.split("::")[0] == f:
                     return "docstring"
             it = m.importtime.get(f)

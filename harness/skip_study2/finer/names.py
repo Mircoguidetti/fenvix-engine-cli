@@ -57,6 +57,10 @@ PURE_DECORATORS = {
     "runtime_checkable", "deprecated", "total_ordering", "no_type_check", "contextmanager",
     "asynccontextmanager", "singledispatchmethod",
 }
+MODULE_HARD_DUNDERS = {"__getattr__", "__dir__", "__all__", "__path__", "__spec__", "__loader__", "__builtins__"}
+CLASS_HARD_DUNDERS = {"__init_subclass__", "__set_name__", "__class_getitem__", "__slots__", "__mro_entries__",
+                      "__prepare__", "__instancecheck__", "__subclasscheck__", "__subclasshook__", "__module__",
+                      "__qualname__", "__dict__", "__weakref__", "__match_args__"}
 IMPLICIT_OK = {"__doc__", "__version__", "__author__", "__license__", "__copyright__", "__email__", "__url__",
                "__title__", "__description__", "__status__", "__maintainer__", "__credits__", "__date__"}
 
@@ -227,7 +231,7 @@ def _items(body, ns, out):
 
 def module_change(old: str, new: str, special: set, hooks: set, path: str):
     to, tn = parse(old), parse(new)
-    res = {"hard": [], "qual": set(), "attrs": set(), "doc": False}
+    res = {"hard": [], "qual": set(), "attrs": set(), "doc": False, "exec_spans": [], "touch_spans": []}
     if to is None or tn is None:
         res["hard"].append("syntax")
         return res
@@ -235,15 +239,29 @@ def module_change(old: str, new: str, special: set, hooks: set, path: str):
     _items(to.body, "", io)
     _items(tn.body, "", inn)
     hook_names = {h.split("::", 1)[1].rsplit(".", 1)[-1] for h in hooks}
+    old_classes = {}
+    for scope, n in module_level_statements(to):
+        if isinstance(n, ast.ClassDef):
+            old_classes[scope + n.name] = (n.lineno, n.end_lineno or n.lineno)
 
     def changed_name(ns, name):
         if _dunder(name):
-            res["hard"].append(f"dunder {ns}{name}")
+            if ns == "" and name in MODULE_HARD_DUNDERS or ns and name in CLASS_HARD_DUNDERS:
+                res["hard"].append(f"dunder {ns}{name}")
+            elif ns:
+                # read implicitly by the interpreter on instances of the class: tests that executed code of the
+                # class (or name it) can observe it
+                span = old_classes.get(ns[:-1])
+                if span is None:
+                    res["hard"].append(f"dunder in new class {ns}{name}")
+                else:
+                    res["touch_spans"].append(span)
         if ns == "":
             res["qual"].add(name)
         else:
             cls = ns[:-1]
             res["qual"].add(cls.split(".")[0])
+            res["attrs"].add(cls.split(".")[-1])
         res["attrs"].add(name)
 
     def special_class(ns):
@@ -300,19 +318,22 @@ def module_change(old: str, new: str, special: set, hooks: set, path: str):
                     res["hard"].append(f"decorated def added/removed {q}")
                 changed_name(ns, name)
             else:
+                span = (min([a.lineno] + [d.lineno for d in a.decorator_list]), a.end_lineno or a.lineno)
                 hdr_a = ast.dump(ast.Module(body=list(a.decorator_list), type_ignores=[]))
                 hdr_b = ast.dump(ast.Module(body=list(b.decorator_list), type_ignores=[]))
                 if hdr_a != hdr_b:
                     if not (_pure_decos(a.decorator_list) and _pure_decos(b.decorator_list)):
                         res["hard"].append(f"decorator {q}")
-                    changed_name(ns, name)
+                    res["exec_spans"].append(span)
                 sig_a = ast.dump(a.args) + ast.dump(a.returns) if a.returns else ast.dump(a.args)
                 sig_b = ast.dump(b.args) + ast.dump(b.returns) if b.returns else ast.dump(b.args)
                 if sig_a != sig_b:
-                    # defaults and annotations live on the function object: callers and introspection
-                    changed_name(ns, name)
+                    # defaults live on the function object and act only when it is called (its body runs);
+                    # signatures and annotations are also read by introspection
+                    res["exec_spans"].append(span)
                     res["attrs"].update({"__defaults__", "__kwdefaults__", "__annotations__", "__signature__",
-                                         "signature", "get_type_hints", "getfullargspec", "__annotate__"})
+                                         "signature", "get_type_hints", "getfullargspec", "__annotate__",
+                                         "__wrapped__", "__code__"})
                     if special_class(ns):
                         res["hard"].append(f"signature in special class {q}")
                 da = a.body[0].value.value if a.body and _is_doc(a.body[0]) else None
@@ -336,6 +357,27 @@ def _base_name(x) -> str:
 def _stmt_change(stmt, ns, res, changed_name):
     why = _side_effect(stmt)
     if why == "compound statement" and isinstance(stmt, ast.If) and _type_checking(stmt):
+        return
+    if why == "compound statement" and isinstance(stmt, (ast.If, ast.Try, ast.With)) and not isinstance(stmt, ast.With):
+        # e.g. try: import x / except ImportError: x = None; the guard expressions themselves must be pure
+        for e in ([stmt.test] if isinstance(stmt, ast.If) else []):
+            if _impure_call(e):
+                res["hard"].append(f"call in condition in {ns or '<module>'}")
+                return
+        inner = list(stmt.body) + list(getattr(stmt, "orelse", []) or []) + list(getattr(stmt, "finalbody", []) or [])
+        for h in getattr(stmt, "handlers", []) or []:
+            inner += list(h.body)
+        for x in inner:
+            if isinstance(x, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                if isinstance(x, ast.ClassDef) and (x.decorator_list or x.keywords):
+                    res["hard"].append(f"decorated class in compound statement in {ns or '<module>'}")
+                    return
+                if not isinstance(x, ast.ClassDef) and _side_effect(x):
+                    res["hard"].append(f"decorated def in compound statement in {ns or '<module>'}")
+                    return
+                changed_name(ns + "." if ns else "", x.name)
+                continue
+            _stmt_change(x, ns, res, changed_name)
         return
     if why:
         res["hard"].append(f"{why} in {ns or '<module>'}")
