@@ -15,7 +15,7 @@ setup() {
 }
 
 run_tests() {
-  py.test -n logical --dist loadscope -m "not integration" -p no:rerunfailures --junitxml="$JUNIT_DIR/parallel.xml"
+  py.test -n "$(serial_or 0 logical)" --dist "$(serial_or no loadscope)" -m "not integration" -p no:rerunfailures --junitxml="$JUNIT_DIR/parallel.xml"
   a=$?
   INDEXER_KEY=$MEILI_MASTER_KEY py.test -m integration -rs -p no:rerunfailures --junitxml="$JUNIT_DIR/integration.xml"
   b=$?

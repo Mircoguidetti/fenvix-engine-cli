@@ -12,6 +12,7 @@ setup() {
 }
 
 run_tests() {
-  cd e2e && pnpm exec vitest --run \
+  # CI sets retry: 4 for vitest; retries are switched off here so flaky tests stay visible
+  cd e2e && pnpm exec vitest --run --retry=0 \
     --reporter=dot --reporter=junit --outputFile.junit="$JUNIT_DIR/vitest.xml"
 }

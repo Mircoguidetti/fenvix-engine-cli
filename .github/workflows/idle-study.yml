@@ -81,12 +81,15 @@ jobs:
           RO=$(jq -r '.runs // empty' fenvix/harness/idle_study/run.json)
           if [ -n "$RO" ]; then export RUNS_OVERRIDE=$RO; else unset RUNS_OVERRIDE; fi
           export BUDGET_MIN=$(jq -r '.budget_min // 270' fenvix/harness/idle_study/run.json)
+          export IDLE_VARIANT=$(jq -r '.variant // ""' fenvix/harness/idle_study/run.json)
           bash fenvix/harness/idle_study/lib/run_repo.sh "${{ matrix.name }}"
       - name: commit result
         if: always()
         run: |
           set -u
-          f="fenvix/harness/idle_study/results/${{ matrix.name }}.json"
+          V=$(jq -r '.variant // ""' fenvix/harness/idle_study/run.json)
+          RN="${{ matrix.name }}${V:+--$V}"
+          f="fenvix/harness/idle_study/results/$RN.json"
           if [ ! -f "$f" ]; then
             jq -n --arg n "${{ matrix.name }}" '{name:$n, status:"job_failed", run_id: env.GITHUB_RUN_ID}' > "$f"
           fi
@@ -97,9 +100,9 @@ jobs:
           for i in $(seq 1 40); do
             git fetch -q --depth=1 origin "$GITHUB_REF_NAME" && git checkout -q -f -B pub FETCH_HEAD || { sleep 5; continue; }
             mkdir -p harness/idle_study/results
-            cp /tmp/result.json "harness/idle_study/results/${{ matrix.name }}.json"
-            git add "harness/idle_study/results/${{ matrix.name }}.json"
-            git commit -q -m "idle-study: result for ${{ matrix.name }} (run ${GITHUB_RUN_ID})" || exit 0
+            cp /tmp/result.json "harness/idle_study/results/$RN.json"
+            git add "harness/idle_study/results/$RN.json"
+            git commit -q -m "idle-study: result for $RN (run ${GITHUB_RUN_ID})" || exit 0
             git push -q origin "pub:$GITHUB_REF_NAME" && exit 0
             sleep $(( (RANDOM % 20) + 5 ))
           done

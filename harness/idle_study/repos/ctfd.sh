@@ -12,5 +12,12 @@ setup() {
 }
 
 run_tests() {
-  PYTEST_ADDOPTS="--junitxml=$JUNIT_DIR/pytest.xml -p no:rerunfailures" uv run make test
+  if [ "$IDLE_VARIANT" = serial ]; then
+    # the Makefile's command line without -n auto
+    uv run pytest -rf --cov=CTFd --cov-context=test --cov-report=xml --ignore-glob="**/node_modules/" --ignore=node_modules/ \
+      -W ignore::sqlalchemy.exc.SADeprecationWarning -W ignore::sqlalchemy.exc.SAWarning \
+      -p no:rerunfailures --junitxml="$JUNIT_DIR/pytest.xml"
+  else
+    PYTEST_ADDOPTS="--junitxml=$JUNIT_DIR/pytest.xml -p no:rerunfailures" uv run make test
+  fi
 }

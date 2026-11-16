@@ -12,5 +12,5 @@ setup() {
 }
 
 run_tests() {
-  pytest -n 3 -p no:rerunfailures --junitxml="$JUNIT_DIR/pytest.xml"
+  pytest -n "$(serial_or 0 3)" -p no:rerunfailures --junitxml="$JUNIT_DIR/pytest.xml"
 }

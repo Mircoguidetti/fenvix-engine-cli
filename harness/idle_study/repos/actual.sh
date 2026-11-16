@@ -11,5 +11,5 @@ setup() {
 }
 
 run_tests() {
-  CI=1 yarn e2e --shard=1/3 --retries=0 --reporter=line,junit
+  CI=1 E2E_WORKERS="$(serial_or 1 4)" yarn e2e --shard=1/3 --retries=0 --reporter=line,junit
 }

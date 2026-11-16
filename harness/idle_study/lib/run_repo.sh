@@ -9,7 +9,10 @@ NAME=$1
 IS=$(cd "$(dirname "$0")/.." && pwd)
 CFG="$IS/repos/$NAME.sh"
 export IDLE_OUT="${RUNNER_TEMP:-/tmp}/idle_out/$NAME"
-RESULT="$IS/results/$NAME.json"
+# IDLE_VARIANT=serial: the same suite with the project's own test parallelism switched off
+# (each repos/<name>.sh reads $IDLE_VARIANT in run_tests); stored as results/<name>--serial.json
+export IDLE_VARIANT=${IDLE_VARIANT:-}
+RESULT="$IS/results/$NAME${IDLE_VARIANT:+--$IDLE_VARIANT}.json"
 W="${RUNNER_TEMP:-/tmp}/target"
 RUNS=${RUNS_OVERRIDE:-$(jq -r --arg n "$NAME" '.[$n].runs // 6' "$IS/repos.json")}
 REPO=$(jq -r --arg n "$NAME" '.[$n].repo' "$IS/repos.json")
@@ -34,7 +37,7 @@ write_meta() {  # write_meta STATUS
     --arg runner "$(nproc) vCPU, $(free -g | awk '/Mem:/{print $2}') GiB, $(. /etc/os-release; echo "$PRETTY_NAME")" \
     --slurpfile cfg <(jq --arg n "$NAME" '.[$n]' "$IS/repos.json") \
     '{name:$name, repo:$repo, ref:$ref, status:$status, setup_s:$setup_s, runner:$runner, config:$cfg[0],
-      run_id: env.GITHUB_RUN_ID, measured_at: (now|todate)}' >"$IDLE_OUT/meta.json"
+      variant: (env.IDLE_VARIANT // ""), run_id: env.GITHUB_RUN_ID, measured_at: (now|todate)}' >"$IDLE_OUT/meta.json"
 }
 
 echo "::group::clone $REPO@$REF"

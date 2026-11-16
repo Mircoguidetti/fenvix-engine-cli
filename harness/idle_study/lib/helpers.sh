@@ -9,6 +9,11 @@ svc_bg() {
   echo $! >>"$IDLE_OUT/svc.pids"
 }
 
+# serial_or SERIAL_VALUE DEFAULT_VALUE: pick the first in the serial variant (IDLE_VARIANT=serial)
+serial_or() {
+  if [ "${IDLE_VARIANT:-}" = serial ]; then printf '%s' "$1"; else printf '%s' "$2"; fi
+}
+
 # persist NAME VALUE: export now and keep it for the test runs (setup() runs in a subshell)
 persist() {
   export "$1=$2"

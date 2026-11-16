@@ -9,5 +9,5 @@ setup() {
 }
 
 run_tests() {
-  .venv/bin/py.test -p no:rerunfailures --junitxml="$JUNIT_DIR/pytest.xml"
+  .venv/bin/py.test -n "$(serial_or 0 auto)" -p no:rerunfailures --junitxml="$JUNIT_DIR/pytest.xml"
 }

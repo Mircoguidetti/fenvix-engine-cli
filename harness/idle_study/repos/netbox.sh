@@ -16,5 +16,5 @@ setup() {
 }
 
 run_tests() {
-  python netbox/manage.py test netbox/ --parallel --keepdb --timing -v 2
+  python netbox/manage.py test netbox/ $(serial_or "" --parallel) --keepdb --timing -v 2
 }

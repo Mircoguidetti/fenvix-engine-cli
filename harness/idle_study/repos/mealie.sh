@@ -16,5 +16,5 @@ setup() {
 }
 
 run_tests() {
-  uv run pytest -n auto --dist loadfile -p no:rerunfailures --junitxml="$JUNIT_DIR/pytest.xml"
+  uv run pytest -n "$(serial_or 0 auto)" --dist "$(serial_or no loadfile)" -p no:rerunfailures --junitxml="$JUNIT_DIR/pytest.xml"
 }

@@ -15,6 +15,6 @@ setup() {
 }
 
 run_tests() {
-  TZ=UTC yarn vitest run --project "server*" --maxWorkers=4 --shard=1/3 \
+  TZ=UTC yarn vitest run --project "server*" --maxWorkers="$(serial_or 1 4)" --shard=1/3 \
     --reporter=dot --reporter=junit --outputFile.junit="$JUNIT_DIR/vitest.xml"
 }
