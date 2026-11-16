@@ -105,7 +105,8 @@ class VirtualClock:
 
     # Derived values ---------------------------------------------------
     def wall_ns(self, e: int) -> int:
-        return self.wall_offset + e
+        travel = _time_machine_ns(e)
+        return self.wall_offset + e if travel is None else travel
 
     @staticmethod
     def mono_ns(e: int) -> int:
@@ -113,6 +114,29 @@ class VirtualClock:
 
 
 CLOCK: VirtualClock | None = None
+
+
+def _time_machine_ns(e: int) -> int | None:
+    """Wall time of an active ``time_machine`` travel, or None.
+
+    time-machine patches the C builtins (``time.time``, ``datetime.now``...),
+    which detpy has replaced, so under --det its travel would be ignored. While
+    a travel is active the virtual wall clock returns its destination; a ticking
+    travel advances with the *virtual* counter (not real time) so the values
+    stay deterministic.
+    """
+    tm = sys.modules.get("time_machine")
+    stack = getattr(tm, "traveller_stack", None) if tm is not None else None
+    if not stack:
+        return None
+    t = stack[-1]
+    dest = getattr(t, "_destination_timestamp_ns", None)
+    if dest is None:
+        return None
+    if not getattr(t, "_tick", True):
+        return dest
+    start = t.__dict__.setdefault("_detpy_start_elapsed", e)
+    return getattr(tm, "SYSTEM_EPOCH_TIMESTAMP_NS", 0) + dest + (e - start)
 
 
 def _rel(e: int) -> str:

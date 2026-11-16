@@ -250,3 +250,36 @@ def test_sleep_lets_other_threads_run(pytester, run_det):
     )
     result, _ = run_det("-p", "no:randomly")
     result.assert_outcomes(passed=2)
+
+
+def test_time_machine_travel_is_honoured(pytester, run_det):
+    """Regression (structlog, 43 tests): time-machine patches the C builtins, which
+    detpy replaces; under --det its travel had no effect at all."""
+    pytest = __import__("pytest")
+    pytest.importorskip("time_machine")
+    pytester.makepyfile(
+        test_tm="""
+        import datetime as dt, time
+        import time_machine
+
+        @time_machine.travel("1980-03-25 16:00:00+00:00", tick=False)
+        def test_frozen():
+            assert time.time() == 322848000.0
+            assert dt.datetime.now(dt.timezone.utc).year == 1980
+            assert time.strftime("%Y", time.gmtime()) == "1980"
+
+        def test_ticking_is_deterministic():
+            with time_machine.travel(dt.datetime(1980, 3, 25, tzinfo=dt.timezone.utc)):
+                a = time.time(); b = time.time()
+                assert 322790400 <= a < b < 322790401
+                print("VAL", repr(a), repr(b))
+
+        def test_back_to_virtual_epoch():
+            assert 1735689600 <= time.time() < 1735689601
+        """
+    )
+    r1, (_, t1, _) = run_det("-p", "no:randomly", "-s")
+    r1.assert_outcomes(passed=3)
+    r2, (_, t2, _) = run_det("-p", "no:randomly", "-s")
+    v1 = [line for line in r1.outlines if "VAL" in line]
+    assert v1 and v1 == [line for line in r2.outlines if "VAL" in line]
