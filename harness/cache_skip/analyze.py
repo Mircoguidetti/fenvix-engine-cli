@@ -369,9 +369,9 @@ class FileChange:
 # ---------------------------------------------------------------------------
 # Dependency map at one commit
 class DepMap:
-    def __init__(self, stem: Path):
-        cap = json.loads(Path(str(stem) + ".cap.json").read_text())
-        with gzip.open(str(stem) + ".cov.pkl.gz", "rb") as fh:
+    def __init__(self, stem: Path, tag: str = ""):
+        cap = json.loads(Path(str(stem) + tag + ".cap.json").read_text())
+        with gzip.open(str(stem) + tag + ".cov.pkl.gz", "rb") as fh:
             cov = pickle.load(fh)
         self.files = cov["files"]
         blobs = [(self.files[fi], frozenset(lines)) for fi, lines in cov["blobs"]]
@@ -520,7 +520,9 @@ def decide(m: DepMap, nid: str, fcs: dict, data_changed: set, list_changed: set,
     return None
 
 
-def analyze(repo: str, work: Path, refresh: int) -> dict:
+def analyze(repo: str, work: Path, refresh: int, tag: str = "", skip_ids: bool = False) -> dict:
+    """``tag``: read the captures ``<stem><tag>.*`` (e.g. ".sm" for the sys.monitoring tracer of
+    ``run_repo.py --tracer both``); ``skip_ids``: keep the ids of the skipped tests (equivalence checks)."""
     meta = json.loads((work / "meta.json").read_text())
     src = work / "src"
     caps = work / "caps"
@@ -553,7 +555,7 @@ def analyze(repo: str, work: Path, refresh: int) -> dict:
 
     def get_map(i):
         if i not in maps:
-            maps[i] = DepMap(stems[i])
+            maps[i] = DepMap(stems[i], tag)
             keep = {i, i - 1, i - 2, ((i - 1) // refresh) * refresh, ((i - 2) // refresh) * refresh}
             for k in [k for k in maps if k not in keep]:
                 del maps[k]
@@ -622,7 +624,7 @@ def analyze(repo: str, work: Path, refresh: int) -> dict:
 
         cur_tests = {n: r for n, r in tcur["tests"].items() if r.get("idx", -1) >= 0}
         total = sum(r["dur"] for r in cur_tests.values())
-        row.update(tests=len(cur_tests), test_time=total, wall=cur.get("time_wall"), cap_wall=cur.get("cap_wall"))
+        row.update(tests=len(cur_tests), test_time=total, wall=cur.get("time_wall"), cap_wall=cur.get("cap_wall" + tag))
         base_reason = {}
         for nid in cur_tests:
             if nid not in m.tests:
@@ -660,6 +662,8 @@ def analyze(repo: str, work: Path, refresh: int) -> dict:
                     "reasons": _count(reasons.values()),
                     "outcome_changed": len(o_changed), "outcome_changed_examples": o_changed[:5],
                 }
+                if skip_ids:
+                    res[f"{cm}/{v}"]["skip_ids"] = sorted(skip)
         row["results"] = res
         # ground truth on executed paths: for skipped tests (strict/line+guard and strict/file), compare the
         # lines they execute at cur with the lines they executed at prev moved to cur's numbering
@@ -778,6 +782,9 @@ def summarize(transitions, steps) -> dict:
                   for v in ("file", "line", "file+guard", "line+guard", "line+nameguard")} if st else {}
     oks = [x for x in steps if x.get("status") == "ok"]
     s["overhead"] = _stats([x["cap_wall"] / x["time_wall"] - 1 for x in oks if x.get("time_wall")])
+    if any("cap_wall.sm" in x for x in oks):
+        s["overhead_sm"] = _stats([x["cap_wall.sm"] / x["time_wall"] - 1 for x in oks
+                                   if x.get("time_wall") and "cap_wall.sm" in x])
     s["plain_wall"] = _stats([x["time_wall"] for x in oks])
     s["base_reasons_mean"] = {}
     return s
@@ -789,11 +796,13 @@ def main(argv=None) -> int:
     ap.add_argument("--work", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--refresh", type=int, default=10)
+    ap.add_argument("--tag", default="", help="capture files <stem><tag>.* (\".sm\": sys.monitoring tracer)")
+    ap.add_argument("--skip-ids", action="store_true", help="keep the ids of the skipped tests")
     a = ap.parse_args(argv)
-    res = analyze(a.repo, Path(a.work).resolve() / a.repo, a.refresh)
+    res = analyze(a.repo, Path(a.work).resolve() / a.repo, a.refresh, a.tag, a.skip_ids)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    (out / f"{a.repo}.json").write_text(json.dumps(res, indent=1))
+    (out / f"{a.repo}{a.tag}.json").write_text(json.dumps(res, indent=1))
     return 0
 
 

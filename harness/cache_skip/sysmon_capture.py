@@ -13,17 +13,27 @@ callback per execution:
   ``runpy`` before the code runs), and the functions and classes they define
   are the code objects nested in their constants. Code that exists before the
   start is found with ``gc``. The test runner's own code is never
-  instrumented, so a restart costs nothing there.
-* The ``LINE`` callback adds the line to the current context's set and returns
-  ``DISABLE``: a loop body costs one callback, not one per iteration.
-* A context switch calls ``sys.monitoring.restart_events()``, which re-arms
-  every disabled location, so each line is seen again (once) in the new
-  context. A switch with nothing recorded since the previous one skips the
-  restart.
+  instrumented.
+* ``PY_START`` is also enabled on the code objects with an *entry line* (see
+  ``entry_line``: one-line functions, lambdas, docstring-only functions, empty
+  modules), the one line ``LINE`` alone never reports and coverage.py does.
+* Each callback appends one integer (file id, line) to a flat ``array`` and
+  returns ``DISABLE``: a loop body costs one callback, not one per iteration,
+  and nothing is allocated per event (no per-context sets for the garbage
+  collector to traverse).
+* A context switch notes the position in the array and calls
+  ``sys.monitoring.restart_events()``, which re-arms every disabled location,
+  so each line is seen again (once) in the new context. A switch with nothing
+  recorded since the previous restart skips it.
 
-Data is kept as ``{context: {co_filename: set(lines)}}`` and written once, at
-interpreter exit, in the compact form ``run_repo.extract_coverage`` produces
-from a coverage.py data file: ``{"files", "blobs", "ctx"}``.
+The array is folded at interpreter exit into the compact form
+``run_repo.extract_coverage`` produces from a coverage.py data file:
+``{"files", "blobs", "ctx"}``.
+
+Measured alternatives (see the capture-overhead report): re-arming only the
+code objects with disabled lines (``set_local_events`` off and on) instead of
+``restart_events()`` was not cheaper; keeping LINE armed and de-duplicating in
+the callback is far more expensive on loops.
 """
 
 from __future__ import annotations
@@ -34,13 +44,18 @@ import gzip
 import os
 import pickle
 import sys
+from array import array
+from bisect import bisect_left
 from types import CodeType, FunctionType
 
 _mon = getattr(sys, "monitoring", None)
 AVAILABLE = _mon is not None
+_DBG = os.environ.get("SYSMON_DBG", "")  # profiling knobs: "off" (tracer not started), "norestart"
 _RESUME = dis.opmap.get("RESUME", -1)
 # opcodes that may precede the first RESUME (cells, free variables, generator and coroutine creation)
 _PRELUDE = {dis.opmap[n] for n in ("MAKE_CELL", "COPY_FREE_VARS", "RETURN_GENERATOR", "POP_TOP") if n in dis.opmap}
+_SHIFT = 24  # recorded value: file id << _SHIFT | line
+_MASK = (1 << _SHIFT) - 1
 
 
 def entry_line(code) -> int | None:
@@ -65,15 +80,6 @@ def entry_line(code) -> int | None:
             ln = line
             break
     return ln if ln is not None and ln == lr else None
-_DBG = os.environ.get("SYSMON_DBG", "")
-_DBG_NORESTART = "norestart" in _DBG
-# re-arm strategy at a context switch (see the module docstring): "rearm" (default) or "restart"
-STRATEGY = "restart" if "restart" in _DBG.replace("norestart", "") else "rearm"
-# rearm: a code object's lines are disabled once it has run this many already-recorded lines in the context
-try:
-    HOT = int(os.environ.get("SYSMON_HOT", "32"))
-except ValueError:
-    HOT = 32
 
 
 class SysmonCapture:
@@ -81,16 +87,16 @@ class SysmonCapture:
         self.root = os.path.realpath(root)
         self.root_sep = self.root + os.sep
         self.out = out
-        self.data: dict[str, dict[str, set]] = {}
+        self.buf = array("Q")
+        self.segs: list[tuple[str, int]] = [("", 0)]  # (context, start index in buf)
         self.ctx = ""
-        self.cur: dict[str, set] = self.data.setdefault("", {})
-        self.dirty = False
+        self.mark = 0  # len(buf) at the last restart
         self.tool = None
         self._wanted: dict[str, bool] = {}
+        self._fid: dict[str, int] = {}  # co_filename -> file id << _SHIFT
+        self._fnames: list[str] = []
         self._armed: set[int] = set()
         self._keep: list = []  # armed code objects stay alive: their id() is never reused
-        self._rep: dict[int, int] = {}  # rearm: id(code) -> already-recorded lines run in this context
-        self._rearm: dict[int, CodeType] = {}  # rearm: code objects with disabled lines, re-armed at the switch
         self._entry: dict[int, int] = {}  # id(code) -> entry line (see entry_line), recorded from PY_START
         self._saved = False
 
@@ -107,6 +113,9 @@ class SysmonCapture:
                     p = ""
                 w = p.startswith(self.root_sep)
             self._wanted[filename] = w
+            if w:
+                self._fid[filename] = len(self._fnames) << _SHIFT
+                self._fnames.append(filename)
         return w
 
     # -- arming --------------------------------------------------------------
@@ -155,53 +164,17 @@ class SysmonCapture:
             f = f.f_back
 
     def _make_callbacks(self):
-        """(LINE callback, PY_START callback). PY_START is enabled only on code objects with an entry line."""
+        """(LINE callback, PY_START callback): one array append each, then DISABLE until the next restart."""
         DISABLE = _mon.DISABLE
-        me = self
-        entry = self._entry
-        if STRATEGY == "restart":
-
-            def line(code, lineno):
-                cur = me.cur
-                fn = code.co_filename
-                s = cur.get(fn)
-                if s is None:
-                    cur[fn] = {lineno}
-                else:
-                    s.add(lineno)
-                me.dirty = True
-                return DISABLE
-
-            def start(code, offset):
-                line(code, entry[id(code)])
-                return DISABLE
-
-            return line, start
-
-        rep, rearm, hot = self._rep, self._rearm, HOT
+        app, fid, entry = self.buf.append, self._fid, self._entry
 
         def line(code, lineno):
-            cur = me.cur
-            fn = code.co_filename
-            s = cur.get(fn)
-            if s is None:
-                cur[fn] = {lineno}
-                return None
-            if lineno not in s:
-                s.add(lineno)
-                return None
-            # a line already recorded in this context runs again (loop, repeated call): keep paying one callback
-            # per run while the code object is cool, then disable its lines until the next switch
-            k = id(code)
-            n = rep.get(k, 0)
-            if n < hot:
-                rep[k] = n + 1
-                return None
-            rearm[k] = code
+            app(fid[code.co_filename] | lineno)
             return DISABLE
 
         def start(code, offset):
-            return line(code, entry[id(code)])
+            app(fid[code.co_filename] | entry[id(code)])
+            return DISABLE
 
         return line, start
 
@@ -219,8 +192,6 @@ class SysmonCapture:
         line, start = self._make_callbacks()
         _mon.register_callback(self.tool, _mon.events.LINE, line)
         _mon.register_callback(self.tool, _mon.events.PY_START, start)
-        # no global event: only code objects below the root are instrumented, so a restart_events() costs
-        # nothing for the test runner's own code
         sys.addaudithook(self._audit)
         self._arm_existing()
         atexit.register(self.save)
@@ -229,22 +200,14 @@ class SysmonCapture:
         if ctx == self.ctx:
             return
         self.ctx = ctx
-        self.cur = self.data.setdefault(ctx, {})
-        if STRATEGY == "rearm":
-            self._rep.clear()
-            if self._rearm:
-                # re-instrument only the code objects with disabled lines (eagerly), instead of every code object
-                # that runs after a restart_events()
-                set_local, tool, LINE, START, entry = (_mon.set_local_events, self.tool, _mon.events.LINE,
-                                                       _mon.events.PY_START, self._entry)
-                for k, code in self._rearm.items():
-                    set_local(tool, code, 0)
-                    set_local(tool, code, LINE | START if k in entry else LINE)
-                self._rearm.clear()
-            return
-        if self.dirty:
-            self.dirty = False
-            if not _DBG_NORESTART:
+        n = len(self.buf)
+        if self.segs[-1][1] == n:
+            self.segs[-1] = (ctx, n)
+        else:
+            self.segs.append((ctx, n))
+        if n != self.mark:
+            self.mark = n
+            if "norestart" not in _DBG:
                 _mon.restart_events()
 
     def stop(self) -> None:
@@ -260,27 +223,42 @@ class SysmonCapture:
             _mon.free_tool_id(self.tool)
             self.tool = None
 
+    def data(self) -> dict[str, dict[str, set]]:
+        """{context: {path relative to the root: set(lines)}} (contexts with no line are left out)."""
+        buf = self.buf
+        by_ctx: dict[str, set] = {}
+        segs = self.segs + [("", len(buf))]
+        for (c, a), (_, b) in zip(segs, segs[1:]):
+            if b > a:
+                by_ctx.setdefault(c, set()).update(buf[a:b])
+        rel = []
+        for fn in self._fnames:
+            p = os.path.realpath(os.path.abspath(fn))
+            rel.append(p[len(self.root_sep):] if p.startswith(self.root_sep) else p)
+        out: dict[str, dict[str, set]] = {}
+        mask = _MASK.__and__
+        for c, vals in by_ctx.items():
+            v = sorted(vals)
+            per = out[c] = {}
+            i, n = 0, len(v)
+            while i < n:
+                f = v[i] >> _SHIFT
+                j = bisect_left(v, (f + 1) << _SHIFT, i)
+                # one file may appear under several co_filename spellings: merge per relative path
+                per.setdefault(rel[f], set()).update(map(mask, v[i:j]))
+                i = j
+        return out
+
     def compact(self) -> dict:
         """Same layout as ``run_repo.extract_coverage``: {"files", "blobs", "ctx"}; paths relative to the root."""
-        rel_of: dict[str, str] = {}
-        for per in self.data.values():
-            for fn in per:
-                if fn not in rel_of:
-                    p = os.path.realpath(os.path.abspath(fn))
-                    rel_of[fn] = p[len(self.root_sep):] if p.startswith(self.root_sep) else p
-        # one file may appear under several co_filename spellings: merge per (ctx, rel path)
-        merged: dict[str, dict[str, set]] = {}
-        for c, per in self.data.items():
-            for fn, lines in per.items():
-                if lines:
-                    merged.setdefault(rel_of[fn], {}).setdefault(c, set()).update(lines)
-        files, blobs, ctx = [], [], {}
+        data = self.data()
+        files = sorted({f for per in data.values() for f in per})
+        fi_of = {f: i for i, f in enumerate(files)}
+        blobs, ctx = [], {}
         blob_ix: dict = {}
-        for rel in sorted(merged):
-            fi = len(files)
-            files.append(rel)
-            for c, lines in merged[rel].items():
-                key = (fi, tuple(sorted(lines)))
+        for c, per in data.items():
+            for f, lines in sorted(per.items()):
+                key = (fi_of[f], tuple(sorted(lines)))
                 b = blob_ix.get(key)
                 if b is None:
                     b = blob_ix[key] = len(blobs)
