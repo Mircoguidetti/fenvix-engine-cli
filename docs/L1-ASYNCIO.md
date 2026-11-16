@@ -181,6 +181,17 @@ scheduled selector loop under `--det-async`.
   for them up to `--det-async-grace` real seconds per timer before jumping, so a
   slow subprocess plus a short timeout behaves as in reality (flaky), and is
   recorded as `grace-wakeup`.
+* **Thread-pool work outside `run_in_executor`** (an executor used directly,
+  e.g. tornado's `run_on_executor`, results chained back with
+  `call_soon_threadsafe`) is not scheduled: its in-flight items are only
+  counted, and while any is in flight an idle loop lets the next timer's whole
+  delay elapse for real before jumping (found on webssh: without this,
+  tornado's 5 s `gen_test` timeout fired while a paramiko connect was still
+  running).
+* **Nothing blocking may run inside the loop thread on detpy's behalf**: anyio's
+  suite runs blockbuster, which turns any blocking call made in a running loop
+  (even `os.path.abspath`) into an error. Creation sites are therefore
+  resolved with string prefixes computed outside the loop.
 * **Byte chunking** of stream reads is not controlled (what one `recv` returns).
 * **`set`s of tasks** (`asyncio.wait`) iterate in address order; L0's
   ASLR-off makes that stable in practice but it is not guaranteed.
