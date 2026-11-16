@@ -1,0 +1,14 @@
+[
+ {
+  "repo": "pw-msw",
+  "pool": "playwright",
+  "nodeid": "test/msw-api/setup-worker/scenarios/iframe-isolated-response/iframe-isolated-response.pw.test.ts::responds with different responses for the same request based on request referrer (frame url) [chromium]",
+  "class": "concurrency/event-order",
+  "evidence": "test source uses async , await , promise.all, waitfor",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=1;passed=9",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ }
+]
