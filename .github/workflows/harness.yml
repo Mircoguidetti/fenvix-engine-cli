@@ -215,10 +215,20 @@ jobs:
           --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       - uses: actions/upload-artifact@v4
         with: {name: "results-${{ inputs.result_set }}", path: "harness/results/${{ inputs.result_set }}/"}
-      - name: commit results to the branch
+      - name: commit results to the branch tip
         run: |
+          set -e
+          dest="harness/results/${{ inputs.result_set }}"
+          cp -r "$dest" /tmp/results-out
+          git fetch -q origin "${{ github.ref_name }}"
+          git checkout -q -B publish "origin/${{ github.ref_name }}"
+          rm -rf "$dest" && mkdir -p "$dest" && cp -r /tmp/results-out/. "$dest/"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "harness/results/${{ inputs.result_set }}"
+          git add -A "$dest"
           git commit -m "Harness results (${{ inputs.result_set }}) from Actions run ${{ github.run_id }}" || exit 0
-          for i in 1 2 3 4; do git pull --rebase -q && git push -q && break; sleep $((i * 5)); done
+          for i in 1 2 3 4; do
+            if git push -q origin "HEAD:${{ github.ref_name }}"; then exit 0; fi
+            sleep $((i * 5)); git fetch -q origin "${{ github.ref_name }}"; git rebase -q "origin/${{ github.ref_name }}"
+          done
+          exit 1
