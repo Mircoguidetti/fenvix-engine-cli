@@ -1,0 +1,58 @@
+{
+  "name": "idoft-krllint",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/d4nuu8/krllint",
+  "commit": "2f9376cdae14",
+  "commit_date": "2019-03-02",
+  "python": "3.9",
+  "install": "-e . -r dev-requirements.txt -r requirements.txt",
+  "pytest_args": [],
+  "xdist": false,
+  "runs": 10,
+  "baseline_mean_s": 0.27242025840023415,
+  "det_mean_s": 1.125833092100038,
+  "slowdown_pct": 313.2706938578655,
+  "precompile_first_s": 1.168,
+  "precompile_rest_median_s": 0.585,
+  "tests": 16,
+  "unstable_baseline": 2,
+  "unstable_det": 0,
+  "became_stable": 2,
+  "outcome_changed_by_det": 0,
+  "covered": 16,
+  "not_covered": 0,
+  "reproduced": 2,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    20,
+    18
+  ],
+  "seeds_explored": 20,
+  "exploration_runs": 38,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "random": 2
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 9,
+  "known_present": 9,
+  "known_unstable_baseline": 2,
+  "known_reproduced": 2,
+  "known_categories": {
+    "OD-Vic": 9
+  },
+  "examples": {
+    "reproduced": [
+      "tests/test_extraneous_whitespace.py::ExtraneousWhiteSpaceTestCase::test_rule_without_fix (seed 20): event #0: random.state @ <end> returned different values: \"43808a5a1de749f14f0b612832178aa6\" vs \"9af2410abc887ff69e002f7aed8f457b\"",
+      "tests/test_trailing_white_space_rule.py::TrailingWhiteSpaceTestCase::test_rule_without_fix (seed 18): event #0: random.state @ <end> returned different values: \"4220c41585bbaa476abde0a57e085ff4\" vs \"974868580687505dbfe07df1b484142f\""
+    ]
+  }
+}

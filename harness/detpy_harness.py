@@ -963,6 +963,7 @@ def main(argv=None) -> int:
                          "timing: quiet timing pass")
     ap.add_argument("--timing-runs", type=int, default=3)
     ap.add_argument("--no-ablation", action="store_true", help="skip the per-control ablation of broken tests")
+    ap.add_argument("--no-xdist", action="store_true", help="serial baseline (no pytest-xdist) even when supported")
     ap.add_argument("--executor", default="local", help="free text recorded in the report (e.g. GitHub Actions)")
     ap.add_argument("--fresh", action="store_true", help="discard results already in --out instead of resuming")
     ap.add_argument("--checkpoint", action="store_true",
@@ -987,6 +988,7 @@ def main(argv=None) -> int:
     detpy = _import_detpy()
 
     meta = {"set": args.set, "runs": args.runs, "seeds": args.seeds, "confirm": args.confirm, "jobs": args.jobs,
+            "baseline_xdist": not args.no_xdist,
             "executor": args.executor, "timing_runs": args.timing_runs,
             "detpy": detpy.__version__,
             "date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
@@ -1051,6 +1053,8 @@ def main(argv=None) -> int:
                 return
             try:
                 p = prepare(repo, work, wheel, args.python, args.max_first_run)
+                if args.no_xdist:
+                    p.xdist = False
                 log(f"prepared {p.name} [{kind}]: {p.status} py{p.python_version} {p.collected} tests "
                     f"xdist={p.xdist} {p.detail[-100:]!r}")
                 if p.status != "ok":
