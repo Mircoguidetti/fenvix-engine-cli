@@ -72,6 +72,7 @@ class _Session:
         self.compare_report = None
         self.net_mode = None
         self.disabled_plugins: list[str] = []
+        self.adjustments: list[str] = []
         self.rebound: list[str] = []
         self.saved_cassette = 0
         self.index = 0
@@ -149,6 +150,17 @@ def pytest_load_initial_conftests(early_config, parser, args):
                 S.reexec_status = f"hash seed fixed; not applied: {','.join(missing)} ({reason})"
         else:
             S.reexec_status = "ok"
+    if "time" in controls:
+        # Benchmarks calibrate loop counts on elapsed time: under a virtual
+        # clock a call always "lasts" one tick and calibration never ends.
+        # Their numbers are wall-clock measurements anyway: run them once.
+        pm = early_config.pluginmanager
+        if pm.hasplugin("benchmark") and "--benchmark-disable" not in args:
+            args.append("--benchmark-disable")
+            S.adjustments.append("pytest-benchmark: --benchmark-disable")
+        if pm.hasplugin("codspeed") and "--codspeed" in args:
+            args.remove("--codspeed")
+            S.adjustments.append("pytest-codspeed: disabled")
     _install(early_config, ns, controls)
 
 
@@ -236,6 +248,8 @@ def pytest_report_header(config):
     ]
     if S.disabled_plugins:
         lines.append(f"detpy: disabled conflicting plugins: {', '.join(S.disabled_plugins)}")
+    if S.adjustments:
+        lines.append(f"detpy: adjusted: {'; '.join(S.adjustments)}")
     return lines
 
 
@@ -284,6 +298,7 @@ def pytest_collection_finish(session):
         "platform": sys.platform,
         "pytest": pytest.__version__,
         "disabled_plugins": S.disabled_plugins,
+        "adjustments": S.adjustments,
         "rebound_references": len(S.rebound),
         "order_digest": S.order_digest,
     }

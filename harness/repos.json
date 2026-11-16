@@ -4,7 +4,7 @@
   "repos": [
     {"name": "itsdangerous", "url": "https://github.com/pallets/itsdangerous"},
     {"name": "cachetools", "url": "https://github.com/tkem/cachetools"},
-    {"name": "filelock", "url": "https://github.com/tox-dev/filelock"},
+    {"name": "filelock", "url": "https://github.com/tox-dev/filelock", "install": ["pytest-asyncio", "pytest-mock", "pytest-timeout", "pytest-randomly"]},
     {"name": "humanize", "url": "https://github.com/python-humanize/humanize", "install": ["freezegun"]},
     {"name": "tenacity", "url": "https://github.com/jd/tenacity", "install": ["tornado", "typeguard"]},
     {"name": "markupsafe", "url": "https://github.com/pallets/markupsafe"},

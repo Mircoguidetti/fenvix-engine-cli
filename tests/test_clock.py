@@ -164,3 +164,20 @@ def test_time_control_can_be_disabled(pytester, run_det):
     )
     result, _ = run_det("--det-disable=time")
     result.assert_outcomes(passed=1)
+
+
+def test_benchmark_plugins_are_disabled(pytester, run_det):
+    # Stand-in for pytest-benchmark (registered under the name "benchmark").
+    pytester.makepyfile(
+        benchmark="""
+        def pytest_addoption(parser):
+            parser.addoption("--benchmark-disable", action="store_true")
+        """,
+        test_b="""
+        def test_b(request):
+            assert request.config.getoption("benchmark_disable")
+        """,
+    )
+    result, (header, _, _) = run_det("-p", "benchmark")
+    result.assert_outcomes(passed=1)
+    assert header["meta"]["adjustments"] == ["pytest-benchmark: --benchmark-disable"]

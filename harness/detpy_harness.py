@@ -173,6 +173,10 @@ def prepare(repo: dict, work: Path, wheel: str, python: str, max_first_run: floa
             return p
     # Collection check; some repos need their addopts cleared (e.g. xdist/cov flags).
     p.pytest_args = list(repo.get("pytest_args", []))
+    # Benchmarks are disabled by --det (they calibrate on wall time); disable
+    # them in normal runs too so both modes execute the same work.
+    if sh([str(py), "-c", "import pytest_benchmark"])[0] == 0 and "--benchmark-disable" not in p.pytest_args:
+        p.pytest_args.append("--benchmark-disable")
     env = clean_env(str(py), p.env)
     for extra in ([], ["-o", "addopts="]):
         args = p.pytest_args + extra
@@ -221,19 +225,42 @@ def run_once(p: Prepared, mode: str, i: int, rundir: Path, timeout: float) -> Ru
     return RunResult(mode, i, dur, code, to, outcomes, str(trace) if trace and trace.exists() else None)
 
 
+def _hung_test(r: RunResult, p: Prepared) -> str:
+    """Best effort: the first test of the executed order without an outcome."""
+    if r.trace:
+        try:
+            with open(r.trace) as f:
+                order = json.loads(f.readline()).get("order", [])
+            done = {json.loads(line)["nodeid"] for line in open(r.trace) if '"type":"test"' in line}
+            for nid in order:
+                if nid not in done:
+                    return nid
+        except Exception:
+            pass
+    return "unknown"
+
+
 def measure(p: Prepared, runs: int, outdir: Path, work: Path, run_timeout: float) -> dict:
     rundir = work / "runs" / p.name
     shutil.rmtree(rundir, ignore_errors=True)
     rundir.mkdir(parents=True)
     results: list[RunResult] = []
+    timeout = run_timeout
     for i in range(runs):
         for mode in ("normal", "det"):
-            r = run_once(p, mode, i, rundir, run_timeout)
+            r = run_once(p, mode, i, rundir, timeout)
             results.append(r)
             log(f"{p.name}: {mode} #{i} {r.duration:.1f}s exit={r.exit_code}{' TIMEOUT' if r.timed_out else ''}"
                 f" tests={len(r.outcomes)}")
-            if i == 0 and mode == "normal" and r.duration > p.max_run_seconds:
-                p.status, p.detail = "too-slow", f"first normal run took {r.duration:.0f}s"
+            if i == 0 and mode == "normal":
+                if r.duration > p.max_run_seconds:
+                    p.status, p.detail = "too-slow", f"first normal run took {r.duration:.0f}s"
+                    return {"name": p.name, "status": p.status, "detail": p.detail}
+                timeout = min(run_timeout, max(180.0, 10 * r.duration))
+            if r.timed_out:
+                hung = _hung_test(r, p)
+                p.status = f"{mode}-timeout"
+                p.detail = f"{mode} run #{i} exceeded {timeout:.0f}s; last running test: {hung}"
                 return {"name": p.name, "status": p.status, "detail": p.detail}
     return analyze(p, results, outdir)
 
