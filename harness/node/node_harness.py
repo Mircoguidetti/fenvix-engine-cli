@@ -218,6 +218,9 @@ def install(p: Prepared, repo: dict) -> bool:
     src = Path(p.src)
     env = node_env(p)
     sh(["corepack", "enable", "--install-directory", p.node_bin], cwd=src, env=env)
+    if not (src / "package.json").exists():
+        p.status, p.detail = "no-runner", "no package.json at the repository root"
+        return False
     pkg = json.loads((src / "package.json").read_text())
     pm_field = pkg.get("packageManager", "")
     if repo.get("install"):
@@ -301,6 +304,9 @@ def detect_runner(p: Prepared, repo: dict) -> bool:
     if repo.get("runner") == "playwright":
         return detect_playwright(p, repo)
     src = Path(p.src)
+    if not (src / "package.json").exists():
+        p.status, p.detail = "no-runner", "no package.json at the repository root"
+        return False
     req = f"require('module').createRequire(process.cwd() + '/x.js')"
     for runner in ([repo["runner"]] if repo.get("runner") else ["vitest", "jest"]):
         code, out, _, _ = sh([f"{p.node_bin}/node", "-e",
@@ -496,11 +502,17 @@ def run_node(p: Prepared, rundir: Path, mode: str, index: int, timeout: float, s
     code, out, dur, to = sh(cmd, cwd=cwd, env=node_env(p, extra), timeout=timeout)
     (rundir / f"{tag}.log").write_text(out[-20000:])
     outcomes, exceptions = (parse_playwright(report, p.src) if p.runner == "playwright" else parse_report(report, p.src))
+    if trace is not None and not trace.exists() and not DIAG.get("missing_trace"):
+        DIAG["missing_trace"] = f"{tag}: exit {code}; command {' '.join(map(str, cmd))[-300:]}; output tail: {out[-2500:]}"
+        log(f"{p.name}: WARNING no trace written by {tag}: {out[-1500:]}")
+    if mode == "det" and index == 0:
+        DIAG["first_det_log_tail"] = out[-2500:]
     return H.RunResult(mode, index, seed, dur, code, to, outcomes,
                        str(trace) if trace and trace.exists() else None, None, exceptions)
 
 
 H.run_pytest = run_node
+DIAG: dict = {}
 
 _orig_analyze = H.analyze
 
@@ -518,7 +530,7 @@ def analyze(p: Prepared, results, explore, outdir: Path) -> dict:
     s = _orig_analyze(p, results, explore, outdir)
     s.update({"runner": f"{p.runner} {p.runner_version}", "node": p.python_version, "documented_source": p.source,
               "documented_hints": list(p.documented)[:10], "random_order_baseline": p.random_order,
-              "verifier": VERIFIER})
+              "verifier": VERIFIER, "diagnostics": dict(DIAG)})
     csv_path = outdir / f"{p.name}.csv"
     if csv_path.exists():
         text = csv_path.read_text().replace("idoft_category", "documented_flaky", 1)

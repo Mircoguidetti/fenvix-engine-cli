@@ -1,1 +1,1 @@
-{"result_set": "node-validate", "per_pool": 2, "flaky_candidates": 6, "popular_candidates": 4, "runs": 3, "seeds": 3, "confirm": 3, "repo_budget": 1500, "max_first_run": 180, "timing": "true"}
+{"result_set": "node-validate2", "only": "date-fns,luxon,dayjs,mobx,immer,pw-msw,pw-slate", "runs": 3, "seeds": 2, "confirm": 3, "repo_budget": 1500, "timing": "false"}
