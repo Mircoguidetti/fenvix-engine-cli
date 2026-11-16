@@ -1,0 +1,15 @@
+[package]
+name = "detpy-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Deterministic test execution core: execution fingerprints, run verifier, trace and cassette formats."
+
+[dependencies]
+blake3 = "1.8"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.23"
+
+[dev-dependencies]
+tempfile = "3"

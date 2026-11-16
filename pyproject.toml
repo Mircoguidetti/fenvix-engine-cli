@@ -1,0 +1,29 @@
+[build-system]
+requires = ["maturin>=1.5,<2"]
+build-backend = "maturin"
+
+[project]
+name = "detpy"
+version = "0.1.0"
+description = "Deterministic execution of Python tests (Level 0) with execution fingerprints"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = ["pytest>=7"]
+classifiers = ["Framework :: Pytest", "Programming Language :: Rust", "Programming Language :: Python :: 3"]
+
+[project.entry-points.pytest11]
+detpy = "detpy.plugin"
+
+[project.scripts]
+detpy = "detpy.cli:main"
+
+[tool.maturin]
+manifest-path = "crates/detpy-py/Cargo.toml"
+python-source = "python"
+module-name = "detpy._core"
+features = ["pyo3/extension-module"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p pytester"

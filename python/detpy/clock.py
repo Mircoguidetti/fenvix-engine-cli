@@ -1,0 +1,341 @@
+"""Virtual clock.
+
+All clocks derive from one virtual nanosecond counter that advances by a fixed
+``tick`` on every read and by the requested amount on ``time.sleep``:
+
+* wall clock (``time.time``, ``datetime.now``, ...) is reset to the configured
+  epoch at the start of every test, so a test sees the same dates whatever its
+  position in the run;
+* monotonic clocks (``time.monotonic``, ``perf_counter``) never go backwards
+  inside the process; events record them relative to the start of the test.
+
+Blocking primitives that really time out (``threading.Condition.wait`` and
+everything built on it: ``Event.wait``, ``queue.Queue.get``, ...) advance the
+virtual clock by their timeout, so "wait up to N seconds" loops terminate.
+"""
+
+from __future__ import annotations
+
+import datetime as _dt
+import sys
+import threading
+import time as _time
+import warnings
+
+from . import _state
+from ._patch import Patcher, rebind_module_references
+
+NS = 1_000_000_000
+
+# Real functions, captured at import time (before any patching).
+real_time = _time.time
+real_time_ns = _time.time_ns
+real_monotonic = _time.monotonic
+real_monotonic_ns = _time.monotonic_ns
+real_perf_counter = _time.perf_counter
+real_perf_counter_ns = _time.perf_counter_ns
+real_sleep = _time.sleep
+real_localtime = _time.localtime
+real_gmtime = _time.gmtime
+real_ctime = _time.ctime
+real_asctime = _time.asctime
+real_strftime = _time.strftime
+real_clock_gettime = getattr(_time, "clock_gettime", None)
+real_clock_gettime_ns = getattr(_time, "clock_gettime_ns", None)
+real_datetime = _dt.datetime
+real_date = _dt.date
+
+_MONO_BASE_NS = 1_000 * NS  # arbitrary, positive, process-independent
+
+
+class VirtualClock:
+    def __init__(self, epoch_ns: int, tick_ns: int) -> None:
+        self._lock = threading.Lock()
+        self.epoch_ns = epoch_ns
+        self.tick_ns = tick_ns
+        self.elapsed = 0  # ns since installation
+        self.wall_offset = epoch_ns
+        self.test_start = 0
+
+    def read(self) -> int:
+        """Advance by one tick and return the elapsed counter."""
+        with self._lock:
+            self.elapsed += self.tick_ns
+            return self.elapsed
+
+    def advance(self, ns: int) -> None:
+        if ns > 0:
+            with self._lock:
+                self.elapsed += ns
+
+    def start_test(self) -> None:
+        with self._lock:
+            self.test_start = self.elapsed
+            self.wall_offset = self.epoch_ns - self.elapsed
+
+    # Derived values ---------------------------------------------------
+    def wall_ns(self, e: int) -> int:
+        return self.wall_offset + e
+
+    @staticmethod
+    def mono_ns(e: int) -> int:
+        return _MONO_BASE_NS + e
+
+
+CLOCK: VirtualClock | None = None
+
+
+def _rel(e: int) -> str:
+    assert CLOCK is not None
+    return str(e - CLOCK.test_start)
+
+
+# Fake time functions ---------------------------------------------------------
+def time() -> float:
+    e = CLOCK.read()
+    _state.record("time", "time.time", _rel(e))
+    return CLOCK.wall_ns(e) / NS
+
+
+def time_ns() -> int:
+    e = CLOCK.read()
+    _state.record("time", "time.time_ns", _rel(e))
+    return CLOCK.wall_ns(e)
+
+
+def monotonic() -> float:
+    e = CLOCK.read()
+    _state.record("time", "time.monotonic", _rel(e))
+    return CLOCK.mono_ns(e) / NS
+
+
+def monotonic_ns() -> int:
+    e = CLOCK.read()
+    _state.record("time", "time.monotonic_ns", _rel(e))
+    return CLOCK.mono_ns(e)
+
+
+def perf_counter() -> float:
+    e = CLOCK.read()
+    _state.record("time", "time.perf_counter", _rel(e))
+    return CLOCK.mono_ns(e) / NS
+
+
+def perf_counter_ns() -> int:
+    e = CLOCK.read()
+    _state.record("time", "time.perf_counter_ns", _rel(e))
+    return CLOCK.mono_ns(e)
+
+
+def sleep(secs: float) -> None:
+    # Same argument validation as the real function.
+    if not isinstance(secs, (int, float)):
+        try:
+            secs = float(secs)  # Decimal, Fraction, numpy scalars
+        except (TypeError, ValueError):
+            raise TypeError(f"'{type(secs).__name__}' object cannot be interpreted as an integer or float")
+    if secs != secs:
+        raise ValueError("Invalid value NaN (not a number)")
+    if secs < 0:
+        raise ValueError("sleep length must be non-negative")
+    ns = int(secs * NS)
+    _state.record("time", "time.sleep", str(ns))
+    CLOCK.advance(ns)
+    if _state.STATE.config.sleep == "real":
+        real_sleep(secs)
+    else:
+        real_sleep(0)  # still yield the GIL / scheduler
+
+
+def _wall_secs(op: str) -> float:
+    e = CLOCK.read()
+    _state.record("time", op, _rel(e), depth=2)
+    return CLOCK.wall_ns(e) / NS
+
+
+def localtime(secs=None):
+    return real_localtime(_wall_secs("time.localtime") if secs is None else secs)
+
+
+def gmtime(secs=None):
+    return real_gmtime(_wall_secs("time.gmtime") if secs is None else secs)
+
+
+def ctime(secs=None):
+    return real_ctime(_wall_secs("time.ctime") if secs is None else secs)
+
+
+def asctime(t=None):
+    return real_asctime(real_localtime(_wall_secs("time.asctime")) if t is None else t)
+
+
+def strftime(fmt, t=None):
+    return real_strftime(fmt, real_localtime(_wall_secs("time.strftime")) if t is None else t)
+
+
+_REALTIME = {getattr(_time, n) for n in ("CLOCK_REALTIME", "CLOCK_TAI") if hasattr(_time, n)}
+_MONOTONIC = {
+    getattr(_time, n)
+    for n in ("CLOCK_MONOTONIC", "CLOCK_MONOTONIC_RAW", "CLOCK_BOOTTIME", "CLOCK_UPTIME", "CLOCK_HIGHRES")
+    if hasattr(_time, n)
+}
+
+
+def clock_gettime_ns(clk_id):
+    if clk_id in _REALTIME:
+        e = CLOCK.read()
+        _state.record("time", "time.clock_gettime", _rel(e))
+        return CLOCK.wall_ns(e)
+    if clk_id in _MONOTONIC:
+        e = CLOCK.read()
+        _state.record("time", "time.clock_gettime", _rel(e))
+        return CLOCK.mono_ns(e)
+    return real_clock_gettime_ns(clk_id)
+
+
+def clock_gettime(clk_id):
+    if clk_id in _REALTIME or clk_id in _MONOTONIC:
+        e = CLOCK.read()
+        _state.record("time", "time.clock_gettime", _rel(e))
+        return (CLOCK.wall_ns(e) if clk_id in _REALTIME else CLOCK.mono_ns(e)) / NS
+    return real_clock_gettime(clk_id)
+
+
+# Fake datetime classes ---------------------------------------------------------
+class _FakeMeta(type):
+    """isinstance/issubclass against the fakes behave like the real classes."""
+
+    def __instancecheck__(cls, obj):
+        real = cls.__dict__.get("_detpy_real")
+        if real is not None:
+            return isinstance(obj, real)
+        return type.__instancecheck__(cls, obj)
+
+    def __subclasscheck__(cls, sub):
+        real = cls.__dict__.get("_detpy_real")
+        if real is not None:
+            return issubclass(sub, real)
+        return type.__subclasscheck__(cls, sub)
+
+
+class FakeDate(real_date, metaclass=_FakeMeta):
+    _detpy_real = real_date
+
+    def __new__(cls, *args, **kwargs):
+        if cls is FakeDate:
+            # Hand out real instances: C extensions often require the exact type.
+            return real_date(*args, **kwargs)
+        return real_date.__new__(cls, *args, **kwargs)
+
+    @classmethod
+    def today(cls):
+        t = _wall_secs("date.today")
+        if cls is FakeDate:
+            return real_date.fromtimestamp(t)
+        return super().fromtimestamp(t)
+
+
+class FakeDatetime(real_datetime, metaclass=_FakeMeta):
+    _detpy_real = real_datetime
+
+    def __new__(cls, *args, **kwargs):
+        if cls is FakeDatetime:
+            return real_datetime(*args, **kwargs)
+        return real_datetime.__new__(cls, *args, **kwargs)
+
+    @classmethod
+    def now(cls, tz=None):
+        t = _wall_secs("datetime.now")
+        if cls is FakeDatetime:
+            return real_datetime.fromtimestamp(t, tz)
+        return super().fromtimestamp(t, tz)
+
+    @classmethod
+    def today(cls):
+        t = _wall_secs("datetime.today")
+        if cls is FakeDatetime:
+            return real_datetime.fromtimestamp(t)
+        return super().fromtimestamp(t)
+
+    @classmethod
+    def utcnow(cls):
+        if sys.version_info >= (3, 12):
+            warnings.warn(
+                "datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. "
+                "Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        t = _wall_secs("datetime.utcnow")
+        aware = real_datetime.fromtimestamp(t, _dt.timezone.utc).replace(tzinfo=None)
+        if cls is FakeDatetime:
+            return aware
+        return super().fromtimestamp(t, _dt.timezone.utc).replace(tzinfo=None)
+
+
+for _cls, _name in ((FakeDate, "date"), (FakeDatetime, "datetime")):
+    _cls.__name__ = _cls.__qualname__ = _name
+    _cls.__module__ = "datetime"
+
+
+# Wait primitives -----------------------------------------------------------------
+_real_condition_wait = threading.Condition.wait
+
+
+def _condition_wait(self, timeout=None):
+    got = _real_condition_wait(self, timeout)
+    if not got and timeout is not None and timeout > 0 and CLOCK is not None:
+        CLOCK.advance(int(timeout * NS))
+    return got
+
+
+# Installation ---------------------------------------------------------------------
+# Stdlib modules that bind clock functions at import time and use them for real
+# blocking waits: import them now so they keep the *real* functions.
+_PRELOAD = ("threading", "queue", "subprocess", "sched", "socketserver", "selectors", "asyncio",
+            "concurrent.futures", "multiprocessing", "multiprocessing.connection", "logging", "tempfile")
+
+
+def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module) -> list[str]:
+    global CLOCK
+    import importlib
+
+    for name in _PRELOAD:
+        try:
+            importlib.import_module(name)
+        except Exception:  # pragma: no cover - optional modules
+            pass
+    CLOCK = VirtualClock(epoch_ns, tick_ns)
+    fakes = {
+        "time": time, "time_ns": time_ns, "monotonic": monotonic, "monotonic_ns": monotonic_ns,
+        "perf_counter": perf_counter, "perf_counter_ns": perf_counter_ns, "sleep": sleep,
+        "localtime": localtime, "gmtime": gmtime, "ctime": ctime, "asctime": asctime, "strftime": strftime,
+    }
+    if real_clock_gettime is not None:
+        fakes["clock_gettime"] = clock_gettime
+    if real_clock_gettime_ns is not None:
+        fakes["clock_gettime_ns"] = clock_gettime_ns
+    replacements = {}
+    for name, fake in fakes.items():
+        real = patcher.set(_time, name, fake)
+        replacements[id(real)] = (real, fake)
+    patcher.set(_dt, "datetime", FakeDatetime)
+    patcher.set(_dt, "date", FakeDate)
+    replacements[id(real_datetime)] = (real_datetime, FakeDatetime)
+    replacements[id(real_date)] = (real_date, FakeDate)
+    patcher.set(threading.Condition, "wait", _condition_wait)
+    # asyncio's event loop must keep real time: its selector waits for real.
+    import asyncio.base_events
+
+    patcher.set(asyncio.base_events.BaseEventLoop, "time", lambda self: real_monotonic())
+    return rebind_module_references(patcher, replacements, skip_module)
+
+
+def uninstall() -> None:
+    global CLOCK
+    CLOCK = None
+
+
+def start_test() -> None:
+    if CLOCK is not None:
+        CLOCK.start_test()
