@@ -1,0 +1,865 @@
+{
+ "name": "nodebb",
+ "repo": "NodeBB/NodeBB",
+ "ref": "8a5db4f12a31913b4a11c76a16efe6b8162bbf92",
+ "status": "ok",
+ "setup_s": 49,
+ "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
+ "config": {
+  "repo": "NodeBB/NodeBB",
+  "ref": "8a5db4f12a31913b4a11c76a16efe6b8162bbf92",
+  "app": "node",
+  "suite": "integration: mocha on Redis",
+  "services": "Redis 8",
+  "node": "24",
+  "runs": 6,
+  "parser": "junit"
+ },
+ "run_id": "43945303458",
+ "measured_at": "2026-11-16T20:23:51Z",
+ "baseline_cores": 0.0184,
+ "n_runs": 6,
+ "runs": [
+  {
+   "run": 1,
+   "rc": 0,
+   "wall_s": 210.88,
+   "busy_cpu_s": 76.06,
+   "cores_mean": 0.361,
+   "idle_share_raw": 0.6393,
+   "idle_share_net": 0.6577,
+   "quiet_share": 0.6896,
+   "share_ge1core": 0.1777,
+   "iowait_s": 0.14,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.6,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.13,
+   "cpu_other_s": 73.93,
+   "containers": {
+    "redis [redis:8.10.1]": 2.131
+   },
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     48.86
+    ],
+    [
+     "host",
+     "npm install nod",
+     3.02
+    ],
+    [
+     "host",
+     "provjobd4824174",
+     3.01
+    ],
+    [
+     "host",
+     "docker-proxy",
+     2.99
+    ],
+    [
+     "container",
+     "redis-server",
+     2.11
+    ],
+    [
+     "host",
+     "npm uninstall n",
+     0.69
+    ],
+    [
+     "host",
+     "python3",
+     0.58
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.39
+    ],
+    [
+     "host",
+     "npm exec nyc --",
+     0.24
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.18
+    ],
+    [
+     "host",
+     "kworker/u16:8-events_unbound",
+     0.16
+    ],
+    [
+     "host",
+     "containerd",
+     0.13
+    ],
+    [
+     "host",
+     "dart:sass.snaps",
+     0.12
+    ],
+    [
+     "host",
+     "kworker/u16:4-iou_exit",
+     0.06
+    ],
+    [
+     "host",
+     "kworker/0:0-events",
+     0.04
+    ]
+   ],
+   "n_tests": 3230,
+   "n_pass": 3228,
+   "n_fail": 0,
+   "n_skip": 2,
+   "series_1s": [
+    0.02,
+    1.56,
+    1.66,
+    2.93,
+    1.42,
+    1.72,
+    1.45,
+    1.48,
+    1.27,
+    1.03,
+    1.07,
+    1.45,
+    0.6,
+    0.42,
+    1.56,
+    1.93,
+    2.18,
+    1.24,
+    0.83,
+    0.17,
+    0.02,
+    0.06,
+    0.04,
+    0.51,
+    0.39,
+    0.02,
+    0.67,
+    0.02,
+    0.02,
+    0.03,
+    0.02,
+    0.01,
+    0.05,
+    0.01,
+    0.02,
+    0.02,
+    0.03,
+    0.01,
+    0.03,
+    0.03,
+    0.04,
+    0.01,
+    0.06,
+    0.02,
+    0.03,
+    0.02,
+    0.02,
+    0.01,
+    0.08,
+    0.02,
+    0.48,
+    0.04,
+    0.01,
+    0.11,
+    0.07,
+    2.8,
+    3.88,
+    3.03,
+    0.03,
+    0.03,
+    0.01,
+    0.02,
+    0.03,
+    0.01,
+    0.03,
+    0.98,
+    0.69,
+    0.02,
+    0.17,
+    0.32,
+    0.02,
+    0.03,
+    0.02,
+    0.04,
+    0.02,
+    0.03,
+    0.01,
+    0.04,
+    0.01,
+    0.04,
+    0.02,
+    0.05,
+    0.02,
+    0.06,
+    0.05,
+    0.04,
+    0.03,
+    0.9,
+    0.02,
+    0.25,
+    0.62,
+    0.01,
+    0.02,
+    0.56,
+    0.07,
+    0.01,
+    0.01,
+    0.02,
+    0.03,
+    0.02,
+    0.07,
+    0.02,
+    0.02,
+    0.04,
+    0.02,
+    0.53,
+    0.49,
+    0.0,
+    0.21,
+    0.02,
+    0.03,
+    0.01,
+    0.02,
+    0.03,
+    0.03,
+    0.36,
+    0.03,
+    0.01,
+    0.06,
+    0.08,
+    0.02,
+    0.02,
+    0.76,
+    0.89,
+    1.02,
+    1.2,
+    1.29,
+    0.41,
+    0.42,
+    0.04,
+    0.08,
+    0.33,
+    0.01,
+    0.3,
+    0.61,
+    0.02,
+    0.13,
+    0.54,
+    0.99,
+    1.35,
+    0.67,
+    0.05,
+    0.02,
+    0.01,
+    0.05,
+    0.01,
+    0.02,
+    0.01,
+    0.03,
+    1.14,
+    0.01,
+    0.02,
+    0.13,
+    0.01,
+    0.5,
+    1.22,
+    1.15,
+    0.81,
+    0.02,
+    0.02,
+    0.02,
+    0.06,
+    0.02,
+    0.08,
+    0.25,
+    0.01,
+    0.01,
+    0.02,
+    0.02,
+    0.43,
+    0.59,
+    0.29,
+    0.85,
+    0.49,
+    1.1,
+    0.51,
+    0.09,
+    0.47,
+    0.68,
+    0.02,
+    0.01,
+    0.26,
+    0.02,
+    0.01,
+    0.02,
+    0.02,
+    0.02,
+    0.02,
+    0.02,
+    0.02,
+    0.68,
+    2.23,
+    1.61,
+    0.89,
+    0.64,
+    0.01,
+    0.02,
+    0.04,
+    0.01,
+    0.02,
+    0.03,
+    0.01,
+    0.02,
+    0.03,
+    0.04,
+    0.02,
+    0.02,
+    0.03,
+    0.02,
+    0.02,
+    0.01,
+    1.04
+   ]
+  },
+  {
+   "run": 2,
+   "rc": 0,
+   "wall_s": 205.49,
+   "busy_cpu_s": 67.05,
+   "cores_mean": 0.326,
+   "idle_share_raw": 0.6737,
+   "idle_share_net": 0.6921,
+   "quiet_share": 0.7015,
+   "share_ge1core": 0.1481,
+   "iowait_s": 0.01,
+   "steal_s": 0.01,
+   "sampler_cpu_s": 0.58,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.21,
+   "cpu_other_s": 64.84,
+   "containers": {
+    "redis [redis:8.10.1]": 2.21
+   },
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     42.03
+    ],
+    [
+     "host",
+     "provjobd4824174",
+     3.35
+    ],
+    [
+     "host",
+     "docker-proxy",
+     3.02
+    ],
+    [
+     "container",
+     "redis-server",
+     2.2
+    ],
+    [
+     "host",
+     "npm install nod",
+     1.4
+    ],
+    [
+     "host",
+     "python3",
+     0.56
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.39
+    ],
+    [
+     "host",
+     "npm exec nyc --",
+     0.24
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.15
+    ],
+    [
+     "host",
+     "containerd",
+     0.14
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/2:2-events",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/u16:5-writeback",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/1:0-events",
+     0.02
+    ],
+    [
+     "host",
+     "kworker/u16:0-ext4-rsv-conversion",
+     0.02
+    ]
+   ],
+   "n_tests": 3230,
+   "n_pass": 3228,
+   "n_fail": 0,
+   "n_skip": 2
+  },
+  {
+   "run": 3,
+   "rc": 0,
+   "wall_s": 205.29,
+   "busy_cpu_s": 66.72,
+   "cores_mean": 0.325,
+   "idle_share_raw": 0.675,
+   "idle_share_net": 0.6933,
+   "quiet_share": 0.7032,
+   "share_ge1core": 0.1387,
+   "iowait_s": 0.01,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.58,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.17,
+   "cpu_other_s": 64.55,
+   "containers": {
+    "redis [redis:8.10.1]": 2.173
+   },
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     40.16
+    ],
+    [
+     "host",
+     "provjobd4824174",
+     3.82
+    ],
+    [
+     "host",
+     "docker-proxy",
+     3.02
+    ],
+    [
+     "container",
+     "redis-server",
+     2.15
+    ],
+    [
+     "host",
+     "python3",
+     0.56
+    ],
+    [
+     "host",
+     "npm install nod",
+     0.41
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.37
+    ],
+    [
+     "host",
+     "npm exec nyc --",
+     0.24
+    ],
+    [
+     "host",
+     "containerd",
+     0.14
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.11
+    ],
+    [
+     "host",
+     "kworker/0:0-events",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/u16:8-writeback",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/2:2-events",
+     0.02
+    ],
+    [
+     "host",
+     "hosted-compute-",
+     0.02
+    ],
+    [
+     "host",
+     "kworker/u16:5-events_power_efficient",
+     0.02
+    ]
+   ],
+   "n_tests": 3230,
+   "n_pass": 3228,
+   "n_fail": 0,
+   "n_skip": 2
+  },
+  {
+   "run": 4,
+   "rc": 0,
+   "wall_s": 205.77,
+   "busy_cpu_s": 67.25,
+   "cores_mean": 0.327,
+   "idle_share_raw": 0.6732,
+   "idle_share_net": 0.6916,
+   "quiet_share": 0.6869,
+   "share_ge1core": 0.1383,
+   "iowait_s": 0.05,
+   "steal_s": 0.01,
+   "sampler_cpu_s": 0.57,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.12,
+   "cpu_other_s": 65.13,
+   "containers": {
+    "redis [redis:8.10.1]": 2.119
+   },
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     41.93
+    ],
+    [
+     "host",
+     "provjobd4824174",
+     3.41
+    ],
+    [
+     "host",
+     "docker-proxy",
+     2.98
+    ],
+    [
+     "container",
+     "redis-server",
+     2.09
+    ],
+    [
+     "host",
+     "npm install nod",
+     0.89
+    ],
+    [
+     "host",
+     "python3",
+     0.56
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.37
+    ],
+    [
+     "host",
+     "npm exec nyc --",
+     0.24
+    ],
+    [
+     "host",
+     "npm uninstall n",
+     0.23
+    ],
+    [
+     "host",
+     "containerd",
+     0.14
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.1
+    ],
+    [
+     "host",
+     "dockerd",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/u16:8-events_power_efficient",
+     0.03
+    ],
+    [
+     "host",
+     "multipathd",
+     0.02
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.02
+    ]
+   ],
+   "n_tests": 3230,
+   "n_pass": 3228,
+   "n_fail": 0,
+   "n_skip": 2
+  },
+  {
+   "run": 5,
+   "rc": 0,
+   "wall_s": 206.51,
+   "busy_cpu_s": 66.75,
+   "cores_mean": 0.323,
+   "idle_share_raw": 0.6767,
+   "idle_share_net": 0.6951,
+   "quiet_share": 0.6812,
+   "share_ge1core": 0.1401,
+   "iowait_s": 0.01,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.58,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.11,
+   "cpu_other_s": 64.64,
+   "containers": {
+    "redis [redis:8.10.1]": 2.114
+   },
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     44.34
+    ],
+    [
+     "host",
+     "provjobd4824174",
+     3.38
+    ],
+    [
+     "host",
+     "docker-proxy",
+     2.98
+    ],
+    [
+     "container",
+     "redis-server",
+     2.1
+    ],
+    [
+     "host",
+     "npm install nod",
+     1.56
+    ],
+    [
+     "host",
+     "npm uninstall n",
+     1.4
+    ],
+    [
+     "host",
+     "python3",
+     0.55
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.36
+    ],
+    [
+     "host",
+     "npm exec nyc --",
+     0.23
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.16
+    ],
+    [
+     "host",
+     "containerd",
+     0.13
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/0:0-events",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/u16:4-events_power_efficient",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/2:0-events",
+     0.02
+    ]
+   ],
+   "n_tests": 3230,
+   "n_pass": 3228,
+   "n_fail": 0,
+   "n_skip": 2
+  },
+  {
+   "run": 6,
+   "rc": 0,
+   "wall_s": 204.56,
+   "busy_cpu_s": 67.3,
+   "cores_mean": 0.329,
+   "idle_share_raw": 0.671,
+   "idle_share_net": 0.6893,
+   "quiet_share": 0.6927,
+   "share_ge1core": 0.1415,
+   "iowait_s": 0.01,
+   "steal_s": 0.01,
+   "sampler_cpu_s": 0.57,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 2.12,
+   "cpu_other_s": 65.18,
+   "containers": {
+    "redis [redis:8.10.1]": 2.12
+   },
+   "top_comm": [
+    [
+     "host",
+     "MainThread",
+     42.42
+    ],
+    [
+     "host",
+     "provjobd4824174",
+     3.82
+    ],
+    [
+     "host",
+     "docker-proxy",
+     3.02
+    ],
+    [
+     "container",
+     "redis-server",
+     2.1
+    ],
+    [
+     "host",
+     "npm install nod",
+     1.13
+    ],
+    [
+     "host",
+     "python3",
+     0.55
+    ],
+    [
+     "host",
+     "npm uninstall n",
+     0.39
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.32
+    ],
+    [
+     "host",
+     "npm exec nyc --",
+     0.23
+    ],
+    [
+     "host",
+     "containerd",
+     0.12
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.04
+    ],
+    [
+     "host",
+     "kworker/u16:2-events_power_efficient",
+     0.03
+    ],
+    [
+     "host",
+     "multipathd",
+     0.02
+    ],
+    [
+     "host",
+     "hosted-compute-",
+     0.02
+    ],
+    [
+     "host",
+     "kworker/u16:8-ext4-rsv-conversion",
+     0.02
+    ]
+   ],
+   "n_tests": 3230,
+   "n_pass": 3228,
+   "n_fail": 0,
+   "n_skip": 2
+  }
+ ],
+ "idle": {
+  "median_idle_share_raw": 0.6734,
+  "median_idle_share_net": 0.6919,
+  "median_quiet_share": 0.6911,
+  "median_cores_mean": 0.3265,
+  "median_wall_s": 205.63,
+  "median_busy_cpu_s": 67.15
+ },
+ "tests": {
+  "n_distinct": 3230,
+  "n_flaky": 0,
+  "n_consistent_fail": 0,
+  "flaky": [],
+  "consistent_fail_sample": []
+ }
+}
