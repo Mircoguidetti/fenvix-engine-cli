@@ -3,7 +3,7 @@
  "repo": "healthchecks/healthchecks",
  "ref": "6c05a7adf266efb70f9517727bef9ea8b2bbf52f",
  "status": "ok",
- "setup_s": 53,
+ "setup_s": 23,
  "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
  "config": {
   "repo": "healthchecks/healthchecks",
@@ -15,402 +15,51 @@
   "runs": 8,
   "parser": "django"
  },
- "run_id": "43945303458",
- "measured_at": "2026-11-16T20:09:13Z",
- "baseline_cores": 0.0147,
+ "run_id": "43947164895",
+ "measured_at": "2026-11-16T20:16:54Z",
+ "baseline_cores": 0.0088,
  "n_runs": 8,
  "runs": [
   {
    "run": 1,
    "rc": 0,
-   "wall_s": 44.58,
-   "busy_cpu_s": 36.11,
-   "cores_mean": 0.81,
-   "idle_share_raw": 0.19,
-   "idle_share_net": 0.2047,
-   "quiet_share": 0.1648,
-   "share_ge1core": 0.5604,
-   "iowait_s": 10.39,
+   "wall_s": 21.66,
+   "busy_cpu_s": 21.17,
+   "cores_mean": 0.977,
+   "idle_share_raw": 0.0226,
+   "idle_share_net": 0.0314,
+   "idle_share_clamped": 0.0226,
+   "idle_interval_bound": 0.0945,
+   "quiet_share": 0.0444,
+   "share_ge1core": 0.7111,
+   "iowait_s": 3.27,
    "steal_s": 0.0,
-   "sampler_cpu_s": 0.25,
+   "sampler_cpu_s": 0.09,
    "cpu_test_tree_s": 0.0,
    "cpu_svc_s": 0.0,
    "cpu_containers_s": 0,
-   "cpu_other_s": 36.11,
+   "cpu_other_s": 21.17,
    "containers": {},
    "top_comm": [
     [
      "host",
      "python",
-     27.44
+     16.46
     ],
     [
      "host",
      "postgres",
-     0.71
+     0.23
     ],
     [
      "host",
-     "provjobd3824859",
-     0.29
-    ],
-    [
-     "host",
-     "python3",
-     0.21
-    ],
-    [
-     "host",
-     "hv_kvp_daemon",
-     0.16
-    ],
-    [
-     "host",
-     "Runner.Worker",
-     0.13
-    ],
-    [
-     "host",
-     "kworker/u16:3-events_power_efficient",
-     0.12
-    ],
-    [
-     "host",
-     "Runner.Listener",
-     0.05
-    ],
-    [
-     "host",
-     "containerd",
-     0.03
-    ],
-    [
-     "host",
-     "rcu_sched",
-     0.03
-    ],
-    [
-     "host",
-     "kworker/u16:4-ext4-rsv-conversion",
-     0.03
-    ],
-    [
-     "host",
-     "ExtHandler",
-     0.02
-    ],
-    [
-     "host",
-     "kworker/u16:4-flush-8:0",
-     0.02
-    ],
-    [
-     "host",
-     "kworker/u16:3-mlx5_fc",
-     0.01
-    ],
-    [
-     "host",
-     "kworker/0:1-events",
-     0.01
-    ]
-   ],
-   "n_tests": 1785,
-   "n_pass": 1785,
-   "n_fail": 0,
-   "n_skip": 0,
-   "series_1s": [
-    0.06,
-    0.13,
-    0.09,
-    0.31,
-    0.33,
-    0.24,
-    0.09,
-    0.54,
-    0.14,
-    0.05,
-    0.04,
-    0.04,
-    0.59,
-    0.94,
-    0.96,
-    0.9,
-    1.02,
-    1.05,
-    0.97,
-    1.04,
-    1.06,
-    0.93,
-    1.03,
-    1.04,
-    1.06,
-    1.02,
-    1.05,
-    1.03,
-    1.06,
-    1.04,
-    1.06,
-    1.02,
-    1.01,
-    1.03,
-    1.04,
-    1.04,
-    1.09,
-    1.08,
-    1.24,
-    1.03,
-    1.06,
-    1.04,
-    1.04,
-    1.04,
-    1.01,
-    0.54
-   ]
-  },
-  {
-   "run": 2,
-   "rc": 0,
-   "wall_s": 33.32,
-   "busy_cpu_s": 34.54,
-   "cores_mean": 1.037,
-   "idle_share_raw": -0.0367,
-   "idle_share_net": -0.022,
-   "quiet_share": 0.0147,
-   "share_ge1core": 0.8971,
-   "iowait_s": 0.06,
-   "steal_s": 0.0,
-   "sampler_cpu_s": 0.19,
-   "cpu_test_tree_s": 0.0,
-   "cpu_svc_s": 0.0,
-   "cpu_containers_s": 0,
-   "cpu_other_s": 34.54,
-   "containers": {},
-   "top_comm": [
-    [
-     "host",
-     "python",
-     25.78
-    ],
-    [
-     "host",
-     "postgres",
-     0.75
-    ],
-    [
-     "host",
-     "provjobd3824859",
-     0.31
-    ],
-    [
-     "host",
-     "python3",
-     0.17
-    ],
-    [
-     "host",
-     "Runner.Worker",
-     0.1
-    ],
-    [
-     "host",
-     "rcu_sched",
-     0.03
-    ],
-    [
-     "host",
-     "containerd",
-     0.03
-    ],
-    [
-     "host",
-     "Runner.Listener",
-     0.03
-    ],
-    [
-     "host",
-     "ExtHandler",
-     0.03
-    ],
-    [
-     "host",
-     "kworker/u16:4-mlx5_fc",
-     0.01
-    ],
-    [
-     "host",
-     "chronyd",
-     0.01
-    ],
-    [
-     "host",
-     "hosted-compute-",
-     0.01
-    ],
-    [
-     "host",
-     "kworker/2:3-events",
-     0.01
-    ],
-    [
-     "host",
-     "dockerd",
-     0.01
-    ],
-    [
-     "host",
-     "kworker/0:1-events",
-     0.01
-    ]
-   ],
-   "n_tests": 1785,
-   "n_pass": 1785,
-   "n_fail": 0,
-   "n_skip": 0
-  },
-  {
-   "run": 3,
-   "rc": 0,
-   "wall_s": 33.37,
-   "busy_cpu_s": 34.91,
-   "cores_mean": 1.046,
-   "idle_share_raw": -0.0463,
-   "idle_share_net": -0.0316,
-   "quiet_share": 0.0147,
-   "share_ge1core": 0.8971,
-   "iowait_s": 0.07,
-   "steal_s": 0.0,
-   "sampler_cpu_s": 0.2,
-   "cpu_test_tree_s": 0.0,
-   "cpu_svc_s": 0.0,
-   "cpu_containers_s": 0,
-   "cpu_other_s": 34.91,
-   "containers": {},
-   "top_comm": [
-    [
-     "host",
-     "python",
-     25.76
-    ],
-    [
-     "host",
-     "postgres",
-     0.74
-    ],
-    [
-     "host",
-     "provjobd3824859",
-     0.31
-    ],
-    [
-     "host",
-     "python3",
-     0.17
-    ],
-    [
-     "host",
-     "hv_kvp_daemon",
+     "provjobd2682350",
      0.14
     ],
     [
      "host",
-     "Runner.Worker",
-     0.1
-    ],
-    [
-     "host",
-     "Runner.Listener",
-     0.04
-    ],
-    [
-     "host",
-     "containerd",
-     0.03
-    ],
-    [
-     "host",
-     "rcu_sched",
-     0.02
-    ],
-    [
-     "host",
-     "kworker/3:1-mm_percpu_wq",
-     0.01
-    ],
-    [
-     "host",
-     "bash",
-     0.01
-    ],
-    [
-     "host",
-     "hosted-compute-",
-     0.01
-    ],
-    [
-     "host",
-     "kworker/1:1-mm_percpu_wq",
-     0.01
-    ],
-    [
-     "host",
-     "chronyd",
-     0.01
-    ],
-    [
-     "host",
-     "ExtHandler",
-     0.01
-    ]
-   ],
-   "n_tests": 1785,
-   "n_pass": 1785,
-   "n_fail": 0,
-   "n_skip": 0
-  },
-  {
-   "run": 4,
-   "rc": 0,
-   "wall_s": 33.7,
-   "busy_cpu_s": 35.65,
-   "cores_mean": 1.058,
-   "idle_share_raw": -0.0578,
-   "idle_share_net": -0.0431,
-   "quiet_share": 0.0145,
-   "share_ge1core": 0.942,
-   "iowait_s": 0.05,
-   "steal_s": 0.0,
-   "sampler_cpu_s": 0.19,
-   "cpu_test_tree_s": 0.0,
-   "cpu_svc_s": 0.0,
-   "cpu_containers_s": 0,
-   "cpu_other_s": 35.65,
-   "containers": {},
-   "top_comm": [
-    [
-     "host",
-     "python",
-     27.27
-    ],
-    [
-     "host",
-     "postgres",
-     0.73
-    ],
-    [
-     "host",
      "python3",
-     0.61
-    ],
-    [
-     "host",
-     "provjobd3824859",
-     0.33
-    ],
-    [
-     "host",
-     "Runner.Worker",
-     0.1
+     0.07
     ],
     [
      "host",
@@ -419,17 +68,32 @@
     ],
     [
      "host",
-     "ExtHandler",
-     0.04
+     "kworker/u16:2-flush-259:0",
+     0.07
     ],
     [
      "host",
-     "rcu_sched",
+     "Runner.Worker",
+     0.06
+    ],
+    [
+     "host",
+     "kworker/u16:2+flush-259:0",
      0.03
     ],
     [
      "host",
-     "systemd",
+     "kworker/u16:5-writeback",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/u16:5-events_power_efficient",
+     0.02
+    ],
+    [
+     "host",
+     "ext4lazyinit",
      0.02
     ],
     [
@@ -439,93 +103,148 @@
     ],
     [
      "host",
-     "multipathd",
-     0.01
-    ],
-    [
-     "host",
-     "systemd-journal",
-     0.01
-    ],
-    [
-     "host",
-     "kworker/2:3-events",
-     0.01
-    ],
-    [
-     "host",
-     "kworker/u16:3-writeback",
+     "kworker/u16:5-ext4-rsv-conversion",
      0.01
     ],
     [
      "host",
      "chronyd",
      0.01
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.01
     ]
+   ],
+   "busy_series_0p5s": [
+    0.06,
+    0.36,
+    0.8,
+    0.74,
+    0.04,
+    0.34,
+    0.9,
+    0.94,
+    0.99,
+    1.06,
+    1.02,
+    1.12,
+    1.23,
+    1.02,
+    1.04,
+    1.0,
+    1.05,
+    1.04,
+    1.04,
+    1.02,
+    1.01,
+    1.04,
+    1.02,
+    1.06,
+    1.01,
+    1.02,
+    1.04,
+    1.04,
+    1.07,
+    1.0,
+    1.06,
+    1.0,
+    1.07,
+    1.06,
+    1.04,
+    1.06,
+    1.07,
+    1.04,
+    1.1,
+    1.04,
+    1.07,
+    1.04,
+    1.04,
+    1.02,
+    0.59
    ],
    "n_tests": 1785,
    "n_pass": 1785,
    "n_fail": 0,
-   "n_skip": 0
+   "n_skip": 0,
+   "cgroup_diag": "tee_rc=1 pid=2937\n0::/system.slice/hosted-compute-agent.service\n/sys/fs/cgroup/idle_test/cgroup.procs: No such process (os error 3)",
+   "series_1s": [
+    0.06,
+    0.58,
+    0.39,
+    0.62,
+    0.96,
+    1.04,
+    1.17,
+    1.03,
+    1.02,
+    1.04,
+    1.01,
+    1.03,
+    1.03,
+    1.03,
+    1.05,
+    1.03,
+    1.03,
+    1.05,
+    1.06,
+    1.07,
+    1.05,
+    1.04,
+    0.81
+   ]
   },
   {
-   "run": 5,
+   "run": 2,
    "rc": 0,
-   "wall_s": 33.72,
-   "busy_cpu_s": 35.16,
-   "cores_mean": 1.043,
-   "idle_share_raw": -0.0428,
-   "idle_share_net": -0.0281,
-   "quiet_share": 0.0145,
-   "share_ge1core": 0.8841,
-   "iowait_s": 0.04,
+   "wall_s": 19.86,
+   "busy_cpu_s": 20.53,
+   "cores_mean": 1.033,
+   "idle_share_raw": -0.0335,
+   "idle_share_net": -0.0247,
+   "idle_share_clamped": 0.0,
+   "idle_interval_bound": 0.0377,
+   "quiet_share": 0.0244,
+   "share_ge1core": 0.8293,
+   "iowait_s": 1.36,
    "steal_s": 0.0,
-   "sampler_cpu_s": 0.19,
+   "sampler_cpu_s": 0.08,
    "cpu_test_tree_s": 0.0,
    "cpu_svc_s": 0.0,
    "cpu_containers_s": 0,
-   "cpu_other_s": 35.16,
+   "cpu_other_s": 20.53,
    "containers": {},
    "top_comm": [
     [
      "host",
      "python",
-     27.33
+     15.89
     ],
     [
      "host",
      "postgres",
-     0.67
+     0.26
     ],
     [
      "host",
-     "provjobd3824859",
-     0.3
+     "provjobd2682350",
+     0.12
     ],
     [
      "host",
      "hv_kvp_daemon",
-     0.17
+     0.09
     ],
     [
      "host",
      "python3",
-     0.16
+     0.06
     ],
     [
      "host",
      "Runner.Worker",
-     0.11
-    ],
-    [
-     "host",
-     "ExtHandler",
-     0.02
-    ],
-    [
-     "host",
-     "kworker/0:1-events",
-     0.02
+     0.05
     ],
     [
      "host",
@@ -534,17 +253,22 @@
     ],
     [
      "host",
-     "containerd",
+     "ext4lazyinit",
      0.02
     ],
     [
      "host",
-     "php-fpm8.5",
+     "bash",
      0.01
     ],
     [
      "host",
-     "polkitd",
+     "kworker/u16:2-flush-259:0",
+     0.01
+    ],
+    [
+     "host",
+     "ExtHandler",
      0.01
     ],
     [
@@ -554,14 +278,62 @@
     ],
     [
      "host",
-     "chronyd",
+     "hosted-compute-",
      0.01
     ],
     [
      "host",
-     "kworker/u16:3-writeback",
+     "kworker/0:1-events",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/u16:2-events_power_efficient",
      0.01
     ]
+   ],
+   "busy_series_0p5s": [
+    0.04,
+    0.64,
+    0.92,
+    0.98,
+    0.95,
+    0.96,
+    1.04,
+    1.04,
+    1.03,
+    1.02,
+    1.02,
+    1.06,
+    1.03,
+    1.02,
+    1.04,
+    1.06,
+    1.03,
+    1.12,
+    1.02,
+    1.04,
+    1.05,
+    1.22,
+    1.06,
+    1.04,
+    1.05,
+    1.04,
+    1.02,
+    1.04,
+    1.05,
+    1.08,
+    1.04,
+    1.06,
+    1.05,
+    1.04,
+    1.02,
+    1.08,
+    1.03,
+    1.06,
+    1.02,
+    1.04,
+    0.97
    ],
    "n_tests": 1785,
    "n_pass": 1785,
@@ -569,57 +341,49 @@
    "n_skip": 0
   },
   {
-   "run": 6,
+   "run": 3,
    "rc": 0,
-   "wall_s": 33.28,
-   "busy_cpu_s": 34.68,
-   "cores_mean": 1.042,
-   "idle_share_raw": -0.0422,
-   "idle_share_net": -0.0275,
-   "quiet_share": 0.0147,
-   "share_ge1core": 0.9412,
-   "iowait_s": 0.05,
+   "wall_s": 19.09,
+   "busy_cpu_s": 19.69,
+   "cores_mean": 1.032,
+   "idle_share_raw": -0.0315,
+   "idle_share_net": -0.0227,
+   "idle_share_clamped": 0.0,
+   "idle_interval_bound": 0.0502,
+   "quiet_share": 0.025,
+   "share_ge1core": 0.825,
+   "iowait_s": 1.1,
    "steal_s": 0.0,
-   "sampler_cpu_s": 0.18,
+   "sampler_cpu_s": 0.08,
    "cpu_test_tree_s": 0.0,
    "cpu_svc_s": 0.0,
    "cpu_containers_s": 0,
-   "cpu_other_s": 34.68,
+   "cpu_other_s": 19.69,
    "containers": {},
    "top_comm": [
     [
      "host",
      "python",
-     25.69
+     14.24
     ],
     [
      "host",
      "postgres",
-     0.55
+     0.2
     ],
     [
      "host",
-     "provjobd3824859",
-     0.33
+     "provjobd2682350",
+     0.14
     ],
     [
      "host",
      "python3",
-     0.16
+     0.06
     ],
     [
      "host",
      "Runner.Worker",
-     0.11
-    ],
-    [
-     "host",
-     "hv_kvp_daemon",
-     0.11
-    ],
-    [
-     "host",
-     "Runner.Listener",
      0.05
     ],
     [
@@ -629,27 +393,151 @@
     ],
     [
      "host",
-     "rcu_sched",
-     0.02
+     "Runner.Listener",
+     0.01
     ],
     [
      "host",
      "ExtHandler",
-     0.02
-    ],
-    [
-     "host",
-     "kworker/3:1-events",
      0.01
     ],
     [
      "host",
-     "kworker/2:3-mm_percpu_wq",
+     "dockerd",
      0.01
     ],
     [
      "host",
-     "hosted-compute-",
+     "ext4lazyinit",
+     0.01
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.01
+    ],
+    [
+     "host",
+     "chronyd",
+     0.01
+    ]
+   ],
+   "busy_series_0p5s": [
+    0.02,
+    0.66,
+    0.96,
+    0.92,
+    1.01,
+    0.98,
+    1.06,
+    1.02,
+    1.03,
+    1.0,
+    1.08,
+    1.02,
+    1.07,
+    1.04,
+    1.06,
+    1.06,
+    1.09,
+    1.04,
+    1.02,
+    1.02,
+    1.07,
+    1.02,
+    1.04,
+    1.04,
+    1.01,
+    1.04,
+    1.06,
+    1.04,
+    1.05,
+    1.06,
+    1.06,
+    1.04,
+    1.03,
+    1.04,
+    1.04,
+    1.02,
+    1.05,
+    1.02,
+    1.08,
+    0.46
+   ],
+   "n_tests": 1785,
+   "n_pass": 1785,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 4,
+   "rc": 0,
+   "wall_s": 20.28,
+   "busy_cpu_s": 20.95,
+   "cores_mean": 1.033,
+   "idle_share_raw": -0.0329,
+   "idle_share_net": -0.0241,
+   "idle_share_clamped": 0.0,
+   "idle_interval_bound": 0.0371,
+   "quiet_share": 0.0238,
+   "share_ge1core": 0.8095,
+   "iowait_s": 0.07,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.08,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 20.95,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "python",
+     15.95
+    ],
+    [
+     "host",
+     "postgres",
+     0.29
+    ],
+    [
+     "host",
+     "provjobd2682350",
+     0.12
+    ],
+    [
+     "host",
+     "python3",
+     0.06
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.05
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.03
+    ],
+    [
+     "host",
+     "systemd",
+     0.01
+    ],
+    [
+     "host",
+     "containerd",
+     0.01
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/u16:5-writeback",
      0.01
     ],
     [
@@ -659,9 +547,58 @@
     ],
     [
      "host",
-     "kworker/1:1-mm_percpu_wq",
+     "ExtHandler",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/1:1-events",
      0.01
     ]
+   ],
+   "busy_series_0p5s": [
+    0.02,
+    0.64,
+    1.04,
+    1.0,
+    0.97,
+    1.0,
+    1.02,
+    1.02,
+    1.05,
+    1.02,
+    1.04,
+    1.08,
+    1.07,
+    1.0,
+    1.04,
+    1.02,
+    1.11,
+    1.02,
+    1.06,
+    1.02,
+    1.03,
+    1.0,
+    1.04,
+    1.04,
+    1.09,
+    1.02,
+    1.06,
+    1.02,
+    1.05,
+    1.04,
+    1.04,
+    1.06,
+    1.07,
+    1.02,
+    1.04,
+    1.04,
+    1.07,
+    1.02,
+    1.06,
+    1.02,
+    1.07,
+    0.82
    ],
    "n_tests": 1785,
    "n_pass": 1785,
@@ -669,57 +606,64 @@
    "n_skip": 0
   },
   {
-   "run": 7,
+   "run": 5,
    "rc": 0,
-   "wall_s": 33.15,
-   "busy_cpu_s": 34.35,
-   "cores_mean": 1.036,
-   "idle_share_raw": -0.0361,
-   "idle_share_net": -0.0214,
-   "quiet_share": 0.0147,
-   "share_ge1core": 0.8529,
-   "iowait_s": 0.04,
+   "wall_s": 21.0,
+   "busy_cpu_s": 21.77,
+   "cores_mean": 1.037,
+   "idle_share_raw": -0.0367,
+   "idle_share_net": -0.0279,
+   "idle_share_clamped": 0.0,
+   "idle_interval_bound": 0.0497,
+   "quiet_share": 0.0227,
+   "share_ge1core": 0.8636,
+   "iowait_s": 0.17,
    "steal_s": 0.0,
-   "sampler_cpu_s": 0.19,
+   "sampler_cpu_s": 0.09,
    "cpu_test_tree_s": 0.0,
    "cpu_svc_s": 0.0,
    "cpu_containers_s": 0,
-   "cpu_other_s": 34.35,
+   "cpu_other_s": 21.77,
    "containers": {},
    "top_comm": [
     [
      "host",
      "python",
-     25.74
+     15.86
     ],
     [
      "host",
      "postgres",
-     0.6
+     0.23
     ],
     [
      "host",
-     "provjobd3824859",
-     0.31
+     "provjobd2682350",
+     0.15
     ],
     [
      "host",
      "python3",
-     0.17
+     0.07
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     0.07
     ],
     [
      "host",
      "Runner.Worker",
-     0.11
+     0.06
     ],
     [
      "host",
      "rcu_sched",
-     0.03
+     0.02
     ],
     [
      "host",
-     "ExtHandler",
+     "Runner.Listener",
      0.02
     ],
     [
@@ -729,7 +673,145 @@
     ],
     [
      "host",
+     "systemd-journal",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/2:2-events",
+     0.01
+    ],
+    [
+     "host",
      "kworker/0:1-events",
+     0.01
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.01
+    ]
+   ],
+   "busy_series_0p5s": [
+    0.02,
+    0.64,
+    0.98,
+    0.96,
+    1.01,
+    0.98,
+    1.02,
+    1.02,
+    1.07,
+    1.02,
+    1.04,
+    1.06,
+    1.03,
+    1.06,
+    1.06,
+    1.02,
+    1.07,
+    1.04,
+    1.04,
+    1.06,
+    1.05,
+    1.02,
+    1.02,
+    1.06,
+    1.07,
+    1.02,
+    1.02,
+    1.04,
+    1.05,
+    1.04,
+    1.06,
+    1.06,
+    1.03,
+    1.04,
+    1.06,
+    1.04,
+    1.05,
+    1.04,
+    1.04,
+    1.04,
+    1.15,
+    1.12,
+    1.04,
+    0.24
+   ],
+   "n_tests": 1785,
+   "n_pass": 1785,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 6,
+   "rc": 0,
+   "wall_s": 21.21,
+   "busy_cpu_s": 21.97,
+   "cores_mean": 1.036,
+   "idle_share_raw": -0.0356,
+   "idle_share_net": -0.0268,
+   "idle_share_clamped": 0.0,
+   "idle_interval_bound": 0.0391,
+   "quiet_share": 0.0227,
+   "share_ge1core": 0.8182,
+   "iowait_s": 0.11,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.09,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 21.97,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "python",
+     15.88
+    ],
+    [
+     "host",
+     "postgres",
+     0.24
+    ],
+    [
+     "host",
+     "provjobd2682350",
+     0.16
+    ],
+    [
+     "host",
+     "python3",
+     0.07
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.05
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.03
+    ],
+    [
+     "host",
+     "ExtHandler",
+     0.02
+    ],
+    [
+     "host",
+     "chronyd",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/3:3+events",
+     0.01
+    ],
+    [
+     "host",
+     "multipathd",
      0.01
     ],
     [
@@ -739,29 +821,184 @@
     ],
     [
      "host",
-     "systemd-journal",
+     "rcu_sched",
      0.01
     ],
     [
      "host",
-     "bash",
-     0.01
-    ],
-    [
-     "host",
-     "kcompactd0",
-     0.01
-    ],
-    [
-     "host",
-     "kworker/u16:1-flush-8:0",
-     0.01
-    ],
-    [
-     "host",
-     "chronyd",
+     "containerd",
      0.01
     ]
+   ],
+   "busy_series_0p5s": [
+    0.04,
+    0.64,
+    0.98,
+    0.94,
+    0.99,
+    1.0,
+    1.0,
+    1.04,
+    1.05,
+    1.08,
+    1.02,
+    1.06,
+    1.05,
+    1.06,
+    1.02,
+    1.04,
+    1.05,
+    1.06,
+    1.04,
+    1.04,
+    1.07,
+    1.02,
+    1.02,
+    1.04,
+    1.05,
+    1.04,
+    1.04,
+    1.06,
+    1.05,
+    1.06,
+    1.04,
+    1.04,
+    1.07,
+    1.04,
+    1.08,
+    1.08,
+    1.05,
+    1.06,
+    1.04,
+    1.02,
+    1.05,
+    1.06,
+    1.02,
+    0.7
+   ],
+   "n_tests": 1785,
+   "n_pass": 1785,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 7,
+   "rc": 0,
+   "wall_s": 21.78,
+   "busy_cpu_s": 22.52,
+   "cores_mean": 1.034,
+   "idle_share_raw": -0.034,
+   "idle_share_net": -0.0252,
+   "idle_share_clamped": 0.0,
+   "idle_interval_bound": 0.0342,
+   "quiet_share": 0.0222,
+   "share_ge1core": 0.8222,
+   "iowait_s": 0.08,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.1,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 0,
+   "cpu_other_s": 22.52,
+   "containers": {},
+   "top_comm": [
+    [
+     "host",
+     "python",
+     17.44
+    ],
+    [
+     "host",
+     "postgres",
+     0.23
+    ],
+    [
+     "host",
+     "provjobd2682350",
+     0.14
+    ],
+    [
+     "host",
+     "python3",
+     0.08
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.05
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.02
+    ],
+    [
+     "host",
+     "kworker/u16:2-events_unbound",
+     0.01
+    ],
+    [
+     "host",
+     "containerd",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/0:1-events",
+     0.01
+    ],
+    [
+     "host",
+     "jbd2/nvme0n1p1-8",
+     0.01
+    ]
+   ],
+   "busy_series_0p5s": [
+    0.02,
+    0.66,
+    0.98,
+    1.0,
+    1.0,
+    1.04,
+    1.02,
+    1.04,
+    1.01,
+    1.04,
+    1.0,
+    1.06,
+    1.07,
+    1.06,
+    1.02,
+    1.06,
+    1.03,
+    1.06,
+    1.04,
+    1.04,
+    1.03,
+    1.04,
+    1.0,
+    1.02,
+    1.05,
+    1.08,
+    1.04,
+    1.04,
+    1.05,
+    1.04,
+    1.04,
+    1.06,
+    1.07,
+    1.06,
+    1.04,
+    1.04,
+    1.07,
+    1.04,
+    1.04,
+    1.04,
+    1.05,
+    1.02,
+    1.06,
+    1.04,
+    0.81
    ],
    "n_tests": 1785,
    "n_pass": 1785,
@@ -771,97 +1008,137 @@
   {
    "run": 8,
    "rc": 0,
-   "wall_s": 33.09,
-   "busy_cpu_s": 34.8,
-   "cores_mean": 1.052,
-   "idle_share_raw": -0.0518,
-   "idle_share_net": -0.0371,
-   "quiet_share": 0.0147,
-   "share_ge1core": 0.8971,
-   "iowait_s": 0.04,
+   "wall_s": 19.84,
+   "busy_cpu_s": 20.63,
+   "cores_mean": 1.039,
+   "idle_share_raw": -0.0395,
+   "idle_share_net": -0.0307,
+   "idle_share_clamped": 0.0,
+   "idle_interval_bound": 0.0335,
+   "quiet_share": 0.0244,
+   "share_ge1core": 0.8293,
+   "iowait_s": 0.2,
    "steal_s": 0.0,
-   "sampler_cpu_s": 0.19,
+   "sampler_cpu_s": 0.08,
    "cpu_test_tree_s": 0.0,
    "cpu_svc_s": 0.0,
    "cpu_containers_s": 0,
-   "cpu_other_s": 34.8,
+   "cpu_other_s": 20.63,
    "containers": {},
    "top_comm": [
     [
      "host",
      "python",
-     25.72
+     15.88
     ],
     [
      "host",
      "postgres",
-     0.66
+     0.25
     ],
     [
      "host",
-     "provjobd3824859",
-     0.32
-    ],
-    [
-     "host",
-     "python3",
-     0.16
+     "provjobd2682350",
+     0.13
     ],
     [
      "host",
      "hv_kvp_daemon",
-     0.15
+     0.07
     ],
     [
      "host",
-     "Runner.Worker",
-     0.1
-    ],
-    [
-     "host",
-     "Runner.Listener",
+     "python3",
      0.06
     ],
     [
      "host",
-     "rcu_sched",
+     "Runner.Worker",
+     0.04
+    ],
+    [
+     "host",
+     "Runner.Listener",
      0.03
     ],
     [
      "host",
      "containerd",
-     0.02
-    ],
-    [
-     "host",
-     "kworker/1:1-events",
-     0.01
-    ],
-    [
-     "host",
-     "kworker/2:3-events",
-     0.01
-    ],
-    [
-     "host",
-     "chronyd",
-     0.01
-    ],
-    [
-     "host",
-     "systemd-resolve",
-     0.01
-    ],
-    [
-     "host",
-     "polkitd",
      0.01
     ],
     [
      "host",
      "ExtHandler",
      0.01
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/2:2-events",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/0:1-events",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/u16:5-events_power_efficient",
+     0.01
+    ],
+    [
+     "host",
+     "chronyd",
+     0.01
     ]
+   ],
+   "busy_series_0p5s": [
+    0.06,
+    0.64,
+    1.02,
+    0.98,
+    1.03,
+    0.98,
+    1.04,
+    1.04,
+    1.03,
+    1.0,
+    1.2,
+    1.04,
+    1.07,
+    1.02,
+    1.06,
+    1.02,
+    1.07,
+    0.98,
+    1.04,
+    1.04,
+    1.09,
+    1.0,
+    1.02,
+    1.04,
+    1.05,
+    1.02,
+    1.06,
+    1.02,
+    1.07,
+    1.02,
+    1.04,
+    1.06,
+    1.05,
+    1.04,
+    1.06,
+    1.1,
+    1.05,
+    1.08,
+    1.02,
+    1.06,
+    1.01
    ],
    "n_tests": 1785,
    "n_pass": 1785,
@@ -870,12 +1147,14 @@
   }
  ],
  "idle": {
-  "median_idle_share_raw": -0.0425,
-  "median_idle_share_net": -0.0278,
-  "median_quiet_share": 0.0147,
-  "median_cores_mean": 1.0425,
-  "median_wall_s": 33.345,
-  "median_busy_cpu_s": 34.855
+  "median_idle_share_raw": -0.0338,
+  "median_idle_share_net": -0.0249,
+  "median_idle_share_clamped": 0.0,
+  "median_idle_interval_bound": 0.0384,
+  "median_quiet_share": 0.0241,
+  "median_cores_mean": 1.0335,
+  "median_wall_s": 20.64,
+  "median_busy_cpu_s": 21.06
  },
  "tests": {
   "n_distinct": 1785,
