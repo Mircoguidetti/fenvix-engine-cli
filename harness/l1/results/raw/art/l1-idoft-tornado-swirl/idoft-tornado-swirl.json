@@ -25,7 +25,7 @@
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
    ],
    "exit": 1,
-   "duration_s": 0.293,
+   "duration_s": 0.233,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -43,7 +43,7 @@
     "--det"
    ],
    "exit": 1,
-   "duration_s": 1.979,
+   "duration_s": 1.511,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -62,7 +62,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 1.011,
+   "duration_s": 0.766,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -72,6 +72,672 @@
    "mode": "calm",
    "seed": null,
    "run": 0
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.227,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 1
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.756,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 1
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.774,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 1
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.232,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 2
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.765,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 2
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.753,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 2
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.229,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 3
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.753,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 3
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.798,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 3
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.234,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 4
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.8,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 4
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.772,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 4
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.232,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 5
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.77,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 5
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.781,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 5
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.233,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 6
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.768,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 6
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.797,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 6
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.229,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 7
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.752,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 7
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.754,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 7
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.232,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 8
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.749,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 8
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.772,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 8
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.232,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 9
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.772,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 9
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.774,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 9
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.529,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "loaded",
+   "seed": null,
+   "run": 0
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 1.927,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "loaded-calm",
+   "seed": null,
+   "run": 0
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.315,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "loaded",
+   "seed": null,
+   "run": 1
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 1.932,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "loaded-calm",
+   "seed": null,
+   "run": 1
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.565,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "loaded",
+   "seed": null,
+   "run": 2
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 2.241,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "loaded-calm",
+   "seed": null,
+   "run": 2
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.469,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "loaded",
+   "seed": null,
+   "run": 3
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 2.155,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "loaded-calm",
+   "seed": null,
+   "run": 3
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
+   ],
+   "exit": 1,
+   "duration_s": 0.626,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "loaded",
+   "seed": null,
+   "run": 4
+  },
+  {
+   "args": [
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 2.037,
+   "timed_out": false,
+   "outcomes": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
+   },
+   "tail": "",
+   "mode": "loaded-calm",
+   "seed": null,
+   "run": 4
   },
   {
    "args": [
@@ -86,672 +752,6 @@
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
    },
    "tail": "",
-   "mode": "baseline",
-   "seed": null,
-   "run": 1
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det"
-   ],
-   "exit": 1,
-   "duration_s": 1.01,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "det",
-   "seed": null,
-   "run": 1
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 1.007,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "calm",
-   "seed": null,
-   "run": 1
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.299,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "baseline",
-   "seed": null,
-   "run": 2
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det"
-   ],
-   "exit": 1,
-   "duration_s": 0.995,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "det",
-   "seed": null,
-   "run": 2
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 1.015,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "calm",
-   "seed": null,
-   "run": 2
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.289,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "baseline",
-   "seed": null,
-   "run": 3
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det"
-   ],
-   "exit": 1,
-   "duration_s": 1.009,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "det",
-   "seed": null,
-   "run": 3
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 1.049,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "calm",
-   "seed": null,
-   "run": 3
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.287,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "baseline",
-   "seed": null,
-   "run": 4
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det"
-   ],
-   "exit": 1,
-   "duration_s": 1.024,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "det",
-   "seed": null,
-   "run": 4
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 1.029,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "calm",
-   "seed": null,
-   "run": 4
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.298,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "baseline",
-   "seed": null,
-   "run": 5
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det"
-   ],
-   "exit": 1,
-   "duration_s": 1.038,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "det",
-   "seed": null,
-   "run": 5
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 1.006,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "calm",
-   "seed": null,
-   "run": 5
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.291,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "baseline",
-   "seed": null,
-   "run": 6
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det"
-   ],
-   "exit": 1,
-   "duration_s": 1.044,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "det",
-   "seed": null,
-   "run": 6
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 1.005,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "calm",
-   "seed": null,
-   "run": 6
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.297,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "baseline",
-   "seed": null,
-   "run": 7
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det"
-   ],
-   "exit": 1,
-   "duration_s": 1.017,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "det",
-   "seed": null,
-   "run": 7
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 1.011,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "calm",
-   "seed": null,
-   "run": 7
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.287,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "baseline",
-   "seed": null,
-   "run": 8
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det"
-   ],
-   "exit": 1,
-   "duration_s": 1.038,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "det",
-   "seed": null,
-   "run": 8
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 1.042,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "calm",
-   "seed": null,
-   "run": 8
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.294,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "baseline",
-   "seed": null,
-   "run": 9
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det"
-   ],
-   "exit": 1,
-   "duration_s": 1.01,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "det",
-   "seed": null,
-   "run": 9
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 1.038,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "calm",
-   "seed": null,
-   "run": 9
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.451,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "loaded",
-   "seed": null,
-   "run": 0
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 2.305,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "loaded-calm",
-   "seed": null,
-   "run": 0
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.725,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "loaded",
-   "seed": null,
-   "run": 1
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 2.376,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "loaded-calm",
-   "seed": null,
-   "run": 1
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.563,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "loaded",
-   "seed": null,
-   "run": 2
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 2.209,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "loaded-calm",
-   "seed": null,
-   "run": 2
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.74,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "loaded",
-   "seed": null,
-   "run": 3
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 2.032,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "loaded-calm",
-   "seed": null,
-   "run": 3
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.597,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "loaded",
-   "seed": null,
-   "run": 4
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2",
-    "--det",
-    "--det-async"
-   ],
-   "exit": 1,
-   "duration_s": 2.007,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
-   "mode": "loaded-calm",
-   "seed": null,
-   "run": 4
-  },
-  {
-   "args": [
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
-   ],
-   "exit": 1,
-   "duration_s": 0.566,
-   "timed_out": false,
-   "outcomes": {
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
-    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "failed"
-   },
-   "tail": "",
    "mode": "loaded",
    "seed": null,
    "run": 5
@@ -764,7 +764,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 2.285,
+   "duration_s": 1.617,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -781,7 +781,7 @@
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
    ],
    "exit": 1,
-   "duration_s": 0.379,
+   "duration_s": 0.295,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -800,7 +800,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 2.134,
+   "duration_s": 1.83,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -817,7 +817,7 @@
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
    ],
    "exit": 1,
-   "duration_s": 0.545,
+   "duration_s": 0.39,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -836,7 +836,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 1.984,
+   "duration_s": 1.646,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -853,7 +853,7 @@
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
    ],
    "exit": 1,
-   "duration_s": 0.594,
+   "duration_s": 0.622,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -872,7 +872,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 2.183,
+   "duration_s": 2.026,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -889,7 +889,7 @@
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2"
    ],
    "exit": 1,
-   "duration_s": 0.53,
+   "duration_s": 0.578,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -908,7 +908,7 @@
     "--det-async"
    ],
    "exit": 1,
-   "duration_s": 2.266,
+   "duration_s": 2.087,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -928,7 +928,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 1.028,
+   "duration_s": 0.793,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -948,7 +948,7 @@
     "--det-async-seed=2"
    ],
    "exit": 1,
-   "duration_s": 1.018,
+   "duration_s": 0.792,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -968,7 +968,7 @@
     "--det-async-seed=3"
    ],
    "exit": 1,
-   "duration_s": 1.001,
+   "duration_s": 0.785,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -988,7 +988,7 @@
     "--det-async-seed=4"
    ],
    "exit": 1,
-   "duration_s": 1.025,
+   "duration_s": 0.765,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1008,7 +1008,7 @@
     "--det-async-seed=5"
    ],
    "exit": 1,
-   "duration_s": 1.013,
+   "duration_s": 0.794,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1028,7 +1028,7 @@
     "--det-async-seed=6"
    ],
    "exit": 1,
-   "duration_s": 1.032,
+   "duration_s": 0.786,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1048,7 +1048,7 @@
     "--det-async-seed=7"
    ],
    "exit": 1,
-   "duration_s": 1.025,
+   "duration_s": 0.763,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1068,7 +1068,7 @@
     "--det-async-seed=8"
    ],
    "exit": 1,
-   "duration_s": 1.015,
+   "duration_s": 0.779,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1088,7 +1088,7 @@
     "--det-async-seed=9"
    ],
    "exit": 1,
-   "duration_s": 1.02,
+   "duration_s": 0.781,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1108,7 +1108,7 @@
     "--det-async-seed=10"
    ],
    "exit": 1,
-   "duration_s": 1.008,
+   "duration_s": 0.76,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1128,7 +1128,7 @@
     "--det-async-seed=11"
    ],
    "exit": 1,
-   "duration_s": 1.006,
+   "duration_s": 0.799,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1148,7 +1148,7 @@
     "--det-async-seed=12"
    ],
    "exit": 1,
-   "duration_s": 1.028,
+   "duration_s": 0.79,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1168,7 +1168,7 @@
     "--det-async-seed=13"
    ],
    "exit": 1,
-   "duration_s": 0.995,
+   "duration_s": 0.767,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1188,7 +1188,7 @@
     "--det-async-seed=14"
    ],
    "exit": 1,
-   "duration_s": 1.021,
+   "duration_s": 0.765,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1208,7 +1208,7 @@
     "--det-async-seed=15"
    ],
    "exit": 1,
-   "duration_s": 0.999,
+   "duration_s": 0.77,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1228,7 +1228,7 @@
     "--det-async-seed=16"
    ],
    "exit": 1,
-   "duration_s": 1.0,
+   "duration_s": 0.778,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1248,7 +1248,7 @@
     "--det-async-seed=17"
    ],
    "exit": 1,
-   "duration_s": 0.996,
+   "duration_s": 0.797,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1268,7 +1268,7 @@
     "--det-async-seed=18"
    ],
    "exit": 1,
-   "duration_s": 0.989,
+   "duration_s": 0.804,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1288,7 +1288,7 @@
     "--det-async-seed=19"
    ],
    "exit": 1,
-   "duration_s": 1.026,
+   "duration_s": 0.807,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1308,7 +1308,7 @@
     "--det-async-seed=20"
    ],
    "exit": 1,
-   "duration_s": 1.031,
+   "duration_s": 0.768,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1328,7 +1328,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 1.112,
+   "duration_s": 0.762,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1348,7 +1348,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 1.035,
+   "duration_s": 0.785,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1368,7 +1368,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 1.007,
+   "duration_s": 0.775,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1388,7 +1388,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 1.027,
+   "duration_s": 0.771,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1408,7 +1408,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 1.024,
+   "duration_s": 0.788,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1428,7 +1428,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 1.019,
+   "duration_s": 0.781,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1448,7 +1448,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 1.021,
+   "duration_s": 0.762,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1468,7 +1468,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 1.001,
+   "duration_s": 0.78,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1488,7 +1488,7 @@
     "--det-async-seed=1"
    ],
    "exit": 1,
-   "duration_s": 1.006,
+   "duration_s": 0.778,
    "timed_out": false,
    "outcomes": {
     "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "failed",
@@ -1524,7 +1524,7 @@
   {
    "mode": "det",
    "run": 0,
-   "duration_s": 1.166,
+   "duration_s": 0.882,
    "exit": 0,
    "timed_out": false,
    "counts": {
@@ -1535,7 +1535,7 @@
   {
    "mode": "det-async",
    "run": 0,
-   "duration_s": 1.159,
+   "duration_s": 0.916,
    "exit": 0,
    "timed_out": false,
    "counts": {
@@ -1546,7 +1546,7 @@
   {
    "mode": "det-async-s1",
    "run": 0,
-   "duration_s": 1.154,
+   "duration_s": 0.911,
    "exit": 0,
    "timed_out": false,
    "counts": {
@@ -1557,7 +1557,7 @@
   {
    "mode": "det",
    "run": 1,
-   "duration_s": 1.13,
+   "duration_s": 0.895,
    "exit": 0,
    "timed_out": false,
    "counts": {
@@ -1568,7 +1568,7 @@
   {
    "mode": "det-async",
    "run": 1,
-   "duration_s": 1.146,
+   "duration_s": 0.914,
    "exit": 0,
    "timed_out": false,
    "counts": {
@@ -1579,7 +1579,7 @@
   {
    "mode": "det-async-s1",
    "run": 1,
-   "duration_s": 1.166,
+   "duration_s": 0.901,
    "exit": 0,
    "timed_out": false,
    "counts": {
@@ -1590,7 +1590,7 @@
   {
    "mode": "det",
    "run": 2,
-   "duration_s": 1.169,
+   "duration_s": 0.895,
    "exit": 0,
    "timed_out": false,
    "counts": {
@@ -1601,7 +1601,7 @@
   {
    "mode": "det-async",
    "run": 2,
-   "duration_s": 1.177,
+   "duration_s": 0.914,
    "exit": 0,
    "timed_out": false,
    "counts": {
@@ -1612,7 +1612,7 @@
   {
    "mode": "det-async-s1",
    "run": 2,
-   "duration_s": 1.152,
+   "duration_s": 0.927,
    "exit": 0,
    "timed_out": false,
    "counts": {
