@@ -43,8 +43,8 @@ the callback is far more expensive on loops.
 from __future__ import annotations
 
 import atexit
-import dis
 import gzip
+import opcode
 import os
 import pickle
 import sys
@@ -55,9 +55,10 @@ from types import CodeType, FunctionType
 _mon = getattr(sys, "monitoring", None)
 AVAILABLE = _mon is not None
 _DBG = os.environ.get("SYSMON_DBG", "")  # profiling knobs: "off" (tracer not started), "norestart"
-_RESUME = dis.opmap.get("RESUME", -1)
+_RESUME = opcode.opmap.get("RESUME", -1)
 # opcodes that may precede the first RESUME (cells, free variables, generator and coroutine creation)
-_PRELUDE = {dis.opmap[n] for n in ("MAKE_CELL", "COPY_FREE_VARS", "RETURN_GENERATOR", "POP_TOP") if n in dis.opmap}
+_PRELUDE = {opcode.opmap[n] for n in ("MAKE_CELL", "COPY_FREE_VARS", "RETURN_GENERATOR", "POP_TOP")
+            if n in opcode.opmap}
 _SHIFT = 24  # recorded value: file id << _SHIFT | line
 _MASK = (1 << _SHIFT) - 1
 
@@ -157,12 +158,17 @@ class SysmonCapture:
                 self.arm(code)
 
     def _arm_existing(self) -> None:
-        """Code objects created before ``start`` (functions of modules imported earlier, frames on the stack)."""
-        import gc
+        """Code objects created before ``start`` (functions of modules imported earlier, frames on the stack).
 
-        for o in gc.get_objects():
-            if type(o) is FunctionType:
-                self.arm(o.__code__)
+        The heap is scanned only when a module below the root is already loaded (usually none is: the plugin is
+        imported before conftest files and the code under test).
+        """
+        if any(self._want(getattr(m, "__file__", None) or "") for m in list(sys.modules.values())):
+            import gc
+
+            for o in gc.get_objects():
+                if type(o) is FunctionType:
+                    self.arm(o.__code__)
         f = sys._getframe()
         while f is not None:
             self.arm(f.f_code)
