@@ -41,7 +41,7 @@ def main():
                                              text=True).stdout.split()[0]
         groups = f.get("groups", spec.get("ci_groups", 1))
         for rep in range(f.get("reps", 10)):
-            for g in range(groups):
+            for g in [x - 1 for x in f.get("only_groups", range(1, groups + 1))]:
                 flaky.append(entry(f["spec"], {"rep": rep, "group": f"{g + 1}/{groups}", "sha": sha,
                                                "budget": str(f.get("budget_min", 200))}))
     finer = [{"name": f["repo"], "sha": f["sha"]} for f in run.get("finer", [])]

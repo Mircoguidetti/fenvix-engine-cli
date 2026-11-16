@@ -752,6 +752,7 @@ class Walker:
                     d["closure"] = d["go-cache"]
                 elif u in rt_changed:
                     d["closure"] = "runtime-read-changed"   # Go's own key did not see it: potential wrong hit
+                    d["path"] = os.path.relpath(rt_changed[u], self.src)
                 else:
                     d["closure"] = None
                 if r.get("execs_seen") or (pkgrec.get(u, {}).get("execs")):
