@@ -44,6 +44,45 @@ candidate is listed in the report with the reason.
    (coverage) and, for every unstable test, the trace of a passing `--det` run
    with the trace of a failing one (first diverging event).
 
+## Running on GitHub Actions
+
+`.github/workflows/harness.yml` (manual `workflow_dispatch`) runs the same
+protocol as a matrix, one repository per `ubuntu-latest` runner:
+`build` (wheel) → `candidates` → `prepare` (selection filters per candidate) →
+`select` (first `per_pool` per pool, `harness/ci.py select`) → `round` (full
+protocol, 60 min per job, `--repo-budget 2700`) → `timing-pick` + `timing`
+(quiet timing pass) → `aggregate` (merges artifacts with `harness/ci.py
+aggregate`, writes `harness/results/<set>/REPORT.md` and commits it to the
+branch). Input `only=a,b,c` skips the selection and measures just those
+repositories (used to re-measure after a fix). Locally the same harness runs
+with `python harness/detpy_harness.py --set ...` (`--checkpoint` commits the
+results after every repository).
+
+## Tests broken by Level 0
+
+A test is *broken by `--det`* when it fails in at least one fixed-order `--det`
+run but in at most one baseline run (and less often than under `--det`). For
+each such test the harness records the exception type and message of its
+`--det` failures and the first diverging event, then classifies the cause with
+one extra run per variant:
+
+* a reference run **without `--det`**, serial and in the same fixed order: if
+  the test fails there too, the cause is `fixed-order` — an order dependency
+  that the random/parallel baseline hides, not a Level 0 failure (easypy: 41
+  of the 50 extra failures under `--det` in the trial run);
+* one `--det --det-disable=<control>` run per control (`time`, `net`, `fs`,
+  `seeds`, `hashseed`): the cause is the set of controls whose removal makes the
+  test pass; `unexplained` when none does.
+
+## Quiet timing pass
+
+`--mode timing`: on one runner, `--timing-runs` (3) serial fixed-order normal
+runs (`-p no:randomly`, no xdist, no `--det`) interleaved with the same number
+of `--det` runs; the slowdown is the ratio of the medians. On GitHub-hosted
+runners the numbers are labelled DECLARED-NOISY (virtual machines on shared
+hardware). The round's own timings (serial `--det` vs the xdist baseline) are
+reported as NOT COMPARABLE.
+
 ## Metrics
 
 * **main metric — reproduced**: % of baseline-unstable tests for which some
@@ -76,6 +115,8 @@ candidate is listed in the report with the reason.
 | `reproduced`, `repro_seed`, `seeds_needed`, `best_attempt` | exploration result (`fixed` = fixed order) |
 | `pass_fail_reason`, `pass_fail_divergence` | first diverging event between a passing and a failing `--det` run |
 | `fingerprint_covered`, `distinct_fingerprints`, `det_reason`, `det_divergence` | coverage over the fixed-order `--det` runs |
+| `baseline_exception`, `det_exception`, `det_exception_message` | most frequent exception of the failures in each mode |
+| `broken_by_det`, `broken_cause` | see "Tests broken by Level 0" |
 
 `<repo>_runs.csv`: one row per run (`mode` normal/det/seed, `seed`, `run`,
 `duration_s`, `precompile_s`, `exit_code`, `timed_out`, outcome counts).
