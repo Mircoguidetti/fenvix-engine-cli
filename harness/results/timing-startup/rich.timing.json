@@ -1,0 +1,45 @@
+{
+  "name": "rich",
+  "kind": "popular",
+  "status": "ok",
+  "python": "3.13",
+  "serial_s": [
+    5.418175498000011,
+    4.951388157999986,
+    4.913400988999996
+  ],
+  "det_s": [
+    14.69080034999999,
+    6.4891378560000135,
+    6.480193568000004
+  ],
+  "precompile_s": [
+    8.62,
+    0.403,
+    0.407
+  ],
+  "tests": 981,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000008656",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "startup_normal_s": [
+    0.21180850300001453,
+    0.21040343499998926,
+    0.20686915400000316
+  ],
+  "startup_det_s": [
+    0.853344782999983,
+    0.8463283469999965,
+    0.8420116279999945
+  ],
+  "startup_cost_s": 0.6359249120000072,
+  "slowdown_pct": 31.05694098160081
+}

@@ -1,0 +1,45 @@
+{
+  "name": "idoft-easypy",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "serial_s": [
+    12.154553432000057,
+    12.311998722999988,
+    12.267500105000067
+  ],
+  "det_s": [
+    12.55896452200011,
+    11.918276724999942,
+    11.844569830999944
+  ],
+  "precompile_s": [
+    1.101,
+    0.369,
+    0.369
+  ],
+  "tests": 212,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000008661",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "Intel(R) Xeon(R) 6973P-C"
+  },
+  "startup_normal_s": [
+    0.146528093000029,
+    0.13693897799998922,
+    0.14000739199991585
+  ],
+  "startup_det_s": [
+    0.6402093760000298,
+    0.6359318199999962,
+    0.6606975220000777
+  ],
+  "startup_cost_s": 0.500201984000114,
+  "slowdown_pct": -2.8467363114819677
+}

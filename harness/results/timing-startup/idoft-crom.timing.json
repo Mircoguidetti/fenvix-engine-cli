@@ -1,0 +1,45 @@
+{
+  "name": "idoft-crom",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "serial_s": [
+    0.3968340379999802,
+    0.3967947470000013,
+    0.40212176100001784
+  ],
+  "det_s": [
+    2.1414842679999992,
+    1.185251787999988,
+    1.1774661589999766
+  ],
+  "precompile_s": [
+    1.477,
+    0.519,
+    0.533
+  ],
+  "tests": 84,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000008696",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 7763 64-Core Processor"
+  },
+  "startup_normal_s": [
+    0.1908217109999839,
+    0.20013366599999927,
+    0.19291126099997769
+  ],
+  "startup_det_s": [
+    0.9228682019999894,
+    0.9186283180000032,
+    0.9111897100000022
+  ],
+  "startup_cost_s": 0.7257170570000255,
+  "slowdown_pct": 198.67694665850394
+}

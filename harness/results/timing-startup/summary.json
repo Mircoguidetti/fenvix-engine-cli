@@ -1,0 +1,553 @@
+{
+  "meta": {
+    "set": "timing-startup",
+    "runs": 10,
+    "seeds": 20,
+    "confirm": 10,
+    "jobs": 1,
+    "timing_runs": 3,
+    "detpy": "0.1.0",
+    "executor": "GitHub Actions matrix, one repository per ubuntu-latest runner (run https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43946234291)",
+    "date": "2026-11-16 21:40 UTC",
+    "command": "gh workflow run harness.yml -f runs=10 -f seeds=20 -f confirm=10",
+    "order": [
+      "attrs",
+      "idoft-centreon-sdk-python",
+      "idoft-cloudnetpy",
+      "idoft-crom",
+      "idoft-easypy",
+      "idoft-eppy",
+      "networkx",
+      "pygments",
+      "rich",
+      "werkzeug"
+    ],
+    "notes": [
+      "The FlaPy dataset (Gruber et al.) is published on Zenodo, which the development environment cannot reach (HTTP 403 from the network proxy): the 'flaky' pool uses the Python section of IDoFT, each project pinned at the commit where its flaky tests were detected.",
+      "Selection: the first 25 candidates per pool (in harness/repos.json and harness/flaky_candidates.json order) that clone, install, collect and finish their first baseline run within 120 s; every rejected candidate is listed above."
+    ]
+  },
+  "totals": {
+    "all": {},
+    "flaky": {},
+    "popular": {}
+  },
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_causes": {},
+  "timings": [
+    {
+      "name": "attrs",
+      "kind": "popular",
+      "status": "ok",
+      "python": "3.13",
+      "serial_s": [
+        10.065290748999999,
+        8.661054368999999,
+        8.666667239999995
+      ],
+      "det_s": [
+        18.769859647000004,
+        11.122536365999991,
+        10.987037830999995
+      ],
+      "precompile_s": [
+        8.127,
+        0.344,
+        0.339
+      ],
+      "tests": 1412,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008678",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz"
+      },
+      "startup_normal_s": [
+        0.32503171900000893,
+        0.3274753100000112,
+        0.32448672800001077
+      ],
+      "startup_det_s": [
+        1.351687482999992,
+        1.3561897119999884,
+        1.372604973999998
+      ],
+      "startup_cost_s": 1.0311579929999795,
+      "slowdown_pct": 28.33694957924793
+    },
+    {
+      "name": "idoft-centreon-sdk-python",
+      "kind": "flaky",
+      "status": "ok",
+      "python": "3.9",
+      "serial_s": [
+        0.33878944900000363,
+        0.33149364399999826,
+        0.33269441800000266
+      ],
+      "det_s": [
+        1.6978626329999997,
+        0.8709114850000006,
+        0.8609176560000051
+      ],
+      "precompile_s": [
+        1.171,
+        0.361,
+        0.354
+      ],
+      "tests": 44,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008675",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+      },
+      "startup_normal_s": [
+        0.1411144240000013,
+        0.1416534089999999,
+        0.1424755300000058
+      ],
+      "startup_det_s": [
+        0.6409088670000003,
+        0.662256352,
+        0.6548978140000017
+      ],
+      "startup_cost_s": 0.5132444050000018,
+      "slowdown_pct": 161.7752020714678
+    },
+    {
+      "name": "idoft-cloudnetpy",
+      "kind": "flaky",
+      "status": "ok",
+      "python": "3.9",
+      "serial_s": [
+        6.318949637000003,
+        6.230554788000006,
+        6.20497375299999
+      ],
+      "det_s": [
+        8.048300095999991,
+        6.303090450999974,
+        6.146624046999989
+      ],
+      "precompile_s": [
+        2.621,
+        0.669,
+        0.674
+      ],
+      "tests": 439,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008687",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.82.6",
+        "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+      },
+      "startup_normal_s": [
+        0.18143274199999837,
+        0.18855280699997934,
+        0.18503676500000665
+      ],
+      "startup_det_s": [
+        1.026406413000018,
+        1.0244335639999917,
+        1.0235130749999826
+      ],
+      "startup_cost_s": 0.8393967989999851,
+      "slowdown_pct": 1.1641926837666405
+    },
+    {
+      "name": "idoft-crom",
+      "kind": "flaky",
+      "status": "ok",
+      "python": "3.9",
+      "serial_s": [
+        0.3968340379999802,
+        0.3967947470000013,
+        0.40212176100001784
+      ],
+      "det_s": [
+        2.1414842679999992,
+        1.185251787999988,
+        1.1774661589999766
+      ],
+      "precompile_s": [
+        1.477,
+        0.519,
+        0.533
+      ],
+      "tests": 84,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008696",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 7763 64-Core Processor"
+      },
+      "startup_normal_s": [
+        0.1908217109999839,
+        0.20013366599999927,
+        0.19291126099997769
+      ],
+      "startup_det_s": [
+        0.9228682019999894,
+        0.9186283180000032,
+        0.9111897100000022
+      ],
+      "startup_cost_s": 0.7257170570000255,
+      "slowdown_pct": 198.67694665850394
+    },
+    {
+      "name": "idoft-easypy",
+      "kind": "flaky",
+      "status": "ok",
+      "python": "3.9",
+      "serial_s": [
+        12.154553432000057,
+        12.311998722999988,
+        12.267500105000067
+      ],
+      "det_s": [
+        12.55896452200011,
+        11.918276724999942,
+        11.844569830999944
+      ],
+      "precompile_s": [
+        1.101,
+        0.369,
+        0.369
+      ],
+      "tests": 212,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008661",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "Intel(R) Xeon(R) 6973P-C"
+      },
+      "startup_normal_s": [
+        0.146528093000029,
+        0.13693897799998922,
+        0.14000739199991585
+      ],
+      "startup_det_s": [
+        0.6402093760000298,
+        0.6359318199999962,
+        0.6606975220000777
+      ],
+      "startup_cost_s": 0.500201984000114,
+      "slowdown_pct": -2.8467363114819677
+    },
+    {
+      "name": "idoft-eppy",
+      "kind": "flaky",
+      "status": "ok",
+      "python": "3.9",
+      "serial_s": [
+        6.086988542,
+        5.880814985999997,
+        6.236175736999996
+      ],
+      "det_s": [
+        7.595952140000001,
+        6.7452507270000055,
+        6.744448488000003
+      ],
+      "precompile_s": [
+        1.306,
+        0.38,
+        0.384
+      ],
+      "tests": 218,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008668",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+      },
+      "startup_normal_s": [
+        0.1290080979999999,
+        0.1313601619999929,
+        0.13176378
+      ],
+      "startup_det_s": [
+        0.6022482759999974,
+        0.5953120239999947,
+        0.5934127390000015
+      ],
+      "startup_cost_s": 0.4639518620000018,
+      "slowdown_pct": 10.81425043694464
+    },
+    {
+      "name": "networkx",
+      "kind": "popular",
+      "status": "ok",
+      "python": "3.13",
+      "serial_s": [
+        141.361834591,
+        137.00545680700003,
+        142.76653069499991
+      ],
+      "det_s": [
+        159.999285097,
+        153.81568401700002,
+        153.50018668799999
+      ],
+      "precompile_s": [
+        10.542,
+        0.722,
+        0.727
+      ],
+      "tests": 10191,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008670",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 7763 64-Core Processor"
+      },
+      "startup_normal_s": [
+        0.37729109599990807,
+        0.36872462999997424,
+        0.3788967179999645
+      ],
+      "startup_det_s": [
+        1.472584771999891,
+        1.458442691000073,
+        1.522408913999925
+      ],
+      "startup_cost_s": 1.095293675999983,
+      "slowdown_pct": 8.8099093097034
+    },
+    {
+      "name": "pygments",
+      "kind": "popular",
+      "status": "ok",
+      "python": "3.13",
+      "serial_s": [
+        19.652957990000004,
+        19.089929829,
+        19.481569961000005
+      ],
+      "det_s": [
+        28.12172096100001,
+        21.074818993000008,
+        21.091564759000022
+      ],
+      "precompile_s": [
+        7.369,
+        0.588,
+        0.595
+      ],
+      "tests": 5346,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008684",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 7763 64-Core Processor"
+      },
+      "startup_normal_s": [
+        0.2436533949999955,
+        0.2403889969999966,
+        0.2395713950000129
+      ],
+      "startup_det_s": [
+        0.9461044380000203,
+        0.9495783129999893,
+        0.9474758499999894
+      ],
+      "startup_cost_s": 0.7070868529999927,
+      "slowdown_pct": 8.264194319159346
+    },
+    {
+      "name": "rich",
+      "kind": "popular",
+      "status": "ok",
+      "python": "3.13",
+      "serial_s": [
+        5.418175498000011,
+        4.951388157999986,
+        4.913400988999996
+      ],
+      "det_s": [
+        14.69080034999999,
+        6.4891378560000135,
+        6.480193568000004
+      ],
+      "precompile_s": [
+        8.62,
+        0.403,
+        0.407
+      ],
+      "tests": 981,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008656",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+      },
+      "startup_normal_s": [
+        0.21180850300001453,
+        0.21040343499998926,
+        0.20686915400000316
+      ],
+      "startup_det_s": [
+        0.853344782999983,
+        0.8463283469999965,
+        0.8420116279999945
+      ],
+      "startup_cost_s": 0.6359249120000072,
+      "slowdown_pct": 31.05694098160081
+    },
+    {
+      "name": "werkzeug",
+      "kind": "popular",
+      "status": "ok",
+      "python": "3.13",
+      "serial_s": [
+        10.075606053999998,
+        9.302039464000003,
+        9.354994966999996
+      ],
+      "det_s": [
+        18.438279594,
+        11.42160513399999,
+        11.487913182
+      ],
+      "precompile_s": [
+        7.077,
+        0.451,
+        0.464
+      ],
+      "tests": 1016,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008695",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 7763 64-Core Processor"
+      },
+      "startup_normal_s": [
+        0.25944990099999643,
+        0.26112508600000695,
+        0.2472522619999893
+      ],
+      "startup_det_s": [
+        0.9704163399999999,
+        0.9863130579999932,
+        0.9855828800000097
+      ],
+      "startup_cost_s": 0.7261329790000133,
+      "slowdown_pct": 22.799779396182807
+    }
+  ],
+  "repos": [],
+  "skipped": [
+    {
+      "name": "attrs",
+      "kind": "",
+      "status": "round: no-result",
+      "detail": "the matrix job produced no summary (job timeout or crash)"
+    },
+    {
+      "name": "idoft-centreon-sdk-python",
+      "kind": "",
+      "status": "round: no-result",
+      "detail": "the matrix job produced no summary (job timeout or crash)"
+    },
+    {
+      "name": "idoft-cloudnetpy",
+      "kind": "",
+      "status": "round: no-result",
+      "detail": "the matrix job produced no summary (job timeout or crash)"
+    },
+    {
+      "name": "idoft-crom",
+      "kind": "",
+      "status": "round: no-result",
+      "detail": "the matrix job produced no summary (job timeout or crash)"
+    },
+    {
+      "name": "idoft-easypy",
+      "kind": "",
+      "status": "round: no-result",
+      "detail": "the matrix job produced no summary (job timeout or crash)"
+    },
+    {
+      "name": "idoft-eppy",
+      "kind": "",
+      "status": "round: no-result",
+      "detail": "the matrix job produced no summary (job timeout or crash)"
+    },
+    {
+      "name": "networkx",
+      "kind": "",
+      "status": "round: no-result",
+      "detail": "the matrix job produced no summary (job timeout or crash)"
+    },
+    {
+      "name": "pygments",
+      "kind": "",
+      "status": "round: no-result",
+      "detail": "the matrix job produced no summary (job timeout or crash)"
+    },
+    {
+      "name": "rich",
+      "kind": "",
+      "status": "round: no-result",
+      "detail": "the matrix job produced no summary (job timeout or crash)"
+    },
+    {
+      "name": "werkzeug",
+      "kind": "",
+      "status": "round: no-result",
+      "detail": "the matrix job produced no summary (job timeout or crash)"
+    }
+  ]
+}

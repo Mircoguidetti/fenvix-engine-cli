@@ -1,0 +1,45 @@
+{
+  "name": "attrs",
+  "kind": "popular",
+  "status": "ok",
+  "python": "3.13",
+  "serial_s": [
+    10.065290748999999,
+    8.661054368999999,
+    8.666667239999995
+  ],
+  "det_s": [
+    18.769859647000004,
+    11.122536365999991,
+    10.987037830999995
+  ],
+  "precompile_s": [
+    8.127,
+    0.344,
+    0.339
+  ],
+  "tests": 1412,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000008678",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz"
+  },
+  "startup_normal_s": [
+    0.32503171900000893,
+    0.3274753100000112,
+    0.32448672800001077
+  ],
+  "startup_det_s": [
+    1.351687482999992,
+    1.3561897119999884,
+    1.372604973999998
+  ],
+  "startup_cost_s": 1.0311579929999795,
+  "slowdown_pct": 28.33694957924793
+}
