@@ -82,27 +82,41 @@ def glob_glob(*args, **kwargs):
 
 
 def glob_iglob(*args, **kwargs):
-    res = sorted(_quietly(lambda: list(_real_iglob(*args, **kwargs))))
-    _event("glob.iglob", args[0] if args else kwargs.get("pathname"), [_sites.norm_path(p) for p in res])
-    return iter(res)
+    # Lazy like the original: the directory is read on the first next(), in
+    # the thread that iterates (asyncio code runs it in a worker thread).
+    def gen():
+        res = sorted(_quietly(lambda: list(_real_iglob(*args, **kwargs))))
+        _event("glob.iglob", args[0] if args else kwargs.get("pathname"), [_sites.norm_path(p) for p in res])
+        yield from res
+
+    return gen()
 
 
 def path_iterdir(self):
-    res = sorted(_quietly(lambda: list(_real_iterdir(self))), key=lambda p: p.name)
-    _event("Path.iterdir", self, [p.name for p in res])
-    return iter(res)
+    def gen():
+        res = sorted(_quietly(lambda: list(_real_iterdir(self))), key=lambda p: p.name)
+        _event("Path.iterdir", self, [p.name for p in res])
+        yield from res
+
+    return gen()
 
 
 def path_glob(self, *args, **kwargs):
-    res = sorted(_quietly(lambda: list(_real_path_glob(self, *args, **kwargs))), key=str)
-    _event("Path.glob", self, [_sites.norm_path(p) for p in res])
-    return iter(res)
+    def gen():
+        res = sorted(_quietly(lambda: list(_real_path_glob(self, *args, **kwargs))), key=str)
+        _event("Path.glob", self, [_sites.norm_path(p) for p in res])
+        yield from res
+
+    return gen()
 
 
 def path_rglob(self, *args, **kwargs):
-    res = sorted(_quietly(lambda: list(_real_path_rglob(self, *args, **kwargs))), key=str)
-    _event("Path.rglob", self, [_sites.norm_path(p) for p in res])
-    return iter(res)
+    def gen():
+        res = sorted(_quietly(lambda: list(_real_path_rglob(self, *args, **kwargs))), key=str)
+        _event("Path.rglob", self, [_sites.norm_path(p) for p in res])
+        yield from res
+
+    return gen()
 
 
 def install(patcher: Patcher) -> None:

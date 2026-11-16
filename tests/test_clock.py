@@ -283,3 +283,90 @@ def test_time_machine_travel_is_honoured(pytester, run_det):
     r2, (_, t2, _) = run_det("-p", "no:randomly", "-s")
     v1 = [line for line in r1.outlines if "VAL" in line]
     assert v1 and v1 == [line for line in r2.outlines if "VAL" in line]
+
+
+def test_blocking_sleep_inside_event_loop_moves_loop_time(pytester, run_det):
+    """Regression (anyio test_fail_after_scope_cancelled_before_timeout, 3 tests):
+    asyncio keeps real time, so a blocking time.sleep() inside a coroutine must
+    really elapse or loop deadlines never expire."""
+    pytester.makepyfile(
+        test_a="""
+        import asyncio, time
+        def test_loop_time_advances():
+            async def main():
+                loop = asyncio.get_running_loop()
+                t0 = loop.time()
+                time.sleep(0.05)
+                return loop.time() - t0
+            assert asyncio.run(main()) >= 0.05
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)
+
+
+def test_references_kept_after_the_session_fall_back_to_real_time():
+    """Regression (anyio): plugins kept `from time import perf_counter` (our fake)
+    and called it during interpreter shutdown, after detpy uninstalled."""
+    from detpy import clock
+
+    assert clock.CLOCK is None  # not installed in this (outer) session
+    assert clock.perf_counter() > 0 and clock.time() > 1.7e9 and clock.monotonic_ns() > 0
+    clock.sleep(0)
+
+
+def test_waiting_for_a_child_process_waits_for_real(pytester, run_det):
+    """Regression (idoft-pymq / redislite, 24 tests): a polling loop that sleeps
+    while a child process starts up timed out at once with a virtual sleep."""
+    pytester.makepyfile(
+        test_p="""
+        import os, subprocess, sys, tempfile, time
+        def test_wait_for_child_marker():
+            marker = os.path.join(tempfile.mkdtemp(), "ready")
+            child = subprocess.Popen([sys.executable, "-c",
+                f"import time; time.sleep(0.3); open({marker!r}, 'w').close(); time.sleep(5)"])
+            try:
+                deadline = time.monotonic() + 2
+                while not os.path.exists(marker):
+                    assert time.monotonic() < deadline, "child did not start in time"
+                    time.sleep(0.05)
+            finally:
+                child.kill(); child.wait()
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)
+
+
+def test_asyncio_sleep_moves_the_virtual_clock(pytester, run_det):
+    """Regression (boltons test_wraps_async): asyncio waits in real time; code
+    measuring the wait with time.time() saw ~0 elapsed."""
+    pytester.makepyfile(
+        test_s="""
+        import asyncio, time
+        def test_elapsed():
+            async def main():
+                t0 = time.time()
+                await asyncio.sleep(0.25)
+                return time.time() - t0
+            assert asyncio.run(main()) >= 0.25
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)
+
+
+def test_adaptive_tick_does_not_trip_algorithm_timeouts(pytester, run_det):
+    """Regression (networkx graph_edit_distance timeout, faker): a hot loop that
+    checks a timeout with perf_counter must not see virtual time race ahead."""
+    pytester.makepyfile(
+        test_t="""
+        import time
+        def test_timeout_guarded_loop():
+            start = time.perf_counter()
+            for _ in range(5000):
+                assert time.perf_counter() - start < 1.0, "spurious timeout"
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)
