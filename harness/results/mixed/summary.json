@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "set": "mixed",
+    "runs": 10,
+    "seeds": 20,
+    "confirm": 10,
+    "jobs": 2,
+    "detpy": "0.1.0",
+    "date": "2026-11-16 14:33 UTC",
+    "command": "python harness/detpy_harness.py --set mixed --per-pool 25 --runs 10 --seeds 20 --confirm 10 --jobs 2",
+    "notes": [
+      "Il dataset FlaPy di Gruber et al. \u00e8 pubblicato su Zenodo, non raggiungibile da questo ambiente (403 dal proxy di rete): il pool 'flaky' usa la sezione Python di IDoFT, con i progetti fissati al commit in cui i test instabili furono rilevati."
+    ],
+    "order": []
+  },
+  "totals": {
+    "all": {},
+    "flaky": {},
+    "popular": {}
+  },
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "repos": [],
+  "skipped": [
+    {
+      "name": "idoft-reframe",
+      "kind": "flaky",
+      "status": "install-failed",
+      "detail": "install with python 3.10:   import reframe.core.runtime as rt\n      File \"/home/user/fenvix-engine-cli/.harness-work/src/idoft-reframe/reframe/core/runtime.py\", line 14, in <module>\n        import reframe.core.config as config\n      File \"/home/user/fenvix-engine-cli/.harness-work/src/idoft-reframe/reframe/core/config.py\", line 10, in <module>\n        import jsonschema\n    ModuleNotFoundError: No module named 'jsonschema'\n"
+    }
+  ]
+}
