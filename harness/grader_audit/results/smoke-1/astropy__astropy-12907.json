@@ -1,0 +1,214 @@
+{
+ "baseline_reward_stable": true,
+ "baseline_rewards": [
+  true,
+  true,
+  true
+ ],
+ "broken_by_det": false,
+ "det_reward_stable": true,
+ "det_rewards": {
+  "det-fixed": true,
+  "det-seed-1": true,
+  "det-seed-2": true,
+  "det-seed-3": true,
+  "epoch-dst": true,
+  "epoch-leapday": true,
+  "epoch-y2038": true,
+  "epoch-yearend": true
+ },
+ "gold_apply": "git apply --verbose",
+ "hidden_instability": false,
+ "image": "swebench/sweb.eval.x86_64.astropy_1776_astropy-12907:latest",
+ "instance_id": "astropy__astropy-12907",
+ "n_fail_to_pass": 2,
+ "n_pass_to_pass": 13,
+ "official_plain_rewards": [
+  true,
+  true,
+  true
+ ],
+ "official_reward_stable": true,
+ "pull_s": 18.3,
+ "pytest": "7.4.0",
+ "pytest_before": "7.4.0",
+ "python": "3.9.20",
+ "repo": "astropy/astropy",
+ "run_timeout_s": 300,
+ "runs": {
+  "det-fixed": {
+   "args": "",
+   "dur": 4.4,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 15,
+   "n_required": 15,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "det-seed-1": {
+   "args": "--det-seed=1",
+   "dur": 4.4,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order shuffled with seed 1",
+    "detpy: PYTHONHASHSEED=1 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 15,
+   "n_required": 15,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "det-seed-2": {
+   "args": "--det-seed=2",
+   "dur": 4.4,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order shuffled with seed 2",
+    "detpy: PYTHONHASHSEED=2 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 15,
+   "n_required": 15,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "det-seed-3": {
+   "args": "--det-seed=3",
+   "dur": 4.3,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order shuffled with seed 3",
+    "detpy: PYTHONHASHSEED=3 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 15,
+   "n_required": 15,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "epoch-dst": {
+   "args": "--det-epoch=2025-03-09T06:59:59+00:00",
+   "dur": 2.9,
+   "env": {
+    "TZ": "EST5EDT,M3.2.0,M11.1.0"
+   },
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 15,
+   "n_required": 15,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "epoch-leapday": {
+   "args": "--det-epoch=2024-02-29T23:59:59+00:00",
+   "dur": 3.0,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 15,
+   "n_required": 15,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "epoch-y2038": {
+   "args": "--det-epoch=2038-01-19T03:14:07+00:00",
+   "dur": 2.9,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 15,
+   "n_required": 15,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "epoch-yearend": {
+   "args": "--det-epoch=2025-12-31T23:59:59+00:00",
+   "dur": 2.9,
+   "failing": [],
+   "header": [
+    "detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)",
+    "detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual"
+   ],
+   "kind": "det",
+   "n_failing": 0,
+   "n_parsed": 15,
+   "n_required": 15,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "plain-1": {
+   "dur": 1.7,
+   "failing": [],
+   "kind": "plain",
+   "n_failing": 0,
+   "n_parsed": 15,
+   "n_required": 15,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "plain-2": {
+   "dur": 1.0,
+   "failing": [],
+   "kind": "plain",
+   "n_failing": 0,
+   "n_parsed": 15,
+   "n_required": 15,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  },
+  "plain-3": {
+   "dur": 1.1,
+   "failing": [],
+   "kind": "plain",
+   "n_failing": 0,
+   "n_parsed": 15,
+   "n_required": 15,
+   "rc": 0,
+   "reward": true,
+   "timed_out": false
+  }
+ },
+ "seeds_planned": 3,
+ "seeds_run": 3,
+ "setup_rc": 0,
+ "setup_s": 47.5,
+ "started": "2026-11-16T19:57:36Z",
+ "status": "measured",
+ "task_s": 109.4,
+ "test_cmd": "pytest -rA astropy/modeling/tests/test_separable.py",
+ "version": "4.3",
+ "visible_instability": false
+}
