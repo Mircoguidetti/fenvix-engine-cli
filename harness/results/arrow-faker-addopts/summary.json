@@ -1,0 +1,270 @@
+{
+  "meta": {
+    "set": "arrow-faker-addopts",
+    "runs": 10,
+    "seeds": 20,
+    "confirm": 10,
+    "jobs": 1,
+    "timing_runs": 3,
+    "detpy": "0.1.0",
+    "executor": "GitHub Actions matrix, one repository per ubuntu-latest runner (run https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43946215518)",
+    "date": "2026-11-16 21:45 UTC",
+    "command": "gh workflow run harness.yml -f runs=10 -f seeds=20 -f confirm=10",
+    "order": [
+      "arrow",
+      "faker"
+    ],
+    "notes": [
+      "The FlaPy dataset (Gruber et al.) is published on Zenodo, which the development environment cannot reach (HTTP 403 from the network proxy): the 'flaky' pool uses the Python section of IDoFT, each project pinned at the commit where its flaky tests were detected.",
+      "Selection: the first 25 candidates per pool (in harness/repos.json and harness/flaky_candidates.json order) that clone, install, collect and finish their first baseline run within 120 s; every rejected candidate is listed above."
+    ]
+  },
+  "totals": {
+    "all": {
+      "tests": 4374,
+      "unstable_baseline": 2,
+      "unstable_det": 0,
+      "became_stable": 2,
+      "outcome_changed_by_det": 4,
+      "covered": 4374,
+      "not_covered": 0,
+      "reproduced": 2,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "broken_by_det": 0,
+      "broken_always": 0
+    },
+    "flaky": {},
+    "popular": {
+      "tests": 4374,
+      "unstable_baseline": 2,
+      "unstable_det": 0,
+      "became_stable": 2,
+      "outcome_changed_by_det": 4,
+      "covered": 4374,
+      "not_covered": 0,
+      "reproduced": 2,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "broken_by_det": 0,
+      "broken_always": 0
+    }
+  },
+  "reasons": {},
+  "pass_fail_reasons": {
+    "random": 2
+  },
+  "broken_causes": {},
+  "timings": [
+    {
+      "name": "arrow",
+      "kind": "popular",
+      "status": "ok",
+      "python": "3.13",
+      "serial_s": [
+        6.593426640000018,
+        6.149193276999995,
+        6.310535131999984
+      ],
+      "det_s": [
+        17.731591348999984,
+        11.362448188000002,
+        11.478478831999979
+      ],
+      "precompile_s": [
+        6.642,
+        0.382,
+        0.391
+      ],
+      "tests": 1904,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008741",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+      },
+      "startup_normal_s": [
+        0.22751826499998629,
+        0.2509981059999973,
+        0.22903277399998956
+      ],
+      "startup_det_s": [
+        0.8897702430000152,
+        0.8743246310000075,
+        0.8747292669999922
+      ],
+      "startup_cost_s": 0.6456964930000026,
+      "slowdown_pct": 81.89390585584349
+    },
+    {
+      "name": "faker",
+      "kind": "popular",
+      "status": "ok",
+      "python": "3.13",
+      "serial_s": [
+        38.83125834500001,
+        39.293129419999985,
+        38.82195150900003
+      ],
+      "det_s": [
+        46.37981311600001,
+        34.456790802,
+        34.55636088799997
+      ],
+      "precompile_s": [
+        12.443,
+        0.724,
+        0.749
+      ],
+      "tests": 2470,
+      "runner": {
+        "cpus": 4,
+        "platform": "linux",
+        "RUNNER_NAME": "GitHub Actions 1000008738",
+        "RUNNER_OS": "Linux",
+        "RUNNER_ARCH": "X64",
+        "RUNNER_ENVIRONMENT": "github-hosted",
+        "ImageOS": "ubuntu26",
+        "ImageVersion": "20261111.196.1",
+        "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C"
+      },
+      "startup_normal_s": [
+        0.5094216580000079,
+        0.3126121429999671,
+        0.31401838200002885
+      ],
+      "startup_det_s": [
+        1.3653070899999875,
+        1.3631858939999688,
+        1.334522729000014
+      ],
+      "startup_cost_s": 1.04916751199994,
+      "slowdown_pct": -11.008907872671303
+    }
+  ],
+  "repos": [
+    {
+      "name": "arrow",
+      "kind": "popular",
+      "status": "ok",
+      "url": "https://github.com/arrow-py/arrow",
+      "commit": "2224255c4acc",
+      "commit_date": "2026-04-30",
+      "python": "3.13",
+      "install": "-e .[test]",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 7.533768329200002,
+      "det_mean_s": 14.745707842999995,
+      "slowdown_pct": 95.72818274551081,
+      "precompile_first_s": 6.255,
+      "precompile_rest_median_s": 0.442,
+      "tests": 1904,
+      "unstable_baseline": 2,
+      "unstable_det": 0,
+      "became_stable": 2,
+      "outcome_changed_by_det": 0,
+      "covered": 1904,
+      "not_covered": 0,
+      "reproduced": 2,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [
+        2,
+        2
+      ],
+      "seeds_explored": 2,
+      "exploration_runs": 11,
+      "exploration_budget_hit": false,
+      "reasons": {},
+      "pass_fail_reasons": {
+        "random": 2
+      },
+      "broken_by_det": 0,
+      "broken_always": 0,
+      "broken_causes": {},
+      "broken_examples": {},
+      "ablation_runs": 0,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "known_categories": {},
+      "examples": {
+        "reproduced": [
+          "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation (seed 2): event #0: random.state @ <end> returned different values: \"6371d902d2c7c45be6c296da2b4f9097\" vs \"27579933b71dbd90d37eb1b59192c6be\"",
+          "tests/test_locales.py::TestLocaleValidation::test_locale_validation (seed 2): event #0: random.state @ <end> returned different values: \"44483d0bc284088405b800f7a4c9dd54\" vs \"c893ebd281fa8adcb130abc0b5a1b680\""
+        ]
+      }
+    },
+    {
+      "name": "faker",
+      "kind": "popular",
+      "status": "ok",
+      "url": "https://github.com/joke2k/faker",
+      "commit": "affa2c5aada2",
+      "commit_date": "2026-11-10",
+      "python": "3.13",
+      "install": "-e . -r dev-requirements.txt freezegun validators ukpostcodeparser sphinx",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 21.859517800700004,
+      "det_mean_s": 30.426695054999993,
+      "slowdown_pct": 39.19197729981785,
+      "precompile_first_s": 8.194,
+      "precompile_rest_median_s": 0.677,
+      "tests": 2470,
+      "unstable_baseline": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "outcome_changed_by_det": 4,
+      "covered": 2470,
+      "not_covered": 0,
+      "reproduced": 0,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [],
+      "seeds_explored": 0,
+      "exploration_runs": 0,
+      "exploration_budget_hit": false,
+      "reasons": {},
+      "pass_fail_reasons": {},
+      "broken_by_det": 0,
+      "broken_always": 0,
+      "broken_causes": {},
+      "broken_examples": {},
+      "ablation_runs": 0,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "known_categories": {},
+      "examples": {
+        "changed:failed->passed": [
+          "tests/pytest/test_autouse_faker_locale.py::test_no_injection",
+          "tests/pytest/test_manual_injection.py::test_inject_faker_locale"
+        ]
+      }
+    }
+  ],
+  "skipped": []
+}

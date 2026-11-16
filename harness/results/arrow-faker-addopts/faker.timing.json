@@ -1,0 +1,45 @@
+{
+  "name": "faker",
+  "kind": "popular",
+  "status": "ok",
+  "python": "3.13",
+  "serial_s": [
+    38.83125834500001,
+    39.293129419999985,
+    38.82195150900003
+  ],
+  "det_s": [
+    46.37981311600001,
+    34.456790802,
+    34.55636088799997
+  ],
+  "precompile_s": [
+    12.443,
+    0.724,
+    0.749
+  ],
+  "tests": 2470,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000008738",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C"
+  },
+  "startup_normal_s": [
+    0.5094216580000079,
+    0.3126121429999671,
+    0.31401838200002885
+  ],
+  "startup_det_s": [
+    1.3653070899999875,
+    1.3631858939999688,
+    1.334522729000014
+  ],
+  "startup_cost_s": 1.04916751199994,
+  "slowdown_pct": -11.008907872671303
+}

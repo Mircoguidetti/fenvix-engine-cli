@@ -1,0 +1,45 @@
+{
+  "name": "arrow",
+  "kind": "popular",
+  "status": "ok",
+  "python": "3.13",
+  "serial_s": [
+    6.593426640000018,
+    6.149193276999995,
+    6.310535131999984
+  ],
+  "det_s": [
+    17.731591348999984,
+    11.362448188000002,
+    11.478478831999979
+  ],
+  "precompile_s": [
+    6.642,
+    0.382,
+    0.391
+  ],
+  "tests": 1904,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000008741",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "startup_normal_s": [
+    0.22751826499998629,
+    0.2509981059999973,
+    0.22903277399998956
+  ],
+  "startup_det_s": [
+    0.8897702430000152,
+    0.8743246310000075,
+    0.8747292669999922
+  ],
+  "startup_cost_s": 0.6456964930000026,
+  "slowdown_pct": 81.89390585584349
+}
