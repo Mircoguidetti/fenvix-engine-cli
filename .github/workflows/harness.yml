@@ -1,0 +1,224 @@
+name: harness
+
+# The detpy measurement round as a matrix: one repository per runner.
+#   build      -> detpy wheel (shared by every job)
+#   candidates -> list of candidate repositories (IDoFT pool + popular pool)
+#   prepare    -> selection filters per candidate (clone, install, collect, first baseline run)
+#   select     -> first N candidates per pool that pass, in pool order (or the `only` list)
+#   round      -> full protocol per selected repository (baseline, --det, seed exploration, ablation)
+#   timing     -> quiet timing pass on 10 measured repositories (3 serial normal vs 3 --det runs)
+#   aggregate  -> merges everything into harness/results/<set>/ and commits it to the branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      runs: {description: "baseline and --det runs per repository", default: "10"}
+      seeds: {description: "seeds explored per repository", default: "20"}
+      confirm: {description: "runs that must all fail to call a test reproduced", default: "10"}
+      per_pool: {description: "repositories per pool", default: "25"}
+      flaky_candidates: {description: "IDoFT candidates tried in the selection stage", default: "60"}
+      max_first_run: {description: "selection: max seconds of the first baseline run", default: "120"}
+      only: {description: "comma separated repositories: skip selection, measure only these", default: ""}
+      timing: {description: "run the quiet timing pass", default: "true"}
+      result_set: {description: "results directory name under harness/results", default: "mixed"}
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+  UV_PYTHON_PREFERENCE: managed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: pip install maturin
+      - run: maturin build --release --compatibility linux -o dist
+      - uses: actions/upload-artifact@v4
+        with: {name: wheel, path: dist/*.whl}
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: cargo test -p detpy-core
+      - run: |
+          python -m venv .venv && . .venv/bin/activate
+          pip install maturin pytest numpy requests pytest-benchmark
+          maturin develop --release
+          python -m pytest tests -q -p no:randomly
+
+  candidates:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.c.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - id: c
+        run: python harness/ci.py candidates --flaky ${{ inputs.flaky_candidates }}
+
+  prepare:
+    if: ${{ inputs.only == '' }}
+    needs: [build, candidates]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        repo: ${{ fromJSON(needs.candidates.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/download-artifact@v4
+        with: {name: wheel, path: dist}
+      - run: pip install pytest && pip install --no-deps dist/*.whl
+      - name: selection filters
+        run: >
+          python harness/detpy_harness.py --set "${{ matrix.repo }}" --mode prepare --jobs 1
+          --wheel "$(ls dist/*.whl)" --work /tmp/work --out out
+          --max-first-run ${{ inputs.max_first_run }} --run-timeout 600 --executor "GitHub Actions"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: "prepare-${{ matrix.repo }}", path: out/, if-no-files-found: ignore}
+
+  select:
+    if: ${{ always() && needs.candidates.result == 'success' }}
+    needs: [candidates, prepare]
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.s.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/download-artifact@v4
+        if: ${{ inputs.only == '' }}
+        with: {pattern: "prepare-*", path: art}
+      - id: s
+        run: |
+          if [ -n "${{ inputs.only }}" ]; then
+            python -c "import json,sys; m=[x.strip() for x in sys.argv[1].split(',') if x.strip()]; print(json.dumps({'selected': m, 'discarded': []}))" "${{ inputs.only }}" > selection.json
+            echo "matrix=$(python -c "import json; print(json.dumps(json.load(open('selection.json'))['selected']))")" >> "$GITHUB_OUTPUT"
+          else
+            python harness/ci.py select --dir art --per-pool ${{ inputs.per_pool }} --flaky ${{ inputs.flaky_candidates }} --selection selection.json
+          fi
+      - uses: actions/upload-artifact@v4
+        with: {name: selection, path: selection.json}
+
+  round:
+    if: ${{ always() && needs.select.result == 'success' }}
+    needs: [build, select]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        repo: ${{ fromJSON(needs.select.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/download-artifact@v4
+        with: {name: wheel, path: dist}
+      - run: pip install pytest && pip install --no-deps dist/*.whl
+      - name: round
+        run: >
+          python harness/detpy_harness.py --set "${{ matrix.repo }}" --mode round --jobs 1
+          --runs ${{ inputs.runs }} --seeds ${{ inputs.seeds }} --confirm ${{ inputs.confirm }}
+          --wheel "$(ls dist/*.whl)" --work /tmp/work --out out
+          --max-first-run 100000 --repo-budget 2700 --run-timeout 900 --executor "GitHub Actions"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: "round-${{ matrix.repo }}", path: out/, if-no-files-found: ignore}
+
+  timing-pick:
+    if: ${{ always() && inputs.timing == 'true' && needs.round.result != 'skipped' }}
+    needs: [round]
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.t.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/download-artifact@v4
+        with: {pattern: "round-*", path: art}
+      - uses: actions/download-artifact@v4
+        with: {name: selection, path: .}
+      - id: t
+        run: python harness/ci.py timing-pick --dir art --selection selection.json -n 10
+
+  timing:
+    if: ${{ always() && needs.timing-pick.result == 'success' && needs.timing-pick.outputs.matrix != '[]' }}
+    needs: [build, timing-pick]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        repo: ${{ fromJSON(needs.timing-pick.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/download-artifact@v4
+        with: {name: wheel, path: dist}
+      - run: pip install pytest && pip install --no-deps dist/*.whl
+      - name: quiet timing pass
+        run: >
+          python harness/detpy_harness.py --set "${{ matrix.repo }}" --mode timing --jobs 1 --timing-runs 3
+          --wheel "$(ls dist/*.whl)" --work /tmp/work --out out --max-first-run 100000 --run-timeout 1200
+          --executor "GitHub Actions"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: "timing-${{ matrix.repo }}", path: out/, if-no-files-found: ignore}
+
+  aggregate:
+    if: ${{ always() && needs.select.result == 'success' }}
+    needs: [build, select, round, timing]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/download-artifact@v4
+        with: {name: wheel, path: dist}
+      - run: pip install --no-deps dist/*.whl
+      - uses: actions/download-artifact@v4
+        with: {pattern: "round-*", path: art}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with: {pattern: "timing-*", path: art}
+      - uses: actions/download-artifact@v4
+        with: {name: selection, path: .}
+      - name: build report
+        run: >
+          python harness/ci.py aggregate --dir art --out "harness/results/${{ inputs.result_set }}"
+          --selection selection.json --set "${{ inputs.result_set }}"
+          --runs ${{ inputs.runs }} --seeds ${{ inputs.seeds }} --confirm ${{ inputs.confirm }}
+          --max-first-run ${{ inputs.max_first_run }}
+          --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      - uses: actions/upload-artifact@v4
+        with: {name: "results-${{ inputs.result_set }}", path: "harness/results/${{ inputs.result_set }}/"}
+      - name: commit results to the branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "harness/results/${{ inputs.result_set }}"
+          git commit -m "Harness results (${{ inputs.result_set }}) from Actions run ${{ github.run_id }}" || exit 0
+          for i in 1 2 3 4; do git pull --rebase -q && git push -q && break; sleep $((i * 5)); done

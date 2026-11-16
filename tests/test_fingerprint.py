@@ -190,3 +190,5 @@ def test_outcomes_file_without_det(pytester):
         "test_x.py::test_skip": "skipped",
     }
     assert data["exitstatus"] == 1
+    assert data["exceptions"]["test_x.py::test_bad"][:2] == ["AssertionError", "call"]
+    assert data["exceptions"]["test_x.py::test_err"][:2] == ["RuntimeError", "setup"]

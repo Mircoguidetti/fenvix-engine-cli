@@ -68,6 +68,7 @@ class _Session:
         self.trace_path = None
         self.outcomes: dict[str, str] = {}
         self.parts: dict[str, dict] = {}
+        self.exceptions: dict[str, list] = {}
         self.fingerprints: dict[str, str] = {}
         self.compare_report = None
         self.net_mode = None
@@ -369,6 +370,18 @@ def pytest_runtest_logreport(report):
     parts = S.parts.setdefault(report.nodeid, {})
     parts[report.when] = o
     S.outcomes[report.nodeid] = _final_outcome(parts)
+    if report.failed and report.nodeid not in S.exceptions:
+        S.exceptions[report.nodeid] = _exception_of(report)
+
+
+def _exception_of(report) -> list:
+    """[exception type, phase, first line of the message] of a failed report."""
+    crash = getattr(getattr(report, "longrepr", None), "reprcrash", None)
+    message = getattr(crash, "message", None) or str(getattr(report, "longrepr", "") or "")
+    first = message.strip().splitlines()[0] if message.strip() else ""
+    head = first.split(":", 1)[0].strip()
+    etype = head.rsplit(".", 1)[-1] if head and " " not in head else "AssertionError" if first.startswith("assert") else "unknown"
+    return [etype, report.when, first[:200]]
 
 
 _OUTCOMES_PATH: list = []
@@ -388,7 +401,7 @@ def pytest_sessionfinish(session, exitstatus):
         path = _OUTCOMES_PATH[0]
         os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
         with open(path, "w") as f:
-            json.dump({"outcomes": S.outcomes, "exitstatus": int(exitstatus),
+            json.dump({"outcomes": S.outcomes, "exceptions": S.exceptions, "exitstatus": int(exitstatus),
                        "order": [i.nodeid for i in getattr(session, "items", [])]}, f)
         _OUTCOMES_PATH.clear()
     if not S.active:

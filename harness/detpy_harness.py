@@ -79,6 +79,17 @@ def sh(cmd, cwd=None, env=None, timeout=None):
         return -9, out, time.perf_counter() - t0, True
 
 
+def _import_detpy():
+    """The installed detpy (CI installs the wheel); fall back to the source tree (maturin develop)."""
+    try:
+        import detpy
+        import detpy._core  # noqa: F401
+    except ImportError:
+        sys.path.insert(0, str(ROOT / "python"))
+        import detpy
+    return detpy
+
+
 def is_fail(outcome) -> bool:
     return outcome is not None and (outcome.startswith("failed") or outcome.startswith("error")
                                     or "teardown-error" in outcome)
@@ -273,33 +284,47 @@ class RunResult:
     outcomes: dict
     trace: str | None
     precompile_s: float | None = None
+    exceptions: dict = field(default_factory=dict)
 
     @property
     def completed(self) -> bool:
         return not self.timed_out and bool(self.outcomes)
 
 
-def run_pytest(p: Prepared, rundir: Path, mode: str, index: int, timeout: float, seed: int | None = None) -> RunResult:
-    tag = f"{mode}{'' if seed is None else seed}_{index}"
+ABLATE_CONTROLS = ("time", "net", "fs", "seeds", "hashseed")
+
+
+def run_pytest(p: Prepared, rundir: Path, mode: str, index: int, timeout: float, seed: int | None = None,
+               disable: str | None = None) -> RunResult:
+    """mode: normal (baseline: random order, xdist), serial (fixed order, no xdist, no --det),
+    det (fixed order), seed (--det-seed), ablate (--det with one control disabled)."""
+    tag = f"{mode}{'' if seed is None else seed}{'' if disable is None else '-' + disable}_{index}"
     out_json = rundir / f"{tag}.json"
-    trace = rundir / f"{tag}.jsonl" if mode != "normal" else None
+    trace = rundir / f"{tag}.jsonl" if mode not in ("normal", "serial") else None
     cmd = [p.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", f"--det-outcomes={out_json}", *p.pytest_args]
     if mode == "normal":
         cmd += [f"--randomly-seed={1000 + index}"]
         if p.xdist:
             cmd += ["-n", "2"]
+    elif mode == "serial":
+        cmd += ["-p", "no:randomly"]
+        if p.has_xdist:
+            cmd += ["-n", "0"]
     else:
         cmd += ["--det", f"--det-trace={trace}"]
         if seed is not None:
             cmd += [f"--det-seed={seed}"]
+        if disable is not None:
+            cmd += [f"--det-disable={disable}"]
         if p.has_xdist:
             cmd += ["-n", "0"]
     code, out, dur, to = sh(cmd, cwd=p.src, env=clean_env(p.python, p.env), timeout=timeout)
     (rundir / f"{tag}.log").write_text(out[-20000:])
-    outcomes = {}
+    outcomes, exceptions = {}, {}
     if out_json.exists():
         try:
-            outcomes = json.loads(out_json.read_text())["outcomes"]
+            data = json.loads(out_json.read_text())
+            outcomes, exceptions = data["outcomes"], data.get("exceptions", {})
         except Exception:
             pass
     pre = None
@@ -309,7 +334,8 @@ def run_pytest(p: Prepared, rundir: Path, mode: str, index: int, timeout: float,
                 pre = json.loads(f.readline()).get("meta", {}).get("precompile_s")
         except Exception:
             pass
-    return RunResult(mode, index, seed, dur, code, to, outcomes, str(trace) if trace and trace.exists() else None, pre)
+    return RunResult(mode, index, seed, dur, code, to, outcomes, str(trace) if trace and trace.exists() else None, pre,
+                     exceptions)
 
 
 def _hung_test(r: RunResult) -> str:
@@ -349,8 +375,89 @@ def measure(p: Prepared, args, outdir: Path, work: Path) -> dict:
             if r.timed_out:
                 return {"name": p.name, "kind": p.kind, "status": f"{mode}-timeout",
                         "detail": f"{mode} run #{i} exceeded {timeout:.0f}s; running: {_hung_test(r)}"}
+        if i >= 2 and time.monotonic() - t_start > args.repo_budget * 0.6:
+            log(f"{p.name}: time budget: baseline/--det phase stopped after {i + 1} runs per mode")
+            break
     explore = explore_seeds(p, results, rundir, timeout, args, t_start)
+    explore["ablation"] = ablate(p, results, rundir, timeout, args)
     return analyze(p, results, explore, outdir)
+
+
+def broken_by_det(results: list[RunResult]) -> list[str]:
+    """Tests that fail under --det (always or sometimes) but never or rarely (<= 1 run) in the baseline."""
+    normal = [r for r in results if r.mode == "normal" and r.completed]
+    det = [r for r in results if r.mode == "det" and r.completed]
+    ids = set().union(*(r.outcomes.keys() for r in det)) if det else set()
+    out = []
+    for nid in sorted(ids):
+        base_fails = sum(is_fail(r.outcomes.get(nid)) for r in normal)
+        det_fails = sum(is_fail(r.outcomes.get(nid)) for r in det)
+        if det_fails >= 1 and base_fails <= 1 and det_fails > base_fails:
+            out.append(nid)
+    return out
+
+
+def ablate(p: Prepared, results: list[RunResult], rundir: Path, timeout: float, args) -> dict:
+    """One --det run per control disabled, to find which control breaks a test."""
+    if args.no_ablation or not broken_by_det(results):
+        return {}
+    runs = {}
+    for c in ABLATE_CONTROLS:
+        r = run_pytest(p, rundir, "ablate", 0, timeout, disable=c)
+        log(f"{p.name}: ablation --det-disable={c} {r.duration:.1f}s exit={r.exit_code}")
+        if r.completed:
+            runs[c] = r
+    return runs
+
+
+def prepare_check(p: Prepared, args, outdir: Path, work: Path) -> dict:
+    """CI selection stage: the same filters as the round (install, collect, first baseline run)."""
+    rundir = work / "runs" / p.name
+    shutil.rmtree(rundir, ignore_errors=True)
+    rundir.mkdir(parents=True)
+    r = run_pytest(p, rundir, "normal", 0, args.run_timeout)
+    res = {"name": p.name, "kind": p.kind, "status": "ok", "python": p.python_version, "collected": p.collected,
+           "xdist": p.xdist, "first_run_s": r.duration, "detail": ""}
+    if r.timed_out or r.duration > p.max_run_seconds:
+        res.update(status="too-slow", detail=f"first baseline run took {r.duration:.0f}s")
+    elif not r.outcomes:
+        res.update(status="baseline-broken", detail=f"first baseline run produced no outcomes (exit {r.exit_code}): "
+                   + (rundir / "normal_0.log").read_text()[-200:])
+    (outdir / f"{p.name}.prepare.json").write_text(json.dumps(res, indent=2))
+    return res
+
+
+def timing_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
+    """Quiet timing: N serial fixed-order normal runs vs N --det runs, interleaved."""
+    rundir = work / "timing" / p.name
+    shutil.rmtree(rundir, ignore_errors=True)
+    rundir.mkdir(parents=True)
+    normal, det = [], []
+    for i in range(args.timing_runs):
+        normal.append(run_pytest(p, rundir, "serial", i, args.run_timeout))
+        det.append(run_pytest(p, rundir, "det", i, args.run_timeout))
+        log(f"{p.name}: timing #{i} serial {normal[-1].duration:.2f}s det {det[-1].duration:.2f}s")
+    res = {"name": p.name, "kind": p.kind, "status": "ok", "python": p.python_version,
+           "serial_s": [r.duration for r in normal], "det_s": [r.duration for r in det],
+           "precompile_s": [r.precompile_s for r in det],
+           "tests": len(normal[0].outcomes) if normal else 0, "runner": runner_info()}
+    m_n, m_d = statistics.median(res["serial_s"]), statistics.median(res["det_s"])
+    res["slowdown_pct"] = (m_d / m_n - 1) * 100 if m_n > 0 else None
+    (outdir / f"{p.name}.timing.json").write_text(json.dumps(res, indent=2))
+    return res
+
+
+def runner_info() -> dict:
+    info = {"cpus": os.cpu_count(), "platform": sys.platform}
+    for k in ("RUNNER_NAME", "RUNNER_OS", "RUNNER_ARCH", "RUNNER_ENVIRONMENT", "ImageOS", "ImageVersion"):
+        if os.environ.get(k):
+            info[k] = os.environ[k]
+    try:
+        with open("/proc/cpuinfo") as f:
+            info["cpu_model"] = next((line.split(":", 1)[1].strip() for line in f if line.startswith("model name")), "")
+    except OSError:
+        pass
+    return info
 
 
 def explore_seeds(p: Prepared, results: list[RunResult], rundir: Path, timeout: float, args, t_start) -> dict:
@@ -440,8 +547,7 @@ def _verify(_core, traces) -> dict:
 
 
 def analyze(p: Prepared, results: list[RunResult], explore: dict, outdir: Path) -> dict:
-    sys.path.insert(0, str(ROOT / "python"))
-    from detpy import _core
+    _core = _import_detpy()._core
 
     normal = [r for r in results if r.mode == "normal" and r.completed]
     det = [r for r in results if r.mode == "det" and r.completed]
@@ -464,6 +570,14 @@ def analyze(p: Prepared, results: list[RunResult], explore: dict, outdir: Path) 
             pair_of[nid] = (pass_run.trace, fail_run.trace)
     pair_verdicts = {pair: _verify(_core, list(pair)) for pair in set(pair_of.values())}
 
+    broken = set(broken_by_det(results))
+    ablation = explore.get("ablation") or {}
+
+    def exc_of(runs, nid):
+        """Most frequent [type, phase, message] among the runs where nid failed."""
+        excs = [tuple(r.exceptions[nid]) for r in runs if nid in r.exceptions and is_fail(r.outcomes.get(nid))]
+        return list(collections.Counter(excs).most_common(1)[0][0]) if excs else ["", "", ""]
+
     known_map = {k: sorted(i for i in ids if i == k or i.startswith(k + "[")) for k in p.known_flaky}
     known_of = {nid: k for k, nids in known_map.items() for nid in nids}
     rows = []
@@ -471,6 +585,8 @@ def analyze(p: Prepared, results: list[RunResult], explore: dict, outdir: Path) 
     reasons, div_reasons = collections.Counter(), collections.Counter()
     seeds_needed = []
     examples = collections.defaultdict(list)
+    broken_causes = collections.Counter()
+    broken_examples = collections.defaultdict(list)
     for nid in ids:
         nv = [r.outcomes.get(nid) for r in normal]
         dv = [r.outcomes.get(nid) for r in det]
@@ -504,7 +620,23 @@ def analyze(p: Prepared, results: list[RunResult], explore: dict, outdir: Path) 
             "distinct_fingerprints": (v or {}).get("distinct_fingerprints", 0),
             "det_reason": fdiv.get("reason", "") if v and not covered else "",
             "det_divergence": fdiv.get("description", "")[:300],
+            "baseline_exception": exc_of(normal, nid)[0],
+            "det_exception": exc_of(det, nid)[0],
+            "det_exception_message": exc_of(det, nid)[2],
+            "broken_by_det": nid in broken,
+            "broken_cause": "",
         }
+        if nid in broken:
+            fixed_by = [c for c, r in ablation.items() if r.outcomes.get(nid) == "passed"]
+            cause = "+".join(fixed_by) if fixed_by else ("unexplained" if ablation else "not-ablated")
+            row["broken_cause"] = cause
+            src = pdiv.get("reason") or fdiv.get("reason") or "-"
+            key = f"{cause} | {row['det_exception'] or '?'}"
+            broken_causes[key] += 1
+            if len(broken_examples[key]) < 3:
+                broken_examples[key].append(f"{nid}: {row['det_exception_message'][:140]} (first diverging source: {src})")
+            agg["broken_by_det"] += 1
+            agg["broken_always"] += all(is_fail(r.outcomes.get(nid)) for r in det)
         rows.append(row)
         agg["tests"] += 1
         agg["unstable_baseline"] += not ns
@@ -581,6 +713,11 @@ def analyze(p: Prepared, results: list[RunResult], explore: dict, outdir: Path) 
         "exploration_budget_hit": explore["budget_hit"],
         "reasons": dict(reasons),
         "pass_fail_reasons": dict(div_reasons),
+        "broken_by_det": agg["broken_by_det"],
+        "broken_always": agg["broken_always"],
+        "broken_causes": dict(broken_causes),
+        "broken_examples": dict(broken_examples),
+        "ablation_runs": len(ablation),
         "known_flaky": len(p.known_flaky),
         "known_present": len(known_present),
         "known_unstable_baseline": len(known_unstable),
@@ -593,16 +730,16 @@ def analyze(p: Prepared, results: list[RunResult], explore: dict, outdir: Path) 
 
 
 # ---------------------------------------------------------------------------
-# Report (Italian: it is read by the project owner)
+# Report (English). Every number carries a label: MEASURED, ESTIMATED, DECLARED or UNKNOWN.
 def _fmt(x, nd=1):
-    return "n/d" if x is None or (isinstance(x, float) and x != x) else f"{x:.{nd}f}"
+    return "n/a" if x is None or (isinstance(x, float) and x != x) else f"{x:.{nd}f}"
 
 
 def _pct(a, b):
-    return f"{100 * a / b:.1f}%" if b else "n/d"
+    return f"{100 * a / b:.1f}%" if b else "n/a"
 
 
-BUCKETS = ("0 (ordine fisso)", "1", "2-5", "6-10", "11-20", ">20")
+BUCKETS = ("0 (fixed order)", "1", "2-5", "6-10", "11-20", ">20")
 
 
 def _bucket(n):
@@ -610,118 +747,157 @@ def _bucket(n):
         "11-20" if n <= 20 else ">20"
 
 
+SUM_KEYS = ("tests", "unstable_baseline", "unstable_det", "became_stable", "outcome_changed_by_det", "covered",
+            "not_covered", "reproduced", "never_fails_under_det", "always_fails_under_det",
+            "fails_sometimes_under_det", "known_flaky", "known_present", "known_unstable_baseline",
+            "known_reproduced", "broken_by_det", "broken_always")
+
+
 def write_report(outdir: Path, meta: dict) -> Path:
     summaries = [json.loads(f.read_text()) for f in sorted(outdir.glob("*.summary.json"))]
+    timings = [json.loads(f.read_text()) for f in sorted(outdir.glob("*.timing.json"))]
     skipped = json.loads((outdir / "skipped.json").read_text()) if (outdir / "skipped.json").exists() else []
+    before = json.loads((outdir / "broken-before.json").read_text()) if (outdir / "broken-before.json").exists() else None
     order = meta.get("order") or []
-    ok = sorted([s for s in summaries if s.get("status") == "ok"],
-                key=lambda s: order.index(s["name"]) if s["name"] in order else 1e9)
-    keys = ("tests", "unstable_baseline", "unstable_det", "became_stable", "outcome_changed_by_det", "covered",
-            "not_covered", "reproduced", "never_fails_under_det", "always_fails_under_det",
-            "fails_sometimes_under_det", "known_flaky",
-            "known_present", "known_unstable_baseline", "known_reproduced")
+    ok = sorted([x for x in summaries if x.get("status") == "ok"],
+                key=lambda x: (x["kind"] != "flaky", order.index(x["name"]) if x["name"] in order else 1e9))
     tot = {kind: collections.Counter() for kind in ("all", "flaky", "popular")}
-    reasons, pf_reasons, seeds = collections.Counter(), collections.Counter(), []
-    for s in ok:
-        for kind in {"all", s["kind"]}:
-            for k in keys:
-                tot.setdefault(kind, collections.Counter())[k] += s.get(k, 0)
-        reasons.update(s["reasons"])
-        pf_reasons.update(s["pass_fail_reasons"])
-        seeds += s["seeds_needed"]
-    slow = [s["slowdown_pct"] for s in ok if s["slowdown_pct"] == s["slowdown_pct"]]
-    pre_first = [s["precompile_first_s"] for s in ok if s.get("precompile_first_s") is not None]
-    pre_rest = [s["precompile_rest_median_s"] for s in ok if s.get("precompile_rest_median_s") is not None]
+    reasons, pf_reasons, causes, seeds = collections.Counter(), collections.Counter(), collections.Counter(), []
+    cause_examples = collections.defaultdict(list)
+    for x in ok:
+        for kind in {"all", x["kind"]}:
+            for k in SUM_KEYS:
+                tot.setdefault(kind, collections.Counter())[k] += x.get(k, 0)
+        reasons.update(x["reasons"])
+        pf_reasons.update(x["pass_fail_reasons"])
+        causes.update(x.get("broken_causes", {}))
+        for k, ex in (x.get("broken_examples") or {}).items():
+            cause_examples[k] += [f"{x['name']}: {e}" for e in ex][: max(0, 3 - len(cause_examples[k]))]
+        seeds += x["seeds_needed"]
     T = tot["all"]
     med = statistics.median
-
-    L = [f"# detpy Livello 0 — rapporto di misura (`{meta.get('set')}`)\n",
-         f"Generato il {meta.get('date')} con detpy {meta.get('detpy')}. Per repository: {meta.get('runs')} run di "
-         f"baseline (ordine casuale con pytest-randomly, seme diverso per run, pytest-xdist `-n 2` dove la suite lo "
-         f"supporta) alternati a {meta.get('runs')} run `--det` (ordine fisso, seriale); poi, per i test instabili in "
-         f"baseline, esplorazione con `--det-seed=1..{meta.get('seeds')}` e conferma {meta.get('confirm')}/"
-         f"{meta.get('confirm')} del seme che li fa fallire. {meta.get('jobs')} repository in parallelo su "
-         f"{os.cpu_count()} CPU.\n",
-         "## Metrica principale\n",
-         f"**Test instabili in baseline resi riproducibili: {T['reproduced']}/{T['unstable_baseline']} = "
-         f"{_pct(T['reproduced'], T['unstable_baseline'])}** — esiste un `--det-seed` (o l'ordine fisso di `--det`) "
-         f"con cui il test fallisce {meta.get('confirm')} volte su {meta.get('confirm')}, e almeno una configurazione "
-         f"`--det` in cui passa (altrimenti il fallimento è causato dal Livello 0 stesso, non riprodotto).\n",
-         "| pool | repository | test | instabili in baseline | riprodotti | % | mai falliti sotto --det | "
-         "falliscono sempre sotto --det | falliscono a volte sotto --det |",
+    L = [f"# detpy Level 0: measurement report (`{meta.get('set')}`)\n",
+         f"Generated {meta.get('date')} with detpy {meta.get('detpy')}. Per repository: {meta.get('runs')} baseline runs "
+         f"(random order from pytest-randomly with a different seed per run, pytest-xdist `-n 2` where the suite "
+         f"supports it) interleaved with {meta.get('runs')} `--det` runs (fixed order, serial); then, for every test "
+         f"unstable in the baseline, exploration with `--det-seed=1..{meta.get('seeds')}` and {meta.get('confirm')}/"
+         f"{meta.get('confirm')} confirmation of the seed that makes it fail. Executor: {meta.get('executor', 'local')}."
+         f" Labels: MEASURED (by this harness), ESTIMATED, DECLARED (with source), UNKNOWN; NOISY = shared host.\n",
+         "## Main metric\n",
+         f"**Baseline-unstable tests made reproducible: {T['reproduced']}/{T['unstable_baseline']} = "
+         f"{_pct(T['reproduced'], T['unstable_baseline'])}** (MEASURED). A test counts as reproduced when some "
+         f"`--det-seed` (or the fixed `--det` order) makes it fail {meta.get('confirm')} times out of "
+         f"{meta.get('confirm')} AND some `--det` configuration makes it pass; a test that fails under every `--det` "
+         f"configuration is broken by Level 0, not reproduced.\n",
+         "| pool | repositories | tests | unstable in baseline | reproduced | % | never fail under --det | "
+         "always fail under --det | fail sometimes under --det |",
          "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
-    for kind, label in (("flaky", "dataset IDoFT"), ("popular", "popolari"), ("all", "totale")):
+    for kind, label in (("flaky", "IDoFT dataset"), ("popular", "popular"), ("all", "total")):
         t = tot[kind]
-        n = len([s for s in ok if kind == "all" or s["kind"] == kind])
-        if not n:
-            continue
-        L.append(f"| {label} | {n} | {t['tests']} | {t['unstable_baseline']} | {t['reproduced']} | "
-                 f"{_pct(t['reproduced'], t['unstable_baseline'])} | {t['never_fails_under_det']} | "
-                 f"{t['always_fails_under_det']} | {t['fails_sometimes_under_det']} |")
+        n = len([x for x in ok if kind == "all" or x["kind"] == kind])
+        if n:
+            L.append(f"| {label} | {n} | {t['tests']} | {t['unstable_baseline']} | {t['reproduced']} | "
+                     f"{_pct(t['reproduced'], t['unstable_baseline'])} | {t['never_fails_under_det']} | "
+                     f"{t['always_fails_under_det']} | {t['fails_sometimes_under_det']} |")
     L.append("")
     if seeds:
-        b = collections.Counter(_bucket(x) for x in seeds)
-        L.append("**(a) e (b) — semi esplorati prima di trovare il seme riproducente** (test riprodotti): "
-                 + ", ".join(f"{k}: {b[k]}" for k in BUCKETS if b[k]) + f"; mediana {med(seeds):.0f}.\n")
+        b = collections.Counter(_bucket(v) for v in seeds)
+        L.append("**(a, b) Seeds explored before the reproducing seed was found** (reproduced tests, MEASURED): "
+                 + ", ".join(f"{k}: {b[k]}" for k in BUCKETS if b[k]) + f"; median {med(seeds):.0f}.\n")
     if pf_reasons:
-        L.append("**(c) — primo evento divergente tra l'impronta di un run `--det` che passa e una che fallisce** "
-                 "(test riprodotti): " + ", ".join(f"`{k}` {v}" for k, v in pf_reasons.most_common()) + ".\n")
+        L.append("**(c) First diverging event between the fingerprints of a passing and a failing `--det` run** "
+                 "(MEASURED): " + ", ".join(f"`{k}` {v}" for k, v in pf_reasons.most_common()) + ".\n")
     tf = tot["flaky"]
     if tf["known_flaky"]:
-        L.append(f"**Test instabili noti (IDoFT)**: {tf['known_flaky']} nei progetti misurati; presenti nella suite "
-                 f"raccolta {tf['known_present']}; instabili nella nostra baseline {tf['known_unstable_baseline']}; "
-                 f"riprodotti {tf['known_reproduced']}.\n")
-    L.append("## Altre metriche\n")
-    L.append(f"* rallentamento di `--det` (seriale) rispetto alla baseline (casuale, xdist dove possibile): mediana "
-             f"**{_fmt(med(slow) if slow else None)}%** (min {_fmt(min(slow) if slow else None)}%, max "
-             f"{_fmt(max(slow) if slow else None)}%)")
-    L.append(f"* precompilazione deterministica del bytecode, primo run `--det` di ogni repository: mediana "
-             f"**{_fmt(med(pre_first) if pre_first else None, 2)} s** (max {_fmt(max(pre_first) if pre_first else None, 2)}"
-             f" s); run successivi (verifica incrementale): mediana **{_fmt(med(pre_rest) if pre_rest else None, 2)} s**")
-    L.append(f"* test instabili con `--det` (ordine fisso, {meta.get('runs')} run): {T['unstable_det']}; resi stabili "
-             f"da `--det`: {T['became_stable']}")
-    L.append(f"* esito cambiato da `--det` (stabile in entrambe le modalità ma diverso): {T['outcome_changed_by_det']}")
-    L.append(f"* impronta identica in tutti i run `--det` (coperti dal Livello 0): {T['covered']} "
-             f"({_pct(T['covered'], T['covered'] + T['not_covered'])}); non coperti: {T['not_covered']}"
-             + (" — " + ", ".join(f"`{k}` {v}" for k, v in reasons.most_common()) if reasons else ""))
+        L.append("## IDoFT known flaky tests (MEASURED)\n")
+        L.append("| known flaky tests (IDoFT, measured projects) | present in the collected suite | flaky in our "
+                 "baseline | reproduced |")
+        L.append("|---:|---:|---:|---:|")
+        L.append(f"| {tf['known_flaky']} | {tf['known_present']} | {tf['known_unstable_baseline']} | "
+                 f"{tf['known_reproduced']} |\n")
+    L.append("## Tests broken by Level 0\n")
+    L.append(f"A test is *broken by `--det`* when it fails in at least one fixed-order `--det` run but in at most one "
+             f"baseline run (and less often than under `--det`). These are false failures. **{T['broken_by_det']} tests** "
+             f"(MEASURED), of which {T['broken_always']} fail in every `--det` run."
+             + (f" Before the L0 fixes: **{before.get('broken_by_det')}** (MEASURED, {before.get('date')})."
+                if before else "") + "\n")
+    if causes:
+        L.append("Cause = the controls whose `--det-disable` makes the test pass again (one ablation run per control); "
+                 "`unexplained` = no single control does.\n")
+        L.append("| cause (controls) &#124; exception | tests | examples |")
+        L.append("|---|---:|---|")
+        for k, n in causes.most_common(15):
+            ex = "<br>".join(e.replace("|", "/") for e in cause_examples[k][:2])
+            L.append(f"| `{k}` | {n} | {ex} |")
+        L.append("")
+    L.append("## Timing\n")
+    if timings:
+        sl = [t["slowdown_pct"] for t in timings if t.get("slowdown_pct") is not None]
+        runner = timings[0].get("runner", {})
+        rdesc = ", ".join(f"{k}={v}" for k, v in runner.items())
+        shared = "GitHub-hosted runner, one repository per runner" if runner.get("RUNNER_ENVIRONMENT") else "local host"
+        L.append(f"Quiet timing pass: {len(timings)} repositories, one per {shared}, {meta.get('timing_runs', 3)} serial "
+                 f"fixed-order normal runs vs {meta.get('timing_runs', 3)} `--det` runs interleaved on the same machine; "
+                 f"median per repository. Runner: {rdesc}. Labelled **DECLARED-NOISY**: hosted runners are virtual "
+                 f"machines on shared hardware.\n")
+        L.append(f"**Slowdown of `--det` (MEASURED, DECLARED-NOISY): median {_fmt(med(sl) if sl else None)}%**, "
+                 f"min {_fmt(min(sl) if sl else None)}%, max {_fmt(max(sl) if sl else None)}%.\n")
+        L.append("| repo | tests | normal serial s (median) | --det s (median) | slowdown % | precompile s (per run) |")
+        L.append("|---|---:|---:|---:|---:|---|")
+        for t in timings:
+            pre = ", ".join(_fmt(v, 2) for v in t.get("precompile_s", []))
+            L.append(f"| {t['name']} | {t['tests']} | {_fmt(med(t['serial_s']), 2)} | {_fmt(med(t['det_s']), 2)} | "
+                     f"{_fmt(t.get('slowdown_pct'))} | {pre} |")
+        L.append("")
+    else:
+        L.append("Quiet timing pass: not run yet (UNKNOWN).\n")
+    slow = [x["slowdown_pct"] for x in ok if x["slowdown_pct"] == x["slowdown_pct"]]
+    L.append(f"* Round timings, serial `--det` vs the random-order xdist `-n 2` baseline: median {_fmt(med(slow) if slow else None)}% "
+             f"— **NOT COMPARABLE** (different parallelism and order; reported only for completeness).")
+    pre_first = [x["precompile_first_s"] for x in ok if x.get("precompile_first_s") is not None]
+    pre_rest = [x["precompile_rest_median_s"] for x in ok if x.get("precompile_rest_median_s") is not None]
+    L.append(f"* Deterministic bytecode precompilation, first `--det` run of each repository: median "
+             f"{_fmt(med(pre_first) if pre_first else None, 2)} s, max {_fmt(max(pre_first) if pre_first else None, 2)} s; "
+             f"later runs (incremental check): median {_fmt(med(pre_rest) if pre_rest else None, 2)} s (MEASURED, NOISY).")
     L.append("")
-    L.append("## Per repository\n")
-    L.append("| repo | pool | py | xdist | test | baseline s | det s | rall. % | precomp. 1° s | instabili | "
-             "riprodotti | semi esplorati | cambiati da det | non coperti |")
-    L.append("|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
-    for s in ok:
-        L.append(f"| [{s['name']}]({s['url']}) | {s['kind']} | {s['python']} | {'sì' if s['xdist'] else 'no'} | "
-                 f"{s['tests']} | {_fmt(s['baseline_mean_s'], 2)} | {_fmt(s['det_mean_s'], 2)} | "
-                 f"{_fmt(s['slowdown_pct'])} | {_fmt(s.get('precompile_first_s'), 2)} | {s['unstable_baseline']} | "
-                 f"{s['reproduced']} | {s['seeds_explored']}{' (budget)' if s['exploration_budget_hit'] else ''} | "
-                 f"{s['outcome_changed_by_det']} | {s['not_covered']} |")
+    L.append("## Other metrics (MEASURED)\n")
+    L.append(f"* tests unstable under `--det` (fixed order, {meta.get('runs')} runs): {T['unstable_det']}; unstable in "
+             f"the baseline and stable under `--det`: {T['became_stable']}")
+    L.append(f"* stable in both modes but with a different majority outcome: {T['outcome_changed_by_det']}")
+    L.append(f"* identical fingerprint in every fixed-order `--det` run (covered by Level 0): {T['covered']} "
+             f"({_pct(T['covered'], T['covered'] + T['not_covered'])}); not covered: {T['not_covered']}"
+             + (" (" + ", ".join(f"`{k}` {v}" for k, v in reasons.most_common()) + ")" if reasons else ""))
     L.append("")
-    if any(s.get("examples") for s in ok):
-        L.append("## Esempi\n")
-        for s in ok:
-            ex = s.get("examples") or {}
-            if ex:
-                L.append(f"**{s['name']}**\n")
-                for k, items in sorted(ex.items()):
-                    L += [f"* `{k}` — {it}" for it in items]
-                L.append("")
+    L.append("## Per repository (MEASURED)\n")
+    L.append("| repo | pool | py | xdist | tests | unstable | reproduced | seeds explored | broken by det | "
+             "not covered | IDoFT present / flaky / reproduced |")
+    L.append("|---|---|---|---|---:|---:|---:|---:|---:|---:|---|")
+    for x in ok:
+        idoft = f"{x['known_present']} / {x['known_unstable_baseline']} / {x['known_reproduced']}" \
+            if x["kind"] == "flaky" else ""
+        L.append(f"| [{x['name']}]({x['url']}) | {x['kind']} | {x['python']} | {'yes' if x['xdist'] else 'no'} | "
+                 f"{x['tests']} | {x['unstable_baseline']} | {x['reproduced']} | {x['seeds_explored']}"
+                 f"{' (budget)' if x['exploration_budget_hit'] else ''} | {x.get('broken_by_det', 0)} | "
+                 f"{x['not_covered']} | {idoft} |")
+    L.append("")
     if skipped:
-        L.append("## Repository scartati\n")
-        L.append("| repo | pool | motivo | dettaglio |")
+        L.append("## Discarded candidates\n")
+        L.append("| repo | pool | reason | detail |")
         L.append("|---|---|---|---|")
         for sk in skipped:
             d = re.sub(r"\s+", " ", sk.get("detail", ""))[-220:].replace("|", "/")
             L.append(f"| {sk['name']} | {sk.get('kind', '')} | {sk['status']} | {d} |")
         L.append("")
-    L.append("## Riproduzione\n")
+    L.append("## Reproduction\n")
     L += ["```bash", meta.get("command", ""), "```",
-          "Dettagli per test in `<repo>.csv`, per run in `<repo>_runs.csv`; colonne in `docs/HARNESS.md`."]
+          "Per-test details in `<repo>.csv`, per-run details in `<repo>_runs.csv`; columns in `docs/HARNESS.md`."]
     if meta.get("notes"):
-        L += ["", "## Note", ""] + [f"* {n}" for n in meta["notes"]]
+        L += ["", "## Notes", ""] + [f"* {n}" for n in meta["notes"]]
     path = outdir / "REPORT.md"
     path.write_text("\n".join(L) + "\n")
     (outdir / "summary.json").write_text(json.dumps({"meta": meta, "totals": {k: dict(v) for k, v in tot.items()},
                                                     "reasons": dict(reasons), "pass_fail_reasons": dict(pf_reasons),
+                                                    "broken_causes": dict(causes), "timings": timings,
                                                     "repos": ok, "skipped": skipped}, indent=2))
     return path
 
@@ -769,6 +945,12 @@ def main(argv=None) -> int:
     ap.add_argument("--repo-budget", type=float, default=2700,
                     help="seconds per repository after which the exploration stops")
     ap.add_argument("--report-only", action="store_true")
+    ap.add_argument("--mode", choices=("round", "prepare", "timing"), default="round",
+                    help="round: full protocol; prepare: install/collect/first-run filters only (CI selection); "
+                         "timing: quiet timing pass")
+    ap.add_argument("--timing-runs", type=int, default=3)
+    ap.add_argument("--no-ablation", action="store_true", help="skip the per-control ablation of broken tests")
+    ap.add_argument("--executor", default="local", help="free text recorded in the report (e.g. GitHub Actions)")
     ap.add_argument("--fresh", action="store_true", help="discard results already in --out instead of resuming")
     ap.add_argument("--checkpoint", action="store_true",
                     help="git commit + push the results directory after every repository (survives restarts)")
@@ -789,16 +971,16 @@ def main(argv=None) -> int:
         quota = {"custom": len(names)}
     outdir = Path(args.out or HERE / "results" / (args.set if args.set in ("validate", "mixed") else "custom"))
     work = Path(args.work)
-    sys.path.insert(0, str(ROOT / "python"))
-    import detpy
+    detpy = _import_detpy()
 
     meta = {"set": args.set, "runs": args.runs, "seeds": args.seeds, "confirm": args.confirm, "jobs": args.jobs,
+            "executor": args.executor, "timing_runs": args.timing_runs,
             "detpy": detpy.__version__,
             "date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
             "command": "python harness/detpy_harness.py " + " ".join(argv if argv is not None else sys.argv[1:]),
-            "notes": ["Il dataset FlaPy di Gruber et al. è pubblicato su Zenodo, non raggiungibile da questo ambiente "
-                      "(403 dal proxy di rete): il pool 'flaky' usa la sezione Python di IDoFT, con i progetti fissati "
-                      "al commit in cui i test instabili furono rilevati."]}
+            "notes": ["The FlaPy dataset (Gruber et al.) is published on Zenodo, which the development environment "
+                      "cannot reach (HTTP 403 from the network proxy): the 'flaky' pool uses the Python section of "
+                      "IDoFT, each project pinned at the commit where its flaky tests were detected."]}
     if args.report_only:
         prev = outdir / "summary.json"
         if prev.exists():
@@ -810,11 +992,12 @@ def main(argv=None) -> int:
     if args.fresh:
         for f in list(outdir.glob("*.summary.json")) + list(outdir.glob("*.csv")) + list(outdir.glob("skipped.json")):
             f.unlink()
-    wheel = args.wheel or build_wheel(work)
+    wheel = os.path.abspath(args.wheel) if args.wheel else build_wheel(work)
     log(f"wheel: {wheel}")
 
     # Resume: repositories already measured or discarded are not redone.
-    results: list[dict] = [json.loads(f.read_text()) for f in sorted(outdir.glob("*.summary.json"))]
+    results: list[dict] = ([json.loads(f.read_text()) for f in sorted(outdir.glob("*.summary.json"))]
+                           if args.mode == "round" else [])
     skipped: list[dict] = json.loads((outdir / "skipped.json").read_text()) if (outdir / "skipped.json").exists() else []
     finished = {r["name"] for r in results} | {s_["name"] for s_ in skipped}
     lock = threading.Lock()
@@ -858,12 +1041,16 @@ def main(argv=None) -> int:
                 log(f"prepared {p.name} [{kind}]: {p.status} py{p.python_version} {p.collected} tests "
                     f"xdist={p.xdist} {p.detail[-100:]!r}")
                 if p.status != "ok":
-                    r = {"name": p.name, "kind": kind, "status": p.status, "detail": p.detail}
+                    r = {"name": p.name, "kind": p.kind, "status": p.status, "detail": p.detail}
+                elif args.mode == "prepare":
+                    r = prepare_check(p, args, outdir, work)
+                elif args.mode == "timing":
+                    r = timing_pass(p, args, outdir, work)
                 else:
                     r = measure(p, args, outdir, work)
             except Exception as e:  # pragma: no cover
                 import traceback
-                r = {"name": repo["name"], "kind": kind, "status": "harness-error",
+                r = {"name": repo["name"], "kind": repo.get("kind", kind), "status": "harness-error",
                      "detail": repr(e) + traceback.format_exc()[-300:]}
             with lock:
                 running[kind] -= 1
@@ -871,11 +1058,12 @@ def main(argv=None) -> int:
                 if r.get("status") == "ok":
                     done_ok[kind] += 1
                 else:
-                    skipped.append({"name": r["name"], "kind": kind, "status": r["status"],
+                    skipped.append({"name": r["name"], "kind": r.get("kind", kind), "status": r["status"],
                                     "detail": r.get("detail", "")})
                 (outdir / "skipped.json").write_text(json.dumps(skipped, indent=2))
                 meta["order"] = [x["name"] for x in results if x.get("status") == "ok"]
-                write_report(outdir, meta)  # partial report after every repository
+                if args.mode == "round":
+                    write_report(outdir, meta)  # partial report after every repository
                 checkpoint(r["name"])
             log(f"done {r['name']} [{kind}]: {r.get('status')} (ok so far: {dict(done_ok)})")
 
@@ -886,7 +1074,9 @@ def main(argv=None) -> int:
         t.join()
     meta["order"] = [r["name"] for pool in pools.values() for r in pool
                      if any(x["name"] == r["name"] and x.get("status") == "ok" for x in results)]
-    print(write_report(outdir, meta))
+    (outdir / "meta.json").write_text(json.dumps(meta, indent=2))
+    if args.mode == "round":
+        print(write_report(outdir, meta))
     return 0
 
 
