@@ -19,7 +19,7 @@ persist() {
 wait_http() {
   local url=$1 t=${2:-120} i
   for ((i = 0; i < t; i++)); do
-    curl -fsS -o /dev/null --max-time 3 "$url" && return 0
+    curl -fs -o /dev/null --max-time 3 "$url" && return 0
     sleep 1
   done
   echo "wait_http: $url did not answer in ${t}s" >&2

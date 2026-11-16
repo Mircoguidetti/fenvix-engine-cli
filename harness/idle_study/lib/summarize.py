@@ -53,6 +53,17 @@ for rd in run_dirs:
     thr = (base_cores or 0.0) + QUIET_ABOVE_BASELINE
     quiet = sum(1 for p in series if p[1] < thr) / len(series) if series else None
     ge1 = sum(1 for p in series if p[1] >= 1.0) / len(series) if series else None
+    # Per-interval bound: in an interval with b busy cores (b < 1), at least (1 - b) of it had no CPU running
+    # at all, whatever the overlap; summed over intervals this is a lower bound of the all-blocked time.
+    ib = None
+    if series:
+        tot, idle_t, prev = 0.0, 0.0, 0.0
+        for p in series:
+            dt = p[0] - prev
+            prev = p[0]
+            tot += dt
+            idle_t += dt * max(0.0, 1.0 - p[1])
+        ib = idle_t / tot if tot else None
     cg = s["cgroups"]
     cont = sum(s["containers"].values())
     other = busy - (cg.get("test") or 0) - (cg.get("svc") or 0) - cont
@@ -71,6 +82,8 @@ for rd in run_dirs:
         "cores_mean": round(busy / W, 3) if W else None,
         "idle_share_raw": round(1 - busy / W, 4) if W else None,
         "idle_share_net": round(1 - net / W, 4) if W else None,
+        "idle_share_clamped": round(max(0.0, 1 - busy / W), 4) if W else None,
+        "idle_interval_bound": None if ib is None else round(ib, 4),
         "quiet_share": None if quiet is None else round(quiet, 4),
         "share_ge1core": None if ge1 is None else round(ge1, 4),
         "iowait_s": round(s["total"]["iowait"], 2),
@@ -82,6 +95,7 @@ for rd in run_dirs:
         "cpu_other_s": round(other, 2),
         "containers": dict(sorted(s["containers"].items(), key=lambda kv: -kv[1])[:12]),
         "top_comm": s["by_comm"][:15],
+        "busy_series_0p5s": [round(p[1], 2) for p in series][:12000],
         "n_tests": len(t),
         "n_pass": sum(1 for v in t.values() if v["s"] == "pass"),
         "n_fail": n_fail,
@@ -90,6 +104,7 @@ for rd in run_dirs:
     if not t or (rm.get("rc") not in (0, None) and n_fail == 0):
         r["log_tail"] = tail(os.path.join(rd, "test.log"), 50)
     if i == 1:
+        r["cgroup_diag"] = tail(os.path.join(rd, "cg.txt"), 10)
         # 1-second buckets of total busy cores for plotting
         buckets = {}
         for p in series:
@@ -127,6 +142,8 @@ result.update({
     "idle": {
         "median_idle_share_raw": med([r["idle_share_raw"] for r in runs]),
         "median_idle_share_net": med([r["idle_share_net"] for r in runs]),
+        "median_idle_share_clamped": med([r["idle_share_clamped"] for r in runs]),
+        "median_idle_interval_bound": med([r["idle_interval_bound"] for r in runs]),
         "median_quiet_share": med([r["quiet_share"] for r in runs]),
         "median_cores_mean": med([r["cores_mean"] for r in runs]),
         "median_wall_s": med([r["wall_s"] for r in runs]),
