@@ -1,0 +1,56 @@
+{
+  "name": "jsonschema",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/python-jsonschema/jsonschema",
+  "commit": "64b62de5df4e",
+  "commit_date": "2026-11-16",
+  "python": "3.13",
+  "install": "-e . --group test",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 8.915822370099999,
+  "det_mean_s": 11.6459530805,
+  "slowdown_pct": 30.621187783593996,
+  "precompile_first_s": 7.384,
+  "precompile_rest_median_s": 0.33,
+  "tests": 8529,
+  "unstable_baseline": 2,
+  "unstable_det": 0,
+  "became_stable": 2,
+  "outcome_changed_by_det": 0,
+  "covered": 8529,
+  "not_covered": 0,
+  "reproduced": 2,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    2,
+    2
+  ],
+  "seeds_explored": 2,
+  "exploration_runs": 11,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "random": 2
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "reproduced": [
+      "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id (seed 2): event #0: random.state @ <end> returned different values: \"ecac3cc1dfb2fe19d97afaaef90095b2\" vs \"164f2a214cb69a205e82811f93fa8929\"",
+      "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id (seed 2): event #0: random.state @ <end> returned different values: \"fa206d0a793d44989469034f1b401f43\" vs \"af033098dcca41d0cc64ccbd5de6a317\""
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "name": "networkx",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/networkx/networkx",
+  "commit": "ada19dd8000e",
+  "commit_date": "2026-11-14",
+  "python": "3.13",
+  "install": "-e .[test,test-extras] -r requirements/test.txt numpy scipy",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 9,
+  "baseline_mean_s": 63.12340246677779,
+  "det_mean_s": 120.64765238099999,
+  "slowdown_pct": 91.12983088086473,
+  "precompile_first_s": 8.816,
+  "precompile_rest_median_s": 0.5085,
+  "tests": 10181,
+  "unstable_baseline": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "outcome_changed_by_det": 1,
+  "covered": 10119,
+  "not_covered": 62,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 0,
+  "exploration_runs": 0,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "entropy": 62
+  },
+  "pass_fail_reasons": {},
+  "broken_by_det": 1,
+  "broken_always": 1,
+  "broken_causes": {
+    "time | AssertionError": 1
+  },
+  "broken_examples": {
+    "time | AssertionError": [
+      "networkx/algorithms/tests/test_similarity.py::TestSimilarity::test_graph_edit_distance_roots_and_timeout: assert None == 8 (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->failed": [
+      "networkx/algorithms/tests/test_similarity.py::TestSimilarity::test_graph_edit_distance_roots_and_timeout"
+    ]
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "name": "anyio",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/agronholm/anyio",
+  "commit": "9df02f0b8362",
+  "commit_date": "2026-11-16",
+  "python": "3.13",
+  "install": "-e . --group test",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 51.9519648923,
+  "det_mean_s": 37.4062736111,
+  "slowdown_pct": -27.998346763888946,
+  "precompile_first_s": 6.034,
+  "precompile_rest_median_s": 0.404,
+  "tests": 4857,
+  "unstable_baseline": 17,
+  "unstable_det": 0,
+  "became_stable": 17,
+  "outcome_changed_by_det": 2863,
+  "covered": 2020,
+  "not_covered": 11,
+  "reproduced": 0,
+  "never_fails_under_det": 17,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 4,
+  "exploration_runs": 4,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "time": 4,
+    "entropy": 7
+  },
+  "pass_fail_reasons": {},
+  "broken_by_det": 39,
+  "broken_always": 39,
+  "broken_causes": {
+    "time | unknown": 3,
+    "fs | BlockingError": 36
+  },
+  "broken_examples": {
+    "time | unknown": [
+      "tests/streams/test_tls.py::TestTLSListener::test_handshake_fail[asyncio+eager]: BlockingError('Blocking call to os.path.abspath') [single exception in ExceptionGroup] (first diverging source: -)",
+      "tests/streams/test_tls.py::TestTLSListener::test_handshake_fail[asyncio+uvloop]: BlockingError('Blocking call to os.path.abspath') [single exception in ExceptionGroup] (first diverging source: -)",
+      "tests/streams/test_tls.py::TestTLSListener::test_handshake_fail[asyncio]: BlockingError('Blocking call to os.path.abspath') [single exception in ExceptionGroup] (first diverging source: -)"
+    ],
+    "fs | BlockingError": [
+      "tests/test_fileio.py::TestPath::test_glob[asyncio+eager-False]: blockbuster.blockbuster.BlockingError: Blocking call to SortedScandir.__next__ (first diverging source: -)",
+      "tests/test_fileio.py::TestPath::test_glob[asyncio+eager-True]: blockbuster.blockbuster.BlockingError: Blocking call to SortedScandir.__next__ (first diverging source: -)",
+      "tests/test_fileio.py::TestPath::test_glob[asyncio+uvloop-False]: blockbuster.blockbuster.BlockingError: Blocking call to SortedScandir.__next__ (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:None->passed": [
+      "test_plugin.py::test_async_fixture_from_marked_test[asyncio]",
+      "test_plugin.py::test_async_fixture_from_sync_test[asyncio]"
+    ],
+    "changed:None->skipped": [
+      "test_plugin.py::test_skip_inline[asyncio]"
+    ],
+    "changed:passed->failed": [
+      "tests/streams/test_tls.py::TestTLSListener::test_handshake_fail[asyncio+eager]",
+      "tests/streams/test_tls.py::TestTLSListener::test_handshake_fail[asyncio+uvloop]"
+    ],
+    "changed:passed->None": [
+      "tests/test_pytest_plugin.py::TestFreePortFactory::test_free_tcp_port[asyncio+eager]",
+      "tests/test_pytest_plugin.py::TestFreePortFactory::test_free_tcp_port[asyncio+uvloop]"
+    ],
+    "changed:skipped->None": [
+      "tests/test_pytest_plugin.py::TestFreePortFactory::test_free_tcp_port[trio]",
+      "tests/test_pytest_plugin.py::TestFreePortFactory::test_free_udp_port[trio]"
+    ],
+    "changed:passed->unknown": [
+      "tests/test_pytest_plugin.py::test_plugin"
+    ],
+    "changed:xfailed->None": [
+      "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+      "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]"
+    ],
+    "changed:failed->None": [
+      "tests/test_to_process.py::test_entrypoint_main_module[asyncio+eager]",
+      "tests/test_to_process.py::test_entrypoint_main_module[asyncio+uvloop]"
+    ]
+  }
+}

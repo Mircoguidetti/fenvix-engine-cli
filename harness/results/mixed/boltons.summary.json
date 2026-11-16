@@ -1,0 +1,64 @@
+{
+  "name": "boltons",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/mahmoud/boltons",
+  "commit": "d31d821d56c8",
+  "commit_date": "2026-10-25",
+  "python": "3.13",
+  "install": "-e . --group dev",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 1.9559737474000016,
+  "det_mean_s": 5.863151281800002,
+  "slowdown_pct": 199.75613372079542,
+  "precompile_first_s": 9.904,
+  "precompile_rest_median_s": 0.305,
+  "tests": 621,
+  "unstable_baseline": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "outcome_changed_by_det": 2,
+  "covered": 616,
+  "not_covered": 5,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 0,
+  "exploration_runs": 0,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "entropy": 3,
+    "thread": 2
+  },
+  "pass_fail_reasons": {},
+  "broken_by_det": 2,
+  "broken_always": 2,
+  "broken_causes": {
+    "time | AssertionError": 1,
+    "time | Timeout": 1
+  },
+  "broken_examples": {
+    "time | AssertionError": [
+      "tests/test_funcutils_fb_py3.py::test_wraps_async: assert 9.999999974752427e-07 > 0.25 (first diverging source: -)"
+    ],
+    "time | Timeout": [
+      "tests/test_socketutils.py::test_socketutils_netstring: boltons.socketutils.Timeout: socket operation timed out after 10000ms. 0 bytes unsent (first diverging source: thread)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->failed": [
+      "tests/test_funcutils_fb_py3.py::test_wraps_async",
+      "tests/test_socketutils.py::test_socketutils_netstring"
+    ]
+  }
+}
