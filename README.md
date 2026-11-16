@@ -44,6 +44,12 @@ What `--det` controls:
 | 5 | closed network | connections/DNS/UDP to non-local hosts raise `detpy.NetworkBlockedError` (or `socket.gaierror` for DNS) with an explicit message; loopback and `AF_UNIX` allowed; local HTTP proxies count as external. `--det-record` records per-test byte streams (plaintext above TLS) and later runs replay them. |
 | 6 | fingerprint | every interaction above (plus OS entropy reads, which are observed but not controlled) becomes an event `(thread, source, op, call site, value)`; the Rust core chains them with BLAKE3 and stores the trace. |
 
+Level 1 prototype (asyncio): `--det --det-async` runs every asyncio loop of the test
+thread under a seeded scheduler (virtual loop clock, I/O readiness, executor results and
+`call_soon_threadsafe` delivered in an order chosen by the seed, each choice recorded in the
+fingerprint). `--det-async-seed=N` explores (0 = calm, reproducible, no exploration). Design and
+limits: [docs/L1-ASYNCIO.md](docs/L1-ASYNCIO.md).
+
 Other options: `--det-disable=time,fs,bytecode,...`, `--det-sleep=real`, `--det-urandom`
 (make `os.urandom`/`uuid4` deterministic — beyond Level 0), `--det-tick-adapt=N`,
 `--det-allow-host=H`, `--det-max-events=N`, `--det-keep-aslr`, `--det-no-reexec`,
