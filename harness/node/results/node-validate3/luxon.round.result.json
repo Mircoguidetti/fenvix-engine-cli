@@ -1,0 +1,79 @@
+{
+  "name": "luxon",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/moment/luxon",
+  "commit": "f427515a38f6a671f8de663e6bcc040ed81f114e",
+  "commit_date": "2026-08-09T14:44:44+02:00",
+  "python": "node v18.20.8",
+  "install": "npm ci --no-audit --no-fund",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 3,
+  "baseline_mean_s": 4.140720848333331,
+  "det_mean_s": 1.8833689513333265,
+  "slowdown_pct": -54.5159159403031,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 1262,
+  "unstable_baseline": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "outcome_changed_by_det": 1262,
+  "covered": 0,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 0,
+  "exploration_runs": 0,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 58,
+  "broken_always": 58,
+  "broken_causes": {
+    "unexplained | unknown": 58
+  },
+  "broken_examples": {
+    "unexplained | unknown": [
+      "test/datetime/create.test.js::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+      "test/datetime/degrade.test.js::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+      "test/datetime/diff.test.js::<file>: \u25cf Test suite failed to run (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:None->error": [
+      "test/datetime/create.test.js::<file>",
+      "test/datetime/degrade.test.js::<file>"
+    ],
+    "changed:passed->None": [
+      "test/datetime/create.test.js::DateTime.fromHTTP is invalid when weekday is not consistent",
+      "test/datetime/create.test.js::DateTime.fromHTTP parses ascii"
+    ],
+    "changed:failed->None": [
+      "test/datetime/diff.test.js::DateTime#diff handles fractional days as fractions of those specific days",
+      "test/datetime/diff.test.js::DateTime#diff is precise for lower order units"
+    ]
+  },
+  "runner": "jest 29.4.3",
+  "node": "node v18.20.8",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": false,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "st/runner.js:15:97\n      at detjsJestRunner (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:242:29)\n\nFAIL test/zones/zoneInterface.test.js\n  \u25cf Test suite failed to run\n\n    TypeError: Cannot assign to read only property 'mark' of object '#<Performance>'\n\n      399 |     'getEntriesByType', 'toJSON', 'timerify', 'eventLoopUtilization', 'markResourceTiming',\n      400 |     'clearResourceTimings', 'setResourceTimingBufferSize', 'addEventListener', 'removeEventListener', 'dispatchEvent']) {\n    > 401 |     if (typeof hostPerf[k] === 'function') out[k] = hostPerf[k].bind(hostPerf);\n          |                                                   ^\n      402 |   }\n      403 |   Object.defineProperty(out, 'timeOrigin', { get: () => hostPerf.timeOrigin, enumerable: true });\n      404 |   Object.defineProperty(out, 'nodeTiming', { get: () => hostPerf.nodeTiming });\n\n      at wrapPerformance (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/clock.js:401:51)\n      at Object.installRealm (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/clock.js:432:40)\n      at Object.installRealm (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/controls.js:52:37)\n      at _callee$ (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:103:20)\n      at tryCatch (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:13:1357)\n      at Generator.<anonymous> (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:13:4174)\n      at Generator.next (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:13:2208)\n      at asyncGeneratorStep (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:14:103)\n      at _next (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:15:194)\n      at ../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:15:364\n      at ../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:15:97\n      at detjsJestRunner (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:242:29)\n\n\nTest Suites: 58 failed, 58 total\nTests:       0 total\nSnapshots:   0 total\nTime:        1.219 s\nRan all test suites.\nTest results written to: ../../runs/luxon/det_0.json\n"
+  },
+  "not_reproduced_causes": {},
+  "executor": "GitHub Actions",
+  "date": "2026-11-16T17:14:30.167037+00:00"
+}
