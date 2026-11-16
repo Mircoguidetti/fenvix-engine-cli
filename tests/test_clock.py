@@ -235,13 +235,24 @@ def test_real_pytest_benchmark(pytester, run_det):
 def test_sleep_lets_other_threads_run(pytester, run_det):
     """Regression (easypy, test_tag_along_thread / concurrent_find_proper_shutdown):
     code that sleeps to let *other threads* make progress must keep working.
-    A purely virtual sleep returned at once and the other thread never ran."""
+    A purely virtual sleep returned at once and the other thread never ran.
+
+    The worker waits 0.2 s of real time with a raw _thread lock (no detpy wrapper,
+    no virtual clock): before the fix the main thread's sleep(0.5) returned at
+    once and the assertion failed every time (review R-001: the previous version
+    let the worker sleep virtually too, so it failed only 5/10 before the fix)."""
     pytester.makepyfile(
         test_t="""
-        import threading, time
+        import _thread, threading, time
+
+        def _real_wait(seconds):
+            lock = _thread.allocate_lock()
+            lock.acquire()
+            lock.acquire(timeout=seconds)  # times out after `seconds` of real time
+
         def test_wait_for_worker():
             done = []
-            t = threading.Thread(target=lambda: (time.sleep(0.2), done.append(1)))
+            t = threading.Thread(target=lambda: (_real_wait(0.2), done.append(1)))
             t.start()
             time.sleep(0.5)          # "wait for stragglers"
             assert done
