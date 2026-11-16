@@ -392,6 +392,11 @@ def prepare(repo: dict, work: Path, _wheel, _default, max_first_run: float) -> P
 
 # ---------------------------------------------------------------------------
 # Runs
+def clean(text: str) -> str:
+    """Lone UTF-16 surrogates (test names built from binary data) -> U+FFFD, as the native core does."""
+    return text.encode("utf-16", "surrogatepass").decode("utf-16", "replace")
+
+
 def parse_report(path: Path, root: str) -> tuple[dict, dict]:
     """Jest-format JSON report (Jest --json, Vitest --reporter=json) -> outcomes, exceptions."""
     outcomes, exceptions = {}, {}
@@ -402,7 +407,7 @@ def parse_report(path: Path, root: str) -> tuple[dict, dict]:
     norm = {"passed": "passed", "failed": "failed", "pending": "skipped", "skipped": "skipped", "todo": "todo",
             "disabled": "skipped", "focused": "passed"}
     for f in data.get("testResults", []):
-        fid = os.path.relpath(f.get("name", ""), root).replace(os.sep, "/")
+        fid = os.path.relpath(f.get("name") or "<unknown>", root).replace(os.sep, "/")
         results = f.get("assertionResults") or []
         if not results and f.get("status") == "failed":
             nid = f"{fid}::<file>"
@@ -414,13 +419,13 @@ def parse_report(path: Path, root: str) -> tuple[dict, dict]:
             anc = [" ".join(map(str, x)) if isinstance(x, list) else ("" if x is None else str(x)) for x in anc]
             title = a.get("title", "")
             title = " ".join(map(str, title)) if isinstance(title, list) else ("" if title is None else str(title))
-            nid = "::".join([fid, *anc, title])
+            nid = clean("::".join([fid, *anc, title]))
             o = norm.get(a.get("status"), a.get("status") or "unknown")
             prev = outcomes.get(nid)
             if prev is None or (o == "failed" and prev != "failed"):
                 outcomes[nid] = o
             if o == "failed" and nid not in exceptions:
-                exceptions[nid] = _exc("\n".join(a.get("failureMessages") or []), "call")
+                exceptions[nid] = _exc("\n".join(str(m) for m in (a.get("failureMessages") or []) if m), "call")
     return outcomes, exceptions
 
 

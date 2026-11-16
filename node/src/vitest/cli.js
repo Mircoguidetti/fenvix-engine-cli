@@ -73,13 +73,21 @@ async function main(argv) {
     }
   }
 
+  // The runner is loaded through a shim in the project's node_modules: Vitest
+  // imports dependencies natively, while a file outside the project root goes
+  // through Vite and is refused when the project restricts server.fs (jotai).
+  const shimDir = path.join(root, 'node_modules', '.detjs');
+  fs.mkdirSync(shimDir, { recursive: true });
+  const runnerShim = path.join(shimDir, `runner-${process.pid}.mjs`);
+  fs.writeFileSync(runnerShim, `export { default } from ${JSON.stringify(pathToFileURL(path.join(__dirname, 'runner.mjs')).href)};\n`);
+  process.on('exit', () => { try { fs.rmSync(runnerShim, { force: true }); } catch { /* ignore */ } });
   Object.assign(options, {
     run: true,
     watch: false,
     fileParallelism: false,
     maxWorkers: 1,
     maxConcurrency: 1,
-    runner: path.join(__dirname, 'runner.mjs'),
+    runner: runnerShim,
     sequence: { ...(options.sequence || {}), shuffle: false, concurrent: false, sequencer: DetSequencer },
   });
   if (major < 4) options.minWorkers = 1;

@@ -1663,6 +1663,202 @@
      "state": "closed"
     }
    ]
+  },
+  {
+   "name": "growi-flaky",
+   "repo": "growilabs/growi",
+   "url": "https://github.com/growilabs/growi",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 1480,
+   "issues": [
+    {
+     "url": "https://github.com/growilabs/growi/issues/12252",
+     "title": "flaky: vitest:src/features/opentelemetry/server/anonymization/anonymize-http-requests.instrumentation.spec.ts:URL attributes recorded by the HTTP instrumentation > records / either as received or as the hook set it",
+     "created_at": "2026-11-14T16:18:53Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/growilabs/growi/issues/12252",
+     "title": "flaky: vitest:src/features/opentelemetry/server/anonymization/anonymize-http-requests.instrumentation.spec.ts:URL attributes recorded by the HTTP instrumentation > records / either as received or as the hook set it",
+     "created_at": "2026-11-14T16:18:53Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/growilabs/growi/issues/12251",
+     "title": "flaky: vitest:src/features/change-proposal/server/routes/write-routes.integ.ts:change-proposal write routes > POST /:id/approve > answers a missing, malformed, someone else\u2019s and someone else\u2019s settled proposal with one identical 404",
+     "created_at": "2026-11-14T16:18:06Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "element-web-flaky",
+   "repo": "element-hq/element-web",
+   "url": "https://github.com/element-hq/element-web",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 13663,
+   "issues": [
+    {
+     "url": "https://github.com/element-hq/element-web/issues/33219",
+     "title": "Flaky Jest test: `<VerificationQRCode /> \u203a renders a QR code`",
+     "created_at": "2026-04-21T10:23:35Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/element-hq/element-web/issues/32651",
+     "title": "Flaky jest test: `<MatrixChat /> \u203a with a soft-logged-out session \u203a should show the soft-logout page`",
+     "created_at": "2026-02-26T11:40:07Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/element-hq/element-web/issues/31778",
+     "title": "Flaky Jest test: `RoomView \u203a message search \u203a should close search results when edit is clicked`",
+     "created_at": "2026-01-16T17:57:28Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "opencti-flaky",
+   "repo": "OpenCTI-Platform/opencti",
+   "url": "https://github.com/OpenCTI-Platform/opencti",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 10378,
+   "issues": [
+    {
+     "url": "https://github.com/OpenCTI-Platform/opencti/issues/18142",
+     "title": "fix(tests): the telemetry collector clears the Redis gauges while the integration tests run (flaky test)",
+     "created_at": "2026-09-06T11:23:19Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/OpenCTI-Platform/opencti/issues/18133",
+     "title": "fix(tests): the integration test wait budgets are unmeasured (flaky tests)",
+     "created_at": "2026-09-05T11:25:06Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/OpenCTI-Platform/opencti/issues/18109",
+     "title": "fix(tests): telemetry manager tests poll asynchronous counters with a too short budget (flaky tests)",
+     "created_at": "2026-09-04T10:22:01Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "okou-flaky",
+   "repo": "okou-ai/okou",
+   "url": "https://github.com/okou-ai/okou",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 1161,
+   "issues": [
+    {
+     "url": "https://github.com/okou-ai/okou/issues/29627",
+     "title": "test(e2e): replace flaky Agora firewall probe with Twilio",
+     "created_at": "2026-08-26T10:37:55Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/okou-ai/okou/issues/23780",
+     "title": "test(vsock-guest): remove flaky pidfd exit watcher",
+     "created_at": "2026-07-29T10:34:11Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/okou-ai/okou/issues/23209",
+     "title": "test(api): flaky \"fails after every canonical session preparation snapshot changes\"",
+     "created_at": "2026-07-27T04:38:45Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "kibana-flaky",
+   "repo": "elastic/kibana",
+   "url": "https://github.com/elastic/kibana",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 21378,
+   "issues": [
+    {
+     "url": "https://github.com/elastic/kibana/issues/305624",
+     "title": "[Fleet] Stub the agent enrollment flyout in the agent-based policies table test",
+     "created_at": "2026-11-16T13:23:53Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/elastic/kibana/issues/299789",
+     "title": "[Alerting v2] Make the dispatcher dedup ledger searchable before the tick returns",
+     "created_at": "2026-10-22T10:22:51Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/elastic/kibana/issues/280978",
+     "title": "Duplicate `logstash_functional` ES archives diverge, causing flaky Scout test failures on shared clusters",
+     "created_at": "2026-07-27T09:55:12Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "theia-flaky",
+   "repo": "eclipse-theia/theia",
+   "url": "https://github.com/eclipse-theia/theia",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 21763,
+   "issues": [
+    {
+     "url": "https://github.com/eclipse-theia/theia/issues/18319",
+     "title": "Flaky tests (Oct\u2013Nov 2026)",
+     "created_at": "2026-11-04T21:02:27Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/eclipse-theia/theia/issues/18139",
+     "title": "Flaky test on Node 26: AgentGenericCapabilitiesSettings 'rolls back a swallowed write failure'",
+     "created_at": "2026-10-07T14:52:39Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/eclipse-theia/theia/issues/18016",
+     "title": "Flaky Explorer API test occasionally fails on CI for unrelated PRs",
+     "created_at": "2026-09-12T13:58:10Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "opencove-flaky",
+   "repo": "DeadWaveWave/opencove",
+   "url": "https://github.com/DeadWaveWave/opencove",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 1652,
+   "issues": [
+    {
+     "url": "https://github.com/DeadWaveWave/opencove/issues/693",
+     "title": "Shorten pull request CI: macOS runs its platform tests before merge and the full E2E after it",
+     "created_at": "2026-11-15T04:33:58Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/DeadWaveWave/opencove/issues/683",
+     "title": "Run every browser E2E spec in CI, and make tests that run nowhere visible",
+     "created_at": "2026-11-14T13:31:34Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/DeadWaveWave/opencove/issues/683",
+     "title": "Run every browser E2E spec in CI, and make tests that run nowhere visible",
+     "created_at": "2026-11-14T13:31:34Z",
+     "state": "closed"
+    }
+   ]
   }
  ]
 }
