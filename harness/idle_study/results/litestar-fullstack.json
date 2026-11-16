@@ -1,0 +1,758 @@
+{
+ "name": "litestar-fullstack",
+ "repo": "litestar-org/litestar-fullstack",
+ "ref": "90e074e12383209716c68b98a74982599e477900",
+ "status": "ok",
+ "setup_s": 4,
+ "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
+ "config": {
+  "repo": "litestar-org/litestar-fullstack",
+  "ref": "90e074e12383209716c68b98a74982599e477900",
+  "app": "python",
+  "suite": "integration: pytest with pytest-databases (Postgres, Redis containers started by the suite)",
+  "services": "Postgres, Redis (started by the tests)",
+  "python": "3.12",
+  "bun": "latest",
+  "runs": 6,
+  "parser": "junit"
+ },
+ "run_id": "43945303458",
+ "measured_at": "2026-11-16T20:13:41Z",
+ "baseline_cores": 0.0106,
+ "n_runs": 6,
+ "runs": [
+  {
+   "run": 1,
+   "rc": 0,
+   "wall_s": 102.03,
+   "busy_cpu_s": 305.5,
+   "cores_mean": 2.994,
+   "idle_share_raw": -1.9943,
+   "idle_share_net": -1.9837,
+   "quiet_share": 0.0341,
+   "share_ge1core": 0.8634,
+   "iowait_s": 19.47,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.38,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 12.04,
+   "cpu_other_s": 293.45,
+   "containers": {
+    "f7564f53ae06": 12.045
+   },
+   "top_comm": [
+    [
+     "host",
+     "[pytest-xdist r",
+     224.57
+    ],
+    [
+     "host",
+     "[pytest-xdist i",
+     27.17
+    ],
+    [
+     "host",
+     "python",
+     20.33
+    ],
+    [
+     "host",
+     "pytest",
+     8.13
+    ],
+    [
+     "host",
+     "containerd",
+     2.61
+    ],
+    [
+     "host",
+     "docker-proxy",
+     2.27
+    ],
+    [
+     "host",
+     "provjobd3919016",
+     2.09
+    ],
+    [
+     "host",
+     "dockerd",
+     0.76
+    ],
+    [
+     "container",
+     "postgres",
+     0.59
+    ],
+    [
+     "host",
+     "python3",
+     0.36
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.27
+    ],
+    [
+     "host",
+     "unpigz",
+     0.26
+    ],
+    [
+     "host",
+     "kworker/u16:4-events_power_efficient",
+     0.17
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.17
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.11
+    ]
+   ],
+   "n_tests": 577,
+   "n_pass": 577,
+   "n_fail": 0,
+   "n_skip": 0,
+   "series_1s": [
+    0.02,
+    0.31,
+    1.07,
+    0.22,
+    0.23,
+    0.56,
+    0.84,
+    0.67,
+    1.36,
+    4.0,
+    3.9,
+    2.48,
+    3.41,
+    3.91,
+    3.73,
+    3.96,
+    0.24,
+    0.04,
+    0.15,
+    0.13,
+    2.31,
+    1.86,
+    0.92,
+    0.1,
+    0.94,
+    2.64,
+    3.83,
+    3.76,
+    3.84,
+    3.71,
+    2.87,
+    3.21,
+    3.82,
+    3.52,
+    3.8,
+    3.76,
+    3.48,
+    3.35,
+    3.64,
+    3.49,
+    2.4,
+    3.38,
+    3.72,
+    2.28,
+    3.15,
+    3.79,
+    3.49,
+    3.44,
+    3.54,
+    3.69,
+    3.44,
+    3.5,
+    3.82,
+    3.8,
+    3.78,
+    3.46,
+    3.26,
+    3.64,
+    3.69,
+    3.58,
+    3.43,
+    3.52,
+    3.58,
+    3.46,
+    3.45,
+    3.5,
+    3.65,
+    3.52,
+    3.72,
+    3.63,
+    3.57,
+    3.56,
+    3.63,
+    3.81,
+    3.82,
+    3.83,
+    3.83,
+    3.8,
+    3.83,
+    3.84,
+    3.84,
+    3.71,
+    3.59,
+    3.89,
+    3.84,
+    3.88,
+    3.87,
+    3.89,
+    3.6,
+    2.8,
+    2.91,
+    3.32,
+    2.75,
+    2.53,
+    2.95,
+    3.09,
+    3.01,
+    3.04,
+    3.94,
+    4.0,
+    3.02,
+    1.19,
+    1.07,
+    0.24
+   ]
+  },
+  {
+   "run": 2,
+   "rc": 0,
+   "wall_s": 81.74,
+   "busy_cpu_s": 279.3,
+   "cores_mean": 3.417,
+   "idle_share_raw": -2.4169,
+   "idle_share_net": -2.4063,
+   "quiet_share": 0.0061,
+   "share_ge1core": 0.9695,
+   "iowait_s": 0.02,
+   "steal_s": 0.01,
+   "sampler_cpu_s": 0.32,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 11.41,
+   "cpu_other_s": 267.88,
+   "containers": {
+    "44392d43be56": 11.415
+   },
+   "top_comm": [
+    [
+     "host",
+     "[pytest-xdist r",
+     212.97
+    ],
+    [
+     "host",
+     "[pytest-xdist i",
+     26.76
+    ],
+    [
+     "host",
+     "python",
+     15.62
+    ],
+    [
+     "host",
+     "pytest",
+     4.51
+    ],
+    [
+     "host",
+     "docker-proxy",
+     2.23
+    ],
+    [
+     "host",
+     "provjobd3919016",
+     2.22
+    ],
+    [
+     "container",
+     "postgres",
+     0.56
+    ],
+    [
+     "host",
+     "python3",
+     0.3
+    ],
+    [
+     "host",
+     "dockerd",
+     0.27
+    ],
+    [
+     "host",
+     "containerd",
+     0.2
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.18
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.1
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.07
+    ],
+    [
+     "host",
+     "kworker/3:1-events",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/0:1-events",
+     0.03
+    ]
+   ],
+   "n_tests": 577,
+   "n_pass": 577,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 3,
+   "rc": 0,
+   "wall_s": 83.59,
+   "busy_cpu_s": 283.43,
+   "cores_mean": 3.391,
+   "idle_share_raw": -2.3907,
+   "idle_share_net": -2.3801,
+   "quiet_share": 0.006,
+   "share_ge1core": 0.9762,
+   "iowait_s": 0.02,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.33,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 11.9,
+   "cpu_other_s": 271.53,
+   "containers": {
+    "1fc844f1c868": 11.896
+   },
+   "top_comm": [
+    [
+     "host",
+     "[pytest-xdist r",
+     218.0
+    ],
+    [
+     "host",
+     "[pytest-xdist i",
+     26.02
+    ],
+    [
+     "host",
+     "python",
+     15.6
+    ],
+    [
+     "host",
+     "pytest",
+     4.61
+    ],
+    [
+     "host",
+     "docker-proxy",
+     2.26
+    ],
+    [
+     "host",
+     "provjobd3919016",
+     2.18
+    ],
+    [
+     "container",
+     "postgres",
+     0.62
+    ],
+    [
+     "host",
+     "python3",
+     0.31
+    ],
+    [
+     "host",
+     "dockerd",
+     0.24
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.2
+    ],
+    [
+     "host",
+     "containerd",
+     0.2
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.1
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.08
+    ],
+    [
+     "host",
+     "systemd",
+     0.04
+    ],
+    [
+     "host",
+     "kworker/1:0-events",
+     0.03
+    ]
+   ],
+   "n_tests": 577,
+   "n_pass": 577,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 4,
+   "rc": 0,
+   "wall_s": 83.28,
+   "busy_cpu_s": 284.81,
+   "cores_mean": 3.42,
+   "idle_share_raw": -2.4199,
+   "idle_share_net": -2.4092,
+   "quiet_share": 0.006,
+   "share_ge1core": 0.9701,
+   "iowait_s": 0.03,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.32,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 12.0,
+   "cpu_other_s": 272.81,
+   "containers": {
+    "5e620193946e": 12.0
+   },
+   "top_comm": [
+    [
+     "host",
+     "[pytest-xdist r",
+     217.07
+    ],
+    [
+     "host",
+     "[pytest-xdist i",
+     29.45
+    ],
+    [
+     "host",
+     "python",
+     15.57
+    ],
+    [
+     "host",
+     "pytest",
+     4.61
+    ],
+    [
+     "host",
+     "provjobd3919016",
+     2.29
+    ],
+    [
+     "host",
+     "docker-proxy",
+     2.27
+    ],
+    [
+     "container",
+     "postgres",
+     0.61
+    ],
+    [
+     "host",
+     "python3",
+     0.3
+    ],
+    [
+     "host",
+     "dockerd",
+     0.2
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.19
+    ],
+    [
+     "host",
+     "containerd",
+     0.19
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.1
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.07
+    ],
+    [
+     "host",
+     "systemd",
+     0.04
+    ],
+    [
+     "host",
+     "kworker/0:1-events",
+     0.03
+    ]
+   ],
+   "n_tests": 577,
+   "n_pass": 577,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 5,
+   "rc": 0,
+   "wall_s": 83.36,
+   "busy_cpu_s": 281.8,
+   "cores_mean": 3.381,
+   "idle_share_raw": -2.3805,
+   "idle_share_net": -2.3699,
+   "quiet_share": 0.0119,
+   "share_ge1core": 0.9643,
+   "iowait_s": 0.02,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.32,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 11.83,
+   "cpu_other_s": 269.97,
+   "containers": {
+    "70034f370eab": 11.83
+   },
+   "top_comm": [
+    [
+     "host",
+     "[pytest-xdist r",
+     216.31
+    ],
+    [
+     "host",
+     "[pytest-xdist i",
+     25.84
+    ],
+    [
+     "host",
+     "python",
+     15.57
+    ],
+    [
+     "host",
+     "pytest",
+     4.59
+    ],
+    [
+     "host",
+     "docker-proxy",
+     2.25
+    ],
+    [
+     "host",
+     "provjobd3919016",
+     2.22
+    ],
+    [
+     "container",
+     "postgres",
+     0.6
+    ],
+    [
+     "host",
+     "python3",
+     0.31
+    ],
+    [
+     "host",
+     "dockerd",
+     0.27
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.21
+    ],
+    [
+     "host",
+     "containerd",
+     0.2
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.1
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.1
+    ],
+    [
+     "host",
+     "systemd",
+     0.03
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.03
+    ]
+   ],
+   "n_tests": 577,
+   "n_pass": 577,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 6,
+   "rc": 0,
+   "wall_s": 82.12,
+   "busy_cpu_s": 280.7,
+   "cores_mean": 3.418,
+   "idle_share_raw": -2.4181,
+   "idle_share_net": -2.4075,
+   "quiet_share": 0.0061,
+   "share_ge1core": 0.9758,
+   "iowait_s": 0.02,
+   "steal_s": 0.01,
+   "sampler_cpu_s": 0.32,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 11.76,
+   "cpu_other_s": 268.94,
+   "containers": {
+    "13fc3b560195": 11.761
+   },
+   "top_comm": [
+    [
+     "host",
+     "[pytest-xdist r",
+     212.76
+    ],
+    [
+     "host",
+     "[pytest-xdist i",
+     28.79
+    ],
+    [
+     "host",
+     "python",
+     15.59
+    ],
+    [
+     "host",
+     "pytest",
+     4.88
+    ],
+    [
+     "host",
+     "provjobd3919016",
+     2.3
+    ],
+    [
+     "host",
+     "docker-proxy",
+     2.25
+    ],
+    [
+     "container",
+     "postgres",
+     0.58
+    ],
+    [
+     "host",
+     "python3",
+     0.3
+    ],
+    [
+     "host",
+     "dockerd",
+     0.26
+    ],
+    [
+     "host",
+     "containerd",
+     0.21
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.18
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.09
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.05
+    ],
+    [
+     "host",
+     "systemd",
+     0.04
+    ],
+    [
+     "host",
+     "kworker/3:1-events",
+     0.03
+    ]
+   ],
+   "n_tests": 577,
+   "n_pass": 577,
+   "n_fail": 0,
+   "n_skip": 0
+  }
+ ],
+ "idle": {
+  "median_idle_share_raw": -2.4038,
+  "median_idle_share_net": -2.3932,
+  "median_quiet_share": 0.0061,
+  "median_cores_mean": 3.404,
+  "median_wall_s": 83.32,
+  "median_busy_cpu_s": 282.615
+ },
+ "tests": {
+  "n_distinct": 577,
+  "n_flaky": 0,
+  "n_consistent_fail": 0,
+  "flaky": [],
+  "consistent_fail_sample": []
+ }
+}
