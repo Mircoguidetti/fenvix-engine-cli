@@ -1,0 +1,153 @@
+name: diff-study
+
+# Execution-diff study (harness/diff_study). Triggered by a push that changes
+# harness/diff_study/run.json on this branch (workflow_dispatch only works on
+# the default branch). Jobs:
+#   plan     -> reads run.json
+#   build    -> detpy wheel from the engine commit named in run.json
+#   select   -> merged PRs that change source code (GitHub API)
+#   prs      -> one PR per runner: base x2, head x2 under --det, per-test diff
+#   mutants  -> one (repository, shard) per runner: surviving mutants vs trace diff
+#   publish  -> commits every result to harness/diff_study/results/ (rebase-retry)
+# With "publish_run_id" in run.json only `publish` runs, on that run's artifacts.
+
+on:
+  push:
+    branches: [claude/loving-maxwell-58mv2w]
+    paths: [harness/diff_study/run.json]
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  PYTHONUNBUFFERED: "1"
+  UV_PYTHON_PREFERENCE: managed
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      engine: ${{ steps.p.outputs.engine }}
+      prs: ${{ steps.p.outputs.prs }}
+      prs_args: ${{ steps.p.outputs.prs_args }}
+      mutants: ${{ steps.p.outputs.mutants }}
+      mut_matrix: ${{ steps.p.outputs.mut_matrix }}
+      publish_run: ${{ steps.p.outputs.publish_run }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: p
+        run: python3 harness/diff_study/plan.py | tee -a "$GITHUB_OUTPUT"
+
+  build:
+    needs: plan
+    if: ${{ needs.plan.outputs.publish_run == '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: "${{ needs.plan.outputs.engine }}"}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install maturin
+      - run: maturin build --release --compatibility linux -o dist
+      - uses: actions/upload-artifact@v4
+        with: {name: wheel, path: dist/*.whl}
+
+  select:
+    needs: plan
+    if: ${{ needs.plan.outputs.publish_run == '' && needs.plan.outputs.prs == 'true' }}
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.s.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with: {ref: "${{ needs.plan.outputs.engine }}", path: engine}
+      - id: s
+        env: {GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"}
+        run: python3 harness/diff_study/select_prs.py --repos-json engine/harness/repos.json --out sel/prs.json ${{ needs.plan.outputs.prs_args }}
+      - uses: actions/upload-artifact@v4
+        with: {name: prs, path: sel/prs.json}
+
+  prs:
+    needs: [plan, build, select]
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        idx: ${{ fromJSON(needs.select.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/download-artifact@v4
+        with: {name: wheel, path: dist}
+      - uses: actions/download-artifact@v4
+        with: {name: prs, path: sel}
+      - run: |
+          python3 harness/diff_study/run_pr.py --spec sel/prs.json --index ${{ matrix.idx }} \
+            --wheel "$(ls dist/*.whl)" --out out --work /tmp/work --timeout 1500
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: "pr-${{ matrix.idx }}", path: out/, if-no-files-found: ignore}
+
+  mutants:
+    needs: [plan, build]
+    if: ${{ needs.plan.outputs.mutants == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        m: ${{ fromJSON(needs.plan.outputs.mut_matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/download-artifact@v4
+        with: {name: wheel, path: dist}
+      - run: |
+          python3 harness/diff_study/mutate.py --repo "${{ matrix.m.repo }}" --url "${{ matrix.m.url }}" \
+            --ref "${{ matrix.m.ref }}" --install '${{ matrix.m.install }}' --pytest-args '${{ matrix.m.pytest_args }}' \
+            --shard ${{ matrix.m.shard }} --per-shard ${{ matrix.m.per_shard }} \
+            --wheel "$(ls dist/*.whl)" --out out --work /tmp/work --budget 3300
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: "mut-${{ matrix.m.repo }}-${{ matrix.m.shard }}", path: out/, if-no-files-found: ignore}
+
+  publish:
+    needs: [plan, select, prs, mutants]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Download artifacts (this run or publish_run_id)
+        uses: actions/download-artifact@v4
+        with:
+          path: art
+          run-id: ${{ needs.plan.outputs.publish_run != '' && needs.plan.outputs.publish_run || github.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit results
+        run: |
+          set -x
+          src_run="${{ needs.plan.outputs.publish_run != '' && needs.plan.outputs.publish_run || github.run_id }}"
+          ls art || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin "${{ github.ref_name }}"
+          git checkout -q -B publish "origin/${{ github.ref_name }}"
+          dest=harness/diff_study/results
+          mkdir -p "$dest/prs" "$dest/mutants"
+          [ -f art/prs/prs.json ] && cp art/prs/prs.json "$dest/prs.json"
+          for d in art/pr-*; do [ -d "$d" ] && cp "$d"/*.json.gz "$dest/prs/" 2>/dev/null || true; done
+          for d in art/mut-*; do [ -d "$d" ] && cp "$d"/*.json.gz "$dest/mutants/" 2>/dev/null || true; done
+          echo "$src_run" > "$dest/last_run.txt"
+          git add -A "$dest"
+          git commit -q -m "Diff study results from Actions run $src_run" || exit 0
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if git push -q origin "HEAD:${{ github.ref_name }}"; then exit 0; fi
+            sleep $((i * 5)); git fetch -q origin "${{ github.ref_name }}"; git rebase -q "origin/${{ github.ref_name }}"
+          done
+          exit 1

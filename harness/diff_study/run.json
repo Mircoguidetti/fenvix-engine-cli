@@ -1,0 +1,19 @@
+{
+ "nonce": 1,
+ "engine_sha": "0aef0aeee3bfe6a3adfd921712bfec5d625009bf",
+ "prs": {"enabled": true, "args": "--since 2024-01-01 --per-repo 6 --total 80 --max-refactors 20"},
+ "mutants": {
+  "enabled": true,
+  "per_shard": 50,
+  "repos": [
+   {"name": "toolz", "url": "https://github.com/pytoolz/toolz", "ref": "451af60dec590a6010e2babdbf391ea8f815122f", "shards": 4, "pytest_args": ["--ignore=toolz/sandbox/tests/test_parallel.py"]},
+   {"name": "sqlparse", "url": "https://github.com/andialbrecht/sqlparse", "ref": "09dbe1eec31ed1b3cd05366748865f11ba427d32", "shards": 4},
+   {"name": "marshmallow", "url": "https://github.com/marshmallow-code/marshmallow", "ref": "777ff66039fd939fc509226a33586bc3209df301", "shards": 4},
+   {"name": "structlog", "url": "https://github.com/hynek/structlog", "ref": "81779f0abe5942018c543e4a7cb047e92d2b5ad8", "shards": 4},
+   {"name": "boltons", "url": "https://github.com/mahmoud/boltons", "ref": "d31d821d56c8f7756af9c30a864077f2e5855321", "shards": 4},
+   {"name": "jinja", "url": "https://github.com/pallets/jinja", "ref": "5ef70112a1ff19c05324ff889dd30405b1002044", "shards": 4, "install": ["trio"]},
+   {"name": "arrow", "url": "https://github.com/arrow-py/arrow", "ref": "2224255c4acc594d734cef0bbc83360452a67983", "shards": 4},
+   {"name": "click", "url": "https://github.com/pallets/click", "ref": "08b803cf32ceb2ae6a772c62d5da42757a897d44", "shards": 4}
+  ]
+ }
+}
