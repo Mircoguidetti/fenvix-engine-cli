@@ -1,0 +1,20 @@
+{
+ "name": "idoft-python-dugong",
+ "url": "https://github.com/python-dugong/python-dugong",
+ "source": "IDoFT (asyncio)",
+ "tests": {
+  "test/test_aio.py::test_aio_future": "NIO"
+ },
+ "executor": "GitHub Actions",
+ "runner": "ip-10-0-128-160",
+ "python_requested": [
+  "3.10",
+  "3.9"
+ ],
+ "commit": "00dd4d5aab6eddb116cace2829a9f93bda153664",
+ "status": "install-failed",
+ "detail": "install with python 3.9: error: Distribution not found at: file:///tmp/l1work/src/idoft-python-dugong/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+ "python": "",
+ "install": "",
+ "collected": 0
+}

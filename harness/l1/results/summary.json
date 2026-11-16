@@ -1,0 +1,100 @@
+{
+ "meta": {
+  "run_url": "https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43914981044",
+  "protocol": "Per project: 10 baseline / --det / --det --det-async (seed 0) runs of the corpus tests, interleaved, serial, fixed collection order; exploration with --det-async-seed=1..20 (test order fixed); 10/10 confirmation of the first failing seed; 3 timed runs of the full suite per mode."
+ },
+ "projects": [
+  {
+   "name": "anyio",
+   "status": "install-failed",
+   "detail": "install with python 3.13: error: Distribution not found at: file:///tmp/l1work/src/anyio/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+   "python": "",
+   "commit": "9df02f0b8362e9f4a1fc3a4404052d0d7016e4f0",
+   "collected": 0,
+   "source": "25+25 round (popular pool, run 43892303433)"
+  },
+  {
+   "name": "idoft-aiopylimit",
+   "status": "install-failed",
+   "detail": "install with python 3.9: error: Distribution not found at: file:///tmp/l1work/src/idoft-aiopylimit/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+   "python": "",
+   "commit": "b4075a8ac30dbbef59a2243f618a35a2f54b590c",
+   "collected": 0,
+   "source": "IDoFT (asyncio,asynctest)"
+  },
+  {
+   "name": "idoft-aiotasks",
+   "status": "install-failed",
+   "detail": "install with python 3.9: error: Distribution not found at: file:///tmp/l1work/src/idoft-aiotasks/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+   "python": "",
+   "commit": "ec485c84db55227c9283319a9c58401e294a06ff",
+   "collected": 0,
+   "source": "IDoFT (asyncio)"
+  },
+  {
+   "name": "idoft-easypy",
+   "status": "install-failed",
+   "detail": "install with python 3.9: error: Distribution not found at: file:///tmp/l1work/src/idoft-easypy/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+   "python": "",
+   "commit": "9501c3ee03dcb1630e58cbb73b1647056907bcea",
+   "collected": 0,
+   "source": "25+25 round (IDoFT pool) + IDoFT"
+  },
+  {
+   "name": "idoft-plcx",
+   "status": "install-failed",
+   "detail": "install with python 3.9: error: Distribution not found at: file:///tmp/l1work/src/idoft-plcx/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+   "python": "",
+   "commit": "2756c0ba78c4c9e572d95ba002708957bc55d4fa",
+   "collected": 0,
+   "source": "IDoFT (asyncio)"
+  },
+  {
+   "name": "idoft-pyps4-2ndscreen",
+   "status": "install-failed",
+   "detail": "install with python 3.9: 2ndscreen/pyps4_2ndscreen/ps4.py\", line 8, in <module>\n             from .connection import LegacyConnection, AsyncConnection, DEFAULT_LOGIN_DELAY\n           File \"/tmp/l1work/src/idoft-pyps4-2ndscreen/pyps4_2ndscreen/connection.py\", line 11, in <module>\n             from construct import (Bytes, Const, Int32ul, Padding, Struct, Container)\n         ModuleNotFoundError: No module named 'construct'\n",
+   "python": "",
+   "commit": "457dc9c3f04017569d52bae7390ea2fc54e96ce5",
+   "collected": 0,
+   "source": "IDoFT (asyncio,asynctest)"
+  },
+  {
+   "name": "idoft-python-dugong",
+   "status": "install-failed",
+   "detail": "install with python 3.9: error: Distribution not found at: file:///tmp/l1work/src/idoft-python-dugong/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+   "python": "",
+   "commit": "00dd4d5aab6eddb116cace2829a9f93bda153664",
+   "collected": 0,
+   "source": "IDoFT (asyncio)"
+  },
+  {
+   "name": "idoft-tornado-swirl",
+   "status": "install-failed",
+   "detail": "install with python 3.9: error: Distribution not found at: file:///tmp/l1work/src/idoft-tornado-swirl/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+   "python": "",
+   "commit": "b8df27efc3d7fd0dce0f0290767c94ac2e747311",
+   "collected": 0,
+   "source": "IDoFT (tornado)"
+  },
+  {
+   "name": "idoft-webssh",
+   "status": "install-failed",
+   "detail": "install with python 3.9: error: Distribution not found at: file:///tmp/l1work/src/idoft-webssh/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+   "python": "",
+   "commit": "51d527fe75a62aed239126a6697749a30baecb30",
+   "collected": 0,
+   "source": "IDoFT (tornado)"
+  },
+  {
+   "name": "l1-repro",
+   "status": "install-failed",
+   "detail": "install with python 3.13: error: Distribution not found at: file:///tmp/l1work/src/l1-repro/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+   "python": "",
+   "commit": "local",
+   "collected": 0,
+   "source": "minimal reproductions (this study)"
+  }
+ ],
+ "tests": [],
+ "timing": []
+}

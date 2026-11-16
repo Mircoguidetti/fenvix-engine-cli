@@ -1,0 +1,20 @@
+{
+ "name": "idoft-aiopylimit",
+ "url": "https://github.com/dmarkey/aiopylimit",
+ "source": "IDoFT (asyncio,asynctest)",
+ "tests": {
+  "aiopylimit/tests/test_aiopylimit.py::TestPyLimit::test_exception": "OD-Vic"
+ },
+ "executor": "GitHub Actions",
+ "runner": "runnervmccnms",
+ "python_requested": [
+  "3.10",
+  "3.9"
+ ],
+ "commit": "b4075a8ac30dbbef59a2243f618a35a2f54b590c",
+ "status": "install-failed",
+ "detail": "install with python 3.9: error: Distribution not found at: file:///tmp/l1work/src/idoft-aiopylimit/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+ "python": "",
+ "install": "",
+ "collected": 0
+}

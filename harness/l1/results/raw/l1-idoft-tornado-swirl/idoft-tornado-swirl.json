@@ -1,0 +1,21 @@
+{
+ "name": "idoft-tornado-swirl",
+ "url": "https://github.com/rduldulao/tornado-swirl",
+ "source": "IDoFT (tornado)",
+ "tests": {
+  "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "OD-Brit",
+  "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "OD-Brit"
+ },
+ "executor": "GitHub Actions",
+ "runner": "runnervmccnms",
+ "python_requested": [
+  "3.10",
+  "3.9"
+ ],
+ "commit": "b8df27efc3d7fd0dce0f0290767c94ac2e747311",
+ "status": "install-failed",
+ "detail": "install with python 3.9: error: Distribution not found at: file:///tmp/l1work/src/idoft-tornado-swirl/dist/detpy-0.1.0-cp39-abi3-linux_x86_64.whl\n",
+ "python": "",
+ "install": "",
+ "collected": 0
+}
