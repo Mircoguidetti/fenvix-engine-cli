@@ -1859,6 +1859,270 @@
      "state": "closed"
     }
    ]
+  },
+  {
+   "name": "open-mercato-flaky",
+   "repo": "open-mercato/open-mercato",
+   "url": "https://github.com/open-mercato/open-mercato",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 1941,
+   "issues": [
+    {
+     "url": "https://github.com/open-mercato/open-mercato/issues/8779",
+     "title": "[tracking] CRM \u2014 open issues and unmerged PRs by area (snapshot 2026-11-05)",
+     "created_at": "2026-11-05T12:06:01Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/open-mercato/open-mercato/issues/8073",
+     "title": "Fix: make SearchService availability parallelism test deterministic",
+     "created_at": "2026-10-27T18:47:43Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/open-mercato/open-mercato/issues/7522",
+     "title": "Flaky: queue local.strategy \"delayed jobs remain queued\" times out at 1800ms in CI",
+     "created_at": "2026-10-16T10:10:28Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "workers-sdk-flaky",
+   "repo": "cloudflare/workers-sdk",
+   "url": "https://github.com/cloudflare/workers-sdk",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 4731,
+   "issues": [
+    {
+     "url": "https://github.com/cloudflare/workers-sdk/issues/16168",
+     "title": "Intermittent \"Expected global Vitest state\" assertions from entrypoint wrapper while tests pass",
+     "created_at": "2026-10-09T02:33:30Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/cloudflare/workers-sdk/issues/16056",
+     "title": "vitest-pool-workers: a Workflow waiting on a short timer (retry backoff) intermittently freezes the whole test isolate for ~300 s",
+     "created_at": "2026-10-04T04:41:12Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "langfuse-flaky",
+   "repo": "langfuse/langfuse",
+   "url": "https://github.com/langfuse/langfuse",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 37500,
+   "issues": [
+    {
+     "url": "https://github.com/langfuse/langfuse/issues/20290",
+     "title": "CI Runtime Report: 2026-11-10..2026-11-16 \u2014 best week on record (gated 256s, 2.3% failures); the e2e Build step is cache-bimodal",
+     "created_at": "2026-11-16T08:59:49Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/langfuse/langfuse/issues/20279",
+     "title": "CI Runtime Report: 2026-11-10 .. 2026-11-16 \u2014 best week on record (perceived 276s, \u221225.9%), but runs after 17:00 UTC pay a 45% penalty",
+     "created_at": "2026-11-16T06:08:25Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "qwen-code-flaky",
+   "repo": "QwenLM/qwen-code",
+   "url": "https://github.com/QwenLM/qwen-code",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 30619,
+   "issues": [
+    {
+     "url": "https://github.com/QwenLM/qwen-code/issues/13384",
+     "title": "ci(flaky): Test lane fails on vitest-worker onTaskUpdate RPC timeout under runner load",
+     "created_at": "2026-10-04T07:58:00Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "tunarr-flaky",
+   "repo": "chrisbenincasa/tunarr",
+   "url": "https://github.com/chrisbenincasa/tunarr",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 2731,
+   "issues": [
+    {
+     "url": "https://github.com/chrisbenincasa/tunarr/issues/2138",
+     "title": "Flaky: LanguagePreferencesList test times out at the 5s vitest default in CI",
+     "created_at": "2026-09-21T21:37:04Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "hapi-flaky",
+   "repo": "tiann/hapi",
+   "url": "https://github.com/tiann/hapi",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 5423,
+   "issues": [
+    {
+     "url": "https://github.com/tiann/hapi/issues/1823",
+     "title": "flaky(cli,ci): Windows shim-spawn test in codexMcpProxy.test.ts times out at the vitest 5s default",
+     "created_at": "2026-09-11T10:50:12Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "assistant-ui-flaky",
+   "repo": "assistant-ui/assistant-ui",
+   "url": "https://github.com/assistant-ui/assistant-ui",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 13268,
+   "issues": [
+    {
+     "url": "https://github.com/assistant-ui/assistant-ui/issues/7007",
+     "title": "flaky: react-native MessageContent derived-status cases sit on the 5s vitest timeout",
+     "created_at": "2026-09-08T03:34:05Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "vercel-flaky",
+   "repo": "vercel/vercel",
+   "url": "https://github.com/vercel/vercel",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 16605,
+   "issues": [
+    {
+     "url": "https://github.com/vercel/vercel/issues/17501",
+     "title": "Investigate and deflake flaky tests reported by Vitest in CI",
+     "created_at": "2026-08-14T15:46:21Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "vinext-flaky",
+   "repo": "cloudflare/vinext",
+   "url": "https://github.com/cloudflare/vinext",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 9376,
+   "issues": [
+    {
+     "url": "https://github.com/cloudflare/vinext/issues/2719",
+     "title": "Flaky unit tests: server-booting tests run on vitest's default 5s timeout",
+     "created_at": "2026-07-27T07:31:43Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "podman-desktop-flaky",
+   "repo": "podman-desktop/podman-desktop",
+   "url": "https://github.com/podman-desktop/podman-desktop",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 8180,
+   "issues": [
+    {
+     "url": "https://github.com/podman-desktop/podman-desktop/issues/17285",
+     "title": "Unit tests flaky on Ubuntu due to Vitest v4 EnvironmentTeardownError",
+     "created_at": "2026-04-28T07:51:30Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "librechat-flaky",
+   "repo": "LibreChat-AI/LibreChat",
+   "url": "https://github.com/LibreChat-AI/LibreChat",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 47196,
+   "issues": [
+    {
+     "url": "https://github.com/LibreChat-AI/LibreChat/issues/14471",
+     "title": "Flaky api tests: PrincipalType undefined in packages/api/src/admin/config.ts under parallel jest workers",
+     "created_at": "2026-07-27T23:16:49Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "yosemite-crew-flaky",
+   "repo": "YosemiteCrew/Yosemite-Crew",
+   "url": "https://github.com/YosemiteCrew/Yosemite-Crew",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 2020,
+   "issues": [
+    {
+     "url": "https://github.com/YosemiteCrew/Yosemite-Crew/issues/1822",
+     "title": "Flaky mobileAppYC Jest suite: one random test fails per full parallel run",
+     "created_at": "2026-07-09T06:15:36Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "app-flaky",
+   "repo": "Expensify/App",
+   "url": "https://github.com/Expensify/App",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 5099,
+   "issues": [
+    {
+     "url": "https://github.com/Expensify/App/issues/73713",
+     "title": "[$250] Flaky jest tests",
+     "created_at": "2025-10-29T01:32:23Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "matrix-js-sdk-flaky",
+   "repo": "matrix-org/matrix-js-sdk",
+   "url": "https://github.com/matrix-org/matrix-js-sdk",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 2203,
+   "issues": [
+    {
+     "url": "https://github.com/matrix-org/matrix-js-sdk/issues/4331",
+     "title": "Flaky jest test: `Room \u203a recalculate \u203a recalculates in acceptable time without heroes`",
+     "created_at": "2024-07-29T12:11:45Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "puppeteer-flaky",
+   "repo": "puppeteer/puppeteer",
+   "url": "https://github.com/puppeteer/puppeteer",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 95846,
+   "issues": [
+    {
+     "url": "https://github.com/puppeteer/puppeteer/issues/11751",
+     "title": "Test: ng-schematics jest test is flaky",
+     "created_at": "2024-01-25T10:14:14Z",
+     "state": "closed"
+    }
+   ]
   }
  ]
 }
