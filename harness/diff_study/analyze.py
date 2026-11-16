@@ -143,6 +143,9 @@ def extra_numbers(prs: list) -> dict:
     loc_stable, loc_noisy = collections.Counter(), collections.Counter()
     first_src = collections.Counter()
     ref = {v: [0, 0] for v in VARIANTS}
+    ref_stable = {v: [0, 0] for v in VARIANTS}
+    ref_probe = {k: [0, 0] for k in ("rets", "calls")}
+    loc_stable_fo = collections.Counter()
     for r in prs:
         t, divs = r["tests"], r["divergences"]
         both = {n: x for n, x in t.items() if x["fp"]["line"][0] != "-" and x["fp"]["line"][2] != "-"}
@@ -174,12 +177,29 @@ def extra_numbers(prs: list) -> dict:
                 fo = x["fp"]["func_ord"]
                 e["div_fixed_by_func_ord"] += fo[0] == fo[2]
                 e["div_fixed_by_nosite"] += x["fp"]["nosite"][0] == x["fp"]["nosite"][2]
+            fo = x["fp"]["func_ord"]
+            if fo[0] == fo[1] and fo[2] == fo[3] and fo[0] != fo[2] and "-" not in fo:
+                loc_stable_fo[divs.get(n, {}).get("loc", "?")] += 1
         if is_refactor(r["spec"]):
             for v in VARIANTS:
                 ref[v][1] += 1
                 ref[v][0] += all(x["fp"][v][0] == x["fp"][v][2] for x in both.values())
+                ref_stable[v][1] += 1
+                ref_stable[v][0] += not any(_stable_change(x["fp"][v]) for x in both.values())
+            for k in ("rets", "calls"):
+                ref_probe[k][1] += 1
+                ref_probe[k][0] += not any(_stable_change(x["probe"][k]) for x in both.values())
     return {"counts": dict(e), "loc_stable": dict(loc_stable), "loc_noisy": dict(loc_noisy),
-            "first_event_source": dict(first_src), "refactor_zero_div": {v: f"{a}/{b}" for v, (a, b) in ref.items()}}
+            "loc_stable_func_ord": dict(loc_stable_fo),
+            "first_event_source": dict(first_src), "refactor_zero_div": {v: f"{a}/{b}" for v, (a, b) in ref.items()},
+            "refactor_zero_stable_div": {v: f"{a}/{b}" for v, (a, b) in ref_stable.items()},
+            "refactor_zero_stable_probe": {k: f"{a}/{b}" for k, (a, b) in ref_probe.items()}}
+
+
+def _stable_change(p: str) -> bool:
+    """Both base runs agree, both head runs agree, base differs from head."""
+    p = p.replace("-", "?")
+    return p[0] == p[1] and p[2] == p[3] and p[0] != p[2] and "?" not in p
 
 
 def recheck_numbers(runs: list) -> dict:
