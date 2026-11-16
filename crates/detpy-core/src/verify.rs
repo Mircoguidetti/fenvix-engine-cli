@@ -210,6 +210,14 @@ pub fn diff_records(a: &TestRecord, b: &TestRecord, run_a: usize, run_b: usize) 
     })
 }
 
+/// Site used by producers for summary events emitted when a test ends
+/// (e.g. final generator state). Like the outcome, they close the sequence.
+pub const END_SITE: &str = "<end>";
+
+fn is_terminal(e: &Event) -> bool {
+    e.source == Source::Outcome || e.site == END_SITE
+}
+
 fn classify(a: Option<&Event>, b: Option<&Event>) -> Reason {
     match (a, b) {
         (Some(ea), Some(eb)) => {
@@ -217,7 +225,8 @@ fn classify(a: Option<&Event>, b: Option<&Event>) -> Reason {
                 Reason::Thread
             } else if ea.source == Source::Outcome && eb.source == Source::Outcome {
                 Reason::OutcomeOnly
-            } else if ea.source == Source::Outcome {
+            } else if is_terminal(ea) && !is_terminal(eb) {
+                // Run A already ended: run B performed an extra interaction.
                 Reason::from_source(eb.source)
             } else {
                 Reason::from_source(ea.source)
@@ -465,6 +474,16 @@ mod tests {
         assert_eq!(d.index, Some(1));
         assert_eq!(d.reason, Reason::Fs);
         assert_eq!(d.event_b.as_ref(), Some(&fs));
+    }
+
+    #[test]
+    fn extra_event_blamed_over_end_summary() {
+        let end = Event::new(Source::Random, "random.state", END_SITE, "x");
+        let a = trace(vec![rec("x", &[end.clone()], "passed", 100)]);
+        let b = trace(vec![rec("x", &[t("1"), end], "passed", 100)]);
+        let r = verify(&[a, b], &[]);
+        let d = r.tests[0].divergence.as_ref().unwrap();
+        assert_eq!((d.index, d.reason), (Some(0), Reason::Time));
     }
 
     #[test]

@@ -42,6 +42,8 @@ _real_ssl_send = ssl.SSLSocket.send
 _real_ssl_write = ssl.SSLSocket.write
 _real_ssl_read = ssl.SSLSocket.read
 _real_socketpair = socket.socketpair
+_real_setsockopt = socket.socket.setsockopt
+_real_getpeername = socket.socket.getpeername
 
 
 class NetworkBlockedError(ConnectionRefusedError):
@@ -319,6 +321,22 @@ def _wrap_socket(self, sock, *args, **kwargs):
 
 
 # Replay ---------------------------------------------------------------------
+def _setsockopt(self, *args):
+    # A replayed socket is an AF_UNIX socketpair end: TCP options (TCP_NODELAY,
+    # keep-alive tuning) would fail with EOPNOTSUPP, so they are ignored.
+    if self in _replays:
+        return None
+    return _real_setsockopt(self, *args)
+
+
+def _getpeername(self):
+    label = _replays.get(self)
+    if label is not None:
+        host, _, rest = label.rpartition(":")
+        return (POLICY.fake_ip(host) if POLICY else host, int(rest.split("#")[0]))
+    return _real_getpeername(self)
+
+
 def _recv_upto(peer, n: int) -> bytes:
     buf = bytearray()
     peer.settimeout(10.0)
@@ -462,6 +480,9 @@ def install(patcher: Patcher, record: bool, cassette_path: str | None, allow_hos
     patcher.set(socket, "gethostbyname", _gethostbyname)
     patcher.set(socket, "gethostbyname_ex", _gethostbyname_ex)
     patcher.set(ssl.SSLContext, "wrap_socket", _wrap_socket)
+    if mode == "replay":
+        patcher.set(socket.socket, "setsockopt", _setsockopt)
+        patcher.set(socket.socket, "getpeername", _getpeername)
     if mode == "record":
         patcher.set(socket.socket, "send", _rec_send)
         patcher.set(socket.socket, "sendall", _rec_sendall)
