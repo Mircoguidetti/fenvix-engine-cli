@@ -11,16 +11,92 @@
     "notes": [
       "Il dataset FlaPy di Gruber et al. \u00e8 pubblicato su Zenodo, non raggiungibile da questo ambiente (403 dal proxy di rete): il pool 'flaky' usa la sezione Python di IDoFT, con i progetti fissati al commit in cui i test instabili furono rilevati."
     ],
-    "order": []
+    "order": [
+      "pygments"
+    ]
   },
   "totals": {
-    "all": {},
+    "all": {
+      "tests": 5346,
+      "unstable_baseline": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "outcome_changed_by_det": 0,
+      "covered": 5346,
+      "not_covered": 0,
+      "reproduced": 0,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0
+    },
     "flaky": {},
-    "popular": {}
+    "popular": {
+      "tests": 5346,
+      "unstable_baseline": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "outcome_changed_by_det": 0,
+      "covered": 5346,
+      "not_covered": 0,
+      "reproduced": 0,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0
+    }
   },
   "reasons": {},
   "pass_fail_reasons": {},
-  "repos": [],
+  "repos": [
+    {
+      "name": "pygments",
+      "kind": "popular",
+      "status": "ok",
+      "url": "https://github.com/pygments/pygments",
+      "commit": "156d85fdd18d",
+      "commit_date": "2026-09-27",
+      "python": "3.13",
+      "install": "-e . -r requirements.txt wcag-contrast-ratio",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 11.601507523599958,
+      "det_mean_s": 16.64744558050006,
+      "slowdown_pct": 43.49381359823783,
+      "precompile_first_s": 1.586,
+      "precompile_rest_median_s": 0.994,
+      "tests": 5346,
+      "unstable_baseline": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "outcome_changed_by_det": 0,
+      "covered": 5346,
+      "not_covered": 0,
+      "reproduced": 0,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [],
+      "seeds_explored": 0,
+      "exploration_runs": 0,
+      "exploration_budget_hit": false,
+      "reasons": {},
+      "pass_fail_reasons": {},
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "known_categories": {},
+      "examples": {}
+    }
+  ],
   "skipped": [
     {
       "name": "idoft-reframe",
