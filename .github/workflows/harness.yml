@@ -88,7 +88,7 @@ jobs:
           python harness/detpy_harness.py --set "${{ matrix.repo }}" --mode prepare --jobs 1
           --wheel "$(ls dist/*.whl)" --work /tmp/work --out out
           --max-first-run ${{ inputs.max_first_run }} --run-timeout 600 --executor "GitHub Actions"
-      - if: ${{ !cancelled() }}
+      - if: always()
         uses: actions/upload-artifact@v4
         with: {name: "prepare-${{ matrix.repo }}", path: out/, if-no-files-found: ignore}
 
@@ -140,7 +140,7 @@ jobs:
           --runs ${{ inputs.runs }} --seeds ${{ inputs.seeds }} --confirm ${{ inputs.confirm }}
           --wheel "$(ls dist/*.whl)" --work /tmp/work --out out
           --max-first-run 100000 --repo-budget 2700 --run-timeout 900 --executor "GitHub Actions"
-      - if: ${{ !cancelled() }}
+      - if: always()
         uses: actions/upload-artifact@v4
         with: {name: "round-${{ matrix.repo }}", path: out/, if-no-files-found: ignore}
 
@@ -184,7 +184,7 @@ jobs:
           python harness/detpy_harness.py --set "${{ matrix.repo }}" --mode timing --jobs 1 --timing-runs 3
           --wheel "$(ls dist/*.whl)" --work /tmp/work --out out --max-first-run 100000 --run-timeout 1200
           --executor "GitHub Actions"
-      - if: ${{ !cancelled() }}
+      - if: always()
         uses: actions/upload-artifact@v4
         with: {name: "timing-${{ matrix.repo }}", path: out/, if-no-files-found: ignore}
 
