@@ -1,0 +1,2770 @@
+{
+ "since": "2024-01-01",
+ "scanned": {
+  "attrs": {
+   "closed_scanned": 300,
+   "merged_human_since": 167
+  },
+  "click": {
+   "closed_scanned": 300,
+   "merged_human_since": 141
+  },
+  "flask": {
+   "closed_scanned": 300,
+   "merged_human_since": 45
+  },
+  "jinja": {
+   "closed_scanned": 300,
+   "merged_human_since": 50
+  },
+  "werkzeug": {
+   "closed_scanned": 300,
+   "merged_human_since": 187
+  },
+  "marshmallow": {
+   "closed_scanned": 300,
+   "merged_human_since": 134
+  },
+  "arrow": {
+   "closed_scanned": 300,
+   "merged_human_since": 33
+  },
+  "structlog": {
+   "closed_scanned": 300,
+   "merged_human_since": 101
+  },
+  "more-itertools": {
+   "closed_scanned": 300,
+   "merged_human_since": 216
+  },
+  "sqlparse": {
+   "closed_scanned": 281,
+   "merged_human_since": 26
+  },
+  "isort": {
+   "closed_scanned": 300,
+   "merged_human_since": 143
+  },
+  "toolz": {
+   "closed_scanned": 300,
+   "merged_human_since": 23
+  },
+  "boltons": {
+   "closed_scanned": 300,
+   "merged_human_since": 65
+  },
+  "pygments": {
+   "closed_scanned": 300,
+   "merged_human_since": 222
+  },
+  "packaging": {
+   "closed_scanned": 300,
+   "merged_human_since": 223
+  },
+  "jsonschema": {
+   "closed_scanned": 300,
+   "merged_human_since": 18
+  },
+  "rich": {
+   "closed_scanned": 300,
+   "merged_human_since": 63
+  }
+ },
+ "candidates": [
+  {
+   "repo": "attrs",
+   "url": "https://github.com/python-attrs/attrs",
+   "number": 1322,
+   "title": "Simplify & optimize own attribute detection",
+   "labels": [],
+   "merged_at": "2024-08-03T11:24:28Z",
+   "merge_sha": "689a0e64012d1e576ebd99e786a254bc537582c6",
+   "commits": 1,
+   "files": [
+    "src/attr/_make.py"
+   ],
+   "source_files": [
+    "src/attr/_make.py"
+   ],
+   "test_files": [],
+   "additions": 2,
+   "deletions": 14,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 0
+  },
+  {
+   "repo": "attrs",
+   "url": "https://github.com/python-attrs/attrs",
+   "number": 1290,
+   "title": "refactor: Only loop once on \"cached_properties\" when building slotted classes",
+   "labels": [],
+   "merged_at": "2024-06-26T12:28:01Z",
+   "merge_sha": "e1b2c9491bd7d73e6049d8ad54828cc785577103",
+   "commits": 2,
+   "files": [
+    "src/attr/_make.py"
+   ],
+   "source_files": [
+    "src/attr/_make.py"
+   ],
+   "test_files": [],
+   "additions": 5,
+   "deletions": 11,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 1
+  },
+  {
+   "repo": "click",
+   "url": "https://github.com/pallets/click",
+   "number": 3921,
+   "title": "Python 3.11 cleanups",
+   "labels": [
+    "typing",
+    "tests"
+   ],
+   "merged_at": "2026-11-16T17:03:41Z",
+   "merge_sha": "08b803cf32ceb2ae6a772c62d5da42757a897d44",
+   "commits": 2,
+   "files": [
+    "CHANGES.md",
+    "src/click/_compat.py",
+    "src/click/_termui_impl.py",
+    "src/click/_utils.py",
+    "src/click/core.py",
+    "src/click/utils.py",
+    "tests/test_arguments.py",
+    "tests/test_deprecations.py",
+    "tests/test_options.py",
+    "tests/test_utils/test_sentinel.py"
+   ],
+   "source_files": [
+    "src/click/_compat.py",
+    "src/click/_termui_impl.py",
+    "src/click/_utils.py",
+    "src/click/core.py",
+    "src/click/utils.py"
+   ],
+   "test_files": [
+    "tests/test_arguments.py",
+    "tests/test_deprecations.py",
+    "tests/test_options.py",
+    "tests/test_utils/test_sentinel.py"
+   ],
+   "additions": 18,
+   "deletions": 24,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 2
+  },
+  {
+   "repo": "click",
+   "url": "https://github.com/pallets/click",
+   "number": 3861,
+   "title": "Move common `help` argument from `Option` and `Argument` to `Parameter`",
+   "labels": [
+    "help output"
+   ],
+   "merged_at": "2026-09-10T19:29:50Z",
+   "merge_sha": "6d5bac5c712195cbfa9666ba0ecbf0573cdea356",
+   "commits": 1,
+   "files": [
+    "CHANGES.md",
+    "src/click/core.py",
+    "tests/test_info_dict.py"
+   ],
+   "source_files": [
+    "src/click/core.py"
+   ],
+   "test_files": [
+    "tests/test_info_dict.py"
+   ],
+   "additions": 61,
+   "deletions": 31,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 3
+  },
+  {
+   "repo": "click",
+   "url": "https://github.com/pallets/click",
+   "number": 3767,
+   "title": "Refactor pager stream handling",
+   "labels": [
+    "tests"
+   ],
+   "merged_at": "2026-08-18T05:38:45Z",
+   "merge_sha": "f36d58bbd7f188178de2d4fe1d0292c510375ca7",
+   "commits": 1,
+   "files": [
+    "CHANGES.md",
+    "src/click/_compat.py",
+    "src/click/_termui_impl.py",
+    "tests/test_termui.py",
+    "tests/test_utils/test_echo_via_pager.py"
+   ],
+   "source_files": [
+    "src/click/_compat.py",
+    "src/click/_termui_impl.py"
+   ],
+   "test_files": [
+    "tests/test_termui.py",
+    "tests/test_utils/test_echo_via_pager.py"
+   ],
+   "additions": 113,
+   "deletions": 80,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 4
+  },
+  {
+   "repo": "flask",
+   "url": "https://github.com/pallets/flask",
+   "number": 5799,
+   "title": "refactor stream_with_context for async views",
+   "labels": [
+    "async"
+   ],
+   "merged_at": "2025-08-19T15:23:51Z",
+   "merge_sha": "38b4c1e19b50494cfcdc9332899e09b7fed34979",
+   "commits": 1,
+   "files": [
+    "CHANGES.rst",
+    "src/flask/helpers.py",
+    "tests/test_helpers.py"
+   ],
+   "source_files": [
+    "src/flask/helpers.py"
+   ],
+   "test_files": [
+    "tests/test_helpers.py"
+   ],
+   "additions": 63,
+   "deletions": 32,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 5
+  },
+  {
+   "repo": "jinja",
+   "url": "https://github.com/pallets/jinja",
+   "number": 1695,
+   "title": "Simplify example for ModuleLoader",
+   "labels": [
+    "docs"
+   ],
+   "merged_at": "2024-12-19T00:08:33Z",
+   "merge_sha": "791dd3b0415b99faac229d42a81db1d7096b003c",
+   "commits": 1,
+   "files": [
+    "src/jinja2/loaders.py"
+   ],
+   "source_files": [
+    "src/jinja2/loaders.py"
+   ],
+   "test_files": [],
+   "additions": 1,
+   "deletions": 4,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [
+    "trio"
+   ],
+   "pytest_args": [],
+   "priority": 6
+  },
+  {
+   "repo": "werkzeug",
+   "url": "https://github.com/pallets/werkzeug",
+   "number": 3341,
+   "title": "move `TestResponse.text` to `Response`",
+   "labels": [],
+   "merged_at": "2026-11-05T14:51:02Z",
+   "merge_sha": "5f11cd39b40ac03296ab7db446bfb0a737d77590",
+   "commits": 2,
+   "files": [
+    "CHANGES.rst",
+    "src/werkzeug/test.py",
+    "src/werkzeug/wrappers/response.py",
+    "tests/test_apply_range.py",
+    "tests/test_debug.py",
+    "tests/test_exceptions.py",
+    "tests/test_formparser.py",
+    "tests/test_test.py",
+    "tests/test_utils.py",
+    "tests/test_wrappers.py"
+   ],
+   "source_files": [
+    "src/werkzeug/test.py",
+    "src/werkzeug/wrappers/response.py"
+   ],
+   "test_files": [
+    "tests/test_apply_range.py",
+    "tests/test_debug.py",
+    "tests/test_exceptions.py",
+    "tests/test_formparser.py",
+    "tests/test_test.py",
+    "tests/test_utils.py",
+    "tests/test_wrappers.py"
+   ],
+   "additions": 47,
+   "deletions": 47,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 7
+  },
+  {
+   "repo": "werkzeug",
+   "url": "https://github.com/pallets/werkzeug",
+   "number": 3339,
+   "title": "more WSGI environ cleanup",
+   "labels": [],
+   "merged_at": "2026-10-30T14:37:59Z",
+   "merge_sha": "2adaad1ab68312fa46efb07ff072b15b720e2444",
+   "commits": 5,
+   "files": [
+    "src/werkzeug/_internal.py",
+    "src/werkzeug/exceptions.py",
+    "src/werkzeug/http.py",
+    "src/werkzeug/test.py",
+    "src/werkzeug/wrappers/response.py"
+   ],
+   "source_files": [
+    "src/werkzeug/_internal.py",
+    "src/werkzeug/exceptions.py",
+    "src/werkzeug/http.py",
+    "src/werkzeug/test.py",
+    "src/werkzeug/wrappers/response.py"
+   ],
+   "test_files": [],
+   "additions": 74,
+   "deletions": 110,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 8
+  },
+  {
+   "repo": "werkzeug",
+   "url": "https://github.com/pallets/werkzeug",
+   "number": 3333,
+   "title": "refactor exceptions",
+   "labels": [],
+   "merged_at": "2026-10-17T03:47:25Z",
+   "merge_sha": "665e760ca6325a348ce03e5cf780b17e4be01848",
+   "commits": 1,
+   "files": [
+    "CHANGES.rst",
+    "docs/exceptions.rst",
+    "src/werkzeug/exceptions.py",
+    "src/werkzeug/sansio/response.py",
+    "src/werkzeug/wrappers/request.py",
+    "tests/test_exceptions.py"
+   ],
+   "source_files": [
+    "src/werkzeug/exceptions.py",
+    "src/werkzeug/sansio/response.py",
+    "src/werkzeug/wrappers/request.py"
+   ],
+   "test_files": [
+    "tests/test_exceptions.py"
+   ],
+   "additions": 472,
+   "deletions": 720,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 9
+  },
+  {
+   "repo": "marshmallow",
+   "url": "https://github.com/marshmallow-code/marshmallow",
+   "number": 3024,
+   "title": "Simplify `get_value` to match actual usage",
+   "labels": [],
+   "merged_at": "2026-08-21T16:06:00Z",
+   "merge_sha": "fcb0f9abd63822defd588ac0550dbfd960b391de",
+   "commits": 1,
+   "files": [
+    "src/marshmallow/utils.py",
+    "tests/test_utils.py"
+   ],
+   "source_files": [
+    "src/marshmallow/utils.py"
+   ],
+   "test_files": [
+    "tests/test_utils.py"
+   ],
+   "additions": 7,
+   "deletions": 22,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 10
+  },
+  {
+   "repo": "marshmallow",
+   "url": "https://github.com/marshmallow-code/marshmallow",
+   "number": 2988,
+   "title": "Simplify use of self.opts.index_errors in _deserialize",
+   "labels": [],
+   "merged_at": "2026-06-27T15:54:36Z",
+   "merge_sha": "cea3d44f40683832b88b792b84f4a91be032f7ad",
+   "commits": 1,
+   "files": [
+    "src/marshmallow/schema.py"
+   ],
+   "source_files": [
+    "src/marshmallow/schema.py"
+   ],
+   "test_files": [],
+   "additions": 2,
+   "deletions": 3,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 11
+  },
+  {
+   "repo": "marshmallow",
+   "url": "https://github.com/marshmallow-code/marshmallow",
+   "number": 2776,
+   "title": "Move constants to constants.py and document them",
+   "labels": [],
+   "merged_at": "2025-01-15T21:01:28Z",
+   "merge_sha": "61f2e888774f862e9967bb45c3c375bbeea85ac7",
+   "commits": 1,
+   "files": [
+    "docs/extending.rst",
+    "docs/top_level.rst",
+    "src/marshmallow/__init__.py",
+    "src/marshmallow/constants.py",
+    "src/marshmallow/fields.py",
+    "src/marshmallow/schema.py",
+    "src/marshmallow/utils.py"
+   ],
+   "source_files": [
+    "src/marshmallow/__init__.py",
+    "src/marshmallow/constants.py",
+    "src/marshmallow/fields.py",
+    "src/marshmallow/schema.py",
+    "src/marshmallow/utils.py"
+   ],
+   "test_files": [],
+   "additions": 53,
+   "deletions": 42,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 12
+  },
+  {
+   "repo": "structlog",
+   "url": "https://github.com/hynek/structlog",
+   "number": 758,
+   "title": "Refactor terminal initialization into separate function",
+   "labels": [],
+   "merged_at": "2025-10-13T06:46:53Z",
+   "merge_sha": "635621bf694887b969003a6b0c4ecf4531e1e0d9",
+   "commits": 2,
+   "files": [
+    ".github/workflows/ci.yml",
+    "CHANGELOG.md",
+    "src/structlog/_config.py",
+    "src/structlog/dev.py"
+   ],
+   "source_files": [
+    "src/structlog/_config.py",
+    "src/structlog/dev.py"
+   ],
+   "test_files": [],
+   "additions": 57,
+   "deletions": 28,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 13
+  },
+  {
+   "repo": "structlog",
+   "url": "https://github.com/hynek/structlog",
+   "number": 741,
+   "title": "refactor: extract styles configuration to separate method",
+   "labels": [],
+   "merged_at": "2025-09-12T11:01:26Z",
+   "merge_sha": "9d4022c796eaaf1637648519db5ee6a84169e152",
+   "commits": 9,
+   "files": [
+    "CHANGELOG.md",
+    "docs/api.rst",
+    "docs/conf.py",
+    "src/structlog/dev.py",
+    "tests/test_dev.py"
+   ],
+   "source_files": [
+    "src/structlog/dev.py"
+   ],
+   "test_files": [
+    "tests/test_dev.py"
+   ],
+   "additions": 112,
+   "deletions": 25,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 14
+  },
+  {
+   "repo": "more-itertools",
+   "url": "https://github.com/more-itertools/more-itertools",
+   "number": 1261,
+   "title": "Fix/simplify `combination_with_replacement_index`",
+   "labels": [],
+   "merged_at": "2026-09-08T20:18:44Z",
+   "merge_sha": "926acab4ae876eea0697a885996efdf3a32bf0ac",
+   "commits": 2,
+   "files": [
+    "more_itertools/more.py",
+    "tests/test_more.py"
+   ],
+   "source_files": [
+    "more_itertools/more.py"
+   ],
+   "test_files": [
+    "tests/test_more.py"
+   ],
+   "additions": 39,
+   "deletions": 23,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 15
+  },
+  {
+   "repo": "more-itertools",
+   "url": "https://github.com/more-itertools/more-itertools",
+   "number": 1236,
+   "title": "Simplify and speed up nth_permutation",
+   "labels": [],
+   "merged_at": "2026-08-10T18:49:47Z",
+   "merge_sha": "cecd215fe1c6fdc639b9eb837cee93bba09d2952",
+   "commits": 1,
+   "files": [
+    "more_itertools/more.py"
+   ],
+   "source_files": [
+    "more_itertools/more.py"
+   ],
+   "test_files": [],
+   "additions": 4,
+   "deletions": 5,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 16
+  },
+  {
+   "repo": "more-itertools",
+   "url": "https://github.com/more-itertools/more-itertools",
+   "number": 1171,
+   "title": "Remove code unused in `count_cycle` after prior refactor",
+   "labels": [],
+   "merged_at": "2026-06-15T20:13:19Z",
+   "merge_sha": "ccf6e0caedd1d982e7f628e5160956a8a18ad608",
+   "commits": 1,
+   "files": [
+    "more_itertools/more.py"
+   ],
+   "source_files": [
+    "more_itertools/more.py"
+   ],
+   "test_files": [],
+   "additions": 1,
+   "deletions": 2,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [],
+   "pytest_args": [],
+   "priority": 17
+  },
+  {
+   "repo": "isort",
+   "url": "https://github.com/PyCQA/isort",
+   "number": 2731,
+   "title": "Small cleanup before release",
+   "labels": [
+    "build-wheels"
+   ],
+   "merged_at": "2026-10-18T19:11:35Z",
+   "merge_sha": "f97a190a40acf1ccdce6689df518a0321d41c1a3",
+   "commits": 4,
+   "files": [
+    ".dockerignore",
+    ".pre-commit-config.yaml",
+    "isort/stdlibs/py315.py",
+    "logo.png",
+    "pyproject.toml",
+    "uv.lock"
+   ],
+   "source_files": [
+    "isort/stdlibs/py315.py"
+   ],
+   "test_files": [],
+   "additions": 1271,
+   "deletions": 1027,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [
+    "hypothesis",
+    "hypothesmith",
+    "pytest-mock"
+   ],
+   "pytest_args": [],
+   "priority": 18
+  },
+  {
+   "repo": "isort",
+   "url": "https://github.com/PyCQA/isort",
+   "number": 2677,
+   "title": "Refactors in `process`",
+   "labels": [],
+   "merged_at": "2026-09-26T17:13:03Z",
+   "merge_sha": "13758cf5b16c8340d067c345014b7a5fec6171a3",
+   "commits": 8,
+   "files": [
+    "isort/core.py",
+    "isort/literal.py",
+    "isort/parse.py",
+    "tests/unit/test_parse.py"
+   ],
+   "source_files": [
+    "isort/core.py",
+    "isort/literal.py",
+    "isort/parse.py"
+   ],
+   "test_files": [
+    "tests/unit/test_parse.py"
+   ],
+   "additions": 124,
+   "deletions": 90,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [
+    "hypothesis",
+    "hypothesmith",
+    "pytest-mock"
+   ],
+   "pytest_args": [],
+   "priority": 19
+  },
+  {
+   "repo": "attrs",
+   "url": "https://github.com/python-attrs/attrs",
+   "number": 1636,
+   "title": "Improve astuple performance for nested atomic sequences",
+   "labels": [],
+   "merged_at": "2026-10-13T13:56:18Z",
+   "merge_sha": "8f76a5262b3b426bfb6a1127f12d49430d168c8b",
+   "commits": 3,
+   "files": [
+    "changelog.d/1636.change.md",
+    "src/attr/_funcs.py"
+   ],
+   "source_files": [
+    "src/attr/_funcs.py"
+   ],
+   "test_files": [],
+   "additions": 2,
+   "deletions": 1,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 20
+  },
+  {
+   "repo": "click",
+   "url": "https://github.com/pallets/click",
+   "number": 3920,
+   "title": "Drop support for Python 3.10",
+   "labels": [
+    "typing",
+    "tests"
+   ],
+   "merged_at": "2026-11-12T16:38:08Z",
+   "merge_sha": "e38188e9e205005d5af5f9e59df51904c984586a",
+   "commits": 1,
+   "files": [
+    ".github/workflows/nightly.yaml",
+    ".github/workflows/tests.yaml",
+    "CHANGES.md",
+    "examples/aliases/pyproject.toml",
+    "examples/colors/pyproject.toml",
+    "examples/completion/pyproject.toml",
+    "examples/complex/pyproject.toml",
+    "examples/imagepipe/pyproject.toml",
+    "examples/inout/pyproject.toml",
+    "examples/naval/pyproject.toml",
+    "examples/repo/pyproject.toml",
+    "examples/termui/pyproject.toml",
+    "examples/validation/pyproject.toml",
+    "pyproject.toml",
+    "src/click/core.py",
+    "src/click/decorators.py",
+    "src/click/types.py",
+    "src/click/utils.py",
+    "tests/test_basic.py",
+    "tests/test_options.py",
+    "tests/typing/typing_aliased_group.py",
+    "tests/typing/typing_confirmation_option.py",
+    "tests/typing/typing_edit.py",
+    "tests/typing/typing_group_kw_options.py",
+    "tests/typing/typing_help_option.py",
+    "tests/typing/typing_options.py",
+    "tests/typing/typing_password_option.py",
+    "tests/typing/typing_path.py",
+    "tests/typing/typing_progressbar.py",
+    "tests/typing/typing_prompt.py",
+    "tests/typing/typing_simple_example.py",
+    "tests/typing/typing_version_option.py",
+    "uv.lock"
+   ],
+   "source_files": [
+    "src/click/core.py",
+    "src/click/decorators.py",
+    "src/click/types.py",
+    "src/click/utils.py"
+   ],
+   "test_files": [
+    "tests/test_basic.py",
+    "tests/test_options.py",
+    "tests/typing/typing_aliased_group.py",
+    "tests/typing/typing_confirmation_option.py",
+    "tests/typing/typing_edit.py",
+    "tests/typing/typing_group_kw_options.py",
+    "tests/typing/typing_help_option.py",
+    "tests/typing/typing_options.py",
+    "tests/typing/typing_password_option.py",
+    "tests/typing/typing_path.py",
+    "tests/typing/typing_progressbar.py",
+    "tests/typing/typing_prompt.py",
+    "tests/typing/typing_simple_example.py",
+    "tests/typing/typing_version_option.py"
+   ],
+   "additions": 92,
+   "deletions": 417,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 21
+  },
+  {
+   "repo": "flask",
+   "url": "https://github.com/pallets/flask",
+   "number": 6176,
+   "title": "add `versionchanged` for ctx signature change",
+   "labels": [],
+   "merged_at": "2026-10-30T15:05:21Z",
+   "merge_sha": "49943b5a94413a530761350f04e896f76e8d620e",
+   "commits": 1,
+   "files": [
+    "src/flask/app.py"
+   ],
+   "source_files": [
+    "src/flask/app.py"
+   ],
+   "test_files": [],
+   "additions": 67,
+   "deletions": 11,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 22
+  },
+  {
+   "repo": "jinja",
+   "url": "https://github.com/pallets/jinja",
+   "number": 2099,
+   "title": "update identifier pattern for Python 3.10",
+   "labels": [],
+   "merged_at": "2025-05-28T19:14:32Z",
+   "merge_sha": "10304827e46780c7a1bd08f2fa6b304dbe47d6b8",
+   "commits": 2,
+   "files": [
+    "scripts/generate_identifier_pattern.py",
+    "src/jinja2/_identifier.py"
+   ],
+   "source_files": [
+    "scripts/generate_identifier_pattern.py",
+    "src/jinja2/_identifier.py"
+   ],
+   "test_files": [],
+   "additions": 5,
+   "deletions": 6,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "trio"
+   ],
+   "pytest_args": [],
+   "priority": 23
+  },
+  {
+   "repo": "werkzeug",
+   "url": "https://github.com/pallets/werkzeug",
+   "number": 3349,
+   "title": "enable import conventions lint rule",
+   "labels": [],
+   "merged_at": "2026-11-09T19:06:24Z",
+   "merge_sha": "0f43c6ebd426039e4b99ec22535c2c8a2ec2f69f",
+   "commits": 1,
+   "files": [
+    "pyproject.toml",
+    "src/werkzeug/datastructures/range.py",
+    "src/werkzeug/exceptions.py",
+    "src/werkzeug/sansio/http.py",
+    "src/werkzeug/sansio/request.py",
+    "src/werkzeug/sansio/response.py",
+    "src/werkzeug/test.py",
+    "src/werkzeug/user_agent.py",
+    "src/werkzeug/utils.py",
+    "tests/middleware/test_profiler.py",
+    "tests/test_http.py",
+    "tests/test_send_file.py",
+    "tests/test_utils.py",
+    "tests/test_wrappers.py"
+   ],
+   "source_files": [
+    "src/werkzeug/datastructures/range.py",
+    "src/werkzeug/exceptions.py",
+    "src/werkzeug/sansio/http.py",
+    "src/werkzeug/sansio/request.py",
+    "src/werkzeug/sansio/response.py",
+    "src/werkzeug/test.py",
+    "src/werkzeug/user_agent.py",
+    "src/werkzeug/utils.py"
+   ],
+   "test_files": [
+    "tests/middleware/test_profiler.py",
+    "tests/test_http.py",
+    "tests/test_send_file.py",
+    "tests/test_utils.py",
+    "tests/test_wrappers.py"
+   ],
+   "additions": 79,
+   "deletions": 70,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 24
+  },
+  {
+   "repo": "marshmallow",
+   "url": "https://github.com/marshmallow-code/marshmallow",
+   "number": 3102,
+   "title": "Support Python 3.11-3.15",
+   "labels": [],
+   "merged_at": "2026-11-04T00:06:28Z",
+   "merge_sha": "88efe3ea5e4ebdac59ea7500892e671f454b5a88",
+   "commits": 1,
+   "files": [
+    ".github/workflows/build-release.yml",
+    ".readthedocs.yml",
+    "CHANGELOG.rst",
+    "examples/flask_example.py",
+    "examples/inflection_example.py",
+    "examples/package_json_example.py",
+    "performance/benchmark.py",
+    "pyproject.toml",
+    "src/marshmallow/experimental/context.py",
+    "src/marshmallow/fields.py",
+    "src/marshmallow/utils.py",
+    "tests/test_deserialization.py",
+    "tests/test_schema.py",
+    "tests/test_serialization.py",
+    "tox.ini",
+    "uv.lock"
+   ],
+   "source_files": [
+    "examples/flask_example.py",
+    "examples/inflection_example.py",
+    "examples/package_json_example.py",
+    "performance/benchmark.py",
+    "src/marshmallow/experimental/context.py",
+    "src/marshmallow/fields.py",
+    "src/marshmallow/utils.py"
+   ],
+   "test_files": [
+    "tests/test_deserialization.py",
+    "tests/test_schema.py",
+    "tests/test_serialization.py"
+   ],
+   "additions": 62,
+   "deletions": 501,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 25
+  },
+  {
+   "repo": "arrow",
+   "url": "https://github.com/arrow-py/arrow",
+   "number": 1264,
+   "title": "Revert \"Fix humanize reporting 'a month' for 16-day differences\"",
+   "labels": [],
+   "merged_at": "2026-04-30T08:13:11Z",
+   "merge_sha": "2224255c4acc594d734cef0bbc83360452a67983",
+   "commits": 1,
+   "files": [
+    "arrow/arrow.py"
+   ],
+   "source_files": [
+    "arrow/arrow.py"
+   ],
+   "test_files": [],
+   "additions": 9,
+   "deletions": 11,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 26
+  },
+  {
+   "repo": "structlog",
+   "url": "https://github.com/hynek/structlog",
+   "number": 849,
+   "title": "Make imports lazy on Python 3.15",
+   "labels": [],
+   "merged_at": "2026-10-17T13:27:22Z",
+   "merge_sha": "19c4f21059e853114efa7a93b6e675d93bf7934e",
+   "commits": 1,
+   "files": [
+    "CHANGELOG.md",
+    "src/structlog/__init__.py",
+    "src/structlog/_config.py",
+    "src/structlog/_frames.py",
+    "src/structlog/_native.py",
+    "src/structlog/_output.py",
+    "src/structlog/_utils.py",
+    "src/structlog/dev.py",
+    "src/structlog/processors.py",
+    "src/structlog/stdlib.py",
+    "src/structlog/threadlocal.py",
+    "src/structlog/tracebacks.py",
+    "tests/processors/test_renderers.py",
+    "tests/test_packaging.py"
+   ],
+   "source_files": [
+    "src/structlog/__init__.py",
+    "src/structlog/_config.py",
+    "src/structlog/_frames.py",
+    "src/structlog/_native.py",
+    "src/structlog/_output.py",
+    "src/structlog/_utils.py",
+    "src/structlog/dev.py",
+    "src/structlog/processors.py",
+    "src/structlog/stdlib.py",
+    "src/structlog/threadlocal.py",
+    "src/structlog/tracebacks.py"
+   ],
+   "test_files": [
+    "tests/processors/test_renderers.py",
+    "tests/test_packaging.py"
+   ],
+   "additions": 89,
+   "deletions": 13,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 27
+  },
+  {
+   "repo": "more-itertools",
+   "url": "https://github.com/more-itertools/more-itertools",
+   "number": 1356,
+   "title": "docs: note empty-input behavior in set_partitions docstring",
+   "labels": [],
+   "merged_at": "2026-11-10T15:12:15Z",
+   "merge_sha": "ceafee8ce96f4bc1eb74c528bc247c91d648a0bb",
+   "commits": 1,
+   "files": [
+    "more_itertools/more.py"
+   ],
+   "source_files": [
+    "more_itertools/more.py"
+   ],
+   "test_files": [],
+   "additions": 5,
+   "deletions": 0,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 28
+  },
+  {
+   "repo": "sqlparse",
+   "url": "https://github.com/andialbrecht/sqlparse",
+   "number": 937,
+   "title": "Escape dollar signs in PHP output (CVE-2026-112307)",
+   "labels": [],
+   "merged_at": "2026-11-01T12:54:06Z",
+   "merge_sha": "91149dffdf691945dc5e20d9c9623390d9b96ffb",
+   "commits": 1,
+   "files": [
+    "CHANGELOG",
+    "sqlparse/filters/output.py",
+    "tests/test_format.py"
+   ],
+   "source_files": [
+    "sqlparse/filters/output.py"
+   ],
+   "test_files": [
+    "tests/test_format.py"
+   ],
+   "additions": 49,
+   "deletions": 3,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 29
+  },
+  {
+   "repo": "isort",
+   "url": "https://github.com/PyCQA/isort",
+   "number": 2776,
+   "title": "Count the opening-line comment when wrapping an aliased import",
+   "labels": [],
+   "merged_at": "2026-11-15T15:46:52Z",
+   "merge_sha": "eb62da318ea543b82340f3d0a52bc0509c7e626e",
+   "commits": 2,
+   "files": [
+    "isort/output.py",
+    "tests/unit/test_regressions.py"
+   ],
+   "source_files": [
+    "isort/output.py"
+   ],
+   "test_files": [
+    "tests/unit/test_regressions.py"
+   ],
+   "additions": 31,
+   "deletions": 0,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "hypothesis",
+    "hypothesmith",
+    "pytest-mock"
+   ],
+   "pytest_args": [],
+   "priority": 30
+  },
+  {
+   "repo": "toolz",
+   "url": "https://github.com/pytoolz/toolz",
+   "number": 635,
+   "title": "Fix interpose([]) raising StopIteration",
+   "labels": [],
+   "merged_at": "2026-09-18T16:40:29Z",
+   "merge_sha": "d2eba0374a452c2b18fe188b04527e22bda3548c",
+   "commits": 1,
+   "files": [
+    "toolz/itertoolz.py",
+    "toolz/tests/test_itertoolz.py"
+   ],
+   "source_files": [
+    "toolz/itertoolz.py"
+   ],
+   "test_files": [
+    "toolz/tests/test_itertoolz.py"
+   ],
+   "additions": 10,
+   "deletions": 1,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 31
+  },
+  {
+   "repo": "boltons",
+   "url": "https://github.com/mahmoud/boltons",
+   "number": 610,
+   "title": "October PR sweep follow-up: #482, #483, #605, #607, #608",
+   "labels": [],
+   "merged_at": "2026-10-25T23:42:41Z",
+   "merge_sha": "d31d821d56c8f7756af9c30a864077f2e5855321",
+   "commits": 5,
+   "files": [
+    "CHANGELOG.md",
+    "boltons/dictutils.py",
+    "boltons/fileutils.py",
+    "boltons/ioutils.py",
+    "boltons/timeutils.py",
+    "boltons/urlutils.py",
+    "tests/test_dictutils.py",
+    "tests/test_fileutils.py",
+    "tests/test_ioutils.py"
+   ],
+   "source_files": [
+    "boltons/dictutils.py",
+    "boltons/fileutils.py",
+    "boltons/ioutils.py",
+    "boltons/timeutils.py",
+    "boltons/urlutils.py"
+   ],
+   "test_files": [
+    "tests/test_dictutils.py",
+    "tests/test_fileutils.py",
+    "tests/test_ioutils.py"
+   ],
+   "additions": 53,
+   "deletions": 14,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 32
+  },
+  {
+   "repo": "pygments",
+   "url": "https://github.com/pygments/pygments",
+   "number": 3232,
+   "title": "Remove superfluous parentheses from PostgresExplainLexer",
+   "labels": [],
+   "merged_at": "2026-07-28T05:48:38Z",
+   "merge_sha": "19c581704c466cde59fd1a49e04c3424449110f3",
+   "commits": 1,
+   "files": [
+    "pygments/lexers/sql.py"
+   ],
+   "source_files": [
+    "pygments/lexers/sql.py"
+   ],
+   "test_files": [],
+   "additions": 19,
+   "deletions": 19,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "wcag-contrast-ratio"
+   ],
+   "pytest_args": [],
+   "priority": 33
+  },
+  {
+   "repo": "packaging",
+   "url": "https://github.com/pypa/packaging",
+   "number": 1542,
+   "title": "perf(ranges): reuse cached version keys when filtering",
+   "labels": [],
+   "merged_at": "2026-11-16T19:46:08Z",
+   "merge_sha": "882c95dccf1228673a10d81ab4d4ed398d942ed4",
+   "commits": 1,
+   "files": [
+    "src/packaging/_ranges.py"
+   ],
+   "source_files": [
+    "src/packaging/_ranges.py"
+   ],
+   "test_files": [],
+   "additions": 9,
+   "deletions": 64,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "pretend"
+   ],
+   "pytest_args": [],
+   "priority": 34
+  },
+  {
+   "repo": "jsonschema",
+   "url": "https://github.com/python-jsonschema/jsonschema",
+   "number": 1300,
+   "title": "Pick the deepest error among the most relevant ones in each separate subschema",
+   "labels": [],
+   "merged_at": "2026-09-07T19:41:59Z",
+   "merge_sha": "a677cbe190f35b016a8699067a08ab134aaa8511",
+   "commits": 2,
+   "files": [
+    "jsonschema/exceptions.py",
+    "jsonschema/tests/test_deprecations.py",
+    "jsonschema/tests/test_exceptions.py"
+   ],
+   "source_files": [
+    "jsonschema/exceptions.py"
+   ],
+   "test_files": [
+    "jsonschema/tests/test_deprecations.py",
+    "jsonschema/tests/test_exceptions.py"
+   ],
+   "additions": 208,
+   "deletions": 8,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 35
+  },
+  {
+   "repo": "rich",
+   "url": "https://github.com/Textualize/rich",
+   "number": 4252,
+   "title": "formatting",
+   "labels": [],
+   "merged_at": "2026-11-07T11:02:54Z",
+   "merge_sha": "7ceca93d4bb1435358ac7d247505692097fe4b47",
+   "commits": 1,
+   "files": [
+    ".github/workflows/pythonpackage.yml",
+    ".pre-commit-config.yaml",
+    "examples/bars.py",
+    "examples/cp_progress.py",
+    "examples/exception.py",
+    "examples/jobs.py",
+    "examples/live_progress.py",
+    "examples/print_calendar.py",
+    "examples/screen.py",
+    "examples/table_movie.py",
+    "examples/top_lite_simulator.py",
+    "rich/_palettes.py",
+    "rich/columns.py",
+    "rich/console.py",
+    "rich/containers.py",
+    "rich/layout.py",
+    "rich/markup.py",
+    "rich/prompt.py",
+    "rich/repr.py",
+    "rich/screen.py",
+    "rich/themes.py",
+    "rich/tree.py",
+    "tests/render.py",
+    "tests/test_block_bar.py",
+    "tests/test_emoji.py",
+    "tests/test_highlighter.py",
+    "tests/test_inspect.py",
+    "tests/test_markdown.py",
+    "tests/test_pretty.py",
+    "tests/test_rule_in_table.py",
+    "tests/test_table.py",
+    "tests/test_text.py",
+    "tests/test_win32_console.py",
+    "tools/profile_pretty.py"
+   ],
+   "source_files": [
+    "examples/bars.py",
+    "examples/cp_progress.py",
+    "examples/exception.py",
+    "examples/jobs.py",
+    "examples/live_progress.py",
+    "examples/print_calendar.py",
+    "examples/screen.py",
+    "examples/table_movie.py",
+    "examples/top_lite_simulator.py",
+    "rich/_palettes.py",
+    "rich/columns.py",
+    "rich/console.py",
+    "rich/containers.py",
+    "rich/layout.py",
+    "rich/markup.py",
+    "rich/prompt.py",
+    "rich/repr.py",
+    "rich/screen.py",
+    "rich/themes.py",
+    "rich/tree.py",
+    "tools/profile_pretty.py"
+   ],
+   "test_files": [
+    "tests/render.py",
+    "tests/test_block_bar.py",
+    "tests/test_emoji.py",
+    "tests/test_highlighter.py",
+    "tests/test_inspect.py",
+    "tests/test_markdown.py",
+    "tests/test_pretty.py",
+    "tests/test_rule_in_table.py",
+    "tests/test_table.py",
+    "tests/test_text.py",
+    "tests/test_win32_console.py"
+   ],
+   "additions": 102,
+   "deletions": 141,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "attrs"
+   ],
+   "pytest_args": [],
+   "priority": 36
+  },
+  {
+   "repo": "attrs",
+   "url": "https://github.com/python-attrs/attrs",
+   "number": 1625,
+   "title": "docs/fix: remove duplicated words in docs and source comment",
+   "labels": [],
+   "merged_at": "2026-10-01T12:47:10Z",
+   "merge_sha": "a602f78ff670f22be90fb8aea501a6cc30e10fdd",
+   "commits": 2,
+   "files": [
+    "docs/api.rst",
+    "src/attr/_make.py"
+   ],
+   "source_files": [
+    "src/attr/_make.py"
+   ],
+   "test_files": [],
+   "additions": 2,
+   "deletions": 2,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 37
+  },
+  {
+   "repo": "click",
+   "url": "https://github.com/pallets/click",
+   "number": 3902,
+   "title": "Help pages no longer break a line within a hyphenated word",
+   "labels": [
+    "docs",
+    "help output"
+   ],
+   "merged_at": "2026-11-12T16:28:55Z",
+   "merge_sha": "a46a95c733d0ed72f63cd2915f2bc4a09a7179f9",
+   "commits": 1,
+   "files": [
+    "CHANGES.md",
+    "docs/documentation.md",
+    "src/click/_textwrap.py",
+    "src/click/formatting.py",
+    "tests/test_compat.py",
+    "tests/test_formatting.py"
+   ],
+   "source_files": [
+    "src/click/_textwrap.py",
+    "src/click/formatting.py"
+   ],
+   "test_files": [
+    "tests/test_compat.py",
+    "tests/test_formatting.py"
+   ],
+   "additions": 174,
+   "deletions": 141,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 38
+  },
+  {
+   "repo": "flask",
+   "url": "https://github.com/pallets/flask",
+   "number": 6168,
+   "title": "drop support for Python 3.10",
+   "labels": [],
+   "merged_at": "2026-10-07T13:56:06Z",
+   "merge_sha": "728c5e440af704a786384159184f695cf04ecbe7",
+   "commits": 1,
+   "files": [
+    ".github/workflows/tests.yaml",
+    "CHANGES.rst",
+    "docs/installation.rst",
+    "pyproject.toml",
+    "src/flask/cli.py",
+    "src/flask/helpers.py",
+    "src/flask/sessions.py",
+    "tests/test_appctx.py",
+    "tests/test_basic.py",
+    "tests/test_config.py",
+    "tests/test_json_tag.py",
+    "uv.lock"
+   ],
+   "source_files": [
+    "src/flask/cli.py",
+    "src/flask/helpers.py",
+    "src/flask/sessions.py"
+   ],
+   "test_files": [
+    "tests/test_appctx.py",
+    "tests/test_basic.py",
+    "tests/test_config.py",
+    "tests/test_json_tag.py"
+   ],
+   "additions": 67,
+   "deletions": 433,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 39
+  },
+  {
+   "repo": "jinja",
+   "url": "https://github.com/pallets/jinja",
+   "number": 2098,
+   "title": "deprecate `__version__`",
+   "labels": [],
+   "merged_at": "2025-05-28T18:43:09Z",
+   "merge_sha": "9e49736ae075fcffb85f731a3fe2c006cf1edca4",
+   "commits": 1,
+   "files": [
+    "CHANGES.rst",
+    "pyproject.toml",
+    "src/jinja2/__init__.py",
+    "uv.lock"
+   ],
+   "source_files": [
+    "src/jinja2/__init__.py"
+   ],
+   "test_files": [],
+   "additions": 24,
+   "deletions": 2,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "trio"
+   ],
+   "pytest_args": [],
+   "priority": 40
+  },
+  {
+   "repo": "werkzeug",
+   "url": "https://github.com/pallets/werkzeug",
+   "number": 3348,
+   "title": "`FileStorage.save` uses `open` as a context manager",
+   "labels": [],
+   "merged_at": "2026-11-09T18:16:15Z",
+   "merge_sha": "16ba8750921c8464a92b91b3d29f420e89320e36",
+   "commits": 1,
+   "files": [
+    "src/werkzeug/datastructures/file_storage.py"
+   ],
+   "source_files": [
+    "src/werkzeug/datastructures/file_storage.py"
+   ],
+   "test_files": [],
+   "additions": 6,
+   "deletions": 17,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 41
+  },
+  {
+   "repo": "marshmallow",
+   "url": "https://github.com/marshmallow-code/marshmallow",
+   "number": 3101,
+   "title": "pre-commit autoupdate",
+   "labels": [],
+   "merged_at": "2026-11-02T21:53:03Z",
+   "merge_sha": "f9882187c78cd0ff0d39ed6b201f7f8e2fef128f",
+   "commits": 1,
+   "files": [
+    ".pre-commit-config.yaml",
+    "examples/flask_example.py",
+    "performance/benchmark.py"
+   ],
+   "source_files": [
+    "examples/flask_example.py",
+    "performance/benchmark.py"
+   ],
+   "test_files": [],
+   "additions": 9,
+   "deletions": 9,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 42
+  },
+  {
+   "repo": "arrow",
+   "url": "https://github.com/arrow-py/arrow",
+   "number": 1242,
+   "title": "Fix humanize reporting 'a month' for 16-day differences",
+   "labels": [],
+   "merged_at": "2026-02-19T15:24:45Z",
+   "merge_sha": "b423717da81aaf8117313b4b377efaa6413a9639",
+   "commits": 2,
+   "files": [
+    "arrow/arrow.py"
+   ],
+   "source_files": [
+    "arrow/arrow.py"
+   ],
+   "test_files": [],
+   "additions": 11,
+   "deletions": 9,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 43
+  },
+  {
+   "repo": "structlog",
+   "url": "https://github.com/hynek/structlog",
+   "number": 821,
+   "title": "Avoid kwargs unpacking in _process_event hot path",
+   "labels": [],
+   "merged_at": "2026-07-30T16:24:24Z",
+   "merge_sha": "bf3cfd017dcccf8d97fef0c4dbdaf74b2224c470",
+   "commits": 4,
+   "files": [
+    "src/structlog/_base.py"
+   ],
+   "source_files": [
+    "src/structlog/_base.py"
+   ],
+   "test_files": [],
+   "additions": 1,
+   "deletions": 1,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 44
+  },
+  {
+   "repo": "more-itertools",
+   "url": "https://github.com/more-itertools/more-itertools",
+   "number": 1345,
+   "title": "Fix numeric_range equality and hashing above sys.maxsize",
+   "labels": [],
+   "merged_at": "2026-11-04T00:20:44Z",
+   "merge_sha": "f42daddf205f335fea6e200dad46049f33e71221",
+   "commits": 1,
+   "files": [
+    "more_itertools/more.py",
+    "tests/test_more.py"
+   ],
+   "source_files": [
+    "more_itertools/more.py"
+   ],
+   "test_files": [
+    "tests/test_more.py"
+   ],
+   "additions": 31,
+   "deletions": 3,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 45
+  },
+  {
+   "repo": "sqlparse",
+   "url": "https://github.com/andialbrecht/sqlparse",
+   "number": 868,
+   "title": "Keep keyword before leading-dot float literal (issue #601)",
+   "labels": [],
+   "merged_at": "2026-07-25T15:08:10Z",
+   "merge_sha": "a194d3187b04b0aed7a935c3401f068236fb6264",
+   "commits": 1,
+   "files": [
+    "CHANGELOG",
+    "sqlparse/keywords.py",
+    "tests/test_regressions.py"
+   ],
+   "source_files": [
+    "sqlparse/keywords.py"
+   ],
+   "test_files": [
+    "tests/test_regressions.py"
+   ],
+   "additions": 37,
+   "deletions": 1,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 46
+  },
+  {
+   "repo": "isort",
+   "url": "https://github.com/PyCQA/isort",
+   "number": 2734,
+   "title": "Preserve force_to_top ordering",
+   "labels": [],
+   "merged_at": "2026-11-15T15:34:09Z",
+   "merge_sha": "6b36d38999bb001843ee49ce6983d110007bea77",
+   "commits": 5,
+   "files": [
+    "docs/configuration/options.md",
+    "isort/settings.py",
+    "isort/sorting.py",
+    "scripts/build_config_option_docs.py",
+    "tests/unit/test_ticketed_features.py"
+   ],
+   "source_files": [
+    "isort/settings.py",
+    "isort/sorting.py",
+    "scripts/build_config_option_docs.py"
+   ],
+   "test_files": [
+    "tests/unit/test_ticketed_features.py"
+   ],
+   "additions": 419,
+   "deletions": 8,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "hypothesis",
+    "hypothesmith",
+    "pytest-mock"
+   ],
+   "pytest_args": [],
+   "priority": 47
+  },
+  {
+   "repo": "toolz",
+   "url": "https://github.com/pytoolz/toolz",
+   "number": 636,
+   "title": "Support Python 3.15 and refresh dev tooling",
+   "labels": [],
+   "merged_at": "2026-09-18T05:52:09Z",
+   "merge_sha": "55ce42dc3b6f786ed9d4e38633cc5cfe3622a526",
+   "commits": 1,
+   "files": [
+    ".github/dependabot.yml",
+    ".github/workflows/pre-commit.yml",
+    ".github/workflows/publish_pypi.yml",
+    ".github/workflows/test.yml",
+    ".pre-commit-config.yaml",
+    ".readthedocs.yaml",
+    "doc/source/conf.py",
+    "pyproject.toml",
+    "toolz/functoolz.py",
+    "tox.ini"
+   ],
+   "source_files": [
+    "toolz/functoolz.py"
+   ],
+   "test_files": [],
+   "additions": 53,
+   "deletions": 36,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 48
+  },
+  {
+   "repo": "boltons",
+   "url": "https://github.com/mahmoud/boltons",
+   "number": 513,
+   "title": "Fix spooled stream write compatibility and backwards text seeks",
+   "labels": [],
+   "merged_at": "2026-09-23T23:55:31Z",
+   "merge_sha": "4e5faa3d7e4008d89e0d8bf1ea87b6d9a061a16d",
+   "commits": 3,
+   "files": [
+    "boltons/ioutils.py",
+    "tests/test_ioutils.py"
+   ],
+   "source_files": [
+    "boltons/ioutils.py"
+   ],
+   "test_files": [
+    "tests/test_ioutils.py"
+   ],
+   "additions": 91,
+   "deletions": 16,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 49
+  },
+  {
+   "repo": "pygments",
+   "url": "https://github.com/pygments/pygments",
+   "number": 3191,
+   "title": "Remove redundant duplicate regexes in several lexers",
+   "labels": [],
+   "merged_at": "2026-07-26T19:12:30Z",
+   "merge_sha": "9992e0992ad273565f19ffb1b4c9cae96cd8dd00",
+   "commits": 1,
+   "files": [
+    "pygments/lexers/ada.py",
+    "pygments/lexers/basic.py",
+    "pygments/lexers/eiffel.py",
+    "pygments/lexers/factor.py",
+    "pygments/lexers/fantom.py",
+    "pygments/lexers/futhark.py",
+    "pygments/lexers/javascript.py",
+    "pygments/lexers/unicon.py"
+   ],
+   "source_files": [
+    "pygments/lexers/ada.py",
+    "pygments/lexers/basic.py",
+    "pygments/lexers/eiffel.py",
+    "pygments/lexers/factor.py",
+    "pygments/lexers/fantom.py",
+    "pygments/lexers/futhark.py",
+    "pygments/lexers/javascript.py",
+    "pygments/lexers/unicon.py"
+   ],
+   "test_files": [],
+   "additions": 0,
+   "deletions": 11,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "wcag-contrast-ratio"
+   ],
+   "pytest_args": [],
+   "priority": 50
+  },
+  {
+   "repo": "packaging",
+   "url": "https://github.com/pypa/packaging",
+   "number": 1538,
+   "title": "perf(version): use posessive regex on 3.11+",
+   "labels": [],
+   "merged_at": "2026-11-16T16:45:44Z",
+   "merge_sha": "3a124d720dcad5d47183ff64503ac1335507fce2",
+   "commits": 2,
+   "files": [
+    "src/packaging/version.py"
+   ],
+   "source_files": [
+    "src/packaging/version.py"
+   ],
+   "test_files": [],
+   "additions": 21,
+   "deletions": 12,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "pretend"
+   ],
+   "pytest_args": [],
+   "priority": 51
+  },
+  {
+   "repo": "jsonschema",
+   "url": "https://github.com/python-jsonschema/jsonschema",
+   "number": 1482,
+   "title": "Speed up uniqueItems validation with structural hashing",
+   "labels": [],
+   "merged_at": "2026-05-12T11:57:55Z",
+   "merge_sha": "9f6fc68476453e5dac836cb38252f32e952481fe",
+   "commits": 4,
+   "files": [
+    "jsonschema/_utils.py",
+    "jsonschema/tests/test_utils.py"
+   ],
+   "source_files": [
+    "jsonschema/_utils.py"
+   ],
+   "test_files": [
+    "jsonschema/tests/test_utils.py"
+   ],
+   "additions": 161,
+   "deletions": 18,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 52
+  },
+  {
+   "repo": "rich",
+   "url": "https://github.com/Textualize/rich",
+   "number": 4251,
+   "title": "Bump Python, switch to uv",
+   "labels": [],
+   "merged_at": "2026-11-07T10:50:49Z",
+   "merge_sha": "4a9a4637c91640fded310bc657af57f4ffd86bdc",
+   "commits": 5,
+   "files": [
+    ".github/workflows/pythonpackage.yml",
+    ".gitignore",
+    ".python-version",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "Makefile",
+    "poetry.lock",
+    "pyproject.toml",
+    "rich/_unicode_data/__init__.py",
+    "rich/console.py",
+    "rich/live_render.py",
+    "setup.py",
+    "tests/_card_render.py",
+    "tests/test_inspect.py",
+    "tests/test_markdown.py",
+    "tests/test_panel.py",
+    "tests/test_pretty.py",
+    "tests/test_syntax.py",
+    "tox.ini",
+    "uv.lock"
+   ],
+   "source_files": [
+    "rich/_unicode_data/__init__.py",
+    "rich/console.py",
+    "rich/live_render.py"
+   ],
+   "test_files": [
+    "tests/_card_render.py",
+    "tests/test_inspect.py",
+    "tests/test_markdown.py",
+    "tests/test_panel.py",
+    "tests/test_pretty.py",
+    "tests/test_syntax.py"
+   ],
+   "additions": 1517,
+   "deletions": 1155,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "attrs"
+   ],
+   "pytest_args": [],
+   "priority": 53
+  },
+  {
+   "repo": "attrs",
+   "url": "https://github.com/python-attrs/attrs",
+   "number": 1606,
+   "title": "Stop evolve dunders from being modified",
+   "labels": [],
+   "merged_at": "2026-08-02T11:46:58Z",
+   "merge_sha": "f53fc5440d7f86aac4328aec7a563eb48634177f",
+   "commits": 2,
+   "files": [
+    "changelog.d/1606.change.md",
+    "src/attr/_make.py",
+    "tests/test_functional.py"
+   ],
+   "source_files": [
+    "src/attr/_make.py"
+   ],
+   "test_files": [
+    "tests/test_functional.py"
+   ],
+   "additions": 19,
+   "deletions": 1,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 54
+  },
+  {
+   "repo": "click",
+   "url": "https://github.com/pallets/click",
+   "number": 3896,
+   "title": "Add `context_settings` parameter to `CliRunner.invoke`",
+   "labels": [
+    "docs",
+    "test runner"
+   ],
+   "merged_at": "2026-11-06T17:50:07Z",
+   "merge_sha": "fdb65f4809719580436acb067410cec64433e5de",
+   "commits": 1,
+   "files": [
+    "CHANGES.md",
+    "docs/testing.md",
+    "src/click/testing.py",
+    "tests/test_termui.py",
+    "tests/test_testing.py"
+   ],
+   "source_files": [
+    "src/click/testing.py"
+   ],
+   "test_files": [
+    "tests/test_termui.py",
+    "tests/test_testing.py"
+   ],
+   "additions": 178,
+   "deletions": 40,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 55
+  },
+  {
+   "repo": "flask",
+   "url": "https://github.com/pallets/flask",
+   "number": 6133,
+   "title": "add `app.query` route decorator",
+   "labels": [],
+   "merged_at": "2026-08-11T20:19:14Z",
+   "merge_sha": "d8eaaba824655046958d1a97f11780de460c3271",
+   "commits": 1,
+   "files": [
+    "CHANGES.rst",
+    "src/flask/sansio/scaffold.py",
+    "tests/test_basic.py"
+   ],
+   "source_files": [
+    "src/flask/sansio/scaffold.py"
+   ],
+   "test_files": [
+    "tests/test_basic.py"
+   ],
+   "additions": 14,
+   "deletions": 2,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 56
+  },
+  {
+   "repo": "jinja",
+   "url": "https://github.com/pallets/jinja",
+   "number": 2096,
+   "title": "drop end of life python versions",
+   "labels": [],
+   "merged_at": "2025-05-28T18:15:29Z",
+   "merge_sha": "49c48a0b313eca05a5547b2a0c821c0c5c5166fe",
+   "commits": 2,
+   "files": [
+    ".github/workflows/tests.yaml",
+    "CHANGES.rst",
+    "docs/intro.rst",
+    "pyproject.toml",
+    "src/jinja2/async_utils.py",
+    "src/jinja2/bccache.py",
+    "src/jinja2/compiler.py",
+    "src/jinja2/debug.py",
+    "src/jinja2/defaults.py",
+    "src/jinja2/environment.py",
+    "src/jinja2/exceptions.py",
+    "src/jinja2/ext.py",
+    "src/jinja2/filters.py",
+    "src/jinja2/idtracking.py",
+    "src/jinja2/lexer.py",
+    "src/jinja2/loaders.py",
+    "src/jinja2/meta.py",
+    "src/jinja2/nativetypes.py",
+    "src/jinja2/nodes.py",
+    "src/jinja2/optimizer.py",
+    "src/jinja2/parser.py",
+    "src/jinja2/runtime.py",
+    "src/jinja2/sandbox.py",
+    "src/jinja2/utils.py",
+    "src/jinja2/visitor.py",
+    "uv.lock"
+   ],
+   "source_files": [
+    "src/jinja2/async_utils.py",
+    "src/jinja2/bccache.py",
+    "src/jinja2/compiler.py",
+    "src/jinja2/debug.py",
+    "src/jinja2/defaults.py",
+    "src/jinja2/environment.py",
+    "src/jinja2/exceptions.py",
+    "src/jinja2/ext.py",
+    "src/jinja2/filters.py",
+    "src/jinja2/idtracking.py",
+    "src/jinja2/lexer.py",
+    "src/jinja2/loaders.py",
+    "src/jinja2/meta.py",
+    "src/jinja2/nativetypes.py",
+    "src/jinja2/nodes.py",
+    "src/jinja2/optimizer.py",
+    "src/jinja2/parser.py",
+    "src/jinja2/runtime.py",
+    "src/jinja2/sandbox.py",
+    "src/jinja2/utils.py",
+    "src/jinja2/visitor.py"
+   ],
+   "test_files": [],
+   "additions": 412,
+   "deletions": 627,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "trio"
+   ],
+   "pytest_args": [],
+   "priority": 57
+  },
+  {
+   "repo": "werkzeug",
+   "url": "https://github.com/pallets/werkzeug",
+   "number": 3345,
+   "title": "test client writes multipart data to `BytesIO`",
+   "labels": [],
+   "merged_at": "2026-11-09T17:28:29Z",
+   "merge_sha": "6c2eee2c23fefa270fab76e0a1dcd169571c5e85",
+   "commits": 1,
+   "files": [
+    "CHANGES.rst",
+    "src/werkzeug/test.py",
+    "tests/test_test.py"
+   ],
+   "source_files": [
+    "src/werkzeug/test.py"
+   ],
+   "test_files": [
+    "tests/test_test.py"
+   ],
+   "additions": 31,
+   "deletions": 84,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 58
+  },
+  {
+   "repo": "marshmallow",
+   "url": "https://github.com/marshmallow-code/marshmallow",
+   "number": 3082,
+   "title": "Fix Pluck handling of empty data_key",
+   "labels": [],
+   "merged_at": "2026-10-19T16:55:44Z",
+   "merge_sha": "5761beab3985d654d712f9326e08bfb2e2ec9c4c",
+   "commits": 1,
+   "files": [
+    "src/marshmallow/fields.py",
+    "tests/test_fields.py"
+   ],
+   "source_files": [
+    "src/marshmallow/fields.py"
+   ],
+   "test_files": [
+    "tests/test_fields.py"
+   ],
+   "additions": 19,
+   "deletions": 1,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 59
+  },
+  {
+   "repo": "arrow",
+   "url": "https://github.com/arrow-py/arrow",
+   "number": 1234,
+   "title": "Added weeks to afrikaans locale",
+   "labels": [],
+   "merged_at": "2025-12-16T04:41:26Z",
+   "merge_sha": "b247ad073d4c350270528edb5afff8e7f4f7d9e4",
+   "commits": 6,
+   "files": [
+    "arrow/locales.py",
+    "tests/test_locales.py"
+   ],
+   "source_files": [
+    "arrow/locales.py"
+   ],
+   "test_files": [
+    "tests/test_locales.py"
+   ],
+   "additions": 7,
+   "deletions": 0,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 60
+  },
+  {
+   "repo": "structlog",
+   "url": "https://github.com/hynek/structlog",
+   "number": 828,
+   "title": "100% type coverage",
+   "labels": [],
+   "merged_at": "2026-07-25T11:54:42Z",
+   "merge_sha": "68ad7dedb24e42463d353159c25c6bcf2158ca24",
+   "commits": 2,
+   "files": [
+    "src/structlog/contextvars.py",
+    "src/structlog/dev.py",
+    "src/structlog/processors.py",
+    "src/structlog/threadlocal.py"
+   ],
+   "source_files": [
+    "src/structlog/contextvars.py",
+    "src/structlog/dev.py",
+    "src/structlog/processors.py",
+    "src/structlog/threadlocal.py"
+   ],
+   "test_files": [],
+   "additions": 9,
+   "deletions": 8,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 61
+  },
+  {
+   "repo": "more-itertools",
+   "url": "https://github.com/more-itertools/more-itertools",
+   "number": 1342,
+   "title": "fix: validate the chunk size in chunked_even",
+   "labels": [],
+   "merged_at": "2026-10-30T14:50:28Z",
+   "merge_sha": "08dca284ba5446a026afdc34067b658f9da989eb",
+   "commits": 1,
+   "files": [
+    "more_itertools/more.py",
+    "tests/test_more.py"
+   ],
+   "source_files": [
+    "more_itertools/more.py"
+   ],
+   "test_files": [
+    "tests/test_more.py"
+   ],
+   "additions": 18,
+   "deletions": 0,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 62
+  },
+  {
+   "repo": "sqlparse",
+   "url": "https://github.com/andialbrecht/sqlparse",
+   "number": 867,
+   "title": "Fix function grouping skipped for lowercase 'as' in CREATE TABLE AS SELECT",
+   "labels": [],
+   "merged_at": "2026-07-25T09:50:16Z",
+   "merge_sha": "cd4c1b66cb0a148b40f742d435c527f27cf0a9fb",
+   "commits": 2,
+   "files": [
+    "CHANGELOG",
+    "sqlparse/engine/grouping.py",
+    "tests/test_grouping.py"
+   ],
+   "source_files": [
+    "sqlparse/engine/grouping.py"
+   ],
+   "test_files": [
+    "tests/test_grouping.py"
+   ],
+   "additions": 11,
+   "deletions": 1,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 63
+  },
+  {
+   "repo": "isort",
+   "url": "https://github.com/PyCQA/isort",
+   "number": 2789,
+   "title": "Respect comment_prefix for section headings and footers",
+   "labels": [],
+   "merged_at": "2026-11-15T15:33:11Z",
+   "merge_sha": "940b5ae134f031691c0e1b830439a27d4fde614d",
+   "commits": 1,
+   "files": [
+    "isort/output.py",
+    "isort/settings.py",
+    "tests/unit/test_isort.py",
+    "tests/unit/test_settings.py"
+   ],
+   "source_files": [
+    "isort/output.py",
+    "isort/settings.py"
+   ],
+   "test_files": [
+    "tests/unit/test_isort.py",
+    "tests/unit/test_settings.py"
+   ],
+   "additions": 182,
+   "deletions": 5,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "hypothesis",
+    "hypothesmith",
+    "pytest-mock"
+   ],
+   "pytest_args": [],
+   "priority": 64
+  },
+  {
+   "repo": "toolz",
+   "url": "https://github.com/pytoolz/toolz",
+   "number": 634,
+   "title": "Expose combined `__annotations__` on composed functions (#496)",
+   "labels": [],
+   "merged_at": "2026-09-17T17:53:32Z",
+   "merge_sha": "a1e25cbd2c398b534f0736f5838e416202b0cb28",
+   "commits": 4,
+   "files": [
+    "toolz/functoolz.py",
+    "toolz/tests/test_functoolz.py"
+   ],
+   "source_files": [
+    "toolz/functoolz.py"
+   ],
+   "test_files": [
+    "toolz/tests/test_functoolz.py"
+   ],
+   "additions": 221,
+   "deletions": 1,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 65
+  },
+  {
+   "repo": "boltons",
+   "url": "https://github.com/mahmoud/boltons",
+   "number": 481,
+   "title": "Complete September PR sweep for 26.2.0",
+   "labels": [],
+   "merged_at": "2026-09-07T10:37:10Z",
+   "merge_sha": "1216b467c10b852d08aa6895c80b6b9ec8f990d8",
+   "commits": 7,
+   "files": [
+    "CHANGELOG.md",
+    "boltons/cacheutils.py",
+    "boltons/jsonutils.py",
+    "boltons/strutils.py",
+    "boltons/urlutils.py",
+    "tests/test_cacheutils.py",
+    "tests/test_jsonutils.py",
+    "tests/test_namedutils.py",
+    "tests/test_statsutils.py",
+    "tests/test_strutils.py",
+    "tests/test_urlutils.py"
+   ],
+   "source_files": [
+    "boltons/cacheutils.py",
+    "boltons/jsonutils.py",
+    "boltons/strutils.py",
+    "boltons/urlutils.py"
+   ],
+   "test_files": [
+    "tests/test_cacheutils.py",
+    "tests/test_jsonutils.py",
+    "tests/test_namedutils.py",
+    "tests/test_statsutils.py",
+    "tests/test_strutils.py",
+    "tests/test_urlutils.py"
+   ],
+   "additions": 145,
+   "deletions": 33,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 66
+  },
+  {
+   "repo": "pygments",
+   "url": "https://github.com/pygments/pygments",
+   "number": 3221,
+   "title": "Simplify single-character regex alternations to character classes",
+   "labels": [],
+   "merged_at": "2026-07-21T18:43:00Z",
+   "merge_sha": "aabba32860b5ba15acabdcba9b436a32e92ce75e",
+   "commits": 1,
+   "files": [
+    "pygments/lexers/amdgpu.py",
+    "pygments/lexers/asm.py",
+    "pygments/lexers/business.py",
+    "pygments/lexers/cplint.py",
+    "pygments/lexers/dsls.py",
+    "pygments/lexers/esoteric.py",
+    "pygments/lexers/graphics.py",
+    "pygments/lexers/html.py",
+    "pygments/lexers/idl.py",
+    "pygments/lexers/javascript.py",
+    "pygments/lexers/kuin.py",
+    "pygments/lexers/lisp.py",
+    "pygments/lexers/nit.py",
+    "pygments/lexers/prolog.py",
+    "pygments/lexers/r.py",
+    "pygments/lexers/sas.py"
+   ],
+   "source_files": [
+    "pygments/lexers/amdgpu.py",
+    "pygments/lexers/asm.py",
+    "pygments/lexers/business.py",
+    "pygments/lexers/cplint.py",
+    "pygments/lexers/dsls.py",
+    "pygments/lexers/esoteric.py",
+    "pygments/lexers/graphics.py",
+    "pygments/lexers/html.py",
+    "pygments/lexers/idl.py",
+    "pygments/lexers/javascript.py",
+    "pygments/lexers/kuin.py",
+    "pygments/lexers/lisp.py",
+    "pygments/lexers/nit.py",
+    "pygments/lexers/prolog.py",
+    "pygments/lexers/r.py",
+    "pygments/lexers/sas.py"
+   ],
+   "test_files": [],
+   "additions": 26,
+   "deletions": 26,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [
+    "wcag-contrast-ratio"
+   ],
+   "pytest_args": [],
+   "priority": 67
+  },
+  {
+   "repo": "packaging",
+   "url": "https://github.com/pypa/packaging",
+   "number": 1539,
+   "title": "refactor(specifiers): cache the spec Version without a key",
+   "labels": [],
+   "merged_at": "2026-11-16T16:38:54Z",
+   "merge_sha": "1a62128470d7489b8ad7c643d3a3e6ba02f90711",
+   "commits": 1,
+   "files": [
+    "src/packaging/specifiers.py",
+    "tests/test_specifiers.py"
+   ],
+   "source_files": [
+    "src/packaging/specifiers.py"
+   ],
+   "test_files": [
+    "tests/test_specifiers.py"
+   ],
+   "additions": 28,
+   "deletions": 23,
+   "refactor_label": false,
+   "refactor_title": true,
+   "install": [
+    "pretend"
+   ],
+   "pytest_args": [],
+   "priority": 68
+  },
+  {
+   "repo": "jsonschema",
+   "url": "https://github.com/python-jsonschema/jsonschema",
+   "number": 1444,
+   "title": "docs: Fix misleading comment in relevance function",
+   "labels": [],
+   "merged_at": "2026-01-08T11:03:59Z",
+   "merge_sha": "79ae4a9f32a3e89d3ff7a5bc6210e7dca42a8062",
+   "commits": 3,
+   "files": [
+    "jsonschema/exceptions.py"
+   ],
+   "source_files": [
+    "jsonschema/exceptions.py"
+   ],
+   "test_files": [],
+   "additions": 1,
+   "deletions": 1,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 69
+  },
+  {
+   "repo": "rich",
+   "url": "https://github.com/Textualize/rich",
+   "number": 4079,
+   "title": "Inline table code",
+   "labels": [],
+   "merged_at": "2026-04-12T07:45:03Z",
+   "merge_sha": "ffe2edc5968eac19d5493c2d7b27965031a692e9",
+   "commits": 3,
+   "files": [
+    "CHANGELOG.md",
+    "rich/markdown.py",
+    "tests/test_markdown.py"
+   ],
+   "source_files": [
+    "rich/markdown.py"
+   ],
+   "test_files": [
+    "tests/test_markdown.py"
+   ],
+   "additions": 21,
+   "deletions": 3,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "attrs"
+   ],
+   "pytest_args": [],
+   "priority": 70
+  },
+  {
+   "repo": "attrs",
+   "url": "https://github.com/python-attrs/attrs",
+   "number": 1603,
+   "title": "Drop Python 3.9",
+   "labels": [],
+   "merged_at": "2026-08-02T09:06:07Z",
+   "merge_sha": "9b98a730bf71cabae9bcedb8a3aac72289c23733",
+   "commits": 8,
+   "files": [
+    ".github/workflows/ci.yml",
+    "changelog.d/1603.change.md",
+    "pyproject.toml",
+    "src/attr/_compat.py",
+    "src/attr/_make.py",
+    "src/attr/converters.py",
+    "tests/conftest.py",
+    "tests/strategies.py",
+    "tests/test_abc.py",
+    "tests/test_dunders.py",
+    "tests/test_funcs.py",
+    "tests/test_make.py",
+    "tests/test_next_gen.py",
+    "tests/utils.py",
+    "tox.ini",
+    "uv.lock"
+   ],
+   "source_files": [
+    "src/attr/_compat.py",
+    "src/attr/_make.py",
+    "src/attr/converters.py"
+   ],
+   "test_files": [
+    "tests/conftest.py",
+    "tests/strategies.py",
+    "tests/test_abc.py",
+    "tests/test_dunders.py",
+    "tests/test_funcs.py",
+    "tests/test_make.py",
+    "tests/test_next_gen.py",
+    "tests/utils.py"
+   ],
+   "additions": 177,
+   "deletions": 905,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 71
+  },
+  {
+   "repo": "click",
+   "url": "https://github.com/pallets/click",
+   "number": 3910,
+   "title": "Merge stable into main",
+   "labels": [],
+   "merged_at": "2026-11-06T17:48:12Z",
+   "merge_sha": "dd149eb3129d887a22202c3fafa5ceb0e0d7018d",
+   "commits": 18,
+   "files": [
+    ".github/ISSUE_TEMPLATE/bug-report.md",
+    ".github/ISSUE_TEMPLATE/config.yml",
+    ".github/workflows/publish.yaml",
+    "CHANGES.md",
+    "docs/faqs.md",
+    "docs/index.md",
+    "docs/standalone-apps-briefcase.md",
+    "docs/standalone-apps-nuitka.md",
+    "docs/upgrade-guides.md",
+    "src/click/_termui_impl.py",
+    "src/click/core.py",
+    "src/click/decorators.py",
+    "src/click/shell_completion.py",
+    "src/click/testing.py",
+    "tests/test_abort_interrupt.py",
+    "tests/test_arguments.py",
+    "tests/test_basic.py",
+    "tests/test_commands.py",
+    "tests/test_context.py",
+    "tests/test_defaults.py",
+    "tests/test_formatting.py",
+    "tests/test_options.py",
+    "tests/test_stream_lifecycle.py",
+    "tests/test_termui.py",
+    "tests/test_testing.py",
+    "tests/test_types/test_File.py",
+    "tests/test_types/test_convert_type.py",
+    "tests/test_utils/test_echo.py",
+    "tests/test_utils/test_echo_via_pager.py",
+    "tests/test_utils/test_prompt.py",
+    "tests/test_utils/test_style.py"
+   ],
+   "source_files": [
+    "src/click/_termui_impl.py",
+    "src/click/core.py",
+    "src/click/decorators.py",
+    "src/click/shell_completion.py",
+    "src/click/testing.py"
+   ],
+   "test_files": [
+    "tests/test_abort_interrupt.py",
+    "tests/test_arguments.py",
+    "tests/test_basic.py",
+    "tests/test_commands.py",
+    "tests/test_context.py",
+    "tests/test_defaults.py",
+    "tests/test_formatting.py",
+    "tests/test_options.py",
+    "tests/test_stream_lifecycle.py",
+    "tests/test_termui.py",
+    "tests/test_testing.py",
+    "tests/test_types/test_File.py",
+    "tests/test_types/test_convert_type.py",
+    "tests/test_utils/test_echo.py",
+    "tests/test_utils/test_echo_via_pager.py",
+    "tests/test_utils/test_prompt.py",
+    "tests/test_utils/test_style.py"
+   ],
+   "additions": 675,
+   "deletions": 503,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 72
+  },
+  {
+   "repo": "flask",
+   "url": "https://github.com/pallets/flask",
+   "number": 6096,
+   "title": "Fix `.partition(\":\")` usage on potential IPv6 addresses",
+   "labels": [],
+   "merged_at": "2026-08-11T19:48:41Z",
+   "merge_sha": "05e9c6bd630ecf4ec0ec884b1fc7901663737bc7",
+   "commits": 2,
+   "files": [
+    "src/flask/app.py",
+    "src/flask/testing.py",
+    "tests/test_basic.py",
+    "tests/test_testing.py"
+   ],
+   "source_files": [
+    "src/flask/app.py",
+    "src/flask/testing.py"
+   ],
+   "test_files": [
+    "tests/test_basic.py",
+    "tests/test_testing.py"
+   ],
+   "additions": 23,
+   "deletions": 5,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 73
+  },
+  {
+   "repo": "jinja",
+   "url": "https://github.com/pallets/jinja",
+   "number": 2077,
+   "title": "release version 3.1.6",
+   "labels": [],
+   "merged_at": "2025-03-05T20:05:21Z",
+   "merge_sha": "01d0bab939f46a03fb3babb9f4770cadb50aaef0",
+   "commits": 1,
+   "files": [
+    "CHANGES.rst",
+    "src/jinja2/__init__.py"
+   ],
+   "source_files": [
+    "src/jinja2/__init__.py"
+   ],
+   "test_files": [],
+   "additions": 2,
+   "deletions": 2,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [
+    "trio"
+   ],
+   "pytest_args": [],
+   "priority": 74
+  },
+  {
+   "repo": "werkzeug",
+   "url": "https://github.com/pallets/werkzeug",
+   "number": 3347,
+   "title": "require watchdog>=7",
+   "labels": [],
+   "merged_at": "2026-11-09T17:24:03Z",
+   "merge_sha": "284d15b0f1f9659da5882c1e62c40c9ce77cd5fd",
+   "commits": 1,
+   "files": [
+    ".github/workflows/pre-commit.yaml",
+    ".github/workflows/publish.yaml",
+    ".github/workflows/tests.yaml",
+    ".github/workflows/zizmor.yaml",
+    ".pre-commit-config.yaml",
+    "CHANGES.rst",
+    "pyproject.toml",
+    "src/werkzeug/_reloader.py",
+    "tests/live_apps/reloader_app.py",
+    "tests/test_serving.py",
+    "uv.lock"
+   ],
+   "source_files": [
+    "src/werkzeug/_reloader.py"
+   ],
+   "test_files": [
+    "tests/live_apps/reloader_app.py",
+    "tests/test_serving.py"
+   ],
+   "additions": 394,
+   "deletions": 353,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 75
+  },
+  {
+   "repo": "marshmallow",
+   "url": "https://github.com/marshmallow-code/marshmallow",
+   "number": 3034,
+   "title": "Various docstring fixes",
+   "labels": [],
+   "merged_at": "2026-08-26T12:42:36Z",
+   "merge_sha": "324f387b023d5f94cab847f6ce702f684e908700",
+   "commits": 1,
+   "files": [
+    "src/marshmallow/class_registry.py",
+    "src/marshmallow/decorators.py",
+    "src/marshmallow/fields.py",
+    "src/marshmallow/schema.py",
+    "src/marshmallow/utils.py"
+   ],
+   "source_files": [
+    "src/marshmallow/class_registry.py",
+    "src/marshmallow/decorators.py",
+    "src/marshmallow/fields.py",
+    "src/marshmallow/schema.py",
+    "src/marshmallow/utils.py"
+   ],
+   "test_files": [],
+   "additions": 25,
+   "deletions": 25,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 76
+  },
+  {
+   "repo": "arrow",
+   "url": "https://github.com/arrow-py/arrow",
+   "number": 1228,
+   "title": "Bump version to 1.4.0 and add changelog.",
+   "labels": [],
+   "merged_at": "2025-10-18T17:38:11Z",
+   "merge_sha": "c61de9299733da6d4a7e8badabae43684a3f9da2",
+   "commits": 2,
+   "files": [
+    "CHANGELOG.rst",
+    "arrow/_version.py"
+   ],
+   "source_files": [
+    "arrow/_version.py"
+   ],
+   "test_files": [],
+   "additions": 26,
+   "deletions": 1,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 77
+  },
+  {
+   "repo": "structlog",
+   "url": "https://github.com/hynek/structlog",
+   "number": 825,
+   "title": "Explicit attribute type annotations",
+   "labels": [],
+   "merged_at": "2026-07-18T08:49:21Z",
+   "merge_sha": "4b10c943429e0fe10bd8f6118900b17630d650af",
+   "commits": 1,
+   "files": [
+    "src/structlog/_output.py",
+    "src/structlog/processors.py",
+    "src/structlog/stdlib.py",
+    "src/structlog/tracebacks.py",
+    "src/structlog/twisted.py"
+   ],
+   "source_files": [
+    "src/structlog/_output.py",
+    "src/structlog/processors.py",
+    "src/structlog/stdlib.py",
+    "src/structlog/tracebacks.py",
+    "src/structlog/twisted.py"
+   ],
+   "test_files": [],
+   "additions": 39,
+   "deletions": 2,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 78
+  },
+  {
+   "repo": "more-itertools",
+   "url": "https://github.com/more-itertools/more-itertools",
+   "number": 1334,
+   "title": "Speed up interleave_longest() on CPython",
+   "labels": [],
+   "merged_at": "2026-10-30T14:46:04Z",
+   "merge_sha": "20c4ee5c63f8f8c35a37aee3b69d95cd2450c09a",
+   "commits": 1,
+   "files": [
+    "more_itertools/more.py"
+   ],
+   "source_files": [
+    "more_itertools/more.py"
+   ],
+   "test_files": [],
+   "additions": 2,
+   "deletions": 4,
+   "refactor_label": false,
+   "refactor_title": false,
+   "install": [],
+   "pytest_args": [],
+   "priority": 79
+  }
+ ]
+}
