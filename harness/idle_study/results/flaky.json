@@ -1,0 +1,325 @@
+[
+ {
+  "repo": "ctfd",
+  "id": "runnervmccnms|tests.test_views::test_user_can_access_files",
+  "pass_runs": 5,
+  "fail_runs": 1,
+  "fail_in": [
+   5
+  ],
+  "messages": [
+   "FileExistsError: [Errno 17] File exists: '/home/runner/work/_temp/target/CTFd/uploads/test_file_path'\ndef test_user_can_access_files():\n        app = create_ctfd()\n        with app.app_context():\n            from CTFd.utils.uploads import rmdir\n    \n            chal = gen_challenge(app.db)\n            chal_id = chal.id\n            path = app.config.get(\"UPLOAD_FOLDER\")\n    \n            location = os.path.join(path, \"test_file_path\", \"test.txt\")\n            directory = os.path.dirname(location)\n            model_path = os.path.join(\"test_file_path\", \"test.txt\")\n    \n            try:\n>               os.makedirs(directory)\n\ntests/test_views.py:195: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nname = '/home/runner/work/_temp/target/CTFd/uploads/test_file_path', mode = 511\nexist_ok = False\n\n>   ???\nE   FileExistsError: [Errno 17] File exists: '/home/runner/work/_temp/target/CTFd/uploads/test_file_path'\n\n<frozen os>:225: FileExistsError"
+  ]
+ },
+ {
+  "repo": "documenso",
+  "id": "ui|admin/email-transports/email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims",
+  "pass_runs": 3,
+  "fail_runs": 2,
+  "fail_in": [
+   1,
+   3
+  ],
+  "messages": [
+   "locator.click: Element is outside of the viewport\n\n  [ui] \u203a admin/email-transports/email-transport-claims.spec.ts:2:4327 \u203a [ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims \n\n    Error: locator.click: Element is outside of the viewport\n    Call log:\n      - waiting for getByRole('option', { name: 'e2e-transport-backport-jlgAynWJkfe6mwyfMOdj3' })\n        - locator resolved to <div role=\"option\" tabindex=\"-1\" aria-selected=\"false\" data-state=\"unchecked\" data-radix-collection-item=\"\" aria-labelledby=\"radix-_r_2g_\" class=\"relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50\">\u2026</div>\n      - attempting click action\n        - scrolling into view if needed\n        - done scrolling\n\n\n      1 | import { encryptEmailTransportConfig } from '@documenso/lib/server-only/email/email-transport-config';\n    > 2 | import { generateDatabaseId, nanoid } from '@documenso/lib/universal/id';\n        |                                                                                          "
+  ]
+ },
+ {
+  "repo": "documenso",
+  "id": "api|api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401",
+  "pass_runs": 4,
+  "fail_runs": 1,
+  "fail_in": [
+   3
+  ],
+  "messages": [
+   "apiRequestContext.get: read ECONNRESET\n\n  [api] \u203a api/trpc/admin/admin-find-documents.spec.ts:2:1027 \u203a [ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401 \n\n    Error: apiRequestContext.get: read ECONNRESET\n    Call log:\n      - \u2192 GET http://localhost:3000/api/trpc/admin.document.find?input=%7B%22json%22%3A%7B%22query%22%3A%22recipient%3Aanything%22%2C%22page%22%3A1%2C%22perPage%22%3A20%7D%7D\n        - user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36\n        - accept: */*\n        - accept-encoding: gzip,deflate,br\n        - cookie: __disable_animations=true; csrfToken=x5b65vuxgdjghxzhlwehjonkwywuidy6.VlnDndTckPRL%2FIrd7b2LWo99aSvNu84ER3LpRoQR0gE%3D; sessionId=jmoe26dbzaxsm7eifbpmhp3t3u2bnsah.z0xniRvWVQaAXX6f4gEPC6fsd6QFbMGr21rsFAC68ZI%3D; lang=ImVuIg%3D%3D; preferred-team-url=personal_xmzkrnbbrzuvoirc\n\n\n      1 | import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';\n    > 2 | import { seedPendingDocument } from '@documenso/prisma/seed/documents';\n        |                                                                                                                ^\n      3 "
+  ]
+ },
+ {
+  "repo": "documenso",
+  "id": "api|api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with numeric value matches by exact recipient ID",
+  "pass_runs": 3,
+  "fail_runs": 1,
+  "fail_in": [
+   1
+  ],
+  "messages": [
+   "apiRequestContext.get: read ECONNRESET\n\n  [api] \u203a api/trpc/admin/admin-find-documents.spec.ts:2:4794 \u203a [ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with numeric value matches by exact recipient ID \n\n    Error: apiRequestContext.get: read ECONNRESET\n    Call log:\n      - \u2192 GET http://localhost:3000/api/trpc/admin.document.find?input=%7B%22json%22%3A%7B%22query%22%3A%22recipient%3A2227%22%2C%22page%22%3A1%2C%22perPage%22%3A20%7D%7D\n        - user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36\n        - accept: */*\n        - accept-encoding: gzip,deflate,br\n        - cookie: __disable_animations=true; csrfToken=b3h73xho3lc3yg3pu73uh3xpgsm3lxcq.BMaGf2aI%2F2JJZtqMOrGHH%2FfvE%2BXZzf9t8nY%2FbLbI%2FwY%3D; sessionId=hvg52zfdvwdtcpjgt2ev6m6nz6jwrxdg.D7sjv6z7vmDkRdzi2GvQtrCwjY3RBZjNQx8Sks8K%2Fzk%3D; lang=ImVuIg%3D%3D; preferred-team-url=personal_hhxvubziaiyvlekk\n\n\n      1 | import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';\n    > 2 | import { seedPendingDocument } from '@documenso/prisma/seed/documents';\n        |                                                                                      "
+  ]
+ },
+ {
+  "repo": "documenso",
+  "id": "api|api/trpc/admin/admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: non-admin authenticated user is rejected with 401",
+  "pass_runs": 3,
+  "fail_runs": 1,
+  "fail_in": [
+   4
+  ],
+  "messages": [
+   "apiRequestContext.get: read ECONNRESET\n\n  [api] \u203a api/trpc/admin/admin-search.spec.ts:2:1341 \u203a [ADMIN][TRPC][SEARCH]: non-admin authenticated user is rejected with 401 \n\n    Error: apiRequestContext.get: read ECONNRESET\n    Call log:\n      - \u2192 GET http://localhost:3000/api/trpc/admin.search?input=%7B%22json%22%3A%7B%22query%22%3A%22anything%22%7D%7D\n        - user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36\n        - accept: */*\n        - accept-encoding: gzip,deflate,br\n        - cookie: __disable_animations=true; csrfToken=eh5hwubgokvarnkruxoo34edv3cjcfmj.ZJDSyOzow6WipXmUuhkIqplMOwdw%2FS4Pkox3H0XZlSw%3D; sessionId=o6sbsep6njpaxldsf2elilsl72pvkt63.kHLna1kSI1r5h3XQ%2FdaURBvZc5AsDKRsOaydnKqdlCI%3D; lang=ImVuIg%3D%3D; preferred-team-url=personal_zowauszraodkrbiu\n\n\n      1 | import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';\n    > 2 | import { seedPendingDocument } from '@documenso/prisma/seed/documents';\n        |                                                                                                                ^\n      3 | import { seedUser } from '@documenso/prisma/seed/users'"
+  ]
+ },
+ {
+  "repo": "etherpad",
+  "id": "chromium|tests/frontend-new/specs/embed_value.spec.ts::embed links \u203a when read only option is set \u203a the embed as iframe code is an iframe with the correct url parameters and correct size",
+  "pass_runs": 5,
+  "fail_runs": 1,
+  "fail_in": [
+   1
+  ],
+  "messages": [
+   "Test timeout of 90000ms exceeded while running \"beforeEach\" hook.\n\n  [chromium] \u203a tests/frontend-new/specs/embed_value.spec.ts:114:7 \u203a embed links \u203a when read only option is set \u203a the embed as iframe code is an iframe with the correct url parameters and correct size \n\n    Test timeout of 90000ms exceeded while running \"beforeEach\" hook.\n\n      90 |\n      91 |   test.describe('when read only option is set', function () {\n    > 92 |     test.beforeEach(async ({ page })=>{\n         |          ^\n      93 |       // create a new pad before each test run\n      94 |       await goToNewPad(page);\n      95 |     })\n        at /home/runner/work/_temp/target/src/tests/frontend-new/specs/embed_value.spec.ts:92:10\n\n    Error: page.waitForSelector: Test timeout of 90000ms exceeded.\n    Call log:\n      - waiting for locator('iframe[name=\"ace_outer\"]') to be visible\n\n\n       at tests/frontend-new/helper/padHelper.ts:127\n\n      125 | // to receive input\".\n      126 | const waitForEditorReady = async (page: Page) => {\n    > 127 |   await page.waitForSelector('iframe[name=\"ace_outer\"]');\n          |              ^\n      128 |   await page.waitForSelector('#editorcontainer.initialized');\n      129 |  "
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.admin_tests.test_admin_user_actions::test_init_superuser",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 'ih7of6sif7' == 'Change Me'\n  \n  - Change Me\n  + ih7of6sif7\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nadmin_user = TestUser(email='changeme@example.com', user_id=UUID('7a4ddb9c-3ad5-4053-918d-0838067b4e98'), username='admin', full_na...qsekAtnNzSogHSeVujR3eqr0zvWfV8YOjY'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f2a857a40>)\n\n    def test_init_superuser(api_client: TestClient, admin_user: TestUser):\n        settings = get_app_settings()\n    \n        response = api_client.get(api_routes.admin_users_item_id(admin_user.user_id), headers=admin_user.token)\n        assert response.status_code == 200\n    \n        admin_data = response.json()\n    \n        assert admin_data[\"id\"] == str(admin_user.user_id)\n        assert admin_data[\"groupId\"] == admin_user.group_id\n    \n>       assert admin_data[\"fullName\"] == \"Change Me\"\nE       AssertionError: assert 'ih7of6sif7' == 'Change Me'\nE         \nE         - Change Me\nE         + ih7of6sif7\n\ntests/integration_tests/admin_tests/test_admin_user_actions.py:41: AssertionError",
+   "AssertionError: assert 'ukyo97ndx9' == 'Change Me'\n  \n  - Change Me\n  + ukyo97ndx9\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nadmin_user = TestUser(email='changeme@example.com', user_id=UUID('7a4ddb9c-3ad5-4053-918d-0838067b4e98'), username='admin', full_na...5IPOXm6HL3K-xkQ7ijD6Aid3uaIswD2uqA'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fc15467b0>)\n\n    def test_init_superuser(api_client: TestClient, admin_user: TestUser):\n        settings = get_app_settings()\n    \n        response = api_client.get(api_routes.admin_users_item_id(admin_user.user_id), headers=admin_user.token)\n        assert response.status_code == 200\n    \n        admin_data = response.json()\n    \n        assert admin_data[\"id\"] == str(admin_user.user_id)\n        assert admin_data[\"groupId\"] == admin_user.group_id\n    \n>       assert admin_data[\"fullName\"] == \"Change Me\"\nE       AssertionError: assert 'ukyo97ndx9' == 'Change Me'\nE         \nE         - Change Me\nE         + ukyo97ndx9\n\ntests/integration_tests/admin_tests/test_admin_user_actions.py:41: AssertionError"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_create_from_mealie_export::test_paste_mealie_export_keeps_contents[snake_case]",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user = TestUser(email='oih43hzwp1@fake.com', user_id=UUID('6b2f298f-4fcf-4172-a66d-f02d53c44665'), username='hy1ld5hssv', ful...1MuvzcoS1kEvp_jKmDH5CgIBhy9SZNS_Fs'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dcb380>)\nexport = <function snake_case_export at 0x7b5f2a571c70>\n\n    @pytest.mark.parametrize(\"export\", EXPORTS, ids=[\"snake_case\", \"camelCase\"])\n    def test_paste_mealie_export_keeps_contents(\n        api_client: TestClient, unique_user: TestUser, export: Callable[[TestClient, TestUser, str], str]\n    ):\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:108: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nuser = TestUser(email='oih43hzwp1@fake.com', user_id=UUID",
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID('4a2c2fdd-13a6-4588-9fc1-1b6c3e58204e'), username='go63p770lh', ful...SN_D74r3rDyh97RcyO1xje1lYBReKf-Iu4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5f55010>)\nexport = <function snake_case_export at 0x773fc1046140>\n\n    @pytest.mark.parametrize(\"export\", EXPORTS, ids=[\"snake_case\", \"camelCase\"])\n    def test_paste_mealie_export_keeps_contents(\n        api_client: TestClient, unique_user: TestUser, export: Callable[[TestClient, TestUser, str], str]\n    ):\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:108: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nuser = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_create_from_mealie_export::test_paste_mealie_export_keeps_contents[camelCase]",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user = TestUser(email='oih43hzwp1@fake.com', user_id=UUID('6b2f298f-4fcf-4172-a66d-f02d53c44665'), username='hy1ld5hssv', ful...1MuvzcoS1kEvp_jKmDH5CgIBhy9SZNS_Fs'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dcb380>)\nexport = <function camel_case_export at 0x7b5f2a571dd0>\n\n    @pytest.mark.parametrize(\"export\", EXPORTS, ids=[\"snake_case\", \"camelCase\"])\n    def test_paste_mealie_export_keeps_contents(\n        api_client: TestClient, unique_user: TestUser, export: Callable[[TestClient, TestUser, str], str]\n    ):\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:108: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nuser = TestUser(email='oih43hzwp1@fake.com', user_id=UUID",
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID('4a2c2fdd-13a6-4588-9fc1-1b6c3e58204e'), username='go63p770lh', ful...SN_D74r3rDyh97RcyO1xje1lYBReKf-Iu4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5f55010>)\nexport = <function camel_case_export at 0x773fc10462a0>\n\n    @pytest.mark.parametrize(\"export\", EXPORTS, ids=[\"snake_case\", \"camelCase\"])\n    def test_paste_mealie_export_keeps_contents(\n        api_client: TestClient, unique_user: TestUser, export: Callable[[TestClient, TestUser, str], str]\n    ):\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:108: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nuser = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_create_from_mealie_export::test_paste_mealie_export_from_another_group",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user = TestUser(email='oih43hzwp1@fake.com', user_id=UUID('6b2f298f-4fcf-4172-a66d-f02d53c44665'), username='hy1ld5hssv', ful...1MuvzcoS1kEvp_jKmDH5CgIBhy9SZNS_Fs'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dcb380>)\ng2_user = TestUser(email='sazyuqtbqr@fake.com', user_id=UUID('261b53fc-0725-4104-b96a-90b1ab6ff069'), username='va0t6v0qmx', ful...Z25P5M2t7IQgiRsGllX1DDyjy027-1df4k'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dc8f80>)\n\n    def test_paste_mealie_export_from_another_group(api_client: TestClient, unique_user: TestUser, g2_user: TestUser):\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:146: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_client = <starlette.testclient.TestClient object at 0x",
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID('4a2c2fdd-13a6-4588-9fc1-1b6c3e58204e'), username='go63p770lh', ful...SN_D74r3rDyh97RcyO1xje1lYBReKf-Iu4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5f55010>)\ng2_user = TestUser(email='lcwl8irqvz@fake.com', user_id=UUID('f3e34918-fcd3-4f0f-a420-b9767fc2a2f4'), username='g6mzu5pmqs', ful...ieHNESOJmMqvh49sGvHf9Nw9DHESvROEAk'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5dbb0b0>)\n\n    def test_paste_mealie_export_from_another_group(api_client: TestClient, unique_user: TestUser, g2_user: TestUser):\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:146: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_client = <starlette.testclient.TestClient object at 0x"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_create_from_mealie_export::test_paste_mealie_export_follows_household_visibility[True]",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user_fn_scoped = TestUser(email='8eexy3m1ln@fake.com', user_id=UUID('a02709ef-4db1-4c56-b666-b1a44b4aa9ba'), username='5wpzv6proy', ful...AfL0AOo_vFuOuYb6y_4z_Sr14fHcksEYr4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dc9be0>)\nhousehold_public = True\n\n    @pytest.mark.parametrize(\"household_public\", [True, False])\n    def test_paste_mealie_export_follows_household_visibility(\n        api_client: TestClient, unique_user_fn_scoped: TestUser, household_public: bool\n    ):\n        \"\"\"Like the zip import, a pasted export takes `public` from the household, not from the export.\"\"\"\n        user = unique_user_fn_scoped\n        prefs = api_client.get(api_routes.households_preferences, headers=user.token).json()\n        prefs[\"recipePublic\"] = household_public\n        assert api_client.put(api_routes.households_preferences, json=prefs, headers=user.token).status_code == 200\n    \n>       original = create_populated_recipe(api_client, user)\n            ",
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user_fn_scoped = TestUser(email='k8aizbzh1u@fake.com', user_id=UUID('eca93119-0d6c-4b58-810a-f1bdc5a243e0'), username='b26xpa0xik', ful...AZnPLBMYVuhfyMpfqL-P22d4OUFMJHUnoM'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5cf8e60>)\nhousehold_public = True\n\n    @pytest.mark.parametrize(\"household_public\", [True, False])\n    def test_paste_mealie_export_follows_household_visibility(\n        api_client: TestClient, unique_user_fn_scoped: TestUser, household_public: bool\n    ):\n        \"\"\"Like the zip import, a pasted export takes `public` from the household, not from the export.\"\"\"\n        user = unique_user_fn_scoped\n        prefs = api_client.get(api_routes.households_preferences, headers=user.token).json()\n        prefs[\"recipePublic\"] = household_public\n        assert api_client.put(api_routes.households_preferences, json=prefs, headers=user.token).status_code == 200\n    \n>       original = create_populated_recipe(api_client, user)\n            "
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_create_from_mealie_export::test_paste_mealie_export_follows_household_visibility[False]",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user_fn_scoped = TestUser(email='zdvlndlce2@fake.com', user_id=UUID('7acb8935-0692-494b-8ad6-6a1340f3eb47'), username='vslqgo98cq', ful...hksPdK4jM-VbU_eqjIt871lnZ4Dg9UQ4F8'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26fa32f0>)\nhousehold_public = False\n\n    @pytest.mark.parametrize(\"household_public\", [True, False])\n    def test_paste_mealie_export_follows_household_visibility(\n        api_client: TestClient, unique_user_fn_scoped: TestUser, household_public: bool\n    ):\n        \"\"\"Like the zip import, a pasted export takes `public` from the household, not from the export.\"\"\"\n        user = unique_user_fn_scoped\n        prefs = api_client.get(api_routes.households_preferences, headers=user.token).json()\n        prefs[\"recipePublic\"] = household_public\n        assert api_client.put(api_routes.households_preferences, json=prefs, headers=user.token).status_code == 200\n    \n>       original = create_populated_recipe(api_client, user)\n           ",
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user_fn_scoped = TestUser(email='t2wqrumayk@fake.com', user_id=UUID('f03673ac-2faa-4823-8de3-6c6cf8e90613'), username='kwcvx4ridr', ful...Svmk1prVtTsV6NuWn8BA2sguNdcJTMLj_o'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5cfaa80>)\nhousehold_public = False\n\n    @pytest.mark.parametrize(\"household_public\", [True, False])\n    def test_paste_mealie_export_follows_household_visibility(\n        api_client: TestClient, unique_user_fn_scoped: TestUser, household_public: bool\n    ):\n        \"\"\"Like the zip import, a pasted export takes `public` from the household, not from the export.\"\"\"\n        user = unique_user_fn_scoped\n        prefs = api_client.get(api_routes.households_preferences, headers=user.token).json()\n        prefs[\"recipePublic\"] = household_public\n        assert api_client.put(api_routes.households_preferences, json=prefs, headers=user.token).status_code == 200\n    \n>       original = create_populated_recipe(api_client, user)\n           "
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_create_from_mealie_export::test_paste_mealie_export_honours_organizer_options",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user = TestUser(email='oih43hzwp1@fake.com', user_id=UUID('6b2f298f-4fcf-4172-a66d-f02d53c44665'), username='hy1ld5hssv', ful...1MuvzcoS1kEvp_jKmDH5CgIBhy9SZNS_Fs'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dcb380>)\n\n    def test_paste_mealie_export_honours_organizer_options(api_client: TestClient, unique_user: TestUser):\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:201: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nuser = TestUser(email='oih43hzwp1@fake.com', user_id=UUID('6b2f298f-4fcf-4172-a66d-f02d53c44665'), username='hy1ld5hssv', ful...1MuvzcoS1kEvp_jKmDH5CgIBhy9SZNS_Fs'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dcb380>)\n\n",
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID('4a2c2fdd-13a6-4588-9fc1-1b6c3e58204e'), username='go63p770lh', ful...SN_D74r3rDyh97RcyO1xje1lYBReKf-Iu4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5f55010>)\n\n    def test_paste_mealie_export_honours_organizer_options(api_client: TestClient, unique_user: TestUser):\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:201: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nuser = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID('4a2c2fdd-13a6-4588-9fc1-1b6c3e58204e'), username='go63p770lh', ful...SN_D74r3rDyh97RcyO1xje1lYBReKf-Iu4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5f55010>)\n\n"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_create_from_mealie_export::test_paste_mealie_export_drops_files_and_comments",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user = TestUser(email='oih43hzwp1@fake.com', user_id=UUID('6b2f298f-4fcf-4172-a66d-f02d53c44665'), username='hy1ld5hssv', ful...1MuvzcoS1kEvp_jKmDH5CgIBhy9SZNS_Fs'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dcb380>)\n\n    def test_paste_mealie_export_drops_files_and_comments(api_client: TestClient, unique_user: TestUser):\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:220: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nuser = TestUser(email='oih43hzwp1@fake.com', user_id=UUID('6b2f298f-4fcf-4172-a66d-f02d53c44665'), username='hy1ld5hssv', ful...1MuvzcoS1kEvp_jKmDH5CgIBhy9SZNS_Fs'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dcb380>)\n\n ",
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID('4a2c2fdd-13a6-4588-9fc1-1b6c3e58204e'), username='go63p770lh', ful...SN_D74r3rDyh97RcyO1xje1lYBReKf-Iu4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5f55010>)\n\n    def test_paste_mealie_export_drops_files_and_comments(api_client: TestClient, unique_user: TestUser):\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:220: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nuser = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID('4a2c2fdd-13a6-4588-9fc1-1b6c3e58204e'), username='go63p770lh', ful...SN_D74r3rDyh97RcyO1xje1lYBReKf-Iu4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5f55010>)\n\n "
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_create_from_mealie_export::test_paste_mealie_export_streams_done",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user = TestUser(email='oih43hzwp1@fake.com', user_id=UUID('6b2f298f-4fcf-4172-a66d-f02d53c44665'), username='hy1ld5hssv', ful...1MuvzcoS1kEvp_jKmDH5CgIBhy9SZNS_Fs'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dcb380>)\n\n    def test_paste_mealie_export_streams_done(api_client: TestClient, unique_user: TestUser):\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:237: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nuser = TestUser(email='oih43hzwp1@fake.com', user_id=UUID('6b2f298f-4fcf-4172-a66d-f02d53c44665'), username='hy1ld5hssv', ful...1MuvzcoS1kEvp_jKmDH5CgIBhy9SZNS_Fs'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dcb380>)\n\n    def creat",
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID('4a2c2fdd-13a6-4588-9fc1-1b6c3e58204e'), username='go63p770lh', ful...SN_D74r3rDyh97RcyO1xje1lYBReKf-Iu4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5f55010>)\n\n    def test_paste_mealie_export_streams_done(api_client: TestClient, unique_user: TestUser):\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:237: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nuser = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID('4a2c2fdd-13a6-4588-9fc1-1b6c3e58204e'), username='go63p770lh', ful...SN_D74r3rDyh97RcyO1xje1lYBReKf-Iu4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5f55010>)\n\n    def creat"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_create_from_mealie_export::test_paste_mealie_export_skips_the_scraper",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user = TestUser(email='oih43hzwp1@fake.com', user_id=UUID('6b2f298f-4fcf-4172-a66d-f02d53c44665'), username='hy1ld5hssv', ful...1MuvzcoS1kEvp_jKmDH5CgIBhy9SZNS_Fs'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dcb380>)\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7b5f26417770>\n\n    def test_paste_mealie_export_skips_the_scraper(api_client: TestClient, unique_user: TestUser, monkeypatch: MonkeyPatch):\n        async def fail(*args, **kwargs):\n            raise AssertionError(\"a Mealie export must not reach the web scraper\")\n    \n        monkeypatch.setattr(\"mealie.routes.recipe.recipe_crud_routes.create_from_html\", fail)\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:258: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_cli",
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID('4a2c2fdd-13a6-4588-9fc1-1b6c3e58204e'), username='go63p770lh', ful...SN_D74r3rDyh97RcyO1xje1lYBReKf-Iu4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5f55010>)\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x773fb4ce42f0>\n\n    def test_paste_mealie_export_skips_the_scraper(api_client: TestClient, unique_user: TestUser, monkeypatch: MonkeyPatch):\n        async def fail(*args, **kwargs):\n            raise AssertionError(\"a Mealie export must not reach the web scraper\")\n    \n        monkeypatch.setattr(\"mealie.routes.recipe.recipe_crud_routes.create_from_html\", fail)\n>       original = create_populated_recipe(api_client, unique_user)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:258: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\napi_cli"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_create_from_mealie_export::test_paste_broken_mealie_export_returns_a_clear_error",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user = TestUser(email='oih43hzwp1@fake.com', user_id=UUID('6b2f298f-4fcf-4172-a66d-f02d53c44665'), username='hy1ld5hssv', ful...1MuvzcoS1kEvp_jKmDH5CgIBhy9SZNS_Fs'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dcb380>)\n\n    def test_paste_broken_mealie_export_returns_a_clear_error(api_client: TestClient, unique_user: TestUser):\n>       r = paste(api_client, unique_user, broken_export(api_client, unique_user))\n                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:276: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:269: in broken_export\n    original = create_populated_recipe(api_client, user)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _",
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID('4a2c2fdd-13a6-4588-9fc1-1b6c3e58204e'), username='go63p770lh', ful...SN_D74r3rDyh97RcyO1xje1lYBReKf-Iu4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5f55010>)\n\n    def test_paste_broken_mealie_export_returns_a_clear_error(api_client: TestClient, unique_user: TestUser):\n>       r = paste(api_client, unique_user, broken_export(api_client, unique_user))\n                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:276: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:269: in broken_export\n    original = create_populated_recipe(api_client, user)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_create_from_mealie_export::test_paste_broken_mealie_export_streams_a_clear_error",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user = TestUser(email='oih43hzwp1@fake.com', user_id=UUID('6b2f298f-4fcf-4172-a66d-f02d53c44665'), username='hy1ld5hssv', ful...1MuvzcoS1kEvp_jKmDH5CgIBhy9SZNS_Fs'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f26dcb380>)\n\n    def test_paste_broken_mealie_export_streams_a_clear_error(api_client: TestClient, unique_user: TestUser):\n        response = api_client.post(\n            api_routes.recipes_create_html_or_json_stream,\n>           json={\"data\": broken_export(api_client, unique_user)},\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n            headers=unique_user.token,\n        )\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:285: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:269: in broken_export\n    original = create_populated_recipe(api_client, user)\n               ^^",
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+4 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user = TestUser(email='s0u7zjgnxn@fake.com', user_id=UUID('4a2c2fdd-13a6-4588-9fc1-1b6c3e58204e'), username='go63p770lh', ful...SN_D74r3rDyh97RcyO1xje1lYBReKf-Iu4'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773fb5f55010>)\n\n    def test_paste_broken_mealie_export_streams_a_clear_error(api_client: TestClient, unique_user: TestUser):\n        response = api_client.post(\n            api_routes.recipes_create_html_or_json_stream,\n>           json={\"data\": broken_export(api_client, unique_user)},\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n            headers=unique_user.token,\n        )\n\ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:285: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/integration_tests/user_recipe_tests/test_recipe_create_from_mealie_export.py:269: in broken_export\n    original = create_populated_recipe(api_client, user)\n               ^^"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_crud::test_create_recipe_from_zip_reimport_preserves_contents",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+5 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user = TestUser(email='qnczl7128g@fake.com', user_id=UUID('bad3e1e8-0281-4d0d-8cbb-4ce039f1e35f'), username='f4uathskxl', ful...MZNFoumNd8bdIw51R1wc1hTpEcleb__SWo'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f1d5d5760>)\n\n    def test_create_recipe_from_zip_reimport_preserves_contents(api_client: TestClient, unique_user: TestUser):\n        \"\"\"Re-importing an export into the same instance keeps every part of the recipe.\"\"\"\n        category = api_client.post(\n            api_routes.organizers_categories, json={\"name\": random_string()}, headers=unique_user.token\n        ).json()\n        tag = api_client.post(api_routes.organizers_tags, json={\"name\": random_string()}, headers=unique_user.token).json()\n        tool = api_client.post(\n            api_routes.organizers_tools, json={\"name\": random_string()}, headers=unique_user.token\n        ).json()\n        food = api_client.post(api_routes.foods, json={\"name\": random_string()}, headers=unique_user.to",
+   "AssertionError: assert 400 == 200\n +  where 400 = <Response [400 Bad Request]>.status_code\n[+5 more lines; full report in element text]\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user = TestUser(email='0ai9okz770@fake.com', user_id=UUID('e5997ef6-c4e8-43af-a13a-1687797a6842'), username='5jl6a627gc', ful...rneipyfYGI08SCS-kCSmNZ5FFMZb0JLBmY'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773faf42a600>)\n\n    def test_create_recipe_from_zip_reimport_preserves_contents(api_client: TestClient, unique_user: TestUser):\n        \"\"\"Re-importing an export into the same instance keeps every part of the recipe.\"\"\"\n        category = api_client.post(\n            api_routes.organizers_categories, json={\"name\": random_string()}, headers=unique_user.token\n        ).json()\n        tag = api_client.post(api_routes.organizers_tags, json={\"name\": random_string()}, headers=unique_user.token).json()\n        tool = api_client.post(\n            api_routes.organizers_tools, json={\"name\": random_string()}, headers=unique_user.token\n        ).json()\n        food = api_client.post(api_routes.foods, json={\"name\": random_string()}, headers=unique_user.to"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.integration_tests.user_recipe_tests.test_recipe_crud::test_patch_recipe_after_name_changes_without_slug_update",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "sqlalchemy.exc.MultipleResultsFound: Multiple rows were found when exactly one was required\napi_client = <starlette.testclient.TestClient object at 0x7b5f278ac2f0>\nunique_user = TestUser(email='qnczl7128g@fake.com', user_id=UUID('bad3e1e8-0281-4d0d-8cbb-4ce039f1e35f'), username='f4uathskxl', ful...MZNFoumNd8bdIw51R1wc1hTpEcleb__SWo'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x7b5f1d5d5760>)\n\n    def test_patch_recipe_after_name_changes_without_slug_update(api_client: TestClient, unique_user: TestUser):\n        original_name = \"Nourish Bowls (Zuppa Copycat)\"\n        translated_name = \"Bols nourrissants (copie de Zuppa)\"\n    \n        response = api_client.post(api_routes.recipes, json={\"name\": original_name}, headers=unique_user.token)\n        assert response.status_code == 201\n        original_slug = response.json()\n    \n        session = unique_user.repos.session\n>       recipe = session.query(RecipeModel).filter(RecipeModel.slug == original_slug).one()\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_crud.py:2046: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _",
+   "sqlalchemy.exc.MultipleResultsFound: Multiple rows were found when exactly one was required\napi_client = <starlette.testclient.TestClient object at 0x773fbe3702f0>\nunique_user = TestUser(email='0ai9okz770@fake.com', user_id=UUID('e5997ef6-c4e8-43af-a13a-1687797a6842'), username='5jl6a627gc', ful...rneipyfYGI08SCS-kCSmNZ5FFMZb0JLBmY'}, repos=<mealie.repos.repository_factory.AllRepositories object at 0x773faf42a600>)\n\n    def test_patch_recipe_after_name_changes_without_slug_update(api_client: TestClient, unique_user: TestUser):\n        original_name = \"Nourish Bowls (Zuppa Copycat)\"\n        translated_name = \"Bols nourrissants (copie de Zuppa)\"\n    \n        response = api_client.post(api_routes.recipes, json={\"name\": original_name}, headers=unique_user.token)\n        assert response.status_code == 201\n        original_slug = response.json()\n    \n        session = unique_user.repos.session\n>       recipe = session.query(RecipeModel).filter(RecipeModel.slug == original_slug).one()\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/integration_tests/user_recipe_tests/test_recipe_crud.py:2046: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.unit_tests.repository_tests.test_recipe_repository::test_recipe_note_step_references",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "sqlalchemy.exc.IntegrityError: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint \"recipe_note_ref_link_pkey\"\nDETAIL:  Key (id)=(13) already exists.\n\n[SQL: INSERT INTO recipe_note_ref_link (instruction_id, reference_id, created_at, update_at) VALUES (%(instruction_id)s::UUID, %(reference_id)s::UUID, %(created_at)s, %(update_at)s) RETURNING recipe_note_ref_link.id]\n[+2 more lines; full report in element text]\nself = <sqlalchemy.engine.base.Connection object at 0x7b5f14d34b90>\ndialect = <sqlalchemy.dialects.postgresql.psycopg2.PGDialect_psycopg2 object at 0x7b5f435f56a0>\ncontext = <sqlalchemy.dialects.postgresql.psycopg2.PGExecutionContext_psycopg2 object at 0x7b5f14164050>\nstatement = <sqlalchemy.dialects.postgresql.base.PGCompiler object at 0x7b5f26cdfed0>\nparameters = [{'instruction_id': '61979970-0696-400d-a018-4cd5915b2cae', 'reference_id': '4ad29aac-14f3-4d6f-af1f-185571f6e2f9', 'c...datetime.datetime(2026, 11, 16, 21, 35, 19, 787510), 'update_at': datetime.datetime(2026, 11, 16, 21, 35, 19, 787512)}]\n\n    def _exec_single_context(\n        self,\n        dialect: Dialect,\n        context: ExecutionContext,\n        statement: Union[str, Compiled],\n  "
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.unit_tests.repository_tests.test_recipe_repository::test_recipe_create_keeps_provided_id",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "sqlalchemy.exc.SAWarning: Session's state has been changed on a non-active transaction - this state will be discarded.\nself = <mealie.repos.repository_recipes.RepositoryRecipes object at 0x7b5f15da07d0>\ndata = {'id': UUID('8a003b62-1073-4889-b955-2fb2f4e43768'), 'user_id': UUID('eca6203c-9bc6-4728-8587-fe5a1a96b9fa'), 'household_id': None, 'group_id': UUID('641dab21-e2f6-43ad-8b18-972c0c2f673b'), ...}\n\n    def create(self, data: Schema | BaseModel | dict) -> Schema:\n        try:\n            data = data if isinstance(data, dict) else data.model_dump()\n            new_document = self.model(session=self.session, **data)\n            self.session.add(new_document)\n>           self.session.commit()\n\nmealie/repos/repository_generic.py:191: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n.venv/lib/python3.14/site-packages/sqlalchemy/orm/session.py:2177: in commit\n    trans.commit(_to_root=True)\n.venv/lib/python3.14/site-packages/sqlalchemy/orm/state_changes.py:101: in _go\n    self._raise_for_prerequisite_state(fn.__name__, current_state)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <sqlalchemy.orm.session.Session",
+   "sqlalchemy.exc.SAWarning: Session's state has been changed on a non-active transaction - this state will be discarded.\nself = <mealie.repos.repository_recipes.RepositoryRecipes object at 0x773faa625bd0>\ndata = {'id': UUID('95e59264-4a34-4e0d-b35c-42c92d6c2dd6'), 'user_id': UUID('fbbf5b11-d1b5-4d29-9383-b842a544ffd1'), 'household_id': None, 'group_id': UUID('ede5d37d-1a6a-45d9-be44-b9cc06c30edc'), ...}\n\n    def create(self, data: Schema | BaseModel | dict) -> Schema:\n        try:\n            data = data if isinstance(data, dict) else data.model_dump()\n            new_document = self.model(session=self.session, **data)\n            self.session.add(new_document)\n>           self.session.commit()\n\nmealie/repos/repository_generic.py:191: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n.venv/lib/python3.14/site-packages/sqlalchemy/orm/session.py:2177: in commit\n    trans.commit(_to_root=True)\n.venv/lib/python3.14/site-packages/sqlalchemy/orm/state_changes.py:101: in _go\n    self._raise_for_prerequisite_state(fn.__name__, current_state)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <sqlalchemy.orm.session.Session"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.unit_tests.repository_tests.test_recipe_repository::test_recipe_update_ignores_id_in_payload",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "sqlalchemy.exc.SAWarning: Session's state has been changed on a non-active transaction - this state will be discarded.\nself = <mealie.repos.repository_recipes.RepositoryRecipes object at 0x7b5f15da07d0>\ndata = {'id': None, 'user_id': UUID('eca6203c-9bc6-4728-8587-fe5a1a96b9fa'), 'household_id': None, 'group_id': UUID('641dab21-e2f6-43ad-8b18-972c0c2f673b'), ...}\n\n    def create(self, data: Schema | BaseModel | dict) -> Schema:\n        try:\n            data = data if isinstance(data, dict) else data.model_dump()\n            new_document = self.model(session=self.session, **data)\n            self.session.add(new_document)\n>           self.session.commit()\n\nmealie/repos/repository_generic.py:191: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n.venv/lib/python3.14/site-packages/sqlalchemy/orm/session.py:2177: in commit\n    trans.commit(_to_root=True)\n.venv/lib/python3.14/site-packages/sqlalchemy/orm/state_changes.py:101: in _go\n    self._raise_for_prerequisite_state(fn.__name__, current_state)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <sqlalchemy.orm.session.SessionTransaction object at 0x7b5f14d77ad0>\nop",
+   "sqlalchemy.exc.SAWarning: Session's state has been changed on a non-active transaction - this state will be discarded.\nself = <mealie.repos.repository_recipes.RepositoryRecipes object at 0x773faa625bd0>\ndata = {'id': None, 'user_id': UUID('fbbf5b11-d1b5-4d29-9383-b842a544ffd1'), 'household_id': None, 'group_id': UUID('ede5d37d-1a6a-45d9-be44-b9cc06c30edc'), ...}\n\n    def create(self, data: Schema | BaseModel | dict) -> Schema:\n        try:\n            data = data if isinstance(data, dict) else data.model_dump()\n            new_document = self.model(session=self.session, **data)\n            self.session.add(new_document)\n>           self.session.commit()\n\nmealie/repos/repository_generic.py:191: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n.venv/lib/python3.14/site-packages/sqlalchemy/orm/session.py:2177: in commit\n    trans.commit(_to_root=True)\n.venv/lib/python3.14/site-packages/sqlalchemy/orm/state_changes.py:101: in _go\n    self._raise_for_prerequisite_state(fn.__name__, current_state)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <sqlalchemy.orm.session.SessionTransaction object at 0x773fa5bcbba0>\nop"
+  ]
+ },
+ {
+  "repo": "mealie--serial",
+  "id": "runnervmccnms|tests.unit_tests.repository_tests.test_recipe_repository::test_recipe_repo_count_all",
+  "pass_runs": 1,
+  "fail_runs": 2,
+  "fail_in": [
+   2,
+   3
+  ],
+  "messages": [
+   "failed on setup with \"sqlalchemy.exc.SAWarning: Session's state has been changed on a non-active transaction - this state will be discarded.\"\nself = <mealie.repos.repository_group.RepositoryGroup object at 0x7b5f15872ac0>\ndata = {'name': 'fs681gmo8n', 'slug': 'fs681gmo8n'}\n\n    def create(self, data: Schema | BaseModel | dict) -> Schema:\n        try:\n            data = data if isinstance(data, dict) else data.model_dump()\n            new_document = self.model(session=self.session, **data)\n            self.session.add(new_document)\n>           self.session.commit()\n\nmealie/repos/repository_generic.py:191: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n.venv/lib/python3.14/site-packages/sqlalchemy/orm/session.py:2177: in commit\n    trans.commit(_to_root=True)\n.venv/lib/python3.14/site-packages/sqlalchemy/orm/state_changes.py:101: in _go\n    self._raise_for_prerequisite_state(fn.__name__, current_state)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <sqlalchemy.orm.session.SessionTransaction object at 0x7b5f14d77ad0>\noperation_name = 'commit', state = <SessionTransactionState.DEACTIVE: 4>\n\n    def _raise_for_"
+  ]
+ }
+]
