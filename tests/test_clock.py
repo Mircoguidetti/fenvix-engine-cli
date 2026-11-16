@@ -39,8 +39,14 @@ def test_types_and_isinstance():
     class Sub(datetime.datetime):
         pass
     assert type(Sub.now()) is Sub
-    with pytest.warns(DeprecationWarning):
-        assert datetime.datetime.utcnow().year == 2025
+    import sys, warnings
+    if sys.version_info >= (3, 12):  # utcnow is deprecated (and warns) only from 3.12
+        with pytest.warns(DeprecationWarning):
+            assert datetime.datetime.utcnow().year == 2025
+    else:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            assert datetime.datetime.utcnow().year == 2025
     assert type(datetime.datetime.today()) is datetime.datetime
     assert type(datetime.date.today()) is datetime.date
 
