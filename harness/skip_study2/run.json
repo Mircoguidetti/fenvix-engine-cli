@@ -1,6 +1,13 @@
-{"run_id": "r3",
- "walk": [
-  {"spec": "vue-core", "shards": 1, "budget_min": 330},
-  {"spec": "docusaurus", "shards": 1, "budget_min": 330}
+{"run_id": "r4",
+ "agent": [
+  {"spec": "home-assistant", "query": "head:codex/", "label": "codex", "max_prs": 8, "sample": 0.04, "budget_min": 340},
+  {"spec": "home-assistant", "query": "author:app/copilot-swe-agent", "label": "copilot", "max_prs": 8, "sample": 0.04, "budget_min": 340},
+  {"spec": "openai-agents-python", "query": "head:codex/", "label": "codex", "max_prs": 12, "budget_min": 340},
+  {"spec": "vue-core", "query": "head:codex/", "label": "codex", "max_prs": 12, "budget_min": 340},
+  {"spec": "github-mcp-server", "query": "author:app/copilot-swe-agent", "label": "copilot", "max_prs": 15, "budget_min": 340},
+  {"spec": "typescript-go", "query": "author:app/copilot-swe-agent", "label": "copilot", "max_prs": 8, "budget_min": 340}
+ ],
+ "flaky": [
+  {"spec": "home-assistant", "reps": 10, "budget_min": 280}
  ]
 }

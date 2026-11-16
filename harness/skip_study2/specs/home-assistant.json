@@ -43,7 +43,7 @@
  ],
  "units": {
   "include": [
-   "tests/*.py",
+   "tests/test_*.py",
    "tests/**/test_*.py"
   ],
   "exclude": [

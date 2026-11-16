@@ -20,7 +20,7 @@ ha = {
     "install_files": ["requirements*.txt", "pyproject.toml", "homeassistant/package_constraints.txt",
                       "packages/*/pyproject.toml"],
     "build": ["{py} -m script.translations develop --all > /dev/null"],
-    "units": {"include": ["tests/*.py", "tests/**/test_*.py"],
+    "units": {"include": ["tests/test_*.py", "tests/**/test_*.py"],
               "exclude": ["tests/e2e/*", "tests/conftest.py", "tests/common.py", "tests/typing.py", "tests/syrupy.py",
                           "tests/patch_*.py", "tests/__init__.py", "tests/ignore_uncaught_exceptions.py",
                           "tests/pylint/*", "tests/mypy_plugins/*", "tests/non_packaged_scripts/*"],
