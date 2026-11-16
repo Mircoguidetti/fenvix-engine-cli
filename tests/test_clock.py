@@ -414,3 +414,31 @@ def test_waiting_for_a_daemonized_process_waits_for_real(pytester, run_det):
     )
     result, _ = run_det("-p", "no:randomly")
     result.assert_outcomes(passed=1)
+
+
+def test_lock_acquire_timeouts_advance_the_clock(pytester, run_det):
+    """Regression (easypy LoggedRLock under --det-seed=2: hang): a loop that retries
+    lock.acquire(timeout=...) until a time.time() deadline never ended, because the
+    C-level wait took real time while the virtual clock stood still."""
+    pytester.makepyfile(
+        test_l="""
+        import threading, time
+        def test_retry_until_deadline():
+            for factory in (threading.Lock, threading.RLock):
+                lock, held, release = factory(), threading.Event(), threading.Event()
+                def owner():
+                    with lock:
+                        held.set(); release.wait()
+                t = threading.Thread(target=owner, daemon=True); t.start(); held.wait()
+                deadline, attempts = time.time() + 1.0, 0
+                while time.time() < deadline:
+                    attempts += 1
+                    assert attempts < 20, "virtual clock did not advance on lock timeouts"
+                    assert not lock.acquire(timeout=0.2)
+                release.set(); t.join()
+                with lock:          # still a working lock / context manager
+                    pass
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)
