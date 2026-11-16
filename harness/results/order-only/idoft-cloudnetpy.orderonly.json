@@ -1,0 +1,255 @@
+{
+  "name": "idoft-cloudnetpy",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/unit/test_drizzle.py::test_calc_beta_z_ratio": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_calc_dia": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_calc_fall_velocity": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_find_lut_indices": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_init_variables[Do]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_init_variables[S]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_init_variables[beta_corr]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_update_result_tables[S-93.7247943]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_update_result_tables[mu--1]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_lwc.py::test_init_status[0]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_lwc.py::test_update_status[0]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_calc_lwf": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_is_converged": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_update_result_tables[Do-10]": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_lwc.py::test_remove_good_profiles": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_lwc.py::test_update_status[1]": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_rpg.py::TestReduceHeader::test_1": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_N]": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_lwc]": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_lwf]": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_calc_derived_products[v_air]": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_calc_derived_products[v_drizzle]": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_calc_lwc": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_calc_v_air": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_drizzle.py::test_find_indices": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_classify.py::TestFindRain::test_1": {
+      "config": "4",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/unit/test_classify.py::TestFindRain::test_3": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 27,
+  "order_alone": 27
+}

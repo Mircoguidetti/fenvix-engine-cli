@@ -1,0 +1,606 @@
+{
+  "name": "idoft-eppy",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "eppy/tests/test_IDF.py::TestIDF::test_popidfobject": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_IDF.py::TestIDF::test_removeidfobject": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_fanpower.py::test_fan_maxcfm": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_fanpower.py::testfanpower_bhp": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_fanpower.py::testfanpower_watts": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_get_referenced_object": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_getreferingobjs": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_examples.py::test_pythonic": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_simpleread.py::test_idfreadtest": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_hvacbuilder.py::test_connectcomponents": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_hvacbuilder.py::test_renamenodes": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_hvacbuilder.py::test_replacebranch": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_json_functions.py::test_updateidf": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_getallobjlists": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_getiddgroupdict": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_getrefnames": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_idd_index": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_idfinmsequence": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_idfstr": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_initread": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_initreadtxt": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_new": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_newidfobject": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_refname2key": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_rename": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_save": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_save_with_lineendings_and_encodings": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_saveas": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_savecopy": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_modeleditor.py::test_zonearea_zonevolume": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_1_layer_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_2_layer_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_airgap_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_infraredtransparent_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_material": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_nomass_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_roofvegetation_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_1_layer_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_2_layer_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_airgap_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_fails": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_infraredtransparent_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_material": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_nomass_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_roofvegetation_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_1_layer_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_2_layer_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_airgap_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_infraredtransparent_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_material": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_nomass_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_roofvegetation_construction": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_case_insensitive.py::test_contains[BUILDING]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_case_insensitive.py::test_contains[BuIlDiNg]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_case_insensitive.py::test_contains[building]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_case_insensitive.py::test_del[BUILDING]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_case_insensitive.py::test_del[BuIlDiNg]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_case_insensitive.py::test_del[Building]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_case_insensitive.py::test_del[building]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_case_insensitive.py::test_get_and_set[BUILDING]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_case_insensitive.py::test_get_and_set[BuIlDiNg]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_case_insensitive.py::test_get_and_set[Building]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_case_insensitive.py::test_get_and_set[building]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_idf_helpers.py::test_getanymentions": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "eppy/tests/test_idf_helpers.py::test_getidfkeyswithnodes": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 66,
+  "order_alone": 66
+}

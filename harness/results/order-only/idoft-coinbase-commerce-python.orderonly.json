@@ -1,0 +1,84 @@
+{
+  "name": "idoft-coinbase-commerce-python",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_api_client.py::TestApiClient::test_authentication_error": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_api_client.py::TestApiClient::test_resource_not_found_error": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create": {
+      "config": "fixed",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list": {
+      "config": "fixed",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping": {
+      "config": "fixed",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping": {
+      "config": "fixed",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping": {
+      "config": "fixed",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 8,
+  "order_alone": 8
+}

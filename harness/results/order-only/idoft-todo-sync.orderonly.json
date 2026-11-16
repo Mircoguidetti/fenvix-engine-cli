@@ -1,0 +1,93 @@
+{
+  "name": "idoft-todo-sync",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node6-expected_node6]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node7-expected_node7]": {
+      "config": "12",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node4-expected_node4]": {
+      "config": "14",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node3-expected_node3]": {
+      "config": "17",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node8-expected_node8]": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node9-expected_node9]": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node2-expected_node2]": {
+      "config": "4",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node0-expected_node0]": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node10-expected_node10]": {
+      "config": "8",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 9,
+  "order_alone": 9
+}

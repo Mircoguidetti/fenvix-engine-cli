@@ -1,0 +1,66 @@
+{
+  "name": "anyio",
+  "kind": "popular",
+  "status": "ok",
+  "python": "3.13",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed+teardown-error": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 6,
+  "order_alone": 6
+}

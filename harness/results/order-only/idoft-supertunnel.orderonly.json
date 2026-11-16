@@ -1,0 +1,93 @@
+{
+  "name": "idoft-supertunnel",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "supertunnel/ssh/continuous_test.py::test_backoff": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "supertunnel/ssh/continuous_test.py::test_run": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "supertunnel/ssh/continuous_test.py::test_run_continuous": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 9,
+  "order_alone": 9
+}

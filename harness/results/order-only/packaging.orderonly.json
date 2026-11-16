@@ -1,0 +1,21 @@
+{
+  "name": "packaging",
+  "kind": "popular",
+  "status": "ok",
+  "python": "3.13",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 1,
+  "order_alone": 1
+}
