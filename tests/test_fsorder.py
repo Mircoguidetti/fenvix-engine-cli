@@ -85,3 +85,34 @@ def test_sorting_does_not_rely_on_the_filesystem(monkeypatch, tmp_path):
     assert fsorder.listdir(tmp_path) == ["a", "b", "c"]
     with fsorder.scandir(tmp_path) as it:
         assert [e.name for e in it] == ["a", "b", "c"]
+
+
+def test_glob_stays_lazy_and_bookkeeping_never_blocks(pytester, run_det):
+    """Regression (anyio + blockbuster, 39 tests): Path.glob/rglob and glob.iglob were
+    evaluated eagerly in the caller's thread (an asyncio loop) and detpy's own path
+    normalisation called os.getcwd, which blocking-call detectors forbid there."""
+    pytester.makepyfile(
+        test_l="""
+        import glob, os, pathlib
+
+        def test_lazy(tmp_path):
+            g, r, i = tmp_path.glob("*"), tmp_path.rglob("*"), glob.iglob(str(tmp_path / "*"))
+            (tmp_path / "late").touch()      # created after the call, before iteration
+            assert [p.name for p in g] == ["late"]
+            assert [p.name for p in r] == ["late"]
+            assert [os.path.basename(p) for p in i] == ["late"]
+
+        def test_no_getcwd(monkeypatch, tmp_path):
+            monkeypatch.chdir(tmp_path)
+            def blocking():
+                raise RuntimeError("blocking call to os.getcwd")
+            monkeypatch.setattr(os, "getcwd", blocking)
+            for name in ("abspath", "relpath", "realpath"):
+                monkeypatch.setattr(os.path, name, blocking)
+            assert os.listdir(".") == []
+            assert os.listdir(str(tmp_path)) == []
+            assert list(pathlib.Path(str(tmp_path)).glob("*")) == []
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=2)

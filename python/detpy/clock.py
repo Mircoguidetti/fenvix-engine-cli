@@ -17,6 +17,7 @@ virtual clock by their timeout, so "wait up to N seconds" loops terminate.
 from __future__ import annotations
 
 import datetime as _dt
+import os
 import sys
 import threading
 import time as _time
@@ -35,6 +36,7 @@ real_monotonic_ns = _time.monotonic_ns
 real_perf_counter = _time.perf_counter
 real_perf_counter_ns = _time.perf_counter_ns
 real_sleep = _time.sleep
+_real_listdir = os.listdir
 real_localtime = _time.localtime
 real_gmtime = _time.gmtime
 real_ctime = _time.ctime
@@ -48,7 +50,11 @@ real_date = _dt.date
 _MONO_BASE_NS = 1_000 * NS  # arbitrary, positive, process-independent
 
 
-MAX_TICK_NS = NS  # the adaptive tick never exceeds one second per read
+# The adaptive tick never exceeds this per read. It only has to let
+# calibration loops reach a few microseconds (pytest-benchmark needs ~10 us);
+# a larger cap made virtual time run faster than real time and tripped the
+# timeouts of algorithms that poll perf_counter in a hot loop (networkx).
+MAX_TICK_NS = 16_000
 
 
 class VirtualClock:
@@ -57,7 +63,7 @@ class VirtualClock:
     Adaptive tick: once ``adapt_after`` consecutive clock reads happened with no
     other event in between (no random draw, filesystem listing, network access,
     sleep...), every further read of that run doubles the tick, up to
-    ``MAX_TICK_NS``; any other event or the start of a test restores the base
+    ``MAX_TICK_NS`` (16 us); any other event or the start of a test restores the base
     tick. Doubling on every read (rather than every N reads) is what makes
     calibration loops that double their own work per measurement terminate. Code that only watches the clock
     (time-calibrated loops such as pytest-benchmark's) therefore sees time
@@ -146,42 +152,56 @@ def _rel(e: int) -> str:
 
 # Fake time functions ---------------------------------------------------------
 def time() -> float:
+    if CLOCK is None:  # called through a reference kept after uninstall
+        return real_time()
     e = CLOCK.read()
     _state.record("time", "time.time", _rel(e))
     return CLOCK.wall_ns(e) / NS
 
 
 def time_ns() -> int:
+    if CLOCK is None:  # called through a reference kept after uninstall
+        return real_time_ns()
     e = CLOCK.read()
     _state.record("time", "time.time_ns", _rel(e))
     return CLOCK.wall_ns(e)
 
 
 def monotonic() -> float:
+    if CLOCK is None:  # called through a reference kept after uninstall
+        return real_monotonic()
     e = CLOCK.read()
     _state.record("time", "time.monotonic", _rel(e))
     return CLOCK.mono_ns(e) / NS
 
 
 def monotonic_ns() -> int:
+    if CLOCK is None:  # called through a reference kept after uninstall
+        return real_monotonic_ns()
     e = CLOCK.read()
     _state.record("time", "time.monotonic_ns", _rel(e))
     return CLOCK.mono_ns(e)
 
 
 def perf_counter() -> float:
+    if CLOCK is None:  # called through a reference kept after uninstall
+        return real_perf_counter()
     e = CLOCK.read()
     _state.record("time", "time.perf_counter", _rel(e))
     return CLOCK.mono_ns(e) / NS
 
 
 def perf_counter_ns() -> int:
+    if CLOCK is None:  # called through a reference kept after uninstall
+        return real_perf_counter_ns()
     e = CLOCK.read()
     _state.record("time", "time.perf_counter_ns", _rel(e))
     return CLOCK.mono_ns(e)
 
 
 def sleep(secs: float) -> None:
+    if CLOCK is None:
+        return real_sleep(secs)
     # Same argument validation as the real function.
     if not isinstance(secs, (int, float)):
         try:
@@ -196,13 +216,38 @@ def sleep(secs: float) -> None:
     CLOCK.other_event()  # a sleep is not a read: it ends a run of reads
     _state.record("time", "time.sleep", str(ns))
     CLOCK.advance(ns)
-    if _state.STATE.config.sleep == "real" or _other_threads_alive():
-        # Another thread may need this time to make progress (code that sleeps
-        # to "let the worker finish"): wait for real as well. Scheduling is not
-        # controlled by Level 0 anyway once several threads run.
+    if (_state.STATE.config.sleep == "real" or _other_threads_alive() or _in_event_loop()
+            or _children_alive()):
+        # Someone observes real time: another thread or a child process may need
+        # this time to make progress ("wait until the server is up"), or an
+        # asyncio loop (which keeps real time) is running here and its
+        # deadlines must see the sleep.
+        # Wait for real as well; the virtual clock still advances.
         real_sleep(secs)
     else:
         real_sleep(0)  # still yield the GIL / scheduler
+
+
+def _children_alive() -> bool:
+    """True if this process has live child processes (Linux: /proc children lists)."""
+    try:
+        for tid in _real_listdir("/proc/self/task"):
+            with open(f"/proc/self/task/{tid}/children") as f:
+                if f.read().strip():
+                    return True
+    except OSError:
+        return False
+    return False
+
+
+def _in_event_loop() -> bool:
+    aio = sys.modules.get("asyncio")
+    if aio is None:
+        return False
+    try:
+        return aio._get_running_loop() is not None
+    except Exception:  # pragma: no cover
+        return False
 
 
 def _other_threads_alive() -> bool:
@@ -213,6 +258,8 @@ def _other_threads_alive() -> bool:
 
 
 def _wall_secs(op: str) -> float:
+    if CLOCK is None:
+        return real_time()
     e = CLOCK.read()
     _state.record("time", op, _rel(e), depth=2)
     return CLOCK.wall_ns(e) / NS
@@ -247,6 +294,8 @@ _MONOTONIC = {
 
 
 def clock_gettime_ns(clk_id):
+    if CLOCK is None:
+        return real_clock_gettime_ns(clk_id)
     if clk_id in _REALTIME:
         e = CLOCK.read()
         _state.record("time", "time.clock_gettime", _rel(e))
@@ -259,6 +308,8 @@ def clock_gettime_ns(clk_id):
 
 
 def clock_gettime(clk_id):
+    if CLOCK is None:
+        return real_clock_gettime(clk_id)
     if clk_id in _REALTIME or clk_id in _MONOTONIC:
         e = CLOCK.read()
         _state.record("time", "time.clock_gettime", _rel(e))
@@ -305,6 +356,22 @@ def _condition_wait(self, timeout=None):
     return got
 
 
+def _wrap_selector_select(real):
+    def select(self, timeout=None):
+        ready = real(self, timeout)
+        if not ready and timeout is not None and timeout > 0 and CLOCK is not None:
+            # Same rule as Condition.wait: a wait that times out advances the
+            # virtual clock by its timeout (asyncio.sleep, loop deadlines).
+            # asyncio asks for "deadline - now" (a few microseconds less than the
+            # delay the code requested): round up to the millisecond so the
+            # virtual clock never shows less than the requested delay.
+            CLOCK.advance(-(-int(timeout * NS) // 1_000_000) * 1_000_000)
+        return ready
+
+    select.__wrapped__ = real
+    return select
+
+
 # Installation ---------------------------------------------------------------------
 # Stdlib modules that bind clock functions at import time and use them for real
 # blocking waits: import them now so they keep the *real* functions.
@@ -341,6 +408,12 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
     patcher.set_type_attr(real_datetime, "utcnow", classmethod(_dt_utcnow))
     patcher.set_type_attr(real_date, "today", classmethod(_date_today))
     patcher.set(threading.Condition, "wait", _condition_wait)
+    import selectors
+
+    for name in ("SelectSelector", "PollSelector", "EpollSelector", "DevpollSelector", "KqueueSelector"):
+        cls = getattr(selectors, name, None)
+        if cls is not None and "select" in vars(cls):
+            patcher.set(cls, "select", _wrap_selector_select(vars(cls)["select"]))
     # asyncio's event loop must keep real time: its selector waits for real.
     import asyncio.base_events
 
