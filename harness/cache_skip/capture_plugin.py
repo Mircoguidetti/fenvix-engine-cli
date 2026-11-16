@@ -21,6 +21,15 @@ Environment:
   the root that are opened (non-Python data inputs), directories that are
   listed, subprocesses spawned and inet sockets connected. ``sys.modules`` is
   scanned after each test to know when each repository module was first loaded.
+
+* ``CACHE_SKIP_TRACER`` (capture mode) ``coverage`` (the session runs under
+  ``coverage run``, as in the study) or ``sysmon`` (Python 3.12+: the plugin
+  records the same per-context executed lines itself with ``sys.monitoring``,
+  see ``sysmon_capture.py``, and no ``coverage run`` is needed). ``auto``
+  (default) picks ``sysmon`` when ``sys.monitoring`` exists and the session is
+  not under coverage, else ``coverage``.
+* ``CACHE_SKIP_COV`` (``sysmon`` tracer) output file for the executed lines, in
+  the compact pickle format of ``run_repo.extract_coverage``.
 """
 
 from __future__ import annotations
@@ -39,6 +48,25 @@ ROOT_SEP = ROOT + os.sep
 
 _ctx = ["s|session"]
 _cov = None
+_sysmon = None
+
+
+def _pick_tracer() -> str:
+    t = os.environ.get("CACHE_SKIP_TRACER", "auto")
+    if t == "auto":
+        under_coverage = "coverage" in sys.modules and sys.modules["coverage"].Coverage.current() is not None
+        t = "sysmon" if hasattr(sys, "monitoring") and not under_coverage else "coverage"
+    return t
+
+
+TRACER = _pick_tracer() if MODE == "capture" else ""
+if TRACER == "sysmon":
+    # started at import (``-p capture_plugin`` is imported before conftest files and pytest11 entry points), so
+    # repository code run at startup is recorded in the "" context, as under ``coverage run``
+    from sysmon_capture import SysmonCapture
+
+    _sysmon = SysmonCapture(ROOT, os.environ.get("CACHE_SKIP_COV", OUT + ".cov.pkl.gz"))
+    _sysmon.start()
 _fs: dict[str, dict[str, set]] = {}  # ctx -> {"open": set, "list": set}
 _spawn: dict[str, int] = {}
 _net: dict[str, int] = {}
@@ -102,6 +130,8 @@ def _switch(ctx: str) -> None:
     _ctx[0] = ctx
     if _cov is not None:
         _cov.switch_context(ctx)
+    elif _sysmon is not None:
+        _sysmon.switch_context(ctx)
 
 
 def _scan_modules(index: int) -> None:
@@ -123,10 +153,13 @@ def pytest_configure(config):
     global _cov
     _marks["configure"] = time.perf_counter() - _t0
     if MODE == "capture":
-        import coverage
-        _cov = coverage.Coverage.current()
-        if _cov is None:
-            raise pytest.UsageError("CACHE_SKIP_MODE=capture needs `coverage run`")
+        if TRACER == "coverage":
+            import coverage
+            _cov = coverage.Coverage.current()
+            if _cov is None:
+                raise pytest.UsageError("CACHE_SKIP_TRACER=coverage needs `coverage run`")
+        elif _sysmon is None:
+            raise pytest.UsageError(f"unknown CACHE_SKIP_TRACER {TRACER!r}")
         sys.addaudithook(_audit)
         _switch("s|session")
 
