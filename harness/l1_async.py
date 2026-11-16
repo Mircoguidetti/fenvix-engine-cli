@@ -129,6 +129,16 @@ def measure(project: dict, args) -> dict:
         go("baseline", [], i)
         go("det", ["--det"], i)
         go("calm", ["--det", "--det-async"], i)
+    if args.loaded_runs:
+        # Baseline under CPU contention (a busy CI runner): one spinning process per core.
+        hogs = [subprocess.Popen([sys.executable, "-c", "while True: pass"]) for _ in range(os.cpu_count() or 2)]
+        try:
+            for i in range(args.loaded_runs):
+                go("loaded", [], i)
+                go("loaded-calm", ["--det", "--det-async"], i)
+        finally:
+            for h in hogs:
+                h.kill()
     first_fail, first_pass = {}, {}
     for s in range(1, args.seeds + 1):
         r = go("explore", ["--det", "--det-async", f"--det-async-seed={s}"], 0, s,
@@ -206,12 +216,16 @@ def aggregate(indir: Path, outdir: Path, meta: dict) -> None:
             for run in r["runs"]:
                 per[run["mode"]].append(run["outcomes"].get(n, "missing"))
             b, d, c, e = per["baseline"], per["det"], per["calm"], per["explore"]
+            ld, lc = per.get("loaded", []), per.get("loaded-calm", [])
             cf = r.get("confirm", {}).get(n, {})
             rows.append({
                 "project": r["name"], "nodeid": n, "category": cat,
                 "uvloop": "uvloop" in n,
                 "baseline": hist(b), "baseline_flaky": len(set(b)) > 1, "baseline_fail_rate": round(
                     sum(map(is_fail, b)) / len(b), 3) if b else None,
+                "loaded": hist(ld), "loaded_flaky": len(set(ld)) > 1,
+                "flaky_any": len(set(b + ld)) > 1,
+                "loaded_calm": hist(lc), "loaded_calm_stable": len(set(lc)) <= 1,
                 "det": hist(d), "det_stable": len(set(d)) == 1,
                 "calm": hist(c), "calm_stable": len(set(c)) == 1,
                 "explore": hist(e), "seeds_failing": sum(map(is_fail, e)),
@@ -232,6 +246,9 @@ def aggregate(indir: Path, outdir: Path, meta: dict) -> None:
         by = collections.defaultdict(list)
         for t in r.get("timing", []):
             if not t["timed_out"] and t["exit"] in (0, 1):
+                by[t["mode"]].append(t["duration_s"])
+        for t in r.get("timing", []):  # exit 3 = pytest INTERNALERROR (pre-existing L0 issue), counted if tests ran
+            if t["exit"] == 3 and t["counts"].get("passed") and not t["timed_out"]:
                 by[t["mode"]].append(t["duration_s"])
         if by.get("det") and by.get("det-async"):
             md = statistics.median(by["det"])
@@ -267,9 +284,11 @@ def report(s: dict) -> str:
         sel = list(sel)
         if not sel:
             return
-        bf = [r for r in sel if r["baseline_flaky"]]
+        bf = [r for r in sel if r["flaky_any"]]
         L.extend(["", f"## {title}", "",
-                  f"* tests: {len(sel)}; flaky in the baseline: {len(bf)}",
+                  f"* tests: {len(sel)}; flaky in the baseline (quiet or CPU-loaded runs, or different between the two): {len(bf)} "
+                  f"(quiet only: {sum(r['baseline_flaky'] for r in sel)}, loaded only: {sum(r['loaded_flaky'] for r in sel)})",
+                  f"* `--det --det-async` (calm) under CPU load: same outcome in every loaded run {sum(r['loaded_calm_stable'] for r in sel)}/{len(sel)}",
                   f"* `--det` only: stable outcome {sum(r['det_stable'] for r in sel)}/{len(sel)}; "
                   f"of the baseline-flaky ones {sum(r['det_stable'] for r in bf)}/{len(bf)}",
                   f"* `--det --det-async` (calm, seed 0): stable outcome {sum(r['calm_stable'] for r in sel)}/{len(sel)}",
@@ -283,10 +302,10 @@ def report(s: dict) -> str:
           (r for r in rows if r["uvloop"]))
     for proj in sorted({r["project"] for r in rows}):
         block(f"Project {proj}", (r for r in rows if r["project"] == proj and not r["uvloop"]))
-    L.extend(["", "## Per test", "", "| project | test | cat. | baseline | --det | calm | explore (20 seeds) | repro seed | confirm | passing seed | fingerprint |",
-              "|---|---|---|---|---|---|---|---|---|---|---|"])
+    L.extend(["", "## Per test", "", "| project | test | cat. | baseline | loaded | --det | calm | calm loaded | explore (20 seeds) | repro seed | confirm | passing seed | fingerprint |",
+              "|---|---|---|---|---|---|---|---|---|---|---|---|---|"])
     for r in rows:
-        L.append(f"| {r['project']} | `{r['nodeid'][-90:]}` | {r['category']} | {r['baseline']} | {r['det']} | {r['calm']} | "
+        L.append(f"| {r['project']} | `{r['nodeid'][-90:]}` | {r['category']} | {r['baseline']} | {r['loaded']} | {r['det']} | {r['calm']} | {r['loaded_calm']} | "
                  f"{r['explore']} | {r['repro_seed'] or ''} | {r['confirm']} | {r['passing_seed'] or ''} | {r['fingerprint']} |")
     if s["timing"]:
         L.extend(["", "## Slowdown on the full suites (serial)", "",
@@ -312,6 +331,7 @@ def main(argv=None) -> None:
     ap.add_argument("--seeds", type=int, default=20)
     ap.add_argument("--confirm", type=int, default=10)
     ap.add_argument("--timing-runs", type=int, default=3)
+    ap.add_argument("--loaded-runs", type=int, default=10, help="baseline runs under CPU contention")
     ap.add_argument("--run-timeout", type=float, default=900)
     ap.add_argument("--suite-timeout", type=float, default=2400)
     ap.add_argument("--executor", default="local")

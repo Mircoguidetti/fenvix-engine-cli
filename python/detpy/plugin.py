@@ -217,7 +217,8 @@ def _install(config, ns, controls) -> None:
         fsorder.install(_PATCHER)
     if ns.det_async:
         seed = ns.det_async_seed if ns.det_async_seed is not None else (ns.det_seed or 0)
-        aio.install(_PATCHER, seed, ns.det_async_grace, ns.det_async_wait, ns.det_async_settle)
+        aio.install(_PATCHER, seed, ns.det_async_grace, ns.det_async_wait, ns.det_async_settle,
+                    str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd())
 
 
 @pytest.hookimpl(trylast=True)
@@ -228,6 +229,8 @@ def pytest_configure(config):
         warnings.warn("detpy: pytest-xdist is not supported under --det (order is only fixed per worker)")
     root = str(config.rootpath)
     _sites.refresh(root)
+    if aio.CFG.enabled:
+        aio.refresh_prefixes(root)  # after plugins are imported
     opt = config.option
     cassette = opt.det_cassette or os.path.join(root, ".detpy", "cassette.json")
     _state.STATE.config.cassette_path = cassette

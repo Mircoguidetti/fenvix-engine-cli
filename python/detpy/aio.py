@@ -414,7 +414,7 @@ class Scheduler:
     # -- stable ids and recording -------------------------------------------
     def stable_id(self, depth: int) -> str:
         """Creation site of a callback (first user frame) plus a per-site counter."""
-        site = _sites.resolve(depth + 1) or "<asyncio>"
+        site = _site_of(depth + 1)
         with self.lock:
             self.site_n[site] += 1
             n = self.site_n[site]
@@ -564,6 +564,72 @@ class Scheduler:
             now.append(later.pop(self.rng.below(len(later))))
         self.rng.shuffle(now)
         return now, later
+
+
+_SITE_CACHE: dict = {}
+
+
+def _classify_file(filename: str):
+    """(kind, display path) with string operations only.
+
+    The loop thread must not call os/os.path here: tools such as blockbuster
+    (used by anyio's test suite) flag any blocking call made inside a running
+    event loop, and realpath/abspath are such calls.
+    """
+    hit = _SITE_CACHE.get(filename)
+    if hit is not None:
+        return hit
+    kind, shown = "user", filename
+    if filename.startswith("<"):
+        kind = "stdlib" if filename.startswith("<frozen") else "user"
+    elif any(filename.startswith(p) for p in _PREFIXES["infra"]):
+        kind = "infra"
+    else:
+        for d in _PREFIXES["site"]:
+            if filename.startswith(d + "/"):
+                shown = "<site>/" + filename[len(d) + 1:]
+                break
+        else:
+            if any(filename.startswith(d + "/") for d in _PREFIXES["stdlib"]):
+                kind = "stdlib"
+            elif _PREFIXES["root"] and filename.startswith(_PREFIXES["root"] + "/"):
+                shown = filename[len(_PREFIXES["root"]) + 1:]
+    res = (kind, shown.replace("\\", "/"))
+    _SITE_CACHE[filename] = res
+    return res
+
+
+_PREFIXES: dict = {"infra": (), "site": (), "stdlib": (), "root": None}
+
+
+def refresh_prefixes(rootdir) -> None:
+    """Computed outside the loop (filesystem calls allowed here)."""
+    std, site, infra = _sites._dirs()
+    extra = set()
+    for d in list(std) + list(site):
+        extra.add(os.path.abspath(d))
+    _PREFIXES["stdlib"] = tuple(sorted({*std, *(os.path.abspath(d) for d in std)}, key=len, reverse=True))
+    _PREFIXES["site"] = tuple(sorted({*site, *(os.path.abspath(d) for d in site)}, key=len, reverse=True))
+    _PREFIXES["infra"] = tuple(infra) + (os.path.dirname(os.path.abspath(__file__)),)
+    _PREFIXES["root"] = rootdir.rstrip("/") if rootdir else None
+    _SITE_CACHE.clear()
+
+
+def _site_of(depth: int) -> str:
+    import sys
+
+    try:
+        f = sys._getframe(depth + 1)
+    except ValueError:
+        return "<asyncio>"
+    while f is not None:
+        kind, shown = _classify_file(f.f_code.co_filename)
+        if kind == "user":
+            return f"{shown}:{f.f_lineno}"
+        if kind == "infra":
+            return "<asyncio>"
+        f = f.f_back
+    return "<asyncio>"
 
 
 def _log1m(u: float) -> float:
@@ -738,7 +804,8 @@ def _io_patch(name, kind):
     return method
 
 
-def install(patcher, seed: int, grace: float, wait: float, settle: float) -> None:
+def install(patcher, seed: int, grace: float, wait: float, settle: float, rootdir=None) -> None:
+    refresh_prefixes(rootdir)
     CFG.enabled = True
     CFG.seed = seed
     CFG.grace, CFG.wait, CFG.settle = grace, wait, settle

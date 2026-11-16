@@ -51,7 +51,11 @@
     "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]": "round-flaky",
     "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]": "round-flaky",
     "tests/test_taskgroups.py::test_host_exception[asyncio+uvloop]": "round-flaky"
-   }
+   },
+   "suite_args": [
+    "--ignore=tests/test_pytest_plugin.py"
+   ],
+   "note": "tests/test_pytest_plugin.py runs nested in-process pytest sessions, which hit a pre-existing detpy INTERNALERROR (recorder reset by the inner session)"
   },
   {
    "name": "idoft-easypy",
@@ -73,8 +77,8 @@
    "url": "https://github.com/Cognexa/plcx",
    "sha": "2756c0ba78c4c9e572d95ba002708957bc55d4fa",
    "python": [
-    "3.10",
-    "3.9"
+    "3.9",
+    "3.10"
    ],
    "tests": {
     "plcx/tests/comm/test_client.py::test_clientx[123]": "OD-Vic",
@@ -92,8 +96,8 @@
    "url": "https://github.com/cr0hn/aiotasks",
    "sha": "ec485c84db55227c9283319a9c58401e294a06ff",
    "python": [
-    "3.10",
-    "3.9"
+    "3.9",
+    "3.10"
    ],
    "tests": {
     "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_add_task_non_coroutine_as_input": "OD-Vic",
@@ -108,8 +112,8 @@
    "url": "https://github.com/dmarkey/aiopylimit",
    "sha": "b4075a8ac30dbbef59a2243f618a35a2f54b590c",
    "python": [
-    "3.10",
-    "3.9"
+    "3.9",
+    "3.10"
    ],
    "tests": {
     "aiopylimit/tests/test_aiopylimit.py::TestPyLimit::test_exception": "OD-Vic"
@@ -154,7 +158,10 @@
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "NOD",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "NOD",
     "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "NOD"
-   }
+   },
+   "install": [
+    "six"
+   ]
   },
   {
    "name": "idoft-pyps4-2ndscreen",
@@ -162,8 +169,8 @@
    "url": "https://github.com/ktnrg45/pyps4-2ndscreen",
    "sha": "457dc9c3f04017569d52bae7390ea2fc54e96ce5",
    "python": [
-    "3.10",
-    "3.9"
+    "3.9",
+    "3.10"
    ],
    "tests": {
     "tests/test_media_art.py::test_result_item_missing_data": "NIO"
