@@ -85,13 +85,24 @@ def checkout(work: Path, url: str, commit: str) -> Path | None:
     return d
 
 
+TIME_IN_ID = re.compile(r"\[[^\]]*\d{1,4}[-/:]\d{1,2}[-/:]\d{1,4}[^\]]*\]")
+
+
 def classify(row: dict, src: str) -> tuple[str, str]:
     cat = row.get("idoft_category", "")
+    hist = dict(kv.split("=") for kv in row.get("baseline_outcomes", "").split(";") if "=" in kv)
+    if "missing" in hist and TIME_IN_ID.search(row["nodeid"]):
+        return "a", "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+    if hist and all(k.startswith(("failed", "error")) for k in hist):
+        return "d", ("fails in every baseline run; only the failing phase changes "
+                     f"({', '.join(sorted(hist))}): not flaky in outcome")
     reason = row.get("pass_fail_reason", "") or row.get("det_reason", "")
     exc = row.get("det_exception") or row.get("baseline_exception") or ""
     msg = row.get("det_exception_message", "")
     if cat.startswith("OD") or cat == "NIO":
-        return "c", f"IDoFT category {cat} (order/state dependent) not reproduced by the explored seeds"
+        extra = (" (brittle: fails when its state-setter did not run first; in the baseline xdist can place them "
+                 "on different workers, which a permutation of the full suite never does)") if cat == "OD-Brit" else ""
+        return "c", f"IDoFT category {cat} (order/state dependent) not reproduced by the explored seeds{extra}"
     if reason in ("net",) or exc in EXC_B or B.search(msg):
         return "b", f"exception {exc or '-'} / diverging event {reason or '-'}"
     if reason in ("thread", "time") or exc in EXC_A:
