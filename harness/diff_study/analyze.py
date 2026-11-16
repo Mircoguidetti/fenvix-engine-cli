@@ -17,9 +17,11 @@ def pct(a, b):
     return f"{a}/{b} = {100 * a / b:.1f}%" if b else f"{a}/0"
 
 
-def load(d: Path) -> list:
+def load(d: Path, pattern: str = "*.json.gz", skip: str = "recheck-") -> list:
     out = []
-    for p in sorted(d.glob("*.json.gz")):
+    for p in sorted(d.glob(pattern)):
+        if skip and p.name.startswith(skip):
+            continue
         with gzip.open(p, "rt") as f:
             out.append(json.load(f))
     return out
@@ -180,6 +182,55 @@ def extra_numbers(prs: list) -> dict:
             "first_event_source": dict(first_src), "refactor_zero_div": {v: f"{a}/{b}" for v, (a, b) in ref.items()}}
 
 
+def recheck_numbers(runs: list) -> dict:
+    """Survivors re-run next to no-op controls: a flag counts only on tests
+    that no control run flagged (the method's own noise floor)."""
+    kinds = {"det": "det_ids", "rets": "probe_rets_ids", "calls": "probe_calls_ids", "files": "probe_files_ids"}
+    out = {"repos": {}, "survivors": 0, "status": collections.Counter(), "flagged": collections.Counter(),
+           "flagged_raw": collections.Counter(), "det_sources": collections.Counter(), "det_locs": collections.Counter(),
+           "examples": []}
+    for r in runs:
+        if r.get("status") != "ok":
+            out["repos"][r.get("repo")] = r.get("status")
+            continue
+        ctrl = [m for m in r["mutants"] if m.get("control")]
+        muts = [m for m in r["mutants"] if not m.get("control")]
+        noise = {k: set().union(*[set(m.get(f, [])) for m in ctrl]) if ctrl else set() for k, f in kinds.items()}
+        rep = {"controls": len(ctrl), "control_status": [m["status"] for m in ctrl],
+               "control_flagged": {k: len(v) for k, v in noise.items()}, "mutants": len(muts),
+               "status": dict(collections.Counter(m["status"] for m in muts)), "flagged": collections.Counter()}
+        for m in muts:
+            out["status"][m["status"]] += 1
+            if m["status"] != "survived":
+                continue
+            out["survivors"] += 1
+            hit = {}
+            for k, f in kinds.items():
+                ids = set(m.get(f, []))
+                hit[k] = bool(ids - noise[k])
+                out["flagged_raw"][k] += bool(ids)
+                out["flagged"][k] += hit[k]
+                rep["flagged"][k] += hit[k]
+            out["flagged"]["det_or_rets"] += hit["det"] or hit["rets"]
+            out["flagged"]["any_probe"] += hit["rets"] or hit["calls"] or hit["files"]
+            if hit["det"]:
+                for t, fe in (m.get("det_firsts") or {}).items():
+                    if t in noise["det"]:
+                        continue
+                    ev = fe.get("base") or fe.get("mutant") or {}
+                    out["det_sources"][ev.get("s", "?")] += 1
+                    out["det_locs"][fe.get("loc")] += 1
+                if len(out["examples"]) < 10:
+                    out["examples"].append({"repo": r["repo"], "file": m["file"], "line": m["line"], "op": m["op"],
+                                            "tests": sorted(set(m["det_ids"]) - noise["det"])[:3],
+                                            "first": next(iter(m.get("det_firsts", {}).values()), None)})
+        rep["flagged"] = dict(rep["flagged"])
+        out["repos"][r["repo"]] = rep
+    for k in ("status", "flagged", "flagged_raw", "det_sources", "det_locs"):
+        out[k] = dict(out[k])
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--results", default=str(Path(__file__).resolve().parent / "results"))
@@ -198,6 +249,8 @@ def main():
     res.update(pr_numbers(chosen))
     res["extra"] = extra_numbers(chosen)
     res["mutants"] = mutant_numbers(load(root / "mutants")) if (root / "mutants").exists() else {}
+    rc = load(root / "mutants", "recheck-*.json.gz", skip="")
+    res["recheck"] = recheck_numbers(rc) if rc else {}
     (root / "summary.json").write_text(json.dumps(res, indent=1))
     t = res["totals"]
     print(json.dumps({k: v for k, v in res.items() if k not in ("per_pr", "failures")}, indent=1))
