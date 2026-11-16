@@ -1,0 +1,964 @@
+{
+ "name": "idoft-python-dugong",
+ "url": "https://github.com/python-dugong/python-dugong",
+ "source": "IDoFT (asyncio)",
+ "tests": {
+  "test/test_aio.py::test_aio_future": "NIO"
+ },
+ "executor": "GitHub Actions",
+ "runner": "runnervmccnms",
+ "python_requested": [
+  "3.10",
+  "3.9"
+ ],
+ "commit": "00dd4d5aab6eddb116cace2829a9f93bda153664",
+ "status": "ok",
+ "detail": "",
+ "python": "3.10",
+ "install": "-e .",
+ "collected": 118,
+ "runs": [
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future"
+   ],
+   "exit": 1,
+   "duration_s": 0.217,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 1.855,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.902,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future"
+   ],
+   "exit": 1,
+   "duration_s": 0.221,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 1
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.929,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 1
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.95,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 1
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future"
+   ],
+   "exit": 1,
+   "duration_s": 0.221,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 2
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.926,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 2
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.896,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 2
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future"
+   ],
+   "exit": 1,
+   "duration_s": 0.223,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 3
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.905,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 3
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.893,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 3
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future"
+   ],
+   "exit": 1,
+   "duration_s": 0.224,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 4
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.918,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 4
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.903,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 4
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future"
+   ],
+   "exit": 1,
+   "duration_s": 0.22,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 5
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.905,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 5
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.894,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 5
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future"
+   ],
+   "exit": 1,
+   "duration_s": 0.223,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 6
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.953,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 6
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.924,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 6
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future"
+   ],
+   "exit": 1,
+   "duration_s": 0.224,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 7
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.925,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 7
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.92,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 7
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future"
+   ],
+   "exit": 1,
+   "duration_s": 0.225,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 8
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.914,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 8
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.957,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 8
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future"
+   ],
+   "exit": 1,
+   "duration_s": 0.223,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "baseline",
+   "seed": null,
+   "run": 9
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det"
+   ],
+   "exit": 1,
+   "duration_s": 0.923,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "det",
+   "seed": null,
+   "run": 9
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async"
+   ],
+   "exit": 1,
+   "duration_s": 0.928,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "calm",
+   "seed": null,
+   "run": 9
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=1"
+   ],
+   "exit": 1,
+   "duration_s": 0.936,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 1,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=2"
+   ],
+   "exit": 1,
+   "duration_s": 0.928,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 2,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=3"
+   ],
+   "exit": 1,
+   "duration_s": 0.922,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 3,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=4"
+   ],
+   "exit": 1,
+   "duration_s": 0.931,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 4,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=5"
+   ],
+   "exit": 1,
+   "duration_s": 0.932,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 5,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=6"
+   ],
+   "exit": 1,
+   "duration_s": 0.891,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 6,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=7"
+   ],
+   "exit": 1,
+   "duration_s": 0.928,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 7,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=8"
+   ],
+   "exit": 1,
+   "duration_s": 0.922,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 8,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=9"
+   ],
+   "exit": 1,
+   "duration_s": 0.924,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 9,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=10"
+   ],
+   "exit": 1,
+   "duration_s": 0.904,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 10,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=11"
+   ],
+   "exit": 1,
+   "duration_s": 0.913,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 11,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=12"
+   ],
+   "exit": 1,
+   "duration_s": 0.918,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 12,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=13"
+   ],
+   "exit": 1,
+   "duration_s": 0.904,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 13,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=14"
+   ],
+   "exit": 1,
+   "duration_s": 0.917,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 14,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=15"
+   ],
+   "exit": 1,
+   "duration_s": 0.943,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 15,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=16"
+   ],
+   "exit": 1,
+   "duration_s": 0.923,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 16,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=17"
+   ],
+   "exit": 1,
+   "duration_s": 0.919,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 17,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=18"
+   ],
+   "exit": 1,
+   "duration_s": 0.9,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 18,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=19"
+   ],
+   "exit": 1,
+   "duration_s": 0.893,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 19,
+   "run": 0
+  },
+  {
+   "args": [
+    "test/test_aio.py::test_aio_future",
+    "--det",
+    "--det-async",
+    "--det-async-seed=20"
+   ],
+   "exit": 1,
+   "duration_s": 0.894,
+   "timed_out": false,
+   "outcomes": {
+    "test/test_aio.py::test_aio_future": "missing"
+   },
+   "tail": "",
+   "mode": "explore",
+   "seed": 20,
+   "run": 0
+  }
+ ],
+ "confirm": {},
+ "timing": [
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 44.837,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "error": 118
+   },
+   "tail": ""
+  },
+  {
+   "mode": "det-async",
+   "run": 0,
+   "duration_s": 44.851,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "error": 118
+   },
+   "tail": ""
+  },
+  {
+   "mode": "det-async-s1",
+   "run": 0,
+   "duration_s": 44.853,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "error": 118
+   },
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 44.829,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "error": 118
+   },
+   "tail": ""
+  },
+  {
+   "mode": "det-async",
+   "run": 1,
+   "duration_s": 44.837,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "error": 118
+   },
+   "tail": ""
+  },
+  {
+   "mode": "det-async-s1",
+   "run": 1,
+   "duration_s": 44.864,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "error": 118
+   },
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 44.856,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "error": 118
+   },
+   "tail": ""
+  },
+  {
+   "mode": "det-async",
+   "run": 2,
+   "duration_s": 44.853,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "error": 118
+   },
+   "tail": ""
+  },
+  {
+   "mode": "det-async-s1",
+   "run": 2,
+   "duration_s": 44.86,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "error": 118
+   },
+   "tail": ""
+  }
+ ]
+}

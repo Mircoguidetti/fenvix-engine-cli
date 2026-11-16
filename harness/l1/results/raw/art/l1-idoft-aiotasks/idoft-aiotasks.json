@@ -1,0 +1,23 @@
+{
+ "name": "idoft-aiotasks",
+ "url": "https://github.com/cr0hn/aiotasks",
+ "source": "IDoFT (asyncio)",
+ "tests": {
+  "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_add_task_non_coroutine_as_input": "OD-Vic",
+  "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_task_decorator_invalid_function": "OD-Vic",
+  "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_task_decorator_invalid_task_id_format": "OD-Vic",
+  "tests/unittesting/tasks/memory/test_subscribers.py::test_memory_subscribers_empty_topics": "OD-Vic"
+ },
+ "executor": "GitHub Actions",
+ "runner": "runnervmccnms",
+ "python_requested": [
+  "3.10",
+  "3.9"
+ ],
+ "commit": "ec485c84db55227c9283319a9c58401e294a06ff",
+ "status": "install-failed",
+ "detail": "install with python 3.9: ild backend returned an error\n  cause: Call to `setuptools.build_meta:__legacy__.get_requires_for_build_wheel` failed (exit status: 1)\n\n         [stderr]\n         error in booby-ng setup command: use_2to3 is invalid.\n\nhint: `booby-ng` (v0.8.4) was included because `aiotasks` (v1.0.0a2) depends on `booby-ng`\n\nhint: Build failures usually indicate a problem with the package or the build environment\n",
+ "python": "",
+ "install": "",
+ "collected": 0
+}
