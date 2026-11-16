@@ -133,6 +133,53 @@ def mutant_numbers(muts: list) -> dict:
                          for m in surv if m.get("det_flag_tests", 0) > 0][:10]}
 
 
+def extra_numbers(prs: list) -> dict:
+    """Numbers for the report beyond pr_numbers: informative-event coverage,
+    divergence locations split by stability, recall against tests that ran
+    changed files, site-identity effect, refactor PRs per identity."""
+    e = collections.Counter()
+    loc_stable, loc_noisy = collections.Counter(), collections.Counter()
+    first_src = collections.Counter()
+    ref = {v: [0, 0] for v in VARIANTS}
+    for r in prs:
+        t, divs = r["tests"], r["divergences"]
+        both = {n: x for n, x in t.items() if x["fp"]["line"][0] != "-" and x["fp"]["line"][2] != "-"}
+        for n, x in both.items():
+            p = x["fp"]["line"]
+            e["common"] += 1
+            e["informative"] += bool(x["ni"])
+            if x["runs_changed"]:
+                e["ran_changed"] += 1
+                e["ran_changed_div"] += p[0] != p[2]
+                e["ran_changed_div_stable"] += p[0] == p[1] and p[2] == p[3] and p[0] != p[2]
+                e["ran_changed_rets_stable"] += (x["probe"]["rets"][0] == x["probe"]["rets"][1]
+                                                 and x["probe"]["rets"][2] == x["probe"]["rets"][3]
+                                                 and x["probe"]["rets"][0] != x["probe"]["rets"][2])
+            if p[0] != p[2]:
+                e["div"] += 1
+                e["div_ran_changed"] += x["runs_changed"]
+                stable = p[0] == p[1] and p[2] == p[3]
+                d = divs.get(n, {})
+                (loc_stable if stable else loc_noisy)[d.get("loc", "?")] += 1
+                e["div_stable" if stable else "div_noisy"] += 1
+                e["div_site_only"] += bool(d.get("site_only"))
+                e["div_outcome_changed"] += x["o"][0] != x["o"][2]
+                for k in ("base", "head"):
+                    ev = d.get(k)
+                    if ev:
+                        first_src[ev["s"]] += 1
+                        break
+                fo = x["fp"]["func_ord"]
+                e["div_fixed_by_func_ord"] += fo[0] == fo[2]
+                e["div_fixed_by_nosite"] += x["fp"]["nosite"][0] == x["fp"]["nosite"][2]
+        if is_refactor(r["spec"]):
+            for v in VARIANTS:
+                ref[v][1] += 1
+                ref[v][0] += all(x["fp"][v][0] == x["fp"][v][2] for x in both.values())
+    return {"counts": dict(e), "loc_stable": dict(loc_stable), "loc_noisy": dict(loc_noisy),
+            "first_event_source": dict(first_src), "refactor_zero_div": {v: f"{a}/{b}" for v, (a, b) in ref.items()}}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--results", default=str(Path(__file__).resolve().parent / "results"))
@@ -149,6 +196,7 @@ def main():
            "refactor_label_prs": sum(1 for r in chosen if r["spec"].get("refactor_label")),
            "failures": {r["key"]: (r["status"], r.get("detail", "")[-200:]) for r in allprs if r["status"] != "ok"}}
     res.update(pr_numbers(chosen))
+    res["extra"] = extra_numbers(chosen)
     res["mutants"] = mutant_numbers(load(root / "mutants")) if (root / "mutants").exists() else {}
     (root / "summary.json").write_text(json.dumps(res, indent=1))
     t = res["totals"]

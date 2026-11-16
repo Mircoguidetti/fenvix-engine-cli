@@ -111,7 +111,8 @@ jobs:
           python3 harness/diff_study/mutate.py --repo "${{ matrix.m.repo }}" --url "${{ matrix.m.url }}" \
             --ref "${{ matrix.m.ref }}" --install '${{ matrix.m.install }}' --pytest-args '${{ matrix.m.pytest_args }}' \
             --shard ${{ matrix.m.shard }} --per-shard ${{ matrix.m.per_shard }} \
-            --wheel "$(ls dist/*.whl)" --out out --work /tmp/work --budget 3300
+            --wheel "$(ls dist/*.whl)" --out out --work /tmp/work --budget 3300 \
+            --recheck "${{ matrix.m.recheck }}" --controls ${{ matrix.m.controls }}
       - if: always()
         uses: actions/upload-artifact@v4
         with: {name: "mut-${{ matrix.m.repo }}-${{ matrix.m.shard }}", path: out/, if-no-files-found: ignore}

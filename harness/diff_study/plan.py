@@ -9,10 +9,11 @@ mut = []
 m = cfg.get("mutants", {})
 if m.get("enabled"):
     for r in m["repos"]:
-        for s in range(r.get("shards", 1)):
+        for s in range(1 if m.get("recheck") else r.get("shards", 1)):
             mut.append({"repo": r["name"], "url": r["url"], "ref": r["ref"], "install": json.dumps(r.get("install", [])),
                         "pytest_args": json.dumps(r.get("pytest_args", [])), "shard": s,
-                        "per_shard": m.get("per_shard", 40)})
+                        "per_shard": m.get("per_shard", 40), "recheck": m.get("recheck", ""),
+                        "controls": m.get("controls", 0)})
 prs = cfg.get("prs", {})
 print(f"engine={cfg['engine_sha']}")
 print(f"prs={'true' if prs.get('enabled') else 'false'}")

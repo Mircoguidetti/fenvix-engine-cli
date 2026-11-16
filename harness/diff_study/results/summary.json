@@ -1,0 +1,1506 @@
+{
+ "attempted": 43,
+ "status": {
+  "ok": 42,
+  "collect-failed-base": 1
+ },
+ "measured": 42,
+ "repos": {
+  "attrs": 4,
+  "click": 5,
+  "jinja": 3,
+  "marshmallow": 5,
+  "structlog": 4,
+  "more-itertools": 5,
+  "isort": 1,
+  "flask": 2,
+  "werkzeug": 2,
+  "arrow": 2,
+  "sqlparse": 2,
+  "toolz": 2,
+  "boltons": 1,
+  "pygments": 1,
+  "packaging": 1,
+  "jsonschema": 1,
+  "rich": 1
+ },
+ "refactor_prs": 15,
+ "refactor_label_prs": 0,
+ "failures": {
+  "flask-5799": [
+   "collect-failed-base",
+   "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n431 tests collected, 1 error in 0.21s\n"
+  ]
+ },
+ "totals": {
+  "tests_base_pair": 120510,
+  "base_identical": 119737,
+  "base_identical_info": 2487,
+  "base_pair_info": 3008,
+  "only_base": 315,
+  "only_head": 67,
+  "common": 120811,
+  "common_info": 3039,
+  "identical_line": 120099,
+  "changed_stable_line": 416,
+  "noisy_line": 1779,
+  "identical_func_ord": 120434,
+  "changed_stable_func_ord": 81,
+  "noisy_func_ord": 1779,
+  "identical_func": 120434,
+  "changed_stable_func": 81,
+  "noisy_func": 1779,
+  "identical_nosite": 120438,
+  "changed_stable_nosite": 81,
+  "noisy_nosite": 1769,
+  "identical_info": 2421,
+  "identical_runs_changed": 29910,
+  "identical_rets_differ": 1387,
+  "runs_changed": 30461,
+  "outcome_changed": 0,
+  "probe_identical_rets": 117547,
+  "probe_changed_stable_rets": 1049,
+  "probe_identical_calls": 118413,
+  "probe_changed_stable_calls": 1006,
+  "probe_identical_files": 120367,
+  "probe_changed_stable_files": 18,
+  "site_only": 339
+ },
+ "loc": {
+  "site-packages": 52,
+  "end-random-state": 203,
+  "changed-file": 356,
+  "unchanged-test-file": 28,
+  "unchanged-source-file": 71,
+  "stdlib": 2
+ },
+ "per_pr": [
+  {
+   "key": "attrs-1322",
+   "refactor": true,
+   "label": false,
+   "title": "Simplify & optimize own attribute detection",
+   "common": 1409,
+   "div_line": 168,
+   "div_func_ord": 168,
+   "div_func": 168,
+   "div_nosite": 164,
+   "changed_stable": 0,
+   "noisy": 1131,
+   "base_noise": 128,
+   "runs_changed": 1138,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {
+    "site-packages": 39,
+    "end-random-state": 129
+   },
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "attrs-1290",
+   "refactor": true,
+   "label": false,
+   "title": "refactor: Only loop once on \"cached_properties\" when building slotted classes",
+   "common": 785,
+   "div_line": 1,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 0,
+   "noisy": 114,
+   "base_noise": 114,
+   "runs_changed": 0,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {
+    "site-packages": 1
+   },
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "click-3921",
+   "refactor": true,
+   "label": false,
+   "title": "Python 3.11 cleanups",
+   "common": 2651,
+   "div_line": 23,
+   "div_func_ord": 3,
+   "div_func": 3,
+   "div_nosite": 3,
+   "changed_stable": 20,
+   "noisy": 3,
+   "base_noise": 3,
+   "runs_changed": 2441,
+   "rets_changed_stable": 5,
+   "outcome_changed": 0,
+   "locs": {
+    "changed-file": 20,
+    "unchanged-test-file": 3
+   },
+   "files": 10,
+   "src_files": 5
+  },
+  {
+   "key": "click-3861",
+   "refactor": true,
+   "label": false,
+   "title": "Move common `help` argument from `Option` and `Argument` to `Parameter`",
+   "common": 2081,
+   "div_line": 3,
+   "div_func_ord": 3,
+   "div_func": 3,
+   "div_nosite": 3,
+   "changed_stable": 0,
+   "noisy": 3,
+   "base_noise": 2,
+   "runs_changed": 1427,
+   "rets_changed_stable": 31,
+   "outcome_changed": 0,
+   "locs": {
+    "unchanged-test-file": 3
+   },
+   "files": 3,
+   "src_files": 1
+  },
+  {
+   "key": "click-3767",
+   "refactor": true,
+   "label": false,
+   "title": "Refactor pager stream handling",
+   "common": 1995,
+   "div_line": 52,
+   "div_func_ord": 3,
+   "div_func": 3,
+   "div_nosite": 3,
+   "changed_stable": 49,
+   "noisy": 3,
+   "base_noise": 3,
+   "runs_changed": 1455,
+   "rets_changed_stable": 83,
+   "outcome_changed": 0,
+   "locs": {
+    "changed-file": 49,
+    "unchanged-test-file": 3
+   },
+   "files": 5,
+   "src_files": 2
+  },
+  {
+   "key": "jinja-1695",
+   "refactor": true,
+   "label": false,
+   "title": "Simplify example for ModuleLoader",
+   "common": 874,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 169,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "marshmallow-3024",
+   "refactor": true,
+   "label": false,
+   "title": "Simplify `get_value` to match actual usage",
+   "common": 1187,
+   "div_line": 1,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 0,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 722,
+   "rets_changed_stable": 3,
+   "outcome_changed": 0,
+   "locs": {
+    "unchanged-test-file": 1
+   },
+   "files": 2,
+   "src_files": 1
+  },
+  {
+   "key": "marshmallow-2988",
+   "refactor": true,
+   "label": false,
+   "title": "Simplify use of self.opts.index_errors in _deserialize",
+   "common": 1178,
+   "div_line": 1,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 0,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 457,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {
+    "unchanged-test-file": 1
+   },
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "marshmallow-2776",
+   "refactor": true,
+   "label": false,
+   "title": "Move constants to constants.py and document them",
+   "common": 1101,
+   "div_line": 1,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 0,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 884,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {
+    "unchanged-test-file": 1
+   },
+   "files": 7,
+   "src_files": 5
+  },
+  {
+   "key": "structlog-758",
+   "refactor": true,
+   "label": false,
+   "title": "Refactor terminal initialization into separate function",
+   "common": 876,
+   "div_line": 19,
+   "div_func_ord": 19,
+   "div_func": 19,
+   "div_nosite": 19,
+   "changed_stable": 0,
+   "noisy": 19,
+   "base_noise": 19,
+   "runs_changed": 865,
+   "rets_changed_stable": 33,
+   "outcome_changed": 0,
+   "locs": {
+    "unchanged-source-file": 18,
+    "unchanged-test-file": 1
+   },
+   "files": 4,
+   "src_files": 2
+  },
+  {
+   "key": "structlog-741",
+   "refactor": true,
+   "label": false,
+   "title": "refactor: extract styles configuration to separate method",
+   "common": 862,
+   "div_line": 19,
+   "div_func_ord": 19,
+   "div_func": 19,
+   "div_nosite": 19,
+   "changed_stable": 0,
+   "noisy": 19,
+   "base_noise": 19,
+   "runs_changed": 81,
+   "rets_changed_stable": 37,
+   "outcome_changed": 0,
+   "locs": {
+    "unchanged-source-file": 18,
+    "unchanged-test-file": 1
+   },
+   "files": 5,
+   "src_files": 1
+  },
+  {
+   "key": "more-itertools-1261",
+   "refactor": true,
+   "label": false,
+   "title": "Fix/simplify `combination_with_replacement_index`",
+   "common": 745,
+   "div_line": 7,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 6,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 613,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {
+    "changed-file": 7
+   },
+   "files": 2,
+   "src_files": 1
+  },
+  {
+   "key": "more-itertools-1236",
+   "refactor": true,
+   "label": false,
+   "title": "Simplify and speed up nth_permutation",
+   "common": 732,
+   "div_line": 1,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 0,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 588,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {
+    "unchanged-test-file": 1
+   },
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "more-itertools-1171",
+   "refactor": true,
+   "label": false,
+   "title": "Remove code unused in `count_cycle` after prior refactor",
+   "common": 725,
+   "div_line": 15,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 14,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 586,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {
+    "changed-file": 14,
+    "unchanged-test-file": 1
+   },
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "isort-2731",
+   "refactor": true,
+   "label": false,
+   "title": "Small cleanup before release",
+   "common": 422,
+   "div_line": 82,
+   "div_func_ord": 82,
+   "div_func": 82,
+   "div_nosite": 82,
+   "changed_stable": 81,
+   "noisy": 2,
+   "base_noise": 2,
+   "runs_changed": 0,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {
+    "site-packages": 8,
+    "end-random-state": 74
+   },
+   "files": 6,
+   "src_files": 1
+  },
+  {
+   "key": "attrs-1636",
+   "refactor": false,
+   "label": false,
+   "title": "Improve astuple performance for nested atomic sequences",
+   "common": 1412,
+   "div_line": 1,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 0,
+   "noisy": 202,
+   "base_noise": 202,
+   "runs_changed": 88,
+   "rets_changed_stable": 8,
+   "outcome_changed": 0,
+   "locs": {
+    "site-packages": 1
+   },
+   "files": 2,
+   "src_files": 1
+  },
+  {
+   "key": "click-3920",
+   "refactor": false,
+   "label": false,
+   "title": "Drop support for Python 3.10",
+   "common": 2651,
+   "div_line": 24,
+   "div_func_ord": 3,
+   "div_func": 3,
+   "div_nosite": 3,
+   "changed_stable": 21,
+   "noisy": 3,
+   "base_noise": 2,
+   "runs_changed": 1843,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {
+    "changed-file": 21,
+    "unchanged-test-file": 3
+   },
+   "files": 33,
+   "src_files": 4
+  },
+  {
+   "key": "flask-6176",
+   "refactor": false,
+   "label": false,
+   "title": "add `versionchanged` for ctx signature change",
+   "common": 494,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 0,
+   "base_noise": 0,
+   "runs_changed": 434,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "jinja-2099",
+   "refactor": false,
+   "label": false,
+   "title": "update identifier pattern for Python 3.10",
+   "common": 911,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 0,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 2,
+   "src_files": 2
+  },
+  {
+   "key": "werkzeug-3349",
+   "refactor": false,
+   "label": false,
+   "title": "enable import conventions lint rule",
+   "common": 1016,
+   "div_line": 11,
+   "div_func_ord": 9,
+   "div_func": 9,
+   "div_nosite": 9,
+   "changed_stable": 2,
+   "noisy": 10,
+   "base_noise": 9,
+   "runs_changed": 508,
+   "rets_changed_stable": 2,
+   "outcome_changed": 0,
+   "locs": {
+    "unchanged-source-file": 7,
+    "unchanged-test-file": 1,
+    "site-packages": 1,
+    "changed-file": 2
+   },
+   "files": 14,
+   "src_files": 8
+  },
+  {
+   "key": "marshmallow-3102",
+   "refactor": false,
+   "label": false,
+   "title": "Support Python 3.11-3.15",
+   "common": 1192,
+   "div_line": 1,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 0,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 921,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {
+    "changed-file": 1
+   },
+   "files": 16,
+   "src_files": 7
+  },
+  {
+   "key": "arrow-1264",
+   "refactor": false,
+   "label": false,
+   "title": "Revert \"Fix humanize reporting 'a month' for 16-day differences\"",
+   "common": 1904,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 0,
+   "base_noise": 0,
+   "runs_changed": 306,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "structlog-849",
+   "refactor": false,
+   "label": false,
+   "title": "Make imports lazy on Python 3.15",
+   "common": 920,
+   "div_line": 212,
+   "div_func_ord": 19,
+   "div_func": 19,
+   "div_nosite": 19,
+   "changed_stable": 193,
+   "noisy": 19,
+   "base_noise": 19,
+   "runs_changed": 896,
+   "rets_changed_stable": 1,
+   "outcome_changed": 0,
+   "locs": {
+    "changed-file": 211,
+    "unchanged-test-file": 1
+   },
+   "files": 14,
+   "src_files": 11
+  },
+  {
+   "key": "more-itertools-1356",
+   "refactor": false,
+   "label": false,
+   "title": "docs: note empty-input behavior in set_partitions docstring",
+   "common": 771,
+   "div_line": 17,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 16,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 627,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {
+    "changed-file": 16,
+    "unchanged-test-file": 1
+   },
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "sqlparse-937",
+   "refactor": false,
+   "label": false,
+   "title": "Escape dollar signs in PHP output (CVE-2026-112307)",
+   "common": 516,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 0,
+   "base_noise": 0,
+   "runs_changed": 67,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 3,
+   "src_files": 1
+  },
+  {
+   "key": "toolz-635",
+   "refactor": false,
+   "label": false,
+   "title": "Fix interpose([]) raising StopIteration",
+   "common": 192,
+   "div_line": 1,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 0,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 58,
+   "rets_changed_stable": 1,
+   "outcome_changed": 0,
+   "locs": {
+    "stdlib": 1
+   },
+   "files": 2,
+   "src_files": 1
+  },
+  {
+   "key": "boltons-610",
+   "refactor": false,
+   "label": false,
+   "title": "October PR sweep follow-up: #482, #483, #605, #607, #608",
+   "common": 617,
+   "div_line": 7,
+   "div_func_ord": 4,
+   "div_func": 4,
+   "div_nosite": 4,
+   "changed_stable": 3,
+   "noisy": 4,
+   "base_noise": 4,
+   "runs_changed": 264,
+   "rets_changed_stable": 1,
+   "outcome_changed": 0,
+   "locs": {
+    "changed-file": 3,
+    "unchanged-source-file": 3,
+    "unchanged-test-file": 1
+   },
+   "files": 9,
+   "src_files": 5
+  },
+  {
+   "key": "pygments-3232",
+   "refactor": false,
+   "label": false,
+   "title": "Remove superfluous parentheses from PostgresExplainLexer",
+   "common": 5346,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 0,
+   "base_noise": 0,
+   "runs_changed": 31,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "packaging-1542",
+   "refactor": false,
+   "label": false,
+   "title": "perf(ranges): reuse cached version keys when filtering",
+   "common": 63809,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 0,
+   "base_noise": 0,
+   "runs_changed": 4889,
+   "rets_changed_stable": 801,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "jsonschema-1300",
+   "refactor": false,
+   "label": false,
+   "title": "Pick the deepest error among the most relevant ones in each separate subschema",
+   "common": 8513,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 0,
+   "base_noise": 0,
+   "runs_changed": 3721,
+   "rets_changed_stable": 23,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 2,
+   "src_files": 1
+  },
+  {
+   "key": "rich-4252",
+   "refactor": false,
+   "label": false,
+   "title": "formatting",
+   "common": 981,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 0,
+   "base_noise": 0,
+   "runs_changed": 667,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 34,
+   "src_files": 21
+  },
+  {
+   "key": "attrs-1625",
+   "refactor": false,
+   "label": false,
+   "title": "docs/fix: remove duplicated words in docs and source comment",
+   "common": 1412,
+   "div_line": 1,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 0,
+   "noisy": 202,
+   "base_noise": 202,
+   "runs_changed": 1208,
+   "rets_changed_stable": 2,
+   "outcome_changed": 0,
+   "locs": {
+    "site-packages": 1
+   },
+   "files": 2,
+   "src_files": 1
+  },
+  {
+   "key": "click-3902",
+   "refactor": false,
+   "label": false,
+   "title": "Help pages no longer break a line within a hyphenated word",
+   "common": 2639,
+   "div_line": 3,
+   "div_func_ord": 3,
+   "div_func": 3,
+   "div_nosite": 3,
+   "changed_stable": 0,
+   "noisy": 3,
+   "base_noise": 3,
+   "runs_changed": 477,
+   "rets_changed_stable": 12,
+   "outcome_changed": 0,
+   "locs": {
+    "unchanged-test-file": 3
+   },
+   "files": 6,
+   "src_files": 2
+  },
+  {
+   "key": "flask-6168",
+   "refactor": false,
+   "label": false,
+   "title": "drop support for Python 3.10",
+   "common": 494,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 0,
+   "base_noise": 0,
+   "runs_changed": 488,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 12,
+   "src_files": 3
+  },
+  {
+   "key": "jinja-2098",
+   "refactor": false,
+   "label": false,
+   "title": "deprecate `__version__`",
+   "common": 911,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 0,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 4,
+   "src_files": 1
+  },
+  {
+   "key": "werkzeug-3348",
+   "refactor": false,
+   "label": false,
+   "title": "`FileStorage.save` uses `open` as a context manager",
+   "common": 1016,
+   "div_line": 8,
+   "div_func_ord": 8,
+   "div_func": 8,
+   "div_nosite": 8,
+   "changed_stable": 0,
+   "noisy": 8,
+   "base_noise": 8,
+   "runs_changed": 202,
+   "rets_changed_stable": 1,
+   "outcome_changed": 0,
+   "locs": {
+    "unchanged-source-file": 7,
+    "site-packages": 1
+   },
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "marshmallow-3101",
+   "refactor": false,
+   "label": false,
+   "title": "pre-commit autoupdate",
+   "common": 1192,
+   "div_line": 1,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 0,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 0,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {
+    "unchanged-test-file": 1
+   },
+   "files": 3,
+   "src_files": 2
+  },
+  {
+   "key": "arrow-1242",
+   "refactor": false,
+   "label": false,
+   "title": "Fix humanize reporting 'a month' for 16-day differences",
+   "common": 1904,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 0,
+   "base_noise": 0,
+   "runs_changed": 306,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "structlog-821",
+   "refactor": false,
+   "label": false,
+   "title": "Avoid kwargs unpacking in _process_event hot path",
+   "common": 920,
+   "div_line": 19,
+   "div_func_ord": 19,
+   "div_func": 19,
+   "div_nosite": 19,
+   "changed_stable": 0,
+   "noisy": 19,
+   "base_noise": 19,
+   "runs_changed": 226,
+   "rets_changed_stable": 1,
+   "outcome_changed": 0,
+   "locs": {
+    "unchanged-source-file": 18,
+    "unchanged-test-file": 1
+   },
+   "files": 1,
+   "src_files": 1
+  },
+  {
+   "key": "more-itertools-1345",
+   "refactor": false,
+   "label": false,
+   "title": "Fix numeric_range equality and hashing above sys.maxsize",
+   "common": 769,
+   "div_line": 12,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 11,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 637,
+   "rets_changed_stable": 3,
+   "outcome_changed": 0,
+   "locs": {
+    "changed-file": 12
+   },
+   "files": 2,
+   "src_files": 1
+  },
+  {
+   "key": "sqlparse-868",
+   "refactor": false,
+   "label": false,
+   "title": "Keep keyword before leading-dot float literal (issue #601)",
+   "common": 494,
+   "div_line": 0,
+   "div_func_ord": 0,
+   "div_func": 0,
+   "div_nosite": 0,
+   "changed_stable": 0,
+   "noisy": 0,
+   "base_noise": 0,
+   "runs_changed": 91,
+   "rets_changed_stable": 0,
+   "outcome_changed": 0,
+   "locs": {},
+   "files": 3,
+   "src_files": 1
+  },
+  {
+   "key": "toolz-636",
+   "refactor": false,
+   "label": false,
+   "title": "Support Python 3.15 and refresh dev tooling",
+   "common": 192,
+   "div_line": 1,
+   "div_func_ord": 1,
+   "div_func": 1,
+   "div_nosite": 1,
+   "changed_stable": 0,
+   "noisy": 1,
+   "base_noise": 1,
+   "runs_changed": 80,
+   "rets_changed_stable": 1,
+   "outcome_changed": 0,
+   "locs": {
+    "stdlib": 1
+   },
+   "files": 10,
+   "src_files": 1
+  }
+ ],
+ "extra": {
+  "counts": {
+   "common": 120811,
+   "informative": 3039,
+   "ran_changed": 30461,
+   "ran_changed_div": 551,
+   "ran_changed_div_stable": 335,
+   "ran_changed_rets_stable": 1040,
+   "div": 712,
+   "div_ran_changed": 551,
+   "div_noisy": 296,
+   "div_site_only": 339,
+   "div_outcome_changed": 0,
+   "div_fixed_by_func_ord": 335,
+   "div_fixed_by_nosite": 339,
+   "div_stable": 416
+  },
+  "loc_stable": {
+   "changed-file": 335,
+   "site-packages": 7,
+   "end-random-state": 74
+  },
+  "loc_noisy": {
+   "site-packages": 45,
+   "end-random-state": 129,
+   "unchanged-test-file": 28,
+   "unchanged-source-file": 71,
+   "changed-file": 21,
+   "stdlib": 2
+  },
+  "first_event_source": {
+   "entropy": 114,
+   "time": 396,
+   "random": 190,
+   "fs": 12
+  },
+  "refactor_zero_div": {
+   "line": "1/15",
+   "func_ord": "1/15",
+   "func": "1/15",
+   "nosite": "1/15"
+  }
+ },
+ "mutants": {
+  "status": {
+   "killed": 1102,
+   "survived": 192,
+   "timeout": 5,
+   "shard-install-failed": 1,
+   "incomplete": 51
+  },
+  "survivors": 192,
+  "flags": {
+   "det_flag_tests": 19,
+   "probe_rets_tests": 82,
+   "probe_calls_tests": 23,
+   "probe_files_tests": 3
+  },
+  "det_or_rets": 95,
+  "det_sources": {
+   "time": 3,
+   "fs": 16
+  },
+  "per_repo": {
+   "arrow": {
+    "killed": 173,
+    "survived": 27,
+    "det_flag": 0,
+    "rets_flag": 0
+   },
+   "boltons": {
+    "killed": 148,
+    "survived": 52,
+    "det_flag": 3,
+    "rets_flag": 52
+   },
+   "click": {
+    "killed": 155,
+    "survived": 45,
+    "det_flag": 16,
+    "rets_flag": 13
+   },
+   "marshmallow": {
+    "killed": 184,
+    "survived": 16,
+    "det_flag": 0,
+    "rets_flag": 4
+   },
+   "sqlparse": {
+    "killed": 118,
+    "timeout": 2,
+    "survived": 30,
+    "det_flag": 0,
+    "rets_flag": 11
+   },
+   "structlog": {
+    "killed": 149,
+    "incomplete": 51
+   },
+   "toolz": {
+    "killed": 175,
+    "survived": 22,
+    "det_flag": 0,
+    "rets_flag": 2,
+    "timeout": 3
+   }
+  },
+  "baseline": {
+   "arrow": {
+    "tests": 1904,
+    "fp_stable": 1904,
+    "outcome_stable": 1904,
+    "probe_stable": {
+     "calls": 1904,
+     "rets": 1904,
+     "files": 1904
+    },
+    "duration_s": [
+     9.05,
+     8.09
+    ],
+    "with_informative_events": 54
+   },
+   "boltons": {
+    "tests": 621,
+    "fp_stable": 617,
+    "outcome_stable": 621,
+    "probe_stable": {
+     "calls": 620,
+     "rets": 618,
+     "files": 621
+    },
+    "duration_s": [
+     5.94,
+     5.19
+    ],
+    "with_informative_events": 38
+   },
+   "click": {
+    "tests": 2653,
+    "fp_stable": 2651,
+    "outcome_stable": 2653,
+    "probe_stable": {
+     "calls": 2653,
+     "rets": 2635,
+     "files": 2653
+    },
+    "duration_s": [
+     7.65,
+     6.98
+    ],
+    "with_informative_events": 97
+   },
+   "jinja": {
+    "tests": 911,
+    "fp_stable": 910,
+    "outcome_stable": 910,
+    "probe_stable": {
+     "calls": 908,
+     "rets": 907,
+     "files": 911
+    },
+    "duration_s": [
+     5.53,
+     4.85
+    ],
+    "with_informative_events": 46
+   },
+   "marshmallow": {
+    "tests": 1192,
+    "fp_stable": 1191,
+    "outcome_stable": 1192,
+    "probe_stable": {
+     "calls": 1192,
+     "rets": 1157,
+     "files": 1192
+    },
+    "duration_s": [
+     3.28,
+     2.61
+    ],
+    "with_informative_events": 9
+   },
+   "sqlparse": {
+    "tests": 540,
+    "fp_stable": 540,
+    "outcome_stable": 540,
+    "probe_stable": {
+     "calls": 540,
+     "rets": 540,
+     "files": 540
+    },
+    "duration_s": [
+     5.14,
+     4.56
+    ],
+    "with_informative_events": 3
+   },
+   "structlog": {
+    "tests": 921,
+    "fp_stable": 902,
+    "outcome_stable": 921,
+    "probe_stable": {
+     "calls": 921,
+     "rets": 902,
+     "files": 921
+    },
+    "duration_s": [
+     3.88,
+     3.05
+    ],
+    "with_informative_events": 238
+   },
+   "toolz": {
+    "tests": 192,
+    "fp_stable": 192,
+    "outcome_stable": 192,
+    "probe_stable": {
+     "calls": 192,
+     "rets": 191,
+     "files": 192
+    },
+    "duration_s": [
+     2.66,
+     1.81
+    ],
+    "with_informative_events": 0
+   }
+  },
+  "examples": [
+   {
+    "repo": "boltons",
+    "file": "boltons/urlutils.py",
+    "line": 783,
+    "op": "2->3",
+    "new_line": "        elif (scheme and path[:3] != '//' and self.uses_netloc):",
+    "det_flag_tests": 1,
+    "probe_rets_tests": 5,
+    "det_example": {
+     "test": "tests/test_socketutils.py::test_socketutils_netstring_timeout",
+     "i": 9,
+     "base": {
+      "t": 1,
+      "s": "time",
+      "o": "time.time",
+      "at": "boltons/socketutils.py:459",
+      "v": "20010000"
+     },
+     "mutant": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "boltons/socketutils.py:389",
+      "v": "20010000"
+     },
+     "loc": "unchanged-source-file"
+    }
+   },
+   {
+    "repo": "boltons",
+    "file": "boltons/fileutils.py",
+    "line": 645,
+    "op": "0->1",
+    "new_line": "    def read(self, size=1):",
+    "det_flag_tests": 1,
+    "probe_rets_tests": 5,
+    "det_example": {
+     "test": "tests/test_socketutils.py::test_socketutils_netstring_timeout",
+     "i": 4,
+     "base": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "boltons/socketutils.py:459",
+      "v": "20004000"
+     },
+     "mutant": {
+      "t": 1,
+      "s": "time",
+      "o": "time.time",
+      "at": "boltons/socketutils.py:389",
+      "v": "20004000"
+     },
+     "loc": "unchanged-source-file"
+    }
+   },
+   {
+    "repo": "boltons",
+    "file": "boltons/tableutils.py",
+    "line": 538,
+    "op": ">->>=",
+    "new_line": "        new_depth = max_depth - 1 if max_depth >= 1 else max_depth",
+    "det_flag_tests": 1,
+    "probe_rets_tests": 5,
+    "det_example": {
+     "test": "tests/test_socketutils.py::test_socketutils_netstring_timeout",
+     "i": 9,
+     "base": {
+      "t": 1,
+      "s": "time",
+      "o": "time.time",
+      "at": "boltons/socketutils.py:459",
+      "v": "20010000"
+     },
+     "mutant": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "boltons/socketutils.py:389",
+      "v": "20010000"
+     },
+     "loc": "unchanged-source-file"
+    }
+   },
+   {
+    "repo": "click",
+    "file": "src/click/globals.py",
+    "line": 20,
+    "op": "False->True",
+    "new_line": "def get_current_context(silent: bool = True) -> Context | None:",
+    "det_flag_tests": 1,
+    "probe_rets_tests": 0,
+    "det_example": {
+     "test": "tests/test_testing.py::test_tempdir_isolation_is_thread_safe",
+     "i": 6,
+     "base": {
+      "t": 1,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "mutant": {
+      "t": 7,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "loc": "unchanged-test-file"
+    }
+   },
+   {
+    "repo": "click",
+    "file": "src/click/core.py",
+    "line": 159,
+    "op": "is->is not",
+    "new_line": "        if e.ctx is not None:",
+    "det_flag_tests": 1,
+    "probe_rets_tests": 1,
+    "det_example": {
+     "test": "tests/test_testing.py::test_tempdir_isolation_is_thread_safe",
+     "i": 3,
+     "base": {
+      "t": 4,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "mutant": {
+      "t": 1,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "loc": "unchanged-test-file"
+    }
+   },
+   {
+    "repo": "click",
+    "file": "src/click/parser.py",
+    "line": 85,
+    "op": ">->>=",
+    "new_line": "        elif nargs >= 1:",
+    "det_flag_tests": 1,
+    "probe_rets_tests": 0,
+    "det_example": {
+     "test": "tests/test_testing.py::test_tempdir_isolation_is_thread_safe",
+     "i": 3,
+     "base": {
+      "t": 4,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "mutant": {
+      "t": 1,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "loc": "unchanged-test-file"
+    }
+   },
+   {
+    "repo": "click",
+    "file": "src/click/decorators.py",
+    "line": 478,
+    "op": "is->is not",
+    "new_line": "    if version is not None and package_name is None:",
+    "det_flag_tests": 1,
+    "probe_rets_tests": 0,
+    "det_example": {
+     "test": "tests/test_testing.py::test_tempdir_isolation_is_thread_safe",
+     "i": 4,
+     "base": {
+      "t": 5,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "mutant": {
+      "t": 1,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "loc": "unchanged-test-file"
+    }
+   },
+   {
+    "repo": "click",
+    "file": "src/click/core.py",
+    "line": 121,
+    "op": "and->or",
+    "new_line": "        if module != \"click\" and not module.startswith(\"click.\") or module not in skip:",
+    "det_flag_tests": 1,
+    "probe_rets_tests": 50,
+    "det_example": {
+     "test": "tests/test_testing.py::test_tempdir_isolation_is_thread_safe",
+     "i": 2,
+     "base": {
+      "t": 3,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "mutant": {
+      "t": 1,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "loc": "unchanged-test-file"
+    }
+   },
+   {
+    "repo": "click",
+    "file": "src/click/core.py",
+    "line": 1937,
+    "op": "False->True",
+    "new_line": "    def result_callback(self, replace: bool = True) -> t.Callable[[F], F]:",
+    "det_flag_tests": 1,
+    "probe_rets_tests": 0,
+    "det_example": {
+     "test": "tests/test_testing.py::test_tempdir_isolation_is_thread_safe",
+     "i": 6,
+     "base": {
+      "t": 1,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "mutant": {
+      "t": 7,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "loc": "unchanged-test-file"
+    }
+   },
+   {
+    "repo": "click",
+    "file": "src/click/core.py",
+    "line": 3901,
+    "op": "1->2",
+    "new_line": "                required = attrs.get(\"nargs\", 2) > 0",
+    "det_flag_tests": 1,
+    "probe_rets_tests": 0,
+    "det_example": {
+     "test": "tests/test_testing.py::test_tempdir_isolation_is_thread_safe",
+     "i": 1,
+     "base": {
+      "t": 2,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "mutant": {
+      "t": 1,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_testing.py:632",
+      "v": "<fd>|1|819bd8ccbb0b913ad1fc930aa375ae41"
+     },
+     "loc": "unchanged-test-file"
+    }
+   }
+  ]
+ }
+}

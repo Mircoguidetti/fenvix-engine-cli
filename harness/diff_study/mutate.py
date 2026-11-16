@@ -127,11 +127,15 @@ def main() -> int:
     ap.add_argument("--out", required=True)
     ap.add_argument("--python", default="3.12")
     ap.add_argument("--budget", type=float, default=2400, help="seconds for the mutant loop")
+    ap.add_argument("--recheck", default="",
+                    help="directory of earlier shard results: re-run only their survivors, with test ids")
+    ap.add_argument("--controls", type=int, default=0,
+                    help="no-op mutants (same file rewritten unchanged, new mtime) run before the mutants")
     a = ap.parse_args()
     a.wheel = str(Path(a.wheel).resolve())
     import time
     t_start = time.monotonic()
-    key = f"{a.repo}-s{a.shard}"
+    key = f"recheck-{a.repo}" if a.recheck else f"{a.repo}-s{a.shard}"
     work = Path(a.work) / key
     shutil.rmtree(work, ignore_errors=True)
     src, rundir = work / "src", work / "runs"
@@ -161,6 +165,16 @@ def main() -> int:
     if args is None:
         return finish("collect-failed", out)
     res["pytest_args"] = args
+    if a.recheck:
+        mine = []
+        for p in sorted(Path(a.recheck).glob(f"{a.repo}-s*.json.gz")):
+            with gzip.open(p, "rt") as f:
+                old = json.load(f)
+            mine += [{k: m[k] for k in ("file", "line", "col", "op", "orig_line", "new_line")}
+                     for m in old.get("mutants", []) if m.get("status") == "survived"]
+        res["candidates"] = len(mine)
+        log(f"{key}: re-checking {len(mine)} survivors")
+        return run_mutants(a, key, src, rundir, py, args, mine, res, finish, t_start)
     # Coverage (plain run, fixed order) -> covered lines of non-test source files.
     cov_json = rundir / "coverage.json"
     code, out, dur, _ = sh([py, "-m", "coverage", "run", f"--include={src}/*", "--data-file", str(rundir / ".cov"),
@@ -183,6 +197,18 @@ def main() -> int:
     res["candidates"] = len(candidates)
     mine = candidates[a.shard * a.per_shard:(a.shard + 1) * a.per_shard]
     log(f"{key}: {len(candidates)} candidate mutants, shard has {len(mine)}")
+    return run_mutants(a, key, src, rundir, py, args, mine, res, finish, t_start)
+
+
+def run_mutants(a, key, src, rundir, py, args, mine, res, finish, t_start) -> int:
+    import time
+    if a.controls and mine:
+        f0 = mine[0]["file"]
+        line0 = (src / f0).read_text().split("\n")
+        ln = next(i for i, x in enumerate(line0, 1) if x.strip())
+        ctrl = {"file": f0, "line": ln, "col": 0, "op": "control", "orig_line": line0[ln - 1],
+                "new_line": line0[ln - 1], "control": True}
+        mine = [dict(ctrl) for _ in range(a.controls)] + mine
     # Baselines.
     base = {}
     for tag in ("base1", "base2"):
@@ -230,6 +256,7 @@ def main() -> int:
                 entry["status"] = "survived"
                 div = sorted(n for n in stable_fp if n in tr and tr[n]["fingerprint"] != b1[n]["fingerprint"])
                 entry["det_flag_tests"] = len(div)
+                entry["det_ids"] = div[:200]
                 if div:
                     a1, h1 = b1[div[0]], tr[div[0]]
                     i, ea, eb = first_divergence(a1["events"], h1["events"])
@@ -237,12 +264,19 @@ def main() -> int:
                                             "mutant": short_event(eb), "loc": locate(ea, eb, {m["file"]})}
                     from collections import Counter
                     srcs = Counter()
+                    firsts = {}
                     for n in div:
                         j, x, y = first_divergence(b1[n]["events"], tr[n]["events"])
                         srcs[(x or y or {"s": "?"})["s"]] += 1
+                        if len(firsts) < 200:
+                            firsts[n] = {"base": short_event(x), "mutant": short_event(y),
+                                         "loc": locate(x, y, {m["file"]})}
                     entry["det_sources"] = dict(srcs)
+                    entry["det_firsts"] = firsts
                 for kk in ("calls", "rets", "files"):
-                    entry[f"probe_{kk}_tests"] = sum(1 for n in stable_pr[kk] if n in pm and pm[n][kk] != p1[n][kk])
+                    ids = sorted(n for n in stable_pr[kk] if n in pm and pm[n][kk] != p1[n][kk])
+                    entry[f"probe_{kk}_tests"] = len(ids)
+                    entry[f"probe_{kk}_ids"] = ids[:200]
                 entry["tests_running_file"] = sum(1 for n in pm if m["file"] in pm[n]["files"])
         res["mutants"].append(entry)
         log(f"{key}: mutant {k} {m['file']}:{m['line']} {m['op']} -> {entry['status']}"
