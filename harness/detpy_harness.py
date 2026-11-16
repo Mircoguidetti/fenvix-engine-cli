@@ -548,10 +548,28 @@ def baseline_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
     known = {k: {nid: per_test[nid] for nid in ids if nid == k or nid.startswith(k + "[")} for k in p.known_flaky}
     unstable = {nid: c for nid, c in per_test.items() if len(c) > 1}
     freeze = sh(["uv", "pip", "freeze", "--python", p.python], timeout=120)[1]
+    # The order pytest-randomly gives each seed, and the same seeds run serially
+    # (no xdist): separates "different order" from "different execution".
+    env = clean_env(p.python, p.env)
+    orders, serial = {}, {}
+    for i in range(args.runs):
+        seed = 1000 + i
+        out = sh([p.python, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider", *p.pytest_args,
+                  f"--randomly-seed={seed}"] + (["-n", "0"] if p.has_xdist else []), cwd=p.src, env=env, timeout=600)[1]
+        orders[seed] = [line for line in out.splitlines() if "::" in line]
+        j = rundir / f"serial_{seed}.json"
+        sh([p.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", f"--det-outcomes={j}", *p.pytest_args,
+            f"--randomly-seed={seed}"] + (["-n", "0"] if p.has_xdist else []), cwd=p.src, env=env, timeout=args.run_timeout)
+        try:
+            oc = json.loads(j.read_text())["outcomes"]
+            serial[seed] = sorted(n for n, o in oc.items() if is_fail(o))
+        except Exception:
+            serial[seed] = None
     res = {"name": p.name, "kind": p.kind, "status": "ok", "python": p.python_version, "xdist": p.xdist,
            "install": p.install_cmd, "commit": p.commit, "runs": len(runs),
            "durations_s": [r.duration for r in runs], "exit_codes": [r.exit_code for r in runs],
            "tests": len(ids), "unstable": unstable, "known_flaky": known, "freeze": freeze.splitlines(),
+           "orders": orders, "serial_failures": serial,
            "runner": runner_info()}
     (outdir / f"{p.name}.baseline.json").write_text(json.dumps(res, indent=2))
     for r in runs[:2]:
