@@ -1,0 +1,75 @@
+{
+  "name": "user-event",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/testing-library/user-event",
+  "commit": "930fb1ee1a6ccb2a492bfd3f790b60619af9d872",
+  "commit_date": "2026-11-16T13:25:58+11:00",
+  "python": "node v18.20.8",
+  "install": "npm install --no-audit --no-fund --legacy-peer-deps",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 7.901424463300003,
+  "det_mean_s": 0.8877569859999852,
+  "slowdown_pct": -88.76459567356015,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 624,
+  "unstable_baseline": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "outcome_changed_by_det": 624,
+  "covered": 0,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 0,
+  "exploration_runs": 0,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 55,
+  "broken_always": 55,
+  "broken_causes": {
+    "fixed-order (fails without --det too) | unknown": 55
+  },
+  "broken_examples": {
+    "fixed-order (fails without --det too) | unknown": [
+      "tests/clipboard/copy.ts::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+      "tests/clipboard/cut.ts::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+      "tests/clipboard/paste.ts::<file>: \u25cf Test suite failed to run (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:None->error": [
+      "tests/clipboard/copy.ts::<file>",
+      "tests/clipboard/cut.ts::<file>"
+    ],
+    "changed:passed->None": [
+      "tests/clipboard/copy.ts::copy on empty selection does nothing",
+      "tests/clipboard/copy.ts::copy selected text in contenteditable"
+    ]
+  },
+  "runner": "jest 28.1.3",
+  "node": "node v18.20.8",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": false,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "l allow reusing \"babel helpers\" from node_modules rather than bundling their copies into your files. (While processing: /tmp/work/src/user-event/node_modules/kcd-scripts/dist/config/babelrc.js)\n\n      at Object.<anonymous> (node_modules/kcd-scripts/dist/config/babelrc.js:36:9)\n      at Object.newLoader (node_modules/pirates/lib/index.js:134:7)\n\nFAIL tests/utils/misc/isElementType.ts\n  \u25cf Test suite failed to run\n\n    [BABEL]: You should add @babel/runtime as dependency to your package. It will allow reusing \"babel helpers\" from node_modules rather than bundling their copies into your files. (While processing: /tmp/work/src/user-event/node_modules/kcd-scripts/dist/config/babelrc.js)\n\n      at Object.<anonymous> (node_modules/kcd-scripts/dist/config/babelrc.js:36:9)\n      at Object.newLoader (node_modules/pirates/lib/index.js:134:7)\n\nFAIL tests/utils/misc/isVisible.ts\n  \u25cf Test suite failed to run\n\n    [BABEL]: You should add @babel/runtime as dependency to your package. It will allow reusing \"babel helpers\" from node_modules rather than bundling their copies into your files. (While processing: /tmp/work/src/user-event/node_modules/kcd-scripts/dist/config/babelrc.js)\n\n      at Object.<anonymous> (node_modules/kcd-scripts/dist/config/babelrc.js:36:9)\n      at Object.newLoader (node_modules/pirates/lib/index.js:134:7)\n\nFAIL tests/utils/misc/wait.ts\n  \u25cf Test suite failed to run\n\n    [BABEL]: You should add @babel/runtime as dependency to your package. It will allow reusing \"babel helpers\" from node_modules rather than bundling their copies into your files. (While processing: /tmp/work/src/user-event/node_modules/kcd-scripts/dist/config/babelrc.js)\n\n      at Object.<anonymous> (node_modules/kcd-scripts/dist/config/babelrc.js:36:9)\n      at Object.newLoader (node_modules/pirates/lib/index.js:134:7)\n\nFAIL tests/utils/pointer/cssPointerEvents.ts\n  \u25cf Test suite failed to run\n\n    [BABEL]: You should add @babel/runtime as dependency to your package. It will allow reusing \"babel helpers\" from node_modules rather than bundling their copies into your files. (While processing: /tmp/work/src/user-event/node_modules/kcd-scripts/dist/config/babelrc.js)\n\n      at Object.<anonymous> (node_modules/kcd-scripts/dist/config/babelrc.js:36:9)\n      at Object.newLoader (node_modules/pirates/lib/index.js:134:7)\n\n\nTest Suites: 55 failed, 55 total\nTests:       0 total\nSnapshots:   0 total\nTime:        0.143 s\nRan all test suites.\nTest results written to: ../../runs/user-event/det_0.json\n"
+  },
+  "not_reproduced_causes": {},
+  "executor": "GitHub Actions",
+  "date": "2026-11-16T18:12:16.920145+00:00"
+}
