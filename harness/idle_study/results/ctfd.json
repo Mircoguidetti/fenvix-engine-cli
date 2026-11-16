@@ -1,0 +1,1176 @@
+{
+ "name": "ctfd",
+ "repo": "CTFd/CTFd",
+ "ref": "485d59e7bff790424f093be80ea9f6031b631f2d",
+ "status": "ok",
+ "setup_s": 14,
+ "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
+ "config": {
+  "repo": "CTFd/CTFd",
+  "ref": "485d59e7bff790424f093be80ea9f6031b631f2d",
+  "app": "python",
+  "suite": "integration: pytest -n auto (Flask) on Postgres + Redis",
+  "services": "Postgres, Redis",
+  "python": "3.11",
+  "node": "20",
+  "runs": 6,
+  "parser": "junit"
+ },
+ "run_id": "43945303458",
+ "measured_at": "2026-11-16T20:52:19Z",
+ "baseline_cores": 0.0294,
+ "n_runs": 6,
+ "runs": [
+  {
+   "run": 1,
+   "rc": 0,
+   "wall_s": 502.39,
+   "busy_cpu_s": 1863.39,
+   "cores_mean": 3.709,
+   "idle_share_raw": -2.7091,
+   "idle_share_net": -2.6797,
+   "quiet_share": 0.001,
+   "share_ge1core": 0.994,
+   "iowait_s": 16.86,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 3.53,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 213.03,
+   "cpu_other_s": 1650.36,
+   "containers": {
+    "postgres [postgres]": 212.048,
+    "redis [redis]": 0.987
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     1582.19
+    ],
+    [
+     "container",
+     "postgres",
+     42.89
+    ],
+    [
+     "host",
+     "docker-proxy",
+     31.91
+    ],
+    [
+     "host",
+     "provjobd3696543",
+     15.01
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     10.95
+    ],
+    [
+     "host",
+     "pytest",
+     5.0
+    ],
+    [
+     "host",
+     "python3",
+     3.89
+    ],
+    [
+     "host",
+     "jbd2/sda1-8",
+     2.91
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     1.7
+    ],
+    [
+     "host",
+     "kworker/1:1H-kblockd",
+     1.41
+    ],
+    [
+     "container",
+     "redis-server",
+     0.98
+    ],
+    [
+     "host",
+     "kworker/0:1H-kblockd",
+     0.92
+    ],
+    [
+     "host",
+     "kworker/3:1H-kblockd",
+     0.69
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.61
+    ],
+    [
+     "host",
+     "kworker/2:1H-kblockd",
+     0.6
+    ]
+   ],
+   "n_tests": 747,
+   "n_pass": 747,
+   "n_fail": 0,
+   "n_skip": 0,
+   "series_1s": [
+    0.08,
+    0.64,
+    0.85,
+    3.33,
+    3.64,
+    3.92,
+    3.87,
+    3.94,
+    3.92,
+    3.98,
+    3.98,
+    3.9,
+    4.0,
+    4.0,
+    3.99,
+    3.59,
+    3.85,
+    3.87,
+    3.84,
+    3.86,
+    3.83,
+    3.83,
+    3.74,
+    3.78,
+    3.81,
+    3.91,
+    3.62,
+    3.75,
+    3.95,
+    3.55,
+    3.66,
+    3.79,
+    3.89,
+    3.68,
+    3.77,
+    3.87,
+    3.83,
+    3.75,
+    3.76,
+    3.76,
+    3.8,
+    3.61,
+    3.86,
+    3.68,
+    3.79,
+    3.8,
+    3.79,
+    3.68,
+    3.71,
+    3.73,
+    3.73,
+    3.82,
+    3.78,
+    3.76,
+    3.67,
+    3.78,
+    3.87,
+    3.77,
+    3.7,
+    3.65,
+    3.72,
+    3.68,
+    3.85,
+    3.62,
+    3.89,
+    3.95,
+    3.75,
+    3.69,
+    3.81,
+    3.73,
+    3.36,
+    3.92,
+    3.78,
+    3.83,
+    3.54,
+    3.77,
+    3.66,
+    3.67,
+    3.74,
+    3.69,
+    3.63,
+    3.86,
+    3.71,
+    3.7,
+    3.73,
+    3.86,
+    3.85,
+    3.75,
+    3.63,
+    3.83,
+    3.83,
+    3.54,
+    3.89,
+    3.73,
+    3.8,
+    3.86,
+    3.69,
+    3.73,
+    3.76,
+    3.78,
+    3.8,
+    3.81,
+    3.81,
+    3.68,
+    3.83,
+    3.76,
+    3.65,
+    3.86,
+    3.73,
+    3.55,
+    3.83,
+    3.68,
+    3.73,
+    3.51,
+    3.9,
+    3.72,
+    3.78,
+    3.62,
+    3.64,
+    3.96,
+    3.83,
+    3.76,
+    3.79,
+    3.5,
+    3.83,
+    3.98,
+    3.67,
+    3.8,
+    3.86,
+    3.73,
+    3.75,
+    3.79,
+    3.7,
+    3.67,
+    3.8,
+    3.84,
+    3.74,
+    3.73,
+    3.77,
+    3.77,
+    3.12,
+    3.68,
+    3.81,
+    3.47,
+    3.79,
+    3.77,
+    3.77,
+    3.61,
+    3.73,
+    3.75,
+    3.66,
+    3.79,
+    3.71,
+    3.75,
+    3.76,
+    3.75,
+    3.74,
+    3.75,
+    3.75,
+    3.77,
+    3.66,
+    3.65,
+    3.56,
+    3.57,
+    3.83,
+    3.85,
+    3.69,
+    3.83,
+    3.54,
+    3.85,
+    3.87,
+    3.69,
+    3.76,
+    3.96,
+    3.64,
+    3.85,
+    3.9,
+    3.82,
+    3.68,
+    3.75,
+    3.74,
+    3.75,
+    3.66,
+    3.71,
+    3.78,
+    3.74,
+    3.88,
+    3.55,
+    3.89,
+    3.69,
+    3.73,
+    3.6,
+    3.77,
+    3.64,
+    3.73,
+    3.71,
+    3.74,
+    3.57,
+    3.75,
+    3.59,
+    3.75,
+    3.7,
+    3.86,
+    3.64,
+    3.81,
+    3.62,
+    3.66,
+    3.66,
+    3.87,
+    3.58,
+    3.68,
+    3.68,
+    3.68,
+    3.71,
+    3.71,
+    3.78,
+    3.67,
+    3.62,
+    3.85,
+    3.56,
+    3.82,
+    3.69,
+    3.77,
+    3.6,
+    3.76,
+    3.85,
+    3.7,
+    3.71,
+    3.69,
+    3.82,
+    3.81,
+    3.84,
+    3.61,
+    3.87,
+    3.84,
+    3.73,
+    3.64,
+    3.82,
+    3.73,
+    3.7,
+    3.86,
+    3.72,
+    3.7,
+    3.78,
+    3.67,
+    3.73,
+    3.89,
+    3.82,
+    3.94,
+    3.54,
+    3.78,
+    3.74,
+    3.53,
+    3.7,
+    3.71,
+    3.69,
+    3.82,
+    3.71,
+    3.68,
+    3.79,
+    3.79,
+    3.83,
+    3.71,
+    3.89,
+    3.66,
+    3.86,
+    3.97,
+    3.64,
+    3.87,
+    3.79,
+    3.76,
+    3.51,
+    3.85,
+    3.78,
+    3.72,
+    3.68,
+    3.64,
+    3.82,
+    3.8,
+    3.92,
+    3.9,
+    3.85,
+    3.9,
+    3.96,
+    3.75,
+    3.75,
+    3.84,
+    3.74,
+    3.8,
+    3.87,
+    3.71,
+    3.83,
+    3.8,
+    3.71,
+    3.87,
+    3.88,
+    3.76,
+    3.88,
+    3.84,
+    3.83,
+    3.88,
+    3.82,
+    3.96,
+    3.7,
+    3.67,
+    3.69,
+    3.87,
+    3.76,
+    3.89,
+    3.77,
+    3.84,
+    3.64,
+    3.83,
+    3.79,
+    3.82,
+    3.84,
+    3.66,
+    3.68,
+    3.77,
+    3.69,
+    3.88,
+    3.79,
+    3.86,
+    3.79,
+    3.64,
+    3.78,
+    3.6,
+    3.62,
+    3.77,
+    3.73,
+    3.79,
+    3.72,
+    3.68,
+    3.58,
+    3.74,
+    3.9,
+    3.59,
+    3.53,
+    3.6,
+    3.77,
+    3.62,
+    3.7,
+    3.76,
+    3.8,
+    3.68,
+    3.73,
+    3.67,
+    3.82,
+    3.66,
+    3.85,
+    3.73,
+    3.71,
+    3.69,
+    3.8,
+    3.79,
+    3.56,
+    3.8,
+    3.85,
+    3.73,
+    3.6,
+    3.95,
+    3.69,
+    3.83,
+    3.78,
+    3.68,
+    3.75,
+    3.87,
+    3.87,
+    3.92,
+    3.67,
+    3.71,
+    3.75,
+    3.81,
+    3.83,
+    3.71,
+    3.7,
+    3.79,
+    3.59,
+    3.75,
+    3.64,
+    3.74,
+    3.75,
+    3.9,
+    3.77,
+    3.84,
+    3.69,
+    3.72,
+    3.81,
+    3.86,
+    3.76,
+    3.92,
+    3.51,
+    3.72,
+    3.65,
+    3.76,
+    3.63,
+    3.59,
+    3.7,
+    3.77,
+    3.68,
+    3.58,
+    3.7,
+    3.65,
+    3.32,
+    3.83,
+    3.64,
+    3.6,
+    3.65,
+    3.72,
+    3.86,
+    3.76,
+    3.65,
+    3.67,
+    3.74,
+    3.79,
+    3.77,
+    3.53,
+    3.76,
+    3.52,
+    3.86,
+    3.55,
+    3.56,
+    3.67,
+    3.59,
+    3.78,
+    3.7,
+    3.56,
+    3.92,
+    3.71,
+    3.71,
+    3.67,
+    3.56,
+    3.76,
+    3.71,
+    3.67,
+    3.56,
+    3.81,
+    3.66,
+    3.73,
+    3.75,
+    3.7,
+    3.72,
+    3.75,
+    3.67,
+    3.77,
+    3.7,
+    3.64,
+    3.72,
+    3.74,
+    3.67,
+    3.6,
+    3.72,
+    3.78,
+    3.81,
+    3.84,
+    3.59,
+    3.75,
+    3.71,
+    3.57,
+    3.89,
+    3.47,
+    3.67,
+    3.7,
+    3.75,
+    3.94,
+    3.76,
+    3.81,
+    3.76,
+    3.81,
+    3.72,
+    3.88,
+    3.94,
+    3.66,
+    3.66,
+    3.56,
+    3.72,
+    3.68,
+    3.71,
+    3.75,
+    3.76,
+    3.84,
+    3.67,
+    3.72,
+    3.77,
+    3.83,
+    3.81,
+    3.66,
+    3.8,
+    3.67,
+    3.62,
+    3.65,
+    3.58,
+    3.7,
+    3.79,
+    3.39,
+    3.01,
+    3.02,
+    3.06,
+    2.98,
+    3.24,
+    1.59,
+    1.9,
+    3.27,
+    0.26
+   ]
+  },
+  {
+   "run": 2,
+   "rc": 0,
+   "wall_s": 495.79,
+   "busy_cpu_s": 1821.2,
+   "cores_mean": 3.673,
+   "idle_share_raw": -2.6733,
+   "idle_share_net": -2.644,
+   "quiet_share": 0.001,
+   "share_ge1core": 0.9969,
+   "iowait_s": 15.44,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 3.44,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 218.78,
+   "cpu_other_s": 1602.42,
+   "containers": {
+    "postgres [postgres]": 217.784,
+    "redis [redis]": 0.999
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     1539.87
+    ],
+    [
+     "container",
+     "postgres",
+     43.51
+    ],
+    [
+     "host",
+     "docker-proxy",
+     32.13
+    ],
+    [
+     "host",
+     "provjobd3696543",
+     16.45
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     9.63
+    ],
+    [
+     "host",
+     "pytest",
+     3.85
+    ],
+    [
+     "host",
+     "python3",
+     3.41
+    ],
+    [
+     "host",
+     "jbd2/sda1-8",
+     2.86
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     1.59
+    ],
+    [
+     "host",
+     "kworker/1:1H-kblockd",
+     1.35
+    ],
+    [
+     "container",
+     "redis-server",
+     0.99
+    ],
+    [
+     "host",
+     "kworker/0:1H-kblockd",
+     0.9
+    ],
+    [
+     "host",
+     "kworker/2:1H-kblockd",
+     0.65
+    ],
+    [
+     "host",
+     "kworker/3:1H-kblockd",
+     0.61
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.46
+    ]
+   ],
+   "n_tests": 747,
+   "n_pass": 747,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 3,
+   "rc": 0,
+   "wall_s": 490.07,
+   "busy_cpu_s": 1819.93,
+   "cores_mean": 3.714,
+   "idle_share_raw": -2.7136,
+   "idle_share_net": -2.6843,
+   "quiet_share": 0.0021,
+   "share_ge1core": 0.9969,
+   "iowait_s": 15.22,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 3.43,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 220.79,
+   "cpu_other_s": 1599.14,
+   "containers": {
+    "postgres [postgres]": 219.814,
+    "redis [redis]": 0.976
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     1534.24
+    ],
+    [
+     "container",
+     "postgres",
+     43.98
+    ],
+    [
+     "host",
+     "docker-proxy",
+     31.84
+    ],
+    [
+     "host",
+     "provjobd3696543",
+     16.67
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     9.69
+    ],
+    [
+     "host",
+     "pytest",
+     3.82
+    ],
+    [
+     "host",
+     "python3",
+     3.4
+    ],
+    [
+     "host",
+     "jbd2/sda1-8",
+     2.93
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     1.63
+    ],
+    [
+     "host",
+     "kworker/1:1H-kblockd",
+     1.39
+    ],
+    [
+     "container",
+     "redis-server",
+     0.97
+    ],
+    [
+     "host",
+     "kworker/0:1H-kblockd",
+     0.83
+    ],
+    [
+     "host",
+     "kworker/2:1H-kblockd",
+     0.67
+    ],
+    [
+     "host",
+     "kworker/3:1H-kblockd",
+     0.66
+    ],
+    [
+     "host",
+     "dockerd",
+     0.44
+    ]
+   ],
+   "n_tests": 747,
+   "n_pass": 747,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 4,
+   "rc": 0,
+   "wall_s": 491.88,
+   "busy_cpu_s": 1830.17,
+   "cores_mean": 3.721,
+   "idle_share_raw": -2.7207,
+   "idle_share_net": -2.6914,
+   "quiet_share": 0.001,
+   "share_ge1core": 0.9959,
+   "iowait_s": 15.66,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 3.39,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 225.86,
+   "cpu_other_s": 1604.31,
+   "containers": {
+    "postgres [postgres]": 224.879,
+    "redis [redis]": 0.98
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     1540.41
+    ],
+    [
+     "container",
+     "postgres",
+     43.3
+    ],
+    [
+     "host",
+     "docker-proxy",
+     31.89
+    ],
+    [
+     "host",
+     "provjobd3696543",
+     17.1
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     9.72
+    ],
+    [
+     "host",
+     "pytest",
+     4.05
+    ],
+    [
+     "host",
+     "python3",
+     3.37
+    ],
+    [
+     "host",
+     "jbd2/sda1-8",
+     2.93
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     1.61
+    ],
+    [
+     "host",
+     "kworker/1:1H-kblockd",
+     1.37
+    ],
+    [
+     "container",
+     "redis-server",
+     0.98
+    ],
+    [
+     "host",
+     "kworker/0:1H-kblockd",
+     0.87
+    ],
+    [
+     "host",
+     "kworker/2:1H-kblockd",
+     0.68
+    ],
+    [
+     "host",
+     "kworker/3:1H-kblockd",
+     0.64
+    ],
+    [
+     "host",
+     "kworker/u16:3-events_power_efficient",
+     0.48
+    ]
+   ],
+   "n_tests": 747,
+   "n_pass": 747,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 5,
+   "rc": 2,
+   "wall_s": 495.24,
+   "busy_cpu_s": 1830.52,
+   "cores_mean": 3.696,
+   "idle_share_raw": -2.6962,
+   "idle_share_net": -2.6668,
+   "quiet_share": 0.001,
+   "share_ge1core": 0.998,
+   "iowait_s": 16.24,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 3.42,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 230.53,
+   "cpu_other_s": 1599.99,
+   "containers": {
+    "postgres [postgres]": 229.548,
+    "redis [redis]": 0.978
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     1531.53
+    ],
+    [
+     "container",
+     "postgres",
+     44.83
+    ],
+    [
+     "host",
+     "docker-proxy",
+     31.87
+    ],
+    [
+     "host",
+     "provjobd3696543",
+     17.18
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     10.93
+    ],
+    [
+     "host",
+     "python3",
+     3.39
+    ],
+    [
+     "host",
+     "pytest",
+     3.11
+    ],
+    [
+     "host",
+     "jbd2/sda1-8",
+     3.04
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     1.61
+    ],
+    [
+     "host",
+     "kworker/1:1H-kblockd",
+     1.48
+    ],
+    [
+     "container",
+     "redis-server",
+     0.97
+    ],
+    [
+     "host",
+     "kworker/0:1H-kblockd",
+     0.84
+    ],
+    [
+     "host",
+     "kworker/2:1H-kblockd",
+     0.66
+    ],
+    [
+     "host",
+     "kworker/3:1H-kblockd",
+     0.61
+    ],
+    [
+     "host",
+     "kworker/u16:0-ext4-rsv-conversion",
+     0.53
+    ]
+   ],
+   "n_tests": 747,
+   "n_pass": 746,
+   "n_fail": 1,
+   "n_skip": 0
+  },
+  {
+   "run": 6,
+   "rc": 0,
+   "wall_s": 491.87,
+   "busy_cpu_s": 1828.74,
+   "cores_mean": 3.718,
+   "idle_share_raw": -2.7179,
+   "idle_share_net": -2.6886,
+   "quiet_share": 0.0021,
+   "share_ge1core": 0.9969,
+   "iowait_s": 15.47,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 3.39,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 232.32,
+   "cpu_other_s": 1596.42,
+   "containers": {
+    "postgres [postgres]": 231.353,
+    "redis [redis]": 0.97
+   },
+   "top_comm": [
+    [
+     "host",
+     "python",
+     1532.67
+    ],
+    [
+     "container",
+     "postgres",
+     44.1
+    ],
+    [
+     "host",
+     "docker-proxy",
+     31.58
+    ],
+    [
+     "host",
+     "provjobd3696543",
+     17.19
+    ],
+    [
+     "host",
+     "hv_kvp_daemon",
+     9.72
+    ],
+    [
+     "host",
+     "pytest",
+     4.03
+    ],
+    [
+     "host",
+     "python3",
+     3.37
+    ],
+    [
+     "host",
+     "jbd2/sda1-8",
+     2.89
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     1.84
+    ],
+    [
+     "host",
+     "kworker/1:1H-kblockd",
+     1.29
+    ],
+    [
+     "container",
+     "redis-server",
+     0.96
+    ],
+    [
+     "host",
+     "kworker/0:1H-kblockd",
+     0.86
+    ],
+    [
+     "host",
+     "kworker/2:1H-kblockd",
+     0.7
+    ],
+    [
+     "host",
+     "kworker/3:1H-kblockd",
+     0.64
+    ],
+    [
+     "host",
+     "dockerd",
+     0.44
+    ]
+   ],
+   "n_tests": 747,
+   "n_pass": 747,
+   "n_fail": 0,
+   "n_skip": 0
+  }
+ ],
+ "idle": {
+  "median_idle_share_raw": -2.7113,
+  "median_idle_share_net": -2.682,
+  "median_quiet_share": 0.001,
+  "median_cores_mean": 3.7115,
+  "median_wall_s": 493.56,
+  "median_busy_cpu_s": 1829.455
+ },
+ "tests": {
+  "n_distinct": 747,
+  "n_flaky": 1,
+  "n_consistent_fail": 0,
+  "flaky": [
+   {
+    "id": "runnervmccnms|tests.test_views::test_user_can_access_files",
+    "pass_runs": 5,
+    "fail_runs": 1,
+    "fail_in": [
+     5
+    ],
+    "messages": [
+     "FileExistsError: [Errno 17] File exists: '/home/runner/work/_temp/target/CTFd/uploads/test_file_path'\ndef test_user_can_access_files():\n        app = create_ctfd()\n        with app.app_context():\n            from CTFd.utils.uploads import rmdir\n    \n            chal = gen_challenge(app.db)\n            chal_id = chal.id\n            path = app.config.get(\"UPLOAD_FOLDER\")\n    \n            location = os.path.join(path, \"test_file_path\", \"test.txt\")\n            directory = os.path.dirname(location)\n            model_path = os.path.join(\"test_file_path\", \"test.txt\")\n    \n            try:\n>               os.makedirs(directory)\n\ntests/test_views.py:195: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nname = '/home/runner/work/_temp/target/CTFd/uploads/test_file_path', mode = 511\nexist_ok = False\n\n>   ???\nE   FileExistsError: [Errno 17] File exists: '/home/runner/work/_temp/target/CTFd/uploads/test_file_path'\n\n<frozen os>:225: FileExistsError"
+    ]
+   }
+  ],
+  "consistent_fail_sample": []
+ }
+}
