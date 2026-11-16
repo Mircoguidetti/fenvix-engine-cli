@@ -1,0 +1,738 @@
+{
+ "name": "rallly",
+ "repo": "lukevella/rallly",
+ "ref": "e96c4c5c1d92f4db14e59c8e1f0cde934c94c419",
+ "status": "ok",
+ "setup_s": 104,
+ "runner": "4 vCPU, 15 GiB, Ubuntu 26.04.1 LTS",
+ "config": {
+  "repo": "lukevella/rallly",
+  "ref": "e96c4c5c1d92f4db14e59c8e1f0cde934c94c419",
+  "app": "node",
+  "suite": "e2e: Playwright against Next.js (shard 1/3) on Postgres + Mailpit",
+  "services": "Next.js server, Postgres 18, Mailpit, browser",
+  "node": "24",
+  "runs": 6,
+  "parser": "junit"
+ },
+ "run_id": "43945303458",
+ "measured_at": "2026-11-16T20:11:11Z",
+ "baseline_cores": 0.0208,
+ "n_runs": 6,
+ "runs": [
+  {
+   "run": 1,
+   "rc": 0,
+   "wall_s": 78.15,
+   "busy_cpu_s": 147.87,
+   "cores_mean": 1.892,
+   "idle_share_raw": -0.892,
+   "idle_share_net": -0.8712,
+   "quiet_share": 0.0255,
+   "share_ge1core": 0.8917,
+   "iowait_s": 2.39,
+   "steal_s": 0.01,
+   "sampler_cpu_s": 0.32,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 1.4,
+   "cpu_other_s": 146.47,
+   "containers": {
+    "postgres [postgres:18-alpine]": 0.945,
+    "mailpit [axllent/mailpit]": 0.459
+   },
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     74.75
+    ],
+    [
+     "host",
+     "next-server (v1",
+     18.13
+    ],
+    [
+     "host",
+     "MainThread",
+     17.15
+    ],
+    [
+     "host",
+     "provjobd4215143",
+     9.95
+    ],
+    [
+     "container",
+     "postgres",
+     0.67
+    ],
+    [
+     "host",
+     "python3",
+     0.3
+    ],
+    [
+     "container",
+     "mailpit",
+     0.28
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.21
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.15
+    ],
+    [
+     "host",
+     "containerd",
+     0.08
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.08
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.08
+    ],
+    [
+     "host",
+     "kworker/u16:1-flush-252:0",
+     0.07
+    ],
+    [
+     "host",
+     "dockerd",
+     0.04
+    ],
+    [
+     "host",
+     "kworker/u16:14-events_power_efficient",
+     0.04
+    ]
+   ],
+   "n_tests": 66,
+   "n_pass": 66,
+   "n_fail": 0,
+   "n_skip": 0,
+   "series_1s": [
+    0.04,
+    1.19,
+    1.24,
+    1.47,
+    1.7,
+    0.96,
+    0.05,
+    0.36,
+    1.42,
+    2.12,
+    1.64,
+    1.87,
+    1.58,
+    2.13,
+    1.63,
+    1.77,
+    2.08,
+    1.39,
+    1.99,
+    1.55,
+    1.79,
+    1.76,
+    2.38,
+    2.44,
+    2.51,
+    2.36,
+    2.33,
+    1.87,
+    2.1,
+    1.86,
+    1.09,
+    2.54,
+    1.35,
+    1.75,
+    2.05,
+    2.08,
+    1.96,
+    2.29,
+    2.26,
+    0.94,
+    1.83,
+    2.07,
+    2.11,
+    1.52,
+    2.07,
+    2.88,
+    2.61,
+    2.33,
+    2.41,
+    2.82,
+    2.81,
+    1.46,
+    2.09,
+    1.57,
+    1.72,
+    1.7,
+    2.09,
+    1.9,
+    1.88,
+    1.45,
+    1.26,
+    2.03,
+    1.83,
+    1.48,
+    1.57,
+    1.06,
+    1.75,
+    1.32,
+    1.76,
+    2.22,
+    2.38,
+    2.36,
+    1.48,
+    2.31,
+    1.43,
+    2.79,
+    3.27,
+    3.24,
+    2.81
+   ]
+  },
+  {
+   "run": 2,
+   "rc": 0,
+   "wall_s": 73.96,
+   "busy_cpu_s": 140.13,
+   "cores_mean": 1.895,
+   "idle_share_raw": -0.8946,
+   "idle_share_net": -0.8738,
+   "quiet_share": 0.0067,
+   "share_ge1core": 0.9463,
+   "iowait_s": 0.03,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.29,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 1.3,
+   "cpu_other_s": 138.82,
+   "containers": {
+    "postgres [postgres:18-alpine]": 0.895,
+    "mailpit [axllent/mailpit]": 0.41
+   },
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     75.42
+    ],
+    [
+     "host",
+     "next-server (v1",
+     18.45
+    ],
+    [
+     "host",
+     "MainThread",
+     16.58
+    ],
+    [
+     "host",
+     "provjobd4215143",
+     3.82
+    ],
+    [
+     "container",
+     "postgres",
+     0.67
+    ],
+    [
+     "container",
+     "mailpit",
+     0.28
+    ],
+    [
+     "host",
+     "python3",
+     0.27
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.24
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.14
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.08
+    ],
+    [
+     "host",
+     "containerd",
+     0.06
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.04
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.04
+    ],
+    [
+     "host",
+     "dockerd",
+     0.03
+    ],
+    [
+     "host",
+     "kworker/u16:16-events_power_efficient",
+     0.02
+    ]
+   ],
+   "n_tests": 66,
+   "n_pass": 66,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 3,
+   "rc": 0,
+   "wall_s": 73.49,
+   "busy_cpu_s": 139.11,
+   "cores_mean": 1.893,
+   "idle_share_raw": -0.8928,
+   "idle_share_net": -0.872,
+   "quiet_share": 0.0068,
+   "share_ge1core": 0.9459,
+   "iowait_s": 0.03,
+   "steal_s": 0.01,
+   "sampler_cpu_s": 0.29,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 1.34,
+   "cpu_other_s": 137.77,
+   "containers": {
+    "postgres [postgres:18-alpine]": 0.935,
+    "mailpit [axllent/mailpit]": 0.408
+   },
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     70.85
+    ],
+    [
+     "host",
+     "next-server (v1",
+     17.0
+    ],
+    [
+     "host",
+     "MainThread",
+     16.07
+    ],
+    [
+     "host",
+     "provjobd4215143",
+     4.63
+    ],
+    [
+     "container",
+     "postgres",
+     0.65
+    ],
+    [
+     "host",
+     "python3",
+     0.27
+    ],
+    [
+     "container",
+     "mailpit",
+     0.27
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.2
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.15
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.09
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.09
+    ],
+    [
+     "host",
+     "containerd",
+     0.06
+    ],
+    [
+     "host",
+     "kworker/u16:5-events_power_efficient",
+     0.03
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.02
+    ],
+    [
+     "host",
+     "dockerd",
+     0.02
+    ]
+   ],
+   "n_tests": 66,
+   "n_pass": 66,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 4,
+   "rc": 0,
+   "wall_s": 74.19,
+   "busy_cpu_s": 138.82,
+   "cores_mean": 1.871,
+   "idle_share_raw": -0.8711,
+   "idle_share_net": -0.8503,
+   "quiet_share": 0.0067,
+   "share_ge1core": 0.94,
+   "iowait_s": 0.03,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.28,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 1.28,
+   "cpu_other_s": 137.54,
+   "containers": {
+    "postgres [postgres:18-alpine]": 0.886,
+    "mailpit [axllent/mailpit]": 0.394
+   },
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     74.52
+    ],
+    [
+     "host",
+     "next-server (v1",
+     17.14
+    ],
+    [
+     "host",
+     "MainThread",
+     16.44
+    ],
+    [
+     "host",
+     "provjobd4215143",
+     3.69
+    ],
+    [
+     "container",
+     "postgres",
+     0.66
+    ],
+    [
+     "host",
+     "python3",
+     0.26
+    ],
+    [
+     "container",
+     "mailpit",
+     0.25
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.24
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.15
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.08
+    ],
+    [
+     "host",
+     "containerd",
+     0.06
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.04
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.03
+    ],
+    [
+     "host",
+     "chronyd",
+     0.02
+    ],
+    [
+     "host",
+     "dockerd",
+     0.02
+    ]
+   ],
+   "n_tests": 66,
+   "n_pass": 66,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 5,
+   "rc": 0,
+   "wall_s": 75.55,
+   "busy_cpu_s": 141.1,
+   "cores_mean": 1.868,
+   "idle_share_raw": -0.8678,
+   "idle_share_net": -0.8469,
+   "quiet_share": 0.0066,
+   "share_ge1core": 0.9211,
+   "iowait_s": 0.03,
+   "steal_s": 0.01,
+   "sampler_cpu_s": 0.29,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 1.28,
+   "cpu_other_s": 139.82,
+   "containers": {
+    "postgres [postgres:18-alpine]": 0.874,
+    "mailpit [axllent/mailpit]": 0.406
+   },
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     72.09
+    ],
+    [
+     "host",
+     "next-server (v1",
+     18.28
+    ],
+    [
+     "host",
+     "MainThread",
+     15.6
+    ],
+    [
+     "host",
+     "provjobd4215143",
+     4.74
+    ],
+    [
+     "container",
+     "postgres",
+     0.61
+    ],
+    [
+     "container",
+     "mailpit",
+     0.28
+    ],
+    [
+     "host",
+     "python3",
+     0.27
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.22
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.15
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.08
+    ],
+    [
+     "host",
+     "containerd",
+     0.07
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.06
+    ],
+    [
+     "host",
+     "dockerd",
+     0.03
+    ],
+    [
+     "host",
+     "systemd-journal",
+     0.01
+    ],
+    [
+     "host",
+     "kworker/3:2-mm_percpu_wq",
+     0.01
+    ]
+   ],
+   "n_tests": 66,
+   "n_pass": 66,
+   "n_fail": 0,
+   "n_skip": 0
+  },
+  {
+   "run": 6,
+   "rc": 0,
+   "wall_s": 73.34,
+   "busy_cpu_s": 133.97,
+   "cores_mean": 1.827,
+   "idle_share_raw": -0.8267,
+   "idle_share_net": -0.8059,
+   "quiet_share": 0.0068,
+   "share_ge1core": 0.9392,
+   "iowait_s": 0.03,
+   "steal_s": 0.0,
+   "sampler_cpu_s": 0.28,
+   "cpu_test_tree_s": 0.0,
+   "cpu_svc_s": 0.0,
+   "cpu_containers_s": 1.3,
+   "cpu_other_s": 132.68,
+   "containers": {
+    "postgres [postgres:18-alpine]": 0.896,
+    "mailpit [axllent/mailpit]": 0.401
+   },
+   "top_comm": [
+    [
+     "host",
+     "chrome-headless",
+     69.63
+    ],
+    [
+     "host",
+     "next-server (v1",
+     17.58
+    ],
+    [
+     "host",
+     "MainThread",
+     14.39
+    ],
+    [
+     "host",
+     "provjobd4215143",
+     3.83
+    ],
+    [
+     "container",
+     "postgres",
+     0.63
+    ],
+    [
+     "host",
+     "python3",
+     0.26
+    ],
+    [
+     "container",
+     "mailpit",
+     0.26
+    ],
+    [
+     "host",
+     "docker-proxy",
+     0.24
+    ],
+    [
+     "host",
+     "Runner.Worker",
+     0.14
+    ],
+    [
+     "host",
+     "rcu_sched",
+     0.08
+    ],
+    [
+     "host",
+     "containerd",
+     0.05
+    ],
+    [
+     "host",
+     "Runner.Listener",
+     0.04
+    ],
+    [
+     "host",
+     "containerd-shim",
+     0.04
+    ],
+    [
+     "host",
+     "kworker/u16:12-events_power_efficient",
+     0.03
+    ],
+    [
+     "host",
+     "dockerd",
+     0.02
+    ]
+   ],
+   "n_tests": 66,
+   "n_pass": 66,
+   "n_fail": 0,
+   "n_skip": 0
+  }
+ ],
+ "idle": {
+  "median_idle_share_raw": -0.8816,
+  "median_idle_share_net": -0.8607,
+  "median_quiet_share": 0.0067,
+  "median_cores_mean": 1.8815,
+  "median_wall_s": 74.075,
+  "median_busy_cpu_s": 139.62
+ },
+ "tests": {
+  "n_distinct": 66,
+  "n_flaky": 0,
+  "n_consistent_fail": 0,
+  "flaky": [],
+  "consistent_fail_sample": []
+ }
+}
