@@ -370,3 +370,47 @@ def test_adaptive_tick_does_not_trip_algorithm_timeouts(pytester, run_det):
     )
     result, _ = run_det("-p", "no:randomly")
     result.assert_outcomes(passed=1)
+
+
+def test_date_today_follows_a_patched_time_time(pytester, run_det):
+    """Regression (idoft-freezegun, 2 tests): CPython's date.today() calls time.time()
+    through the module, so libraries patching time.time drive it; detpy's
+    replacement read the virtual clock directly."""
+    pytester.makepyfile(
+        test_d="""
+        import datetime, time
+        def test_today(monkeypatch):
+            monkeypatch.setattr(time, "time", lambda: 1365508800.0)  # 2013-04-09 12:00 UTC
+            assert datetime.date.today() == datetime.date(2013, 4, 9)
+            assert datetime.datetime(2020, 1, 1).today().date() == datetime.date(2013, 4, 9)
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)
+
+
+def test_waiting_for_a_daemonized_process_waits_for_real(pytester, run_det):
+    """Regression (idoft-pymq / redislite): redis-server daemonizes (its parent
+    exits at once) and the caller polls a fixed number of times with sleep()."""
+    pytester.makepyfile(
+        test_p="""
+        import os, subprocess, sys, tempfile, time
+        DAEMON = '''
+        import os, sys, time
+        if os.fork():
+            sys.exit(0)          # the parent exits immediately, like a daemonizing server
+        time.sleep(0.3)
+        open(sys.argv[1], "w").close()
+        '''
+        def test_wait_for_daemon():
+            marker = os.path.join(tempfile.mkdtemp(), "ready")
+            subprocess.call([sys.executable, "-c", DAEMON.replace("\\\\n        ", "\\\\n"), marker])
+            for _ in range(40):              # 40 x 50 ms
+                if os.path.exists(marker):
+                    break
+                time.sleep(0.05)
+            assert os.path.exists(marker), "daemon did not start in time"
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)

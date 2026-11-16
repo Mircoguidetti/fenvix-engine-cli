@@ -151,7 +151,8 @@ def pytest_load_initial_conftests(early_config, parser, args):
                 if capman is not None:
                     capman.stop_global_capturing()
                 rootdir = str(early_config.rootpath) if hasattr(early_config, "rootpath") else os.getcwd()
-                reexec.reexec(_hashseed(ns), not ns.det_keep_aslr, want_bytecode, rootdir)  # no return
+                block = [n for n in _CONFLICTING_PLUGINS if early_config.pluginmanager.get_plugin(n) is not None]
+                reexec.reexec(_hashseed(ns), not ns.det_keep_aslr, want_bytecode, rootdir, block)  # no return
             reason = "--det-no-reexec" if ns.det_no_reexec else why
             if need["hashseed"]:
                 S.reexec_status = f"PYTHONHASHSEED not fixed ({reason})"
@@ -192,10 +193,14 @@ def _install(config, ns, controls) -> None:
     # Plugins that reorder tests or reseed `random` with their own seed would
     # undo Level 0: switch them off.
     pm = config.pluginmanager
+    # Normally blocked with -p no:<name> by the re-exec, before they load.
+    S.disabled_plugins.extend(n for n in os.environ.get(reexec.BLOCKED_ENV, "").split(",") if n)
     for name in _CONFLICTING_PLUGINS:
         if pm.get_plugin(name) is not None:
+            # Fallback without re-exec: hooks are removed, but fixtures the
+            # plugin defined may stay active (documented limit).
             pm.unregister(name=name)
-            S.disabled_plugins.append(name)
+            S.disabled_plugins.append(name + " (unregistered after loading)")
     if "seeds" in controls:
         seeds.install(_PATCHER, cfg.control_urandom)
     for plugin in pm.get_plugins():
