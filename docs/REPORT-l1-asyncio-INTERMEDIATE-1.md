@@ -44,3 +44,10 @@ Main files: `docs/L1-ASYNCIO.md`, `python/detpy/aio.py`, `tests/test_aio.py`, `h
 * The default branch of fenvix-engine-cli is `claude/gracious-rubin-eyswxd`, so a workflow that exists only on my branch cannot be dispatched; the measurement is triggered by pushing `harness/l1/run.json`.
 * Pre-existing L0 test failure on CPython 3.10/3.11: `tests/test_clock.py::test_clock_behaviour` expects a `DeprecationWarning` from `datetime.utcnow()`, which exists only on 3.12+. Not caused by this work; the round CI runs only 3.13.
 * Brain gap: `sessions/README.md` assumes every session can push to fenvix-brain-cli `main`; this one cannot.
+
+## Addendum (coordinator messages of 16:20–16:45 UTC, read at 17:08 UTC)
+
+* **Shared event vocabulary, own small commit: `2ec240f`** ("Core: shared event vocabulary, ENCODING_VERSION 2, verifier refuses mixed encodings"), on `claude/l1-asyncio-study`. Contents: `Source::Sched` (tag 9, `sched`), `ENCODING_VERSION = 2`, `SCHED_OPS` (`sched.ready`, `sched.timer`, `sched.io`, `sched.executor`, `sched.microtask`, `sched.thread`), `sched_value` / `parse_sched_value` for `<chosen index>/<set size>:<stable id>`, `TraceError::Incompatible` returned by `verify_paths` when encodings differ; 42 core tests pass (MEASURED, container). Only `event.rs`, `trace.rs`, `verify.rs` are touched; the Node and Detpy branches can cherry-pick it alone.
+* Commit `9a39641`: the asyncio scheduler records its choices in that vocabulary (`sched.io`, `sched.ready`, `sched.executor`, `sched.timer`, stable id = creation site + per-site counter, site = `path:line` from the root); trace header meta now has `runtime`, `runtime_version`, `runner`, `seed`, `controls` (with `async`). 60 plugin tests pass on CPython 3.13 (MEASURED, container).
+* `docs/L1-ASYNCIO.md` section 4: mapping of the choice-point model onto Node's event loop (libuv phases, nextTick and promise queues as non-choices, `sched.microtask` for the macrotask choice, threadpool as `sched.executor`, where to intercept).
+* The first measurement run (43914981044) failed to install every project (relative wheel path in the harness); fixed, re-running as of 17:3x UTC.
