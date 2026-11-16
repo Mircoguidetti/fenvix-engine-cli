@@ -1,0 +1,91 @@
+{
+ "name": "home-assistant",
+ "url": "https://github.com/home-assistant/core",
+ "lang": "pytest",
+ "seq": {
+  "kind": "first-parent",
+  "n": 51
+ },
+ "apt": [
+  "bluez",
+  "ffmpeg",
+  "libturbojpeg0",
+  "libxml2-utils",
+  "libudev-dev",
+  "libpcap-dev",
+  "libgammu-dev",
+  "portaudio19-dev",
+  "libavformat-dev",
+  "libavcodec-dev",
+  "libavdevice-dev",
+  "libavutil-dev",
+  "libswscale-dev",
+  "libswresample-dev",
+  "libavfilter-dev",
+  "libyaml-dev",
+  "libxml2-dev",
+  "libxslt1-dev"
+ ],
+ "install": [
+  "test -x {py} || uv venv -q --python 3.14 {venv}",
+  "uv pip install -q --python {py} -r requirements.txt",
+  "python3 {harness}/pyinstall.py --python {py} -r requirements_all.txt -r requirements_test.txt",
+  "uv pip install -q --python {py} -e . $(for d in packages/hassfest packages/pytest-homeassistant; do test -d $d && echo -e $d; done) --config-settings editable_mode=compat"
+ ],
+ "install_files": [
+  "requirements*.txt",
+  "pyproject.toml",
+  "homeassistant/package_constraints.txt",
+  "packages/*/pyproject.toml"
+ ],
+ "build": [
+  "{py} -m script.translations develop --all > /dev/null"
+ ],
+ "units": {
+  "include": [
+   "tests/*.py",
+   "tests/**/test_*.py"
+  ],
+  "exclude": [
+   "tests/e2e/*",
+   "tests/conftest.py",
+   "tests/common.py",
+   "tests/typing.py",
+   "tests/syrupy.py",
+   "tests/patch_*.py",
+   "tests/__init__.py",
+   "tests/ignore_uncaught_exceptions.py",
+   "tests/pylint/*",
+   "tests/mypy_plugins/*",
+   "tests/non_packaged_scripts/*"
+  ],
+  "sample": 0.12,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "-b",
+  "-X",
+  "dev",
+  "-m",
+  "pytest",
+  "-qq",
+  "--timeout=9",
+  "-p",
+  "no:sugar",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "{unit}"
+ ],
+ "unit_timeout": 900,
+ "verify": 0.08,
+ "ci": {
+  "workers": 40,
+  "source": ".github/workflows/ci.yaml pytest-full: 10 groups x --numprocesses logical (4 vCPU), --dist=loadfile; dev-branch pushes always run the full suite"
+ },
+ "ci_groups": 10,
+ "ci_cmd": "{py} -m script.split_tests {groups} tests > /dev/null && {py} -b -X dev -m pytest -qq --timeout=9 --durations=0 --durations-min=1 --numprocesses logical --snapshot-details --dist=loadfile -o console_output_style=count -p no:sugar --exclude-warning-annotations --junitxml={report} -o junit_family=legacy $(sed -n \"{group},1p\" pytest_buckets.txt)",
+ "ci_report": "junit"
+}

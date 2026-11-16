@@ -1,0 +1,124 @@
+name: skip-study2
+
+# Skip-with-proof study 2 (harness/skip_study2/). Triggered by a push that changes harness/skip_study2/run.json.
+#   plan   -> job matrices from run.json
+#   walk   -> one job per (repository, shard): commit walk with dependency capture (walk.py)
+#   flaky  -> one job per (repository, CI test group, repetition): the project's own CI test step at a pinned
+#             commit (flaky.py)
+# Every job commits its JSON result to harness/skip_study2/results/<run_id>/ with rebase-retry.
+
+on:
+  push:
+    branches: [claude/loving-maxwell-58mv2w]
+    paths: [harness/skip_study2/run.json]
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+  S2_COMMIT: "1"
+  S2_BRANCH: claude/loving-maxwell-58mv2w
+  GOTOOLCHAIN: auto
+  UV_PYTHON_PREFERENCE: managed
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      run_id: ${{ steps.p.outputs.run_id }}
+      walk: ${{ steps.p.outputs.walk }}
+      flaky: ${{ steps.p.outputs.flaky }}
+      has_walk: ${{ steps.p.outputs.has_walk }}
+      has_flaky: ${{ steps.p.outputs.has_flaky }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: p
+        run: python3 harness/skip_study2/plan.py
+
+  walk:
+    needs: plan
+    if: ${{ needs.plan.outputs.has_walk == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.walk) }}
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          df -h / | tail -1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v6
+      - if: ${{ matrix.lang == 'go' }}
+        uses: actions/setup-go@v5
+        with: {go-version: stable, cache: false}
+      - if: ${{ matrix.node != '' }}
+        uses: actions/setup-node@v4
+        with: {node-version: "${{ matrix.node }}"}
+      - name: System packages and services
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq strace ${{ matrix.apt }} > /dev/null
+          for s in ${{ matrix.services }}; do
+            case $s in
+              postgres) docker run -d --name pg -p 5432:5432 -e POSTGRES_USER=saleor -e POSTGRES_PASSWORD=saleor postgres:15-alpine ;;
+              valkey) docker run -d --name vk -p 6379:6379 valkey/valkey:8.1-alpine ;;
+            esac
+          done
+          strace -V | head -1
+      - name: Walk
+        run: |
+          git config user.name "skip-study2-bot"
+          git config user.email "skip-study2-bot@users.noreply.github.com"
+          shard_tag=$(echo "${{ matrix.shard }}" | tr / of)
+          python3 harness/skip_study2/walk.py --spec "${{ matrix.spec }}" --work "$RUNNER_TEMP/w" \
+            --out "harness/skip_study2/results/${{ needs.plan.outputs.run_id }}/walk/${{ matrix.name }}-${shard_tag}.json.gz" \
+            --shard "${{ matrix.shard }}" --budget-min "${{ matrix.budget }}" --run-id "${{ needs.plan.outputs.run_id }}"
+
+  flaky:
+    needs: plan
+    if: ${{ needs.plan.outputs.has_flaky == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.flaky) }}
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v6
+      - if: ${{ matrix.lang == 'go' }}
+        uses: actions/setup-go@v5
+        with: {go-version: stable, cache: false}
+      - if: ${{ matrix.node != '' }}
+        uses: actions/setup-node@v4
+        with: {node-version: "${{ matrix.node }}"}
+      - name: System packages and services
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq strace ${{ matrix.apt }} > /dev/null
+          for s in ${{ matrix.services }}; do
+            case $s in
+              postgres) docker run -d --name pg -p 5432:5432 -e POSTGRES_USER=saleor -e POSTGRES_PASSWORD=saleor postgres:15-alpine ;;
+              valkey) docker run -d --name vk -p 6379:6379 valkey/valkey:8.1-alpine ;;
+            esac
+          done
+          strace -V | head -1
+      - name: CI test step
+        run: |
+          git config user.name "skip-study2-bot"
+          git config user.email "skip-study2-bot@users.noreply.github.com"
+          g=$(echo "${{ matrix.group }}" | tr / of)
+          python3 harness/skip_study2/flaky.py --spec "${{ matrix.spec }}" --sha "${{ matrix.sha }}" \
+            --group "${{ matrix.group }}" --rep "${{ matrix.rep }}" --work "$RUNNER_TEMP/f" \
+            --out "harness/skip_study2/results/${{ needs.plan.outputs.run_id }}/flaky/${{ matrix.name }}-g${g}-r${{ matrix.rep }}.json"

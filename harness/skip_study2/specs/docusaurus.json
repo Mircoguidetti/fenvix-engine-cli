@@ -1,0 +1,54 @@
+{
+ "name": "docusaurus",
+ "url": "https://github.com/facebook/docusaurus",
+ "lang": "vitest",
+ "node": "26",
+ "seq": {
+  "kind": "first-parent",
+  "n": 51
+ },
+ "install": [
+  "corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent || pnpm install --reporter=silent"
+ ],
+ "install_files": [
+  "pnpm-lock.yaml",
+  "package.json",
+  "packages/*/package.json",
+  "pnpm-workspace.yaml"
+ ],
+ "build": [
+  "pnpm build:packages > /dev/null 2>&1"
+ ],
+ "units": {
+  "include": [
+   "packages/**/*.test.ts",
+   "packages/**/*.test.tsx",
+   "website/**/*.test.ts",
+   "admin/**/*.test.ts",
+   "__tests__/**/*.test.ts"
+  ],
+  "exclude": [
+   "**/__fixtures__/**",
+   "**/lib/**",
+   "**/node_modules/**"
+  ],
+  "sample": 1.0
+ },
+ "cmd": [
+  "pnpm",
+  "exec",
+  "vitest",
+  "run",
+  "--reporter=json",
+  "--outputFile={out}",
+  "{unit}"
+ ],
+ "unit_timeout": 600,
+ "verify": 0.1,
+ "ci": {
+  "workers": 4,
+  "source": ".github/workflows/tests.yml: one ubuntu-latest job per Node version, pnpm test (vitest run)"
+ },
+ "ci_cmd": "pnpm test --reporter=default --reporter=json --outputFile={report}",
+ "ci_report": "vitest"
+}

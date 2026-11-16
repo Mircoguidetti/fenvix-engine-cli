@@ -1,0 +1,27 @@
+{
+ "name": "terraform",
+ "url": "https://github.com/hashicorp/terraform",
+ "lang": "go",
+ "seq": {
+  "kind": "first-parent",
+  "n": 51
+ },
+ "install_files": [
+  "go.mod",
+  "go.sum"
+ ],
+ "units": {
+  "patterns": [
+   "./..."
+  ],
+  "sample": 1.0
+ },
+ "go_args": [],
+ "verify": 0.08,
+ "ci": {
+  "workers": 4,
+  "source": ".github/workflows/checks.yml unit-tests: go test ./... on one ubuntu-latest job"
+ },
+ "ci_cmd": "go test -json ./... > {report}",
+ "ci_report": "go"
+}
