@@ -29,6 +29,7 @@ from a coverage.py data file: ``{"files", "blobs", "ctx"}``.
 from __future__ import annotations
 
 import atexit
+import dis
 import gzip
 import os
 import pickle
@@ -37,8 +38,42 @@ from types import CodeType, FunctionType
 
 _mon = getattr(sys, "monitoring", None)
 AVAILABLE = _mon is not None
+_RESUME = dis.opmap.get("RESUME", -1)
+# opcodes that may precede the first RESUME (cells, free variables, generator and coroutine creation)
+_PRELUDE = {dis.opmap[n] for n in ("MAKE_CELL", "COPY_FREE_VARS", "RETURN_GENERATOR", "POP_TOP") if n in dis.opmap}
+
+
+def entry_line(code) -> int | None:
+    """The line ``LINE`` alone never reports on entry, which ``sys.settrace`` (hence coverage.py) does.
+
+    The first instruction after the RESUME raises a line event only when its line differs from the RESUME's;
+    legacy tracing (and any tool with ``PY_START`` on the code object) reports it on every entry anyway. This is
+    the only line of one-line functions, lambdas, docstring-only functions and empty modules. Returns that line
+    when it is the RESUME's line, else None (the line event fires by itself).
+    """
+    co = code.co_code
+    r = 0
+    while r < len(co) and co[r] in _PRELUDE:
+        r += 2
+    if r + 2 >= len(co) or co[r] != _RESUME:
+        return None
+    lr = ln = None
+    for start, end, line in code.co_lines():
+        if start <= r < end:
+            lr = line
+        if start <= r + 2 < end:
+            ln = line
+            break
+    return ln if ln is not None and ln == lr else None
 _DBG = os.environ.get("SYSMON_DBG", "")
 _DBG_NORESTART = "norestart" in _DBG
+# re-arm strategy at a context switch (see the module docstring): "rearm" (default) or "restart"
+STRATEGY = "restart" if "restart" in _DBG.replace("norestart", "") else "rearm"
+# rearm: a code object's lines are disabled once it has run this many already-recorded lines in the context
+try:
+    HOT = int(os.environ.get("SYSMON_HOT", "32"))
+except ValueError:
+    HOT = 32
 
 
 class SysmonCapture:
@@ -54,6 +89,9 @@ class SysmonCapture:
         self._wanted: dict[str, bool] = {}
         self._armed: set[int] = set()
         self._keep: list = []  # armed code objects stay alive: their id() is never reused
+        self._rep: dict[int, int] = {}  # rearm: id(code) -> already-recorded lines run in this context
+        self._rearm: dict[int, CodeType] = {}  # rearm: code objects with disabled lines, re-armed at the switch
+        self._entry: dict[int, int] = {}  # id(code) -> entry line (see entry_line), recorded from PY_START
         self._saved = False
 
     # -- filtering -------------------------------------------------------------
@@ -75,7 +113,7 @@ class SysmonCapture:
     def arm(self, code) -> None:
         """Enable LINE locally on ``code`` and on every code object nested in it, if its file is below the root."""
         stack = [code]
-        set_local, tool, LINE = _mon.set_local_events, self.tool, _mon.events.LINE
+        set_local, tool, LINE, START = _mon.set_local_events, self.tool, _mon.events.LINE, _mon.events.PY_START
         while stack:
             c = stack.pop()
             if id(c) in self._armed:
@@ -88,7 +126,12 @@ class SysmonCapture:
                 continue
             self._armed.add(id(c))
             self._keep.append(c)
-            set_local(tool, c, LINE)
+            e = entry_line(c)
+            if e is None:
+                set_local(tool, c, LINE)
+            else:
+                self._entry[id(c)] = e
+                set_local(tool, c, LINE | START)
             stack.extend(k for k in c.co_consts if isinstance(k, CodeType))
 
     def _audit(self, event, args):
@@ -111,9 +154,31 @@ class SysmonCapture:
             self.arm(f.f_code)
             f = f.f_back
 
-    def _make_line_callback(self):
+    def _make_callbacks(self):
+        """(LINE callback, PY_START callback). PY_START is enabled only on code objects with an entry line."""
         DISABLE = _mon.DISABLE
         me = self
+        entry = self._entry
+        if STRATEGY == "restart":
+
+            def line(code, lineno):
+                cur = me.cur
+                fn = code.co_filename
+                s = cur.get(fn)
+                if s is None:
+                    cur[fn] = {lineno}
+                else:
+                    s.add(lineno)
+                me.dirty = True
+                return DISABLE
+
+            def start(code, offset):
+                line(code, entry[id(code)])
+                return DISABLE
+
+            return line, start
+
+        rep, rearm, hot = self._rep, self._rearm, HOT
 
         def line(code, lineno):
             cur = me.cur
@@ -121,12 +186,24 @@ class SysmonCapture:
             s = cur.get(fn)
             if s is None:
                 cur[fn] = {lineno}
-            else:
+                return None
+            if lineno not in s:
                 s.add(lineno)
-            me.dirty = True
+                return None
+            # a line already recorded in this context runs again (loop, repeated call): keep paying one callback
+            # per run while the code object is cool, then disable its lines until the next switch
+            k = id(code)
+            n = rep.get(k, 0)
+            if n < hot:
+                rep[k] = n + 1
+                return None
+            rearm[k] = code
             return DISABLE
 
-        return line
+        def start(code, offset):
+            return line(code, entry[id(code)])
+
+        return line, start
 
     # -- control ---------------------------------------------------------------
     def start(self) -> None:
@@ -139,7 +216,9 @@ class SysmonCapture:
         else:
             raise RuntimeError("sys.monitoring: no free tool id")
         _mon.use_tool_id(self.tool, "cache_skip_capture")
-        _mon.register_callback(self.tool, _mon.events.LINE, self._make_line_callback())
+        line, start = self._make_callbacks()
+        _mon.register_callback(self.tool, _mon.events.LINE, line)
+        _mon.register_callback(self.tool, _mon.events.PY_START, start)
         # no global event: only code objects below the root are instrumented, so a restart_events() costs
         # nothing for the test runner's own code
         sys.addaudithook(self._audit)
@@ -151,6 +230,18 @@ class SysmonCapture:
             return
         self.ctx = ctx
         self.cur = self.data.setdefault(ctx, {})
+        if STRATEGY == "rearm":
+            self._rep.clear()
+            if self._rearm:
+                # re-instrument only the code objects with disabled lines (eagerly), instead of every code object
+                # that runs after a restart_events()
+                set_local, tool, LINE, START, entry = (_mon.set_local_events, self.tool, _mon.events.LINE,
+                                                       _mon.events.PY_START, self._entry)
+                for k, code in self._rearm.items():
+                    set_local(tool, code, 0)
+                    set_local(tool, code, LINE | START if k in entry else LINE)
+                self._rearm.clear()
+            return
         if self.dirty:
             self.dirty = False
             if not _DBG_NORESTART:
@@ -165,6 +256,7 @@ class SysmonCapture:
                 except ValueError:
                     pass
             _mon.register_callback(self.tool, _mon.events.LINE, None)
+            _mon.register_callback(self.tool, _mon.events.PY_START, None)
             _mon.free_tool_id(self.tool)
             self.tool = None
 
