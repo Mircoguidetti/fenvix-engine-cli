@@ -22,6 +22,7 @@ on:
       timing: {description: "run the quiet timing pass", default: "true"}
       result_set: {description: "results directory name under harness/results", default: "mixed"}
       timing_only: {description: "with `only`: run just the quiet timing pass on those repositories", default: "false"}
+      mode: {description: "round | orderonly | baseline (orderonly and baseline need `only`)", default: "round"}
 
 permissions:
   contents: write
@@ -137,7 +138,7 @@ jobs:
       - run: pip install pytest && pip install --no-deps dist/*.whl
       - name: round
         run: >
-          python harness/detpy_harness.py --set "${{ matrix.repo }}" --mode round --jobs 1
+          python harness/detpy_harness.py --set "${{ matrix.repo }}" --mode ${{ inputs.mode }} --jobs 1
           --runs ${{ inputs.runs }} --seeds ${{ inputs.seeds }} --confirm ${{ inputs.confirm }}
           --wheel "$(ls dist/*.whl)" --work /tmp/work --out out
           --max-first-run 100000 --repo-budget 2700 --run-timeout 900 --executor "GitHub Actions"
@@ -146,7 +147,7 @@ jobs:
         with: {name: "round-${{ matrix.repo }}", path: out/, if-no-files-found: ignore}
 
   timing-pick:
-    if: ${{ !cancelled() && inputs.timing == 'true' && needs.round.result != 'skipped' }}
+    if: ${{ !cancelled() && inputs.timing == 'true' && inputs.mode == 'round' && needs.round.result != 'skipped' }}
     needs: [round]
     runs-on: ubuntu-latest
     outputs:
@@ -213,7 +214,7 @@ jobs:
           python harness/ci.py aggregate --dir art --out "harness/results/${{ inputs.result_set }}"
           --selection selection.json --set "${{ inputs.result_set }}"
           --runs ${{ inputs.runs }} --seeds ${{ inputs.seeds }} --confirm ${{ inputs.confirm }}
-          --max-first-run ${{ inputs.max_first_run }}
+          --max-first-run ${{ inputs.max_first_run }} --mode ${{ inputs.mode }}
           --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       - uses: actions/upload-artifact@v4
         with: {name: "results-${{ inputs.result_set }}", path: "harness/results/${{ inputs.result_set }}/"}

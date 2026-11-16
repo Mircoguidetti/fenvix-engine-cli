@@ -1,0 +1,548 @@
+{
+ "anyio": {
+  "2": [
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]"
+  ]
+ },
+ "arrow": {
+  "2": [
+   "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+   "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+  ]
+ },
+ "idoft-accessify": {
+  "5": [
+   "tests/interfaces/test_implements.py::test_implements_no_implementation_getter",
+   "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method",
+   "tests/interfaces/test_implements.py::test_implements_not_self_convention",
+   "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter",
+   "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter",
+   "tests/interfaces/test_implements.py::test_not_implements_private_access",
+   "tests/interfaces/test_implements.py::test_not_implements_protected_access"
+  ]
+ },
+ "idoft-breathe": {
+  "1": [
+   "tests/test_command_context.py::test_manual_context_noccr",
+   "tests/test_merger.py::test_context_commands",
+   "tests/test_merger.py::test_core_commands",
+   "tests/test_merger.py::test_invalid"
+  ],
+  "10": [
+   "tests/test_loading.py::test_loading_failure"
+  ],
+  "2": [
+   "tests/test_loading.py::test_loading",
+   "tests/test_merger.py::test_noccr_commands"
+  ],
+  "3": [
+   "tests/test_loading.py::test_reloading"
+  ]
+ },
+ "idoft-centreon-sdk-python": {
+  "1": [
+   "tests/test_hosts.py::TestHosts::test_hosts_add",
+   "tests/test_hosts.py::TestHosts::test_hosts_delete",
+   "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+   "tests/test_hosts.py::TestHosts::test_hosts_list",
+   "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+  ],
+  "10": [
+   "tests/test_hosts.py::TestHost::test_host_addcontact",
+   "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+   "tests/test_hosts.py::TestHost::test_host_addparent",
+   "tests/test_hosts.py::TestHost::test_host_addtemplate",
+   "tests/test_hosts.py::TestHost::test_host_applytemplate",
+   "tests/test_hosts.py::TestHost::test_host_deletecontact",
+   "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+   "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+   "tests/test_hosts.py::TestHost::test_host_delmacro",
+   "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+   "tests/test_hosts.py::TestHost::test_host_disable",
+   "tests/test_hosts.py::TestHost::test_host_enable",
+   "tests/test_hosts.py::TestHost::test_host_getcontact",
+   "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+   "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+   "tests/test_hosts.py::TestHost::test_host_getmacro",
+   "tests/test_hosts.py::TestHost::test_host_getparents",
+   "tests/test_hosts.py::TestHost::test_host_gettemplate",
+   "tests/test_hosts.py::TestHost::test_host_setcontact",
+   "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+   "tests/test_hosts.py::TestHost::test_host_setinstance",
+   "tests/test_hosts.py::TestHost::test_host_setmacro",
+   "tests/test_hosts.py::TestHost::test_host_setparam",
+   "tests/test_hosts.py::TestHost::test_host_setparent",
+   "tests/test_hosts.py::TestHost::test_host_settemplate"
+  ],
+  "2": [
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+  ]
+ },
+ "idoft-cloudnetpy": {
+  "1": [
+   "tests/unit/test_drizzle.py::test_calc_beta_z_ratio",
+   "tests/unit/test_drizzle.py::test_calc_dia",
+   "tests/unit/test_drizzle.py::test_calc_fall_velocity",
+   "tests/unit/test_drizzle.py::test_find_lut_indices",
+   "tests/unit/test_drizzle.py::test_init_variables[Do]",
+   "tests/unit/test_drizzle.py::test_init_variables[S]",
+   "tests/unit/test_drizzle.py::test_init_variables[beta_corr]",
+   "tests/unit/test_drizzle.py::test_update_result_tables[S-93.7247943]",
+   "tests/unit/test_drizzle.py::test_update_result_tables[mu--1]",
+   "tests/unit/test_lwc.py::test_init_status[0]",
+   "tests/unit/test_lwc.py::test_update_status[0]"
+  ],
+  "2": [
+   "tests/unit/test_drizzle.py::test_calc_lwf",
+   "tests/unit/test_drizzle.py::test_is_converged",
+   "tests/unit/test_drizzle.py::test_update_result_tables[Do-10]",
+   "tests/unit/test_lwc.py::test_remove_good_profiles",
+   "tests/unit/test_lwc.py::test_update_status[1]",
+   "tests/unit/test_rpg.py::TestReduceHeader::test_1"
+  ],
+  "3": [
+   "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_N]",
+   "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_lwc]",
+   "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_lwf]",
+   "tests/unit/test_drizzle.py::test_calc_derived_products[v_air]",
+   "tests/unit/test_drizzle.py::test_calc_derived_products[v_drizzle]",
+   "tests/unit/test_drizzle.py::test_calc_lwc",
+   "tests/unit/test_drizzle.py::test_calc_v_air",
+   "tests/unit/test_drizzle.py::test_find_indices"
+  ],
+  "4": [
+   "tests/unit/test_classify.py::TestFindRain::test_1"
+  ],
+  "5": [
+   "tests/unit/test_classify.py::TestFindRain::test_3"
+  ]
+ },
+ "idoft-coinbase-commerce-python": {
+  "1": [
+   "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+  ],
+  "2": [
+   "tests/test_api_client.py::TestApiClient::test_authentication_error",
+   "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+  ],
+  "fixed": [
+   "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+   "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+   "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+   "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+   "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+  ]
+ },
+ "idoft-crom": {
+  "1": [
+   "tests/test_model.py::TestFactorySerialization::test_collapse_json",
+   "tests/test_model.py::TestFactorySerialization::test_toJSON"
+  ],
+  "5": [
+   "tests/test_model.py::TestFactorySerialization::test_toString"
+  ],
+  "6": [
+   "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+   "tests/test_model.py::TestFactorySerialization::test_toString_fast"
+  ],
+  "9": [
+   "tests/test_model.py::TestBaseResource::test_allows_multiple",
+   "tests/test_model.py::TestBaseResource::test_init_params",
+   "tests/test_model.py::TestBaseResource::test_list_my_props",
+   "tests/test_model.py::TestBaseResource::test_multiplicity"
+  ],
+  "fixed": [
+   "tests/test_model.py::TestBaseResource::test_check_reference",
+   "tests/test_model.py::TestFactorySerialization::test_toFile"
+  ]
+ },
+ "idoft-devtracker": {
+  "1": [
+   "devtracker/test_devtracker.py::test_add_start",
+   "devtracker/test_devtracker.py::test_current_status",
+   "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+   "devtracker/test_devtracker.py::test_today_report_err_one"
+  ],
+  "2": [
+   "devtracker/test_devtracker.py::test_make_project_csv",
+   "devtracker/test_devtracker.py::test_start_time"
+  ]
+ },
+ "idoft-domain2idna": {
+  "1": [
+   "tests/test_cli.py::TestCLI::test_domain"
+  ],
+  "fixed": [
+   "tests/test_cli.py::TestCLI::test_file",
+   "tests/test_converter.py::TestConverter::test_commented_line",
+   "tests/test_converter.py::TestConverter::test_hosts_file_format",
+   "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+   "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+   "tests/test_converter.py::TestConverter::test_to_idna_single",
+   "tests/test_helpers.py::TestFile::test_delete_not_exist",
+   "tests/test_helpers.py::TestFile::test_read_delete",
+   "tests/test_helpers.py::TestFile::test_write_delete",
+   "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+   "tests/test_init.py::TestInit::test_get"
+  ]
+ },
+ "idoft-easypy": {
+  "fixed": [
+   "tests/test_caching.py::test_resilient_between_timecaches",
+   "tests/test_concurrency.py::test_concurrent_done_status[False]",
+   "tests/test_concurrency.py::test_concurrent_done_status[True]",
+   "tests/test_concurrency.py::test_multiexception_api[concurrent]",
+   "tests/test_concurrency.py::test_multiexception_api[nonconcurrent]",
+   "tests/test_concurrency.py::test_multiexception_pickling",
+   "tests/test_concurrency.py::test_multiexception_types",
+   "tests/test_concurrency.py::test_multiobject_1",
+   "tests/test_concurrency.py::test_multiobject_exceptions",
+   "tests/test_concurrency.py::test_thread_context_stacks",
+   "tests/test_concurrency.py::test_thread_contexts_counters",
+   "tests/test_concurrency.py::test_thread_stacks",
+   "tests/test_exceptions.py::test_pickle_texception",
+   "tests/test_logging.py::test_indent_around_ctx",
+   "tests/test_logging.py::test_indent_around_function",
+   "tests/test_logging.py::test_indent_around_generator",
+   "tests/test_rwlock.py::test_rwlock",
+   "tests/test_signals.py::test_async",
+   "tests/test_signals.py::test_ctx",
+   "tests/test_signals.py::test_ctx_with_identifier",
+   "tests/test_signals.py::test_priorities",
+   "tests/test_signals.py::test_priorities_async",
+   "tests/test_signals.py::test_registration_context",
+   "tests/test_signals.py::test_signal_weakref",
+   "tests/test_signals.py::test_signal_weakref_complex_descriptors",
+   "tests/test_signals.py::test_signal_weakref_context_manager_delete_after",
+   "tests/test_signals.py::test_signal_weakref_context_manager_delete_after_with_identifier",
+   "tests/test_signals.py::test_signal_weakref_context_manager_delete_during",
+   "tests/test_signals.py::test_signal_weakref_context_manager_delete_during_with_identifier",
+   "tests/test_signals.py::test_signal_weakref_with_identifier",
+   "tests/test_signals.py::test_simple_signal_object_identifier",
+   "tests/test_signals.py::test_simple_signal_object_identifier_attribute",
+   "tests/test_signals.py::test_simple_signal_object_registration",
+   "tests/test_signals.py::test_simple_signal_object_wo_identifier",
+   "tests/test_signals.py::test_simple_signal_registration",
+   "tests/test_sync.py::test_logged_condition",
+   "tests/test_sync.py::test_logged_condition_exception",
+   "tests/test_sync.py::test_logged_condition_waited_for",
+   "tests/test_sync.py::test_logged_lock",
+   "tests/test_sync.py::test_synchronization_coordinator_failing_context_manager",
+   "tests/test_sync.py::test_synchronization_coordinator_timeout",
+   "tests/test_sync.py::test_synchronization_coordinator_with_multiobject_exception",
+   "tests/test_sync.py::test_wait_log_predicate"
+  ]
+ },
+ "idoft-eppy": {
+  "1": [
+   "eppy/tests/test_IDF.py::TestIDF::test_popidfobject",
+   "eppy/tests/test_IDF.py::TestIDF::test_removeidfobject",
+   "eppy/tests/test_fanpower.py::test_fan_maxcfm",
+   "eppy/tests/test_fanpower.py::testfanpower_bhp",
+   "eppy/tests/test_fanpower.py::testfanpower_watts"
+  ],
+  "2": [
+   "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_get_referenced_object",
+   "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_getreferingobjs",
+   "eppy/tests/test_examples.py::test_pythonic",
+   "eppy/tests/test_simpleread.py::test_idfreadtest"
+  ],
+  "3": [
+   "eppy/tests/test_hvacbuilder.py::test_connectcomponents",
+   "eppy/tests/test_hvacbuilder.py::test_renamenodes",
+   "eppy/tests/test_hvacbuilder.py::test_replacebranch",
+   "eppy/tests/test_json_functions.py::test_updateidf",
+   "eppy/tests/test_modeleditor.py::test_getallobjlists",
+   "eppy/tests/test_modeleditor.py::test_getiddgroupdict",
+   "eppy/tests/test_modeleditor.py::test_getrefnames",
+   "eppy/tests/test_modeleditor.py::test_idd_index",
+   "eppy/tests/test_modeleditor.py::test_idfinmsequence",
+   "eppy/tests/test_modeleditor.py::test_idfstr",
+   "eppy/tests/test_modeleditor.py::test_initread",
+   "eppy/tests/test_modeleditor.py::test_initreadtxt",
+   "eppy/tests/test_modeleditor.py::test_new",
+   "eppy/tests/test_modeleditor.py::test_newidfobject",
+   "eppy/tests/test_modeleditor.py::test_refname2key",
+   "eppy/tests/test_modeleditor.py::test_rename",
+   "eppy/tests/test_modeleditor.py::test_save",
+   "eppy/tests/test_modeleditor.py::test_save_with_lineendings_and_encodings",
+   "eppy/tests/test_modeleditor.py::test_saveas",
+   "eppy/tests/test_modeleditor.py::test_savecopy",
+   "eppy/tests/test_modeleditor.py::test_zonearea_zonevolume",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_1_layer_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_2_layer_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_airgap_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_infraredtransparent_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_material",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_nomass_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_roofvegetation_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_1_layer_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_2_layer_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_airgap_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_fails",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_infraredtransparent_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_material",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_nomass_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_roofvegetation_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_1_layer_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_2_layer_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_airgap_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_infraredtransparent_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_material",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_nomass_construction",
+   "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_roofvegetation_construction"
+  ],
+  "5": [
+   "eppy/tests/test_case_insensitive.py::test_contains[BUILDING]",
+   "eppy/tests/test_case_insensitive.py::test_contains[BuIlDiNg]",
+   "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+   "eppy/tests/test_case_insensitive.py::test_contains[building]",
+   "eppy/tests/test_case_insensitive.py::test_del[BUILDING]",
+   "eppy/tests/test_case_insensitive.py::test_del[BuIlDiNg]",
+   "eppy/tests/test_case_insensitive.py::test_del[Building]",
+   "eppy/tests/test_case_insensitive.py::test_del[building]",
+   "eppy/tests/test_case_insensitive.py::test_get_and_set[BUILDING]",
+   "eppy/tests/test_case_insensitive.py::test_get_and_set[BuIlDiNg]",
+   "eppy/tests/test_case_insensitive.py::test_get_and_set[Building]",
+   "eppy/tests/test_case_insensitive.py::test_get_and_set[building]",
+   "eppy/tests/test_idf_helpers.py::test_getanymentions",
+   "eppy/tests/test_idf_helpers.py::test_getidfkeyswithnodes"
+  ]
+ },
+ "idoft-flask-multi-redis": {
+  "3": [
+   "test/integration/test_flask_multi_redis.py::test_aggregated_delitem_method",
+   "test/integration/test_flask_multi_redis.py::test_aggregated_setitem_method",
+   "test/integration/test_flask_multi_redis.py::test_aggregator_keys_method",
+   "test/integration/test_flask_multi_redis.py::test_aggregator_set_method",
+   "test/integration/test_flask_multi_redis.py::test_aggregator_strategy",
+   "test/integration/test_flask_multi_redis.py::test_custom_default_config",
+   "test/integration/test_flask_multi_redis.py::test_custom_node",
+   "test/integration/test_flask_multi_redis.py::test_custom_prefix",
+   "test/integration/test_flask_multi_redis.py::test_extension_registration_if_app_has_no_extensions",
+   "test/integration/test_flask_multi_redis.py::test_init_app",
+   "test/integration/test_flask_multi_redis.py::test_loadbalanced_delitem_method",
+   "test/integration/test_flask_multi_redis.py::test_loadbalanced_setitem_method",
+   "test/integration/test_flask_multi_redis.py::test_methods_transmission_from_aggregator",
+   "test/integration/test_flask_multi_redis.py::test_task_runner"
+  ]
+ },
+ "idoft-freezegun": {
+  "10": [
+   "tests/test_warnings.py::test_ignore_warnings_in_start",
+   "tests/test_warnings.py::test_ignore_warnings_in_stop"
+  ],
+  "2": [
+   "tests/test_class_import.py::test_import_after_start",
+   "tests/test_datetimes.py::test_min_and_max"
+  ],
+  "7": [
+   "tests/test_datetimes.py::test_time_ns"
+  ],
+  "9": [
+   "tests/test_uuid.py::test_uuid1_future",
+   "tests/test_uuid.py::test_uuid1_past"
+  ]
+ },
+ "idoft-krllint": {
+  "10": [
+   "tests/test_open_task.py::OpenTaskTestCase::test_rule_without_fix"
+  ],
+  "2": [
+   "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix"
+  ]
+ },
+ "idoft-ljson": {
+  "1": [
+   "test/test_ljson_disk.py::test_edit",
+   "test/test_ljson_disk.py::test_read",
+   "test/test_ljson_mem.py::test_contains"
+  ],
+  "3": [
+   "test/test_ljson_mem.py::test_edit"
+  ]
+ },
+ "idoft-mdutils": {
+  "1": [
+   "tests/test_mdutils.py::TestMdUtils::test_create_md_file",
+   "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_checked_list",
+   "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_list",
+   "tests/test_mdutils.py::TestMdUtils::test_new_header",
+   "tests/test_mdutils.py::TestMdUtils::test_new_list",
+   "tests/test_mdutils.py::TestMdUtils::test_new_reference_image_markdown_data",
+   "tests/test_mdutils.py::TestMdUtils::test_new_table_of_contents",
+   "tests/test_mdutils.py::TestMdUtils::test_references_placed_in_markdown_file"
+  ]
+ },
+ "idoft-odinweb": {
+  "1": [
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware"
+  ]
+ },
+ "idoft-py-autodoc": {
+  "1": [
+   "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+  ],
+  "15": [
+   "examples/test_requests.py::TestUnittest::test_foo_bar"
+  ],
+  "2": [
+   "examples/test_unittest.py::TestUnittest::test_foo_bar",
+   "tests/test_autodoc.py::TestAutodoc::test_parse_response"
+  ],
+  "5": [
+   "examples/test_requests.py::TestUnittest::test_get"
+  ],
+  "6": [
+   "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+  ],
+  "7": [
+   "examples/test_pytest.py::test_index"
+  ],
+  "9": [
+   "examples/test_unittest.py::TestUnittest::test_get"
+  ],
+  "fixed": [
+   "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+   "examples/test_gen_each_case.py::TestUnittest::test_get",
+   "examples/test_gen_each_case.py::TestUnittest::test_post",
+   "examples/test_pytest.py::test_post",
+   "examples/test_requests.py::TestUnittest::test_post",
+   "examples/test_unittest.py::TestUnittest::test_post",
+   "tests/test_autodoc.py::TestAutodoc::test_create_document"
+  ]
+ },
+ "idoft-pykicad": {
+  "1": [
+   "tests/test_module.py::NetTests::test_net_auto_numbering"
+  ],
+  "2": [
+   "tests/test_module.py::CurveTests::test_curve",
+   "tests/test_module.py::DrillTests::test_drill",
+   "tests/test_module.py::DrillTests::test_drill_offset",
+   "tests/test_module.py::DrillTests::test_drill_oval",
+   "tests/test_module.py::LineTests::test_line",
+   "tests/test_module.py::ModelTests::test_model",
+   "tests/test_module.py::ModuleTests::test_module",
+   "tests/test_module.py::PadTests::test_pad",
+   "tests/test_module.py::PadTests::test_pad_with_drill",
+   "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+   "tests/test_module.py::PolygonTests::test_polygon",
+   "tests/test_module.py::TextTests::test_text",
+   "tests/test_module.py::TextTests::test_text_with_hide",
+   "tests/test_module.py::TextTests::test_text_with_justify",
+   "tests/test_module.py::TextTests::test_text_with_rotation",
+   "tests/test_module.py::TextTests::test_text_with_thickness",
+   "tests/test_pcb.py::NetClassTests::test_parse",
+   "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+   "tests/test_pcb.py::NetClassTests::test_with_net",
+   "tests/test_pcb.py::NetClassTests::test_without_net",
+   "tests/test_pcb.py::PcbTests::test_comment",
+   "tests/test_pcb.py::PcbTests::test_layers",
+   "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+   "tests/test_pcb.py::PcbTests::test_num_nets",
+   "tests/test_pcb.py::PcbTests::test_page",
+   "tests/test_pcb.py::PcbTests::test_single_module",
+   "tests/test_pcb.py::ZoneTests::test_parse"
+  ]
+ },
+ "idoft-supertunnel": {
+  "1": [
+   "supertunnel/ssh/continuous_test.py::test_backoff",
+   "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+   "supertunnel/ssh/continuous_test.py::test_run",
+   "supertunnel/ssh/continuous_test.py::test_run_continuous",
+   "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+   "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+   "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+   "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+   "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+  ]
+ },
+ "idoft-todo-sync": {
+  "1": [
+   "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node6-expected_node6]"
+  ],
+  "12": [
+   "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node7-expected_node7]"
+  ],
+  "14": [
+   "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node4-expected_node4]"
+  ],
+  "17": [
+   "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node3-expected_node3]"
+  ],
+  "2": [
+   "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node8-expected_node8]"
+  ],
+  "3": [
+   "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node9-expected_node9]"
+  ],
+  "4": [
+   "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node2-expected_node2]"
+  ],
+  "5": [
+   "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node0-expected_node0]"
+  ],
+  "8": [
+   "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node10-expected_node10]"
+  ]
+ },
+ "idoft-tunacell": {
+  "1": [
+   "tunacell/tests/test_experiment.py::test_counts",
+   "tunacell/tests/test_experiment.py::test_experiment_abspath",
+   "tunacell/tests/test_experiment.py::test_experiment_attributes",
+   "tunacell/tests/test_experiment.py::test_experiment_datatype",
+   "tunacell/tests/test_experiment.py::test_experiment_iter",
+   "tunacell/tests/test_experiment.py::test_experiment_label",
+   "tunacell/tests/test_experiment.py::test_experiment_metadata",
+   "tunacell/tests/test_experiment.py::test_load_experiment",
+   "tunacell/tests/test_observable.py::test_observable_str"
+  ],
+  "6": [
+   "tunacell/tests/test_filters.py::test_cell_any"
+  ]
+ },
+ "jsonschema": {
+  "2": [
+   "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+   "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+  ]
+ },
+ "packaging": {
+  "10": [
+   "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi"
+  ]
+ },
+ "rich": {
+  "1": [
+   "tests/test_box.py::test_get_row",
+   "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+   "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+   "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+   "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+  ]
+ }
+}

@@ -463,9 +463,101 @@ def timing_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
            "serial_s": [r.duration for r in normal], "det_s": [r.duration for r in det],
            "precompile_s": [r.precompile_s for r in det],
            "tests": len(normal[0].outcomes) if normal else 0, "runner": runner_info()}
+    res.update(startup_cost(p, rundir, args.timing_runs))
     m_n, m_d = statistics.median(res["serial_s"]), statistics.median(res["det_s"])
     res["slowdown_pct"] = (m_d / m_n - 1) * 100 if m_n > 0 else None
     (outdir / f"{p.name}.timing.json").write_text(json.dumps(res, indent=2))
+    return res
+
+
+def startup_cost(p: Prepared, rundir: Path, runs: int) -> dict:
+    """Fixed cost of a pytest start with and without --det, in the repository's venv.
+
+    A one-test suite in an empty directory (its own rootdir): what is left of the
+    --det run time is start-up (re-exec, incremental bytecode check of the venv,
+    plugin installation). Measured after the repository runs (warm caches), runs
+    interleaved; the medians are reported.
+    """
+    d = rundir / "startup"
+    shutil.rmtree(d, ignore_errors=True)
+    d.mkdir(parents=True)
+    (d / "pytest.ini").write_text("[pytest]\n")
+    (d / "test_one.py").write_text("def test_one():\n    assert True\n")
+    env = clean_env(p.python, p.env)
+    base = [p.python, "-m", "pytest", "-q", "-p", "no:cacheprovider"]
+    normal, det = [], []
+    for _ in range(runs):
+        normal.append(sh(base, cwd=d, env=env, timeout=600)[2])
+        det.append(sh(base + ["--det"], cwd=d, env=env, timeout=600)[2])
+    return {"startup_normal_s": normal, "startup_det_s": det,
+            "startup_cost_s": statistics.median(det) - statistics.median(normal)}
+
+
+def order_only_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
+    """P-009 item 5: are the reproduced tests reproduced by the order alone?
+
+    For every reproduced test, the --det configuration that reproduced it (fixed
+    order or --det-seed=S) is run again with every other Level 0 control disabled
+    (--det-disable=seeds,time,fs,net,hashseed,bytecode), up to --confirm times; the
+    runs of one configuration stop early once every test of that configuration has
+    passed at least once (it can no longer fail confirm/confirm).
+    """
+    targets = json.loads(Path(args.targets).read_text()).get(p.name, {})
+    rundir = work / "orderonly" / p.name
+    shutil.rmtree(rundir, ignore_errors=True)
+    rundir.mkdir(parents=True)
+    disable = "seeds,time,fs,net,hashseed,bytecode"
+    tests = {}
+    for config, nodeids in sorted(targets.items()):
+        seed = None if config == "fixed" else int(config)
+        counts = {nid: collections.Counter() for nid in nodeids}
+        n = 0
+        for i in range(args.confirm):
+            r = run_pytest(p, rundir, "seed" if seed is not None else "det", i, args.run_timeout, seed=seed,
+                           disable=disable)
+            n += 1
+            for nid in nodeids:
+                counts[nid][r.outcomes.get(nid, "missing")] += 1
+            log(f"{p.name}: order-only {config} #{i} {r.duration:.1f}s exit={r.exit_code}")
+            if r.timed_out or all(sum(v for k, v in c.items() if not is_fail(k)) for c in counts.values()):
+                break
+        for nid in nodeids:
+            fails = sum(v for k, v in counts[nid].items() if is_fail(k))
+            tests[nid] = {"config": config, "runs": n, "fails": fails, "outcomes": dict(counts[nid]),
+                          "order_alone": fails == n == args.confirm}
+    res = {"name": p.name, "kind": p.kind, "status": "ok", "python": p.python_version, "disable": disable,
+           "confirm": args.confirm, "tests": tests,
+           "reproduced": len(tests), "order_alone": sum(t["order_alone"] for t in tests.values())}
+    (outdir / f"{p.name}.orderonly.json").write_text(json.dumps(res, indent=2))
+    return res
+
+
+def baseline_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
+    """P-009 item 7: --runs baseline runs (random order, xdist when available) plus
+    the exact package versions of the venv, to compare runners."""
+    rundir = work / "baseline" / p.name
+    shutil.rmtree(rundir, ignore_errors=True)
+    rundir.mkdir(parents=True)
+    runs = []
+    for i in range(args.runs):
+        r = run_pytest(p, rundir, "normal", i, args.run_timeout)
+        runs.append(r)
+        log(f"{p.name}: baseline #{i} {r.duration:.1f}s exit={r.exit_code}")
+    ids = sorted(set().union(*(r.outcomes.keys() for r in runs))) if runs else []
+    per_test = {nid: dict(collections.Counter(r.outcomes.get(nid, "missing") for r in runs)) for nid in ids}
+    known = {k: {nid: per_test[nid] for nid in ids if nid == k or nid.startswith(k + "[")} for k in p.known_flaky}
+    unstable = {nid: c for nid, c in per_test.items() if len(c) > 1}
+    freeze = sh(["uv", "pip", "freeze", "--python", p.python], timeout=120)[1]
+    res = {"name": p.name, "kind": p.kind, "status": "ok", "python": p.python_version, "xdist": p.xdist,
+           "install": p.install_cmd, "commit": p.commit, "runs": len(runs),
+           "durations_s": [r.duration for r in runs], "exit_codes": [r.exit_code for r in runs],
+           "tests": len(ids), "unstable": unstable, "known_flaky": known, "freeze": freeze.splitlines(),
+           "runner": runner_info()}
+    (outdir / f"{p.name}.baseline.json").write_text(json.dumps(res, indent=2))
+    for r in runs[:2]:
+        log_file = rundir / f"normal_{r.index}.log"
+        if log_file.exists():
+            shutil.copy2(log_file, outdir / f"{p.name}.baseline_{r.index}.log")
     return res
 
 
@@ -960,21 +1052,41 @@ def write_report(outdir: Path, meta: dict) -> Path:
     L.append("## Timing\n")
     if timings:
         sl = [t["slowdown_pct"] for t in timings if t.get("slowdown_pct") is not None]
-        runner = timings[0].get("runner", {})
-        rdesc = ", ".join(f"{k}={v}" for k, v in runner.items())
-        shared = "GitHub-hosted runner, one repository per runner" if runner.get("RUNNER_ENVIRONMENT") else "local host"
+        cpus = collections.Counter((t.get("runner") or {}).get("cpu_model") or "unknown CPU" for t in timings)
+        runner0 = timings[0].get("runner", {})
+        shared = "GitHub-hosted runner" if runner0.get("RUNNER_ENVIRONMENT") else "local host"
+        cpu_desc = "; ".join(f"{c} ({n} {'repository' if n == 1 else 'repositories'})" for c, n in cpus.most_common())
         L.append(f"Quiet timing pass: {len(timings)} repositories, one per {shared}, {meta.get('timing_runs', 3)} serial "
                  f"fixed-order normal runs vs {meta.get('timing_runs', 3)} `--det` runs interleaved on the same machine; "
-                 f"median per repository. Runner: {rdesc}. Labelled **DECLARED-NOISY**: hosted runners are virtual "
+                 f"median per repository. Every ratio compares two runs on the same runner, but the runners differ: "
+                 f"{len(cpus)} CPU {'model' if len(cpus) == 1 else 'models'} — {cpu_desc}; "
+                 f"{runner0.get('cpus', '?')} vCPUs, {runner0.get('ImageOS', runner0.get('platform', ''))} "
+                 f"{runner0.get('ImageVersion', '')}. Labelled **DECLARED-NOISY**: hosted runners are virtual "
                  f"machines on shared hardware.\n")
         L.append(f"**Slowdown of `--det` (MEASURED, DECLARED-NOISY): median {_fmt(med(sl) if sl else None)}%**, "
                  f"min {_fmt(min(sl) if sl else None)}%, max {_fmt(max(sl) if sl else None)}%.\n")
-        L.append("| repo | tests | normal serial s (median) | --det s (median) | slowdown % | precompile s (per run) |")
-        L.append("|---|---:|---:|---:|---:|---|")
+        big = [t["slowdown_pct"] for t in timings if t.get("slowdown_pct") is not None and med(t["serial_s"]) >= 1.0]
+        small = [t["name"] for t in timings if t.get("slowdown_pct") is not None and med(t["serial_s"]) < 1.0]
+        startup = [t["startup_cost_s"] for t in timings if t.get("startup_cost_s") is not None]
+        extra = [med(t["det_s"]) - med(t["serial_s"]) for t in timings]
+        L.append(f"* Without the suites that run in under 1 s ({', '.join(small) or 'none'}): median "
+                 f"{_fmt(med(big) if big else None)}% over {len(big)} repositories (MEASURED, DECLARED-NOISY).")
+        L.append(f"* Absolute extra time of `--det` per suite run: median {_fmt(med(extra) if extra else None, 2)} s "
+                 f"(MEASURED, DECLARED-NOISY)." + (
+                     f" Fixed start-up cost (one-test suite, same venv, warm caches): median "
+                     f"{_fmt(med(startup), 2)} s, min {_fmt(min(startup), 2)} s, max {_fmt(max(startup), 2)} s "
+                     f"(MEASURED, DECLARED-NOISY)." if startup else " Fixed start-up cost: not measured in this pass "
+                     "(UNKNOWN)."))
+        L.append("")
+        L.append("| repo | tests | runner CPU | normal serial s (median) | --det s (median) | slowdown % | "
+                 "start-up cost s | precompile s (per run) |")
+        L.append("|---|---:|---|---:|---:|---:|---:|---|")
         for t in timings:
             pre = ", ".join(_fmt(v, 2) for v in t.get("precompile_s", []))
-            L.append(f"| {t['name']} | {t['tests']} | {_fmt(med(t['serial_s']), 2)} | {_fmt(med(t['det_s']), 2)} | "
-                     f"{_fmt(t.get('slowdown_pct'))} | {pre} |")
+            cpu = (t.get("runner") or {}).get("cpu_model") or "unknown CPU"
+            L.append(f"| {t['name']} | {t['tests']} | {cpu} | {_fmt(med(t['serial_s']), 2)} | "
+                     f"{_fmt(med(t['det_s']), 2)} | {_fmt(t.get('slowdown_pct'))} | "
+                     f"{_fmt(t.get('startup_cost_s'), 2)} | {pre} |")
         L.append("")
     else:
         L.append("Quiet timing pass: not run yet (UNKNOWN).\n")
@@ -1072,9 +1184,13 @@ def main(argv=None) -> int:
     ap.add_argument("--repo-budget", type=float, default=2700,
                     help="seconds per repository after which the exploration stops")
     ap.add_argument("--report-only", action="store_true")
-    ap.add_argument("--mode", choices=("round", "prepare", "timing"), default="round",
+    ap.add_argument("--mode", choices=("round", "prepare", "timing", "orderonly", "baseline"), default="round",
                     help="round: full protocol; prepare: install/collect/first-run filters only (CI selection); "
-                         "timing: quiet timing pass")
+                         "timing: quiet timing pass; orderonly: re-run reproduced tests with every Level 0 "
+                         "control disabled except the order (--targets); baseline: --runs baseline runs only, "
+                         "with the installed package versions")
+    ap.add_argument("--targets", default=str(HERE / "order_only_targets.json"),
+                    help="orderonly: JSON {repo: {seed or 'fixed': [nodeid, ...]}}")
     ap.add_argument("--timing-runs", type=int, default=3)
     ap.add_argument("--no-ablation", action="store_true", help="skip the per-control ablation of broken tests")
     ap.add_argument("--no-xdist", action="store_true", help="serial baseline (no pytest-xdist) even when supported")
@@ -1177,6 +1293,10 @@ def main(argv=None) -> int:
                     r = prepare_check(p, args, outdir, work)
                 elif args.mode == "timing":
                     r = timing_pass(p, args, outdir, work)
+                elif args.mode == "orderonly":
+                    r = order_only_pass(p, args, outdir, work)
+                elif args.mode == "baseline":
+                    r = baseline_pass(p, args, outdir, work)
                 else:
                     r = measure(p, args, outdir, work)
             except Exception as e:  # pragma: no cover

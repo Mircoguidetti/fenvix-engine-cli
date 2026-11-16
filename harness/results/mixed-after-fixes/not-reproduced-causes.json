@@ -1,19 +1,19 @@
 {
   "counts": {
     "a": 31,
-    "c": 11,
-    "d": 5,
-    "b": 1
+    "c": 10,
+    "d": 4,
+    "b": 3
   },
   "by_pool": {
     "popular": {
       "a": 28
     },
     "flaky": {
-      "c": 11,
-      "d": 5,
+      "c": 10,
+      "d": 4,
       "a": 3,
-      "b": 1
+      "b": 3
     }
   },
   "examples": {
@@ -37,11 +37,12 @@
       "idoft-domain2idna: `tests/test_cli.py::TestCLI::test_domain_output` (fails in every baseline run; only the failing phase changes (error+teardown-error, failed+teardown-error): not flaky in outcome)",
       "idoft-domain2idna: `tests/test_cli.py::TestCLI::test_empty_domain` (fails in every baseline run; only the failing phase changes (error+teardown-error, failed+teardown-error): not flaky in outcome)",
       "idoft-domain2idna: `tests/test_cli.py::TestCLI::test_file_output` (fails in every baseline run; only the failing phase changes (error+teardown-error, failed+teardown-error): not flaky in outcome)",
-      "idoft-eppy: `eppy/tests/test_parse_error.py::test_capture_real_error` (fails in every baseline run; only the failing phase changes (error, failed): not flaky in outcome)",
-      "idoft-panamah-sdk-python: `tests/test_processor.py::TestStream::test_expiration_by_max_length` (IDoFT category NOD, no concurrency/external marker found)"
+      "idoft-eppy: `eppy/tests/test_parse_error.py::test_capture_real_error` (fails in every baseline run; only the failing phase changes (error, failed): not flaky in outcome)"
     ],
     "b": [
-      "idoft-panamah-sdk-python: `tests/test_processor.py::TestStream::test_expiration_by_max_size` (exception OSError / diverging event -)"
+      "idoft-panamah-sdk-python: `tests/test_processor.py::TestStream::test_expiration_by_max_age` (filesystem state in a fixed (non-temporary) directory, written by the test or its set-up/helpers (shutil.rmtree): the xdist baseline workers share it, a serial --det run never does (cross-process, outside Level 0))",
+      "idoft-panamah-sdk-python: `tests/test_processor.py::TestStream::test_expiration_by_max_length` (filesystem state in a fixed (non-temporary) directory, written by the test or its set-up/helpers (shutil.rmtree): the xdist baseline workers share it, a serial --det run never does (cross-process, outside Level 0))",
+      "idoft-panamah-sdk-python: `tests/test_processor.py::TestStream::test_expiration_by_max_size` (filesystem state in a fixed (non-temporary) directory, written by the test or its set-up/helpers (shutil.rmtree): the xdist baseline workers share it, a serial --det run never does (cross-process, outside Level 0))"
     ]
   },
   "idoft": [
