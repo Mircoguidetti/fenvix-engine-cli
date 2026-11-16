@@ -392,6 +392,52 @@ def _wrap_selector_select(real):
     return select
 
 
+class _TimedLock:
+    """Transparent wrapper of a Lock/RLock created under --det.
+
+    ``acquire(timeout=t)`` that times out advances the virtual clock by ``t``
+    (the C-level wait took real time): retry loops bounded by a time.time()
+    deadline terminate. Everything else is delegated to the real lock.
+    """
+
+    __slots__ = ("_lock", "__weakref__")
+
+    def __init__(self, lock):
+        self._lock = lock
+
+    def acquire(self, blocking=True, timeout=-1):
+        got = self._lock.acquire(blocking, timeout)
+        if not got and blocking and timeout is not None and timeout > 0 and CLOCK is not None:
+            CLOCK.advance(int(timeout * NS))
+        return got
+
+    def release(self):
+        self._lock.release()
+
+    def __enter__(self):
+        return self.acquire()
+
+    def __exit__(self, *exc):
+        self._lock.release()
+
+    def locked(self):
+        return self._lock.locked()
+
+    def __getattr__(self, name):  # _is_owned, _release_save, _acquire_restore, _at_fork_reinit...
+        return getattr(self._lock, name)
+
+    def __repr__(self):
+        return repr(self._lock)
+
+
+def _timed_factory(real):
+    def factory(*args, **kwargs):
+        return _TimedLock(real(*args, **kwargs))
+
+    factory.__wrapped__ = real
+    return factory
+
+
 # Installation ---------------------------------------------------------------------
 # Stdlib modules that bind clock functions at import time and use them for real
 # blocking waits: import them now so they keep the *real* functions.
@@ -427,6 +473,8 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
     patcher.set_type_attr(real_datetime, "now", classmethod(_dt_now))
     patcher.set_type_attr(real_datetime, "utcnow", classmethod(_dt_utcnow))
     patcher.set(threading.Condition, "wait", _condition_wait)
+    patcher.set(threading, "Lock", _timed_factory(threading.Lock))
+    patcher.set(threading, "RLock", _timed_factory(threading.RLock))
     import subprocess
 
     patcher.set(subprocess.Popen, "__init__", _mark_external(subprocess.Popen.__init__))
