@@ -209,6 +209,8 @@ def flaky_summary(items, spec):
 
 
 def main(argv):
+    md = "--md" in argv
+    argv = [a for a in argv if a != "--md"]
     run_ids = argv or sorted(p.name for p in RES.iterdir() if p.is_dir())
     summary = {"walk": {}, "flaky": {}, "agent": {}, "finer": {}}
     for rid in run_ids:
@@ -254,7 +256,10 @@ def main(argv):
             d = load(p)
             summary["finer"][d["repo"]] = finer_summary(d)
     (RES / "summary.json").write_text(json.dumps(summary, indent=1, default=str))
-    print_tables(summary)
+    if md:
+        print_md(summary)
+    else:
+        print_tables(summary)
     return 0
 
 
@@ -309,6 +314,79 @@ def print_tables(s):
     for k, f in s["finer"].items():
         print(f"\n== finer {k}: " + json.dumps({kk: (vv["time"] if isinstance(vv, dict) and "time" in vv else vv)
                                                  for kk, vv in f.items()}, default=str)[:900])
+
+
+def ms(st, nd=0):
+    """'median / mean' of a stats dict, in percent."""
+    if not st:
+        return "n/a"
+    return f"{100 * st['median']:.{nd}f}% / {100 * st['mean']:.{nd}f}%"
+
+
+def print_md(s):
+    """Report-ready markdown tables (every number MEASURED on the stated sample)."""
+    print("| project | lang | transitions | units (sample) | rule | time skipped median / mean | tests skipped "
+          "median / mean | time to green before -> after, median / mean | invalidate all (why) | verified skips "
+          "(wrong, flaky) |")
+    print("|---|---|---:|---|---|---:|---:|---|---|---|")
+    for name, w in s["walk"].items():
+        if not w["transitions"]:
+            continue
+        v = w["verify"]
+        ver = f"{v.get('checked', 0)} ({v.get('wrong', 0)}, {v.get('flaky', 0)})"
+        why = ", ".join(f"{k} {n}" for k, n in sorted(w["invalidate_all_why"].items(), key=lambda x: -x[1]))
+        inv = f"{w['invalidate_all']}/{w['transitions']} ({why or '-'})"
+        tb = w.get("ttg_before_s") or {}
+        for r in rules_for(w["lang"]):
+            x = w.get(r) or {}
+            if not x.get("time"):
+                continue
+            ta = x.get("ttg_after_s") or {}
+            ttg = (f"{tb.get('median', 0):.0f}s -> {ta.get('median', 0):.0f}s / {tb.get('mean', 0):.0f}s -> "
+                   f"{ta.get('mean', 0):.0f}s") if tb else "n/a"
+            print(f"| {name} | {w['lang']} | {w['transitions']} | {w['units']} ({w['sample']:.0%}) | {r} | "
+                  f"{ms(x['time'])} | {ms(x['count'])} | {ttg} | {inv} | {ver} |")
+    if s["agent"]:
+        print()
+        print("| repository : agent | PRs | pushes | rule | time skipped per push median / mean | verified (wrong) |")
+        print("|---|---:|---:|---|---:|---|")
+        for k, ag in s["agent"].items():
+            for r, st in ag["pooled_time"].items():
+                if st:
+                    print(f"| {k} | {len(ag['prs'])} | {ag['pushes']} | {r} | {ms(st)} | "
+                          f"{ag['verify'].get('checked', 0)} ({ag['verify'].get('wrong', 0)}) |")
+    if s["flaky"]:
+        print()
+        print("| suite | CI groups | runs | failed runs, reproducible-flaky | always failing groups | flaky run rate | "
+              "mean job min | wasted min per run | flaky tests |")
+        print("|---|---:|---:|---:|---:|---:|---:|---:|---|")
+        for name, f in s["flaky"].items():
+            ft = ", ".join(f"{t} x{n}" for t, n in f["flaky_tests"][:4])
+            print(f"| {name} | {f['groups']} | {f['attempts']} | {f['flaky_failed_attempts']} | "
+                  f"{f['always_failing_groups']} | {pct(f['flaky_run_rate'])} | {f['mean_job_min'] or 0:.1f} | "
+                  f"{f['wasted_min_per_job'] or 0:.2f} | {ft or '-'} |")
+    if s["finer"]:
+        keys = ["strict/closure", "strict/file+guard", "strict/line+guard", "strict/line+names", "strict/line",
+                "relaxed/line+guard", "relaxed/line+names", "relaxed/line"]
+        print()
+        print("| library | transitions | config (strict) | " + " | ".join(keys) + " |")
+        print("|---|---:|---:|" + "---:|" * len(keys))
+        agg = {k: ([], []) for k in keys}
+        for repo, f in s["finer"].items():
+            cells = []
+            for k in keys:
+                x = f.get(k)
+                if not x:
+                    cells.append("n/a")
+                    continue
+                agg[k][0].append(x["time"]["median"])
+                agg[k][1].append(x["time"]["mean"])
+                bad = f" **{x['outcome_changed']} wrong**" if x["outcome_changed"] else ""
+                cells.append(f"{100 * x['time']['median']:.0f}/{100 * x['time']['mean']:.0f}{bad}")
+            print(f"| {repo} | {f['evaluated']} | {f['config_strict']} | " + " | ".join(cells) + " |")
+        print("| **median of medians / mean of means** | | | " + " | ".join(
+            f"{100 * statistics.median(a):.0f}/{100 * statistics.fmean(b):.0f}" if a else "n/a"
+            for a, b in agg.values()) + " |")
 
 
 if __name__ == "__main__":

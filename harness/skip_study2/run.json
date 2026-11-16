@@ -1,5 +1,5 @@
-{"run_id": "r8",
- "flaky": [
-  {"spec": "docusaurus", "reps": 10}
+{"run_id": "r9",
+ "agent": [
+  {"spec": "home-assistant", "query": "head:claude/", "label": "claude-code", "max_prs": 8, "sample": 0.04, "budget_min": 340}
  ]
 }
