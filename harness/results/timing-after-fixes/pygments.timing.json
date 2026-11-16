@@ -1,0 +1,34 @@
+{
+  "name": "pygments",
+  "kind": "popular",
+  "status": "ok",
+  "python": "3.13",
+  "serial_s": [
+    19.265146097,
+    18.90512964,
+    19.143653465
+  ],
+  "det_s": [
+    27.334151988000002,
+    20.982753019,
+    21.017591608999993
+  ],
+  "precompile_s": [
+    6.842,
+    0.631,
+    0.583
+  ],
+  "tests": 5346,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000008437",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 7763 64-Core Processor"
+  },
+  "slowdown_pct": 9.788821906048817
+}
