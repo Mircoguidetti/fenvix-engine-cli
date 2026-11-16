@@ -375,13 +375,14 @@ def pytest_runtest_logreport(report):
 
 
 def _exception_of(report) -> list:
-    """[exception type, phase, first line of the message] of a failed report."""
+    """[exception type, phase, first line of the message, crash path:line] of a failed report."""
     crash = getattr(getattr(report, "longrepr", None), "reprcrash", None)
     message = getattr(crash, "message", None) or str(getattr(report, "longrepr", "") or "")
     first = message.strip().splitlines()[0] if message.strip() else ""
     head = first.split(":", 1)[0].strip()
     etype = head.rsplit(".", 1)[-1] if head and " " not in head else "AssertionError" if first.startswith("assert") else "unknown"
-    return [etype, report.when, first[:200]]
+    where = f"{getattr(crash, 'path', '')}:{getattr(crash, 'lineno', '')}" if crash is not None else ""
+    return [etype, report.when, first[:200], where]
 
 
 _OUTCOMES_PATH: list = []
