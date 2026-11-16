@@ -769,6 +769,9 @@ def main(argv=None) -> int:
     ap.add_argument("--repo-budget", type=float, default=2700,
                     help="seconds per repository after which the exploration stops")
     ap.add_argument("--report-only", action="store_true")
+    ap.add_argument("--fresh", action="store_true", help="discard results already in --out instead of resuming")
+    ap.add_argument("--checkpoint", action="store_true",
+                    help="git commit + push the results directory after every repository (survives restarts)")
     args = ap.parse_args(argv)
 
     cfg = json.loads(Path(args.repos).read_text())
@@ -804,17 +807,36 @@ def main(argv=None) -> int:
         return 0
     work.mkdir(parents=True, exist_ok=True)
     outdir.mkdir(parents=True, exist_ok=True)
-    for f in list(outdir.glob("*.summary.json")) + list(outdir.glob("*.csv")):
-        f.unlink()
+    if args.fresh:
+        for f in list(outdir.glob("*.summary.json")) + list(outdir.glob("*.csv")) + list(outdir.glob("skipped.json")):
+            f.unlink()
     wheel = args.wheel or build_wheel(work)
     log(f"wheel: {wheel}")
 
-    skipped: list[dict] = []
-    results: list[dict] = []
+    # Resume: repositories already measured or discarded are not redone.
+    results: list[dict] = [json.loads(f.read_text()) for f in sorted(outdir.glob("*.summary.json"))]
+    skipped: list[dict] = json.loads((outdir / "skipped.json").read_text()) if (outdir / "skipped.json").exists() else []
+    finished = {r["name"] for r in results} | {s_["name"] for s_ in skipped}
     lock = threading.Lock()
-    queues = {k: list(v) for k, v in pools.items()}
-    done_ok = collections.Counter()
+    queues = {k: [r for r in v if r["name"] not in finished] for k, v in pools.items()}
+    done_ok = collections.Counter(r["kind"] for r in results if r.get("status") == "ok")
     running = collections.Counter()
+    if finished:
+        log(f"resuming: {len(results)} measured, {len(skipped)} discarded already")
+
+    def checkpoint(name: str) -> None:
+        if not args.checkpoint:
+            return
+        rel = os.path.relpath(outdir, ROOT)
+        sh(["git", "add", "-A", rel], cwd=ROOT)
+        msg = (f"Harness results: {name} ({sum(done_ok.values())} measured)\n\n"
+               "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n"
+               "Claude-Session: https://claude.ai/code/session_01YAF6Dii5H2Yb6A4iModrCE")
+        if sh(["git", "commit", "-q", "-m", msg], cwd=ROOT)[0] == 0:
+            for attempt in range(4):
+                if sh(["git", "push", "-q"], cwd=ROOT, timeout=120)[0] == 0:
+                    break
+                time.sleep(2 ** (attempt + 1))
 
     def take():
         """Next candidate of a pool that still needs repositories (pools alternate)."""
@@ -854,6 +876,7 @@ def main(argv=None) -> int:
                 (outdir / "skipped.json").write_text(json.dumps(skipped, indent=2))
                 meta["order"] = [x["name"] for x in results if x.get("status") == "ok"]
                 write_report(outdir, meta)  # partial report after every repository
+                checkpoint(r["name"])
             log(f"done {r['name']} [{kind}]: {r.get('status')} (ok so far: {dict(done_ok)})")
 
     threads = [threading.Thread(target=worker) for _ in range(args.jobs)]
