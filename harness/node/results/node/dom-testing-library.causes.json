@@ -1,0 +1,50 @@
+[
+ {
+  "repo": "dom-testing-library",
+  "pool": "popular",
+  "nodeid": "src/__tests__/element-queries.js::can filter results of label query based on selector",
+  "class": "external",
+  "evidence": "test source uses https://",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=7;passed=3",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ },
+ {
+  "repo": "dom-testing-library",
+  "pool": "popular",
+  "nodeid": "src/__tests__/element-queries.js::can find the correct element when there are multiple matching labels",
+  "class": "unknown",
+  "evidence": "no marker in the source, exception or fingerprint",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=3;passed=7",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ },
+ {
+  "repo": "dom-testing-library",
+  "pool": "popular",
+  "nodeid": "src/__tests__/element-queries.js::can get form controls by label text",
+  "class": "unknown",
+  "evidence": "no marker in the source, exception or fingerprint",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=6;passed=4",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ },
+ {
+  "repo": "dom-testing-library",
+  "pool": "popular",
+  "nodeid": "src/__tests__/element-queries.js::getAll* matchers return an array",
+  "class": "unknown",
+  "evidence": "no marker in the source, exception or fingerprint",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=7;passed=3",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ }
+]
