@@ -1,8 +1,0 @@
-[
-  {
-    "name": "idoft-reframe",
-    "kind": "flaky",
-    "status": "install-failed",
-    "detail": "install with python 3.10:   import reframe.core.runtime as rt\n      File \"/home/user/fenvix-engine-cli/.harness-work/src/idoft-reframe/reframe/core/runtime.py\", line 14, in <module>\n        import reframe.core.config as config\n      File \"/home/user/fenvix-engine-cli/.harness-work/src/idoft-reframe/reframe/core/config.py\", line 10, in <module>\n        import jsonschema\n    ModuleNotFoundError: No module named 'jsonschema'\n"
-  }
-]
