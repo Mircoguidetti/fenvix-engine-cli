@@ -64,7 +64,8 @@
     ],
     "notes": [
       "The FlaPy dataset (Gruber et al.) is published on Zenodo, which the development environment cannot reach (HTTP 403 from the network proxy): the 'flaky' pool uses the Python section of IDoFT, each project pinned at the commit where its flaky tests were detected.",
-      "Selection: the first 25 candidates per pool (in harness/repos.json and harness/flaky_candidates.json order) that clone, install, collect and finish their first baseline run within 120 s; every rejected candidate is listed above."
+      "Selection: the first 25 candidates per pool (in harness/repos.json and harness/flaky_candidates.json order) that clone, install, collect and finish their first baseline run within 120 s; every rejected candidate is listed above.",
+      "arrow and faker re-measured with their own addopts in force (GitHub Actions run 43946215518, P-009 item 1): the earlier measurement ran them with '-o addopts=' (harness fallback, removed). Per-test results are identical."
     ]
   },
   "totals": {
@@ -2733,17 +2734,14 @@
       "commit_date": "2026-11-10",
       "python": "3.13",
       "install": "-e . -r dev-requirements.txt freezegun validators ukpostcodeparser sphinx",
-      "pytest_args": [
-        "-o",
-        "addopts="
-      ],
+      "pytest_args": [],
       "xdist": true,
       "runs": 10,
-      "baseline_mean_s": 16.550665097899998,
-      "det_mean_s": 22.773499821700007,
-      "slowdown_pct": 37.59869882564164,
-      "precompile_first_s": 6.673,
-      "precompile_rest_median_s": 0.476,
+      "baseline_mean_s": 21.859517800700004,
+      "det_mean_s": 30.426695054999993,
+      "slowdown_pct": 39.19197729981785,
+      "precompile_first_s": 8.194,
+      "precompile_rest_median_s": 0.677,
       "tests": 2470,
       "unstable_baseline": 0,
       "unstable_det": 0,
@@ -2840,17 +2838,14 @@
       "commit_date": "2026-04-30",
       "python": "3.13",
       "install": "-e .[test]",
-      "pytest_args": [
-        "-o",
-        "addopts="
-      ],
+      "pytest_args": [],
       "xdist": true,
       "runs": 10,
-      "baseline_mean_s": 3.5851698478999965,
-      "det_mean_s": 8.4215042914,
-      "slowdown_pct": 134.89833532804235,
-      "precompile_first_s": 12.619,
-      "precompile_rest_median_s": 0.452,
+      "baseline_mean_s": 7.533768329200002,
+      "det_mean_s": 14.745707842999995,
+      "slowdown_pct": 95.72818274551081,
+      "precompile_first_s": 6.255,
+      "precompile_rest_median_s": 0.442,
       "tests": 1904,
       "unstable_baseline": 2,
       "unstable_det": 0,

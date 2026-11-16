@@ -56,7 +56,7 @@ Cause: `fixed-order` = the test also fails in a serial fixed-order run *without*
 
 ## Timing
 
-Quiet timing pass: 10 repositories, one per GitHub-hosted runner, one repository per runner, 3 serial fixed-order normal runs vs 3 `--det` runs interleaved on the same machine; median per repository. Every ratio compares two runs on the same runner, but the runners differ: 4 CPU models — AMD EPYC 7763 64-Core Processor (5 repositories); AMD EPYC 9V74 80-Core Processor (2 repositories); AMD EPYC 9V45 96-Core Processor (2 repositories); INTEL(R) XEON(R) PLATINUM 8573C (1 repository); 4 vCPUs, ubuntu26 20261111.196.1. Labelled **DECLARED-NOISY**: hosted runners are virtual machines on shared hardware.
+Quiet timing pass: 10 repositories, one per GitHub-hosted runner, 3 serial fixed-order normal runs vs 3 `--det` runs interleaved on the same machine; median per repository. Every ratio compares two runs on the same runner, but the runners differ: 4 CPU models — AMD EPYC 7763 64-Core Processor (5 repositories); AMD EPYC 9V74 80-Core Processor (2 repositories); AMD EPYC 9V45 96-Core Processor (2 repositories); INTEL(R) XEON(R) PLATINUM 8573C (1 repository); 4 vCPUs, ubuntu26 20261111.196.1. Labelled **DECLARED-NOISY**: hosted runners are virtual machines on shared hardware.
 
 **Slowdown of `--det` (MEASURED, DECLARED-NOISY): median 25.0%**, min -5.7%, max 202.1%.
 
@@ -184,3 +184,4 @@ Per-test details in `<repo>.csv`, per-run details in `<repo>_runs.csv`; columns 
 
 * The FlaPy dataset (Gruber et al.) is published on Zenodo, which the development environment cannot reach (HTTP 403 from the network proxy): the 'flaky' pool uses the Python section of IDoFT, each project pinned at the commit where its flaky tests were detected.
 * Selection: the first 25 candidates per pool (in harness/repos.json and harness/flaky_candidates.json order) that clone, install, collect and finish their first baseline run within 120 s; every rejected candidate is listed above.
+* arrow and faker re-measured with their own addopts in force (GitHub Actions run 43946215518, P-009 item 1): the earlier measurement ran them with '-o addopts=' (harness fallback, removed). Per-test results are identical.
