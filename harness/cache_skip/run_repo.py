@@ -96,11 +96,14 @@ def pytest_args(repo: dict, py: str, src: Path, env: dict) -> tuple[list, int, s
         args += ["-n", "0"]
     if has("pytest_cov"):
         args += ["--no-cov"]
+    if has("pytest_timeout"):
+        args += ["--timeout=120"]  # a hung live-server test must not stall the whole walk
     out = ""
-    for extra in ([], ["-o", "addopts="]):
+    for extra in ([], ["-o", "addopts="], ["--continue-on-collection-errors"],
+                  ["-o", "addopts=", "--continue-on-collection-errors"]):
         code, out, _ = sh([py, "-m", "pytest", "--collect-only", *args, *extra], cwd=src, env=env, timeout=600)
         n = sum(1 for line in out.splitlines() if "::" in line)
-        if code == 0 and n:
+        if (code == 0 or (code == 1 and "--continue-on-collection-errors" in extra)) and n:
             return args + extra, n, ""
     return [], 0, out[-1500:]
 
