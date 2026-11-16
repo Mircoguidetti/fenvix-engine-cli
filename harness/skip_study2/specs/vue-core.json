@@ -18,9 +18,15 @@
  ],
  "units": {
   "include": [
+   "packages/**/__tests__/*.spec.ts",
    "packages/**/__tests__/**/*.spec.ts",
+   "packages/**/__tests__/*.spec.tsx",
    "packages/**/__tests__/**/*.spec.tsx",
+   "packages-private/**/__tests__/*.spec.ts",
    "packages-private/**/__tests__/**/*.spec.ts"
+  ],
+  "exclude": [
+   "packages/vue/__tests__/e2e/*"
   ],
   "sample": 1.0
  },

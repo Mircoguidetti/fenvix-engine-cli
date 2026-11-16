@@ -185,6 +185,9 @@ def parse_vitest(path):
                                                          else "failed"), (a.get("duration") or 0) / 1000.0]
         if f.get("status") == "failed" and not f.get("assertionResults"):
             tests["<file>"] = ["error", 0.0]
+        # vitest test durations exclude module loading and transforms; the file's own span includes them
+        if f.get("startTime") and f.get("endTime"):
+            tests["<file-span>"] = ["span", max(0.0, (f["endTime"] - f["startTime"]) / 1000.0)]
     return tests
 
 
@@ -344,7 +347,11 @@ class Walker:
             tests = parse_vitest(rep)
         rep.unlink(missing_ok=True)
         r = {"code": code, "wall": wall, "tests": tests, "tail": out[-1200:] if (code not in (0, 5) or tests is None) else ""}
-        r["test_time"] = sum(v[1] for v in (tests or {}).values())
+        if tests and "<file-span>" in tests:
+            span = tests.pop("<file-span>")[1]
+            r["test_time"] = max(span, sum(v[1] for v in tests.values()))
+        else:
+            r["test_time"] = sum(v[1] for v in (tests or {}).values())
         if deps is not None:
             r["deps"] = self.normalize(unit, deps, pyrec)
         shutil.rmtree(pyrec, ignore_errors=True)

@@ -56,8 +56,10 @@ vue = {
     "install": ["corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent "
                 "|| pnpm install --reporter=silent"],
     "install_files": ["pnpm-lock.yaml", "package.json", "packages/*/package.json", "pnpm-workspace.yaml"],
-    "units": {"include": ["packages/**/__tests__/**/*.spec.ts", "packages/**/__tests__/**/*.spec.tsx",
-                          "packages-private/**/__tests__/**/*.spec.ts"], "sample": 1.0},
+    "units": {"include": ["packages/**/__tests__/*.spec.ts", "packages/**/__tests__/**/*.spec.ts",
+                          "packages/**/__tests__/*.spec.tsx", "packages/**/__tests__/**/*.spec.tsx",
+                          "packages-private/**/__tests__/*.spec.ts", "packages-private/**/__tests__/**/*.spec.ts"],
+              "exclude": ["packages/vue/__tests__/e2e/*"], "sample": 1.0},
     "cmd": ["pnpm", "exec", "vitest", "run", "--project", "unit*", "--reporter=json", "--outputFile={out}", "{unit}"],
     "unit_timeout": 600, "verify": 0.1,
     "ci": {"workers": 4, "source": ".github/workflows/test.yml unit-test: one ubuntu-latest job, "
