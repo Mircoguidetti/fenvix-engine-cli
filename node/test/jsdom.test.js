@@ -16,6 +16,9 @@ test('jsdom globals under control', () => {
   expect(new Date() instanceof Date).toBe(true);
   expect(typeof document.createElement('div').getBoundingClientRect).toBe('function');
 });
+test('leaks a timer that throws after the test (dom-testing-library waitFor pattern)', () => {
+  setTimeout(() => { throw new Error('late timer'); }, 60000);
+});
 test('jsdom timers', async () => {
   const t0 = Date.now();
   await new Promise((r) => setTimeout(r, 2000));
@@ -28,7 +31,7 @@ test('jest jsdom environment: controls apply, outcomes unchanged', { timeout: 12
   const normal = run('jest', dir);
   const det = run('jest', dir, ['--det']);
   for (const [m, r] of Object.entries({ normal, det })) {
-    assert.equal(Object.keys(r.outcomes).length, 2, `${m}\n${r.stdout}\n${r.stderr}`);
+    assert.equal(Object.keys(r.outcomes).length, 3, `${m}\n${r.stdout}\n${r.stderr}`);
     assert.deepEqual(failed(r), [], `${m}\n${r.stdout}\n${r.stderr}`);
   }
   const ops = det.trace.tests.flatMap((t) => t.events.map((e) => e.o));

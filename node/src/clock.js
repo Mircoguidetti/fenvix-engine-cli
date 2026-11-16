@@ -163,7 +163,10 @@ let nextId = 1;
 const BY_ID = new Map();
 
 class Timeout {
-  constructor(fn, args, delayMs, repeat, site) {
+  constructor(fn, args, delayMs, repeat, site, realm) {
+    this._realm = realm;
+    this._test = STATE.testId;
+    this._handle = null; // realm timer once the timer was released to real time
     this.id = nextId++;
     this._fn = fn;
     this._args = args;
@@ -177,8 +180,8 @@ class Timeout {
     this._active = false;
     this._destroyed = false;
   }
-  ref() { this._ref = true; DRIVER.rearm(); return this; }
-  unref() { this._ref = false; DRIVER.rearm(); return this; }
+  ref() { this._ref = true; if (this._handle && this._handle.ref) this._handle.ref(); DRIVER.rearm(); return this; }
+  unref() { this._ref = false; if (this._handle && this._handle.unref) this._handle.unref(); DRIVER.rearm(); return this; }
   hasRef() { return this._ref; }
   refresh() { if (this._active) { DRIVER.remove(this); DRIVER.schedule(this); } return this; }
   close() { DRIVER.clear(this); return this; }
@@ -242,6 +245,11 @@ class Driver {
 
   clear(t) {
     if (!t || t._destroyed) return;
+    if (t._handle) {
+      t._realm.clearTimeout(t._handle);
+      t._realm.clearInterval(t._handle);
+      t._handle = null;
+    }
     this.remove(t);
     t._destroyed = true;
     BY_ID.delete(t.id);
@@ -306,6 +314,51 @@ class Driver {
     }
   }
 
+  /**
+   * A test ended: its pending virtual timers become real timers of their realm
+   * with the real delay that remains. Fast virtual time must not fire a timer
+   * leaked by a finished test (it would fire at once, during the next test,
+   * instead of later or never: jsdom clears its timers at teardown).
+   */
+  releaseTest(testId) {
+    const leaked = this.queue.filter((t) => t._test === testId);
+    if (!leaked.length) return 0;
+    this.queue = this.queue.filter((t) => t._test !== testId);
+    for (const t of leaked) {
+      t._active = false;
+      const remaining = Math.max(0, t._realDeadline - realNowMs());
+      const R = t._realm;
+      const run = () => {
+        if (t._destroyed) return;
+        if (t._repeat) {
+          t._handle = R.setInterval(() => { if (!t._destroyed) t._fn.apply(undefined, t._args); }, t._delayMs);
+          if (!t._ref && t._handle && t._handle.unref) t._handle.unref();
+        } else {
+          t._destroyed = true;
+          BY_ID.delete(t.id);
+        }
+        t._fn.apply(undefined, t._args);
+      };
+      t._handle = R.setTimeout(run, remaining);
+      if (!t._ref && t._handle && t._handle.unref) t._handle.unref();
+    }
+    this.rearm();
+    return leaked.length;
+  }
+
+  /** Cancel every pending virtual timer. */
+  clearAll() {
+    const n = this.queue.length;
+    for (const t of this.queue) {
+      t._active = false;
+      t._destroyed = true;
+      BY_ID.delete(t.id);
+    }
+    this.queue = [];
+    this.rearm();
+    return n;
+  }
+
   startTest() {
     this.fastFired = 0;
     this.budgetHit = false;
@@ -326,18 +379,19 @@ function countResources() {
 
 const DRIVER = new Driver();
 
-function makeSetTimeout(repeat) {
+function makeSetTimeout(repeat, R) {
   const op = repeat ? 'setInterval' : 'setTimeout';
-  const real = repeat ? REAL.setInterval : REAL.setTimeout;
+  const real = repeat ? R.setInterval : R.setTimeout;
   return function (fn, ms, ...args) {
-    if (typeof fn !== 'function') return real(fn, ms, ...args); // native error message
+    // Outside tests (module level, beforeAll, teardown) timers stay the realm's own.
+    if (typeof fn !== 'function' || STATE.testId === null) return real(fn, ms, ...args);
     let site = '';
     if (STATE.config.sites) {
       site = STATE.quiet(() => sites.resolve());
       if (site === null) return real(fn, ms, ...args);
     }
     const delay = normDelay(ms);
-    const t = new Timeout(fn, args, delay, repeat, site);
+    const t = new Timeout(fn, args, delay, repeat, site, R);
     CLOCK.otherEvent();
     STATE.record('time', op, `schedule:${delay * NS_PER_MS}`);
     DRIVER.schedule(t);
@@ -382,14 +436,20 @@ function abortError(signal) {
   return e;
 }
 
-const TIMERS = {
-  setTimeout: makeSetTimeout(false),
-  setInterval: makeSetTimeout(true),
-  clearTimeout: makeClear(REAL.clearTimeout),
-  clearInterval: makeClear(REAL.clearInterval),
-  setImmediate: setImmediateRecorded,
-};
-for (const [name, fn] of Object.entries(TIMERS)) Object.defineProperty(fn, 'name', { value: name });
+function makeTimers(R) {
+  const T = {
+    setTimeout: makeSetTimeout(false, R),
+    setInterval: makeSetTimeout(true, R),
+    clearTimeout: makeClear(R.clearTimeout),
+    clearInterval: makeClear(R.clearInterval),
+    setImmediate: setImmediateRecorded,
+  };
+  for (const [name, fn] of Object.entries(T)) Object.defineProperty(fn, 'name', { value: name });
+  return T;
+}
+
+const TIMERS = makeTimers(REAL);
+
 
 function wrapPerformance(hostPerf) {
   // A stand-in for the host `performance` object (Jest copies the host object
@@ -417,6 +477,7 @@ function installProcess(patcher, cfg) {
     DRIVER.budget = cfg.timerBudget;
     DRIVER.mode = cfg.timers;
     STATE.onTestStart.push(() => { CLOCK.startTest(); DRIVER.startTest(); });
+    STATE.onTestEnd.push((id) => { DRIVER.releaseTest(id); });
   }
   patcher.set(process, 'hrtime', hrtime);
   if (cfg.controls.has('timers')) {
@@ -438,7 +499,17 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
     patcher.set(g.process, 'hrtime', hrtime); // Jest gives every context its own process object
   }
   if (cfg.controls.has('timers')) {
-    for (const k of Object.keys(TIMERS)) patcher.set(g, k, TIMERS[k]);
+    // The realm's own timers (jsdom's window timers in a Jest jsdom environment)
+    // serve the timers created outside tests and the ones released at test end.
+    const R = {};
+    for (const k of ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'setImmediate']) {
+      R[k] = typeof g[k] === 'function' && !g[k].__detjs ? g[k].bind(g) : REAL[k];
+    }
+    const T = sameRealm ? TIMERS : makeTimers(R);
+    for (const k of Object.keys(T)) {
+      Object.defineProperty(T[k], '__detjs', { value: true });
+      patcher.set(g, k, T[k]);
+    }
   }
 }
 

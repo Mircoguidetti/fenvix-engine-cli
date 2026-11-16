@@ -10,6 +10,11 @@ const { project, run, failed, RUNNERS } = require('./helpers');
 const T = { timeout: 300000 };
 
 const SUITE = `
+test('runner environment variables', () => {
+  expect(process.env.NODE_ENV).toBe('test');
+  if (typeof vi !== 'undefined') expect(process.env.VITEST).toBe('true');
+});
+
 describe('Date', () => {
   test('constructor forms and statics', () => {
     expect(new Date(0).toISOString()).toBe('1970-01-01T00:00:00.000Z');
@@ -148,7 +153,7 @@ for (const runner of RUNNERS) {
         seed11: run(runner, dir, ['--det', '--det-seed=11']),
       };
       for (const [mode, r] of Object.entries(results)) {
-        assert.ok(Object.keys(r.outcomes).length >= 13, `${mode}: ${JSON.stringify(r.outcomes)}\n${r.stderr}`);
+        assert.ok(Object.keys(r.outcomes).length >= 14, `${mode}: ${JSON.stringify(r.outcomes)}\n${r.stderr}`);
         assert.deepEqual(failed(r), [], `${mode}\n${r.stdout}\n${r.stderr}`);
       }
       assert.deepEqual(Object.keys(results.det.outcomes).sort(), Object.keys(results.normal.outcomes).sort());

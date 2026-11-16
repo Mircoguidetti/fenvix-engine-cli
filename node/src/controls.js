@@ -91,6 +91,7 @@ function openFile(fileId, project) {
 
 function closeFile() {
   if (STATE.testId !== null) STATE.endTest('interrupted');
+  // (Timers left pending by a test were released to real time when it ended.)
   if (STATE.recorder) {
     STATE.flush();
     STATE.recorder.close();

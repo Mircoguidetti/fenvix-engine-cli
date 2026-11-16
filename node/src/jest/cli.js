@@ -52,6 +52,8 @@ async function main(argv) {
     runners[`${c.rootDir}|${c.displayName ? c.displayName.name : ''}`] = c.testRunner;
     projects.push({ rootDir: c.rootDir, testRunner: c.testRunner, testEnvironment: c.testEnvironment });
   }
+  // What jest-cli's bin does before run(): many configs (Babel presets) depend on it.
+  if (process.env.NODE_ENV == null) process.env.NODE_ENV = 'test';
   const run = session.prepare(opts, root, 'jest');
   process.env.DETJS_JEST_RUNNERS = JSON.stringify(runners);
   const extra = ['--runInBand', '--maxConcurrency=1',

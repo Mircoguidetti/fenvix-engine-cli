@@ -102,9 +102,13 @@ async function main(argv) {
   // createVitest + start (instead of startVitest) so that the detjs runner and
   // the ordering options can be set on every resolved project: project
   // configs (Vitest workspaces / `projects`) do not inherit them from the CLI.
+  // What Vitest's own startVitest/prepareVitest does before creating the instance.
+  process.env.TEST = 'true';
+  process.env.VITEST = 'true';
+  process.env.NODE_ENV ??= 'test';
   const ctx = major >= 5
-    ? await nodeApi.createVitest(options)
-    : await nodeApi.createVitest('test', options);
+    ? await nodeApi.createVitest(options, undefined, { cliFilters: filters })
+    : await nodeApi.createVitest('test', options, undefined, { cliFilters: filters });
   const projects = ctx.projects || ctx.getProjects?.() || [];
   const pools = new Set();
   for (const pr of projects) {
