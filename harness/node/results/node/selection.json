@@ -1,0 +1,1966 @@
+{
+ "selected": [
+  "babel-flaky",
+  "prettier-flaky",
+  "query-flaky",
+  "msw-flaky",
+  "svelte-flaky",
+  "zod-flaky",
+  "react-testing-library-flaky",
+  "happy-dom-flaky",
+  "nuxt-flaky",
+  "react-admin-flaky",
+  "quasar-flaky",
+  "mermaid-flaky",
+  "tiptap-flaky",
+  "date-fns",
+  "luxon",
+  "immer",
+  "immutable-js",
+  "mobx",
+  "jotai",
+  "redux",
+  "yup",
+  "vue-core",
+  "pinia",
+  "vueuse",
+  "h3",
+  "ufo",
+  "unstorage",
+  "cheerio",
+  "react-redux",
+  "dom-testing-library",
+  "user-event",
+  "recharts",
+  "tanstack-table",
+  "tanstack-form",
+  "preact-signals",
+  "valibot",
+  "yaml",
+  "shiki",
+  "pw-msw",
+  "pw-solid-start",
+  "pw-ariakit",
+  "pw-starlight"
+ ],
+ "discarded": [
+  {
+   "name": "freecodecamp-flaky",
+   "kind": "flaky",
+   "status": "unsupported",
+   "detail": "jest 24.9.0 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  {
+   "name": "react-flaky",
+   "kind": "flaky",
+   "status": "install-failed",
+   "detail": "npm error     at nextTickCallback (/tmp/work/src/react-flaky/node_modules/kew/kew.js:47:28)\nnpm error     at process.processTicksAndRejections (node:internal/process/task_queues:77:11)\nnpm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-16T18_28_24_655Z-debug-0.log\n"
+  },
+  {
+   "name": "bootstrap-flaky",
+   "kind": "flaky",
+   "status": "install-failed",
+   "detail": "error     at nextTickCallback (/tmp/work/src/bootstrap-flaky/node_modules/kew/kew.js:47:28)\nnpm error     at process.processTicksAndRejections (node:internal/process/task_queues:77:11)\nnpm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-16T18_28_55_500Z-debug-0.log\n"
+  },
+  {
+   "name": "electron-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "node-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "no package.json at the repository root"
+  },
+  {
+   "name": "material-ui-flaky",
+   "kind": "flaky",
+   "status": "baseline-broken",
+   "detail": "811/811 tests fail in the first baseline run"
+  },
+  {
+   "name": "storybook-flaky",
+   "kind": "flaky",
+   "status": "install-failed",
+   "detail": "out this command.\nerror Command failed.\nExit code: 128\nCommand: git\nArguments: ls-remote --tags --heads git://github.com/CharlesMangwa/simple-markdown.git\nDirectory: /tmp/work/src/storybook-flaky\nOutput:\nfatal: unable to connect to github.com:\ngithub.com[0: 140.82.112.3]: errno=Connection timed out\n"
+  },
+  {
+   "name": "atom-flaky",
+   "kind": "flaky",
+   "status": "install-failed",
+   "detail": ")\nnpm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-16T18_29_06_467Z-debug-0.log,/home/runner/.npm/_logs/2026-11-16T18_29_06_467Z-debug-1.log,/home/runner/.npm/_logs/2026-11-16T18_29_06_467Z-debug-2.log,/home/runner/.npm/_logs/2026-11-16T18_29_06_467Z-debug-3.log\n"
+  },
+  {
+   "name": "jquery-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "chart.js-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "element-flaky",
+   "kind": "flaky",
+   "status": "install-failed",
+   "detail": "dules/node-gyp/bin/node-gyp.js\" \"rebuild\" \"--verbose\" \"--libsass_ext=\" \"--libsass_cflags=\" \"--libsass_ldflags=\" \"--libsass_library=\"\ngyp ERR! cwd /tmp/work/src/element-flaky/node_modules/node-sass\ngyp ERR! node -v v18.20.8\ngyp ERR! node-gyp -v v3.6.2\ngyp ERR! not ok \nBuild failed with error code: 1\n"
+  },
+  {
+   "name": "lodash-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "moment-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "meteor-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "no package.json at the repository root"
+  },
+  {
+   "name": "yarn-flaky",
+   "kind": "flaky",
+   "status": "unsupported",
+   "detail": "jest 22.4.3 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  {
+   "name": "vite-flaky",
+   "kind": "flaky",
+   "status": "unsupported",
+   "detail": "vitest 0.29.7 (detjs needs >= 1.4)"
+  },
+  {
+   "name": "jest-flaky",
+   "kind": "flaky",
+   "status": "baseline-broken",
+   "detail": "memory-server-core/lib/util/MongoInstance.js:276:14)\n    at ChildProcess.emit (node:events:517:28)\n    at maybeClose (node:internal/child_process:1098:16)\n    at Socket.<anonymous> (node:internal/child_process:450:11)\n    at Socket.emit (node:events:517:28)\n    at Pipe.<anonymous> (node:net:350:12)\n"
+  },
+  {
+   "name": "apollo-client-flaky",
+   "kind": "flaky",
+   "status": "baseline-broken",
+   "detail": "155/155 tests fail in the first baseline run"
+  },
+  {
+   "name": "react-router-flaky",
+   "kind": "flaky",
+   "status": "baseline-broken",
+   "detail": "1266:32)\n    at Module._load (node:internal/modules/cjs/loader:1091:12)\n    at Module.require (node:internal/modules/cjs/loader:1289:19)\n    at require (node:internal/modules/helpers:182:18)\n    at Object.<anonymous> (/tmp/work/src/react-router-flaky/packages/create-react-router/jest.config.js:3:6)\n"
+  },
+  {
+   "name": "dayjs-flaky",
+   "kind": "flaky",
+   "status": "unsupported",
+   "detail": "jest 22.4.4 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  {
+   "name": "excalidraw-flaky",
+   "kind": "flaky",
+   "status": "too-slow",
+   "detail": "first baseline run took 209s"
+  },
+  {
+   "name": "tldraw-flaky",
+   "kind": "flaky",
+   "status": "too-slow",
+   "detail": "first baseline run took 222s"
+  },
+  {
+   "name": "trpc-flaky",
+   "kind": "flaky",
+   "status": "unsupported",
+   "detail": "vitest 0.28.5 (detjs needs >= 1.4)"
+  },
+  {
+   "name": "pnpm-flaky",
+   "kind": "flaky",
+   "status": "baseline-broken",
+   "detail": "/30.4.1/58198308af0435a83c55203d495b9ff08a3102041e4173d7a5fc72ae5c99a927/node_modules/jest-worker/build/processChild.js:189:7)\n    at process.emit (node:events:519:28)\n    at emit (node:internal/child_process:949:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n"
+  },
+  {
+   "name": "typescript-eslint-flaky",
+   "kind": "flaky",
+   "status": "too-slow",
+   "detail": "first baseline run took 407s"
+  },
+  {
+   "name": "sentry-javascript-flaky",
+   "kind": "flaky",
+   "status": "too-slow",
+   "detail": "first baseline run took 444s"
+  },
+  {
+   "name": "posthog-js-flaky",
+   "kind": "flaky",
+   "status": "too-few-tests",
+   "detail": " (../../node_modules/.pnpm/@jest+transform@29.7.0/node_modules/@jest/transform/build/ScriptTransformer.js:726:19)\n\nSeed:        1000\nTest Suites: 8 failed, 8 total\nTests:       0 total\nSnapshots:   0 total\nTime:        0.394 s\nTest results written to: ../../../../runs/posthog-js-flaky/normal_0.json\n"
+  },
+  {
+   "name": "webdriverio-flaky",
+   "kind": "flaky",
+   "status": "too-slow",
+   "detail": "first baseline run took 224s"
+  },
+  {
+   "name": "vitest-flaky",
+   "kind": "flaky",
+   "status": "harness-error",
+   "detail": "-engine-cli/fenvix-engine-cli/harness/node/node_harness.py\", line 423, in parse_report\n    exceptions[nid] = _exc(\"\\n\".join(a.get(\"failureMessages\") or []), \"call\")\n                           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: sequence item 0: expected str instance, NoneType found\n"
+  },
+  {
+   "name": "material-ui-flaky",
+   "kind": "flaky",
+   "status": "baseline-broken",
+   "detail": "811/811 tests fail in the first baseline run"
+  },
+  {
+   "name": "next.js-flaky",
+   "kind": "flaky",
+   "status": "baseline-broken",
+   "detail": "2119/2119 tests fail in the first baseline run"
+  },
+  {
+   "name": "sequelize-flaky",
+   "kind": "flaky",
+   "status": "install-failed",
+   "detail": "fallback-to-build --module=/tmp/work/src/sequelize-flaky/node_modules/odbc/lib/bindings/napi-v6/odbc.node --module_name=odbc --module_path=/tmp/work/src/sequelize-flaky/node_modules/odbc/lib/bindings/napi-v6 --napi_version=9 --node_abi_napi=napi --napi_build_version=6 --node_napi_label=napi-v6' (1)\n"
+  },
+  {
+   "name": "astro-flaky",
+   "kind": "flaky",
+   "status": "unsupported",
+   "detail": "vitest 0.20.3 (detjs needs >= 1.4)"
+  },
+  {
+   "name": "vuetify-flaky",
+   "kind": "flaky",
+   "status": "baseline-broken",
+   "detail": "88/88 tests fail in the first baseline run"
+  },
+  {
+   "name": "ionic-framework-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "react-three-fiber-flaky",
+   "kind": "flaky",
+   "status": "too-few-tests",
+   "detail": "\n      at new JSDOMEnvironment (node_modules/jest-environment-jsdom/build/index.js:72:44)\n\nSeed:        1000\nTest Suites: 15 failed, 15 total\nTests:       0 total\nSnapshots:   0 total\nTime:        0.385 s\nRan all test suites.\nTest results written to: ../../runs/react-three-fiber-flaky/normal_0.json\n"
+  },
+  {
+   "name": "pixijs-flaky",
+   "kind": "flaky",
+   "status": "unsupported",
+   "detail": "jest 26.6.3 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  {
+   "name": "n8n-flaky",
+   "kind": "flaky",
+   "status": "baseline-broken",
+   "detail": "466/583 tests fail in the first baseline run"
+  },
+  {
+   "name": "medusa-flaky",
+   "kind": "flaky",
+   "status": "too-slow",
+   "detail": "first baseline run took 364s"
+  },
+  {
+   "name": "nx-flaky",
+   "kind": "flaky",
+   "status": "baseline-broken",
+   "detail": "859/928 tests fail in the first baseline run"
+  },
+  {
+   "name": "primitives-flaky",
+   "kind": "flaky",
+   "status": "install-failed",
+   "detail": "/streams/destroy:132:10)\n    at process.processTicksAndRejections (node:internal/process/task_queues:81:21)\n\u001b[94m\u27a4\u001b[39m YN0013: \u2502 No packages were cached - 1728 packages had to be fetched\n::endgroup::\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2514 Completed in 1m 1s\n\u001b[91m\u27a4\u001b[39m YN0000: Failed with errors in 1m 1s\n"
+  },
+  {
+   "name": "ariakit-flaky",
+   "kind": "flaky",
+   "status": "too-slow",
+   "detail": "first baseline run took 415s"
+  },
+  {
+   "name": "mui-x-flaky",
+   "kind": "flaky",
+   "status": "too-slow",
+   "detail": "first baseline run took 466s"
+  },
+  {
+   "name": "blueprint-flaky",
+   "kind": "flaky",
+   "status": "too-few-tests",
+   "detail": " module\n\n      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1505:14)\n\nSeed:        1000\nTest Suites: 11 failed, 11 total\nTests:       0 total\nSnapshots:   0 total\nTime:        0.665 s\nRan all test suites.\nTest results written to: ../../runs/blueprint-flaky/normal_0.json\n"
+  },
+  {
+   "name": "eui-flaky",
+   "kind": "flaky",
+   "status": "unsupported",
+   "detail": "jest 24.9.0 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  {
+   "name": "grafana-flaky",
+   "kind": "flaky",
+   "status": "too-slow",
+   "detail": "first baseline run took 345s"
+  },
+  {
+   "name": "outline-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "nocodb-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "appsmith-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "no package.json at the repository root"
+  },
+  {
+   "name": "twenty-flaky",
+   "kind": "flaky",
+   "status": "install-failed",
+   "detail": "-4.9.2.cjs:462:18229\n    at async Ot.start (/tmp/work/src/twenty-flaky/.yarn/releases/yarn-4.9.2.cjs:175:1995)\n    at async wC.execute (/tmp/work/src/twenty-flaky/.yarn/releases/yarn-4.9.2.cjs:462:18086)\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2514 Completed\n\u001b[91m\u27a4\u001b[39m YN0000: \u00b7 Failed with errors in 36s 129ms\n"
+  },
+  {
+   "name": "documenso-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "leaflet-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "openlayers-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "maplibre-gl-js-flaky",
+   "kind": "flaky",
+   "status": "install-failed",
+   "detail": " \"rebuild\"\nnpm error gyp ERR! cwd /tmp/work/src/maplibre-gl-js-flaky/node_modules/gl\nnpm error gyp ERR! node -v v18.20.8\nnpm error gyp ERR! node-gyp -v v8.4.1\nnpm error gyp ERR! not ok\nnpm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-16T18_36_36_036Z-debug-0.log\n"
+  },
+  {
+   "name": "undici-flaky",
+   "kind": "flaky",
+   "status": "too-few-tests",
+   "detail": "ASS test/jest/test.js\nPASS test/jest/util-timers.test.js\nPASS test/jest/mock-scope.test.js\n\nSeed:        1000\nTest Suites: 7 passed, 7 total\nTests:       11 passed, 11 total\nSnapshots:   0 total\nTime:        2.011 s\nRan all test suites.\nTest results written to: ../../runs/undici-flaky/normal_0.json\n"
+  },
+  {
+   "name": "got-flaky",
+   "kind": "flaky",
+   "status": "install-failed",
+   "detail": " Please see https://eslint.org/version-support for other options.\nnpm error code 1\nnpm error path /tmp/work/src/got-flaky\nnpm error command failed\nnpm error command sh -c npm run build\nnpm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-16T18_36_08_419Z-debug-0.log\n"
+  },
+  {
+   "name": "fastify-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "mongoose-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "node-redis-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "zod",
+   "kind": "popular",
+   "status": "duplicate",
+   "detail": "repository already in the flaky pool"
+  },
+  {
+   "name": "dayjs",
+   "kind": "popular",
+   "status": "unsupported",
+   "detail": "jest 22.4.4 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  {
+   "name": "zustand",
+   "kind": "popular",
+   "status": "install-failed",
+   "detail": "ERROR: This version of pnpm requires at least Node.js v22.13\nThe current version of Node.js is v18.20.8\nVisit https://r.pnpm.io/comp to see the list of past pnpm versions with respective Node.js version support.\n"
+  },
+  {
+   "name": "valtio",
+   "kind": "popular",
+   "status": "install-failed",
+   "detail": "ERROR: This version of pnpm requires at least Node.js v22.13\nThe current version of Node.js is v18.20.8\nVisit https://r.pnpm.io/comp to see the list of past pnpm versions with respective Node.js version support.\n"
+  },
+  {
+   "name": "redux-toolkit",
+   "kind": "popular",
+   "status": "baseline-broken",
+   "detail": "99/114 tests fail in the first baseline run"
+  },
+  {
+   "name": "react-hook-form",
+   "kind": "popular",
+   "status": "baseline-broken",
+   "detail": "167/167 tests fail in the first baseline run"
+  },
+  {
+   "name": "formik",
+   "kind": "popular",
+   "status": "unsupported",
+   "detail": "jest 25.5.4 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  {
+   "name": "hono",
+   "kind": "popular",
+   "status": "baseline-broken",
+   "detail": "_modules/vitest/dist/chunks/cac.fSuRXrAx.js:2369:27)\n    at async CAC.run (file:///tmp/work/src/hono/node_modules/.pnpm/vitest@5.0.1_@types+node@24.13.6_@vitest+browser-preview@5.0.1_@vitest+coverage-v8@5.0._68c5305fb163089a9626a63dab7b643c/node_modules/vitest/dist/chunks/cac.fSuRXrAx.js:2346:2)\n\n\n\n"
+  },
+  {
+   "name": "happy-dom",
+   "kind": "popular",
+   "status": "duplicate",
+   "detail": "repository already in the flaky pool"
+  },
+  {
+   "name": "commander",
+   "kind": "popular",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "xstate",
+   "kind": "popular",
+   "status": "too-slow",
+   "detail": "first baseline run took 305s"
+  },
+  {
+   "name": "rxjs",
+   "kind": "popular",
+   "status": "baseline-broken",
+   "detail": "511/751 tests fail in the first baseline run"
+  },
+  {
+   "name": "floating-ui",
+   "kind": "popular",
+   "status": "baseline-broken",
+   "detail": "67/76 tests fail in the first baseline run"
+  },
+  {
+   "name": "stylelint",
+   "kind": "popular",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "fastify-ajv-compiler",
+   "kind": "popular",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "ky",
+   "kind": "popular",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "superjson",
+   "kind": "popular",
+   "status": "unsupported",
+   "detail": "vitest 0.34.6 (detjs needs >= 1.4)"
+  },
+  {
+   "name": "effect",
+   "kind": "popular",
+   "status": "too-slow",
+   "detail": "first baseline run took 278s"
+  },
+  {
+   "name": "kysely",
+   "kind": "popular",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  {
+   "name": "uuid",
+   "kind": "popular",
+   "status": "too-few-tests",
+   "detail": "\n\n      at createRequireEsmError (node_modules/jest-runtime/build/index.js:452:17)\n\n\nSeed:        1000\nTest Suites: 34 failed, 34 total\nTests:       6 failed, 6 total\nSnapshots:   0 total\nTime:        0.918 s, estimated 1 s\nRan all test suites.\nTest results written to: ../../runs/uuid/normal_0.json\n"
+  },
+  {
+   "name": "pw-slate",
+   "kind": "playwright",
+   "status": "no-runner",
+   "detail": "@playwright/test / playwright not resolvable: t evalTypeScript (node:internal/process/execution:291:3)\n    at node:internal/main/eval_string:74:3 {\n  code: 'MODULE_NOT_FOUND',\n  requireStack: [ '/tmp/work/src/pw-slate/x.js' ]\n}\n\nNode.js v22.23.5\n"
+  },
+  {
+   "name": "pw-react-router",
+   "kind": "playwright",
+   "status": "browser-install-failed",
+   "detail": "Failed to install browsers\nError: ERROR: Playwright does not support chromium on ubuntu26.04-x64\n"
+  },
+  {
+   "name": "pw-floating-ui",
+   "kind": "playwright",
+   "status": "browser-install-failed",
+   "detail": "Failed to install browsers\nError: ERROR: Playwright does not support chromium on ubuntu26.04-x64\n"
+  },
+  {
+   "name": "pw-lexical",
+   "kind": "playwright",
+   "status": "baseline-broken",
+   "detail": "23.15_yaml@2.9.0/node_modules/vite/dist/node/chunks/node.js:35589:198)\n[WebServer]     at async CAC.<anonymous> (file:///tmp/work/src/pw-lexical/node_modules/.pnpm/vite@8.3.3_@types+node@26.4.1_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.0/node_modules/vite/dist/node/cli.js:811:18)\n"
+  },
+  {
+   "name": "pw-material-ui",
+   "kind": "playwright",
+   "status": "baseline-broken",
+   "detail": "ocs/package.json'));\n>  9 | const LZString = requireFromDocs('lz-string') as typeof LZStringModule;\n     |                  ^\n  10 |\n  11 | const test = base.extend<TestFixture>({});\n  12 |\n    at Object.<anonymous> (/tmp/work/src/pw-material-ui/test/e2e-website/demo-docs-production.spec.ts:9:18)\n\n\n"
+  },
+  {
+   "name": "pw-tanstack-router",
+   "kind": "playwright",
+   "status": "baseline-broken",
+   "detail": "esm/module_job:182:49) {\n[WebServer]   code: 'ERR_MODULE_NOT_FOUND',\n[WebServer]   url: 'file:///tmp/work/src/pw-tanstack-router/examples/react/start-basic-react-query/node_modules/@tanstack/react-start/dist/esm/plugin/vite.js'\n[WebServer] }\n[WebServer] [ELIFECYCLE] Command failed with exit code 1.\n"
+  },
+  {
+   "name": "pw-astro",
+   "kind": "playwright",
+   "status": "too-slow",
+   "detail": "first baseline run took 475s"
+  },
+  {
+   "name": "pw-sveltekit",
+   "kind": "playwright",
+   "status": "baseline-broken",
+   "detail": "\n[WebServer]     at async analyse (file:///tmp/work/src/pw-sveltekit/packages/kit/src/core/postbuild/analyse.js:153:34)\n[WebServer]     at async MessagePort.<anonymous> (file:///tmp/work/src/pw-sveltekit/packages/kit/src/utils/fork.js:21:22)\n[WebServer] [ELIFECYCLE] Command failed with exit code 1.\n"
+  },
+  {
+   "name": "pw-qwik",
+   "kind": "playwright",
+   "status": "baseline-broken",
+   "detail": "ik.dev/core/dist/optimizer.mjs' imported from /tmp/work/src/pw-qwik/e2e/qwik-e2e/tests/qwikrouter/ssg-snapshot.e2e.ts\n\nError: Cannot find module '/tmp/work/src/pw-qwik/node_modules/@qwik.dev/core/dist/optimizer.mjs' imported from /tmp/work/src/pw-qwik/e2e/qwik-e2e/tests/server-only-modules.e2e.ts\n\n\n"
+  },
+  {
+   "name": "pw-tldraw",
+   "kind": "playwright",
+   "status": "baseline-broken",
+   "detail": "0 test outcomes (exit 1): \nError: http://localhost:5420 is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer.\n\n\n"
+  },
+  {
+   "name": "pw-swr",
+   "kind": "playwright",
+   "status": "browser-install-failed",
+   "detail": "Failed to install browsers\nError: ERROR: Playwright does not support chromium on ubuntu26.04-x64\n"
+  },
+  {
+   "name": "pw-remix",
+   "kind": "playwright",
+   "status": "baseline-broken",
+   "detail": "packages/assets/src/lib/asset-server.ts:877:23)\n    at /tmp/work/src/pw-remix/template/app/assets.ts:38:41\n\nError: No tests found\n\n\n(node:4494) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  }
+ ],
+ "prepare": {
+  "apollo-client-flaky": {
+   "status": "baseline-broken",
+   "runner": "jest",
+   "runner_version": "29.7.0",
+   "tests": 155,
+   "first_run_s": 3.451273094000001,
+   "node": "node v20.20.2",
+   "commit": "cde7e247f145d759d67d8596ec98b9aaafda04da",
+   "detail": "155/155 tests fail in the first baseline run"
+  },
+  "appsmith-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "no package.json at the repository root"
+  },
+  "ariakit-flaky": {
+   "status": "too-slow",
+   "runner": "vitest",
+   "runner_version": "5.1.0",
+   "tests": 2583,
+   "first_run_s": 415.380608826,
+   "node": "node v22.23.5",
+   "commit": "b480facc3725d9cb5e7334d3a62d4520ac6a07bd",
+   "detail": "first baseline run took 415s"
+  },
+  "astro-flaky": {
+   "status": "unsupported",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "vitest 0.20.3 (detjs needs >= 1.4)"
+  },
+  "atom-flaky": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "HHM2CEzAvs/YQFRGEcx4VDDWVOXNpbuAaYnvbaQkbCfNxk6+fvESoOszM5SSRgjRYvc45u2XF4fv4cuqWfA==. (167654 bytes)\nnpm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-16T18_29_06_467Z-debug-0.log,/home/runner/.npm/_logs/2026-11-16T18_29_06_467Z-debug-1.log,/home/runner/.npm/_logs/2026-11-16T18_29_06_467Z-debug-2.log,/home/runner/.npm/_logs/2026-11-16T18_29_06_467Z-debug-3.log\n"
+  },
+  "babel-flaky": {
+   "status": "ok",
+   "runner": "jest",
+   "runner_version": "29.6.2",
+   "tests": 25554,
+   "first_run_s": 43.42893111000001,
+   "node": "node v20.20.2",
+   "commit": "ddf20013bdfd960308090865777bf4cf3c8d1f8d",
+   "detail": ""
+  },
+  "blueprint-flaky": {
+   "status": "too-few-tests",
+   "runner": "jest",
+   "runner_version": "29.7.0",
+   "tests": 11,
+   "first_run_s": 1.1892505130000046,
+   "node": "node v20.20.2",
+   "commit": "3457fa91d323486a4c69a38fbb99c1dd6e1e3d83",
+   "detail": "11 test outcomes (exit 1):  module\n\n      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1505:14)\n\nSeed:        1000\nTest Suites: 11 failed, 11 total\nTests:       0 total\nSnapshots:   0 total\nTime:        0.665 s\nRan all test suites.\nTest results written to: ../../runs/blueprint-flaky/normal_0.json\n"
+  },
+  "bootstrap-flaky": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "127:30)\nnpm error     at /tmp/work/src/bootstrap-flaky/node_modules/phantomjs/install.js:476:19\nnpm error     at nextTickCallback (/tmp/work/src/bootstrap-flaky/node_modules/kew/kew.js:47:28)\nnpm error     at process.processTicksAndRejections (node:internal/process/task_queues:77:11)\nnpm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-16T18_28_55_500Z-debug-0.log\n"
+  },
+  "chart.js-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "cheerio": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "5.1.0",
+   "tests": 846,
+   "first_run_s": 7.726071906000001,
+   "node": "node v22.23.5",
+   "commit": "010dbdee0c7907db03f2108223d3ad87f47a1d5c",
+   "detail": ""
+  },
+  "commander": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "date-fns": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "5.0.1",
+   "tests": 222,
+   "first_run_s": 3.114590728000053,
+   "node": "node v22.23.5",
+   "commit": "a9739fb3e5384a810e90d7376446f6d84ecc5029",
+   "detail": ""
+  },
+  "dayjs": {
+   "status": "unsupported",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "jest 22.4.4 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  "dayjs-flaky": {
+   "status": "unsupported",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "jest 22.4.4 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  "documenso-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "dom-testing-library": {
+   "status": "ok",
+   "runner": "jest",
+   "runner_version": "29.7.0",
+   "tests": 664,
+   "first_run_s": 7.668180016000001,
+   "node": "node v18.20.8",
+   "commit": "6049cc0bc7cf2201625c476c95fa6299d0e2fa8b",
+   "detail": ""
+  },
+  "effect": {
+   "status": "too-slow",
+   "runner": "vitest",
+   "runner_version": "5.1.0",
+   "tests": 17649,
+   "first_run_s": 277.512175253,
+   "node": "node v22.23.5",
+   "commit": "3d13d1e84a933bfd4b90952ad9a221728326e923",
+   "detail": "first baseline run took 278s"
+  },
+  "electron-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "element-flaky": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "RR! command \"/tmp/detjs-cache/node-v18.20.8-linux-x64/bin/node\" \"/tmp/work/src/element-flaky/node_modules/node-gyp/bin/node-gyp.js\" \"rebuild\" \"--verbose\" \"--libsass_ext=\" \"--libsass_cflags=\" \"--libsass_ldflags=\" \"--libsass_library=\"\ngyp ERR! cwd /tmp/work/src/element-flaky/node_modules/node-sass\ngyp ERR! node -v v18.20.8\ngyp ERR! node-gyp -v v3.6.2\ngyp ERR! not ok \nBuild failed with error code: 1\n"
+  },
+  "eui-flaky": {
+   "status": "unsupported",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "jest 24.9.0 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  "excalidraw-flaky": {
+   "status": "too-slow",
+   "runner": "vitest",
+   "runner_version": "3.0.6",
+   "tests": 1611,
+   "first_run_s": 208.69076951799997,
+   "node": "node v18.20.8",
+   "commit": "5cf547650b700b35507e83773695098150b810d2",
+   "detail": "first baseline run took 209s"
+  },
+  "fastify-ajv-compiler": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "fastify-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "floating-ui": {
+   "status": "baseline-broken",
+   "runner": "vitest",
+   "runner_version": "4.1.9",
+   "tests": 76,
+   "first_run_s": 8.357063859999997,
+   "node": "node v22.23.5",
+   "commit": "c3042f1f37d96dfadff1d8894daa31e120d89ed4",
+   "detail": "67/76 tests fail in the first baseline run"
+  },
+  "formik": {
+   "status": "unsupported",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "jest 25.5.4 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  "freecodecamp-flaky": {
+   "status": "unsupported",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "jest 24.9.0 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  "got-flaky": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "recated sinon@14.0.2: 16.1.1\nnpm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.\nnpm error code 1\nnpm error path /tmp/work/src/got-flaky\nnpm error command failed\nnpm error command sh -c npm run build\nnpm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-16T18_36_08_419Z-debug-0.log\n"
+  },
+  "grafana-flaky": {
+   "status": "too-slow",
+   "runner": "vitest",
+   "runner_version": "4.1.11",
+   "tests": 3015,
+   "first_run_s": 345.0798137879999,
+   "node": "node v22.23.5",
+   "commit": "7da97f6fe4548d9d3d4759e0483a5ca6ff7c74fb",
+   "detail": "first baseline run took 345s"
+  },
+  "h3": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "5.0.5",
+   "tests": 3386,
+   "first_run_s": 21.376457740999996,
+   "node": "node v20.20.2",
+   "commit": "2f29b875617e8daf39d25118f7474fd4c24fbfe1",
+   "detail": ""
+  },
+  "happy-dom": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.8",
+   "tests": 8098,
+   "first_run_s": 144.78985071600002,
+   "node": "node v20.20.2",
+   "commit": "5e100dedb73111a276f75a3daff3a506e2524759",
+   "detail": ""
+  },
+  "happy-dom-flaky": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.8",
+   "tests": 8096,
+   "first_run_s": 132.262187677,
+   "node": "node v20.20.2",
+   "commit": "875ef5c647b336cc933c82426c9d780a5aab84f9",
+   "detail": ""
+  },
+  "hono": {
+   "status": "baseline-broken",
+   "runner": "vitest",
+   "runner_version": "5.0.1",
+   "tests": 0,
+   "first_run_s": 0.2390319419999969,
+   "node": "node v18.20.8",
+   "commit": "676c8f80fcafc49e6e74c847a8f0d9c44cc7faee",
+   "detail": "0 test outcomes (exit 1): _modules/vitest/dist/chunks/cac.fSuRXrAx.js:2369:27)\n    at async CAC.run (file:///tmp/work/src/hono/node_modules/.pnpm/vitest@5.0.1_@types+node@24.13.6_@vitest+browser-preview@5.0.1_@vitest+coverage-v8@5.0._68c5305fb163089a9626a63dab7b643c/node_modules/vitest/dist/chunks/cac.fSuRXrAx.js:2346:2)\n\n\n\n"
+  },
+  "immer": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "3.2.6",
+   "tests": 4192,
+   "first_run_s": 5.226620593999996,
+   "node": "node v22.23.5",
+   "commit": "784c86bb234e805566481c9425fcb2a3897e8bcc",
+   "detail": ""
+  },
+  "immutable-js": {
+   "status": "ok",
+   "runner": "jest",
+   "runner_version": "29.7.0",
+   "tests": 899,
+   "first_run_s": 57.219783627,
+   "node": "node v22.23.5",
+   "commit": "abfaef3c08905918e9fa05d0595e7e220fd36dbf",
+   "detail": ""
+  },
+  "ionic-framework-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "jest-flaky": {
+   "status": "baseline-broken",
+   "runner": "jest",
+   "runner_version": "28.1.1",
+   "tests": 0,
+   "first_run_s": 0.8597924279999916,
+   "node": "node v18.20.8",
+   "commit": "96dae9947b85dc0dcc0636af9516958ea32be752",
+   "detail": "0 test outcomes (exit 1): memory-server-core/lib/util/MongoInstance.js:276:14)\n    at ChildProcess.emit (node:events:517:28)\n    at maybeClose (node:internal/child_process:1098:16)\n    at Socket.<anonymous> (node:internal/child_process:450:11)\n    at Socket.emit (node:events:517:28)\n    at Pipe.<anonymous> (node:net:350:12)\n"
+  },
+  "jotai": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "5.1.0",
+   "tests": 412,
+   "first_run_s": 15.650289629,
+   "node": "node v22.23.5",
+   "commit": "9de9377d10a5ac01388764b89458e2d7091d29d4",
+   "detail": ""
+  },
+  "jquery-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "ky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "kysely": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "leaflet-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "lodash-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "luxon": {
+   "status": "ok",
+   "runner": "jest",
+   "runner_version": "29.4.3",
+   "tests": 1204,
+   "first_run_s": 6.191420149999999,
+   "node": "node v18.20.8",
+   "commit": "f427515a38f6a671f8de663e6bcc040ed81f114e",
+   "detail": ""
+  },
+  "maplibre-gl-js-flaky": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "he/node-v18.20.8-linux-x64/bin/node\" \"/tmp/work/src/maplibre-gl-js-flaky/node_modules/.bin/node-gyp\" \"rebuild\"\nnpm error gyp ERR! cwd /tmp/work/src/maplibre-gl-js-flaky/node_modules/gl\nnpm error gyp ERR! node -v v18.20.8\nnpm error gyp ERR! node-gyp -v v8.4.1\nnpm error gyp ERR! not ok\nnpm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-16T18_36_36_036Z-debug-0.log\n"
+  },
+  "material-ui-flaky": {
+   "status": "baseline-broken",
+   "runner": "vitest",
+   "runner_version": "3.0.8",
+   "tests": 811,
+   "first_run_s": 97.98956099599997,
+   "node": "node v22.23.5",
+   "commit": "d97f1383e7852c7b2d34cb5385f82dc3dc93fe1b",
+   "detail": "811/811 tests fail in the first baseline run"
+  },
+  "medusa-flaky": {
+   "status": "too-slow",
+   "runner": "vitest",
+   "runner_version": "3.2.4",
+   "tests": 1331,
+   "first_run_s": 364.34182179899994,
+   "node": "node v22.23.5",
+   "commit": "c3713be51df64cec0f454ba6a598c801a979d243",
+   "detail": "first baseline run took 364s"
+  },
+  "mermaid": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.12",
+   "tests": 8173,
+   "first_run_s": 161.725771398,
+   "node": "node v22.23.5",
+   "commit": "e5fdf81d222d9e011ca75d9e4363f3bd7bf99616",
+   "detail": ""
+  },
+  "mermaid-flaky": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "3.2.4",
+   "tests": 4015,
+   "first_run_s": 80.49401366199999,
+   "node": "node v22.23.5",
+   "commit": "89818e854e6e517726e49e6625b3a1ccd62e1935",
+   "detail": ""
+  },
+  "meteor-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "no package.json at the repository root"
+  },
+  "mobx": {
+   "status": "ok",
+   "runner": "jest",
+   "runner_version": "30.3.0",
+   "tests": 1027,
+   "first_run_s": 45.921379749,
+   "node": "node v22.23.5",
+   "commit": "bf94b8e866c58995f78189c5412cf06042012720",
+   "detail": ""
+  },
+  "moment-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "mongoose-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "msw-flaky": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "3.1.4",
+   "tests": 254,
+   "first_run_s": 11.920304572,
+   "node": "node v20.20.2",
+   "commit": "d3113a95564292c4d180b3e1f50b8f3a536d26e0",
+   "detail": ""
+  },
+  "mui-x-flaky": {
+   "status": "too-slow",
+   "runner": "vitest",
+   "runner_version": "3.1.3",
+   "tests": 8050,
+   "first_run_s": 465.50825965700005,
+   "node": "node v22.23.5",
+   "commit": "b8c0ff1198e6e63b2c7cf0ad5a1f16144835b1b5",
+   "detail": "first baseline run took 466s"
+  },
+  "n8n-flaky": {
+   "status": "baseline-broken",
+   "runner": "vitest",
+   "runner_version": "3.1.3",
+   "tests": 583,
+   "first_run_s": 86.07981431899998,
+   "node": "node v22.23.5",
+   "commit": "574ec6e895ad7e487f5820f1a7a1be7128488a77",
+   "detail": "466/583 tests fail in the first baseline run"
+  },
+  "next.js-flaky": {
+   "status": "baseline-broken",
+   "runner": "jest",
+   "runner_version": "29.7.0",
+   "tests": 2119,
+   "first_run_s": 46.01113377499999,
+   "node": "node v20.20.2",
+   "commit": "969733cfb7014a782464456f048807faff6caa33",
+   "detail": "2119/2119 tests fail in the first baseline run"
+  },
+  "nocodb-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "node-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "no package.json at the repository root"
+  },
+  "node-redis-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "nuxt-flaky": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "3.2.4",
+   "tests": 696,
+   "first_run_s": 39.013111068,
+   "node": "node v22.23.5",
+   "commit": "0344123b3c2c46c6f591c42696eef8ffc6504947",
+   "detail": ""
+  },
+  "nx-flaky": {
+   "status": "baseline-broken",
+   "runner": "vitest",
+   "runner_version": "3.2.4",
+   "tests": 928,
+   "first_run_s": 137.677807479,
+   "node": "node v22.23.5",
+   "commit": "65a216bfe2736deb7dd2b44f8382e25c381983db",
+   "detail": "859/928 tests fail in the first baseline run"
+  },
+  "openlayers-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "outline-flaky": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "pinia": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.11",
+   "tests": 276,
+   "first_run_s": 9.475972666999994,
+   "node": "node v22.23.5",
+   "commit": "4817135a25431172d363bd928476db7cdbf875c4",
+   "detail": ""
+  },
+  "pixijs": {
+   "status": "unsupported",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "jest 26.6.3 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  "pixijs-flaky": {
+   "status": "unsupported",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "jest 26.6.3 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  "pnpm-flaky": {
+   "status": "baseline-broken",
+   "runner": "jest",
+   "runner_version": "30.4.2",
+   "tests": 0,
+   "first_run_s": 0.45903218099999776,
+   "node": "node v22.23.5",
+   "commit": "0db922d74a906c1cdef3ca66296f9bd41bea4a91",
+   "detail": "0 test outcomes (exit 1): /30.4.1/58198308af0435a83c55203d495b9ff08a3102041e4173d7a5fc72ae5c99a927/node_modules/jest-worker/build/processChild.js:189:7)\n    at process.emit (node:events:519:28)\n    at emit (node:internal/child_process:949:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n"
+  },
+  "posthog-js-flaky": {
+   "status": "too-few-tests",
+   "runner": "jest",
+   "runner_version": "29.7.0",
+   "tests": 8,
+   "first_run_s": 0.6365862449999895,
+   "node": "node v22.23.5",
+   "commit": "3740abc5309b0af105a52aa79472366de1932e95",
+   "detail": "8 test outcomes (exit 1):  (../../node_modules/.pnpm/@jest+transform@29.7.0/node_modules/@jest/transform/build/ScriptTransformer.js:726:19)\n\nSeed:        1000\nTest Suites: 8 failed, 8 total\nTests:       0 total\nSnapshots:   0 total\nTime:        0.394 s\nTest results written to: ../../../../runs/posthog-js-flaky/normal_0.json\n"
+  },
+  "preact-signals": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.0.17",
+   "tests": 1099,
+   "first_run_s": 7.131581455000003,
+   "node": "node v22.23.5",
+   "commit": "395fd7ebd440cbc4d1ced05b4b498b08f3ed33d0",
+   "detail": ""
+  },
+  "prettier-flaky": {
+   "status": "ok",
+   "runner": "jest",
+   "runner_version": "30.2.0",
+   "tests": 25624,
+   "first_run_s": 100.44278974,
+   "node": "node v20.20.2",
+   "commit": "e51ff9ad41b0c8e22aaad2d7d6b99710ccebfd3d",
+   "detail": ""
+  },
+  "primitives-flaky": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "end-of-stream:154:30)\n    at PassThrough.emit (node:events:517:28)\n    at emitCloseNT (node:internal/streams/destroy:132:10)\n    at process.processTicksAndRejections (node:internal/process/task_queues:81:21)\n\u001b[94m\u27a4\u001b[39m YN0013: \u2502 No packages were cached - 1728 packages had to be fetched\n::endgroup::\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2514 Completed in 1m 1s\n\u001b[91m\u27a4\u001b[39m YN0000: Failed with errors in 1m 1s\n"
+  },
+  "pw-ariakit": {
+   "status": "ok",
+   "runner": "playwright",
+   "runner_version": "1.62.0",
+   "tests": 10,
+   "first_run_s": 3.6008419030000027,
+   "node": "node v22.23.5",
+   "commit": "7f394c8d3e9a91b163b2aeff6f6ff07eddf5e908",
+   "detail": ""
+  },
+  "pw-astro": {
+   "status": "too-slow",
+   "runner": "playwright",
+   "runner_version": "1.65.0",
+   "tests": 317,
+   "first_run_s": 474.800142789,
+   "node": "node v22.23.5",
+   "commit": "bf5a17080454d2696e2cd40cc7e03a76d73efc57",
+   "detail": "first baseline run took 475s"
+  },
+  "pw-floating-ui": {
+   "status": "browser-install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "Failed to install browsers\nError: ERROR: Playwright does not support chromium on ubuntu26.04-x64\n"
+  },
+  "pw-lexical": {
+   "status": "baseline-broken",
+   "runner": "playwright",
+   "runner_version": "1.63.0",
+   "tests": 0,
+   "first_run_s": 2.411832462999996,
+   "node": "node v22.23.5",
+   "commit": "d28a8834957e423fcb55a6174eb9f3b7713e5a0a",
+   "detail": "0 test outcomes (exit 1): 23.15_yaml@2.9.0/node_modules/vite/dist/node/chunks/node.js:35589:198)\n[WebServer]     at async CAC.<anonymous> (file:///tmp/work/src/pw-lexical/node_modules/.pnpm/vite@8.3.3_@types+node@26.4.1_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.0/node_modules/vite/dist/node/cli.js:811:18)\n"
+  },
+  "pw-material-ui": {
+   "status": "baseline-broken",
+   "runner": "playwright",
+   "runner_version": "1.63.0",
+   "tests": 0,
+   "first_run_s": 0.5271501690000377,
+   "node": "node v22.23.5",
+   "commit": "6a200b8e5966ad34f10c4e57d86c543280fe8b8d",
+   "detail": "0 test outcomes (exit 1): ocs/package.json'));\n>  9 | const LZString = requireFromDocs('lz-string') as typeof LZStringModule;\n     |                  ^\n  10 |\n  11 | const test = base.extend<TestFixture>({});\n  12 |\n    at Object.<anonymous> (/tmp/work/src/pw-material-ui/test/e2e-website/demo-docs-production.spec.ts:9:18)\n\n\n"
+  },
+  "pw-msw": {
+   "status": "ok",
+   "runner": "playwright",
+   "runner_version": "1.63.0",
+   "tests": 52,
+   "first_run_s": 18.598385352999998,
+   "node": "node v22.23.5",
+   "commit": "13fe000cc36f6bcf5d60483874e1d2f5b6e9256d",
+   "detail": ""
+  },
+  "pw-qwik": {
+   "status": "baseline-broken",
+   "runner": "playwright",
+   "runner_version": "1.61.1",
+   "tests": 0,
+   "first_run_s": 4.180714904000013,
+   "node": "node v22.23.5",
+   "commit": "5827998d825c01c8cef064c271bf2f1db30d649a",
+   "detail": "0 test outcomes (exit 1): ik.dev/core/dist/optimizer.mjs' imported from /tmp/work/src/pw-qwik/e2e/qwik-e2e/tests/qwikrouter/ssg-snapshot.e2e.ts\n\nError: Cannot find module '/tmp/work/src/pw-qwik/node_modules/@qwik.dev/core/dist/optimizer.mjs' imported from /tmp/work/src/pw-qwik/e2e/qwik-e2e/tests/server-only-modules.e2e.ts\n\n\n"
+  },
+  "pw-react-router": {
+   "status": "browser-install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "Failed to install browsers\nError: ERROR: Playwright does not support chromium on ubuntu26.04-x64\n"
+  },
+  "pw-remix": {
+   "status": "baseline-broken",
+   "runner": "playwright",
+   "runner_version": "1.63.0",
+   "tests": 0,
+   "first_run_s": 9.272647366000001,
+   "node": "node v22.23.5",
+   "commit": "3fac48ab24f835367af7e3abb48d227e870f0500",
+   "detail": "0 test outcomes (exit 1): packages/assets/src/lib/asset-server.ts:877:23)\n    at /tmp/work/src/pw-remix/template/app/assets.ts:38:41\n\nError: No tests found\n\n\n(node:4494) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  },
+  "pw-slate": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "@playwright/test / playwright not resolvable: t evalTypeScript (node:internal/process/execution:291:3)\n    at node:internal/main/eval_string:74:3 {\n  code: 'MODULE_NOT_FOUND',\n  requireStack: [ '/tmp/work/src/pw-slate/x.js' ]\n}\n\nNode.js v22.23.5\n"
+  },
+  "pw-solid-start": {
+   "status": "ok",
+   "runner": "playwright",
+   "runner_version": "1.62.0",
+   "tests": 47,
+   "first_run_s": 48.08627711600002,
+   "node": "node v22.23.5",
+   "commit": "68784294b16692adf687c25bcd58c16c8a625cb3",
+   "detail": ""
+  },
+  "pw-starlight": {
+   "status": "ok",
+   "runner": "playwright",
+   "runner_version": "1.61.1",
+   "tests": 26,
+   "first_run_s": 71.808504255,
+   "node": "node v22.23.5",
+   "commit": "ea812fe60b73413c73f91229be2bfd1e179c5ccd",
+   "detail": ""
+  },
+  "pw-sveltekit": {
+   "status": "baseline-broken",
+   "runner": "playwright",
+   "runner_version": "1.63.0",
+   "tests": 0,
+   "first_run_s": 2.3168484149999955,
+   "node": "node v22.23.5",
+   "commit": "407ef8cb1257d0d7529db6ebde1130654ffd8fe4",
+   "detail": "0 test outcomes (exit 1): \n[WebServer]     at async analyse (file:///tmp/work/src/pw-sveltekit/packages/kit/src/core/postbuild/analyse.js:153:34)\n[WebServer]     at async MessagePort.<anonymous> (file:///tmp/work/src/pw-sveltekit/packages/kit/src/utils/fork.js:21:22)\n[WebServer] [ELIFECYCLE] Command failed with exit code 1.\n"
+  },
+  "pw-swr": {
+   "status": "browser-install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "Failed to install browsers\nError: ERROR: Playwright does not support chromium on ubuntu26.04-x64\n"
+  },
+  "pw-tanstack-router": {
+   "status": "baseline-broken",
+   "runner": "playwright",
+   "runner_version": "1.63.0",
+   "tests": 0,
+   "first_run_s": 0.6070877909999979,
+   "node": "node v22.23.5",
+   "commit": "0b6d4f3f6b42e704555d9ff0014ddbf8b44f8e09",
+   "detail": "0 test outcomes (exit 1): esm/module_job:182:49) {\n[WebServer]   code: 'ERR_MODULE_NOT_FOUND',\n[WebServer]   url: 'file:///tmp/work/src/pw-tanstack-router/examples/react/start-basic-react-query/node_modules/@tanstack/react-start/dist/esm/plugin/vite.js'\n[WebServer] }\n[WebServer] [ELIFECYCLE] Command failed with exit code 1.\n"
+  },
+  "pw-tldraw": {
+   "status": "baseline-broken",
+   "runner": "playwright",
+   "runner_version": "1.61.0",
+   "tests": 0,
+   "first_run_s": 1.0714157840000098,
+   "node": "node v22.23.5",
+   "commit": "1ca96321df92ff8464e8f9a1fa70d3f9d848d73c",
+   "detail": "0 test outcomes (exit 1): \nError: http://localhost:5420 is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer.\n\n\n"
+  },
+  "quasar-flaky": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.8",
+   "tests": 1041,
+   "first_run_s": 92.43430676600008,
+   "node": "node v22.23.5",
+   "commit": "6d531cf190aa6c2fa0c5990ecbe1349bc801c718",
+   "detail": ""
+  },
+  "query-flaky": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "2.0.5",
+   "tests": 479,
+   "first_run_s": 16.06054042400001,
+   "node": "node v22.23.5",
+   "commit": "e3aca9813440b950947d8d10e48cc90cad568db3",
+   "detail": ""
+  },
+  "react-admin-flaky": {
+   "status": "ok",
+   "runner": "jest",
+   "runner_version": "29.5.0",
+   "tests": 2087,
+   "first_run_s": 130.095381659,
+   "node": "node v20.20.2",
+   "commit": "3ff5554b10342fc8467348d35143c805a2ff81e5",
+   "detail": ""
+  },
+  "react-flaky": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "tall.js:127:30)\nnpm error     at /tmp/work/src/react-flaky/node_modules/phantomjs/install.js:476:19\nnpm error     at nextTickCallback (/tmp/work/src/react-flaky/node_modules/kew/kew.js:47:28)\nnpm error     at process.processTicksAndRejections (node:internal/process/task_queues:77:11)\nnpm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-16T18_28_24_655Z-debug-0.log\n"
+  },
+  "react-hook-form": {
+   "status": "baseline-broken",
+   "runner": "jest",
+   "runner_version": "30.4.2",
+   "tests": 167,
+   "first_run_s": 9.791454488,
+   "node": "node v18.20.8",
+   "commit": "66f4d72b8c66627d5542dd13e15070227d84d4a2",
+   "detail": "167/167 tests fail in the first baseline run"
+  },
+  "react-redux": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.11",
+   "tests": 140,
+   "first_run_s": 6.512852926000008,
+   "node": "node v22.23.5",
+   "commit": "8e54f5b9dbbdcc972c120ad3ce3c1c57fc2e89fd",
+   "detail": ""
+  },
+  "react-router-flaky": {
+   "status": "baseline-broken",
+   "runner": "jest",
+   "runner_version": "29.7.0",
+   "tests": 0,
+   "first_run_s": 0.19068221000000563,
+   "node": "node v20.20.2",
+   "commit": "b07dff446a5d0fd82d54c8e8784bb3dee1e958ef",
+   "detail": "0 test outcomes (exit 1): 1266:32)\n    at Module._load (node:internal/modules/cjs/loader:1091:12)\n    at Module.require (node:internal/modules/cjs/loader:1289:19)\n    at require (node:internal/modules/helpers:182:18)\n    at Object.<anonymous> (/tmp/work/src/react-router-flaky/packages/create-react-router/jest.config.js:3:6)\n"
+  },
+  "react-testing-library-flaky": {
+   "status": "ok",
+   "runner": "jest",
+   "runner_version": "29.7.0",
+   "tests": 250,
+   "first_run_s": 3.50209674300001,
+   "node": "node v18.20.8",
+   "commit": "1c931a6c03091d725eccee7767d9ec696d5d33c6",
+   "detail": ""
+  },
+  "react-three-fiber-flaky": {
+   "status": "too-few-tests",
+   "runner": "jest",
+   "runner_version": "29.7.0",
+   "tests": 15,
+   "first_run_s": 0.7807692190000068,
+   "node": "node v22.23.5",
+   "commit": "0a107412ac64667b1908422e859447952f57feef",
+   "detail": "15 test outcomes (exit 1): \n      at new JSDOMEnvironment (node_modules/jest-environment-jsdom/build/index.js:72:44)\n\nSeed:        1000\nTest Suites: 15 failed, 15 total\nTests:       0 total\nSnapshots:   0 total\nTime:        0.385 s\nRan all test suites.\nTest results written to: ../../runs/react-three-fiber-flaky/normal_0.json\n"
+  },
+  "recharts": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.11",
+   "tests": 9334,
+   "first_run_s": 157.40244407900002,
+   "node": "node v22.23.5",
+   "commit": "f27aeba6293c66c0e8b602e4351faf6d2de42875",
+   "detail": ""
+  },
+  "redux": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.0.5",
+   "tests": 82,
+   "first_run_s": 0.9808108390000001,
+   "node": "node v22.23.5",
+   "commit": "39bd88011b0c7c6f67cec8230ada49fac20ad989",
+   "detail": ""
+  },
+  "redux-toolkit": {
+   "status": "baseline-broken",
+   "runner": "vitest",
+   "runner_version": "5.0.0",
+   "tests": 114,
+   "first_run_s": 13.479284788000001,
+   "node": "node v22.23.5",
+   "commit": "f1d2de3b6572d5b6fff2b0cfbbb29963c85e5ac1",
+   "detail": "99/114 tests fail in the first baseline run"
+  },
+  "rxjs": {
+   "status": "baseline-broken",
+   "runner": "vitest",
+   "runner_version": "4.1.10",
+   "tests": 751,
+   "first_run_s": 67.66374139199999,
+   "node": "node v22.23.5",
+   "commit": "54796b38a57e6309f9861e174737479bb3f63f61",
+   "detail": "511/751 tests fail in the first baseline run"
+  },
+  "sentry-javascript-flaky": {
+   "status": "too-slow",
+   "runner": "vitest",
+   "runner_version": "4.1.11",
+   "tests": 9124,
+   "first_run_s": 443.78848186,
+   "node": "node v22.23.5",
+   "commit": "6c6c040256450996682d7b73b3f2693cc4bfbb69",
+   "detail": "first baseline run took 444s"
+  },
+  "sequelize-flaky": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "js-cache/node-v18.20.8-linux-x64/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js build --fallback-to-build --module=/tmp/work/src/sequelize-flaky/node_modules/odbc/lib/bindings/napi-v6/odbc.node --module_name=odbc --module_path=/tmp/work/src/sequelize-flaky/node_modules/odbc/lib/bindings/napi-v6 --napi_version=9 --node_abi_napi=napi --napi_build_version=6 --node_napi_label=napi-v6' (1)\n"
+  },
+  "shiki": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "5.0.5",
+   "tests": 691,
+   "first_run_s": 42.38274417000001,
+   "node": "node v20.20.2",
+   "commit": "de15fd2efb709ea4528d894ab857ac145f3dc277",
+   "detail": ""
+  },
+  "storybook-flaky": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": ".\n[2/4] Fetching packages...\ninfo Visit https://yarnpkg.com/en/docs/cli/install for documentation about this command.\nerror Command failed.\nExit code: 128\nCommand: git\nArguments: ls-remote --tags --heads git://github.com/CharlesMangwa/simple-markdown.git\nDirectory: /tmp/work/src/storybook-flaky\nOutput:\nfatal: unable to connect to github.com:\ngithub.com[0: 140.82.112.3]: errno=Connection timed out\n"
+  },
+  "stylelint": {
+   "status": "no-runner",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+  },
+  "superjson": {
+   "status": "unsupported",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "vitest 0.34.6 (detjs needs >= 1.4)"
+  },
+  "svelte-flaky": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "2.1.9",
+   "tests": 6969,
+   "first_run_s": 60.055548637,
+   "node": "node v22.23.5",
+   "commit": "7a2435471c96c43d6f00144cdb5889772703d786",
+   "detail": ""
+  },
+  "tanstack-form": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "5.0.5",
+   "tests": 474,
+   "first_run_s": 10.172541116999994,
+   "node": "node v22.23.5",
+   "commit": "eba4084b706699e4c4d8cfc39f895f722ea9cdfc",
+   "detail": ""
+  },
+  "tanstack-table": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "5.1.0",
+   "tests": 1816,
+   "first_run_s": 124.83448836600002,
+   "node": "node v22.23.5",
+   "commit": "564a459b74834c77631e0d6fdba7661383bbc1b4",
+   "detail": ""
+  },
+  "tiptap-flaky": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.2",
+   "tests": 1420,
+   "first_run_s": 57.87465042000002,
+   "node": "node v22.23.5",
+   "commit": "1ecf81434f0fa7a40c1b7815719836e82a77d4b9",
+   "detail": ""
+  },
+  "tldraw-flaky": {
+   "status": "too-slow",
+   "runner": "vitest",
+   "runner_version": "4.1.7",
+   "tests": 6956,
+   "first_run_s": 222.061572851,
+   "node": "node v22.23.5",
+   "commit": "a1d5d13539578f7ceae7b248f6a9824e108a24e8",
+   "detail": "first baseline run took 222s"
+  },
+  "trpc-flaky": {
+   "status": "unsupported",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "vitest 0.28.5 (detjs needs >= 1.4)"
+  },
+  "twenty-flaky": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "/.yarn/releases/yarn-4.9.2.cjs:212:4806)\n    at async /tmp/work/src/twenty-flaky/.yarn/releases/yarn-4.9.2.cjs:462:18229\n    at async Ot.start (/tmp/work/src/twenty-flaky/.yarn/releases/yarn-4.9.2.cjs:175:1995)\n    at async wC.execute (/tmp/work/src/twenty-flaky/.yarn/releases/yarn-4.9.2.cjs:462:18086)\n\u001b[94m\u27a4\u001b[39m \u001b[90mYN0000\u001b[39m: \u2514 Completed\n\u001b[91m\u27a4\u001b[39m YN0000: \u00b7 Failed with errors in 36s 129ms\n"
+  },
+  "typescript-eslint-flaky": {
+   "status": "too-slow",
+   "runner": "vitest",
+   "runner_version": "4.1.5",
+   "tests": 45570,
+   "first_run_s": 406.89599588199997,
+   "node": "node v18.20.8",
+   "commit": "af4282417d6fbfb8d79030b520435599f65efaf0",
+   "detail": "first baseline run took 407s"
+  },
+  "ufo": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.5",
+   "tests": 487,
+   "first_run_s": 1.7264431259999995,
+   "node": "node v22.23.5",
+   "commit": "f06c800d0c59f2a4a1b9ba65eb6cb61a84419be6",
+   "detail": ""
+  },
+  "undici-flaky": {
+   "status": "too-few-tests",
+   "runner": "jest",
+   "runner_version": "30.3.0",
+   "tests": 11,
+   "first_run_s": 2.375540877000006,
+   "node": "node v22.23.5",
+   "commit": "397bc13d71942465e231518b80a3e533856cc283",
+   "detail": "11 test outcomes (exit 0): ASS test/jest/test.js\nPASS test/jest/util-timers.test.js\nPASS test/jest/mock-scope.test.js\n\nSeed:        1000\nTest Suites: 7 passed, 7 total\nTests:       11 passed, 11 total\nSnapshots:   0 total\nTime:        2.011 s\nRan all test suites.\nTest results written to: ../../runs/undici-flaky/normal_0.json\n"
+  },
+  "unocss": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "5.0.5",
+   "tests": 1983,
+   "first_run_s": 104.80355587700001,
+   "node": "node v22.23.5",
+   "commit": "df5d74fb3cf8310b146661c136bec3705bc65ad4",
+   "detail": ""
+  },
+  "unstorage": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "5.0.5",
+   "tests": 885,
+   "first_run_s": 13.900389071999996,
+   "node": "node v22.23.5",
+   "commit": "5781aae96f7f34820a99e447df29ceead97e9210",
+   "detail": ""
+  },
+  "urql": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "2.1.1",
+   "tests": 620,
+   "first_run_s": 12.459612947999972,
+   "node": "node v18.20.8",
+   "commit": "f57b08947d25487f04568bd4e6b37548d3a16ea0",
+   "detail": ""
+  },
+  "user-event": {
+   "status": "ok",
+   "runner": "jest",
+   "runner_version": "28.1.3",
+   "tests": 569,
+   "first_run_s": 14.233048531999998,
+   "node": "node v18.20.8",
+   "commit": "930fb1ee1a6ccb2a492bfd3f790b60619af9d872",
+   "detail": ""
+  },
+  "uuid": {
+   "status": "too-few-tests",
+   "runner": "jest",
+   "runner_version": "30.5.1",
+   "tests": 39,
+   "first_run_s": 1.117470167999997,
+   "node": "node v22.23.5",
+   "commit": "766d0d29c1646f37cb2261bbee723f0daf94e44a",
+   "detail": "39 test outcomes (exit 1): \n\n      at createRequireEsmError (node_modules/jest-runtime/build/index.js:452:17)\n\n\nSeed:        1000\nTest Suites: 34 failed, 34 total\nTests:       6 failed, 6 total\nSnapshots:   0 total\nTime:        0.918 s, estimated 1 s\nRan all test suites.\nTest results written to: ../../runs/uuid/normal_0.json\n"
+  },
+  "valibot": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.8",
+   "tests": 3220,
+   "first_run_s": 3.4105539639999947,
+   "node": "node v22.23.5",
+   "commit": "d72f76fcf70ccfa0a5ca341b80da1d440ac60b11",
+   "detail": ""
+  },
+  "valtio": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "ERROR: This version of pnpm requires at least Node.js v22.13\nThe current version of Node.js is v18.20.8\nVisit https://r.pnpm.io/comp to see the list of past pnpm versions with respective Node.js version support.\n"
+  },
+  "vite-flaky": {
+   "status": "unsupported",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "vitest 0.29.7 (detjs needs >= 1.4)"
+  },
+  "vitepress": {
+   "status": "baseline-broken",
+   "runner": "vitest",
+   "runner_version": "5.0.3",
+   "tests": 56,
+   "first_run_s": 5.263546289999994,
+   "node": "node v22.23.5",
+   "commit": "40b2e090772ac11eac358d25ec92ee435fc2adbd",
+   "detail": "56/56 tests fail in the first baseline run"
+  },
+  "vitest-flaky": {
+   "status": "harness-error",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "TypeError('sequence item 0: expected str instance, NoneType found')\", line 537, in run_node\n    outcomes, exceptions = (parse_playwright(report, p.src) if p.runner == \"playwright\" else parse_report(report, p.src))\n                                                                                             ~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/harness/node/node_harness.py\", line 423, in parse_report\n    exceptions[nid] = _exc(\"\\n\".join(a.get(\"failureMessages\") or []), \"call\")\n                           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: sequence item 0: expected str instance, NoneType found\n"
+  },
+  "vue-core": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.11",
+   "tests": 3164,
+   "first_run_s": 30.653003337,
+   "node": "node v20.20.2",
+   "commit": "cbd95955a5362b44060908f6e28ad447c3031b8a",
+   "detail": ""
+  },
+  "vuetify-flaky": {
+   "status": "baseline-broken",
+   "runner": "vitest",
+   "runner_version": "3.2.4",
+   "tests": 88,
+   "first_run_s": 18.51115955299997,
+   "node": "node v22.23.5",
+   "commit": "30deb56531e10ed8afd1365caaf8c13143da6929",
+   "detail": "88/88 tests fail in the first baseline run"
+  },
+  "vueuse": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "5.1.0",
+   "tests": 1023,
+   "first_run_s": 87.262964331,
+   "node": "node v22.23.5",
+   "commit": "bed1dce149ce6760fec13d4798c047f51a563180",
+   "detail": ""
+  },
+  "webdriverio-flaky": {
+   "status": "too-slow",
+   "runner": "vitest",
+   "runner_version": "5.0.2",
+   "tests": 6488,
+   "first_run_s": 224.38309893899998,
+   "node": "node v22.23.5",
+   "commit": "cbcc47f13d46fa081993521a759d35ac069523d3",
+   "detail": "first baseline run took 224s"
+  },
+  "xstate": {
+   "status": "too-slow",
+   "runner": "vitest",
+   "runner_version": "3.2.7",
+   "tests": 5043,
+   "first_run_s": 305.17866319399997,
+   "node": "node v22.23.5",
+   "commit": "8e53990c2f9318d2d649b8af1a3c96af970d9bf2",
+   "detail": "first baseline run took 305s"
+  },
+  "yaml": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.11",
+   "tests": 988,
+   "first_run_s": 3.488283981999995,
+   "node": "node v20.20.2",
+   "commit": "528ef30d6ded4bd9f2c3521b670eb2b29d503c5c",
+   "detail": ""
+  },
+  "yarn-flaky": {
+   "status": "unsupported",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "jest 22.4.3 (detjs needs jest-circus, the default runner since Jest 27)"
+  },
+  "yup": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "3.2.4",
+   "tests": 438,
+   "first_run_s": 5.497918312000003,
+   "node": "node v22.23.5",
+   "commit": "ff31eee8a2b10c938bb3a22544d9e33957a8cf01",
+   "detail": ""
+  },
+  "zod": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "tep will be performed to fix it.\n\u2009ERR_PNPM_WORKSPACE_PKG_NOT_FOUND\u2009 In : \"zod@workspace:*\" is in the dependencies but no package named \"zod\" is present in the workspace\n\nThis error happened while installing a direct dependency of /tmp/work/src/zod\n\nPackages found in the workspace: \n\u2009WARN\u2009 The \"workspaces\" field in package.json is not supported by pnpm. Create a \"pnpm-workspace.yaml\" file instead.\n"
+  },
+  "zod-flaky": {
+   "status": "ok",
+   "runner": "vitest",
+   "runner_version": "4.1.5",
+   "tests": 3817,
+   "first_run_s": 27.775193547999997,
+   "node": "node v22.23.5",
+   "commit": "ead9fcb310bf65a70427f92ca76545efe954037e",
+   "detail": ""
+  },
+  "zustand": {
+   "status": "install-failed",
+   "runner": null,
+   "runner_version": null,
+   "tests": null,
+   "first_run_s": null,
+   "node": null,
+   "commit": null,
+   "detail": "ERROR: This version of pnpm requires at least Node.js v22.13\nThe current version of Node.js is v18.20.8\nVisit https://r.pnpm.io/comp to see the list of past pnpm versions with respective Node.js version support.\n"
+  }
+ }
+}
