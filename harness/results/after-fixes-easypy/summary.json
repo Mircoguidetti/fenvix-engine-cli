@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "set": "after-fixes-easypy",
+    "runs": 10,
+    "seeds": 20,
+    "confirm": 10,
+    "jobs": 1,
+    "timing_runs": 3,
+    "detpy": "0.1.0",
+    "executor": "GitHub Actions matrix, one repository per ubuntu-latest runner (run https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43931114732)",
+    "date": "2026-11-16 18:50 UTC",
+    "command": "gh workflow run harness.yml -f runs=10 -f seeds=20 -f confirm=10",
+    "order": [
+      "idoft-easypy"
+    ],
+    "notes": [
+      "The FlaPy dataset (Gruber et al.) is published on Zenodo, which the development environment cannot reach (HTTP 403 from the network proxy): the 'flaky' pool uses the Python section of IDoFT, each project pinned at the commit where its flaky tests were detected.",
+      "Selection: the first 25 candidates per pool (in harness/repos.json and harness/flaky_candidates.json order) that clone, install, collect and finish their first baseline run within 120 s; every rejected candidate is listed above."
+    ]
+  },
+  "totals": {
+    "all": {
+      "tests": 212,
+      "unstable_baseline": 44,
+      "unstable_det": 0,
+      "became_stable": 44,
+      "outcome_changed_by_det": 0,
+      "covered": 183,
+      "not_covered": 29,
+      "reproduced": 43,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 1,
+      "fails_sometimes_under_det": 0,
+      "known_flaky": 44,
+      "known_present": 44,
+      "known_unstable_baseline": 44,
+      "known_reproduced": 43,
+      "broken_by_det": 1,
+      "broken_always": 1
+    },
+    "flaky": {
+      "tests": 212,
+      "unstable_baseline": 44,
+      "unstable_det": 0,
+      "became_stable": 44,
+      "outcome_changed_by_det": 0,
+      "covered": 183,
+      "not_covered": 29,
+      "reproduced": 43,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 1,
+      "fails_sometimes_under_det": 0,
+      "known_flaky": 44,
+      "known_present": 44,
+      "known_unstable_baseline": 44,
+      "known_reproduced": 43,
+      "broken_by_det": 1,
+      "broken_always": 1
+    },
+    "popular": {}
+  },
+  "reasons": {
+    "thread": 28,
+    "entropy": 1
+  },
+  "pass_fail_reasons": {
+    "time": 35,
+    "thread": 6,
+    "random": 2
+  },
+  "broken_causes": {
+    "fixed-order (fails without --det too) | RecursionError": 1
+  },
+  "timings": [],
+  "repos": [
+    {
+      "name": "idoft-easypy",
+      "kind": "flaky",
+      "status": "ok",
+      "url": "https://github.com/weka-io/easypy",
+      "commit": "9501c3ee03dc",
+      "commit_date": "2020-04-21",
+      "python": "3.9",
+      "install": "-e .",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 8.365491361100007,
+      "det_mean_s": 12.981930321499998,
+      "slowdown_pct": 55.184313283337836,
+      "precompile_first_s": 1.44,
+      "precompile_rest_median_s": 0.498,
+      "tests": 212,
+      "unstable_baseline": 44,
+      "unstable_det": 0,
+      "became_stable": 44,
+      "outcome_changed_by_det": 0,
+      "covered": 183,
+      "not_covered": 29,
+      "reproduced": 43,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 1,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "seeds_explored": 20,
+      "exploration_runs": 20,
+      "exploration_budget_hit": false,
+      "reasons": {
+        "thread": 28,
+        "entropy": 1
+      },
+      "pass_fail_reasons": {
+        "time": 35,
+        "thread": 6,
+        "random": 2
+      },
+      "broken_by_det": 1,
+      "broken_always": 1,
+      "broken_causes": {
+        "fixed-order (fails without --det too) | RecursionError": 1
+      },
+      "broken_examples": {
+        "fixed-order (fails without --det too) | RecursionError": [
+          "tests/test_sync.py::test_logged_condition_exception: RecursionError: maximum recursion depth exceeded (first diverging source: time)"
+        ]
+      },
+      "ablation_runs": 6,
+      "known_flaky": 44,
+      "known_present": 44,
+      "known_unstable_baseline": 44,
+      "known_reproduced": 43,
+      "known_categories": {
+        "OD-Vic": 44
+      },
+      "examples": {
+        "reproduced": [
+          "tests/test_caching.py::test_resilient_between_timecaches (seed fixed): event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = e4f59db1be156634878454fccdb30534",
+          "tests/test_concurrency.py::test_concurrent_done_status[False] (seed fixed): event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = 6d46a593f18bd5b92e4e5e42e0a6c48f",
+          "tests/test_concurrency.py::test_concurrent_done_status[True] (seed fixed): event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = 91246647fcd49b153a9557c2d7025bf3"
+        ],
+        "always-fails-under-det": [
+          "tests/test_concurrency.py::test_multiobject_logging (fixed:10/10)"
+        ]
+      }
+    }
+  ],
+  "skipped": []
+}
