@@ -86,7 +86,7 @@ def walk_summary(shards, spec):
         walls = sorted(c["wall"] for c in units.values() if c.get("wall"))
         base = walls[max(0, int(len(walls) * 0.05) - 1)] if walls else 0.0
         units = {u: dict(c, test=max(c["test"], c.get("wall", 0.0) - base)) for u, c in units.items()}
-    per_rule = {r: {"time": [], "count": [], "ttg_after": []} for r in rules}
+    per_rule = {r: {"time": [], "count": [], "ttg_after": [], "ttg_after_plain": []} for r in rules}
     ttg_before, inval_all, inval_why, verify = [], 0, Counter(), Counter()
     wrong, flaky_v = [], []
     rows = []
@@ -136,6 +136,8 @@ def walk_summary(shards, spec):
             k = ratio if (ratio and r not in ("go-cache",) and lang != "go") else 1.0
             w = max(1, round(workers * frac)) if frac < 1 else workers
             per_rule[r]["ttg_after"].append(lpt_makespan([units[u]["test"] * k for u in must], w))
+            # the same schedule without the dependency-capture overhead (capture paid only on a sample of runs)
+            per_rule[r]["ttg_after_plain"].append(lpt_makespan([units[u]["test"] for u in must], w))
             row[r] = round(skip_t / tot_t, 4)
         main = "go-cache" if lang == "go" else "closure"
         if row[main] < 0.01:
@@ -151,7 +153,8 @@ def walk_summary(shards, spec):
            "commits_per_day": commits_per_day(shards)}
     for r in rules:
         out[r] = {"time": stats(per_rule[r]["time"]), "count": stats(per_rule[r]["count"]),
-                  "ttg_after_s": stats(per_rule[r]["ttg_after"])}
+                  "ttg_after_s": stats(per_rule[r]["ttg_after"]),
+                  "ttg_after_plain_s": stats(per_rule[r]["ttg_after_plain"])}
     out["ttg_before_s"] = stats(ttg_before)
     if frac < 1:
         out["ttg_note"] = (f"sample of {frac:.0%} of the test files scheduled on {frac:.0%} of the CI workers "
@@ -266,7 +269,7 @@ def main(argv):
 def finer_summary(d):
     s = d["summary"]
     out = {"evaluated": s.get("evaluated"), "config_strict": s.get("config_strict")}
-    for key in ("strict/line", "strict/file", "strict/line+guard", "strict/file+guard", "strict/line+nameguard",
+    for key in ("relaxed/closure", "strict/line", "strict/file", "strict/line+guard", "strict/file+guard", "strict/line+nameguard",
                 "strict/line+names", "relaxed/line+names", "relaxed/line+guard", "relaxed/line", "strict/closure"):
         if key in s:
             out[key] = {"time": s[key]["share_time"], "count": s[key]["share_count"],
@@ -326,7 +329,7 @@ def ms(st, nd=0):
 def print_md(s):
     """Report-ready markdown tables (every number MEASURED on the stated sample)."""
     print("| project | lang | transitions | units (sample) | rule | time skipped median / mean | tests skipped "
-          "median / mean | time to green before -> after, median / mean | invalidate all (why) | verified skips "
+          "median / mean | time to green before -> after (after without capture overhead), median / mean | invalidate all (why) | verified skips "
           "(wrong, flaky) |")
     print("|---|---|---:|---|---|---:|---:|---|---|---|")
     for name, w in s["walk"].items():
@@ -342,8 +345,9 @@ def print_md(s):
             if not x.get("time"):
                 continue
             ta = x.get("ttg_after_s") or {}
-            ttg = (f"{tb.get('median', 0):.0f}s -> {ta.get('median', 0):.0f}s / {tb.get('mean', 0):.0f}s -> "
-                   f"{ta.get('mean', 0):.0f}s") if tb else "n/a"
+            tp = x.get("ttg_after_plain_s") or {}
+            ttg = (f"{tb.get('median', 0):.0f}s -> {ta.get('median', 0):.0f}s ({tp.get('median', 0):.0f}s) / "
+                   f"{tb.get('mean', 0):.0f}s -> {ta.get('mean', 0):.0f}s ({tp.get('mean', 0):.0f}s)") if tb else "n/a"
             print(f"| {name} | {w['lang']} | {w['transitions']} | {w['units']} ({w['sample']:.0%}) | {r} | "
                   f"{ms(x['time'])} | {ms(x['count'])} | {ttg} | {inv} | {ver} |")
     if s["agent"]:
@@ -366,7 +370,7 @@ def print_md(s):
                   f"{f['always_failing_groups']} | {pct(f['flaky_run_rate'])} | {f['mean_job_min'] or 0:.1f} | "
                   f"{f['wasted_min_per_job'] or 0:.2f} | {ft or '-'} |")
     if s["finer"]:
-        keys = ["strict/closure", "strict/file+guard", "strict/line+guard", "strict/line+names", "strict/line",
+        keys = ["strict/closure", "relaxed/closure", "strict/file+guard", "strict/line+guard", "strict/line+names", "strict/line",
                 "relaxed/line+guard", "relaxed/line+names", "relaxed/line"]
         print()
         print("| library | transitions | config (strict) | " + " | ".join(keys) + " |")
