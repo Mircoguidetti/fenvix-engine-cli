@@ -31,6 +31,8 @@ jobs:
       engine: ${{ steps.p.outputs.engine }}
       prs: ${{ steps.p.outputs.prs }}
       prs_args: ${{ steps.p.outputs.prs_args }}
+      prs_reuse: ${{ steps.p.outputs.prs_reuse }}
+      prs_indices: ${{ steps.p.outputs.prs_indices }}
       mutants: ${{ steps.p.outputs.mutants }}
       mut_matrix: ${{ steps.p.outputs.mut_matrix }}
       publish_run: ${{ steps.p.outputs.publish_run }}
@@ -65,7 +67,14 @@ jobs:
         with: {ref: "${{ needs.plan.outputs.engine }}", path: engine}
       - id: s
         env: {GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"}
-        run: python3 harness/diff_study/select_prs.py --repos-json engine/harness/repos.json --out sel/prs.json ${{ needs.plan.outputs.prs_args }}
+        run: |
+          # With "reuse" in run.json: the earlier candidate list, only the listed indices.
+          if [ -n "${{ needs.plan.outputs.prs_reuse }}" ]; then
+            mkdir -p sel && cp "${{ needs.plan.outputs.prs_reuse }}" sel/prs.json
+            echo 'matrix=${{ needs.plan.outputs.prs_indices }}' >> "$GITHUB_OUTPUT"
+          else
+            python3 harness/diff_study/select_prs.py --repos-json engine/harness/repos.json --out sel/prs.json ${{ needs.plan.outputs.prs_args }}
+          fi
       - uses: actions/upload-artifact@v4
         with: {name: prs, path: sel/prs.json}
 

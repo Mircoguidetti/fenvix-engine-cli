@@ -1,12 +1,31 @@
 {
- "nonce": 3,
+ "nonce": 4,
  "engine_sha": "0aef0aeee3bfe6a3adfd921712bfec5d625009bf",
  "prs": {
-  "enabled": false,
-  "args": "--since 2024-01-01 --per-repo 6 --total 80 --max-refactors 20"
+  "enabled": true,
+  "args": "--since 2024-01-01 --per-repo 6 --total 80 --max-refactors 20",
+  "reuse": "harness/diff_study/results/prs.json",
+  "indices": [
+   49,
+   50,
+   51,
+   52,
+   53,
+   54,
+   55,
+   56,
+   57,
+   59,
+   60,
+   61,
+   62,
+   63,
+   65,
+   66
+  ]
  },
  "mutants": {
-  "enabled": true,
+  "enabled": false,
   "per_shard": 50,
   "repos": [
    {
