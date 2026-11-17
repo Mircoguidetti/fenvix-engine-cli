@@ -122,6 +122,7 @@ class VirtualClock:
 
 
 CLOCK: VirtualClock | None = None
+_on_sleep = None  # set by detpy.aio
 
 
 def _time_machine_ns(e: int) -> int | None:
@@ -218,12 +219,15 @@ def sleep(secs: float) -> None:
     CLOCK.other_event()  # a sleep is not a read: it ends a run of reads
     _state.record("time", "time.sleep", str(ns))
     CLOCK.advance(ns)
-    if (_state.STATE.config.sleep == "real" or _other_threads_alive() or _in_event_loop()
+    if _on_sleep is not None:
+        _on_sleep(ns)  # --det-async: charge the sleep to the executor job running it
+    if (_state.STATE.config.sleep == "real" or _other_threads_alive()
+            or (_in_event_loop() and _on_sleep is None)
             or _EXTERNAL["started"] or _children_alive()):
         # Someone observes real time: another thread or a child process may need
         # this time to make progress ("wait until the server is up"), or an
-        # asyncio loop (which keeps real time) is running here and its
-        # deadlines must see the sleep.
+        # asyncio loop (which keeps real time without --det-async) is running
+        # here and its deadlines must see the sleep.
         # Wait for real as well; the virtual clock still advances.
         real_sleep(secs)
     else:

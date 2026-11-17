@@ -1,0 +1,207 @@
+{
+ "_comment": "L1 study corpus: async flaky tests. See docs/L1-ASYNCIO.md and harness/l1_async.py.",
+ "projects": [
+  {
+   "name": "l1-repro",
+   "source": "minimal reproductions (this study)",
+   "local": "harness/l1/repro",
+   "python": [
+    "3.13"
+   ],
+   "tests": {
+    "tests/test_races.py::test_sleep_as_sync_with_executor": "repro",
+    "tests/test_races.py::test_tight_timeout_on_thread": "repro",
+    "tests/test_races.py::test_executor_results_in_submission_order": "repro",
+    "tests/test_races.py::test_as_completed_first_is_first_submitted": "repro",
+    "tests/test_races.py::test_thread_signal_before_timeout": "repro",
+    "tests/test_races.py::test_server_sees_clients_in_order": "repro",
+    "tests/test_races.py::test_cancel_before_job_finishes": "repro",
+    "tests/test_races.py::test_first_completed_job_beats_timer": "repro",
+    "tests/test_races.py::test_subprocess_answers_quickly": "repro",
+    "tests/test_races.py::test_queue_fed_by_thread": "repro",
+    "tests/test_races.py::test_rate_limiter_window": "repro",
+    "tests/test_races.py::test_ordered_appends_after_work": "repro",
+    "tests/test_races.py::test_readers_see_writes_in_order": "repro",
+    "tests/test_races.py::test_lock_order_with_thread_work": "repro"
+   }
+  },
+  {
+   "name": "anyio",
+   "source": "25+25 round (popular pool, run 43892303433)",
+   "url": "https://github.com/agronholm/anyio",
+   "sha": "9df02f0b8362",
+   "python": [
+    "3.13"
+   ],
+   "tests": {
+    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+uvloop]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[asyncio+uvloop]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]": "round-flaky",
+    "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]": "round-flaky",
+    "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]": "round-flaky",
+    "tests/test_taskgroups.py::test_host_exception[asyncio+uvloop]": "round-flaky"
+   },
+   "suite_args": [
+    "--ignore=tests/test_pytest_plugin.py"
+   ],
+   "note": "tests/test_pytest_plugin.py runs nested in-process pytest sessions, which hit a pre-existing detpy INTERNALERROR (recorder reset by the inner session)"
+  },
+  {
+   "name": "idoft-easypy",
+   "source": "25+25 round (IDoFT pool) + IDoFT",
+   "url": "https://github.com/weka-io/easypy",
+   "sha": "9501c3ee03dc",
+   "python": [
+    "3.10",
+    "3.9"
+   ],
+   "tests": {
+    "tests/test_signals.py::test_async": "round-flaky",
+    "tests/test_signals.py::test_priorities_async": "round-flaky"
+   }
+  },
+  {
+   "name": "idoft-plcx",
+   "source": "IDoFT (asyncio)",
+   "url": "https://github.com/Cognexa/plcx",
+   "sha": "2756c0ba78c4c9e572d95ba002708957bc55d4fa",
+   "python": [
+    "3.9",
+    "3.10"
+   ],
+   "tests": {
+    "plcx/tests/comm/test_client.py::test_clientx[123]": "OD-Vic",
+    "plcx/tests/comm/test_client.py::test_clientx[1]": "OD-Vic",
+    "plcx/tests/comm/test_client.py::test_clientx[hola]": "OD-Vic",
+    "plcx/tests/comm/test_client.py::test_clientx_context[111]": "OD-Vic",
+    "plcx/tests/comm/test_client.py::test_clientx_context[321]": "OD-Vic",
+    "plcx/tests/comm/test_client.py::test_clientx_context[hi]": "OD-Vic",
+    "plcx/tests/comm/test_client.py::test_clientx_error": "OD-Vic"
+   }
+  },
+  {
+   "name": "idoft-aiotasks",
+   "source": "IDoFT (asyncio)",
+   "url": "https://github.com/cr0hn/aiotasks",
+   "sha": "ec485c84db55227c9283319a9c58401e294a06ff",
+   "python": [
+    "3.9",
+    "3.10"
+   ],
+   "tests": {
+    "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_add_task_non_coroutine_as_input": "OD-Vic",
+    "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_task_decorator_invalid_function": "OD-Vic",
+    "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_task_decorator_invalid_task_id_format": "OD-Vic",
+    "tests/unittesting/tasks/memory/test_subscribers.py::test_memory_subscribers_empty_topics": "OD-Vic"
+   }
+  },
+  {
+   "name": "idoft-aiopylimit",
+   "source": "IDoFT (asyncio,asynctest)",
+   "url": "https://github.com/dmarkey/aiopylimit",
+   "sha": "b4075a8ac30dbbef59a2243f618a35a2f54b590c",
+   "python": [
+    "3.9",
+    "3.10"
+   ],
+   "tests": {
+    "aiopylimit/tests/test_aiopylimit.py::TestPyLimit::test_exception": "OD-Vic"
+   }
+  },
+  {
+   "name": "idoft-webssh",
+   "source": "IDoFT (tornado)",
+   "url": "https://github.com/huashengdun/webssh",
+   "sha": "51d527fe75a62aed239126a6697749a30baecb30",
+   "python": [
+    "3.10",
+    "3.9"
+   ],
+   "tests": {
+    "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_auth_with_pubkey_cannot_be_decoded_by_multipart_form": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_auth_with_pubkey_exceeds_key_max_size": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_auth_with_valid_pubkey_by_multipart_form": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_auth_with_valid_pubkey_by_urlencoded_form": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_multipart_form": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_urlencoded_form": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_ip_not_matched": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_with_no_port": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_wrong_id": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_timeout": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_bar": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_empty_passcode": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "OD-Vic",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "NOD",
+    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "NOD"
+   },
+   "install": [
+    "six"
+   ]
+  },
+  {
+   "name": "idoft-pyps4-2ndscreen",
+   "source": "IDoFT (asyncio,asynctest)",
+   "url": "https://github.com/ktnrg45/pyps4-2ndscreen",
+   "sha": "457dc9c3f04017569d52bae7390ea2fc54e96ce5",
+   "python": [
+    "3.9",
+    "3.10"
+   ],
+   "tests": {
+    "tests/test_media_art.py::test_result_item_missing_data": "NIO"
+   }
+  },
+  {
+   "name": "idoft-python-dugong",
+   "source": "IDoFT (asyncio)",
+   "url": "https://github.com/python-dugong/python-dugong",
+   "sha": "00dd4d5aab6eddb116cace2829a9f93bda153664",
+   "python": [
+    "3.10",
+    "3.9"
+   ],
+   "tests": {
+    "test/test_aio.py::test_aio_future": "NIO"
+   }
+  },
+  {
+   "name": "idoft-tornado-swirl",
+   "source": "IDoFT (tornado)",
+   "url": "https://github.com/rduldulao/tornado-swirl",
+   "sha": "b8df27efc3d7fd0dce0f0290767c94ac2e747311",
+   "python": [
+    "3.10",
+    "3.9"
+   ],
+   "tests": {
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "OD-Brit",
+    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "OD-Brit"
+   }
+  }
+ ]
+}

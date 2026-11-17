@@ -11,7 +11,7 @@ import warnings
 
 import pytest
 
-from . import __version__, _core, _sites, _state, clock, fsorder, network, reexec, seeds
+from . import __version__, _core, _sites, _state, aio, clock, fsorder, network, reexec, seeds
 from ._patch import Patcher
 
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net")
@@ -59,6 +59,16 @@ def pytest_addoption(parser, pluginmanager):
                 help="never re-exec the interpreter to fix PYTHONHASHSEED")
     g.addoption("--det-max-events", type=int, default=10_000, metavar="N",
                 help="events stored verbatim per test (the fingerprint always covers all of them)")
+    g.addoption("--det-async", action="store_true", default=False,
+                help="Level 1 prototype: deterministic asyncio scheduling driven by a seed (needs --det)")
+    g.addoption("--det-async-seed", type=int, default=None, metavar="N",
+                help="seed of the asyncio scheduler (default: --det-seed; 0 = calm profile, no exploration)")
+    g.addoption("--det-async-grace", type=float, default=1.0, metavar="S",
+                help="real seconds an idle loop waits for foreign I/O or threads before its clock jumps")
+    g.addoption("--det-async-wait", type=float, default=2.0, metavar="S",
+                help="real seconds the loop waits for an executor job before giving up determinism for it")
+    g.addoption("--det-async-settle", type=float, default=0.01, metavar="S",
+                help="real seconds to batch near-simultaneous foreign wake-ups")
     g.addoption("--det-outcomes", default=None, metavar="PATH",
                 help="write {nodeid: outcome} as JSON (works without --det; used by the harness)")
 
@@ -231,6 +241,8 @@ def pytest_load_initial_conftests(early_config, parser, args):
     reexec.SESSION_DEPTH += 1
     ns = early_config.known_args_namespace
     if not getattr(ns, "det", False):
+        if getattr(ns, "det_async", False):
+            raise pytest.UsageError("--det-async needs --det")
         return
     if S.active:
         # A pytest session nested in-process inside a --det session (pytester
@@ -311,6 +323,10 @@ def _install(config, ns, controls) -> None:
         S.rebound = clock.install(_PATCHER, cfg.epoch_ns, cfg.tick_ns, _skip_module, cfg.tick_adapt)
     if "fs" in controls:
         fsorder.install(_PATCHER)
+    if ns.det_async:
+        seed = ns.det_async_seed if ns.det_async_seed is not None else (ns.det_seed or 0)
+        aio.install(_PATCHER, seed, ns.det_async_grace, ns.det_async_wait, ns.det_async_settle,
+                    str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd())
 
 
 def _owner(config) -> bool:
@@ -332,6 +348,8 @@ def _configure_det(config) -> None:
         warnings.warn("detpy: pytest-xdist is not supported under --det (order is only fixed per worker)")
     root = str(config.rootpath)
     _sites.refresh(root)
+    if aio.CFG.enabled:
+        aio.refresh_prefixes(root)  # after plugins are imported
     opt = config.option
     cassette = opt.det_cassette or os.path.join(root, ".detpy", "cassette.json")
     _state.STATE.config.cassette_path = cassette
@@ -352,6 +370,7 @@ def pytest_unconfigure(config):
     if _owner(config):
         _PATCHER.undo_all()
         clock.uninstall()
+        aio.uninstall()
         seeds.uninstall()
         network.uninstall()
         _state.STATE.recorder = None
@@ -486,6 +505,9 @@ class _DetSession(_Outcomes):
             f"detpy: PYTHONHASHSEED={os.environ.get('PYTHONHASHSEED')} ({S.reexec_status}); "
             f"ASLR {'off' if reexec.aslr_disabled() else 'on'}; network={S.net_mode}; sleep={cfg.sleep}",
         ]
+        if aio.CFG.enabled:
+            lines.append(f"detpy: --det-async (Level 1 prototype): asyncio scheduler seed {aio.CFG.seed}"
+                         f"{' (calm)' if aio.CFG.seed == 0 else ' (exploring)'}")
         if S.disabled_plugins:
             lines.append(f"detpy: disabled conflicting plugins: {', '.join(S.disabled_plugins)}")
         if S.adjustments:
@@ -524,9 +546,12 @@ class _DetSession(_Outcomes):
         cfg = _state.STATE.config
         meta = {
             "detpy": __version__,
+            "runtime": "python",
+            "runtime_version": platform.python_version(),
+            "runner": "pytest",
             "seed": cfg.seed,
             "shuffle": cfg.shuffle,
-            "controls": sorted(cfg.controls),
+            "controls": sorted(cfg.controls | ({"async"} if aio.CFG.enabled else set())),
             "hashseed": os.environ.get("PYTHONHASHSEED"),
             "reexec": S.reexec_status,
             "aslr_disabled": reexec.aslr_disabled(),
@@ -547,6 +572,8 @@ class _DetSession(_Outcomes):
             "disabled_plugins": S.disabled_plugins,
             "adjustments": S.adjustments,
             "rebound_references": len(S.rebound),
+            "det_async": ({"seed": aio.CFG.seed, "grace": aio.CFG.grace, "wait": aio.CFG.wait,
+                           "settle": aio.CFG.settle} if aio.CFG.enabled else None),
             "order_digest": S.order_digest,
         }
         _state.STATE.recorder.open(S.trace_path, json.dumps(meta), S.order)

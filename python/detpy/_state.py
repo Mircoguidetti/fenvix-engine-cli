@@ -62,12 +62,23 @@ def record(source: str, op: str, value: str, depth: int = 1) -> None:
     site = _sites.resolve(depth + 1)
     if site is None:  # infrastructure (pytest, detpy) touched the source
         return
+    buf = getattr(_tls, "buffer", None)
+    if buf is not None:  # --det-async executor job: recorded when its result is delivered
+        buf.append((source, op, site, value))
+        return
     tid = _get_ident()
     threads = STATE.threads
     t = threads.get(tid)
     if t is None:
         t = threads[tid] = len(threads)
     rec.record(source, op, site, value, t)
+
+
+def set_event_buffer(buf):
+    """Divert this thread's events into ``buf`` (None: record directly); returns the previous one."""
+    prev = getattr(_tls, "buffer", None)
+    _tls.buffer = buf
+    return prev
 
 
 def record_at(source: str, op: str, site: str, value: str) -> None:
