@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import gzip
 import json
 import statistics
@@ -43,10 +44,22 @@ def load(run_id):
     return groups
 
 
+def is_test_unit(u, spec):
+    """walk.discover matches with fnmatch, whose ``*`` also crosses ``/``: ``**/test_*.py`` then matches
+    ``tests/test_apps/x/__init__.py``. Keep units whose basename matches an include pattern's basename, and the
+    directory units."""
+    if u in spec.get("dir_units", []):
+        return True
+    base = u.rsplit("/", 1)[-1]
+    return any(fnmatch.fnmatch(base, p.rsplit("/", 1)[-1]) for p in spec["units"]["include"])
+
+
 def summarize(shards):
+    spec = shards[0]["spec"]
     units = {}
     for d in shards:
-        units.update({u: c for u, c in (d.get("units") or {}).items() if c})
+        units.update({u: c for u, c in (d.get("units") or {}).items() if c and is_test_unit(u, spec)})
+    dropped = {u for d in shards for u in (d.get("units") or {}) if not is_test_unit(u, spec)}
     walls = sorted(c["wall"] for c in units.values() if c.get("wall"))
     base = walls[max(0, int(len(walls) * 0.05) - 1)] if walls else 0.0
     cost = {u: max(c["test"], c.get("wall", 0.0) - base) for u, c in units.items()}
@@ -69,10 +82,16 @@ def summarize(shards):
             dec.update(t["decisions"])
             for r in RULES:
                 ck = t["checks"].get(r)
-                if ck:
-                    checks[r].update({k: v for k, v in ck.items() if k != "keys"})
-                    keys[r].update((u, ri) for u, ri in ck.get("keys", []))
+                if ck and not ck.get("keys") and dropped:
+                    checks[r].update({k: v for k, v in ck.items() if k != "keys"})   # h1 / h2: no per-unit keys
+                elif ck:
+                    kk = [(u, ri) for u, ri in ck.get("keys", []) if u not in dropped]
+                    ne = sum(1 for u, _ in kk if (t["decisions"].get(u) or {}).get("C"))
+                    checks[r].update({"n": len(kk), "extra": ne, "sample": len(kk) - ne})
+                    keys[r].update((u, ri) for u, ri in ck.get("keys", []) if u not in dropped)
             for m in t["mismatch"]:
+                if m["unit"] in dropped:
+                    continue
                 mism[m["rule"]].append(dict(m, i=i))
         live = [u for u in live if u in cost]
         tot = sum(cost[u] for u in live)
@@ -88,6 +107,7 @@ def summarize(shards):
         for x in d.get("rechecks", []):
             rech[(x["unit"], x["rec_sha"], x.get("profile", 0))] = x
     out = {"transitions": len(full), "shards": len(shards), "units": len(cost), "unit_transitions": unit_tr,
+           "non_test_units_dropped": len(dropped),
            "profiles": shards[0].get("profiles"), "interp": sorted({c.get("interp", "") for d in shards
                                                                     for c in d["commits"] if c.get("interp")}),
            "notes": sorted({n for d in shards for n in d.get("notes", [])})}
