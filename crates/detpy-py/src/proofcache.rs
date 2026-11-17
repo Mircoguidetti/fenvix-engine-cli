@@ -3,13 +3,14 @@
 use detpy_core::proof::{self, Checker, CodeFile, Current, Observed, Store, Unit};
 use pyo3::exceptions::{PyKeyError, PyValueError};
 use pyo3::prelude::*;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::PathBuf;
 use std::sync::{Mutex, MutexGuard};
 
 struct Inner {
     store: Store,
     checker: Checker,
+    touched: BTreeSet<String>,
 }
 
 /// The on-disk store of one cache directory plus the reuse checker of the
@@ -57,7 +58,7 @@ impl ProofCache {
     fn new(dir: PathBuf, root: PathBuf) -> Self {
         let store = Store::load(&dir);
         let checker = Checker::new(Current { root, ..Default::default() });
-        ProofCache { dir, inner: Mutex::new(Inner { store, checker }) }
+        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new() }) }
     }
 
     /// Set the current session state: configuration and runtime digests, clock
@@ -71,7 +72,7 @@ impl ProofCache {
     /// Known code files whose content changed: `[(path, current content digest)]`.
     fn changed_code_files(&self) -> Vec<(String, String)> {
         let mut g = lock(&self.inner);
-        let Inner { store, checker } = &mut *g;
+        let Inner { store, checker, .. } = &mut *g;
         checker.changed_code_files(store)
     }
 
@@ -84,7 +85,7 @@ impl ProofCache {
     /// reused, else `(False, "kind: detail")`.
     fn check(&self, nodeid: &str) -> PyResult<(bool, String)> {
         let mut g = lock(&self.inner);
-        let Inner { store, checker } = &mut *g;
+        let Inner { store, checker, .. } = &mut *g;
         Ok(match checker.check(store, nodeid) {
             Ok(r) => (true, serde_json::to_string(&r).map_err(|e| PyValueError::new_err(e.to_string()))?),
             Err(m) => (false, format!("{}: {}", m.kind, m.detail)),
@@ -135,14 +136,31 @@ impl ProofCache {
         units: Vec<(u32, u32)>,
     ) -> PyResult<String> {
         let report = serde_json::from_str(report_json).map_err(|e| PyValueError::new_err(format!("report: {e}")))?;
-        Ok(lock(&self.inner).store.record(
+        let mut g = lock(&self.inner);
+        g.touched.insert(nodeid.to_string());
+        Ok(g.store.record(
             nodeid,
             Observed { outcome, report, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units },
         ))
     }
 
     fn remove(&self, nodeid: &str) -> bool {
-        lock(&self.inner).store.remove(nodeid)
+        let mut g = lock(&self.inner);
+        g.touched.insert(nodeid.to_string());
+        g.store.remove(nodeid)
+    }
+
+    /// Paths written by earlier sessions: `{path: [writer contexts]}`.
+    fn written(&self) -> BTreeMap<String, Vec<String>> {
+        lock(&self.inner).store.written.iter().map(|(k, v)| (k.clone(), v.iter().cloned().collect())).collect()
+    }
+
+    /// Note paths this session wrote and their writer contexts.
+    fn add_written(&self, written: BTreeMap<String, Vec<String>>) {
+        let mut g = lock(&self.inner);
+        for (p, w) in written {
+            g.store.written.entry(p).or_default().extend(w);
+        }
     }
 
     fn __len__(&self) -> usize {
@@ -154,9 +172,10 @@ impl ProofCache {
         lock(&self.inner).store.files.len()
     }
 
-    /// Compact and write the store atomically.
+    /// Merge this session's changes into the store on disk (under a lock) and write it atomically.
     fn save(&self) -> PyResult<()> {
-        lock(&self.inner).store.save(&self.dir)?;
+        let g = lock(&self.inner);
+        g.store.save_merged(&self.dir, &g.touched)?;
         Ok(())
     }
 }

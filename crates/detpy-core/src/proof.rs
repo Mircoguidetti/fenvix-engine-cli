@@ -27,7 +27,7 @@
 
 use crate::fingerprint::digest_bytes;
 use serde::{Deserialize, Serialize};
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::fs;
 use std::io::{self, Read};
 use std::path::{Path, PathBuf};
@@ -97,6 +97,10 @@ pub struct Store {
     pub files: Vec<CodeFile>,
     pub sets: Vec<Vec<u32>>,
     pub tests: BTreeMap<String, Entry>,
+    /// Paths that code run by a session wrote (repository-relative or absolute) and the contexts that wrote
+    /// them: a test that reads one is cached only if every writer is its own code (test, its fixtures).
+    #[serde(default)]
+    pub written: BTreeMap<String, BTreeSet<String>>,
     #[serde(skip)]
     file_ix: HashMap<(String, String), u32>,
     #[serde(skip)]
@@ -430,6 +434,49 @@ impl Store {
         self.reindex();
     }
 
+    /// Copy the entries of `touched` (or their removal) into `disk`, remapping
+    /// file and set indices; merge the written paths.
+    pub fn merge_into(&self, disk: &mut Store, touched: &BTreeSet<String>) {
+        for nid in touched {
+            match self.tests.get(nid) {
+                None => {
+                    disk.tests.remove(nid);
+                }
+                Some(e) => {
+                    let mut e = e.clone();
+                    let remap_file = |i: u32, disk: &mut Store| -> u32 {
+                        match self.files.get(i as usize) {
+                            Some(f) => disk.add_file(f.clone()),
+                            None => u32::MAX,
+                        }
+                    };
+                    for id in [&mut e.content, &mut e.skeleton, &mut e.hooks] {
+                        let set: Vec<u32> = self.set(*id).iter().map(|&f| remap_file(f, disk)).collect();
+                        *id = disk.intern(set);
+                    }
+                    for c in e.units.chunks_mut(2) {
+                        c[0] = remap_file(c[0], disk);
+                    }
+                    disk.tests.insert(nid.clone(), e);
+                }
+            }
+        }
+        for (p, w) in &self.written {
+            disk.written.entry(p.clone()).or_default().extend(w.iter().cloned());
+        }
+    }
+
+    /// Merge this session's changes (`touched` entries, written paths) into the
+    /// store on disk under a lock, so that concurrent sessions (one process per
+    /// test file, pytest-xdist workers) sharing a directory lose nothing.
+    pub fn save_merged(&self, dir: &Path, touched: &BTreeSet<String>) -> io::Result<()> {
+        fs::create_dir_all(dir)?;
+        let _lock = DirLock::acquire(dir)?;
+        let mut disk = Store::load(dir);
+        self.merge_into(&mut disk, touched);
+        disk.save(dir)
+    }
+
     /// Compact and write atomically to `dir`.
     pub fn save(&mut self, dir: &Path) -> io::Result<()> {
         self.compact();
@@ -438,6 +485,43 @@ impl Store {
         let tmp = path.with_extension(format!("tmp{}", std::process::id()));
         fs::write(&tmp, serde_json::to_vec(self).map_err(io::Error::other)?)?;
         fs::rename(tmp, path)
+    }
+}
+
+struct DirLock(PathBuf);
+
+impl DirLock {
+    fn acquire(dir: &Path) -> io::Result<DirLock> {
+        let path = dir.join(".lock");
+        let start = std::time::Instant::now();
+        loop {
+            match fs::OpenOptions::new().write(true).create_new(true).open(&path) {
+                Ok(_) => return Ok(DirLock(path)),
+                Err(e) if e.kind() == io::ErrorKind::AlreadyExists => {
+                    let stale = fs::metadata(&path)
+                        .and_then(|m| m.modified())
+                        .ok()
+                        .and_then(|t| t.elapsed().ok())
+                        .map(|age| age.as_secs() > 300)
+                        .unwrap_or(false);
+                    if stale {
+                        let _ = fs::remove_file(&path);
+                        continue;
+                    }
+                    if start.elapsed().as_secs() > 600 {
+                        return Err(io::Error::new(io::ErrorKind::TimedOut, "cache directory lock"));
+                    }
+                    std::thread::sleep(std::time::Duration::from_millis(20));
+                }
+                Err(e) => return Err(e),
+            }
+        }
+    }
+}
+
+impl Drop for DirLock {
+    fn drop(&mut self) {
+        let _ = fs::remove_file(&self.0);
     }
 }
 
@@ -822,6 +906,34 @@ mod tests {
         fs::write(d.path().join("b"), "").unwrap();
         fs::write(d.path().join("a"), "").unwrap();
         assert_eq!(listing_digest(d.path()).unwrap(), digest_bytes(b"a\0b").short());
+    }
+
+    #[test]
+    fn concurrent_sessions_merge() {
+        let (d, s, cur) = setup();
+        let dir = d.path().join("cache");
+        s.clone().save(&dir).unwrap();
+        // session 2 records t::x, session 3 removes t::a; both start from the same store
+        let mut s2 = Store::load(&dir);
+        let fi = s2.add_file(CodeFile {
+            path: "n.py".into(),
+            content: "c".into(),
+            skeleton: "s".into(),
+            hooks: "h".into(),
+            units: vec![unit("u", "U")],
+            imports: vec![],
+        });
+        s2.record("t::x", Observed { outcome: "passed".into(), skeleton: vec![fi], units: vec![(fi, 0)], ..Default::default() });
+        s2.written.entry("out.txt".into()).or_default().insert("t|t::x".into());
+        let mut s3 = Store::load(&dir);
+        s3.remove("t::a");
+        s2.save_merged(&dir, &["t::x".to_string()].into_iter().collect()).unwrap();
+        s3.save_merged(&dir, &["t::a".to_string()].into_iter().collect()).unwrap();
+        let m = Store::load(&dir);
+        assert_eq!(m.tests.keys().collect::<Vec<_>>(), vec!["t::x"]);
+        assert_eq!(m.key_of("t::x", &m.tests["t::x"]), s2.tests["t::x"].key);
+        assert!(m.written["out.txt"].contains("t|t::x"));
+        let _ = cur;
     }
 
     #[test]
