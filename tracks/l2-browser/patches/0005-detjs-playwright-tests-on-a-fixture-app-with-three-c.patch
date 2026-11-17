@@ -1,0 +1,289 @@
+From 344495514855cea2016393cf78c4c3df5fc6e5cc Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 07:23:59 +0000
+Subject: [PATCH 5/7] detjs playwright: tests on a fixture app with three
+ cross-process races (fail when the app server goes uncontrolled); app servers
+ under a path containing 'playwright' are servers
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ node/package-lock.json       |  46 ++++++++++
+ node/package.json            |   1 +
+ node/src/pw/boot.js          |   7 +-
+ node/test/playwright.test.js | 161 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 212 insertions(+), 3 deletions(-)
+ create mode 100644 node/test/playwright.test.js
+
+diff --git a/node/package-lock.json b/node/package-lock.json
+index 3c05235..c409228 100644
+--- a/node/package-lock.json
++++ b/node/package-lock.json
+@@ -12,6 +12,7 @@
+         "detjs": "bin/detjs.js"
+       },
+       "devDependencies": {
++        "@playwright/test": "^1.65.1",
+         "jest": "^30.5.2",
+         "jest-environment-jsdom": "^30.5.2",
+         "vitest": "^5.1.0"
+@@ -1597,6 +1598,22 @@
+         "url": "https://opencollective.com/pkgr"
+       }
+     },
++    "node_modules/@playwright/test": {
++      "version": "1.65.1",
++      "resolved": "https://registry.npmjs.org/@playwright/test/-/test-1.65.1.tgz",
++      "integrity": "sha512-y+NCIRm2LvY4slUVWvGh1nujJ8RF/hEisIsq2mtUPgdQC4L701bq5hZGMhrpeXjACvwvO9tj5dJqhvM6TP9lbw==",
++      "dev": true,
++      "license": "Apache-2.0",
++      "dependencies": {
++        "playwright": "1.65.1"
++      },
++      "bin": {
++        "playwright": "cli.js"
++      },
++      "engines": {
++        "node": ">=20"
++      }
++    },
+     "node_modules/@rolldown/binding-android-arm-eabi": {
+       "version": "1.2.19",
+       "resolved": "https://registry.npmjs.org/@rolldown/binding-android-arm-eabi/-/binding-android-arm-eabi-1.2.19.tgz",
+@@ -5003,6 +5020,35 @@
+         "node": ">=8"
+       }
+     },
++    "node_modules/playwright": {
++      "version": "1.65.1",
++      "resolved": "https://registry.npmjs.org/playwright/-/playwright-1.65.1.tgz",
++      "integrity": "sha512-vJ1FuoOrNwOKHUIVEvSt3jT1L+wjjDpwhwIstKtfvTh8XIG4FG4bIFuvNdMxi81LGfAhUgUZleVFaOLY4RIUUw==",
++      "dev": true,
++      "license": "Apache-2.0",
++      "dependencies": {
++        "playwright-core": "1.65.1"
++      },
++      "bin": {
++        "playwright": "cli.js"
++      },
++      "engines": {
++        "node": ">=20"
++      }
++    },
++    "node_modules/playwright-core": {
++      "version": "1.65.1",
++      "resolved": "https://registry.npmjs.org/playwright-core/-/playwright-core-1.65.1.tgz",
++      "integrity": "sha512-hqPpz7blSMPxWVdoeE1yiBSzXsKiVOd2k+kjCvmUywD2GPO2Dd9HfcWnq9NN0GHbNZDFgZ9JfBFr+X5/BLo0qw==",
++      "dev": true,
++      "license": "Apache-2.0",
++      "bin": {
++        "playwright-core": "cli.js"
++      },
++      "engines": {
++        "node": ">=20"
++      }
++    },
+     "node_modules/postcss": {
+       "version": "8.5.33",
+       "resolved": "https://registry.npmjs.org/postcss/-/postcss-8.5.33.tgz",
+diff --git a/node/package.json b/node/package.json
+index 6a47f50..39b225f 100644
+--- a/node/package.json
++++ b/node/package.json
+@@ -13,6 +13,7 @@
+     "test": "node --test --test-concurrency=1 test/*.test.js"
+   },
+   "devDependencies": {
++    "@playwright/test": "1.65.1",
+     "jest": "^30.5.2",
+     "jest-environment-jsdom": "^30.5.2",
+     "vitest": "^5.1.0"
+diff --git a/node/src/pw/boot.js b/node/src/pw/boot.js
+index 59735b7..f6e510e 100644
+--- a/node/src/pw/boot.js
++++ b/node/src/pw/boot.js
+@@ -14,10 +14,11 @@ function role() {
+   if (process.env.DETJS !== '1') return null;
+   const main = process.argv[1] || '';
+   if (process.env.TEST_WORKER_INDEX !== undefined || /[\\/]playwright[\\/]lib[\\/](worker|common)[\\/]/.test(main)) return 'worker'; // child process entry (1.3x: common/process.js)
+-  if (/[\\/](playwright|playwright-core|@playwright[\\/]test)[\\/]/.test(main)) return null; // runner helpers (loader, test server)
++  // The runner and its helpers (loader, test server) live in node_modules; an app whose own path
++  // contains a "playwright" folder (tests/playwright/server.js) is still a server.
++  if (/[\\/]node_modules[\\/](.*[\\/])?(playwright|playwright-core|@playwright[\\/]test)[\\/]/.test(main)) return null;
++  if (/[\\/]node_modules[\\/]\.bin[\\/]playwright$/.test(main)) return null; // the runner through its bin link
+   const script = path.basename(main);
+-  const args = process.argv.slice(1).join(' ');
+-  if (/playwright/.test(args) && /\b(cli\.js|playwright)\b/.test(args) && /\btest\b/.test(args)) return null; // the runner
+   if (process.env.DETJS_PW_RUNNER_PID === String(process.pid)) return null;
+   if (LAUNCHERS.test(script) || /[\\/](npm|pnpm|yarn|corepack)[\\/]/.test(process.argv[1] || '')) return null;
+   if (process.env.DETJS_PW_SERVER === '0') return null;
+diff --git a/node/test/playwright.test.js b/node/test/playwright.test.js
+new file mode 100644
+index 0000000..a18e30b
+--- /dev/null
++++ b/node/test/playwright.test.js
+@@ -0,0 +1,161 @@
++'use strict';
++// Level 2 browser prototype (`detjs playwright --det`, docs/L2-BROWSER.md) on a
++// fixture app with three flaky-by-design races between browser, runner and
++// server. Needs @playwright/test (devDependency) and a Chromium: the browser
++// Playwright installed, or DETJS_PW_EXECUTABLE (e.g. /usr/bin/google-chrome).
++// Skipped when neither is available.
++const { test } = require('node:test');
++const assert = require('node:assert/strict');
++const fs = require('node:fs');
++const path = require('node:path');
++const { spawnSync } = require('node:child_process');
++const { TMP, BIN, readTrace } = require('./helpers');
++
++const DIR = path.join(TMP, 'playwright', 'races');
++const PORT = 4597;
++
++function chromium() {
++  if (process.env.DETJS_PW_EXECUTABLE) return process.env.DETJS_PW_EXECUTABLE;
++  for (const p of ['/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']) if (fs.existsSync(p)) return p;
++  return null;
++}
++
++function available() {
++  try { require.resolve('@playwright/test/package.json', { paths: [__dirname] }); } catch { return 'no @playwright/test'; }
++  return chromium() ? null : 'no Chromium (set DETJS_PW_EXECUTABLE)';
++}
++
++const APP = `
++const http = require('http');
++const crypto = require('crypto');
++let counter = 0;
++const notes = [];
++const page = (body) => '<!doctype html><html><body>' + body + '</body></html>';
++http.createServer((req, res) => {
++  const u = new URL(req.url, 'http://x');
++  const delay = Math.floor(Math.random() * 40);
++  if (u.pathname === '/race') {
++    res.setHeader('content-type', 'text/html');
++    return res.end(page('<div id=out>loading</div><script>' +
++      "fetch('/api/slow?n=a').then(r => r.text()).then(x => { out.textContent = x; });" +
++      "fetch('/api/slow?n=b').then(r => r.text()).then(x => { out.textContent = x; });</script>"));
++  }
++  if (u.pathname === '/ids') {
++    res.setHeader('content-type', 'text/html');
++    return res.end(page('<div id=sid>' + crypto.randomUUID() + '</div><div id=when>' + new Date().toISOString() +
++      '</div><div id=r></div><script>r.textContent = Math.random().toFixed(6) + " " + crypto.randomUUID() + " " + new Date().toISOString();</script>'));
++  }
++  if (u.pathname === '/api/slow') { counter++; const n = u.searchParams.get('n'); return setTimeout(() => res.end(n + counter), delay); }
++  if (u.pathname === '/api/note' && req.method === 'POST') {
++    let b = ''; req.on('data', (c) => (b += c));
++    return req.on('end', () => setTimeout(() => { notes.push(b); res.end('ok'); }, delay));
++  }
++  if (u.pathname === '/api/notes') return res.end(JSON.stringify(notes));
++  res.statusCode = 404; res.end('nf');
++}).listen(${PORT});
++`;
++
++const SPEC = `
++const { test, expect } = require('@playwright/test');
++const fs = require('fs');
++test('race: the last response wins', async ({ page }) => {
++  await page.goto('/race');
++  await expect(page.locator('#out')).not.toHaveText('loading');
++  await page.waitForTimeout(100);
++  await expect(page.locator('#out')).toHaveText(/^b/);
++});
++test('ids', async ({ page }) => {
++  await page.goto('/ids');
++  await expect(page.locator('#r')).not.toBeEmpty();
++  const v = [await page.locator('#sid').textContent(), await page.locator('#when').textContent(), await page.locator('#r').textContent(), Math.random()];
++  fs.appendFileSync(process.env.IDS_FILE, JSON.stringify(v) + '\\n');
++});
++test('runner write vs browser read', async ({ page, request }) => {
++  const name = 'n' + Math.floor(Math.random() * 1e6);
++  const write = request.post('/api/note', { data: name });
++  await page.goto('/api/notes');
++  await write;
++  expect(await page.locator('body').textContent()).toContain(name);
++});
++`;
++
++function fixture() {
++  fs.rmSync(DIR, { recursive: true, force: true });
++  fs.mkdirSync(path.join(DIR, 'tests'), { recursive: true });
++  fs.writeFileSync(path.join(DIR, 'package.json'), '{"name":"fixture-pw","private":true}');
++  fs.writeFileSync(path.join(DIR, 'app.js'), APP);
++  fs.writeFileSync(path.join(DIR, 'tests', 'races.spec.js'), SPEC);
++  fs.writeFileSync(path.join(DIR, 'playwright.config.js'), `module.exports = {
++  testDir: './tests', fullyParallel: true, workers: 2, reporter: 'list',
++  use: { baseURL: 'http://localhost:${PORT}', launchOptions: { executablePath: ${JSON.stringify(chromium())} } },
++  webServer: { command: 'node app.js', url: 'http://localhost:${PORT}/api/notes', reuseExistingServer: false },
++};\n`);
++}
++
++function pw(args, label) {
++  const ids = path.join(DIR, `ids-${label}.jsonl`);
++  fs.rmSync(ids, { force: true });
++  const env = { ...process.env, IDS_FILE: ids, DETJS_PW_EXECUTABLE: chromium() };
++  delete env.CI; delete env.DETJS; delete env.NODE_OPTIONS;
++  const r = spawnSync(process.execPath, [BIN, 'playwright', 'test', ...args], { cwd: DIR, encoding: 'utf8', env, timeout: 180000 });
++  const tracePath = path.join(DIR, '.detjs', 'trace.jsonl');
++  let trace = null;
++  if (args.includes('--det') && fs.existsSync(tracePath)) {
++    const keep = path.join(DIR, `trace-${label}.jsonl`);
++    fs.renameSync(tracePath, keep);
++    trace = { path: keep, ...readTrace(keep) };
++  }
++  const idsValue = fs.existsSync(ids) ? fs.readFileSync(ids, 'utf8') : '';
++  return { status: r.status, out: r.stdout + r.stderr, trace, ids: idsValue };
++}
++
++function verify(paths) {
++  const r = spawnSync(process.execPath, [BIN, 'verify', ...paths, '--json'], { encoding: 'utf8' });
++  return JSON.parse(r.stdout);
++}
++
++const outcome = (run, name) => run.trace.tests.find((t) => t.nodeid.includes(name)).outcome;
++const skip = available() || false;
++
++test('playwright without --det: server and page randomness differ between runs', { skip, timeout: 240000 }, () => {
++  fixture();
++  const a = pw([], 'plain-a');
++  const b = pw([], 'plain-b');
++  assert.ok(a.ids && b.ids, a.out + b.out);
++  assert.notEqual(a.ids, b.ids);
++});
++
++test('playwright --det: three runs, identical fingerprints and values for every test', { skip, timeout: 360000 }, () => {
++  fixture();
++  const runs = [1, 2, 3].map((i) => pw(['--det'], `det-${i}`));
++  for (const r of runs) assert.ok(r.trace, r.out);
++  assert.equal(runs[0].trace.tests.length, 3);
++  assert.equal(runs[0].trace.header.meta.level, 'L2-browser');
++  assert.equal(runs[0].ids, runs[1].ids);
++  assert.equal(runs[0].ids, runs[2].ids);
++  const v = verify(runs.map((r) => r.trace.path));
++  assert.equal(v.summary.stable, 3, JSON.stringify(v.summary));
++  assert.equal(v.summary.outcome_unstable, 0);
++  // The fingerprint covers the network order, the server and the page.
++  const ev = runs[0].trace.tests.find((t) => t.nodeid.includes('ids')).events.map((e) => e.o);
++  for (const o of ['sched.io', 'browser.request', 'server.fingerprint', 'page.random', 'dom.digest']) assert.ok(ev.includes(o), `${o} in ${ev}`);
++});
++
++test('playwright --det-seed: a seed replays its outcome, seeds explore both outcomes of the race', { skip, timeout: 600000 }, () => {
++  fixture();
++  const seen = new Set();
++  let replayed = null;
++  for (let seed = 1; seed <= 8 && seen.size < 2; seed++) {
++    const r = pw(['--det', `--det-seed=${seed}`], `seed-${seed}`);
++    assert.ok(r.trace, r.out);
++    seen.add(outcome(r, 'race'));
++    if (seed === 1) {
++      const again = pw(['--det', '--det-seed=1'], 'seed-1-again');
++      const v = verify([r.trace.path, again.trace.path]);
++      assert.equal(v.summary.stable, 3, JSON.stringify(v.summary));
++      replayed = outcome(again, 'race');
++      assert.equal(replayed, outcome(r, 'race'));
++    }
++  }
++  assert.deepEqual([...seen].sort(), ['failed', 'passed']);
++});
+-- 
+2.43.0
+

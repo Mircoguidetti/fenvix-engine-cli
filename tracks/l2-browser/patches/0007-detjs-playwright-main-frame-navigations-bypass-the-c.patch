@@ -1,0 +1,123 @@
+From 1ab207c0c1b363384f13d818a42bbc7219a829f7 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 07:44:53 +0000
+Subject: [PATCH 7/7] detjs playwright: main-frame navigations bypass the chunk
+ wait (Chrome suspends the page session while its navigation is pending:
+ deadlock on a first page.goto right after a grant); DETJS_PW_DEBUG=1 event
+ log; regression test
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ node/src/pw/worker.js        | 30 +++++++++++++++++++++++++++---
+ node/test/playwright.test.js | 12 ++++++++++++
+ 2 files changed, 39 insertions(+), 3 deletions(-)
+
+diff --git a/node/src/pw/worker.js b/node/src/pw/worker.js
+index 2298a9f..e8bd34d 100644
+--- a/node/src/pw/worker.js
++++ b/node/src/pw/worker.js
+@@ -39,6 +39,9 @@ const EPOCH_MS = Date.parse(ENV.DETJS_EPOCH || '2025-01-01T00:00:00Z');
+ const SERVER_HOSTS = new Set((ENV.DETJS_PW_SERVER_HOSTS || 'localhost,127.0.0.1,[::1],0.0.0.0').split(','));
+ const COMPLETE_TIMEOUT_MS = Number(ENV.DETJS_PW_COMPLETE_TIMEOUT || 5000);
+ const APP_TYPES = new Set(['document', 'fetch', 'xhr']);
++const DEBUG = ENV.DETJS_PW_DEBUG === '1';
++const T_START = Date.now();
++function dbg(...a) { if (DEBUG) process.stderr.write(`[detjs ${Date.now() - T_START}ms] ${a.join(' ')}\n`); }
+ 
+ // ---------------------------------------------------------------- buckets
+ const BUCKET_DIR = path.join(DIR, 'buckets');
+@@ -93,6 +96,7 @@ function enqueue(item) {
+   return new Promise((resolve) => {
+     item.release = resolve;
+     QUEUE.pending.push(item);
++    if (item.nav && VT.waiters.length) { const w = VT.waiters; VT.waiters = []; for (const f of w) f(); }
+     if (QUEUE.timer) { clearTimeout(QUEUE.timer); QUEUE.timer = null; }
+     schedule();
+   });
+@@ -129,7 +133,11 @@ async function pump() {
+   QUEUE.timer = null;
+   if (QUEUE.busy || !QUEUE.pending.length) return;
+   QUEUE.busy = true;
+-  await whenPaused(); // never deliver a response while a page is inside a virtual time chunk
++  // Never deliver a response while a page is inside a virtual time chunk, except a main-frame
++  // navigation: Chrome suspends the page's DevTools session while its navigation request is
++  // pending, so the chunk cannot end before the document arrives (deadlock: found on a first
++  // page.goto issued right after a grant). The new document starts at the page's virtual instant.
++  if (!QUEUE.pending.some((it) => it.nav)) await whenPaused();
+   await barrier(QUEUE.pending[0].test);
+   QUEUE.busy = false;
+   if (!QUEUE.pending.length) return;
+@@ -150,6 +158,7 @@ async function pump() {
+   const chosen = sorted[idx].it;
+   QUEUE.pending.splice(QUEUE.pending.indexOf(chosen), 1);
+   rec(chosen.test, 'sched', 'sched.io', `${idx}/${n}:${keyOf(chosen)}`);
++  dbg('release', keyOf(chosen));
+   QUEUE.busy = true;
+   const done = () => {
+     QUEUE.busy = false;
+@@ -203,7 +212,9 @@ async function routeHandler(route, request) {
+     if (!isServerHost(url)) return route.fallback();
+     return route.fallback({ headers: { ...request.headers(), 'x-detjs-test': testIdOf(key) } });
+   }
+-  const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()) };
++  let nav = false;
++  try { nav = type === 'document' && request.isNavigationRequest() && request.frame().parentFrame() === null; } catch { nav = false; }
++  const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), nav };
+   const release = await enqueue(item);
+   const page = request.frame && (() => { try { return request.frame().page(); } catch { return null; } })();
+   let finished = false;
+@@ -213,6 +224,7 @@ async function routeHandler(route, request) {
+     if (page) { page.off('requestfinished', onDone); page.off('requestfailed', onFail); page.off('response', onResponse); }
+     clearTimeout(timer);
+     rec(key, 'net', 'browser.done', `${item.method} ${item.target} ${how}`);
++    dbg('done', item.target, how);
+     release();
+   };
+   const onDone = async (r) => {
+@@ -352,9 +364,21 @@ async function setupPage(ctx, page, key) {
+     if (first) params.initialVirtualTime = EPOCH_MS / 1000;
+     inChunk = true;
+     VT.running++;
++    dbg('grant', granted, first ? 'first' : '');
+     try { await cdp.send('Emulation.setVirtualTimePolicy', params); } catch { stopped = true; end(); }
+   };
+-  cdp.on('Emulation.virtualTimeBudgetExpired', () => { end(); grant(false).catch(() => {}); });
++  cdp.on('Emulation.virtualTimeBudgetExpired', () => {
++    if (!inChunk) return; // a chunk already ended by a stall
++    dbg('expired', granted);
++    end();
++    grant(false).catch(() => {});
++  });
++  if (DEBUG) {
++    page.on('framenavigated', (f) => dbg('framenavigated', f === page.mainFrame() ? 'main' : 'sub', f.url()));
++    page.on('requestfailed', (r) => dbg('requestfailed', r.url(), r.failure() && r.failure().errorText));
++    page.on('crash', () => dbg('crash'));
++    page.on('request', (r) => dbg('request', r.resourceType(), r.url()));
++  }
+   page.on('close', () => { stopped = true; end(); });
+   await grant(true);
+ }
+diff --git a/node/test/playwright.test.js b/node/test/playwright.test.js
+index a18e30b..9a1fe40 100644
+--- a/node/test/playwright.test.js
++++ b/node/test/playwright.test.js
+@@ -159,3 +159,15 @@ test('playwright --det-seed: a seed replays its outcome, seeds explore both outc
+   }
+   assert.deepEqual([...seen].sort(), ['failed', 'passed']);
+ });
++
++test('playwright --det: a run whose first action is a navigation never deadlocks (6 single-test runs, one fingerprint)', { skip, timeout: 360000 }, () => {
++  // Before the fix, about one run in three hung: page.goto issued right after a virtual time
++  // grant left the DevTools session suspended while the queue waited for the chunk to end.
++  fixture();
++  const runs = [1, 2, 3, 4, 5, 6].map((i) => pw(['--det', 'races.spec.js:4', '--timeout=15000'], `single-${i}`));
++  if (!runs[0].trace.tests.length) assert.fail(runs[0].out);
++  for (const r of runs) assert.ok(r.trace, r.out);
++  const v = verify(runs.map((r) => r.trace.path));
++  assert.equal(v.summary.tests, 1);
++  assert.equal(v.summary.stable, 1, JSON.stringify(v.tests[0].divergence));
++});
+-- 
+2.43.0
+

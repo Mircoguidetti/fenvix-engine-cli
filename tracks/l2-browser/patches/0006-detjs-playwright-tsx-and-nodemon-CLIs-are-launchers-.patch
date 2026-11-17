@@ -1,0 +1,29 @@
+From 69a0d45b176bea71c403539c27e455b82f22ceca Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 07:27:26 +0000
+Subject: [PATCH 6/7] detjs playwright: tsx and nodemon CLIs are launchers (the
+ server is their child)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ node/src/pw/boot.js | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/node/src/pw/boot.js b/node/src/pw/boot.js
+index f6e510e..b57afa9 100644
+--- a/node/src/pw/boot.js
++++ b/node/src/pw/boot.js
+@@ -20,7 +20,8 @@ function role() {
+   if (/[\\/]node_modules[\\/]\.bin[\\/]playwright$/.test(main)) return null; // the runner through its bin link
+   const script = path.basename(main);
+   if (process.env.DETJS_PW_RUNNER_PID === String(process.pid)) return null;
+-  if (LAUNCHERS.test(script) || /[\\/](npm|pnpm|yarn|corepack)[\\/]/.test(process.argv[1] || '')) return null;
++  if (LAUNCHERS.test(script) || /[\\/](npm|pnpm|yarn|corepack)[\\/]/.test(main)) return null;
++  if (/[\\/]node_modules[\\/](.*[\\/])?(tsx|nodemon)[\\/]dist[\\/]cli\.m?js$/.test(main)) return null; // relays to a child Node process
+   if (process.env.DETJS_PW_SERVER === '0') return null;
+   return 'server';
+ }
+-- 
+2.43.0
+
