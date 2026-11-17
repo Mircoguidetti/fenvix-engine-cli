@@ -1,0 +1,238 @@
+{
+ "name": "requests",
+ "set": "popular",
+ "url": "https://github.com/psf/requests",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009578",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "3c7baaa05ab4aa49cc819ce3a819d260de19c157",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group test -r requirements-dev.txt",
+ "collected": 635,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 79.072,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 619,
+    "skipped": 15,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 87.591,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 58.348,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 611,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 8
+   },
+   "stats": {
+    "decisions": 1,
+    "switches": 846,
+    "escapes": 0,
+    "deadlocks": 6,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_none_timeout[None]": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_encoded_methods": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_requests.py::test_urllib3_retries": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_requests.py::test_urllib3_pool_connection_closed": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_utils.py::test_should_bypass_proxies_win_registry_ProxyOverride_value": "ERROR ExceptionGroup: errors while tearing down <Session  exitstatus=<ExitCode.OK: 0> testsfailed=8 testscollected=635> (2 sub-exceptions)"
+   }
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 2402.613,
+   "exit": -9,
+   "timed_out": true,
+   "counts": {},
+   "stats": null,
+   "tail": "_.py\", line 262 in _main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 286 in _console_main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pytest/__main__.py\", line 9 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 203 in _run_module_as_main\n\nExtension modules: markupsafe._speedups, _cffi_backend, charset_normalizer.md, charset_normalizer.cd, requests.packages.charset_normalizer.md, requests.packages.chardet.md, requests.packages.charset_normalizer.cd, requests.packages.chardet.cd (total: 8)\n",
+   "hang": "..................[2026-11-17 17:34:04,254] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-17 17:34:05,021] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\nTimeout (0:05:00)!\nThread 0x00007fffe3fff6c0 (most recent call first):\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 456 in _wait_gate\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 931 in boot\n\nThread 0x00007ffff11276c0 (most recent call first):\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/selectors.py\", line 398 in select\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/socketserver.py\", line 235 in serve_forever\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 995 in run\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 1044 in _bootstrap_inner\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 1015 in _bootstrap\n\nThread 0x00007ffff31296c0 (most recent call first):\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 130 in acquire\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 1275 in _watchdog\n\nThread 0x00007ffff7ec8bc0 (most recent call first):\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 130 in acquire\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 562 in _point\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 809 in release\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 818 in __exit__\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 307 in __exit__\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/queue.py\", line 191 in get\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/urllib3/connectionpool.py\", line 1207 in _close_pool_connections\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/weakref.py\", line 590 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 306 in _locked_poll_io\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 395 in _locked_candidates\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 486 in _switch\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 611 in _block\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 786 in acquire\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 359 in wait\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/clock.py\", line 394 in _condition_wait\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 660 in wait\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 982 in start\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 992 in start\n  File \"/tmp/l1t/src/requests/tests/testserver/server.py\", line 118 in __enter__\n  File \"/tmp/l1t/src/requests/tests/test_lowlevel.py\", line 293 in test_use_proxy_from_environment\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/python.py\", line 187 in pytest_pyfunc_call\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/python.py\", line 1798 in runtest\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 184 in pytest_runtest_call\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 250 in <lambda>\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 361 in from_call\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 249 in call_and_report\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 139 in runtestprotocol\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 118 in pytest_runtest_protocol\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 411 in pytest_runtestloop\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 387 in _main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 333 in wrap_session\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 380 in pytest_cmdline_main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 262 in _main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 286 in _console_main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pytest/__main__.py\", line 9 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 203 in _run_module_as_main\nFatal Python error: Aborted\n\nThread 0x00007fffe3fff6c0 (most recent call first):\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 456 in _wait_gate\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 931 in boot\n\nThread 0x00007ffff11276c0 (most recent call first):\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/selectors.py\", line 398 in select\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/socketserver.py\", line 235 in serve_forever\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 995 in run\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 1044 in _bootstrap_inner\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 1015 in _bootstrap\n\nThread 0x00007ffff31296c0 (most recent call first):\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 130 in acquire\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 1275 in _watchdog\n\nCurrent thread 0x00007ffff7ec8bc0 (most recent call first):\n  Garbage-collecting\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 130 in acquire\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 562 in _point\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 809 in release\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 818 in __exit__\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 307 in __exit__\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/queue.py\", line 191 in get\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/urllib3/connectionpool.py\", line 1207 in _close_pool_connections\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/weakref.py\", line 590 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 306 in _locked_poll_io\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 395 in _locked_candidates\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 486 in _switch\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 611 in _block\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 786 in acquire\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 359 in wait\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/clock.py\", line 394 in _condition_wait\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 660 in wait\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 982 in start\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 992 in start\n  File \"/tmp/l1t/src/requests/tests/testserver/server.py\", line 118 in __enter__\n  File \"/tmp/l1t/src/requests/tests/test_lowlevel.py\", line 293 in test_use_proxy_from_environment\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/python.py\", line 187 in pytest_pyfunc_call\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/python.py\", line 1798 in runtest\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 184 in pytest_runtest_call\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 250 in <lambda>\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 361 in from_call\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 249 in call_and_report\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 139 in runtestprotocol\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 118 in pytest_runtest_protocol\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 411 in pytest_runtestloop\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 387 in _main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 333 in wrap_session\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 380 in pytest_cmdline_main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 262 in _main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 286 in _console_main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pytest/__main__.py\", line 9 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 203 in _run_module_as_main\n\nExtension modules: markupsafe._speedups, _cffi_backend, charset_normalizer.md, charset_normalizer.cd, requests.packages.charset_normalizer.md, requests.packages.chardet.md, requests.packages.charset_normalizer.cd, requests.packages.chardet.cd (total: 8)\n",
+   "msgs": {}
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 78.766,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 619,
+    "skipped": 15,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 80.206,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 58.4,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 611,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 8
+   },
+   "stats": {
+    "decisions": 1,
+    "switches": 858,
+    "escapes": 0,
+    "deadlocks": 6,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_none_timeout[None]": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_encoded_methods": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_requests.py::test_urllib3_retries": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_requests.py::test_urllib3_pool_connection_closed": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_utils.py::test_should_bypass_proxies_win_registry_ProxyOverride_value": "ERROR ExceptionGroup: errors while tearing down <Session  exitstatus=<ExitCode.OK: 0> testsfailed=8 testscollected=635> (2 sub-exceptions)"
+   }
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 2400.677,
+   "exit": -9,
+   "timed_out": true,
+   "counts": {},
+   "stats": null,
+   "tail": "_.py\", line 262 in _main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 286 in _console_main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pytest/__main__.py\", line 9 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 203 in _run_module_as_main\n\nExtension modules: markupsafe._speedups, _cffi_backend, charset_normalizer.md, charset_normalizer.cd, requests.packages.charset_normalizer.md, requests.packages.chardet.md, requests.packages.charset_normalizer.cd, requests.packages.chardet.cd (total: 8)\n",
+   "hang": "..................[2026-11-17 18:17:44,263] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-17 18:17:45,073] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\nTimeout (0:05:00)!\nThread 0x00007fffe3fff6c0 (most recent call first):\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 456 in _wait_gate\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 931 in boot\n\nThread 0x00007ffff11276c0 (most recent call first):\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/selectors.py\", line 398 in select\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/socketserver.py\", line 235 in serve_forever\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 995 in run\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 1044 in _bootstrap_inner\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 1015 in _bootstrap\n\nThread 0x00007ffff31296c0 (most recent call first):\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 130 in acquire\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 1275 in _watchdog\n\nThread 0x00007ffff7ec8bc0 (most recent call first):\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 130 in acquire\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 562 in _point\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 809 in release\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 818 in __exit__\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 307 in __exit__\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/queue.py\", line 191 in get\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/urllib3/connectionpool.py\", line 1207 in _close_pool_connections\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/weakref.py\", line 590 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 306 in _locked_poll_io\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 395 in _locked_candidates\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 486 in _switch\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 611 in _block\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 786 in acquire\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 359 in wait\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/clock.py\", line 394 in _condition_wait\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 660 in wait\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 982 in start\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 992 in start\n  File \"/tmp/l1t/src/requests/tests/testserver/server.py\", line 118 in __enter__\n  File \"/tmp/l1t/src/requests/tests/test_lowlevel.py\", line 293 in test_use_proxy_from_environment\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/python.py\", line 187 in pytest_pyfunc_call\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/python.py\", line 1798 in runtest\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 184 in pytest_runtest_call\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 250 in <lambda>\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 361 in from_call\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 249 in call_and_report\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 139 in runtestprotocol\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 118 in pytest_runtest_protocol\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 411 in pytest_runtestloop\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 387 in _main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 333 in wrap_session\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 380 in pytest_cmdline_main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 262 in _main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 286 in _console_main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pytest/__main__.py\", line 9 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 203 in _run_module_as_main\nFatal Python error: Aborted\n\nThread 0x00007fffe3fff6c0 (most recent call first):\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 456 in _wait_gate\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 931 in boot\n\nThread 0x00007ffff11276c0 (most recent call first):\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/selectors.py\", line 398 in select\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/socketserver.py\", line 235 in serve_forever\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 995 in run\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 1044 in _bootstrap_inner\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 1015 in _bootstrap\n\nThread 0x00007ffff31296c0 (most recent call first):\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 130 in acquire\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 1275 in _watchdog\n\nCurrent thread 0x00007ffff7ec8bc0 (most recent call first):\n  Garbage-collecting\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 130 in acquire\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 562 in _point\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 809 in release\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 818 in __exit__\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 307 in __exit__\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/queue.py\", line 191 in get\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/urllib3/connectionpool.py\", line 1207 in _close_pool_connections\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/weakref.py\", line 590 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 306 in _locked_poll_io\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 395 in _locked_candidates\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 486 in _switch\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 611 in _block\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 786 in acquire\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 359 in wait\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/clock.py\", line 394 in _condition_wait\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 660 in wait\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/threading.py\", line 982 in start\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/detpy/threads.py\", line 992 in start\n  File \"/tmp/l1t/src/requests/tests/testserver/server.py\", line 118 in __enter__\n  File \"/tmp/l1t/src/requests/tests/test_lowlevel.py\", line 293 in test_use_proxy_from_environment\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/python.py\", line 187 in pytest_pyfunc_call\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/python.py\", line 1798 in runtest\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 184 in pytest_runtest_call\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 250 in <lambda>\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 361 in from_call\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 249 in call_and_report\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 139 in runtestprotocol\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/runner.py\", line 118 in pytest_runtest_protocol\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 411 in pytest_runtestloop\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 387 in _main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 333 in wrap_session\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/main.py\", line 380 in pytest_cmdline_main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 262 in _main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 286 in _console_main\n  File \"/tmp/l1t/venvs/requests/lib/python3.13/site-packages/pytest/__main__.py\", line 9 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 203 in _run_module_as_main\n\nExtension modules: markupsafe._speedups, _cffi_backend, charset_normalizer.md, charset_normalizer.cd, requests.packages.charset_normalizer.md, requests.packages.chardet.md, requests.packages.charset_normalizer.cd, requests.packages.chardet.cd (total: 8)\n",
+   "msgs": {}
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   2,
+   2
+  ],
+  "broken": [
+   "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]",
+   "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]",
+   "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]",
+   "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]"
+  ],
+  "n_broken": 4,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   2,
+   2
+  ],
+  "broken": [
+   "tests/test_requests.py::TestTimeout::test_encoded_methods",
+   "tests/test_requests.py::TestTimeout::test_none_timeout[None]",
+   "tests/test_requests.py::test_urllib3_pool_connection_closed",
+   "tests/test_requests.py::test_urllib3_retries",
+   "tests/test_utils.py::test_should_bypass_proxies_win_registry_ProxyOverride_value"
+  ],
+  "n_broken": 5,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   2,
+   0
+  ],
+  "broken": [],
+  "sometimes": []
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 2,
+  "loaded_runs": 5
+ }
+}
