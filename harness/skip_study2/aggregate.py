@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import gzip
 import json
+import os
 import statistics
 import sys
 from collections import Counter, defaultdict
@@ -124,7 +125,7 @@ def walk_summary(shards, spec):
     v3 = any("cached_fail" in t for sh in shards for t in sh.get("transitions", []))
     for sh in shards:
         units.update({u: c for u, c in (sh.get("units") or {}).items() if c})
-        if lang != "go" and not v3:
+        if lang != "go" and not v3 and not os.environ.get("S2_V2_NO_FAILURE_RULE"):  # (toggle: before/after)
             v2_failing.update(u for u, c in (sh.get("units") or {}).items() if c and c.get("code") not in (0, 5, None))
             v2_failing.update(u for u, c in (sh.get("unit_info") or {}).items() if c.get("code") not in (0, 5, None))
         for t in sh.get("transitions", []):
@@ -373,6 +374,17 @@ def main(argv):
         for p in sorted((base / "finer").glob("*.json*")) if (base / "finer").exists() else []:
             d = load(p)
             summary["finer"][d["repo"]] = finer_summary(d)
+    # setting 2 pooled over every push of every repository : agent pair
+    if summary["agent"]:
+        rows = [(k, row) for k, ag in summary["agent"].items() for p in ag["prs"] for row in p["rows"]]
+        summary["agent_pooled"] = {
+            "pushes": len(rows),
+            "closure": stats([row.get("closure") for _, row in rows]),
+            "go test cache (no proof) for Go, closure otherwise": stats(
+                [row.get("go-cache", row.get("closure")) for _, row in rows]),
+            "verify_closure": dict(sum((Counter({k: n for k, n in (ag["verify_by_rule"].get("closure") or {}).items()
+                                                 if isinstance(n, int)}) for ag in summary["agent"].values()),
+                                       Counter()))}
     for (name, sha), items in fl_all.items():
         spec = json.loads((SPECS / f"{name}.json").read_text())
         fs = flaky_summary(items, spec)
@@ -480,6 +492,13 @@ def print_md(s):
                     v = ag.get("verify_by_rule", {}).get(r, ag["verify"]) if ag.get("verify_by_rule") else ag["verify"]
                     ver = "n/a" if v is None else f"{v.get('checked', 0)} ({v.get('wrong', 0)}, {v.get('flaky', 0)})"
                     print(f"| {k} | {len(ag['prs'])} | {ag['pushes']} | {RULE_LABEL.get(r, r)} | {ms(st)} | {ver} |")
+    if s.get("agent_pooled"):
+        ap = s["agent_pooled"]
+        print()
+        print(f"Setting 2 pooled over {ap['pushes']} pushes: closure {ms(ap['closure'])}; go test cache (no proof) for "
+              f"Go, closure otherwise {ms(ap['go test cache (no proof) for Go, closure otherwise'])}; closure verified "
+              f"{ap['verify_closure'].get('checked', 0)} ({ap['verify_closure'].get('wrong', 0)}, "
+              f"{ap['verify_closure'].get('flaky', 0)})")
     if s["flaky"]:
         print()
         print("| suite (commit) | CI groups rerun (of) | tests per group run | attempts (min per group) | "
