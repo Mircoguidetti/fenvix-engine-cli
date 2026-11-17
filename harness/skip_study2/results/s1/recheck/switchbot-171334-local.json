@@ -1,0 +1,267 @@
+{
+ "unit": "tests/components/switchbot/test_init.py",
+ "pr": 171334,
+ "rec": "7cf3cba27bec95fc6dfeaeb68b79471ddaaee1b7",
+ "cur": "cbfc323f04360c3bcbb88db837527ae0cd3266c9",
+ "where": "local re-check, 4 vCPU container, Python 3.14.6, HA test requirements + switchbot/bluetooth/mqtt/hassio integration requirements; plain runs (no strace, no load), --timeout=9 as in HA CI",
+ "cmd": "python -b -X dev -m pytest --timeout=9 -p no:sugar -p no:cacheprovider -W ignore -rfE tests/components/switchbot/test_init.py",
+ "test": "test_exception_handling_for_device_initialization[exception0-...wrong model]",
+ "rec_runs": [
+  {
+   "summary": "13 passed in 1.24s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.27s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.13s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.19s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.17s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.16s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.10s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.10s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.18s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.12s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.16s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed, 1 error in 1.49s",
+   "teardown_error": true,
+   "error": "KeyError: 'path'"
+  },
+  {
+   "summary": "13 passed in 1.09s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.17s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.21s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.18s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.20s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.17s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.19s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed, 1 error in 1.52s",
+   "teardown_error": true,
+   "error": "KeyError: 'path'"
+  }
+ ],
+ "cur_runs": [
+  {
+   "summary": "13 passed in 1.26s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.23s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.17s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.17s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.28s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.24s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.18s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.12s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.14s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.26s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.09s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.12s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed, 1 error in 1.39s",
+   "teardown_error": true,
+   "error": "KeyError: 'path'"
+  },
+  {
+   "summary": "13 passed, 1 error in 1.42s",
+   "teardown_error": true,
+   "error": "KeyError: 'path'"
+  },
+  {
+   "summary": "13 passed in 1.13s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.11s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.15s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.24s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.21s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.19s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.27s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.33s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.14s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.16s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.16s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.17s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.15s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.20s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.11s",
+   "teardown_error": false,
+   "error": null
+  },
+  {
+   "summary": "13 passed in 1.14s",
+   "teardown_error": false,
+   "error": null
+  }
+ ],
+ "rec_errors": 2,
+ "cur_errors": 2,
+ "mechanism": "the test passes, then the hass fixture teardown re-raises an exception from a background task the integration left running: PySwitchbot's lock update tries to connect to the mock BLE device through bleak's BlueZ backend and hits KeyError 'path'; whether that task runs before teardown depends on scheduling",
+ "verdict": "flaky (same intermittent teardown error at both commits): the cached failure at the base commit was a flaky outcome, not a missed dependency"
+}
