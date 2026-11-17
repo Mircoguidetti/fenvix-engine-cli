@@ -1,0 +1,42 @@
+From ee6ea078cea8f7b5184eceab03402f2aada48aa8 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 08:27:37 +0000
+Subject: [PATCH 10/10] detjs playwright test: the fixture's webServer command
+ uses a node_modules/.bin tool (fails before the PATH fix)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ node/test/playwright.test.js | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/node/test/playwright.test.js b/node/test/playwright.test.js
+index 0ca894a..139b820 100644
+--- a/node/test/playwright.test.js
++++ b/node/test/playwright.test.js
+@@ -84,11 +84,13 @@ function fixture() {
+   fs.mkdirSync(path.join(DIR, 'tests'), { recursive: true });
+   fs.writeFileSync(path.join(DIR, 'package.json'), '{"name":"fixture-pw","private":true}');
+   fs.writeFileSync(path.join(DIR, 'app.js'), APP);
++  fs.mkdirSync(path.join(DIR, 'node_modules', '.bin'), { recursive: true });
++  fs.writeFileSync(path.join(DIR, 'node_modules', '.bin', 'fixture-tool'), '#!/bin/sh\nexit 0\n', { mode: 0o755 });
+   fs.writeFileSync(path.join(DIR, 'tests', 'races.spec.js'), SPEC);
+   fs.writeFileSync(path.join(DIR, 'playwright.config.js'), `module.exports = {
+   testDir: './tests', fullyParallel: true, workers: 2, reporter: 'list',
+   use: { baseURL: 'http://localhost:${PORT}', launchOptions: { executablePath: ${JSON.stringify(chromium())} } },
+-  webServer: { command: 'node app.js', url: 'http://localhost:${PORT}/api/notes', reuseExistingServer: false },
++  webServer: { command: 'fixture-tool && node app.js', url: 'http://localhost:${PORT}/api/notes', reuseExistingServer: false },
+ };\n`);
+ }
+ 
+@@ -117,6 +119,7 @@ function verify(paths) {
+ const outcome = (run, name) => run.trace.tests.find((t) => t.nodeid.includes(name)).outcome;
+ const skip = available() || false;
+ 
++// The webServer command uses a node_modules/.bin tool, as projects do (cross-env): found on uptime-kuma.
+ test('playwright without --det: server and page randomness differ between runs', { skip, timeout: 240000 }, () => {
+   fixture();
+   const a = pw([], 'plain-a');
+-- 
+2.43.0
+

@@ -2,7 +2,7 @@
 
 Updated 2026-11-17 08:20 UTC. Local branch `track-l2-browser` in a scratch worktree of
 /home/user/fenvix-engine-cli; base `9ffbb0a` (origin/claude/node-l0, rebased at resume). Patches:
-`patches/` (`git am` on the base; 8 commits).
+`patches/` (`git am` on the base; 10 commits).
 
 ## Done
 - Prototype `detjs playwright --det ...` (node/src/pw/): wrapper config (workers=1, retries=0, detjs
@@ -17,4 +17,4 @@ Updated 2026-11-17 08:20 UTC. Local branch `track-l2-browser` in a scratch workt
   documenso, actual, rallly, solid-start. Dry run on a local toy project works.
 
 ## Next
-- Batches 1-2 cancelled (old patches; 300-min budgets too long for the shared queue); batch 3: 8 patches, 110-min budget per repository. Then REPORT.md.
+- Batch 3 (run 44043803663, 8 patches, 110-min budget per repository) running; uptime-kuma broke on PATH (fixed in patch 9), rerun as batch 4 with 10 patches. Then REPORT.md.
