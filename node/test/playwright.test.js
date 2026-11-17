@@ -43,7 +43,7 @@ http.createServer((req, res) => {
   if (u.pathname === '/ids') {
     res.setHeader('content-type', 'text/html');
     return res.end(page('<div id=sid>' + crypto.randomUUID() + '</div><div id=when>' + new Date().toISOString() +
-      '</div><div id=r></div><script>r.textContent = Math.random().toFixed(6) + " " + crypto.randomUUID() + " " + new Date().toISOString();</script>'));
+      '</div><div id=vite>' + require('vite').stamp() + '</div><div id=r></div><script>r.textContent = Math.random().toFixed(6) + " " + crypto.randomUUID() + " " + new Date().toISOString();</script>'));
   }
   if (u.pathname === '/api/slow') { counter++; const n = u.searchParams.get('n'); return setTimeout(() => res.end(n + counter), delay); }
   if (u.pathname === '/api/note' && req.method === 'POST') {
@@ -67,7 +67,7 @@ test('race: the last response wins', async ({ page }) => {
 test('ids', async ({ page }) => {
   await page.goto('/ids');
   await expect(page.locator('#r')).not.toBeEmpty();
-  const v = [await page.locator('#sid').textContent(), await page.locator('#when').textContent(), await page.locator('#r').textContent(), Math.random()];
+  const v = [await page.locator('#sid').textContent(), await page.locator('#when').textContent(), await page.locator('#vite').textContent(), await page.locator('#r').textContent(), Math.random()];
   fs.appendFileSync(process.env.IDS_FILE, JSON.stringify(v) + '\\n');
 });
 test('runner write vs browser read', async ({ page, request }) => {
@@ -85,6 +85,9 @@ function fixture() {
   fs.writeFileSync(path.join(DIR, 'package.json'), '{"name":"fixture-pw","private":true}');
   fs.writeFileSync(path.join(DIR, 'app.js'), APP);
   fs.mkdirSync(path.join(DIR, 'node_modules', '.bin'), { recursive: true });
+  // A dev server of the app's own (as Vite in solid-start): its clock reads are the app's.
+  fs.mkdirSync(path.join(DIR, 'node_modules', 'vite'), { recursive: true });
+  fs.writeFileSync(path.join(DIR, 'node_modules', 'vite', 'index.js'), 'exports.stamp = () => Date.now();\n');
   fs.writeFileSync(path.join(DIR, 'node_modules', '.bin', 'fixture-tool'), '#!/bin/sh\nexit 0\n', { mode: 0o755 });
   fs.writeFileSync(path.join(DIR, 'tests', 'races.spec.js'), SPEC);
   fs.writeFileSync(path.join(DIR, 'playwright.config.js'), `module.exports = {

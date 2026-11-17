@@ -7,6 +7,13 @@ const path = require('node:path');
 
 const SHELL_DIR = path.resolve(__dirname) + path.sep; // node/src/
 const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|playwright|playwright-core|@playwright|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format)[\\/]/;
+// App servers under Level 2 (DETJS_NODE_INFRA=1) are not test runners: Vite there is the app's own dev
+// server, whose clock reads end up in URLs (?t=), temp file names and pages (found on solid-start).
+const INFRA_SERVER = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|tinypool|playwright|playwright-core|@playwright|tinyspy|jest-[a-z-]+|@jest|jest|babel-jest|ts-jest|source-map-support)[\\/]/;
+function isInfra(f) {
+  if (NODE_INFRA === null) NODE_INFRA = process.env.DETJS_NODE_INFRA === '1';
+  return (NODE_INFRA ? INFRA_SERVER : INFRA).test(f);
+}
 const DEPS = /^(.*[\\/]node_modules[\\/])((?:@[^\\/]+[\\/])?[^\\/]+)[\\/](.*)$/;
 
 let root = process.cwd();
@@ -63,7 +70,7 @@ function resolveFormatted() {
     const q = f.indexOf('?');
     if (q >= 0) f = f.slice(0, q);
     if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || f === 'native' || !f.includes('/')) continue;
-    if (INFRA.test(f)) return null;
+    if (isInfra(f)) return null;
     return `${normPath(f)}:${m[2]}`;
   }
   return '<node>';
@@ -124,7 +131,7 @@ function resolveDepth(depth) {
   for (const cs of frames) {
     const f = rawFile(cs);
     if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || !f.includes('/')) continue;
-    if (INFRA.test(f)) return null;
+    if (isInfra(f)) return null;
     const key = `${f}:${cs.getLineNumber()}:${cs.getColumnNumber()}`;
     let site = CACHE.get(key);
     if (site === undefined) {
