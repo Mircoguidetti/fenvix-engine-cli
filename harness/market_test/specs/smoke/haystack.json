@@ -6,7 +6,8 @@
   "test -x {py} || uv venv -q --python 3.12 {venv}",
   "uv pip install -q --python {py} torch --index-url https://download.pytorch.org/whl/cpu",
   "python3 {harness}/hatchdeps.py pyproject.toml test > {work}/hs-reqs.txt && python3 {harness}/pyinstall.py --python {py} -r {work}/hs-reqs.txt",
-  "uv pip install -q --python {py} -e ."
+  "uv pip install -q --python {py} -e .",
+  "{py} -m compileall -q -j 4 {venv}/lib > /dev/null 2>&1 || true"
  ],
  "install_files": [
   "pyproject.toml"

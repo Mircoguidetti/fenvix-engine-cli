@@ -49,6 +49,10 @@ def main():
         err = p.stderr + p.stdout
         bad = set(re.findall(r"(?:Failed to build|Failed to download and build|Failed to download|"
                              r"Failed to prepare distributions|Failed to resolve)\s+`([A-Za-z0-9_.\-]+)", err))
+        # a transitive build failure: uv names the chain ("`krb5` (v..) was included because `requests-kerberos`
+        # (v..) depends on ..."); drop the requirement at the head of the chain (market test addition)
+        for m in re.finditer(r"was included because `([A-Za-z0-9_.\-]+)(?:\[[^`]*\])?`", err):
+            bad.add(m.group(1))
         bad = {b.lower().replace("_", "-") for b in bad} - drop
         if not bad:
             print(err[-4000:], file=sys.stderr)

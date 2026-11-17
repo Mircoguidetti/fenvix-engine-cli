@@ -8,7 +8,8 @@
  "install": [
   "test -x {py} || uv venv -q --python 3.12 {venv}",
   "uv pip install -q --python {py} torch torchvision --index-url https://download.pytorch.org/whl/cpu",
-  "uv pip install -q --python {py} -e '.[testing,sentencepiece,tokenizers,vision,tiktoken]' || uv pip install -q --python {py} -e '.[testing,sentencepiece,vision]'"
+  "uv pip install -q --python {py} -e '.[testing,sentencepiece,tokenizers,vision,tiktoken]' || uv pip install -q --python {py} -e '.[testing,sentencepiece,vision]'",
+  "{py} -m compileall -q -j 4 {venv}/lib > /dev/null 2>&1 || true"
  ],
  "install_files": [
   "setup.py",

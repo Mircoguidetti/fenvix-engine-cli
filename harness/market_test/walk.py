@@ -325,7 +325,7 @@ class Walker:
         self.spec, self.work, self.out = spec, Path(work).resolve(), Path(out).resolve()
         self.shard, self.nshards, self.budget = shard, nshards, budget_min * 60
         self.run_id = run_id
-        self.src = self.work / "src"
+        self.src = self.work / spec.get("src_dir", "src")  # market test: a layout path (Ansible collections)
         self.venv = self.work / "venv"
         self.rec_dir = self.work / "rec"
         self.rec_dir.mkdir(parents=True, exist_ok=True)

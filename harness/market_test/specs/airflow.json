@@ -19,7 +19,8 @@
  ],
  "install": [
   "test -x {py} || uv venv -q --python 3.12 {venv}",
-  "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --frozen --all-packages || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --all-packages"
+  "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --frozen --all-packages || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --all-packages",
+  "{py} -m compileall -q -j 4 {venv}/lib > /dev/null 2>&1 || true"
  ],
  "install_files": [
   "uv.lock",

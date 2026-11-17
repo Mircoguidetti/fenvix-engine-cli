@@ -167,16 +167,21 @@ SPECS = [
         "install": [venv("3.12"),
                     "uv pip install -q --python {py} ansible-core pytest pytest-mock pytest-xdist",
                     "python3 {harness}/pyinstall.py --python {py} -r tests/unit/requirements.txt",
+                    # tests/unit/requirements.yml: community.internal_test_tools (from GitHub, not Galaxy)
                     "mkdir -p {work}/ac/ansible_collections/community && "
-                    "{venv}/bin/ansible-galaxy collection install -r tests/unit/requirements.yml -p {work}/ac"],
+                    "(test -d {work}/ac/ansible_collections/community/internal_test_tools || git clone -q --depth 1 "
+                    "https://github.com/ansible-collections/community.internal_test_tools "
+                    "{work}/ac/ansible_collections/community/internal_test_tools)"],
         "install_files": ["tests/unit/requirements.txt", "tests/unit/requirements.yml"],
-        # the collection must be importable as ansible_collections.community.general: a symlink to the checkout
-        "build": ["mkdir -p {work}/ac/ansible_collections/community && "
-                  "ln -sfn {src} {work}/ac/ansible_collections/community/general"],
-        "env": {"PYTHONPATH": "{work}/ac"},
+        # the checkout itself lives at ansible_collections/community/general (walker option src_dir), as
+        # ansible-test lays it out; the tests load through ansible-test's collection pytest plugin
+        "src_dir": "ac/ansible_collections/community/general",
+        "env": {"PYTHONPATH": "{work}/ac", "ANSIBLE_COLLECTIONS_PATH": "{work}/ac",
+                "ANSIBLE_CONTROLLER_MIN_PYTHON_VERSION": "3.12"},
         "roots": ["{work}/ac"],
         "units": {"include": ["tests/unit/**/test_*.py"], "sample": 0.5, "seed": "s2"},
-        "cmd": ["{py}", *PYTEST, "{unit}"],
+        "cmd": ["{py}", *PYTEST, "-p", "ansible_test._util.target.pytest.plugins.ansible_pytest_collections",
+                "{unit}"],
         "unit_timeout": 900, "verify": 0.08,
         "ci": {"workers": 4, "source": "ansible-test units: one runner per Python version, 4 vCPU assumed"},
     },
@@ -200,10 +205,16 @@ SMOKE_SAMPLE = {"airflow": 0.02, "integrations-core": 0.03, "moto": 0.05, "trans
                 "community-general": 0.15, "haystack": 0.2}
 
 
+# a warm bytecode cache in the virtualenv, as a cached CI environment has: without it the first runs write
+# __pycache__ directories into site-packages and the next commit sees "appeared" paths in every unit
+COMPILE = "{py} -m compileall -q -j 4 {venv}/lib > /dev/null 2>&1 || true"
+
+
 def main():
     smoke = "--smoke" in sys.argv
     for s in SPECS:
         s = json.loads(json.dumps(s))
+        s["install"].append(COMPILE)
         s["seq"] = {"kind": "first-parent", "n": 51, "head": HEADS[s["name"]]}
         if smoke:
             s["seq"]["n"] = 3
