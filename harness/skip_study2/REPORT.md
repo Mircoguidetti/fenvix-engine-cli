@@ -1,6 +1,6 @@
 # Skip-with-proof study 2: where are the minutes?
 
-**Status (2026-11-17 03:05 UTC): version 3, partial.**
+**Status (2026-11-17 02:57 UTC): version 3, partial.**
 
 * **Final:**
   * the R-002 code fixes: 3 proven errors and 6 notes, each with a test; 14 of 14 tests pass (MEASURED, `harness/skip_study2/tests/`);
@@ -235,7 +235,7 @@ Skip shares are MEASURED on the stated sample. Time to green is ESTIMATED. The s
 
 ## 3. Setting 2: commits inside pull requests opened by coding agents (v2 capture; not re-walked)
 
-Each push of an agent PR is a transition from the previous push. At the PR's base commit every unit runs first. Home Assistant is walked on its 12% sample, Go packages in full (MEASURED, snapshot 03:00 UTC):
+Each push of an agent PR is a transition from the previous push. At the PR's base commit every unit runs first. Home Assistant is walked on its 12% sample, Go packages in full (MEASURED, snapshot 02:57 UTC):
 
 | repository : agent | PRs | pushes | rule | time skipped per push median / mean | verified (wrong, flaky) |
 |---|---:|---:|---|---:|---|
