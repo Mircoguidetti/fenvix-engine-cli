@@ -14,10 +14,11 @@ function role() {
   if (process.env.DETJS !== '1') return null;
   const main = process.argv[1] || '';
   if (process.env.TEST_WORKER_INDEX !== undefined || /[\\/]playwright[\\/]lib[\\/](worker|common)[\\/]/.test(main)) return 'worker'; // child process entry (1.3x: common/process.js)
-  if (/[\\/](playwright|playwright-core|@playwright[\\/]test)[\\/]/.test(main)) return null; // runner helpers (loader, test server)
+  // The runner and its helpers (loader, test server) live in node_modules; an app whose own path
+  // contains a "playwright" folder (tests/playwright/server.js) is still a server.
+  if (/[\\/]node_modules[\\/](.*[\\/])?(playwright|playwright-core|@playwright[\\/]test)[\\/]/.test(main)) return null;
+  if (/[\\/]node_modules[\\/]\.bin[\\/]playwright$/.test(main)) return null; // the runner through its bin link
   const script = path.basename(main);
-  const args = process.argv.slice(1).join(' ');
-  if (/playwright/.test(args) && /\b(cli\.js|playwright)\b/.test(args) && /\btest\b/.test(args)) return null; // the runner
   if (process.env.DETJS_PW_RUNNER_PID === String(process.pid)) return null;
   if (LAUNCHERS.test(script) || /[\\/](npm|pnpm|yarn|corepack)[\\/]/.test(process.argv[1] || '')) return null;
   if (process.env.DETJS_PW_SERVER === '0') return null;
