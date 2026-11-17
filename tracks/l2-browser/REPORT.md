@@ -24,7 +24,10 @@ queued behind the shared Actions queue. Its results commit themselves into `resu
   in both, but the fingerprint did not: 10 distinct fingerprints in 10 runs, for both** (MEASURED). So the share of
   real flaky browser tests that replay 10/10 with an identical fingerprint is **0 of 2** so far. One of the two (actual)
   passes under `--det`; the other (uptime-kuma, "saves the data retention period") failed in all 13 `--det` runs
-  (default seed and seeds 1-3): it behaves as broken by the controls, not as a reproduced flake.
+  (default seed and seeds 1-3): it behaves as broken by the controls, not as a reproduced flake, and is counted in both
+  lists. **Caveat:** 9 of the 11 flaky tests (6 of actual's 8, all 3 of uptime-kuma's) failed only in the stressed runs
+  (CPU hogs beside the suite); the `--det` runs were not stressed, so "passed under `--det`" says nothing about those 9.
+  Only actual's 2 baseline flakes (p = 1/5 each) are a like-for-like comparison.
 - **Tests broken by the controls** (pass in every baseline run, fail under `--det`; MEASURED): etherpad 10 always + 4
   sometimes of 288; uptime-kuma 11 always of 71; solid-start 3 always of 47; actual 0 always + 2 sometimes of 74.
 - **Full-suite fingerprints identical across `--det` runs** (MEASURED): etherpad 20/289 (3 runs), uptime-kuma 3/71 (2),
@@ -98,12 +101,17 @@ fingerprint). On the real projects measured so far the outcome repeats, but the 
 
 ## Honest assessment so far
 
+(Interim; the outcome repeatability below is measured without the CPU load under which most of these flakes appeared.)
 Process-level Level 2 makes browser + Node server runs repeat their **outcome** (most tests, every run), but not their
 **fingerprint** on real apps: dev servers, socket.io pushes and web workers keep real-time behaviour that the shells do
 not order. It breaks tests in socket-heavy apps (etherpad 14 of 288, uptime-kuma 11 of 71) and costs x2-x6.5 wall
 time. On a purpose-built fixture it does what Level 2 promises. The gap is what a deterministic VM would close.
 
 ## Next
+
+Note for finishing: the final run's `--det` targets and plain runs are unstressed too; stress-only flaky tests must be
+read with the caveat above. `aggregate.py` totals must exclude rallly (baseline broken: every test fails, so its 66/66
+"identical" fingerprints are meaningless) and any documenso result not from run 44069979210.
 
 1. Read run 44069979210 (`python3 harness/aggregate.py`): known flaky tests of documenso (4, idle study) and etherpad
    (1), actual (4) and uptime-kuma (3) targeted first; per-control ablation of the broken tests; documenso with

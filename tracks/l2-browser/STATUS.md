@@ -21,4 +21,6 @@ Updated 2026-11-17 11:50 UTC. Local branch `track-l2-browser` in a scratch workt
 - Final run 44069979210 (nonce 9; etherpad, documenso, actual, uptime-kuma, solid-start; 11 patches; harness with
   known flaky targets first + ablation; 200-min budget) queued since 11:00 behind the shared queue. When it lands:
   `git pull`, `python3 tracks/l2-browser/harness/aggregate.py`, rewrite REPORT.md headline, first line DONE.
+- When aggregating: exclude rallly (baseline broken) and any documenso result not from 44069979210; stress-only
+  flaky tests are not comparable with unstressed --det runs (see REPORT caveat).
 - Do not push RUN again without the coordinator's go (shared queue).
