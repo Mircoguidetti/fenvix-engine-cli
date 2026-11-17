@@ -70,17 +70,29 @@ def main() -> None:
     A("Session node-l0, 2026-11-16/17. Repository fenvix-engine-cli, branch `claude/node-l0`. Labels: MEASURED (this "
       "work), ESTIMATED, DECLARED (with source), UNKNOWN; NOISY = shared host (GitHub-hosted runners).\n")
     A("## Summary\n")
-    A(f"* **Main metric (MEASURED):** baseline-unstable tests made reproducible by `--det` / `--det-seed`: "
-      f"**{T['reproduced']}/{T['unstable_baseline']} = {pct(T['reproduced'], T['unstable_baseline'])}** over "
-      f"{len(repos)} projects ({nflaky} with documented flaky tests, {npop} popular at HEAD; "
-      + ", ".join(f"{k} {v}" for k, v in runners.items()) + "). Documented-flaky pool: "
-      f"{F['reproduced']}/{F['unstable_baseline']} = {pct(F['reproduced'], F['unstable_baseline'])}; popular pool: "
-      f"{P['reproduced']}/{P['unstable_baseline']} = {pct(P['reproduced'], P['unstable_baseline'])}.")
-    A(f"* **Fingerprint coverage (MEASURED):** {T['covered']} tests had an identical fingerprint in every fixed-order "
-      f"`--det` run, {T['not_covered']} did not ({pct(T['covered'], T['covered'] + T['not_covered'])} covered)"
-      + (": " + ", ".join(f"`{k}` {v}" for k, v in sorted(reasons.items(), key=lambda kv: -kv[1])) if reasons else "") + ".")
-    A(f"* **Tests broken by `--det` (MEASURED):** {T['broken_by_det']} after the L0 fixes of this session, "
-      f"{T['broken_always']} of them failing in every `--det` run.")
+    S = {k: collections.Counter(v) for k, v in summary.get("strict", {}).items()}
+    SA, SF, SP = (S.get(k, collections.Counter()) for k in ("all", "flaky", "popular"))
+    per_repo = summary.get("per_repo_strict", {})
+    cov_all = SA["covered"] + SA["not_covered"] + SA["nofp_ran"]
+    A(f"* **Main metric (MEASURED):** tests unstable in our baseline that `--det` / `--det-seed` makes reproducible "
+      f"(fail {meta.get('confirm', 10)}/{meta.get('confirm', 10)} under some seed or the fixed order, pass under some "
+      f"`--det` configuration): **{SA['reproduced_strict']}/{SA['unstable_strict']} = "
+      f"{pct(SA['reproduced_strict'], SA['unstable_strict'])}** over {len(repos)} projects ({nflaky} with documented "
+      f"flaky tests, {npop} popular at HEAD; " + ", ".join(f"{k} {v}" for k, v in runners.items()) + "). Tests whose "
+      f"id is not present in every baseline run ({SA['id_unstable']}) are not flaky tests and are excluded, as in the "
+      "Python harness (P-008). Documented-flaky pool: "
+      f"{SF['reproduced_strict']}/{SF['unstable_strict']} = {pct(SF['reproduced_strict'], SF['unstable_strict'])}; "
+      f"popular pool: {SP['reproduced_strict']}/{SP['unstable_strict']} = "
+      f"{pct(SP['reproduced_strict'], SP['unstable_strict'])}. This is about tests that were flaky in our own "
+      "baseline runs; none of the flaky tests named by the projects' issues was flaky in our baseline (see below).")
+    A(f"* **Fingerprint coverage (MEASURED):** {SA['covered']} of {cov_all} tests that ran under `--det` had one "
+      f"identical fingerprint in every fixed-order `--det` run ({pct(SA['covered'], cov_all)}); {SA['not_covered']} had "
+      f"several, and {SA['nofp_ran']} ran without any fingerprint ({SA['nofp_typecheck']} of them Vitest type-check "
+      "tasks, checked by tsc without executing test code, so the runner hooks never see them; zod runs every test file "
+      "a second time in type-check mode). Reasons for several fingerprints: "
+      + ", ".join(f"`{k}` {v}" for k, v in sorted(reasons.items(), key=lambda kv: -kv[1])) + ".")
+    A(f"* **Tests broken by `--det` (MEASURED):** {SA['broken_strict']} after the L0 fixes of this session "
+      "(fail under fixed-order `--det` but at most once in the baseline).")
     if sl:
         A(f"* **Slowdown of `--det` (MEASURED, NOISY):** median {fmt(statistics.median(sl))}% over "
           f"{len(sl)} projects (serial runner without `--det` vs `--det`, quiet timing pass).")
@@ -88,7 +100,8 @@ def main() -> None:
     A(f"* **Shortfalls (MEASURED):** documented-flaky pool {nflaky}/25 projects, Playwright {len(pw)}/5 (see Projects "
       "and Playwright). Not in the numbers: babel and prettier (custom Jest runner, Level 0 not applied, J16) and "
       "matrix-js-sdk (`--det` runs crash in band, UNKNOWN cause).")
-    A(f"* Shell tests: per-control tests for Vitest and Jest, 20/20 pass locally and on CI (MEASURED).\n")
+    A(f"* Shell tests (MEASURED): per-control tests for Vitest and Jest, regression tests for every defect fixed in this "
+      "session: 27/27 pass locally; the CI tests job of the last round ran the 20 tests that existed then (20/20).\n")
 
     A("## What was built (steps 1–3)\n")
     A("Details in `docs/NODE.md` and `docs/REPORT-node-l0-INTERMEDIATE-1.md`.\n")
@@ -134,11 +147,20 @@ def main() -> None:
       f"seeds 1..{meta.get('seeds', 20)}, {meta.get('confirm', 10)}/{meta.get('confirm', 10)} confirmation)\n")
     A("| pool | projects | tests | unstable in baseline | reproduced | % | never fail under --det | fail sometimes | always fail |")
     A("|---|---:|---:|---:|---:|---:|---:|---:|---:|")
-    for label, t, n in (("documented flaky", F, nflaky), ("popular", P, npop), ("total", T, len(repos))):
-        A(f"| {label} | {n} | {t['tests']} | {t['unstable_baseline']} | {t['reproduced']} | "
-          f"{pct(t['reproduced'], t['unstable_baseline'])} | {t['never_fails_under_det']} | "
+    for label, t, st, n in (("documented flaky", F, SF, nflaky), ("popular", P, SP, npop), ("total", T, SA, len(repos))):
+        A(f"| {label} | {n} | {t['tests']} | {st['unstable_strict']} | {st['reproduced_strict']} | "
+          f"{pct(st['reproduced_strict'], st['unstable_strict'])} | {t['never_fails_under_det'] - st['id_unstable']} | "
           f"{t['fails_sometimes_under_det']} | {t['always_fails_under_det']} |")
     A("")
+    partial = {n: v for n, v in per_repo.items() if v.get("runs_normal", 0) < meta.get("runs", 10)
+               or v.get("runs_det", 0) < meta.get("runs", 10)}
+    A("Runs per project (MEASURED): " + (
+        "every project has the full " if not partial else "all projects have the full ")
+      + f"{meta.get('runs', 10)} baseline and {meta.get('runs', 10)} `--det` runs"
+      + ("" if not partial else ", except (partial, stopped by the time budget): " + ", ".join(
+          f"{n} {v.get('runs_normal', 0)}+{v.get('runs_det', 0)}" for n, v in sorted(partial.items())))
+      + f". Tests with ids absent from some baseline runs, excluded: " + ", ".join(
+          f"{n} {v['id_unstable']}" for n, v in sorted(per_repo.items()) if v.get("id_unstable")) + ".\n")
     if seeds:
         b = collections.Counter("0 (fixed order)" if v == 0 else "1" if v == 1 else "2-5" if v <= 5 else "6-10"
                                 if v <= 10 else "11-20" for v in seeds)
