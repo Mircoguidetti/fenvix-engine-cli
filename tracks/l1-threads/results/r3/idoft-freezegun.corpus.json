@@ -1,0 +1,1888 @@
+{
+ "name": "idoft-freezegun",
+ "set": "class-a",
+ "url": "https://github.com/spulec/freezegun",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009446",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "python_requested": [
+  "3.9"
+ ],
+ "commit": "b46da782a7a051081fd51577749cfc0074db0cc6",
+ "status": "ok",
+ "detail": "",
+ "python": "3.9",
+ "install": "-e . -r requirements.txt",
+ "collected": 112,
+ "kind": "corpus",
+ "tests": {
+  "tests/test_ticking.py::test_ticking_time": "class a"
+ },
+ "baseline_exception": {
+  "tests/test_ticking.py::test_ticking_time": ""
+ },
+ "runs": [
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.312,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 2.447,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.424,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.414,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.386,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 0.299,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 1.37,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 1.368,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 1.37,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 1.5,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 0.309,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 1.429,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 1.382,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 1.439,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 1.38,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 0.296,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 1.412,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 1.465,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 1.52,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 1.417,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 0.291,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 1.383,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 1.354,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 1.419,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 1.381,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 0.28,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 1.365,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 1.396,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 1.384,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 1.373,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 0.285,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 1.391,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 1.411,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 1.418,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 1.416,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 0.282,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 1.397,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 1.407,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 1.404,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 1.451,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 0.306,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 1.421,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 1.404,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 1.378,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 1.443,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 0.285,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 1.391,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 1.461,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 1.384,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 1.392,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.457,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 3.268,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 2.492,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 0.459,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 3.053,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 3.048,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 0.758,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 3.318,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 3.252,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 0.75,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 3.093,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 3.048,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 0.661,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 2.603,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 3.246,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 1,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.432,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 2,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.441,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 3,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.447,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 4,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.431,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 5,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.438,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 6,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.438,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 7,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.456,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 8,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.462,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 9,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.451,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 10,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.443,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 11,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.429,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 12,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.484,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 13,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.443,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 14,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.452,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 15,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.429,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 16,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.435,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 17,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.436,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 18,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.433,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 19,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.421,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 20,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.435,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 1,
+    "managed": 1
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_ticking.py::test_ticking_time": "passed"
+   },
+   "fps": {
+    "tests/test_ticking.py::test_ticking_time": "2ba96af1fa075e1db8497580070d19f6"
+   },
+   "msgs": {}
+  }
+ ],
+ "confirm": {},
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
