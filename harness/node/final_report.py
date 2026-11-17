@@ -47,7 +47,8 @@ def main() -> None:
     before_runs = []
     # Latest earlier measurement of each project (later sets override earlier ones): the rounds stopped on
     # earlier shells, then the full round on d3075a1 and its re-runs before the last fixes.
-    for d in ("node-before-fixes", "node-before-fixes-2", "node-before-fixes-3", "node", "node-rerun", "node-rerun2"):
+    for d in ("node-before-fixes", "node-before-fixes-2", "node-before-fixes-3", "node", "node-rerun", "node-rerun2",
+              "node-before-fixes-5"):
         before_runs += [s for s in load(HERE / "results" / d, "*.summary.json")]
     before_by = {s["name"]: s for s in before_runs}
     inactive = {}
@@ -66,7 +67,7 @@ def main() -> None:
     L = []
     A = L.append
     A("# Node L0 (detjs) — final report\n")
-    A("Session node-l0, 2026-11-16. Repository fenvix-engine-cli, branch `claude/node-l0`. Labels: MEASURED (this "
+    A("Session node-l0, 2026-11-16/17. Repository fenvix-engine-cli, branch `claude/node-l0`. Labels: MEASURED (this "
       "work), ESTIMATED, DECLARED (with source), UNKNOWN; NOISY = shared host (GitHub-hosted runners).\n")
     A("## Summary\n")
     A(f"* **Main metric (MEASURED):** baseline-unstable tests made reproducible by `--det` / `--det-seed`: "
@@ -84,6 +85,9 @@ def main() -> None:
         A(f"* **Slowdown of `--det` (MEASURED, DECLARED-NOISY):** median {fmt(statistics.median(sl))}% over "
           f"{len(sl)} projects (serial runner without `--det` vs `--det`, quiet timing pass).")
     A(f"* **Playwright (MEASURED, measured only):** {len(pw)} projects; see the Playwright section.")
+    A(f"* **Shortfalls (MEASURED):** documented-flaky pool {nflaky}/25 projects, Playwright {len(pw)}/5 (see Projects "
+      "and Playwright). Not in the numbers: babel and prettier (custom Jest runner, Level 0 not applied, J16) and "
+      "matrix-js-sdk (`--det` runs crash in band, UNKNOWN cause).")
     A(f"* Shell tests: per-control tests for Vitest and Jest, 20/20 pass locally and on CI (MEASURED).\n")
 
     A("## What was built (steps 1–3)\n")
@@ -101,7 +105,9 @@ def main() -> None:
       "meta follow the shared vocabulary.")
     A("* Tests: one fixture per control and runner that fails in a realistic run without `--det` and passes with it; "
       "a deterministic suite whose outcomes `--det` does not change; regression tests for each defect found by the "
-      "harness (Vitest projects, jsdom accessors, leaked timers, runner environment variables).\n")
+      "harness (Vitest projects, jsdom accessors, leaked timers, runner environment variables, `setImmediate` chains before "
+      "fast timers, clock reads that must not inflate time, per-file `performance.now()` origin), each failing before "
+      "its fix and passing after.\n")
 
     A("## Projects (step 4)\n")
     A("**Flaky pool.** The public dataset of JavaScript flaky tests of Hashemi, Tahir, Rasheed (ICSME 2022, Zenodo "
@@ -163,6 +169,9 @@ def main() -> None:
     A("| adaptive tick doubled after 8 clock reads; React's scheduler reads the clock hundreds of times per render "
       "(recharts) | virtual `performance.now()` ran 194 s ahead within a test; code comparing it with Vitest's fake "
       "`requestAnimationFrame` timestamps looped: 1113 tests broken by `--det` |")
+    A("| `performance.now()` counted from the process start (recharts) | values grew over a full run: 40 tests broken "
+      "in a full run, none with the file alone; now counted from the start of each test file. recharts is the only "
+      "project re-measured with this fix (commit e747edd); the others were measured on a6d2fbd |")
     A("| custom Jest `runner` (jest-light-runner) bypasses detjs (babel, prettier) | Level 0 not applied: 0 of ~25 000 "
       "tests traced; now reported (J16), not fixed |")
     A("")
@@ -243,14 +252,17 @@ def main() -> None:
         A("No Playwright project measured (UNKNOWN).\n")
 
     A("## Limits found\n")
-    A("The full list with the project where each was found is in `docs/NODE.md` (J1–J16). The ones that matter most "
+    A("The full list with the project where each was found is in `docs/NODE.md` (J1–J17). The ones that matter most "
       "for the numbers: J4 (fast virtual timers versus real I/O once I/O is pending), J5 (cost of call sites), J15 (CPU "
       "time is not virtual time: loops bounded by a virtual deadline can exceed the runner's real timeout), J16 (custom "
-      "Jest runners replaced by jest-runner under `--det`), J2 (vm pools / browser mode not covered), J3 (Jest "
-      "`setupFiles` run before the controls), J11 (Playwright measured only). Not fixed: on matrix-js-sdk, tests that "
-      "switch to Jest's modern fake timers inside a test hang under `--det` with the virtual clock on (they pass with "
-      "`--det-disable=time`); the interaction between Jest's fake `Date`/`performance` and the virtual clock is not "
-      "understood yet (UNKNOWN cause).\n")
+      "Jest runners bypass detjs), J17 (extra stack frames of patched calls: deep recursion can overflow under `--det` "
+      "only), J2 (vm pools / browser mode not covered), J3 (Jest `setupFiles` run before the controls), J11 (Playwright "
+      "measured only).\n")
+    A("Not fixed: on matrix-js-sdk every `--det` run of the full suite dies in band (an error thrown by fetch-mock, "
+      "`route already exists`, in a `beforeEach` of `crypto.spec.ts`; in Jest's worker mode such a crash costs one "
+      "worker, in band the whole run), so the project has no `--det` trace and is out of the numbers (UNKNOWN root "
+      "cause). In a subset run of the same project, tests that switch to Jest's modern fake timers inside a test hang "
+      "under `--det` with the virtual clock on (they pass with `--det-disable=time`; UNKNOWN cause).\n")
 
     A("## Cockpit readiness\n")
     A("What the Node outputs already give per test, as the Python ones: the outcome per run, the fingerprint (trace "
