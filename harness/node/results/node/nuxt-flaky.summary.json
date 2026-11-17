@@ -1,0 +1,79 @@
+{
+  "name": "nuxt-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/nuxt/nuxt",
+  "commit": "0344123b3c2c46c6f591c42696eef8ffc6504947",
+  "commit_date": "2025-07-07T23:42:15+01:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile && npm run build",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 39.18424775730003,
+  "det_mean_s": 64.527381505,
+  "slowdown_pct": 64.67684132835889,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 696,
+  "unstable_baseline": 3,
+  "unstable_det": 0,
+  "became_stable": 3,
+  "outcome_changed_by_det": 2,
+  "covered": 418,
+  "not_covered": 17,
+  "reproduced": 1,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 2,
+  "seeds_needed": [
+    1
+  ],
+  "seeds_explored": 20,
+  "exploration_runs": 47,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "fs": 16,
+    "time": 1
+  },
+  "pass_fail_reasons": {
+    "random": 1
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "not-reproduced": [
+      "packages/nuxt/test/builder.test.ts::builder:watch::should restart Nuxt when a file is added with chokidar strategy (fixed:0/10) event #0: fs.readdir @ <node> returned different values: \".test/builder-watch|1|ad99a238dc08e2988248408b1395f579\" vs \".t",
+      "packages/nuxt/test/builder.test.ts::builder:watch::should restart Nuxt when a file is added with parcel strategy (seed 19:3/10) event #4: fs.readdir @ <node> returned different values: \".test/builder-watch/project/.nuxt/dev|2|f45ad78bfafe2a830dca2d"
+    ],
+    "reproduced": [
+      "packages/nuxt/test/load-nuxt.test.ts::loadNuxt::expect hooks to get the correct context outside of initNuxt (seed 1): event #3: crypto.randomUUID @ packages/nuxt/src/core/nuxt.ts:64 returned different values: \"7630fe2a-4cf1-445e-931d-2c9560869c3d\" vs \"38a03455-3679-4b0e-86e6-02"
+    ],
+    "changed:failed->passed": [
+      "packages/nuxt/test/pages.test.ts::pages:generateRoutesFromFiles::should consistently normalize routes",
+      "packages/nuxt/test/pages.test.ts::pages:generateRoutesFromFiles::should consistently normalize routes when overriding meta"
+    ]
+  },
+  "runner": "vitest 3.2.4",
+  "node": "node v22.23.5",
+  "documented_source": "https://github.com/nuxt/nuxt/issues/32557",
+  "documented_hints": [
+    "NuxtTime: Flaky testcase"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.4; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nBrowserslist: browsers data (caniuse-lite) is 17 months old. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme\nJSON report written to /tmp/work/runs/nuxt-flaky/det_0.json\ndetjs: trace ../../runs/nuxt-flaky/det_0.jsonl: 475 tests, order digest 50a8dc5d352ee211818393772c5d2dfa\n"
+  },
+  "not_reproduced_causes": {
+    "l0-gap": 2
+  }
+}
