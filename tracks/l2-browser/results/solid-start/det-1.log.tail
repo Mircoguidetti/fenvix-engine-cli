@@ -1,7 +1,7 @@
 detjs 0.1.0: Level 2 browser prototype; playwright 1.62.0; seed 0; epoch 2025-01-01T00:00:00Z; vtime=paced; net=on; server=on; workers=1
 [WebServer] $ vite dev --host 127.0.0.1 --port 3000 --strictPort
 [WebServer] 
-[WebServer]   VITE v8.1.5  ready in 489 ms
+[WebServer]   VITE v8.1.5  ready in 438 ms
 [WebServer] 
 [WebServer]   ➜  Local:   http://127.0.0.1:3000/
 
@@ -45,17 +45,17 @@ Running 47 tests using 1 worker
 [WebServer]   message: 'thrown by an API route',
 [WebServer] }
 [WebServer] 
-··[WebServer] 8:34:17 AM [vite] (client) hmr update /src/app.tsx
-·····························[WebServer] 8:34:51 AM [vite] Internal server error: socket hang up
+··[WebServer] 8:58:35 AM [vite] (client) hmr update /src/app.tsx
+·····························[WebServer] 8:59:08 AM [vite] Internal server error: socket hang up
 [WebServer]       at Socket.socketOnEnd (node:_http_client:599:25)
 [WebServer]       at Socket.emit (node:events:531:35)
 [WebServer]       at endReadableNT (node:internal/streams/readable:1698:12)
 [WebServer]       at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
 [WebServer] [BABEL] Note: The code generator has deoptimised the styling of /home/runner/work/_temp/l2_target/apps/tests/node_modules/.vite/deps/wasm-WFPBK7Te.js as it exceeds the max of 500KB.
-F····[WebServer] 8:35:04 AM [vite] (ssr) warning: A "use server" module can only serve the functions it declares, so this export is left out of the client build (line 6). "testQuery" is not a function.
+F····[WebServer] 8:59:21 AM [vite] (ssr) warning: A "use server" module can only serve the functions it declares, so this export is left out of the client build (line 6). "testQuery" is not a function.
 [WebServer]   Plugin: solid-start:server-functions/compiler
 [WebServer]   File: /home/runner/work/_temp/l2_target/apps/tests/src/functions/solid-router-query.ts
-[WebServer] 8:35:04 AM [vite] (client) warning: A "use server" module can only serve the functions it declares, so this export is left out of the client build (line 6). "testQuery" is not a function.
+[WebServer] 8:59:21 AM [vite] (client) warning: A "use server" module can only serve the functions it declares, so this export is left out of the client build (line 6). "testQuery" is not a function.
 [WebServer]   Plugin: solid-start:server-functions/compiler
 [WebServer]   File: /home/runner/work/_temp/l2_target/apps/tests/src/functions/solid-router-query.ts
 ····F··F

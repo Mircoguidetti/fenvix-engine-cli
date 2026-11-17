@@ -1,6 +1,6 @@
 [WebServer] $ vite dev --host 127.0.0.1 --port 3000 --strictPort
 [WebServer] 
-[WebServer]   VITE v8.1.5  ready in 662 ms
+[WebServer]   VITE v8.1.5  ready in 574 ms
 [WebServer] 
 [WebServer]   ➜  Local:   http://127.0.0.1:3000/
 
@@ -44,13 +44,13 @@ Running 47 tests using 2 workers
 [WebServer]   message: 'thrown by an API route',
 [WebServer] }
 [WebServer] 
-··[WebServer] 8:26:09 AM [vite] (client) hmr update /src/app.tsx
-[WebServer] 8:26:10 AM [vite] (client) dependency optimized: h3
-···································[WebServer] 8:26:40 AM [vite] (ssr) warning: A "use server" module can only serve the functions it declares, so this export is left out of the client build (line 6). "testQuery" is not a function.
+··[WebServer] 8:50:41 AM [vite] (client) hmr update /src/app.tsx
+[WebServer] 8:50:42 AM [vite] (client) dependency optimized: h3
+···································[WebServer] 8:51:11 AM [vite] (ssr) warning: A "use server" module can only serve the functions it declares, so this export is left out of the client build (line 6). "testQuery" is not a function.
 [WebServer]   Plugin: solid-start:server-functions/compiler
 [WebServer]   File: /home/runner/work/_temp/l2_target/apps/tests/src/functions/solid-router-query.ts
-[WebServer] 8:26:40 AM [vite] (client) warning: A "use server" module can only serve the functions it declares, so this export is left out of the client build (line 6). "testQuery" is not a function.
+[WebServer] 8:51:11 AM [vite] (client) warning: A "use server" module can only serve the functions it declares, so this export is left out of the client build (line 6). "testQuery" is not a function.
 [WebServer]   Plugin: solid-start:server-functions/compiler
 [WebServer]   File: /home/runner/work/_temp/l2_target/apps/tests/src/functions/solid-router-query.ts
 ·······
-  47 passed (46.5s)
+  47 passed (44.7s)

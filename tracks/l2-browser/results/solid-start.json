@@ -3,8 +3,8 @@
  "repo": "solidjs/solid-start",
  "ref": "68784294b16692adf687c25bcd58c16c8a625cb3",
  "status": "ok",
- "run_id": "44043803663",
- "setup_s": 29,
+ "run_id": "44049271859",
+ "setup_s": 30,
  "params": {
   "baseline": 5,
   "stress": 3,
@@ -30,7 +30,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 47.2,
+   "wall_s": 45.3,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -80,6 +80,7 @@
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
    },
+   "errors": {},
    "trace": null,
    "counts": {
     "passed": 47
@@ -92,7 +93,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 46.0,
+   "wall_s": 44.3,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -142,6 +143,7 @@
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
    },
+   "errors": {},
    "trace": null,
    "counts": {
     "passed": 47
@@ -154,7 +156,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 45.4,
+   "wall_s": 44.1,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -204,6 +206,7 @@
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
    },
+   "errors": {},
    "trace": null,
    "counts": {
     "passed": 47
@@ -216,7 +219,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 45.2,
+   "wall_s": 44.2,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -266,6 +269,7 @@
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
    },
+   "errors": {},
    "trace": null,
    "counts": {
     "passed": 47
@@ -278,7 +282,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 45.5,
+   "wall_s": 44.1,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -328,6 +332,7 @@
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
    },
+   "errors": {},
    "trace": null,
    "counts": {
     "passed": 47
@@ -340,7 +345,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 69.1,
+   "wall_s": 68.2,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -390,6 +395,7 @@
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
    },
+   "errors": {},
    "trace": null,
    "counts": {
     "passed": 47
@@ -402,7 +408,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 69.7,
+   "wall_s": 69.0,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -452,6 +458,7 @@
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
    },
+   "errors": {},
    "trace": null,
    "counts": {
     "passed": 47
@@ -464,7 +471,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 70.5,
+   "wall_s": 66.5,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -514,6 +521,7 @@
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
    },
+   "errors": {},
    "trace": null,
    "counts": {
     "passed": 47
@@ -528,7 +536,7 @@
     "--workers=1"
    ],
    "rc": 0,
-   "wall_s": 50.4,
+   "wall_s": 48.6,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -578,6 +586,7 @@
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
    },
+   "errors": {},
    "trace": null,
    "counts": {
     "passed": 47
@@ -590,7 +599,7 @@
    "filters": [],
    "extra": [],
    "rc": 1,
-   "wall_s": 99.3,
+   "wall_s": 97.8,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -639,6 +648,11 @@
     "server-function.test.ts::server-function::should propagate a server function error with non-latin1 message [chromium]": "passed",
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "failed"
+   },
+   "errors": {
+    "server-function.test.ts::server-function::should build with a server function ping [chromium]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: locator('#server-fn-test')\nExpected substring: \"{\\\"result\\\":true}\"\nReceived string:    \"{}\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" with timeout 5000ms\n  - waiting for locator('#server-fn-test')\n    14 \u00d7 locator resolved to <span id=\"server-fn-test\">{}</span>\n       - unexpected value \"{}\"\n",
+    "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: locator('#server-fn-test')\nExpected substring: \"false\"\nReceived string:    \"Click me\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" with timeout 5000ms\n  - waiting for locator('#server-fn-test')\n    14 \u00d7 locator resolved to <span id=\"server-fn-test\">Click me</span>\n       - unexpected value \"Click me\"\n",
+    "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('#cookie-value')\nExpected: \"1234\"\nReceived: \"none\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" with timeout 5000ms\n  - waiting for locator('#cookie-value')\n    14 \u00d7 locator resolved to <p id=\"cookie-value\">none</p>\n       - unexpected value \"none\"\n"
    },
    "trace": "/home/runner/work/_temp/l2_out/solid-start/traces/det-1.jsonl",
    "counts": {
@@ -653,7 +667,7 @@
    "filters": [],
    "extra": [],
    "rc": 1,
-   "wall_s": 100.0,
+   "wall_s": 98.5,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -702,6 +716,11 @@
     "server-function.test.ts::server-function::should propagate a server function error with non-latin1 message [chromium]": "passed",
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "failed"
+   },
+   "errors": {
+    "server-function.test.ts::server-function::should build with a server function ping [chromium]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: locator('#server-fn-test')\nExpected substring: \"{\\\"result\\\":true}\"\nReceived string:    \"{}\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" with timeout 5000ms\n  - waiting for locator('#server-fn-test')\n    14 \u00d7 locator resolved to <span id=\"server-fn-test\">{}</span>\n       - unexpected value \"{}\"\n",
+    "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: locator('#server-fn-test')\nExpected substring: \"false\"\nReceived string:    \"Click me\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" with timeout 5000ms\n  - waiting for locator('#server-fn-test')\n    14 \u00d7 locator resolved to <span id=\"server-fn-test\">Click me</span>\n       - unexpected value \"Click me\"\n",
+    "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('#cookie-value')\nExpected: \"1234\"\nReceived: \"none\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" with timeout 5000ms\n  - waiting for locator('#cookie-value')\n    14 \u00d7 locator resolved to <p id=\"cookie-value\">none</p>\n       - unexpected value \"none\"\n"
    },
    "trace": "/home/runner/work/_temp/l2_out/solid-start/traces/det-2.jsonl",
    "counts": {
@@ -716,7 +735,7 @@
    "filters": [],
    "extra": [],
    "rc": 1,
-   "wall_s": 99.6,
+   "wall_s": 87.8,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -766,6 +785,11 @@
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "failed"
    },
+   "errors": {
+    "server-function.test.ts::server-function::should build with a server function ping [chromium]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: locator('#server-fn-test')\nExpected substring: \"{\\\"result\\\":true}\"\nReceived string:    \"{}\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" with timeout 5000ms\n  - waiting for locator('#server-fn-test')\n    14 \u00d7 locator resolved to <span id=\"server-fn-test\">{}</span>\n       - unexpected value \"{}\"\n",
+    "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: locator('#server-fn-test')\nExpected substring: \"false\"\nReceived string:    \"Click me\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" with timeout 5000ms\n  - waiting for locator('#server-fn-test')\n    14 \u00d7 locator resolved to <span id=\"server-fn-test\">Click me</span>\n       - unexpected value \"Click me\"\n",
+    "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('#cookie-value')\nExpected: \"1234\"\nReceived: \"none\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" with timeout 5000ms\n  - waiting for locator('#cookie-value')\n    14 \u00d7 locator resolved to <p id=\"cookie-value\">none</p>\n       - unexpected value \"none\"\n"
+   },
    "trace": "/home/runner/work/_temp/l2_out/solid-start/traces/det-3.jsonl",
    "counts": {
     "passed": 44,
@@ -773,13 +797,13 @@
    }
   }
  ],
- "measured_at": "2026-11-17T08:26:01Z",
+ "measured_at": "2026-11-17T08:50:34Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "tests_baseline": 47,
- "baseline_wall_median_s": 45.5,
- "stress_wall_median_s": 69.7,
- "serial_wall_median_s": 50.4,
- "det_wall_median_s": 99.6,
+ "baseline_wall_median_s": 44.2,
+ "stress_wall_median_s": 68.2,
+ "serial_wall_median_s": 48.6,
+ "det_wall_median_s": 97.8,
  "always_failing_baseline": [],
  "flaky": [],
  "broken_by_controls": [
@@ -803,13 +827,13 @@
  "det_verify": {
   "runs": 3,
   "tests": 47,
-  "stable": 15,
-  "diverged": 32,
+  "stable": 16,
+  "diverged": 31,
   "missing": 0,
   "outcome_unstable": 0,
   "order_identical": true,
   "reasons": {
-   "other": 29,
+   "other": 28,
    "sched": 3
   }
  },
@@ -826,17 +850,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 4422c67d3af96eae7559f5a07946a0fd 56"
+     "v": "http://127.0.0.1:3000 9e358e193077dedc6d7bdf95d79028e2 56"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 f98d53247ca262564a1c05031bb56df8 56"
+     "v": "http://127.0.0.1:3000 0066ea78f6bfd015aac16691e6045919 56"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 4422c67d3af96eae7559f5a07946a0fd 56\" vs \"http://127.0.0.1:3000 f98d53247ca262564a1c05031bb56df8 56\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 9e358e193077dedc6d7bdf95d79028e2 56\" vs \"http://127.0.0.1:3000 0066ea78f6bfd015aac16691e6045919 56\""
    }
   },
   {
@@ -851,17 +875,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 a62619a42e27880d278aa3cb225ee040 3"
+     "v": "http://127.0.0.1:3000 b45c9e7c2a6f15aaaa060cb22e959440 3"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 81fbdd736f5f9e0eb35027131b29a05b 3"
+     "v": "http://127.0.0.1:3000 127c5cd8a5a37c44ada289c0498d53b4 3"
     },
     "reason": "other",
-    "description": "event #6: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 a62619a42e27880d278aa3cb225ee040 3\" vs \"http://127.0.0.1:3000 81fbdd736f5f9e0eb35027131b29a05b 3\""
+    "description": "event #6: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 b45c9e7c2a6f15aaaa060cb22e959440 3\" vs \"http://127.0.0.1:3000 127c5cd8a5a37c44ada289c0498d53b4 3\""
    }
   },
   {
@@ -876,21 +900,21 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 b0e29881cee08f9b802355cfa8e0cc19 5"
+     "v": "http://127.0.0.1:3000 eee3ee3d4fc60c1c9574f299a3f50c1e 5"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 8a62df60ef550b44a79a9154a8a3a546 5"
+     "v": "http://127.0.0.1:3000 ab0b6194adf77276964dc4b2ac72ac4a 5"
     },
     "reason": "other",
-    "description": "event #6: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 b0e29881cee08f9b802355cfa8e0cc19 5\" vs \"http://127.0.0.1:3000 8a62df60ef550b44a79a9154a8a3a546 5\""
+    "description": "event #6: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 eee3ee3d4fc60c1c9574f299a3f50c1e 5\" vs \"http://127.0.0.1:3000 ab0b6194adf77276964dc4b2ac72ac4a 5\""
    }
   },
   {
-   "key": "hydration-navigation.test.ts::handles a pathname change before hydration [chromium]",
+   "key": "hydration-navigation.test.ts::navigates while the initial route module is still loading [chromium]",
    "divergence": {
     "run_a": 0,
     "run_b": 1,
@@ -901,17 +925,17 @@
      "s": "other",
      "o": "dom.digest",
      "at": "",
-     "v": "1db70e93688890268bacc38afc2fa0e1"
+     "v": "8bb053fad59b51c113e0ca3398efca92"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "dom.digest",
      "at": "",
-     "v": "0d65c4cbc3e1f394081de3452c8f528e"
+     "v": "05beadf457d028e60587a2001d391f8b"
     },
     "reason": "other",
-    "description": "event #6: dom.digest @  returned different values: \"1db70e93688890268bacc38afc2fa0e1\" vs \"0d65c4cbc3e1f394081de3452c8f528e\""
+    "description": "event #6: dom.digest @  returned different values: \"8bb053fad59b51c113e0ca3398efca92\" vs \"05beadf457d028e60587a2001d391f8b\""
    }
   },
   {
@@ -926,17 +950,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 db80ac44d0f5ae3d2b7ae318c3a68a6b 3"
+     "v": "http://127.0.0.1:3000 317a0f71e13dc32c9b46ec0df882b6cc 3"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 a5e84c1f7caadef3d3051aebe11f42ff 3"
+     "v": "http://127.0.0.1:3000 848fdc83634b6610930c7b03e0d5e2dd 3"
     },
     "reason": "other",
-    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 db80ac44d0f5ae3d2b7ae318c3a68a6b 3\" vs \"http://127.0.0.1:3000 a5e84c1f7caadef3d3051aebe11f42ff 3\""
+    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 317a0f71e13dc32c9b46ec0df882b6cc 3\" vs \"http://127.0.0.1:3000 848fdc83634b6610930c7b03e0d5e2dd 3\""
    }
   },
   {
@@ -951,42 +975,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 84052737799a3f4912956aad8bcc7c7e 6"
+     "v": "http://127.0.0.1:3000 c161e2baa1a69cc0654478c836e740ac 6"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 b214908bbae6bc706435db2674db7702 6"
+     "v": "http://127.0.0.1:3000 968692e72cfb34131778de708b7b56e8 6"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 84052737799a3f4912956aad8bcc7c7e 6\" vs \"http://127.0.0.1:3000 b214908bbae6bc706435db2674db7702 6\""
-   }
-  },
-  {
-   "key": "hydration.test.ts::SSR Hydration::should render SSR content and hydrate successfully [chromium]",
-   "divergence": {
-    "run_a": 0,
-    "run_b": 2,
-    "index": 6,
-    "window": null,
-    "event_a": {
-     "t": 0,
-     "s": "other",
-     "o": "dom.digest",
-     "at": "",
-     "v": "9f379fe7d6a3ac1b7e7c132c4424f3e2"
-    },
-    "event_b": {
-     "t": 0,
-     "s": "other",
-     "o": "dom.digest",
-     "at": "",
-     "v": "e1cf32dd8343d8c0642897898678aa79"
-    },
-    "reason": "other",
-    "description": "event #6: dom.digest @  returned different values: \"9f379fe7d6a3ac1b7e7c132c4424f3e2\" vs \"e1cf32dd8343d8c0642897898678aa79\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 c161e2baa1a69cc0654478c836e740ac 6\" vs \"http://127.0.0.1:3000 968692e72cfb34131778de708b7b56e8 6\""
    }
   },
   {
@@ -1001,17 +1000,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 ed39002ed2b07d6ef9532be6b09c1b76 12"
+     "v": "http://127.0.0.1:3000 f5072543983049691e42348738b551c4 12"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 41af21f6627e89afe05b2b4043ef2835 12"
+     "v": "http://127.0.0.1:3000 2423690f4e111129511847ce0ed263ba 12"
     },
     "reason": "other",
-    "description": "event #8: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 ed39002ed2b07d6ef9532be6b09c1b76 12\" vs \"http://127.0.0.1:3000 41af21f6627e89afe05b2b4043ef2835 12\""
+    "description": "event #8: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 f5072543983049691e42348738b551c4 12\" vs \"http://127.0.0.1:3000 2423690f4e111129511847ce0ed263ba 12\""
    }
   },
   {
@@ -1026,17 +1025,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 ee9c86fcceac40981daadea532781b17 3"
+     "v": "http://127.0.0.1:3000 8fb3cf2874726b76dc261b313e8954c8 3"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 15997ca8ff8b406bc6150a3bbe30ec8f 3"
+     "v": "http://127.0.0.1:3000 271ca6a609e14f8eac0fcdb0125d392a 3"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 ee9c86fcceac40981daadea532781b17 3\" vs \"http://127.0.0.1:3000 15997ca8ff8b406bc6150a3bbe30ec8f 3\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 8fb3cf2874726b76dc261b313e8954c8 3\" vs \"http://127.0.0.1:3000 271ca6a609e14f8eac0fcdb0125d392a 3\""
    }
   },
   {
@@ -1051,17 +1050,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 4fd8f17ccc207f82e26b00bac332ec8e 6"
+     "v": "http://127.0.0.1:3000 d0917e63fed90ed5829c6b9e54ab0464 6"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 93f5c823afc8a6bda13419cd5c316420 6"
+     "v": "http://127.0.0.1:3000 ea0b5c3f256806a3584ee15126048173 6"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 4fd8f17ccc207f82e26b00bac332ec8e 6\" vs \"http://127.0.0.1:3000 93f5c823afc8a6bda13419cd5c316420 6\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 d0917e63fed90ed5829c6b9e54ab0464 6\" vs \"http://127.0.0.1:3000 ea0b5c3f256806a3584ee15126048173 6\""
    }
   },
   {
@@ -1076,17 +1075,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 f624f1142b1978c43e85b56fc8e9af9b 5"
+     "v": "http://127.0.0.1:3000 5b14e914284ec29227841773fe210e7c 5"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 d6bce34e3fbb6acac7fdd78d483cbaa7 5"
+     "v": "http://127.0.0.1:3000 fb2409f2c432ed2cc655d45da6486b6e 5"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 f624f1142b1978c43e85b56fc8e9af9b 5\" vs \"http://127.0.0.1:3000 d6bce34e3fbb6acac7fdd78d483cbaa7 5\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 5b14e914284ec29227841773fe210e7c 5\" vs \"http://127.0.0.1:3000 fb2409f2c432ed2cc655d45da6486b6e 5\""
    }
   },
   {
@@ -1101,17 +1100,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 8a63ed14863ef6cd19183319ed3024bf 6"
+     "v": "http://127.0.0.1:3000 42b03449075921962bace02c3f2f385c 6"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 412dbd87693d9952870e6a14ef7fa668 6"
+     "v": "http://127.0.0.1:3000 261e4d6dba3d50475a08a5481dadcafb 6"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 8a63ed14863ef6cd19183319ed3024bf 6\" vs \"http://127.0.0.1:3000 412dbd87693d9952870e6a14ef7fa668 6\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 42b03449075921962bace02c3f2f385c 6\" vs \"http://127.0.0.1:3000 261e4d6dba3d50475a08a5481dadcafb 6\""
    }
   },
   {
@@ -1126,17 +1125,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 c706f9469c7922e2844a3cb69cc498a5 6"
+     "v": "http://127.0.0.1:3000 1b08d41e945e6bb26b801753b1a362da 6"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 771b08ad9fa0a110cf7df2c53e60817c 6"
+     "v": "http://127.0.0.1:3000 c7b0e6cb1d7b26e4258448748cc4b203 6"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 c706f9469c7922e2844a3cb69cc498a5 6\" vs \"http://127.0.0.1:3000 771b08ad9fa0a110cf7df2c53e60817c 6\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 1b08d41e945e6bb26b801753b1a362da 6\" vs \"http://127.0.0.1:3000 c7b0e6cb1d7b26e4258448748cc4b203 6\""
    }
   },
   {
@@ -1151,17 +1150,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 e451f050ccab82d04938ef0c9f565641 6"
+     "v": "http://127.0.0.1:3000 5dc32d9c41f7eac42c554b10e1a1da75 6"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 5687d04d469ba391c8118b6f07bee3c3 6"
+     "v": "http://127.0.0.1:3000 ab4232d1a8f7ba922e7501246f4983ec 6"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 e451f050ccab82d04938ef0c9f565641 6\" vs \"http://127.0.0.1:3000 5687d04d469ba391c8118b6f07bee3c3 6\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 5dc32d9c41f7eac42c554b10e1a1da75 6\" vs \"http://127.0.0.1:3000 ab4232d1a8f7ba922e7501246f4983ec 6\""
    }
   },
   {
@@ -1176,17 +1175,42 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 eaa5ef7ad4326c365551c2c59b67b6ab 5"
+     "v": "http://127.0.0.1:3000 b6366e0bbc0803dfa16374401e2e472e 5"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 2806eddf231a08031913149275dd3eae 5"
+     "v": "http://127.0.0.1:3000 86cdbba15edb20a5df8200961300ff2f 5"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 eaa5ef7ad4326c365551c2c59b67b6ab 5\" vs \"http://127.0.0.1:3000 2806eddf231a08031913149275dd3eae 5\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 b6366e0bbc0803dfa16374401e2e472e 5\" vs \"http://127.0.0.1:3000 86cdbba15edb20a5df8200961300ff2f 5\""
+   }
+  },
+  {
+   "key": "server-function.test.ts::server-function::should externalize node builtin in server function - toplevel [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 10,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "server.fingerprint",
+     "at": "",
+     "v": "http://127.0.0.1:3000 a9ebb160d4e72f7fcf67ad2571a212ee 5"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "server.fingerprint",
+     "at": "",
+     "v": "http://127.0.0.1:3000 daf5dfcb26f9cb7ae3cea8444bfccb3a 5"
+    },
+    "reason": "other",
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 a9ebb160d4e72f7fcf67ad2571a212ee 5\" vs \"http://127.0.0.1:3000 daf5dfcb26f9cb7ae3cea8444bfccb3a 5\""
    }
   }
  ],
@@ -1237,13 +1261,13 @@
    "PPP"
   ],
   "hydration-navigation.test.ts::navigates while the initial route module is still loading [chromium]": [
-   "stable",
-   1,
+   "diverged",
+   2,
    "PPP"
   ],
   "hydration-navigation.test.ts::handles a pathname change before hydration [chromium]": [
-   "diverged",
-   2,
+   "stable",
+   1,
    "PPP"
   ],
   "hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]": [
@@ -1262,8 +1286,8 @@
    "PPP"
   ],
   "hydration.test.ts::SSR Hydration::should render SSR content and hydrate successfully [chromium]": [
-   "diverged",
-   2,
+   "stable",
+   1,
    "PPP"
   ],
   "no-js-action.test.ts::actions without JavaScript::returning json() stays on the submitting page and keeps the result [chromium]": [
@@ -1428,5 +1452,5 @@
   ]
  },
  "targets": [],
- "elapsed_min": 13.1
+ "elapsed_min": 12.6
 }
