@@ -1,4 +1,4 @@
-"""Child processes under the cache with proof (``--det-cache-follow``).
+"""Child processes under the cache with proof (on by default with ``--det-cache``; ``--det-cache-no-follow``).
 
 Without following, a test that starts a process is never cached: the child's inputs are invisible to the
 in-process recorder. With following, every process the tests start through ``subprocess`` (and
@@ -11,7 +11,8 @@ of the session each log becomes inputs of the context (test, fixture, collection
   digest, ``missing`` or ``dir`` (the same deps as in-process reads; a Python child that finds a warm
   ``__pycache__`` stats the source, so the source is an input);
 * every directory it listed (``getdents``);
-* the whole environment (a child's ``getenv`` is not observable);
+* the whole environment when the child inherits it (a child's ``getenv`` is not observable); an explicit
+  ``env=`` is built by the test's recorded code from recorded reads, so it adds nothing;
 * paths it wrote, as in-process writes (a later reader in another test is not cached); paths the tree
   itself wrote first are internal (gcc's temporary objects) and are not inputs.
 
@@ -20,8 +21,10 @@ reads of ``/proc``, ``/sys`` or ``/dev`` other than the process's own entries, t
 and the machine shape (CPU and memory limits); a log that is missing, incomplete (a process still running at
 the end of the session) or has a system call the parser does not know; strace missing or unable to trace.
 
-Not recorded (limits): the child's real clock (vDSO, invisible to strace) and its entropy
-(``getrandom``, ``/dev/urandom``) are outside detpy's control; they are counted, not refused.
+Not recorded (limits, the same as the strace skip study): the child's real clock (vDSO, invisible to strace) and
+its entropy (``getrandom``, ``/dev/urandom``: glibc and every interpreter draw some at start-up) are outside
+detpy's control; entropy draws are counted, not refused. A child that is still running when the session ends
+(a daemon, a forkserver) refuses the context that started it.
 The child's arguments are not a key: they are computed by the test's code from its recorded inputs, and a key
 must be known before the test runs.
 """
@@ -140,9 +143,9 @@ class Follower:
         self.logdir = logdir
         self.spawns: list[Spawn] = []
         self.n = 0
-        # without --det-cache-follow the wrapper still sees every fork_exec (multiprocessing's starters raise no
+        # with --det-cache-no-follow the wrapper still sees every fork_exec (multiprocessing's starters raise no
         # subprocess audit event) and refuses its context
-        self.why_not = probe(logdir) if follow else "--det-cache-follow not set"
+        self.why_not = probe(logdir) if follow else "--det-cache-no-follow"
         self.exe = _PROBE.get("exe")
         self._saved: list = []
 
@@ -203,7 +206,10 @@ class Follower:
             from .proofcache import _spawn_detail
 
             detail = _spawn_detail("subprocess.Popen", (exe, argv))
-        cap.env_read_ctx(ctx, "*")
+        if args[5] is None:
+            # the child inherits this process's environment and its getenv calls are not observable: the whole
+            # environment is an input. An explicit env= was built by recorded code from recorded reads.
+            cap.env_read_ctx(ctx, "*")
         if exe is None:
             return args  # exec fails in the child: nothing runs
         if not self.enabled:
@@ -475,7 +481,7 @@ def _parse_one(lines: list[str], cwd: str, res: Result) -> None:
 # paths a child may touch without them being inputs
 _DEV_OK = ("/dev/null", "/dev/zero", "/dev/full", "/dev/tty", "/dev/stdin", "/dev/stdout", "/dev/stderr")
 _MACHINE = ("/proc/sys/vm/overcommit_memory", "/proc/cpuinfo", "/proc/meminfo", "/sys/devices/system/cpu/",
-            "/sys/fs/cgroup/", "/proc/sys/kernel/random/boot_id", "/proc/filesystems", "/proc/mounts")
+            "/sys/fs/cgroup/", "/proc/filesystems", "/proc/mounts", "/sys/fs/selinux", "/sys/fs/selinux/")
 
 
 def special(p: str, pids: set[str]) -> str | None:

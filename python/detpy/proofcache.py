@@ -476,6 +476,11 @@ class Capture:
             # (HTTPS_PROXY=http://127.0.0.1:...) or a service the test process tree did not start
             if self._caller_kind() == "infra":
                 return
+            if event == "socket.connect" and self._own_listener(args):
+                # a server this process runs (aiohttp's test server, an in-process HTTP stub): what it answers is
+                # computed by recorded code from recorded inputs. A loopback port of another process (a proxy, a
+                # database, a sidecar) stays a network input.
+                return
             self.flag(self._cur(), "connect", f"{event} {_addr(args)} at {_first_user_site()}")
         elif event in ("socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr"):
             # a name lookup (DNS, /etc/hosts) is an input from outside; numeric addresses are not
@@ -511,6 +516,13 @@ class Capture:
                 p = self._abs(args[i] if len(args) > i else None)
                 if p is not None and not self._ignored(p):
                     self.wrote(ctx, p)
+
+    def _own_listener(self, args) -> bool:
+        self.active = False  # the check's own /proc reads are not inputs
+        try:
+            return _own_listener(args)
+        finally:
+            self.active = True
 
     def flag(self, ctx: int, flag: str, detail: str | None = None) -> None:
         fl = self.flags.setdefault(ctx, set())
@@ -548,10 +560,16 @@ class Capture:
             return
         import time
 
-        budget_end = time.monotonic() + 10.0
+        # a log is complete once the detached tracer wrote its process's exit, normally within milliseconds of the
+        # exit; a process still running (a daemon, multiprocessing's resource tracker) never completes: wait for it
+        # once, briefly, then not at all
+        budget_end = time.monotonic() + 3.0
+        wait = 1.0
         for sp in fo.spawns:
             self.children += 1
-            logs = follow._wait_logs(sp.prefix, max(0.0, min(2.0, budget_end - time.monotonic())))
+            logs = follow._wait_logs(sp.prefix, max(0.0, min(wait, budget_end - time.monotonic())))
+            if logs and not all(follow._complete(f) for f in logs):
+                wait = 0.05
             ctx = sp.ctx
             if not logs:
                 self.flag(ctx, "spawn", f"{sp.detail} [not followed: no trace log]")
@@ -591,6 +609,10 @@ class Capture:
                     if interp:
                         self.child_read(ctx, interp)
                 self.child_read(ctx, p, "d" if op == "d" else "f")
+        try:
+            os.rmdir(fo.logdir)
+        except OSError:
+            pass
 
     def env_read(self, name: str) -> None:
         if self.active:
@@ -1296,6 +1318,7 @@ class ProofCachePlugin:
             "record_seconds": round(self.t_record, 3),
             "config": self.config_digest,
             "runtime": self.runtime_digest,
+            "epoch_ns": self.epoch,
             "verify_mismatches": [v for v in self.verify_results if not v["same"]],
             "stale_reuses": self.stale_hits,
             "error": self.error,
@@ -1461,6 +1484,70 @@ def _spawn_detail(event: str, args) -> str:
     return f"{name} ({event}) at {_first_user_site()}"
 
 
+def _own_listener(args) -> bool:
+    """A TCP connect to a numeric loopback address whose port a listening socket of this very process holds."""
+    import ipaddress
+    import socket as _socket
+
+    try:
+        sock, addr = args[0], args[1]
+        if sock.family not in (_socket.AF_INET, _socket.AF_INET6) or sock.type & 0xF != _socket.SOCK_STREAM:
+            return False
+        host, port = addr[0], int(addr[1])
+        ip = ipaddress.ip_address(str(host).split("%", 1)[0])
+    except (AttributeError, IndexError, TypeError, ValueError, OSError):
+        return False
+    mapped = getattr(ip, "ipv4_mapped", None)
+    if not (ip.is_loopback or (mapped is not None and mapped.is_loopback)):
+        return False
+    try:
+        fds = os.listdir("/proc/self/fd")
+    except OSError:
+        return False
+    mine = set()
+    for fd in fds:
+        try:
+            link = os.readlink("/proc/self/fd/" + fd)
+        except OSError:
+            continue
+        if link.startswith("socket:["):
+            mine.add(link[8:-1])
+    want = f"{port:04X}"
+    for t in ("tcp", "tcp6"):
+        try:
+            with open("/proc/self/net/" + t, "rb") as fh:
+                next(fh, None)
+                for line in fh:
+                    parts = line.split()
+                    if len(parts) < 10 or parts[3] != b"0A":  # LISTEN
+                        continue
+                    laddr, _, lport = parts[1].decode().rpartition(":")
+                    if lport != want or parts[9].decode() not in mine:
+                        continue
+                    if set(laddr) <= {"0"} or _loopback_hex(laddr):
+                        return True
+        except OSError:
+            continue
+    return False
+
+
+def _loopback_hex(laddr: str) -> bool:
+    """A /proc/net/tcp{,6} local address (hex, host byte order per 32-bit word) that is loopback."""
+    try:
+        b = bytes.fromhex(laddr)
+    except ValueError:
+        return False
+    if len(b) == 4:
+        return b[3] == 127  # little-endian 127.x.y.z
+    if len(b) == 16:
+        words = [b[i:i + 4][::-1] for i in range(0, 16, 4)]
+        raw = b"".join(words)
+        if raw == b"\0" * 15 + b"\1":
+            return True
+        return raw[:12] == b"\0" * 10 + b"\xff\xff" and raw[12] == 127
+    return False
+
+
 def _addr(args) -> str:
     try:
         a = args[1]
@@ -1510,6 +1597,33 @@ def _module_of(path: str) -> tuple[str | None, bool]:
 
 
 # ---------------------------------------------------------------------------
+def cache_epoch(cache_dir: str, head_ns: int, window_ns: int) -> int:
+    """The epoch the cache in ``cache_dir`` runs its tests at (``epoch.json``).
+
+    The HEAD commit time when the cache took it, kept while the current HEAD commit time ``head_ns`` is at most
+    ``window_ns`` later; otherwise (no epoch yet, or older than the window) the epoch moves to ``head_ns``. An older
+    checkout keeps the cache's epoch (later than its commit, as for any run after the commit). The epoch is part of
+    the key of every test that read the clock, so moving it reruns those tests.
+    """
+    path = os.path.join(os.path.abspath(cache_dir), "epoch.json")
+    try:
+        with open(path) as fh:
+            kept = int(json.load(fh)["epoch_ns"])
+    except (OSError, ValueError, KeyError, TypeError):
+        kept = None
+    if kept is not None and head_ns - kept <= window_ns:
+        return kept
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        tmp = f"{path}.{os.getpid()}.tmp"
+        with open(tmp, "w") as fh:
+            json.dump({"epoch_ns": head_ns, "taken_from": "git HEAD commit time"}, fh)
+        os.replace(tmp, path)
+    except OSError:
+        pass
+    return head_ns
+
+
 CAPTURE: Capture | None = None
 PLUGIN: ProofCachePlugin | None = None
 
@@ -1531,7 +1645,7 @@ def start(early_config, ns) -> None:
     _state.set_event_listener(cap.event)
     # probed before recording starts: the probe's own strace run is not a child of any test
     cap.follower = follow.Follower(cap, os.path.join(os.path.abspath(ns.det_cache), f"follow-{os.getpid()}"),
-                                   bool(getattr(ns, "det_cache_follow", False)))
+                                   not getattr(ns, "det_cache_no_follow", False))
     cap.follower.install()
     cap.start()
 

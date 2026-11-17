@@ -67,9 +67,12 @@ def pytest_addoption(parser, pluginmanager):
                      "runtime, configuration) is unchanged; failures are never reused; prints a receipt")
     g.addoption("--det-cache-verify", type=float, default=0.0, metavar="FRACTION",
                 help="run this random fraction of the reusable tests anyway and compare with the cached result")
-    g.addoption("--det-cache-follow", action="store_true", default=False,
-                help="with --det-cache: run the processes tests start under strace and record their inputs, "
-                     "instead of never caching those tests")
+    g.addoption("--det-cache-no-follow", action="store_true", default=False,
+                help="with --det-cache: never cache a test that starts a process (default: the processes run under "
+                     "strace and their files, program and environment become inputs of the test)")
+    g.addoption("--det-cache-epoch-window", type=float, default=30.0, metavar="DAYS",
+                help="with --det-cache and --det-epoch=auto: keep the cache's epoch while the HEAD commit time is at "
+                     "most DAYS later (default 30), so tests that read the clock are reusable across commits")
     g.addoption("--det-cache-receipts", default=None, metavar="PATH",
                 help="where to write the per-test receipts (JSON lines; default DIR/receipts.jsonl)")
 
@@ -218,6 +221,23 @@ def _epoch_ns(text: str, root: str) -> int:
     return _parse_epoch(text)
 
 
+def _epoch_for(ns, root: str) -> int:
+    """The session's epoch. Under ``--det-cache`` with ``--det-epoch=auto`` it is the cache's epoch: the HEAD commit
+    time when the cache took it, kept while HEAD is at most ``--det-cache-epoch-window`` days later. The epoch is a
+    configuration input of every test that reads the clock; one that moved at every commit made those tests (and,
+    through a clock read at import time, every test) unreusable from one commit to the next."""
+    ns_epoch = _epoch_ns(ns.det_epoch, root)
+    cache = getattr(ns, "det_cache", None)
+    if cache and ns.det_epoch == "auto" and EPOCH_SOURCE.get("source") == "git HEAD commit time":
+        window = getattr(ns, "det_cache_epoch_window", 30.0)
+        kept = proofcache.cache_epoch(cache, ns_epoch, int(window * 86400 * 1_000_000_000))
+        if kept != ns_epoch:
+            EPOCH_SOURCE.update(source="cache epoch (HEAD commit time when the cache took it)",
+                                value=kept // 1_000_000_000, head=ns_epoch // 1_000_000_000)
+        return kept
+    return ns_epoch
+
+
 def _parse_epoch(text: str) -> int:
     try:
         d = _dt.datetime.fromisoformat(text)
@@ -290,7 +310,7 @@ def _install(config, ns, controls) -> None:
     cfg = _state.Config(
         seed=ns.det_seed or 0,
         shuffle=ns.det_seed is not None and not getattr(ns, "det_order", None),
-        epoch_ns=_epoch_ns(ns.det_epoch, str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()),
+        epoch_ns=_epoch_for(ns, str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()),
         tick_ns=max(0, ns.det_tick),
         tick_adapt=max(0, ns.det_tick_adapt),
         sleep=ns.det_sleep,

@@ -267,18 +267,17 @@ def test_cached_failure_is_never_reused(pytester, run_cache):
     assert data["cache"]["miss_ids"]["test_m.py::test_bad"].startswith("new")
 
 
-def test_network_connection_and_subprocess_are_never_cached(pytester, run_cache):
-    # review R-002 error 3: a test that reaches a service (here loopback) cannot be proven
-    project(pytester, **{"test_m.py": """
+def test_network_connection_and_subprocess_are_never_cached(pytester, run_cache, outside_server):
+    # review R-002 error 3: a test that reaches a service it did not start (here on loopback) cannot be proven.
+    # Step 1 narrowed two rules, each with its own tests: a connection to a server this very process listens on is
+    # in-process computation (test_own_loopback_server_* in test_proofcache_follow.py), and a subprocess is
+    # followed (its program, files and environment become inputs) unless --det-cache-no-follow.
+    project(pytester, **{"test_m.py": f"""
         import socket, subprocess, sys
 
         def test_loopback():
-            srv = socket.socket()
-            srv.bind(("127.0.0.1", 0))
-            srv.listen(1)
-            c = socket.create_connection(srv.getsockname())
+            c = socket.create_connection(("127.0.0.1", {outside_server}))
             c.close()
-            srv.close()
 
         def test_spawn():
             subprocess.run([sys.executable, "-c", "pass"], check=True)
@@ -286,8 +285,8 @@ def test_network_connection_and_subprocess_are_never_cached(pytester, run_cache)
         def test_plain():
             pass
         """})
-    run_cache()
-    _, reused, data = run_cache()
+    run_cache("--det-cache-no-follow")
+    _, reused, data = run_cache("--det-cache-no-follow")
     assert reused == ids("test_plain")
     nc = data["cache"]["not_cached_ids"]
     assert nc["test_m.py::test_loopback"] == "network connection"
@@ -538,7 +537,7 @@ def test_refusal_names_the_program_and_the_context(pytester, run_cache):
         def test_a():
             pass
         """})
-    _, _, data = run_cache()
+    _, _, data = run_cache("--det-cache-no-follow")  # followed by default since step 1
     c = data["cache"]
     assert c["not_cached_ids"]["test_m.py::test_a"] == "subprocess"
     where = c["not_cached_where"]["test_m.py::test_a"]
