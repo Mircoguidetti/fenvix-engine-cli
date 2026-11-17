@@ -1,0 +1,911 @@
+ge 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('heading', { name: 'Welcome' }).first() to be visible
+
+
+      38 |   test("login page", async ({ page }) => {
+      39 |     await page.goto("/login");
+    > 40 |     await welcomeHeading(page).waitFor();
+         |                                ^
+      41 |     expect(await scan(page)).toEqual([]);
+      42 |   });
+      43 |
+        at /home/runner/work/_temp/l2_target/apps/web/tests/accessibility.spec.ts:40:32
+
+    Error Context: test-results/accessibility-accessibilit-80255-re-WCAG-2-1-A-AA-login-page-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/accessibility-accessibilit-80255-re-WCAG-2-1-A-AA-login-page-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/accessibility-accessibilit-80255-re-WCAG-2-1-A-AA-login-page-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/accessibility.spec.ts:44:7 › accessibility (axe-core, WCAG 2.1 A/AA) › login verify page 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('heading', { name: 'Welcome' }).first() to be visible
+
+
+      44 |   test("login verify page", async ({ page }) => {
+      45 |     await page.goto("/login");
+    > 46 |     await welcomeHeading(page).waitFor();
+         |                                ^
+      47 |     await expect(async () => {
+      48 |       await page
+      49 |         .getByPlaceholder("jessie.smith@example.com")
+        at /home/runner/work/_temp/l2_target/apps/web/tests/accessibility.spec.ts:46:32
+
+    Error Context: test-results/accessibility-accessibilit-54a43--2-1-A-AA-login-verify-page-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/accessibility-accessibilit-54a43--2-1-A-AA-login-verify-page-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/accessibility-accessibilit-54a43--2-1-A-AA-login-verify-page-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests/accessibility.spec.ts:75:9 › accessibility (axe-core, WCAG 2.1 A/AA) › invite page › desktop layout 
+
+    "beforeAll" hook timeout of 30000ms exceeded.
+
+      60 |     let inviteUrl: string;
+      61 |
+    > 62 |     test.beforeAll(async ({ browser }) => {
+         |          ^
+      63 |       const page = await browser.newPage();
+      64 |       const newPollPage = new NewPollPage(page);
+      65 |       await newPollPage.goto();
+        at /home/runner/work/_temp/l2_target/apps/web/tests/accessibility.spec.ts:62:10
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+       at new-poll-page.ts:88
+
+      86 |     // The Share dialog opening on the poll page is the success signal, so
+      87 |     // assert it here; callers that need the page behind it close it.
+    > 88 |     await page.waitForURL(/\/poll\/[^/?]+/);
+         |                ^
+      89 |     await expect(page.getByRole("dialog", { name: "Share" })).toBeVisible();
+      90 |     return new PollPage(page);
+      91 |   }
+        at NewPollPage.create (/home/runner/work/_temp/l2_target/apps/web/tests/new-poll-page.ts:88:16)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/accessibility.spec.ts:66:7
+
+    Error Context: test-results/accessibility-accessibilit-03bd2--invite-page-desktop-layout-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/accessibility-accessibilit-03bd2--invite-page-desktop-layout-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/accessibility-accessibilit-03bd2--invite-page-desktop-layout-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › tests/accessibility.spec.ts:105:9 › accessibility (axe-core, WCAG 2.1 A/AA) › vote view › options 
+
+    "beforeAll" hook timeout of 30000ms exceeded.
+
+      90 |     let voteUrl: string;
+      91 |
+    > 92 |     test.beforeAll(async ({ browser }) => {
+         |          ^
+      93 |       const page = await browser.newPage();
+      94 |       const newPollPage = new NewPollPage(page);
+      95 |       await newPollPage.goto();
+        at /home/runner/work/_temp/l2_target/apps/web/tests/accessibility.spec.ts:92:10
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+       at new-poll-page.ts:88
+
+      86 |     // The Share dialog opening on the poll page is the success signal, so
+      87 |     // assert it here; callers that need the page behind it close it.
+    > 88 |     await page.waitForURL(/\/poll\/[^/?]+/);
+         |                ^
+      89 |     await expect(page.getByRole("dialog", { name: "Share" })).toBeVisible();
+      90 |     return new PollPage(page);
+      91 |   }
+        at NewPollPage.create (/home/runner/work/_temp/l2_target/apps/web/tests/new-poll-page.ts:88:16)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/accessibility.spec.ts:96:7
+
+    Error Context: test-results/accessibility-accessibilit-c656a--2-1-A-AA-vote-view-options-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/accessibility-accessibilit-c656a--2-1-A-AA-vote-view-options-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/accessibility-accessibilit-c656a--2-1-A-AA-vote-view-options-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [chromium] › tests/admin-setup.spec.ts:29:7 › Admin Setup Page Access › should redirect unauthenticated user to login page 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.user.deleteMany()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:23
+
+      10 
+      11 test.describe("Admin Setup Page Access", () => {
+      12   test.beforeEach(async () => {
+    → 13     await prisma.user.deleteMany(
+
+
+      11 | test.describe("Admin Setup Page Access", () => {
+      12 |   test.beforeEach(async () => {
+    > 13 |     await prisma.user.deleteMany({
+         |                       ^
+      14 |       where: {
+      15 |         email: {
+      16 |           in: [
+        at /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:23
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:5
+
+    Error Context: test-results/admin-setup-Admin-Setup-Pa-4e415-nticated-user-to-login-page-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/admin-setup-Admin-Setup-Pa-4e415-nticated-user-to-login-page-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/admin-setup-Admin-Setup-Pa-4e415-nticated-user-to-login-page-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [chromium] › tests/admin-setup.spec.ts:36:7 › Admin Setup Page Access › should allow access if user is the designated initial admin (and not yet admin role) 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.user.deleteMany()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:23
+
+      10 
+      11 test.describe("Admin Setup Page Access", () => {
+      12   test.beforeEach(async () => {
+    → 13     await prisma.user.deleteMany(
+
+
+      11 | test.describe("Admin Setup Page Access", () => {
+      12 |   test.beforeEach(async () => {
+    > 13 |     await prisma.user.deleteMany({
+         |                       ^
+      14 |       where: {
+      15 |         email: {
+      16 |           in: [
+        at /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:23
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:5
+
+    Error Context: test-results/admin-setup-Admin-Setup-Pa-17a59-min-and-not-yet-admin-role--chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/admin-setup-Admin-Setup-Pa-17a59-min-and-not-yet-admin-role--chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/admin-setup-Admin-Setup-Pa-17a59-min-and-not-yet-admin-role--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [chromium] › tests/admin-setup.spec.ts:54:7 › Admin Setup Page Access › should explain missing admin access to a regular user (not initial admin, not admin role) 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.user.deleteMany()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:23
+
+      10 
+      11 test.describe("Admin Setup Page Access", () => {
+      12   test.beforeEach(async () => {
+    → 13     await prisma.user.deleteMany(
+
+
+      11 | test.describe("Admin Setup Page Access", () => {
+      12 |   test.beforeEach(async () => {
+    > 13 |     await prisma.user.deleteMany({
+         |                       ^
+      14 |       where: {
+      15 |         email: {
+      16 |           in: [
+        at /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:23
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:5
+
+    Error Context: test-results/admin-setup-Admin-Setup-Pa-1c1bd-itial-admin-not-admin-role--chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/admin-setup-Admin-Setup-Pa-1c1bd-itial-admin-not-admin-role--chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/admin-setup-Admin-Setup-Pa-1c1bd-itial-admin-not-admin-role--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [chromium] › tests/admin-setup.spec.ts:69:7 › Admin Setup Page Access › should redirect an existing admin user to control-panel 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.user.deleteMany()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:23
+
+      10 
+      11 test.describe("Admin Setup Page Access", () => {
+      12   test.beforeEach(async () => {
+    → 13     await prisma.user.deleteMany(
+
+
+      11 | test.describe("Admin Setup Page Access", () => {
+      12 |   test.beforeEach(async () => {
+    > 13 |     await prisma.user.deleteMany({
+         |                       ^
+      14 |       where: {
+      15 |         email: {
+      16 |           in: [
+        at /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:23
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:5
+
+    Error Context: test-results/admin-setup-Admin-Setup-Pa-e7b2e-admin-user-to-control-panel-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/admin-setup-Admin-Setup-Pa-e7b2e-admin-user-to-control-panel-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/admin-setup-Admin-Setup-Pa-e7b2e-admin-user-to-control-panel-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) [chromium] › tests/admin-setup.spec.ts:83:7 › Admin Setup Page Access › should explain missing admin access if INITIAL_ADMIN_EMAIL in env is different from user's email 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.user.deleteMany()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:23
+
+      10 
+      11 test.describe("Admin Setup Page Access", () => {
+      12   test.beforeEach(async () => {
+    → 13     await prisma.user.deleteMany(
+
+
+      11 | test.describe("Admin Setup Page Access", () => {
+      12 |   test.beforeEach(async () => {
+    > 13 |     await prisma.user.deleteMany({
+         |                       ^
+      14 |       where: {
+      15 |         email: {
+      16 |           in: [
+        at /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:23
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:5
+
+    Error Context: test-results/admin-setup-Admin-Setup-Pa-3d1ab-different-from-user-s-email-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/admin-setup-Admin-Setup-Pa-3d1ab-different-from-user-s-email-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/admin-setup-Admin-Setup-Pa-3d1ab-different-from-user-s-email-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  10) [chromium] › tests/admin-setup.spec.ts:97:7 › Admin Setup Page Access › initial admin can make themselves admin using the button 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.user.deleteMany()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:23
+
+      10 
+      11 test.describe("Admin Setup Page Access", () => {
+      12   test.beforeEach(async () => {
+    → 13     await prisma.user.deleteMany(
+
+
+      11 | test.describe("Admin Setup Page Access", () => {
+      12 |   test.beforeEach(async () => {
+    > 13 |     await prisma.user.deleteMany({
+         |                       ^
+      14 |       where: {
+      15 |         email: {
+      16 |           in: [
+        at /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:23
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/admin-setup.spec.ts:13:5
+
+    Error Context: test-results/admin-setup-Admin-Setup-Pa-03b3c-lves-admin-using-the-button-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/admin-setup-Admin-Setup-Pa-03b3c-lves-admin-using-the-button-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/admin-setup-Admin-Setup-Pa-03b3c-lves-admin-using-the-button-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  11) [chromium] › tests/api-poll-quota-warning.spec.ts:65:5 › crossing 80% queues one email to the owner 
+
+    AggregateError: 
+
+       at test-utils.ts:45
+
+      43 |   lastSeenAt?: Date;
+      44 | }) {
+    > 45 |   return await prisma.$transaction(async (tx) => {
+         |          ^
+      46 |     const user = await tx.user.create({
+      47 |       data: {
+      48 |         email,
+        at /home/runner/work/_temp/l2_target/node_modules/.pnpm/pg-pool@3.11.0_pg@8.18.0/node_modules/pg-pool/index.js:45:11
+        at PrismaPgAdapter.startTransaction (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+adapter-pg@7.8.0/node_modules/@prisma/adapter-pg/dist/index.js:720:18)
+        at qt.#r (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client-engine-runtime/src/transaction-manager/transaction-manager.ts:163:31)
+        at qt.startTransaction (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client-engine-runtime/src/transaction-manager/transaction-manager.ts:103:12)
+        at e.startTransaction (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:93:18)
+        at jt.transaction (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:444:18)
+        at Proxy._transactionWithCallback (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:798:16)
+        at createUserInDb (/home/runner/work/_temp/l2_target/apps/web/tests/test-utils.ts:45:10)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/api-poll-quota-warning.spec.ts:20:16
+
+    Error: connect ECONNREFUSED ::1:5450
+        at Error: connect ECONNREFUSED ::1:5450
+
+    Error: connect ECONNREFUSED 127.0.0.1:5450
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.queuedEmail.deleteMany()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/api-poll-quota-warning.spec.ts:32:28
+
+      29 });
+      30 
+      31 test.afterAll(async () => {
+    → 32   await prisma.queuedEmail.deleteMany(
+
+
+      30 |
+      31 | test.afterAll(async () => {
+    > 32 |   await prisma.queuedEmail.deleteMany({ where: { userId } });
+         |                            ^
+      33 |   await prisma.user.deleteMany({ where: { id: userId } });
+      34 | });
+      35 |
+        at /home/runner/work/_temp/l2_target/apps/web/tests/api-poll-quota-warning.spec.ts:32:28
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/api-poll-quota-warning.spec.ts:32:3
+
+    Error Context: test-results/api-poll-quota-warning-cro-20a82-eues-one-email-to-the-owner-chromium/error-context.md
+
+    Error Context: test-results/api-poll-quota-warning-cro-20a82-eues-one-email-to-the-owner-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/api-poll-quota-warning-cro-20a82-eues-one-email-to-the-owner-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/api-poll-quota-warning-cro-20a82-eues-one-email-to-the-owner-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  12) [chromium] › tests/api-poll-usage.spec.ts:54:5 › concurrent reservations never exceed the limit 
+
+    AggregateError: 
+
+       at test-utils.ts:45
+
+      43 |   lastSeenAt?: Date;
+      44 | }) {
+    > 45 |   return await prisma.$transaction(async (tx) => {
+         |          ^
+      46 |     const user = await tx.user.create({
+      47 |       data: {
+      48 |         email,
+        at /home/runner/work/_temp/l2_target/node_modules/.pnpm/pg-pool@3.11.0_pg@8.18.0/node_modules/pg-pool/index.js:45:11
+        at PrismaPgAdapter.startTransaction (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+adapter-pg@7.8.0/node_modules/@prisma/adapter-pg/dist/index.js:720:18)
+        at qt.#r (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client-engine-runtime/src/transaction-manager/transaction-manager.ts:163:31)
+        at qt.startTransaction (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client-engine-runtime/src/transaction-manager/transaction-manager.ts:103:12)
+        at e.startTransaction (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:93:18)
+        at jt.transaction (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:444:18)
+        at Proxy._transactionWithCallback (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:798:16)
+        at createUserInDb (/home/runner/work/_temp/l2_target/apps/web/tests/test-utils.ts:45:10)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/api-poll-usage.spec.ts:20:16
+
+    Error: connect ECONNREFUSED ::1:5450
+        at Error: connect ECONNREFUSED ::1:5450
+
+    Error: connect ECONNREFUSED 127.0.0.1:5450
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.user.deleteMany()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/api-poll-usage.spec.ts:32:21
+
+      29 });
+      30 
+      31 test.afterAll(async () => {
+    → 32   await prisma.user.deleteMany(
+
+
+      30 |
+      31 | test.afterAll(async () => {
+    > 32 |   await prisma.user.deleteMany({ where: { id: userId } });
+         |                     ^
+      33 | });
+      34 |
+      35 | function storedCount(period: Date) {
+        at /home/runner/work/_temp/l2_target/apps/web/tests/api-poll-usage.spec.ts:32:21
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/api-poll-usage.spec.ts:32:3
+
+    Error Context: test-results/api-poll-usage-concurrent--e0f57-ions-never-exceed-the-limit-chromium/error-context.md
+
+    Error Context: test-results/api-poll-usage-concurrent--e0f57-ions-never-exceed-the-limit-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/api-poll-usage-concurrent--e0f57-ions-never-exceed-the-limit-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/api-poll-usage-concurrent--e0f57-ions-never-exceed-the-limit-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  13) [chromium] › tests/authentication.spec.ts:30:9 › new user › user registration ────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('heading', { name: 'Welcome' }).first() to be visible
+
+
+       at register-page.ts:16
+
+      14 |   async goto() {
+      15 |     await this.page.goto("/login");
+    > 16 |     await this.page.getByRole("heading", { name: "Welcome" }).first().waitFor();
+         |                                                                       ^
+      17 |   }
+      18 |
+      19 |   async register({ name, email }: { name: string; email: string }) {
+        at RegisterPage.goto (/home/runner/work/_temp/l2_target/apps/web/tests/register-page.ts:16:71)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/authentication.spec.ts:32:7
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.user.deleteMany()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/authentication.spec.ts:16:23
+
+      13 
+      14 test.describe.serial(() => {
+      15   test.afterAll(async () => {
+    → 16     await prisma.user.deleteMany(
+
+
+      14 | test.describe.serial(() => {
+      15 |   test.afterAll(async () => {
+    > 16 |     await prisma.user.deleteMany({
+         |                       ^
+      17 |       where: {
+      18 |         email: {
+      19 |           in: [testUserEmail, testExistingUserEmail],
+        at /home/runner/work/_temp/l2_target/apps/web/tests/authentication.spec.ts:16:23
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/authentication.spec.ts:16:5
+
+    Error Context: test-results/authentication-new-user-user-registration-chromium/error-context.md
+
+    Error Context: test-results/authentication-new-user-user-registration-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/authentication-new-user-user-registration-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/authentication-new-user-user-registration-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  14) [chromium] › tests/closed-poll-writes.spec.ts:59:9 › writes to a closed poll › a rename is refused 
+
+    "beforeAll" hook timeout of 30000ms exceeded.
+
+      39 |     const row = () => page.getByTestId("participant-row").first();
+      40 |
+    > 41 |     test.beforeAll(async ({ browser }) => {
+         |          ^
+      42 |       page = await (await browser.newContext()).newPage();
+      43 |       const newPollPage = new NewPollPage(page);
+      44 |       await newPollPage.goto();
+        at /home/runner/work/_temp/l2_target/apps/web/tests/closed-poll-writes.spec.ts:41:10
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+       at new-poll-page.ts:88
+
+      86 |     // The Share dialog opening on the poll page is the success signal, so
+      87 |     // assert it here; callers that need the page behind it close it.
+    > 88 |     await page.waitForURL(/\/poll\/[^/?]+/);
+         |                ^
+      89 |     await expect(page.getByRole("dialog", { name: "Share" })).toBeVisible();
+      90 |     return new PollPage(page);
+      91 |   }
+        at NewPollPage.create (/home/runner/work/_temp/l2_target/apps/web/tests/new-poll-page.ts:88:16)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/closed-poll-writes.spec.ts:45:18
+
+    Error Context: test-results/closed-poll-writes-writes--880d0-ed-poll-a-rename-is-refused-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/closed-poll-writes-writes--880d0-ed-poll-a-rename-is-refused-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/closed-poll-writes-writes--880d0-ed-poll-a-rename-is-refused-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  15) [chromium] › tests/comments-disabled.spec.ts:9:7 › comments disabled › the action rejects a comment once comments are turned off 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+       at new-poll-page.ts:88
+
+      86 |     // The Share dialog opening on the poll page is the success signal, so
+      87 |     // assert it here; callers that need the page behind it close it.
+    > 88 |     await page.waitForURL(/\/poll\/[^/?]+/);
+         |                ^
+      89 |     await expect(page.getByRole("dialog", { name: "Share" })).toBeVisible();
+      90 |     return new PollPage(page);
+      91 |   }
+        at NewPollPage.create (/home/runner/work/_temp/l2_target/apps/web/tests/new-poll-page.ts:88:16)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/comments-disabled.spec.ts:14:22
+
+    Error Context: test-results/comments-disabled-comments-58908-nce-comments-are-turned-off-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/comments-disabled-comments-58908-nce-comments-are-turned-off-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/comments-disabled-comments-58908-nce-comments-are-turned-off-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  16) [chromium] › tests/comments-disabled.spec.ts:47:7 › comments disabled › the action still accepts a comment when comments are on 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+       at new-poll-page.ts:88
+
+      86 |     // The Share dialog opening on the poll page is the success signal, so
+      87 |     // assert it here; callers that need the page behind it close it.
+    > 88 |     await page.waitForURL(/\/poll\/[^/?]+/);
+         |                ^
+      89 |     await expect(page.getByRole("dialog", { name: "Share" })).toBeVisible();
+      90 |     return new PollPage(page);
+      91 |   }
+        at NewPollPage.create (/home/runner/work/_temp/l2_target/apps/web/tests/new-poll-page.ts:88:16)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/comments-disabled.spec.ts:52:22
+
+    Error Context: test-results/comments-disabled-comments-a53d2-omment-when-comments-are-on-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/comments-disabled-comments-a53d2-omment-when-comments-are-on-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/comments-disabled-comments-a53d2-omment-when-comments-are-on-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  17) [chromium] › tests/conferencing.spec.ts:83:9 › conferencing integrations › settings page lists the configured providers to connect 
+
+    AggregateError: 
+
+       at test-utils.ts:45
+
+      43 |   lastSeenAt?: Date;
+      44 | }) {
+    > 45 |   return await prisma.$transaction(async (tx) => {
+         |          ^
+      46 |     const user = await tx.user.create({
+      47 |       data: {
+      48 |         email,
+        at /home/runner/work/_temp/l2_target/node_modules/.pnpm/pg-pool@3.11.0_pg@8.18.0/node_modules/pg-pool/index.js:45:11
+        at PrismaPgAdapter.startTransaction (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+adapter-pg@7.8.0/node_modules/@prisma/adapter-pg/dist/index.js:720:18)
+        at qt.#r (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client-engine-runtime/src/transaction-manager/transaction-manager.ts:163:31)
+        at qt.startTransaction (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client-engine-runtime/src/transaction-manager/transaction-manager.ts:103:12)
+        at e.startTransaction (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/core/engines/client/LocalExecutor.ts:93:18)
+        at jt.transaction (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/core/engines/client/ClientEngine.ts:444:18)
+        at Proxy._transactionWithCallback (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:798:16)
+        at createUserInDb (/home/runner/work/_temp/l2_target/apps/web/tests/test-utils.ts:45:10)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/conferencing.spec.ts:74:20
+
+    Error: connect ECONNREFUSED ::1:5450
+        at Error: connect ECONNREFUSED ::1:5450
+
+    Error: connect ECONNREFUSED 127.0.0.1:5450
+
+    PrismaClientValidationError: 
+    Invalid `prisma.user.delete()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/conferencing.spec.ts:80:31
+
+      77 });
+      78 
+      79 test.afterAll(async () => {
+    → 80   await prisma.user.delete({
+             where: {
+               id: undefined,
+           ?   email?: String,
+           ?   AND?: UserWhereInput | UserWhereInput[],
+           ?   OR?: UserWhereInput[],
+           ?   NOT?: UserWhereInput | UserWhereInput[],
+           ?   name?: StringFilter | String,
+           ?   emailVerified?: BoolNullableFilter | Boolean | Null,
+           ?   image?: StringNullableFilter | String | Null,
+           ?   timeZone?: StringNullableFilter | String | Null,
+           ?   weekStart?: IntNullableFilter | Int | Null,
+           ?   timeFormat?: EnumTimeFormatNullableFilter | TimeFormat | Null,
+           ?   locale?: StringNullableFilter | String | Null,
+           ?   createdAt?: DateTimeFilter | DateTime,
+           ?   updatedAt?: DateTimeNullableFilter | DateTime | Null,
+           ?   customerId?: StringNullableFilter | String | Null,
+           ?   banned?: BoolFilter | Boolean,
+           ?   bannedAt?: DateTimeNullableFilter | DateTime | Null,
+           ?   banReason?: StringNullableFilter | String | Null,
+           ?   banExpires?: DateTimeNullableFilter | DateTime | Null,
+           ?   role?: EnumUserRoleFilter | UserRole,
+           ?   lastLoginMethod?: StringNullableFilter | String | Null,
+           ?   isAnonymous?: BoolFilter | Boolean,
+           ?   lastSeenAt?: DateTimeFilter | DateTime,
+           ?   deletedAt?: DateTimeNullableFilter | DateTime | Null,
+           ?   jobTitle?: StringNullableFilter | String | Null,
+           ?   reviewRequestedAt?: DateTimeNullableFilter | DateTime | Null,
+           ?   defaultDestinationCalendarId?: StringNullableFilter | String | Null,
+           ?   comments?: CommentListRelationFilter,
+           ?   polls?: PollListRelationFilter,
+           ?   notificationPreferences?: UserNotificationPreferencesNullableScalarRelationFilter | UserNotificationPreferencesWhereInput | Null,
+           ?   queuedEmails?: QueuedEmailListRelationFilter,
+           ?   accounts?: AccountListRelationFilter,
+           ?   participants?: ParticipantListRelationFilter,
+           ?   paymentMethods?: PaymentMethodListRelationFilter,
+           ?   spaceMemberInvites?: SpaceMemberInviteListRelationFilter,
+           ?   nonprofitApplications?: NonprofitApplicationListRelationFilter,
+           ?   subscriptions?: SubscriptionListRelationFilter,
+           ?   spaces?: SpaceListRelationFilter,
+           ?   memberOf?: SpaceMemberListRelationFilter,
+           ?   scheduledEvents?: ScheduledEventListRelationFilter,
+           ?   scheduledEventInvites?: ScheduledEventInviteListRelationFilter,
+           ?   hostedEventTypes?: EventTypeListRelationFilter,
+           ?   hostedSheets?: SheetListRelationFilter,
+           ?   calendarConnections?: CalendarConnectionListRelationFilter,
+           ?   conferencingConnections?: ConferencingConnectionListRelationFilter,
+           ?   credentials?: CredentialListRelationFilter,
+           ?   defaultDestinationCalendar?: ProviderCalendarNullableScalarRelationFilter | ProviderCalendarWhereInput | Null,
+           ?   sessions?: SessionListRelationFilter,
+           ?   impersonatedSessions?: SessionListRelationFilter
+             }
+           })
+
+    Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+
+      78 |
+      79 |     test.afterAll(async () => {
+    > 80 |       await prisma.user.delete({ where: { id: userId } });
+         |                               ^
+      81 |     });
+      82 |
+      83 |     test("settings page lists the configured providers to connect", async () => {
+        at /home/runner/work/_temp/l2_target/apps/web/tests/conferencing.spec.ts:80:31
+        at throwValidationException (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/core/errorRendering/throwValidationException.ts:46:9)
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:211:7)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/conferencing.spec.ts:80:7
+
+    Error Context: test-results/conferencing-conferencing--9d210-igured-providers-to-connect-chromium/error-context.md
+
+    Error Context: test-results/conferencing-conferencing--9d210-igured-providers-to-connect-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/conferencing-conferencing--9d210-igured-providers-to-connect-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/conferencing-conferencing--9d210-igured-providers-to-connect-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  18) [chromium] › tests/control-panel.spec.ts:23:9 › Control Panel Access (/control-panel) › should redirect unauthenticated user to login page 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.user.deleteMany()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/control-panel.spec.ts:13:25
+
+      10 test.describe
+      11   .serial("Control Panel Access (/control-panel)", () => {
+      12     test.beforeEach(async () => {
+    → 13       await prisma.user.deleteMany(
+
+
+      11 |   .serial("Control Panel Access (/control-panel)", () => {
+      12 |     test.beforeEach(async () => {
+    > 13 |       await prisma.user.deleteMany({
+         |                         ^
+      14 |         where: {
+      15 |           email: {
+      16 |             in: [CONTROL_PANEL_NON_ADMIN_EMAIL, CONTROL_PANEL_ADMIN_EMAIL],
+        at /home/runner/work/_temp/l2_target/apps/web/tests/control-panel.spec.ts:13:25
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/control-panel.spec.ts:13:7
+
+    Error Context: test-results/control-panel-Control-Pane-0b66c-nticated-user-to-login-page-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/control-panel-Control-Pane-0b66c-nticated-user-to-login-page-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/control-panel-Control-Pane-0b66c-nticated-user-to-login-page-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  19) [chromium] › tests/create-delete-poll.spec.ts:16:7 › create a new poll ───────────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation until "load"
+    ============================================================
+
+       at new-poll-page.ts:88
+
+      86 |     // The Share dialog opening on the poll page is the success signal, so
+      87 |     // assert it here; callers that need the page behind it close it.
+    > 88 |     await page.waitForURL(/\/poll\/[^/?]+/);
+         |                ^
+      89 |     await expect(page.getByRole("dialog", { name: "Share" })).toBeVisible();
+      90 |     return new PollPage(page);
+      91 |   }
+        at NewPollPage.create (/home/runner/work/_temp/l2_target/apps/web/tests/new-poll-page.ts:88:16)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/create-delete-poll.spec.ts:21:22
+
+    Error Context: test-results/create-delete-poll-create-a-new-poll-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/create-delete-poll-create-a-new-poll-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/create-delete-poll-create-a-new-poll-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  20) [chromium] › tests/cross-timezone.spec.ts:229:7 › cross-timezone rendering › poll with a time zone shifts slot times between viewers 
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.poll.deleteMany()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/cross-timezone.spec.ts:178:21
+
+      175 }
+      176 
+      177 async function cleanup() {
+    → 178   await prisma.poll.deleteMany(
+
+
+      176 |
+      177 | async function cleanup() {
+    > 178 |   await prisma.poll.deleteMany({
+          |                     ^
+      179 |     where: { id: { in: [ZONED_POLL_ID, FLOATING_POLL_ID, DATE_POLL_ID] } },
+      180 |   });
+      181 |   await prisma.scheduledEvent.deleteMany({
+        at /home/runner/work/_temp/l2_target/apps/web/tests/cross-timezone.spec.ts:178:21
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at cleanup (/home/runner/work/_temp/l2_target/apps/web/tests/cross-timezone.spec.ts:178:3)
+        at seed (/home/runner/work/_temp/l2_target/apps/web/tests/cross-timezone.spec.ts:91:3)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/cross-timezone.spec.ts:192:5
+
+    PrismaClientKnownRequestError: 
+    Invalid `prisma.poll.deleteMany()` invocation in
+    /home/runner/work/_temp/l2_target/apps/web/tests/cross-timezone.spec.ts:178:21
+
+      175 }
+      176 
+      177 async function cleanup() {
+    → 178   await prisma.poll.deleteMany(
+
+
+      176 |
+      177 | async function cleanup() {
+    > 178 |   await prisma.poll.deleteMany({
+          |                     ^
+      179 |     where: { id: { in: [ZONED_POLL_ID, FLOATING_POLL_ID, DATE_POLL_ID] } },
+      180 |   });
+      181 |   await prisma.scheduledEvent.deleteMany({
+        at /home/runner/work/_temp/l2_target/apps/web/tests/cross-timezone.spec.ts:178:21
+        at zr.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:237:13)
+        at zr.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:183:12)
+        at zr.request (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/RequestHandler.ts:152:12)
+        at a (/home/runner/work/_temp/l2_target/node_modules/.pnpm/@prisma+client@7.8.0_prisma@7.8.0_@types+react-dom@19.2.3_@types+react@19.2.13__@types+_a952af91d3025c6b42b98acd44c7e6e3/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:963:24)
+        at cleanup (/home/runner/work/_temp/l2_target/apps/web/tests/cross-timezone.spec.ts:178:3)
+        at /home/runner/work/_temp/l2_target/apps/web/tests/cross-timezone.spec.ts:206:5
+
+    Error Context: test-results/cross-timezone-cross-timez-4ed80--slot-times-between-viewers-chromium/error-context.md
+
+    Error Context: test-results/cross-timezone-cross-timez-4ed80--slot-times-between-viewers-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/cross-timezone-cross-timez-4ed80--slot-times-between-viewers-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/cross-timezone-cross-timez-4ed80--slot-times-between-viewers-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  20 failed
+    [chromium] › tests/accessibility.spec.ts:38:7 › accessibility (axe-core, WCAG 2.1 A/AA) › login page 
+    [chromium] › tests/accessibility.spec.ts:44:7 › accessibility (axe-core, WCAG 2.1 A/AA) › login verify page 
+    [chromium] › tests/accessibility.spec.ts:75:9 › accessibility (axe-core, WCAG 2.1 A/AA) › invite page › desktop layout 
+    [chromium] › tests/accessibility.spec.ts:105:9 › accessibility (axe-core, WCAG 2.1 A/AA) › vote view › options 
+    [chromium] › tests/admin-setup.spec.ts:29:7 › Admin Setup Page Access › should redirect unauthenticated user to login page 
+    [chromium] › tests/admin-setup.spec.ts:36:7 › Admin Setup Page Access › should allow access if user is the designated initial admin (and not yet admin role) 
+    [chromium] › tests/admin-setup.spec.ts:54:7 › Admin Setup Page Access › should explain missing admin access to a regular user (not initial admin, not admin role) 
+    [chromium] › tests/admin-setup.spec.ts:69:7 › Admin Setup Page Access › should redirect an existing admin user to control-panel 
+    [chromium] › tests/admin-setup.spec.ts:83:7 › Admin Setup Page Access › should explain missing admin access if INITIAL_ADMIN_EMAIL in env is different from user's email 
+    [chromium] › tests/admin-setup.spec.ts:97:7 › Admin Setup Page Access › initial admin can make themselves admin using the button 
+    [chromium] › tests/api-poll-quota-warning.spec.ts:65:5 › crossing 80% queues one email to the owner 
+    [chromium] › tests/api-poll-usage.spec.ts:54:5 › concurrent reservations never exceed the limit 
+    [chromium] › tests/authentication.spec.ts:30:9 › new user › user registration ──────────────────
+    [chromium] › tests/closed-poll-writes.spec.ts:59:9 › writes to a closed poll › a rename is refused 
+    [chromium] › tests/comments-disabled.spec.ts:9:7 › comments disabled › the action rejects a comment once comments are turned off 
+    [chromium] › tests/comments-disabled.spec.ts:47:7 › comments disabled › the action still accepts a comment when comments are on 
+    [chromium] › tests/conferencing.spec.ts:83:9 › conferencing integrations › settings page lists the configured providers to connect 
+    [chromium] › tests/control-panel.spec.ts:23:9 › Control Panel Access (/control-panel) › should redirect unauthenticated user to login page 
+    [chromium] › tests/create-delete-poll.spec.ts:16:7 › create a new poll ─────────────────────────
+    [chromium] › tests/cross-timezone.spec.ts:229:7 › cross-timezone rendering › poll with a time zone shifts slot times between viewers 
+  46 did not run
