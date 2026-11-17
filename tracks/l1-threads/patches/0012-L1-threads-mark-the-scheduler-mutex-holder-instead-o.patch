@@ -1,0 +1,84 @@
+From 5eb99fd4cae808e5b0e989fe6efd6c638d1d34cd Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 09:41:42 +0000
+Subject: [PATCH 12/12] L1 threads: mark the scheduler-mutex holder instead of
+ walking the stack (managed threads always have detpy's boot frame below them)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ python/detpy/threads.py | 42 +++++++++++++++++++++++++++--------------
+ 1 file changed, 28 insertions(+), 14 deletions(-)
+
+diff --git a/python/detpy/threads.py b/python/detpy/threads.py
+index ec836fb..2816cfb 100644
+--- a/python/detpy/threads.py
++++ b/python/detpy/threads.py
+@@ -110,9 +110,35 @@ class T:
+         self.budget = 0
+ 
+ 
++class _SchedMutex:
++    """The scheduler's own lock. The calling thread is marked from before the
++    acquire until the release: line preemption must not run while it holds the
++    lock (code that wraps lock.acquire in Python, e.g. blockbuster, can be traced
++    project code and would otherwise preempt inside the scheduler)."""
++
++    __slots__ = ("_lock",)
++
++    def __init__(self) -> None:
++        self._lock = _real_allocate()
++
++    def acquire(self, blocking=True, timeout=-1):
++        _tls.in_mu = True
++        got = self._lock.acquire(blocking, timeout)
++        if not got:
++            _tls.in_mu = False
++        return got
++
++    def release(self):
++        self._lock.release()
++        _tls.in_mu = False
++
++    def locked(self):
++        return self._lock.locked()
++
++
+ class _Sched:
+     def __init__(self) -> None:
+-        self.mu = _real_allocate()
++        self.mu = _SchedMutex()
+         self.active = False
+         self.threads: list = []  # live managed threads (finished ones are dropped)
+         self.nthreads = 0
+@@ -1014,7 +1040,7 @@ def _install_tracer(t) -> None:
+             t.budget -= 1
+             if t.budget <= 0:
+                 t.budget = _new_budget()
+-                if S.active and S.current is t and S.runq and not _inside_detpy(frame):
++                if S.active and S.current is t and S.runq and not getattr(_tls, "in_mu", False):
+                     _preempt(t)
+         return line
+ 
+@@ -1026,18 +1052,6 @@ def _install_tracer(t) -> None:
+     sys.settrace(call)
+ 
+ 
+-def _inside_detpy(frame) -> bool:
+-    """True if detpy code is on the stack below ``frame``: project code called from
+-    inside the scheduler (a user wrapper around lock.acquire, a predicate) must not
+-    be preempted, the scheduler may hold its own lock."""
+-    f = frame.f_back
+-    while f is not None:
+-        if f.f_code.co_filename.startswith(_DETPY_DIR):
+-            return True
+-        f = f.f_back
+-    return False
+-
+-
+ def _preempt(me) -> None:
+     S.mu.acquire()
+     if not S.active or S.current is not me:
+-- 
+2.43.0
+

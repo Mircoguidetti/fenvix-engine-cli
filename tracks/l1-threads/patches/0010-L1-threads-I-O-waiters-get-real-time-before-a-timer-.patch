@@ -1,7 +1,7 @@
 From c2596b0b44ad7e53c5f424ba8becb72a123198bf Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 17 Nov 2026 08:42:54 +0000
-Subject: [PATCH 10/11] L1 threads: I/O waiters get real time before a timer
+Subject: [PATCH 10/12] L1 threads: I/O waiters get real time before a timer
  jump; event-loop select timeouts advance the clock
 
 With only socket waiters left the clock used to jump to their timeout at once,

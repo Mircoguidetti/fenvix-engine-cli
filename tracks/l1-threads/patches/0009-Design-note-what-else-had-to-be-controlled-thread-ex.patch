@@ -1,7 +1,7 @@
 From c0d5324f8256d2c8a4388608f0d9a1aab2b0a99a Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 17 Nov 2026 07:59:19 +0000
-Subject: [PATCH 09/11] Design note: what else had to be controlled (thread
+Subject: [PATCH 09/12] Design note: what else had to be controlled (thread
  exit, address order, stdlib clock, entropy)
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
