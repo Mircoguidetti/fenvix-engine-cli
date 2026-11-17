@@ -105,7 +105,8 @@ async function main(argv) {
   const { opts, rest } = session.parseArgs(afterPw);
   const cwd = process.cwd();
   const { cli, version } = resolvePlaywrightCli(cwd);
-  if (!opts.det) return run(process.execPath, [cli, ...rest], process.env);
+  // Without --det: the project's CLI as `npx playwright` runs it (node_modules/.bin on PATH for webServer commands).
+  if (!opts.det) return run(process.execPath, [cli, ...rest], { ...process.env, PATH: binPath(cwd, process.env.PATH) });
 
   const root = process.env.DETJS_ROOT || cwd;
   const runEnv = session.prepare(opts, root, 'playwright');
