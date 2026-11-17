@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Aggregate skip study 2 results into harness/skip_study2/results/summary.json (and print tables).
 
-    python harness/skip_study2/aggregate.py [run_id ...]
+    python harness/skip_study2/aggregate.py [run_id ...] [--md]
+    python harness/skip_study2/aggregate.py --compare r1,r2,r3,r5,r6,r7,r8 v3   # setting 1 before/after (capture v2 vs v3)
 """
 
 from __future__ import annotations
@@ -144,6 +145,7 @@ def walk_summary(shards, spec):
     ttg_before, inval_all, inval_why, verify = [], 0, Counter(), Counter()
     xverify = {r: Counter() for r in rules}
     closure_ver = Counter()
+    closure_why = Counter()
     wrong, flaky_v = [], []
     rows = []
     n_full = 0
@@ -180,6 +182,10 @@ def walk_summary(shards, spec):
                         if verdict:
                             xverify[r][verdict] += 1
         live = [u for u in all_units if (units.get(u) or {}).get("n", all_units[u]) and u in units]
+        for u in live:  # why the proof rule reran a unit (kind only): shows what the v3 key additions cost
+            why = (decisions.get(u) or {}).get("closure")
+            if why:
+                closure_why[why.split(":", 1)[0]] += 1
         tot_t = sum(units[u]["test"] for u in live)
         tot_n = sum(units[u]["n"] for u in live)
         if not live or tot_t <= 0:
@@ -217,7 +223,7 @@ def walk_summary(shards, spec):
            "verify_by_rule": verify_by_rule(lang, rules, verify, closure_ver, xverify, has_xverify),
            "capture": "v3" if v3 else "v2", "v2_failing_forced": len(v2_failing),
            "wrong_hits": wrong[:20], "flaky_in_verify": flaky_v[:20], "rows": rows,
-           "commits_per_day": commits_per_day(shards)}
+           "commits_per_day": commits_per_day(shards), "closure_rerun_why": dict(closure_why.most_common())}
     for r in rules:
         out[r] = {"time": stats(per_rule[r]["time"]), "count": stats(per_rule[r]["count"]),
                   "ttg_after_s": stats(per_rule[r]["ttg_after"]),
@@ -325,7 +331,55 @@ def flaky_summary(items, spec):
             "flaky_tests": tests.most_common(15)}
 
 
+def walk_summaries(run_ids):
+    """{repository: walk summary} over the given runs (a later run replaces an earlier one, as in main)."""
+    out = {}
+    for rid in run_ids:
+        d = RES / rid / "walk"
+        walk = defaultdict(list)
+        for p in sorted(d.glob("*.json*")) if d.exists() else []:
+            x = load(p)
+            walk[x["spec"]["name"]].append(x)
+        for name, shards in walk.items():
+            nsh = shards[0].get("nshards", 1)
+            if len(shards) != nsh:
+                print(f"warning: {rid} {name}: {len(shards)}/{nsh} shards", file=sys.stderr)
+            out[name] = walk_summary(shards, shards[0]["spec"])
+    return out
+
+
+NEW_KEY = ("env-var", "runtime", "network", "cached-failure")  # rerun reasons added by the v3 key (R-002)
+
+
+def print_compare(before_ids, after_ids):
+    """Setting 1 before/after table: capture v2 (before_ids) vs capture v3 (after_ids), rule by rule."""
+    b, a = walk_summaries(before_ids), walk_summaries(after_ids)
+
+    def ver(w, r):
+        v = (w.get("verify_by_rule") or {}).get(r) if w else None
+        return "n/a" if not v else f"{v.get('checked', 0)} ({v.get('wrong', 0)}, {v.get('flaky', 0)})"
+
+    print("| project | rule | transitions v2 / v3 | time skipped median / mean, v2 | v3 | verified skips "
+          "(wrong, flaky), v2 | v3 | v3 reruns from the new key (env-var, runtime, network, cached failure) |")
+    print("|---|---|---|---:|---:|---|---|---|")
+    for name in sorted(set(b) | set(a)):
+        wb, wa = b.get(name), a.get(name)
+        lang = (wa or wb)["lang"]
+        rules = ["closure", "go-cache"] if lang == "go" else ["closure"]
+        for r in rules:
+            label = "closure (proof; v3 adds the net guard)" if (lang == "go" and r == "closure") else RULE_LABEL.get(r, r)
+            why = (wa or {}).get("closure_rerun_why") or {}
+            new = ", ".join(str(why.get(k, 0)) for k in NEW_KEY) if (wa and r == "closure") else "-"
+            print(f"| {name} | {label} | {(wb or {}).get('transitions', '-')} / {(wa or {}).get('transitions', '-')} | "
+                  f"{ms((wb or {}).get(r, {}).get('time'))} | {ms((wa or {}).get(r, {}).get('time'))} | "
+                  f"{ver(wb, r)} | {ver(wa, r)} | {new} |")
+
+
 def main(argv):
+    if "--compare" in argv:  # aggregate.py --compare r1,r2,r3 v3
+        k = argv.index("--compare")
+        print_compare(argv[k + 1].split(","), argv[k + 2].split(","))
+        return 0
     md = "--md" in argv
     argv = [a for a in argv if a != "--md"]
     run_ids = argv or sorted(p.name for p in RES.iterdir() if p.is_dir())
