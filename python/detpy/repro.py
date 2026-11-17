@@ -76,6 +76,7 @@ class Runner:
     timeout: float = 1800
     env: dict | None = None
     keep_traces: bool = True
+    orders: dict = field(default_factory=dict)
     runs: int = 0
     seconds: float = 0.0
     log: list = field(default_factory=list)
@@ -126,22 +127,33 @@ class Runner:
         for f in self.workdir.glob("*.jsonl"):
             f.unlink(missing_ok=True)
 
-    def collect(self) -> list:
-        out = self.workdir / "collect.json"
+    def order_of(self, config: str) -> list:
+        """The order a whole-suite run with this configuration uses, as the plugin
+        computes it (shuffle, then pytest-django's groups, ...): read from a
+        collect-only run, or from a whole-suite run already made."""
+        if config not in self.orders:
+            self.orders[config] = self.collect(config)
+        return self.orders[config]
+
+    def collect(self, config: str = FIXED) -> list:
+        out = self.workdir / f"collect-{config}.json"
         self.workdir.mkdir(parents=True, exist_ok=True)
         out.unlink(missing_ok=True)
-        cmd = self._cmd(FIXED, ["--collect-only", f"--det-outcomes={out}",
-                                f"--det-trace={self.workdir / 'collect.jsonl'}"])
+        cmd = self._cmd(config, ["--collect-only", f"--det-outcomes={out}",
+                                 f"--det-trace={self.workdir / 'collect.jsonl'}"])
         t0 = time.monotonic()
         p = subprocess.run(cmd, cwd=self.cwd, capture_output=True, text=True, timeout=self.timeout, env=self.env)
         self.seconds += time.monotonic() - t0
         if not out.exists():
             raise RuntimeError("collection failed:\n" + (p.stdout + p.stderr)[-2000:])
-        return json.loads(out.read_text())["order"]
+        order = json.loads(out.read_text())["order"]
+        self.orders.setdefault(config, order)
+        return order
 
 
 def order_for(collected: list, config: str) -> list:
-    """The order a full ``pytest --det [--det-seed=S]`` run uses."""
+    """The shuffle alone (no plugin adjustments such as pytest-django's groups);
+    ``Runner.order_of`` gives the order a run really uses."""
     if config == FIXED:
         return list(collected)
     perm = _core.shuffle_order(list(collected), int(config))
@@ -220,7 +232,7 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
     (``status`` = reproduced | not-found | not-minimised | replay-unstable)."""
     t_start = time.monotonic()
     runs_at_start = runner.runs
-    collected = collected if collected is not None else runner.collect()
+    collected = collected if collected is not None else runner.order_of(FIXED)
     if target not in collected:
         return {"test": target, "status": "not-collected"}
     budget = {"left": max_runs}
@@ -247,7 +259,7 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
         configs = [known_fail] + [c for c in configs if c != known_fail]
     searched = 0
     for config in configs:
-        order = prefix_through(order_for(collected, config), target)
+        order = prefix_through(runner.order_of(config), target)
         r = run_order(config, order, f"search-{config}")
         searched += 1
         if is_fail(r.outcome(target)):
@@ -279,7 +291,7 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
             minimal = []
             # Brittle test: name what makes it pass, from a passing configuration.
             for pconf in passing or ([FIXED] if config != FIXED else []):
-                porder = prefix_through(order_for(collected, pconf), target)
+                porder = prefix_through(runner.order_of(pconf), target)
                 pbefore = porder[: porder.index(target)]
                 if not pbefore:
                     continue
@@ -362,12 +374,14 @@ def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, c
     """Seeds 1..N within the budget; one bundle per failing test (flaky only)."""
     t0 = time.monotonic()
     out_dir.mkdir(parents=True, exist_ok=True)
-    collected = runner.collect()
+    collected = runner.order_of(FIXED)
     seeds_log, fail_cfg, pass_cfg = [], {}, {}
     for s in range(1, max_seeds + 1):
         if time.monotonic() - t0 > budget_s:
             break
         r = runner.run(str(s), None, f"seed-{s}")
+        if r.order:
+            runner.orders.setdefault(str(s), list(r.order))
         if not runner.keep_traces:
             Path(r.trace).unlink(missing_ok=True)
         failing = sorted(n for n, o in r.outcomes.items() if is_fail(o))
