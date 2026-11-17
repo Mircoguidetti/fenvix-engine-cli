@@ -4,8 +4,8 @@ replacement for ``coverage run`` + dynamic contexts in the cache-skip study.
 It records the same thing as coverage.py in statement mode: for every context
 (``t|nodeid``, ``f|...``, ``c|file``, ``s|session``, ``""`` before the first
 switch), the set of lines executed in each file below the root. It is cheaper
-because every (code location, context) pair costs one callback instead of one
-callback per execution:
+because every (code location, context) pair costs at most ``1 + _HOT``
+callbacks instead of one callback per execution:
 
 * No event is enabled globally. ``LINE`` is enabled locally on every code
   object whose file is below the root: module code objects are seen through
@@ -17,14 +17,22 @@ callback per execution:
 * ``PY_START`` is also enabled on the code objects with an *entry line* (see
   ``entry_line``: one-line functions, lambdas, docstring-only functions, empty
   modules), the one line ``LINE`` alone never reports and coverage.py does.
-* Each callback appends one integer (file id, line) to a flat ``array`` and
-  returns ``DISABLE``: a loop body costs one callback, not one per iteration,
-  and nothing is allocated per event (no per-context sets for the garbage
-  collector to traverse).
-* A context switch notes the position in the array and calls
-  ``sys.monitoring.restart_events()``, which re-arms every disabled location,
-  so each line is seen again (once) in the new context. A switch with nothing
-  recorded since the previous restart skips it.
+* The first hit of a location in a context appends one integer (file id,
+  line) to a flat buffer; the next ``_HOT`` hits (default 16) in the same
+  context only count; past that the location is a loop body and the callback
+  returns ``DISABLE``, and its code object is re-armed (``set_local_events``
+  off and on) at the next context switch. Nothing is allocated per event.
+* A context switch notes the position in the buffer and forgets the seen
+  locations. No ``restart_events()``: it re-instruments every code object run
+  afterwards, about 90 ns per line of each function entered (MEASURED), which
+  cost more than the callbacks it saves; only the few code objects with a
+  disabled location are re-armed.
+* The callbacks and the audit-event filter are a small C module
+  (``_sysmon_rec.c``), built on first use with the interpreter's compiler
+  settings (``load_native``): no Python frame per event. Without a compiler the
+  same strategy runs as Python closures (same output, slower), and
+  ``SYSMON_DBG=restart`` keeps the older DISABLE + ``restart_events()``
+  strategy for comparison.
 
 At interpreter exit the raw data (file names, context boundaries, the array
 as bytes) is written as one uncompressed pickle; ``fold`` turns it, outside
@@ -34,10 +42,8 @@ coverage.py writes its data file at exit and ``extract_coverage`` reads it
 afterwards). With ``raw=False`` the process folds and writes the compact form
 itself.
 
-Measured alternatives (see the capture-overhead report): re-arming only the
-code objects with disabled lines (``set_local_events`` off and on) instead of
-``restart_events()`` was not cheaper; keeping LINE armed and de-duplicating in
-the callback is far more expensive on loops.
+Pythons without ``sys.monitoring`` (3.11 and older) use coverage.py, as in the
+study (``capture_plugin``, ``CACHE_SKIP_TRACER=auto``).
 """
 
 from __future__ import annotations
@@ -430,5 +436,8 @@ def fold_file(raw_path: str, out_path: str) -> None:
         pickle.dump(fold(raw), fh, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-if __name__ == "__main__":  # python sysmon_capture.py <raw> <out.cov.pkl.gz>
-    fold_file(sys.argv[1], sys.argv[2])
+if __name__ == "__main__":
+    if sys.argv[1:] == ["--build"]:  # python sysmon_capture.py --build: build the C recorder for this interpreter
+        print("native recorder:", "ok" if load_native() is not None else "unavailable (Python callbacks)")
+    else:  # python sysmon_capture.py <raw> <out.cov.pkl.gz>
+        fold_file(sys.argv[1], sys.argv[2])

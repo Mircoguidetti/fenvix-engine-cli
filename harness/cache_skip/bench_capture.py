@@ -69,6 +69,8 @@ def main(argv=None) -> int:
         cpus = {v: [] for v in variants}
         post = {v: [] for v in variants}  # post-processing outside the test process (extract / fold)
         sh([py, "-m", "pytest", *args], cwd=src, env=dict(env, CACHE_SKIP_MODE="time"))  # warm-up (pyc, page cache)
+        if any(v.startswith("sysmon") for v in variants):  # build the C recorder before the timed runs
+            print(f"{name}: " + sh([py, str(HERE / "sysmon_capture.py"), "--build"], env=env)[1].strip(), flush=True)
         for k in range(a.runs):
             for v in variants:
                 e = dict(env, CACHE_SKIP_OUT=str(tmp / f"{v}.json"), CACHE_SKIP_COV=str(tmp / f"{v}.cov.pkl.gz"))

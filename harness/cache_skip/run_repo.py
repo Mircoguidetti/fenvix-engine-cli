@@ -258,6 +258,8 @@ def main(argv=None) -> int:
             else:
                 tracers = ["coverage", "sysmon"] if a.tracer == "both" else [a.tracer]
             meta["tracers"] = tracers
+            if "sysmon" in tracers:  # build the C recorder once, outside the timed runs
+                meta["sysmon_native"] = sh([py, str(HERE / "sysmon_capture.py"), "--build"], env=env)[1].strip()
         step["args"] = args
         freeze = [x for x in sh(["uv", "pip", "freeze", "--python", py])[1].splitlines() if not x.startswith("detpy")]
         step["freeze"] = hashlib.sha256("\n".join(freeze).encode()).hexdigest()[:16]
