@@ -1,0 +1,258 @@
+{
+ "name": "werkzeug",
+ "set": "popular",
+ "url": "https://github.com/pallets/werkzeug",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009519",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "0f43c6ebd426039e4b99ec22535c2c8a2ec2f69f",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group tests",
+ "collected": 1016,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 7.974,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1016
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 14.483,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1016
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 9.617,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1016
+   },
+   "stats": {
+    "decisions": 1,
+    "switches": 194,
+    "escapes": 3,
+    "deadlocks": 0,
+    "timer_jumps": 5,
+    "managed": 7
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 13.661,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1016
+   },
+   "stats": {
+    "decisions": 1,
+    "switches": 194,
+    "escapes": 3,
+    "deadlocks": 0,
+    "timer_jumps": 5,
+    "managed": 7
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 7.46,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1016
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 9.022,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1016
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 9.475,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1016
+   },
+   "stats": {
+    "decisions": 1,
+    "switches": 194,
+    "escapes": 3,
+    "deadlocks": 0,
+    "timer_jumps": 5,
+    "managed": 7
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 13.21,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1016
+   },
+   "stats": {
+    "decisions": 1,
+    "switches": 194,
+    "escapes": 4,
+    "deadlocks": 0,
+    "timer_jumps": 5,
+    "managed": 7
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 2,
+   "duration_s": 7.451,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1016
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 9.001,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1016
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 2,
+   "duration_s": 9.631,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1016
+   },
+   "stats": {
+    "decisions": 1,
+    "switches": 194,
+    "escapes": 3,
+    "deadlocks": 0,
+    "timer_jumps": 5,
+    "managed": 7
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 2,
+   "duration_s": 13.543,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1016
+   },
+   "stats": {
+    "decisions": 1,
+    "switches": 194,
+    "escapes": 3,
+    "deadlocks": 0,
+    "timer_jumps": 5,
+    "managed": 7
+   },
+   "tail": ""
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
