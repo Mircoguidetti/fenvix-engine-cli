@@ -1,0 +1,224 @@
+{
+ "name": "jinja",
+ "set": "popular",
+ "url": "https://github.com/pallets/jinja",
+ "runner": "ip-10-0-132-196",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009662",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.82.6",
+  "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "5ef70112a1ff19c05324ff889dd30405b1002044",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group tests trio",
+ "collected": 911,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 1.738,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 911
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 3.43,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 891,
+    "failed": 20
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 3.472,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 891,
+    "failed": 20
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_async.py::test_basic_async[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_await_on_calls[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_await_and_macros[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_async_blocks[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::TestAsyncImports::test_exports[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::TestAsyncForLoop::test_loop_errors[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_namespace_awaitable[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_chainable_undefined_aiter[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_native_async[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_native_list_async[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_basic_generate_async[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_include_generate_async[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_blocks_generate_async[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_async_extend[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async_filters.py::test_first[trio-<lambda>0]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async_filters.py::test_first[trio-<lambda>1]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async_filters.py::test_custom_async_filter[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async_filters.py::test_custom_async_iteratable_filter[trio-<lambda>0]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async_filters.py::test_custom_async_iteratable_filter[trio-<lambda>1]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_nativetypes.py::test_string_concatenation[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!"
+   }
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 7.702,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 891,
+    "failed": 20
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_async.py::test_basic_async[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_await_on_calls[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_await_and_macros[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_async_blocks[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::TestAsyncImports::test_exports[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::TestAsyncForLoop::test_loop_errors[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_namespace_awaitable[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_chainable_undefined_aiter[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_native_async[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_native_list_async[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_basic_generate_async[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_include_generate_async[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_blocks_generate_async[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async.py::test_async_extend[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async_filters.py::test_first[trio-<lambda>0]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async_filters.py::test_first[trio-<lambda>1]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async_filters.py::test_custom_async_filter[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async_filters.py::test_custom_async_iteratable_filter[trio-<lambda>0]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_async_filters.py::test_custom_async_iteratable_filter[trio-<lambda>1]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!",
+    "tests/test_nativetypes.py::test_string_concatenation[trio]": "FAILED trio.TrioInternalError: internal error in Trio - please file a bug!"
+   }
+  }
+ ],
+ "suite_seeds": [
+  1
+ ],
+ "mtimes_restored": [
+  1,
+  1,
+  1,
+  1
+ ],
+ "warmup": [
+  {
+   "duration_s": 7.664,
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [
+   "tests/test_async.py::TestAsyncForLoop::test_loop_errors[trio]",
+   "tests/test_async.py::TestAsyncImports::test_exports[trio]",
+   "tests/test_async.py::test_async_blocks[trio]",
+   "tests/test_async.py::test_async_extend[trio]",
+   "tests/test_async.py::test_await_and_macros[trio]",
+   "tests/test_async.py::test_await_on_calls[trio]",
+   "tests/test_async.py::test_basic_async[trio]",
+   "tests/test_async.py::test_basic_generate_async[trio]",
+   "tests/test_async.py::test_blocks_generate_async[trio]",
+   "tests/test_async.py::test_chainable_undefined_aiter[trio]",
+   "tests/test_async.py::test_include_generate_async[trio]",
+   "tests/test_async.py::test_namespace_awaitable[trio]",
+   "tests/test_async.py::test_native_async[trio]",
+   "tests/test_async.py::test_native_list_async[trio]",
+   "tests/test_async_filters.py::test_custom_async_filter[trio]",
+   "tests/test_async_filters.py::test_custom_async_iteratable_filter[trio-<lambda>0]",
+   "tests/test_async_filters.py::test_custom_async_iteratable_filter[trio-<lambda>1]",
+   "tests/test_async_filters.py::test_first[trio-<lambda>0]",
+   "tests/test_async_filters.py::test_first[trio-<lambda>1]",
+   "tests/test_nativetypes.py::test_string_concatenation[trio]"
+  ],
+  "n_broken": 20,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 1,
+  "loaded_runs": 5
+ }
+}
