@@ -1,10 +1,7 @@
 {
- "run_id": "r2",
+ "run_id": "r3",
+ "note": "home-assistant only (Python 3.14 needs the fsorder fix in patch 6); r2 has the 14 libraries and pylint",
  "walk": [
-  {"spec": "arrow"}, {"spec": "attrs"}, {"spec": "boltons"}, {"spec": "click"}, {"spec": "flask"},
-  {"spec": "isort"}, {"spec": "jinja"}, {"spec": "marshmallow"}, {"spec": "more-itertools"}, {"spec": "pygments"},
-  {"spec": "sqlparse"}, {"spec": "structlog"}, {"spec": "toolz"}, {"spec": "werkzeug"},
-  {"spec": "pylint"},
-  {"spec": "home-assistant", "shards": 16}
+  {"spec": "home-assistant", "shards": 16, "commit_every": 2}
  ]
 }

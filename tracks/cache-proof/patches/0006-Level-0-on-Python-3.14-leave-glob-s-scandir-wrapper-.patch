@@ -1,0 +1,128 @@
+From ee027292a8e5ad4d703b00bc85ed208a23eb8e44 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 07:55:11 +0000
+Subject: [PATCH 6/6] Level 0 on Python 3.14: leave glob's scandir wrapper
+ alone (pytest failed at startup under --det); proxies named other than
+ localhost that resolve to loopback, or do not resolve, make every loopback
+ connect to their port external (review R-002c)
+
+* fsorder: Python 3.14's _StringGlobber.scandir yields (entry, name, path) and calls os.scandir at run time;
+  replacing it with the sorted os.scandir broke every Path.glob (TypeError at pytest's anchor discovery).
+  Patch it only where it is os.scandir itself (3.13). Engine suite on 3.14: 107 passed, 6 skipped.
+* network: _proxy_endpoints resolves proxy host names; loopback (127.0.1.1, ::1, mapped) or unresolvable ->
+  ("*", port): any loopback host on that port is external.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ python/detpy/fsorder.py |  5 +++--
+ python/detpy/network.py | 29 +++++++++++++++++++++++++----
+ tests/test_network.py   | 28 ++++++++++++++++++++++++++++
+ 3 files changed, 56 insertions(+), 6 deletions(-)
+
+diff --git a/python/detpy/fsorder.py b/python/detpy/fsorder.py
+index af5a7c6..19cd409 100644
+--- a/python/detpy/fsorder.py
++++ b/python/detpy/fsorder.py
+@@ -124,9 +124,10 @@ def install(patcher: Patcher) -> None:
+     patcher.set(os, "scandir", disguise(scandir, "os", "scandir"))
+     patcher.set(glob, "glob", disguise(glob_glob, "glob", "glob", binds=True))
+     patcher.set(glob, "iglob", disguise(glob_iglob, "glob", "iglob", binds=True))
+-    # Python 3.13+: pathlib globbing binds os.scandir at class creation.
++    # Python 3.13: pathlib globbing binds os.scandir at class creation (3.14 wraps it in a function that
++    # yields (entry, name, path) and looks os.scandir up at call time: leave that one alone).
+     globber = getattr(glob, "_StringGlobber", None)
+-    if globber is not None and "scandir" in vars(globber):
++    if globber is not None and getattr(vars(globber).get("scandir"), "__func__", None) is _real_scandir:
+         patcher.set(globber, "scandir", staticmethod(scandir))
+     patcher.set(pathlib.Path, "iterdir", path_iterdir)
+     patcher.set(pathlib.Path, "glob", path_glob)
+diff --git a/python/detpy/network.py b/python/detpy/network.py
+index 9abdb5d..cd006e2 100644
+--- a/python/detpy/network.py
++++ b/python/detpy/network.py
+@@ -84,12 +84,33 @@ def _proxy_endpoints() -> set:
+         except ValueError:
+             continue
+         host = (parts.hostname or "").lower()
+-        if host and _is_local_name(host):
+-            for h in (host, "127.0.0.1", "::1", "localhost"):
+-                out.add((h, port))
++        if host and (_is_local_name(host) or _resolves_local(host, port)):
++            # any loopback address on that port is the proxy (127.0.1.1, ::1, a name mapped in /etc/hosts)
++            out.add(("*", port))
++            out.add((host, port))
+     return out
+ 
+ 
++def _resolves_local(host: str, port: int) -> bool:
++    """A proxy name other than localhost that maps to loopback (/etc/hosts: "runsc", the machine name ->
++    127.0.1.1), or that cannot be resolved here: conservatively local (review R-002c)."""
++    if _is_ip(host):
++        return False
++    try:
++        infos = _real_getaddrinfo(host, port, proto=socket.IPPROTO_TCP)
++    except (OSError, UnicodeError):
++        return True
++    for info in infos:
++        try:
++            ip = ipaddress.ip_address(str(info[4][0]).split("%", 1)[0])
++        except ValueError:
++            continue
++        mapped = getattr(ip, "ipv4_mapped", None)
++        if ip.is_loopback or ip.is_unspecified or (mapped is not None and mapped.is_loopback):
++            return True
++    return not infos
++
++
+ class _Policy:
+     def __init__(self, mode: str, cassette, allow_hosts) -> None:
+         self.mode = mode  # block | record | replay
+@@ -111,7 +132,7 @@ class _Policy:
+         return self.host_of_fake.get(host) or self.host_of_ip.get(host) or host
+ 
+     def external(self, host: str, port) -> bool:
+-        if (host.lower(), port) in self.proxies:
++        if (host.lower(), port) in self.proxies or (("*", port) in self.proxies and _is_local_name(host)):
+             return True
+         if _is_local_name(host):
+             return False
+diff --git a/tests/test_network.py b/tests/test_network.py
+index a9e4a9a..57d04ad 100644
+--- a/tests/test_network.py
++++ b/tests/test_network.py
+@@ -198,3 +198,31 @@ def test_local_name_detection():
+     assert network._is_local_name("api.localhost")
+     assert not network._is_local_name("example.com")
+     assert not network._is_local_name("10.0.0.1")
++
++
++def test_proxy_named_other_than_localhost_that_maps_to_loopback(monkeypatch):
++    # review R-002c: HTTPS_PROXY=http://runsc:41047 with /etc/hosts mapping runsc to 127.0.0.1 (or the machine name
++    # to 127.0.1.1): any loopback connect to that port is the proxy, so it is external
++    real = network._real_getaddrinfo
++
++    def fake(host, port, *a, **k):
++        if host == "runsc":
++            return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("127.0.1.1", port))]
++        if host == "proxy.unresolvable.invalid":
++            raise socket.gaierror("no such name")
++        if host == "corp-proxy.example":
++            return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("203.0.113.7", port))]
++        return real(host, port, *a, **k)
++
++    monkeypatch.setattr(network, "_real_getaddrinfo", fake)
++    for var in ("http_proxy", "https_proxy", "all_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY"):
++        monkeypatch.delenv(var, raising=False)
++    monkeypatch.setenv("HTTPS_PROXY", "http://runsc:41047")
++    monkeypatch.setenv("HTTP_PROXY", "http://proxy.unresolvable.invalid:3128")
++    monkeypatch.setenv("ALL_PROXY", "http://corp-proxy.example:8080")
++    policy = network._Policy("block", None, [])
++    for host in ("127.0.0.1", "127.0.1.1", "::1", "localhost"):
++        assert policy.external(host, 41047)
++        assert policy.external(host, 3128)  # not resolvable here: conservatively loopback
++    assert not policy.external("127.0.0.1", 8080)  # the proxy is not on loopback: its address is external anyway
++    assert not policy.external("127.0.0.1", 5432)  # other loopback ports stay local
+-- 
+2.43.0
+
