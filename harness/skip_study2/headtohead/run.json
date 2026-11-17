@@ -1,67 +1,64 @@
 {
- "run_id": "h2",
- "note": "h1 = main + env + runtime arms (run 44123885253); h2 = home-root arm",
+ "run_id": "h3",
+ "note": "h1 = main + env + runtime arms (run 44123885253); h2 = home-root arm (run 44136144219); h3 = main re-walk of the Python projects with the per-test coverage rules Ae / Af (pygments with its data-driven test directories as units)",
  "jobs": [
-  {
-   "spec": "docusaurus",
-   "arms": [
-    "home-root"
-   ],
-   "arm_budget_min": 150,
-   "arm_commits": 11
-  },
-  {
-   "spec": "vue-core",
-   "arms": [
-    "home-root"
-   ],
-   "arm_budget_min": 150,
-   "arm_commits": 11
-  },
   {
    "spec": "home-assistant",
    "shards": 8,
-   "only_shards": [
-    0,
-    1
-   ],
    "arms": [
-    "home-root"
+    "main"
    ],
-   "arm_budget_min": 300,
-   "arm_commits": 11
+   "budget_min": 300
+  },
+  {
+   "spec": "pygments",
+   "arms": [
+    "main"
+   ],
+   "budget_min": 300
+  },
+  {
+   "spec": "isort",
+   "arms": [
+    "main"
+   ],
+   "budget_min": 200
   },
   {
    "spec": [
     "arrow",
     "attrs",
     "boltons",
-    "click",
-    "flask",
-    "isort",
-    "jinja"
+    "click"
    ],
    "arms": [
-    "home-root"
+    "main"
    ],
-   "arm_budget_min": 45,
-   "arm_commits": 11
+   "budget_min": 75
   },
   {
    "spec": [
+    "flask",
+    "jinja",
     "marshmallow",
-    "more-itertools",
-    "pygments",
+    "more-itertools"
+   ],
+   "arms": [
+    "main"
+   ],
+   "budget_min": 75
+  },
+  {
+   "spec": [
     "sqlparse",
     "structlog",
     "toolz",
     "werkzeug"
    ],
    "arms": [
-    "home-root"
+    "main"
    ],
-   "arm_budget_min": 45,
-   "arm_commits": 11
+   "budget_min": 75
   }
  ]
 }

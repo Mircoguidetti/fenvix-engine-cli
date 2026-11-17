@@ -70,6 +70,10 @@ def lib(name):
     }
 
 
+# data-driven tests collected by a conftest from non-Python files: one unit per directory (pygments golden files)
+DIR_UNITS = {"pygments": ["tests/examplefiles", "tests/snippets"]}
+
+
 def main():
     out = HERE / "specs"
     out.mkdir(exist_ok=True)
@@ -80,6 +84,8 @@ def main():
         print(n, len(s["seq"]["commits"]), "commits")
     for n in LIBS:
         s = lib(n)
+        if n in DIR_UNITS:
+            s["dir_units"] = DIR_UNITS[n]
         (out / f"{n}.json").write_text(json.dumps(s, indent=1) + "\n")
         print(n, len(s["seq"]["commits"]), "commits", s["cmd"][3:-1])
 

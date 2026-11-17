@@ -10,6 +10,12 @@ failure, so the rules differ only in what they treat as a dependency):
   build/test configuration such as vitest.config.ts / tsconfig.json / pyproject.toml). Not seen, as the vendors'
   docs admit: installed packages, data files, configuration, environment variables, runtime, network.
   The loaded set is a superset of the covered set, so A here skips at most what a coverage tool would skip.
+* ``Ae`` (Python only; per-test coverage shape, file level): A, except that a changed repository ``.py`` file
+  counts only when it is the unit's own file or the unit *executed a function defined in it* (sys.monitoring
+  PY_START; code that only ran at import time, module bodies and class bodies, does not count, as in per-test
+  coverage contexts).
+* ``Af`` (Python only; Codecov ATS shape, function level): reruns only when the unit's own file changed or the
+  definition of a function it executed changed (``pyskel.changed_functions``); module-level changes are not seen.
 * ``B`` (Nx Ultracache shape, literal: "files read"): reruns only when a file the unit opened read-only (repository,
   virtualenv / node_modules) changed or vanished. Not seen: environment variables, files opened read-write, network,
   runtime identity, paths stat'ed / found missing, directory listings.
@@ -67,9 +73,10 @@ S2 = HERE.parent
 sys.path.insert(0, str(S2))
 import walk as W  # noqa: E402
 from walk import Hasher, Walker, git, log, outcome_summary, sh, strict_config_hit  # noqa: E402
+from pyskel import changed_functions, defs  # noqa: E402
 
-RULES = ("C", "A", "B", "B+")
-OWN = ("A", "B", "B+")
+RULES_ALL = ("C", "A", "Ae", "Af", "B", "B+")
+PY_ONLY = ("Ae", "Af")
 CODE_EXT = (".py", ".pyw", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts", ".vue")
 ALT_TZ = "America/Los_Angeles"
 ALT_LANG = "en_US.UTF-8"
@@ -87,11 +94,14 @@ class H2H(Walker):
         self.max_rechecks = max_rechecks
         self.profile = 0
         self.base_env = False
-        self.rrec = {r: {} for r in OWN}
+        self.rules_h = tuple(r for r in RULES_ALL if self.lang == "pytest" or r not in PY_ONLY)
+        self.own = tuple(r for r in self.rules_h if r != "C")
+        self.rrec = {r: {} for r in self.own}
+        self._pycache = {}
         self.last_dep = {0: None, 1: None}
         self.candidates = {}   # (unit, rec_sha, rec_profile) -> {"rules": set, "i": [...], "cached": summary}
         self.alt = {}
-        self.result.update({"h2h": 2, "arm": self.arm, "rules": list(RULES), "profiles": {}, "rechecks": []})
+        self.result.update({"h2h": 3, "arm": self.arm, "rules": list(self.rules_h), "profiles": {}, "rechecks": []})
         if self.arm:
             self.prepare_arm()
 
@@ -259,6 +269,8 @@ class H2H(Walker):
             return "no-result"
         if not good(rec.get("code")):
             return "cached-failure"
+        if rule in PY_ONLY:
+            return self.py_cov_decide(unit, rec, i_sha, rule)
         rw = set(d.get("rw", []))
         for p, h in d["reads"].items():
             if rule == "A":
@@ -289,6 +301,51 @@ class H2H(Walker):
                     if {".".join(parts[k:]) for k in range(len(parts))} & tried:
                         return "import-resolution"
         return None
+
+    def _py_pair(self, j_sha, i_sha, rel):
+        key = (j_sha, i_sha, rel)
+        if key not in self._pycache:
+            old, new = self.blob(j_sha, rel), self.blob(i_sha, rel)
+            if old is None or new is None:
+                self._pycache[key] = (None, None, None)
+            else:
+                same, ch, ok = changed_functions(old, new)
+                self._pycache[key] = (set(defs(old) or {}), ch, ok)
+        return self._pycache[key]
+
+    def py_cov_decide(self, unit, rec, i_sha, rule):
+        d = rec["deps"]
+        src = str(self.src) + "/"
+        execd = {}
+        for f, q in (d.get("py") or {}).get("funcs", []):
+            execd.setdefault(f, set()).add(q)
+        for p, h in d["reads"].items():
+            if not (p.startswith(src) and p.endswith((".py", ".pyw"))) or "/node_modules/" in p:
+                continue
+            if self.hasher.file(p) == h:
+                continue
+            rel = p[len(src):]
+            if rel == unit:
+                return "own-file"
+            ran = execd.get(rel)
+            if not ran:
+                continue
+            fdefs, ch, ok = self._py_pair(rec["sha"], i_sha, rel)
+            if fdefs is None:
+                return "py-unreadable"
+            if not ok:
+                return "py-syntax"
+            ran_funcs = ran & fdefs   # executed functions (not module or class bodies)
+            if rule == "Ae" and ran_funcs:
+                return "py-executed-file"
+            if rule == "Af" and (ch & ran_funcs):
+                return "py-executed-function"
+        return None
+
+    def discover(self):
+        units, total = super().discover()
+        extra = [x for x in self.spec.get("dir_units", []) if (self.src / x).is_dir()]
+        return sorted(set(units) | set(extra)), total + len(extra)
 
     def all_changes(self, rec):
         """Every class of change between ``rec`` and now (for attributing a mismatch), not only the first."""
@@ -378,14 +435,14 @@ class H2H(Walker):
             dec = {}
             for u in units:
                 c = self.decide(u, self.records.get(u), sha, commits)[0]["closure"]
-                dec[u] = {"C": c, **{r: self.rule_decide(u, self.rrec[r].get(u), sha, r) for r in OWN}}
+                dec[u] = {"C": c, **{r: self.rule_decide(u, self.rrec[r].get(u), sha, r) for r in self.own}}
             must_c = [u for u in units if dec[u]["C"]]
             must_any = [u for u in units if any(dec[u].values())]
             skip_c = [u for u in units if not dec[u]["C"]]
             ver = [u for u in skip_c if self.rng.random() < verify] if i else []
             torun = sorted(set(must_any) | set(ver))
             log(f"[{i}] {sha[:10]} p{self.profile} units {len(units)} " +
-                " ".join(f"{r}:{sum(1 for u in units if dec[u][r])}" for r in RULES) +
+                " ".join(f"{r}:{sum(1 for u in units if dec[u][r])}" for r in self.rules_h) +
                 f" verify {len(ver)} run {len(torun)} changed {len(changed)}")
             runs = {}
 
@@ -408,13 +465,13 @@ class H2H(Walker):
             for u, r in runs.items():
                 r.update(sha=sha, i=i, profile=self.profile)
             # comparisons: every rule's skip of a unit that ran fresh here
-            checks = {r: {"n": 0, "extra": 0, "sample": 0} for r in RULES}
+            checks = {r: {"n": 0, "extra": 0, "sample": 0} for r in self.rules_h}
             mism = []
             reruns = {}
             if i:
                 for u in torun:
                     new = runs[u]
-                    for r in RULES:
+                    for r in self.rules_h:
                         if dec[u][r] is not None:
                             continue
                         old = (self.records if r == "C" else self.rrec[r]).get(u)
@@ -422,6 +479,7 @@ class H2H(Walker):
                             continue
                         checks[r]["n"] += 1
                         checks[r]["extra" if dec[u]["C"] else "sample"] += 1
+                        checks[r].setdefault("keys", []).append([u, old.get("i")])
                         k, a, b = self.kind(old, new)
                         if k == "same":
                             continue
@@ -458,14 +516,15 @@ class H2H(Walker):
             for u in must_c + ver:
                 if u in runs:
                     self.records[u] = runs[u]
-            for r in OWN:
+            for r in self.own:
                 for u in units:
                     if dec[u][r] is not None and u in runs:
                         self.rrec[r][u] = runs[u]
             if i:
                 self.result["transitions"].append({
                     "i": i, "sha": sha, "profile": self.profile, "units": len(units), "changed_files": len(changed),
-                    "decisions": {u: {r: dec[u][r] for r in RULES if dec[u][r]} for u in units if any(dec[u].values())},
+                    "decisions": {u: {r: dec[u][r] for r in self.rules_h if dec[u][r]} for u in units
+                                  if any(dec[u].values())},
                     "checks": checks, "mismatch": mism, "verify_sample": len(ver),
                     "tests": {u: self.costs.get(u, {}).get("n", 0) for u in units}})
             row.update(status="ok", ran=len(runs), seconds=time.time() - t_commit,

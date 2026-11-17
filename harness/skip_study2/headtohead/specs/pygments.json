@@ -109,5 +109,9 @@
  ],
  "unit_timeout": 600,
  "verify": 1.0,
- "plain_baseline": true
+ "plain_baseline": true,
+ "dir_units": [
+  "tests/examplefiles",
+  "tests/snippets"
+ ]
 }

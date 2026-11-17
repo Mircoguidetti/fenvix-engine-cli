@@ -23,7 +23,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-RULES = ("A", "B", "B+", "C")
+RULES = ("A", "Ae", "Af", "B", "B+", "C")
 LIBS = ("arrow attrs boltons click flask isort jinja marshmallow more-itertools pygments sqlparse structlog toolz "
         "werkzeug").split()
 
@@ -57,6 +57,8 @@ def summarize(shards):
     full = sorted(i for i, ts in by_i.items() if len(ts) == len(shards))
     share = {r: [] for r in RULES}
     checks = {r: Counter() for r in RULES}
+    keys = {r: set() for r in RULES}
+    present = {r for d in shards for r in d.get("rules", ["C", "A", "B", "B+"])}
     mism = {r: [] for r in RULES}
     skips = {r: 0 for r in RULES}
     unit_tr = 0
@@ -66,13 +68,18 @@ def summarize(shards):
             live += list(t["tests"])
             dec.update(t["decisions"])
             for r in RULES:
-                checks[r].update(t["checks"][r])
+                ck = t["checks"].get(r)
+                if ck:
+                    checks[r].update({k: v for k, v in ck.items() if k != "keys"})
+                    keys[r].update((u, ri) for u, ri in ck.get("keys", []))
             for m in t["mismatch"]:
                 mism[m["rule"]].append(dict(m, i=i))
         live = [u for u in live if u in cost]
         tot = sum(cost[u] for u in live)
         unit_tr += len(live)
         for r in RULES:
+            if r not in present:
+                continue
             must = sum(cost[u] for u in live if (dec.get(u) or {}).get(r))
             share[r].append(1 - must / tot if tot else None)
             skips[r] += sum(1 for u in live if not (dec.get(u) or {}).get(r))
@@ -84,7 +91,8 @@ def summarize(shards):
            "profiles": shards[0].get("profiles"), "interp": sorted({c.get("interp", "") for d in shards
                                                                     for c in d["commits"] if c.get("interp")}),
            "notes": sorted({n for d in shards for n in d.get("notes", [])})}
-    for r in RULES:
+    out["rules"] = [r for r in RULES if r in present]
+    for r in out["rules"]:
         cls = Counter()
         wrong_items, incidents, why = [], set(), Counter()
         for m in mism[r]:
@@ -106,6 +114,7 @@ def summarize(shards):
             else:
                 cls["unconfirmed"] += 1
         out[r] = {"time": stats(share[r]), "skips": skips[r], "checked": checks[r]["n"],
+                  "checked_distinct": len(keys[r]),
                   "checked_extra": checks[r]["extra"], "checked_sample": checks[r]["sample"],
                   "wrong": cls["wrong"], "wrong_incidents": len(incidents), "flaky": cls["flaky"],
                   "unconfirmed": cls["unconfirmed"], "set_diff": cls["set"],
@@ -124,7 +133,8 @@ def row(name, s, r):
     x = s[r]
     t = x["time"]
     return (f"| {name} | {r} | {s['transitions']} | {pct(t['median'])} / {pct(t['mean'])} | {x['checked']} "
-            f"({x['checked_extra']} extra + {x['checked_sample']} sample) | **{x['wrong']}** "
+            f"({x['checked_extra']} extra + {x['checked_sample']} sample; {x['checked_distinct'] or 'n/a'} distinct) | "
+            f"**{x['wrong']}** "
             f"({x['wrong_incidents']} incidents) | {x['flaky']} | {x['unconfirmed']} | {x['set_diff']} |")
 
 
@@ -133,18 +143,22 @@ HEAD = ("| project | rule | transitions | time skipped median / mean | verified 
 
 
 def pooled(sums, names):
-    """Libraries pooled: every transition of every library weighted equally; counts summed."""
+    """Pooled over projects: every transition of every project weighted equally; counts summed. A rule is pooled
+    over the projects that have it (Ae / Af: Python only)."""
     out = {}
     for r in RULES:
-        series = [x for n in names if n in sums for x in sums[n][r]["share_series"] if x is not None]
-        out[r] = {"time": stats(series),
-                  "median_of_medians": statistics.median([sums[n][r]["time"]["median"] for n in names if n in sums
-                                                          and sums[n][r]["time"]["median"] is not None] or [0]),
-                  "mean_of_means": statistics.fmean([sums[n][r]["time"]["mean"] for n in names if n in sums
-                                                     and sums[n][r]["time"]["mean"] is not None] or [0])}
-        for k in ("skips", "checked", "checked_extra", "checked_sample", "wrong", "wrong_incidents", "flaky",
-                  "unconfirmed", "set_diff"):
-            out[r][k] = sum(sums[n][r][k] for n in names if n in sums)
+        ns = [n for n in names if n in sums and r in sums[n].get("rules", [])]
+        if not ns:
+            continue
+        series = [x for n in ns for x in sums[n][r]["share_series"] if x is not None]
+        out[r] = {"projects": len(ns), "time": stats(series),
+                  "median_of_medians": statistics.median([sums[n][r]["time"]["median"] for n in ns
+                                                          if sums[n][r]["time"]["median"] is not None] or [0]),
+                  "mean_of_means": statistics.fmean([sums[n][r]["time"]["mean"] for n in ns
+                                                     if sums[n][r]["time"]["mean"] is not None] or [0])}
+        for k in ("skips", "checked", "checked_distinct", "checked_extra", "checked_sample", "wrong",
+                  "wrong_incidents", "flaky", "unconfirmed", "set_diff"):
+            out[r][k] = sum(sums[n][r][k] for n in ns)
     out["transitions"] = sum(sums[n]["transitions"] for n in names if n in sums)
     return out
 
@@ -166,7 +180,7 @@ def main(argv=None):
         order = [n for n in ("home-assistant", "docusaurus", "vue-core") if n in sums] + \
                 [n for n in LIBS if n in sums]
         for n in order:
-            for r in RULES:
+            for r in sums[n]["rules"]:
                 print(row(n, sums[n], r))
         libs = [n for n in LIBS if n in sums]
         if libs:
@@ -177,14 +191,14 @@ def main(argv=None):
                 f"{pct(p[r]['median_of_medians'])}, mean-of-means {pct(p[r]['mean_of_means'])}), checked "
                 f"{p[r]['checked']} ({p[r]['checked_extra']} extra), wrong {p[r]['wrong']} "
                 f"({p[r]['wrong_incidents']} incidents), flaky {p[r]['flaky']}, unconfirmed {p[r]['unconfirmed']}, "
-                f"set {p[r]['set_diff']}" for r in RULES))
+                f"set {p[r]['set_diff']}" for r in RULES if r in p))
         allp = pooled(sums, [n for n in sums if not n.startswith("_")])
         sums["_all"] = allp
         print("\nall projects pooled (each transition weighted equally): " + "; ".join(
             f"{r}: {pct(allp[r]['time']['median'])} / {pct(allp[r]['time']['mean'])}, wrong {allp[r]['wrong']} "
-            f"({allp[r]['wrong_incidents']} incidents) of {allp[r]['checked']} verified" for r in RULES))
+            f"({allp[r]['wrong_incidents']} incidents) of {allp[r]['checked']} verified" for r in RULES if r in allp))
         for n in [x for x in sums if not x.startswith("_")]:
-            for r in RULES:
+            for r in sums[n]["rules"]:
                 if sums[n][r]["wrong"]:
                     print(f"  wrong {n} {r}: why {sums[n][r]['wrong_why']} e.g. {sums[n][r]['wrong_examples'][:2]}")
     if a.json:
