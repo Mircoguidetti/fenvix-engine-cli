@@ -1,0 +1,569 @@
+{
+ "_comment": "Track l1-threads (P-012). 'corpus': the 10 easypy thread tests of Block 2 (each with its minimised order) and the class-a tests of the mixed round that have a stable id (the 18 marshmallow class-a rows are one test whose id contains the wall-clock time at collection: no stable id, not a thread problem). 'suites': the Block 1 popular pool (25) plus easypy, full suites, for tests broken by --det-threads and slowdown.",
+ "excluded_class_a": [
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:21:47]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:21:58]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:02]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:06]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:14]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:18]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:22]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:26]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:30]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:21:47 2026-11-16]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:21:58 2026-11-16]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:02 2026-11-16]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:06 2026-11-16]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:14 2026-11-16]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:18 2026-11-16]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:22 2026-11-16]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:26 2026-11-16]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  },
+  {
+   "repo": "marshmallow",
+   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:30 2026-11-16]",
+   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+  }
+ ],
+ "corpus": [
+  {
+   "name": "idoft-easypy",
+   "set": "easypy-block2",
+   "url": "https://github.com/weka-io/easypy",
+   "sha": "9501c3ee03dc",
+   "python": [
+    "3.9"
+   ],
+   "tests": {
+    "tests/test_concurrency.py::test_multiexception_api[concurrent]": "block2 thread test (order-dependent failure)",
+    "tests/test_concurrency.py::test_multiobject_1": "block2 thread test (order-dependent failure)",
+    "tests/test_concurrency.py::test_multiobject_exceptions": "block2 thread test (order-dependent failure)",
+    "tests/test_concurrency.py::test_multiobject_logging": "block2 thread test (order-dependent failure)",
+    "tests/test_concurrency.py::test_thread_stacks": "block2 thread test (order-dependent failure)",
+    "tests/test_sync.py::test_logged_condition": "block2 thread test (order-dependent failure)",
+    "tests/test_sync.py::test_logged_lock": "block2 thread test (order-dependent failure)",
+    "tests/test_sync.py::test_synchronization_coordinator_failing_context_manager": "block2 thread test (order-dependent failure)",
+    "tests/test_sync.py::test_synchronization_coordinator_timeout": "block2 thread test (order-dependent failure)",
+    "tests/test_sync.py::test_synchronization_coordinator_with_multiobject_exception": "block2 thread test (order-dependent failure)"
+   },
+   "orders": {
+    "tests/test_concurrency.py::test_multiexception_api[concurrent]": [
+     "test_package.py::test_package[properties]",
+     "test_package.py::test_package[logging]",
+     "tests/test_concurrency.py::test_multiexception_api[concurrent]"
+    ],
+    "tests/test_concurrency.py::test_multiobject_1": [
+     "test_package.py::test_package[properties]",
+     "test_package.py::test_package[logging]",
+     "tests/test_concurrency.py::test_multiobject_1"
+    ],
+    "tests/test_concurrency.py::test_multiobject_exceptions": [
+     "test_package.py::test_package[properties]",
+     "test_package.py::test_package[logging]",
+     "tests/test_concurrency.py::test_multiobject_exceptions"
+    ],
+    "tests/test_concurrency.py::test_multiobject_logging": [
+     "tests/test_concurrency.py::test_multiobject_logging"
+    ],
+    "tests/test_concurrency.py::test_thread_stacks": [
+     "test_package.py::test_package[lockstep]",
+     "tests/test_concurrency.py::test_thread_stacks"
+    ],
+    "tests/test_sync.py::test_logged_condition": [
+     "test_package.py::test_package[lockstep]",
+     "tests/test_sync.py::test_logged_condition"
+    ],
+    "tests/test_sync.py::test_logged_lock": [
+     "test_package.py::test_package[lockstep]",
+     "tests/test_sync.py::test_logged_lock"
+    ],
+    "tests/test_sync.py::test_synchronization_coordinator_failing_context_manager": [
+     "test_package.py::test_package[properties]",
+     "test_package.py::test_package[logging]",
+     "tests/test_sync.py::test_synchronization_coordinator_failing_context_manager"
+    ],
+    "tests/test_sync.py::test_synchronization_coordinator_timeout": [
+     "test_package.py::test_package[properties]",
+     "test_package.py::test_package[logging]",
+     "tests/test_sync.py::test_synchronization_coordinator_timeout"
+    ],
+    "tests/test_sync.py::test_synchronization_coordinator_with_multiobject_exception": [
+     "test_package.py::test_package[properties]",
+     "test_package.py::test_package[logging]",
+     "tests/test_sync.py::test_synchronization_coordinator_with_multiobject_exception"
+    ]
+   }
+  },
+  {
+   "name": "anyio",
+   "set": "class-a",
+   "url": "https://github.com/agronholm/anyio",
+   "sha": "9df02f0b8362",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "tests": {
+    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+uvloop]": "class a",
+    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]": "class a",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]": "class a",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]": "class a",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]": "class a",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]": "class a",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]": "class a",
+    "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]": "class a",
+    "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio+uvloop]": "class a",
+    "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]": "class a"
+   }
+  },
+  {
+   "name": "idoft-freezegun",
+   "set": "class-a",
+   "url": "https://github.com/spulec/freezegun",
+   "sha": "b46da782a7a0",
+   "python": [
+    "3.9"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "tests": {
+    "tests/test_ticking.py::test_ticking_time": "class a"
+   }
+  },
+  {
+   "name": "idoft-panamah-sdk-python",
+   "set": "class-a",
+   "url": "https://github.com/casamagalhaes/panamah-sdk-python",
+   "sha": "746f3fb7ebcf",
+   "python": [
+    "3.9"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "tests": {
+    "tests/test_stream.py::TestStream::test_events": "class a"
+   }
+  },
+  {
+   "name": "idoft-pymq",
+   "set": "class-a",
+   "url": "https://github.com/thrau/pymq",
+   "sha": "101857bca2b7",
+   "python": [
+    "3.9"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "tests": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "class a"
+   }
+  }
+ ],
+ "suites": [
+  {
+   "name": "anyio",
+   "set": "popular",
+   "url": "https://github.com/agronholm/anyio",
+   "sha": "9df02f0b8362",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {},
+   "suite_args": [
+    "--ignore=tests/test_pytest_plugin.py"
+   ]
+  },
+  {
+   "name": "arrow",
+   "set": "popular",
+   "url": "https://github.com/arrow-py/arrow",
+   "sha": "2224255c4acc",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "attrs",
+   "set": "popular",
+   "url": "https://github.com/python-attrs/attrs",
+   "sha": "2a1fb86d4481",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "boltons",
+   "set": "popular",
+   "url": "https://github.com/mahmoud/boltons",
+   "sha": "d31d821d56c8",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "click",
+   "set": "popular",
+   "url": "https://github.com/pallets/click",
+   "sha": "e38188e9e205",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "dateutil",
+   "set": "popular",
+   "url": "https://github.com/dateutil/dateutil",
+   "sha": "a78cbd81d5d0",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "freezegun",
+    "hypothesis"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "faker",
+   "set": "popular",
+   "url": "https://github.com/joke2k/faker",
+   "sha": "affa2c5aada2",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "freezegun",
+    "validators",
+    "ukpostcodeparser",
+    "sphinx"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "flask",
+   "set": "popular",
+   "url": "https://github.com/pallets/flask",
+   "sha": "49943b5a9441",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "humanize",
+   "set": "popular",
+   "url": "https://github.com/python-humanize/humanize",
+   "sha": "a95004512dde",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "freezegun"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "isort",
+   "set": "popular",
+   "url": "https://github.com/PyCQA/isort",
+   "sha": "eb62da318ea5",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "hypothesis",
+    "hypothesmith",
+    "pytest-mock"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "jinja",
+   "set": "popular",
+   "url": "https://github.com/pallets/jinja",
+   "sha": "5ef70112a1ff",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "trio"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "jsonschema",
+   "set": "popular",
+   "url": "https://github.com/python-jsonschema/jsonschema",
+   "sha": "64b62de5df4e",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "marshmallow",
+   "set": "popular",
+   "url": "https://github.com/marshmallow-code/marshmallow",
+   "sha": "777ff66039fd",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "more-itertools",
+   "set": "popular",
+   "url": "https://github.com/more-itertools/more-itertools",
+   "sha": "ceafee8ce96f",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "networkx",
+   "set": "popular",
+   "url": "https://github.com/networkx/networkx",
+   "sha": "2e0ae8ad9578",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "numpy",
+    "scipy"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "packaging",
+   "set": "popular",
+   "url": "https://github.com/pypa/packaging",
+   "sha": "5a7d3386d277",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "pretend"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "pluggy",
+   "set": "popular",
+   "url": "https://github.com/pytest-dev/pluggy",
+   "sha": "46a80723004b",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "pygments",
+   "set": "popular",
+   "url": "https://github.com/pygments/pygments",
+   "sha": "156d85fdd18d",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "wcag-contrast-ratio"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "requests",
+   "set": "popular",
+   "url": "https://github.com/psf/requests",
+   "sha": "3c7baaa05ab4",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "rich",
+   "set": "popular",
+   "url": "https://github.com/Textualize/rich",
+   "sha": "3a109ccdffe5",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "attrs"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "sortedcontainers",
+   "set": "popular",
+   "url": "https://github.com/grantjenks/python-sortedcontainers",
+   "sha": "3ac358631f58",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "sqlparse",
+   "set": "popular",
+   "url": "https://github.com/andialbrecht/sqlparse",
+   "sha": "09dbe1eec31e",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "structlog",
+   "set": "popular",
+   "url": "https://github.com/hynek/structlog",
+   "sha": "81779f0abe59",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "toolz",
+   "set": "popular",
+   "url": "https://github.com/pytoolz/toolz",
+   "sha": "451af60dec59",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "werkzeug",
+   "set": "popular",
+   "url": "https://github.com/pallets/werkzeug",
+   "sha": "0f43c6ebd426",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "idoft-easypy",
+   "set": "thread-heavy",
+   "url": "https://github.com/weka-io/easypy",
+   "sha": "9501c3ee03dc",
+   "python": [
+    "3.9"
+   ]
+  }
+ ]
+}
