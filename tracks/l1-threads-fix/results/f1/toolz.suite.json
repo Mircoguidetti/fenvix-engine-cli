@@ -1,0 +1,155 @@
+{
+ "name": "toolz",
+ "set": "popular",
+ "url": "https://github.com/pytoolz/toolz",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009653",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "451af60dec590a6010e2babdbf391ea8f815122f",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group test",
+ "collected": 193,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 1.012,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 192,
+    "skipped": 1
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 12.133,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 192,
+    "skipped": 1
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 2.204,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 192,
+    "skipped": 1
+   },
+   "stats": {
+    "decisions": 7,
+    "switches": 22,
+    "escapes": 4,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 4
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 2.618,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 192,
+    "skipped": 1
+   },
+   "stats": {
+    "decisions": 6,
+    "switches": 15,
+    "escapes": 4,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 4
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  }
+ ],
+ "suite_seeds": [
+  1
+ ],
+ "mtimes_restored": [
+  0,
+  0,
+  0,
+  0
+ ],
+ "broken_by_det": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 1,
+  "loaded_runs": 5
+ }
+}
