@@ -1,39 +1,21 @@
 {
- "run_id": "h1",
+ "run_id": "h2",
+ "note": "h1 = main + env + runtime arms (run 44123885253); h2 = home-root arm",
  "jobs": [
   {
-   "spec": "home-assistant",
-   "shards": 8,
-   "arms": [
-    "main"
-   ],
-   "budget_min": 300
-  },
-  {
    "spec": "docusaurus",
    "arms": [
-    "main"
+    "home-root"
    ],
-   "budget_min": 300
+   "arm_budget_min": 150,
+   "arm_commits": 11
   },
   {
    "spec": "vue-core",
    "arms": [
-    "main"
+    "home-root"
    ],
-   "budget_min": 300
-  },
-  {
-   "spec": "home-assistant",
-   "shards": 8,
-   "only_shards": [
-    0,
-    1
-   ],
-   "arms": [
-    "env"
-   ],
-   "arm_budget_min": 240,
+   "arm_budget_min": 150,
    "arm_commits": 11
   },
   {
@@ -44,181 +26,41 @@
     1
    ],
    "arms": [
-    "runtime"
+    "home-root"
    ],
-   "arm_budget_min": 240,
+   "arm_budget_min": 300,
    "arm_commits": 11
   },
   {
-   "spec": "docusaurus",
-   "arms": [
-    "env",
-    "runtime"
+   "spec": [
+    "arrow",
+    "attrs",
+    "boltons",
+    "click",
+    "flask",
+    "isort",
+    "jinja"
    ],
-   "arm_budget_min": 120,
+   "arms": [
+    "home-root"
+   ],
+   "arm_budget_min": 45,
    "arm_commits": 11
   },
   {
-   "spec": "vue-core",
-   "arms": [
-    "env",
-    "runtime"
+   "spec": [
+    "marshmallow",
+    "more-itertools",
+    "pygments",
+    "sqlparse",
+    "structlog",
+    "toolz",
+    "werkzeug"
    ],
-   "arm_budget_min": 120,
-   "arm_commits": 11
-  },
-  {
-   "spec": "arrow",
    "arms": [
-    "main",
-    "env",
-    "runtime"
+    "home-root"
    ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "attrs",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "boltons",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "click",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "flask",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "isort",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "jinja",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "marshmallow",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "more-itertools",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "pygments",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "sqlparse",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "structlog",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "toolz",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
-   "arm_commits": 11
-  },
-  {
-   "spec": "werkzeug",
-   "arms": [
-    "main",
-    "env",
-    "runtime"
-   ],
-   "budget_min": 150,
-   "arm_budget_min": 60,
+   "arm_budget_min": 45,
    "arm_commits": 11
   }
  ]

@@ -35,6 +35,8 @@ Classification per rule:
 two profiles at every commit (commit 0 in profile 0):
 
 * ``env``: profile 1 sets HOME to another (existing, writable) home, TZ=America/Los_Angeles, LANG=en_US.UTF-8;
+* ``home-root``: profile 1 sets only HOME=/root, as on a root container runner (added after the ``env`` arm: it targets
+  the one environment dependency the R-002 reviewer had documented, docusaurus snapshots that render ``/root/...``);
 * ``runtime``: profile 1 uses another patch release of the same interpreter (Python: a second virtualenv at the same
   path, created with an older patch release; Node: an older release of the same major first on PATH).
 
@@ -109,6 +111,18 @@ class H2H(Walker):
             self.alt = alt
             self.result["profiles"] = {"0": {"HOME": os.path.expanduser("~"), "TZ": os.environ.get("TZ"),
                                              "LANG": os.environ.get("LANG")}, "1": alt}
+        elif self.arm == "home-root":
+            # a root container runner (docker images run as root with HOME=/root); /root made writable by the
+            # workflow so that no test fails for lack of permissions
+            home = Path("/root")
+            src = Path(os.path.expanduser("~")) / ".gitconfig"
+            try:
+                if src.exists() and not (home / ".gitconfig").exists():
+                    shutil.copy(src, home / ".gitconfig")
+            except OSError as e:
+                log(f"/root not writable: {e}")
+            self.alt = {"HOME": str(home)}
+            self.result["profiles"] = {"0": {"HOME": os.path.expanduser("~")}, "1": self.alt}
         elif self.arm == "runtime":
             if self.lang == "pytest":
                 minor = self.spec.get("py_minor") or "3.13"
@@ -184,7 +198,7 @@ class H2H(Walker):
     def env(self):
         e = super().env()
         if self.profile == 1 and not self.base_env:
-            if self.arm == "env":
+            if self.arm in ("env", "home-root"):
                 e.update(self.alt)
             elif self.arm == "runtime" and self.lang != "pytest" and self.alt.get("node_bin"):
                 e["PATH"] = self.alt["node_bin"] + ":" + e.get("PATH", "")
@@ -515,7 +529,7 @@ def main(argv=None):
     ap.add_argument("--shard", default="0/1")
     ap.add_argument("--budget-min", type=float, default=330)
     ap.add_argument("--run-id", default="local")
-    ap.add_argument("--arm", default="", choices=("", "env", "runtime"))
+    ap.add_argument("--arm", default="", choices=("", "env", "runtime", "home-root"))
     ap.add_argument("--max-commits", type=int, default=0)
     ap.add_argument("--max-rechecks", type=int, default=80)
     a = ap.parse_args(argv)

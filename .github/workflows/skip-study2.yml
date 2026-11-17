@@ -307,18 +307,22 @@ jobs:
         run: |
           git config user.name "skip-study2-bot"
           git config user.email "skip-study2-bot@users.noreply.github.com"
+          sudo chmod a+rwx /root || true
           shard_tag=$(echo "${{ matrix.shard }}" | tr / o)
           out="harness/skip_study2/headtohead/results/${{ needs.h2hplan.outputs.run_id }}"
-          for arm in ${{ matrix.arms }}; do
-            if [ "$arm" = main ]; then
-              python3 harness/skip_study2/headtohead/h2h_walk.py --spec "${{ matrix.spec }}" --work "$RUNNER_TEMP/w-$arm" \
-                --out "$out/${{ matrix.name }}-main-${shard_tag}.json.gz" --shard "${{ matrix.shard }}" \
-                --budget-min "${{ matrix.budget }}" --run-id "${{ needs.h2hplan.outputs.run_id }}" || true
-            else
-              python3 harness/skip_study2/headtohead/h2h_walk.py --spec "${{ matrix.spec }}" --work "$RUNNER_TEMP/w-$arm" \
-                --out "$out/${{ matrix.name }}-$arm-${shard_tag}.json.gz" --shard "${{ matrix.shard }}" --arm "$arm" \
-                --max-commits "${{ matrix.arm_commits }}" --budget-min "${{ matrix.arm_budget }}" \
-                --run-id "${{ needs.h2hplan.outputs.run_id }}" || true
-            fi
-            rm -rf "$RUNNER_TEMP/w-$arm"
+          for spec in ${{ matrix.spec }}; do
+            name=$(basename "$spec" .json)
+            for arm in ${{ matrix.arms }}; do
+              if [ "$arm" = main ]; then
+                python3 harness/skip_study2/headtohead/h2h_walk.py --spec "$spec" --work "$RUNNER_TEMP/w-$arm" \
+                  --out "$out/$name-main-${shard_tag}.json.gz" --shard "${{ matrix.shard }}" \
+                  --budget-min "${{ matrix.budget }}" --run-id "${{ needs.h2hplan.outputs.run_id }}" || true
+              else
+                python3 harness/skip_study2/headtohead/h2h_walk.py --spec "$spec" --work "$RUNNER_TEMP/w-$arm" \
+                  --out "$out/$name-$arm-${shard_tag}.json.gz" --shard "${{ matrix.shard }}" --arm "$arm" \
+                  --max-commits "${{ matrix.arm_commits }}" --budget-min "${{ matrix.arm_budget }}" \
+                  --run-id "${{ needs.h2hplan.outputs.run_id }}" || true
+              fi
+              rm -rf "$RUNNER_TEMP/w-$arm"
+            done
           done

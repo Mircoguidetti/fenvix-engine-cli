@@ -20,12 +20,15 @@ def main():
     run = json.loads((HERE / "run.json").read_text())
     jobs = []
     for j in run["jobs"]:
-        sp = HERE / "specs" / f"{j['spec']}.json"
-        spec = json.loads(sp.read_text())
+        names = j["spec"] if isinstance(j["spec"], list) else [j["spec"]]   # a list runs one after the other
+        sps = [HERE / "specs" / f"{x}.json" for x in names]
+        spec = json.loads(sps[0].read_text())
+        sp = sps[0]
         n = j.get("shards", 1)
         for s in j.get("only_shards", range(n)):
             arms = j.get("arms", ["main"])
-            jobs.append({"name": spec["name"], "spec": str(sp.relative_to(ROOT)), "lang": spec["lang"],
+            jobs.append({"name": spec["name"] if len(names) == 1 else f"{names[0]}+{len(names) - 1}",
+                         "spec": " ".join(str(x.relative_to(ROOT)) for x in sps), "lang": spec["lang"],
                          "node": spec.get("node", ""), "apt": " ".join(spec.get("apt", [])),
                          "services": " ".join(spec.get("services", [])), "shard": f"{s}/{n}",
                          "arms": " ".join(arms), "tag": f"{'-'.join(arms)}-{s}o{n}",
