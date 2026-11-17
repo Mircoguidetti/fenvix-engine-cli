@@ -1,6 +1,6 @@
 # Skip-with-proof study 2: where are the minutes?
 
-**Status (2026-11-17 02:10 UTC): version 2, partial.** Final: setting 1 for docusaurus, vue-core,
+**Status (2026-11-17 01:55 UTC): version 2, partial.** Final: setting 1 for docusaurus, vue-core,
 terraform, prometheus (50 commits each) and Home Assistant (50 commits, 12% sample); setting 3 v1 (14
 libraries); the verdict on the two verification mismatches (both flaky, 0 wrong hits). Partial: setting 2
 (4 agent/repository pairs, 145 pushes; openai-agents-python, vue-core Codex and Home Assistant Claude Code
