@@ -1,0 +1,14 @@
+{
+  "name": "material-ui-flaky",
+  "kind": "flaky",
+  "status": "baseline-broken",
+  "node": "node v22.23.5",
+  "runner": "vitest",
+  "runner_version": "3.0.8",
+  "tests": 811,
+  "first_run_s": 97.81985251900001,
+  "commit": "d97f1383e7852c7b2d34cb5385f82dc3dc93fe1b",
+  "detail": "811/811 tests fail in the first baseline run",
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T07:07:00.542112+00:00"
+}
