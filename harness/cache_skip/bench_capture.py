@@ -4,7 +4,8 @@
 Uses a work directory already prepared by ``run_repo.py`` (``<work>/<repo>/src`` and ``venv``, checked out at the
 commit to measure). Runs the variants interleaved, ``--runs`` times each, serially, and prints the medians.
 
-    python harness/cache_skip/bench_capture.py --work /tmp/cs --runs 3 more-itertools click marshmallow
+    python harness/cache_skip/bench_capture.py --work /tmp/cs --runs 3 more-itertools click marshmallow \
+        --deselect more-itertools=tests/test_more.py::TestConcurrentTee::test_concurrent_consumers
 """
 
 from __future__ import annotations
@@ -35,6 +36,9 @@ def main(argv=None) -> int:
     ap.add_argument("--runs", type=int, default=3)
     ap.add_argument("--variants", default=",".join(VARIANTS))
     ap.add_argument("--out", default="")
+    ap.add_argument("--deselect", action="append", default=[],
+                    help="<repo>=<test node id> left out of every variant (e.g. a test whose duration is a thread-scheduling "
+                         "lottery even in the plain run)")
     ap.add_argument("repos", nargs="+")
     a = ap.parse_args(argv)
     variants = a.variants.split(",")
@@ -52,6 +56,10 @@ def main(argv=None) -> int:
         if not args:
             print(f"{name}: collect failed {why[-300:]}")
             continue
+        for d in a.deselect:
+            r, _, nid = d.partition("=")
+            if r == name:
+                args = [*args, "--deselect", nid]
         rc = tmp / "coveragerc"
         covdata = tmp / ".coverage"
         rc.write_text(f"[run]\nsource = {src}\ndata_file = {covdata}\nconcurrency = thread\n"
