@@ -37,7 +37,9 @@ def stats(xs):
 def reason_class(r: str) -> str:
     if r is None:
         return "skip"
-    if r in ("new", "no-record", "no-result", "network", "go-miss"):
+    if r in ("new", "no-record", "no-result", "network", "go-miss", "cached-failure", "runtime", "env-var"):
+        return r
+    if r.startswith(("runtime:", "env-var:")):
         return r
     if ":" in r:
         kind, what = r.split(":", 1)
@@ -65,6 +67,27 @@ def lpt_makespan(costs, workers):
 
 
 _RECHECK = None
+
+# Re-check verdicts that turn a verification mismatch into "flaky": an explicit allow-list (review R-002 note).
+# The label is the verdict text before the first ":". Anything else (including "code-change", "incomplete" or a
+# free-text verdict such as "missed dependency") leaves the mismatch counted as a wrong hit.
+FLAKY_VERDICTS = frozenset({
+    "flaky (plain runs disagree)",                                 # recheck.py
+    "not-reproducible",                                            # recheck.py: cached outcome not reproducible
+    "not-reproducible (load-sensitive)",                           # recheck.py
+    "flaky (same intermittent teardown error at both commits)",    # results/s1/recheck/switchbot-171334-local.json
+    "capture-induced flaky failure",                               # results/s1/recheck/knx-163164-local.json
+})
+
+
+def recheck_says_flaky(verdict) -> bool:
+    if not isinstance(verdict, str):
+        return False
+    return verdict.split(":", 1)[0].strip() in FLAKY_VERDICTS
+
+
+# Display names of the rules in the report tables
+RULE_LABEL = {"go-cache": "go test cache (no proof)", "closure": "closure", "strict": "strict"}
 
 
 def recheck_verdicts():
@@ -94,8 +117,16 @@ def walk_summary(shards, spec):
     workers = spec.get("ci", {}).get("workers", 4)
     units, by_i = {}, defaultdict(list)
     ovh = []
+    # v2 walks did not apply "a cached failure is never reused": approximate it with every unit whose recorded
+    # outcome was ever a failure (first run or last record), forced to rerun at every transition (upper bound)
+    v2_failing = set()
+    has_xverify = any("xverify" in t for sh in shards for t in sh.get("transitions", []))
+    v3 = any("cached_fail" in t for sh in shards for t in sh.get("transitions", []))
     for sh in shards:
         units.update({u: c for u, c in (sh.get("units") or {}).items() if c})
+        if lang != "go" and not v3:
+            v2_failing.update(u for u, c in (sh.get("units") or {}).items() if c and c.get("code") not in (0, 5, None))
+            v2_failing.update(u for u, c in (sh.get("unit_info") or {}).items() if c.get("code") not in (0, 5, None))
         for t in sh.get("transitions", []):
             by_i[t["i"]].append(t)
         co = sh.get("capture_overhead") or {}
@@ -110,6 +141,8 @@ def walk_summary(shards, spec):
         units = {u: dict(c, test=max(c["test"], c.get("wall", 0.0) - base)) for u, c in units.items()}
     per_rule = {r: {"time": [], "count": [], "ttg_after": [], "ttg_after_plain": []} for r in rules}
     ttg_before, inval_all, inval_why, verify = [], 0, Counter(), Counter()
+    xverify = {r: Counter() for r in rules}
+    closure_ver = Counter()
     wrong, flaky_v = [], []
     rows = []
     n_full = 0
@@ -125,22 +158,26 @@ def walk_summary(shards, spec):
             all_units.update(t["tests"])
             decisions.update(t["decisions"])
             for v in t.get("verify", []):
+                verdict = classify(v, t)
                 verify["checked"] += 1
-                if not v["same"]:
-                    # wrong hit: the fresh outcome differs from the cached one and is reproducible; otherwise the
-                    # unit is flaky at this commit
-                    reproducible = (v.get("rerun_matches_fresh") == 2) if "rerun_matches_fresh" in v else True
-                    # a re-check (recheck.py or results/*/recheck/*.json) that reran the unit at the cached commit
-                    # and found the cached outcome itself not reproducible overrides: flaky, not wrong
-                    rc = recheck_verdicts().get((v["unit"], t.get("sha")))
-                    if rc:
-                        v = dict(v, recheck=rc)
-                    if v.get("rerun_matches_cache") or not reproducible or (rc and not rc.startswith("code-change")):
-                        flaky_v.append({"i": i, **v})
-                        verify["flaky"] += 1
-                    else:
-                        wrong.append({"i": i, **v})
-                        verify["wrong"] += 1
+                # Go: the closure rule's own verified skips are the go-cache hits closure also skipped
+                if lang != "go" or v.get("closure_skip", not v.get("potential")):
+                    closure_ver["checked"] += 1
+                    if verdict:
+                        closure_ver[verdict] += 1
+                if verdict == "flaky":
+                    flaky_v.append({"i": i, **v})
+                    verify["flaky"] += 1
+                elif verdict == "wrong":
+                    wrong.append({"i": i, **v})
+                    verify["wrong"] += 1
+            for v in t.get("xverify", []):
+                verdict = classify(v, t)
+                for r in v.get("rules", []):
+                    if r in xverify:
+                        xverify[r]["checked"] += 1
+                        if verdict:
+                            xverify[r][verdict] += 1
         live = [u for u in all_units if (units.get(u) or {}).get("n", all_units[u]) and u in units]
         tot_t = sum(units[u]["test"] for u in live)
         tot_n = sum(units[u]["n"] for u in live)
@@ -153,9 +190,9 @@ def walk_summary(shards, spec):
         for r in rules:
             if r == "strict":
                 must = live if strict else [u for u in live if (decisions.get(u) or {}).get(
-                    "go-cache" if lang == "go" else "closure")]
+                    "go-cache" if lang == "go" else "closure") or u in v2_failing]
             else:
-                must = [u for u in live if (decisions.get(u) or {}).get(r)]
+                must = [u for u in live if (decisions.get(u) or {}).get(r) or u in v2_failing]
             skip_t = tot_t - sum(units[u]["test"] for u in must)
             skip_n = tot_n - sum(units[u]["n"] for u in must)
             per_rule[r]["time"].append(skip_t / tot_t)
@@ -176,6 +213,8 @@ def walk_summary(shards, spec):
            "tests": sum(c.get("n", 0) for c in units.values()), "transitions": n_full,
            "capture_overhead_ratio": ratio, "ci_workers": workers,
            "invalidate_all": inval_all, "invalidate_all_why": dict(inval_why), "verify": dict(verify),
+           "verify_by_rule": verify_by_rule(lang, rules, verify, closure_ver, xverify, has_xverify),
+           "capture": "v3" if v3 else "v2", "v2_failing_forced": len(v2_failing),
            "wrong_hits": wrong[:20], "flaky_in_verify": flaky_v[:20], "rows": rows,
            "commits_per_day": commits_per_day(shards)}
     for r in rules:
@@ -186,6 +225,41 @@ def walk_summary(shards, spec):
     if frac < 1:
         out["ttg_note"] = (f"sample of {frac:.0%} of the test files scheduled on {frac:.0%} of the CI workers "
                            f"(same load per worker as the full suite on {workers} workers)")
+    return out
+
+
+def classify(v, t):
+    """None (same outcome), "flaky" or "wrong" for one verification item."""
+    if v["same"]:
+        return None
+    # wrong hit: the fresh outcome differs from the cached one and is reproducible; otherwise the unit is flaky
+    reproducible = (v.get("rerun_matches_fresh") == 2) if "rerun_matches_fresh" in v else True
+    # a re-check (recheck.py or results/*/recheck/*.json) that reran the unit at the cached commit and found the
+    # cached outcome itself not reproducible overrides: flaky, not wrong (accepted verdicts: FLAKY_VERDICTS)
+    rc = recheck_verdicts().get((v["unit"], t.get("sha")))
+    if v.get("rerun_matches_cache") or not reproducible or recheck_says_flaky(rc):
+        return "flaky"
+    return "wrong"
+
+
+def verify_by_rule(lang, rules, verify, closure_ver, xverify, has_xverify):
+    """Verified skips per rule: {"checked", "wrong", "flaky"} or None (n/a: the rule's own skips were not compared).
+
+    closure: the random sample of its skips. strict (a subset of closure / go-cache): the same sample. go-cache: its
+    sample plus every potential wrong hit. func+guard, func, ~cfg: the closure sample (their skips include every
+    closure skip) plus every extra skip, compared in full (``xverify``, walks from version 3 on); n/a before."""
+    out = {}
+    for r in rules:
+        if r == "go-cache" or (r == "strict" and lang == "go"):
+            out[r] = dict(verify)
+        elif r in ("closure", "strict"):
+            out[r] = dict(closure_ver) if lang == "go" else dict(verify)
+        elif has_xverify:
+            c = Counter(verify)
+            c.update(xverify[r])
+            out[r] = dict(c, extra=xverify[r].get("checked", 0))
+        else:
+            out[r] = None
     return out
 
 
@@ -287,8 +361,13 @@ def main(argv):
             pooled = {}
             for r in rules_for(spec["lang"]):
                 pooled[r] = stats([row.get(r) for p in prs for row in p["rows"]])
+            vbr = {}
+            for r in rules_for(spec["lang"]):
+                per = [p["verify_by_rule"].get(r) for p in prs]
+                vbr[r] = None if any(x is None for x in per) else dict(sum((Counter(
+                    {k: n for k, n in x.items() if isinstance(n, int)}) for x in per), Counter()))
             summary["agent"][key] = {"prs": prs, "pooled_time": pooled,
-                                     "pushes": sum(len(p["rows"]) for p in prs),
+                                     "pushes": sum(len(p["rows"]) for p in prs), "verify_by_rule": vbr,
                                      "verify": dict(sum((Counter(p["verify"]) for p in prs), Counter())),
                                      "wrong": [w for p in prs for w in p["wrong_hits"]]}
         for p in sorted((base / "finer").glob("*.json*")) if (base / "finer").exists() else []:
@@ -376,8 +455,6 @@ def print_md(s):
     for name, w in s["walk"].items():
         if not w["transitions"]:
             continue
-        v = w["verify"]
-        ver = f"{v.get('checked', 0)} ({v.get('wrong', 0)}, {v.get('flaky', 0)})"
         why = ", ".join(f"{k} {n}" for k, n in sorted(w["invalidate_all_why"].items(), key=lambda x: -x[1]))
         inv = f"{w['invalidate_all']}/{w['transitions']} ({why or '-'})"
         tb = w.get("ttg_before_s") or {}
@@ -385,11 +462,13 @@ def print_md(s):
             x = w.get(r) or {}
             if not x.get("time"):
                 continue
+            v = (w.get("verify_by_rule") or {}).get(r, w["verify"]) if "verify_by_rule" in w else w["verify"]
+            ver = "n/a" if v is None else f"{v.get('checked', 0)} ({v.get('wrong', 0)}, {v.get('flaky', 0)})"
             ta = x.get("ttg_after_s") or {}
             tp = x.get("ttg_after_plain_s") or {}
             ttg = (f"{tb.get('median', 0):.0f}s -> {ta.get('median', 0):.0f}s ({tp.get('median', 0):.0f}s) / "
                    f"{tb.get('mean', 0):.0f}s -> {ta.get('mean', 0):.0f}s ({tp.get('mean', 0):.0f}s)") if tb else "n/a"
-            print(f"| {name} | {w['lang']} | {w['transitions']} | {w['units']} ({w['sample']:.0%}) | {r} | "
+            print(f"| {name} | {w['lang']} | {w['transitions']} | {w['units']} ({w['sample']:.0%}) | {RULE_LABEL.get(r, r)} | "
                   f"{ms(x['time'])} | {ms(x['count'])} | {ttg} | {inv} | {ver} |")
     if s["agent"]:
         print()
@@ -398,8 +477,9 @@ def print_md(s):
         for k, ag in s["agent"].items():
             for r, st in ag["pooled_time"].items():
                 if st:
-                    print(f"| {k} | {len(ag['prs'])} | {ag['pushes']} | {r} | {ms(st)} | "
-                          f"{ag['verify'].get('checked', 0)} ({ag['verify'].get('wrong', 0)}, {ag['verify'].get('flaky', 0)}) |")
+                    v = ag.get("verify_by_rule", {}).get(r, ag["verify"]) if ag.get("verify_by_rule") else ag["verify"]
+                    ver = "n/a" if v is None else f"{v.get('checked', 0)} ({v.get('wrong', 0)}, {v.get('flaky', 0)})"
+                    print(f"| {k} | {len(ag['prs'])} | {ag['pushes']} | {RULE_LABEL.get(r, r)} | {ms(st)} | {ver} |")
     if s["flaky"]:
         print()
         print("| suite (commit) | CI groups rerun (of) | tests per group run | attempts (min per group) | "

@@ -579,7 +579,7 @@ class Walker:
         else:
             for f in envrec.glob("*.txt") if envrec is not None and envrec.exists() else []:
                 try:
-                    env_names.update(x for x in f.read_text(errors="replace").splitlines() if x)
+                    env_names.update(x for x in f.read_text(errors="replace").splitlines() if x and not x.startswith("#"))
                 except OSError:
                     pass
             first = deps["reads"].get(os.path.join(str(self.src), unit)) if self.lang != "go" else 0

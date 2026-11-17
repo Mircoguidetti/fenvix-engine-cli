@@ -42,7 +42,8 @@ if (out) {
     Error.stackTraceLimit = lim;
     let user = null;
     for (const line of stack) {
-      if (line.includes(__filename) || /\(node:|at node:/.test(line)) continue;
+      // skip this hook, Node's own modules and native frames (Object.keys, Array.prototype.forEach, ...)
+      if (line.includes(__filename) || /\(node:|at node:|\(<anonymous>\)|^\s*at [^(]*$/.test(line)) continue;
       user = line;
       break;
     }
@@ -51,6 +52,7 @@ if (out) {
     scheduleClear();
     // forwarded by the toolchain to a child whose own reads are recorded: not a dependency of the test
     if (user !== null && RUNNER.test(user)) return;
+    if (!seen.has('*')) rec('#enumerated by ' + (user || 'no user frame').trim().slice(0, 300));
     rec('*');
   };
   const name = (k) => (typeof k === 'string' ? k : null);
