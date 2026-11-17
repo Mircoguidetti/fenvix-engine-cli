@@ -1,0 +1,12 @@
+{
+  "name": "vuetify-flaky",
+  "kind": "flaky",
+  "status": "baseline-broken",
+  "node": "node v22.23.5",
+  "runner": "vitest",
+  "runner_version": "3.2.4",
+  "tests": 88,
+  "first_run_s": 18.290125757999988,
+  "commit": "30deb56531e10ed8afd1365caaf8c13143da6929",
+  "detail": "88/88 tests fail in the first baseline run"
+}
