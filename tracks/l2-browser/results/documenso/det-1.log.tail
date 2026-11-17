@@ -1,0 +1,61 @@
+detjs 0.1.0: Level 2 browser prototype; playwright 1.64.1; seed 0; epoch 2025-01-01T00:00:00Z; vtime=paced; net=on; server=on; workers=1
+◇ injected env (102) from ../../.env // tip: ◈ secrets for agents [www.dotenvx.com]
+◇ injected env (0) from ../../.env.local // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from ../../.env.test // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+
+Running 595 tests using 1 worker
+◇ injected env (0) from ../../.env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from ../../.env.local // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (0) from ../../.env.test // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+·F
+Testing stopped early after 1 maximum allowed failures.
+
+
+  1) [api] › e2e/api/trpc/admin/admin-find-documents.spec.ts:2:1441 › [ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient email 
+
+    Error: expect(received).toBeTruthy()
+
+    Received: false
+
+      1 | import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
+    > 2 | import { seedPendingDocument } from '@documenso/prisma/seed/documents';
+        |                                                                                                                ^
+      3 | import { seedUser } from '@documenso/prisma/seed/users';
+      4 | import type { Page } from '@playwright/test';
+      5 | import { expect, test } from '@playwright/test';
+        at /home/runner/work/_temp/l2_target/packages/app-tests/e2e/api/trpc/admin/admin-find-documents.spec.ts:2:2276
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/api-trpc-admin-admin-find--81bd9--matches-by-recipient-email-api/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/api-trpc-admin-admin-find--81bd9--matches-by-recipient-email-api/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/api-trpc-admin-admin-find--81bd9--matches-by-recipient-email-api/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/api-trpc-admin-admin-find--81bd9--matches-by-recipient-email-api/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [api] › e2e/api/trpc/admin/admin-find-documents.spec.ts:2:1441 › [ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient email 
+  593 did not run
+  1 passed (7.5s)
+  1 error was not a part of any test, see above for details
+detjs: trace ../../../l2_out/documenso/traces/det-1.jsonl
