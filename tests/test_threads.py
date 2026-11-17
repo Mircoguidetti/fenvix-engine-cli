@@ -353,3 +353,68 @@ def test_det_threads_needs_det(pytester):
     pytester.makepyfile(test_x="def test_x():\n    pass\n")
     result = pytester.runpytest_subprocess("--det-threads", "-p", "no:cacheprovider")
     assert "--det-threads needs --det" in result.stderr.str()
+
+
+FUTURE_ORDER = r'''
+import json
+from concurrent.futures import Future, as_completed, wait
+from concurrent.futures._base import _AcquireFutures
+
+def test_future_order():
+    # Free every other future and allocate new ones: the new ones reuse the
+    # freed memory, so creation order and address order disagree.
+    fs = [Future() for _ in range(64)]
+    keep = fs[1::2]
+    del fs
+    fs = keep + [Future() for _ in range(32)]
+    for f in fs:
+        f.set_result(None)
+    order = {id(f): i for i, f in enumerate(fs)}
+    seen = [order[id(f)] for f in as_completed(fs)]
+    done, _ = wait(fs)
+    seen_wait = [order[id(f)] for f in done]
+    locked = [order[id(f)] for f in _AcquireFutures(list(reversed(fs))).futures]
+    print("RESULT futures", json.dumps([seen, seen_wait, locked]), flush=True)
+    # as_completed yields already finished futures from the end of its list
+    monotone = lambda xs: xs == sorted(xs) or xs == sorted(xs, reverse=True)
+    assert monotone(seen) and monotone(seen_wait) and locked == sorted(locked)
+'''
+
+
+@pytest.mark.skipif(WITHOUT_PROTOTYPE, reason="needs --det-threads")
+def test_futures_follow_creation_order_not_addresses(pytester):
+    """as_completed/wait iterate sets of futures and _AcquireFutures sorts them by
+    id(): under --det-threads all three follow the creation order."""
+    pytester.makepyfile(test_fut=FUTURE_ORDER)
+    result = pytester.runpytest_subprocess(*FLAGS, "-p", "no:cacheprovider", "-s")
+    result.assert_outcomes(passed=1)
+
+
+EXIT_TEARDOWN = r'''
+import threading
+from concurrent.futures import ThreadPoolExecutor
+
+def test_many_short_pools():
+    out = []
+    lock = threading.Lock()
+    def job(i):
+        with lock:
+            out.append(i)
+        return i
+    for r in range(15):
+        with ThreadPoolExecutor(3) as ex:
+            list(ex.map(job, range(6)))
+    print("RESULT pools", len(out), flush=True)
+'''
+
+
+@pytest.mark.skipif(WITHOUT_PROTOTYPE, reason="needs --det-threads")
+def test_thread_exit_is_serialised(pytester):
+    """Threads that end while others run: their teardown must not shift the
+    seeded choices (an exiting thread used to consume the seeded stream)."""
+    pytester.makepyfile(test_exit=EXIT_TEARDOWN)
+    fps = set()
+    for _ in range(6):
+        _, _, fp = _run(pytester, "--det-threads-seed=3")
+        fps.add(json.dumps(fp, sort_keys=True))
+    assert len(fps) == 1

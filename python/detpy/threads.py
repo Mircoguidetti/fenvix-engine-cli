@@ -31,6 +31,8 @@ from . import _sites, _state
 
 _real_allocate = _thread.allocate_lock
 _real_start_new_thread = _thread.start_new_thread
+_real_join = threading.Thread.join
+_real_is_alive = threading.Thread.is_alive
 _get_ident = _thread.get_ident
 _real_poll = getattr(_select, "poll", None)
 _real_select = _select.select
@@ -129,6 +131,7 @@ class _Sched:
         self.stats = {"decisions": 0, "switches": 0, "escapes": 0, "deadlocks": 0, "timer_jumps": 0,
                       "managed": 0}
         self.watchdog_on = False
+        self.exiting: list = []  # Thread objects finished for the scheduler, not yet ended
 
 
 S = _Sched()
@@ -373,6 +376,9 @@ def _locked_choose(me, cands):
     else:
         i = S.rng.below(n)
     chosen = cands[i]
+    if _DEBUG:
+        _dbg(f"choose {i} of {[t.idx for t in cands]} rng={S.rng.s} by {getattr(me, 'idx', None)} "
+             f"tid={_get_ident() == getattr(S.current, 'ident', None)}")
     order = sorted(cands, key=lambda t: t.idx)
     _record("sched.thread", f"{order.index(chosen)}/{n}:{chosen.sid}")
     return chosen
@@ -387,7 +393,8 @@ def _locked_hand(me, nxt) -> None:
         S.since_switch = 0
         S.stats["switches"] += 1
     if _DEBUG:
-        _dbg(f"hand {getattr(me, 'idx', None)} -> {getattr(nxt, 'idx', None)} runq={[t.idx for t in S.runq]} "
+        _dbg(f"hand {getattr(me, 'idx', None)} -> {getattr(nxt, 'idx', None)} at {_site()} "
+             f"({getattr(me, 'state', None)} {getattr(me, 'wait', '')}) runq={[t.idx for t in S.runq]} "
              f"states={[(t.idx, t.state) for t in S.threads]}")
     if nxt is None:
         S.idle_since = _real_monotonic()
@@ -402,6 +409,26 @@ def _wait_gate(me) -> None:
     """Wait (no lock held) until the baton is handed to ``me``."""
     me.gate.acquire()
     me.handed = False
+    if S.exiting:
+        _reap()
+
+
+def _reap() -> None:
+    """Wait until threads that finished for the scheduler have really ended.
+
+    A finished thread still runs interpreter teardown (its frames, thread state,
+    ``threading._active`` entry) after handing the baton on; letting it do so
+    while the next thread runs makes memory reuse, and so object addresses, id()
+    order and garbage collection timing, depend on the OS. The baton holder waits
+    for it first (short; the outcome does not depend on timing)."""
+    while S.exiting:
+        th = S.exiting.pop(0)
+        try:
+            _real_join(th, 2.0)
+            if _real_is_alive(th):
+                _record_uncontrolled(f"thread {th.name} still ending after 2 s")
+        except Exception:  # pragma: no cover
+            pass
 
 
 def _switch(me) -> None:
@@ -442,6 +469,8 @@ def _rejoin(me) -> None:
         S.current = me
         S.idle_since = None
         S.mu.release()
+        if S.exiting:
+            _reap()
         return
     _locked_make_runnable(me)
     S.mu.release()
@@ -451,11 +480,15 @@ def _rejoin(me) -> None:
 def _point(me) -> None:
     """A controlled point where the running thread may be switched out (exploration,
     or a holder that ran too long while others wait)."""
+    if S.current is not me:
+        return  # not the baton holder (exiting, escaped): never consume a seeded choice
     S.since_switch += 1
     if not S.runq:
         if not (CFG.seed and S.since_switch & 31 == 0 and _has(IOWAIT)):
             return
     if CFG.seed:
+        if _DEBUG:
+            _dbg(f"point {me.idx} at {_site()}")
         if S.rng.random() >= S.p_switch and S.since_switch < CFG.starve_ops:
             return
     elif S.since_switch < CFG.starve_ops:
@@ -852,7 +885,12 @@ def _wrap_start_thread(real):
 
 
 def _exit(t) -> None:
+    # From here on the thread is outside the scheduler (teardown code may still
+    # take locks): it must neither wait for the baton nor consume seeded choices.
+    _tls.t = None
     S.mu.acquire()
+    if t.thread is not None and S.active:
+        S.exiting.append(t.thread)
     was_holder = S.current is t
     t.state = FINISHED
     t.wait_obj = None
@@ -1242,8 +1280,43 @@ class _InsertionOrderedSet(set):
         super().clear()
         self._order = []
 
+    def pop(self):
+        if not self._order:
+            raise KeyError("pop from an empty set")
+        x = self._order.pop(0)
+        super().discard(x)
+        return x
+
     def __iter__(self):
         return iter(list(self._order))
+
+
+_FUTURE_SEQ = [0]
+
+
+def _wrap_future_init(real):
+    def __init__(self, *args, **kwargs):
+        real(self, *args, **kwargs)
+        if S.active:
+            _FUTURE_SEQ[0] += 1
+            self._detpy_seq = _FUTURE_SEQ[0]
+
+    __init__.__wrapped__ = real
+    return __init__
+
+
+def _future_hash(self):
+    seq = getattr(self, "_detpy_seq", None)
+    return object.__hash__(self) if seq is None else seq
+
+
+def _future_key(f):
+    seq = getattr(f, "_detpy_seq", None)
+    return (1, id(f)) if seq is None else (0, seq)
+
+
+def _acquire_futures_init(self, futures):
+    self.futures = sorted(futures, key=_future_key)
 
 
 def _wrap_pool_init(real):
@@ -1311,6 +1384,16 @@ def install(patcher, seed: int, grace: float, deadlock: float, preempt: int) -> 
     import concurrent.futures.thread as _cft
 
     patcher.set(_cft.ThreadPoolExecutor, "__init__", _wrap_pool_init(_cft.ThreadPoolExecutor.__init__))
+    import concurrent.futures._base as _cfb
+
+    # Futures hash by address: wait()/as_completed() iterate sets of futures and
+    # _AcquireFutures locks them in id() order, so which future is seen first (and
+    # where the caller blocks) would follow the heap layout. Give every future
+    # created under the scheduler a creation number and use it instead.
+    patcher.set(_cfb.Future, "__init__", _wrap_future_init(_cfb.Future.__init__))
+    patcher.set(_cfb.Future, "__hash__", _future_hash)
+    if hasattr(_cfb, "_AcquireFutures"):
+        patcher.set(_cfb._AcquireFutures, "__init__", _acquire_futures_init)
     from . import clock
 
     patcher.set(clock, "_sched_sleep", sleep)
