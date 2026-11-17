@@ -1,0 +1,571 @@
+{
+ "name": "requests",
+ "set": "popular",
+ "url": "https://github.com/psf/requests",
+ "runner": "ip-10-0-129-148",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009649",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.82.6",
+  "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "3c7baaa05ab4aa49cc819ce3a819d260de19c157",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group test -r requirements-dev.txt",
+ "collected": 635,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 78.572,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 619,
+    "skipped": 15,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 83.251,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 84.128,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 150,
+    "switches": 1067,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 85.05,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 164,
+    "switches": 1063,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s2",
+   "run": 0,
+   "duration_s": 85.173,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 699,
+    "switches": 1327,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s3",
+   "run": 0,
+   "duration_s": 85.18,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 418,
+    "switches": 1149,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 77.751,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 619,
+    "skipped": 15,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 78.734,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 84.261,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 150,
+    "switches": 1073,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 85.265,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 164,
+    "switches": 1025,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s2",
+   "run": 1,
+   "duration_s": 85.197,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 699,
+    "switches": 1299,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s3",
+   "run": 1,
+   "duration_s": 85.21,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 418,
+    "switches": 1185,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "plain",
+   "run": 2,
+   "duration_s": 77.77,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 619,
+    "skipped": 15,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 78.713,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 2,
+   "duration_s": 84.237,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 150,
+    "switches": 1071,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s1",
+   "run": 2,
+   "duration_s": 85.163,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 164,
+    "switches": 1057,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s2",
+   "run": 2,
+   "duration_s": 85.112,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 699,
+    "switches": 1307,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s3",
+   "run": 2,
+   "duration_s": 85.215,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 409,
+    "switches": 1189,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  }
+ ],
+ "suite_seeds": [
+  1,
+  2,
+  3
+ ],
+ "mtimes_restored": [
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0
+ ],
+ "broken_by_det": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [
+   "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]",
+   "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]",
+   "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]",
+   "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]"
+  ],
+  "n_broken": 4,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s2": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s3": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": [],
+  "l1-s2": [],
+  "l1-s3": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
