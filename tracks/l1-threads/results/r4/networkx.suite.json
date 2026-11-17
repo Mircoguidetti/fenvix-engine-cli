@@ -1,0 +1,282 @@
+{
+ "name": "networkx",
+ "set": "popular",
+ "url": "https://github.com/networkx/networkx",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009499",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "2e0ae8ad957821e4ad545b50bc246aa89b7f5c0e",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e .[test,test-extras] -r requirements/test.txt numpy scipy",
+ "collected": 10191,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 113.646,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 9375,
+    "skipped": 75,
+    "xfailed": 741
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 132.983,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 9375,
+    "skipped": 75,
+    "xfailed": 741
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 124.076,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 9375,
+    "skipped": 75,
+    "xfailed": 741
+   },
+   "stats": {
+    "decisions": 65,
+    "switches": 192,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 65
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 428.687,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 9375,
+    "skipped": 75,
+    "xfailed": 741
+   },
+   "stats": {
+    "decisions": 2289,
+    "switches": 2398,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 65
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 111.01,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 9375,
+    "skipped": 75,
+    "xfailed": 741
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 126.268,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 9375,
+    "skipped": 75,
+    "xfailed": 741
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 121.761,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 9375,
+    "skipped": 75,
+    "xfailed": 741
+   },
+   "stats": {
+    "decisions": 65,
+    "switches": 192,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 65
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 432.388,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 9375,
+    "skipped": 75,
+    "xfailed": 741
+   },
+   "stats": {
+    "decisions": 2289,
+    "switches": 2398,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 65
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 2,
+   "duration_s": 110.453,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 9375,
+    "skipped": 75,
+    "xfailed": 741
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 123.614,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 9375,
+    "skipped": 75,
+    "xfailed": 741
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 2,
+   "duration_s": 123.219,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 9375,
+    "skipped": 75,
+    "xfailed": 741
+   },
+   "stats": {
+    "decisions": 65,
+    "switches": 192,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 65
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 2,
+   "duration_s": 432.608,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 9375,
+    "skipped": 75,
+    "xfailed": 741
+   },
+   "stats": {
+    "decisions": 1967,
+    "switches": 2082,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 65
+   },
+   "tail": ""
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
