@@ -76,9 +76,14 @@ class Config:
     seed = 0
     grace = 1.0  # real s an idle scheduler waits for external work before a timer fires
     deadlock = 5.0  # real s with only I/O waiters left before a deadlock is declared
+    stuck = 60.0  # real s without progress while waiting on work outside the scheduler, then DeadlockError
+    spin_escape = 1.0  # real s a holder may run without a controlled point while another thread is runnable
+    spin_time = 10.0  # same, while the others only wait for time or I/O (a long computation is not a spin)
     escape_ms = 50  # real ms without progress (holder sleeping in C) before an escape
     preempt = 0  # mean user-code lines between preemptions (0 = off; exploration only)
     starve_ops = 2000  # controlled ops a holder may run while others wait, then it yields
+    spin_min_ns = 1_000  # virtual time charged to a failed poll (doubles while the holder spins)
+    spin_max_ns = 1_000_000
 
 
 CFG = Config()
@@ -126,13 +131,25 @@ class _SchedMutex:
         self._lock = _real_allocate()
 
     def acquire(self, blocking=True, timeout=-1):
+        if getattr(_tls, "holds_mu", False):
+            # An asynchronous exception (a signal handler: pytest-timeout,
+            # KeyboardInterrupt) left this thread's earlier hold unreleased: it
+            # still owns the lock. Continue instead of deadlocking on itself.
+            return True
         _tls.in_mu = True
-        got = _lock_acquire(self._lock, blocking, timeout)
-        if not got:
+        try:
+            got = _lock_acquire(self._lock, blocking, timeout)
+        except BaseException:
+            _tls.in_mu = False
+            raise
+        if got:
+            _tls.holds_mu = True
+        else:
             _tls.in_mu = False
         return got
 
     def release(self):
+        _tls.holds_mu = False
         self._lock.release()
         _tls.in_mu = False
 
@@ -159,7 +176,8 @@ class _Sched:
         self.idle_since = None
         self.site_counts: dict = {}
         self.stats = {"decisions": 0, "switches": 0, "escapes": 0, "deadlocks": 0, "timer_jumps": 0,
-                      "managed": 0}
+                      "managed": 0, "spin_yields": 0, "spin_ticks": 0, "interrupted": 0}
+        self.spin_ns = 0  # virtual time the next failed poll of a spinning holder charges
         self.watchdog_on = False
         self.exiting: list = []  # Thread objects finished for the scheduler, not yet ended
 
@@ -320,6 +338,32 @@ def _locked_poll_io() -> None:
                 _locked_make_runnable(t)
 
 
+def _locked_live_timer():
+    """The earliest live timer as (deadline, T), dropping stale heads, or None."""
+    while S.timers:
+        dl, _, t, tseq = S.timers[0]
+        if t.tseq != tseq or t.state not in (BLOCKED, IOWAIT) or t.deadline is None:
+            heapq.heappop(S.timers)
+            continue
+        return dl, t
+    return None
+
+
+def _locked_expire_timers() -> bool:
+    """Wake the threads whose timers are due at the current virtual time (no jump)."""
+    now = _now()
+    woke = False
+    while S.timers and S.timers[0][0] <= now:
+        _, _, t, tseq = heapq.heappop(S.timers)
+        if t.tseq == tseq and t.state in (BLOCKED, IOWAIT) and t.deadline is not None:
+            t.timed_out = True
+            t.wait_obj = None
+            t.pred = None
+            _locked_make_runnable(t)
+            woke = True
+    return woke
+
+
 def _locked_fire_timer() -> bool:
     """Jump the virtual clock to the earliest live timer and wake its threads."""
     while S.timers:
@@ -343,18 +387,31 @@ def _locked_fire_timer() -> bool:
     return False
 
 
-def _unmanaged_alive() -> bool:
+def _unmanaged_threads() -> list:
     managed_idents = S.known_idents
     try:
         ts = threading.enumerate()
     except Exception:  # pragma: no cover
-        return False
-    for th in ts:
-        ident = th.ident
-        if ident in managed_idents or th.name.startswith("detpy-"):
-            continue
-        return True
-    return False
+        return []
+    return [th for th in ts if th.ident not in managed_idents and not th.name.startswith("detpy-")]
+
+
+def _unmanaged_alive() -> bool:
+    return bool(_unmanaged_threads())
+
+
+def _outside_lines() -> list:
+    """What outside the scheduler could still wake a blocked managed thread."""
+    out = [f"thread {t.idx} ({t.name}, started at {t.sid}) runs outside the scheduler (escaped)"
+           for t in S.threads if t.state == EXTERNAL]
+    for th in _unmanaged_threads():
+        out.append(f"unmanaged thread {th.name!r}{' (daemon)' if th.daemon else ''}")
+    from . import clock
+
+    ext = getattr(clock, "_EXTERNAL", None)
+    if ext is not None and ext.get("started"):
+        out.append("a child process started by this test")
+    return out
 
 
 def _has(state) -> bool:
@@ -375,10 +432,18 @@ def _outside_activity() -> bool:
     return _unmanaged_alive()
 
 
-def _locked_raise_deadlock() -> None:
+def _locked_raise_deadlock(stuck_s: float = 0.0) -> None:
     blocked = [t for t in S.threads if t.state in (BLOCKED, IOWAIT)]
     lines = [f"thread {t.idx} ({t.name}, started at {t.sid}) waits for {t.wait or t.state}" for t in blocked]
-    msg = "detpy --det-threads: deadlock: every managed thread is blocked\n  " + "\n  ".join(lines)
+    outside = _outside_lines()
+    if stuck_s:
+        head = (f"detpy --det-threads: deadlock: no progress for {stuck_s:g} s real time: every managed thread "
+                f"is blocked and nothing outside the scheduler woke any of them (--det-threads-stuck)")
+    else:
+        head = "detpy --det-threads: deadlock: every managed thread is blocked"
+    msg = head + "\n  " + "\n  ".join(lines)
+    if outside:
+        msg += "\n  outside the scheduler: " + "; ".join(outside)
     S.stats["deadlocks"] += 1
     for t in blocked:
         t.exc = DeadlockError(msg)
@@ -437,6 +502,7 @@ def _locked_hand(me, nxt) -> None:
     S.current = nxt
     if nxt is not me:
         S.since_switch = 0
+        S.spin_ns = 0
         S.stats["switches"] += 1
     if _DEBUG:
         _dbg(f"hand {getattr(me, 'idx', None)} -> {getattr(nxt, 'idx', None)} at {_site()} "
@@ -453,10 +519,40 @@ def _locked_hand(me, nxt) -> None:
 
 def _wait_gate(me) -> None:
     """Wait (no lock held) until the baton is handed to ``me``."""
-    _lock_acquire(me.gate)
+    try:
+        _lock_acquire(me.gate)
+    except BaseException:
+        _interrupted(me)
+        raise
     me.handed = False
     if S.exiting:
         _reap()
+
+
+def _interrupted(me) -> None:
+    """An asynchronous exception (a signal handler: pytest-timeout's signal method,
+    KeyboardInterrupt) ended ``me``'s wait for the baton. The exception must
+    propagate, so ``me`` keeps running: as the holder if the baton reached it
+    meanwhile, otherwise outside the scheduler until its next controlled point."""
+    S.mu.acquire()
+    try:
+        S.stats["interrupted"] += 1
+        if me.handed:  # the gate was opened for us: consume it, we hold the baton
+            _lock_acquire(me.gate, False)
+            me.handed = False
+        me.tseq += 1  # drop its timer
+        me.deadline = None
+        me.wait_obj = None
+        me.pred = None
+        if S.current is me:
+            me.state = RUNNABLE
+            return
+        if me in S.runq:
+            S.runq.remove(me)
+        me.state = EXTERNAL
+        _record_uncontrolled(f"thread {me.idx} ({me.name}) interrupted while waiting for the baton")
+    finally:
+        S.mu.release()
 
 
 def _reap() -> None:
@@ -630,13 +726,13 @@ def sleep(ns: int) -> bool:
         return False
     if ns <= 0:
         S.mu.release()
-        _yield(me)
+        _yield(me, spin=True)
         return True
     _block(me, BLOCKED, f"sleep({ns / 1e9:g}s)", timeout_ns=ns)
     return True
 
 
-def _yield(me) -> None:
+def _yield(me, spin: bool = False) -> None:
     S.mu.acquire()
     if not S.active or S.current is not me:
         S.mu.release()
@@ -644,6 +740,20 @@ def _yield(me) -> None:
     me.state = RUNNABLE
     S.runq.append(me)
     cands = _locked_candidates(me, inline=True)
+    if spin:
+        if len(cands) == 1 and _locked_live_timer() is not None:
+            # A spinning holder and nobody else can run: in a real run time would
+            # pass while it spins. Charge this poll some virtual time (doubling
+            # while the spin lasts) and wake the threads whose timers are due.
+            S.spin_ns = min(max(CFG.spin_min_ns, 2 * S.spin_ns), CFG.spin_max_ns)
+            _advance_to(_now() + S.spin_ns)
+            S.stats["spin_ticks"] += 1
+            if _locked_expire_timers():
+                S.runq.remove(me)
+                S.runq.append(me)  # the woken threads go first
+                cands = S.runq = [t for t in S.runq if t.state == RUNNABLE]
+        if len(cands) > 1:
+            S.stats["spin_yields"] += 1
     # A yield gives the others a turn: the yielding thread goes last.
     if CFG.seed:
         nxt = cands[S.rng.below(len(cands))] if len(cands) > 1 else cands[0]
@@ -661,6 +771,24 @@ def _yield(me) -> None:
     S.mu.release()
     _wait_gate(me)
     _after_wake(me)
+
+
+def poll_miss(me=None) -> None:
+    """A zero-timeout poll of a managed thread found nothing: ``select(0)``, a failed
+    non-blocking acquire, ``Event.is_set()`` false, ``Queue.get_nowait()`` empty.
+    A loop of such polls waits for another thread or for time to pass (anyio:
+    ``while not started.is_set(): await checkpoint()``), so the runnable threads go
+    first (calm: the poller goes last) and, if none can run, the poll is charged
+    virtual time so that due timers fire. Nothing happens when no other managed
+    thread is waiting for anything."""
+    if me is None:
+        me = _me()
+        if me is None:
+            return
+    if S.current is not me or not (S.runq or S.timers or _has(IOWAIT)):
+        return
+    _check_depth()
+    _yield(me, spin=True)
 
 
 def io_wait(pred, timeout=None, what="I/O", real_time=False) -> bool:
@@ -761,7 +889,8 @@ class SchedLock:
         _point(me)
         if self._real.acquire(False):
             return True
-        if not blocking:
+        if not blocking or timeout == 0:
+            poll_miss(me)  # a non-blocking acquire in a loop is a spin
             return False
         _check_depth()
         if timeout is not None and timeout >= 0:
@@ -1034,6 +1163,10 @@ def _wrap_is_alive(real):
             if t.state == FINISHED:
                 return False
             if t.state != "starting":
+                if _polled_by_user():
+                    poll_miss(me)  # while t.is_alive(): ... spins until t ends
+                    if t.state == FINISHED:
+                        return False
                 return True
         return real(self)
 
@@ -1135,6 +1268,48 @@ def _wrap_sock_read(real):
     return method
 
 
+_STDLIB_CALLERS = frozenset(("threading", "queue", "concurrent.futures.thread", "concurrent.futures._base",
+                             "concurrent.futures.process", "logging", "logging.handlers"))
+
+
+def _polled_by_user() -> bool:
+    """The poll comes from code under test, not from the standard library's own
+    bookkeeping (Thread.start checks its _started event)."""
+    try:
+        return sys._getframe(2).f_globals.get("__name__") not in _STDLIB_CALLERS
+    except ValueError:  # pragma: no cover
+        return False
+
+
+def _wrap_event_is_set(real):
+    def is_set(self):
+        r = real(self)
+        if not r and S.active:
+            me = _me()
+            if me is not None and S.current is me and _polled_by_user():
+                poll_miss(me)
+        return r
+
+    is_set.__wrapped__ = real
+    return is_set
+
+
+def _wrap_queue_get(real):
+    def get(self, block=True, timeout=None):
+        try:
+            return real(self, block, timeout)
+        except Exception as e:
+            if (S.active and type(e).__name__ == "Empty"
+                    and (not block or (timeout is not None and timeout <= 0))):
+                me = _me()
+                if me is not None and S.current is me:
+                    poll_miss(me)
+            raise
+
+    get.__wrapped__ = real
+    return get
+
+
 def _ssl_ready(sock) -> bool:
     try:
         if sock.pending():
@@ -1206,8 +1381,12 @@ def _wrap_selector_select(real):
         if _me() is None:
             return real(self, timeout)
         if timeout is not None and timeout <= 0:
-            _enter(_me())
-            return real(self, 0)
+            me = _me()
+            _enter(me)
+            r = real(self, 0)
+            if not r:
+                poll_miss(me)  # an event loop with nothing ready, or a polling loop
+            return r
         from . import aio
 
         real_time = _in_event_loop() and not aio.CFG.enabled  # asyncio keeps real time under Level 0
@@ -1234,8 +1413,15 @@ def _wrap_selector_select(real):
 
 
 def _select_select(rlist, wlist, xlist, timeout=None):
-    if _me() is None or (timeout is not None and timeout <= 0):
+    me = _me()
+    if me is None:
         return _real_select(rlist, wlist, xlist, timeout)
+    if timeout is not None and timeout <= 0:
+        _enter(me)
+        r = _real_select(rlist, wlist, xlist, 0)
+        if not (r[0] or r[1] or r[2]):
+            poll_miss(me)
+        return r
     box = []
 
     def pred():
@@ -1266,7 +1452,9 @@ def _task_state(native) -> str:
 def _watchdog() -> None:
     last_ops = -1
     last_cur = None
+    last_switches = -1
     stalled_since = None
+    held_since = None
     while True:
         _real_sleep(0.005)
         if not S.active:
@@ -1279,26 +1467,47 @@ def _watchdog() -> None:
                 return
             cur = S.current
             if cur is None:
-                stalled_since = None
+                stalled_since = held_since = None
                 _idle_duty()
                 continue
-            # Escape check: the holder made no progress and sleeps in the kernel.
-            others = S.runq or S.timers or any(t.state == IOWAIT for t in S.threads)
-            if cur is not last_cur or S.ops != last_ops or not others:
-                last_cur, last_ops, stalled_since = cur, S.ops, None
-                continue
             now = _real_monotonic()
+            if cur is not last_cur or S.stats["switches"] != last_switches:
+                last_cur, last_switches, last_ops = cur, S.stats["switches"], S.ops
+                stalled_since, held_since = None, now
+                continue
+            others = S.runq or _locked_live_timer() is not None or _has(IOWAIT)
+            if not others:
+                last_ops, stalled_since, held_since = S.ops, None, now
+                continue
+            if S.ops != last_ops:
+                # The holder makes controlled operations but keeps the baton while
+                # others wait only for time (a spin on something that is not a
+                # poll, e.g. qsize()): after a long while, let time pass (uncontrolled).
+                last_ops, stalled_since = S.ops, None
+                if not S.runq and now - held_since >= CFG.spin_time and _locked_fire_timer():
+                    _record_uncontrolled(f"timer fired while thread {cur.idx} ({cur.name}) kept the baton "
+                                         f"for {now - held_since:.1f} s")
+                    held_since = now
+                continue
             if stalled_since is None:
                 stalled_since = now
                 continue
-            if (now - stalled_since) * 1000 < CFG.escape_ms:
+            stalled_ms = (now - stalled_since) * 1000
+            if stalled_ms < CFG.escape_ms:
                 continue
-            if _task_state(cur.native) not in ("S", "D"):
-                stalled_since = now
+            state = _task_state(cur.native)
+            if state in ("S", "D"):
+                why = "blocked outside the scheduler"
+            elif stalled_ms >= (CFG.spin_escape if S.runq else CFG.spin_time) * 1000:
+                # Running Python (or C) code with no controlled point for a long
+                # time while others wait: a spin on a plain variable. Without an
+                # escape it would never let the thread it waits for run.
+                why = f"running {stalled_ms / 1000:.1f} s without a controlled point"
+            else:
                 continue
             cur.state = EXTERNAL
             S.stats["escapes"] += 1
-            _record_uncontrolled(f"escape of thread {cur.idx} ({cur.name}) blocked outside the scheduler")
+            _record_uncontrolled(f"escape of thread {cur.idx} ({cur.name}) {why}")
             cands = _locked_candidates(None, inline=False)
             nxt = _locked_choose(None, cands) if cands else None
             _locked_hand(None, nxt)
@@ -1316,13 +1525,20 @@ def _idle_duty() -> None:
     outside = _outside_activity()
     io = _has(IOWAIT)
     idle = _real_monotonic() - (S.idle_since or _real_monotonic())
-    if S.timers:
+    timer = _locked_live_timer()
+    if timer is not None:
+        left = max(0.0, (timer[0] - _now()) / 1e9)
         if outside:
             limit = CFG.grace
+            if timer[1].state == IOWAIT:
+                # A socket timeout while work outside the scheduler (an unmanaged
+                # server thread, a child process, an escaped thread) may answer:
+                # that answer comes in real time, so the timeout is real time too.
+                limit = max(limit, left)
         elif io:
             # Only I/O waiters: give data in flight as much real time as the
             # virtual time to the next timer (at most the grace), as a real run would.
-            limit = min(CFG.grace, max(0.0, (S.timers[0][0] - _now()) / 1e9))
+            limit = min(CFG.grace, left)
         else:
             limit = 0.0
         if idle >= limit:
@@ -1333,11 +1549,22 @@ def _idle_duty() -> None:
                 if cands:
                     _locked_hand(None, _locked_choose(None, cands))
         return
-    if _has(EXTERNAL) or any(t.state == IOWAIT and t.real_deadline is not None for t in S.threads):
-        return
     blocked = any(t.state in (BLOCKED, IOWAIT) for t in S.threads)
-    if blocked and idle >= (CFG.deadlock if (outside or io) else 0):
-        _locked_raise_deadlock()
+    if not blocked:
+        return
+    if any(t.state == IOWAIT and t.real_deadline is not None for t in S.threads):
+        return  # a real-time wait (event-loop select) ends by itself
+    if _has(EXTERNAL) or (outside and io):
+        # Waiting for work outside the scheduler (an escaped thread, an unmanaged
+        # server, a child process): a real wait, as in a plain run, but bounded so
+        # that a test never hangs.
+        limit = CFG.stuck
+    elif outside or io:
+        limit = CFG.deadlock
+    else:
+        limit = 0.0
+    if idle >= limit:
+        _locked_raise_deadlock(stuck_s=limit if limit == CFG.stuck else 0.0)
         cands = [t for t in S.runq if t.state == RUNNABLE]
         if cands:
             _locked_hand(None, cands[0])
@@ -1431,7 +1658,7 @@ def _wrap_pool_init(real):
 _PATCHED = {"on": False}
 
 
-def install(patcher, seed: int, grace: float, deadlock: float, preempt: int) -> None:
+def install(patcher, seed: int, grace: float, deadlock: float, preempt: int, stuck: float = 60.0) -> None:
     import queue
     import selectors
     import socket
@@ -1440,6 +1667,7 @@ def install(patcher, seed: int, grace: float, deadlock: float, preempt: int) -> 
     CFG.seed = seed
     CFG.grace = grace
     CFG.deadlock = deadlock
+    CFG.stuck = max(stuck, deadlock)
     CFG.preempt = preempt if seed else 0
     S.rng = Rng(seed)
     S.p_switch = (0.02, 0.1, 0.3, 0.6)[Rng(seed ^ 0x5EED).below(4)] if seed else 0.0
@@ -1459,6 +1687,10 @@ def install(patcher, seed: int, grace: float, deadlock: float, preempt: int) -> 
     patcher.set(threading.Thread, "start", _wrap_thread_start(threading.Thread.start))
     patcher.set(threading.Thread, "join", _wrap_join(threading.Thread.join))
     patcher.set(threading.Thread, "is_alive", _wrap_is_alive(threading.Thread.is_alive))
+    patcher.set(threading.Event, "is_set", _wrap_event_is_set(threading.Event.is_set))
+    patcher.set(queue.Queue, "get", _wrap_queue_get(queue.Queue.get))
+    if hasattr(queue, "_PySimpleQueue"):
+        patcher.set(queue._PySimpleQueue, "get", _wrap_queue_get(queue._PySimpleQueue.get))
     if hasattr(queue, "_PySimpleQueue"):
         patcher.set(queue, "SimpleQueue", queue._PySimpleQueue)
     for name in ("recv", "recv_into", "recvfrom", "recvfrom_into", "accept"):

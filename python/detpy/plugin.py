@@ -77,6 +77,9 @@ def pytest_addoption(parser, pluginmanager):
                 help="real seconds an idle scheduler waits for work outside the process before a timer fires")
     g.addoption("--det-threads-deadlock", type=float, default=5.0, metavar="S",
                 help="real seconds with only I/O waiters (or unmanaged threads) left before a deadlock is declared")
+    g.addoption("--det-threads-stuck", type=float, default=60.0, metavar="S",
+                help="real seconds every managed thread may wait on work outside the scheduler (an unmanaged "
+                     "thread, a child process, an escaped thread) before a DeadlockError is raised")
     g.addoption("--det-threads-preempt", type=int, default=200, metavar="N",
                 help="exploring seeds only: mean number of user-code lines between preemptions (0 = off)")
     g.addoption("--det-outcomes", default=None, metavar="PATH",
@@ -341,7 +344,8 @@ def _install(config, ns, controls) -> None:
                     str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd())
     if getattr(ns, "det_threads", False):
         seed = ns.det_threads_seed if ns.det_threads_seed is not None else (ns.det_seed or 0)
-        threads.install(_PATCHER, seed, ns.det_threads_grace, ns.det_threads_deadlock, ns.det_threads_preempt)
+        threads.install(_PATCHER, seed, ns.det_threads_grace, ns.det_threads_deadlock, ns.det_threads_preempt,
+                        ns.det_threads_stuck)
 
 
 def _owner(config) -> bool:
@@ -595,7 +599,8 @@ class _DetSession(_Outcomes):
             "det_async": ({"seed": aio.CFG.seed, "grace": aio.CFG.grace, "wait": aio.CFG.wait,
                            "settle": aio.CFG.settle} if aio.CFG.enabled else None),
             "det_threads": ({"seed": threads.CFG.seed, "grace": threads.CFG.grace,
-                             "deadlock": threads.CFG.deadlock, "preempt": threads.CFG.preempt}
+                             "deadlock": threads.CFG.deadlock, "preempt": threads.CFG.preempt,
+                             "stuck": threads.CFG.stuck}
                             if threads.CFG.enabled else None),
             "order_digest": S.order_digest,
         }
