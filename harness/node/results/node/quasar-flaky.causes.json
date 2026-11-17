@@ -1,0 +1,38 @@
+[
+ {
+  "repo": "quasar-flaky",
+  "pool": "flaky",
+  "nodeid": "../src/plugins/app-visibility/AppVisibility.test.js::[AppVisibility API]::[Props]::[(prop)appVisible]::is correct type",
+  "class": "l0-gap",
+  "evidence": "shared state not reset by Level 0: document.",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=2;passed=8",
+  "det_exception": "",
+  "pass_fail_reason": "outcome-only"
+ },
+ {
+  "repo": "quasar-flaky",
+  "pool": "flaky",
+  "nodeid": "../src/plugins/dark/Dark.test.js::[Dark API]::[Props]::[(prop)isActive]::is reactive",
+  "class": "l0-gap",
+  "evidence": "shared state not reset by Level 0: document., window.",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=3;passed=7",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ },
+ {
+  "repo": "quasar-flaky",
+  "pool": "flaky",
+  "nodeid": "../src/utils/private.config/instance-config.test.js::[instanceConfig API]::[Variables]::[(variable)globalConfig]::is defined correctly",
+  "class": "unknown",
+  "evidence": "no marker in the source, exception or fingerprint",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=2;passed=8",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ }
+]
