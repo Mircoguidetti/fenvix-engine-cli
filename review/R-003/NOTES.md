@@ -1,0 +1,28 @@
+# R-003 checkpoint notes (Block 2 review)
+- started; worktree at $S/rv-b2
+- worktree $S/rv-b2 at 455c57c created
+- SUSPECT E1: block2_report.py randomly_replay_s sums replays per TARGET, but harness reruns per SEED (shared by targets with same first seed) -> 424 min randomly replay cost double counted. Verify; affects "Proving a failure" 348 vs 424, find+prove 579 vs 610, comparison table replay cost row.
+- recompute.py (review-R-003/) : Tables 1,2(mostly),3,4 all recompute. E1 CONFIRMED: randomly replay per-target sum 423.8 min, per distinct seed 107.2 min; randomly seconds field total 293.6 = 186.3+107.2. detpy find+prove 579 vs randomly 293.6 (not 610).
+- panamah name: report says test_expiration_by_max_size, data says test_expiration_by_max_length (check)
+- Table1-4 all recompute exactly (recompute.py). Comparison: "only randomly 15"/"only detpy 4" recompute under def R10 vs detpy-reproduced (OK). Fail-based diff is 8/4 (anyio3,crom1,panamah3,todo1) - note only.
+- E2: panamah no-bundle target is test_expiration_by_max_length (data), report names test_expiration_by_max_size (which detpy never failed).
+- outside flaky 140/138/91, fmr 12/0 recompute OK.
+- E3 BIG: flask-multi-redis 14 targets fail under ALL 50 detpy seeds (in always_failing) with "TypeError: _thread.allocate_lock() takes no arguments (1 given)" = detpy stand-in bug (T1 class), yet counted found@K=1, reproduced, 10/10 identical, fails-alone. Randomly fails them in 14/50 seeds. By Block 1 rule (harness explore_seeds docstring) these are detpy-induced, not reproductions. Also contradicts the "version caveat none of N6/T1/T2 changes a number" and the "need real Redis which --det blocks" explanation.
+- 18 targets fail all 50 detpy seeds: fmr 14 (detpy artifact, randomly 14/50), domain2idna 3 + eppy 1 (fail 50/50 in BOTH tools -> fair). Corrected detpy (excl fmr14): fails K50 364, reproduced 351, any-fp 362 (93.3%) vs randomly 376 (96.9%). Headline "finder equals randomly 96.9% each" false.
+- NEXT: build engine (head) ; T1 extra case = class attr threading.Lock on py<3.13 (old: TypeError) ; repro 5 targets ; fixes before/after
+- head build OK (.venv in rv-b2, editable). tests: 81 passed 4 skipped (claim 85/85)
+- task4: N3 (nested test), N4, N5 fail before de5f7a6 / pass after: VERIFIED
+- task4: N6 f6364dc 8 fail->10 pass; T1 67560d0 1F->1P; T2 c568c31 1F->2P : VERIFIED
+- E4 T1 incomplete: review-R-003/t1extra/test_t1_extra.py: os.system and socket.gethostbyname as class attrs fail under --det at head (py3.13): "system() takes at most 1 argument (2 given)", "_gethostbyname() takes 1 positional argument but 2 were given". mono/random/Lock(3.13) pass.
+- next: py3.9 venv to check Lock case at head vs ef2aa7a (fmr artifact)
+- E3 confirmed mechanism: py3.9 venv (review-R-003/venv39), ef2aa7a code: class attr threading.Lock -> "TypeError: _thread.allocate_lock() takes no arguments (1 given)" (same as fmr bundles); head passes Lock on 3.9; os.system/gethostbyname still fail on head 3.9 and 3.13.
+- fairness: same seeds/targets/serial/pytest_args OK; 18/28 repos detpy vs randomly on different CPU models (cost compare noisy)
+- task2: preparing 5 repos via harness --mode prepare into review-R-003/work (log review-R-003/prep.log)
+- corrected (excl fmr14 artifacts) detpy: K1 119/109/119, K5 301/290/300, K10 347/335/346, K20 353/341/352, K50 364/351/362 (fail/ident/any). vs randomly 113..382, 10/10 111..376
+- E5 minor: "eppy 142 min of repro" -> repro 133.2, explore 9.3 (142.5 = explore+repro); K=50 max 149.3 is anyio (80.3+69.0)
+- task2 targets: ljson disk::test_edit, krllint open_task::test_rule_with_fix, accessify test_not_implements_private_access, py-autodoc examples/test_pytest.py::test_post (brittle), pykicad NetTests::test_net_auto_numbering. script review-R-003/run_repro.sh (resumable), out review-R-003/repro/
+- task2 results: ljson/krllint/accessify/pykicad reproduced exactly like CI (seed, prefix, polluter, 10/10, 1 fp; ljson fp identical to CI 59de1a28). py-autodoc examples/test_pytest.py::test_post: local = fails-alone, no setter (CI: brittle, setter test_should_not_generate) -> investigate
+- E6: repro.py L293: when target fails in FIXED config (first searched, standalone `detpy repro`), passing=[] and FIXED excluded -> setter search skipped; py-autodoc test_post reported fails-alone/no setter, yet [test_should_not_generate, test_post] passes 2/2 under --det (pyautodoc_setter_order.txt). CI found setter only because explore passes known_fail=seed.
+- task2: detpy replay matches_bundle true for all 5; target alone passes 3/3 for 4 order bundles (minimal); py-autodoc alone errors (fails-alone) so 1 minimal
+- E6 script e6_setter_skipped.sh confirmed. Evidence scripts done. Verdict FIX 6 (E1-E6). NEXT: write /tmp/claude-0/-home-user/50f6213c-868e-5784-89fb-56a198be63cf/scratchpad/R-003-block2.md
+- DONE: report written /tmp/claude-0/-home-user/50f6213c-868e-5784-89fb-56a198be63cf/scratchpad/R-003-block2.md (FIX 6)

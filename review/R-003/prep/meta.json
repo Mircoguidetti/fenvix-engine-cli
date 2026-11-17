@@ -1,0 +1,23 @@
+{
+  "set": "idoft-ljson,idoft-krllint,idoft-accessify,idoft-py-autodoc,idoft-pykicad",
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "jobs": 1,
+  "baseline_xdist": true,
+  "executor": "local",
+  "timing_runs": 3,
+  "detpy": "0.1.0",
+  "date": "2026-11-17 04:24 UTC",
+  "command": "python harness/detpy_harness.py --set idoft-ljson,idoft-krllint,idoft-accessify,idoft-py-autodoc,idoft-pykicad --mode prepare --wheel /tmp/claude-0/-home-user/50f6213c-868e-5784-89fb-56a198be63cf/scratchpad/review-R-003/dist/detpy-0.1.0-cp39-abi3-manylinux_2_34_x86_64.whl --work /tmp/claude-0/-home-user/50f6213c-868e-5784-89fb-56a198be63cf/scratchpad/review-R-003/work --out /tmp/claude-0/-home-user/50f6213c-868e-5784-89fb-56a198be63cf/scratchpad/review-R-003/prep --jobs 1 --max-first-run 100000",
+  "notes": [
+    "The FlaPy dataset (Gruber et al.) is published on Zenodo, which the development environment cannot reach (HTTP 403 from the network proxy): the 'flaky' pool uses the Python section of IDoFT, each project pinned at the commit where its flaky tests were detected."
+  ],
+  "order": [
+    "idoft-ljson",
+    "idoft-krllint",
+    "idoft-accessify",
+    "idoft-py-autodoc",
+    "idoft-pykicad"
+  ]
+}
