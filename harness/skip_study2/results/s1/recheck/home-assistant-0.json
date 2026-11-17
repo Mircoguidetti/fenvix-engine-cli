@@ -1,0 +1,406 @@
+{
+ "spec": "home-assistant",
+ "pr": 171334,
+ "rec": "7cf3cba27bec95fc6dfeaeb68b79471ddaaee1b7",
+ "cur": "cbfc323f04360c3bcbb88db837527ae0cd3266c9",
+ "units": [
+  "tests/components/switchbot/test_init.py"
+ ],
+ "runs": {
+  "rec": {
+   "sha": "7cf3cba27bec95fc6dfeaeb68b79471ddaaee1b7",
+   "units": {
+    "tests/components/switchbot/test_init.py": {
+     "plain": [
+      {
+       "code": 0,
+       "wall": 6.07,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 2.7,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 2.62,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      }
+     ],
+     "traced": {
+      "code": 0,
+      "wall": 7.67,
+      "tests": {
+       "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+       "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+       "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+       "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+      },
+      "tail": ""
+     },
+     "loaded": [
+      {
+       "code": 0,
+       "wall": 8.16,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 1,
+       "wall": 10.9,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "fail",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": "line=430::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n::warning file=/home/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=430::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n::warning file=/home/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=430::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n"
+      },
+      {
+       "code": 1,
+       "wall": 10.31,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "fail",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": "line=430::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n::warning file=/home/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=430::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n::warning file=/home/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=430::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n"
+      },
+      {
+       "code": 0,
+       "wall": 8.35,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      }
+     ]
+    }
+   }
+  },
+  "cur": {
+   "sha": "cbfc323f04360c3bcbb88db837527ae0cd3266c9",
+   "units": {
+    "tests/components/switchbot/test_init.py": {
+     "plain": [
+      {
+       "code": 0,
+       "wall": 2.66,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 2.65,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 2.7,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      }
+     ],
+     "traced": {
+      "code": 0,
+      "wall": 7.51,
+      "tests": {
+       "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+       "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+       "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+       "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+      },
+      "tail": ""
+     },
+     "loaded": [
+      {
+       "code": 0,
+       "wall": 8.67,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 8.21,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 8.67,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 8.67,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      }
+     ]
+    }
+   }
+  },
+  "rec2": {
+   "sha": "7cf3cba27bec95fc6dfeaeb68b79471ddaaee1b7",
+   "units": {
+    "tests/components/switchbot/test_init.py": {
+     "plain": [
+      {
+       "code": 0,
+       "wall": 2.78,
+       "tests": {
+        "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+        "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+        "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+        "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+       },
+       "tail": ""
+      }
+     ],
+     "traced": {
+      "code": 0,
+      "wall": 7.69,
+      "tests": {
+       "tests/components/switchbot/test_init.py::test_exception_handling_for_device_initialization[exception0-Switchbot device initialization failed because of incorrect configuration parameters: wrong model]": "pass",
+       "tests/components/switchbot/test_init.py::test_setup_entry_without_ble_device": "pass",
+       "tests/components/switchbot/test_init.py::test_setup_entry_meter_pro_co2_uses_non_connectable": "pass",
+       "tests/components/switchbot/test_init.py::test_coordinator_wait_ready_timeout": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[curtain-service_info0-expected_options0]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_entry_from_v1_1_to_v1_2[hygrometer-service_info1-expected_options1]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_entry_preserves_existing_options": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_entry_fails_for_future_version": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info0-air_purifier_jp]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier-service_info1-air_purifier_us]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info2-air_purifier_table_jp]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type[air_purifier_table-service_info3-air_purifier_table_us]": "pass",
+       "tests/components/switchbot/test_init.py::test_migrate_deprecated_air_purifier_sensor_type_device_not_in_range": "pass"
+      },
+      "tail": ""
+     },
+     "loaded": []
+    }
+   }
+  }
+ },
+ "verdict": {
+  "tests/components/switchbot/test_init.py": "not-reproducible (load-sensitive)"
+ }
+}
