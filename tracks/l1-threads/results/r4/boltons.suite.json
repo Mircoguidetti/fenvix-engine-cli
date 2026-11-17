@@ -1,0 +1,258 @@
+{
+ "name": "boltons",
+ "set": "popular",
+ "url": "https://github.com/mahmoud/boltons",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009501",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "d31d821d56c8f7756af9c30a864077f2e5855321",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group dev",
+ "collected": 621,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 2.323,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 621
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 9.404,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 621
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 3.596,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 621
+   },
+   "stats": {
+    "decisions": 20,
+    "switches": 2078,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 8,
+    "managed": 13
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 6.413,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 621
+   },
+   "stats": {
+    "decisions": 1240,
+    "switches": 2684,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 8,
+    "managed": 13
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 2.239,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 621
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 4.125,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 621
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 3.617,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 621
+   },
+   "stats": {
+    "decisions": 20,
+    "switches": 2078,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 8,
+    "managed": 13
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 6.564,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 621
+   },
+   "stats": {
+    "decisions": 1240,
+    "switches": 2684,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 8,
+    "managed": 13
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 2,
+   "duration_s": 2.328,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 621
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 4.125,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 621
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 2,
+   "duration_s": 3.571,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 621
+   },
+   "stats": {
+    "decisions": 20,
+    "switches": 2078,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 8,
+    "managed": 13
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 2,
+   "duration_s": 6.463,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 621
+   },
+   "stats": {
+    "decisions": 1239,
+    "switches": 2697,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 8,
+    "managed": 13
+   },
+   "tail": ""
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
