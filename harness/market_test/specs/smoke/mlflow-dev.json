@@ -42,6 +42,7 @@
   "source": "GitHub Actions python job groups, 4 vCPU each assumed"
  },
  "ci_env": "false",
+ "untracked_exists_are_outputs": true,
  "seq": {
   "kind": "first-parent",
   "n": 3,

@@ -210,7 +210,7 @@ SPECS = [
 # process builds a wheel of the whole source tree (--serve-wheel), so every test reads every file; CI=false turns
 # it off. Both are measured: "mlflow" (CI mode) and "mlflow-dev".
 _mlflow = next(s for s in SPECS if s["name"] == "mlflow")
-SPECS.append(dict(json.loads(json.dumps(_mlflow)), name="mlflow-dev", ci_env="false"))
+SPECS.append(dict(json.loads(json.dumps(_mlflow)), name="mlflow-dev", ci_env="false", untracked_exists_are_outputs=True))
 HEADS["mlflow-dev"] = HEADS["mlflow"]
 
 SMOKE_SAMPLE = {"mlflow-dev": 0.04, "airflow": 0.02, "integrations-core": 0.03, "moto": 0.05, "transformers": 0.03, "mlflow": 0.04,

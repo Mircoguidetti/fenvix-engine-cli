@@ -556,6 +556,18 @@ class Walker:
         reads = {p: h for p, h in reads.items() if h is not None}
         exists = {p: Hasher.kind(p) for p in deps["exists"]}
         exists = {p: k for p, k in exists.items() if k}
+        if self.spec.get("untracked_exists_are_outputs"):
+            # market test (spec option): a path under the checkout that is neither tracked nor ignored did not exist
+            # after the checkout's `git clean`; it was created by this run (an output, e.g. pytest-benchmark's
+            # .benchmarks), as E1 already treats untracked read-write files. Tracked or ignored paths are kept.
+            tr = self.tracked()
+            keep = {}
+            for p, k in exists.items():
+                rel = p[len(src):] if p.startswith(src) else None
+                if rel is None or rel in tr \
+                        or self.ignored(rel) or self._has_tracked_below(rel):
+                    keep[p] = k
+            exists = keep
         lists = {}
         py = None
         env_names = set(ALWAYS_ENV.get(self.lang, ()))
@@ -603,6 +615,14 @@ class Walker:
                 "net": len(deps["net"]), "net_ext": len(nonloop), "net_ext_addr": sorted({x[0] for x in nonloop})[:5],
                 "execs": len(deps["execs"]), "nread_src": sum(1 for p in reads if p.startswith(src)), "n_rw": n_rw,
                 "env": envk, "runtime": self.runtime()}
+
+    def _has_tracked_below(self, rel):
+        cache = self.__dict__.setdefault("_tb_cache", {})
+        key = (self.cur_sha, rel)
+        if key not in cache:
+            pre = rel.rstrip("/") + "/"
+            cache[key] = any(f.startswith(pre) for f in self.tracked())
+        return cache[key]
 
     def ignored(self, rel):
         return subprocess.run(["git", "check-ignore", "-q", "--", rel], cwd=self.src).returncode == 0
