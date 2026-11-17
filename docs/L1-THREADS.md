@@ -84,6 +84,36 @@ instead of claiming an identical execution. Threads that existed before the
 scheduler started (or were started by C code) are unmanaged and run freely; our
 locks fall back to plain lock behaviour for them.
 
+## No blocking point can hang a test (fix round, 2026-11-17)
+
+Found on anyio's worker-thread pool and on requests with pytest-httpbin (Block 1 popular pool):
+
+* **Polls are scheduling points.** A zero-timeout poll that finds nothing (`select(0)`,
+  `selector.select(0)` of an event loop with nothing ready, a failed non-blocking acquire,
+  `sleep(0)`, `Event.is_set()` false, `Queue.get_nowait()` empty, `Thread.is_alive()` true,
+  called from code under test) lets the runnable threads go first (calm: the poller goes
+  last). If none can run, the poll is charged virtual time (1 µs, doubling while the spin
+  lasts, at most 1 ms) and due timers fire. anyio's `while not started.is_set(): await
+  checkpoint()` spun forever before: the worker it waited for never got the baton.
+* **Outside work is real time, bounded.** When an unmanaged thread (a server started by a
+  fixture or at import), a child process or an escaped thread may answer, a socket timeout
+  is real time (not the 1 s grace), and a wait with no timeout is a real wait. With only
+  managed threads it is still a deadlock after `--det-threads-deadlock` (5 s); with outside
+  work it becomes a `DeadlockError` after `--det-threads-stuck` (60 s), naming the waiting
+  threads and every thread outside the scheduler.
+* **Thread ids are reused.** A finished managed thread's id is forgotten: the OS gives it to
+  later threads, and pytest-httpbin's server was mistaken for a managed thread (requests:
+  5 false `DeadlockError`s).
+* **Spinning without a controlled point.** A holder running pure Python (a flag read) for
+  1 s while another thread is runnable, or 10 s while the others only wait for time, is
+  escaped (recorded as `threads.uncontrolled`). The watchdog survives its own errors.
+* **Asynchronous exceptions** (pytest-timeout's signal method, KeyboardInterrupt) while a
+  thread waits for the baton: the thread keeps running outside the scheduler until its next
+  controlled point instead of wedging it; an exception that escapes while the scheduler lock
+  is held does not deadlock the thread on itself.
+* **The preemption tracer is a C callable** (`detpy._core.LineTracer`): a Python trace
+  function moved a test's RecursionError one frame up, inside detpy (structlog).
+
 ## What it does not do (yet)
 
 * Preemption between controlled points only in exploration and only via
