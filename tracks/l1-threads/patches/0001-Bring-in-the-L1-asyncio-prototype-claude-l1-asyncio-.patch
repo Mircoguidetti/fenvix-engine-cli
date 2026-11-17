@@ -1,0 +1,2914 @@
+From 227af1e0f516fe214b45a887c78a2a6da8418d43 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 06:20:38 +0000
+Subject: [PATCH 1/3] Bring in the L1 asyncio prototype
+ (claude/l1-asyncio-study at f3e8be4), code and docs only
+
+Squashed so the track stays linear for format-patch backups. Raw results and
+the asyncio study workflows are left on their branch. Conflicts: clock.sleep
+keeps the head's real-time conditions plus the --det-async sleep hook; the
+plugin's asyncio hooks moved into _DetSession.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ README.md                            |   6 +
+ crates/detpy-core/src/event.rs       |  62 +-
+ crates/detpy-core/src/trace.rs       |   3 +
+ crates/detpy-core/src/verify.rs      |  48 ++
+ docs/L1-ASYNCIO.md                   | 211 +++++++
+ docs/REPORT-l1-asyncio.md            | 104 ++++
+ harness/l1/corpus.json               | 207 +++++++
+ harness/l1/repro/README.md           |   7 +
+ harness/l1/repro/pyproject.toml      |  12 +
+ harness/l1/repro/tests/test_races.py | 257 ++++++++
+ harness/l1_async.py                  | 362 +++++++++++
+ python/detpy/_state.py               |  11 +
+ python/detpy/aio.py                  | 858 +++++++++++++++++++++++++++
+ python/detpy/clock.py                |  10 +-
+ python/detpy/plugin.py               |  31 +-
+ tests/test_aio.py                    | 384 ++++++++++++
+ 16 files changed, 2564 insertions(+), 9 deletions(-)
+ create mode 100644 docs/L1-ASYNCIO.md
+ create mode 100644 docs/REPORT-l1-asyncio.md
+ create mode 100644 harness/l1/corpus.json
+ create mode 100644 harness/l1/repro/README.md
+ create mode 100644 harness/l1/repro/pyproject.toml
+ create mode 100644 harness/l1/repro/tests/test_races.py
+ create mode 100644 harness/l1_async.py
+ create mode 100644 python/detpy/aio.py
+ create mode 100644 tests/test_aio.py
+
+diff --git a/README.md b/README.md
+index 0348102..e687163 100644
+--- a/README.md
++++ b/README.md
+@@ -44,6 +44,12 @@ What `--det` controls:
+ | 5 | closed network | connections/DNS/UDP to non-local hosts raise `detpy.NetworkBlockedError` (or `socket.gaierror` for DNS) with an explicit message; loopback and `AF_UNIX` allowed; local HTTP proxies count as external. `--det-record` records per-test byte streams (plaintext above TLS) and later runs replay them. |
+ | 6 | fingerprint | every interaction above (plus OS entropy reads, which are observed but not controlled) becomes an event `(thread, source, op, call site, value)`; the Rust core chains them with BLAKE3 and stores the trace. |
+ 
++Level 1 prototype (asyncio): `--det --det-async` runs every asyncio loop of the test
++thread under a seeded scheduler (virtual loop clock, I/O readiness, executor results and
++`call_soon_threadsafe` delivered in an order chosen by the seed, each choice recorded in the
++fingerprint). `--det-async-seed=N` explores (0 = calm, reproducible, no exploration). Design and
++limits: [docs/L1-ASYNCIO.md](docs/L1-ASYNCIO.md).
++
+ Other options: `--det-disable=time,fs,bytecode,...`, `--det-sleep=real`, `--det-urandom`
+ (make `os.urandom`/`uuid4` deterministic — beyond Level 0), `--det-tick-adapt=N`,
+ `--det-allow-host=H`, `--det-max-events=N`, `--det-keep-aslr`, `--det-no-reexec`,
+diff --git a/crates/detpy-core/src/event.rs b/crates/detpy-core/src/event.rs
+index da2ac19..9870c25 100644
+--- a/crates/detpy-core/src/event.rs
++++ b/crates/detpy-core/src/event.rs
+@@ -11,9 +11,40 @@
+ use serde::{Deserialize, Serialize};
+ use std::fmt;
+ 
+-/// Bump when [`Event::encode`] changes: fingerprints are only comparable
+-/// between traces produced with the same encoding version.
+-pub const ENCODING_VERSION: u32 = 1;
++/// Bump when [`Event::encode`] or the event vocabulary changes: fingerprints
++/// are only comparable between traces produced with the same encoding version,
++/// and the verifier refuses to compare traces whose encodings differ.
++///
++/// * 1: Level 0 (Python).
++/// * 2: shared vocabulary for every runtime and level (fenvix-brain-cli
++///   ARCHITECTURE.md, "Shared event vocabulary"): adds [`Source::Sched`]
++///   (tag 9) for the scheduling choices of Level 1. Sched ops:
++///   `sched.ready`, `sched.timer`, `sched.io`, `sched.executor`,
++///   `sched.microtask` (Node), `sched.thread` (later); value
++///   `<chosen index>/<set size>:<stable id>`, stable id = creation site of the
++///   chosen callback plus a per-site counter. Site = `path:line` relative to the
++///   repository root, POSIX separators.
++pub const ENCODING_VERSION: u32 = 2;
++
++/// The operations a [`Source::Sched`] event may carry.
++pub const SCHED_OPS: [&str; 6] =
++    ["sched.ready", "sched.timer", "sched.io", "sched.executor", "sched.microtask", "sched.thread"];
++
++/// Build the value of a sched event: `<chosen index>/<set size>:<stable id>`.
++pub fn sched_value(chosen: usize, size: usize, stable_id: &str) -> String {
++    format!("{chosen}/{size}:{stable_id}")
++}
++
++/// Parse a sched value back into `(chosen index, set size, stable id)`.
++pub fn parse_sched_value(v: &str) -> Option<(usize, usize, &str)> {
++    let (head, id) = v.split_once(':')?;
++    let (i, n) = head.split_once('/')?;
++    let (i, n) = (i.parse().ok()?, n.parse().ok()?);
++    if i >= n {
++        return None;
++    }
++    Some((i, n, id))
++}
+ 
+ /// Category of non-deterministic source an event belongs to.
+ #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+@@ -35,10 +66,14 @@ pub enum Source {
+     Syscall,
+     /// Anything else a backend wants to report.
+     Other,
++    /// Scheduling choices of the Level 1 runtime (`--det-async`: which ready
++    /// external events an asyncio loop iteration delivered, timers fired,
++    /// clock jumps). Appended after `Other` so existing tags are unchanged.
++    Sched,
+ }
+ 
+ impl Source {
+-    pub const ALL: [Source; 8] = [
++    pub const ALL: [Source; 9] = [
+         Source::Time,
+         Source::Random,
+         Source::Fs,
+@@ -47,6 +82,7 @@ impl Source {
+         Source::Outcome,
+         Source::Syscall,
+         Source::Other,
++        Source::Sched,
+     ];
+ 
+     pub fn as_str(self) -> &'static str {
+@@ -59,6 +95,7 @@ impl Source {
+             Source::Outcome => "outcome",
+             Source::Syscall => "syscall",
+             Source::Other => "other",
++            Source::Sched => "sched",
+         }
+     }
+ 
+@@ -73,6 +110,7 @@ impl Source {
+             "entropy" => Source::Entropy,
+             "outcome" => Source::Outcome,
+             "syscall" => Source::Syscall,
++            "sched" => Source::Sched,
+             _ => Source::Other,
+         }
+     }
+@@ -87,6 +125,7 @@ impl Source {
+             Source::Outcome => 6,
+             Source::Syscall => 7,
+             Source::Other => 8,
++            Source::Sched => 9,
+         }
+     }
+ }
+@@ -186,6 +225,21 @@ mod tests {
+         assert_ne!(enc(&a), enc(&c));
+     }
+ 
++    #[test]
++    fn sched_source_and_values() {
++        assert_eq!(Source::parse("sched"), Source::Sched);
++        assert_eq!(Source::Sched.as_str(), "sched");
++        assert_eq!(Source::Sched.tag(), 9);
++        // Existing tags are unchanged by the new source.
++        assert_eq!(Source::Other.tag(), 8);
++        let v = sched_value(2, 5, "tests/test_a.py:12#3");
++        assert_eq!(v, "2/5:tests/test_a.py:12#3");
++        assert_eq!(parse_sched_value(&v), Some((2, 5, "tests/test_a.py:12#3")));
++        assert_eq!(parse_sched_value("5/5:x"), None);
++        assert_eq!(parse_sched_value("garbage"), None);
++        assert!(SCHED_OPS.contains(&"sched.microtask"));
++    }
++
+     #[test]
+     fn json_is_compact() {
+         let e = Event::new(Source::Fs, "os.listdir", "t.py:3", "2:abcd");
+diff --git a/crates/detpy-core/src/trace.rs b/crates/detpy-core/src/trace.rs
+index a68f3da..ca35432 100644
+--- a/crates/detpy-core/src/trace.rs
++++ b/crates/detpy-core/src/trace.rs
+@@ -126,6 +126,8 @@ pub enum TraceError {
+     Io(io::Error),
+     Parse { line: usize, msg: String },
+     Format(String),
++    /// Traces produced with different event encodings: never compared.
++    Incompatible(String),
+ }
+ 
+ impl std::fmt::Display for TraceError {
+@@ -134,6 +136,7 @@ impl std::fmt::Display for TraceError {
+             TraceError::Io(e) => write!(f, "I/O error: {e}"),
+             TraceError::Parse { line, msg } => write!(f, "parse error at line {line}: {msg}"),
+             TraceError::Format(m) => write!(f, "invalid trace: {m}"),
++            TraceError::Incompatible(m) => write!(f, "traces not comparable: {m}"),
+         }
+     }
+ }
+diff --git a/crates/detpy-core/src/verify.rs b/crates/detpy-core/src/verify.rs
+index a487e00..b0da932 100644
+--- a/crates/detpy-core/src/verify.rs
++++ b/crates/detpy-core/src/verify.rs
+@@ -26,6 +26,9 @@ pub enum Reason {
+     Entropy,
+     Syscall,
+     Other,
++    /// First differing event is a scheduling choice of the Level 1 runtime
++    /// (`--det-async`): the runs delivered asyncio events in a different order.
++    Sched,
+     /// The differing events come from different threads or from a non-main
+     /// thread: scheduling is not controlled by Level 0.
+     Thread,
+@@ -49,6 +52,7 @@ impl Reason {
+             Reason::Entropy => "entropy",
+             Reason::Syscall => "syscall",
+             Reason::Other => "other",
++            Reason::Sched => "sched",
+             Reason::Thread => "thread",
+             Reason::OutcomeOnly => "outcome-only",
+             Reason::BeyondTrace => "beyond-trace",
+@@ -66,6 +70,7 @@ impl Reason {
+             Source::Syscall => Reason::Syscall,
+             Source::Outcome => Reason::OutcomeOnly,
+             Source::Other => Reason::Other,
++            Source::Sched => Reason::Sched,
+         }
+     }
+ }
+@@ -251,6 +256,10 @@ fn describe(i: u64, a: Option<&Event>, b: Option<&Event>) -> String {
+              the cause is a source Level 0 does not observe",
+             ea.value, eb.value
+         ),
++        (Some(ea), Some(eb)) if ea.source == Source::Sched && eb.source == Source::Sched => format!(
++            "event #{i}: first diverging scheduling choice: {} {} @ {}  <>  {} {} @ {}",
++            ea.op, ea.value, ea.site, eb.op, eb.value, eb.site
++        ),
+         (Some(ea), Some(eb)) if ea.op == eb.op && ea.site == eb.site && ea.thread == eb.thread => format!(
+             "event #{i}: {} @ {} returned different values: {:?} vs {:?}",
+             ea.op, ea.site, ea.value, eb.value
+@@ -358,9 +367,26 @@ pub fn verify_paths<P: AsRef<Path>>(paths: &[P]) -> Result<Report, TraceError> {
+         traces.push(read_trace(p.as_ref())?);
+         labels.push(p.as_ref().display().to_string());
+     }
++    check_compatible(&traces, &labels)?;
+     Ok(verify(&traces, &labels))
+ }
+ 
++/// Traces with different event encodings are never compared: their
++/// fingerprints differ by construction, which is not a divergence.
++pub fn check_compatible(traces: &[Trace], labels: &[String]) -> Result<(), TraceError> {
++    let Some(first) = traces.first() else { return Ok(()) };
++    let base = first.header.encoding;
++    for (t, l) in traces.iter().zip(labels).skip(1) {
++        if t.header.encoding != base {
++            return Err(TraceError::Incompatible(format!(
++                "{} uses event encoding {} but {} uses {}; re-run both with the same detpy version",
++                labels[0], base, l, t.header.encoding
++            )));
++        }
++    }
++    Ok(())
++}
++
+ /// Human-readable rendering of a report.
+ pub fn render_text(report: &Report, show_stable: bool) -> String {
+     use std::fmt::Write;
+@@ -424,6 +450,28 @@ mod tests {
+         Event::new(Source::Time, "time.time", "t.py:1", v)
+     }
+ 
++    #[test]
++    fn sched_divergence_is_named() {
++        let a = Event::new(Source::Sched, "sched.io", "tests/t.py:7", "0/2:tests/t.py:7#1");
++        let b = Event::new(Source::Sched, "sched.io", "tests/t.py:7", "1/2:tests/t.py:7#2");
++        assert_eq!(classify(Some(&a), Some(&b)), Reason::Sched);
++        let d = describe(4, Some(&a), Some(&b));
++        assert!(d.starts_with("event #4: first diverging scheduling choice: sched.io 0/2:"), "{d}");
++        assert!(d.contains("1/2:tests/t.py:7#2"), "{d}");
++    }
++
++    #[test]
++    fn different_encodings_are_not_compared() {
++        let mut a = trace(vec![]);
++        let b = trace(vec![]);
++        a.header.encoding = 1;
++        let labels = vec!["old.jsonl".to_string(), "new.jsonl".to_string()];
++        let err = check_compatible(&[a, b], &labels).unwrap_err();
++        assert!(matches!(err, TraceError::Incompatible(_)));
++        assert!(err.to_string().contains("old.jsonl uses event encoding 1 but new.jsonl uses 2"), "{err}");
++        assert!(check_compatible(&[trace(vec![]), trace(vec![])], &labels).is_ok());
++    }
++
+     #[test]
+     fn identical_runs_are_stable() {
+         let a = trace(vec![rec("x", &[t("1")], "passed", 100)]);
+diff --git a/docs/L1-ASYNCIO.md b/docs/L1-ASYNCIO.md
+new file mode 100644
+index 0000000..67f1e3c
+--- /dev/null
++++ b/docs/L1-ASYNCIO.md
+@@ -0,0 +1,211 @@
++# L1 study: deterministic asyncio (`--det-async`)
++
++Status: design note plus prototype (`python/detpy/aio.py`, flag `--det-async`
++on top of `--det`). CPython 3.10–3.13. Written 2026-11-16 by the L1 study
++session (prompt P-006).
++
++## 1. Where asyncio nondeterminism comes from
++
++asyncio runs one thread and calls callbacks in exactly one place,
++`BaseEventLoop._run_once`. One iteration does, in this order:
++
++1. drop cancelled timers from the heap `_scheduled`;
++2. `event_list = self._selector.select(timeout)`; `timeout` is 0 if the ready
++   queue `_ready` is not empty, otherwise the time until the first timer
++   (real time, `loop.time()` = `time.monotonic()`);
++3. `_process_events(event_list)` appends the reader/writer callbacks of the
++   ready file objects to `_ready`;
++4. every timer with `when < loop.time() + clock_resolution` is moved to `_ready`;
++5. the callbacks that are in `_ready` *now* are run, FIFO; callbacks they
++   schedule wait for the next iteration.
++
++Given the same inputs at the same iterations, that is deterministic: `_ready`
++is a FIFO deque and `call_soon` order is a documented guarantee. All the
++nondeterminism comes from *what is put into `_ready` at which iteration*:
++
++| source | mechanism | typical flaky test |
++|---|---|---|
++| **ready-queue order** | FIFO itself is fixed; what varies is the iteration at which external callbacks (below) join it, so they interleave differently with task steps. `asyncio.wait`, `all_tasks()` return `set`s of tasks hashed by address. | "task B ran before A finished its setup", results read from a `set` of tasks |
++| **timers and the clock** | `loop.time()` is real `time.monotonic()`. Whether a timer fires in this iteration or a later one depends on how much real CPU time the callbacks took, on scheduler preemption, GC pauses, a loaded CI runner. | `wait_for(x, timeout=0.1)` that sometimes times out; `sleep(0.01)` used as "enough time for the other task"; two timers whose order depends on work done between scheduling them |
++| **I/O readiness from selectors** | `select()` returns what the kernel has ready at that instant, in kernel order (epoll: readiness order). A peer in another thread/process, the network, the loopback stack under load decide it. The number of bytes a `recv` returns also depends on timing. | server/client tests where two responses arrive in either order; "readline got half a line" |
++| **thread-pool executors** | `run_in_executor` / `to_thread` / `getaddrinfo` run in worker threads; the result is posted back with `call_soon_threadsafe` whenever the worker finishes. | "job result arrived after the timeout", order of results of parallel jobs |
++| **`call_soon_threadsafe`** | foreign threads append to `_ready` and write to the self-pipe at an arbitrary point between iterations. Also used by asyncio itself: executor shutdown thread, async-generator finalizers (GC), threaded child watchers (subprocess exit, 3.12+). | "event set from a thread is seen one iteration late" |
++| **task cancellation** | `Task.cancel()` is itself deterministic (delivered at the next step), but most cancellations come from timeouts (`wait_for`, `asyncio.timeout`, `TaskGroup` failure fan-out), so they inherit the timer and I/O races above; `cancel()` vs. completion in the same iteration decides whether `CancelledError` or the result is seen. | "CancelledError not raised", "task finished despite cancel" |
++| others | signal handlers via the self-pipe; GC finalizers of transports; `uvloop` (not a `BaseEventLoop`); trio (own scheduler) | |
++
++## 2. What Level 0 already fixes, and what it does not
++
++Level 0 (`--det`) fixes the test order, the seeds, `PYTHONHASHSEED`, the
++filesystem listing order, the network, and the clock *of user code*
++(`time.*`, `datetime.now`). It explicitly **keeps asyncio on real time**:
++`clock.install` patches `BaseEventLoop.time` to the real `time.monotonic`,
++because the selector waits for real and a virtual loop clock without a
++scheduler would make every timeout fire immediately. So under L0:
++
++* every row of the table above is still nondeterministic;
++* worse, user code mixing `time.monotonic()` (virtual) with `asyncio.sleep`
++  (real) sees inconsistent clocks: `await asyncio.sleep(10)` takes 10 real
++  seconds and `time.monotonic()` advances by a few microseconds.
++
++What L0 gives L1 for free: a fixed hash seed (so `set` iteration of strings is
++stable), ASLR off (task addresses, hence `set`-of-task order, are more often
++equal across runs, but not guaranteed), the per-test seed derivation
++(`derive_seed(seed, nodeid)`), the virtual clock to keep consistent with, the
++event sink and the verifier.
++
++## 3. The seeded scheduler
++
++`--det-async` gives every asyncio loop *run by the thread of the running test*
++a `Scheduler` that replaces `_run_once`. Each choice point where real asyncio
++depends on timing is decided by a SplitMix64 generator seeded with
++`derive_seed(seed, nodeid + loop index)`:
++
++| choice point | real asyncio | `--det-async` |
++|---|---|---|
++| loop clock | real monotonic | virtual: each callback costs a seeded duration (CPU-time model: exponential, mean 8 µs, 2% "hiccups" up to 5 ms; seed 0 = fixed 5 µs); when nothing is ready the clock **jumps** to the next deadline instead of sleeping. Jumps are mirrored into the L0 clock so `time.monotonic()` agrees. |
++| which timers fire this iteration | real time elapsed | pure function of the virtual clock, hence of the seed |
++| I/O readiness | `select(timeout)` blocks; kernel order | `select(0)` every iteration (never blocks while work is pending). Each ready file object is delivered now or **deferred** to a later iteration (p = 0.35 per iteration; it stays ready because selectors are level-triggered); delivered ones are put in canonical order (fd) then shuffled. Seed 0: all, in fd order. |
++| executor results | posted by the worker whenever it finishes | `run_in_executor` keeps the `concurrent.futures.Future`; at the next iteration the loop **waits for the job** and schedules its delivery at virtual time `submit + virtual sleeps of the job + seeded cost`; the delivery is a timer-like event, so "job vs. timer" and "job A vs. job B" are decided by virtual durations and the seed, not by thread speed. The worker's own events (e.g. its `time.sleep`) are buffered and recorded at the delivery point. |
++| `call_soon_threadsafe` from foreign threads | appended at arrival | buffered; when the loop has to wait for real it batches arrivals over a settle window (10 ms, extended by each new arrival); the batch is merged **FIFO per posting thread** (causal order kept), threads interleaved by the seed |
++| idle loop with timers and live foreign sources (threads, child processes) | sleeps on the selector until the timer | waits for real up to `min(delay, --det-async-grace)` (1 s) for foreign I/O, then jumps. A wake-up in that window is recorded (`grace-wakeup`) because its timing is not controlled. |
++| `shutdown_default_executor` | joins in a helper thread, 300 s timeout race | joined in the loop thread |
++
++What is **not** reordered: callbacks already in `_ready`. FIFO is an asyncio API
++guarantee; reordering it would produce executions CPython can never produce and
++therefore false failures. The seed explores only the freedom real asyncio has:
++*when* external events arrive relative to each other and to timers, and how
++long callbacks take.
++
++Seed 0 is the **calm profile** (fixed costs, everything ready delivered at
++once): the default of `--det-async` alone, meant to make a suite reproducible
++without exploring. Seeds ≥ 1 explore (`--det-async-seed=N`, default
++`--det-seed`).
++
++### Recording, fingerprint, verifier (shared event vocabulary)
++
++Every choice is one event in the shared vocabulary (fenvix-brain-cli
++ARCHITECTURE.md, "Shared event vocabulary"; encoding version 2):
++
++| op | when | chosen index / set size |
++|---|---|---|
++| `sched.io` | a ready file object is delivered | index in the canonical (fd-ordered) set of ready objects still undelivered, including the deferred ones |
++| `sched.ready` | a foreign `call_soon_threadsafe` callback is delivered | index in the canonical order of the batch still undelivered |
++| `sched.executor` | an executor result is delivered | `0/n`, n = results due together (order = virtual completion time) |
++| `sched.timer` | a timer fires | `0/n`, n = timers due together (order = deadline) |
++
++value = `<chosen index>/<set size>:<stable id>`; the stable id is the creation
++site of the callback (first user frame when the timer, reader/writer, executor
++job or threadsafe call was created; `path:line` relative to the root) plus a
++per-site counter, e.g. `sched.io 1/3:tests/test_x.py:39#2`. The event's site is
++the same creation site. Points whose timing the scheduler does not control are
++recorded as `other` events `asyncio.uncontrolled` (`grace-wakeup`,
++`blocked-wakeup`, `executor-unsettled=<job>`). Events of executor workers are
++recorded at the delivery point of their job, so worker threads do not perturb
++the fingerprint. The Rust core has `Source::Sched` (tag 9), `Reason::Sched`,
++`ENCODING_VERSION = 2` and refuses to compare traces of different encodings.
++`detpy verify` reports, e.g.:
++
++```
++NOT-COVERED test_races.py::test_io_threads  [sched]
++    runs 0 vs 1: event #4: first diverging scheduling choice: sched.io 1/3:test_races.py:39#2 @ test_races.py:39  <>  sched.io 2/3:test_races.py:39#3 @ test_races.py:39
++```
++
++## 4. Mapping onto Node's event loop (design only)
++
++The Node L1 can reuse the same model and the same vocabulary; only the
++interception points differ. Node's loop is libuv plus V8's microtask queue:
++
++```
++timers -> pending callbacks -> idle/prepare -> poll (I/O) -> check (setImmediate) -> close callbacks
++          after every macrotask callback: process.nextTick queue, then the promise (microtask) queue, until both are empty
++```
++
++| asyncio concept (this prototype) | Node / libuv equivalent | choice point and `sched` op |
++|---|---|---|
++| `_ready` FIFO of callbacks scheduled by callbacks | `process.nextTick` queue and promise jobs (microtasks): FIFO, drained completely after each macrotask | **not a choice** (FIFO is guaranteed by the language, like `call_soon`). Exactly as here, reordering them would create impossible executions. |
++| microtasks vs. macrotasks | V8 microtask checkpoint vs. libuv phases | the order is fixed by the spec; `sched.microtask` is reserved for the one real freedom: *which macrotask* runs next when several are runnable (e.g. `setImmediate` vs. an expired `setTimeout(0)` scheduled from the main module, whose order depends on loop start time) |
++| timers + virtual clock with jumps | timers phase (`setTimeout`/`setInterval`, libuv timer heap, `uv_now` updated once per iteration) | `sched.timer`: virtual `uv_now` with the same cost model and jumps; timers due together fire in deadline order (`0/n`) |
++| I/O readiness, deferral, seeded order | poll phase (epoll/kqueue), `pending callbacks` phase for deferred I/O errors | `sched.io`: poll with timeout 0, deliver or defer each ready handle, seeded order among delivered |
++| executor jobs (`run_in_executor`) | libuv threadpool (`fs.*`, `dns.lookup`, `crypto.pbkdf2`, `zlib`), worker threads' `postMessage` | `sched.executor`: wait for the work request, deliver its completion at `submit + virtual duration + seeded cost` |
++| foreign `call_soon_threadsafe` | `uv_async_send` from other threads (worker_threads messages, N-API thread-safe functions) | `sched.ready`: batch, FIFO per sender, seeded interleaving |
++| `call_soon` from the loop | `setImmediate` (check phase) | FIFO within the check phase; the choice is check-before/after-timers only at loop start |
++| `shutdown_default_executor` race | process exit with pending handles (`unref`ed timers) | deterministic drain at test end |
++
++Where to intercept in Node: timers and `setImmediate` in JS (the
++`internal/timers` lists, or a loader that wraps the globals as the Node L0
++already does for `Date`), `process.hrtime`/`performance.now` for the clock;
++I/O and the threadpool are in C (libuv), so a Node L1 that controls `sched.io`
++and `sched.executor` needs either a patched `libuv` (a custom Node build or a
++`LD_PRELOAD` shim of `uv_run`/`uv__io_poll`/`uv_queue_work`) or, at JS level,
++wrappers of `fs`/`net`/`dns` callbacks that defer delivery through the
++scheduler (cheaper, partial: native addons and streams' internal reads escape
++it). The Rust core needs nothing new: the same `Source::Sched` ops and value
++format, stable ids from source-mapped `.ts` sites.
++
++## 5. Approaches compared
++
++| | A. custom loop + event loop policy | **B. instrument `BaseEventLoop` internals** (chosen) | C. selector shim |
++|---|---|---|---|
++| what it is | a new `AbstractEventLoop` (or `SelectorEventLoop` subclass) installed with `set_event_loop_policy` / `loop_factory` | replace `_run_once`, `time`, `call_soon_threadsafe`, `run_in_executor`, `run_forever`, `shutdown_default_executor` on the class, active only on loops run by the test thread | wrap `loop._selector` so `select()` returns events in a seeded order and never blocks |
++| loops covered | only loops created through the policy: misses `asyncio.new_event_loop()` with an explicit class, `asyncio.Runner(loop_factory=...)`, pytest-asyncio's own loop fixtures in some versions, tornado/aiohttp test utilities that create loops directly, session-scoped loops created before the plugin | every `BaseEventLoop` whatever created it (asyncio.run, Runner, pytest-asyncio, anyio's asyncio backend, tornado ≥ 5, aiohttp test utils); loops created before the test are re-based onto virtual time when first run | every selector loop, but only the I/O dimension |
++| choice points controlled | all, if the loop is written from scratch | all (timers, I/O, executors, threadsafe, clock) | I/O order only; timers, executors, threadsafe and the clock stay real |
++| fidelity | a re-implementation drifts from CPython semantics (exception handling, debug mode, slow-callback logging, eager tasks 3.12+, `_asyncgen` hooks) | the original methods do all the work except the iteration itself; `_run_once` is ~60 lines and identical in structure 3.10–3.13 | high, but too little control |
++| fragility | public API only | private attributes (`_ready`, `_scheduled`, `_selector`, `_process_events`, `_read_from_self`, `_clock_resolution`, `TimerHandle._when`): stable 3.10–3.13, must be re-checked per CPython release (3.14 has not been checked) | private `_selector` |
++| `isinstance` / identity | loop class changes | unchanged | unchanged |
++| effort | high | medium | low |
++
++**Choice: B.** It is the only approach that both reaches every loop a real
++test suite creates (pytest-asyncio, anyio, asyncio.run, tornado) and controls
++every choice point, while reusing CPython's own handle/transport machinery so
++semantics do not drift. The selector work of C is folded into B (non-blocking
++polling and seeded delivery inside `_run_once`). The cost is a dependency on
++private internals; it is contained in one module and covered by tests on
++3.10–3.13 in CI. A (a custom loop) remains the right shape for *uvloop users*
++later (uvloop is not a `BaseEventLoop`), via a policy that swaps uvloop for a
++scheduled selector loop under `--det-async`.
++
++## 6. Limits of the prototype
++
++* **Foreign threads are not scheduled.** Callbacks and I/O caused by
++  threads the test starts itself are delivered in seeded order *within a
++  batch*, but which batch they fall into depends on real time (settle window).
++  These deliveries are visible in the fingerprint. Deterministic thread
++  switching is the other half of L1 (bytecode-count scheduling) and is not
++  part of this study.
++* **Executor jobs that wait for the loop** (`run_coroutine_threadsafe(...).result()`
++  inside a job, asgiref-style bridges) cannot be waited for: the loop detects a
++  post from another thread while waiting and falls back to delivery at arrival
++  (`executor-unsettled`, recorded). A job running longer than
++  `--det-async-wait` (2 s real) falls back the same way.
++* **Child processes and the real network** are external: an idle loop waits
++  for them up to `--det-async-grace` real seconds per timer before jumping, so a
++  slow subprocess plus a short timeout behaves as in reality (flaky), and is
++  recorded as `grace-wakeup`.
++* **Thread-pool work outside `run_in_executor`** (an executor used directly,
++  e.g. tornado's `run_on_executor`, results chained back with
++  `call_soon_threadsafe`) is not scheduled: its in-flight items are only
++  counted, and while any is in flight an idle loop lets the next timer's whole
++  delay elapse for real before jumping (found on webssh: without this,
++  tornado's 5 s `gen_test` timeout fired while a paramiko connect was still
++  running).
++* **Nothing blocking may run inside the loop thread on detpy's behalf**: anyio's
++  suite runs blockbuster, which turns any blocking call made in a running loop
++  (even `os.path.abspath`) into an error. Creation sites are therefore
++  resolved with string prefixes computed outside the loop.
++* **Byte chunking** of stream reads is not controlled (what one `recv` returns).
++* **`set`s of tasks** (`asyncio.wait`) iterate in address order; L0's
++  ASLR-off makes that stable in practice but it is not guaranteed.
++* **uvloop and trio** are not covered (not `BaseEventLoop`).
++* CPython only; 3.14 not checked.
++
++## 7. Files
++
++* `python/detpy/aio.py` — scheduler, patched loop methods.
++* `python/detpy/plugin.py` — `--det-async`, `--det-async-seed`, `--det-async-grace`,
++  `--det-async-wait`, `--det-async-settle`.
++* `python/detpy/clock.py` — virtual sleeps of executor jobs are charged to the job.
++* `python/detpy/_state.py` — per-thread event buffer (executor jobs).
++* `crates/detpy-core/src/{event,verify}.rs` — `Source::Sched`, `Reason::Sched`.
++* `tests/test_aio.py` — race tests (fail without the prototype:
++  `DETPY_ASYNC_FLAGS="--det" pytest tests/test_aio.py`), exploration,
++  fingerprint, no-false-failure checks.
+diff --git a/docs/REPORT-l1-asyncio.md b/docs/REPORT-l1-asyncio.md
+new file mode 100644
+index 0000000..984367b
+--- /dev/null
++++ b/docs/REPORT-l1-asyncio.md
+@@ -0,0 +1,104 @@
++# REPORT — L1 study: deterministic asyncio (P-006)
++
++DONE (with gaps listed below: the real-project corpus is small and its flaky tests do not flake in isolation).
++
++Intended path: fenvix-brain-cli `sessions/2026-11-16-l1-asyncio/REPORT.md`; this session cannot push to fenvix-brain-cli `main` (permission policy), so it is delivered on the work branch as `sessions/README.md` prescribes.
++
++Repository fenvix-engine-cli, branch `claude/l1-asyncio-study` (from `claude/gracious-rubin-eyswxd` at 227c161). Key commits: 8843427 prototype; 2ec240f shared event vocabulary (own commit, `event.rs`/`trace.rs`/`verify.rs` only); 9a39641 choices recorded in that vocabulary; 68c11ae and 2d36e12 fixes found on the corpus. No PR opened (not requested by the prompt).
++Files: `docs/L1-ASYNCIO.md` (design note), `python/detpy/aio.py` (scheduler), `tests/test_aio.py`, `harness/l1_async.py`, `harness/l1/corpus.json`, `harness/l1/repro/`, `harness/l1/results/` (REPORT.md, summary.json, raw per-run JSON), `.github/workflows/l1-async.yml`, `.github/workflows/l1-measure.yml`.
++Measurement runs (GitHub-hosted runners, one job per project): **43925910072 (run 4, final code at 2d36e12; all numbers below unless stated)** and 43920396238 (run 3, before the webssh fix). Results: `harness/l1/results/` (run 4).
++
++## Numbers against "Done means"
++
++### Design note and prototype
++
++| item | value | label |
++|---|---|---|
++| design note | `docs/L1-ASYNCIO.md`: sources, what L0 fixes (none of the asyncio sources: L0 keeps the loop on real time), seeded scheduler, shared vocabulary, Node mapping, 3 approaches compared, limits | — |
++| prototype | `--det-async` (needs `--det`), `--det-async-seed`, `--det-async-grace/wait/settle`; 858 lines of Python + ~150 lines of Rust | MEASURED (line count) |
++| tests | 12 tests in `tests/test_aio.py`; plugin suite 60/60 on CPython 3.13 (container) and 3.12 (CI); on 3.10/3.11 (CI) 59/60, the one failure is a pre-existing L0 test (`datetime.utcnow` warning exists only on 3.12+) | MEASURED |
++| fail without / pass with | without the prototype (`DETPY_ASYNC_FLAGS="--det"`) 4/4 race tests fail on 3.10–3.13 (CI); with it they pass; 24 parallel runs on a loaded host gave identical results for 5/5 races | MEASURED |
++| Rust core | 42 tests; `Source::Sched`, `ENCODING_VERSION = 2`, verifier refuses mixed encodings | MEASURED |
++
++### Corpus (step 3)
++
++* IDoFT Python section: 1,618 rows, every test file fetched at its detection commit: **45 async-related tests in 7 projects** (MEASURED); 32 more asyncio rows belong to a deleted repository (tukio). 30 of the 45 are order-dependent (OD), which L0 already targets.
++* 25+25 round: **anyio 17** and **easypy 2** baseline-flaky async tests (DECLARED by the round, run 43892303433, `harness/results/mixed`).
++* Real async *timing* races in these sources are scarce, so the corpus adds **14 minimal reproductions** of classic races (`harness/l1/repro`).
++* Corpus: **78 tests in 10 projects**. Measurable: **65 tests in 6 projects** (anyio 17, webssh 29, l1-repro 14, easypy 2, tornado-swirl 2, python-dugong 1). Not measurable: plcx 7, aiotasks 4 (dependencies no longer resolve), aiopylimit 1 (collection error), pyps4-2ndscreen 1 (setup.py fails); dugong's test does not collect. 7 anyio tests are `asyncio+uvloop` parametrisations, outside the prototype (uvloop is not a `BaseEventLoop`). The target "≥ 20 tests in ≥ 5 projects" is met by count, **not by substance**: see below.
++
++### Measurement (step 4), 58 tests without uvloop, run 4, MEASURED on GitHub-hosted runners
++
++Protocol per project: 10 quiet baseline runs, 10 baseline runs under CPU contention (one spinning process per core), 10 `--det`, 10 `--det --det-async` (calm, seed 0), 10 calm under contention, seeds 1..20, 10/10 confirmation of the first failing seed with fingerprint comparison, test order fixed, serial.
++
++| | real projects (44 tests) | minimal reproductions (14) |
++|---|---|---|
++| flaky in the baseline (quiet or loaded, run alone) | **0/44** | 8/14 (quiet 2, CPU-loaded 6 more) |
++| `--det` only: same outcome in all 10 runs | 40/44 | 13/14 |
++| `--det --det-async` calm: same outcome in all 10 runs | **43/44** | 13/14 |
++| calm under CPU load: same outcome in all 10 runs | 42/44 | 13/14 (baseline under the same load: 6/14 stable) |
++| reproduced 10/10 with a seed **and** passing with another seed | 0/44 | **8/14** (4 of the 8 baseline-flaky ones; 4 are latent races never seen failing in the baseline) |
++| fingerprints identical across the 10 confirmation runs | — | 8/8 of the reproduced ones |
++
++* **Real projects:** none of the 44 real async flaky tests flaked when run on its own, quiet or loaded (anyio's 17 flaked in the round only inside the full suite with pytest-randomly and xdist `-n 2`; the IDoFT ones are mostly order-dependent or were flaky on 2019–2021 hardware). So the share of *real* async flaky tests made reproducible is **UNKNOWN**: the corpus does not exhibit the flakiness in isolation, with or without detpy. This is the main gap of the study.
++* **Minimal reproductions:** reproducible with a seed (10/10, identical fingerprints) and passing with another: executor results order, `as_completed` order, tight timeout on a thread job, lock order after thread work (these 4 flaked in the baseline), plus `FIRST_COMPLETED` job vs timer, ordered appends after thread work, readers on sockets written by threads, thread signal vs timeout (seed 15) (latent: never failed in the baseline). Not reproduced: cancellation racing a job, subprocess vs a 50 ms timeout, queue fed by a thread (pass with every seed: the cost model makes executor work fast, subprocesses are external), two clients from threads connecting to a server (foreign threads: 5/10, fingerprint diverges, as designed). One test is broken in every mode (rate limiter).
++* **False failures:** corpus tests: none in run 4 that pass under `--det` and fail under calm `--det-async` in quiet runs (webssh `test_app_with_wrong_hostname_domain` failed 1/10 under calm *with CPU load* only). Full suites, run 0 of the timing pass: anyio `--det` 50 failed vs calm 49 (no extra); webssh `--det` 18 vs calm 21 (3 more, not yet analysed; `--det` itself varies 18–20 on this suite); easypy, tornado-swirl, l1-repro: no extra. Two defects found and fixed on the way: blockbuster (anyio's suite) flagged detpy's `os.path` calls inside the loop, making 85 anyio tests fail only under `--det-async` (fixed in 68c11ae); the clock jumped past tornado's 5 s `gen_test` timeout while a paramiko connect ran on webssh's own thread pool, 3 tests failing 3/10 only under `--det-async` (fixed in 2d36e12; run 4: 0/10).
++* **L0 itself** breaks 13 of webssh's 29 corpus tests (pass 10/10 in the baseline, fail under `--det`): a Level 0 issue (threaded paramiko server, virtual sleeps), reported here for the Detpy session.
++* With `--det` alone, asyncio stays on real time and `time.monotonic()` on virtual time, which breaks some async code: `test_sleep_as_sync_with_executor` fails 9/10 under `--det` and passes 10/10 under calm `--det-async`.
++
++### Slowdown, `--det --det-async` vs `--det`, full suites, serial, 3 runs each, medians (run 4)
++
++| project | `--det` s | calm `--det-async` | seed 1 | label |
++|---|---|---|---|---|
++| anyio (4,812 tests, `tests/test_pytest_plugin.py` excluded) | 87.7 | 95.0 (**+8.3%**) | 95.1 (+8.5%) | MEASURED, NOISY (hosted runner) |
++| webssh | 17.4 | 20.2 (**+16.0%**) | 19.1 (+9.6%) | MEASURED, NOISY |
++| easypy | 12.97 | 12.87 (−0.8%) | 12.90 (−0.6%) | MEASURED, NOISY |
++| tornado-swirl | 0.90 | 0.91 (+1.7%) | 0.91 (+1.7%) | MEASURED, NOISY |
++| l1-repro | 0.89 | 0.88 (−0.8%) | 0.89 (+0.3%) | MEASURED, NOISY |
++
++(python-dugong's suite errors at collection in every mode; excluded.) anyio, the one large asyncio suite: **≈ 8% over `--det`** (run 3: 8.0%). webssh became slower with the 2d36e12 fix (run 3: +1.6%): while thread-pool work is in flight an idle loop now waits the timer's full delay for real, and webssh's L0-broken tests then wait out tornado's 5 s timeout. Waits of pure-asyncio tests get shorter (virtual jumps).
++
++## What worked
++
++* Instrumenting `BaseEventLoop` reaches every loop real suites create (asyncio.run, pytest-asyncio, anyio's asyncio backend, tornado 6) without changing loop classes; `_run_once` is structurally identical on 3.10–3.13.
++* Seeded choices are replayable: the same seed gives the same results and the same fingerprint (8/8 reproduced tests, 10/10 runs each); different seeds explore different interleavings; the verifier names the first diverging choice (`sched.io 1/3:tests/test_x.py:39#2 …`).
++* Executor results delivered at virtual completion times remove thread speed from the outcome; this was the hardest part (the asyncio chaining of executor futures raced with job registration; replaced by waiting on the `concurrent.futures.Future` directly).
++* The calm profile fixes L0's inconsistent clocks for asyncio code at ≈ 8% cost on anyio, and makes outcomes steadier than `--det` alone (43/44 vs 40/44 real tests stable; under CPU load 13/14 vs 6/14 for the baseline on the reproductions).
++
++## What did not
++
++* Foreign threads (threads the test starts, servers in threads, thread pools used outside `run_in_executor`) remain timing-dependent; the scheduler only batches their arrivals. Most of the remaining real-world asyncio flakiness in this corpus (anyio TLS tests with threaded servers, webssh with a paramiko server thread) is of this kind: it needs the *threads* half of L1.
++* The CPU-cost model makes executor work fast and deterministic; races that in reality depend on *slow* thread or subprocess work (sleep-as-sync, cancel-vs-job) are not reached by the seeds explored. A heavier-tailed cost model or a seed dimension on job durations would reach them.
++* Old IDoFT projects (2018–2021) mostly no longer install.
++
++## How hard to copy
++
++* The asyncio half is copyable by a strong engineer in **2–4 weeks** (ESTIMATED): the idea is public (trio's `MockClock(autojump)`, simulation testing à la FoundationDB, Coyote/Shuttle-style systematic schedulers), and the prototype is ~860 lines. What took most of the time here, and would take time for anyone, are the edge cases that only real suites reveal (executor chaining races, blockbuster, direct thread pools, timeouts racing real work) and making it cheap (≈ 8%).
++* The barrier is not the asyncio scheduler alone but its combination with the fingerprint/verifier vocabulary shared across runtimes (Python now, Node next) and the threads half of L1.
++
++## Go/no-go proposal for Block 3
++
++**GO, re-scoped.**
++1. Ship the calm `--det-async` into the main `--det` path once it has run on the full suites of ~10 asyncio-heavy repositories without extra failures (gate: 0 tests that pass under `--det` and fail under calm `--det-async` — webssh's 3 suite-level extra failures must be explained first; slowdown ≤ 15%). Reason: it fixes L0's real-time asyncio clock cheaply and makes async suites replayable.
++2. Make **thread scheduling** (bytecode-count switches, or at least deterministic delivery of thread-pool work and threaded servers) the main Block 3 investment: in this corpus it is what blocks the remaining asyncio cases.
++3. Measure exploration in **suite context** (full suite, xdist, random order, CPU contention), not on isolated tests: the real flaky tests of the corpus only flake there.
++4. Exit metric for Block 3 stays as in ROADMAP; first checkpoint: on the anyio round set, reproduce in suite context at least 5 of the 10 non-uvloop tests with a seed (10/10) and a passing seed.
++
++## Cockpit readiness (coordinator request, 18:03 UTC)
++
++Rendering "S3 answered before DynamoDB at orders.ts:42" from sched events today:
++* **Possible:** each sched event has the chosen callback's creation site (`path:line` from the root) and a per-site counter, plus `<chosen index>/<set size>`; the event site equals the creation site; the replay command is exact (`pytest --det --det-async --det-async-seed=N <nodeid>`).
++* **Harder:** (1) the value names only the *chosen* callback, not the alternatives it beat; "A before B" needs the other members of the set (suggest: a sidecar or an optional field with the canonical set's stable ids); (2) the creation site is the first *user* frame, so for I/O it is where the connection was opened, not which response arrived — a protocol/peer label (e.g. remote host:port or the callback qualname) would read better; (3) timer and executor choices are `0/n` because their order is decided by virtual durations, which are not in the event; showing "job took 3 ms virtual" needs the virtual time in the trace; (4) worker-thread events are re-recorded on thread 0 at the delivery point (deterministic, but the thread identity is lost for display); (5) uncontrolled points are `other`/`asyncio.uncontrolled` events, which the cockpit should show as "not deterministic here" rather than as a cause.
++
++## What blocks or is missing
++
++* The real-project share made reproducible is UNKNOWN (see above); a suite-context exploration is the next measurement.
++* Push to fenvix-brain-cli `main` refused by this session's permission policy (reports are on the work branch).
++* Round artifacts are not downloadable from this container (blob storage host blocked); read from the round branch instead.
++* Pre-existing L0 issues found: `datetime.utcnow` test expectation on 3.10/3.11; INTERNALERROR (`'NoneType' object has no attribute 'end_test'`) when a suite runs nested in-process pytest sessions (anyio `tests/test_pytest_plugin.py`); L0 breaks 13 webssh tests.
++
++## Errors or gaps in the brain
++
++* `sessions/README.md` assumes every session can push to fenvix-brain-cli `main`.
++* ARCHITECTURE.md "L1 (designed)" should now point to `docs/L1-ASYNCIO.md` and to encoding version 2.
++* The default branch of fenvix-engine-cli is another session's branch, so workflows that exist only on a work branch cannot be dispatched; this study triggers its measurement by pushing `harness/l1/run.json`.
+diff --git a/harness/l1/corpus.json b/harness/l1/corpus.json
+new file mode 100644
+index 0000000..e5b0dba
+--- /dev/null
++++ b/harness/l1/corpus.json
+@@ -0,0 +1,207 @@
++{
++ "_comment": "L1 study corpus: async flaky tests. See docs/L1-ASYNCIO.md and harness/l1_async.py.",
++ "projects": [
++  {
++   "name": "l1-repro",
++   "source": "minimal reproductions (this study)",
++   "local": "harness/l1/repro",
++   "python": [
++    "3.13"
++   ],
++   "tests": {
++    "tests/test_races.py::test_sleep_as_sync_with_executor": "repro",
++    "tests/test_races.py::test_tight_timeout_on_thread": "repro",
++    "tests/test_races.py::test_executor_results_in_submission_order": "repro",
++    "tests/test_races.py::test_as_completed_first_is_first_submitted": "repro",
++    "tests/test_races.py::test_thread_signal_before_timeout": "repro",
++    "tests/test_races.py::test_server_sees_clients_in_order": "repro",
++    "tests/test_races.py::test_cancel_before_job_finishes": "repro",
++    "tests/test_races.py::test_first_completed_job_beats_timer": "repro",
++    "tests/test_races.py::test_subprocess_answers_quickly": "repro",
++    "tests/test_races.py::test_queue_fed_by_thread": "repro",
++    "tests/test_races.py::test_rate_limiter_window": "repro",
++    "tests/test_races.py::test_ordered_appends_after_work": "repro",
++    "tests/test_races.py::test_readers_see_writes_in_order": "repro",
++    "tests/test_races.py::test_lock_order_with_thread_work": "repro"
++   }
++  },
++  {
++   "name": "anyio",
++   "source": "25+25 round (popular pool, run 43892303433)",
++   "url": "https://github.com/agronholm/anyio",
++   "sha": "9df02f0b8362",
++   "python": [
++    "3.13"
++   ],
++   "tests": {
++    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+uvloop]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[asyncio+uvloop]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]": "round-flaky",
++    "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]": "round-flaky",
++    "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]": "round-flaky",
++    "tests/test_taskgroups.py::test_host_exception[asyncio+uvloop]": "round-flaky"
++   },
++   "suite_args": [
++    "--ignore=tests/test_pytest_plugin.py"
++   ],
++   "note": "tests/test_pytest_plugin.py runs nested in-process pytest sessions, which hit a pre-existing detpy INTERNALERROR (recorder reset by the inner session)"
++  },
++  {
++   "name": "idoft-easypy",
++   "source": "25+25 round (IDoFT pool) + IDoFT",
++   "url": "https://github.com/weka-io/easypy",
++   "sha": "9501c3ee03dc",
++   "python": [
++    "3.10",
++    "3.9"
++   ],
++   "tests": {
++    "tests/test_signals.py::test_async": "round-flaky",
++    "tests/test_signals.py::test_priorities_async": "round-flaky"
++   }
++  },
++  {
++   "name": "idoft-plcx",
++   "source": "IDoFT (asyncio)",
++   "url": "https://github.com/Cognexa/plcx",
++   "sha": "2756c0ba78c4c9e572d95ba002708957bc55d4fa",
++   "python": [
++    "3.9",
++    "3.10"
++   ],
++   "tests": {
++    "plcx/tests/comm/test_client.py::test_clientx[123]": "OD-Vic",
++    "plcx/tests/comm/test_client.py::test_clientx[1]": "OD-Vic",
++    "plcx/tests/comm/test_client.py::test_clientx[hola]": "OD-Vic",
++    "plcx/tests/comm/test_client.py::test_clientx_context[111]": "OD-Vic",
++    "plcx/tests/comm/test_client.py::test_clientx_context[321]": "OD-Vic",
++    "plcx/tests/comm/test_client.py::test_clientx_context[hi]": "OD-Vic",
++    "plcx/tests/comm/test_client.py::test_clientx_error": "OD-Vic"
++   }
++  },
++  {
++   "name": "idoft-aiotasks",
++   "source": "IDoFT (asyncio)",
++   "url": "https://github.com/cr0hn/aiotasks",
++   "sha": "ec485c84db55227c9283319a9c58401e294a06ff",
++   "python": [
++    "3.9",
++    "3.10"
++   ],
++   "tests": {
++    "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_add_task_non_coroutine_as_input": "OD-Vic",
++    "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_task_decorator_invalid_function": "OD-Vic",
++    "tests/unittesting/tasks/memory/test_delay.py::test_memory_delay_task_decorator_invalid_task_id_format": "OD-Vic",
++    "tests/unittesting/tasks/memory/test_subscribers.py::test_memory_subscribers_empty_topics": "OD-Vic"
++   }
++  },
++  {
++   "name": "idoft-aiopylimit",
++   "source": "IDoFT (asyncio,asynctest)",
++   "url": "https://github.com/dmarkey/aiopylimit",
++   "sha": "b4075a8ac30dbbef59a2243f618a35a2f54b590c",
++   "python": [
++    "3.9",
++    "3.10"
++   ],
++   "tests": {
++    "aiopylimit/tests/test_aiopylimit.py::TestPyLimit::test_exception": "OD-Vic"
++   }
++  },
++  {
++   "name": "idoft-webssh",
++   "source": "IDoFT (tornado)",
++   "url": "https://github.com/huashengdun/webssh",
++   "sha": "51d527fe75a62aed239126a6697749a30baecb30",
++   "python": [
++    "3.10",
++    "3.9"
++   ],
++   "tests": {
++    "tests/test_app.py::TestAppBasic::test_app_auth_with_invalid_pubkey_for_user_robey": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_auth_with_pubkey_cannot_be_decoded_by_multipart_form": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_auth_with_pubkey_exceeds_key_max_size": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_auth_with_valid_pubkey_by_multipart_form": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_auth_with_valid_pubkey_by_urlencoded_form": "OD-Vic",
++    "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_multipart_form": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_post_form_with_large_body_size_by_urlencoded_form": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_empty_id": "OD-Vic",
++    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_ip_not_matched": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_without_id_argument": "OD-Vic",
++    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_with_no_port": "OD-Vic",
++    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_but_wrong_id": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_timeout": "OD-Vic",
++    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_bar": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_correct_credentials_user_robey": "OD-Vic",
++    "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_invalid_value": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_invalid_form_for_missing_argument": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_user_keyonly_for_bad_authentication_type": "OD-Vic",
++    "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_correct_passwords": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_user_pass2fa_with_wrong_pkey_correct_passwords": "OD-Vic",
++    "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_correct_passwords": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_empty_passcode": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_passcode": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_user_pkey2fa_with_wrong_password": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_wrong_credentials": "OD-Vic",
++    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_domain": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_wrong_hostname_ip": "NOD",
++    "tests/test_app.py::TestAppBasic::test_app_with_wrong_port": "NOD"
++   },
++   "install": [
++    "six"
++   ]
++  },
++  {
++   "name": "idoft-pyps4-2ndscreen",
++   "source": "IDoFT (asyncio,asynctest)",
++   "url": "https://github.com/ktnrg45/pyps4-2ndscreen",
++   "sha": "457dc9c3f04017569d52bae7390ea2fc54e96ce5",
++   "python": [
++    "3.9",
++    "3.10"
++   ],
++   "tests": {
++    "tests/test_media_art.py::test_result_item_missing_data": "NIO"
++   }
++  },
++  {
++   "name": "idoft-python-dugong",
++   "source": "IDoFT (asyncio)",
++   "url": "https://github.com/python-dugong/python-dugong",
++   "sha": "00dd4d5aab6eddb116cace2829a9f93bda153664",
++   "python": [
++    "3.10",
++    "3.9"
++   ],
++   "tests": {
++    "test/test_aio.py::test_aio_future": "NIO"
++   }
++  },
++  {
++   "name": "idoft-tornado-swirl",
++   "source": "IDoFT (tornado)",
++   "url": "https://github.com/rduldulao/tornado-swirl",
++   "sha": "b8df27efc3d7fd0dce0f0290767c94ac2e747311",
++   "python": [
++    "3.10",
++    "3.9"
++   ],
++   "tests": {
++    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme1": "OD-Brit",
++    "tests/test_swirl.py::TestSampleEndpoints::test_security_scheme2": "OD-Brit"
++   }
++  }
++ ]
++}
+\ No newline at end of file
+diff --git a/harness/l1/repro/README.md b/harness/l1/repro/README.md
+new file mode 100644
+index 0000000..6b613a0
+--- /dev/null
++++ b/harness/l1/repro/README.md
+@@ -0,0 +1,7 @@
++# Minimal reproductions of classic asyncio races
++
++Each test is a deliberately flaky test written the way such tests are written in
++real projects (a sleep used as synchronisation, a tight timeout, an assumed
++order of results). They exist because the public flaky-test datasets contain
++few asyncio timing races (see `docs/L1-ASYNCIO.md` and the L1 study report).
++Only the standard library and pytest are used.
+diff --git a/harness/l1/repro/pyproject.toml b/harness/l1/repro/pyproject.toml
+new file mode 100644
+index 0000000..bfd513c
+--- /dev/null
++++ b/harness/l1/repro/pyproject.toml
+@@ -0,0 +1,12 @@
++[project]
++name = "l1-async-repro"
++version = "0.0.0"
++description = "Minimal reproductions of classic asyncio races (detpy L1 study corpus)"
++requires-python = ">=3.10"
++dependencies = ["pytest>=7"]
++
++[tool.setuptools]
++packages = []
++
++[tool.pytest.ini_options]
++testpaths = ["tests"]
+diff --git a/harness/l1/repro/tests/test_races.py b/harness/l1/repro/tests/test_races.py
+new file mode 100644
+index 0000000..142a7c5
+--- /dev/null
++++ b/harness/l1/repro/tests/test_races.py
+@@ -0,0 +1,257 @@
++"""Classic asyncio races. Every test is flaky on purpose (timing decides)."""
++
++import asyncio
++import socket
++import subprocess
++import sys
++import threading
++import time
++
++
++def run(coro):
++    return asyncio.run(coro)
++
++
++# 1. A sleep used as synchronisation with an executor job.
++def test_sleep_as_sync_with_executor():
++    async def main():
++        loop = asyncio.get_running_loop()
++        state = {}
++
++        def work():
++            time.sleep(0.002)
++            state["done"] = True
++
++        loop.run_in_executor(None, work)
++        await asyncio.sleep(0.002)  # "enough for the job"
++        return state.get("done", False)
++
++    assert run(main())
++
++
++# 2. A timeout of the same order as the work it guards.
++def test_tight_timeout_on_thread():
++    async def main():
++        return await asyncio.wait_for(asyncio.to_thread(time.sleep, 0.003), timeout=0.0032)
++
++    run(main())
++
++
++# 3. The order of results of parallel executor jobs is assumed.
++def test_executor_results_in_submission_order():
++    async def main():
++        loop = asyncio.get_running_loop()
++        out = []
++
++        def job(i):
++            time.sleep(0.001)
++            return i
++
++        async def one(i):
++            out.append(await loop.run_in_executor(None, job, i))
++
++        await asyncio.gather(*(one(i) for i in range(3)))
++        return out
++
++    assert run(main()) == [0, 1, 2]
++
++
++# 4. as_completed: the first finished job is assumed to be the first submitted.
++def test_as_completed_first_is_first_submitted():
++    async def main():
++        futs = [asyncio.ensure_future(asyncio.to_thread(lambda i=i: (time.sleep(0.001), i)[1])) for i in range(2)]
++        for f in asyncio.as_completed(futs):
++            return await f
++
++    assert run(main()) == 0
++
++
++# 5. A thread signals the loop; the test waits with a tight timeout.
++def test_thread_signal_before_timeout():
++    async def main():
++        loop = asyncio.get_running_loop()
++        ev = asyncio.Event()
++
++        def worker():
++            time.sleep(0.002)
++            loop.call_soon_threadsafe(ev.set)
++
++        threading.Thread(target=worker).start()
++        await asyncio.wait_for(ev.wait(), timeout=0.0025)
++
++    run(main())
++
++
++# 6. Two clients connect; the server is assumed to see them in connection order.
++def test_server_sees_clients_in_order():
++    async def main():
++        seen = []
++
++        async def handle(reader, writer):
++            seen.append((await reader.readline()).strip())
++            writer.close()
++
++        server = await asyncio.start_server(handle, "127.0.0.1", 0)
++        port = server.sockets[0].getsockname()[1]
++
++        def client(msg):
++            with socket.create_connection(("127.0.0.1", port)) as s:
++                time.sleep(0.001)
++                s.sendall(msg + b"\n")
++                s.recv(1)
++
++        ts = [threading.Thread(target=client, args=(m,)) for m in (b"a", b"b")]
++        for t in ts:
++            t.start()
++            time.sleep(0.0002)  # a starts first
++        while len(seen) < 2:
++            await asyncio.sleep(0.001)
++        for t in ts:
++            await asyncio.to_thread(t.join)
++        server.close()
++        await server.wait_closed()
++        return seen
++
++    assert run(main()) == [b"a", b"b"]
++
++
++# 7. Cancellation races with completion of an executor job.
++def test_cancel_before_job_finishes():
++    async def main():
++        task = asyncio.ensure_future(asyncio.to_thread(time.sleep, 0.002))
++        await asyncio.sleep(0.002)
++        task.cancel()
++        try:
++            await task
++        except asyncio.CancelledError:
++            return "cancelled"
++        return "finished"
++
++    assert run(main()) == "cancelled"
++
++
++# 8. FIRST_COMPLETED between a job and a timer of the same duration.
++def test_first_completed_job_beats_timer():
++    async def main():
++        job = asyncio.ensure_future(asyncio.to_thread(time.sleep, 0.002))
++        timer = asyncio.ensure_future(asyncio.sleep(0.0021))
++        done, pending = await asyncio.wait({job, timer}, return_when=asyncio.FIRST_COMPLETED)
++        for p in pending:
++            p.cancel()
++        return job in done
++
++    assert run(main())
++
++
++# 9. A subprocess is assumed to answer within a short timeout.
++def test_subprocess_answers_quickly():
++    async def main():
++        p = await asyncio.create_subprocess_exec(sys.executable, "-c", "print(1)", stdout=subprocess.PIPE)
++        out, _ = await asyncio.wait_for(p.communicate(), timeout=0.05)
++        return out.strip()
++
++    assert run(main()) == b"1"
++
++
++# 10. A producer thread feeds an asyncio.Queue; the consumer expects items in time.
++def test_queue_fed_by_thread():
++    async def main():
++        loop = asyncio.get_running_loop()
++        q = asyncio.Queue()
++
++        def producer():
++            for i in range(3):
++                time.sleep(0.0005)
++                loop.call_soon_threadsafe(q.put_nowait, i)
++
++        threading.Thread(target=producer).start()
++        got = []
++        for _ in range(3):
++            got.append(await asyncio.wait_for(q.get(), timeout=0.0006))
++        return got
++
++    assert run(main()) == [0, 1, 2]
++
++
++# 11. A rate limiter counts calls within a window measured with loop.time().
++def test_rate_limiter_window():
++    async def main():
++        loop = asyncio.get_running_loop()
++        calls = []
++        for _ in range(5):
++            calls.append(loop.time())
++            await asyncio.to_thread(time.sleep, 0.0002)
++        return sum(1 for c in calls if c - calls[0] < 0.001)
++
++    assert run(main()) == 5
++
++
++# 12. Two tasks append after "the same" delay computed from CPU work.
++def test_ordered_appends_after_work():
++    async def main():
++        out = []
++
++        async def a():
++            await asyncio.to_thread(sum, range(20000))
++            await asyncio.sleep(0.001)
++            out.append("a")
++
++        async def b():
++            await asyncio.sleep(0.0012)
++            out.append("b")
++
++        await asyncio.gather(a(), b())
++        return out
++
++    assert run(main()) == ["a", "b"]
++
++
++# 13. Readers on several sockets written by threads; order assumed.
++def test_readers_see_writes_in_order():
++    async def main():
++        loop = asyncio.get_running_loop()
++        pairs = [socket.socketpair() for _ in range(2)]
++        got = []
++        done = asyncio.Event()
++        for i, (a, b) in enumerate(pairs):
++            a.setblocking(False)
++
++            def cb(i=i, a=a):
++                a.recv(8)
++                loop.remove_reader(a)
++                got.append(i)
++                if len(got) == 2:
++                    done.set()
++
++            loop.add_reader(a, cb)
++
++        def writer(i, b):
++            time.sleep(0.001 + 0.0001 * i)
++            b.send(b"x")
++
++        for i, (_, b) in enumerate(pairs):
++            threading.Thread(target=writer, args=(i, b)).start()
++        await asyncio.wait_for(done.wait(), 5)
++        for a, b in pairs:
++            a.close()
++            b.close()
++        return got
++
++    assert run(main()) == [0, 1]
++
++
++# 14. A lock handed between tasks; one task does blocking work in a thread.
++def test_lock_order_with_thread_work():
++    async def main():
++        lock = asyncio.Lock()
++        order = []
++
++        async def holder(name, work):
++            await asyncio.to_thread(time.sleep, work)
++            async with lock:
++                order.append(name)
++
++        await asyncio.gather(holder("x", 0.001), holder("y", 0.001))
++        return order
++
++    assert run(main()) == ["x", "y"]
+diff --git a/harness/l1_async.py b/harness/l1_async.py
+new file mode 100644
+index 0000000..0e728ae
+--- /dev/null
++++ b/harness/l1_async.py
+@@ -0,0 +1,362 @@
++#!/usr/bin/env python3
++"""L1 study harness: async flaky tests under --det and --det --det-async.
++
++Per project of ``harness/l1/corpus.json`` (one GitHub Actions job each):
++
++1. prepare: clone at the pinned commit (or use the local path), venv, install
++   (same install heuristics as ``detpy_harness.py``), install the detpy wheel;
++2. on the corpus tests of the project, in one pytest invocation per run,
++   fixed collection order, serial:
++   * ``baseline``: N normal runs (no detpy flags);
++   * ``det``: N runs with ``--det``;
++   * ``calm``: N runs with ``--det --det-async`` (seed 0, the calm profile);
++   * ``explore``: one run per seed 1..S with ``--det --det-async --det-async-seed=s``;
++   * ``confirm``: for every test that failed with some seed, its first failing
++     seed is re-run until ``confirm`` runs in total; reproduced = all fail;
++     traces of the confirm runs are compared by the verifier (same fingerprint);
++3. slowdown: the full suite (``suite_args``), serial, alternating ``--det``,
++   ``--det --det-async`` (seed 0) and ``--det --det-async --det-async-seed=1``,
++   ``timing_runs`` runs each; wall time per run.
++
++Output: ``<out>/<name>.json``. ``--aggregate`` merges them into a Markdown
++report and CSVs.
++"""
++
++from __future__ import annotations
++
++import argparse
++import collections
++import json
++import os
++import platform
++import shutil
++import statistics
++import subprocess
++import sys
++import time
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parent.parent
++sys.path.insert(0, str(ROOT / "harness"))
++
++import detpy_harness as H  # noqa: E402  (prepare, clean_env, sh)
++
++CORPUS = ROOT / "harness" / "l1" / "corpus.json"
++FAIL = ("failed", "error")
++
++
++def log(msg: str) -> None:
++    print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
++
++
++def is_fail(outcome: str | None) -> bool:
++    return bool(outcome) and outcome.split("+", 1)[0] in FAIL or "teardown-error" in (outcome or "")
++
++
++def clone(project: dict, src: Path) -> str:
++    if project.get("local"):
++        shutil.rmtree(src, ignore_errors=True)
++        shutil.copytree(ROOT / project["local"], src)
++        subprocess.run(["git", "init", "-q"], cwd=src)
++        return "local"
++    if not (src / ".git").exists():
++        subprocess.run(["git", "clone", "-q", "--filter=blob:none", project["url"], str(src)], check=True, timeout=900)
++    if project.get("sha"):
++        subprocess.run(["git", "checkout", "-q", project["sha"]], cwd=src, check=True)
++    return subprocess.run(["git", "rev-parse", "HEAD"], cwd=src, capture_output=True, text=True).stdout.strip()
++
++
++def pytest_run(p, args: list, out_json: Path, timeout: float, trace: Path | None = None) -> dict:
++    cmd = [p.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", "-p", "no:randomly", "-p", "no:xdist",
++           f"--det-outcomes={out_json}", *p.pytest_args, *args]
++    if trace is not None:
++        cmd.append(f"--det-trace={trace}")
++    out_json.unlink(missing_ok=True)
++    t0 = time.monotonic()
++    try:
++        proc = subprocess.run(cmd, cwd=p.src, env=H.clean_env(p.python, p.env), capture_output=True, text=True,
++                              timeout=timeout)
++        code, tail, timed_out = proc.returncode, (proc.stdout + proc.stderr)[-1500:], False
++    except subprocess.TimeoutExpired as e:
++        code, tail, timed_out = -9, str(e.stdout or "")[-1500:], True
++    dur = time.monotonic() - t0
++    outcomes = {}
++    if out_json.exists():
++        try:
++            outcomes = json.loads(out_json.read_text()).get("outcomes", {})
++        except Exception:
++            pass
++    return {"args": args, "exit": code, "duration_s": round(dur, 3), "timed_out": timed_out, "outcomes": outcomes,
++            "tail": tail if (code not in (0, 1) or timed_out) else ""}
++
++
++def measure(project: dict, args) -> dict:
++    work = Path(args.work)
++    src = work / "src" / project["name"]
++    src.parent.mkdir(parents=True, exist_ok=True)
++    res = {"name": project["name"], "url": project.get("url", ""), "source": project.get("source", ""),
++           "tests": project["tests"], "executor": args.executor, "runner": platform.node(),
++           "python_requested": project.get("python")}
++    try:
++        res["commit"] = clone(project, src)
++    except Exception as e:
++        res["status"] = f"clone-failed: {e}"
++        return res
++    repo = {"name": project["name"], "url": project.get("url", ""), "kind": "flaky", "sha": "",
++            "python": project.get("python"), "install": project.get("install", []),
++            "pytest_args": project.get("pytest_args", []), "env": project.get("env", {})}
++    p = H.prepare(repo, work, args.wheel, "3.13", 100000)
++    res.update(status=p.status, detail=p.detail, python=p.python_version, install=p.install_cmd,
++               collected=p.collected)
++    if p.status != "ok":
++        log(f"{p.name}: {p.status} {p.detail[-300:]}")
++        return res
++    nodeids = list(project["tests"])
++    rd = work / "runs" / p.name
++    rd.mkdir(parents=True, exist_ok=True)
++    tmo = args.run_timeout
++    runs = res["runs"] = []
++
++    def go(mode, flags, i, seed=None, trace=None):
++        r = pytest_run(p, nodeids + flags, rd / f"{mode}-{seed}-{i}.json", tmo, trace)
++        r.update(mode=mode, seed=seed, run=i)
++        runs.append(r)
++        fails = sum(is_fail(r["outcomes"].get(n)) for n in nodeids)
++        log(f"{p.name} {mode} seed={seed} run={i}: {r['duration_s']}s exit={r['exit']} failing={fails}/{len(nodeids)}")
++        return r
++
++    for i in range(args.runs):  # interleaved, so load changes hit all modes alike
++        go("baseline", [], i)
++        go("det", ["--det"], i)
++        go("calm", ["--det", "--det-async"], i)
++    if args.loaded_runs:
++        # Baseline under CPU contention (a busy CI runner): one spinning process per core.
++        hogs = [subprocess.Popen([sys.executable, "-c", "while True: pass"]) for _ in range(os.cpu_count() or 2)]
++        try:
++            for i in range(args.loaded_runs):
++                go("loaded", [], i)
++                go("loaded-calm", ["--det", "--det-async"], i)
++        finally:
++            for h in hogs:
++                h.kill()
++    first_fail, first_pass = {}, {}
++    for s in range(1, args.seeds + 1):
++        r = go("explore", ["--det", "--det-async", f"--det-async-seed={s}"], 0, s,
++               trace=rd / f"explore-{s}.jsonl")
++        for n in nodeids:
++            o = r["outcomes"].get(n)
++            if is_fail(o):
++                first_fail.setdefault(n, s)
++            elif o in ("passed", "xfailed", "skipped"):
++                first_pass.setdefault(n, s)
++    by_seed = collections.defaultdict(list)
++    for n, s in first_fail.items():
++        by_seed[s].append(n)
++    confirm = res["confirm"] = {}
++    for s, tests in sorted(by_seed.items()):
++        traces = [rd / f"explore-{s}.jsonl"]
++        outs = [next(r for r in runs if r["mode"] == "explore" and r["seed"] == s)["outcomes"]]
++        for i in range(1, args.confirm):
++            t = rd / f"confirm-{s}-{i}.jsonl"
++            r = go("confirm", ["--det", "--det-async", f"--det-async-seed={s}"], i, s, trace=t)
++            traces.append(t)
++            outs.append(r["outcomes"])
++        verdict = {}
++        try:
++            v = json.loads(subprocess.run([p.python, "-c", "import sys,detpy._core as c; print(c.verify(sys.argv[1:]))",
++                                           *map(str, traces)], capture_output=True, text=True, timeout=300).stdout)
++            verdict = {t["nodeid"]: t for t in v["tests"]}
++        except Exception as e:
++            log(f"verify failed: {e}")
++        for n in tests:
++            fails = sum(is_fail(o.get(n)) for o in outs)
++            vt = verdict.get(n, {})
++            d = vt.get("divergence") or {}
++            confirm[n] = {"seed": s, "fails": fails, "runs": len(outs), "reproduced": fails == len(outs),
++                          "passing_seed": first_pass.get(n), "fingerprint": vt.get("status"),
++                          "divergence": d.get("description", "")[:300]}
++    # Slowdown on the full suite.
++    timing = res["timing"] = []
++    suite = project.get("suite_args", [])
++    if args.timing_runs:
++        for i in range(args.timing_runs):
++            for mode, flags in (("det", ["--det"]), ("det-async", ["--det", "--det-async"]),
++                                ("det-async-s1", ["--det", "--det-async", "--det-async-seed=1"])):
++                r = pytest_run(p, suite + flags, rd / f"suite-{mode}-{i}.json", args.suite_timeout)
++                c = collections.Counter(o.split("+", 1)[0] for o in r["outcomes"].values())
++                timing.append({"mode": mode, "run": i, "duration_s": r["duration_s"], "exit": r["exit"],
++                               "timed_out": r["timed_out"], "counts": dict(c), "tail": r["tail"][-600:]})
++                log(f"{p.name} suite {mode} run={i}: {r['duration_s']}s {dict(c)}")
++    for r in runs:
++        r["outcomes"] = {n: r["outcomes"].get(n, "missing") for n in nodeids}
++    return res
++
++
++# ---------------------------------------------------------------------------
++def hist(outs: list) -> str:
++    c = collections.Counter(outs)
++    return ";".join(f"{k}={v}" for k, v in sorted(c.items()))
++
++
++def aggregate(indir: Path, outdir: Path, meta: dict) -> None:
++    outdir.mkdir(parents=True, exist_ok=True)
++    rows, projects = [], []
++    for f in sorted(indir.rglob("*.json")):
++        try:
++            r = json.loads(f.read_text())
++        except Exception:
++            continue
++        if "tests" not in r or "status" not in r:
++            continue
++        projects.append(r)
++        if r["status"] != "ok":
++            continue
++        for n, cat in r["tests"].items():
++            per = collections.defaultdict(list)
++            for run in r["runs"]:
++                per[run["mode"]].append(run["outcomes"].get(n, "missing"))
++            b, d, c, e = per["baseline"], per["det"], per["calm"], per["explore"]
++            ld, lc = per.get("loaded", []), per.get("loaded-calm", [])
++            cf = r.get("confirm", {}).get(n, {})
++            rows.append({
++                "project": r["name"], "nodeid": n, "category": cat,
++                "uvloop": "uvloop" in n,
++                "baseline": hist(b), "baseline_flaky": len(set(b)) > 1, "baseline_fail_rate": round(
++                    sum(map(is_fail, b)) / len(b), 3) if b else None,
++                "loaded": hist(ld), "loaded_flaky": len(set(ld)) > 1,
++                "flaky_any": len(set(b + ld)) > 1,
++                "loaded_calm": hist(lc), "loaded_calm_stable": len(set(lc)) <= 1,
++                "det": hist(d), "det_stable": len(set(d)) == 1,
++                "calm": hist(c), "calm_stable": len(set(c)) == 1,
++                "explore": hist(e), "seeds_failing": sum(map(is_fail, e)),
++                "repro_seed": cf.get("seed"), "confirm": f"{cf.get('fails', 0)}/{cf.get('runs', 0)}" if cf else "",
++                "reproduced": bool(cf.get("reproduced")), "passing_seed": cf.get("passing_seed"),
++                "reproducible": bool(cf.get("reproduced")) and cf.get("passing_seed") is not None,
++                "fingerprint": cf.get("fingerprint", ""), "divergence": cf.get("divergence", ""),
++            })
++    import csv
++
++    if rows:
++        with open(outdir / "tests.csv", "w", newline="") as fh:
++            w = csv.DictWriter(fh, fieldnames=list(rows[0]))
++            w.writeheader()
++            w.writerows(rows)
++    timing = []
++    for r in projects:
++        by = collections.defaultdict(list)
++        for t in r.get("timing", []):
++            if not t["timed_out"] and t["exit"] in (0, 1):
++                by[t["mode"]].append(t["duration_s"])
++        for t in r.get("timing", []):  # exit 3 = pytest INTERNALERROR (pre-existing L0 issue), counted if tests ran
++            if t["exit"] == 3 and t["counts"].get("passed") and not t["timed_out"]:
++                by[t["mode"]].append(t["duration_s"])
++        if by.get("det") and by.get("det-async"):
++            md = statistics.median(by["det"])
++            row = {"project": r["name"], "det_median_s": round(md, 2),
++                   "det_async_median_s": round(statistics.median(by["det-async"]), 2),
++                   "det_async_s1_median_s": round(statistics.median(by["det-async-s1"]), 2) if by.get("det-async-s1") else None,
++                   "runs": len(by["det"])}
++            row["slowdown_calm_pct"] = round(100 * (row["det_async_median_s"] / md - 1), 1) if md else None
++            row["slowdown_s1_pct"] = (round(100 * (row["det_async_s1_median_s"] / md - 1), 1)
++                                      if md and row["det_async_s1_median_s"] else None)
++            counts = {t["mode"]: t["counts"] for t in r.get("timing", []) if t["run"] == 0}
++            row["suite_counts"] = counts
++            timing.append(row)
++    summary = {"meta": meta, "projects": [{k: p.get(k) for k in ("name", "status", "detail", "python", "commit",
++                                                                    "collected", "source")} for p in projects],
++               "tests": rows, "timing": timing}
++    (outdir / "summary.json").write_text(json.dumps(summary, indent=1))
++    (outdir / "REPORT.md").write_text(report(summary))
++
++
++def report(s: dict) -> str:
++    rows = s["tests"]
++    L = ["# L1 study: async flaky tests under `--det` and `--det --det-async`", "",
++         f"Generated {time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime())}. {s['meta'].get('protocol', '')}", "",
++         f"Run: {s['meta'].get('run_url', '')}", "", "## Projects", "",
++         "| project | source | status | python | commit | corpus tests |", "|---|---|---|---|---|---|"]
++    for p in s["projects"]:
++        n = sum(1 for r in rows if r["project"] == p["name"])
++        L.append(f"| {p['name']} | {p.get('source', '')} | {p['status']} {('(' + (p.get('detail') or '')[:80] + ')') if p['status'] != 'ok' else ''} "
++                 f"| {p.get('python') or ''} | {(p.get('commit') or '')[:12]} | {n} |")
++
++    def block(title, sel):
++        sel = list(sel)
++        if not sel:
++            return
++        bf = [r for r in sel if r["flaky_any"]]
++        L.extend(["", f"## {title}", "",
++                  f"* tests: {len(sel)}; flaky in the baseline (quiet or CPU-loaded runs, or different between the two): {len(bf)} "
++                  f"(quiet only: {sum(r['baseline_flaky'] for r in sel)}, loaded only: {sum(r['loaded_flaky'] for r in sel)})",
++                  f"* `--det --det-async` (calm) under CPU load: same outcome in every loaded run {sum(r['loaded_calm_stable'] for r in sel)}/{len(sel)}",
++                  f"* `--det` only: stable outcome {sum(r['det_stable'] for r in sel)}/{len(sel)}; "
++                  f"of the baseline-flaky ones {sum(r['det_stable'] for r in bf)}/{len(bf)}",
++                  f"* `--det --det-async` (calm, seed 0): stable outcome {sum(r['calm_stable'] for r in sel)}/{len(sel)}",
++                  f"* reproduced with a seed (10/10) and passing with another: {sum(r['reproducible'] for r in sel)}/{len(sel)}; "
++                  f"of the baseline-flaky ones {sum(r['reproducible'] for r in bf)}/{len(bf)}",
++                  f"* failing with every explored seed (possible false failures or always-failing): "
++                  f"{sum(1 for r in sel if r['explore'] and all(k.split('=')[0].split('+')[0] in FAIL for k in r['explore'].split(';')))}"])
++
++    block("All corpus tests (uvloop parametrisations excluded)", (r for r in rows if not r["uvloop"]))
++    block("uvloop parametrisations (not covered by the prototype: uvloop is not a BaseEventLoop)",
++          (r for r in rows if r["uvloop"]))
++    for proj in sorted({r["project"] for r in rows}):
++        block(f"Project {proj}", (r for r in rows if r["project"] == proj and not r["uvloop"]))
++    L.extend(["", "## Per test", "", "| project | test | cat. | baseline | loaded | --det | calm | calm loaded | explore (20 seeds) | repro seed | confirm | passing seed | fingerprint |",
++              "|---|---|---|---|---|---|---|---|---|---|---|---|---|"])
++    for r in rows:
++        L.append(f"| {r['project']} | `{r['nodeid'][-90:]}` | {r['category']} | {r['baseline']} | {r['loaded']} | {r['det']} | {r['calm']} | {r['loaded_calm']} | "
++                 f"{r['explore']} | {r['repro_seed'] or ''} | {r['confirm']} | {r['passing_seed'] or ''} | {r['fingerprint']} |")
++    if s["timing"]:
++        L.extend(["", "## Slowdown on the full suites (serial)", "",
++                  "Medians of the runs; `--det` vs `--det --det-async` (calm) vs `--det --det-async --det-async-seed=1`. "
++                  "MEASURED on GitHub-hosted runners, one dedicated job per project (shared cloud hardware: NOISY for small differences).", "",
++                  "| project | runs | --det s | --det-async s | slowdown | seed 1 s | slowdown | outcomes (run 0) |", "|---|---|---|---|---|---|---|---|"])
++        for t in s["timing"]:
++            L.append(f"| {t['project']} | {t['runs']} | {t['det_median_s']} | {t['det_async_median_s']} | {t['slowdown_calm_pct']}% | "
++                     f"{t['det_async_s1_median_s']} | {t['slowdown_s1_pct']}% | {json.dumps(t['suite_counts'])} |")
++    return "\n".join(L) + "\n"
++
++
++def main(argv=None) -> None:
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--project", help="corpus project name (measure mode)")
++    ap.add_argument("--list", action="store_true", help="print the project names as a JSON list")
++    ap.add_argument("--aggregate", metavar="DIR", help="merge <DIR>/**/*.json into --out")
++    ap.add_argument("--corpus", default=str(CORPUS))
++    ap.add_argument("--wheel", default="")
++    ap.add_argument("--work", default="/tmp/l1work")
++    ap.add_argument("--out", default="out")
++    ap.add_argument("--runs", type=int, default=10)
++    ap.add_argument("--seeds", type=int, default=20)
++    ap.add_argument("--confirm", type=int, default=10)
++    ap.add_argument("--timing-runs", type=int, default=3)
++    ap.add_argument("--loaded-runs", type=int, default=10, help="baseline runs under CPU contention")
++    ap.add_argument("--run-timeout", type=float, default=900)
++    ap.add_argument("--suite-timeout", type=float, default=2400)
++    ap.add_argument("--executor", default="local")
++    ap.add_argument("--run-url", default="")
++    a = ap.parse_args(argv)
++    corpus = json.loads(Path(a.corpus).read_text())["projects"]
++    if a.list:
++        print(json.dumps([p["name"] for p in corpus]))
++        return
++    if a.aggregate:
++        aggregate(Path(a.aggregate), Path(a.out), {
++            "run_url": a.run_url,
++            "protocol": (f"Per project: {a.runs} baseline / --det / --det --det-async (seed 0) runs of the corpus tests, "
++                         f"interleaved, serial, fixed collection order; exploration with --det-async-seed=1..{a.seeds} "
++                         f"(test order fixed); {a.confirm}/{a.confirm} confirmation of the first failing seed; "
++                         f"{a.timing_runs} timed runs of the full suite per mode.")})
++        return
++    if a.wheel:
++        a.wheel = str(Path(a.wheel).resolve())  # installs run with the project as cwd
++    project = next(p for p in corpus if p["name"] == a.project)
++    res = measure(project, a)
++    Path(a.out).mkdir(parents=True, exist_ok=True)
++    (Path(a.out) / f"{project['name']}.json").write_text(json.dumps(res, indent=1))
++    log(f"wrote {a.out}/{project['name']}.json")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/python/detpy/_state.py b/python/detpy/_state.py
+index f8e4b24..cfce9f4 100644
+--- a/python/detpy/_state.py
++++ b/python/detpy/_state.py
+@@ -62,6 +62,10 @@ def record(source: str, op: str, value: str, depth: int = 1) -> None:
+     site = _sites.resolve(depth + 1)
+     if site is None:  # infrastructure (pytest, detpy) touched the source
+         return
++    buf = getattr(_tls, "buffer", None)
++    if buf is not None:  # --det-async executor job: recorded when its result is delivered
++        buf.append((source, op, site, value))
++        return
+     tid = _get_ident()
+     threads = STATE.threads
+     t = threads.get(tid)
+@@ -70,6 +74,13 @@ def record(source: str, op: str, value: str, depth: int = 1) -> None:
+     rec.record(source, op, site, value, t)
+ 
+ 
++def set_event_buffer(buf):
++    """Divert this thread's events into ``buf`` (None: record directly); returns the previous one."""
++    prev = getattr(_tls, "buffer", None)
++    _tls.buffer = buf
++    return prev
++
++
+ def record_at(source: str, op: str, site: str, value: str) -> None:
+     """Record an event with an explicit site (used by detpy itself)."""
+     rec = STATE.recorder
+diff --git a/python/detpy/aio.py b/python/detpy/aio.py
+new file mode 100644
+index 0000000..fa695fe
+--- /dev/null
++++ b/python/detpy/aio.py
+@@ -0,0 +1,858 @@
++"""Deterministic asyncio scheduling (Level 1 prototype, ``--det-async``).
++
++Design: ``docs/L1-ASYNCIO.md``. In short, every asyncio loop that runs in the
++thread of the running test gets a :class:`Scheduler` that replaces
++``BaseEventLoop._run_once`` (the only place where asyncio calls callbacks) and
++decides, from a seed, every point where real asyncio depends on timing:
++
++* **time**: the loop runs on its own virtual clock. Each callback costs a
++  seeded virtual duration (CPU-time model); when nothing is ready the clock
++  jumps to the next deadline instead of sleeping. Timer order is therefore a
++  pure function of the seed;
++* **I/O readiness**: the selector is always polled without blocking; each ready
++  file object is delivered in this iteration or deferred to a later one (it
++  stays ready: selectors are level-triggered), and the delivered ones are put
++  in a seeded order;
++* **executor results** (``run_in_executor``, ``to_thread``, ``getaddrinfo``):
++  the loop waits for the job to finish at the next iteration and delivers its
++  result at virtual time ``submit + virtual sleeps of the job + seeded cost``,
++  so the delivery point does not depend on how fast the worker thread ran;
++* **call_soon_threadsafe** from foreign threads: buffered, batched over a short
++  settle window and delivered in seeded order (best effort: the arrival time of
++  a foreign thread is not controlled; such deliveries are recorded).
++
++Callbacks already in the ready queue keep asyncio's FIFO guarantee: reordering
++them would create executions that real asyncio cannot produce.
++
++Every iteration that delivered an external event, fired a timer or jumped the
++clock is recorded as one ``sched`` event in the test fingerprint, so the
++verifier names the first diverging scheduling choice of two runs.
++"""
++
++from __future__ import annotations
++
++import asyncio
++import asyncio.base_events as _be
++import asyncio.selector_events as _se
++import collections
++import asyncio.events as _ev
++import asyncio.futures as _af
++import concurrent.futures
++import heapq
++import os
++import threading
++import weakref
++
++from . import _core, _sites, _state
++
++NS = 1_000_000_000
++_M64 = (1 << 64) - 1
++
++
++class Rng:
++    """SplitMix64: identical on every Python version, independent of ``random``
++    (which Level 0 patches and records)."""
++
++    __slots__ = ("s",)
++
++    def __init__(self, seed: int) -> None:
++        self.s = seed & _M64
++
++    def next(self) -> int:
++        self.s = (self.s + 0x9E3779B97F4A7C15) & _M64
++        z = self.s
++        z = ((z ^ (z >> 30)) * 0xBF58476D1CE4E5B9) & _M64
++        z = ((z ^ (z >> 27)) * 0x94D049BB133111EB) & _M64
++        return z ^ (z >> 31)
++
++    def random(self) -> float:
++        return (self.next() >> 11) * (1.0 / (1 << 53))
++
++    def below(self, n: int) -> int:
++        return self.next() % n if n > 0 else 0
++
++    def shuffle(self, xs: list) -> None:
++        for i in range(len(xs) - 1, 0, -1):
++            j = self.below(i + 1)
++            xs[i], xs[j] = xs[j], xs[i]
++
++
++# ---------------------------------------------------------------------------
++# Configuration (set by the plugin)
++class Config:
++    enabled = False
++    seed = 0
++    grace = 1.0  # s of real time a timer waits for foreign I/O before the clock jumps
++    wait = 2.0  # s of real time the loop waits for an executor job
++    settle = 0.01  # s of real time to batch foreign wake-ups
++
++
++CFG = Config()
++
++# Cost model (virtual seconds). Seed 0 is the calm profile: fixed costs, every
++# ready external event delivered at once in canonical order. Other seeds explore.
++CALM_COST = 5e-6
++CALM_JOB = 50e-6
++NOISY_COST_MEAN = 8e-6
++NOISY_HICCUP_P = 0.02  # probability that a callback is "preempted"
++NOISY_HICCUP_MAX = 0.005
++NOISY_JOB_MEAN = 300e-6
++NOISY_DEFER_P = 0.35  # probability that a ready external event waits one more iteration
++
++_DEBUG = bool(os.environ.get("DETPY_AIO_DEBUG"))
++_tl = threading.local()
++_POOL_WORK = {"n": 0}  # thread-pool work items submitted and not finished (any executor)
++_POOL_LOCK = threading.Lock()  # .job: the executor job running in this worker thread
++_orig = {}
++_loop_counter = {"nodeid": None, "n": 0}
++
++
++def _real_monotonic() -> float:
++    from . import clock
++
++    return clock.real_monotonic()
++
++
++def _clock():
++    from . import clock
++
++    return clock.CLOCK if "time" in _state.STATE.config.controls else None
++
++
++def on_sleep(ns: int) -> None:
++    """Called by the virtual ``time.sleep``: charge the sleep to the executor job."""
++    job = getattr(_tl, "job", None)
++    if job is not None:
++        job.vsleep += ns / NS
++
++
++# ---------------------------------------------------------------------------
++# Labels: stable, address-free names for what a choice delivered.
++_TASK_IDS: "weakref.WeakKeyDictionary" = weakref.WeakKeyDictionary()
++_TASK_N = {"n": 0}
++
++
++def _task_id(task) -> int:
++    """Per-test ordinal of a task, by first appearance in a scheduling choice."""
++    n = _TASK_IDS.get(task)
++    if n is None:
++        _TASK_N["n"] += 1
++        n = _TASK_IDS[task] = _TASK_N["n"]
++    return n
++
++
++def _coro_label(task) -> str:
++    try:
++        coro = task.get_coro()
++    except Exception:
++        return "task"
++    name = getattr(coro, "__qualname__", None) or type(coro).__name__
++    frame = getattr(coro, "cr_frame", None) or getattr(coro, "gi_frame", None) or getattr(coro, "ag_frame", None)
++    where = f"{name}:{frame.f_lineno}" if frame is not None else name
++    try:
++        return f"#{_task_id(task)} {where}"
++    except TypeError:
++        return where
++
++
++def _fn_label(cb) -> str:
++    import functools
++
++    while isinstance(cb, functools.partial):
++        cb = cb.func
++    owner = getattr(cb, "__self__", None)
++    if isinstance(owner, asyncio.Task):
++        return "task " + _coro_label(owner)
++    name = getattr(cb, "__qualname__", None) or getattr(cb, "__name__", None) or type(cb).__name__
++    proto = getattr(owner, "_protocol", None) if owner is not None else None
++    if proto is not None:
++        name += f"({type(proto).__name__})"
++    return name
++
++
++def _handle_label(h) -> str:
++    cb, args = h._callback, h._args or ()
++    for a in args:
++        if isinstance(a, asyncio.Future):
++            for item in (getattr(a, "_callbacks", None) or ()):
++                c = item[0] if isinstance(item, tuple) else item
++                if isinstance(getattr(c, "__self__", None), asyncio.Task):
++                    return f"{_fn_label(cb)}->task {_coro_label(c.__self__)}"
++    return _fn_label(cb)
++
++
++def _io_label(key, mask) -> str:
++    reader, writer = key.data if isinstance(key.data, tuple) else (None, None)
++    parts = []
++    if mask & 1 and reader is not None:
++        parts.append("r:" + _fn_label(reader._callback))
++    if mask & 2 and writer is not None:
++        parts.append("w:" + _fn_label(writer._callback))
++    return f"io fd{key.fd} " + ("|".join(parts) or f"mask={mask}")
++
++
++# ---------------------------------------------------------------------------
++class Job:
++    __slots__ = ("n", "label", "submit_vt", "vsleep", "cf", "afut", "due", "interactive", "events", "sid")
++
++    def __init__(self, n: int, label: str, submit_vt: float) -> None:
++        self.n = n
++        self.label = label
++        self.submit_vt = submit_vt
++        self.vsleep = 0.0  # virtual seconds the job slept (charged by the virtual time.sleep)
++        self.cf = None  # concurrent.futures.Future of the job
++        self.afut = None  # asyncio future handed to the caller
++        self.due = None  # virtual delivery time, known once the job finished
++        self.interactive = False
++        self.events: list = []  # events recorded by the worker thread while it ran the job
++        self.sid = ""  # stable id: run_in_executor call site + counter
++
++
++class Scheduler:
++    def __init__(self, loop) -> None:
++        self.loop = loop
++        self.thread_id = threading.get_ident()
++        clk = _clock()
++        self.vt = clk.mono_ns(clk.elapsed) / NS if clk is not None else 1000.0
++        self.synced_vt = self.vt  # loop time already reflected in the Level 0 clock
++        self.lock = threading.Lock()
++        self.pool: list = []  # (handle, thread name) posted by other threads
++        self.jobs: dict = {}  # job number -> Job (running)
++        self.done_jobs: list = []  # heap of (due, n, job)
++        self.job_n = 0
++        self.iteration = 0
++        self.nodeid = None
++        self.rng = Rng(0)
++        self.noisy = False
++        self.index = 0
++        self.wakeup = threading.Condition(self.lock)
++        self.ids = weakref.WeakKeyDictionary()  # handle -> stable id
++        self.io_ids: dict = {}  # (fd, "r"|"w") -> stable id of the registration
++        self.site_n = collections.Counter()
++        self._reset_for_test()
++        # Timers scheduled before the scheduler was attached used real time.
++        offset = self.vt - _real_monotonic()
++        if loop._scheduled:
++            for h in loop._scheduled:
++                h._when += offset
++            heapq.heapify(loop._scheduled)
++
++    # -- per test ---------------------------------------------------------
++    def _reset_for_test(self) -> None:
++        nodeid = _state.STATE.nodeid
++        if _loop_counter["nodeid"] != nodeid:
++            _loop_counter["nodeid"], _loop_counter["n"] = nodeid, 0
++        self.index = _loop_counter["n"]
++        _loop_counter["n"] += 1
++        self.nodeid = nodeid
++        self.rng = Rng(_core.derive_seed(CFG.seed, f"{nodeid or '<session>'}\0asyncio\0{self.index}"))
++        self.noisy = CFG.seed != 0
++        self.iteration = 0
++        self.site_n = collections.Counter()
++        _TASK_IDS.clear()
++        _TASK_N["n"] = 0
++
++    # -- time -------------------------------------------------------------
++    def cost(self) -> float:
++        if not self.noisy:
++            return CALM_COST
++        r = self.rng
++        c = -NOISY_COST_MEAN * _log1m(r.random())
++        if r.random() < NOISY_HICCUP_P:
++            c += r.random() * NOISY_HICCUP_MAX
++        return c
++
++    def job_cost(self) -> float:
++        if not self.noisy:
++            return CALM_JOB
++        return -NOISY_JOB_MEAN * _log1m(self.rng.random())
++
++    def jump_to(self, when: float) -> float:
++        delta = when - self.vt
++        if delta <= 0:
++            return 0.0
++        self.vt = when
++        clk = _clock()
++        if clk is not None:
++            # time.monotonic() sees the sleep (and the callbacks' virtual cost) too.
++            clk.advance(int((self.vt - self.synced_vt) * NS))
++            self.synced_vt = self.vt
++        return delta
++
++    # -- threads ------------------------------------------------------------
++    def post(self, handle) -> None:
++        """Buffer a callback posted from another thread."""
++        name = threading.current_thread().name
++        with self.lock:
++            self.pool.append((handle, name))
++            self.wakeup.notify_all()
++
++    def job_finished(self) -> None:
++        """Done-callback of an executor job (runs in the worker thread)."""
++        with self.lock:
++            self.wakeup.notify_all()
++        try:
++            self.loop._write_to_self()  # wake the loop if it blocks on the selector
++        except Exception:
++            pass
++
++    def _take_pool(self) -> list:
++        with self.lock:
++            items, self.pool = self.pool, []
++        return items
++
++    def _external_possible(self) -> bool:
++        """Can something outside this thread still wake the loop up?"""
++        if self.jobs or _POOL_WORK["n"]:
++            return True
++        me = threading.current_thread()
++        for t in threading.enumerate():
++            if t is me or t.name.startswith("detpy-"):
++                continue
++            if t.name.startswith(("asyncio_", "ThreadPoolExecutor-")) and not self.jobs:
++                continue  # idle executor workers
++            if t.daemon and t.name.startswith(("pytest_timeout", "Dummy-")):
++                continue
++            return True
++        try:
++            return os.waitid(os.P_ALL, 0, os.WEXITED | os.WNOHANG | os.WNOWAIT) is None
++        except (ChildProcessError, OSError, AttributeError):
++            return False
++
++    # -- the loop iteration ----------------------------------------------------
++    def run_once(self) -> None:
++        loop = self.loop
++        if _state.STATE.nodeid != self.nodeid:
++            self._reset_for_test()
++        self.iteration += 1
++        _purge_cancelled(loop)
++        rec = []  # what this iteration delivered, for the fingerprint
++        jump = 0.0
++
++        self._settle_jobs(rec)
++        io = self._poll(0)
++        foreign = self._foreign()
++        due_timers, due_jobs = self._due()
++        busy = bool(loop._ready) or loop._stopping or due_timers or due_jobs
++
++        if not busy and not io and not foreign:
++            # Idle: deliver whatever comes first, deterministically when possible.
++            nxt = self._next_deadline()
++            if nxt is not None:
++                if self._external_possible():
++                    # An executor job still running is real work the timer races
++                    # with: let the timer's whole delay elapse for real first (as
++                    # in reality); otherwise wait at most the grace period.
++                    delay = max(nxt - self.vt, 0.0)
++                    busy_pool = bool(self.jobs) or _POOL_WORK["n"] > 0
++                    io, foreign = self._wait_real(delay if busy_pool else min(delay, CFG.grace))
++                    if io or foreign:
++                        rec.append("grace-wakeup")
++                if not io and not foreign:
++                    jump = self.jump_to(nxt)
++                    due_timers, due_jobs = self._due()
++            else:
++                io, foreign = self._wait_real(None)
++                rec.append("blocked-wakeup")
++
++        if _DEBUG:
++            import sys
++            print(f"[aio] it={self.iteration} ready={len(loop._ready)} io={len(io)} fg={len(foreign)} "
++                  f"timers={due_timers} jobs={[j.n for _, _, j in due_jobs]} pend={sorted(j.n for j in self.jobs.values())} "
++                  f"done={[(round(d, 6), n) for d, n, _ in self.done_jobs]} vt={self.vt:.6f} rec={rec}", file=sys.stderr)
++        # Choose which ready external events are delivered now and in which order.
++        io_now, io_later = self._choose(io, busy or due_timers or due_jobs)
++        fg_now = self._merge(foreign)
++        # Deliver, recording each choice in the shared vocabulary:
++        # op sched.*, value "<chosen index>/<set size>:<stable id>".
++        for why in rec:  # points whose timing is not controlled (see docs/L1-ASYNCIO.md)
++            _state.record_at("other", "asyncio.uncontrolled", f"<loop {self.index}>", why)
++        if io_now:
++            remaining = sorted(io_now + io_later, key=lambda x: (x[1].fd, x[2]))
++            for x in io_now:
++                i = remaining.index(x)
++                self._choice("sched.io", i, len(remaining), self._io_id(x[1], x[2]))
++                remaining.pop(i)
++            loop._process_events([(k, m) for (_, k, m) in io_now])
++        if fg_now:
++            batch = list(fg_now)
++            canon = sorted(batch, key=lambda h: self.ids.get(h, ""))
++            for h in fg_now:
++                i = canon.index(h)
++                self._choice("sched.ready", i, len(canon), self.ids.get(h) or "<thread>#?")
++                canon.pop(i)
++                loop._ready.append(h)
++        for k, (_, _, job) in enumerate(due_jobs):
++            self._choice("sched.executor", 0, len(due_jobs) - k, job.sid)
++            loop._ready.append(_ev.Handle(_deliver_job, (job,), loop, None))
++            for ev in job.events:  # events of the worker thread, at a deterministic point
++                _state.record_at(ev[0], ev[1], ev[2], ev[3])
++        end_time = self.vt + loop._clock_resolution
++        fired = []
++        while loop._scheduled and loop._scheduled[0]._when < end_time:
++            h = heapq.heappop(loop._scheduled)
++            h._scheduled = False
++            loop._ready.append(h)
++            if not h._cancelled:
++                fired.append(h)
++        for k, h in enumerate(fired):
++            self._choice("sched.timer", 0, len(fired) - k, self.ids.get(h) or "<asyncio>:" + _handle_label(h))
++
++        ntodo = len(loop._ready)
++        for _ in range(ntodo):
++            h = loop._ready.popleft()
++            if h._cancelled:
++                continue
++            if loop._debug:
++                try:
++                    loop._current_handle = h
++                    t0 = self.vt
++                    h._run()
++                    self.vt += self.cost()
++                    if self.vt - t0 >= loop.slow_callback_duration:
++                        _be.logger.warning("Executing %s took %.3f seconds", _be._format_handle(h), self.vt - t0)
++                finally:
++                    loop._current_handle = None
++            else:
++                h._run()
++                self.vt += self.cost()
++        h = None
++
++    # -- stable ids and recording -------------------------------------------
++    def stable_id(self, depth: int) -> str:
++        """Creation site of a callback (first user frame) plus a per-site counter."""
++        site = _site_of(depth + 1)
++        with self.lock:
++            self.site_n[site] += 1
++            n = self.site_n[site]
++        return f"{site}#{n}"
++
++    def _io_id(self, key, mask) -> str:
++        kind = "r" if mask & 1 else "w"
++        return self.io_ids.get((key.fd, kind)) or f"<asyncio>:{_io_label(key, mask)}"
++
++    def _choice(self, op: str, chosen: int, size: int, sid: str) -> None:
++        site = sid.rsplit("#", 1)[0]
++        _state.record_at("sched", op, site, f"{chosen}/{size}:{sid}")
++
++    # -- pieces --------------------------------------------------------------
++    def _poll(self, timeout) -> list:
++        loop = self.loop
++        events = loop._selector.select(timeout)
++        ssock = getattr(loop, "_ssock", None)
++        sfd = ssock.fileno() if ssock is not None else -1
++        out = []
++        for key, mask in events:
++            if key.fd == sfd:
++                loop._read_from_self()  # wake-up byte: drain, nothing to deliver
++                continue
++            out.append((_io_label(key, mask), key, mask))
++        out.sort(key=lambda x: (x[1].fd, x[2]))  # canonical order (fd), then the seed decides
++        return out
++
++    def _foreign(self) -> list:
++        return self._take_pool()
++
++    def _merge(self, foreign: list) -> list:
++        """Order of foreign call_soon_threadsafe callbacks: FIFO per posting thread
++        (causal order), threads interleaved by the seed (calm: by thread name)."""
++        if not foreign:
++            return []
++        by_thread: dict = {}
++        for h, name in foreign:
++            by_thread.setdefault(name, []).append(h)
++        queues = [by_thread[k] for k in sorted(by_thread)]
++        if not self.noisy or len(queues) == 1:
++            return [h for q in queues for h in q]
++        out = []
++        while queues:
++            i = self.rng.below(len(queues))
++            out.append(queues[i].pop(0))
++            if not queues[i]:
++                queues.pop(i)
++        return out
++
++    def _settle_jobs(self, rec: list) -> None:
++        """Wait for every running executor job and give it a virtual delivery time."""
++        if not self.jobs:
++            return
++        for n in sorted(self.jobs):
++            job = self.jobs[n]
++            if job.afut.cancelled():
++                # asyncio drops the result of a cancelled future: nothing to deliver.
++                job.cf.cancel()
++                del self.jobs[n]
++                continue
++            if job.interactive:
++                if job.cf.done():
++                    self._finish(job)
++                continue
++            if not job.cf.done() and not self._wait_job(job):
++                job.interactive = True
++                rec.append(f"executor-unsettled={job.label}")
++                continue
++            self._finish(job)
++
++    def _wait_job(self, job) -> bool:
++        """Block until the job finished; give up if it talks to the loop or takes too long."""
++        deadline = _real_monotonic() + CFG.wait
++        with self.lock:
++            while not job.cf.done():
++                if self.pool:
++                    return False  # a thread posted to the loop: the job may be waiting for it
++                left = deadline - _real_monotonic()
++                if left <= 0:
++                    return False
++                self.wakeup.wait(min(left, 0.05))
++        return True
++
++    def _finish(self, job) -> None:
++        del self.jobs[job.n]
++        if job.interactive:
++            job.due = self.vt
++        else:
++            job.due = max(self.vt, job.submit_vt + job.vsleep + self.job_cost())
++        heapq.heappush(self.done_jobs, (job.due, job.n, job))
++
++    def _due(self):
++        loop = self.loop
++        end = self.vt + loop._clock_resolution
++        timers = bool(loop._scheduled) and loop._scheduled[0]._when < end
++        jobs = []
++        while self.done_jobs and self.done_jobs[0][0] < end:
++            jobs.append(heapq.heappop(self.done_jobs))
++        return timers, jobs
++
++    def _next_deadline(self):
++        loop = self.loop
++        cands = []
++        if loop._scheduled:
++            cands.append(loop._scheduled[0]._when)
++        if self.done_jobs:
++            cands.append(self.done_jobs[0][0])
++        return min(cands) if cands else None
++
++    def _wait_real(self, timeout):
++        """Block on the selector for real (foreign I/O or threads), then batch."""
++        io = self._poll(timeout)
++        foreign = self._foreign()
++        if (io or foreign) and CFG.settle > 0 and self._external_possible():
++            # Let near-simultaneous wake-ups land, so their order is chosen by the seed.
++            # Every new arrival extends the window (up to 10 windows).
++            from .clock import real_sleep
++
++            start = _real_monotonic()
++            end = start + CFG.settle
++            while True:
++                now = _real_monotonic()
++                if now >= end:
++                    break
++                real_sleep(min(0.0005, end - now))  # ready fds stay ready: do not spin on select
++                more = self._poll(0)
++                seen = {(k.fd, m) for (_, k, m) in io}
++                new = [x for x in more if (x[1].fd, x[2]) not in seen]
++                fresh = self._foreign()
++                if new or fresh:
++                    io.extend(new)
++                    foreign.extend(fresh)
++                    end = min(_real_monotonic() + CFG.settle, start + 10 * CFG.settle)
++            io.sort(key=lambda x: (x[1].fd, x[2]))
++        return io, foreign
++
++    def _choose(self, io: list, busy) -> tuple:
++        if not io:
++            return [], []
++        if not self.noisy:
++            return io, []
++        now, later = [], []
++        for x in io:
++            (later if busy and self.rng.random() < NOISY_DEFER_P else now).append(x)
++        if not now and not busy:
++            now.append(later.pop(self.rng.below(len(later))))
++        self.rng.shuffle(now)
++        return now, later
++
++
++_SITE_CACHE: dict = {}
++
++
++def _classify_file(filename: str):
++    """(kind, display path) with string operations only.
++
++    The loop thread must not call os/os.path here: tools such as blockbuster
++    (used by anyio's test suite) flag any blocking call made inside a running
++    event loop, and realpath/abspath are such calls.
++    """
++    hit = _SITE_CACHE.get(filename)
++    if hit is not None:
++        return hit
++    kind, shown = "user", filename
++    if filename.startswith("<"):
++        kind = "stdlib" if filename.startswith("<frozen") else "user"
++    elif any(filename.startswith(p) for p in _PREFIXES["infra"]):
++        kind = "infra"
++    else:
++        for d in _PREFIXES["site"]:
++            if filename.startswith(d + "/"):
++                shown = "<site>/" + filename[len(d) + 1:]
++                break
++        else:
++            if any(filename.startswith(d + "/") for d in _PREFIXES["stdlib"]):
++                kind = "stdlib"
++            elif _PREFIXES["root"] and filename.startswith(_PREFIXES["root"] + "/"):
++                shown = filename[len(_PREFIXES["root"]) + 1:]
++    res = (kind, shown.replace("\\", "/"))
++    _SITE_CACHE[filename] = res
++    return res
++
++
++_PREFIXES: dict = {"infra": (), "site": (), "stdlib": (), "root": None}
++
++
++def refresh_prefixes(rootdir) -> None:
++    """Computed outside the loop (filesystem calls allowed here)."""
++    std, site, infra = _sites._dirs()
++    extra = set()
++    for d in list(std) + list(site):
++        extra.add(os.path.abspath(d))
++    _PREFIXES["stdlib"] = tuple(sorted({*std, *(os.path.abspath(d) for d in std)}, key=len, reverse=True))
++    _PREFIXES["site"] = tuple(sorted({*site, *(os.path.abspath(d) for d in site)}, key=len, reverse=True))
++    _PREFIXES["infra"] = tuple(infra) + (os.path.dirname(os.path.abspath(__file__)),)
++    _PREFIXES["root"] = rootdir.rstrip("/") if rootdir else None
++    _SITE_CACHE.clear()
++
++
++def _site_of(depth: int) -> str:
++    import sys
++
++    try:
++        f = sys._getframe(depth + 1)
++    except ValueError:
++        return "<asyncio>"
++    while f is not None:
++        kind, shown = _classify_file(f.f_code.co_filename)
++        if kind == "user":
++            return f"{shown}:{f.f_lineno}"
++        if kind == "infra":
++            return "<asyncio>"
++        f = f.f_back
++    return "<asyncio>"
++
++
++def _log1m(u: float) -> float:
++    import math
++
++    return math.log1p(-u) if u < 1.0 else -40.0
++
++
++def _purge_cancelled(loop) -> None:
++    sched = loop._scheduled
++    n = len(sched)
++    if n > _be._MIN_SCHEDULED_TIMER_HANDLES and loop._timer_cancelled_count / n > _be._MIN_CANCELLED_TIMER_HANDLES_FRACTION:
++        keep = []
++        for h in sched:
++            if h._cancelled:
++                h._scheduled = False
++            else:
++                keep.append(h)
++        heapq.heapify(keep)
++        loop._scheduled = keep
++        loop._timer_cancelled_count = 0
++    else:
++        while sched and sched[0]._cancelled:
++            loop._timer_cancelled_count -= 1
++            h = heapq.heappop(sched)
++            h._scheduled = False
++
++
++# ---------------------------------------------------------------------------
++# Patched BaseEventLoop methods
++def _sched(loop):
++    return loop.__dict__.get("_detpy_sched")
++
++
++def _attach(loop) -> None:
++    if not CFG.enabled or "_detpy_sched" in loop.__dict__:
++        return
++    st = _state.STATE
++    if st.nodeid is None or threading.get_ident() != st.test_thread:
++        return  # loops of other threads and outside tests keep real scheduling
++    if not hasattr(loop, "_selector") or not isinstance(loop, _be.BaseEventLoop):
++        return
++    loop.__dict__["_detpy_sched"] = Scheduler(loop)
++
++
++def _run_once(self):
++    s = self.__dict__.get("_detpy_sched")
++    if s is None:
++        return _orig["_run_once"](self)
++    return s.run_once()
++
++
++def _run_forever(self):
++    _attach(self)
++    return _orig["run_forever"](self)
++
++
++def _time(self):
++    s = self.__dict__.get("_detpy_sched")
++    if s is None:
++        return _real_monotonic()
++    return s.vt
++
++
++def _call_soon_threadsafe(self, callback, *args, context=None):
++    s = self.__dict__.get("_detpy_sched")
++    if s is None or threading.get_ident() == s.thread_id:
++        return _orig["call_soon_threadsafe"](self, callback, *args, context=context)
++    self._check_closed()
++    handle = _ev.Handle(callback, args, self, context)
++    if handle._source_traceback:
++        del handle._source_traceback[-1]
++    s.ids[handle] = s.stable_id(1)
++    s.post(handle)
++    self._write_to_self()
++    return handle
++
++
++def _deliver_job(job) -> None:
++    if not job.afut.done():
++        _af._copy_future_state(job.cf, job.afut)
++
++
++class _JobRunner:
++    """Runs the job in the worker thread and charges its virtual sleeps."""
++
++    __slots__ = ("job", "func")
++
++    def __init__(self, job, func) -> None:
++        self.job, self.func = job, func
++
++    def __call__(self, *args):
++        prev = getattr(_tl, "job", None)
++        _tl.job = self.job
++        prev_buf = _state.set_event_buffer(self.job.events)
++        try:
++            return self.func(*args)
++        finally:
++            _tl.job = prev
++            _state.set_event_buffer(prev_buf)
++
++
++def _run_in_executor(self, executor, func, *args):
++    """Like BaseEventLoop.run_in_executor, but the scheduler delivers the result.
++
++    asyncio chains the job's concurrent future to the asyncio future with
++    call_soon_threadsafe, i.e. at whatever moment the worker thread finishes.
++    Here the scheduler waits for the job and copies its state at a virtual time
++    that depends only on the job's virtual sleeps and the seed.
++    """
++    s = self.__dict__.get("_detpy_sched")
++    if s is None or threading.get_ident() != s.thread_id:
++        return _orig["run_in_executor"](self, executor, func, *args)
++    self._check_closed()
++    if self._debug:
++        self._check_callback(func, "run_in_executor")
++    if executor is None:
++        executor = self._default_executor
++        if hasattr(self, "_check_default_executor"):
++            self._check_default_executor()
++        if executor is None:
++            executor = concurrent.futures.ThreadPoolExecutor(thread_name_prefix="asyncio")
++            self._default_executor = executor
++    s.job_n += 1
++    job = Job(s.job_n, f"{_fn_label(func)}#{s.job_n}", s.vt)
++    job.sid = s.stable_id(1)
++    threaded = isinstance(executor, concurrent.futures.ThreadPoolExecutor)
++    job.cf = executor.submit(_JobRunner(job, func) if threaded else func, *args)
++    job.afut = self.create_future()
++    s.jobs[job.n] = job
++    job.cf.add_done_callback(lambda _cf: s.job_finished())
++    return job.afut
++
++
++async def _shutdown_default_executor(self, *args, **kwargs):
++    """Join the default executor in the loop thread.
++
++    asyncio joins it in a helper thread and waits for its call_soon_threadsafe
++    under a 300 s timeout: a race between a foreign thread and a timer, decided
++    by real time. Jobs of a scheduled loop were already delivered, so joining
++    here is short and deterministic.
++    """
++    if self.__dict__.get("_detpy_sched") is None:
++        return await _orig["shutdown_default_executor"](self, *args, **kwargs)
++    self._executor_shutdown_called = True
++    executor = self._default_executor
++    if executor is not None:
++        executor.shutdown(wait=True)
++
++
++def _call_at(self, when, callback, *args, context=None):
++    timer = _orig["call_at"](self, when, callback, *args, context=context)
++    s = self.__dict__.get("_detpy_sched")
++    if s is not None:
++        s.ids[timer] = s.stable_id(1)
++    return timer
++
++
++def _io_patch(name, kind):
++    def method(self, fd, callback, *args):
++        res = _orig[name](self, fd, callback, *args)
++        s = self.__dict__.get("_detpy_sched")
++        if s is not None:
++            try:
++                fileno = fd if isinstance(fd, int) else fd.fileno()
++            except Exception:
++                return res
++            s.io_ids[(fileno, kind)] = s.stable_id(1)
++        return res
++
++    method.__name__ = name
++    return method
++
++
++def _pool_done(_f) -> None:
++    with _POOL_LOCK:
++        _POOL_WORK["n"] -= 1
++
++
++def _submit(self, fn, /, *args, **kwargs):
++    """ThreadPoolExecutor.submit that counts in-flight work (executors used directly,
++    e.g. tornado's run_on_executor, finish through call_soon_threadsafe)."""
++    f = _orig["submit"](self, fn, *args, **kwargs)
++    with _POOL_LOCK:
++        _POOL_WORK["n"] += 1
++    f.add_done_callback(_pool_done)
++    return f
++
++
++def install(patcher, seed: int, grace: float, wait: float, settle: float, rootdir=None) -> None:
++    refresh_prefixes(rootdir)
++    CFG.enabled = True
++    CFG.seed = seed
++    CFG.grace, CFG.wait, CFG.settle = grace, wait, settle
++    B = _be.BaseEventLoop
++    for name, fn in (("_run_once", _run_once), ("run_forever", _run_forever), ("time", _time),
++                     ("call_soon_threadsafe", _call_soon_threadsafe), ("run_in_executor", _run_in_executor),
++                     ("shutdown_default_executor", _shutdown_default_executor)):
++        _orig[name] = B.__dict__[name] if name != "time" else (lambda self: _real_monotonic())
++        patcher.set(B, name, fn)
++    _orig["call_at"] = B.__dict__["call_at"]
++    patcher.set(B, "call_at", _call_at)
++    T = concurrent.futures.ThreadPoolExecutor
++    _orig["submit"] = T.__dict__["submit"]
++    patcher.set(T, "submit", _submit)
++    S = _se.BaseSelectorEventLoop
++    for name, kind in (("_add_reader", "r"), ("_add_writer", "w")):
++        _orig[name] = S.__dict__[name]
++        patcher.set(S, name, _io_patch(name, kind))
++    from . import clock
++
++    clock._on_sleep = on_sleep
++
++
++def uninstall() -> None:
++    CFG.enabled = False
++    from . import clock
++
++    clock._on_sleep = None
+diff --git a/python/detpy/clock.py b/python/detpy/clock.py
+index 8209d9a..9a53ed8 100644
+--- a/python/detpy/clock.py
++++ b/python/detpy/clock.py
+@@ -122,6 +122,7 @@ class VirtualClock:
+ 
+ 
+ CLOCK: VirtualClock | None = None
++_on_sleep = None  # set by detpy.aio
+ 
+ 
+ def _time_machine_ns(e: int) -> int | None:
+@@ -218,12 +219,15 @@ def sleep(secs: float) -> None:
+     CLOCK.other_event()  # a sleep is not a read: it ends a run of reads
+     _state.record("time", "time.sleep", str(ns))
+     CLOCK.advance(ns)
+-    if (_state.STATE.config.sleep == "real" or _other_threads_alive() or _in_event_loop()
++    if _on_sleep is not None:
++        _on_sleep(ns)  # --det-async: charge the sleep to the executor job running it
++    if (_state.STATE.config.sleep == "real" or _other_threads_alive()
++            or (_in_event_loop() and _on_sleep is None)
+             or _EXTERNAL["started"] or _children_alive()):
+         # Someone observes real time: another thread or a child process may need
+         # this time to make progress ("wait until the server is up"), or an
+-        # asyncio loop (which keeps real time) is running here and its
+-        # deadlines must see the sleep.
++        # asyncio loop (which keeps real time without --det-async) is running
++        # here and its deadlines must see the sleep.
+         # Wait for real as well; the virtual clock still advances.
+         real_sleep(secs)
+     else:
+diff --git a/python/detpy/plugin.py b/python/detpy/plugin.py
+index eda5583..57784ee 100644
+--- a/python/detpy/plugin.py
++++ b/python/detpy/plugin.py
+@@ -11,7 +11,7 @@ import warnings
+ 
+ import pytest
+ 
+-from . import __version__, _core, _sites, _state, clock, fsorder, network, reexec, seeds
++from . import __version__, _core, _sites, _state, aio, clock, fsorder, network, reexec, seeds
+ from ._patch import Patcher
+ 
+ CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net")
+@@ -59,6 +59,16 @@ def pytest_addoption(parser, pluginmanager):
+                 help="never re-exec the interpreter to fix PYTHONHASHSEED")
+     g.addoption("--det-max-events", type=int, default=10_000, metavar="N",
+                 help="events stored verbatim per test (the fingerprint always covers all of them)")
++    g.addoption("--det-async", action="store_true", default=False,
++                help="Level 1 prototype: deterministic asyncio scheduling driven by a seed (needs --det)")
++    g.addoption("--det-async-seed", type=int, default=None, metavar="N",
++                help="seed of the asyncio scheduler (default: --det-seed; 0 = calm profile, no exploration)")
++    g.addoption("--det-async-grace", type=float, default=1.0, metavar="S",
++                help="real seconds an idle loop waits for foreign I/O or threads before its clock jumps")
++    g.addoption("--det-async-wait", type=float, default=2.0, metavar="S",
++                help="real seconds the loop waits for an executor job before giving up determinism for it")
++    g.addoption("--det-async-settle", type=float, default=0.01, metavar="S",
++                help="real seconds to batch near-simultaneous foreign wake-ups")
+     g.addoption("--det-outcomes", default=None, metavar="PATH",
+                 help="write {nodeid: outcome} as JSON (works without --det; used by the harness)")
+ 
+@@ -231,6 +241,8 @@ def pytest_load_initial_conftests(early_config, parser, args):
+     reexec.SESSION_DEPTH += 1
+     ns = early_config.known_args_namespace
+     if not getattr(ns, "det", False):
++        if getattr(ns, "det_async", False):
++            raise pytest.UsageError("--det-async needs --det")
+         return
+     if S.active:
+         # A pytest session nested in-process inside a --det session (pytester
+@@ -311,6 +323,10 @@ def _install(config, ns, controls) -> None:
+         S.rebound = clock.install(_PATCHER, cfg.epoch_ns, cfg.tick_ns, _skip_module, cfg.tick_adapt)
+     if "fs" in controls:
+         fsorder.install(_PATCHER)
++    if ns.det_async:
++        seed = ns.det_async_seed if ns.det_async_seed is not None else (ns.det_seed or 0)
++        aio.install(_PATCHER, seed, ns.det_async_grace, ns.det_async_wait, ns.det_async_settle,
++                    str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd())
+ 
+ 
+ def _owner(config) -> bool:
+@@ -332,6 +348,8 @@ def _configure_det(config) -> None:
+         warnings.warn("detpy: pytest-xdist is not supported under --det (order is only fixed per worker)")
+     root = str(config.rootpath)
+     _sites.refresh(root)
++    if aio.CFG.enabled:
++        aio.refresh_prefixes(root)  # after plugins are imported
+     opt = config.option
+     cassette = opt.det_cassette or os.path.join(root, ".detpy", "cassette.json")
+     _state.STATE.config.cassette_path = cassette
+@@ -352,6 +370,7 @@ def pytest_unconfigure(config):
+     if _owner(config):
+         _PATCHER.undo_all()
+         clock.uninstall()
++        aio.uninstall()
+         seeds.uninstall()
+         network.uninstall()
+         _state.STATE.recorder = None
+@@ -486,6 +505,9 @@ class _DetSession(_Outcomes):
+             f"detpy: PYTHONHASHSEED={os.environ.get('PYTHONHASHSEED')} ({S.reexec_status}); "
+             f"ASLR {'off' if reexec.aslr_disabled() else 'on'}; network={S.net_mode}; sleep={cfg.sleep}",
+         ]
++        if aio.CFG.enabled:
++            lines.append(f"detpy: --det-async (Level 1 prototype): asyncio scheduler seed {aio.CFG.seed}"
++                         f"{' (calm)' if aio.CFG.seed == 0 else ' (exploring)'}")
+         if S.disabled_plugins:
+             lines.append(f"detpy: disabled conflicting plugins: {', '.join(S.disabled_plugins)}")
+         if S.adjustments:
+@@ -524,9 +546,12 @@ class _DetSession(_Outcomes):
+         cfg = _state.STATE.config
+         meta = {
+             "detpy": __version__,
++            "runtime": "python",
++            "runtime_version": platform.python_version(),
++            "runner": "pytest",
+             "seed": cfg.seed,
+             "shuffle": cfg.shuffle,
+-            "controls": sorted(cfg.controls),
++            "controls": sorted(cfg.controls | ({"async"} if aio.CFG.enabled else set())),
+             "hashseed": os.environ.get("PYTHONHASHSEED"),
+             "reexec": S.reexec_status,
+             "aslr_disabled": reexec.aslr_disabled(),
+@@ -547,6 +572,8 @@ class _DetSession(_Outcomes):
+             "disabled_plugins": S.disabled_plugins,
+             "adjustments": S.adjustments,
+             "rebound_references": len(S.rebound),
++            "det_async": ({"seed": aio.CFG.seed, "grace": aio.CFG.grace, "wait": aio.CFG.wait,
++                           "settle": aio.CFG.settle} if aio.CFG.enabled else None),
+             "order_digest": S.order_digest,
+         }
+         _state.STATE.recorder.open(S.trace_path, json.dumps(meta), S.order)
+diff --git a/tests/test_aio.py b/tests/test_aio.py
+new file mode 100644
+index 0000000..81b73b2
+--- /dev/null
++++ b/tests/test_aio.py
+@@ -0,0 +1,384 @@
++"""Level 1 prototype: deterministic asyncio scheduling (``--det-async``).
++
++The race tests below are written so that, without the prototype, the printed
++results differ between two runs (timing decides), and with it they are a pure
++function of the seed. To see them fail without the prototype run::
++
++    DETPY_ASYNC_FLAGS="--det" pytest tests/test_aio.py
++
++(``--det`` alone: Level 0 only; the asyncio loop keeps real time and real
++thread timing.)
++"""
++
++import json
++import os
++import sys
++
++import pytest
++
++FLAGS = os.environ.get("DETPY_ASYNC_FLAGS", "--det --det-async").split()
++WITHOUT_PROTOTYPE = "--det-async" not in FLAGS
++
++RACES = r'''
++import asyncio, json, socket, threading, time
++
++def emit(name, value):
++    print(f"RESULT {name} {json.dumps(value)}", flush=True)
++
++def test_executor_results():
++    """Executor results: delivery order of jobs that take the same time."""
++    async def main():
++        loop = asyncio.get_running_loop()
++        order = []
++        def job(n):
++            time.sleep(0.001)
++            return n
++        async def run(n):
++            order.append(await loop.run_in_executor(None, job, n))
++        await asyncio.gather(*(run(i) for i in range(6)))
++        return order
++    emit("executor", [asyncio.run(main()) for _ in range(15)])
++
++def test_timeout_race():
++    """Timers: a timeout that races with a chain of callbacks."""
++    async def work():
++        for _ in range(20):
++            await asyncio.sleep(0)
++        return 1
++    async def main(t):
++        try:
++            return await asyncio.wait_for(work(), timeout=t)
++        except asyncio.TimeoutError:
++            return 0
++    emit("timeout", [asyncio.run(main(t * 2e-5)) for t in range(1, 60)])
++
++def test_io_readiness():
++    """I/O readiness: several sockets become readable while the loop is busy."""
++    async def main():
++        loop = asyncio.get_running_loop()
++        pairs = [socket.socketpair() for _ in range(5)]
++        got = []
++        for i, (a, b) in enumerate(pairs):
++            a.setblocking(False)
++            def cb(i=i, a=a):
++                a.recv(16)
++                got.append(i)
++                loop.remove_reader(a)
++            loop.add_reader(a, cb)
++        def writer(b):
++            time.sleep(0.0005)
++            b.send(b"x")
++        threads = [threading.Thread(target=writer, args=(b,)) for _, b in pairs]
++        for t in threads:
++            t.start()
++        for t in threads:
++            t.join()  # the loop is blocked: all sockets are ready at the next poll
++        while len(got) < len(pairs):
++            await asyncio.sleep(0)
++        for a, b in pairs:
++            a.close()
++            b.close()
++        return got
++    emit("io", [asyncio.run(main()) for _ in range(10)])
++
++def test_threadsafe_callbacks():
++    """call_soon_threadsafe from several threads while the loop is busy."""
++    async def main():
++        loop = asyncio.get_running_loop()
++        got = []
++        def worker(i):
++            time.sleep(0.0005)
++            loop.call_soon_threadsafe(got.append, i)
++        threads = [threading.Thread(target=worker, args=(i,), name=f"w{i}") for i in range(5)]
++        for t in threads:
++            t.start()
++        for t in threads:
++            t.join()
++        while len(got) < 5:
++            await asyncio.sleep(0)
++        return got
++    emit("threadsafe", [asyncio.run(main()) for _ in range(10)])
++
++def test_job_vs_timer():
++    """An executor job and a timer of (almost) the same duration."""
++    async def main(d):
++        loop = asyncio.get_running_loop()
++        first = []
++        async def timer():
++            await asyncio.sleep(d)
++            first.append("timer")
++        async def job():
++            await loop.run_in_executor(None, time.sleep, 0.001)
++            first.append("job")
++        await asyncio.gather(timer(), job())
++        return first[0]
++    emit("job_vs_timer", [asyncio.run(main(0.001 + k * 1e-5)) for k in range(-10, 10)])
++'''
++
++RACE_NAMES = ("executor", "timeout", "io", "threadsafe", "job_vs_timer")
++
++
++def _run(pytester, *extra, flags=None):
++    args = list(FLAGS if flags is None else flags) + ["-s", "-p", "no:cacheprovider", *extra]
++    result = pytester.runpytest_subprocess(*args)
++    out = {}
++    for line in result.stdout.lines:
++        if "RESULT " in line:
++            _, name, value = line[line.index("RESULT "):].split(" ", 2)
++            out[name] = json.loads(value)
++    return result, out
++
++
++@pytest.fixture
++def races(pytester):
++    pytester.makepyfile(test_races=RACES)
++    return pytester
++
++
++def test_det_async_needs_det(pytester):
++    pytester.makepyfile(test_a="def test_a():\n    pass\n")
++    result = pytester.runpytest_subprocess("--det-async", "-p", "no:cacheprovider")
++    assert result.ret != 0
++    result.stderr.fnmatch_lines(["*--det-async needs --det*"])
++
++
++@pytest.mark.parametrize("seed", ["0", "3"])
++def test_races_are_reproducible(races, seed):
++    """Same seed, same results, in every race (fails without the prototype)."""
++    r1, a = _run(races, f"--det-async-seed={seed}" if not WITHOUT_PROTOTYPE else f"--det-seed={seed}")
++    r2, b = _run(races, f"--det-async-seed={seed}" if not WITHOUT_PROTOTYPE else f"--det-seed={seed}")
++    r3, c = _run(races, f"--det-async-seed={seed}" if not WITHOUT_PROTOTYPE else f"--det-seed={seed}")
++    assert r1.ret == 0 and r2.ret == 0 and r3.ret == 0
++    assert set(a) == set(RACE_NAMES)
++    differing = [n for n in RACE_NAMES if not (a[n] == b[n] == c[n])]
++    assert differing == [], f"results differ between runs with the same seed: {differing}"
++
++
++def test_seeds_explore_orders(races):
++    """Different seeds reach different orders, each one replayable."""
++    if WITHOUT_PROTOTYPE:
++        pytest.fail("needs --det-async: without it there is no seed for the asyncio schedule")
++    seen = {n: set() for n in RACE_NAMES}
++    for seed in range(1, 7):
++        _, out = _run(races, f"--det-async-seed={seed}")
++        for n in RACE_NAMES:
++            seen[n].add(json.dumps(out[n]))
++    # The timeout race outcome is a threshold; all others are orders.
++    assert all(len(v) >= 2 for v in seen.values()), {k: len(v) for k, v in seen.items()}
++
++
++def test_fingerprint_names_first_diverging_choice(races, tmp_path):
++    from detpy import _core
++
++    if WITHOUT_PROTOTYPE:
++        pytest.fail("needs --det-async: without it no scheduling choice is recorded")
++    traces = []
++    for i, seed in enumerate((1, 1, 2)):
++        t = str(tmp_path / f"t{i}.jsonl")
++        _run(races, f"--det-async-seed={seed}", f"--det-trace={t}", "-k", "executor")
++        traces.append(t)
++    same = json.loads(_core.verify(traces[:2]))
++    assert same["summary"]["diverged"] == 0 and same["summary"]["stable"] == 1
++    diff = json.loads(_core.verify([traces[0], traces[2]]))
++    d = diff["tests"][0]["divergence"]
++    assert d["reason"] == "sched"
++    assert "first diverging scheduling choice" in d["description"]
++    assert "sched.executor" in d["description"]
++
++
++# ---------------------------------------------------------------------------
++# Ordinary asyncio code must keep working (no false failures) with any seed.
++SEMANTICS = r'''
++import asyncio, subprocess, sys, threading, time
++import pytest
++
++def run(coro):
++    return asyncio.run(coro)
++
++def test_streams_server_and_client():
++    async def main():
++        async def handle(r, w):
++            data = await r.readline()
++            w.write(data.upper())
++            await w.drain()
++            w.close()
++        server = await asyncio.start_server(handle, "127.0.0.1", 0)
++        port = server.sockets[0].getsockname()[1]
++        results = []
++        async def client(i):
++            r, w = await asyncio.open_connection("127.0.0.1", port)
++            w.write(f"hello {i}\n".encode())
++            await w.drain()
++            results.append(await r.readline())
++            w.close()
++        await asyncio.gather(*(client(i) for i in range(5)))
++        server.close()
++        await server.wait_closed()
++        return sorted(results)
++    assert run(main()) == [f"HELLO {i}\n".encode() for i in range(5)]
++
++def test_subprocess_with_timeout():
++    async def main():
++        p = await asyncio.create_subprocess_exec(sys.executable, "-c", "import time; time.sleep(0.2); print('ok')",
++                                                 stdout=subprocess.PIPE)
++        out, _ = await asyncio.wait_for(p.communicate(), timeout=30)
++        return out.strip(), p.returncode
++    assert run(main()) == (b"ok", 0)
++
++def test_to_thread_and_executor():
++    async def main():
++        a = await asyncio.to_thread(sum, range(10))
++        b = await asyncio.get_running_loop().run_in_executor(None, time.sleep, 0.01)
++        return a, b
++    assert run(main()) == (45, None)
++
++def test_job_calls_back_into_loop():
++    async def double(x):
++        await asyncio.sleep(0.01)
++        return 2 * x
++    async def main():
++        loop = asyncio.get_running_loop()
++        def job():
++            return asyncio.run_coroutine_threadsafe(double(21), loop).result(timeout=10)
++        return await loop.run_in_executor(None, job)
++    assert run(main()) == 42
++
++def test_timeouts_and_cancellation():
++    async def main():
++        with pytest.raises(asyncio.TimeoutError):
++            await asyncio.wait_for(asyncio.sleep(10), timeout=0.01)
++        t = asyncio.ensure_future(asyncio.sleep(10))
++        await asyncio.sleep(0)
++        t.cancel()
++        with pytest.raises(asyncio.CancelledError):
++            await t
++        t0 = time.monotonic()
++        await asyncio.sleep(3600)  # virtual: does not wait
++        assert time.monotonic() - t0 >= 3600
++    run(main())
++
++def test_queue_producer_consumer():
++    async def main():
++        q = asyncio.Queue(maxsize=2)
++        got = []
++        async def producer():
++            for i in range(20):
++                await q.put(i)
++                await asyncio.sleep(0.001)
++            await q.put(None)
++        async def consumer():
++            while (x := await q.get()) is not None:
++                got.append(x)
++        await asyncio.gather(producer(), consumer())
++        return got
++    assert run(main()) == list(range(20))
++
++def test_thread_sets_event_through_loop():
++    async def main():
++        loop = asyncio.get_running_loop()
++        ev = asyncio.Event()
++        threading.Thread(target=lambda: (time.sleep(0.05), loop.call_soon_threadsafe(ev.set))).start()
++        await asyncio.wait_for(ev.wait(), timeout=5)
++        return True
++    assert run(main())
++
++def test_getaddrinfo():
++    async def main():
++        return await asyncio.get_running_loop().getaddrinfo("127.0.0.1", 80)
++    assert run(main())
++
++def test_gather_many_sleepers():
++    async def sleeper(i):
++        await asyncio.sleep(0.01 * (i % 5))
++        return i
++    async def main():
++        return await asyncio.gather(*(sleeper(i) for i in range(100)))
++    assert run(main()) == list(range(100))
++'''
++
++SEMANTICS_311 = r'''
++import asyncio, pytest
++
++def test_taskgroup_and_timeout():
++    async def main():
++        async with asyncio.TaskGroup() as tg:
++            ts = [tg.create_task(asyncio.sleep(0.01, result=i)) for i in range(5)]
++        with pytest.raises(TimeoutError):
++            async with asyncio.timeout(0.05):
++                await asyncio.sleep(1)
++        return [t.result() for t in ts]
++    assert asyncio.run(main()) == list(range(5))
++'''
++
++PLUGINS = r'''
++import asyncio, pytest
++
++@pytest.mark.asyncio
++async def test_pytest_asyncio():
++    await asyncio.sleep(0.01)
++    assert asyncio.get_running_loop().time() > 0
++
++@pytest.mark.anyio
++async def test_anyio_asyncio_backend():
++    import anyio
++    with anyio.fail_after(5):
++        await anyio.sleep(0.01)
++
++@pytest.fixture
++def anyio_backend():
++    return "asyncio"
++'''
++
++
++@pytest.mark.parametrize("seed", ["0", "1", "2", "5"])
++def test_ordinary_asyncio_code_passes(pytester, seed):
++    if WITHOUT_PROTOTYPE:
++        pytest.skip("checks the prototype for false failures (sleep(3600) would really wait)")
++    pytester.makepyfile(test_semantics=SEMANTICS)
++    if sys.version_info >= (3, 11):
++        pytester.makepyfile(test_semantics311=SEMANTICS_311)
++    result = pytester.runpytest_subprocess(*FLAGS, f"--det-seed={seed}", "-p", "no:cacheprovider")
++    outcomes = result.parseoutcomes()
++    assert outcomes.get("failed", 0) == 0 and outcomes.get("error", 0) == 0, result.stdout.str()[-3000:]
++
++
++def test_pytest_asyncio_and_anyio(pytester):
++    if WITHOUT_PROTOTYPE:
++        pytest.skip("checks the prototype for false failures")
++    pytest.importorskip("pytest_asyncio")
++    pytest.importorskip("anyio")
++    pytester.makepyfile(test_plugins=PLUGINS)
++    result = pytester.runpytest_subprocess(*FLAGS, "--det-seed=4", "-p", "no:cacheprovider")
++    result.assert_outcomes(passed=2)
++
++
++def test_trace_header_and_vocabulary(pytester, tmp_path):
++    if WITHOUT_PROTOTYPE:
++        pytest.skip("only with --det-async")
++    from detpy import _core
++
++    pytester.makepyfile(test_a="""
++import asyncio
++def test_a():
++    async def main():
++        await asyncio.sleep(0.01)
++    asyncio.run(main())
++""")
++    t = str(tmp_path / "t.jsonl")
++    pytester.runpytest_subprocess(*FLAGS, "--det-async-seed=2", f"--det-trace={t}", "-p", "no:cacheprovider")
++    lines = [json.loads(x) for x in open(t)]
++    meta = lines[0]["meta"]
++    assert lines[0]["encoding"] == _core.ENCODING_VERSION == 2
++    assert meta["runtime"] == "python" and meta["runner"] == "pytest" and meta["runtime_version"]
++    assert "async" in meta["controls"] and meta["seed"] == 0
++    ev = [e for e in lines[1]["events"] if e["s"] == "sched"]
++    assert ev and ev[0]["o"] == "sched.timer"
++    assert ev[0]["at"] == "test_a.py:4" and ev[0]["v"] == "0/1:test_a.py:4#1"
++
++
++def test_header_reports_seed(pytester):
++    if WITHOUT_PROTOTYPE:
++        pytest.skip("header only shown with --det-async")
++    pytester.makepyfile(test_a="def test_a():\n    pass\n")
++    result = pytester.runpytest_subprocess(*FLAGS, "--det-async-seed=7", "-p", "no:cacheprovider")
++    result.stdout.fnmatch_lines(["*--det-async (Level 1 prototype): asyncio scheduler seed 7 (exploring)*"])
+-- 
+2.43.0
+

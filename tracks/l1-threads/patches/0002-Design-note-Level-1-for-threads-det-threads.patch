@@ -1,0 +1,105 @@
+From fd193ee9265064663b6e45008217fa7cab421be1 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 06:21:10 +0000
+Subject: [PATCH 2/3] Design note: Level 1 for threads (--det-threads)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ docs/L1-THREADS.md | 84 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 84 insertions(+)
+ create mode 100644 docs/L1-THREADS.md
+
+diff --git a/docs/L1-THREADS.md b/docs/L1-THREADS.md
+new file mode 100644
+index 0000000..0831025
+--- /dev/null
++++ b/docs/L1-THREADS.md
+@@ -0,0 +1,84 @@
++# Level 1 for threads (`--det-threads`): design note
++
++Status: prototype (track l1-threads, P-012). Builds on Level 0 (`--det`) and on the
++asyncio half of Level 1 (`docs/L1-ASYNCIO.md`, shared `sched` vocabulary, tag 9).
++
++## Problem
++
++Level 0 fixes order, seeds, clock, filesystem and network, but threads still run
++under the OS scheduler and the GIL's 5 ms switch interval. Two runs of the same test
++interleave differently, so the events of different threads reach the trace in a
++different order (Block 2: easypy's 10 thread tests fail 10/10, never with the same
++fingerprint), and races that need a rare interleaving cannot be replayed at all.
++Level 0 also has to sleep for real whenever a second thread is alive.
++
++## Mechanism: one baton, switches only at controlled points
++
++* **One managed thread runs at a time.** Every thread started with `threading.Thread`
++  (also pool workers, `threading.Timer`) while the scheduler is active is
++  *managed*: it gets a logical index (deterministic: assigned by its parent at
++  `start()`) and a private gate. It runs Python code only while it holds the baton;
++  handing the baton over is "release the next thread's gate, wait on my own".
++* **Controlled points** (the only places where the running thread can change):
++  `Lock`/`RLock` acquire and release, `Condition`/`Event`/`Semaphore`/`Barrier`
++  waits (all built on our lock, so `queue.Queue` and `concurrent.futures` follow;
++  the C `queue.SimpleQueue` is replaced by the pure-Python one), `time.sleep`,
++  `Thread.start/join/is_alive`, thread exit, and blocking I/O on sockets and
++  selectors. Optional (exploration only): a seeded **line budget** in user code
++  (`sys.settrace`, project files only) preempts at a random line, which reaches
++  races with no synchronization at all (`x += 1` lost updates).
++* **Virtual time for waits.** A sleep or a wait with a timeout becomes a timer on
++  the Level 0 virtual clock. When no thread can run, the scheduler polls I/O
++  waiters (non-blocking); if none is ready it jumps the clock to the earliest
++  timer. No real waiting unless something outside the process is involved.
++* **Deterministic I/O between threads.** A blocking `recv`/`accept`/`select` first
++  polls; if not ready the thread waits *in the scheduler* on that readiness
++  predicate. Waiters are re-polled at deterministic points (whenever the running
++  thread blocks or yields), so a loopback server thread wakes at the same point of
++  the execution in every run. Real waiting (bounded by `--det-threads-grace`) is
++  used only for genuinely external work (subprocesses, real network).
++* **Seeded choices.** Seed 0 is the *calm* profile: the running thread continues
++  until it blocks; then the longest-waiting runnable thread runs (FIFO). Any
++  other seed *explores*: at every controlled point a SplitMix64 stream decides
++  whether to switch and to whom (per-run switch probability drawn from the seed),
++  plus the optional line budget. Every choice among two or more runnable threads is
++  recorded as a `sched.thread` event `<chosen>/<n>:<stable id>` (stable id =
++  creation site of the chosen thread + per-site counter, `main` for the test
++  thread), so the verifier names the first diverging scheduling choice.
++* **Deadlock detection.** If every managed thread is blocked, no timer is pending,
++  no I/O waiter or external call is outstanding and no unmanaged thread could
++  release anything, the scheduler raises `detpy.threads.DeadlockError` in every
++  blocked thread, with each thread's index, name and the site it waits at. With
++  only I/O waiters left, it declares a deadlock after `--det-threads-deadlock`
++  real seconds (default 5) instead of hanging.
++
++## Escape hatch (C extensions and uncontrolled blocking)
++
++A managed thread that blocks inside C code (GIL released; a lock bound before
++installation, a C-extension socket, a database driver) would stall everybody. A
++detpy watchdog thread samples the baton holder: if it made no scheduling progress
++for 50 ms and the OS reports it sleeping (`/proc/self/task/<tid>/stat`), the holder
++is *escaped*: it continues outside the scheduler and the baton passes on. It rejoins
++at its next controlled point. Code can also mark a region explicitly with
++`with detpy.threads.external():`. Every escape is recorded as an `other`
++`threads.uncontrolled` event: the fingerprint then says "not deterministic here"
++instead of claiming an identical execution. Threads that existed before the
++scheduler started (or were started by C code) are unmanaged and run freely; our
++locks fall back to plain lock behaviour for them.
++
++## What it does not do (yet)
++
++* Preemption between controlled points only in exploration and only via
++  `settrace` (cost); a pure-Python busy loop with no controlled point is rescued by
++  the watchdog (escape), which is not deterministic.
++* Free-threaded CPython (3.13t) is out of scope: the baton still serialises, but
++  C-level atomics are not modelled.
++* Processes (multiprocessing, subprocess) stay external (Level 2 work).
++
++## Compared approaches
++
++| approach | determinism | cost | reach |
++|---|---|---|---|
++| `sys.setswitchinterval` large | none (OS still decides who wakes) | free | — |
++| baton at controlled points (this) | full while all blocking is controlled | per lock op, plus `settrace` when preempting | races through sync objects, sleeps, I/O; data races only with the line budget |
++| record/replay of real interleaving (rr, Chess-style) | full | high, OS level | Level 2 |
+-- 
+2.43.0
+
