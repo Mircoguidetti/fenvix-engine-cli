@@ -70,6 +70,7 @@ function resolveFormatted() {
 }
 
 const structured = (_e, cs) => cs;
+let NODE_INFRA = null; // read on first use (set by the Level 2 server shell before any event)
 const CACHE = new Map(); // raw "file:line:column" of the first relevant frame -> site (or null)
 const CACHE_MAX = 200000;
 
@@ -92,7 +93,12 @@ function resolve() {
   // undefined = no decision within the captured frames; null = infrastructure.
   let site = resolveDepth(8);
   if (site === undefined) site = resolveDepth(30);
-  return site === undefined ? '<node>' : site;
+  if (site === undefined) site = '<node>';
+  // App servers under Level 2 (DETJS_NODE_INFRA=1): calls made by Node's own internals only
+  // (HTTP Date header cache, socket timeouts) are infrastructure and keep the real clock.
+  if (NODE_INFRA === null) NODE_INFRA = process.env.DETJS_NODE_INFRA === '1';
+  if (site === '<node>' && NODE_INFRA) return null;
+  return site;
 }
 
 /** undefined when no decision within `depth` frames. */

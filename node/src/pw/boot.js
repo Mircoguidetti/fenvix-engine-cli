@@ -13,7 +13,7 @@ const LAUNCHERS = /^(npm|npm-cli|npx|npx-cli|pnpm|pnpm\.c?js|yarn|yarn\.c?js|cor
 function role() {
   if (process.env.DETJS !== '1') return null;
   const main = process.argv[1] || '';
-  if (process.env.TEST_WORKER_INDEX !== undefined || /[\\/]playwright[\\/]lib[\\/]worker[\\/]/.test(main)) return 'worker';
+  if (process.env.TEST_WORKER_INDEX !== undefined || /[\\/]playwright[\\/]lib[\\/](worker|common)[\\/]/.test(main)) return 'worker'; // child process entry (1.3x: common/process.js)
   if (/[\\/](playwright|playwright-core|@playwright[\\/]test)[\\/]/.test(main)) return null; // runner helpers (loader, test server)
   const script = path.basename(main);
   const args = process.argv.slice(1).join(' ');

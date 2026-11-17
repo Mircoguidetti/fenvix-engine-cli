@@ -30,7 +30,7 @@ const SEED = BigInt(ENV.DETJS_SEED || '0');
 const SHUFFLE = ENV.DETJS_SHUFFLE === '1';
 const DIR = ENV.DETJS_DIR || path.join(process.cwd(), '.detjs', 'run');
 const ROOT = ENV.DETJS_ROOT || process.cwd();
-const VTIME = ENV.DETJS_PW_VTIME || 'fast';
+const VTIME = ENV.DETJS_PW_VTIME || 'paced';
 const WINDOW_MS = Number(ENV.DETJS_PW_NET_WINDOW || 15);
 const NET = ENV.DETJS_PW_NET !== 'off';
 const SEEDS = ENV.DETJS_PW_SEEDS !== 'off';
@@ -129,6 +129,7 @@ async function pump() {
   QUEUE.timer = null;
   if (QUEUE.busy || !QUEUE.pending.length) return;
   QUEUE.busy = true;
+  await whenPaused(); // never deliver a response while a page is inside a virtual time chunk
   await barrier(QUEUE.pending[0].test);
   QUEUE.busy = false;
   if (!QUEUE.pending.length) return;
@@ -209,7 +210,7 @@ async function routeHandler(route, request) {
   const finish = (how) => {
     if (finished) return;
     finished = true;
-    if (page) { page.off('requestfinished', onDone); page.off('requestfailed', onFail); }
+    if (page) { page.off('requestfinished', onDone); page.off('requestfailed', onFail); page.off('response', onResponse); }
     clearTimeout(timer);
     rec(key, 'net', 'browser.done', `${item.method} ${item.target} ${how}`);
     release();
@@ -229,7 +230,11 @@ async function routeHandler(route, request) {
   };
   const onFail = (r) => { if (r === request) finish(`failed ${r.failure() ? r.failure().errorText : ''}`); };
   const timer = setTimeout(() => finish('incomplete'), COMPLETE_TIMEOUT_MS);
-  if (page) { page.on('requestfinished', onDone); page.on('requestfailed', onFail); }
+  // A document's body is consumed by the page's loader, which waits for virtual time:
+  // its response headers complete it (the final DOM digest covers its content).
+  const onResponse = (resp) => { if (resp.request() === request) finish(`${resp.status()} document`); };
+  if (type === 'document' && page) { page.on('response', onResponse); page.on('requestfailed', onFail); }
+  else if (page) { page.on('requestfinished', onDone); page.on('requestfailed', onFail); }
   rec(key, 'net', 'browser.request', `${item.method} ${item.target} ${item.bodyDigest}`);
   try {
     if (isServerHost(url)) {
@@ -291,28 +296,66 @@ async function setupWebSockets(ctx) {
   });
 }
 
+// Virtual time is granted in small chunks (policy `advance` with a budget):
+// the page runs its timers, animations and rendering through one chunk, then
+// stops until the next grant. Between chunks the driver lets the requests
+// issued during the chunk reach the queue (SETTLE_MS) and runs the queue to
+// completion before the next grant, and the queue releases requests only
+// while no page is inside a chunk: responses always land between two chunks,
+// at the same virtual instant in every run. (Chrome's own
+// pauseIfNetworkFetchesPending policy freezes the page for as long as any
+// request is open, so long polling apps stop: socket.io, found on uptime-kuma.)
+// paced: virtual time never runs ahead of real time (the app server and
+// WebSocket peers live in real time); fast: idle time is skipped.
+const CHUNK_MS = Number(ENV.DETJS_PW_VTIME_CHUNK || 20);
+const SETTLE_MS = Number(ENV.DETJS_PW_VTIME_SETTLE || 10);
+const VT = { running: 0, waiters: [] };
+function whenPaused() {
+  return VT.running === 0 ? Promise.resolve() : new Promise((r) => VT.waiters.push(r));
+}
+function chunkEnded() {
+  VT.running = Math.max(0, VT.running - 1);
+  if (VT.running === 0) { const w = VT.waiters; VT.waiters = []; for (const f of w) f(); }
+}
+function queueIdle() {
+  return !QUEUE.busy && !QUEUE.pending.length && !QUEUE.timer;
+}
+async function whenQueueIdle() {
+  while (!queueIdle()) await new Promise((r) => setTimeout(r, 2));
+}
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 async function setupPage(ctx, page, key) {
   if (VTIME === 'off') return;
   let cdp;
   try { cdp = await ctx.newCDPSession(page); } catch { rec(key, 'other', 'vtime', 'unsupported'); return; }
-  const chunk = VTIME === 'paced' ? 50 : 5000;
   const started = Date.now();
   let granted = 0;
   let stopped = false;
+  let inChunk = false;
+  const end = () => { if (inChunk) { inChunk = false; chunkEnded(); } };
   const grant = async (first) => {
     if (stopped) return;
+    if (!first) {
+      await sleep(SETTLE_MS);
+      await whenQueueIdle();
+    }
     if (granted >= VCAP_MS) { rec(currentKey() || key, 'time', 'vtime.cap', String(granted)); return; }
     if (VTIME === 'paced') {
       const ahead = granted - (Date.now() - started);
-      if (ahead > 0) await new Promise((r) => setTimeout(r, ahead));
+      if (ahead > 0) await sleep(ahead);
+      await whenQueueIdle();
     }
-    granted += chunk;
-    const params = { policy: 'pauseIfNetworkFetchesPending', budget: chunk };
+    if (stopped) return;
+    granted += CHUNK_MS;
+    const params = { policy: 'advance', budget: CHUNK_MS };
     if (first) params.initialVirtualTime = EPOCH_MS / 1000;
-    try { await cdp.send('Emulation.setVirtualTimePolicy', params); } catch { stopped = true; }
+    inChunk = true;
+    VT.running++;
+    try { await cdp.send('Emulation.setVirtualTimePolicy', params); } catch { stopped = true; end(); }
   };
-  cdp.on('Emulation.virtualTimeBudgetExpired', () => { grant(false); });
-  page.on('close', () => { stopped = true; });
+  cdp.on('Emulation.virtualTimeBudgetExpired', () => { end(); grant(false).catch(() => {}); });
+  page.on('close', () => { stopped = true; end(); });
   await grant(true);
 }
 

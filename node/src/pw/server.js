@@ -26,6 +26,7 @@ function install() {
   // Server settings (inherited by the server's own child processes): one wall clock for the
   // run, OS entropy seeded (session ids, CSRF tokens), network open, no ordering/isolation.
   process.env.DETJS_WALL_RESET = '0';
+  process.env.DETJS_NODE_INFRA = '1';
   if (process.env.DETJS_URANDOM !== '1') process.env.DETJS_URANDOM = process.env.DETJS_PW_SERVER_URANDOM === '0' ? '0' : '1';
   process.env.DETJS_DISABLE = process.env.DETJS_PW_SERVER_DISABLE || 'net,order,isolation';
   const c = controls.cfg();
@@ -54,14 +55,16 @@ function endCurrent() {
 // under 10%) for `ms` consecutive real milliseconds; gives up after `max` ms.
 let inflight = 0;
 const { performance } = require('node:perf_hooks');
-const REAL_SET_TIMEOUT = require('../clock').REAL.setTimeout;
+const { REAL } = require('../clock');
+const REAL_SET_TIMEOUT = REAL.setTimeout;
+const realNow = () => REAL.perfNow(); // the server's own performance.now is virtual
 
 function waitQuiet(ms, max, done) {
-  const start = Date.now ? performance.now() : 0;
+  const start = realNow();
   let idleSince = null;
   let prev = performance.eventLoopUtilization();
   const step = () => {
-    const now = performance.now();
+    const now = realNow();
     const cur = performance.eventLoopUtilization();
     const d = performance.eventLoopUtilization(cur, prev);
     prev = cur;

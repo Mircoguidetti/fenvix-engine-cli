@@ -19,8 +19,8 @@ const session = require('../session');
 const native = require('../native');
 
 const PW_HELP = `detjs playwright options (besides the detjs options of --det-help):
-  --det-vtime=fast|paced|off   browser virtual time (default fast: idle time is skipped;
-                               paced: virtual time never runs ahead of real time)
+  --det-vtime=paced|fast|off   browser virtual time in chunks (default paced: never ahead of real
+                               time; fast: idle time skipped; off: real time)
   --det-net=on|off             serialize and order the app's HTTP traffic (default on)
   --det-net-window=MS          quiet window before choosing the next request (default 15)
   --det-browser-seeds=on|off   seeded Math.random / crypto in pages and test code (default on)
@@ -131,14 +131,15 @@ async function main(argv) {
     DETJS_PW_TRACE: runEnv.tracePath,
     DETJS_PW_META: JSON.stringify({
       seed: Number(runEnv.cfg.seed), shuffle: runEnv.cfg.shuffle, epoch: opts.epoch,
-      vtime: pwEnv.DETJS_PW_VTIME || 'fast', net: pwEnv.DETJS_PW_NET !== 'off', net_window_ms: Number(pwEnv.DETJS_PW_NET_WINDOW || 15),
+      vtime: pwEnv.DETJS_PW_VTIME || 'paced', net: pwEnv.DETJS_PW_NET !== 'off', net_window_ms: Number(pwEnv.DETJS_PW_NET_WINDOW || 15),
       browser_seeds: pwEnv.DETJS_PW_SEEDS !== 'off', server_controls: pwEnv.DETJS_PW_SERVER !== '0',
       playwright: version, node: process.version, platform: process.platform,
     }),
     NODE_OPTIONS: `${process.env.NODE_OPTIONS || ''} --require ${JSON.stringify(boot).slice(1, -1)}`.trim(),
   };
   if (process.env.DETJS_ROOT === undefined) env.DETJS_ROOT = root;
-  process.stderr.write(`detjs ${session.VERSION}: Level 2 browser prototype; playwright ${version}; seed ${env.DETJS_SEED}${runEnv.cfg.shuffle ? ' (seeded order)' : ''}; epoch ${opts.epoch}; vtime=${env.DETJS_PW_VTIME || 'fast'}; net=${env.DETJS_PW_NET || 'on'}; server=${env.DETJS_PW_SERVER === '0' ? 'off' : 'on'}; workers=1\n`);
+  env.PATH = binPath(cwd, env.PATH);
+  process.stderr.write(`detjs ${session.VERSION}: Level 2 browser prototype; playwright ${version}; seed ${env.DETJS_SEED}${runEnv.cfg.shuffle ? ' (seeded order)' : ''}; epoch ${opts.epoch}; vtime=${env.DETJS_PW_VTIME || 'paced'}; net=${env.DETJS_PW_NET || 'on'}; server=${env.DETJS_PW_SERVER === '0' ? 'off' : 'on'}; workers=1\n`);
   let code;
   try {
     code = await run(process.execPath, [cli, ...args], env);
@@ -179,9 +180,21 @@ async function serve(argv) {
     DETJS_DIR: path.join(root, '.detjs', 'serve'),
     NODE_OPTIONS: `${process.env.NODE_OPTIONS || ''} --require ${path.join(__dirname, 'boot.js')}`.trim(),
   };
+  env.PATH = binPath(process.cwd(), env.PATH);
   fs.rmSync(runEnv.dir, { recursive: true, force: true });
   fs.mkdirSync(path.join(env.DETJS_DIR, 'parts'), { recursive: true });
   return run(cmd[0], cmd.slice(1), env);
+}
+
+/** node_modules/.bin of cwd and its parents first on PATH, as `npx` / `npm run` do (webServer commands rely on it). */
+function binPath(cwd, current) {
+  const dirs = [];
+  for (let d = cwd; ; d = path.dirname(d)) {
+    const b = path.join(d, 'node_modules', '.bin');
+    if (fs.existsSync(b)) dirs.push(b);
+    if (path.dirname(d) === d) break;
+  }
+  return [...dirs, current || ''].join(path.delimiter);
 }
 
 function run(cmd, args, env) {
