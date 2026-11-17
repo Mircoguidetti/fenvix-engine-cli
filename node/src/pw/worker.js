@@ -92,10 +92,53 @@ function schedule() {
   QUEUE.timer = setTimeout(pump, WINDOW_MS);
 }
 
+// Navigations requested by the test code (page.goto, reload, ...) reach the queue only after a
+// round trip through the browser; a runner API request issued just before would be chosen alone
+// or together with the document depending on that latency (found on the fixture's "runner write
+// vs browser read"). The queue waits until every navigation the test started has either reached
+// it as a document request or finished without one.
+const NAV = { pending: [], maxWait: Number(ENV.DETJS_PW_NAV_WAIT || 3000) };
+function navStarted() {
+  const n = { open: true };
+  NAV.pending.push(n);
+  return () => navClaim(n);
+}
+function navClaim(n) {
+  const x = n || NAV.pending[0];
+  if (!x || !x.open) return;
+  x.open = false;
+  NAV.pending.splice(NAV.pending.indexOf(x), 1);
+  if (QUEUE.pending.length) { if (QUEUE.timer) { clearTimeout(QUEUE.timer); QUEUE.timer = null; } schedule(); }
+}
+async function navSettled() {
+  const t = Date.now();
+  while (NAV.pending.length && Date.now() - t < NAV.maxWait) await new Promise((r) => setTimeout(r, 2));
+}
+// Page.goto delegates to its main frame's goto: Frame gets goto, Page the page-level ones.
+const NAV_METHODS = { frame: ['goto'], page: ['reload', 'goBack', 'goForward'] };
+function patchNavigation(obj, kind) {
+  const proto = obj && Object.getPrototypeOf(obj);
+  if (!proto || Object.prototype.hasOwnProperty.call(proto, '__detjsNav')) return;
+  Object.defineProperty(proto, '__detjsNav', { value: true });
+  for (const m of NAV_METHODS[kind]) {
+    const orig = proto[m];
+    if (typeof orig !== 'function') continue;
+    proto[m] = function (...args) {
+      if (!NET || !currentKey()) return orig.apply(this, args);
+      const done = navStarted();
+      let p;
+      try { p = orig.apply(this, args); } catch (e) { done(); throw e; }
+      Promise.resolve(p).then(done, done);
+      return p;
+    };
+  }
+}
+
 function enqueue(item) {
   return new Promise((resolve) => {
     item.release = resolve;
     QUEUE.pending.push(item);
+    if (item.nav) navClaim();
     if (item.nav && VT.waiters.length) { const w = VT.waiters; VT.waiters = []; for (const f of w) f(); }
     if (QUEUE.timer) { clearTimeout(QUEUE.timer); QUEUE.timer = null; }
     schedule();
@@ -137,6 +180,7 @@ async function pump() {
   // navigation: Chrome suspends the page's DevTools session while its navigation request is
   // pending, so the chunk cannot end before the document arrives (deadlock: found on a first
   // page.goto issued right after a grant). The new document starts at the page's virtual instant.
+  await navSettled();
   if (!QUEUE.pending.some((it) => it.nav)) await whenPaused();
   await barrier(QUEUE.pending[0].test);
   QUEUE.busy = false;
@@ -402,6 +446,8 @@ async function setupContext(ctx) {
   // app opens itself (popups) get it as soon as the 'page' event is handled (limit B5).
   const ready = new WeakMap();
   const prepare = (page) => {
+    patchNavigation(page, 'page');
+    try { patchNavigation(page.mainFrame(), 'frame'); } catch { /* closed */ }
     if (!ready.has(page)) ready.set(page, setupPage(ctx, page, currentKey() || key).catch(() => {}));
     return ready.get(page);
   };

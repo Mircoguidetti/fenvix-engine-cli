@@ -171,3 +171,16 @@ test('playwright --det: a run whose first action is a navigation never deadlocks
   assert.equal(v.summary.tests, 1);
   assert.equal(v.summary.stable, 1, JSON.stringify(v.tests[0].divergence));
 });
+
+test('playwright --det: a runner API request and a page.goto issued together are ordered the same way in every run', { skip, timeout: 360000 }, () => {
+  // Before the fix the document request reached the queue after a browser round trip, inside
+  // or outside the quiet window by chance: two fingerprints in ten runs, and a seed that failed
+  // once and passed twice.
+  fixture();
+  const line = SPEC.split('\n').findIndex((l) => l.includes("test('runner write")) + 1;
+  const runs = [1, 2, 3, 4, 5, 6].map((i) => pw(['--det', `races.spec.js:${line}`], `nav-${i}`));
+  for (const r of runs) assert.ok(r.trace && r.trace.tests.length === 1, r.out);
+  const v = verify(runs.map((r) => r.trace.path));
+  assert.equal(v.summary.stable, 1, JSON.stringify(v.tests[0].divergence));
+  assert.ok(runs[0].trace.tests[0].events.some((e) => e.o === 'sched.io' && e.v.startsWith('0/2:')), 'both requests pending at the first choice');
+});
