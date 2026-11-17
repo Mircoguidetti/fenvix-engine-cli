@@ -6,6 +6,36 @@ v2 are still running or queued on GitHub Actions. Every number is labelled. Raw 
 `harness/skip_study2/results/<run>/`; summary: `harness/skip_study2/results/summary.json`; tables are
 regenerated with `python3 harness/skip_study2/aggregate.py --md`.
 
+## Interim update (2026-11-17 01:10 UTC)
+
+* home-assistant now 30 commits: closure 98% / 87% (unchanged), coverage-only `func` 98% / 90%, strict
+  98% / 74%; 1575 verified skips, 0 wrong (MEASURED).
+* prometheus now 40 commits: go-cache 50% / 48% (MEASURED), 256 verified hits, 0 wrong.
+* saleor, first 10 commits (shard-complete): closure **0% / 9%**, func+guard 0% / 16%, coverage-only
+  `func` 32% / 38% (MEASURED, 15% sample); 9 of 10 commits invalidate everything (a data directory listing
+  changed 4, a shared Python source changed 4, a config file read 1). Django loads the whole project
+  (settings, every app's models) in every test process, so every test reads nearly every module.
+* Coding-agent PRs (setting 2), first results (MEASURED, time skipped per push, median / mean, rule
+  `closure`; Go also `go-cache`): Copilot on github-mcp-server 15 PRs / 101 pushes: closure 47% / 49%,
+  go-cache 68% / 52%, 0 wrong of 287 verified; Copilot on typescript-go 1 PR / 6 pushes: 49% / 55%;
+  Copilot on home-assistant 3 PRs / 12 pushes: 100% / 95%; Codex on home-assistant 1 PR / 4 pushes:
+  49% / 49%.
+* **Two verification mismatches** on the Home Assistant Copilot PRs (MEASURED): a skipped unit whose fresh
+  outcome differed from the cached one, reproducibly at the new commit
+  (`tests/components/switchbot/test_init.py` in PR 171334, `tests/components/knx/test_number.py` in PR
+  163164). In both cases the push changed 1 file unrelated to the integration, and the cached outcome came
+  from the base commit, where every unit ran in parallel under strace with HA's `--timeout=9`. Until a
+  re-check proves otherwise they count as **wrong hits**. A re-check job (run s1, `recheck.py`) reruns each
+  unit at the cached commit and at the new commit, plainly, traced alone and traced under load, to tell
+  a missed dependency from an outcome that does not reproduce.
+* openai-agents-python Codex PRs (run r6) were invalid: the walker took the merge base with the default
+  branch while these PRs target another branch (400+ commits per "PR", installs failed). Fixed (own base
+  branch, cap at 25 commits) and relaunched in run s1.
+* more-itertools (finer rule): closure 0/11, file+guard 6/14, line+guard 53/38, line+names 53/38,
+  coverage-only line 60/55 (strict, median/mean %). With 14 libraries the median of medians / mean of
+  means is: strict/closure 0/15, file+guard 0/21, line+guard 0/24, **line+names 0/26**, coverage-only
+  line 48/46 (MEASURED).
+
 ## 0. Question and answer so far
 
 The first study (`docs/CACHE-SKIP-STUDY.md`, 14 small Python libraries x 50 commits) found that a median
