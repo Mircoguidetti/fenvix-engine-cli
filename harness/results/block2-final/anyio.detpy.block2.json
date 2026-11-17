@@ -1,0 +1,2264 @@
+{
+ "name": "anyio",
+ "kind": "popular",
+ "status": "ok",
+ "python": "3.13",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+uvloop]",
+  "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]",
+  "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]",
+  "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio+uvloop]",
+  "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008858",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.82.6",
+  "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 95.211,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 98.0,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+eager-both_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-both_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 97.223,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-both_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+eager-0]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 92.354,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 97.376,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 92.646,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[trio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_unwrap[asyncio]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 96.799,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::test_tls_connectable[asyncio+uvloop]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 92.288,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[trio]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 96.669,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_default_context_ignore_unexpected_eof_flag_off[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[trio-0]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_taskgroups.py::test_start_soon_parent_id[asyncio+eager]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 96.516,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio+eager]",
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio+uvloop]",
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_unwrap[trio]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_subprocesses.py::test_user_group_arguments[asyncio+uvloop-user0]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 96.488,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 95.831,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_send_after_eof[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_unwrap[asyncio+uvloop]",
+    "tests/test_fileio.py::TestPath::test_replace[asyncio+uvloop-False]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 97.51,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_default_context_ignore_unexpected_eof_flag_off[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]",
+    "tests/test_itertools.py::TestTakewhile::test_basic_cases[asyncio]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 96.765,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 96.793,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-server_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_unwrap[asyncio+uvloop]",
+    "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv4-asyncio]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 96.701,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_default_context_ignore_unexpected_eof_flag_off[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_does_not_retain_closed_loops[asyncio+uvloop]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 96.407,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[trio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_truststore_ssl[asyncio]",
+    "tests/test_pytest_plugin.py::test_auto_mode_cmdline",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 96.552,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_default_context_ignore_unexpected_eof_flag_off[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops",
+    "tests/test_to_thread.py::test_run_sync_worker_cyclic_references[asyncio]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 91.639,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 96.374,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_default_context_ignore_unexpected_eof_flag_off[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_extra_attributes[trio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_does_not_retain_closed_loops[asyncio+uvloop]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 97.684,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_truststore_ssl[asyncio+uvloop]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops",
+    "tests/test_to_thread.py::test_run_sync_worker_cyclic_references[asyncio+uvloop]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 97.655,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_truststore_ssl[asyncio]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::TestUNIXStream::test_concurrent_send[asyncio-abstract]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 93.46,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio-0]",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_send_after_eof[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_process.py::test_stderr_flood[asyncio+uvloop]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 96.066,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 93.348,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[trio-server_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 97.255,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 98.288,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-both_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_pytest_plugin.py::test_auto_mode_cmdline",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 98.812,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-client_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+eager--1]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::test_tls_connectable[asyncio+eager]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 99.545,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_default_context_ignore_unexpected_eof_flag_off[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_unwrap[asyncio+uvloop]",
+    "tests/test_pytest_plugin.py::test_hypothesis_function_mark",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 96.402,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio+eager]",
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio+uvloop]",
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 97.212,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio+eager]",
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio+uvloop]",
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-both_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_pytest_plugin.py::test_hypothesis_function_mark",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 98.163,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[trio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_unwrap[trio]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_process.py::test_partial[asyncio+uvloop]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 97.574,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 98.147,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 98.158,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_default_context_ignore_unexpected_eof_flag_off[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+eager-neither_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[trio-server_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_itertools.py::TestIslice::test_consumes_start_items_when_stop_is_not_greater[asyncio+eager]",
+    "tests/test_itertools.py::TestProduct::test_invalid_repeat_type[asyncio+eager]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 97.981,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio--1]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 98.091,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 97.755,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 91.662,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio+eager]",
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio+uvloop]",
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[trio-client_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+uvloop]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 96.813,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[trio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_truststore_ssl[asyncio]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::TestUNIXListener::test_accept[asyncio-path-abstract]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 96.519,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 96.697,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 96.537,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_send_after_eof[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_sockets.py::TestTCPStream::test_receive_timeout[asyncio+uvloop-ipv6]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 96.961,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 91.897,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[trio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_pytest_plugin.py::test_auto_mode",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 97.17,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio+eager]",
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio+uvloop]",
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+eager--1]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_pytest_plugin.py::test_hypothesis_function_mark",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 96.5,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_buffered.py::test_delimiter_ending_at_limit[asyncio+eager-3]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[trio-neither_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+eager--1]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 95.644,
+   "tests": 4852,
+   "failing": [
+    "tests/test_sockets.py::TestTCPStream::test_receive_timeout[asyncio+uvloop-ipv6]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 96.953,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_tls.py::TestTLSStream::test_extra_attributes[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+eager-both_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_pytest_plugin.py::test_outcome_exception_does_not_discard_runner_task",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 91.566,
+   "tests": 4852,
+   "failing": [
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio+eager]",
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio+uvloop]",
+    "tests/streams/test_memory.py::test_not_closed_warning[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-both_standard]",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_send_after_eof[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+    "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+    "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [
+  "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-connected]",
+  "tests/test_sockets.py::TestUDPSocketBackpressure::test_close_during_send[asyncio+uvloop-unconnected]",
+  "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+  "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+  "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+eager]",
+  "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio+uvloop]",
+  "tests/test_taskgroups.py::test_fail_after_scope_cancelled_before_timeout[asyncio]"
+ ],
+ "flaky_failing": [
+  "tests/streams/test_buffered.py::test_delimiter_ending_at_limit[asyncio+eager-3]",
+  "tests/streams/test_memory.py::test_not_closed_warning[asyncio+eager]",
+  "tests/streams/test_memory.py::test_not_closed_warning[asyncio+uvloop]",
+  "tests/streams/test_memory.py::test_not_closed_warning[asyncio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+eager]",
+  "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[asyncio+uvloop]",
+  "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[asyncio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_cancelled_send_breaks_stream[trio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_default_context_ignore_unexpected_eof_flag_off[asyncio+eager]",
+  "tests/streams/test_tls.py::TestTLSStream::test_default_context_ignore_unexpected_eof_flag_off[asyncio+uvloop]",
+  "tests/streams/test_tls.py::TestTLSStream::test_default_context_ignore_unexpected_eof_flag_off[asyncio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_extra_attributes[asyncio+eager]",
+  "tests/streams/test_tls.py::TestTLSStream::test_extra_attributes[asyncio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_extra_attributes[trio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+eager-both_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+eager-neither_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-both_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-client_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-both_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-server_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[trio-client_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[trio-neither_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[trio-server_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+eager--1]",
+  "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+eager-0]",
+  "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]",
+  "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio--1]",
+  "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio-0]",
+  "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[trio-0]",
+  "tests/streams/test_tls.py::TestTLSStream::test_receive_send_after_eof[asyncio+eager]",
+  "tests/streams/test_tls.py::TestTLSStream::test_receive_send_after_eof[asyncio+uvloop]",
+  "tests/streams/test_tls.py::TestTLSStream::test_receive_send_after_eof[asyncio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+uvloop]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_receive[trio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_truststore_ssl[asyncio+uvloop]",
+  "tests/streams/test_tls.py::TestTLSStream::test_truststore_ssl[asyncio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_unwrap[asyncio+uvloop]",
+  "tests/streams/test_tls.py::TestTLSStream::test_unwrap[asyncio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_unwrap[trio]",
+  "tests/streams/test_tls.py::test_tls_connectable[asyncio+eager]",
+  "tests/streams/test_tls.py::test_tls_connectable[asyncio+uvloop]",
+  "tests/test_fileio.py::TestPath::test_replace[asyncio+uvloop-False]",
+  "tests/test_itertools.py::TestIslice::test_consumes_start_items_when_stop_is_not_greater[asyncio+eager]",
+  "tests/test_itertools.py::TestProduct::test_invalid_repeat_type[asyncio+eager]",
+  "tests/test_itertools.py::TestTakewhile::test_basic_cases[asyncio]",
+  "tests/test_pytest_plugin.py::test_auto_mode",
+  "tests/test_pytest_plugin.py::test_auto_mode_cmdline",
+  "tests/test_pytest_plugin.py::test_hypothesis_function_mark",
+  "tests/test_pytest_plugin.py::test_outcome_exception_does_not_discard_runner_task",
+  "tests/test_sockets.py::TestTCPStream::test_receive_timeout[asyncio+uvloop-ipv6]",
+  "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv4-asyncio]",
+  "tests/test_sockets.py::TestUNIXListener::test_accept[asyncio-path-abstract]",
+  "tests/test_sockets.py::TestUNIXStream::test_concurrent_send[asyncio-abstract]",
+  "tests/test_subprocesses.py::test_user_group_arguments[asyncio+uvloop-user0]",
+  "tests/test_taskgroups.py::test_start_soon_parent_id[asyncio+eager]",
+  "tests/test_to_process.py::test_partial[asyncio+uvloop]",
+  "tests/test_to_process.py::test_stderr_flood[asyncio+uvloop]",
+  "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops",
+  "tests/test_to_thread.py::test_asyncio_worker_pool_does_not_retain_closed_loops[asyncio+uvloop]",
+  "tests/test_to_thread.py::test_run_sync_worker_cyclic_references[asyncio+uvloop]",
+  "tests/test_to_thread.py::test_run_sync_worker_cyclic_references[asyncio]"
+ ],
+ "bundles": [
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "7",
+   "seed": 7,
+   "kind": "order",
+   "prefix_length": 1936,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-3 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ef5f80a9fc41ff7a58fbab1323688c03"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:317db1ce895a17439b7776f68629d863  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:317db1ce895a17439b7776f68629d863"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "e8e999de0e594fbe1f3f5255ed488b8a",
+     "ef5f80a9fc41ff7a58fbab1323688c03"
+    ]
+   },
+   "runs": 59,
+   "seconds": 228.37,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=7 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_alpn_negotiation_asyncio_-7126d8cc/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_alpn_negotiation_asyncio_-7126d8cc",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_alpn_negotiation_asyncio_-7126d8cc",
+   "first_failing_seed": 7
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "32",
+   "seed": 32,
+   "kind": "order",
+   "prefix_length": 817,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-2 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "272bdea3b56ed079b13be48c3f203f89"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:e748c30264b6292eb56ff7bc5aab5a1d  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:e748c30264b6292eb56ff7bc5aab5a1d"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "c630d581ecb2c7bde4b8a3aae8586fd6",
+     "272bdea3b56ed079b13be48c3f203f89"
+    ]
+   },
+   "runs": 61,
+   "seconds": 257.63,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=32 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_ragged_eof_on_receive_asyncio_eager_-dc1e7f4f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_ragged_eof_on_receive_asyncio_eager_-dc1e7f4f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_ragged_eof_on_receive_asyncio_eager_-dc1e7f4f",
+   "first_failing_seed": 32
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "16",
+   "seed": 16,
+   "kind": "order",
+   "prefix_length": 1243,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-3 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "dd34ee5752262848af579dbbfc9c19d4"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:43eacb411cf4bd49f2470a043da3ea98  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:43eacb411cf4bd49f2470a043da3ea98"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "ae55352318f3a1c972ea5853e3f87312",
+     "dd34ee5752262848af579dbbfc9c19d4"
+    ]
+   },
+   "runs": 56,
+   "seconds": 186.84,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=16 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_ragged_eofs_asyncio_uvloop-server_standard_-1d53f253/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_ragged_eofs_asyncio_uvloop-server_standard_-1d53f253",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_ragged_eofs_asyncio_uvloop-server_standard_-1d53f253",
+   "first_failing_seed": 16
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "30",
+   "seed": 30,
+   "kind": "order",
+   "prefix_length": 2085,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-2 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "4c5564aff24593ab0cac48b5e0df7ae9"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:eccbd8e2cecfc8b983f7948803b6e406  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:eccbd8e2cecfc8b983f7948803b6e406"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "8f40cf197114e5eb6b4c730d1ce33cf8",
+     "4c5564aff24593ab0cac48b5e0df7ae9"
+    ]
+   },
+   "runs": 45,
+   "seconds": 242.01,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=30 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_ragged_eofs_asyncio-neither_standard_-b7e6fd05/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_ragged_eofs_asyncio-neither_standard_-b7e6fd05",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_ragged_eofs_asyncio-neither_standard_-b7e6fd05",
+   "first_failing_seed": 30
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "22",
+   "seed": 22,
+   "kind": "order",
+   "prefix_length": 2413,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-3 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "37ae39175f0ebf56c6c00fbb6f700391"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:e843256624dac51b6960f5d841ac6f03  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:e843256624dac51b6960f5d841ac6f03"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "eda0b9cc4fae88318a31f0dea8e0ff40",
+     "37ae39175f0ebf56c6c00fbb6f700391"
+    ]
+   },
+   "runs": 61,
+   "seconds": 383.75,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=22 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_receive_invalid_max_bytes_asyncio_uvloop-0_-323ca1f5/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_receive_invalid_max_bytes_asyncio_uvloop-0_-323ca1f5",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_receive_invalid_max_bytes_asyncio_uvloop-0_-323ca1f5",
+   "first_failing_seed": 22
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 4800,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "SSLError",
+    "call",
+    "ssl.SSLError: [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1035)",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/ssl.py:969"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "30e0321d69c1459b9448fa030a3eceac"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:b6deeb9821f24f453faecab0421e8927  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:b6deeb9821f24f453faecab0421e8927"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "5e7423717187d54254179be331a634e5",
+     "30e0321d69c1459b9448fa030a3eceac"
+    ]
+   },
+   "runs": 31,
+   "seconds": 411.95,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv12_-b85ae3e3/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv12_-b85ae3e3",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv12_-b85ae3e3",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 4787,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "SSLError",
+    "call",
+    "ssl.SSLError: [SSL: SHUTDOWN_WHILE_IN_INIT] shutdown while in init (_ssl.c:2791)",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/ssl.py:973"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0b08e4ce8f6ff5abaaa97310bcae0b0e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:2c27b5bbb76d4adaab78a8655e9de701  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:2c27b5bbb76d4adaab78a8655e9de701"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "f411688b17d4d6d3c70b51ff11c23267",
+     "0b08e4ce8f6ff5abaaa97310bcae0b0e"
+    ]
+   },
+   "runs": 33,
+   "seconds": 404.14,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv13_-3c23e895/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv13_-3c23e895",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv13_-3c23e895",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 4749,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "OSError",
+    "call",
+    "OSError: [Errno 16] Device or resource busy",
+    "uvloop/loop.pyx:614"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ade779dfccc24edd3f52ebc04a10e820"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:c61116ae709ffa44b3839aa30ac4c779  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:c61116ae709ffa44b3839aa30ac4c779"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "43913a069dcd5bb7ab63c9c5a4c3dc68",
+     "ade779dfccc24edd3f52ebc04a10e820"
+    ]
+   },
+   "runs": 34,
+   "seconds": 424.18,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_uvloop-tlsv12_-5ac87147/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_uvloop-tlsv12_-5ac87147",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_uvloop-tlsv12_-5ac87147",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 4767,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "SSLError",
+    "call",
+    "ssl.SSLError: [SSL: SHUTDOWN_WHILE_IN_INIT] shutdown while in init (_ssl.c:2791)",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/ssl.py:973"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0d9d8330366a49760d1fe9815881c3cd"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:df567a28e7676ecb5fbd76ffa925089b  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:df567a28e7676ecb5fbd76ffa925089b"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "66a0d4ab2b4aec8ed49339e930c72996",
+     "0d9d8330366a49760d1fe9815881c3cd"
+    ]
+   },
+   "runs": 34,
+   "seconds": 418.63,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_uvloop-tlsv13_-e665f973/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_uvloop-tlsv13_-e665f973",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_uvloop-tlsv13_-e665f973",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 4768,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "SSLError",
+    "call",
+    "ssl.SSLError: [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1035)",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/ssl.py:969"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1dc6a5b849a4b1a1ff66d39324689288"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:7681f4cec3bae21947fa56095c333e79  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:7681f4cec3bae21947fa56095c333e79"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "2cae5deeaa76ace7f67f65cfb78721ab",
+     "1dc6a5b849a4b1a1ff66d39324689288"
+    ]
+   },
+   "runs": 34,
+   "seconds": 417.71,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio-tlsv12_-14c1a1b5/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio-tlsv12_-14c1a1b5",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio-tlsv12_-14c1a1b5",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 4784,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "SSLError",
+    "call",
+    "ssl.SSLError: [SSL: SHUTDOWN_WHILE_IN_INIT] shutdown while in init (_ssl.c:2791)",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/ssl.py:973"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "5961257359aa22b645220d99a4cdaf12"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:26d6d044911aae5e5d4a1709533aecf9  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:26d6d044911aae5e5d4a1709533aecf9"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "a300d8cea1ea3f672b53dac95747ef45",
+     "5961257359aa22b645220d99a4cdaf12"
+    ]
+   },
+   "runs": 36,
+   "seconds": 414.24,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio-tlsv13_-37fda230/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio-tlsv13_-37fda230",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio-tlsv13_-37fda230",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "13",
+   "seed": 13,
+   "kind": "order",
+   "prefix_length": 1993,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-3 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "8128d232bdda146ceabf612e15785f01"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:6b65d26e16bf732a2a3630bdb472c05f  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:6b65d26e16bf732a2a3630bdb472c05f"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "0ae6dfe1d0c158384e40fdc1c3fb3bad",
+     "8128d232bdda146ceabf612e15785f01"
+    ]
+   },
+   "runs": 53,
+   "seconds": 353.34,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=13 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_send_receive_asyncio_eager_-65426774/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_send_receive_asyncio_eager_-65426774",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_send_receive_asyncio_eager_-65426774",
+   "first_failing_seed": 13
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "entropy|fs|<site>/blockbuster/blockbuster.py:372": [
+   "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]",
+   "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]",
+   "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]",
+   "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]",
+   "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]"
+  ]
+ },
+ "families_by_polluter": {
+  "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio] + tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]": [
+   "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]"
+  ],
+  "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+uvloop] + tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]": [
+   "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]",
+   "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]"
+  ],
+  "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager] + tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]": [
+   "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]",
+   "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]"
+  ],
+  "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]": [
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+   "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]"
+  ]
+ },
+ "collected": 4852,
+ "seconds": 8964.38
+}

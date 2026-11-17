@@ -1,0 +1,723 @@
+{
+ "name": "idoft-krllint",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_lower_or_mixed_case_built_in_type.py::LowerOrMixedCaseBuiltInTestCase::test_rule_without_fix",
+  "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix",
+  "tests/test_open_task.py::OpenTaskTestCase::test_rule_without_fix"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008953",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 2.077,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 2.124,
+   "tests": 16,
+   "failing": [
+    "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 2.113,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 2.071,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 2.184,
+   "tests": 16,
+   "failing": [
+    "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 2.103,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 2.106,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 2.103,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 2.082,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 2.354,
+   "tests": 16,
+   "failing": [
+    "tests/test_open_task.py::OpenTaskTestCase::test_rule_without_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 2.11,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 2.108,
+   "tests": 16,
+   "failing": [
+    "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 2.278,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 2.098,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 2.1,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 2.082,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 2.129,
+   "tests": 16,
+   "failing": [
+    "tests/test_indentation_checker.py::IndentationCheckerTestCase::test_rule_without_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 2.096,
+   "tests": 16,
+   "failing": [
+    "tests/test_trailing_white_space_rule.py::TrailingWhiteSpaceTestCase::test_rule_without_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 2.119,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 2.128,
+   "tests": 16,
+   "failing": [
+    "tests/test_extraneous_whitespace.py::ExtraneousWhiteSpaceTestCase::test_rule_without_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 2.121,
+   "tests": 16,
+   "failing": [
+    "tests/test_lower_or_mixed_case_built_in_type.py::LowerOrMixedCaseBuiltInTestCase::test_rule_without_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 2.238,
+   "tests": 16,
+   "failing": [
+    "tests/test_trailing_white_space_rule.py::TrailingWhiteSpaceTestCase::test_rule_with_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 2.089,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 2.104,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 2.104,
+   "tests": 16,
+   "failing": [
+    "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 2.106,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 2.109,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 2.096,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 2.092,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 2.113,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 2.111,
+   "tests": 16,
+   "failing": [
+    "tests/test_extraneous_whitespace.py::ExtraneousWhiteSpaceTestCase::test_rule_with_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 2.089,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 2.088,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 2.132,
+   "tests": 16,
+   "failing": [
+    "tests/test_trailing_white_space_rule.py::TrailingWhiteSpaceTestCase::test_rule_with_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 2.087,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 2.092,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 2.122,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 2.11,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 2.119,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 2.368,
+   "tests": 16,
+   "failing": [
+    "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 2.079,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 2.132,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 2.098,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 2.097,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 2.119,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 2.095,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 2.162,
+   "tests": 16,
+   "failing": [
+    "tests/test_trailing_white_space_rule.py::TrailingWhiteSpaceTestCase::test_rule_without_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 2.127,
+   "tests": 16,
+   "failing": [
+    "tests/test_trailing_white_space_rule.py::TrailingWhiteSpaceTestCase::test_rule_with_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 2.106,
+   "tests": 16,
+   "failing": [
+    "tests/test_indentation_checker.py::IndentationCheckerTestCase::test_rule_with_fix"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 2.12,
+   "tests": 16,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [],
+ "flaky_failing": [
+  "tests/test_extraneous_whitespace.py::ExtraneousWhiteSpaceTestCase::test_rule_with_fix",
+  "tests/test_extraneous_whitespace.py::ExtraneousWhiteSpaceTestCase::test_rule_without_fix",
+  "tests/test_indentation_checker.py::IndentationCheckerTestCase::test_rule_with_fix",
+  "tests/test_indentation_checker.py::IndentationCheckerTestCase::test_rule_without_fix",
+  "tests/test_lower_or_mixed_case_built_in_type.py::LowerOrMixedCaseBuiltInTestCase::test_rule_without_fix",
+  "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix",
+  "tests/test_open_task.py::OpenTaskTestCase::test_rule_without_fix",
+  "tests/test_trailing_white_space_rule.py::TrailingWhiteSpaceTestCase::test_rule_with_fix",
+  "tests/test_trailing_white_space_rule.py::TrailingWhiteSpaceTestCase::test_rule_without_fix"
+ ],
+ "bundles": [
+  {
+   "test": "tests/test_lower_or_mixed_case_built_in_type.py::LowerOrMixedCaseBuiltInTestCase::test_rule_without_fix",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "21",
+   "seed": 21,
+   "kind": "order",
+   "prefix_length": 13,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_lower_or_mixed_case_keyword.py::LowerOrMixedCaseKeywordTestCase::test_rule_without_fix"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_lower_or_mixed_case_keyword.py::LowerOrMixedCaseKeywordTestCase::test_rule_without_fix",
+    "tests/test_lower_or_mixed_case_built_in_type.py::LowerOrMixedCaseBuiltInTestCase::test_rule_without_fix"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: 2 != 1",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:830"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "bc7cf3ce3365315129c804c8f5bc9a32"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "16d656232eddb610f3bbc56d057bc389",
+     "bc7cf3ce3365315129c804c8f5bc9a32"
+    ]
+   },
+   "runs": 20,
+   "seconds": 20.69,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-krllint/bin/python",
+   "command": "pytest --det --det-seed=21 --det-order=/tmp/work/block2/idoft-krllint/detpy/bundles/test_rule_without_fix-7173b585/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-krllint/detpy/bundles/test_rule_without_fix-7173b585",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-krllint/detpy/bundles/test_rule_without_fix-7173b585",
+   "first_failing_seed": 21
+  },
+  {
+   "test": "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 3,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_lower_or_mixed_case_keyword.py::LowerOrMixedCaseKeywordTestCase::test_rule_with_fix"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_lower_or_mixed_case_keyword.py::LowerOrMixedCaseKeywordTestCase::test_rule_with_fix",
+    "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: Lists differ: ['   ;TODO This is a open task\\n'] != [';TODO This is a open task\\n']",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c94eac3769d477de97475238f3b4bdaf"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "c2c32db2a4152e0f07de587ee0a2a560",
+     "c94eac3769d477de97475238f3b4bdaf"
+    ]
+   },
+   "runs": 14,
+   "seconds": 14.71,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-krllint/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-krllint/detpy/bundles/test_rule_with_fix-5aa80f2d/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-krllint/detpy/bundles/test_rule_with_fix-5aa80f2d",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-krllint/detpy/bundles/test_rule_with_fix-5aa80f2d",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_open_task.py::OpenTaskTestCase::test_rule_without_fix",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "order",
+   "prefix_length": 5,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_lower_or_mixed_case_keyword.py::LowerOrMixedCaseKeywordTestCase::test_rule_without_fix"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_lower_or_mixed_case_keyword.py::LowerOrMixedCaseKeywordTestCase::test_rule_without_fix",
+    "tests/test_open_task.py::OpenTaskTestCase::test_rule_without_fix"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: 2 != 1",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:830"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "27b74e389324cdfae5a2b39fd77928fa"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "12e4cd5442a5cef480d52a5d0f3c0a82",
+     "27b74e389324cdfae5a2b39fd77928fa"
+    ]
+   },
+   "runs": 16,
+   "seconds": 16.49,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-krllint/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-krllint/detpy/bundles/test_rule_without_fix-f8bde968/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-krllint/detpy/bundles/test_rule_without_fix-f8bde968",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-krllint/detpy/bundles/test_rule_without_fix-f8bde968",
+   "first_failing_seed": 10
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "tests/test_lower_or_mixed_case_built_in_type.py::LowerOrMixedCaseBuiltInTestCase::test_rule_without_fix",
+   "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix",
+   "tests/test_open_task.py::OpenTaskTestCase::test_rule_without_fix"
+  ]
+ },
+ "families_by_polluter": {
+  "tests/test_lower_or_mixed_case_keyword.py::LowerOrMixedCaseKeywordTestCase::test_rule_without_fix": [
+   "tests/test_lower_or_mixed_case_built_in_type.py::LowerOrMixedCaseBuiltInTestCase::test_rule_without_fix",
+   "tests/test_open_task.py::OpenTaskTestCase::test_rule_without_fix"
+  ],
+  "tests/test_lower_or_mixed_case_keyword.py::LowerOrMixedCaseKeywordTestCase::test_rule_with_fix": [
+   "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix"
+  ]
+ },
+ "collected": 16,
+ "seconds": 160.19
+}

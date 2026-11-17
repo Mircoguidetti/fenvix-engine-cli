@@ -1,0 +1,1295 @@
+{
+ "name": "idoft-coinbase-commerce-python",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+  "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+  "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+  "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+  "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+  "tests/test_api_client.py::TestApiClient::test_authentication_error",
+  "tests/test_api_client.py::TestApiClient::test_invalid_request_error",
+  "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008879",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 2.563,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 2.665,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_authentication_error",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error",
+    "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 2.537,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 2.606,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 2.544,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 2.63,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_authentication_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 2.537,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 2.545,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 2.845,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error",
+    "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 2.585,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 2.546,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 2.833,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_authentication_error",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 2.593,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 2.567,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 2.676,
+   "tests": 79,
+   "failing": [
+    "tests/test_api_client.py::TestApiClient::test_authentication_error",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 2.693,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_authentication_error",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 2.614,
+   "tests": 79,
+   "failing": [
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 2.604,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 2.659,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_authentication_error",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 2.562,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 2.652,
+   "tests": 79,
+   "failing": [
+    "tests/test_api_client.py::TestApiClient::test_authentication_error",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 2.609,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 2.513,
+   "tests": 79,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 2.597,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 2.528,
+   "tests": 79,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 2.573,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 2.598,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 2.609,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 2.601,
+   "tests": 79,
+   "failing": [
+    "tests/test_api_client.py::TestApiClient::test_authentication_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 2.596,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 2.608,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_authentication_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 2.922,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 2.593,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 2.638,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 2.538,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 2.694,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_authentication_error",
+    "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 2.591,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 2.571,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 2.561,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 2.554,
+   "tests": 79,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 2.637,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 2.593,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 2.588,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 2.58,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 2.618,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 2.615,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 2.565,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 2.629,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 2.584,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 2.623,
+   "tests": 79,
+   "failing": [
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [],
+ "flaky_failing": [
+  "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+  "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+  "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+  "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+  "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+  "tests/test_api_client.py::TestApiClient::test_authentication_error",
+  "tests/test_api_client.py::TestApiClient::test_invalid_request_error",
+  "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+ ],
+ "bundles": [
+  {
+   "test": "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 79,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls",
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: <TestCreateResource id=No ID> Serialized: {",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0eb5eaf11c03fe8727eaa3f21d781d09"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "5c122e6113b6bcddc176fc8a86ef7ec9",
+     "0eb5eaf11c03fe8727eaa3f21d781d09"
+    ]
+   },
+   "runs": 22,
+   "seconds": 28.83,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_create-44edfb1b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_create-44edfb1b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_create-44edfb1b",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "4",
+   "seed": 4,
+   "kind": "order",
+   "prefix_length": 50,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: False is not true",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:688"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "003e49b49521f7d49a0279caeb4d48d4"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "ed07f984f9fce5fbbd136438dcefd509",
+     "003e49b49521f7d49a0279caeb4d48d4"
+    ]
+   },
+   "runs": 19,
+   "seconds": 24.79,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-seed=4 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list-33cc60ef/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list-33cc60ef",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list-33cc60ef",
+   "first_failing_seed": 4
+  },
+  {
+   "test": "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 47,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: <APIObject id=No ID> Serialized: {",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "90513fdcde9f72836566def13049fa7d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "c381b2b32a71072a39402efbb7837548",
+     "90513fdcde9f72836566def13049fa7d"
+    ]
+   },
+   "runs": 22,
+   "seconds": 28.98,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list_iter_mapping-016deb49/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list_iter_mapping-016deb49",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list_iter_mapping-016deb49",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 42,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: <APIObject id=No ID> Serialized: {",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2f7fb7f77fc565e0c3b5564a32c14108"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "d87137dca70ba3d72859d401f38da94c",
+     "2f7fb7f77fc565e0c3b5564a32c14108"
+    ]
+   },
+   "runs": 20,
+   "seconds": 26.28,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list_iter_mapping-2f946ceb/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list_iter_mapping-2f946ceb",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list_iter_mapping-2f946ceb",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 40,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: <APIObject id=No ID> Serialized: {",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "5ad92963263bf845de6a13bc510d3579"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "f22f21255cbbfbbe8cb6dd4cdac2b7a4",
+     "5ad92963263bf845de6a13bc510d3579"
+    ]
+   },
+   "runs": 21,
+   "seconds": 27.51,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list_iter_mapping-a98e9c0e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list_iter_mapping-a98e9c0e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list_iter_mapping-a98e9c0e",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_api_client.py::TestApiClient::test_authentication_error",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 55,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_api_client.py::TestApiClient::test_param_required_error"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_api_client.py::TestApiClient::test_param_required_error",
+    "tests/test_api_client.py::TestApiClient::test_authentication_error"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParamRequiredError",
+    "call",
+    "coinbase_commerce.error.ParamRequiredError: Request id <MagicMock name='mock.get().headers.get()' id='140737321357120'>: <empty message>",
+    "/tmp/work/src/idoft-coinbase-commerce-python/coinbase_commerce/client.py:89"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "7bfb26a2a7e588f43772ef26359523ca"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "8c8125a4fef265c4e3218f0c9b3509a8",
+     "7bfb26a2a7e588f43772ef26359523ca"
+    ]
+   },
+   "runs": 23,
+   "seconds": 30.75,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_authentication_error-9f1ab912/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_authentication_error-9f1ab912",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_authentication_error-9f1ab912",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_api_client.py::TestApiClient::test_invalid_request_error",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 57,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_api_client.py::TestApiClient::test_validation_error"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_api_client.py::TestApiClient::test_validation_error",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ValidationError",
+    "call",
+    "coinbase_commerce.error.ValidationError: Request id <MagicMock name='mock.get().headers.get()' id='140737321360688'>: <empty message>",
+    "/tmp/work/src/idoft-coinbase-commerce-python/coinbase_commerce/client.py:89"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2d3b0ed09074145bd8c451ed8cd869e3"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "3ae7e48792ffba40f7db5fa7a6c012e4",
+     "2d3b0ed09074145bd8c451ed8cd869e3"
+    ]
+   },
+   "runs": 24,
+   "seconds": 31.58,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_invalid_request_error-b1c8fe08/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_invalid_request_error-b1c8fe08",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_invalid_request_error-b1c8fe08",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_api_client.py::TestApiClient::test_resource_not_found_error",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 57,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_api_client.py::TestApiClient::test_param_required_error"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_api_client.py::TestApiClient::test_param_required_error",
+    "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParamRequiredError",
+    "call",
+    "coinbase_commerce.error.ParamRequiredError: Request id <MagicMock name='mock.get().headers.get()' id='140737321357120'>: <empty message>",
+    "/tmp/work/src/idoft-coinbase-commerce-python/coinbase_commerce/client.py:89"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ef89b9294f9d76196ab8fe1ca2ac0e11"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "bc8a64eb6291f29dadbd06b2f6b4776f",
+     "ef89b9294f9d76196ab8fe1ca2ac0e11"
+    ]
+   },
+   "runs": 23,
+   "seconds": 30.51,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_resource_not_found_error-7c5e64b1/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_resource_not_found_error-7c5e64b1",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_resource_not_found_error-7c5e64b1",
+   "first_failing_seed": 2
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+   "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+   "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+   "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+   "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+   "tests/test_api_client.py::TestApiClient::test_authentication_error",
+   "tests/test_api_client.py::TestApiClient::test_invalid_request_error",
+   "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+  ]
+ },
+ "families_by_polluter": {
+  "tests/test_utils.py::TestUtils::test_register_resource_cls": [
+   "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+   "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+   "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+   "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+   "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+  ],
+  "tests/test_api_client.py::TestApiClient::test_param_required_error": [
+   "tests/test_api_client.py::TestApiClient::test_authentication_error",
+   "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+  ],
+  "tests/test_api_client.py::TestApiClient::test_validation_error": [
+   "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+  ]
+ },
+ "collected": 79,
+ "seconds": 362.26
+}
