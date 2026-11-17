@@ -1,5 +1,32 @@
-{"run_id": "r9",
+{
+ "run_id": "s1",
+ "recheck": [
+  {
+   "spec": "home-assistant",
+   "pr": 171334,
+   "rec": "7cf3cba27bec95fc6dfeaeb68b79471ddaaee1b7",
+   "cur": "cbfc323f04360c3bcbb88db837527ae0cd3266c9",
+   "units": [
+    "tests/components/switchbot/test_init.py"
+   ]
+  },
+  {
+   "spec": "home-assistant",
+   "pr": 163164,
+   "rec": "3a0bde5d3e89aa03d362e4894d41a681afc5af19",
+   "cur": "6688281acfa64f0f49cb81528bef7a3ecbf84603",
+   "units": [
+    "tests/components/knx/test_number.py"
+   ]
+  }
+ ],
  "agent": [
-  {"spec": "home-assistant", "query": "head:claude/", "label": "claude-code", "max_prs": 8, "sample": 0.04, "budget_min": 340}
+  {
+   "spec": "openai-agents-python",
+   "query": "head:codex/",
+   "label": "codex",
+   "max_prs": 12,
+   "budget_min": 300
+  }
  ]
 }

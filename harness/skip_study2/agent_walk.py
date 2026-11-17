@@ -60,7 +60,9 @@ def discover(repo, query, min_commits, max_commits, want, since):
                 out.append({"number": it["number"], "title": it["title"][:120], "commits": n,
                             "merged": bool(pr.get("merged_at")), "state": pr.get("state"),
                             "author": (pr.get("user") or {}).get("login"), "head_ref": pr["head"]["ref"],
-                            "changed_files": pr.get("changed_files"), "created_at": pr.get("created_at")})
+                            "changed_files": pr.get("changed_files"), "created_at": pr.get("created_at"),
+                            "base_ref": (pr.get("base") or {}).get("ref"),
+                            "base_sha": (pr.get("base") or {}).get("sha")})
                 if len(out) >= want:
                     break
             time.sleep(1)
@@ -99,7 +101,8 @@ def main():
         if time.time() - walk.T_START > a.budget_min * 60 * 0.85:
             res["note"] = "budget reached"
             break
-        s = dict(spec, seq={"kind": "pr", "pr": pr["number"]})
+        s = dict(spec, seq={"kind": "pr", "pr": pr["number"], "base_sha": pr.get("base_sha"),
+                            "max": a.max_commits})
         nw = walk.Walker(s, a.work, Path(a.work) / "pr.json", 0, 1, a.budget_min, "agent")
         if w is not None:  # keep the installed environment and the Go cache
             nw._last_dep = w._last_dep

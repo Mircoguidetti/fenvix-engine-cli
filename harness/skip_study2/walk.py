@@ -255,8 +255,14 @@ class Walker:
         if seq["kind"] == "pr":
             n = seq["pr"]
             git(self.src, "fetch", "--quiet", "--filter=blob:none", "origin", f"pull/{n}/head:refs/s2/pr{n}")
-            base = seq.get("base") or git(self.src, "merge-base", "origin/HEAD", f"refs/s2/pr{n}").strip()
+            target = "origin/HEAD"
+            if seq.get("base_sha"):  # the pull request's own base branch (not always the default branch)
+                git(self.src, "fetch", "--quiet", "--filter=blob:none", "origin", seq["base_sha"], check=False)
+                target = seq["base_sha"]
+            base = seq.get("base") or git(self.src, "merge-base", target, f"refs/s2/pr{n}").strip()
             cs = git(self.src, "rev-list", "--reverse", "--first-parent", f"{base}..refs/s2/pr{n}").split()
+            if seq.get("max") and len(cs) > seq["max"]:
+                raise ValueError(f"PR {n}: {len(cs)} commits from the merge base (more than {seq['max']})")
             return [base] + cs
         if seq["kind"] == "list":
             return seq["commits"]

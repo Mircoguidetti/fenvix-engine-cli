@@ -35,6 +35,8 @@ jobs:
       agent: ${{ steps.p.outputs.agent }}
       has_agent: ${{ steps.p.outputs.has_agent }}
       has_finer: ${{ steps.p.outputs.has_finer }}
+      recheck: ${{ steps.p.outputs.recheck }}
+      has_recheck: ${{ steps.p.outputs.has_recheck }}
     steps:
       - uses: actions/checkout@v4
       - id: p
@@ -203,3 +205,41 @@ jobs:
             --work "$RUNNER_TEMP/w" --out "$out" | tail -60
           gzip -9 -f "$out/${{ matrix.name }}.json"
           python3 -c "import sys; sys.path.insert(0, 'harness/skip_study2'); import walk, pathlib; walk.commit_results([pathlib.Path('$out/${{ matrix.name }}.json.gz')], 'Skip study 2 (finer rule): ${{ matrix.name }}')"
+
+  recheck:
+    needs: plan
+    if: ${{ needs.plan.outputs.has_recheck == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.recheck) }}
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v6
+      - if: ${{ matrix.lang == 'go' }}
+        uses: actions/setup-go@v5
+        with: {go-version: stable, cache: false}
+      - if: ${{ matrix.node != '' }}
+        uses: actions/setup-node@v4
+        with: {node-version: "${{ matrix.node }}"}
+      - name: System packages
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq strace ${{ matrix.apt }} > /dev/null
+      - name: Re-check a verification mismatch
+        run: |
+          git config user.name "skip-study2-bot"
+          git config user.email "skip-study2-bot@users.noreply.github.com"
+          pr=""
+          if [ -n "${{ matrix.pr }}" ]; then pr="--pr ${{ matrix.pr }}"; fi
+          units=""
+          for u in ${{ matrix.units }}; do units="$units --unit $u"; done
+          python3 harness/skip_study2/recheck.py --spec "${{ matrix.spec }}" $pr --rec "${{ matrix.rec }}" \
+            --cur "${{ matrix.cur }}" $units --work "$RUNNER_TEMP/r" \
+            --out "harness/skip_study2/results/${{ needs.plan.outputs.run_id }}/recheck/${{ matrix.name }}-${{ matrix.idx }}.json"

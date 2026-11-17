@@ -50,7 +50,12 @@ def main():
         e = entry(g["spec"], {"query": g["query"], "label": g["label"], "max_prs": str(g.get("max_prs", 8)),
                               "sample": str(g.get("sample", "")), "budget": str(g.get("budget_min", 330))})
         agent.append(e)
-    out = {"run_id": run["run_id"], "finer": json.dumps(finer or [{"name": "none"}]),
+    recheck = []
+    for k, r in enumerate(run.get("recheck", [])):
+        recheck.append(entry(r["spec"], {"idx": str(k), "pr": str(r.get("pr", "")), "rec": r["rec"], "cur": r["cur"],
+                                         "units": " ".join(r["units"])}))
+    out = {"run_id": run["run_id"], "recheck": json.dumps(recheck or [{"name": "none"}]),
+           "has_recheck": str(bool(recheck)).lower(), "finer": json.dumps(finer or [{"name": "none"}]),
            "agent": json.dumps(agent or [{"name": "none"}]), "has_agent": str(bool(agent)).lower(),
            "has_finer": str(bool(finer)).lower(), "walk": json.dumps(walk or [{"name": "none"}]),
            "flaky": json.dumps(flaky or [{"name": "none"}]), "has_walk": str(bool(walk)).lower(),
