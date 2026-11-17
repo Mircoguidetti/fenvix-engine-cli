@@ -1,0 +1,94 @@
+{
+ "name": "uptime-kuma",
+ "repo": "louislam/uptime-kuma",
+ "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
+ "status": "baseline_broken",
+ "run_id": "44043803663",
+ "setup_s": 84,
+ "params": {
+  "baseline": 5,
+  "stress": 3,
+  "serial": 1,
+  "det": 3,
+  "replays": 10,
+  "seeds": 6,
+  "max_targets": 6,
+  "budget_min": 110,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8
+ },
+ "pw_dir": ".",
+ "pw_args": [
+  "--max-failures=0"
+ ],
+ "server_outside_runner": false,
+ "runs": [
+  {
+   "label": "baseline-1",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 1,
+   "wall_s": 0.8,
+   "outcomes": {},
+   "trace": null,
+   "counts": {},
+   "log_tail": "[WebServer] /bin/sh: 1: cross-env: not found\n\nError: Process from config.webServer was not able to start. Exit code: 127\n\n\n"
+  },
+  {
+   "label": "baseline-2",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 1,
+   "wall_s": 0.7,
+   "outcomes": {},
+   "trace": null,
+   "counts": {},
+   "log_tail": "[WebServer] /bin/sh: 1: cross-env: not found\n\nError: Process from config.webServer was not able to start. Exit code: 127\n\n\n"
+  },
+  {
+   "label": "baseline-3",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 1,
+   "wall_s": 0.7,
+   "outcomes": {},
+   "trace": null,
+   "counts": {},
+   "log_tail": "[WebServer] /bin/sh: 1: cross-env: not found\n\nError: Process from config.webServer was not able to start. Exit code: 127\n\n\n"
+  },
+  {
+   "label": "baseline-4",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 1,
+   "wall_s": 0.7,
+   "outcomes": {},
+   "trace": null,
+   "counts": {},
+   "log_tail": "[WebServer] /bin/sh: 1: cross-env: not found\n\nError: Process from config.webServer was not able to start. Exit code: 127\n\n\n"
+  },
+  {
+   "label": "baseline-5",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 1,
+   "wall_s": 0.7,
+   "outcomes": {},
+   "trace": null,
+   "counts": {},
+   "log_tail": "[WebServer] /bin/sh: 1: cross-env: not found\n\nError: Process from config.webServer was not able to start. Exit code: 127\n\n\n"
+  }
+ ],
+ "measured_at": "2026-11-17T08:24:28Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS"
+}
