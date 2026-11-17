@@ -52,7 +52,7 @@ AVAILABLE = _mon is not None
 # "f|<scope>|<baseid>|<name>" setup of a wider-scoped fixture, "t|<nodeid>" a test
 _GLOBAL_CTX = ("", "s")
 
-_AUDIT_EVENTS = ("exec", "open", "os.listdir", "os.scandir", "socket.connect", "subprocess.Popen", "os.posix_spawn",
+_AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
                  "os.link")
@@ -75,6 +75,9 @@ _VOLATILE_OPTIONS = {
     "inifilename", "rootdir", "confcutdir", "keyword", "markexpr", "deselect", "ignore", "ignore_glob",
     "continue_on_collection_errors", "numprocesses", "dist", "tx", "det_epoch",
 }
+
+
+_DETPY_DIR = os.path.dirname(os.path.abspath(__file__)) + os.sep
 
 
 def _ctx_file(nodeid: str) -> str:
@@ -278,6 +281,9 @@ class Capture:
             fn = f.f_code.co_filename
             if fn.startswith("<frozen importlib") or fn.startswith("<frozen zipimport"):
                 return "import"
+            if fn.startswith(_DETPY_DIR):  # detpy's own wrappers (network, fsorder, ...) are transparent
+                f = f.f_back
+                continue
             kind, _ = _sites._classify(fn)
             if kind == _sites._USER:
                 return "user"
@@ -374,6 +380,16 @@ class Capture:
                 self.read(ctx, p, "f")
             if writes:
                 self.wrote(ctx, p)
+        elif event == "sqlite3.connect":
+            # sqlite opens the database read-write in C (no "open" event): its committed content is an input
+            db = args[0] if args else None
+            if isinstance(db, (str, bytes, os.PathLike)) and os.fsdecode(db) not in ("", ":memory:") \
+                    and not os.fsdecode(db).startswith("file:"):
+                p = self._abs(db)
+                if p is not None and not self._ignored(p) and self._caller_kind() not in ("import", "infra"):
+                    ctx = self._cur()
+                    self.read(ctx, p, "f")
+                    self.wrote(ctx, p)
         elif event in ("os.listdir", "os.scandir"):
             if self._caller_kind() != "user":
                 return
@@ -416,7 +432,16 @@ class Capture:
         else:
             fl.add(source)
 
-    def scan_modules(self, index: int) -> None:
+    def scan_modules(self, index: int, plugins=()) -> None:
+        """Note the repository modules loaded so far (``sys.modules`` and conftest plugins, which pytest keeps
+        out of ``sys.modules``) as loaded after the test at ``index`` (-1 = collection)."""
+        for m in plugins:
+            f = getattr(m, "__file__", None)
+            if isinstance(f, str) and self._want(f):
+                rel = self.fnames[self.fid[f]]
+                if rel not in self._seen_mods:
+                    self._seen_mods.add(rel)
+                    self.loaded_order.append((rel, index))
         mods = sys.modules
         if len(mods) == self._nmods:
             return
@@ -447,6 +472,9 @@ def _env_caller_is_user() -> bool:
         return True
     while f is not None:
         fn = f.f_code.co_filename
+        if fn.startswith(_DETPY_DIR):
+            f = f.f_back
+            continue
         kind, _ = _sites._classify(fn)
         if kind == _sites._USER:
             return True
@@ -622,6 +650,7 @@ class ProofCachePlugin:
         self.t_record = 0.0
         self.recorded = 0
         self.not_cached: dict[str, str] = {}
+        self.stale_hits: dict[str, str] = {}
 
     # -- setup ----------------------------------------------------------------
     def configure(self, config) -> None:
@@ -659,7 +688,7 @@ class ProofCachePlugin:
     @pytest.hookimpl(trylast=True)
     def pytest_collection_finish(self, session):
         self.cap.switch("s")
-        self.cap.scan_modules(-1)
+        self.cap.scan_modules(-1, self._conftests())
         t0 = time.perf_counter()
         try:
             self._decide(session.items)
@@ -730,7 +759,7 @@ class ProofCachePlugin:
         finally:
             self.dur[nid] = time.perf_counter() - t
             self.cap.switch("s")
-            self.cap.scan_modules(self.test_index.get(nid, len(self.ran)))
+            self.cap.scan_modules(self.test_index.get(nid, len(self.ran)), self._conftests())
             self.ran.append(nid)
 
     def pytest_runtest_logreport(self, report):
@@ -746,6 +775,14 @@ class ProofCachePlugin:
         for k, v in report.user_properties:
             if k == "detpy_fingerprint":
                 self.fingerprints[report.nodeid] = v
+
+    def _conftests(self):
+        pm = self.config.pluginmanager
+        n = len(getattr(pm, "_conftest_plugins", ()))
+        if n == getattr(self, "_n_conftests", -1):
+            return ()
+        self._n_conftests = n
+        return list(getattr(pm, "_conftest_plugins", ()))
 
     def _reuse(self, item, nextitem, receipt) -> None:
         from _pytest.reports import TestReport
@@ -886,6 +923,26 @@ class ProofCachePlugin:
             g_flags |= {f for f in cap.flags.get(c, set()) if f != "proc"}
 
         pre_ix = {fcache[r] for r in cap.preloaded if fcache.get(r) is not None}
+        names_of = cap.ctx_names
+        session_written = {cap._key(p): sorted(names_of[c] for c in w) for p, w in cap.writers.items()}
+        written = {p: set(w) for p, w in store.written().items()}
+        for p, w in session_written.items():
+            written.setdefault(p, set()).update(w)
+        store.add_written(session_written)
+        # results reused in this session whose input files code of this session then wrote: drop them
+        for nid in self.hits:
+            if not session_written:
+                break
+            try:
+                deps = json.loads(store.entry(nid)).get("data", [])
+            except KeyError:
+                continue
+            own = {"t|" + nid}
+            for path, _dep in deps:
+                if path in session_written and not set(session_written[path]) <= own:
+                    self.stale_hits[nid] = path
+                    store.remove(nid)
+                    break
         loaded_idx = cap.loaded_order  # (rel, index)
         cfg = _state.STATE.config
         file_of_ix = {}
@@ -926,10 +983,17 @@ class ProofCachePlugin:
             why = _uncacheable(flags, cfg)
             if why is None:
                 credited = set(ctxs)
+                names = {names_of[c] for c in ctxs}
                 for f in sorted(flags):
                     if f.startswith("rw:") and not cap.writers.get(f[3:], set()) <= credited:
                         why = f"reads a file another test or fixture wrote: {cap._key(f[3:])}"
                         break
+                if why is None:
+                    for path in data:
+                        w = written.get(path)
+                        if w and not w <= names:
+                            why = f"reads a file another test or fixture wrote: {path}"
+                            break
             if why is None and "net-replay" in flags and cfg.cassette_path:
                 d = _core.file_digest(cfg.cassette_path)
                 data[cap._key(os.path.realpath(cfg.cassette_path))] = f"f:{d}" if d else "missing"
@@ -1014,6 +1078,7 @@ class ProofCachePlugin:
             "config": self.config_digest,
             "runtime": self.runtime_digest,
             "verify_mismatches": [v for v in self.verify_results if not v["same"]],
+            "stale_reuses": self.stale_hits,
             "receipts": self.receipts_path,
         }
 
@@ -1037,6 +1102,9 @@ class ProofCachePlugin:
             tr.write_line("not reused: " + ", ".join(f"{k} {v}" for k, v in sorted(s["miss_reasons"].items())))
         if s["not_cached"]:
             tr.write_line("not cacheable: " + ", ".join(f"{k} {v}" for k, v in sorted(s["not_cached"].items())))
+        for nid, path in self.stale_hits.items():
+            tr.write_line(f"WARNING reused {nid}, but this session then wrote its input {path}: entry dropped",
+                          yellow=True)
         if self.verify_results:
             bad = s["verify_mismatches"]
             tr.write_line(f"verified {len(self.verify_results)} reusable result(s) by running them: "
