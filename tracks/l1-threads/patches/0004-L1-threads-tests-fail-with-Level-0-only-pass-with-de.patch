@@ -1,7 +1,7 @@
 From 760ad7019dcefa4bb253a3ae40e893c7e970db68 Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 17 Nov 2026 06:41:45 +0000
-Subject: [PATCH 04/12] L1 threads: tests (fail with Level 0 only, pass with
+Subject: [PATCH 04/13] L1 threads: tests (fail with Level 0 only, pass with
  --det-threads), pool join order, stats line
 
 ThreadPoolExecutor joins its threads in set order, i.e. by address: under
