@@ -1,0 +1,235 @@
+From 53cc67466cd5405128e9292d4644498446946c61 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 16 Nov 2026 22:44:17 +0000
+Subject: [PATCH] Keep pytest-django's test groups under --det
+
+detpy undid every reordering made in pytest_collection_modifyitems,
+including pytest-django's: TestCase tests first, then transactional tests
+(TransactionTestCase, transaction=True), then non-db tests. A transactional
+test flushes the database, so TestCase tests collected after it lost the
+rows created by data migrations and failed only under --det.
+
+detpy now calls pytest-django's own hook (a stable sort) on its fixed or
+seeded order: the group order is kept as a constraint and detpy's order is
+kept inside each group. The result is a pure function of detpy's order, so
+it stays deterministic.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ docs/LIMITS.md             |   2 +-
+ python/detpy/plugin.py     |  32 +++++++++
+ tests/test_django_order.py | 138 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 171 insertions(+), 1 deletion(-)
+ create mode 100644 tests/test_django_order.py
+
+diff --git a/docs/LIMITS.md b/docs/LIMITS.md
+index c79d1eb..01406f5 100644
+--- a/docs/LIMITS.md
++++ b/docs/LIMITS.md
+@@ -21,7 +21,7 @@ repositories (**H**) or by design analysis (**D**), and what mitigates it.
+ | # | limit | found | mitigation |
+ |---|---|---|---|
+ | O1 | pytest-xdist is not supported: the order is only fixed inside each worker and distribution is dynamic. | D | Run without `-n`. |
+-| O2 | Plugins that reorder (`pytest-randomly`, `pytest-random-order`) are blocked under `--det` with `-p no:<name>` injected at the re-exec, before they load (unregistering them after loading left pytest-randomly's autouse `faker_seed` fixture active: 3 faker failures, test `test_conflicting_plugins_are_blocked_before_loading`); the options of a blocked plugin stay valid (review R-001: since `-p no:randomly` a project with `addopts = --randomly-dont-reorganize` or `--randomly-seed=...` stopped with a usage error): detpy calls the blocked plugin's own `pytest_addoption`, so they parse and do nothing (tests `test_det_runs_a_project_that_configures_pytest_randomly`, verified with the real pytest-randomly 5.1.0 and pytest-random-order); code that reads them with `config.getoption` gets the configured value although the plugin is not running; without a re-exec they are unregistered and their fixtures may stay; any other reordering done in `pytest_collection_modifyitems` is undone (deselection is kept). Reorderings done in other hooks are not detected. | T | `--det-seed` gives reproducible shuffles. |
++| O2 | Plugins that reorder (`pytest-randomly`, `pytest-random-order`) are blocked under `--det` with `-p no:<name>` injected at the re-exec, before they load (unregistering them after loading left pytest-randomly's autouse `faker_seed` fixture active: 3 faker failures, test `test_conflicting_plugins_are_blocked_before_loading`); the options of a blocked plugin stay valid (review R-001: since `-p no:randomly` a project with `addopts = --randomly-dont-reorganize` or `--randomly-seed=...` stopped with a usage error): detpy calls the blocked plugin's own `pytest_addoption`, so they parse and do nothing (tests `test_det_runs_a_project_that_configures_pytest_randomly`, verified with the real pytest-randomly 5.1.0 and pytest-random-order); code that reads them with `config.getoption` gets the configured value although the plugin is not running; without a re-exec they are unregistered and their fixtures may stay; any other reordering done in `pytest_collection_modifyitems` is undone (deselection is kept). Exception: pytest-django's grouping (TestCase, then transactional tests that flush the database, then non-db tests) is re-applied to detpy's order by calling pytest-django's own stable sort, so `--det-seed` shuffles inside each group (without it, a flushing test ran before TestCase tests that read data-migration rows: false failures; test `test_django_order.py`). Reorderings done in other hooks are not detected. | T | `--det-seed` gives reproducible shuffles. |
+ | O4 | The fixed order (collection order, serial) exposes order dependencies that a random/parallel baseline hides: on easypy 41 tests fail in collection order with or without `--det` (e.g. a `logging` monkeypatch applied twice → `RecursionError`) and pass under xdist. These are real order dependencies, not Level 0 failures; the harness separates them with a serial fixed-order reference run without `--det`. | H | `--det-seed` explores other orders. |
+ | O3 | Shuffle granularity is module → class → test; tests depending on a sibling module's side effects can still break under a shuffle (that is the point of nightly multi-seed runs). | D | — |
+ 
+diff --git a/python/detpy/plugin.py b/python/detpy/plugin.py
+index 516f637..f6c8501 100644
+--- a/python/detpy/plugin.py
++++ b/python/detpy/plugin.py
+@@ -359,6 +359,34 @@ class _Outcomes:
+                        "order": [i.nodeid for i in getattr(session, "items", [])]}, f)
+ 
+ 
++def _keep_django_groups(config, ordered):
++    """Re-apply pytest-django's grouping to detpy's order, in place.
++
++    pytest-django stable-sorts the items like Django's runner: TestCase (rollback)
++    tests first, then transactional tests (TransactionTestCase, transaction=True,
++    which flush the database), then tests without a database. Running a flushing
++    test before TestCase tests deletes the rows created by data migrations, so the
++    TestCase tests fail under --det although they pass normally. The grouping is a
++    stable sort, a pure function of its input: calling pytest-django's own hook on
++    detpy's (fixed or seeded) order keeps the group order as a constraint, keeps
++    detpy's order inside each group, and stays deterministic. Returns True when
++    the grouping moved a test."""
++    plugin = config.pluginmanager.get_plugin("django")
++    hook = getattr(plugin, "pytest_collection_modifyitems", None)
++    if hook is None:
++        return False
++    grouped = list(ordered)
++    try:
++        hook(items=grouped)
++    except Exception:  # pragma: no cover - never break collection on a pytest-django change
++        return False
++    if sorted(map(id, grouped)) != sorted(map(id, ordered)):  # pragma: no cover - not a pure reorder
++        return False
++    changed = any(a is not b for a, b in zip(grouped, ordered))
++    ordered[:] = grouped
++    return changed
++
++
+ class _DetSession(_Outcomes):
+     """Hooks of the --det session, bound to the config that activated Level 0."""
+ 
+@@ -396,6 +424,10 @@ class _DetSession(_Outcomes):
+         if cfg.shuffle:
+             perm = _core.shuffle_order([i.nodeid for i in ordered], cfg.seed)
+             ordered = [ordered[p] for p in perm]
++        if _keep_django_groups(config, ordered):
++            note = "pytest-django: test groups kept (TestCase, then transactional, then non-db)"
++            if note not in S.adjustments:
++                S.adjustments.append(note)
+         items[:] = ordered
+ 
+     def pytest_collection_finish(self, session):
+diff --git a/tests/test_django_order.py b/tests/test_django_order.py
+new file mode 100644
+index 0000000..e5f570e
+--- /dev/null
++++ b/tests/test_django_order.py
+@@ -0,0 +1,138 @@
++"""pytest-django's test groups are kept under --det (fixed order and --det-seed).
++
++pytest-django runs TestCase tests first, then transactional tests (which flush
++the database), then tests without a database. Undoing that order made TestCase
++tests that read rows created by a data migration fail under --det only."""
++
++import pytest
++
++from test_order import executed
++
++# Stand-in for pytest-django, registered under its plugin name "django": a stable
++# sort by group, like pytest_django.plugin.pytest_collection_modifyitems.
++FAKE_DJANGO = """
++GROUP = {"tc": 0, "ttc": 1, "plain": 2}
++
++def pytest_collection_modifyitems(items):
++    items.sort(key=lambda i: GROUP[i.name.split("_")[1]])
++"""
++
++MODULES = {
++    f"test_m{m}": "\n".join(
++        [f"def test_plain_{t}(): pass" for t in range(3)]
++        + [f"def test_ttc_{t}(): pass" for t in range(3)]
++        + [f"def test_tc_{t}(): pass" for t in range(3)]
++    )
++    for m in range(3)
++}
++
++
++def groups(nodeids):
++    return [n.split("::")[1].split("_")[1] for n in nodeids]
++
++
++def first_change(seq):
++    return [s for i, s in enumerate(seq) if i == 0 or seq[i - 1] != s]
++
++
++@pytest.fixture
++def project(pytester):
++    pytester.makepyfile(fake_django=FAKE_DJANGO, **MODULES)
++
++
++def _run(run_det, pytester, *args):
++    pytester.syspathinsert()
++    pytester.makeconftest(
++        "import fake_django\n"
++        "def pytest_configure(config):\n"
++        "    pm = config.pluginmanager\n"
++        "    real = pm.get_plugin('django')  # real pytest-django, unconfigured here\n"
++        "    if real is not None:\n"
++        "        pm.unregister(real, name='django')\n"
++        "    pm.register(fake_django, 'django')\n"
++    )
++    return run_det(*args)
++
++
++def test_fixed_order_keeps_django_groups(pytester, run_det, project):
++    r, t = _run(run_det, pytester)
++    r.assert_outcomes(passed=27)
++    order = executed(t)
++    assert first_change(groups(order)) == ["tc", "ttc", "plain"]
++    # inside a group: collection order
++    assert order[:3] == [f"test_m0.py::test_tc_{i}" for i in range(3)]
++    assert any("pytest-django" in a for a in t[0]["meta"]["adjustments"])
++
++
++@pytest.mark.parametrize("seed", [1, 2, 3, 4, 5])
++def test_seeded_order_shuffles_inside_django_groups(pytester, run_det, project, seed):
++    _, fixed = _run(run_det, pytester)
++    _, a = run_det(f"--det-seed={seed}")
++    _, b = run_det(f"--det-seed={seed}")
++    assert executed(a) == executed(b)
++    assert first_change(groups(executed(a))) == ["tc", "ttc", "plain"]
++    assert sorted(executed(a)) == sorted(executed(fixed))
++    assert executed(a) != executed(fixed)
++
++
++def test_without_pytest_django_order_is_unchanged(pytester, run_det):
++    pytester.makepyfile(**MODULES)
++    _, t = run_det()
++    assert executed(t)[0] == "test_m0.py::test_plain_0"
++    assert not any("pytest-django" in a for a in t[0]["meta"]["adjustments"])
++
++
++DJANGO_PROJECT = {
++    "proj/__init__.py": "",
++    "proj/settings.py": (
++        'SECRET_KEY = "x"\nINSTALLED_APPS = ["django.contrib.contenttypes", "shop"]\n'
++        'DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "db.sqlite3"}}\n'
++        'DEFAULT_AUTO_FIELD = "django.db.models.AutoField"\n'
++    ),
++    "shop/__init__.py": "",
++    "shop/models.py": (
++        "from django.db import models\n"
++        "class Item(models.Model):\n    name = models.CharField(max_length=50)\n"
++    ),
++    "shop/migrations/__init__.py": "",
++    "shop/migrations/0001_initial.py": (
++        "from django.db import migrations, models\n"
++        "class Migration(migrations.Migration):\n    initial = True\n    dependencies = []\n"
++        "    operations = [migrations.CreateModel('Item', [('id', models.AutoField(primary_key=True)),"
++        " ('name', models.CharField(max_length=50))])]\n"
++    ),
++    "shop/migrations/0002_seed.py": (
++        "from django.db import migrations\n"
++        "def seed(apps, schema_editor):\n    apps.get_model('shop', 'Item').objects.create(name='default')\n"
++        "class Migration(migrations.Migration):\n    dependencies = [('shop', '0001_initial')]\n"
++        "    operations = [migrations.RunPython(seed, migrations.RunPython.noop)]\n"
++    ),
++    # collected first: flushes the table, including the migration's row
++    "test_a_flush.py": (
++        "from django.test import TransactionTestCase\nfrom shop.models import Item\n"
++        "class FlushTests(TransactionTestCase):\n"
++        "    def test_flush_1(self):\n        Item.objects.create(name='tmp')\n"
++        "    def test_flush_2(self):\n        assert Item.objects.count() >= 0\n"
++    ),
++    "test_b_seed.py": (
++        "from django.test import TestCase\nfrom shop.models import Item\n"
++        "class SeedTests(TestCase):\n"
++        "    def test_seed_exists(self):\n        assert Item.objects.filter(name='default').exists()\n"
++        "    def test_seed_count(self):\n        assert Item.objects.count() == 1\n"
++    ),
++}
++
++
++@pytest.mark.parametrize("args", [(), ("--det-seed=2",), ("--det-seed=3",)])
++def test_real_pytest_django_data_migration(pytester, run_det, args):
++    """End to end with the real pytest-django (skipped when it is not installed)."""
++    pytest.importorskip("pytest_django")
++    pytest.importorskip("django")
++    for path, text in DJANGO_PROJECT.items():
++        p = pytester.path / path
++        p.parent.mkdir(parents=True, exist_ok=True)
++        p.write_text(text)
++    pytester.makeini("[pytest]\nDJANGO_SETTINGS_MODULE = proj.settings\npythonpath = .\n")
++    r, t = run_det(*args)
++    r.assert_outcomes(passed=4)
++    assert [n.split("::")[0] for n in executed(t)][:2] == ["test_b_seed.py"] * 2
+-- 
+2.43.0
+
