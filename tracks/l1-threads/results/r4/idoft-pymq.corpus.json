@@ -1,0 +1,2154 @@
+{
+ "name": "idoft-pymq",
+ "set": "class-a",
+ "url": "https://github.com/thrau/pymq",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009460",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "python_requested": [
+  "3.9"
+ ],
+ "commit": "101857bca2b705c328d3bda3b26797b51e8ffb70",
+ "status": "ok",
+ "detail": "",
+ "python": "3.9",
+ "install": "-e . -r requirements-dev.txt -r requirements.txt",
+ "collected": 127,
+ "kind": "corpus",
+ "tests": {
+  "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "class a"
+ },
+ "baseline_exception": {
+  "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "AssertionError"
+ },
+ "runs": [
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 6.421,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 12.389,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "4d1ba63a6151f1547afef0031e5e7486"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.235,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.231,
+   "timed_out": false,
+   "stats": {
+    "decisions": 6,
+    "switches": 29,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "50082204181715330fe8df681e7589a2"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.247,
+   "timed_out": false,
+   "stats": {
+    "decisions": 5,
+    "switches": 31,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "b9f383820a46465ba8d8208457164af3"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 7.262,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 11.261,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "8ef02311d03cc720d6738cc0b010392b"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 11.245,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 11.275,
+   "timed_out": false,
+   "stats": {
+    "decisions": 5,
+    "switches": 31,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "078f999d6b4af6234b72380dcebd97f3"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 11.26,
+   "timed_out": false,
+   "stats": {
+    "decisions": 3,
+    "switches": 31,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "7678812c8da70b67a4b9ced0cffe6b11"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 5.776,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 11.242,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "3cbfe687eaa151de938db7cb378e6152"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 11.26,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 11.286,
+   "timed_out": false,
+   "stats": {
+    "decisions": 4,
+    "switches": 33,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "8eceed18295821db9363f9439e9bef8a"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 11.251,
+   "timed_out": false,
+   "stats": {
+    "decisions": 5,
+    "switches": 35,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "b9f383820a46465ba8d8208457164af3"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 4.595,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 11.223,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "6c91f73377b9a1709b3e741c0d8e0cad"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 11.256,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 11.256,
+   "timed_out": false,
+   "stats": {
+    "decisions": 6,
+    "switches": 31,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "fc8aa0781f3bfec4f1a1ffeea0aed40c"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 11.286,
+   "timed_out": false,
+   "stats": {
+    "decisions": 6,
+    "switches": 33,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "c9a72d6ad429393a1400f479912bd23c"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 12.231,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 11.294,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "9d6e87281f0ee1ac5cd2bf2084be7bf0"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 11.269,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 11.296,
+   "timed_out": false,
+   "stats": {
+    "decisions": 5,
+    "switches": 37,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "e4d19fa3768f098148610452c4ac108d"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 11.232,
+   "timed_out": false,
+   "stats": {
+    "decisions": 7,
+    "switches": 29,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "09a71fc8319e342ba892981163d21cbe"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 12.76,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 11.263,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "9986a49bd6c5317b04339153e3b6d20a"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 11.257,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 11.268,
+   "timed_out": false,
+   "stats": {
+    "decisions": 4,
+    "switches": 35,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "581a2b73239adb28407732e2d1da2155"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 11.253,
+   "timed_out": false,
+   "stats": {
+    "decisions": 3,
+    "switches": 33,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "7678812c8da70b67a4b9ced0cffe6b11"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 14.113,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 11.246,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "2b5009958ba18f9c3724c9a1a81826b7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 11.264,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 11.241,
+   "timed_out": false,
+   "stats": {
+    "decisions": 6,
+    "switches": 33,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "f33eb2d3dcc60f4913d3ac6ef17010eb"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 11.248,
+   "timed_out": false,
+   "stats": {
+    "decisions": 7,
+    "switches": 29,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "3c2434ebad966f05dd65fbac9f483bc2"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 12.721,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 11.285,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "9228767c00a202dcec229a1ca55165f4"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 11.225,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 11.257,
+   "timed_out": false,
+   "stats": {
+    "decisions": 4,
+    "switches": 29,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "d1c763c04237ff822c7b1e17d6b61102"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 11.324,
+   "timed_out": false,
+   "stats": {
+    "decisions": 3,
+    "switches": 33,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "7678812c8da70b67a4b9ced0cffe6b11"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 15.862,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 11.25,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "f911f602aba34752c14d84381c52145b"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 11.247,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 11.252,
+   "timed_out": false,
+   "stats": {
+    "decisions": 6,
+    "switches": 31,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "900c6d74dc32caa79f75007fc47ffc5a"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 11.228,
+   "timed_out": false,
+   "stats": {
+    "decisions": 7,
+    "switches": 29,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "bdc5ffb7ccc8c402d8e4d187bf4084c4"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 13.867,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 11.25,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "23c4355a9c60aeff0d709a5a28cef152"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 11.256,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 11.257,
+   "timed_out": false,
+   "stats": {
+    "decisions": 5,
+    "switches": 31,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "119538cf0eb15b5ba02596488e6d8192"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 11.248,
+   "timed_out": false,
+   "stats": {
+    "decisions": 7,
+    "switches": 32,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "2cc4f2802a8c5cc32465ed49154b2b42"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 5.459,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 12.388,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 12.63,
+   "timed_out": false,
+   "stats": {
+    "decisions": 2,
+    "switches": 52,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "eb136b77f26a5360a3f0e45e3919cdd9"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 15.319,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 12.66,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 12.383,
+   "timed_out": false,
+   "stats": {
+    "decisions": 2,
+    "switches": 50,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "eb136b77f26a5360a3f0e45e3919cdd9"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 2,
+   "exit": 1,
+   "duration_s": 11.001,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED AssertionError: 1 != 0"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 12.749,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "697e5cb6f9fbfa47f3690c246b739038"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 12.716,
+   "timed_out": false,
+   "stats": {
+    "decisions": 1,
+    "switches": 43,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "f29d4380c69357eef76c3cf0b1517e69"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 6.288,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 12.698,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "697e5cb6f9fbfa47f3690c246b739038"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 12.407,
+   "timed_out": false,
+   "stats": {
+    "decisions": 3,
+    "switches": 42,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "08dd3e4c4c0f7d84ac36084e3e7e5e2a"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 8.367,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": null
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 12.01,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "616eb431751b83adfbe865e48cdbc7a7"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 12.61,
+   "timed_out": false,
+   "stats": {
+    "decisions": 5,
+    "switches": 52,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "75c5664338d62832535d7a69e5f1ccb6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 1,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.288,
+   "timed_out": false,
+   "stats": {
+    "decisions": 2,
+    "switches": 22,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "af6323bcf0d6f7c2ebf2d7aadc3b3dc0"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 2,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.273,
+   "timed_out": false,
+   "stats": {
+    "decisions": 68,
+    "switches": 60,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "e4e9af86a3afaaf0711228246da15b27"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 3,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.245,
+   "timed_out": false,
+   "stats": {
+    "decisions": 26,
+    "switches": 37,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "4331aef4fcef37995eb3ee5fe4a9fd06"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 4,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.255,
+   "timed_out": false,
+   "stats": {
+    "decisions": 66,
+    "switches": 54,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "9ee22d15758a125edfdbe937dc187a6e"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 5,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.302,
+   "timed_out": false,
+   "stats": {
+    "decisions": 26,
+    "switches": 34,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "b92ead89555b9bbadadcf62587ac8278"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 6,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.323,
+   "timed_out": false,
+   "stats": {
+    "decisions": 6,
+    "switches": 22,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "b396a051673e522cb5094c35a4e9d948"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 7,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.263,
+   "timed_out": false,
+   "stats": {
+    "decisions": 29,
+    "switches": 37,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "a013b8f08d5198f8faab5af003db3812"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 8,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.256,
+   "timed_out": false,
+   "stats": {
+    "decisions": 15,
+    "switches": 27,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "ad16afb88e24976ea0c479429e0debfa"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 9,
+   "run": 0,
+   "exit": 1,
+   "duration_s": 8.918,
+   "timed_out": false,
+   "stats": {
+    "decisions": 32,
+    "switches": 30,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "5c89bbdd8d2117687d42915df0204404"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_channel_expire.<locals>.remotefn"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 10,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.297,
+   "timed_out": false,
+   "stats": {
+    "decisions": 53,
+    "switches": 55,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "6f88b28a75c95c528468763beee97cbc"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 11,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.274,
+   "timed_out": false,
+   "stats": {
+    "decisions": 14,
+    "switches": 27,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "ffeaa2f9c89df93b1e4440154ae473b2"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 12,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.255,
+   "timed_out": false,
+   "stats": {
+    "decisions": 24,
+    "switches": 33,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "09a8588b8250a4fe9a99cfe3a65e1d2c"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 13,
+   "run": 0,
+   "exit": 1,
+   "duration_s": 10.118,
+   "timed_out": false,
+   "stats": {
+    "decisions": 68,
+    "switches": 52,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "c961b2d14c29e414bc53f63776f78d0c"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED AssertionError: 1 != 0"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 14,
+   "run": 0,
+   "exit": 1,
+   "duration_s": 8.844,
+   "timed_out": false,
+   "stats": {
+    "decisions": 7,
+    "switches": 16,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "a4a0f0e20d571e4c554286a5e23793d7"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_channel_expire.<locals>.remotefn"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 15,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.309,
+   "timed_out": false,
+   "stats": {
+    "decisions": 1,
+    "switches": 21,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "5ec0244c4af27ec4c8be78a482bfdf11"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 16,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.277,
+   "timed_out": false,
+   "stats": {
+    "decisions": 2,
+    "switches": 23,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "294cfaa0c5e33ffa18c45aacd8b65056"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 17,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.258,
+   "timed_out": false,
+   "stats": {
+    "decisions": 5,
+    "switches": 27,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "a86490aa8059aef97d2b3cc3867790c6"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 18,
+   "run": 0,
+   "exit": 1,
+   "duration_s": 10.119,
+   "timed_out": false,
+   "stats": {
+    "decisions": 38,
+    "switches": 39,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "48a27bb8c70af7bb9e6a94eb25797f4a"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED AssertionError: 1 != 0"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 19,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.256,
+   "timed_out": false,
+   "stats": {
+    "decisions": 9,
+    "switches": 26,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "48f6dd0fe1fb41035887bc063af0faac"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 20,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 11.273,
+   "timed_out": false,
+   "stats": {
+    "decisions": 22,
+    "switches": 33,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 3
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "passed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "0741ad82b3479e9721adfded30fe6b61"
+   },
+   "msgs": {}
+  },
+  {
+   "unit": 0,
+   "mode": "confirm",
+   "seed": 9,
+   "run": 1,
+   "exit": 1,
+   "duration_s": 8.853,
+   "timed_out": false,
+   "stats": {
+    "decisions": 33,
+    "switches": 30,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "3b4780512d04f90c72479e6e2f09db25"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_channel_expire.<locals>.remotefn"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "confirm",
+   "seed": 9,
+   "run": 2,
+   "exit": 1,
+   "duration_s": 8.858,
+   "timed_out": false,
+   "stats": {
+    "decisions": 33,
+    "switches": 30,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "3b4780512d04f90c72479e6e2f09db25"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_channel_expire.<locals>.remotefn"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "confirm",
+   "seed": 9,
+   "run": 3,
+   "exit": 1,
+   "duration_s": 8.926,
+   "timed_out": false,
+   "stats": {
+    "decisions": 33,
+    "switches": 30,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "3b4780512d04f90c72479e6e2f09db25"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_channel_expire.<locals>.remotefn"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "confirm",
+   "seed": 9,
+   "run": 4,
+   "exit": 1,
+   "duration_s": 8.893,
+   "timed_out": false,
+   "stats": {
+    "decisions": 33,
+    "switches": 30,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "3b4780512d04f90c72479e6e2f09db25"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_channel_expire.<locals>.remotefn"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "confirm",
+   "seed": 9,
+   "run": 5,
+   "exit": 1,
+   "duration_s": 8.845,
+   "timed_out": false,
+   "stats": {
+    "decisions": 33,
+    "switches": 30,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "3b4780512d04f90c72479e6e2f09db25"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_channel_expire.<locals>.remotefn"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "confirm",
+   "seed": 9,
+   "run": 6,
+   "exit": 1,
+   "duration_s": 8.864,
+   "timed_out": false,
+   "stats": {
+    "decisions": 33,
+    "switches": 30,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "3b4780512d04f90c72479e6e2f09db25"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_channel_expire.<locals>.remotefn"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "confirm",
+   "seed": 9,
+   "run": 7,
+   "exit": 1,
+   "duration_s": 8.872,
+   "timed_out": false,
+   "stats": {
+    "decisions": 33,
+    "switches": 30,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "3b4780512d04f90c72479e6e2f09db25"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_channel_expire.<locals>.remotefn"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "confirm",
+   "seed": 9,
+   "run": 8,
+   "exit": 1,
+   "duration_s": 8.848,
+   "timed_out": false,
+   "stats": {
+    "decisions": 33,
+    "switches": 30,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "3b4780512d04f90c72479e6e2f09db25"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_channel_expire.<locals>.remotefn"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "confirm",
+   "seed": 9,
+   "run": 9,
+   "exit": 1,
+   "duration_s": 8.908,
+   "timed_out": false,
+   "stats": {
+    "decisions": 33,
+    "switches": 30,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "failed"
+   },
+   "fps": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "3b4780512d04f90c72479e6e2f09db25"
+   },
+   "msgs": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_channel_expire.<locals>.remotefn"
+   }
+  }
+ ],
+ "confirm": {
+  "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": {
+   "seed": 9,
+   "fails": 10,
+   "runs": 10,
+   "distinct_fps": 2,
+   "messages": [
+    "FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_channel_expire.<locals>.remotefn"
+   ],
+   "replayed": false,
+   "passing_seed": 1,
+   "divergence": ""
+  }
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
