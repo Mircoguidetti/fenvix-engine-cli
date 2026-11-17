@@ -6,18 +6,25 @@ Unit = one test file (pytest, vitest) run in its own process, or one Go package.
 
 1. check out, reinstall when a dependency spec changed, run the build step;
 2. for every unit, compare its dependency record (taken at its last real run) with the tree now:
-   * ``closure`` (proof, file level): a file it read changed or vanished, a path it found missing now
-     exists, a path it stat'ed vanished, a directory it listed (outside discovery) changed entries, a
-     module name it looked up is now provided by an added file, a new pytest plugin entry point;
+   * ``closure`` (proof, file level): a file it read changed or vanished (read-write opens of existing files
+     included), a path it found missing now exists, a path it stat'ed vanished, a directory it listed
+     (outside discovery) changed entries, a module name it looked up is now provided by an added file, a new
+     pytest plugin entry point, an environment variable it read changed, the runtime identity changed
+     (interpreter / Node binary / standard library / tzdata / system libraries); never when the unit
+     connected to a non-loopback address, and never when its cached outcome is a failure (R-002 fixes);
    * ``func+guard`` (Python, proof at the Python level): ``closure``, except that a changed repository
      ``.py`` file whose module-level skeleton is unchanged only forces a rerun when a function whose
      definition changed was executed by the unit;
    * ``func`` (Python, coverage-only, NOT a proof): only executed functions and the unit's own file;
    * ``strict`` (closure plus the first study's rule: any config/CI/lock file change reruns all);
    * ``go-cache`` (Go): the go command's own test cache, persisted across commits (remote cache from
-     cold CI).
-3. run every unit ``closure`` cannot skip, under strace (plus the Python hooks), and a random sample of
-   the skippable ones (verification: the cached outcome must equal the fresh one);
+     cold CI). NOT a proof: reported as "go test cache (no proof)". Go ``closure`` = go-cache hit (its key
+     covers the Go files, the files opened through package os inside the module and the environment
+     variables read through os.Getenv / os.LookupEnv, from go's test log) AND no runtime read changed
+     (strace) AND no non-loopback connect() AND the same runtime identity.
+3. run every unit ``closure`` cannot skip, under strace (plus the Python / Node hooks), and a random sample of
+   the skippable ones (verification: the cached outcome must equal the fresh one); a unit that ``closure``
+   reruns but another rule would have skipped is compared with its cached outcome too (``xverify``);
 4. write per-transition decisions, costs and verification results.
 
     python harness/skip_study2/walk.py --spec spec.json --work /tmp/w --out results/x.json
@@ -42,10 +49,129 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from strace_deps import traced  # noqa: E402
+from strace_deps import external, traced  # noqa: E402
 from pyskel import changed_functions, top_qualname  # noqa: E402
 
 PYHOOKS = HERE / "pyhooks"
+NODEHOOK = HERE / "nodehooks" / "envrec.cjs"
+# variables read below the hooks (C runtime, interpreter start-up): always part of the key. A trailing "*" is a
+# prefix. Values are hashed, never stored.
+ALWAYS_ENV = {"pytest": ("PATH", "TZ", "LANG", "LANGUAGE", "LC_*", "PYTHON*"),
+              "vitest": ("PATH", "TZ", "LANG", "LANGUAGE", "LC_*", "NODE_*", "UV_*"),
+              "go": ("PATH", "TZ", "LANG", "LANGUAGE", "LC_*")}
+HARNESS_ENV = ("S2_",)  # the harness's own per-run variables
+
+
+def env_value(name, env):
+    """Hash of what the environment gives for ``name``: a variable, a prefix pattern (``LC_*``), the whole
+    environment (``*``) or the proxy variables (``~proxy``). None when unset."""
+    if name == "*":
+        items = sorted((k, v) for k, v in env.items() if not k.startswith(HARNESS_ENV))
+    elif name == "~proxy":
+        items = sorted((k, v) for k, v in env.items() if k.lower().endswith("_proxy"))
+    elif name.endswith("*"):
+        items = sorted((k, v) for k, v in env.items() if k.startswith(name[:-1]) and not k.startswith(HARNESS_ENV))
+    else:
+        v = env.get(name)
+        return None if v is None else hashlib.sha1(v.encode("utf-8", "surrogateescape")).hexdigest()[:12]
+    return hashlib.sha1(repr(items).encode("utf-8", "surrogateescape")).hexdigest()[:12]
+
+
+def _sha_file(p, h=None):
+    h = h or hashlib.sha1()
+    try:
+        with open(p, "rb") as fh:
+            for b in iter(lambda: fh.read(1 << 20), b""):
+                h.update(b)
+    except OSError:
+        h.update(b"<unreadable>")
+    return h
+
+
+def _tree_hash(root, skip_dirs=("site-packages", "dist-packages", "__pycache__", "test", "tests", "idlelib",
+                                "tkinter", "turtledemo", "ensurepip")):
+    """Content hash of a directory tree (relative path + bytes of every file)."""
+    h = hashlib.sha1()
+    for d, dirs, files in os.walk(root):
+        dirs[:] = sorted(x for x in dirs if x not in skip_dirs)
+        for f in sorted(files):
+            if f.endswith(".pyc"):
+                continue
+            p = os.path.join(d, f)
+            h.update(os.path.relpath(p, root).encode() + b"\0")
+            _sha_file(p, h)
+    return h.hexdigest()[:16]
+
+
+def _linked_libs(binary):
+    try:
+        out = subprocess.run(["ldd", binary], capture_output=True, text=True, timeout=60).stdout
+    except Exception:
+        return []
+    libs = []
+    for line in out.splitlines():
+        m = re.search(r"=>\s*(/\S+)", line) or re.match(r"\s*(/\S+)", line)
+        if m:
+            libs.append(os.path.realpath(m.group(1)))
+    return sorted(set(libs))
+
+
+def runtime_identity(lang, env, venv=None):
+    """{component: hash} of what runs the tests besides the repository and its installed packages (R-002 fix 5):
+    interpreter path + version + binary, standard library content, Node binary, Go toolchain, tzdata, and the
+    shared libraries the interpreter links (libc, libssl, ...). Changes on the runner image invalidate."""
+    ident = {}
+    bins = []
+    if lang == "pytest":
+        py = str(Path(venv) / "bin" / "python")
+        code, out, _ = sh([py, "-c", "import os,sys,sysconfig;print(os.path.realpath(sys.executable));"
+                           "print(sys.version);print(sysconfig.get_paths()['stdlib']);"
+                           "print(sysconfig.get_config_var('LIBDIR') or '');print(sysconfig.get_config_var('LDLIBRARY') or '')"],
+                          env=env, timeout=120)
+        lines = out.splitlines()
+        if code == 0 and len(lines) >= 3:
+            exe, ver, stdlib = lines[0], lines[1], lines[2]
+            ident["python"] = hashlib.sha1((exe + "\0" + ver).encode() + _sha_file(exe).digest()).hexdigest()[:16]
+            ident["stdlib"] = _tree_hash(stdlib)
+            bins.append(exe)
+            if len(lines) >= 5 and lines[4]:
+                lib = os.path.join(lines[3], lines[4])
+                if os.path.exists(lib):
+                    ident["libpython"] = _sha_file(lib).hexdigest()[:16]
+        else:
+            ident["python"] = "unknown:" + out[-200:]
+    elif lang in ("vitest", "jest"):
+        node = shutil.which("node", path=env.get("PATH"))
+        if node:
+            node = os.path.realpath(node)
+            _, ver, _ = sh([node, "--version"], env=env, timeout=60)
+            ident["node"] = hashlib.sha1((node + "\0" + ver.strip()).encode() + _sha_file(node).digest()).hexdigest()[:16]
+            bins.append(node)
+        else:
+            ident["node"] = "missing"
+    elif lang == "go":
+        _, out, _ = sh(["go", "env", "GOVERSION", "GOROOT"], env=env, timeout=120)
+        ident["go"] = hashlib.sha1(out.encode()).hexdigest()[:16]
+    tz = [p for p in ("/usr/share/zoneinfo/tzdata.zi", "/etc/localtime") if os.path.exists(p)]
+    h = hashlib.sha1()
+    for p in tz:
+        h.update(os.path.realpath(p).encode())
+        _sha_file(p, h)
+    ident["tzdata"] = h.hexdigest()[:16]
+    libs = set()
+    for b in bins:
+        libs.update(_linked_libs(b))
+    for name in ("libssl.so.3", "libcrypto.so.3"):
+        for d in ("/usr/lib/x86_64-linux-gnu", "/lib/x86_64-linux-gnu", "/usr/lib64", "/usr/lib"):
+            if os.path.exists(os.path.join(d, name)):
+                libs.add(os.path.realpath(os.path.join(d, name)))
+                break
+    h = hashlib.sha1()
+    for p in sorted(libs):
+        h.update(p.encode() + b"\0")
+        _sha_file(p, h)
+    ident["syslibs"] = h.hexdigest()[:16]
+    return ident
 T_START = time.time()
 
 
@@ -212,6 +338,9 @@ class Walker:
         self.added_cache = {}
         self._last_dep = None
         self.push = True
+        self.cur_sha = None
+        self._tracked = {}     # sha -> set of tracked paths (relative)
+        self._runtime = None   # runtime identity, recomputed after every install
 
     # -- environment -------------------------------------------------------
     def env(self):
@@ -226,8 +355,33 @@ class Walker:
             e["PYTHONPATH"] = str(PYHOOKS) + (":" + e["PYTHONPATH"] if e.get("PYTHONPATH") else "")
             e["S2_ROOT"] = str(self.src)
             e["PYTHONHASHSEED"] = "0"
+        elif self.lang in ("vitest", "jest"):
+            req = f"--require {NODEHOOK}"
+            if req not in e.get("NODE_OPTIONS", ""):
+                e["NODE_OPTIONS"] = (e.get("NODE_OPTIONS", "") + " " + req).strip()
         e["CI"] = "true"
         return e
+
+    def runtime(self):
+        if self._runtime is None:
+            self._runtime = runtime_identity(self.lang, self.env(), self.venv)
+        return self._runtime
+
+    def tracked(self):
+        """Paths tracked at the checked-out commit (relative to src)."""
+        sha = self.cur_sha or "HEAD"
+        if sha not in self._tracked:
+            self._tracked = {sha: set(git(self.src, "ls-files", "-z", check=False).split("\0"))}
+        return self._tracked[sha]
+
+    def committed_hash(self, path):
+        """Hash (Hasher format) of the committed content of a tracked file: its content before any test ran."""
+        rel = os.path.relpath(path, self.src)
+        p = subprocess.run(["git", "cat-file", "--filters", f"{self.cur_sha or 'HEAD'}:{rel}"], cwd=self.src,
+                           capture_output=True)
+        if p.returncode:
+            return self.hasher.file(path)
+        return hashlib.sha1(p.stdout).hexdigest()[:16]
 
     def fmt(self, s):
         return (s.replace("{src}", str(self.src)).replace("{venv}", str(self.venv)).replace("{work}", str(self.work))
@@ -270,6 +424,7 @@ class Walker:
 
     def checkout(self, sha):
         git(self.src, "checkout", "--quiet", "--force", sha)
+        self.cur_sha = sha
         git(self.src, "clean", "-qffd", "-e", ".s2rec", check=False)
         if self.lang == "go":
             time.sleep(2.1)  # go test refuses to cache results that read files modified in the last 2 s
@@ -292,6 +447,7 @@ class Walker:
             log(f"install: {cmd[:80]} -> {code} ({dt:.0f}s)")
             if code:
                 return False, out[-3000:]
+        self._runtime = None  # the interpreter may have changed
         return True, ""
 
     def build(self):
@@ -332,9 +488,14 @@ class Walker:
         rep.unlink(missing_ok=True)
         env = self.env()
         env["S2_REPORT"] = str(rep)
+        envrec = self.work / f"envrec-{key}-{tag}"
+        shutil.rmtree(envrec, ignore_errors=True)
         if traced_run and self.lang == "pytest":
             pyrec.mkdir(parents=True, exist_ok=True)
             env["S2_PYREC"] = str(pyrec)
+        if traced_run and self.lang in ("vitest", "jest"):
+            envrec.mkdir(parents=True, exist_ok=True)
+            env["S2_ENVREC"] = str(envrec)
         cmd = [self.fmt(c).replace("{unit}", unit).replace("{out}", str(rep)) for c in self.spec["cmd"]]
         to = self.spec.get("unit_timeout", 900)
         if traced_run:
@@ -359,21 +520,42 @@ class Walker:
         else:
             r["test_time"] = sum(v[1] for v in (tests or {}).values())
         if deps is not None:
-            r["deps"] = self.normalize(unit, deps, pyrec)
+            r["deps"] = self.normalize(unit, deps, pyrec, envrec, env)
         shutil.rmtree(pyrec, ignore_errors=True)
+        shutil.rmtree(envrec, ignore_errors=True)
         return r
 
-    def normalize(self, unit, deps, pyrec):
+    def normalize(self, unit, deps, pyrec, envrec=None, env=None):
         """Turn raw traces into a record that can be compared with a later tree."""
         if "error" in deps:
             return {"error": deps["error"]}
         src = str(self.src) + "/"
-        reads = {p: self.hasher.file(p) for p in deps["reads"]}
+        rw = set(deps.get("rw", []))
+        reads = {}
+        n_rw = 0
+        for p in deps["reads"]:
+            if p in rw:
+                # opened read-write (or read, then written) by the run: the dependency is the content before the run
+                rel = p[len(src):] if p.startswith(src) else None
+                if rel is not None and "/node_modules/" not in "/" + rel:
+                    if rel in self.tracked():
+                        reads[p] = self.committed_hash(p)
+                        n_rw += 1
+                    elif self.ignored(rel):
+                        reads[p] = self.hasher.file(p)  # build output or cache: kept (conservative)
+                        n_rw += 1
+                    # untracked and not ignored: created after the checkout by a test, not an input
+                    continue
+                reads[p] = self.hasher.file(p)
+                n_rw += 1
+                continue
+            reads[p] = self.hasher.file(p)
         reads = {p: h for p, h in reads.items() if h is not None}
         exists = {p: Hasher.kind(p) for p in deps["exists"]}
         exists = {p: k for p, k in exists.items() if k}
         lists = {}
         py = None
+        env_names = set(ALWAYS_ENV.get(self.lang, ()))
         if self.lang == "pytest":
             funcs, tried, mods, plists = set(), set(), set(), set()
             for f in pyrec.glob("*.json") if pyrec.exists() else []:
@@ -385,6 +567,7 @@ class Walker:
                 tried.update(d["tried"])
                 mods.update(d["modules"])
                 plists.update(d["lists"])
+                env_names.update(d.get("env", []))
             for rel in plists:
                 p = os.path.join(str(self.src), rel) if rel != "." else str(self.src)
                 lists[p] = Hasher.listing(p)
@@ -394,6 +577,11 @@ class Walker:
             py = {"funcs": sorted({(f[0], top_qualname(f[1])) for f in funcs}), "tried": sorted(tried),
                   "modules": sorted(mods), "nproc": len(list(pyrec.glob('*.json'))) if pyrec.exists() else 0}
         else:
+            for f in envrec.glob("*.txt") if envrec is not None and envrec.exists() else []:
+                try:
+                    env_names.update(x for x in f.read_text(errors="replace").splitlines() if x)
+                except OSError:
+                    pass
             first = deps["reads"].get(os.path.join(str(self.src), unit)) if self.lang != "go" else 0
             for d, n in deps["lists"].items():
                 if first is None or n > first:
@@ -405,10 +593,16 @@ class Walker:
                     h = self.hasher.file(str(f))
                     if h:
                         reads[str(f)] = h
-        nonloop = [x for x in deps["net"] if not (str(x[0]).startswith("127.") or x[0] in ("::1", "?"))]
+        nonloop = external(deps["net"])
+        env = env if env is not None else self.env()
+        envk = {n: env_value(n, env) for n in sorted(env_names) if not n.startswith(HARNESS_ENV)}
         return {"reads": reads, "exists": exists, "missing": deps["missing"], "lists": lists, "py": py,
-                "net": len(deps["net"]), "net_ext": len(nonloop), "execs": len(deps["execs"]),
-                "nread_src": sum(1 for p in reads if p.startswith(src))}
+                "net": len(deps["net"]), "net_ext": len(nonloop), "net_ext_addr": sorted({x[0] for x in nonloop})[:5],
+                "execs": len(deps["execs"]), "nread_src": sum(1 for p in reads if p.startswith(src)), "n_rw": n_rw,
+                "env": envk, "runtime": self.runtime()}
+
+    def ignored(self, rel):
+        return subprocess.run(["git", "check-ignore", "-q", "--", rel], cwd=self.src).returncode == 0
 
     def site_packages(self):
         if self.lang != "pytest":
@@ -433,7 +627,22 @@ class Walker:
             return {k: "no-result" for k in self.rules()}, {}
         if d["net_ext"]:
             return {k: "network" for k in self.rules()}, {}
+        if rec.get("code") not in (0, 5):
+            # a cached failure is never reused (Bazel does the same): flaky failures do not stick
+            return {k: "cached-failure" for k in self.rules()}, {}
         reasons = []
+        if d.get("runtime") is not None:
+            now = self.runtime()
+            for k in sorted(set(d["runtime"]) | set(now)):
+                if d["runtime"].get(k) != now.get(k):
+                    reasons.append(("runtime", k))
+                    break
+        if d.get("env"):
+            cur = self.env()
+            for n, h in d["env"].items():
+                if env_value(n, cur) != h:
+                    reasons.append(("env-var", n))
+                    break
         changed_py = []
         src = str(self.src) + "/"
         for p, h in d["reads"].items():
@@ -467,7 +676,7 @@ class Walker:
         base = reasons[0] if reasons else None
         out = {}
         # closure: any change at all
-        out["closure"] = (base[0] + ":" + self.kind_of(base[1])) if base else (
+        out["closure"] = self.reason_label(base) if base else (
             ("py-source:" + self.kind_of(changed_py[0])) if changed_py else None)
         if self.lang == "pytest":
             if base:
@@ -534,15 +743,23 @@ class Walker:
             self.added_cache[key] = a is not None and b is not None and pytest_section(a, rel) == pytest_section(b, rel)
         return self.added_cache[key]
 
+    def reason_label(self, r):
+        kind, what = r
+        if kind in ("runtime", "env-var"):
+            return f"{kind}:{what}"
+        return kind + ":" + self.kind_of(what)
+
     def kind_of(self, p):
+        """Class of a path. ``installed`` = third-party packages (virtualenv, node_modules); ``system`` = any other
+        path outside the repository. (Version 2 labelled both ``env``, which read as "environment variable".)"""
         src = str(self.src) + "/"
         if not p.startswith(src):
-            return "env"
+            return "installed" if p.startswith(str(self.venv) + "/") else "system"
         rel = p[len(src):]
         if strict_config_hit(rel):
             return "config"
         if "/node_modules/" in "/" + rel:
-            return "env"
+            return "installed"
         if rel.endswith((".py", ".ts", ".tsx", ".js", ".mjs", ".cjs", ".vue", ".go", ".jsx", ".mts")):
             return "source"
         return "data"
@@ -629,14 +846,13 @@ class Walker:
                                                    "sum_traced": sum(runs[u]["wall"] for u in units if u in runs),
                                                    "sum_plain": sum(self.costs[u]["wall"] for u in units)}
             # verification of skipped units
-            vres = []
-            for u in ver:
+            def compare(u, extra=None):
                 old = self.records.get(u)
                 new = runs[u]
                 a = outcome_summary(old.get("tests") or {})
                 b = outcome_summary(new.get("tests") or {})
                 same = a == b and (old["code"] == 0) == (new["code"] == 0)
-                item = {"unit": u, "same": same}
+                item = {"unit": u, "same": same, **(extra or {})}
                 if not same:
                     diff = sorted(k for k in set(a) | set(b) if a.get(k) != b.get(k))[:10]
                     item["diff"] = diff
@@ -645,7 +861,15 @@ class Walker:
                              for k in range(2)]
                     item["rerun_matches_cache"] = sum(1 for x in again if x == a)
                     item["rerun_matches_fresh"] = sum(1 for x in again if x == b)
-                vres.append(item)
+                return item
+            vres = [compare(u) for u in ver]
+            # extra skips of the other rules (func+guard, func, ~cfg): units closure reran but that rule would
+            # have reused; every one of them ran fresh here, so every one is compared (R-002 fix 6)
+            xres = []
+            for u in must:
+                rs = [r for r, v in dec[u][0].items() if r != "closure" and v is None]
+                if rs and self.records.get(u) and u in runs:
+                    xres.append(compare(u, {"rules": rs}))
             # unit costs (plain baseline when known, else measured traced test time / overhead)
             for u in units:
                 if u not in self.costs and u in runs:
@@ -660,7 +884,9 @@ class Walker:
                 self.records[u] = r
             if i:
                 tr = {"i": i, "sha": sha, "units": len(units), "changed_files": len(changed),
-                      "strict_config": bool(row["strict_config"]), "verify": vres,
+                      "strict_config": bool(row["strict_config"]), "verify": vres, "xverify": xres,
+                      "cached_fail": sorted(u for u in units if dec[u][0]["closure"] == "cached-failure"),
+                      "runtime": self.runtime(),
                       "decisions": {u: dec[u][0] for u in units if any(dec[u][0].values())},
                       "tests": {u: self.costs.get(u, {}).get("n", 0) for u in units},
                       "new_units": [u for u in units if dec[u][0]["closure"] == "new"]}
@@ -675,6 +901,9 @@ class Walker:
                                             "nread_src": r.get("deps", {}).get("nread_src"),
                                             "execs": r.get("deps", {}).get("execs"),
                                             "net": r.get("deps", {}).get("net"),
+                                            "net_ext": r.get("deps", {}).get("net_ext"),
+                                            "n_rw": r.get("deps", {}).get("n_rw"),
+                                            "env": sorted((r.get("deps", {}).get("env") or {}))[:60],
                                             "code": r.get("code"),
                                             "tail": r.get("tail", "")[-300:]}
                                         for u, r in self.records.items()}
@@ -743,9 +972,14 @@ class Walker:
                 pkg = modpath.get(g)
                 if pkg:
                     reads = {p: self.hasher.file(p) for p in gd.get("reads", [])}
+                    net = gd.get("net", [])
+                    net = net if isinstance(net, list) else []
                     pkgrec[pkg] = {"reads": {p: h for p, h in reads.items() if h}, "missing": gd.get("missing", []),
                                    "execs": len([x for x in gd.get("execs", []) if not x.endswith(".test")]),
-                                   "net": gd.get("net", 0), "i": i}
+                                   "net": len(net), "net_ext": len(external(net)),
+                                   "net_ext_addr": sorted({str(x[0]) for x in external(net)})[:5],
+                                   "runtime": self.runtime(),
+                                   "env": {n: env_value(n, env) for n in ALWAYS_ENV["go"]}, "i": i}
             dec = {}
             for u in units:
                 r = res.get(u)
@@ -754,8 +988,18 @@ class Walker:
                     continue
                 cached = r["cached"]
                 d = {"go-cache": None if cached else ("new" if i == 0 else "go-miss")}
+                prec = pkgrec.get(u)
                 if not cached:
                     d["closure"] = d["go-cache"]
+                elif prec is None:
+                    d["closure"] = "no-record"     # no runtime record of this package: nothing to prove with
+                elif prec.get("net_ext"):
+                    d["closure"] = "network"       # connected to a non-loopback address: never skipped (R-002 3)
+                elif prec.get("runtime") != self.runtime():
+                    d["closure"] = "runtime"
+                elif any(env_value(n, env) != h for n, h in (prec.get("env") or {}).items()):
+                    # variables read below os.Getenv (TZ by package time, ...) are not in go's test log
+                    d["closure"] = "env-var"
                 elif u in rt_changed:
                     d["closure"] = "runtime-read-changed"   # Go's own key did not see it: potential wrong hit
                     d["path"] = os.path.relpath(rt_changed[u], self.src)
@@ -771,6 +1015,10 @@ class Walker:
             cached_pkgs = [u for u in units if dec[u].get("go-cache") is None]
             ver = sorted(set([u for u in cached_pkgs if self.rng.random() < verify] +
                              [u for u in cached_pkgs if dec[u].get("closure") == "runtime-read-changed"])) if i else []
+            # rec_i of every go-cache hit: which run's outcome the cache served
+            for u in cached_pkgs:
+                if pkgrec.get(u):
+                    dec[u]["rec_i"] = pkgrec[u]["i"]
             vres = []
             if ver:
                 c2, o2, _ = sh(["go", "test", "-json", "-count=1", *self.spec.get("go_args", []), *ver], cwd=self.src,
@@ -779,7 +1027,8 @@ class Walker:
                 for u in ver:
                     a, b = res.get(u), fresh.get(u)
                     same = a is not None and b is not None and a["ok"] == b["ok"] and a["fails"] == b["fails"]
-                    item = {"unit": u, "same": same, "potential": dec[u].get("closure") == "runtime-read-changed"}
+                    item = {"unit": u, "same": same, "potential": dec[u].get("closure") == "runtime-read-changed",
+                            "closure_skip": dec[u].get("closure") is None, "closure": dec[u].get("closure")}
                     if not same and b is not None:
                         c3, o3, _ = sh(["go", "test", "-json", "-count=1", *self.spec.get("go_args", []), u],
                                        cwd=self.src, env=env, timeout=3600)
@@ -790,8 +1039,9 @@ class Walker:
             if i:
                 self.result["transitions"].append({
                     "i": i, "sha": sha, "units": len(units), "changed_files": len(changed),
-                    "strict_config": bool(row["strict_config"]), "verify": vres,
-                    "decisions": {u: d for u, d in dec.items() if any(v for k, v in d.items() if k != "spawns")},
+                    "strict_config": bool(row["strict_config"]), "verify": vres, "runtime": self.runtime(),
+                    "decisions": {u: d for u, d in dec.items() if any(v for k, v in d.items()
+                                                                       if k not in ("spawns", "rec_i"))},
                     "spawns": sorted(u for u, d in dec.items() if d.get("spawns")),
                     "tests": {u: self.costs.get(u, {}).get("n", 0) for u in units}})
             row["status"] = "ok"
@@ -803,7 +1053,8 @@ class Walker:
                 f"verify {len(ver)} wall {wall:.0f}s")
             self.result["commits"].append(row)
             self.result["units"] = {u: self.costs.get(u) for u in sorted(self.costs)}
-            self.result["unit_info"] = {u: {"nread": len(r["reads"]), "execs": r["execs"], "net": r["net"]}
+            self.result["unit_info"] = {u: {"nread": len(r["reads"]), "execs": r["execs"], "net": r["net"],
+                                            "net_ext": r.get("net_ext", 0), "net_ext_addr": r.get("net_ext_addr", [])}
                                         for u, r in pkgrec.items()}
             if i % 10 == 0 or i == len(commits) - 1:
                 self.flush()

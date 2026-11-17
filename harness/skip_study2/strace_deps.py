@@ -3,7 +3,15 @@
 ``traced(cmd, ...)`` runs a command under ``strace -f`` and returns what the
 whole process tree observed of the file system:
 
-* ``reads``   files opened for reading (path), never written by the same run;
+* ``reads``   files whose content *before the run* the run could observe: opened read-only, or opened
+              read-write / append (``O_RDWR``, ``O_APPEND``, Python ``"r+"``/``"a"``, sqlite, mmap) when the
+              open neither truncated (``O_TRUNC``, ``creat``) nor created the file (``O_EXCL``, or a probe
+              earlier in the same run found the path missing). A path is classified by its *first* access in
+              the trace: read first -> dependency even if the run writes it later (review R-002 error 1);
+              truncated / created first -> not a dependency;
+* ``rw``      the subset of ``reads`` that the run also opened for writing or modified: their recorded
+              content must be the content before the run (the caller hashes the committed blob), not the
+              content the run left behind;
 * ``exists``  paths successfully stat'ed / accessed (existence and type matter);
 * ``missing`` paths probed that did not exist (a file created there later can
               change module resolution, plugin discovery, ...);
@@ -11,7 +19,8 @@ whole process tree observed of the file system:
               position (line index) of the listing, so callers can drop the
               runner's own discovery crawl;
 * ``execs``   programs executed;
-* ``net``     inet connect() targets (loopback and non-loopback);
+* ``net``     inet connect() attempts [address, port], whatever their result (a refused or unreachable
+              connection also makes the outcome depend on the network); per group as well;
 * ``first``   line index of the first successful read of each path.
 
 Only paths below one of ``roots`` are kept (repository, virtualenv,
@@ -35,6 +44,29 @@ _RETPATH = re.compile(r"^<([^>]*)>")
 _PYC = re.compile(r"^(.*)/__pycache__/([^/.]+)\.[^/]*\.pyc$")
 
 WRITE_FLAGS = ("O_WRONLY", "O_RDWR", "O_CREAT", "O_TRUNC", "O_APPEND")
+_FLAG = re.compile(r"\bO_[A-Z]+\b")
+
+
+def is_local_address(ip, port=0) -> bool:
+    """True only for a loopback / unspecified address that is not a DNS query. Unknown address: not local.
+
+    A connect to port 53 is name resolution: the answer comes from outside the machine even when the resolver
+    listens on loopback (systemd-resolved, 127.0.0.53), so it counts as external network."""
+    import ipaddress
+    if port == 53:
+        return False
+    try:
+        a = ipaddress.ip_address(str(ip))
+    except ValueError:
+        return False
+    if getattr(a, "ipv4_mapped", None):
+        a = a.ipv4_mapped
+    return a.is_loopback or a.is_unspecified
+
+
+def external(net) -> list:
+    """The non-local entries of a ``net`` list ([address, port] pairs)."""
+    return [x for x in net if not is_local_address(x[0], x[1] if len(x) > 1 else 0)]
 STAT_CALLS = {"stat", "lstat", "newfstatat", "statx", "access", "faccessat", "faccessat2", "readlink",
               "readlinkat", "stat64", "lstat64", "fstatat64"}
 OPEN_CALLS = {"open", "openat", "openat2", "creat"}
@@ -91,6 +123,7 @@ def parse(log_path, cwd, roots, group_suffix=None) -> dict:
     cwds = {}
     pending = {}
     reads, written, exists, missing, execs = {}, set(), set(), set(), []
+    first = {}  # path -> "r" (first access observed the content before the run) or "w" (truncated/created first)
     lists = {}
     net = []
     root_pid = None
@@ -102,6 +135,9 @@ def parse(log_path, cwd, roots, group_suffix=None) -> dict:
         g = group.get(pid)
         if g is not None:
             gdeps.setdefault(g, {}).setdefault(kind, set()).add(path)
+
+    def keep(path):
+        return _keep(path, roots) and not any(x in path for x in SKIP_PARTS)
 
     def absify(pid, dirpart, p):
         if p.startswith("/"):
@@ -164,12 +200,14 @@ def parse(log_path, cwd, roots, group_suffix=None) -> dict:
                         lists.setdefault(d, n)
                 continue
             if name == "connect":
-                if ok or "EINPROGRESS" in tail:
-                    if "AF_INET" in args:
-                        gadd(pid, "net", 1)
-                        ip = re.search(r'inet_addr\("([^"]+)"\)|inet_pton\(AF_INET6, "([^"]+)"', args)
-                        port = re.search(r"sin6?_port=htons\((\d+)\)", args)
-                        net.append([(ip.group(1) or ip.group(2)) if ip else "?", int(port.group(1)) if port else 0])
+                # every inet attempt counts, whatever its result: a refused / unreachable / timed-out connection
+                # also makes the outcome depend on the network
+                if "AF_INET" in args:
+                    ip = re.search(r'inet_addr\("([^"]+)"\)|inet_pton\(AF_INET6, "([^"]+)"', args)
+                    port = re.search(r"sin6?_port=htons\((\d+)\)", args)
+                    item = ((ip.group(1) or ip.group(2)) if ip else "?", int(port.group(1)) if port else 0)
+                    gadd(pid, "net", item)
+                    net.append(list(item))
                 continue
             # path syscalls
             dirpart = None
@@ -185,9 +223,18 @@ def parse(log_path, cwd, roots, group_suffix=None) -> dict:
                 if ok:
                     rp = _RETPATH.match(tail.strip())
                     real = rp.group(1) if rp else path
-                    if any(f in flags for f in WRITE_FLAGS) or name == "creat":
+                    fl = set(_FLAG.findall(flags))
+                    if fl & set(WRITE_FLAGS) or name == "creat":
                         written.add(path)
                         written.add(real)
+                        clobber = name == "creat" or "O_TRUNC" in fl or "O_EXCL" in fl or path in missing \
+                            or not (fl & {"O_RDWR", "O_APPEND"})
+                        if clobber:
+                            first.setdefault(path, "w")
+                        elif keep(path) and first.setdefault(path, "r") == "r":
+                            # read-write / append open of an existing file: its content before the run is an input
+                            reads.setdefault(path, n)
+                            gadd(pid, "reads", path)
                         continue
                     if "O_DIRECTORY" in flags:
                         if _keep(path, roots) and not any(x in path for x in SKIP_PARTS):
@@ -196,7 +243,8 @@ def parse(log_path, cwd, roots, group_suffix=None) -> dict:
                     pm = _PYC.match(path)
                     if pm:
                         path = f"{pm.group(1)}/{pm.group(2)}.py"
-                    if _keep(path, roots) and not any(x in path for x in SKIP_PARTS):
+                    if keep(path):
+                        first.setdefault(path, "r")
                         reads.setdefault(path, n)
                         gadd(pid, "reads", path)
                 else:
@@ -219,16 +267,24 @@ def parse(log_path, cwd, roots, group_suffix=None) -> dict:
             elif name in WRITE_CALLS:
                 if ok:
                     written.add(path)
+                    first.setdefault(path, "w")
                     if name in ("rename", "renameat", "renameat2", "symlink", "symlinkat", "link", "linkat"):
                         ss = _STR.findall(args)
                         if len(ss) > 1:
                             written.add(absify(pid, None, _unescape(ss[-1])))
     for d in [d for d in lists if d in written]:
         del lists[d]
+    rw = set()
     for w in written:
-        reads.pop(w, None)
+        if first.get(w) == "r" and w in reads:
+            rw.add(w)  # read (or opened read-write) before the run changed it: a dependency on the old content
+        else:
+            reads.pop(w, None)
         exists.discard(w)
         missing.discard(w)
-    groups = {g: {k: sorted(v - written) if k != "net" else len(v) for k, v in d.items()} for g, d in gdeps.items()}
-    return {"groups": groups, "reads": reads, "exists": sorted(exists - set(reads)), "missing": sorted(missing - exists - set(reads)),
+    dropped = written - rw
+    groups = {g: {k: (sorted(v - dropped) if k != "net" else sorted(list(x) for x in v)) for k, v in d.items()}
+              for g, d in gdeps.items()}
+    return {"groups": groups, "reads": reads, "rw": sorted(rw), "exists": sorted(exists - set(reads)),
+            "missing": sorted(missing - exists - set(reads)),
             "lists": lists, "execs": execs, "net": net, "written": len(written), "lines": n}

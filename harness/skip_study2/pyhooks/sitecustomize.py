@@ -8,7 +8,11 @@ writes <S2_PYREC>/<pid>.json with:
 * ``tried``    every module name the import system looked up (found or not): a file added later that
                provides one of these names can change the result;
 * ``modules``  repository files of the modules loaded at exit;
-* ``lists``    directories listed by Python code other than the import system (os.listdir / os.scandir).
+* ``lists``    directories listed by Python code other than the import system (os.listdir / os.scandir);
+* ``env``      environment variables read through ``os.environ`` / ``os.getenv`` / ``os.environb`` (get, ``in``,
+               ``[]``) by any code in the process (review R-002 error 2). Two pseudo-names: ``*`` when code other
+               than the test runner enumerated the whole environment, ``~proxy`` when the standard library's
+               proxy lookup (``urllib.request.getproxies``) enumerated it for ``*_proxy`` variables.
 """
 
 import os
@@ -104,6 +108,63 @@ if _OUT and _ROOT:
 
     sys.addaudithook(_audit)
 
+    # -- environment variables -------------------------------------------------------------------
+    _env = set()
+    _RUNNER = (os.sep + "_pytest" + os.sep, os.sep + "pluggy" + os.sep, os.sep + "xdist" + os.sep,
+               os.sep + "execnet" + os.sep)
+
+    def _enumerated():
+        try:
+            f = sys._getframe(2)
+        except ValueError:
+            return
+        for _ in range(40):
+            if f is None:
+                break
+            fn = f.f_code.co_filename
+            if fn.endswith(os.sep + "urllib" + os.sep + "request.py") and "proxies" in f.f_code.co_name:
+                _env.add("~proxy")
+                return
+            if fn == __file__ or fn.startswith("<frozen") or fn.startswith(_STDLIB):
+                f = f.f_back
+                continue
+            if any(x in fn for x in _RUNNER):
+                return  # the test runner forwarding or snapshotting the environment
+            break
+        _env.add("*")
+
+    def _per_key_of_enumeration():
+        # ItemsView / ValuesView iteration looks every key up: part of the enumeration, not separate reads
+        try:
+            c = sys._getframe(2).f_code
+        except ValueError:
+            return False
+        return c.co_name == "__iter__" and c.co_filename.endswith("_collections_abc.py")
+
+    def _make(base):
+        class _Recorded(base):
+            def __getitem__(self, key):
+                if not _per_key_of_enumeration():
+                    _env.add(os.fsdecode(key) if isinstance(key, (str, bytes)) else repr(key))
+                return base.__getitem__(self, key)
+
+            def __contains__(self, key):
+                _env.add(os.fsdecode(key) if isinstance(key, (str, bytes)) else repr(key))
+                return base.__contains__(self, key)
+
+            def __iter__(self):
+                _enumerated()
+                return base.__iter__(self)
+        return _Recorded
+
+    for _m in ("environ", "environb"):
+        _o = getattr(os, _m, None)
+        if _o is not None:
+            try:
+                _o.__class__ = _make(type(_o))
+            except TypeError:
+                pass
+
     def _dump():
         mods = set()
         for m in list(sys.modules.values()):
@@ -115,7 +176,7 @@ if _OUT and _ROOT:
         try:
             with open(os.path.join(_OUT, f"{os.getpid()}.json"), "w") as fh:
                 json.dump({"funcs": sorted(_funcs), "tried": sorted(_tried), "modules": sorted(mods),
-                           "lists": sorted(_lists)}, fh)
+                           "lists": sorted(_lists), "env": sorted(_env)}, fh)
         except Exception:
             pass
 
