@@ -1,0 +1,71 @@
+{
+  "name": "vue-core",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/vuejs/core",
+  "commit": "2e2f7c6bef54a85a3ce8db768b11c5562385b65d",
+  "commit_date": "2026-11-17T09:02:11+08:00",
+  "python": "node v20.20.2",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 27.653406885400017,
+  "det_mean_s": 47.99093383290001,
+  "slowdown_pct": 73.54438110205315,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 3168,
+  "unstable_baseline": 6,
+  "unstable_det": 0,
+  "became_stable": 6,
+  "outcome_changed_by_det": 0,
+  "covered": 3164,
+  "not_covered": 0,
+  "reproduced": 4,
+  "never_fails_under_det": 2,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    4,
+    7,
+    3,
+    8
+  ],
+  "seeds_explored": 20,
+  "exploration_runs": 56,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "outcome-only": 4
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "reproduced": [
+      "packages/runtime-core/__tests__/apiCreateApp.spec.ts::api: createApp::runWithContext (seed 4): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "packages/server-renderer/__tests__/render.spec.ts::ssr: pipeToNodeWritable::vnode component::Transition (seed 7): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "packages/server-renderer/__tests__/render.spec.ts::ssr: renderToNodeStream::reset current instance after error in errorCaptured (seed 3): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ]
+  },
+  "runner": "vitest 4.1.11",
+  "node": "node v20.20.2",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "\n    at async PlaywrightBrowserProvider.openPage (/tmp/work/src/vue-core/node_modules/.pnpm/@vitest+browser-playwright@4.1.11_playwright@1.64.1_vite@8.3.5_vitest@4.1.11/node_modules/@vitest/browser-playwright/dist/index.js:1161:23)\n    at async TestProject._openBrowserPage (/tmp/work/src/vue-core/node_modules/.pnpm/vitest@4.1.11_@types+node@26.6.6_@vitest+browser-playwright@4.1.11_@vitest+coverage-v8@4.1.11_jsdom@30.0.1_vite@8.3.5/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:11040:3)\n    at async BrowserPool.openPage (/tmp/work/src/vue-core/node_modules/.pnpm/vitest@4.1.11_@types+node@26.6.6_@vitest+browser-playwright@4.1.11_@vitest+coverage-v8@4.1.11_jsdom@30.0.1_vite@8.3.5/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2578:3)\n    at async BrowserPool.runTests (/tmp/work/src/vue-core/node_modules/.pnpm/vitest@4.1.11_@types+node@26.6.6_@vitest+browser-playwright@4.1.11_@vitest+coverage-v8@4.1.11_jsdom@30.0.1_vite@8.3.5/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2573:3)\n    at async runWorkspaceTests (/tmp/work/src/vue-core/node_modules/.pnpm/vitest@4.1.11_@types+node@26.6.6_@vitest+browser-playwright@4.1.11_@vitest+coverage-v8@4.1.11_jsdom@30.0.1_vite@8.3.5/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2473:3)\n    at async executeTests (/tmp/work/src/vue-core/node_modules/.pnpm/vitest@4.1.11_@types+node@26.6.6_@vitest+browser-playwright@4.1.11_@vitest+coverage-v8@4.1.11_jsdom@30.0.1_vite@8.3.5/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:3779:25)\n    at async file:///tmp/work/src/vue-core/node_modules/.pnpm/vitest@4.1.11_@types+node@26.6.6_@vitest+browser-playwright@4.1.11_@vitest+coverage-v8@4.1.11_jsdom@30.0.1_vite@8.3.5/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13657:7\n    at async file:///tmp/work/src/vue-core/node_modules/.pnpm/vitest@4.1.11_@types+node@26.6.6_@vitest+browser-playwright@4.1.11_@vitest+coverage-v8@4.1.11_jsdom@30.0.1_vite@8.3.5/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13684:11\n    at async file:///tmp/work/src/vue-core/node_modules/.pnpm/vitest@4.1.11_@types+node@26.6.6_@vitest+browser-playwright@4.1.11_@vitest+coverage-v8@4.1.11_jsdom@30.0.1_vite@8.3.5/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13546:19\n    at async Object.main (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/vitest/cli.js:132:5) {\n  log: [],\n  name: 'Error',\n  type: 'Unhandled Error'\n}\ndetjs: trace ../../runs/vue-core/det_0.jsonl: 3172 tests, order digest 0317e48fb0f2654206538873e1ad9d86\n"
+  },
+  "not_reproduced_causes": {
+    "concurrency/event-order": 2
+  }
+}
