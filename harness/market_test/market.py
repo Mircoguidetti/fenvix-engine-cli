@@ -30,6 +30,13 @@ import aggregate  # noqa: E402
 
 RES = HERE / "results"
 
+# default-branch first-parent commits from 2026-08-17 to 2026-11-17 (92 days), MEASURED with
+# git rev-list --first-parent --count --since=2026-08-17T00:00:00Z HEAD on a full clone, 2026-11-17
+COMMITS_92D = {"airflow": 2749, "integrations-core": 728, "moto": 269, "transformers": 1216, "mlflow": 1500,
+               "pydantic-ai": 2610, "prefect": 596, "esphome": 3320, "litellm": 4788, "community-general": 287,
+               "haystack": 833, "home-assistant": 9027}
+DAYS = 92
+
 
 def shards_of(run_ids):
     out = {}
@@ -144,6 +151,9 @@ def summarize(name, shards):
         "commits_per_day": cpd, "capture_overhead": s_all["capture_overhead_ratio"],
         "rerun_kinds": kinds, "rerun_paths": paths, "rows": s_ok["rows"],
     }
+    if name in COMMITS_92D:
+        cpd = COMMITS_92D[name] / DAYS  # the 92-day rate, not the 50-commit window (too noisy)
+    out["commits_per_day"], out["commits_per_day_window"] = cpd, s_all.get("commits_per_day")
     if cpd and cl_ok:
         per_month = cpd * 30.44
         out["commits_per_month"] = per_month
