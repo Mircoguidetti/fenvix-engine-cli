@@ -6,6 +6,9 @@ from pathlib import Path
 
 RES = Path(__file__).resolve().parent.parent / "results"
 FAIL = set("F")
+# Left out of every table and total: rallly's baseline is broken in our setup (every test fails or times out
+# also without detjs), so its "identical" fingerprints are meaningless.
+EXCLUDE = {"rallly"}
 
 
 def pct(a, b):
@@ -18,11 +21,17 @@ def main():
            "tests": 0, "det_tests": 0, "stable": 0, "broken": 0, "broken_always": 0}
     for f in sorted(RES.glob("*.json")):
         r = json.loads(f.read_text())
+        if r.get("name") in EXCLUDE:
+            rows.append(f"| {r['name']} | excluded: baseline broken | | | | | | | | |")
+            continue
         if r.get("status") not in ("ok", "running"):
             rows.append(f"| {r['name']} | {r.get('status')} | | | | | | | | |")
             continue
         bw, sw, dw = r.get("baseline_wall_median_s"), r.get("serial_wall_median_s"), r.get("det_wall_median_s")
         vd = r.get("det_verify") or {}
+        fps = r.get("det_fingerprints") or {}
+        stable_pass = sum(1 for st, _, o in fps.values() if st == "stable" and set(o) == {"P"})
+        tot["stable_pass"] = tot.get("stable_pass", 0) + stable_pass
         broken = r.get("broken_by_controls") or []
         nb = len(broken)
         nba = sum(1 for b in broken if b.get("always"))
@@ -39,7 +48,7 @@ def main():
             f"| {r['name']} | {r.get('tests_baseline')} | {nb_runs}+{ns_runs} | {len(r.get('flaky') or [])} | "
             f"{bw and f'{bw:.0f}' or '-'} | {sw and f'{sw:.0f}' or '-'} | {dw and f'{dw:.0f}' or '-'} | "
             f"{f'x{dw / bw:.1f}' if dw and bw else '-'} / {f'x{dw / sw:.1f}' if dw and sw else '-'} | "
-            f"{vd.get('stable', '-')}/{vd.get('tests', '-')} ({nd_runs} runs) | {nb} ({nba} always) |")
+            f"{vd.get('stable', '-')}/{vd.get('tests', '-')} ({stable_pass} passing; {nd_runs} runs) | {nb} ({nba} always) |")
         base_runs = [x for x in runs if x["label"].startswith("baseline")]
         stress_runs = [x for x in runs if x["label"].startswith("stress")]
         L = lambda o: "P" if o == "passed" else "F" if o in ("failed", "timedOut") else "S" if o == "skipped" else "?"
@@ -71,7 +80,7 @@ def main():
         for a in r.get("ablation") or []:
             abl_rows.append(f"| {r['name']} | `{a['key'][:80]}` | {a.get('all-on')} | {a.get('server-off')} | {a.get('net-off')} | {a.get('vtime-off')} | {a.get('seeds-off')} |")
     print("| Project | Tests | Baseline runs (normal+stress) | Flaky | Baseline wall s | Serial wall s | Det wall s | "
-          "Slowdown vs configured / serial | Identical fingerprints, full suite | Broken by controls |")
+          "Slowdown vs configured / serial | Identical fingerprints, full suite (passing every run) | Broken by controls |")
     print("|---|---|---|---|---|---|---|---|---|---|")
     print("\n".join(rows))
     print()
@@ -88,6 +97,8 @@ def main():
     repos = json.loads((Path(__file__).resolve().parent / "repos.json").read_text())
     for f in sorted(RES.glob("*.json")):
         r = json.loads(f.read_text())
+        if r.get("name") in EXCLUDE:
+            continue
         cfg = repos.get(r.get("name"), {})
         rr, tr = cfg.get("ci_retries"), cfg.get("ci_trace", "-")
         for fl in r.get("flaky") or []:
@@ -103,7 +114,7 @@ def main():
           f"{tot['identical']} ({pct(tot['identical'], tot['flaky'])}); pass in some seed: {tot['pass_seed']}; "
           f"fail in some seed: {tot['fail_seed']}; failing seed replays fail with one fingerprint: {tot['fail_seed_repro']}")
     print(f"- full suites under --det: {tot['stable']}/{tot['det_tests']} tests identical fingerprints "
-          f"({pct(tot['stable'], tot['det_tests'])}); broken by controls {tot['broken']} ({tot['broken_always']} always) "
+          f"({pct(tot['stable'], tot['det_tests'])}; {tot.get('stable_pass', 0)} of them passing in every run); broken by controls {tot['broken']} ({tot['broken_always']} always) "
           f"of {tot['tests']} tests")
 
 
