@@ -1203,21 +1203,47 @@ def _new_budget() -> int:
 
 
 def _install_tracer(t) -> None:
+    """Line preemption in project code (exploration). The trace function is
+    ``detpy._core.LineTracer``, a C callable: a Python trace function runs at the
+    depth of the traced code, so near the recursion limit the test's RecursionError
+    was raised inside it, one frame early (structlog test_recursive checks the last
+    frame of a recursion traceback). The Python fallback below is used only with an
+    older compiled core."""
+
+    def on_budget():
+        nb = _new_budget()
+        if (S.active and S.current is t and S.runq and not getattr(_tls, "in_mu", False)
+                and not _near_recursion_limit()):
+            _preempt(t)
+        return nb
+
+    try:
+        from ._core import LineTracer
+    except ImportError:  # pragma: no cover - older compiled core
+        LineTracer = None
+    if LineTracer is not None:
+        sys.settrace(LineTracer(_USER_CODE, _is_project_code, on_budget, _new_budget()))
+        return
     t.budget = _new_budget()
 
     def line(frame, event, arg):
         if event == "line":
             t.budget -= 1
             if t.budget <= 0:
-                t.budget = _new_budget()
-                if (S.active and S.current is t and S.runq and not getattr(_tls, "in_mu", False)
-                        and not _near_recursion_limit()):
-                    _preempt(t)
+                try:
+                    t.budget = on_budget()
+                except RecursionError:
+                    t.budget = 1
         return line
 
     def call(frame, event, arg):
-        if event == "call" and _is_project_code(frame.f_code):
-            return line
+        if event == "call":
+            try:
+                hit = _is_project_code(frame.f_code)
+            except RecursionError:
+                return None
+            if hit:
+                return line
         return None
 
     sys.settrace(call)

@@ -359,3 +359,34 @@ def test_holder_rejoins_after_an_escape():
 def test_the_watchdog_survives_a_holder_that_rejoins(pytester):
     result, _ = _run(pytester, WATCHDOG, timeout=60)
     result.assert_outcomes(passed=1)
+
+
+# Exploration seeds trace project code to preempt it. The trace function must not
+# add a Python frame: near the recursion limit the RecursionError would then be
+# raised one frame early, inside detpy (structlog test_recursive).
+RECURSION = r'''
+import sys, threading
+
+def test_recursion_error_is_raised_by_the_test_code():
+    t = threading.Thread(target=lambda: None)  # a second thread: preemption is possible
+    t.start()
+    def foo(n):
+        return bar(n)
+    def bar(n):
+        return foo(n)
+    try:
+        foo(1)
+    except RecursionError as e:
+        tb = e.__traceback__
+        while tb.tb_next is not None:
+            tb = tb.tb_next
+        last = tb.tb_frame
+    t.join()
+    assert last.f_code.co_name in ("foo", "bar"), last.f_code.co_filename
+    assert last.f_lineno in (foo.__code__.co_firstlineno + 1, bar.__code__.co_firstlineno + 1)
+'''
+
+
+def test_preemption_tracer_does_not_move_a_recursion_error(pytester):
+    result, _ = _run(pytester, RECURSION, "--det-threads-seed=1", timeout=60)
+    result.assert_outcomes(passed=1)

@@ -7,15 +7,105 @@ use detpy_core::fingerprint::digest_bytes;
 use detpy_core::recorder::{Recorder as CoreRecorder, RecorderConfig};
 use detpy_core::trace::Header;
 use detpy_core::{backend::EventSink, order, trace, verify as v};
-use pyo3::exceptions::{PyKeyError, PyRuntimeError, PyValueError};
+use pyo3::exceptions::{PyKeyError, PyRecursionError, PyRuntimeError, PyValueError};
+use pyo3::intern;
 use pyo3::prelude::*;
-use pyo3::types::PyBytes;
+use pyo3::types::{PyBytes, PyDict, PyString};
 use std::path::PathBuf;
+use std::sync::atomic::{AtomicI64, Ordering};
 use std::sync::{Mutex, MutexGuard};
 
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     // A panic while holding the lock must not make every later call fail.
     m.lock().unwrap_or_else(|e| e.into_inner())
+}
+
+/// Trace function for line preemption (`detpy.threads`, exploration seeds), set
+/// with `sys.settrace`. A C callable: calling it pushes no Python frame, so near the
+/// recursion limit the test's own call raises its RecursionError, not the tracer
+/// (a Python trace function moved it one frame up: structlog `test_recursive`).
+/// It is also cheaper on every traced line.
+///
+/// * `call`: project code (per code object, `cache` filled by `classify`) gets
+///   this object as its local trace function; other frames are not traced.
+/// * `line`: one unit of the budget; at zero `on_budget()` returns the next budget
+///   (and may hand the baton to another thread). A RecursionError raised inside the
+///   callbacks is swallowed: the preemption is skipped, not the test's code.
+#[pyclass(module = "detpy._core", frozen)]
+struct LineTracer {
+    cache: Py<PyDict>,
+    classify: Py<PyAny>,
+    on_budget: Py<PyAny>,
+    budget: AtomicI64,
+}
+
+fn is_recursion_error(py: Python<'_>, e: &PyErr) -> bool {
+    e.is_instance_of::<PyRecursionError>(py)
+}
+
+#[pymethods]
+impl LineTracer {
+    #[new]
+    fn new(cache: Py<PyDict>, classify: Py<PyAny>, on_budget: Py<PyAny>, budget: i64) -> Self {
+        LineTracer {
+            cache,
+            classify,
+            on_budget,
+            budget: AtomicI64::new(budget),
+        }
+    }
+
+    #[getter]
+    fn budget(&self) -> i64 {
+        self.budget.load(Ordering::Relaxed)
+    }
+
+    fn __call__(
+        slf: &Bound<'_, Self>,
+        frame: &Bound<'_, PyAny>,
+        event: &Bound<'_, PyString>,
+        _arg: &Bound<'_, PyAny>,
+    ) -> PyResult<Option<Py<PyAny>>> {
+        let py = slf.py();
+        let me = slf.get();
+        let ev = event.to_cow()?;
+        match ev.as_bytes().first() {
+            Some(b'l') => {
+                if me.budget.fetch_sub(1, Ordering::Relaxed) <= 1 {
+                    match me.on_budget.bind(py).call0() {
+                        Ok(nb) => me
+                            .budget
+                            .store(nb.extract::<i64>().unwrap_or(1).max(1), Ordering::Relaxed),
+                        Err(e) if is_recursion_error(py, &e) => {
+                            me.budget.store(1, Ordering::Relaxed)
+                        }
+                        Err(e) => {
+                            me.budget.store(1, Ordering::Relaxed);
+                            return Err(e);
+                        }
+                    }
+                }
+                Ok(Some(slf.clone().into_any().unbind()))
+            }
+            Some(b'c') if ev == "call" => {
+                let code = frame.getattr(intern!(py, "f_code"))?;
+                let hit = match me.cache.bind(py).get_item(&code)? {
+                    Some(v) => v.is_truthy()?,
+                    None => match me.classify.bind(py).call1((code,)) {
+                        Ok(v) => v.is_truthy()?,
+                        Err(e) if is_recursion_error(py, &e) => false,
+                        Err(e) => return Err(e),
+                    },
+                };
+                Ok(if hit {
+                    Some(slf.clone().into_any().unbind())
+                } else {
+                    None
+                })
+            }
+            _ => Ok(Some(slf.clone().into_any().unbind())),
+        }
+    }
 }
 
 /// Per-test fingerprinting recorder that streams a trace file.
@@ -29,13 +119,18 @@ impl Recorder {
     #[new]
     #[pyo3(signature = (max_events = 10_000, checkpoint_every = 256))]
     fn new(max_events: usize, checkpoint_every: u64) -> Self {
-        Recorder { inner: Mutex::new(CoreRecorder::new(RecorderConfig { max_events, checkpoint_every })) }
+        Recorder {
+            inner: Mutex::new(CoreRecorder::new(RecorderConfig {
+                max_events,
+                checkpoint_every,
+            })),
+        }
     }
 
     /// Start streaming the trace to `path`. `meta_json` is free-form JSON.
     fn open(&self, path: PathBuf, meta_json: &str, order: Vec<String>) -> PyResult<()> {
-        let meta: serde_json::Value =
-            serde_json::from_str(meta_json).map_err(|e| PyValueError::new_err(format!("bad meta json: {e}")))?;
+        let meta: serde_json::Value = serde_json::from_str(meta_json)
+            .map_err(|e| PyValueError::new_err(format!("bad meta json: {e}")))?;
         lock(&self.inner).open(&path, &Header::new(meta, order))?;
         Ok(())
     }
@@ -87,7 +182,14 @@ impl Recorder {
         lock(&self.inner)
             .finished()
             .iter()
-            .map(|f| (f.nodeid.clone(), f.outcome.clone(), f.fingerprint.clone(), f.n_events))
+            .map(|f| {
+                (
+                    f.nodeid.clone(),
+                    f.outcome.clone(),
+                    f.fingerprint.clone(),
+                    f.n_events,
+                )
+            })
             .collect()
     }
 }
@@ -99,19 +201,24 @@ struct Cassette {
 }
 
 fn parse_dir(dir: &str) -> PyResult<Direction> {
-    Direction::parse(dir).ok_or_else(|| PyValueError::new_err(format!("direction must be send/recv, got {dir:?}")))
+    Direction::parse(dir)
+        .ok_or_else(|| PyValueError::new_err(format!("direction must be send/recv, got {dir:?}")))
 }
 
 #[pymethods]
 impl Cassette {
     #[new]
     fn new() -> Self {
-        Cassette { inner: Mutex::new(CoreCassette::default()) }
+        Cassette {
+            inner: Mutex::new(CoreCassette::default()),
+        }
     }
 
     #[staticmethod]
     fn load(path: PathBuf) -> PyResult<Self> {
-        Ok(Cassette { inner: Mutex::new(CoreCassette::load(&path)?) })
+        Ok(Cassette {
+            inner: Mutex::new(CoreCassette::load(&path)?),
+        })
     }
 
     fn save(&self, path: PathBuf) -> PyResult<()> {
@@ -134,34 +241,53 @@ impl Cassette {
     fn append(&self, nodeid: &str, idx: usize, dir: &str, data: &[u8]) -> PyResult<()> {
         let dir = parse_dir(dir)?;
         let mut c = lock(&self.inner);
-        let conn = c.connection_mut(nodeid, idx).ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
+        let conn = c
+            .connection_mut(nodeid, idx)
+            .ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
         conn.append(dir, data);
         Ok(())
     }
 
     fn set_tls(&self, nodeid: &str, idx: usize) -> PyResult<()> {
         let mut c = lock(&self.inner);
-        let conn = c.connection_mut(nodeid, idx).ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
+        let conn = c
+            .connection_mut(nodeid, idx)
+            .ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
         conn.tls = true;
         Ok(())
     }
 
     /// Index of the `nth` connection of `nodeid` to `host:port`, if recorded.
     fn find(&self, nodeid: &str, host: &str, port: u16, nth: usize) -> Option<usize> {
-        lock(&self.inner).find(nodeid, host, port, nth).map(|(i, _)| i)
+        lock(&self.inner)
+            .find(nodeid, host, port, nth)
+            .map(|(i, _)| i)
     }
 
     /// `(host, port, tls, n_segments)` of a recorded connection.
     fn info(&self, nodeid: &str, idx: usize) -> PyResult<(String, u16, bool, usize)> {
         let c = lock(&self.inner);
-        let conn = c.connection(nodeid, idx).ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
+        let conn = c
+            .connection(nodeid, idx)
+            .ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
         Ok((conn.host.clone(), conn.port, conn.tls, conn.segments.len()))
     }
 
-    fn segments<'py>(&self, py: Python<'py>, nodeid: &str, idx: usize) -> PyResult<Vec<(String, Bound<'py, PyBytes>)>> {
+    fn segments<'py>(
+        &self,
+        py: Python<'py>,
+        nodeid: &str,
+        idx: usize,
+    ) -> PyResult<Vec<(String, Bound<'py, PyBytes>)>> {
         let c = lock(&self.inner);
-        let conn = c.connection(nodeid, idx).ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
-        Ok(conn.segments.iter().map(|s| (s.dir.as_str().to_string(), PyBytes::new(py, &s.data))).collect())
+        let conn = c
+            .connection(nodeid, idx)
+            .ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
+        Ok(conn
+            .segments
+            .iter()
+            .map(|s| (s.dir.as_str().to_string(), PyBytes::new(py, &s.data)))
+            .collect())
     }
 
     fn merge(&self, other: &Cassette) {
@@ -235,6 +361,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("TRACE_VERSION", trace::TRACE_VERSION)?;
     m.add_class::<Recorder>()?;
     m.add_class::<Cassette>()?;
+    m.add_class::<LineTracer>()?;
     m.add_function(wrap_pyfunction!(verify, m)?)?;
     m.add_function(wrap_pyfunction!(verify_text, m)?)?;
     m.add_function(wrap_pyfunction!(derive_seed, m)?)?;
