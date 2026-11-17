@@ -1,0 +1,60 @@
+{
+ "run_id": "smoke1",
+ "walk": [
+  {
+   "spec": "smoke/airflow",
+   "shards": 1,
+   "budget_min": 60
+  },
+  {
+   "spec": "smoke/integrations-core",
+   "shards": 1,
+   "budget_min": 60
+  },
+  {
+   "spec": "smoke/moto",
+   "shards": 1,
+   "budget_min": 60
+  },
+  {
+   "spec": "smoke/transformers",
+   "shards": 1,
+   "budget_min": 60
+  },
+  {
+   "spec": "smoke/mlflow",
+   "shards": 1,
+   "budget_min": 60
+  },
+  {
+   "spec": "smoke/pydantic-ai",
+   "shards": 1,
+   "budget_min": 60
+  },
+  {
+   "spec": "smoke/prefect",
+   "shards": 1,
+   "budget_min": 60
+  },
+  {
+   "spec": "smoke/esphome",
+   "shards": 1,
+   "budget_min": 60
+  },
+  {
+   "spec": "smoke/litellm",
+   "shards": 1,
+   "budget_min": 60
+  },
+  {
+   "spec": "smoke/community-general",
+   "shards": 1,
+   "budget_min": 60
+  },
+  {
+   "spec": "smoke/haystack",
+   "shards": 1,
+   "budget_min": 60
+  }
+ ]
+}
