@@ -1,0 +1,30 @@
+{
+  "name": "date-fns",
+  "kind": "popular",
+  "status": "ok",
+  "node": "node v22.23.5",
+  "runner": "vitest 5.0.1",
+  "serial_s": [
+    4.145832706999997,
+    3.947808118999994,
+    3.852525357999994
+  ],
+  "det_s": [
+    4.19224397,
+    4.338435621999999,
+    4.587560789999998
+  ],
+  "tests": 222,
+  "machine": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000009535",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+  },
+  "slowdown_pct": 9.894794560049514
+}

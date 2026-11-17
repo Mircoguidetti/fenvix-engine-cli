@@ -1,0 +1,32 @@
+{
+  "name": "cheerio",
+  "kind": "popular",
+  "status": "ok",
+  "node": "node v22.23.5",
+  "runner": "vitest 5.1.0",
+  "serial_s": [
+    4.831482261000005,
+    4.837503039000005,
+    4.846304034999996
+  ],
+  "det_s": [
+    5.175990872,
+    5.154598381,
+    5.135578459999998
+  ],
+  "tests": 846,
+  "machine": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000009529",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "slowdown_pct": 6.554938352360051,
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T16:01:02.441873+00:00"
+}

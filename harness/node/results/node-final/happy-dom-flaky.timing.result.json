@@ -1,0 +1,32 @@
+{
+  "name": "happy-dom-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "node": "node v20.20.2",
+  "runner": "vitest 4.1.8",
+  "serial_s": [
+    186.774319236,
+    187.68926971899998,
+    187.57962921700005
+  ],
+  "det_s": [
+    193.44423967199998,
+    192.8940169409999,
+    192.05962445299997
+  ],
+  "tests": 8096,
+  "machine": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000009532",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.82.6",
+    "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+  },
+  "slowdown_pct": 2.833136916936718,
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T16:21:31.787857+00:00"
+}
