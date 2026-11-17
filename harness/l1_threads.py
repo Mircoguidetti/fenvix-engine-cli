@@ -57,10 +57,11 @@ MODES = {
 }
 SUITE_MODES = {"plain": [], "det": ["--det"], "l1": L1, "l1-s1": ["--det", "--det-threads", "--det-threads-seed=1"]}
 log, is_fail, hist = A.log, A.is_fail, A.hist
+ARTIFACT_MARKERS = ("DeadlockError", "Timeout (>", "deadlock", "detpy")
 
 
 def pytest_run(p, args: list, out_json: Path, timeout: float, trace: Path | None = None) -> dict:
-    cmd = [p.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", "-p", "no:randomly", "-p", "no:xdist",
+    cmd = [p.python, "-m", "pytest", "-q", "-rfE", "-p", "no:cacheprovider", "-p", "no:randomly", "-p", "no:xdist",
            f"--det-outcomes={out_json}", *p.pytest_args, *args]
     if trace is not None:
         cmd.append(f"--det-trace={trace}")
@@ -80,11 +81,17 @@ def pytest_run(p, args: list, out_json: Path, timeout: float, trace: Path | None
             outcomes, fps = data.get("outcomes", {}), data.get("fingerprints", {})
         except Exception:
             pass
+    msgs = {}
+    for line in out.splitlines():
+        if line.startswith(("FAILED ", "ERROR ")):
+            body = line.split(" ", 1)[1]
+            nodeid, _, msg = body.partition(" - ")
+            msgs.setdefault(nodeid.strip(), (line.split(" ", 1)[0] + " " + msg.strip())[:240])
     m = STATS.search(out)
     stats = dict(zip(("decisions", "switches", "escapes", "deadlocks", "timer_jumps", "managed"),
                      map(int, m.groups()))) if m else None
     return {"exit": code, "duration_s": round(dur, 3), "timed_out": timed_out, "outcomes": outcomes, "fps": fps,
-            "stats": stats, "tail": out[-1500:] if (code not in (0, 1) or timed_out) else ""}
+            "stats": stats, "msgs": msgs, "tail": out[-1500:] if (code not in (0, 1) or timed_out) else ""}
 
 
 def _prepare(project: dict, args):
@@ -115,6 +122,7 @@ def measure_corpus(project: dict, args) -> dict:
     res, p = _prepare(project, args)
     res["kind"] = "corpus"
     res["tests"] = project["tests"]
+    res["baseline_exception"] = project.get("baseline_exception", {})
     if p is None:
         return res
     rd = Path(args.work) / "runs" / p.name
@@ -140,7 +148,8 @@ def measure_corpus(project: dict, args) -> dict:
         row = {"unit": unit["id"], "mode": mode, "seed": seed, "run": i, "exit": r["exit"],
                "duration_s": r["duration_s"], "timed_out": r["timed_out"], "stats": r["stats"], "tail": r["tail"][-600:],
                "outcomes": {t: r["outcomes"].get(t, "missing") for t in unit["targets"]},
-               "fps": {t: r["fps"].get(t) for t in unit["targets"]}}
+               "fps": {t: r["fps"].get(t) for t in unit["targets"]},
+               "msgs": {t: r["msgs"][t] for t in unit["targets"] if t in r["msgs"]}}
         runs.append(row)
         fails = sum(is_fail(o) for o in row["outcomes"].values())
         log(f"{p.name} u{unit['id']} {mode} seed={seed} run={i}: {r['duration_s']}s exit={r['exit']} "
@@ -200,7 +209,9 @@ def measure_corpus(project: dict, args) -> dict:
                 fails = sum(is_fail(r["outcomes"].get(t)) for r in rows)
                 fps = {r["fps"].get(t) for r in rows}
                 d = (verdict.get(t) or {}).get("divergence") or {}
+                failmsgs = [r["msgs"].get(t, "") for r in rows if is_fail(r["outcomes"].get(t))]
                 confirm[t] = {"seed": s, "fails": fails, "runs": len(rows), "distinct_fps": len(fps),
+                              "messages": sorted(set(failmsgs))[:5],
                               "replayed": fails == len(rows) and len(fps) == 1 and None not in fps,
                               "passing_seed": first_pass.get(t), "divergence": d.get("description", "")[:300]}
     return res
@@ -302,6 +313,16 @@ def aggregate(indir: Path, outdir: Path, meta: dict) -> None:
             passes_somewhere = cf.get("passing_seed") is not None or "passed" in row["alone-l1-u"]
             row["passes_somewhere"] = passes_somewhere
             row["reproduced"] = row["replayed"] and passes_somewhere
+            msgs = cf.get("messages", [])
+            row["confirm_messages"] = " | ".join(msgs)[:400]
+            artifact = any(k in m for m in msgs for k in ARTIFACT_MARKERS)
+            expected = (r.get("baseline_exception") or {}).get(t, "")
+            row["baseline_exception"] = expected
+            row["artifact"] = artifact
+            row["matches_baseline"] = bool(expected) and bool(msgs) and all(expected in m for m in msgs)
+            # A flake is reproduced when the replay is exact, the test passes elsewhere, the
+            # failure is not a scheduler artefact and (when known) is the baseline's exception.
+            row["flake_reproduced"] = row["reproduced"] and not artifact and (row["matches_baseline"] or not expected)
             row["divergence"] = cf.get("divergence", "")
             rows.append(row)
     if rows:

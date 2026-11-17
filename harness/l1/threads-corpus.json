@@ -182,6 +182,18 @@
     "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]": "class a",
     "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio+uvloop]": "class a",
     "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]": "class a"
+   },
+   "baseline_exception": {
+    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+uvloop]": "PytestUnraisableExceptionWarning",
+    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]": "RuntimeError",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]": "RuntimeError",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]": "PytestUnhandledThreadExceptionWarning",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]": "PytestUnhandledThreadExceptionWarning",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]": "RuntimeError",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]": "ExceptionGroup",
+    "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]": "PytestUnhandledThreadExceptionWarning",
+    "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio+uvloop]": "ExceptionGroup",
+    "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]": "ExceptionGroup"
    }
   },
   {
@@ -196,6 +208,9 @@
    "pytest_args": [],
    "tests": {
     "tests/test_ticking.py::test_ticking_time": "class a"
+   },
+   "baseline_exception": {
+    "tests/test_ticking.py::test_ticking_time": ""
    }
   },
   {
@@ -210,6 +225,9 @@
    "pytest_args": [],
    "tests": {
     "tests/test_stream.py::TestStream::test_events": "class a"
+   },
+   "baseline_exception": {
+    "tests/test_stream.py::TestStream::test_events": "JSONDecodeError"
    }
   },
   {
@@ -224,6 +242,9 @@
    "pytest_args": [],
    "tests": {
     "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "class a"
+   },
+   "baseline_exception": {
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "AssertionError"
    }
   }
  ],
