@@ -497,7 +497,8 @@ class _DetSession(_Outcomes):
         pc = proofcache.PLUGIN
         if pc is not None:
             out["cache"] = {**pc.summary_data(), "reused_ids": sorted(pc.hits), "verified_ids": sorted(pc.verifying),
-                            "not_cached_ids": pc.not_cached, "miss_ids": pc.misses}
+                            "not_cached_ids": pc.not_cached, "not_cached_where": pc.not_cached_where,
+                            "miss_ids": pc.misses}
         return out
 
     def pytest_report_header(self, config):
