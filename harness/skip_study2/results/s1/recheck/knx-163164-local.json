@@ -1,0 +1,42 @@
+{
+ "unit": "tests/components/knx/test_number.py",
+ "pr": 163164,
+ "rec": {
+  "plain": {
+   "runs": 20,
+   "ui_load_failed": 0
+  },
+  "traced_alone": {
+   "runs": 8,
+   "ui_load_failed": 6
+  },
+  "traced_4_at_once": {
+   "runs": 20,
+   "ui_load_failed": 15
+  },
+  "hooks_only_no_strace": {
+   "runs": 8,
+   "ui_load_failed": 0
+  }
+ },
+ "cur": {
+  "plain": {
+   "runs": 20,
+   "ui_load_failed": 0
+  },
+  "traced_alone": {
+   "runs": 8,
+   "ui_load_failed": 6
+  },
+  "traced_4_at_once": {
+   "runs": 12,
+   "ui_load_failed": 6
+  }
+ },
+ "test": "test_number_ui_load",
+ "where": "local re-check, 4 vCPU container, Python 3.14.6, HA test requirements + knx/mqtt/hassio/http/frontend/recorder integration requirements, --timeout=9 as in HA CI",
+ "traced": "strace -f -qq -y --seccomp-bpf -e trace=%file,getdents64,connect,fchdir,clone,clone3,fork,vfork plus the import hooks, exactly as walk.py",
+ "error": "AssertionError: No Telegram found. Expected: GroupValueRead - 2/0/0 - None",
+ "mechanism": "the test asserts that xknx's StateUpdater has already sent the initial GroupValueRead when the telegram queue drains; under strace (syscall tracing slows the process) the read is often not sent yet. A race made likely by the dependency capture itself, identical at both commits",
+ "verdict": "capture-induced flaky failure: the cached failure was recorded under strace at the base commit; plain runs pass 20/20 at both commits, traced runs fail at both commits. Not a missed dependency"
+}
