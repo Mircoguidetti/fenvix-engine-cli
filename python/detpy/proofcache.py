@@ -397,7 +397,9 @@ class Capture:
         if not _encodable(p):
             self.flags.setdefault(ctx, set()).add("badpath")
             return
-        if p.startswith(("/proc/", "/sys/", "/dev/")):
+        if p.startswith(("/proc/", "/sys/", "/dev/")) and (kind != "d" and os.path.exists(p)):
+            # the content of a pseudo-file (process state, kernel tunables, a device) is not a file's content;
+            # a listing (device enumeration such as /dev/bus/usb) and a missing path are ordinary inputs
             self.flag(ctx, "proc", p)
             return
         if p in self.writers:
@@ -476,6 +478,8 @@ class Capture:
             # (HTTPS_PROXY=http://127.0.0.1:...) or a service the test process tree did not start
             if self._caller_kind() == "infra":
                 return
+            if event == "socket.sendmsg" and len(args) > 1 and args[1] is None and self._both_ends_mine(args[0]):
+                return  # a write on a connected socket whose peer is a socket of this process
             if event == "socket.connect" and self._own_listener(args):
                 # a server this process runs (aiohttp's test server, an in-process HTTP stub): what it answers is
                 # computed by recorded code from recorded inputs. A loopback port of another process (a proxy, a
@@ -521,6 +525,13 @@ class Capture:
         self.active = False  # the check's own /proc reads are not inputs
         try:
             return _own_listener(args)
+        finally:
+            self.active = True
+
+    def _both_ends_mine(self, sock) -> bool:
+        self.active = False
+        try:
+            return _both_ends_mine(sock)
         finally:
             self.active = True
 
@@ -595,7 +606,10 @@ class Capture:
                     self.child_entropy += 1
                     continue
                 if sk == "proc":
-                    self.flag(ctx, "spawn", f"{sp.detail} [reads {p}]")
+                    if op == "d" or (op != "w" and not os.path.exists(p)):
+                        self.read(ctx, p, "d" if op == "d" else "f")  # a listing or a missing path: an input
+                    else:
+                        self.flag(ctx, "spawn", f"{sp.detail} [reads {p}]")
                     continue
                 if op == "w":
                     own.add(p)
@@ -1500,18 +1514,7 @@ def _own_listener(args) -> bool:
     mapped = getattr(ip, "ipv4_mapped", None)
     if not (ip.is_loopback or (mapped is not None and mapped.is_loopback)):
         return False
-    try:
-        fds = os.listdir("/proc/self/fd")
-    except OSError:
-        return False
-    mine = set()
-    for fd in fds:
-        try:
-            link = os.readlink("/proc/self/fd/" + fd)
-        except OSError:
-            continue
-        if link.startswith("socket:["):
-            mine.add(link[8:-1])
+    mine = _own_socket_inodes()
     want = f"{port:04X}"
     for t in ("tcp", "tcp6"):
         try:
@@ -1529,6 +1532,59 @@ def _own_listener(args) -> bool:
         except OSError:
             continue
     return False
+
+
+def _both_ends_mine(sock) -> bool:
+    """A connected TCP socket whose peer address is the local address of a socket this process holds."""
+    import socket as _socket
+
+    try:
+        if sock.family not in (_socket.AF_INET, _socket.AF_INET6) or sock.type & 0xF != _socket.SOCK_STREAM:
+            return False
+        peer = sock.getpeername()
+    except (AttributeError, OSError):
+        return False
+    try:
+        import ipaddress
+
+        ip = ipaddress.ip_address(str(peer[0]).split("%", 1)[0])
+    except ValueError:
+        return False
+    mapped = getattr(ip, "ipv4_mapped", None)
+    if not (ip.is_loopback or (mapped is not None and mapped.is_loopback)):
+        return False
+    mine = _own_socket_inodes()
+    want = f"{int(peer[1]):04X}"
+    for t in ("tcp", "tcp6"):
+        try:
+            with open("/proc/self/net/" + t, "rb") as fh:
+                next(fh, None)
+                for line in fh:
+                    parts = line.split()
+                    if len(parts) < 10:
+                        continue
+                    laddr, _, lport = parts[1].decode().rpartition(":")
+                    if lport == want and parts[9].decode() in mine and _loopback_hex(laddr):
+                        return True
+        except OSError:
+            continue
+    return False
+
+
+def _own_socket_inodes() -> set:
+    mine = set()
+    try:
+        fds = os.listdir("/proc/self/fd")
+    except OSError:
+        return mine
+    for fd in fds:
+        try:
+            link = os.readlink("/proc/self/fd/" + fd)
+        except OSError:
+            continue
+        if link.startswith("socket:["):
+            mine.add(link[8:-1])
+    return mine
 
 
 def _loopback_hex(laddr: str) -> bool:

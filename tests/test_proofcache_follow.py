@@ -400,3 +400,60 @@ def test_cache_epoch_is_kept_across_commits_within_the_window(pytester, run_cach
     # an explicit --det-epoch is used as given
     r, reused, data = run_cache("--det-epoch=2026-03-01T00:00:00")
     assert reused == ids("test_reads_import_stamp", "test_now_is_the_cache_epoch")
+
+
+def test_write_on_a_connection_between_two_own_sockets_is_not_the_network(pytester, run_cache, outside_server):
+    # aiohttp writes with sendmsg(buffers) on the connected socket: no new destination
+    project(pytester, **{"test_m.py": f"""
+        import socket
+
+        def test_own():
+            srv = socket.socket()
+            srv.bind(("127.0.0.1", 0))
+            srv.listen(1)
+            c = socket.create_connection(srv.getsockname())
+            s, _ = srv.accept()
+            s.sendmsg([b"hi"])
+            c.sendmsg([b"yo"])
+            assert c.recv(2) == b"hi" and s.recv(2) == b"yo"
+            for x in (c, s, srv):
+                x.close()
+
+        def test_unix_pair():
+            a, b = socket.socketpair()
+            a.sendmsg([b"x"])
+            assert b.recv(1) == b"x"
+        """})
+    run_cache()
+    _, reused, data = run_cache()
+    assert reused == ids("test_own")
+    # a socketpair's peer is not a TCP address: still refused (conservative)
+    assert nc(data)["test_m.py::test_unix_pair"] == "network connection"
+
+
+def test_device_listing_is_an_input_and_device_content_is_refused(pytester, run_cache):
+    # home-assistant's usb watcher walks /dev/bus/usb: a listing (or its absence) is an input like any directory;
+    # reading a pseudo-file's content (process or kernel state) is never cached
+    project(pytester, **{"test_m.py": """
+        import os
+
+        def test_list_dev():
+            os.listdir("/dev")
+
+        def test_missing_dev_dir():
+            assert not os.path.exists("/dev/detpy-no-such-dir") or True
+            try:
+                os.listdir("/dev/detpy-no-such-dir")
+            except FileNotFoundError:
+                pass
+
+        def test_read_proc_content():
+            open("/proc/uptime").read()
+        """})
+    run_cache()
+    _, reused, data = run_cache()
+    assert "test_m.py::test_read_proc_content" not in reused
+    assert nc(data)["test_m.py::test_read_proc_content"] == "reads /proc, /sys or /dev"
+    assert reused >= ids("test_missing_dev_dir")
+    # /dev's listing is reused only while it is the same (a device appearing reruns the test)
+    assert "test_m.py::test_list_dev" in reused or miss(data)["test_m.py::test_list_dev"].startswith("data")
