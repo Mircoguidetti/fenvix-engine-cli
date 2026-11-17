@@ -20,7 +20,8 @@ function role() {
   if (/[\\/]node_modules[\\/]\.bin[\\/]playwright$/.test(main)) return null; // the runner through its bin link
   const script = path.basename(main);
   if (process.env.DETJS_PW_RUNNER_PID === String(process.pid)) return null;
-  if (LAUNCHERS.test(script) || /[\\/](npm|pnpm|yarn|corepack)[\\/]/.test(process.argv[1] || '')) return null;
+  if (LAUNCHERS.test(script) || /[\\/](npm|pnpm|yarn|corepack)[\\/]/.test(main)) return null;
+  if (/[\\/]node_modules[\\/](.*[\\/])?(tsx|nodemon)[\\/]dist[\\/]cli\.m?js$/.test(main)) return null; // relays to a child Node process
   if (process.env.DETJS_PW_SERVER === '0') return null;
   return 'server';
 }
