@@ -1,0 +1,10 @@
+{
+ "run_id": "r1",
+ "walk": [
+  {"spec": "arrow"}, {"spec": "attrs"}, {"spec": "boltons"}, {"spec": "click"}, {"spec": "flask"},
+  {"spec": "isort"}, {"spec": "jinja"}, {"spec": "marshmallow"}, {"spec": "more-itertools"}, {"spec": "pygments"},
+  {"spec": "sqlparse"}, {"spec": "structlog"}, {"spec": "toolz"}, {"spec": "werkzeug"},
+  {"spec": "pylint"},
+  {"spec": "home-assistant", "shards": 16}
+ ]
+}
