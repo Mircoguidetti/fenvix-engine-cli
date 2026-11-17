@@ -88,6 +88,16 @@ queued behind the shared Actions queue. Its results commit themselves into `resu
   real 2026 time. The final run uses the job's start minute as epoch for every `--det` run and for `detjs serve` (a
   harness choice, not a measured cure).
 
+## First results of the final run 44069979210 (solid-start; other projects still running at 12:41)
+
+- solid-start (11 patches, job-start epoch): 3 tests broken again; 12 of 47 tests with identical fingerprints over
+  3 `--det` runs (MEASURED).
+- Ablation (single-test runs, MEASURED): "server function ping" fails with **every one control switched off in turn**
+  (server, net, vtime, page seeds). So no single control is the cause: either two of them together, or what `--det`
+  always changes (the wrapper config: one worker, serial order). "server function only referenced inside onClick"
+  **passes alone under all controls**: it fails only in the full suite, after other tests (order-dependent under
+  `--det`). Neither points at a single fix.
+
 ## Comparison with Playwright's own retries and trace viewer
 
 From MEASURED baseline failure rates p (retries 0) and the projects' CI settings, ESTIMATED with independent attempts:
