@@ -24,6 +24,13 @@ harness `harness/`, raw results `results/<name>.json` (+ `results/<name>/` diagn
   runs); under `--det` **10 tests always broken + 4 sometimes**, **20 of 289 tests with identical fingerprints over 3
   runs**, slowdown **x6.5** against the configured run (185 s -> 1,200 s) and **x3.6** against a serial run (329 s)
   (MEASURED). Most broken tests have two users or two devices in one test (collaboration through socket.io).
+- **actual** (74 Playwright tests, shard 1/3, 4 workers, app logic in the browser and a web worker; run 44043803663,
+  8 patches, first harness): **8 flaky tests** in 5 baseline + 3 stressed runs (2 in baseline alone; MEASURED). Under
+  `--det` all 8 passed in both full-suite runs; 2 other tests fail sometimes under `--det` (not always). One flaky test
+  was replayed 10 times: **10/10 passed but with 10 different fingerprints** (same draw counts, different page random
+  digest: the order of draws differs between runs, ESTIMATED cause the web worker, limit B3). **3 of 74 tests with
+  identical fingerprints over 2 runs.** Slowdown **x3.6** against the configured run (268 s -> 976 s) and **x2.2**
+  against a serial run (436 s) (MEASURED).
 - **rallly**: baseline broken in our setup (every test fails or times out also without detjs): no numbers.
 - **Share of real flaky browser tests that replay 10/10 with one fingerprint and pass in some seed**: UNKNOWN yet. The
   final batch (etherpad, documenso; known flaky tests from the idle study targeted first) is waiting for the shared
