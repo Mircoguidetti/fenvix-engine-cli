@@ -124,9 +124,10 @@ def install(patcher: Patcher) -> None:
     patcher.set(os, "scandir", disguise(scandir, "os", "scandir"))
     patcher.set(glob, "glob", disguise(glob_glob, "glob", "glob", binds=True))
     patcher.set(glob, "iglob", disguise(glob_iglob, "glob", "iglob", binds=True))
-    # Python 3.13+: pathlib globbing binds os.scandir at class creation.
+    # Python 3.13: pathlib globbing binds os.scandir at class creation (3.14 wraps it in a function that
+    # yields (entry, name, path) and looks os.scandir up at call time: leave that one alone).
     globber = getattr(glob, "_StringGlobber", None)
-    if globber is not None and "scandir" in vars(globber):
+    if globber is not None and getattr(vars(globber).get("scandir"), "__func__", None) is _real_scandir:
         patcher.set(globber, "scandir", staticmethod(scandir))
     patcher.set(pathlib.Path, "iterdir", path_iterdir)
     patcher.set(pathlib.Path, "glob", path_glob)
