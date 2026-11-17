@@ -1,0 +1,110 @@
+{
+  "name": "apollo-client-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/apollographql/apollo-client",
+  "commit": "cde7e247f145d759d67d8596ec98b9aaafda04da",
+  "commit_date": "2024-04-12T10:31:27-04:00",
+  "python": "node v20.20.2",
+  "install": "npm ci --no-audit --no-fund",
+  "pytest_args": [
+    "--config",
+    "./config/jest.config.js"
+  ],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 69.4996985554,
+  "det_mean_s": 121.4697543457,
+  "slowdown_pct": 74.77738302544337,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 2632,
+  "unstable_baseline": 24,
+  "unstable_det": 0,
+  "became_stable": 24,
+  "outcome_changed_by_det": 7,
+  "covered": 2392,
+  "not_covered": 240,
+  "reproduced": 4,
+  "never_fails_under_det": 17,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 3,
+  "seeds_needed": [
+    3,
+    1,
+    1,
+    1
+  ],
+  "seeds_explored": 4,
+  "exploration_runs": 30,
+  "exploration_budget_hit": true,
+  "reasons": {
+    "time": 237,
+    "random": 2,
+    "beyond-trace": 1
+  },
+  "pass_fail_reasons": {
+    "time": 3,
+    "outcome-only": 1
+  },
+  "broken_by_det": 6,
+  "broken_always": 6,
+  "broken_causes": {
+    "time | ApolloError": 1,
+    "time+timers | Error": 5
+  },
+  "broken_examples": {
+    "time | ApolloError": [
+      "src/__tests__/optimistic.ts::optimistic mutation results::optimistic updates using `update`::will insert a single itemAsync to the beginning: ApolloError: expect(received).toBe(expected) // Object.is equality (first diverging source: time)"
+    ],
+    "time+timers | Error": [
+      "src/link/persisted-queries/__tests__/persisted-queries.test.ts::failure path::clears the cache when receiving NotSupported error (error code): Error: thrown: \"Exceeded timeout of 5000 ms for a test. (first diverging source: time)",
+      "src/link/persisted-queries/__tests__/persisted-queries.test.ts::failure path::clears the cache when receiving NotSupported error (error message): Error: thrown: \"Exceeded timeout of 5000 ms for a test. (first diverging source: time)",
+      "src/link/persisted-queries/__tests__/persisted-queries.test.ts::happy path::clears the cache when calling `resetHashCache`: Error: thrown: \"Exceeded timeout of 5000 ms for a test. (first diverging source: time)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 26,
+  "known_present": 26,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {
+    "issue": 26
+  },
+  "examples": {
+    "changed:failed->passed": [
+      "src/__tests__/exports.ts::exports of public entry points::completeness"
+    ],
+    "changed:passed->failed": [
+      "src/__tests__/optimistic.ts::optimistic mutation results::optimistic updates using `update`::will insert a single itemAsync to the beginning",
+      "src/link/persisted-queries/__tests__/persisted-queries.test.ts::failure path::clears the cache when receiving NotSupported error (error code)"
+    ],
+    "reproduced": [
+      "src/react/hooks/__tests__/useSubscription.test.tsx::useSubscription Hook::only warns once using `onSubscriptionData` (seed 3): event #1: [time] performance.now @ <deps>/scheduler/cjs/scheduler.development.js:129 = 1000  <>  [time] performance.now @ <deps>/scheduler/cjs/scheduler.develop",
+      "src/react/hooks/__tests__/useSubscription.test.tsx::useSubscription Hook::should warn when using 'onComplete' and 'onSubscriptionComplete' together (seed 1): event #1: [time] performance.now @ <deps>/scheduler/cjs/scheduler.development.js:129 = 1000  <>  [time] performance.now @ <deps>/scheduler/cjs/scheduler.develop",
+      "src/utilities/caching/__tests__/getMemoryInternals.ts::returns information about cache usage (empty caches) (seed 1): event #0: [time] setTimeout @ src/core/ApolloClient.ts:311 = schedule:10000000000  <>  [random] Math.random @ <deps>/source-map/lib/quick-sort.js:43 = 0.9939737"
+    ],
+    "not-reproduced": [
+      "src/react/hooks/__tests__/useSubscription.test.tsx::useSubscription Hook::should warn when using 'onSubscriptionData' and 'onData' together (seed 4:9/9) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "src/utilities/observables/__tests__/asyncMap.ts::asyncMap::[async] mapFn notifies the observer with an error when an error is thrown inside the mapFn (fixed:0/10) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ]
+  },
+  "runner": "jest 29.7.0",
+  "node": "node v20.20.2",
+  "documented_source": "https://github.com/apollographql/apollo-client/issues/11782",
+  "documented_hints": [
+    "src/link/persisted-queries/__tests__/persisted-queries.test.ts"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "es/react-dom/cjs/react-dom.development.js:26682:5)\n      at finishConcurrentRender (../node_modules/react-dom/cjs/react-dom.development.js:25981:9)\n      at performConcurrentWorkOnRoot (../node_modules/react-dom/cjs/react-dom.development.js:25809:7)\n      at workLoop (../node_modules/scheduler/cjs/scheduler.development.js:266:34)\n      at flushWork (../node_modules/scheduler/cjs/scheduler.development.js:239:14)\n      at Immediate.performWorkUntilDeadline (../node_modules/scheduler/cjs/scheduler.development.js:533:21)\n\nFAIL ../src/testing/react/__tests__/mockSubscriptionLink.test.tsx\n  \u25cf mockSubscriptionLink \u203a should work with multiple subscribers to the same mock websocket\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: 2\n    Received: 5\n\n    Ignored nodes: comments, script, style\n    \u001b[36m<html>\u001b[39m\n      \u001b[36m<head />\u001b[39m\n      \u001b[36m<body>\u001b[39m\n        \u001b[36m<div>\u001b[39m\n          \u001b[36m<div />\u001b[39m\n        \u001b[36m</div>\u001b[39m\n      \u001b[36m</body>\u001b[39m\n    \u001b[36m</html>\u001b[39m\n\n      70 |     await waitFor(\n      71 |       () => {\n    > 72 |         expect(renderCountA).toBe(numRenders);\n         |                              ^\n      73 |       },\n      74 |       { timeout: 1000 }\n      75 |     );\n\n      at timeout (testing/react/__tests__/mockSubscriptionLink.test.tsx:72:30)\n      at runWithExpensiveErrorDiagnosticsDisabled (../node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/config.js:47:12)\n      at checkCallback (../node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:124:77)\n      at checkRealTimersCallback (../node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:118:16)\n      at Driver.fire (../../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/clock.js:314:13)\n      at Immediate.<anonymous> (../../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/clock.js:273:46)\n\n\nTest Suites: 4 failed, 1 skipped, 182 passed, 186 of 187 total\nTests:       6 failed, 103 skipped, 3075 passed, 3184 total\nSnapshots:   161 passed, 161 total\nTime:        161.647 s\nRan all test suites in 3 projects.\nTest results written to: ../../runs/apollo-client-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/apollo-client-flaky/det_0.jsonl: 3184 tests, order digest 7e22bf2c232b933915dc437cc68ca6b0\n"
+  },
+  "not_reproduced_causes": {
+    "external": 2,
+    "unknown": 10,
+    "concurrency/event-order": 8
+  },
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T08:43:47.877215+00:00"
+}
