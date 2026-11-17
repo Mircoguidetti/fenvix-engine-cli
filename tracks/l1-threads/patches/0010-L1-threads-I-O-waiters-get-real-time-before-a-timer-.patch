@@ -1,0 +1,139 @@
+From c2596b0b44ad7e53c5f424ba8becb72a123198bf Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 08:42:54 +0000
+Subject: [PATCH 10/10] L1 threads: I/O waiters get real time before a timer
+ jump; event-loop select timeouts advance the clock
+
+With only socket waiters left the clock used to jump to their timeout at once,
+although data already sent was still in the kernel (Nagle, delayed ACK): boltons
+test_socketutils_netstring timed out. Now the watchdog waits up to the virtual
+time to the next timer (at most the grace) for readiness, and declares a deadlock
+with only I/O waiters after --det-threads-deadlock. A selector wait inside an
+event loop that times out advances the virtual clock as under Level 0 (boltons
+test_wraps_async measured 1 us for asyncio.sleep(0.3)).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ python/detpy/threads.py | 25 +++++++++++++++++----
+ tests/test_threads.py   | 48 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 69 insertions(+), 4 deletions(-)
+
+diff --git a/python/detpy/threads.py b/python/detpy/threads.py
+index 302b2b9..4ed31a3 100644
+--- a/python/detpy/threads.py
++++ b/python/detpy/threads.py
+@@ -366,8 +366,10 @@ def _locked_candidates(me, inline: bool):
+     S.runq = [t for t in S.runq if t.state == RUNNABLE]
+     if S.runq or not inline:
+         return S.runq
+-    if _outside_activity():
+-        return S.runq  # idle: the watchdog waits for the outside world, then fires timers
++    if _outside_activity() or _has(IOWAIT):
++        # Idle: the watchdog waits for the outside world (or for the kernel to
++        # deliver data already sent: Nagle, delayed ACKs), then fires timers.
++        return S.runq
+     # Nothing outside the managed threads can change anything: time jumps, or
+     # nobody can ever be woken.
+     if S.timers and _locked_fire_timer():
+@@ -1161,6 +1163,12 @@ def _wrap_selector_select(real):
+ 
+         if io_wait(pred, timeout, what="selector", real_time=real_time):
+             return real(self, 0)
++        if real_time and timeout:
++            # Same rule as Level 0 (clock._wrap_selector_select): an event-loop wait
++            # that times out advances the virtual clock by its timeout (asyncio.sleep).
++            c = _clock()
++            if c is not None:
++                c.advance(-(-int(timeout * 1e9) // 1_000_000) * 1_000_000)
+         return []
+ 
+     select.__wrapped__ = real
+@@ -1248,9 +1256,18 @@ def _idle_duty() -> None:
+         _locked_hand(None, _locked_choose(None, cands))
+         return
+     outside = _outside_activity()
++    io = _has(IOWAIT)
+     idle = _real_monotonic() - (S.idle_since or _real_monotonic())
+     if S.timers:
+-        if not outside or idle >= CFG.grace:
++        if outside:
++            limit = CFG.grace
++        elif io:
++            # Only I/O waiters: give data in flight as much real time as the
++            # virtual time to the next timer (at most the grace), as a real run would.
++            limit = min(CFG.grace, max(0.0, (S.timers[0][0] - _now()) / 1e9))
++        else:
++            limit = 0.0
++        if idle >= limit:
+             if _locked_fire_timer():
+                 if outside:
+                     _record_uncontrolled("timer fired while outside work was pending")
+@@ -1261,7 +1278,7 @@ def _idle_duty() -> None:
+     if _has(EXTERNAL) or any(t.state == IOWAIT and t.real_deadline is not None for t in S.threads):
+         return
+     blocked = any(t.state in (BLOCKED, IOWAIT) for t in S.threads)
+-    if blocked and idle >= (CFG.deadlock if outside else 0):
++    if blocked and idle >= (CFG.deadlock if (outside or io) else 0):
+         _locked_raise_deadlock()
+         cands = [t for t in S.runq if t.state == RUNNABLE]
+         if cands:
+diff --git a/tests/test_threads.py b/tests/test_threads.py
+index 117ad3c..81316b0 100644
+--- a/tests/test_threads.py
++++ b/tests/test_threads.py
+@@ -477,3 +477,51 @@ def test_stdlib_time_left_is_virtual(pytester):
+     pytester.makepyfile(test_stdlib_time=STDLIB_TIME)
+     result = pytester.runpytest_subprocess(*FLAGS, "-p", "no:cacheprovider", timeout=120)
+     result.assert_outcomes(passed=3)
++
++
++IO_IN_FLIGHT = r'''
++import asyncio, socket, threading, time
++
++def test_pipelined_loopback_pingpong():
++    # Many small writes before reading: the kernel holds some data back (Nagle,
++    # delayed ACK) for a few real milliseconds. Waiting threads must get that time
++    # instead of the clock jumping to their 10 s timeout.
++    srv = socket.socket()
++    srv.bind(("127.0.0.1", 0))
++    srv.listen(1)
++    def server():
++        c, _ = srv.accept()
++        c.settimeout(10)
++        buf = b""
++        n = 0
++        while n < 300:
++            buf += c.recv(4096)
++            while len(buf) >= 4:
++                buf = buf[4:]
++                c.sendall(b"pong")
++                n += 1
++        c.close()
++    t = threading.Thread(target=server)
++    t.start()
++    cl = socket.create_connection(srv.getsockname())
++    cl.settimeout(10)
++    for _ in range(300):
++        cl.sendall(b"ping")
++    got = b""
++    while len(got) < 1200:
++        got += cl.recv(4096)
++    t.join()
++    assert got == b"pong" * 300
++
++def test_event_loop_sleep_advances_the_clock():
++    t0 = time.monotonic()
++    asyncio.run(asyncio.sleep(0.3))
++    assert time.monotonic() - t0 >= 0.3
++'''
++
++
++@pytest.mark.skipif(WITHOUT_PROTOTYPE, reason="needs --det-threads")
++def test_io_in_flight_and_event_loop_waits(pytester):
++    pytester.makepyfile(test_io=IO_IN_FLIGHT)
++    result = pytester.runpytest_subprocess(*FLAGS, "-p", "no:cacheprovider", timeout=120)
++    result.assert_outcomes(passed=2)
+-- 
+2.43.0
+
