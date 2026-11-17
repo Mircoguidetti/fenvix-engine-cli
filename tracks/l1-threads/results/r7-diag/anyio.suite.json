@@ -1,0 +1,282 @@
+{
+ "name": "anyio",
+ "set": "popular",
+ "url": "https://github.com/agronholm/anyio",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009569",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "9df02f0b8362e9f4a1fc3a4404052d0d7016e4f0",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group test",
+ "collected": 4852,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 71.415,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 3615,
+    "skipped": 1192,
+    "xfailed": 5
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 82.785,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 3612,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 3
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 2401.268,
+   "exit": -9,
+   "timed_out": true,
+   "counts": {},
+   "stats": null,
+   "tail": "c\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 262 in _main\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 286 in _console_main\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pytest/__main__.py\", line 9 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 203 in _run_module_as_main\n\nExtension modules: _cffi_backend, uvloop.loop, psutil._psutil_linux (total: 3)\n",
+   "hang": ".ss......ss......ss......ss......ss......ss......ss..... [ 60%]\n.ss...sss......ss......ss......ss......ss......ss......ss......ss......ss......ss......ss......ss......ss......ss......ss............ssss............sss [ 63%]\ns......ss......ss......ss......ss......ss......ss......ss......ss......ss......ss......ss......ss......ss......ss............ssss............ssss....... [ 66%]\n.....ssss......ss......ss..xx..ss......ss............ssss......ss...s...s...s...s...s......ss......ss......ss......ss......ss......ss............ssss... [ 69%]\n.............................................ssssssssssssssss............ssss......ss............ssss............ssss............ssss............ssss... [ 72%]\n.........ssss......ss............ssss......ss...s...s...........F.Fs......ss...s...s...s............ssss...s......ss......ss...s...s......ss...s...s...s [ 75%]\n...s...s...s...s...s...s...s...sss...sss...s...s...s...s...s...s...s...s...s...s......ss...s......ss...s.........s...s...s...s...s...s...s...s...s...s.. [ 78%]\n.s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s......ss......ss...s...s...s.........s...s...s...s...s...s...s...s...s...s...s...s......s. [ 82%]\n..s...s...s.....s...s...s...s......s...s...s.s...s...s.......s...s...s...s...s...s...s...s...s...s...s.....................ss...s...s...s...s...s...s... [ 85%]\ns...s...s...s...s...s...s...s...s...s......ss...s...s...sxxxs...s......ss...s...s......ss...s...s......ss...s...s...s...s...s......s...s...s...s...s.... [ 88%]\n..s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s............s...s...s.......s...s...s.......................................s [ 91%]\n...s...s...s...s...s...s...s...s...s...s...s...s........s...s...sssssss...s...s...s...s...s...s......ss...s...s.........sss.........sss......ss...s...s. [ 94%]\n..s...s...s...s......ss...s...s...s...s...s...s...s...s...s...s...s...s...s......ss......ss...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s. [ 97%]\n...FEFFE.......FTimeout (0:05:00)!\nThread 0x00007ffff27706c0 (most recent call first):\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/detpy/threads.py\", line 216 in _real_sleep\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/detpy/threads.py\", line 1271 in _watchdog\n\nThread 0x00007ffff7ec8bc0 (most recent call first):\n  File \"/tmp/l1t/src/anyio/src/anyio/_backends/_asyncio.py\", line 2438 in run_test\n  File \"/tmp/l1t/src/anyio/src/anyio/pytest_plugin.py\", line 293 in pytest_pyfunc_call\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/python.py\", line 1798 in runtest\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/runner.py\", line 184 in pytest_runtest_call\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/runner.py\", line 250 in <lambda>\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/runner.py\", line 361 in from_call\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/runner.py\", line 249 in call_and_report\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/runner.py\", line 139 in runtestprotocol\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/runner.py\", line 118 in pytest_runtest_protocol\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/main.py\", line 411 in pytest_runtestloop\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/main.py\", line 387 in _main\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/main.py\", line 333 in wrap_session\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/main.py\", line 380 in pytest_cmdline_main\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 262 in _main\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 286 in _console_main\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pytest/__main__.py\", line 9 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 203 in _run_module_as_main\nFatal Python error: Aborted\n\nThread 0x00007ffff27706c0 (most recent call first):\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/detpy/threads.py\", line 216 in _real_sleep\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/detpy/threads.py\", line 1271 in _watchdog\n\nCurrent thread 0x00007ffff7ec8bc0 (most recent call first):\n  File \"/tmp/l1t/src/anyio/src/anyio/_backends/_asyncio.py\", line 2438 in run_test\n  File \"/tmp/l1t/src/anyio/src/anyio/pytest_plugin.py\", line 293 in pytest_pyfunc_call\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/python.py\", line 1798 in runtest\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/runner.py\", line 184 in pytest_runtest_call\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/runner.py\", line 250 in <lambda>\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/runner.py\", line 361 in from_call\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/runner.py\", line 249 in call_and_report\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/runner.py\", line 139 in runtestprotocol\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/runner.py\", line 118 in pytest_runtest_protocol\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/main.py\", line 411 in pytest_runtestloop\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/main.py\", line 387 in _main\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/main.py\", line 333 in wrap_session\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/main.py\", line 380 in pytest_cmdline_main\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 262 in _main\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 286 in _console_main\n  File \"/tmp/l1t/venvs/anyio/lib/python3.13/site-packages/pytest/__main__.py\", line 9 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 203 in _run_module_as_main\n\nExtension modules: _cffi_backend, uvloop.loop, psutil._psutil_linux (total: 3)\n",
+   "msgs": {}
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 211.225,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 3608,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 7
+   },
+   "stats": {
+    "decisions": 1474,
+    "switches": 8634,
+    "escapes": 886,
+    "deadlocks": 4,
+    "timer_jumps": 28,
+    "managed": 716
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "asyncio:base_events.py:1890 Exception in callback <_asyncio.TaskStepMethWrapper object at 0x7ffff32f2ec0>()": "ERROR ",
+    "asyncio:base_events.py:1890 Exception in callback <_asyncio.TaskStepMethWrapper object at 0x7ffff0481390>()": "ERROR ",
+    "asyncio:base_events.py:1890 Task was destroyed but it is pending!": "ERROR ",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]": "FAILED socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]": "FAILED socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio]": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+uvloop]": "FAILED RuntimeError: Runner is closed",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+eager]": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio]": "FAILED RuntimeError: Runner is closed",
+    "tests/test_to_thread.py::test_run_sync_worker_cyclic_references[asyncio]": "FAILED ExceptionGroup: multiple unraisable exception warnings (2 sub-exceptions)"
+   }
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 70.571,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 3615,
+    "skipped": 1192,
+    "xfailed": 5
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 78.934,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 3612,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 3
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 260.27,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 3604,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 11
+   },
+   "stats": {
+    "decisions": 407,
+    "switches": 8095,
+    "escapes": 887,
+    "deadlocks": 6,
+    "timer_jumps": 30,
+    "managed": 707
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "asyncio:base_events.py:1890 Exception in callback <_asyncio.TaskStepMethWrapper object at 0x7ffff3314070>()": "ERROR ",
+    "asyncio:base_events.py:1890 Exception in callback <_asyncio.TaskStepMethWrapper object at 0x7ffff04070d0>()": "ERROR ",
+    "asyncio:base_events.py:1890 Exception in callback <_asyncio.TaskStepMethWrapper object at 0x7ffff27e52a0>()": "ERROR ",
+    "asyncio:base_events.py:1890 Task was destroyed but it is pending!": "ERROR ",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]": "FAILED socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]": "FAILED socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio]": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+uvloop]": "FAILED RuntimeError: Runner is closed",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+eager]": "FAILED blockbuster.blockbuster.BlockingError: Blocking call to io.TextIOWrapper.write",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio]": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio+uvloop]": "FAILED RuntimeError: Runner is closed",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio+eager]": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[queued-asyncio]": "FAILED RuntimeError: Runner is closed",
+    "tests/test_to_thread.py::test_asyncio_worker_thread_loop_closed_during_result_report": "FAILED blockbuster.blockbuster.BlockingError: Blocking call to io.TextIOWrapper.write",
+    "tests/test_to_thread.py::test_run_sync_worker_cyclic_references[asyncio]": "FAILED ExceptionGroup: multiple unraisable exception warnings (2 sub-exceptions)"
+   }
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 198.633,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 3609,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 6
+   },
+   "stats": {
+    "decisions": 1462,
+    "switches": 8647,
+    "escapes": 884,
+    "deadlocks": 2,
+    "timer_jumps": 27,
+    "managed": 720
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {
+    "asyncio:base_events.py:1890 Exception in callback <_asyncio.TaskStepMethWrapper object at 0x7ffff27eba30>()": "ERROR ",
+    "asyncio:base_events.py:1890 Task was destroyed but it is pending!": "ERROR ",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]": "FAILED socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]": "FAILED socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio]": "FAILED detpy.threads.DeadlockError: detpy --det-threads: deadlock: every managed thread is blocked",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+uvloop]": "FAILED RuntimeError: Runner is closed",
+    "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+eager]": "FAILED Failed: Timeout (>20.0s) from pytest-timeout.",
+    "tests/test_to_thread.py::test_run_sync_worker_cyclic_references[asyncio]": "FAILED pytest.PytestUnraisableExceptionWarning: Exception ignored in: <function MemoryObjectSendStream.__del__ at 0x7ffff5b05ee0>"
+   }
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   2,
+   2
+  ],
+  "broken": [
+   "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+   "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+  ],
+  "n_broken": 3,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   2,
+   1
+  ],
+  "broken": [
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+eager]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+uvloop]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[queued-asyncio]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio+eager]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio+uvloop]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio]",
+   "tests/test_to_thread.py::test_asyncio_worker_thread_loop_closed_during_result_report",
+   "tests/test_to_thread.py::test_run_sync_worker_cyclic_references[asyncio]"
+  ],
+  "n_broken": 9,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   2,
+   2
+  ],
+  "broken": [
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+eager]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+uvloop]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio]",
+   "tests/test_to_thread.py::test_run_sync_worker_cyclic_references[asyncio]"
+  ],
+  "n_broken": 4,
+  "sometimes": [
+   "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio]"
+  ],
+  "n_sometimes": 1
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1-s1": [
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+eager]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio]"
+  ],
+  "l1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 2,
+  "loaded_runs": 5
+ }
+}
