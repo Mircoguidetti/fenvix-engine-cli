@@ -11,7 +11,8 @@ Unit = one test file (pytest, vitest) run in its own process, or one Go package.
      (outside discovery) changed entries, a module name it looked up is now provided by an added file, a new
      pytest plugin entry point, an environment variable it read changed, the runtime identity changed
      (interpreter / Node binary / standard library / tzdata / system libraries); never when the unit
-     connected to a non-loopback address, and never when its cached outcome is a failure (R-002 fixes);
+     connected to a non-loopback address or to a loopback HTTP(S) proxy (R-002b), and never when its cached
+     outcome is a failure (R-002 fixes);
    * ``func+guard`` (Python, proof at the Python level): ``closure``, except that a changed repository
      ``.py`` file whose module-level skeleton is unchanged only forces a rerun when a function whose
      definition changed was executed by the unit;
@@ -21,7 +22,8 @@ Unit = one test file (pytest, vitest) run in its own process, or one Go package.
      cold CI). NOT a proof: reported as "go test cache (no proof)". Go ``closure`` = go-cache hit (its key
      covers the Go files, the files opened through package os inside the module and the environment
      variables read through os.Getenv / os.LookupEnv, from go's test log) AND no runtime read changed
-     (strace) AND no non-loopback connect() AND the same runtime identity.
+     (strace) AND no non-loopback connect() and no connect() to a loopback HTTP(S) proxy AND the same
+     runtime identity.
 3. run every unit ``closure`` cannot skip, under strace (plus the Python / Node hooks), and a random sample of
    the skippable ones (verification: the cached outcome must equal the fresh one); a unit that ``closure``
    reruns but another rule would have skipped is compared with its cached outcome too (``xverify``);
@@ -593,8 +595,8 @@ class Walker:
                     h = self.hasher.file(str(f))
                     if h:
                         reads[str(f)] = h
-        nonloop = external(deps["net"])
         env = env if env is not None else self.env()
+        nonloop = external(deps["net"], env)   # a connect to a loopback HTTP(S) proxy is external (R-002b)
         envk = {n: env_value(n, env) for n in sorted(env_names) if not n.startswith(HARNESS_ENV)}
         return {"reads": reads, "exists": exists, "missing": deps["missing"], "lists": lists, "py": py,
                 "net": len(deps["net"]), "net_ext": len(nonloop), "net_ext_addr": sorted({x[0] for x in nonloop})[:5],
@@ -976,8 +978,8 @@ class Walker:
                     net = net if isinstance(net, list) else []
                     pkgrec[pkg] = {"reads": {p: h for p, h in reads.items() if h}, "missing": gd.get("missing", []),
                                    "execs": len([x for x in gd.get("execs", []) if not x.endswith(".test")]),
-                                   "net": len(net), "net_ext": len(external(net)),
-                                   "net_ext_addr": sorted({str(x[0]) for x in external(net)})[:5],
+                                   "net": len(net), "net_ext": len(external(net, env)),
+                                   "net_ext_addr": sorted({str(x[0]) for x in external(net, env)})[:5],
                                    "runtime": self.runtime(),
                                    "env": {n: env_value(n, env) for n in ALWAYS_ENV["go"]}, "i": i}
             dec = {}

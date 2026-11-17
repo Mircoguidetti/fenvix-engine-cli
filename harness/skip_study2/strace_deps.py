@@ -64,9 +64,75 @@ def is_local_address(ip, port=0) -> bool:
     return a.is_loopback or a.is_unspecified
 
 
-def external(net) -> list:
-    """The non-local entries of a ``net`` list ([address, port] pairs)."""
-    return [x for x in net if not is_local_address(x[0], x[1] if len(x) > 1 else 0)]
+PROXY_VARS = ("HTTPS_PROXY", "HTTP_PROXY", "ALL_PROXY")
+_PROXY_DEFAULT_PORT = {"http": 80, "https": 443, "socks": 1080, "socks4": 1080, "socks4a": 1080, "socks5": 1080,
+                       "socks5h": 1080}
+
+
+def proxy_endpoints(env) -> set:
+    """The loopback (address, port) pairs of the HTTP(S) proxies configured in ``env`` (HTTPS_PROXY, HTTP_PROXY,
+    ALL_PROXY, upper or lower case). The address is None for ``localhost`` (any loopback address matches).
+
+    R-002b: a test that reaches an outside service through a proxy on loopback connects only to the proxy (the
+    proxy resolves the name, so there is no DNS connect either). That connect leaves the machine, so it is
+    external network. A proxy that is not on loopback is already external by its address."""
+    import ipaddress
+    from urllib.parse import urlsplit
+    out = set()
+    for name in PROXY_VARS:
+        for k in (name, name.lower()):
+            v = (env or {}).get(k)
+            if not v:
+                continue
+            u = urlsplit(v if "://" in v else "http://" + v)
+            try:
+                host, port = u.hostname, u.port
+            except ValueError:
+                continue
+            if not host:
+                continue
+            port = port or _PROXY_DEFAULT_PORT.get((u.scheme or "http").lower(), 80)
+            if host.lower() == "localhost":
+                out.add((None, port))
+                continue
+            try:
+                a = ipaddress.ip_address(host)
+            except ValueError:
+                continue                     # a named non-local host: its connect is already external
+            if getattr(a, "ipv4_mapped", None):
+                a = a.ipv4_mapped
+            if a.is_loopback or a.is_unspecified:
+                out.add((str(a), port))
+    return out
+
+
+def _is_proxy(ip, port, proxies) -> bool:
+    if not proxies:
+        return False
+    import ipaddress
+    try:
+        a = ipaddress.ip_address(str(ip))
+    except ValueError:
+        return False
+    if getattr(a, "ipv4_mapped", None):
+        a = a.ipv4_mapped
+    for pip, pport in proxies:
+        if port == pport and (str(a) == pip or (pip is None and a.is_loopback)
+                              or (pip is not None and ipaddress.ip_address(pip).is_unspecified and a.is_loopback)):
+            return True
+    return False
+
+
+def external(net, env=None) -> list:
+    """The non-local entries of a ``net`` list ([address, port] pairs). A connect to an HTTP(S) proxy configured
+    in ``env`` on loopback counts as external (R-002b)."""
+    proxies = proxy_endpoints(env) if env else set()
+    out = []
+    for x in net:
+        port = x[1] if len(x) > 1 else 0
+        if not is_local_address(x[0], port) or _is_proxy(x[0], port, proxies):
+            out.append(x)
+    return out
 STAT_CALLS = {"stat", "lstat", "newfstatat", "statx", "access", "faccessat", "faccessat2", "readlink",
               "readlinkat", "stat64", "lstat64", "fstatat64"}
 OPEN_CALLS = {"open", "openat", "openat2", "creat"}
