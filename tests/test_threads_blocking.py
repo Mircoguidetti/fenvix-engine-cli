@@ -426,3 +426,30 @@ def test_lock_operations_inside_the_scheduler_are_plain():
 def test_finalizers_inside_the_scheduler_do_not_reenter_it(pytester):
     result, _ = _run(pytester, FINALIZER, "--det-threads-seed=3", timeout=60)
     result.assert_outcomes(passed=1)
+
+
+# uvloop's event loop waits in C (epoll), invisible to the scheduler: holding the
+# baton there stalled each to_thread worker until the watchdog escaped the loop's
+# thread (anyio's uvloop tests about 3x slower). The loop runs outside the
+# scheduler instead, recorded once.
+UVLOOP = r'''
+import asyncio, threading
+import uvloop
+
+def test_to_thread_under_uvloop():
+    async def main():
+        out = []
+        for i in range(20):
+            out.append(await asyncio.to_thread(lambda i=i: i * 2))
+        return out
+    assert uvloop.run(main()) == [i * 2 for i in range(20)]
+'''
+
+
+def test_a_uvloop_loop_runs_outside_the_scheduler(pytester):
+    pytest.importorskip("uvloop")
+    trace = pytester.path / "t.jsonl"
+    result, _ = _run(pytester, UVLOOP, f"--det-trace={trace}", timeout=60)
+    result.assert_outcomes(passed=1)
+    assert "escapes=0" in result.stdout.str()  # no per-call escape of a C wait
+    assert "uvloop event loop" in trace.read_text()

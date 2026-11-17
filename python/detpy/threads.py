@@ -80,6 +80,7 @@ class Config:
     spin_escape = 1.0  # real s a holder may run without a controlled point while another thread is runnable
     spin_time = 10.0  # same, while the others only wait for time or I/O (a long computation is not a spin)
     escape_ms = 50  # real ms without progress (holder sleeping in C) before an escape
+    escape_fast_ms = 5  # the same while another managed thread is runnable (it waits for the holder)
     preempt = 0  # mean user-code lines between preemptions (0 = off; exploration only)
     starve_ops = 2000  # controlled ops a holder may run while others wait, then it yields
     spin_min_ns = 1_000  # virtual time charged to a failed poll (doubles while the holder spins)
@@ -1560,7 +1561,10 @@ def _watchdog_loop() -> None:
                 stalled_since = now
                 continue
             stalled_ms = (now - stalled_since) * 1000
-            if stalled_ms < CFG.escape_ms:
+            # A holder asleep in C while another thread is runnable (uvloop's C event
+            # loop waiting for a to_thread worker): that thread would run at once in a
+            # plain run, so the escape comes sooner.
+            if stalled_ms < (CFG.escape_fast_ms if S.runq else CFG.escape_ms):
                 continue
             state = _task_state(cur.native)
             if state in ("S", "D"):
@@ -1804,6 +1808,9 @@ def install(patcher, seed: int, grace: float, deadlock: float, preempt: int, stu
     patcher.set(clock, "_sched_sleep", sleep)
     patcher.set(clock, "_sched_managed", managed)
     _PATCHED["on"] = True
+    _LATE["patcher"] = patcher
+    _LATE["uvloop"] = False
+    _patch_late_imports()
 
 
 def activate() -> None:
@@ -1828,7 +1835,57 @@ def activate() -> None:
         _real_start_new_thread(_watchdog, ())
 
 
+def _wrap_outside_run(real, why: str):
+    """Run a C event loop (uvloop) outside the scheduler. Its waits are epoll calls in
+    C that detpy cannot see: holding the baton there stalled every thread it waited
+    for until the watchdog escaped it (one escape per to_thread call: anyio's uvloop
+    tests about 3x slower). The thread leaves the scheduler for the whole run (one
+    ``threads.uncontrolled`` event) and rejoins afterwards; the threads it starts
+    meanwhile are plain threads."""
+
+    def run(self, *args, **kwargs):
+        me = _me()
+        if me is None or S.current is not me:
+            return real(self, *args, **kwargs)
+        _enter(me)
+        S.mu.acquire()
+        if not S.active or S.current is not me:
+            S.mu.release()
+            return real(self, *args, **kwargs)
+        me.state = EXTERNAL
+        _record_uncontrolled(f"thread {me.idx} ({me.name}) runs {why} outside the scheduler")
+        cands = _locked_candidates(me, inline=False)
+        _locked_hand(me, _locked_choose(None, cands) if cands else None)
+        S.mu.release()
+        _tls.t = None
+        try:
+            return real(self, *args, **kwargs)
+        finally:
+            _tls.t = me
+            if S.active:
+                _rejoin(me)
+
+    run.__wrapped__ = real
+    return run
+
+
+def _patch_late_imports() -> None:
+    """Libraries imported after the scheduler was installed (uvloop is imported by
+    anyio's test plugin on first use)."""
+    if _LATE["uvloop"] or _LATE["patcher"] is None:
+        return
+    uv = sys.modules.get("uvloop")
+    loop = getattr(uv, "Loop", None) if uv is not None else None
+    if isinstance(loop, type) and "run_forever" not in vars(loop):
+        _LATE["patcher"].set(loop, "run_forever", _wrap_outside_run(loop.run_forever, "a uvloop event loop"))
+        _LATE["uvloop"] = True
+
+
+_LATE = {"patcher": None, "uvloop": False}
+
+
 def start_test() -> None:
+    _patch_late_imports()
     S.site_counts = {}
     me = _me()
     if me is not None and CFG.seed and CFG.preempt and me.idx == 0:

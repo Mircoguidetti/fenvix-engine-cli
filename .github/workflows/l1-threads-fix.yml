@@ -64,7 +64,7 @@ jobs:
           cd engine
           (cargo test -q -p detpy-core 2>&1 | tail -5) > ../tests.txt
           python -m venv .venv && . .venv/bin/activate
-          pip install -q maturin pytest numpy requests pytest-benchmark
+          pip install -q maturin pytest numpy requests pytest-benchmark uvloop
           maturin develop -q --release
           export TMPDIR=$(mktemp -d)
           python -m pytest tests -q -p no:randomly 2>&1 | tail -25 >> ../tests.txt || true
