@@ -64,6 +64,28 @@ def lpt_makespan(costs, workers):
     return max(loads)
 
 
+_RECHECK = None
+
+
+def recheck_verdicts():
+    """(unit, commit) -> verdict of every re-check of a verification mismatch under results/*/recheck/."""
+    global _RECHECK
+    if _RECHECK is None:
+        _RECHECK = {}
+        for p in RES.glob("*/recheck/*.json"):
+            try:
+                d = json.loads(p.read_text())
+            except Exception:
+                continue
+            v = d.get("verdict")
+            if isinstance(v, dict):  # recheck.py: {unit: verdict}
+                for u, x in v.items():
+                    _RECHECK[(u, d.get("cur"))] = x
+            elif isinstance(v, str) and d.get("unit"):
+                _RECHECK[(d["unit"], d.get("cur"))] = v
+    return _RECHECK
+
+
 def walk_summary(shards, spec):
     """shards: list of walk results of one repository (same commits, disjoint units)."""
     lang = spec["lang"]
@@ -108,7 +130,12 @@ def walk_summary(shards, spec):
                     # wrong hit: the fresh outcome differs from the cached one and is reproducible; otherwise the
                     # unit is flaky at this commit
                     reproducible = (v.get("rerun_matches_fresh") == 2) if "rerun_matches_fresh" in v else True
-                    if v.get("rerun_matches_cache") or not reproducible:
+                    # a re-check (recheck.py or results/*/recheck/*.json) that reran the unit at the cached commit
+                    # and found the cached outcome itself not reproducible overrides: flaky, not wrong
+                    rc = recheck_verdicts().get((v["unit"], t.get("sha")))
+                    if rc:
+                        v = dict(v, recheck=rc)
+                    if v.get("rerun_matches_cache") or not reproducible or (rc and not rc.startswith("code-change")):
                         flaky_v.append({"i": i, **v})
                         verify["flaky"] += 1
                     else:
@@ -352,13 +379,13 @@ def print_md(s):
                   f"{ms(x['time'])} | {ms(x['count'])} | {ttg} | {inv} | {ver} |")
     if s["agent"]:
         print()
-        print("| repository : agent | PRs | pushes | rule | time skipped per push median / mean | verified (wrong) |")
+        print("| repository : agent | PRs | pushes | rule | time skipped per push median / mean | verified (wrong, flaky) |")
         print("|---|---:|---:|---|---:|---|")
         for k, ag in s["agent"].items():
             for r, st in ag["pooled_time"].items():
                 if st:
                     print(f"| {k} | {len(ag['prs'])} | {ag['pushes']} | {r} | {ms(st)} | "
-                          f"{ag['verify'].get('checked', 0)} ({ag['verify'].get('wrong', 0)}) |")
+                          f"{ag['verify'].get('checked', 0)} ({ag['verify'].get('wrong', 0)}, {ag['verify'].get('flaky', 0)}) |")
     if s["flaky"]:
         print()
         print("| suite | CI groups | runs | failed runs, reproducible-flaky | always failing groups | flaky run rate | "
