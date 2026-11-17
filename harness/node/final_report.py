@@ -37,13 +37,14 @@ def main() -> None:
     T, F, P = (collections.Counter(tot.get(k, {})) for k in ("all", "flaky", "popular"))
     pw = [s for s in load(RES, "*.summary.json") if s.get("kind") == "playwright" and s.get("status") == "ok"]
     sel = meta.get("selection", {})
+    discards = sel.get("discarded", []) + [r for r in meta.get("rounds", []) if r.get("status") != "ok"]
     timings = summary.get("timings", [])
     causes = collections.Counter(summary.get("not_reproduced_causes", {}))
     reasons = summary.get("reasons", {})
     pf = summary.get("pass_fail_reasons", {})
     broken = summary.get("broken_causes", {})
     before_runs = []
-    for d in ("node-before-fixes", "node-before-fixes-2"):
+    for d in ("node-before-fixes", "node-before-fixes-2", "node-before-fixes-3", "node-before-fixes-4"):
         before_runs += [s for s in load(HERE / "results" / d, "*.summary.json")]
     before_by = {s["name"]: s for s in before_runs}
     now_by = {s["name"]: s for s in repos}
@@ -103,17 +104,18 @@ def main() -> None:
       "measurable project(s). The pool was completed with projects whose GitHub issues document a flaky Jest/Vitest "
       "test (curated list of popular repositories, then a GitHub-wide issue search restricted to JS/TS repositories with "
       "≥ 1000 stars), each pinned at the last commit before the issue was opened.")
-    A(f"**Selection (MEASURED).** {len(sel.get('selected', []))} projects passed the filters (clone, install, runner "
+    A(f"**Selection (MEASURED).** {len(repos) + len(pw)} projects passed the filters and were measured (clone, install, runner "
       "found — also in a workspace package —, ≥ 50 test outcomes, < 50% failing, first run < 180 s): "
       f"{nflaky} documented-flaky, {npop} popular, {len(pw)} Playwright. Discarded: "
-      + ", ".join(f"{k} {v}" for k, v in collections.Counter(d['status'] for d in sel.get('discarded', [])).most_common())
+      + ", ".join(f"{k} {v}" for k, v in collections.Counter(d['status'] for d in discards).most_common())
       + ". Every discarded candidate is listed with its reason in `harness/node/results/node/REPORT.md`.")
     if nflaky < 25:
         A(f"\n**Shortfall:** the documented-flaky pool has {nflaky} measurable projects, not 25 (MEASURED). The other "
           "candidates (all listed) need a build, a browser, services or an old toolchain (Jest < 27 without "
           "jest-circus, Vitest < 1.4), or their suites fail on a clean runner.")
     A("")
-    A("## Main results (MEASURED, 10 baseline + 10 `--det` runs, seeds 1..20, 10/10 confirmation)\n")
+    A(f"## Main results (MEASURED, {meta.get('runs', 10)} baseline + {meta.get('runs', 10)} `--det` runs per project, "
+      f"seeds 1..{meta.get('seeds', 20)}, {meta.get('confirm', 10)}/{meta.get('confirm', 10)} confirmation)\n")
     A("| pool | projects | tests | unstable in baseline | reproduced | % | never fail under --det | fail sometimes | always fail |")
     A("|---|---:|---:|---:|---:|---:|---:|---:|---:|")
     for label, t, n in (("documented flaky", F, nflaky), ("popular", P, npop), ("total", T, len(repos))):
@@ -144,6 +146,20 @@ def main() -> None:
     A("| in-process runners lacked `NODE_ENV=test` / `VITEST` (user-event, jotai) | every user-event suite failed (Babel config) |")
     A("| runner outside the project root refused by Vite `server.fs` (jotai) | 0 of 44 files ran under `--det` |")
     A("| in-band Jest never exits on suites with open handles (react-testing-library) | `--det` run timed out |")
+    A("| fast virtual timers fired while React `act()` / scheduler `setImmediate` chains were pending (apollo-client) | "
+      "34 tests broken by `--det` in a local run (MEASURED locally), 3 after the fix (limit J15) |")
+    A("| Jest compiled the detjs `testRunner` with the project's transform (matrix-js-sdk, immutable-js) | every suite "
+      "failed under `--det` (`@babel/runtime` not found; buble syntax error) |")
+    A("| awaited in-process `jest-cli` run added an `at async main` frame to async stacks (babel) | stack-trace inline "
+      "snapshots failed under `--det` |")
+    A("| custom Jest `runner` (jest-light-runner) bypassed detjs (babel, prettier) | Level 0 not applied: 0 of ~25 000 "
+      "tests traced |")
+    A("")
+    A("Harness defects fixed on the way (they affected the measurement, not detjs): the project's test-script flags "
+      "(`--config`, Node flags, variables) were ignored (apollo-client: every suite failed), leftover web servers survived "
+      "a run (process groups now killed), runs that hang after writing their report were discarded "
+      "(react-testing-library), the test-script flags were applied even when a plain run was better (vercel: 3212 → 30 "
+      "tests).")
     A("")
     if common:
         A("| project | broken by --det before | after |")
@@ -206,10 +222,14 @@ def main() -> None:
         A("No Playwright project measured (UNKNOWN).\n")
 
     A("## Limits found\n")
-    A("The full list with the project where each was found is in `docs/NODE.md` (J1–J14). The ones that matter most "
-      "for the numbers: J4 (fast virtual timers versus real I/O once I/O is pending), J5 (cost of call sites), J2 "
-      "(vm pools / browser mode not covered), J3 (Jest `setupFiles` run before the controls), J11 (Playwright measured "
-      "only).\n")
+    A("The full list with the project where each was found is in `docs/NODE.md` (J1–J16). The ones that matter most "
+      "for the numbers: J4 (fast virtual timers versus real I/O once I/O is pending), J5 (cost of call sites), J15 (CPU "
+      "time is not virtual time: loops bounded by a virtual deadline can exceed the runner's real timeout), J16 (custom "
+      "Jest runners replaced by jest-runner under `--det`), J2 (vm pools / browser mode not covered), J3 (Jest "
+      "`setupFiles` run before the controls), J11 (Playwright measured only). Not fixed: on matrix-js-sdk, tests that "
+      "switch to Jest's modern fake timers inside a test hang under `--det` with the virtual clock on (they pass with "
+      "`--det-disable=time`); the interaction between Jest's fake `Date`/`performance` and the virtual clock is not "
+      "understood yet (UNKNOWN cause).\n")
 
     A("## Cockpit readiness\n")
     A("What the Node outputs already give per test, as the Python ones: the outcome per run, the fingerprint (trace "
