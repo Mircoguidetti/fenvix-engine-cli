@@ -494,6 +494,25 @@ def _switch(me) -> None:
         _wait_gate(me)
 
 
+_HEADROOM = 60  # frames kept free below the recursion limit for the scheduler itself
+
+
+def _near_recursion_limit() -> bool:
+    try:
+        sys._getframe(150)  # cheap common case: a shallow stack
+        sys._getframe(sys.getrecursionlimit() - _HEADROOM)
+    except ValueError:
+        return False
+    return True
+
+
+def _check_depth() -> None:
+    """A RecursionError inside the scheduler (while it holds its lock or has changed a
+    thread's state) would wedge every thread: raise it before entering instead."""
+    if _near_recursion_limit():
+        raise RecursionError("maximum recursion depth exceeded")
+
+
 def _enter(me) -> None:
     """Start of every controlled operation of a managed thread: rejoin if escaped."""
     S.ops += 1
@@ -528,6 +547,7 @@ def _point(me) -> None:
     if not S.runq:
         if not (CFG.seed and S.since_switch & 31 == 0 and _has(IOWAIT)):
             return
+    _check_depth()
     if CFG.seed:
         if _DEBUG:
             _dbg(f"point {me.idx} at {_site()}")
@@ -599,6 +619,7 @@ def sleep(ns: int) -> bool:
     if me is None:
         return False
     _enter(me)
+    _check_depth()
     S.mu.acquire()
     if not S.active:
         S.mu.release()
@@ -654,6 +675,7 @@ def io_wait(pred, timeout=None, what="I/O", real_time=False) -> bool:
         return True
     if timeout is not None and timeout <= 0:
         return False
+    _check_depth()
     S.mu.acquire()
     if not S.active:
         S.mu.release()
@@ -737,6 +759,7 @@ class SchedLock:
             return True
         if not blocking:
             return False
+        _check_depth()
         if timeout is not None and timeout >= 0:
             deadline = _now() + _ns(timeout)
         else:
@@ -765,6 +788,8 @@ class SchedLock:
                 return False
 
     def release(self):
+        if (self._nwait or S.runq) and _me() is not None:
+            _check_depth()
         self._real.release()
         if self._nwait:
             S.mu.acquire()
@@ -877,6 +902,7 @@ def _wrap_start_thread(real):
         if me is None or _started_by_infra():
             return real(function, *args, **kwargs)
         _enter(me)
+        _check_depth()
         thread_obj = getattr(_tls, "starting", None)
         _tls.starting = None
         name = getattr(thread_obj, "name", "thread")
@@ -973,6 +999,7 @@ def _wrap_join(real):
         t = getattr(self, "_detpy_t", None)
         if me is not None and t is not None and t is not me:
             _enter(me)
+            _check_depth()
             S.mu.acquire()
             if S.active and t.state != FINISHED:
                 ok = _block(me, BLOCKED, f"join of thread {t.idx} ({t.name})", obj=t,
@@ -1040,7 +1067,8 @@ def _install_tracer(t) -> None:
             t.budget -= 1
             if t.budget <= 0:
                 t.budget = _new_budget()
-                if S.active and S.current is t and S.runq and not getattr(_tls, "in_mu", False):
+                if (S.active and S.current is t and S.runq and not getattr(_tls, "in_mu", False)
+                        and not _near_recursion_limit()):
                     _preempt(t)
         return line
 

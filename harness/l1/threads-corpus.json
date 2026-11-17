@@ -250,6 +250,133 @@
  ],
  "suites": [
   {
+   "name": "more-itertools",
+   "set": "popular",
+   "url": "https://github.com/more-itertools/more-itertools",
+   "sha": "ceafee8ce96f",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "networkx",
+   "set": "popular",
+   "url": "https://github.com/networkx/networkx",
+   "sha": "2e0ae8ad9578",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "numpy",
+    "scipy"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "structlog",
+   "set": "popular",
+   "url": "https://github.com/hynek/structlog",
+   "sha": "81779f0abe59",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "flask",
+   "set": "popular",
+   "url": "https://github.com/pallets/flask",
+   "sha": "49943b5a9441",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "click",
+   "set": "popular",
+   "url": "https://github.com/pallets/click",
+   "sha": "e38188e9e205",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "boltons",
+   "set": "popular",
+   "url": "https://github.com/mahmoud/boltons",
+   "sha": "d31d821d56c8",
+   "python": [
+    "3.13"
+   ],
+   "install": [],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "jinja",
+   "set": "popular",
+   "url": "https://github.com/pallets/jinja",
+   "sha": "5ef70112a1ff",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "trio"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "rich",
+   "set": "popular",
+   "url": "https://github.com/Textualize/rich",
+   "sha": "3a109ccdffe5",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "attrs"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
+   "name": "idoft-easypy",
+   "set": "thread-heavy",
+   "url": "https://github.com/weka-io/easypy",
+   "sha": "9501c3ee03dc",
+   "python": [
+    "3.9"
+   ]
+  },
+  {
+   "name": "dateutil",
+   "set": "popular",
+   "url": "https://github.com/dateutil/dateutil",
+   "sha": "a78cbd81d5d0",
+   "python": [
+    "3.13"
+   ],
+   "install": [
+    "freezegun",
+    "hypothesis"
+   ],
+   "pytest_args": [],
+   "env": {}
+  },
+  {
    "name": "anyio",
    "set": "popular",
    "url": "https://github.com/agronholm/anyio",
@@ -289,45 +416,6 @@
    "env": {}
   },
   {
-   "name": "boltons",
-   "set": "popular",
-   "url": "https://github.com/mahmoud/boltons",
-   "sha": "d31d821d56c8",
-   "python": [
-    "3.13"
-   ],
-   "install": [],
-   "pytest_args": [],
-   "env": {}
-  },
-  {
-   "name": "click",
-   "set": "popular",
-   "url": "https://github.com/pallets/click",
-   "sha": "e38188e9e205",
-   "python": [
-    "3.13"
-   ],
-   "install": [],
-   "pytest_args": [],
-   "env": {}
-  },
-  {
-   "name": "dateutil",
-   "set": "popular",
-   "url": "https://github.com/dateutil/dateutil",
-   "sha": "a78cbd81d5d0",
-   "python": [
-    "3.13"
-   ],
-   "install": [
-    "freezegun",
-    "hypothesis"
-   ],
-   "pytest_args": [],
-   "env": {}
-  },
-  {
    "name": "faker",
    "set": "popular",
    "url": "https://github.com/joke2k/faker",
@@ -341,18 +429,6 @@
     "ukpostcodeparser",
     "sphinx"
    ],
-   "pytest_args": [],
-   "env": {}
-  },
-  {
-   "name": "flask",
-   "set": "popular",
-   "url": "https://github.com/pallets/flask",
-   "sha": "49943b5a9441",
-   "python": [
-    "3.13"
-   ],
-   "install": [],
    "pytest_args": [],
    "env": {}
   },
@@ -387,20 +463,6 @@
    "env": {}
   },
   {
-   "name": "jinja",
-   "set": "popular",
-   "url": "https://github.com/pallets/jinja",
-   "sha": "5ef70112a1ff",
-   "python": [
-    "3.13"
-   ],
-   "install": [
-    "trio"
-   ],
-   "pytest_args": [],
-   "env": {}
-  },
-  {
    "name": "jsonschema",
    "set": "popular",
    "url": "https://github.com/python-jsonschema/jsonschema",
@@ -421,33 +483,6 @@
     "3.13"
    ],
    "install": [],
-   "pytest_args": [],
-   "env": {}
-  },
-  {
-   "name": "more-itertools",
-   "set": "popular",
-   "url": "https://github.com/more-itertools/more-itertools",
-   "sha": "ceafee8ce96f",
-   "python": [
-    "3.13"
-   ],
-   "install": [],
-   "pytest_args": [],
-   "env": {}
-  },
-  {
-   "name": "networkx",
-   "set": "popular",
-   "url": "https://github.com/networkx/networkx",
-   "sha": "2e0ae8ad9578",
-   "python": [
-    "3.13"
-   ],
-   "install": [
-    "numpy",
-    "scipy"
-   ],
    "pytest_args": [],
    "env": {}
   },
@@ -504,20 +539,6 @@
    "env": {}
   },
   {
-   "name": "rich",
-   "set": "popular",
-   "url": "https://github.com/Textualize/rich",
-   "sha": "3a109ccdffe5",
-   "python": [
-    "3.13"
-   ],
-   "install": [
-    "attrs"
-   ],
-   "pytest_args": [],
-   "env": {}
-  },
-  {
    "name": "sortedcontainers",
    "set": "popular",
    "url": "https://github.com/grantjenks/python-sortedcontainers",
@@ -534,18 +555,6 @@
    "set": "popular",
    "url": "https://github.com/andialbrecht/sqlparse",
    "sha": "09dbe1eec31e",
-   "python": [
-    "3.13"
-   ],
-   "install": [],
-   "pytest_args": [],
-   "env": {}
-  },
-  {
-   "name": "structlog",
-   "set": "popular",
-   "url": "https://github.com/hynek/structlog",
-   "sha": "81779f0abe59",
    "python": [
     "3.13"
    ],
@@ -576,15 +585,6 @@
    "install": [],
    "pytest_args": [],
    "env": {}
-  },
-  {
-   "name": "idoft-easypy",
-   "set": "thread-heavy",
-   "url": "https://github.com/weka-io/easypy",
-   "sha": "9501c3ee03dc",
-   "python": [
-    "3.9"
-   ]
   }
  ]
 }

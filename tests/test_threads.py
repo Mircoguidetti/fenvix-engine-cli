@@ -525,3 +525,44 @@ def test_io_in_flight_and_event_loop_waits(pytester):
     pytester.makepyfile(test_io=IO_IN_FLIGHT)
     result = pytester.runpytest_subprocess(*FLAGS, "-p", "no:cacheprovider", timeout=120)
     result.assert_outcomes(passed=2)
+
+
+DEEP_RECURSION = r'''
+import threading
+
+def test_recursion_through_locks():
+    lock = threading.Lock()
+    cond = threading.Condition()
+    def rec(n):
+        if n % 7 == 0:
+            with lock:
+                pass
+        if n % 11 == 0:
+            with cond:
+                cond.notify_all()
+        a = n
+        b = a + 1
+        return rec(b)
+    errors = []
+    def w():
+        try:
+            rec(0)
+        except RecursionError:
+            errors.append(1)
+    ts = [threading.Thread(target=w) for _ in range(3)]
+    for t in ts:
+        t.start()
+    for t in ts:
+        t.join()
+    assert errors == [1, 1, 1]
+'''
+
+
+@pytest.mark.skipif(WITHOUT_PROTOTYPE, reason="needs --det-threads")
+@pytest.mark.parametrize("seed", ["0", "1", "2", "3"])
+def test_recursion_limit_does_not_wedge_the_scheduler(pytester, seed):
+    """A RecursionError raised inside the scheduler (lock held, state half-changed)
+    used to wedge every thread; it is now raised before entering."""
+    pytester.makepyfile(test_deep=DEEP_RECURSION)
+    result = pytester.runpytest_subprocess(*FLAGS, f"--det-threads-seed={seed}", "-p", "no:cacheprovider", timeout=90)
+    result.assert_outcomes(passed=1)
