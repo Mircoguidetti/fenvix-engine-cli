@@ -437,6 +437,20 @@ impl Store {
     /// Copy the entries of `touched` (or their removal) into `disk`, remapping
     /// file and set indices; merge the written paths.
     pub fn merge_into(&self, disk: &mut Store, touched: &BTreeSet<String>) {
+        // file index here -> file index on disk, each file looked up (and copied) once
+        let mut fmap: Vec<Option<u32>> = vec![None; self.files.len()];
+        let mut remap_file = |i: u32, disk: &mut Store| -> u32 {
+            match fmap.get_mut(i as usize) {
+                Some(Some(j)) => *j,
+                Some(slot) => {
+                    let j = disk.add_file(self.files[i as usize].clone());
+                    *slot = Some(j);
+                    j
+                }
+                None => u32::MAX,
+            }
+        };
+        let mut smap: BTreeMap<u32, u32> = BTreeMap::new();
         for nid in touched {
             match self.tests.get(nid) {
                 None => {
@@ -444,15 +458,15 @@ impl Store {
                 }
                 Some(e) => {
                     let mut e = e.clone();
-                    let remap_file = |i: u32, disk: &mut Store| -> u32 {
-                        match self.files.get(i as usize) {
-                            Some(f) => disk.add_file(f.clone()),
-                            None => u32::MAX,
-                        }
-                    };
                     for id in [&mut e.content, &mut e.skeleton, &mut e.hooks] {
+                        if let Some(&j) = smap.get(id) {
+                            *id = j;
+                            continue;
+                        }
                         let set: Vec<u32> = self.set(*id).iter().map(|&f| remap_file(f, disk)).collect();
-                        *id = disk.intern(set);
+                        let j = disk.intern(set);
+                        smap.insert(*id, j);
+                        *id = j;
                     }
                     for c in e.units.chunks_mut(2) {
                         c[0] = remap_file(c[0], disk);
