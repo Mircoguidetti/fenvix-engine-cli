@@ -70,11 +70,10 @@ bg_stop() {  # bg_stop PIDFILE
 detjs_serve() {
   local mode=$1 seed=$2; shift 3
   if [ "$mode" = det ]; then
-    if [ -n "$seed" ] && [ "$seed" != none ]; then
-      node "$DETJS_BIN" serve --det "--det-seed=$seed" -- "$@"
-    else
-      node "$DETJS_BIN" serve --det -- "$@"
-    fi
+    local opts=(--det)
+    [ -n "$seed" ] && [ "$seed" != none ] && opts+=("--det-seed=$seed")
+    [ -n "${L2_EPOCH:-}" ] && opts+=("--det-epoch=$L2_EPOCH")
+    node "$DETJS_BIN" serve "${opts[@]}" -- "$@"
   else
     "$@"
   fi

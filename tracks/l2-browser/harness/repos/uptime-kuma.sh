@@ -1,7 +1,7 @@
 # louislam/uptime-kuma: Playwright e2e against the app server (webServer in the config; socket.io), as in
 # .github/workflows/auto-test.yml job e2e-test (CI: retries 2, workers 1).
 PW_DIR=.
-PW_ARGS="--max-failures=0"
+PW_ARGS=""
 
 setup() {
   npm clean-install --no-fund

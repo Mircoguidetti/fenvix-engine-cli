@@ -35,8 +35,13 @@ P = {"baseline": 6, "stress": 4, "serial": 2, "det": 3, "replays": 10, "seeds": 
 P.update(CFG.get("params", {}))
 P.update(RUN.get("params", {}))
 DEADLINE = T0 + P["budget_min"] * 60
+# Virtual epoch of every --det run of this job: the job's start minute. Databases, the Playwright
+# worker's own clock and other uncontrolled parts run on real time; a 2025 epoch put the app's
+# timestamps a year behind theirs. Fixed for the whole job, so replays stay comparable.
+EPOCH = time.strftime("%Y-%m-%dT%H:%M:00Z", time.gmtime(T0))
+os.environ["L2_EPOCH"] = EPOCH
 LOG = open(OUT / "study.log", "a")
-FAIL = {"failed", "timedOut", "interrupted"}
+FAIL = {"failed", "timedOut"}
 
 
 def log(msg):
@@ -74,7 +79,7 @@ for d in ("json", "traces", "logs"):
 
 R = {"name": NAME, "repo": CFG["repo"], "ref": CFG["ref"], "status": "running", "run_id": os.environ.get("GITHUB_RUN_ID"),
      "setup_s": int(os.environ.get("L2_SETUP_S") or 0), "params": P, "pw_dir": PW_DIR, "pw_args": PW_ARGS,
-     "server_outside_runner": HAS_SERVER, "runs": [], "measured_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+     "server_outside_runner": HAS_SERVER, "runs": [], "epoch": EPOCH, "measured_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
 try:
     R["machine"] = f"{os.cpu_count()} vCPU, " + open("/etc/os-release").read().split('PRETTY_NAME="')[1].split('"')[0]
 except Exception:
@@ -158,8 +163,9 @@ def run_pw(label, mode, seed=None, filters=(), extra=(), timeout_s=None):
     env = {**os.environ, **PW_ENV, "PLAYWRIGHT_JSON_OUTPUT_NAME": str(jsonf), "DETJS_ROOT": str(PW_CWD)}
     args = ["node", DETJS, "playwright"]
     if mode == "det":
-        args += ["--det", f"--det-trace={trace}"] + ([f"--det-seed={seed}"] if seed is not None else [])
-    args += ["test", *PW_ARGS, *filters, "--retries=0", "--reporter=dot,json", *extra]
+        args += ["--det", f"--det-trace={trace}", f"--det-epoch={EPOCH}"] + ([f"--det-seed={seed}"] if seed is not None else [])
+    # --max-failures=0: configs that stop at the first failure on CI (documenso) would hide the rest.
+    args += ["test", *PW_ARGS, *filters, "--retries=0", "--max-failures=0", "--reporter=dot,json", *extra]
     timeout_s = timeout_s or P["run_timeout_min"] * 60
     timeout_s = max(60, min(timeout_s, remaining() - 120))
     logf = OUT / "logs" / f"{label}.log"
