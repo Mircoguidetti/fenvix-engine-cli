@@ -5,7 +5,21 @@
   "node": "24",
   "why": "known flaky (idle study: embed_value.spec.ts, 1 of 6 runs); CI retries 2; server started before the runner",
   "ci_retries": 2,
-  "ci_trace": "on-first-retry"
+  "ci_trace": "on-first-retry",
+  "known_flaky": [
+   {
+    "file": "embed_value.spec.ts",
+    "grep": "the embed as iframe code is a",
+    "project": "chromium",
+    "source": "idle study 2026-11-16: 1 of 6 runs"
+   }
+  ],
+  "params": {
+   "baseline": 4,
+   "stress": 2,
+   "serial": 1,
+   "det": 2
+  }
  },
  "uptime-kuma": {
   "repo": "louislam/uptime-kuma",
@@ -23,7 +37,39 @@
   "free_disk": true,
   "why": "known flaky (idle study: 3 API tests ECONNRESET under load, 1 UI); CI retries 4, local retries 1",
   "ci_retries": 4,
-  "ci_trace": "retain-on-failure"
+  "ci_trace": "retain-on-failure",
+  "known_flaky": [
+   {
+    "file": "admin-find-documents.spec.ts",
+    "grep": "non-admin user is rejected with 401",
+    "project": "api",
+    "source": "idle study: 1 of 5 runs, ECONNRESET under 10 API workers"
+   },
+   {
+    "file": "admin-find-documents.spec.ts",
+    "grep": "recipient prefix with numeric value matches",
+    "project": "api",
+    "source": "idle study: 1 of 4 runs, ECONNRESET"
+   },
+   {
+    "file": "admin-search.spec.ts",
+    "grep": "non-admin authenticated user is rejected with 401",
+    "project": "api",
+    "source": "idle study: 1 of 4 runs, ECONNRESET"
+   },
+   {
+    "file": "email-transport-claims.spec.ts",
+    "grep": "updating a subscription claim WITH back",
+    "project": "ui",
+    "source": "idle study: 2 of 5 runs, element outside the viewport"
+   }
+  ],
+  "params": {
+   "baseline": 4,
+   "stress": 2,
+   "serial": 0,
+   "det": 2
+  }
  },
  "actual": {
   "repo": "actualbudget/actual",

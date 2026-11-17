@@ -13,7 +13,7 @@ def pct(a, b):
 
 
 def main():
-    rows, flaky_rows = [], []
+    rows, flaky_rows, abl_rows = [], [], []
     tot = {"flaky": 0, "replay10": 0, "identical": 0, "pass_seed": 0, "fail_seed": 0, "fail_seed_repro": 0,
            "tests": 0, "det_tests": 0, "stable": 0, "broken": 0, "broken_always": 0}
     for f in sorted(RES.glob("*.json")):
@@ -40,46 +40,48 @@ def main():
             f"{bw and f'{bw:.0f}' or '-'} | {sw and f'{sw:.0f}' or '-'} | {dw and f'{dw:.0f}' or '-'} | "
             f"{f'x{dw / bw:.1f}' if dw and bw else '-'} / {f'x{dw / sw:.1f}' if dw and sw else '-'} | "
             f"{vd.get('stable', '-')}/{vd.get('tests', '-')} ({nd_runs} runs) | {nb} ({nba} always) |")
-        targets = {t["key"]: t for t in r.get("targets") or []}
-        for fl in r.get("flaky") or []:
-            k = fl["key"]
-            t = targets.get(k)
+        base_runs = [x for x in runs if x["label"].startswith("baseline")]
+        stress_runs = [x for x in runs if x["label"].startswith("stress")]
+        L = lambda o: "P" if o == "passed" else "F" if o in ("failed", "timedOut") else "S" if o == "skipped" else "?"
+        for t in r.get("targets") or []:
+            k = t.get("matched_key") or t.get("key") or t.get("grep")
+            bl = "".join(L((x.get("outcomes") or {}).get(k)) if k in (x.get("outcomes") or {}) else "-" for x in base_runs)
+            sl = "".join(L((x.get("outcomes") or {}).get(k)) if k in (x.get("outcomes") or {}) else "-" for x in stress_runs)
             tot["flaky"] += 1
-            if not t:
-                flaky_rows.append(f"| {r['name']} | `{k[:90]}` | {fl['baseline']} | {fl['stress']} | {fl['det']} | not targeted | | | |")
-                continue
             reps = t.get("replays") or []
             rv = t.get("replay_verify") or {}
             identical = rv.get("status") == "stable" and rv.get("distinct_fingerprints") == 1 and len(reps) >= 10
-            if len(reps) >= 10:
-                tot["replay10"] += 1
-            if identical:
-                tot["identical"] += 1
+            tot["replay10"] += len(reps) >= 10
+            tot["identical"] += identical
             seeds = t.get("seeds") or {}
             outs = list(reps) + list(seeds.values())
-            ps = any(o == "passed" for o in outs)
-            fs = [s for s, o in seeds.items() if o in ("failed", "timedOut")]
-            tot["pass_seed"] += ps
-            tot["fail_seed"] += bool(fs or any(o in ("failed", "timedOut") for o in reps))
+            tot["pass_seed"] += any(o == "passed" for o in outs)
+            tot["fail_seed"] += any(o in ("failed", "timedOut") for o in outs)
             fr = t.get("failing_seed_replays") or []
             fv = t.get("failing_seed_verify") or {}
             repro = bool(fr) and all(o in ("failed", "timedOut") for o in fr) and fv.get("distinct_fingerprints") == 1
             tot["fail_seed_repro"] += repro
-            rl = "".join("P" if o == "passed" else "F" if o in ("failed", "timedOut") else "?" for o in reps)
-            sl = " ".join(f"{s}:{'P' if o == 'passed' else 'F' if o in ('failed', 'timedOut') else '?'}" for s, o in seeds.items())
+            rl = "".join(L(o) for o in reps)
+            sdl = " ".join(f"{sd}:{L(o)}" for sd, o in seeds.items())
             flaky_rows.append(
-                f"| {r['name']} | `{k[:90]}` | {fl['baseline']} | {fl['stress']} | {fl['det']} | {rl} | "
-                f"{rv.get('distinct_fingerprints', '-')} | {sl} | "
-                f"{t.get('failing_seed', '-')}: {''.join('F' if o in ('failed', 'timedOut') else 'P' for o in fr)} "
-                f"({fv.get('distinct_fingerprints', '-')} fp) |")
+                f"| {r['name']} | `{str(k)[:80]}` | {'known' if t.get('known') else 'this job'} | {bl} | {sl} | {t.get('plain_runs', '-')} | {rl} | "
+                f"{rv.get('distinct_fingerprints', '-')} | {sdl} | "
+                f"{t.get('failing_seed', '-')}: {''.join(L(o) for o in fr)} ({fv.get('distinct_fingerprints', '-')} fp) |"
+                + (f" {t['error'][:80]}" if t.get("error") else ""))
+        for a in r.get("ablation") or []:
+            abl_rows.append(f"| {r['name']} | `{a['key'][:80]}` | {a.get('all-on')} | {a.get('server-off')} | {a.get('net-off')} | {a.get('vtime-off')} | {a.get('seeds-off')} |")
     print("| Project | Tests | Baseline runs (normal+stress) | Flaky | Baseline wall s | Serial wall s | Det wall s | "
           "Slowdown vs configured / serial | Identical fingerprints, full suite | Broken by controls |")
     print("|---|---|---|---|---|---|---|---|---|---|")
     print("\n".join(rows))
     print()
-    print("| Project | Flaky test | Baseline | Stress | Det full runs | 10 replays (default seed) | Distinct fp | Seeds | Failing seed replays |")
-    print("|---|---|---|---|---|---|---|---|---|")
+    print("| Project | Flaky test | Source | Baseline (suite) | Stress (suite) | Plain runs (same filter) | Replays --det | Distinct fp | Seeds | Failing seed replays |")
+    print("|---|---|---|---|---|---|---|---|---|---|")
     print("\n".join(flaky_rows))
+    print()
+    print("| Project | Broken test | All controls | Server off | Net off | Vtime off | Seeds off |")
+    print("|---|---|---|---|---|---|---|")
+    print("\n".join(abl_rows))
     print()
     print("| Project | Flaky test | p (baseline, retries 0) | CI retries r | P(failure reported) = p^(r+1) | P(hidden by retries) = p(1-p^r) | CI trace setting | P(a failing attempt traced) |")
     print("|---|---|---|---|---|---|---|---|")

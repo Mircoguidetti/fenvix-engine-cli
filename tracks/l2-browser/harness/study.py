@@ -31,7 +31,7 @@ T0 = time.time()
 RUN = json.loads((H.parent / "RUN").read_text())
 CFG = json.loads((H / "repos.json").read_text())[NAME]
 P = {"baseline": 6, "stress": 4, "serial": 2, "det": 3, "replays": 10, "seeds": 8, "max_targets": 8,
-     "budget_min": 300, "run_timeout_min": 45, "target_timeout_min": 8}
+     "budget_min": 300, "run_timeout_min": 45, "target_timeout_min": 8, "target_plain": 5, "ablation_tests": 3}
 P.update(CFG.get("params", {}))
 P.update(RUN.get("params", {}))
 DEADLINE = T0 + P["budget_min"] * 60
@@ -146,12 +146,13 @@ def kill_group(p):
             pass
 
 
-def run_pw(label, mode, seed=None, filters=(), extra=(), timeout_s=None):
+def run_pw(label, mode, seed=None, filters=(), extra=(), timeout_s=None, server_mode=None, pw_args=None, det_flags=()):
     """One Playwright run (fresh app state and server). Returns the run record."""
-    rec = {"label": label, "mode": mode, "seed": seed, "filters": list(filters), "extra": list(extra)}
+    rec = {"label": label, "mode": mode, "seed": seed, "filters": list(filters), "extra": list(extra),
+           "server_mode": server_mode, "det_flags": list(det_flags)}
     fn("reset")
     if HAS_SERVER:
-        rc, out = fn("server_start", mode, "none" if seed is None else str(seed), timeout=600)
+        rc, out = fn("server_start", server_mode or mode, "none" if seed is None else str(seed), timeout=600)
         if rc != 0:
             rec["error"] = "server_start failed: " + out[-1500:]
             fn("server_stop")
@@ -163,9 +164,9 @@ def run_pw(label, mode, seed=None, filters=(), extra=(), timeout_s=None):
     env = {**os.environ, **PW_ENV, "PLAYWRIGHT_JSON_OUTPUT_NAME": str(jsonf), "DETJS_ROOT": str(PW_CWD)}
     args = ["node", DETJS, "playwright"]
     if mode == "det":
-        args += ["--det", f"--det-trace={trace}", f"--det-epoch={EPOCH}"] + ([f"--det-seed={seed}"] if seed is not None else [])
+        args += ["--det", f"--det-trace={trace}", f"--det-epoch={EPOCH}", *det_flags] + ([f"--det-seed={seed}"] if seed is not None else [])
     # --max-failures=0: configs that stop at the first failure on CI (documenso) would hide the rest.
-    args += ["test", *PW_ARGS, *filters, "--retries=0", "--max-failures=0", "--reporter=dot,json", *extra]
+    args += ["test", *(PW_ARGS if pw_args is None else pw_args), *filters, "--retries=0", "--max-failures=0", "--reporter=dot,json", *extra]
     timeout_s = timeout_s or P["run_timeout_min"] * 60
     timeout_s = max(60, min(timeout_s, remaining() - 120))
     logf = OUT / "logs" / f"{label}.log"
@@ -232,8 +233,136 @@ def budget_for(n_runs, per_run):
     return remaining() > n_runs * per_run + 300
 
 
+# ------------------------------------------------------------------ helpers
+def history(runs):
+    h = {}
+    for r in runs:
+        for k, st in (r.get("outcomes") or {}).items():
+            h.setdefault(k, []).append(st)
+    return h
+
+
+def letters(lst):
+    return "".join("P" if x == "passed" else "F" if x in FAIL else "S" if x == "skipped" else "?" for x in lst)
+
+
+def js_escape(text):
+    return "".join("\\" + c if c in ".*+?^${}()|[]\\/" else c for c in text)
+
+
+def flaky_of(runs):
+    out = []
+    for k, v in history(runs).items():
+        if "passed" in v and any(x in FAIL for x in v):
+            out.append(k)
+    return sorted(out)
+
+
+def spec_of_key(k):
+    """Target spec for a test seen in a JSON report: exact key."""
+    loc = LOC.get(k) or [k.split("::")[0], None]
+    title = k.rsplit(" [", 1)[0].split("::")[-1] if k.endswith("]") else k.split("::")[-1]
+    project = k.rsplit(" [", 1)[1][:-1] if k.endswith("]") else None
+    return {"key": k, "file": Path(loc[0]).name, "grep": title, "project": project, "known": False}
+
+
+def matches(spec, key):
+    if spec.get("key"):
+        return key == spec["key"]
+    if Path(key.split("::")[0]).name != spec["file"] or spec["grep"] not in key:
+        return False
+    return spec.get("project") is None or key.endswith(f" [{spec['project']}]")
+
+
+def outcome_for(spec, run):
+    for k, o in (run.get("outcomes") or {}).items():
+        if matches(spec, k):
+            return k, o
+    return None, "missing"
+
+
+def target_args(spec):
+    filt = [js_escape(spec["file"]), "--grep", js_escape(spec["grep"])]
+    args = None
+    if spec.get("project"):
+        args = [a for a in PW_ARGS if not a.startswith("--project")] + [f"--project={spec['project']}"]
+    return filt, args
+
+
+def verify_for(spec, traces):
+    v = verify(traces)
+    if not v or "tests" not in v:
+        return None
+    for t in v["tests"]:
+        if matches(spec, trace_key(t["nodeid"])):
+            return {"status": t["status"], "distinct_fingerprints": t["distinct_fingerprints"], "runs": len(t["fingerprints"]),
+                    "divergence": t.get("divergence")}
+    return None
+
+
+TT = P["target_timeout_min"] * 60
+
+
+def run_target(spec):
+    """R replays under --det (default seed), seeds 1..K until both outcomes, 3 replays of the first failing seed."""
+    filt, args = target_args(spec)
+    T = {**spec, "replays": [], "seeds": {}, "failing_seed_replays": []}
+    R["targets"].append(T)
+    slug = f"t{len(R['targets'])}"
+    est, reps = None, []
+    for i in range(P["replays"]):
+        if est and not budget_for(1, est * 1.2):
+            break
+        r = run_pw(f"{slug}-replay-{i + 1}", "det", filters=filt, pw_args=args, timeout_s=TT)
+        est = r.get("wall_s", 60)
+        reps.append(r)
+        k, o = outcome_for(spec, r)
+        T["replays"].append(o)
+        T["matched_key"] = T.get("matched_key") or k
+        T["replay_wall_s"] = statistics.median(x["wall_s"] for x in reps)
+        if o == "missing" and i == 0:
+            T["error"] = "test not found by its filter: " + (r.get("log_tail") or "")[-800:]
+            save()
+            return
+        save()
+    T["replay_verify"] = verify_for(spec, [r.get("trace") for r in reps])
+    seen, fail_seed = set(), None
+    for sd in range(1, P["seeds"] + 1):
+        if not budget_for(1, (est or 60) * 1.2):
+            break
+        r = run_pw(f"{slug}-seed-{sd}", "det", seed=sd, filters=filt, pw_args=args, timeout_s=TT)
+        _, o = outcome_for(spec, r)
+        T["seeds"][str(sd)] = o
+        seen.add("P" if o == "passed" else "F" if o in FAIL else "?")
+        if o in FAIL and fail_seed is None:
+            fail_seed = (sd, r.get("trace"))
+        save()
+        if {"P", "F"} <= seen and sd >= 3:
+            break
+    if fail_seed:
+        fr = []
+        for i in range(3):
+            if not budget_for(1, (est or 60) * 1.2):
+                break
+            r = run_pw(f"{slug}-failseed-{fail_seed[0]}-{i + 1}", "det", seed=fail_seed[0], filters=filt, pw_args=args, timeout_s=TT)
+            T["failing_seed_replays"].append(outcome_for(spec, r)[1])
+            fr.append(r.get("trace"))
+        T["failing_seed"] = fail_seed[0]
+        T["failing_seed_verify"] = verify_for(spec, [fail_seed[1]] + fr)
+    # Without the controls, same filter: how often does it fail on its own (the baseline for this selection)?
+    plain = []
+    for i in range(P["target_plain"]):
+        if not budget_for(1, (est or 60) * 1.2):
+            break
+        r = run_pw(f"{slug}-plain-{i + 1}", "plain", filters=filt, pw_args=args, timeout_s=TT)
+        plain.append(outcome_for(spec, r)[1])
+    T["plain_runs"] = letters(plain)
+    save()
+
+
 # ------------------------------------------------------------------ phases
 LOC = {}
+R["targets"] = []
 BASE = []
 for i in range(P["baseline"]):
     if i and not budget_for(1, BASE[0]["wall_s"] * 1.2):
@@ -248,12 +377,23 @@ if not any(r.get("outcomes") for r in BASE):
     sys.exit(0)
 base_wall = statistics.median(r["wall_s"] for r in BASE if r.get("outcomes"))
 
+# Known flaky tests (repos.json known_flaky: idle study, GitHub issues) first, then tests flaky in this
+# job's baseline runs: the targets get their budget before the long full-suite phases.
+known = [{**k, "known": True} for k in CFG.get("known_flaky", [])]
+detected = [spec_of_key(k) for k in flaky_of(BASE)]
+detected = [d for d in detected if not any(matches(kn, d["key"]) for kn in known)]
+R["known_flaky"] = known
+for spec in (known + detected)[: P["max_targets"]]:
+    if remaining() < 900:
+        break
+    run_target(spec)
+
 STRESS = []
 for i in range(P["stress"]):
     if not budget_for(1, base_wall * 2.5 + 60):
         break
     with Hogs():
-        r = run_pw(f"stress-{i + 1}", "plain", extra=())
+        r = run_pw(f"stress-{i + 1}", "plain")
     LOC.update(r.get("locations", {}))
     STRESS.append(r)
     store(r)
@@ -276,39 +416,22 @@ for i in range(P["det"]):
     DET.append(r)
     store(r)
 
-
-def history(runs):
-    h = {}
-    for r in runs:
-        for k, s in (r.get("outcomes") or {}).items():
-            h.setdefault(k, []).append(s)
-    return h
-
-
-def letters(lst):
-    return "".join("P" if s == "passed" else "F" if s in FAIL else "S" if s == "skipped" else "?" for s in lst)
-
-
 hb, hs, hd = history(BASE), history(STRESS), history(DET)
-flaky = []
-for k in sorted(set(hb) | set(hs)):
-    allr = hb.get(k, []) + hs.get(k, [])
-    if "passed" in allr and any(s in FAIL for s in allr):
-        flaky.append(k)
+flaky = flaky_of(BASE + STRESS)
 R["tests_baseline"] = len(hb)
 R["baseline_wall_median_s"] = base_wall
 R["stress_wall_median_s"] = statistics.median(r["wall_s"] for r in STRESS) if STRESS else None
 R["serial_wall_median_s"] = statistics.median(r["wall_s"] for r in SERIAL) if SERIAL else None
 R["det_wall_median_s"] = statistics.median(r["wall_s"] for r in DET) if DET else None
-R["always_failing_baseline"] = sorted(k for k, v in hb.items() if v and all(s in FAIL for s in v))
+R["always_failing_baseline"] = sorted(k for k, v in hb.items() if v and all(x in FAIL for x in v))
 R["flaky"] = [{"key": k, "baseline": letters(hb.get(k, [])), "stress": letters(hs.get(k, [])), "det": letters(hd.get(k, [])),
                "location": LOC.get(k)} for k in flaky]
-# Tests broken by the controls: passed in every baseline run, failed in a --det run.
 broken = []
 for k, v in hd.items():
     b = hb.get(k, [])
-    if b and all(s == "passed" for s in b) and any(s in FAIL for s in v):
-        broken.append({"key": k, "det": letters(v), "always": all(s in FAIL for s in v)})
+    if b and all(x == "passed" for x in b) and any(x in FAIL for x in v):
+        broken.append({"key": k, "det": letters(v), "always": all(x in FAIL for x in v),
+                       "error": next((r.get("errors", {}).get(k) for r in DET if r.get("errors", {}).get(k)), None)})
 R["broken_by_controls"] = broken
 R["det_tests"] = len(hd)
 vd = verify([r.get("trace") for r in DET])
@@ -322,65 +445,33 @@ elif vd:
     R["det_verify"] = vd
 save()
 
-# ------------------------------------------------------------------ targets
-targets = sorted(flaky, key=lambda k: (-(letters(hb.get(k, [])).count("F") > 0), k))[: P["max_targets"]]
-R["targets"] = []
-tt = P["target_timeout_min"] * 60
-for k in targets:
-    loc = LOC.get(k)
-    if not loc or not loc[0]:
-        R["targets"].append({"key": k, "error": "no location"})
+# Stress-detected flaky tests not targeted yet.
+done_keys = [t.get("matched_key") or t.get("key") for t in R["targets"]]
+for k in flaky:
+    if len(R["targets"]) >= P["max_targets"] or remaining() < 900:
+        break
+    if k in done_keys or any(matches(t, k) for t in R["targets"]):
         continue
-    filt = [f"{loc[0]}:{loc[1]}"] if loc[1] else [loc[0]]
-    T = {"key": k, "filter": filt, "replays": [], "seeds": {}, "failing_seed_replays": []}
-    R["targets"].append(T)
-    slug = f"t{len(R['targets'])}"
-    est = None
-    reps = []
-    for i in range(P["replays"]):
-        if est and not budget_for(1, est * 1.2):
+    run_target(spec_of_key(k))
+
+# Ablation: which control breaks a test that fails only under --det (one run per control switched off).
+R["ablation"] = []
+ABL = [("server-off", {"det_flags": ("--det-server=off",), "server_mode": "plain"}),
+       ("net-off", {"det_flags": ("--det-net=off",)}), ("vtime-off", {"det_flags": ("--det-vtime=off",)}),
+       ("seeds-off", {"det_flags": ("--det-browser-seeds=off",)})]
+for b in [x for x in broken if x["always"]][: P["ablation_tests"]]:
+    spec = spec_of_key(b["key"])
+    filt, args = target_args(spec)
+    A = {"key": b["key"]}
+    R["ablation"].append(A)
+    r = run_pw(f"abl{len(R['ablation'])}-all-on", "det", filters=filt, pw_args=args, timeout_s=TT)
+    A["all-on"] = outcome_for(spec, r)[1]
+    est = r.get("wall_s", 60)
+    for name, kw in ABL:
+        if not budget_for(1, est * 1.2):
             break
-        r = run_pw(f"{slug}-replay-{i + 1}", "det", filters=filt, timeout_s=tt)
-        est = r.get("wall_s", 60)
-        reps.append(r)
-        T["replays"].append(r["outcomes"].get(k, "missing"))
-        T["replay_wall_s"] = statistics.median(x["wall_s"] for x in reps)
-        save()
-    v = verify([r.get("trace") for r in reps])
-    if v and "tests" in v:
-        mine = [t for t in v["tests"] if trace_key(t["nodeid"]) == k]
-        if mine:
-            T["replay_verify"] = {"status": mine[0]["status"], "distinct_fingerprints": mine[0]["distinct_fingerprints"],
-                                  "runs": len(mine[0]["fingerprints"]), "divergence": mine[0].get("divergence")}
-        T["replay_summary"] = v["summary"]
-    seen = set()
-    fail_seed = None
-    for s in range(1, P["seeds"] + 1):
-        if not budget_for(1, (est or 60) * 1.2):
-            break
-        r = run_pw(f"{slug}-seed-{s}", "det", seed=s, filters=filt, timeout_s=tt)
-        o = r["outcomes"].get(k, "missing")
-        T["seeds"][str(s)] = o
-        seen.add("P" if o == "passed" else "F" if o in FAIL else "?")
-        if o in FAIL and fail_seed is None:
-            fail_seed = (s, r.get("trace"))
-        save()
-        if {"P", "F"} <= seen and s >= 3:
-            break
-    if fail_seed:
-        fr = []
-        for i in range(3):
-            if not budget_for(1, (est or 60) * 1.2):
-                break
-            r = run_pw(f"{slug}-failseed-{fail_seed[0]}-{i + 1}", "det", seed=fail_seed[0], filters=filt, timeout_s=tt)
-            T["failing_seed_replays"].append(r["outcomes"].get(k, "missing"))
-            fr.append(r.get("trace"))
-        v = verify([fail_seed[1]] + fr)
-        if v and "tests" in v:
-            mine = [t for t in v["tests"] if trace_key(t["nodeid"]) == k]
-            if mine:
-                T["failing_seed_verify"] = {"status": mine[0]["status"], "distinct_fingerprints": mine[0]["distinct_fingerprints"]}
-        T["failing_seed"] = fail_seed[0]
+        r = run_pw(f"abl{len(R['ablation'])}-{name}", "det", filters=filt, pw_args=args, timeout_s=TT, **kw)
+        A[name] = outcome_for(spec, r)[1]
     save()
 
 R["status"] = "ok"
@@ -394,6 +485,16 @@ for r, cap in [(x, 300000) for x in DET[:1]] + [(x, 60000) for x in BASE[:1]]:
     lf = OUT / "logs" / f"{r['label']}.log"
     if lf.exists():
         (diag / f"{r['label']}.log.tail").write_text(lf.read_text(errors="replace")[-cap:])
+# Where the app servers' own events differ between det-1 and det-2 (verifier text, per server process).
+sp = OUT / "server-parts"
+if (sp / "det-1").is_dir() and (sp / "det-2").is_dir():
+    texts = []
+    for f in sorted((sp / "det-1").glob("*.jsonl")):
+        g = sp / "det-2" / f.name
+        if g.exists():
+            rr = subprocess.run(["node", DETJS, "verify", str(f), str(g)], capture_output=True, text=True, timeout=600)
+            texts.append(f"===== {f.name}\n" + "\n".join((rr.stdout + rr.stderr).splitlines()[:120]))
+    (diag / "server-parts-verify.txt").write_text("\n".join(texts))
 total = 0
 for f in sorted((OUT / "server-parts").glob("*/*.jsonl")) if (OUT / "server-parts").is_dir() else []:
     if f.stat().st_size < 1_500_000 and total + f.stat().st_size < 6_000_000:
