@@ -626,18 +626,6 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/chart/SunburstChart.labels.spec.tsx::Sunburst sector labels::supports a custom SVG element",
-  "class": "l0-gap",
-  "evidence": "diverging event `time`: a controlled source still differs between runs",
-  "documented": "",
-  "under_det": "never fails",
-  "baseline_outcomes": "failed=1;passed=6",
-  "det_exception": "",
-  "pass_fail_reason": "time"
- },
- {
-  "repo": "recharts",
-  "pool": "popular",
   "nodeid": "test/component/Text.spec.tsx::scaleToFit=true::scales text to fit the width",
   "class": "external",
   "evidence": "test source uses https://",
@@ -650,7 +638,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 12:31:24 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 14:55:03 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -662,7 +650,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 12:40:48 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 15:03:31 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -674,7 +662,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 12:49:00 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 15:11:23 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -686,7 +674,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 12:56:48 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 15:19:27 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -698,7 +686,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 13:05:11 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 15:27:30 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -710,7 +698,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 13:13:57 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 15:36:30 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -722,7 +710,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 13:24:44 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Tue Nov 17 2026 15:44:51 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -734,7 +722,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 12:31:24 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 14:55:03 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -746,7 +734,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 12:40:48 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 15:03:31 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -758,7 +746,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 12:49:00 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 15:11:23 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -770,7 +758,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 12:56:48 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 15:19:27 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -782,7 +770,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 13:05:11 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 15:27:30 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -794,7 +782,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 13:13:57 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 15:36:30 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",
@@ -806,7 +794,7 @@
  {
   "repo": "recharts",
   "pool": "popular",
-  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 13:24:44 GMT+0000 (Coordinated Universal Time)",
+  "nodeid": "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Tue Nov 17 2026 15:44:51 GMT+0000 (Coordinated Universal Time)",
   "class": "unknown",
   "evidence": "no marker in the source, exception or fingerprint (source not found)",
   "documented": "",

@@ -82,7 +82,7 @@ def main() -> None:
     A(f"* **Tests broken by `--det` (MEASURED):** {T['broken_by_det']} after the L0 fixes of this session, "
       f"{T['broken_always']} of them failing in every `--det` run.")
     if sl:
-        A(f"* **Slowdown of `--det` (MEASURED, DECLARED-NOISY):** median {fmt(statistics.median(sl))}% over "
+        A(f"* **Slowdown of `--det` (MEASURED, NOISY):** median {fmt(statistics.median(sl))}% over "
           f"{len(sl)} projects (serial runner without `--det` vs `--det`, quiet timing pass).")
     A(f"* **Playwright (MEASURED, measured only):** {len(pw)} projects; see the Playwright section.")
     A(f"* **Shortfalls (MEASURED):** documented-flaky pool {nflaky}/25 projects, Playwright {len(pw)}/5 (see Projects "
@@ -122,7 +122,9 @@ def main() -> None:
       "found — also in a workspace package —, ≥ 50 test outcomes, < 50% failing, first run < 180 s): "
       f"{nflaky} documented-flaky, {npop} popular, {len(pw)} Playwright. Discarded: "
       + ", ".join(f"{k} {v}" for k, v in collections.Counter(d['status'] for d in discards).most_common())
-      + f". Every discarded candidate is listed with its reason in `harness/node/results/{RES.name}/REPORT.md`.")
+      + f". Every discarded candidate is listed with its reason in `harness/node/results/{RES.name}/REPORT.md`. "
+      "Candidates discarded at first and re-checked in the final round after harness fixes were not held to the "
+      "180 s limit (excalidraw-flaky, first run 210 s).")
     if nflaky < 25:
         A(f"\n**Shortfall:** the documented-flaky pool has {nflaky} measurable projects, not 25 (MEASURED). The other "
           "candidates (all listed) need a build, a browser, services or an old toolchain (Jest < 27 without "
@@ -215,7 +217,7 @@ def main() -> None:
 
     A("## Timing\n")
     if timings:
-        A(f"Quiet timing pass (MEASURED, DECLARED-NOISY): {len(timings)} projects, 3 serial runs without `--det` vs 3 "
+        A(f"Quiet timing pass (MEASURED, NOISY): {len(timings)} projects, 3 serial runs without `--det` vs 3 "
           f"`--det` runs, interleaved on one GitHub-hosted runner each; median slowdown {fmt(statistics.median(sl))}% "
           f"(min {fmt(min(sl))}%, max {fmt(max(sl))}%). Per project in the harness report. The main cost is the call-site "
           "resolution on clock-heavy code (J5 in `docs/NODE.md`).\n")
@@ -246,7 +248,8 @@ def main() -> None:
           "flakiness lives, are outside it.\n")
         if len(pw) < 5:
             A(f"**Shortfall:** {len(pw)} Playwright projects measured, not 5: the other candidates need builds or "
-              "services that fail on a clean runner, or Playwright versions that cannot install Chromium on the "
+              "services that fail on a clean runner, a web-server port already in use before the first run (pw-zag, "
+              "pw-tldraw; UNKNOWN which process holds it), or Playwright versions that cannot install Chromium on the "
               "runner's Ubuntu 26.04 (listed in the harness report).\n")
     else:
         A("No Playwright project measured (UNKNOWN).\n")

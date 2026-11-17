@@ -10,41 +10,33 @@
   "pytest_args": [],
   "xdist": true,
   "runs": 7,
-  "baseline_mean_s": 201.73615864557144,
-  "det_mean_s": 309.27342919142853,
-  "slowdown_pct": 53.3058977963333,
+  "baseline_mean_s": 184.45958688442855,
+  "det_mean_s": 295.4926367451429,
+  "slowdown_pct": 60.19369973450124,
   "precompile_first_s": null,
   "precompile_rest_median_s": null,
   "tests": 9348,
-  "unstable_baseline": 68,
+  "unstable_baseline": 67,
   "unstable_det": 0,
-  "became_stable": 68,
-  "outcome_changed_by_det": 44,
+  "became_stable": 67,
+  "outcome_changed_by_det": 4,
   "covered": 9206,
   "not_covered": 0,
   "reproduced": 0,
   "never_fails_under_det": 18,
   "always_fails_under_det": 0,
-  "fails_sometimes_under_det": 50,
+  "fails_sometimes_under_det": 49,
   "seeds_needed": [],
   "seeds_explored": 1,
   "exploration_runs": 7,
   "exploration_budget_hit": true,
   "reasons": {},
   "pass_fail_reasons": {},
-  "broken_by_det": 40,
-  "broken_always": 40,
-  "broken_causes": {
-    "time | Error": 40
-  },
-  "broken_examples": {
-    "time | Error": [
-      "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=false it should never render tooltip: Error: Aborting after running 10000 timers, assuming an infinite loop! (first diverging source: -)",
-      "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=true it should render tooltip even after moving the mouse out of the chart.: Error: Aborting after running 10000 timers, assuming an infinite loop! (first diverging source: -)",
-      "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=undefined it should render the Tooltip only while in the chart: Error: Aborting after running 10000 timers, assuming an infinite loop! (first diverging source: -)"
-    ]
-  },
-  "ablation_runs": 6,
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
   "known_flaky": 0,
   "known_present": 0,
   "known_unstable_baseline": 0,
@@ -58,10 +50,6 @@
     "changed:failed->passed": [
       "test/chart/LineChart.spec.tsx::<LineChart /> - Pure Rendering::should only render Line once when the brush moves but doesn't change start/end indices",
       "test/chart/LineChart.spec.tsx::<LineChart /> - Pure Rendering::should only render Line once when the mouse enters and moves"
-    ],
-    "changed:passed->failed": [
-      "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=false it should never render tooltip",
-      "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=true it should render tooltip even after moving the mouse out of the chart."
     ],
     "changed:None->passed": [
       "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Wed Jan 01 2025 00:00:00 GMT+0000 (Coordinated Universal Time)",
@@ -80,7 +68,7 @@
   "not_reproduced_causes": {
     "unknown": 56,
     "concurrency/event-order": 1,
-    "l0-gap": 10,
+    "l0-gap": 9,
     "external": 1
   }
 }

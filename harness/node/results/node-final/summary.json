@@ -8,7 +8,7 @@
   "executor": "GitHub Actions (ubuntu-latest)",
   "run_url": "https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44050766953",
   "detjs": "0.1.0",
-  "date": "2026-11-17 17:31 UTC",
+  "date": "2026-11-17 17:41 UTC",
   "selection": {
    "selected": [
     "apollo-client-flaky",
@@ -4502,41 +4502,33 @@
     "pytest_args": [],
     "xdist": true,
     "runs": 7,
-    "baseline_mean_s": 201.73615864557144,
-    "det_mean_s": 309.27342919142853,
-    "slowdown_pct": 53.3058977963333,
+    "baseline_mean_s": 184.45958688442855,
+    "det_mean_s": 295.4926367451429,
+    "slowdown_pct": 60.19369973450124,
     "precompile_first_s": null,
     "precompile_rest_median_s": null,
     "tests": 9348,
-    "unstable_baseline": 68,
+    "unstable_baseline": 67,
     "unstable_det": 0,
-    "became_stable": 68,
-    "outcome_changed_by_det": 44,
+    "became_stable": 67,
+    "outcome_changed_by_det": 4,
     "covered": 9206,
     "not_covered": 0,
     "reproduced": 0,
     "never_fails_under_det": 18,
     "always_fails_under_det": 0,
-    "fails_sometimes_under_det": 50,
+    "fails_sometimes_under_det": 49,
     "seeds_needed": [],
     "seeds_explored": 1,
     "exploration_runs": 7,
     "exploration_budget_hit": true,
     "reasons": {},
     "pass_fail_reasons": {},
-    "broken_by_det": 40,
-    "broken_always": 40,
-    "broken_causes": {
-     "time | Error": 40
-    },
-    "broken_examples": {
-     "time | Error": [
-      "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=false it should never render tooltip: Error: Aborting after running 10000 timers, assuming an infinite loop! (first diverging source: -)",
-      "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=true it should render tooltip even after moving the mouse out of the chart.: Error: Aborting after running 10000 timers, assuming an infinite loop! (first diverging source: -)",
-      "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=undefined it should render the Tooltip only while in the chart: Error: Aborting after running 10000 timers, assuming an infinite loop! (first diverging source: -)"
-     ]
-    },
-    "ablation_runs": 6,
+    "broken_by_det": 0,
+    "broken_always": 0,
+    "broken_causes": {},
+    "broken_examples": {},
+    "ablation_runs": 0,
     "known_flaky": 0,
     "known_present": 0,
     "known_unstable_baseline": 0,
@@ -4550,10 +4542,6 @@
      "changed:failed->passed": [
       "test/chart/LineChart.spec.tsx::<LineChart /> - Pure Rendering::should only render Line once when the brush moves but doesn't change start/end indices",
       "test/chart/LineChart.spec.tsx::<LineChart /> - Pure Rendering::should only render Line once when the mouse enters and moves"
-     ],
-     "changed:passed->failed": [
-      "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=false it should never render tooltip",
-      "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=true it should render tooltip even after moving the mouse out of the chart."
      ],
      "changed:None->passed": [
       "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Wed Jan 01 2025 00:00:00 GMT+0000 (Coordinated Universal Time)",
@@ -4572,11 +4560,11 @@
     "not_reproduced_causes": {
      "unknown": 56,
      "concurrency/event-order": 1,
-     "l0-gap": 10,
+     "l0-gap": 9,
      "external": 1
     },
     "executor": "GitHub Actions",
-    "date": "2026-11-17T14:33:13.765186+00:00"
+    "date": "2026-11-17T16:26:00.925741+00:00"
    },
    {
     "name": "redux",
@@ -5760,6 +5748,12 @@
     "not_reproduced_causes": {},
     "executor": "GitHub Actions",
     "date": "2026-11-17T13:45:00.581198+00:00"
+   },
+   {
+    "name": "matrix-js-sdk-flaky",
+    "kind": "flaky",
+    "status": "det-no-trace",
+    "detail": "no `--det` run produced a trace (Jest process died in band, or a custom runner bypassed detjs); first --det log: runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:146:12)\n    at async runTestInternal (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-runner/build/runTest.js:444:34)\n"
    }
   ],
   "notes": [
@@ -5770,34 +5764,34 @@
  },
  "totals": {
   "all": {
-   "tests": 87943,
-   "unstable_baseline": 560,
+   "tests": 85236,
+   "unstable_baseline": 421,
    "unstable_det": 39,
-   "became_stable": 526,
-   "outcome_changed_by_det": 2703,
+   "became_stable": 387,
+   "outcome_changed_by_det": 94,
    "covered": 79661,
    "not_covered": 988,
    "reproduced": 129,
-   "never_fails_under_det": 300,
+   "never_fails_under_det": 162,
    "always_fails_under_det": 37,
-   "fails_sometimes_under_det": 94,
+   "fails_sometimes_under_det": 93,
    "known_flaky": 31,
    "known_present": 31,
    "known_unstable_baseline": 0,
    "known_reproduced": 0,
-   "broken_by_det": 88,
-   "broken_always": 81
+   "broken_by_det": 48,
+   "broken_always": 41
   },
   "flaky": {
-   "tests": 45957,
-   "unstable_baseline": 330,
+   "tests": 43250,
+   "unstable_baseline": 192,
    "unstable_det": 3,
-   "became_stable": 330,
-   "outcome_changed_by_det": 2637,
+   "became_stable": 192,
+   "outcome_changed_by_det": 68,
    "covered": 38806,
    "not_covered": 931,
    "reproduced": 51,
-   "never_fails_under_det": 237,
+   "never_fails_under_det": 99,
    "always_fails_under_det": 1,
    "fails_sometimes_under_det": 41,
    "known_flaky": 31,
@@ -5809,22 +5803,22 @@
   },
   "popular": {
    "tests": 41986,
-   "unstable_baseline": 230,
+   "unstable_baseline": 229,
    "unstable_det": 36,
-   "became_stable": 196,
-   "outcome_changed_by_det": 66,
+   "became_stable": 195,
+   "outcome_changed_by_det": 26,
    "covered": 40855,
    "not_covered": 57,
    "reproduced": 78,
    "never_fails_under_det": 63,
    "always_fails_under_det": 36,
-   "fails_sometimes_under_det": 53,
+   "fails_sometimes_under_det": 52,
    "known_flaky": 0,
    "known_present": 0,
    "known_unstable_baseline": 0,
    "known_reproduced": 0,
-   "broken_by_det": 52,
-   "broken_always": 48
+   "broken_by_det": 12,
+   "broken_always": 8
   }
  },
  "reasons": {
@@ -5848,16 +5842,16 @@
   "time+timers | AssertionError": 4,
   "unexplained | Error": 2,
   "net | Error": 5,
-  "time | Error": 55,
+  "time | Error": 15,
   "time+timers | TypeError": 2,
   "seeds+time+timers+fs+net | AssertionError": 3,
   "fixed-order (fails without --det too) | unknown": 4
  },
  "not_reproduced_causes": {
-  "unknown": 191,
+  "unknown": 172,
   "external": 38,
-  "concurrency/event-order": 147,
-  "l0-gap": 55
+  "concurrency/event-order": 30,
+  "l0-gap": 52
  },
  "timings": [
   {
@@ -6484,81 +6478,6 @@
     "unknown": 14,
     "concurrency/event-order": 1,
     "l0-gap": 4
-   }
-  },
-  {
-   "name": "matrix-js-sdk-flaky",
-   "kind": "flaky",
-   "status": "ok",
-   "url": "https://github.com/matrix-org/matrix-js-sdk",
-   "commit": "dc1cccfeccb0a34dce3f2d7249aef44dbbb92cbe",
-   "commit_date": "2024-07-29T12:11:37Z",
-   "python": "node v20.20.2",
-   "install": "npx -y yarn@1 install --frozen-lockfile --ignore-engines",
-   "pytest_args": [],
-   "xdist": true,
-   "runs": 10,
-   "baseline_mean_s": 106.60189783869998,
-   "det_mean_s": NaN,
-   "slowdown_pct": NaN,
-   "precompile_first_s": null,
-   "precompile_rest_median_s": null,
-   "tests": 2707,
-   "unstable_baseline": 138,
-   "unstable_det": 0,
-   "became_stable": 138,
-   "outcome_changed_by_det": 2569,
-   "covered": 0,
-   "not_covered": 0,
-   "reproduced": 0,
-   "never_fails_under_det": 138,
-   "always_fails_under_det": 0,
-   "fails_sometimes_under_det": 0,
-   "seeds_needed": [],
-   "seeds_explored": 20,
-   "exploration_runs": 20,
-   "exploration_budget_hit": false,
-   "reasons": {},
-   "pass_fail_reasons": {},
-   "broken_by_det": 0,
-   "broken_always": 0,
-   "broken_causes": {},
-   "broken_examples": {},
-   "ablation_runs": 0,
-   "known_flaky": 0,
-   "known_present": 0,
-   "known_unstable_baseline": 0,
-   "known_reproduced": 0,
-   "known_categories": {},
-   "examples": {
-    "changed:passed->None": [
-     "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::can bootstrapCrossSigning twice",
-     "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::publishes keys if none were yet published"
-    ],
-    "changed:skipped->None": [
-     "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::get cross signing keys from secret storage and import them",
-     "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::will upload existing cross-signing keys to an established secret storage"
-    ],
-    "changed:failed->None": [
-     "spec/integ/sliding-sync.spec.ts::SlidingSync::lists::should be possible to add an extra list",
-     "spec/integ/sliding-sync.spec.ts::SlidingSync::lists::should be possible to adjust list ranges"
-    ]
-   },
-   "runner": "jest 29.7.0",
-   "node": "node v20.20.2",
-   "documented_source": "https://github.com/matrix-org/matrix-js-sdk/issues/4331",
-   "documented_hints": [
-    "Room \u203a recalculate \u203a recalculates in acceptable time without heroes"
-   ],
-   "random_order_baseline": true,
-   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
-   "diagnostics": {
-    "first_det_log_tail": "de_modules/fetch-mock/cjs/lib/set-up-and-tear-down.js:7:8)\n    at Proxy.FetchMock.<computed> (/tmp/work/src/matrix-js-sdk-flaky/node_modules/fetch-mock-jest/node_modules/fetch-mock/cjs/lib/set-up-and-tear-down.js:80:32)\n    at /tmp/work/src/matrix-js-sdk-flaky/spec/test-utils/E2EKeyReceiver.ts:57:30\n    at new Promise (<anonymous>)\n    at new E2EKeyReceiver (/tmp/work/src/matrix-js-sdk-flaky/spec/test-utils/E2EKeyReceiver.ts:55:31)\n    at Object.<anonymous> (/tmp/work/src/matrix-js-sdk-flaky/spec/integ/crypto/crypto.spec.ts:380:27)\n    at Generator.next (<anonymous>)\n    at asyncGeneratorStep (/tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)\n    at _next (/tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)\n    at /tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7\n    at new Promise (<anonymous>)\n    at Object.<anonymous> (/tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)\n    at Promise.then.completed (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/utils.js:231:10)\n    at _callCircusHook (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:281:40)\n    at async _runTest (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:246:5)\n    at async _runTestsForDescribeBlock (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:126:9)\n    at async _runTestsForDescribeBlock (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:121:9)\n    at async run (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:71:3)\n    at async runAndTransformResultsToJestFormat (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async detjsJestRunner (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:146:12)\n    at async runTestInternal (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-runner/build/runTest.js:444:34)\n"
-   },
-   "not_reproduced_causes": {
-    "concurrency/event-order": 117,
-    "unknown": 19,
-    "l0-gap": 2
    }
   },
   {
@@ -8282,41 +8201,33 @@
    "pytest_args": [],
    "xdist": true,
    "runs": 7,
-   "baseline_mean_s": 201.73615864557144,
-   "det_mean_s": 309.27342919142853,
-   "slowdown_pct": 53.3058977963333,
+   "baseline_mean_s": 184.45958688442855,
+   "det_mean_s": 295.4926367451429,
+   "slowdown_pct": 60.19369973450124,
    "precompile_first_s": null,
    "precompile_rest_median_s": null,
    "tests": 9348,
-   "unstable_baseline": 68,
+   "unstable_baseline": 67,
    "unstable_det": 0,
-   "became_stable": 68,
-   "outcome_changed_by_det": 44,
+   "became_stable": 67,
+   "outcome_changed_by_det": 4,
    "covered": 9206,
    "not_covered": 0,
    "reproduced": 0,
    "never_fails_under_det": 18,
    "always_fails_under_det": 0,
-   "fails_sometimes_under_det": 50,
+   "fails_sometimes_under_det": 49,
    "seeds_needed": [],
    "seeds_explored": 1,
    "exploration_runs": 7,
    "exploration_budget_hit": true,
    "reasons": {},
    "pass_fail_reasons": {},
-   "broken_by_det": 40,
-   "broken_always": 40,
-   "broken_causes": {
-    "time | Error": 40
-   },
-   "broken_examples": {
-    "time | Error": [
-     "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=false it should never render tooltip: Error: Aborting after running 10000 timers, assuming an infinite loop! (first diverging source: -)",
-     "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=true it should render tooltip even after moving the mouse out of the chart.: Error: Aborting after running 10000 timers, assuming an infinite loop! (first diverging source: -)",
-     "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=undefined it should render the Tooltip only while in the chart: Error: Aborting after running 10000 timers, assuming an infinite loop! (first diverging source: -)"
-    ]
-   },
-   "ablation_runs": 6,
+   "broken_by_det": 0,
+   "broken_always": 0,
+   "broken_causes": {},
+   "broken_examples": {},
+   "ablation_runs": 0,
    "known_flaky": 0,
    "known_present": 0,
    "known_unstable_baseline": 0,
@@ -8330,10 +8241,6 @@
     "changed:failed->passed": [
      "test/chart/LineChart.spec.tsx::<LineChart /> - Pure Rendering::should only render Line once when the brush moves but doesn't change start/end indices",
      "test/chart/LineChart.spec.tsx::<LineChart /> - Pure Rendering::should only render Line once when the mouse enters and moves"
-    ],
-    "changed:passed->failed": [
-     "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=false it should never render tooltip",
-     "test/component/Tooltip/Tooltip.visibility.spec.tsx::Tooltip visibility::as a child of 'AreaChart'::active prop::with active=true it should render tooltip even after moving the mouse out of the chart."
     ],
     "changed:None->passed": [
      "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Wed Jan 01 2025 00:00:00 GMT+0000 (Coordinated Universal Time)",
@@ -8352,7 +8259,7 @@
    "not_reproduced_causes": {
     "unknown": 56,
     "concurrency/event-order": 1,
-    "l0-gap": 10,
+    "l0-gap": 9,
     "external": 1
    }
   },

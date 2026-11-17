@@ -1,18 +1,18 @@
 # detjs Level 0 (Node / TypeScript): measurement report (`node-final`)
 
-Generated 2026-11-17 17:31 UTC with detjs 0.1.0 on GitHub Actions (ubuntu-latest) ([run](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44050766953)). Per repository: 10 baseline runs interleaved with 10 `--det` runs. Baseline = the realistic configuration: random order with a different seed per run where the runner supports it (Vitest `--sequence.shuffle --sequence.seed=N`; Jest `--randomize --seed=N`, Jest >= 29.2 only) and two parallel workers (`--maxWorkers=2`). `--det` = fixed order (files sorted by path, tests in declaration order), one worker, files in sequence, all Level 0 controls. Then, for every test unstable in the baseline, `--det --det-seed=1..20` with 10/10 confirmation of the seed that makes it fail. Labels: MEASURED (by this harness), DECLARED (with source), UNKNOWN; NOISY = shared host.
+Generated 2026-11-17 17:41 UTC with detjs 0.1.0 on GitHub Actions (ubuntu-latest) ([run](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44050766953)). Per repository: 10 baseline runs interleaved with 10 `--det` runs. Baseline = the realistic configuration: random order with a different seed per run where the runner supports it (Vitest `--sequence.shuffle --sequence.seed=N`; Jest `--randomize --seed=N`, Jest >= 29.2 only) and two parallel workers (`--maxWorkers=2`). `--det` = fixed order (files sorted by path, tests in declaration order), one worker, files in sequence, all Level 0 controls. Then, for every test unstable in the baseline, `--det --det-seed=1..20` with 10/10 confirmation of the seed that makes it fail. Labels: MEASURED (by this harness), DECLARED (with source), UNKNOWN; NOISY = shared host.
 
 Verifier: Rust verifier through the Python binding (detpy 0.1.0).
 
 ## Main metric
 
-**Baseline-unstable tests made reproducible: 129/560 = 23.0%** (MEASURED). A test counts as reproduced when some `--det-seed` (or the fixed `--det` order) makes it fail 10 times out of 10 AND some `--det` configuration makes it pass.
+**Baseline-unstable tests made reproducible: 129/421 = 30.6%** (MEASURED). A test counts as reproduced when some `--det-seed` (or the fixed `--det` order) makes it fail 10 times out of 10 AND some `--det` configuration makes it pass.
 
 | pool | repositories | tests | unstable in baseline | reproduced | % | never fail under --det | always fail under --det | fail sometimes under --det |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| documented flaky | 17 | 45957 | 330 | 51 | 15.5% | 237 | 1 | 41 |
-| popular (HEAD) | 25 | 41986 | 230 | 78 | 33.9% | 63 | 36 | 53 |
-| total | 42 | 87943 | 560 | 129 | 23.0% | 300 | 37 | 94 |
+| documented flaky | 16 | 43250 | 192 | 51 | 26.6% | 99 | 1 | 41 |
+| popular (HEAD) | 25 | 41986 | 229 | 78 | 34.1% | 63 | 36 | 52 |
+| total | 41 | 85236 | 421 | 129 | 30.6% | 162 | 37 | 93 |
 
 **Seeds explored before the reproducing seed was found** (reproduced tests, MEASURED): 1: 70, 2-5: 21, 6-10: 27, 11-20: 11; median 1.
 
@@ -32,9 +32,9 @@ Classes: `concurrency/event-order` (async ordering, timers racing real I/O, time
 
 | pool | concurrency/event-order | external | l0-gap | unknown |
 |---|---:|---:|---:|---:|
-| flaky | 142 | 1 | 42 | 94 |
-| popular | 5 | 37 | 13 | 97 |
-| total | 147 | 38 | 55 | 191 |
+| flaky | 25 | 1 | 40 | 75 |
+| popular | 5 | 37 | 12 | 97 |
+| total | 30 | 38 | 52 | 172 |
 
 * `concurrency/event-order`: apollo-client-flaky `pLink.ts::SharedHttpTest::passes all arguments to multiple fetch body including extensions` (test source uses settimeout); apollo-client-flaky `h-http/__tests__/batchHttpLink.ts::SharedHttpTest::unsubscribes without calling subscriber` (test source uses settimeout); apollo-client-flaky `eQuery.test.tsx::useQuery Hook::Error handling::should render data and errors with refetch` (test source uses async , await , waitfor; also fetch()
 * `external`: apollo-client-flaky `rc/link/batch-http/__tests__/batchHttpLink.ts::SharedHttpTest::allows uri to be a function` (test source uses fetch(); recharts `test/component/Text.spec.tsx::scaleToFit=true::scales text to fit the width` (test source uses https://); tanstack-table `.cache/e2e-artifacts-96sIYJ/first/tests/e2e/failure.spec.ts::<file>` (exception unknown / diverging event -)
@@ -43,13 +43,13 @@ Classes: `concurrency/event-order` (async ordering, timers racing real I/O, time
 
 ## Tests broken by Level 0
 
-A test is *broken by `--det`* when it fails in at least one fixed-order `--det` run but in at most one baseline run (and less often than under `--det`). **88 tests** (MEASURED), of which 81 fail in every `--det` run.
+A test is *broken by `--det`* when it fails in at least one fixed-order `--det` run but in at most one baseline run (and less often than under `--det`). **48 tests** (MEASURED), of which 41 fail in every `--det` run.
 
 Cause: `fixed-order` = the test also fails under `--det` with every Level 0 control disabled (only the fixed order and serial execution remain): an order/isolation dependency hidden by the random parallel baseline, not a Level 0 control; otherwise the controls whose `--det-disable` makes it pass; `unexplained` = none does.
 
 | cause &#124; exception | tests | examples |
 |---|---:|---|
-| `time &#124; Error` | 55 | react-admin-flaky: packages/ra-ui-materialui/src/detail/ShowGuesser.spec.tsx::<ShowGuesser />::should log the guessed Show view based on the fetched record: Error: Unknown dataProvider function: getMa<br>react-admin-flaky: packages/ra-ui-materialui/src/list/filter/FilterButton.spec.tsx::<FilterButton />::filter selection menu::should close the filter menu on removing all filters: Error: thrown: "Excee |
+| `time &#124; Error` | 15 | react-admin-flaky: packages/ra-ui-materialui/src/detail/ShowGuesser.spec.tsx::<ShowGuesser />::should log the guessed Show view based on the fetched record: Error: Unknown dataProvider function: getMa<br>react-admin-flaky: packages/ra-ui-materialui/src/list/filter/FilterButton.spec.tsx::<FilterButton />::filter selection menu::should close the filter menu on removing all filters: Error: thrown: "Excee |
 | `time &#124; AssertionError` | 6 | assistant-ui-flaky: lib/repo-sandbox.test.ts::createRepoSandbox::cannot reach the host filesystem outside the mounted root: AssertionError: expected 'bash: Maximum call stack size exceeded' to contain<br>assistant-ui-flaky: lib/repo-sandbox.test.ts::createRepoSandbox::falls back to an empty mount before the tree is generated: AssertionError: expected 'bash: Maximum call stack size exceeded' to be '' / |
 | `time+timers &#124; Error` | 5 | apollo-client-flaky: src/link/persisted-queries/__tests__/persisted-queries.test.ts::failure path::clears the cache when receiving NotSupported error (error code): Error: thrown: "Exceeded timeout of <br>apollo-client-flaky: src/link/persisted-queries/__tests__/persisted-queries.test.ts::failure path::clears the cache when receiving NotSupported error (error message): Error: thrown: "Exceeded timeout  |
 | `net &#124; Error` | 5 | react-admin-flaky: examples/crm/src/providers/commons/getContactAvatar.spec.ts::should return gravatar URL for anthony@marmelab.com: Error: expect(received).toBe(expected) // Object.is equality (first<br>unstorage: test/drivers/github.test.ts::drivers: github::can check for a file presence: Error: [unstorage] [github] Failed to fetch git tree (first diverging source: -) |
@@ -83,8 +83,8 @@ Quiet timing pass: 9 repositories, one per GitHub-hosted runner, 3 serial runs w
 
 ## Other metrics (MEASURED)
 
-* tests unstable under `--det` (fixed order, 10 runs): 39; unstable in the baseline and stable under `--det`: 526
-* stable in both modes but with a different majority outcome: 2703
+* tests unstable under `--det` (fixed order, 10 runs): 39; unstable in the baseline and stable under `--det`: 387
+* stable in both modes but with a different majority outcome: 94
 * identical fingerprint in every fixed-order `--det` run (covered by Level 0): 79661 (98.8%); not covered: 988 (`time` 807, `fs` 91, `entropy` 87, `random` 2, `beyond-trace` 1)
 
 ## Per repository (MEASURED)
@@ -95,7 +95,6 @@ Quiet timing pass: 9 repositories, one per GitHub-hosted runner, 3 serial runs w
 | [assistant-ui-flaky](https://github.com/assistant-ui/assistant-ui) | flaky | [b8c5e68298](https://github.com/assistant-ui/assistant-ui/commit/b8c5e68298a81ff6c9c99b504bc57479c5dd4f05) ([doc](https://github.com/assistant-ui/assistant-ui/issues/7007)) | node v22.23.5 | vitest 4.1.11 | yes | 702 | 0 | 0 | 0 | 8 | 1 | 0 / 0 / 0 |
 | [growi-flaky](https://github.com/growilabs/growi) | flaky | [3fc185a4e6](https://github.com/growilabs/growi/commit/3fc185a4e696d614d08f3e9cfd4040226f9d772f) ([doc](https://github.com/growilabs/growi/issues/12252)) | node v22.23.5 | vitest 3.2.6 | yes | 5959 | 2 | 0 | 1 (budget) | 0 | 11 | 1 / 0 / 0 |
 | [happy-dom-flaky](https://github.com/capricorn86/happy-dom) | flaky | [875ef5c647](https://github.com/capricorn86/happy-dom/commit/875ef5c647b336cc933c82426c9d780a5aab84f9) ([doc](https://github.com/capricorn86/happy-dom/issues/2526)) | node v20.20.2 | vitest 4.1.8 | yes | 8106 | 21 | 2 | 2 (budget) | 2 | 25 | 0 / 0 / 0 |
-| [matrix-js-sdk-flaky](https://github.com/matrix-org/matrix-js-sdk) | flaky | [dc1cccfecc](https://github.com/matrix-org/matrix-js-sdk/commit/dc1cccfeccb0a34dce3f2d7249aef44dbbb92cbe) ([doc](https://github.com/matrix-org/matrix-js-sdk/issues/4331)) | node v20.20.2 | jest 29.7.0 | yes | 2707 | 138 | 0 | 20 | 0 | 0 | 0 / 0 / 0 |
 | [mermaid-flaky](https://github.com/mermaid-js/mermaid) | flaky | [89818e854e](https://github.com/mermaid-js/mermaid/commit/89818e854e6e517726e49e6625b3a1ccd62e1935) ([doc](https://github.com/mermaid-js/mermaid/issues/7729)) | node v22.23.5 | vitest 3.2.4 | yes | 4015 | 17 | 6 | 2 (budget) | 0 | 4 | 0 / 0 / 0 |
 | [msw-flaky](https://github.com/mswjs/msw) | flaky | [d3113a9556](https://github.com/mswjs/msw/commit/d3113a95564292c4d180b3e1f50b8f3a536d26e0) ([doc](https://github.com/mswjs/msw/issues/2557)) | node v20.20.2 | vitest 3.1.4 | yes | 254 | 1 | 1 | 2 | 0 | 2 | 0 / 0 / 0 |
 | [nuxt-flaky](https://github.com/nuxt/nuxt) | flaky | [0344123b3c](https://github.com/nuxt/nuxt/commit/0344123b3c2c46c6f591c42696eef8ffc6504947) ([doc](https://github.com/nuxt/nuxt/issues/32557)) | node v22.23.5 | vitest 3.2.4 | yes | 696 | 1 | 1 | 1 | 0 | 15 | 0 / 0 / 0 |
@@ -120,7 +119,7 @@ Quiet timing pass: 9 repositories, one per GitHub-hosted runner, 3 serial runs w
 | [pinia](https://github.com/vuejs/pinia) | popular | [4817135a25](https://github.com/vuejs/pinia/commit/4817135a25431172d363bd928476db7cdbf875c4) | node v22.23.5 | vitest 4.1.11 | yes | 276 | 0 | 0 | 0 | 0 | 0 |  |
 | [preact-signals](https://github.com/preactjs/signals) | popular | [395fd7ebd4](https://github.com/preactjs/signals/commit/395fd7ebd440cbc4d1ced05b4b498b08f3ed33d0) | node v22.23.5 | vitest 4.0.17 | yes | 1099 | 0 | 0 | 0 | 0 | 0 |  |
 | [react-redux](https://github.com/reduxjs/react-redux) | popular | [8e54f5b9db](https://github.com/reduxjs/react-redux/commit/8e54f5b9dbbdcc972c120ad3ce3c1c57fc2e89fd) | node v22.23.5 | vitest 4.1.11 | yes | 140 | 0 | 0 | 0 | 1 | 0 |  |
-| [recharts](https://github.com/recharts/recharts) | popular | [f27aeba629](https://github.com/recharts/recharts/commit/f27aeba6293c66c0e8b602e4351faf6d2de42875) | node v22.23.5 | vitest 4.1.11 | yes | 9348 | 68 | 0 | 1 (budget) | 40 | 0 |  |
+| [recharts](https://github.com/recharts/recharts) | popular | [f27aeba629](https://github.com/recharts/recharts/commit/f27aeba6293c66c0e8b602e4351faf6d2de42875) | node v22.23.5 | vitest 4.1.11 | yes | 9348 | 67 | 0 | 1 (budget) | 0 | 0 |  |
 | [redux](https://github.com/reduxjs/redux) | popular | [39bd88011b](https://github.com/reduxjs/redux/commit/39bd88011b0c7c6f67cec8230ada49fac20ad989) | node v22.23.5 | vitest 4.0.5 | yes | 82 | 0 | 0 | 0 | 0 | 0 |  |
 | [tanstack-form](https://github.com/TanStack/form) | popular | [eba4084b70](https://github.com/TanStack/form/commit/eba4084b706699e4c4d8cfc39f895f722ea9cdfc) | node v22.23.5 | vitest 5.0.5 | yes | 474 | 2 | 2 | 3 | 0 | 0 |  |
 | [tanstack-table](https://github.com/TanStack/table) | popular | [564a459b74](https://github.com/TanStack/table/commit/564a459b74834c77631e0d6fdba7661383bbc1b4) | node v22.23.5 | vitest 5.1.0 | yes | 1856 | 36 | 0 | 7 (budget) | 4 | 0 |  |
@@ -249,6 +248,7 @@ Quiet timing pass: 9 repositories, one per GitHub-hosted runner, 3 serial runs w
 | pw-nuxt-ui | playwright | no-runner | no playwright.config.* found |
 | pw-vercel-ai | playwright | too-few-tests | 2 test outcomes (exit 0): Running 2 tests using 1 worker ·· 2 passed (4.0s) [WebServer] $ next  |
 | pw-zag | playwright | baseline-broken | 0 test outcomes (exit 1): Error: http://localhost:3000 is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer.  |
+| matrix-js-sdk-flaky | flaky | det-no-trace | TestInternal (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-runner/build/runTest.js:367:16) at async runTest (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-runner/build/runTest.js:444:34)  |
 
 ## Playwright end-to-end suites (measured, not built on)
 
@@ -262,7 +262,7 @@ Quiet timing pass: 9 repositories, one per GitHub-hosted runner, 3 serial runs w
 | [pw-solid-start](https://github.com/solidjs/solid-start) | playwright 1.62.0 | 47 | 0 | 0 | 0 | 0 |
 | [pw-starlight](https://github.com/withastro/starlight) | playwright 1.61.1 | 26 | 0 | 0 | 0 | 0 |
 
-Share of the baseline-unstable tests of this round that are browser tests: 1/561 = 0.2% (MEASURED, not weighted by project size).
+Share of the baseline-unstable tests of this round that are browser tests: 1/422 = 0.2% (MEASURED, not weighted by project size).
 
 ## Notes
 
