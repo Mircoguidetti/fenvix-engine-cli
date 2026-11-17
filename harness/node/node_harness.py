@@ -154,6 +154,7 @@ class Prepared(H.Prepared):
     pw_dir: str = ""
     repo_root: str = ""
     script: tuple = ()  # (args, env, script name) found in the project's test script, applied on demand
+    tree: dict = field(default_factory=dict)  # working-tree snapshot restored before every run (clean_tree)
 
 
 def sh_group(cmd, cwd=None, env=None, timeout=None):
@@ -616,10 +617,49 @@ def command(p: Prepared, mode: str, index: int, seed, disable, report: Path, tra
     return [*base, *det, *p.pytest_args]
 
 
+def tree_state(root: str) -> tuple:
+    """(untracked or ignored entries, collapsed per directory; modified tracked files) of a checkout."""
+    _, other, _, _ = git(["ls-files", "--others", "--directory"], cwd=root, timeout=300)
+    _, modified, _, _ = git(["diff", "--name-only"], cwd=root, timeout=300)
+    return set(other.splitlines()), set(modified.splitlines())
+
+
+def snapshot_tree(p: Prepared) -> None:
+    """Remember the working tree as installed (and built): every run starts from it (found on tanstack-table:
+    the suite wrote test files under `.cache/` that later runs collected, 36 tests with run-dependent ids)."""
+    code, root, _, _ = git(["rev-parse", "--show-toplevel"], cwd=p.src)
+    if code != 0:
+        return
+    root = root.strip()
+    other, modified = tree_state(root)
+    p.tree = {"root": root, "other": other, "modified": modified, "cleaned": 0}
+
+
+def clean_tree(p: Prepared) -> None:
+    if not p.tree:
+        return
+    root = p.tree["root"]
+    other, modified = tree_state(root)
+    for entry in sorted(other - p.tree["other"]):
+        target = Path(root) / entry
+        if target.is_dir() and not target.is_symlink():
+            shutil.rmtree(target, ignore_errors=True)
+        else:
+            target.unlink(missing_ok=True)
+        p.tree["cleaned"] += 1
+    changed = sorted(modified - p.tree["modified"])
+    if changed:
+        git(["checkout", "--", *changed], cwd=root)
+        p.tree["cleaned"] += len(changed)
+    if p.tree["cleaned"]:
+        DIAG["tree_entries_cleaned"] = p.tree["cleaned"]
+
+
 def run_node(p: Prepared, rundir: Path, mode: str, index: int, timeout: float, seed=None, disable=None):
     """Same contract as detpy_harness.run_pytest. Modes: normal (baseline), serial (reference for the
     ablation: --det with every Level 0 control off except order and serial execution), det, seed,
     ablate, timing-serial (quiet timing: serial runner without --det)."""
+    clean_tree(p)  # every run starts from the installed (and built) tree
     tag = f"{mode}{'' if seed is None else seed}{'' if disable is None else '-' + disable}_{index}"
     report = rundir / f"{tag}.json"
     trace = rundir / f"{tag}.jsonl" if mode not in ("normal", "timing-serial") else None
@@ -781,6 +821,7 @@ def first_run(p: Prepared, args, rundir: Path):
     """First baseline run; when it is unusable (too few outcomes or mostly failing): the flags and
     variables of the project's own test script (script_setup), then, if the project has a `build`
     script, build once and run again (many monorepos test their built packages)."""
+    snapshot_tree(p)
     r = run_node(p, rundir, "normal", 0, args.run_timeout)
     if p.runner == "playwright" and not r.outcomes and "--project=chromium" in p.pytest_args:
         p.pytest_args = [a for a in p.pytest_args if a != "--project=chromium"]  # no project of that name
@@ -806,7 +847,9 @@ def first_run(p: Prepared, args, rundir: Path):
         bdir = Path(p.repo_root or p.src)
         scripts = json.loads((bdir / "package.json").read_text()).get("scripts", {})
         if "build" in scripts:
+            clean_tree(p)
             code, out, dur, _ = sh(["npm", "run", "build"], cwd=bdir, env=node_env(p), timeout=1800)
+            snapshot_tree(p)  # the build's outputs belong to the tree every run starts from
             log(f"{p.name}: first run unusable ({len(r.outcomes)} outcomes): `npm run build` exit={code} {dur:.0f}s")
             if code == 0:
                 p.install_cmd += " && npm run build"
