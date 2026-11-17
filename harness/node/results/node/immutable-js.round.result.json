@@ -1,0 +1,75 @@
+{
+  "name": "immutable-js",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/immutable-js/immutable-js",
+  "commit": "abfaef3c08905918e9fa05d0595e7e220fd36dbf",
+  "commit_date": "2026-11-13T01:15:19+01:00",
+  "python": "node v22.23.5",
+  "install": "npm ci --no-audit --no-fund && npm run build",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 8,
+  "baseline_mean_s": 44.06305096125001,
+  "det_mean_s": 378.91265118287504,
+  "slowdown_pct": 759.9328528478404,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 955,
+  "unstable_baseline": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "outcome_changed_by_det": 955,
+  "covered": 0,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 0,
+  "exploration_runs": 0,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 56,
+  "broken_always": 56,
+  "broken_causes": {
+    "fixed-order (fails without --det too) | unknown": 56
+  },
+  "broken_examples": {
+    "fixed-order (fails without --det too) | unknown": [
+      "__tests__/ArraySeq.ts::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+      "__tests__/Comparator.ts::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+      "__tests__/Conversion.ts::<file>: \u25cf Test suite failed to run (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:None->error": [
+      "__tests__/ArraySeq.ts::<file>",
+      "__tests__/Comparator.ts::<file>"
+    ],
+    "changed:passed->None": [
+      "__tests__/ArraySeq.ts::ArraySequence::can be iterated",
+      "__tests__/ArraySeq.ts::ArraySequence::cannot be mutated after calling toArray"
+    ]
+  },
+  "runner": "jest 29.7.0",
+  "node": "node v22.23.5",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "not fully supported. Use `transforms: { forOf: false }` to skip transformation and disable this error, or `transforms: { dangerousForOf: true }` if you know what you're doing. (23:3)\n\n      at CompileError.missingTransform (node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:376:9)\n      at Node.initialise (node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:2547:19)\n      at node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:804:34\n          at Array.forEach (<anonymous>)\n      at Node.initialise (node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:804:13)\n      at Node.initialise (node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:102:11)\n      at Node.initialise (node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:2662:9)\n      at node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:804:34\n          at Array.forEach (<anonymous>)\n\nFAIL website/src/worker/normalizeResult.test.ts\n  \u25cf Test suite failed to run\n\n    Transforming for-of statements is not fully supported. Use `transforms: { forOf: false }` to skip transformation and disable this error, or `transforms: { dangerousForOf: true }` if you know what you're doing. (23:3)\n\n      at CompileError.missingTransform (node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:376:9)\n      at Node.initialise (node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:2547:19)\n      at node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:804:34\n          at Array.forEach (<anonymous>)\n      at Node.initialise (node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:804:13)\n      at Node.initialise (node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:102:11)\n      at Node.initialise (node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:2662:9)\n      at node_modules/@rollup/plugin-buble/node_modules/buble/dist/buble.cjs.js:804:34\n          at Array.forEach (<anonymous>)\n\n\nTest Suites: 56 failed, 56 total\nTests:       0 total\nSnapshots:   0 total\nTime:        365.935 s\nRan all test suites.\nTest results written to: ../../runs/immutable-js/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/immutable-js/det_0.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949\n"
+  },
+  "not_reproduced_causes": {},
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T07:35:34.867787+00:00"
+}
