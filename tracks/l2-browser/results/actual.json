@@ -1,0 +1,2006 @@
+{
+ "name": "actual",
+ "repo": "actualbudget/actual",
+ "ref": "abe8ea7851518a88245fd78b53b427b54eba734e",
+ "status": "ok",
+ "run_id": "44043803663",
+ "setup_s": 108,
+ "params": {
+  "baseline": 5,
+  "stress": 3,
+  "serial": 1,
+  "det": 3,
+  "replays": 10,
+  "seeds": 6,
+  "max_targets": 6,
+  "budget_min": 110,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8
+ },
+ "pw_dir": "packages/desktop-client",
+ "pw_args": [
+  "--browser=chromium",
+  "--shard=1/3"
+ ],
+ "server_outside_runner": false,
+ "runs": [
+  {
+   "label": "baseline-1",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 0,
+   "wall_s": 265.9,
+   "outcomes": {
+    "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::On Budget Accounts::creates a transfer from two existing transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports transactions from a CSV file [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::preserves QIF categories in preview and imported transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import csv file twice [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports a new transaction when an unchecked match has the same amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import notes checkbox is not shown for CSV files [chromium]": "passed",
+    "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]": "passed",
+    "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]": "passed",
+    "accounts.test.ts::Accounts::closes an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]": "passed",
+    "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]": "passed",
+    "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer from its arrow [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer older than the first loaded page [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 1280px [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 375px [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::checks the page visuals [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::searches for accounts [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::page handles empty state gracefully [chromium]": "passed",
+    "bank-sync.test.ts::Bank Sync::checks the page visuals [chromium]": "passed",
+    "budget-automations.mobile.test.ts::Mobile budget automations::opens automations from the category menu and drills into the editor [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the To Budget/Overbudgeted amount opens the budget summary menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Saved/Projected Savings/Overspent amount opens the budget summary menu modal [chromium]": "passed"
+   },
+   "trace": null,
+   "counts": {
+    "passed": 74
+   }
+  },
+  {
+   "label": "baseline-2",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 0,
+   "wall_s": 265.9,
+   "outcomes": {
+    "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::On Budget Accounts::creates a transfer from two existing transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports transactions from a CSV file [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::preserves QIF categories in preview and imported transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import csv file twice [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports a new transaction when an unchecked match has the same amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import notes checkbox is not shown for CSV files [chromium]": "passed",
+    "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]": "passed",
+    "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]": "passed",
+    "accounts.test.ts::Accounts::closes an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]": "passed",
+    "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]": "passed",
+    "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer from its arrow [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer older than the first loaded page [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 1280px [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 375px [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::checks the page visuals [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::searches for accounts [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::page handles empty state gracefully [chromium]": "passed",
+    "bank-sync.test.ts::Bank Sync::checks the page visuals [chromium]": "passed",
+    "budget-automations.mobile.test.ts::Mobile budget automations::opens automations from the category menu and drills into the editor [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the To Budget/Overbudgeted amount opens the budget summary menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Saved/Projected Savings/Overspent amount opens the budget summary menu modal [chromium]": "passed"
+   },
+   "trace": null,
+   "counts": {
+    "passed": 74
+   }
+  },
+  {
+   "label": "baseline-3",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 1,
+   "wall_s": 317.8,
+   "outcomes": {
+    "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::On Budget Accounts::creates a transfer from two existing transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports transactions from a CSV file [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::preserves QIF categories in preview and imported transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import csv file twice [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports a new transaction when an unchecked match has the same amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import notes checkbox is not shown for CSV files [chromium]": "passed",
+    "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]": "passed",
+    "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]": "passed",
+    "accounts.test.ts::Accounts::closes an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]": "passed",
+    "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]": "passed",
+    "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer from its arrow [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer older than the first loaded page [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 1280px [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 375px [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::checks the page visuals [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::searches for accounts [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::page handles empty state gracefully [chromium]": "passed",
+    "bank-sync.test.ts::Bank Sync::checks the page visuals [chromium]": "passed",
+    "budget-automations.mobile.test.ts::Mobile budget automations::opens automations from the category menu and drills into the editor [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the To Budget/Overbudgeted amount opens the budget summary menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]": "timedOut",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Saved/Projected Savings/Overspent amount opens the budget summary menu modal [chromium]": "passed"
+   },
+   "trace": null,
+   "counts": {
+    "passed": 73,
+    "timedOut": 1
+   }
+  },
+  {
+   "label": "baseline-4",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 0,
+   "wall_s": 272.2,
+   "outcomes": {
+    "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::On Budget Accounts::creates a transfer from two existing transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports transactions from a CSV file [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::preserves QIF categories in preview and imported transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import csv file twice [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports a new transaction when an unchecked match has the same amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import notes checkbox is not shown for CSV files [chromium]": "passed",
+    "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]": "passed",
+    "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]": "passed",
+    "accounts.test.ts::Accounts::closes an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]": "passed",
+    "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]": "passed",
+    "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer from its arrow [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer older than the first loaded page [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 1280px [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 375px [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::checks the page visuals [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::searches for accounts [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::page handles empty state gracefully [chromium]": "passed",
+    "bank-sync.test.ts::Bank Sync::checks the page visuals [chromium]": "passed",
+    "budget-automations.mobile.test.ts::Mobile budget automations::opens automations from the category menu and drills into the editor [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the To Budget/Overbudgeted amount opens the budget summary menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Saved/Projected Savings/Overspent amount opens the budget summary menu modal [chromium]": "passed"
+   },
+   "trace": null,
+   "counts": {
+    "passed": 74
+   }
+  },
+  {
+   "label": "baseline-5",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 1,
+   "wall_s": 268.8,
+   "outcomes": {
+    "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::On Budget Accounts::creates a transfer from two existing transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports transactions from a CSV file [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::preserves QIF categories in preview and imported transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import csv file twice [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports a new transaction when an unchecked match has the same amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import notes checkbox is not shown for CSV files [chromium]": "passed",
+    "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]": "passed",
+    "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]": "passed",
+    "accounts.test.ts::Accounts::closes an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]": "passed",
+    "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]": "passed",
+    "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer from its arrow [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer older than the first loaded page [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 1280px [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 375px [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]": "failed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::checks the page visuals [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::searches for accounts [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::page handles empty state gracefully [chromium]": "passed",
+    "bank-sync.test.ts::Bank Sync::checks the page visuals [chromium]": "passed",
+    "budget-automations.mobile.test.ts::Mobile budget automations::opens automations from the category menu and drills into the editor [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the To Budget/Overbudgeted amount opens the budget summary menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Saved/Projected Savings/Overspent amount opens the budget summary menu modal [chromium]": "passed"
+   },
+   "trace": null,
+   "counts": {
+    "passed": 73,
+    "failed": 1
+   }
+  },
+  {
+   "label": "stress-1",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 1,
+   "wall_s": 631.3,
+   "outcomes": {
+    "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]": "timedOut",
+    "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]": "timedOut",
+    "accounts.test.ts::Accounts::On Budget Accounts::creates a transfer from two existing transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports transactions from a CSV file [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::preserves QIF categories in preview and imported transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import csv file twice [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports a new transaction when an unchecked match has the same amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import notes checkbox is not shown for CSV files [chromium]": "passed",
+    "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]": "passed",
+    "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]": "passed",
+    "accounts.test.ts::Accounts::closes an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]": "passed",
+    "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]": "passed",
+    "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer from its arrow [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer older than the first loaded page [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 1280px [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 375px [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]": "timedOut",
+    "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::checks the page visuals [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::searches for accounts [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::page handles empty state gracefully [chromium]": "passed",
+    "bank-sync.test.ts::Bank Sync::checks the page visuals [chromium]": "passed",
+    "budget-automations.mobile.test.ts::Mobile budget automations::opens automations from the category menu and drills into the editor [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the To Budget/Overbudgeted amount opens the budget summary menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]": "timedOut",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Saved/Projected Savings/Overspent amount opens the budget summary menu modal [chromium]": "passed"
+   },
+   "trace": null,
+   "counts": {
+    "passed": 70,
+    "timedOut": 4
+   }
+  },
+  {
+   "label": "stress-2",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 1,
+   "wall_s": 609.2,
+   "outcomes": {
+    "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]": "timedOut",
+    "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]": "timedOut",
+    "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]": "timedOut",
+    "accounts.test.ts::Accounts::On Budget Accounts::creates a transfer from two existing transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports transactions from a CSV file [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::preserves QIF categories in preview and imported transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import csv file twice [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports a new transaction when an unchecked match has the same amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import notes checkbox is not shown for CSV files [chromium]": "passed",
+    "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]": "passed",
+    "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]": "passed",
+    "accounts.test.ts::Accounts::closes an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]": "passed",
+    "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]": "passed",
+    "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]": "timedOut",
+    "accounts.test.ts::Accounts::opens the other side of a transfer from its arrow [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer older than the first loaded page [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 1280px [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 375px [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]": "timedOut",
+    "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::checks the page visuals [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::searches for accounts [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::page handles empty state gracefully [chromium]": "passed",
+    "bank-sync.test.ts::Bank Sync::checks the page visuals [chromium]": "passed",
+    "budget-automations.mobile.test.ts::Mobile budget automations::opens automations from the category menu and drills into the editor [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the To Budget/Overbudgeted amount opens the budget summary menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]": "timedOut",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Saved/Projected Savings/Overspent amount opens the budget summary menu modal [chromium]": "passed"
+   },
+   "trace": null,
+   "counts": {
+    "passed": 68,
+    "timedOut": 6
+   }
+  },
+  {
+   "label": "stress-3",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 1,
+   "wall_s": 600.3,
+   "outcomes": {
+    "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]": "timedOut",
+    "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]": "timedOut",
+    "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]": "timedOut",
+    "accounts.test.ts::Accounts::On Budget Accounts::creates a transfer from two existing transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports transactions from a CSV file [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::preserves QIF categories in preview and imported transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import csv file twice [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports a new transaction when an unchecked match has the same amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import notes checkbox is not shown for CSV files [chromium]": "passed",
+    "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]": "passed",
+    "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]": "passed",
+    "accounts.test.ts::Accounts::closes an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]": "passed",
+    "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]": "passed",
+    "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]": "failed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer from its arrow [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer older than the first loaded page [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 1280px [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 375px [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::checks the page visuals [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::searches for accounts [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::page handles empty state gracefully [chromium]": "passed",
+    "bank-sync.test.ts::Bank Sync::checks the page visuals [chromium]": "passed",
+    "budget-automations.mobile.test.ts::Mobile budget automations::opens automations from the category menu and drills into the editor [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]": "timedOut",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the To Budget/Overbudgeted amount opens the budget summary menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]": "timedOut",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Saved/Projected Savings/Overspent amount opens the budget summary menu modal [chromium]": "passed"
+   },
+   "trace": null,
+   "counts": {
+    "passed": 68,
+    "timedOut": 5,
+    "failed": 1
+   }
+  },
+  {
+   "label": "serial-1",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [
+    "--workers=1"
+   ],
+   "rc": 0,
+   "wall_s": 436.3,
+   "outcomes": {
+    "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::On Budget Accounts::creates a transfer from two existing transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports transactions from a CSV file [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::preserves QIF categories in preview and imported transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import csv file twice [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports a new transaction when an unchecked match has the same amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import notes checkbox is not shown for CSV files [chromium]": "passed",
+    "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]": "passed",
+    "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]": "passed",
+    "accounts.test.ts::Accounts::closes an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]": "passed",
+    "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]": "passed",
+    "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer from its arrow [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer older than the first loaded page [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 1280px [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 375px [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::checks the page visuals [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::searches for accounts [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::page handles empty state gracefully [chromium]": "passed",
+    "bank-sync.test.ts::Bank Sync::checks the page visuals [chromium]": "passed",
+    "budget-automations.mobile.test.ts::Mobile budget automations::opens automations from the category menu and drills into the editor [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the To Budget/Overbudgeted amount opens the budget summary menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Saved/Projected Savings/Overspent amount opens the budget summary menu modal [chromium]": "passed"
+   },
+   "trace": null,
+   "counts": {
+    "passed": 74
+   }
+  },
+  {
+   "label": "det-1",
+   "mode": "det",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 1,
+   "wall_s": 986.4,
+   "outcomes": {
+    "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::On Budget Accounts::creates a transfer from two existing transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports transactions from a CSV file [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::preserves QIF categories in preview and imported transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import csv file twice [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports a new transaction when an unchecked match has the same amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import notes checkbox is not shown for CSV files [chromium]": "passed",
+    "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]": "passed",
+    "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]": "passed",
+    "accounts.test.ts::Accounts::closes an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]": "passed",
+    "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]": "passed",
+    "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer from its arrow [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer older than the first loaded page [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 1280px [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 375px [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::checks the page visuals [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::searches for accounts [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::page handles empty state gracefully [chromium]": "passed",
+    "bank-sync.test.ts::Bank Sync::checks the page visuals [chromium]": "passed",
+    "budget-automations.mobile.test.ts::Mobile budget automations::opens automations from the category menu and drills into the editor [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the To Budget/Overbudgeted amount opens the budget summary menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]": "failed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Saved/Projected Savings/Overspent amount opens the budget summary menu modal [chromium]": "passed"
+   },
+   "trace": "/home/runner/work/_temp/l2_out/actual/traces/det-1.jsonl",
+   "counts": {
+    "passed": 73,
+    "failed": 1
+   }
+  },
+  {
+   "label": "det-2",
+   "mode": "det",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "rc": 1,
+   "wall_s": 965.7,
+   "outcomes": {
+    "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]": "passed",
+    "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::On Budget Accounts::creates a transfer from two existing transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports transactions from a CSV file [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::preserves QIF categories in preview and imported transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import csv file twice [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::imports a new transaction when an unchecked match has the same amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::Import Transactions::import notes checkbox is not shown for CSV files [chromium]": "passed",
+    "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]": "passed",
+    "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]": "passed",
+    "accounts.test.ts::Accounts::closes an account [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]": "passed",
+    "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]": "passed",
+    "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]": "passed",
+    "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]": "passed",
+    "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]": "passed",
+    "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer from its arrow [chromium]": "passed",
+    "accounts.test.ts::Accounts::opens the other side of a transfer older than the first loaded page [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 1280px [chromium]": "passed",
+    "api-keys.test.ts::manages budget API keys at 375px [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]": "passed",
+    "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::checks the page visuals [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::searches for accounts [chromium]": "passed",
+    "bank-sync.mobile.test.ts::Mobile Bank Sync::page handles empty state gracefully [chromium]": "passed",
+    "bank-sync.test.ts::Bank Sync::checks the page visuals [chromium]": "passed",
+    "budget-automations.mobile.test.ts::Mobile budget automations::opens automations from the category menu and drills into the editor [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]": "failed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the To Budget/Overbudgeted amount opens the budget summary menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::loads the budget page with budgeted amounts [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the month in the page header opens the month menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category group name opens the category group menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category name opens the category menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category group with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category with transactions [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::updates the budgeted amount [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::copies last month's budget [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 3 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 6 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 12 month average [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking spent cell redirects to the category transactions page [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the balance cell opens the balance menu modal [chromium]": "passed",
+    "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Saved/Projected Savings/Overspent amount opens the budget summary menu modal [chromium]": "passed"
+   },
+   "trace": "/home/runner/work/_temp/l2_out/actual/traces/det-2.jsonl",
+   "counts": {
+    "passed": 73,
+    "failed": 1
+   }
+  }
+ ],
+ "measured_at": "2026-11-17T08:30:34Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "tests_baseline": 74,
+ "baseline_wall_median_s": 268.8,
+ "stress_wall_median_s": 609.2,
+ "serial_wall_median_s": 436.3,
+ "det_wall_median_s": 976.05,
+ "always_failing_baseline": [],
+ "flaky": [
+  {
+   "key": "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]",
+   "baseline": "PPPPP",
+   "stress": "FFF",
+   "det": "PP",
+   "location": [
+    "accounts.mobile.test.ts",
+    67
+   ]
+  },
+  {
+   "key": "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]",
+   "baseline": "PPPPP",
+   "stress": "PFF",
+   "det": "PP",
+   "location": [
+    "accounts.mobile.test.ts",
+    41
+   ]
+  },
+  {
+   "key": "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]",
+   "baseline": "PPPPP",
+   "stress": "FFF",
+   "det": "PP",
+   "location": [
+    "accounts.mobile.test.ts",
+    92
+   ]
+  },
+  {
+   "key": "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]",
+   "baseline": "PPPPP",
+   "stress": "PFF",
+   "det": "PP",
+   "location": [
+    "accounts.test.ts",
+    332
+   ]
+  },
+  {
+   "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]",
+   "baseline": "PPPPF",
+   "stress": "PPP",
+   "det": "PP",
+   "location": [
+    "automatic-budget-range.test.ts",
+    49
+   ]
+  },
+  {
+   "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]",
+   "baseline": "PPPPP",
+   "stress": "FFP",
+   "det": "PP",
+   "location": [
+    "automatic-budget-range.test.ts",
+    86
+   ]
+  },
+  {
+   "key": "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]",
+   "baseline": "PPPPP",
+   "stress": "PPF",
+   "det": "PP",
+   "location": [
+    "budget.mobile.test.ts",
+    433
+   ]
+  },
+  {
+   "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]",
+   "baseline": "PPFPP",
+   "stress": "FFF",
+   "det": "PP",
+   "location": [
+    "budget.mobile.test.ts",
+    433
+   ]
+  }
+ ],
+ "broken_by_controls": [
+  {
+   "key": "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]",
+   "det": "PF",
+   "always": false
+  },
+  {
+   "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]",
+   "det": "FP",
+   "always": false
+  }
+ ],
+ "det_tests": 74,
+ "det_verify": {
+  "runs": 2,
+  "tests": 74,
+  "stable": 3,
+  "diverged": 71,
+  "missing": 0,
+  "outcome_unstable": 2,
+  "order_identical": true,
+  "reasons": {
+   "other": 48,
+   "random": 23
+  }
+ },
+ "det_diverged_examples": [
+  {
+   "key": "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 201,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "2d1f11a2b28efa1d4256e54df1926eba"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "68f98edc076b6c759911fb8963f7dee2"
+    },
+    "reason": "other",
+    "description": "event #201: dom.digest @  returned different values: \"2d1f11a2b28efa1d4256e54df1926eba\" vs \"68f98edc076b6c759911fb8963f7dee2\""
+   }
+  },
+  {
+   "key": "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 200,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "586/1/413:f668c3b7"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "586/1/414:26eb5dc0"
+    },
+    "reason": "random",
+    "description": "event #200: page.random @  returned different values: \"586/1/413:f668c3b7\" vs \"586/1/414:26eb5dc0\""
+   }
+  },
+  {
+   "key": "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 200,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "590/1/448:45d4e2b1"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "590/1/448:d30b2a13"
+    },
+    "reason": "random",
+    "description": "event #200: page.random @  returned different values: \"590/1/448:45d4e2b1\" vs \"590/1/448:d30b2a13\""
+   }
+  },
+  {
+   "key": "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 201,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "feecb752e6a5c1d89d1c420e3f3f21cc"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "05ad4e830edeaeafdcd24a78f23717fb"
+    },
+    "reason": "other",
+    "description": "event #201: dom.digest @  returned different values: \"feecb752e6a5c1d89d1c420e3f3f21cc\" vs \"05ad4e830edeaeafdcd24a78f23717fb\""
+   }
+  },
+  {
+   "key": "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 201,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "6847eaabcba2d11ae7f3584377dec92c"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "b3b81b4bc5ea69c00ef2c497148daca8"
+    },
+    "reason": "other",
+    "description": "event #201: dom.digest @  returned different values: \"6847eaabcba2d11ae7f3584377dec92c\" vs \"b3b81b4bc5ea69c00ef2c497148daca8\""
+   }
+  },
+  {
+   "key": "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 201,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "e0c94921fb84c170c21f378a0b81cbdd"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "f49d4696b9f4a0085b0ea125d6b02f62"
+    },
+    "reason": "other",
+    "description": "event #201: dom.digest @  returned different values: \"e0c94921fb84c170c21f378a0b81cbdd\" vs \"f49d4696b9f4a0085b0ea125d6b02f62\""
+   }
+  },
+  {
+   "key": "accounts.test.ts::Accounts::closes an account [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 200,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "697/1/586:a17c826d"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "697/1/586:eb1d4da3"
+    },
+    "reason": "random",
+    "description": "event #200: page.random @  returned different values: \"697/1/586:a17c826d\" vs \"697/1/586:eb1d4da3\""
+   }
+  },
+  {
+   "key": "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 201,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "77fa04997ed420e2abae17d963dd3267"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "984088841049cdb77367fdd1e0cedf08"
+    },
+    "reason": "other",
+    "description": "event #201: dom.digest @  returned different values: \"77fa04997ed420e2abae17d963dd3267\" vs \"984088841049cdb77367fdd1e0cedf08\""
+   }
+  },
+  {
+   "key": "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 201,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "f004dc31056e90686bb2b62448dfb012"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "27b3ca0eb7ba9b1684d2396532cbd709"
+    },
+    "reason": "other",
+    "description": "event #201: dom.digest @  returned different values: \"f004dc31056e90686bb2b62448dfb012\" vs \"27b3ca0eb7ba9b1684d2396532cbd709\""
+   }
+  },
+  {
+   "key": "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 201,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "4d6619968c11d3d8f4dff62322bbb205"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "4e95a5e7a98820ff26f44670c5b940b2"
+    },
+    "reason": "other",
+    "description": "event #201: dom.digest @  returned different values: \"4d6619968c11d3d8f4dff62322bbb205\" vs \"4e95a5e7a98820ff26f44670c5b940b2\""
+   }
+  },
+  {
+   "key": "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 200,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "701/1/654:e07622ae"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "701/1/654:a3f62c1a"
+    },
+    "reason": "random",
+    "description": "event #200: page.random @  returned different values: \"701/1/654:e07622ae\" vs \"701/1/654:a3f62c1a\""
+   }
+  },
+  {
+   "key": "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 201,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "50c1242a047d1eebc6b3db48c231ba03"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "35362f21d6b12f73f604e0dfaf61df9e"
+    },
+    "reason": "other",
+    "description": "event #201: dom.digest @  returned different values: \"50c1242a047d1eebc6b3db48c231ba03\" vs \"35362f21d6b12f73f604e0dfaf61df9e\""
+   }
+  },
+  {
+   "key": "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 200,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "748/1/869:f0c46489"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "748/1/869:634ab3"
+    },
+    "reason": "random",
+    "description": "event #200: page.random @  returned different values: \"748/1/869:f0c46489\" vs \"748/1/869:634ab3\""
+   }
+  },
+  {
+   "key": "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 200,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "697/1/694:3e541e07"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "697/1/694:20d70cd"
+    },
+    "reason": "random",
+    "description": "event #200: page.random @  returned different values: \"697/1/694:3e541e07\" vs \"697/1/694:20d70cd\""
+   }
+  },
+  {
+   "key": "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 200,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "697/1/698:76e2124"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "page.random",
+     "at": "",
+     "v": "697/1/700:a7dd75f9"
+    },
+    "reason": "random",
+    "description": "event #200: page.random @  returned different values: \"697/1/698:76e2124\" vs \"697/1/700:a7dd75f9\""
+   }
+  }
+ ],
+ "det_fingerprints": {
+  "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::creates a new account and views the initial balance transaction [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::account register widens amount columns for large balances [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::closes an account [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::right clicking an account in sidebar opens context menu [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::right clicking a transaction row opens context menu [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::updates the running balance after editing a transaction amount [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::shows the running balance when sorted by date oldest first [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::bulk editing the date shows a properly formatted date picker [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::shift-click range selection skips hidden reconciled transactions [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::keeps the search applied after toggling reconciled transactions [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::keeps the filter applied after toggling reconciled transactions [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::opens the other side of a transfer from its arrow [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::opens the other side of a transfer older than the first loaded page [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::On Budget Accounts::creates a transfer from two existing transactions [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::Import Transactions::imports transactions from a CSV file [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::Import Transactions::preserves QIF categories in preview and imported transactions [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::Import Transactions::import csv file twice [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::Import Transactions::imports a new transaction when an unchecked match has the same amount [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "accounts.test.ts::Accounts::Import Transactions::import notes checkbox is not shown for CSV files [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "api-keys.test.ts::manages budget API keys at 1280px [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "api-keys.test.ts::manages budget API keys at 375px [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "bank-sync.mobile.test.ts::Mobile Bank Sync::checks the page visuals [chromium]": [
+   "stable",
+   1,
+   "PP"
+  ],
+  "bank-sync.mobile.test.ts::Mobile Bank Sync::searches for accounts [chromium]": [
+   "stable",
+   1,
+   "PP"
+  ],
+  "bank-sync.mobile.test.ts::Mobile Bank Sync::page handles empty state gracefully [chromium]": [
+   "stable",
+   1,
+   "PP"
+  ],
+  "bank-sync.test.ts::Bank Sync::checks the page visuals [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget-automations.mobile.test.ts::Mobile budget automations::opens automations from the category menu and drills into the editor [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::loads the budget page with budgeted amounts [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the month in the page header opens the month menu modal [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category group name opens the category group menu modal [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the category name opens the category menu modal [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::moves a category to another group with drag and drop [chromium]": [
+   "diverged",
+   2,
+   "PF"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category group with transactions [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::opens the transfer confirmation when deleting a category with transactions [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::updates the budgeted amount [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::copies last month's budget [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 3 month average [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 6 month average [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::set budget to 12 month average [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking spent cell redirects to the category transactions page [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the balance cell opens the balance menu modal [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Envelope]::checks that clicking the To Budget/Overbudgeted amount opens the budget summary menu modal [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::loads the budget page with budgeted amounts [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Actual logo in the page header opens the budget page menu [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the left arrow in the page header shows the previous month's budget [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the month in the page header opens the month menu modal [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the right arrow in the page header shows the next month's budget [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category group name opens the category group menu modal [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the category name opens the category menu modal [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::moves a category to another group with drag and drop [chromium]": [
+   "diverged",
+   2,
+   "FP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category group with transactions [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::opens the transfer confirmation when deleting a category with transactions [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the budgeted cell opens the budget menu modal [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::updates the budgeted amount [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::copies last month's budget [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 3 month average [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 6 month average [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::set budget to 12 month average [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking spent cell redirects to the category transactions page [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the balance cell opens the balance menu modal [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ],
+  "budget.mobile.test.ts::Mobile Budget [Tracking]::checks that clicking the Saved/Projected Savings/Overspent amount opens the budget summary menu modal [chromium]": [
+   "diverged",
+   2,
+   "PP"
+  ]
+ },
+ "targets": [
+  {
+   "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]",
+   "filter": [
+    "automatic-budget-range.test.ts:49"
+   ],
+   "replays": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "seeds": {},
+   "failing_seed_replays": [],
+   "replay_wall_s": 64.75,
+   "replay_verify": {
+    "status": "diverged",
+    "distinct_fingerprints": 10,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 397,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "page.random",
+      "at": "",
+      "v": "509/1/725:5e03dc7"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "page.random",
+      "at": "",
+      "v": "509/1/725:afc1c55d"
+     },
+     "reason": "random",
+     "description": "event #397: page.random @  returned different values: \"509/1/725:5e03dc7\" vs \"509/1/725:afc1c55d\""
+    }
+   },
+   "replay_summary": {
+    "runs": 10,
+    "tests": 2,
+    "stable": 0,
+    "diverged": 2,
+    "missing": 0,
+    "outcome_unstable": 0,
+    "order_identical": true,
+    "reasons": {
+     "other": 1,
+     "random": 1
+    }
+   }
+  },
+  {
+   "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]",
+   "filter": [
+    "budget.mobile.test.ts:433"
+   ],
+   "replays": [
+    "passed"
+   ],
+   "seeds": {},
+   "failing_seed_replays": [],
+   "replay_wall_s": 45.3
+  },
+  {
+   "key": "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]",
+   "filter": [
+    "accounts.mobile.test.ts:67"
+   ],
+   "replays": [
+    "timedOut"
+   ],
+   "seeds": {},
+   "failing_seed_replays": [],
+   "replay_wall_s": 66.2
+  },
+  {
+   "key": "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]",
+   "filter": [
+    "accounts.mobile.test.ts:41"
+   ],
+   "replays": [
+    "passed"
+   ],
+   "seeds": {},
+   "failing_seed_replays": [],
+   "replay_wall_s": 32.1
+  },
+  {
+   "key": "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]",
+   "filter": [
+    "accounts.mobile.test.ts:92"
+   ],
+   "replays": [
+    "passed"
+   ],
+   "seeds": {},
+   "failing_seed_replays": [],
+   "replay_wall_s": 33.2
+  },
+  {
+   "key": "accounts.test.ts::Accounts::keeps unreconciled transactions after sorting with hidden reconciled ones [chromium]",
+   "filter": [
+    "accounts.test.ts:332"
+   ],
+   "replays": [
+    "passed"
+   ],
+   "seeds": {},
+   "failing_seed_replays": [],
+   "replay_wall_s": 40.4
+  }
+ ],
+ "elapsed_min": 108.1
+}
