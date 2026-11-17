@@ -1,0 +1,292 @@
+{
+ "name": "jinja",
+ "set": "popular",
+ "url": "https://github.com/pallets/jinja",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009483",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "5ef70112a1ff19c05324ff889dd30405b1002044",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group tests trio",
+ "collected": 911,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 1.802,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 911
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 9.447,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 891,
+    "failed": 20
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 3.888,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 890,
+    "failed": 21
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 8.669,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 890,
+    "failed": 21
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 1.774,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 911
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 3.896,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 891,
+    "failed": 20
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 3.939,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 890,
+    "failed": 21
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 8.612,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 890,
+    "failed": 21
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 2,
+   "duration_s": 1.829,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 911
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 4.083,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 891,
+    "failed": 20
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 2,
+   "duration_s": 3.966,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 890,
+    "failed": 21
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 2,
+   "duration_s": 8.697,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 890,
+    "failed": 21
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": ""
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [
+   "tests/test_async.py::TestAsyncForLoop::test_loop_errors[trio]",
+   "tests/test_async.py::TestAsyncImports::test_exports[trio]",
+   "tests/test_async.py::test_async_blocks[trio]",
+   "tests/test_async.py::test_async_extend[trio]",
+   "tests/test_async.py::test_await_and_macros[trio]",
+   "tests/test_async.py::test_await_on_calls[trio]",
+   "tests/test_async.py::test_basic_async[trio]",
+   "tests/test_async.py::test_basic_generate_async[trio]",
+   "tests/test_async.py::test_blocks_generate_async[trio]",
+   "tests/test_async.py::test_chainable_undefined_aiter[trio]",
+   "tests/test_async.py::test_include_generate_async[trio]",
+   "tests/test_async.py::test_namespace_awaitable[trio]",
+   "tests/test_async.py::test_native_async[trio]",
+   "tests/test_async.py::test_native_list_async[trio]",
+   "tests/test_async_filters.py::test_custom_async_filter[trio]",
+   "tests/test_async_filters.py::test_custom_async_iteratable_filter[trio-<lambda>0]",
+   "tests/test_async_filters.py::test_custom_async_iteratable_filter[trio-<lambda>1]",
+   "tests/test_async_filters.py::test_first[trio-<lambda>0]",
+   "tests/test_async_filters.py::test_first[trio-<lambda>1]",
+   "tests/test_nativetypes.py::test_string_concatenation[trio]"
+  ],
+  "n_broken": 20,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [
+   "tests/test_loader.py::TestFileSystemLoader::test_caches_template_based_on_mtime"
+  ],
+  "n_broken": 1,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [
+   "tests/test_loader.py::TestFileSystemLoader::test_caches_template_based_on_mtime"
+  ],
+  "n_broken": 1,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
