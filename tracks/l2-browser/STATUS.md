@@ -1,6 +1,6 @@
 # STATUS · track l2-browser (P-014)
 
-Updated 2026-11-17 09:10 UTC. Local branch `track-l2-browser` in a scratch worktree of
+Updated 2026-11-17 09:30 UTC. Local branch `track-l2-browser` in a scratch worktree of
 /home/user/fenvix-engine-cli; base `9ffbb0a` (origin/claude/node-l0, rebased at resume). Patches:
 `patches/` (`git am` on the base; 11 commits).
 
@@ -17,4 +17,7 @@ Updated 2026-11-17 09:10 UTC. Local branch `track-l2-browser` in a scratch workt
   documenso, actual, rallly, solid-start. Dry run on a local toy project works.
 
 ## Next
-- Batch 3 (8 patches): solid-start 3 tests broken, 31/47 fingerprints diverged (cause found: Vite counted as runner infrastructure in servers, real clock; fixed in patch 11). etherpad, documenso, actual running. Batch 6: uptime-kuma, rallly running. Batch 7: solid-start with 11 patches. Then REPORT.md.
+- Runs: batch 3 (44043803663: etherpad, actual still running; documenso broke: maxFailures=1 on CI and a 2025
+  epoch against real-time Postgres/test worker -> harness now passes --max-failures=0 and a job-start epoch);
+  batch 6 (44049271859: uptime-kuma, rallly running); batch 7 (44052628988: solid-start, 11 patches);
+  batch 8 (documenso, new harness). Then REPORT.md (harness/aggregate.py prints the tables).
