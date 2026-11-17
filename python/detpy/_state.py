@@ -66,7 +66,7 @@ def record(source: str, op: str, value: str, depth: int = 1) -> None:
     if buf is not None:  # --det-async executor job: recorded when its result is delivered
         buf.append((source, op, site, value))
         return
-    tid = _get_ident()
+    tid = getattr(_tls, "tkey", None) or _get_ident()  # --det-threads: never reused
     threads = STATE.threads
     t = threads.get(tid)
     if t is None:

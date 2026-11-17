@@ -11,7 +11,7 @@ import warnings
 
 import pytest
 
-from . import __version__, _core, _sites, _state, aio, clock, fsorder, network, reexec, seeds
+from . import __version__, _core, _sites, _state, aio, clock, fsorder, network, reexec, seeds, threads
 from ._patch import Patcher
 
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net")
@@ -69,6 +69,16 @@ def pytest_addoption(parser, pluginmanager):
                 help="real seconds the loop waits for an executor job before giving up determinism for it")
     g.addoption("--det-async-settle", type=float, default=0.01, metavar="S",
                 help="real seconds to batch near-simultaneous foreign wake-ups")
+    g.addoption("--det-threads", action="store_true", default=False,
+                help="Level 1 prototype: deterministic thread scheduling driven by a seed (needs --det)")
+    g.addoption("--det-threads-seed", type=int, default=None, metavar="N",
+                help="seed of the thread scheduler (default: --det-seed; 0 = calm profile, no exploration)")
+    g.addoption("--det-threads-grace", type=float, default=1.0, metavar="S",
+                help="real seconds an idle scheduler waits for work outside the process before a timer fires")
+    g.addoption("--det-threads-deadlock", type=float, default=5.0, metavar="S",
+                help="real seconds with only I/O waiters (or unmanaged threads) left before a deadlock is declared")
+    g.addoption("--det-threads-preempt", type=int, default=200, metavar="N",
+                help="exploring seeds only: mean number of user-code lines between preemptions (0 = off)")
     g.addoption("--det-outcomes", default=None, metavar="PATH",
                 help="write {nodeid: outcome} as JSON (works without --det; used by the harness)")
 
@@ -243,6 +253,8 @@ def pytest_load_initial_conftests(early_config, parser, args):
     if not getattr(ns, "det", False):
         if getattr(ns, "det_async", False):
             raise pytest.UsageError("--det-async needs --det")
+        if getattr(ns, "det_threads", False):
+            raise pytest.UsageError("--det-threads needs --det")
         return
     if S.active:
         # A pytest session nested in-process inside a --det session (pytester
@@ -327,6 +339,9 @@ def _install(config, ns, controls) -> None:
         seed = ns.det_async_seed if ns.det_async_seed is not None else (ns.det_seed or 0)
         aio.install(_PATCHER, seed, ns.det_async_grace, ns.det_async_wait, ns.det_async_settle,
                     str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd())
+    if getattr(ns, "det_threads", False):
+        seed = ns.det_threads_seed if ns.det_threads_seed is not None else (ns.det_seed or 0)
+        threads.install(_PATCHER, seed, ns.det_threads_grace, ns.det_threads_deadlock, ns.det_threads_preempt)
 
 
 def _owner(config) -> bool:
@@ -368,6 +383,7 @@ def _configure_det(config) -> None:
 def pytest_unconfigure(config):
     reexec.SESSION_DEPTH = max(0, reexec.SESSION_DEPTH - 1)
     if _owner(config):
+        threads.uninstall()
         _PATCHER.undo_all()
         clock.uninstall()
         aio.uninstall()
@@ -508,6 +524,9 @@ class _DetSession(_Outcomes):
         if aio.CFG.enabled:
             lines.append(f"detpy: --det-async (Level 1 prototype): asyncio scheduler seed {aio.CFG.seed}"
                          f"{' (calm)' if aio.CFG.seed == 0 else ' (exploring)'}")
+        if threads.CFG.enabled:
+            lines.append(f"detpy: --det-threads (Level 1 prototype): thread scheduler seed {threads.CFG.seed}"
+                         f"{' (calm)' if threads.CFG.seed == 0 else ' (exploring)'}")
         if S.disabled_plugins:
             lines.append(f"detpy: disabled conflicting plugins: {', '.join(S.disabled_plugins)}")
         if S.adjustments:
@@ -551,7 +570,8 @@ class _DetSession(_Outcomes):
             "runner": "pytest",
             "seed": cfg.seed,
             "shuffle": cfg.shuffle,
-            "controls": sorted(cfg.controls | ({"async"} if aio.CFG.enabled else set())),
+            "controls": sorted(cfg.controls | ({"async"} if aio.CFG.enabled else set())
+                               | ({"threads"} if threads.CFG.enabled else set())),
             "hashseed": os.environ.get("PYTHONHASHSEED"),
             "reexec": S.reexec_status,
             "aslr_disabled": reexec.aslr_disabled(),
@@ -574,6 +594,9 @@ class _DetSession(_Outcomes):
             "rebound_references": len(S.rebound),
             "det_async": ({"seed": aio.CFG.seed, "grace": aio.CFG.grace, "wait": aio.CFG.wait,
                            "settle": aio.CFG.settle} if aio.CFG.enabled else None),
+            "det_threads": ({"seed": threads.CFG.seed, "grace": threads.CFG.grace,
+                             "deadlock": threads.CFG.deadlock, "preempt": threads.CFG.preempt}
+                            if threads.CFG.enabled else None),
             "order_digest": S.order_digest,
         }
         _state.STATE.recorder.open(S.trace_path, json.dumps(meta), S.order)
@@ -597,9 +620,14 @@ class _DetSession(_Outcomes):
             seeds.start_test(_PATCHER, item.nodeid)
         if "net" in controls:
             network.start_test()
+        if threads.CFG.enabled:
+            threads.activate()
+            threads.start_test()
         try:
             yield
         finally:
+            if threads.CFG.enabled:
+                threads.end_test()
             if "seeds" in controls:
                 seeds.end_test()
             if "net" in controls:

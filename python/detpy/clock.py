@@ -123,6 +123,8 @@ class VirtualClock:
 
 CLOCK: VirtualClock | None = None
 _on_sleep = None  # set by detpy.aio
+_sched_sleep = None  # set by detpy.threads (--det-threads): virtual sleep of a managed thread
+_sched_managed = None  # set by detpy.threads: True if the calling thread is scheduled
 
 
 def _time_machine_ns(e: int) -> int | None:
@@ -218,9 +220,23 @@ def sleep(secs: float) -> None:
     ns = int(secs * NS)
     CLOCK.other_event()  # a sleep is not a read: it ends a run of reads
     _state.record("time", "time.sleep", str(ns))
-    CLOCK.advance(ns)
     if _on_sleep is not None:
         _on_sleep(ns)  # --det-async: charge the sleep to the executor job running it
+    if _sched_managed is not None and _sched_managed():
+        # --det-threads: the sleep is a timer of the thread scheduler (the clock
+        # jumps when no thread can run), unless someone outside the process
+        # observes real time: then wait for real, outside the scheduler.
+        if not (_state.STATE.config.sleep == "real" or (_in_event_loop() and _on_sleep is None)
+                or _EXTERNAL["started"] or _children_alive()):
+            _sched_sleep(ns)
+            return
+        from . import threads
+
+        CLOCK.advance(ns)
+        with threads.external():
+            real_sleep(secs)
+        return
+    CLOCK.advance(ns)
     if (_state.STATE.config.sleep == "real" or _other_threads_alive()
             or (_in_event_loop() and _on_sleep is None)
             or _EXTERNAL["started"] or _children_alive()):
@@ -376,7 +392,8 @@ _real_condition_wait = threading.Condition.wait
 
 def _condition_wait(self, timeout=None):
     got = _real_condition_wait(self, timeout)
-    if not got and timeout is not None and timeout > 0 and CLOCK is not None:
+    if (not got and timeout is not None and timeout > 0 and CLOCK is not None
+            and not (_sched_managed is not None and _sched_managed())):  # threads: already virtual
         CLOCK.advance(int(timeout * NS))
     return got
 
