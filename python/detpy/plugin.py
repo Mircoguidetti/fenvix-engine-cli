@@ -40,8 +40,9 @@ def pytest_addoption(parser, pluginmanager):
                 help="network cassette (default: <rootdir>/.detpy/cassette.json); replayed when present")
     g.addoption("--det-allow-host", action="append", default=[], metavar="HOST",
                 help="external host that may be reached (repeatable)")
-    g.addoption("--det-epoch", default="2025-01-01T00:00:00+00:00", metavar="ISO",
-                help="wall-clock value at the start of every test")
+    g.addoption("--det-epoch", default="auto", metavar="ISO",
+                help="wall-clock value at the start of every test (default auto: the commit time of the "
+                     f"checked-out git HEAD, else {_FALLBACK_EPOCH})")
     g.addoption("--det-tick", type=int, default=1000, metavar="NS",
                 help="nanoseconds the virtual clock advances on every read (default 1000)")
     g.addoption("--det-tick-adapt", type=int, default=8, metavar="N",
@@ -170,6 +171,42 @@ def _skip_module(name: str, mod) -> bool:
     return kind != _sites._USER
 
 
+_FALLBACK_EPOCH = "2025-01-01T00:00:00+00:00"
+EPOCH_SOURCE = {"source": "default"}
+
+
+def _head_commit_time(root: str) -> int | None:
+    """Commit time (seconds) of the git HEAD containing ``root``, or None."""
+    import subprocess
+
+    try:
+        p = subprocess.run(["git", "log", "-1", "--format=%ct"], cwd=root, capture_output=True, text=True,
+                           timeout=10)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    out = p.stdout.strip()
+    return int(out) if p.returncode == 0 and out.isdigit() else None
+
+
+def _epoch_ns(text: str, root: str) -> int:
+    """--det-epoch: an ISO time, or "auto" = the HEAD commit time (T2).
+
+    A test written at a commit may take dates before the commit as past; a fixed
+    epoch older than the commit made such tests fail only under --det. The commit
+    time is a pure function of the checkout and never later than the real time.
+    """
+    if text == "auto":
+        ct = _head_commit_time(root)
+        if ct is not None:
+            EPOCH_SOURCE.update(source="git HEAD commit time", value=ct)
+            return ct * 1_000_000_000
+        EPOCH_SOURCE.update(source="fixed default (no git HEAD)", value=_FALLBACK_EPOCH)
+        text = _FALLBACK_EPOCH
+    else:
+        EPOCH_SOURCE.update(source="--det-epoch", value=text)
+    return _parse_epoch(text)
+
+
 def _parse_epoch(text: str) -> int:
     try:
         d = _dt.datetime.fromisoformat(text)
@@ -238,7 +275,7 @@ def _install(config, ns, controls) -> None:
     cfg = _state.Config(
         seed=ns.det_seed or 0,
         shuffle=ns.det_seed is not None and not getattr(ns, "det_order", None),
-        epoch_ns=_parse_epoch(ns.det_epoch),
+        epoch_ns=_epoch_ns(ns.det_epoch, str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()),
         tick_ns=max(0, ns.det_tick),
         tick_adapt=max(0, ns.det_tick_adapt),
         sleep=ns.det_sleep,
@@ -498,6 +535,7 @@ class _DetSession(_Outcomes):
                              else None),
             "tick_adapt": cfg.tick_adapt,
             "epoch_ns": cfg.epoch_ns,
+            "epoch_source": EPOCH_SOURCE.get("source"),
             "tick_ns": cfg.tick_ns,
             "sleep": cfg.sleep,
             "network": S.net_mode,
