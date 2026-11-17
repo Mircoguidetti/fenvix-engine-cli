@@ -13,7 +13,8 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-RES = HERE / "results" / "node"
+import sys
+RES = HERE / "results" / (sys.argv[1] if len(sys.argv) > 1 else "node-final")
 OUT = ROOT / "docs" / "REPORT-node-l0.md"
 
 
@@ -44,9 +45,16 @@ def main() -> None:
     pf = summary.get("pass_fail_reasons", {})
     broken = summary.get("broken_causes", {})
     before_runs = []
-    for d in ("node-before-fixes", "node-before-fixes-2", "node-before-fixes-3", "node-before-fixes-4"):
+    # Latest earlier measurement of each project (later sets override earlier ones): the rounds stopped on
+    # earlier shells, then the full round on d3075a1 and its re-runs before the last fixes.
+    for d in ("node-before-fixes", "node-before-fixes-2", "node-before-fixes-3", "node", "node-rerun", "node-rerun2"):
         before_runs += [s for s in load(HERE / "results" / d, "*.summary.json")]
     before_by = {s["name"]: s for s in before_runs}
+    inactive = {}
+    for d, n in (("node-rerun", "babel-flaky"), ("node", "prettier-flaky")):
+        f = HERE / "results" / d / f"{n}.summary.json"
+        if f.exists():
+            inactive[n] = json.loads(f.read_text())
     now_by = {s["name"]: s for s in repos}
     common = sorted(set(before_by) & set(now_by))
     seeds = [v for s in repos for v in s.get("seeds_needed", [])]
@@ -108,7 +116,7 @@ def main() -> None:
       "found — also in a workspace package —, ≥ 50 test outcomes, < 50% failing, first run < 180 s): "
       f"{nflaky} documented-flaky, {npop} popular, {len(pw)} Playwright. Discarded: "
       + ", ".join(f"{k} {v}" for k, v in collections.Counter(d['status'] for d in discards).most_common())
-      + ". Every discarded candidate is listed with its reason in `harness/node/results/node/REPORT.md`.")
+      + f". Every discarded candidate is listed with its reason in `harness/node/results/{RES.name}/REPORT.md`.")
     if nflaky < 25:
         A(f"\n**Shortfall:** the documented-flaky pool has {nflaky} measurable projects, not 25 (MEASURED). The other "
           "candidates (all listed) need a build, a browser, services or an old toolchain (Jest < 27 without "
@@ -152,8 +160,11 @@ def main() -> None:
       "failed under `--det` (`@babel/runtime` not found; buble syntax error) |")
     A("| awaited in-process `jest-cli` run added an `at async main` frame to async stacks (babel) | stack-trace inline "
       "snapshots failed under `--det` |")
-    A("| custom Jest `runner` (jest-light-runner) bypassed detjs (babel, prettier) | Level 0 not applied: 0 of ~25 000 "
-      "tests traced |")
+    A("| adaptive tick doubled after 8 clock reads; React's scheduler reads the clock hundreds of times per render "
+      "(recharts) | virtual `performance.now()` ran 194 s ahead within a test; code comparing it with Vitest's fake "
+      "`requestAnimationFrame` timestamps looped: 1113 tests broken by `--det` |")
+    A("| custom Jest `runner` (jest-light-runner) bypasses detjs (babel, prettier) | Level 0 not applied: 0 of ~25 000 "
+      "tests traced; now reported (J16), not fixed |")
     A("")
     A("Harness defects fixed on the way (they affected the measurement, not detjs): the project's test-script flags "
       "(`--config`, Node flags, variables) were ignored (apollo-client: every suite failed), leftover web servers survived "
@@ -162,6 +173,8 @@ def main() -> None:
       "tests).")
     A("")
     if common:
+        A("Per project, the latest measurement before the last fixes (round on d3075a1 and its re-runs, or the earlier "
+          "stopped rounds) against the final round:\n")
         A("| project | broken by --det before | after |")
         A("|---|---:|---:|")
         for n in common:
@@ -177,11 +190,19 @@ def main() -> None:
             A(f"| `{k.replace('|', '&#124;')}` | {v} |")
         A("")
 
+    if inactive:
+        A("**Level 0 not applied (J16).** " + ", ".join(
+            f"{n} ({s.get('tests', '?')} tests, {s.get('covered', 0)} traced)" for n, s in inactive.items())
+          + " run their tests with the custom Jest runner `jest-light-runner`, which bypasses jest-circus's `testRunner` "
+          "hook: detjs cannot install its controls there, so these projects are excluded from the numbers above "
+          "(MEASURED on the round before the last fixes; replacing the runner by `jest-runner` made every suite fail, "
+          "under `--det` and the serial reference alike).\n")
+
     A("## Causes of baseline-flaky tests not reproduced (MEASURED, keyword heuristics)\n")
     A("| concurrency / event order | external | L0 gap | unknown |")
     A("|---:|---:|---:|---:|")
     A(f"| {causes['concurrency/event-order']} | {causes['external']} | {causes['l0-gap']} | {causes['unknown']} |\n")
-    A("Evidence per test in `harness/node/results/node/<repo>.causes.json`.\n")
+    A(f"Evidence per test in `harness/node/results/{RES.name}/<repo>.causes.json`.\n")
 
     A("## Timing\n")
     if timings:
@@ -257,7 +278,7 @@ def main() -> None:
       "`docs/` of this branch per the coordinator's fallback.")
     A("* A second Actions job to fetch the JS-TOD and environmental-flakiness replication packages from Zenodo was "
       "refused by the session's permission system and not retried.")
-    A(f"* Harness report with every number per project and every discarded candidate: `harness/node/results/node/REPORT.md` "
+    A(f"* Harness report with every number per project and every discarded candidate: `harness/node/results/{RES.name}/REPORT.md` "
       f"(run {meta.get('run_url', '')}).")
     OUT.write_text("\n".join(L) + "\n")
     print(OUT)
