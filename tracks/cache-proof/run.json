@@ -1,11 +1,9 @@
 {
- "run_id": "r5",
- "note": "all projects on patches 1-7 (r1-r4 cancelled: engine and harness fixes found on their first results)",
+ "run_id": "s1d1",
+ "note": "step 1 diagnostic: patches 1-8 (refusal causes named); home-assistant 16 shards x 1 commit, pylint 1 commit, structlog 2 commits",
  "walk": [
-  {"spec": "arrow"}, {"spec": "attrs"}, {"spec": "boltons"}, {"spec": "click"}, {"spec": "flask"},
-  {"spec": "isort"}, {"spec": "jinja"}, {"spec": "marshmallow"}, {"spec": "more-itertools"}, {"spec": "pygments"},
-  {"spec": "sqlparse"}, {"spec": "structlog"}, {"spec": "toolz"}, {"spec": "werkzeug"},
-  {"spec": "pylint"},
-  {"spec": "home-assistant", "shards": 16, "commit_every": 5}
+  {"spec": "home-assistant", "shards": 16, "commits": 1, "commit_every": 1},
+  {"spec": "pylint", "commits": 1},
+  {"spec": "structlog", "commits": 2}
  ]
 }

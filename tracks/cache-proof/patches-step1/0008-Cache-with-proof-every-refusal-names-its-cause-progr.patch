@@ -1,0 +1,296 @@
+From 8b3ead35245c66549c4357eb973c02feeeb721a5 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 16:22:58 +0000
+Subject: [PATCH 8/8] Cache with proof: every refusal names its cause (program
+ or address, call site, context); summary not_cached_detail, walk records it
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ harness/cache_proof/walk.py |   6 +-
+ python/detpy/plugin.py      |   3 +-
+ python/detpy/proofcache.py  | 108 ++++++++++++++++++++++++++++++++++--
+ tests/test_proofcache.py    |  20 +++++++
+ 4 files changed, 127 insertions(+), 10 deletions(-)
+
+diff --git a/harness/cache_proof/walk.py b/harness/cache_proof/walk.py
+index a892d25..b9c83e5 100644
+--- a/harness/cache_proof/walk.py
++++ b/harness/cache_proof/walk.py
+@@ -317,7 +317,7 @@ class Walk:
+     @staticmethod
+     def cache_info(r: dict) -> dict:
+         c = r.get("cache") or {}
+-        return {k: c.get(k) for k in ("reused", "ran", "recorded", "miss_reasons", "not_cached", "check_seconds",
++        return {k: c.get(k) for k in ("reused", "ran", "recorded", "miss_reasons", "not_cached", "not_cached_detail", "check_seconds",
+                                       "record_seconds", "stale_reuses", "reused_recorded_seconds")}
+ 
+     def step_suite(self, st: dict, units: list[str], i: int) -> dict:
+@@ -357,7 +357,7 @@ class Walk:
+ 
+     def step_files(self, st: dict, units: list[str], i: int) -> dict:
+         full = i % 10 == 0 or i == self.n - 1
+-        agg = {"wall": 0.0, "reused": 0, "ran": 0, "recorded": 0, "miss_reasons": {}, "not_cached": {},
++        agg = {"wall": 0.0, "reused": 0, "ran": 0, "recorded": 0, "miss_reasons": {}, "not_cached": {}, "not_cached_detail": {},
+                "check_seconds": 0.0, "record_seconds": 0.0, "failed_units": 0}
+         outcomes, reused, times = {}, {}, {}
+         b_wall = 0.0
+@@ -375,7 +375,7 @@ class Walk:
+                 agg[k] += c.get(k) or 0
+             for k in ("check_seconds", "record_seconds"):
+                 agg[k] += c.get(k) or 0.0
+-            for k in ("miss_reasons", "not_cached"):
++            for k in ("miss_reasons", "not_cached", "not_cached_detail"):
+                 for kk, vv in (c.get(k) or {}).items():
+                     agg[k][kk] = agg[k].get(kk, 0) + vv
+             outcomes.update(a["outcomes"])
+diff --git a/python/detpy/plugin.py b/python/detpy/plugin.py
+index c1f4f53..ed2bd20 100644
+--- a/python/detpy/plugin.py
++++ b/python/detpy/plugin.py
+@@ -497,7 +497,8 @@ class _DetSession(_Outcomes):
+         pc = proofcache.PLUGIN
+         if pc is not None:
+             out["cache"] = {**pc.summary_data(), "reused_ids": sorted(pc.hits), "verified_ids": sorted(pc.verifying),
+-                            "not_cached_ids": pc.not_cached, "miss_ids": pc.misses}
++                            "not_cached_ids": pc.not_cached, "not_cached_where": pc.not_cached_where,
++                            "miss_ids": pc.misses}
+         return out
+ 
+     def pytest_report_header(self, config):
+diff --git a/python/detpy/proofcache.py b/python/detpy/proofcache.py
+index 64236ab..e9c976d 100644
+--- a/python/detpy/proofcache.py
++++ b/python/detpy/proofcache.py
+@@ -142,6 +142,7 @@ class Capture:
+         self.data: dict[int, dict[str, str]] = {}
+         self.env: dict[int, set] = {}
+         self.flags: dict[int, set] = {}  # "net", "spawn", "proc", "time", "entropy", "netrec", "foreign:<path>"
++        self.why: dict[tuple, str] = {}  # (context, flag) -> first occurrence (what and where), for the reports
+         self.writers: dict[str, set] = {}  # abs path -> context indices that wrote it
+         self._hashed: dict[str, str] = {}  # abs path -> dep at first read in the session
+         self.loaded_order: list[tuple[str, int]] = []  # (rel module file, index of the test after which it was seen)
+@@ -335,7 +336,7 @@ class Capture:
+             except OSError:
+                 continue
+         if ctx is not None and new & inet:
+-            self.flags.setdefault(ctx, set()).add("csock")
++            self.flag(ctx, "csock", "an internet socket left open")
+ 
+     # -- data, environment, events ------------------------------------------------------
+     def _caller_kind(self) -> str:
+@@ -394,7 +395,7 @@ class Capture:
+             self.flags.setdefault(ctx, set()).add("badpath")
+             return
+         if p.startswith(("/proc/", "/sys/", "/dev/")):
+-            self.flags.setdefault(ctx, set()).add("proc")
++            self.flag(ctx, "proc", p)
+             return
+         if p in self.writers:
+             # reads what code of this session wrote: allowed only if every writer is credited to the reader
+@@ -472,7 +473,7 @@ class Capture:
+             # (HTTPS_PROXY=http://127.0.0.1:...) or a service the test process tree did not start
+             if self._caller_kind() == "infra":
+                 return
+-            self.flags.setdefault(self._cur(), set()).add("connect")
++            self.flag(self._cur(), "connect", f"{event} {_addr(args)} at {_first_user_site()}")
+         elif event in ("socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr"):
+             # a name lookup (DNS, /etc/hosts) is an input from outside; numeric addresses are not
+             host = args[0] if args else None
+@@ -480,7 +481,7 @@ class Capture:
+                 host = host.decode("ascii", "replace")
+             if not isinstance(host, str) or not host or _numeric_host(host) or self._caller_kind() == "infra":
+                 return
+-            self.flags.setdefault(self._cur(), set()).add("dns")
++            self.flag(self._cur(), "dns", f"{event} {host} at {_first_user_site()}")
+         elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
+             if self._caller_kind() == "infra":
+                 return
+@@ -489,7 +490,7 @@ class Capture:
+                 # dynamic linker's cache: that file is the input
+                 self.read(self._cur(), _LD_SO_CACHE, "f")
+                 return
+-            self.flags.setdefault(self._cur(), set()).add("spawn")
++            self.flag(self._cur(), "spawn", _spawn_detail(event, args))
+         else:
+             idx = _WRITE_EVENTS.get(event)
+             if idx is None or self._caller_kind() == "infra":
+@@ -500,6 +501,14 @@ class Capture:
+                 if p is not None and not self._ignored(p):
+                     self.wrote(ctx, p)
+ 
++    def flag(self, ctx: int, flag: str, detail: str | None = None) -> None:
++        fl = self.flags.setdefault(ctx, set())
++        if flag not in fl:
++            fl.add(flag)
++            if detail is None:
++                detail = _first_user_site()
++            self.why[(ctx, flag)] = detail
++
+     def env_read(self, name: str) -> None:
+         if self.active:
+             self.env.setdefault(self._cur(), set()).add(name)
+@@ -735,6 +744,7 @@ class ProofCachePlugin:
+         self.t_record = 0.0
+         self.recorded = 0
+         self.not_cached: dict[str, str] = {}
++        self.not_cached_where: dict[str, str] = {}  # nodeid -> first occurrence of the cause (what, where, context)
+         self.stale_hits: dict[str, str] = {}
+         self.error: str | None = None
+ 
+@@ -1081,6 +1091,8 @@ class ProofCachePlugin:
+                 units |= units_of(per[c][0])
+                 content |= unparsable(per[c][1])
+             why = _uncacheable(flags, cfg)
++            if why is not None:
++                self.not_cached_where[nid] = self._where(why, g_ctx_all + ctxs)
+             if why is None:
+                 # writers credited to the test: its own contexts and the global ones (startup, between tests,
+                 # import time), whose code is an input of every test
+@@ -1142,6 +1154,17 @@ class ProofCachePlugin:
+             self.recorded += 1
+         store.save()
+ 
++    def _where(self, why: str, ctxs) -> str:
++        """``why`` with the first occurrence of its cause: what (command, address...) and in which context."""
++        flag = _FLAG_OF.get(why)
++        if flag is None:
++            return why
++        for c in ctxs:
++            d = self.cap.why.get((c, flag))
++            if d is not None:
++                return f"{d} ({_ctx_label(self.cap.ctx_names[c])})"
++        return ""
++
+     def _not_cached(self, nid: str, why: str) -> None:
+         self.not_cached[nid] = why
+         self.store.remove(nid)
+@@ -1164,9 +1187,15 @@ class ProofCachePlugin:
+             k = why.split(":", 1)[0]
+             kinds[k] = kinds.get(k, 0) + 1
+         nc: dict[str, int] = {}
+-        for why in self.not_cached.values():
++        detail: dict[str, int] = {}
++        for nid, why in self.not_cached.items():
+             k = why.split(" ", 1)[0] if why.startswith("outcome") else why.split(":", 1)[0]
+             nc[k] = nc.get(k, 0) + 1
++            if not why.startswith("outcome"):
++                w = self.not_cached_where.get(nid)
++                full = f"{why}: {w}" if w else why
++                detail[full] = detail.get(full, 0) + 1
++        top = dict(sorted(detail.items(), key=lambda kv: (-kv[1], kv[0]))[:40])
+         return {
+             "reused": len(self.hits),
+             "verified": len(self.verifying),
+@@ -1174,6 +1203,7 @@ class ProofCachePlugin:
+             "recorded": self.recorded,
+             "miss_reasons": kinds,
+             "not_cached": nc,
++            "not_cached_detail": top,
+             "reused_recorded_seconds": round(sum(self._entry_duration(n) for n in self.hits), 3),
+             "check_seconds": round(self.t_check, 3),
+             "record_seconds": round(self.t_record, 3),
+@@ -1286,6 +1316,72 @@ def _numeric_host(host: str) -> bool:
+         return False
+ 
+ 
++_FLAG_OF = {"subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
++            "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc"}
++
++
++def _ctx_label(name: str) -> str:
++    if name == "":
++        return "startup"
++    if name == "s":
++        return "between tests"
++    if name == "i":
++        return "import time"
++    kind, _, rest = name.partition("|")
++    if kind == "i":
++        return "import of " + rest
++    if kind == "c":
++        return "collection of " + rest
++    if kind == "f":
++        return "fixture " + rest.rsplit("|", 1)[-1]
++    return "test"
++
++
++def _first_user_site() -> str:
++    """``file:line`` of the innermost frame outside detpy and the standard library (else the innermost one)."""
++    try:
++        f = sys._getframe(1)
++    except ValueError:
++        return "?"
++    first = None
++    while f is not None:
++        fn = f.f_code.co_filename
++        if not fn.startswith(_DETPY_DIR):
++            kind, norm = _sites._classify(fn)
++            if first is None:
++                first = f"{norm}:{f.f_lineno}"
++            if kind == _sites._USER:
++                return f"{norm}:{f.f_lineno}"
++        f = f.f_back
++    return first or "?"
++
++
++def _spawn_detail(event: str, args) -> str:
++    """The program a spawn event starts and where it was called from."""
++    prog = None
++    try:
++        if event == "subprocess.Popen":
++            prog = args[0] if args[0] is not None else (args[1] if isinstance(args[1], (str, bytes)) else list(args[1])[0])
++        elif event == "os.system":
++            prog = os.fsdecode(args[0]).split()[0]
++        elif event.startswith("os.spawn"):
++            prog = args[1]
++        elif event in ("os.posix_spawn", "os.exec") or event.startswith("os.exec"):
++            prog = args[0]
++    except (IndexError, TypeError, ValueError):
++        prog = None
++    name = os.path.basename(os.fsdecode(prog)) if isinstance(prog, (str, bytes, os.PathLike)) else event
++    return f"{name} ({event}) at {_first_user_site()}"
++
++
++def _addr(args) -> str:
++    try:
++        a = args[1]
++        return f"{a[0]}:{a[1]}" if isinstance(a, tuple) else str(a)
++    except (IndexError, TypeError):
++        return "?"
++
++
+ def _uncacheable(flags: set, cfg) -> str | None:
+     if "badpath" in flags:
+         return "reads a path that is not valid UTF-8"
+diff --git a/tests/test_proofcache.py b/tests/test_proofcache.py
+index a2b4187..3cec764 100644
+--- a/tests/test_proofcache.py
++++ b/tests/test_proofcache.py
+@@ -524,3 +524,23 @@ def test_det_cache_requires_det(pytester):
+     pytester.makepyfile("def test_a():\n    pass\n")
+     r = pytester.runpytest_subprocess(f"--det-cache={pytester.path / 'c'}")
+     r.stderr.fnmatch_lines(["*--det-cache needs --det*"])
++
++
++def test_refusal_names_the_program_and_the_context(pytester, run_cache):
++    # step 1: a refusal says what caused it and where (r5: every home-assistant and pylint test was "subprocess")
++    project(pytester, **{"pkg/spawner.py": """
++        import subprocess, sys
++
++        subprocess.run([sys.executable, "-c", "pass"], check=True)
++        """, "test_m.py": """
++        import pkg.spawner
++
++        def test_a():
++            pass
++        """})
++    _, _, data = run_cache()
++    c = data["cache"]
++    assert c["not_cached_ids"]["test_m.py::test_a"] == "subprocess"
++    where = c["not_cached_where"]["test_m.py::test_a"]
++    assert where.startswith("python") and "pkg/spawner.py:4" in where and where.endswith("(import of pkg/spawner.py)")
++    assert c["not_cached_detail"] == {f"subprocess: {where}": 1}
+-- 
+2.43.0
+

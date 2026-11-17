@@ -1,0 +1,580 @@
+From 9ef4e1d89aec2e3259f61590ebb1d408ea74cc5f Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 07:40:21 +0000
+Subject: [PATCH 4/8] Cache with proof: import-time reads of a test module
+ serve its own tests; name lookups, sendto and C-level sockets are never
+ cached; only detpy's own variables leave the environment input;
+ home-assistant and pylint specs
+
+* import-time reads are attributed to the innermost repository module body (i|<path>); a test module no other
+  module imports gives them to its own tests only (click: a module-level importlib.metadata.version() in one
+  test file made the project's METADATA an input of all 2,500 tests)
+* socket.getaddrinfo/gethostbyname/gethostbyaddr of a non-numeric host, socket.sendto/sendmsg: never cached
+* sockets opened by C extensions (no audit event): /proc/self/fd scanned at every context switch, a new
+  internet socket makes the context uncacheable
+* env baseline drops only DETPY_REEXEC, DETPY_PRECOMPILE_S, DETPY_PYC_CACHE, DETPY_BLOCKED_PLUGINS (the
+  DETPY_ prefix rule hid user variables: test_environment_variable_read... failed)
+* tests: loopback HTTP proxy (review R-002b) and loopback service not started by the test, name lookup,
+  C-level socket held by a module fixture, import-time read scope
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ harness/cache_proof/pyinstall.py              |  62 ++++++++
+ harness/cache_proof/specs/home-assistant.json |  73 +++++++++
+ harness/cache_proof/specs/pylint.json         |  14 ++
+ harness/cache_proof/walk.py                   |   4 +-
+ python/detpy/proofcache.py                    | 104 ++++++++++++-
+ tests/test_proofcache.py                      | 138 ++++++++++++++++++
+ 6 files changed, 388 insertions(+), 7 deletions(-)
+ create mode 100644 harness/cache_proof/pyinstall.py
+ create mode 100644 harness/cache_proof/specs/home-assistant.json
+ create mode 100644 harness/cache_proof/specs/pylint.json
+
+diff --git a/harness/cache_proof/pyinstall.py b/harness/cache_proof/pyinstall.py
+new file mode 100644
+index 0000000..4b5bba6
+--- /dev/null
++++ b/harness/cache_proof/pyinstall.py
+@@ -0,0 +1,62 @@
++#!/usr/bin/env python3
++"""Install requirement files with uv, dropping requirements that fail to build (missing system libraries
++on the runner). The tests of a dropped package fail at import at every commit and are reported as such.
++
++    pyinstall.py --python VENV/bin/python -r requirements_all.txt -r requirements_test.txt
++"""
++
++import argparse
++import re
++import subprocess
++import sys
++import tempfile
++from pathlib import Path
++
++
++def main():
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--python", required=True)
++    ap.add_argument("-r", action="append", default=[])
++    ap.add_argument("--max-drop", type=int, default=40)
++    a = ap.parse_args()
++    drop = set()
++    for attempt in range(a.max_drop + 1):
++        files = []
++        for r in a.r:
++            p = Path(r)
++            lines = []
++            for line in p.read_text().splitlines():
++                name = re.split(r"[=<>!~\[; ]", line.strip(), 1)[0].lower().replace("_", "-")
++                if name and name in drop:
++                    continue
++                if line.strip().startswith(("-c ", "-r ")):  # make relative includes absolute
++                    flag, rest = line.strip().split(None, 1)
++                    line = f"{flag} {(p.parent / rest).resolve()}"
++                lines.append(line)
++            t = tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, dir=p.parent)
++            t.write("\n".join(lines) + "\n")
++            t.close()
++            files.append(t.name)
++        cmd = ["uv", "pip", "install", "--quiet", "--python", a.python]
++        for f in files:
++            cmd += ["-r", f]
++        p = subprocess.run(cmd, capture_output=True, text=True)
++        for f in files:
++            Path(f).unlink(missing_ok=True)
++        if p.returncode == 0:
++            print(f"installed; dropped {sorted(drop)}")
++            return 0
++        err = p.stderr + p.stdout
++        bad = set(re.findall(r"(?:Failed to build|Failed to download and build|Failed to download|"
++                             r"Failed to prepare distributions|Failed to resolve)\s+`([A-Za-z0-9_.\-]+)", err))
++        bad = {b.lower().replace("_", "-") for b in bad} - drop
++        if not bad:
++            print(err[-4000:], file=sys.stderr)
++            return 1
++        print(f"dropping {sorted(bad)}", flush=True)
++        drop |= bad
++    return 1
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/harness/cache_proof/specs/home-assistant.json b/harness/cache_proof/specs/home-assistant.json
+new file mode 100644
+index 0000000..cf46fae
+--- /dev/null
++++ b/harness/cache_proof/specs/home-assistant.json
+@@ -0,0 +1,73 @@
++{
++ "name": "home-assistant",
++ "url": "https://github.com/home-assistant/core",
++ "head": "7c78cc7c2ed0",
++ "commits": 41,
++ "mode": "suite",
++ "apt": [
++  "bluez",
++  "ffmpeg",
++  "libturbojpeg0",
++  "libxml2-utils",
++  "libudev-dev",
++  "libpcap-dev",
++  "libgammu-dev",
++  "portaudio19-dev",
++  "libavformat-dev",
++  "libavcodec-dev",
++  "libavdevice-dev",
++  "libavutil-dev",
++  "libswscale-dev",
++  "libswresample-dev",
++  "libavfilter-dev",
++  "libyaml-dev",
++  "libxml2-dev",
++  "libxslt1-dev"
++ ],
++ "install": [
++  "test -x {py} || uv venv -q --python 3.14 {venv}",
++  "uv pip install -q --python {py} -r requirements.txt",
++  "python3 {harness}/pyinstall.py --python {py} -r requirements_all.txt -r requirements_test.txt",
++  "uv pip install -q --python {py} -e . $(for d in packages/hassfest packages/pytest-homeassistant; do test -d $d && echo -e $d; done) --config-settings editable_mode=compat"
++ ],
++ "install_files": [
++  "requirements*.txt",
++  "pyproject.toml",
++  "homeassistant/package_constraints.txt",
++  "packages/*/pyproject.toml"
++ ],
++ "build": [
++  "{py} -m script.translations develop --all > /dev/null"
++ ],
++ "units": {
++  "include": [
++   "tests/test_*.py",
++   "tests/**/test_*.py"
++  ],
++  "exclude": [
++   "tests/e2e/*",
++   "tests/conftest.py",
++   "tests/common.py",
++   "tests/typing.py",
++   "tests/syrupy.py",
++   "tests/patch_*.py",
++   "tests/__init__.py",
++   "tests/ignore_uncaught_exceptions.py",
++   "tests/pylint/*",
++   "tests/mypy_plugins/*",
++   "tests/non_packaged_scripts/*"
++  ],
++  "sample": 0.12,
++  "seed": "s2"
++ },
++ "python_flags": [
++  "-b"
++ ],
++ "pytest_args": [
++  "--timeout=60",
++  "-p",
++  "no:sugar"
++ ],
++ "timeout": 5400,
++ "note": "sample as in skip study 2 (12% of test files, seed s2); one pytest process per shard over its files, as CI runs groups"
++}
+\ No newline at end of file
+diff --git a/harness/cache_proof/specs/pylint.json b/harness/cache_proof/specs/pylint.json
+new file mode 100644
+index 0000000..65d50cc
+--- /dev/null
++++ b/harness/cache_proof/specs/pylint.json
+@@ -0,0 +1,14 @@
++{
++ "name": "pylint",
++ "url": "https://github.com/pylint-dev/pylint",
++ "head": "3883d7869bc9",
++ "commits": 51,
++ "mode": "suite",
++ "python": "3.13",
++ "pytest_args": [
++  "tests",
++  "--ignore=tests/benchmark",
++  "--ignore=tests/primer"
++ ],
++ "note": "one more large Python application (a linter CLI, ~2000 test functions incl. functional tests)"
++}
+\ No newline at end of file
+diff --git a/harness/cache_proof/walk.py b/harness/cache_proof/walk.py
+index 64c7863..ff20f3c 100644
+--- a/harness/cache_proof/walk.py
++++ b/harness/cache_proof/walk.py
+@@ -71,7 +71,7 @@ def hfrac(seed: str, x: str) -> float:
+ 
+ def commit_results(paths, msg):
+     """Commit result files to the current branch with rebase-retry (inside GitHub Actions)."""
+-    repo = ROOT
++    repo = Path(os.environ.get("CP_REPO", str(ROOT)))
+     branch = os.environ.get("CP_BRANCH", "claude/loving-maxwell-58mv2w")
+     for _ in range(12):
+         sh(["git", "fetch", "-q", "origin", branch], cwd=repo)
+@@ -231,7 +231,7 @@ class Walk:
+         tim = self.work / f"t-{tag}.json"
+         outp.unlink(missing_ok=True)
+         tim.unlink(missing_ok=True)
+-        cmd = [self.py, "-m", "pytest", "--det", f"--det-outcomes={outp}"]
++        cmd = [self.py, *self.spec.get("python_flags", []), "-m", "pytest", "--det", f"--det-outcomes={outp}"]
+         if cache is not None:
+             cmd.append(f"--det-cache={cache}")
+             if receipts is not None:
+diff --git a/python/detpy/proofcache.py b/python/detpy/proofcache.py
+index b2e57b7..44bcd5e 100644
+--- a/python/detpy/proofcache.py
++++ b/python/detpy/proofcache.py
+@@ -55,7 +55,8 @@ AVAILABLE = _mon is not None
+ # "f|<scope>|<baseid>|<name>" setup of a wider-scoped fixture, "t|<nodeid>" a test
+ _GLOBAL_CTX = ("", "s")
+ 
+-_AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "subprocess.Popen", "os.posix_spawn",
++_AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
++                 "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
+                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
+                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
+                  "os.link")
+@@ -80,6 +81,8 @@ _VOLATILE_OPTIONS = {
+ }
+ 
+ 
++# detpy's own bookkeeping variables (re-exec, bytecode cache): set by detpy itself, never a test input
++_DETPY_OWN_ENV = frozenset({"DETPY_REEXEC", "DETPY_PRECOMPILE_S", "DETPY_PYC_CACHE", "DETPY_BLOCKED_PLUGINS"})
+ _DETPY_DIR = os.path.dirname(os.path.abspath(__file__)) + os.sep
+ 
+ 
+@@ -150,6 +153,7 @@ class Capture:
+         self.dist_info_ok: tuple = ()
+         self.import_ctx = -1  # pseudo context for import-time data/env/flags
+         self.active = False
++        self._socks: dict | None = None  # fd -> socket inode at the last scan
+ 
+     # -- contexts -------------------------------------------------------------
+     def ctx_index(self, name: str) -> int:
+@@ -162,6 +166,13 @@ class Capture:
+     def switch(self, name: str) -> None:
+         if name == self.ctx:
+             return
++        if self.active:
++            # startup sockets (pytest, plugins, the runner) are the baseline; the scan's own reads are not inputs
++            self.active = False
++            try:
++                self._scan_sockets(self.ctx_index(self.ctx) if self.ctx else None)
++            finally:
++                self.active = True
+         self.ctx = name
+         i = self.ctx_index(name)
+         if self.rec is None:
+@@ -180,9 +191,23 @@ class Capture:
+ 
+     def _cur(self) -> int:
+         if self.rec is not None and self.rec.import_depth:
+-            return self.import_ctx
++            return self._import_ctx()
+         return self.ctx_ix[self.ctx]
+ 
++    def _import_ctx(self) -> int:
++        """Import time: the context of the innermost repository module body running (``i|<path>``).
++
++        A test module's import-time reads serve only its own tests (unless another module imports it); any
++        other module's are inputs of every test (``_record_all`` decides).
++        """
++        f = sys._getframe(2)
++        while f is not None:
++            c = f.f_code
++            if c.co_name == "<module>" and self._want(c.co_filename):
++                return self.ctx_index("i|" + self.fnames[self.fid[c.co_filename]])
++            f = f.f_back
++        return self.import_ctx
++
+     # -- code ---------------------------------------------------------------------
+     def _want(self, filename: str) -> bool:
+         w = self._wanted.get(filename)
+@@ -273,6 +298,45 @@ class Capture:
+             _mon.free_tool_id(self.tool)
+             self.tool = None
+ 
++    # -- sockets opened in C ----------------------------------------------------------
++    def _scan_sockets(self, ctx: int | None) -> None:
++        """Internet sockets that appeared among this process's descriptors since the last scan.
++
++        Sockets a C extension opens (libpq, grpc, libcurl, ...) raise no audit event; one still open when its
++        test or fixture ends is seen here and makes the context uncacheable.
++        """
++        try:
++            fds = os.listdir("/proc/self/fd")
++        except OSError:
++            return
++        cur = {}
++        for fd in fds:
++            try:
++                link = os.readlink("/proc/self/fd/" + fd)
++            except OSError:
++                continue
++            if link.startswith("socket:["):
++                cur[fd] = link[8:-1]
++        prev, self._socks = self._socks, cur
++        if prev is None:
++            return
++        new = {ino for fd, ino in cur.items() if prev.get(fd) != ino}
++        if not new:
++            return
++        inet = set()
++        for t in ("tcp", "tcp6", "udp", "udp6"):
++            try:
++                with open("/proc/self/net/" + t, "rb") as fh:
++                    next(fh, None)
++                    for line in fh:
++                        parts = line.split()
++                        if len(parts) > 9:
++                            inet.add(parts[9].decode())
++            except OSError:
++                continue
++        if ctx is not None and new & inet:
++            self.flags.setdefault(ctx, set()).add("csock")
++
+     # -- data, environment, events ------------------------------------------------------
+     def _caller_kind(self) -> str:
+         """'import' (the import system), 'infra' (pytest, detpy, ...) or 'user', from the calling frames."""
+@@ -403,10 +467,20 @@ class Capture:
+             if p is None or self._ignored(p):
+                 return
+             self.read(self._cur(), p, "d")
+-        elif event == "socket.connect":
++        elif event in ("socket.connect", "socket.sendto", "socket.sendmsg"):
++            # every connection counts, loopback included: a loopback port can be an HTTP(S) proxy to the outside
++            # (HTTPS_PROXY=http://127.0.0.1:...) or a service the test process tree did not start
+             if self._caller_kind() == "infra":
+                 return
+             self.flags.setdefault(self._cur(), set()).add("connect")
++        elif event in ("socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr"):
++            # a name lookup (DNS, /etc/hosts) is an input from outside; numeric addresses are not
++            host = args[0] if args else None
++            if isinstance(host, bytes):
++                host = host.decode("ascii", "replace")
++            if not isinstance(host, str) or not host or _numeric_host(host) or self._caller_kind() == "infra":
++                return
++            self.flags.setdefault(self._cur(), set()).add("dns")
+         elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
+             if self._caller_kind() == "infra":
+                 return
+@@ -928,7 +1002,11 @@ class ProofCachePlugin:
+         for c in g_ctx:
+             g_units |= units_of(per[c][0])
+             g_unparsable |= unparsable(per[c][1])
+-        g_ctx_all = g_ctx + [cap.import_ctx]
++        # import-time reads of a test module that no other module imports serve only its own tests
++        own_import = {tf: ctx_of["i|" + tf] for tf in test_files - shared_test_files if "i|" + tf in ctx_of}
++        own_import_ix = set(own_import.values())
++        g_ctx_all = g_ctx + [cap.import_ctx] + [i for n, i in ctx_of.items()
++                                                if n.startswith("i|") and i not in own_import_ix]
+         g_data, g_env, g_flags = {}, set(), set()
+         for c in g_ctx_all:
+             g_data.update(cap.data.get(c, {}))
+@@ -984,6 +1062,8 @@ class ProofCachePlugin:
+                 continue
+             own = _ctx_file(nid)
+             ctxs = [ctx_of[c] for c in ["t|" + nid, "c|" + own, *self.fixture_ctx.get(nid, [])] if c in ctx_of]
++            if own in own_import:
++                ctxs.append(own_import[own])
+             flags = set(g_flags)
+             data = dict(g_data)
+             env = set(g_env)
+@@ -1171,6 +1251,16 @@ def _encodable(s: str) -> bool:
+         return False
+ 
+ 
++def _numeric_host(host: str) -> bool:
++    import ipaddress
++
++    try:
++        ipaddress.ip_address(host.split("%", 1)[0])
++        return True
++    except ValueError:
++        return False
++
++
+ def _uncacheable(flags: set, cfg) -> str | None:
+     if "badpath" in flags:
+         return "reads a path that is not valid UTF-8"
+@@ -1178,6 +1268,10 @@ def _uncacheable(flags: set, cfg) -> str | None:
+         return "subprocess"
+     if "connect" in flags:
+         return "network connection"
++    if "csock" in flags:
++        return "network socket opened outside Python (C extension)"
++    if "dns" in flags:
++        return "host name lookup"
+     if "net-record" in flags:
+         return "network recording (--det-record)"
+     if "entropy" in flags and not cfg.control_urandom:
+@@ -1221,7 +1315,7 @@ def start(early_config, ns) -> None:
+         return  # nested in-process session: the outer one records
+     root = str(early_config.rootpath)
+     # detpy's own variables (set by its re-exec, e.g. the precompile time) are configuration, not inputs
+-    env0 = {_safe(k): _safe(v) for k, v in os.environ.items() if not k.startswith("DETPY_")}
++    env0 = {_safe(k): _safe(v) for k, v in os.environ.items() if k not in _DETPY_OWN_ENV}
+     cap = Capture(root, env0)
+     CAPTURE = cap
+     _ENV_CAPTURE = cap
+diff --git a/tests/test_proofcache.py b/tests/test_proofcache.py
+index ed002b5..f83ec1b 100644
+--- a/tests/test_proofcache.py
++++ b/tests/test_proofcache.py
+@@ -147,6 +147,44 @@ def test_data_file_change_reruns_its_reader(pytester, run_cache):
+     r.assert_outcomes(passed=1, failed=1)
+ 
+ 
++def test_import_time_read_of_a_test_module_serves_only_its_own_tests(pytester, run_cache):
++    # test_a.py reads version.txt while it is imported; test_b.py does not import test_a
++    project(pytester, **{
++        "pkg/lib.py": "import os\nHERE = os.path.dirname(__file__)\n"
++                      "def conf():\n    return open(os.path.join(HERE, 'conf.txt')).read()\nCONF = conf()\n",
++        "pkg/conf.txt": "1",
++        "version.txt": "1.0",
++        "test_a.py": """
++            import os
++            VERSION = open(os.path.join(os.path.dirname(__file__), "version.txt")).read()
++
++            def test_version():
++                assert VERSION == "1.0"
++            """,
++        "test_b.py": """
++            from pkg import lib
++
++            def test_b():
++                assert lib.CONF == "1"
++            """,
++    })
++    run_cache()
++    _, reused, _ = run_cache()
++    assert reused == ids("test_version", mod="test_a.py") | ids("test_b", mod="test_b.py")
++    (pytester.path / "version.txt").write_text("2.0")
++    r, reused, data = run_cache()
++    assert reused == ids("test_b", mod="test_b.py")
++    assert data["cache"]["miss_ids"]["test_a.py::test_version"].startswith("data: version.txt")
++    r.assert_outcomes(passed=1, failed=1)
++    # a repository module's import-time read stays an input of every test
++    (pytester.path / "version.txt").write_text("1.0")
++    run_cache()
++    (pytester.path / "pkg/conf.txt").write_text("2")
++    r, reused, _ = run_cache()
++    assert reused == set()
++    r.assert_outcomes(passed=1, failed=1)
++
++
+ def test_read_write_open_is_an_input(pytester, run_cache):
+     # review R-002 error 1: a fixture opened read-write (sqlite, "r+") was dropped from the inputs
+     import sqlite3
+@@ -256,6 +294,106 @@ def test_network_connection_and_subprocess_are_never_cached(pytester, run_cache)
+     assert nc["test_m.py::test_spawn"] == "subprocess"
+ 
+ 
++@pytest.fixture
++def outside_server():
++    """A loopback HTTP server the tested process tree did not start (stands for a proxy or an external service)."""
++    import http.server
++    import threading
++
++    class H(http.server.BaseHTTPRequestHandler):
++        def do_GET(self):
++            self.send_response(200)
++            self.send_header("Content-Length", "2")
++            self.end_headers()
++            self.wfile.write(b"ok")
++
++        def log_message(self, *a):
++            pass
++
++    srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), H)
++    t = threading.Thread(target=srv.serve_forever, daemon=True)
++    t.start()
++    yield srv.server_address[1]
++    srv.shutdown()
++    srv.server_close()
++
++
++def test_external_service_through_a_loopback_proxy_is_never_cached(pytester, run_cache, monkeypatch,
++                                                                    outside_server):
++    # review R-002b: HTTP(S)_PROXY on loopback reaches the outside; "loopback only" proves nothing
++    monkeypatch.setenv("HTTP_PROXY", f"http://127.0.0.1:{outside_server}")
++    monkeypatch.setenv("http_proxy", f"http://127.0.0.1:{outside_server}")
++    monkeypatch.delenv("NO_PROXY", raising=False)
++    monkeypatch.delenv("no_proxy", raising=False)
++    project(pytester, **{"test_m.py": """
++        import urllib.request
++
++        def test_external():
++            with urllib.request.urlopen("http://service.example/", timeout=10) as r:
++                assert r.read() == b"ok"
++
++        def test_plain():
++            pass
++        """})
++    # Level 0 treats the configured proxy as the outside and blocks it: the failure is never reused
++    run_cache()
++    r, reused, data = run_cache()
++    r.assert_outcomes(passed=1, failed=1)
++    assert reused == ids("test_plain")
++    assert data["cache"]["not_cached_ids"]["test_m.py::test_external"] == "outcome failed"
++    # without the proxy the same loopback port is "localhost" to Level 0 and the test passes, but a service the
++    # test process tree did not start is outside too: a connection, loopback or not, is never cached
++    for var in ("HTTP_PROXY", "http_proxy"):
++        monkeypatch.delenv(var)
++    (pytester.path / "test_m.py").write_text((pytester.path / "test_m.py").read_text().replace(
++        "http://service.example/", f"http://127.0.0.1:{outside_server}/"))
++    run_cache()
++    r, reused, data = run_cache()
++    r.assert_outcomes(passed=2)
++    assert reused == ids("test_plain")
++    assert data["cache"]["not_cached_ids"]["test_m.py::test_external"] == "network connection"
++
++
++def test_name_lookup_and_c_level_sockets_are_never_cached(pytester, run_cache, outside_server):
++    # a socket opened by a C extension raises no audit event: one still open when its test or fixture ends counts
++    project(pytester, **{"test_m.py": f"""
++        import ctypes, socket, struct
++
++        import pytest
++
++        KEEP = []
++
++        def test_lookup():
++            assert socket.getaddrinfo("localhost", 80)
++
++        def test_numeric_address_is_not_a_lookup():
++            assert socket.getaddrinfo("127.0.0.1", 80)
++
++        @pytest.fixture(scope="module")
++        def c_connection():
++            libc = ctypes.CDLL(None, use_errno=True)
++            fd = libc.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
++            addr = struct.pack("=H", socket.AF_INET) + struct.pack(">H", {outside_server}) + bytes([127, 0, 0, 1]) + bytes(8)
++            assert libc.connect(fd, addr, len(addr)) == 0, ctypes.get_errno()
++            KEEP.append(fd)
++            return fd
++
++        def test_c_socket(c_connection):
++            assert c_connection > 0
++
++        def test_c_socket_again(c_connection):
++            assert c_connection > 0
++        """})
++    run_cache()
++    r, reused, data = run_cache()
++    r.assert_outcomes(passed=4)
++    assert reused == ids("test_numeric_address_is_not_a_lookup")
++    nc = data["cache"]["not_cached_ids"]
++    assert nc["test_m.py::test_lookup"] == "host name lookup"
++    assert nc["test_m.py::test_c_socket"] == "network socket opened outside Python (C extension)"
++    assert nc["test_m.py::test_c_socket_again"] == "network socket opened outside Python (C extension)"
++
++
+ def test_clock_reader_depends_on_the_epoch(pytester, run_cache):
+     project(pytester, **{"test_m.py": """
+         import time
+-- 
+2.43.0
+

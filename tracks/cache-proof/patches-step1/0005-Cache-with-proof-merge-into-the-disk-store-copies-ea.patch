@@ -1,0 +1,239 @@
+From 41c949a36618782945b90436fcb93b26ba4f74fb Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 07:48:14 +0000
+Subject: [PATCH 5/8] Cache with proof: merge into the disk store copies each
+ file's facts once (save 2.5 s -> ~0 s on click's 2,558 entries); aggregate
+ script
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ crates/detpy-core/src/proof.rs   |  28 ++++--
+ harness/cache_proof/aggregate.py | 167 +++++++++++++++++++++++++++++++
+ 2 files changed, 188 insertions(+), 7 deletions(-)
+ create mode 100644 harness/cache_proof/aggregate.py
+
+diff --git a/crates/detpy-core/src/proof.rs b/crates/detpy-core/src/proof.rs
+index 05aa18d..75fd922 100644
+--- a/crates/detpy-core/src/proof.rs
++++ b/crates/detpy-core/src/proof.rs
+@@ -437,6 +437,20 @@ impl Store {
+     /// Copy the entries of `touched` (or their removal) into `disk`, remapping
+     /// file and set indices; merge the written paths.
+     pub fn merge_into(&self, disk: &mut Store, touched: &BTreeSet<String>) {
++        // file index here -> file index on disk, each file looked up (and copied) once
++        let mut fmap: Vec<Option<u32>> = vec![None; self.files.len()];
++        let mut remap_file = |i: u32, disk: &mut Store| -> u32 {
++            match fmap.get_mut(i as usize) {
++                Some(Some(j)) => *j,
++                Some(slot) => {
++                    let j = disk.add_file(self.files[i as usize].clone());
++                    *slot = Some(j);
++                    j
++                }
++                None => u32::MAX,
++            }
++        };
++        let mut smap: BTreeMap<u32, u32> = BTreeMap::new();
+         for nid in touched {
+             match self.tests.get(nid) {
+                 None => {
+@@ -444,15 +458,15 @@ impl Store {
+                 }
+                 Some(e) => {
+                     let mut e = e.clone();
+-                    let remap_file = |i: u32, disk: &mut Store| -> u32 {
+-                        match self.files.get(i as usize) {
+-                            Some(f) => disk.add_file(f.clone()),
+-                            None => u32::MAX,
+-                        }
+-                    };
+                     for id in [&mut e.content, &mut e.skeleton, &mut e.hooks] {
++                        if let Some(&j) = smap.get(id) {
++                            *id = j;
++                            continue;
++                        }
+                         let set: Vec<u32> = self.set(*id).iter().map(|&f| remap_file(f, disk)).collect();
+-                        *id = disk.intern(set);
++                        let j = disk.intern(set);
++                        smap.insert(*id, j);
++                        *id = j;
+                     }
+                     for c in e.units.chunks_mut(2) {
+                         c[0] = remap_file(c[0], disk);
+diff --git a/harness/cache_proof/aggregate.py b/harness/cache_proof/aggregate.py
+new file mode 100644
+index 0000000..dba1bb1
+--- /dev/null
++++ b/harness/cache_proof/aggregate.py
+@@ -0,0 +1,167 @@
++#!/usr/bin/env python3
++"""Aggregate cache-proof walk results (walk.py outputs) into per-project numbers.
++
++    python harness/cache_proof/aggregate.py RESULTS_DIR [--md OUT.md] [--json OUT.json]
++
++Per project (shards of one project are summed per commit):
++* skipped share = test time of reused results / test time of all tests, per commit after the first (the first
++  commit runs everything with an empty cache); median and mean over commits;
++* verification: reused results compared with the full run (B) at the same commit; a mismatch confirmed by a
++  second full run is a wrong reuse, otherwise flaky;
++* cache-hit run time vs full run: wall time of A (pytest --det --det-cache) vs B (pytest --det), per commit;
++* capture overhead: a run with an empty cache (everything recorded) vs the plain --det runs at the same commit;
++* invalidating commits: commits where under 5% of the test time was reused, with the dominant miss reason.
++"""
++
++from __future__ import annotations
++
++import argparse
++import collections
++import glob
++import gzip
++import json
++import os
++import statistics
++
++
++def load(path):
++    op = gzip.open if path.endswith(".gz") else open
++    with op(path, "rb") as fh:
++        return json.loads(fh.read())
++
++
++def med(xs):
++    return statistics.median(xs) if xs else None
++
++
++def mean(xs):
++    return sum(xs) / len(xs) if xs else None
++
++
++def pct(x):
++    return "-" if x is None else f"{100 * x:.0f}%"
++
++
++def secs(x):
++    return "-" if x is None else f"{x:.1f}s"
++
++
++def project_rows(files):
++    by_project = collections.defaultdict(list)
++    for f in files:
++        d = load(f)
++        by_project[d["spec"]["name"]].append(d)
++    out = {}
++    for name, shards in sorted(by_project.items()):
++        nsh = shards[0].get("nshards", 1)
++        # per commit index: only commits every shard reached with status ok
++        steps = collections.defaultdict(list)
++        for d in shards:
++            for st in d["steps"]:
++                steps[st["i"]].append(st)
++        commits = []
++        for i in sorted(steps):
++            sts = steps[i]
++            if len(sts) < len(shards) or any(s.get("status") != "ok" for s in sts):
++                continue
++            c = {"i": i, "sha": sts[0]["sha"]}
++            c["time_total"] = sum(s.get("time_total") or 0 for s in sts)
++            c["time_reused"] = sum(s.get("time_reused") or 0 for s in sts)
++            c["n_tests"] = sum(s.get("n_tests") or 0 for s in sts)
++            c["n_reused"] = sum(s.get("n_reused") or 0 for s in sts)
++            # shards run in parallel: the commit's wall time is the slowest shard
++            c["a_wall"] = max(s["A"]["wall"] for s in sts)
++            c["b_wall"] = max(s["B"]["wall"] for s in sts)
++            c["a_wall_sum"] = sum(s["A"]["wall"] for s in sts)
++            c["b_wall_sum"] = sum(s["B"]["wall"] for s in sts)
++            c["checked"] = sum(s["verify"]["checked"] for s in sts)
++            c["mm"] = [m for s in sts for m in s["verify"]["mismatches"]]
++            c["ran_diff"] = sum((s.get("ran_diff") or {}).get("n", 0) for s in sts)
++            mr = collections.Counter()
++            nc = collections.Counter()
++            for s in sts:
++                mr.update(s["A"].get("miss_reasons") or {})
++                nc.update(s["A"].get("not_cached") or {})
++            c["miss"] = dict(mr)
++            c["nc"] = dict(nc)
++            ov = [s["overhead"] for s in sts if s.get("overhead")]
++            if len(ov) == len(sts):
++                c["cold"] = sum(o["cold_wall"] for o in ov)
++                c["plain"] = sum(mean(o["plain_walls"]) for o in ov)
++                c["record_s"] = sum(o.get("cold_record_s") or 0 for o in ov)
++            commits.append(c)
++        later = [c for c in commits if c["i"] > 0 and c["time_total"] > 0]
++        shares = [c["time_reused"] / c["time_total"] for c in later]
++        nshares = [c["n_reused"] / c["n_tests"] for c in later if c["n_tests"]]
++        speed = [c["a_wall_sum"] / c["b_wall_sum"] for c in later if c["b_wall_sum"]]
++        wrong = [m for c in commits for m in c["mm"] if m.get("verdict") == "wrong"]
++        flaky = [m for c in commits for m in c["mm"] if m.get("verdict") == "flaky"]
++        ovs = [c["cold"] / c["plain"] - 1 for c in commits if c.get("cold") and c.get("plain")]
++        inval = []
++        for c in later:
++            if c["time_reused"] / c["time_total"] < 0.05:
++                top = max(c["miss"].items(), key=lambda kv: kv[1])[0] if c["miss"] else "-"
++                inval.append({"i": c["i"], "sha": c["sha"][:10], "top_miss": top, "miss": c["miss"]})
++        nc_total = collections.Counter()
++        miss_total = collections.Counter()
++        for c in later:
++            nc_total.update(c["nc"])
++            miss_total.update(c["miss"])
++        out[name] = {
++            "shards": nsh, "shards_found": len(shards), "commits_ok": len(commits), "transitions": len(later),
++            "tests_median": med([c["n_tests"] for c in commits]),
++            "skip_time_median": med(shares), "skip_time_mean": mean(shares),
++            "skip_tests_median": med(nshares), "skip_tests_mean": mean(nshares),
++            "verified": sum(c["checked"] for c in commits), "wrong": len(wrong), "flaky": len(flaky),
++            "wrong_ids": [(m.get("nodeid"), m.get("cached"), m.get("fresh")) for m in wrong][:20],
++            "ran_diff": sum(c["ran_diff"] for c in later),
++            "a_wall_median": med([c["a_wall"] for c in later]), "b_wall_median": med([c["b_wall"] for c in later]),
++            "a_wall_mean": mean([c["a_wall"] for c in later]), "b_wall_mean": mean([c["b_wall"] for c in later]),
++            "hit_over_full_median": med(speed), "hit_over_full_mean": mean(speed),
++            "capture_overhead_median": med(ovs), "capture_overhead_n": len(ovs),
++            "invalidating": inval, "not_cached": dict(nc_total.most_common()), "miss": dict(miss_total.most_common()),
++            "per_commit": [{k: c[k] for k in ("i", "sha", "time_total", "time_reused", "n_tests", "n_reused",
++                                              "a_wall", "b_wall", "checked")} for c in commits],
++            "stopped": [d.get("stopped") for d in shards if d.get("stopped")],
++        }
++    return out
++
++
++def markdown(rows) -> str:
++    lines = ["| project | transitions | tests | time skipped median / mean | tests skipped median / mean | "
++             "cache run vs full run, median (A / B) | capture overhead (median, n) | verified reuses (wrong, flaky) | "
++             "invalidate-all commits |",
++             "|---|---|---|---|---|---|---|---|---|"]
++    for name, r in rows.items():
++        o = r["capture_overhead_median"]
++        ov = "-" if o is None else f"{100 * o:+.0f}%"
++        lines.append(
++            f"| {name} | {r['transitions']} | {r['tests_median']} | {pct(r['skip_time_median'])} / "
++            f"{pct(r['skip_time_mean'])} | {pct(r['skip_tests_median'])} / {pct(r['skip_tests_mean'])} | "
++            f"{pct(r['hit_over_full_median'])} ({secs(r['a_wall_median'])} / {secs(r['b_wall_median'])}) | "
++            f"{ov} "
++            f"({r['capture_overhead_n']}) | {r['verified']} ({r['wrong']}, {r['flaky']}) | "
++            f"{len(r['invalidating'])}/{r['transitions']} |")
++    return "\n".join(lines) + "\n"
++
++
++def main(argv=None):
++    ap = argparse.ArgumentParser()
++    ap.add_argument("results")
++    ap.add_argument("--md")
++    ap.add_argument("--json")
++    a = ap.parse_args(argv)
++    files = sorted(glob.glob(os.path.join(a.results, "*.json*")))
++    rows = project_rows(files)
++    md = markdown(rows)
++    print(md)
++    if a.md:
++        with open(a.md, "w") as fh:
++            fh.write(md)
++    if a.json:
++        with open(a.json, "w") as fh:
++            json.dump(rows, fh, indent=1)
++
++
++if __name__ == "__main__":
++    main()
+-- 
+2.43.0
+
