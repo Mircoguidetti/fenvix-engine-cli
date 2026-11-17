@@ -5,10 +5,12 @@ of /home/user/fenvix-engine-cli; base `1573079` (origin/claude/gracious-rubin-ey
 `patches/` (`git am` on the base).
 
 ## Done
-- Asyncio prototype brought in as one squashed commit (code + docs).
-- Design note `docs/L1-THREADS.md`.
+- Asyncio prototype brought in (one squashed commit), design note `docs/L1-THREADS.md`.
 - Prototype `python/detpy/threads.py`, `--det-threads` (+ `-seed`, `-grace`, `-deadlock`, `-preempt`).
-  Smoke: 6 race tests identical fingerprints over 5 calm runs; deadlock raised with a clear message.
+- tests/test_threads.py: 11 tests (fail with Level 0 only / pass with --det-threads).
+- Fixes found on easypy: patch `_thread.start_new_thread` (threadtree), exiting threads leave the
+  scheduler and are reaped, futures hash/lock by creation order, verifier: entropy in a worker = Entropy.
+- easypy 10 bundles, local, `--det --det-threads --det-urandom`, 10 runs: 10/10 tests one fingerprint.
 
 ## Next
-- tests/test_threads.py (fail without / pass with), easypy 10 bundles, class-a 31, workflow for Actions.
+- class-a 31 list, Actions workflow (easypy + class-a + popular pool + slowdown), REPORT.md.

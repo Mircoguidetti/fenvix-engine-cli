@@ -1,0 +1,90 @@
+From 25f6bc32c68d43e97ed73c9031de355ac772dd9c Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 07:15:56 +0000
+Subject: [PATCH 5/6] L1 threads: patch _thread.start_new_thread too (easypy
+ threadtree); verifier calls entropy in a worker thread Entropy, not Thread
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ crates/detpy-core/src/verify.rs | 22 +++++++++++++++++++++-
+ python/detpy/threads.py         |  9 ++++++++-
+ 2 files changed, 29 insertions(+), 2 deletions(-)
+
+diff --git a/crates/detpy-core/src/verify.rs b/crates/detpy-core/src/verify.rs
+index b0da932..5208052 100644
+--- a/crates/detpy-core/src/verify.rs
++++ b/crates/detpy-core/src/verify.rs
+@@ -226,7 +226,12 @@ fn is_terminal(e: &Event) -> bool {
+ fn classify(a: Option<&Event>, b: Option<&Event>) -> Reason {
+     match (a, b) {
+         (Some(ea), Some(eb)) => {
+-            if ea.thread != eb.thread || ea.thread != 0 {
++            let same_call = ea.thread == eb.thread && ea.op == eb.op && ea.site == eb.site;
++            if ea.thread != 0 && same_call && ea.source == Source::Entropy {
++                // Same thread, same call, different OS entropy: the value does not
++                // depend on how threads interleaved (shared clocks and generators do).
++                Reason::Entropy
++            } else if ea.thread != eb.thread || ea.thread != 0 {
+                 Reason::Thread
+             } else if ea.source == Source::Outcome && eb.source == Source::Outcome {
+                 Reason::OutcomeOnly
+@@ -542,6 +547,21 @@ mod tests {
+         assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Thread);
+     }
+ 
++    #[test]
++    fn entropy_in_a_worker_thread_is_entropy() {
++        let u = |v: &str| Event {
++            thread: 1,
++            source: Source::Entropy,
++            op: "os.urandom".into(),
++            site: "a.py:1".into(),
++            value: v.into(),
++        };
++        let a = trace(vec![rec("x", &[t("1"), u("16:aa")], "passed", 100)]);
++        let b = trace(vec![rec("x", &[t("1"), u("16:bb")], "passed", 100)]);
++        let r = verify(&[a, b], &[]);
++        assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Entropy);
++    }
++
+     #[test]
+     fn beyond_trace_uses_checkpoints() {
+         let mut ea: Vec<Event> = (0..20).map(|i| t(&i.to_string())).collect();
+diff --git a/python/detpy/threads.py b/python/detpy/threads.py
+index baf1abc..2c7188b 100644
+--- a/python/detpy/threads.py
++++ b/python/detpy/threads.py
+@@ -30,6 +30,7 @@ import threading
+ from . import _sites, _state
+ 
+ _real_allocate = _thread.allocate_lock
++_real_start_new_thread = _thread.start_new_thread
+ _get_ident = _thread.get_ident
+ _real_poll = getattr(_select, "poll", None)
+ _real_select = _select.select
+@@ -1279,6 +1280,12 @@ def install(patcher, seed: int, grace: float, deadlock: float, preempt: int) ->
+     for name in ("_start_new_thread", "_start_joinable_thread"):
+         if hasattr(threading, name):
+             patcher.set(threading, name, _wrap_start_thread(getattr(threading, name)))
++    # Libraries that wrap thread creation (easypy's threadtree) capture
++    # _thread.start_new_thread at import and install their own
++    # threading._start_new_thread: patch the low-level entry points too.
++    for name in ("start_new_thread", "start_new", "start_joinable_thread"):
++        if hasattr(_thread, name):
++            patcher.set(_thread, name, _wrap_start_thread(getattr(_thread, name)))
+     patcher.set(threading.Thread, "start", _wrap_thread_start(threading.Thread.start))
+     patcher.set(threading.Thread, "join", _wrap_join(threading.Thread.join))
+     patcher.set(threading.Thread, "is_alive", _wrap_is_alive(threading.Thread.is_alive))
+@@ -1330,7 +1337,7 @@ def activate() -> None:
+     _tls.t = main
+     if not S.watchdog_on:
+         S.watchdog_on = True
+-        _thread.start_new_thread(_watchdog, ())
++        _real_start_new_thread(_watchdog, ())
+ 
+ 
+ def start_test() -> None:
+-- 
+2.43.0
+
