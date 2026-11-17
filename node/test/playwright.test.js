@@ -159,3 +159,15 @@ test('playwright --det-seed: a seed replays its outcome, seeds explore both outc
   }
   assert.deepEqual([...seen].sort(), ['failed', 'passed']);
 });
+
+test('playwright --det: a run whose first action is a navigation never deadlocks (6 single-test runs, one fingerprint)', { skip, timeout: 360000 }, () => {
+  // Before the fix, about one run in three hung: page.goto issued right after a virtual time
+  // grant left the DevTools session suspended while the queue waited for the chunk to end.
+  fixture();
+  const runs = [1, 2, 3, 4, 5, 6].map((i) => pw(['--det', 'races.spec.js:4', '--timeout=15000'], `single-${i}`));
+  if (!runs[0].trace.tests.length) assert.fail(runs[0].out);
+  for (const r of runs) assert.ok(r.trace, r.out);
+  const v = verify(runs.map((r) => r.trace.path));
+  assert.equal(v.summary.tests, 1);
+  assert.equal(v.summary.stable, 1, JSON.stringify(v.tests[0].divergence));
+});

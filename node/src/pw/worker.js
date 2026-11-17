@@ -39,6 +39,9 @@ const EPOCH_MS = Date.parse(ENV.DETJS_EPOCH || '2025-01-01T00:00:00Z');
 const SERVER_HOSTS = new Set((ENV.DETJS_PW_SERVER_HOSTS || 'localhost,127.0.0.1,[::1],0.0.0.0').split(','));
 const COMPLETE_TIMEOUT_MS = Number(ENV.DETJS_PW_COMPLETE_TIMEOUT || 5000);
 const APP_TYPES = new Set(['document', 'fetch', 'xhr']);
+const DEBUG = ENV.DETJS_PW_DEBUG === '1';
+const T_START = Date.now();
+function dbg(...a) { if (DEBUG) process.stderr.write(`[detjs ${Date.now() - T_START}ms] ${a.join(' ')}\n`); }
 
 // ---------------------------------------------------------------- buckets
 const BUCKET_DIR = path.join(DIR, 'buckets');
@@ -93,6 +96,7 @@ function enqueue(item) {
   return new Promise((resolve) => {
     item.release = resolve;
     QUEUE.pending.push(item);
+    if (item.nav && VT.waiters.length) { const w = VT.waiters; VT.waiters = []; for (const f of w) f(); }
     if (QUEUE.timer) { clearTimeout(QUEUE.timer); QUEUE.timer = null; }
     schedule();
   });
@@ -129,7 +133,11 @@ async function pump() {
   QUEUE.timer = null;
   if (QUEUE.busy || !QUEUE.pending.length) return;
   QUEUE.busy = true;
-  await whenPaused(); // never deliver a response while a page is inside a virtual time chunk
+  // Never deliver a response while a page is inside a virtual time chunk, except a main-frame
+  // navigation: Chrome suspends the page's DevTools session while its navigation request is
+  // pending, so the chunk cannot end before the document arrives (deadlock: found on a first
+  // page.goto issued right after a grant). The new document starts at the page's virtual instant.
+  if (!QUEUE.pending.some((it) => it.nav)) await whenPaused();
   await barrier(QUEUE.pending[0].test);
   QUEUE.busy = false;
   if (!QUEUE.pending.length) return;
@@ -150,6 +158,7 @@ async function pump() {
   const chosen = sorted[idx].it;
   QUEUE.pending.splice(QUEUE.pending.indexOf(chosen), 1);
   rec(chosen.test, 'sched', 'sched.io', `${idx}/${n}:${keyOf(chosen)}`);
+  dbg('release', keyOf(chosen));
   QUEUE.busy = true;
   const done = () => {
     QUEUE.busy = false;
@@ -203,7 +212,9 @@ async function routeHandler(route, request) {
     if (!isServerHost(url)) return route.fallback();
     return route.fallback({ headers: { ...request.headers(), 'x-detjs-test': testIdOf(key) } });
   }
-  const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()) };
+  let nav = false;
+  try { nav = type === 'document' && request.isNavigationRequest() && request.frame().parentFrame() === null; } catch { nav = false; }
+  const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), nav };
   const release = await enqueue(item);
   const page = request.frame && (() => { try { return request.frame().page(); } catch { return null; } })();
   let finished = false;
@@ -213,6 +224,7 @@ async function routeHandler(route, request) {
     if (page) { page.off('requestfinished', onDone); page.off('requestfailed', onFail); page.off('response', onResponse); }
     clearTimeout(timer);
     rec(key, 'net', 'browser.done', `${item.method} ${item.target} ${how}`);
+    dbg('done', item.target, how);
     release();
   };
   const onDone = async (r) => {
@@ -352,9 +364,21 @@ async function setupPage(ctx, page, key) {
     if (first) params.initialVirtualTime = EPOCH_MS / 1000;
     inChunk = true;
     VT.running++;
+    dbg('grant', granted, first ? 'first' : '');
     try { await cdp.send('Emulation.setVirtualTimePolicy', params); } catch { stopped = true; end(); }
   };
-  cdp.on('Emulation.virtualTimeBudgetExpired', () => { end(); grant(false).catch(() => {}); });
+  cdp.on('Emulation.virtualTimeBudgetExpired', () => {
+    if (!inChunk) return; // a chunk already ended by a stall
+    dbg('expired', granted);
+    end();
+    grant(false).catch(() => {});
+  });
+  if (DEBUG) {
+    page.on('framenavigated', (f) => dbg('framenavigated', f === page.mainFrame() ? 'main' : 'sub', f.url()));
+    page.on('requestfailed', (r) => dbg('requestfailed', r.url(), r.failure() && r.failure().errorText));
+    page.on('crash', () => dbg('crash'));
+    page.on('request', (r) => dbg('request', r.resourceType(), r.url()));
+  }
   page.on('close', () => { stopped = true; end(); });
   await grant(true);
 }
