@@ -8,7 +8,7 @@ enough to be the center of a product ("execution diff", Move 1 of
 Engine: detpy `0aef0ae` (branch `claude/gracious-rubin-eyswxd`), wheel built in
 the workflow. All runs on GitHub Actions (`ubuntu-latest`, Python 3.12),
 workflow `.github/workflows/diff-study.yml`, runs 2 (PRs, mutants), 3 (survivor
-re-check) and 4 (more PRs, see Caveats). Raw data: `results/prs/*.json.gz`,
+re-check) and 4 (16 more PRs from the saved candidate list). Raw data: `results/prs/*.json.gz`,
 `results/mutants/*.json.gz`; aggregate: `results/summary.json` from
 `analyze.py`. Every number is MEASURED on these runs unless labelled otherwise.
 
@@ -16,32 +16,35 @@ re-check) and 4 (more PRs, see Caveats). Raw data: `results/prs/*.json.gz`,
 
 The diff is clean, and it is clean for the reason that makes it blind. detpy's
 trace records what a test *consumes from the environment* (clock, random,
-entropy, file system, threads), not what the code *does*. Only 2.52% of tests
+entropy, file system, threads), not what the code *does*. Only 1.68% of tests
 carry any event beyond the outcome and the end-of-test random-state digest.
 "Identical trace" therefore mostly means "nothing to compare", not "this change
 provably did not alter what the test executes", which is the promise of Move 1.
 
-* 30,461 tests executed code their PR changed. With a stable site identity
+* 97,978 tests executed code their PR changed. With a stable site identity
   (function + ordinal), **0** of them show a stable divergence whose first event
   is in a changed file.
 * 192 mutants in covered code survive the suite. The trace diff flags **2**
   (1.0%), and both are thread-interleaving noise in an unrelated test: **0**
   real catches. A prototype return-value event flags **31** (16.1%).
-* On the PRs, the same return-value event shows a stable change in 1,049 tests;
-  all 1,049 have an identical detpy trace.
+* On the PRs, the same return-value event shows a stable change in 2,113 tests;
+  all 2,113 have an identical detpy trace (function + ordinal).
 
 What works, and is worth keeping:
 
 1. **Stable site identity is a must and is cheap.** Line shifts (`path:line`)
-   cause 335 of the 416 stable divergences (80.5%); function + call ordinal
-   removes all 335 and nothing real is lost.
-2. **The noise floor is low.** 99.36% of tests are identical base vs base;
+   cause 349 of the 439 stable divergences (79.5%); function + call ordinal
+   removes all 349 and nothing real is lost.
+2. **The noise floor is low.** 99.52% of tests are identical base vs base;
    no-op controls flagged 0 trace changes in 6 of 6 repositories.
-3. **Environment drift is caught and located.** The only PR with stable
-   divergence after the site fix (isort-2731, "Small cleanup before release")
-   changed `uv.lock`; the diff showed 81 tests whose first diverging event is a
-   `time.perf_counter` call inside `site-packages/hypothesis`, i.e. a dependency
-   upgrade changed what the tests execute. That is a correct, useful verdict.
+3. **Environment drift is caught and located.** After the site fix, 90 stable
+   divergences remain, in 3 PRs, and none is a code-behaviour change: isort-2731
+   ("Small cleanup before release", changed `uv.lock`: 81 tests whose first
+   diverging event is a `time.perf_counter` call inside
+   `site-packages/hypothesis`, a dependency upgrade); rich-4251 ("Bump Python,
+   switch to uv": 8 tests fail on base and pass on head, outcome-only);
+   boltons-513 (1 test that scans the checkout's own `.git` directory). These
+   are correct, useful verdicts about the environment, not about the code.
 
 Recommendation: keep "execution diff" as a feature (dependency/environment
 drift, and "certified: fails on head, passes on base, same seed" for red tests,
@@ -52,68 +55,73 @@ then re-run this study (`run.json`, one push). Bar for GO (ESTIMATED, my
 proposal): at least 30% of surviving mutants flagged with 0 control flags, and
 at least 12 of 15 refactor PRs with zero stable divergence.
 
-## Headline numbers (42 PRs, 17 repositories, 120,811 common tests)
+## Headline numbers (50 PRs, 17 repositories, 204,321 common tests)
 
 | # | Question | Result |
 |---|---|---|
-| a | base vs base: identical fingerprints | 119,737/120,510 = **99.36%** (tests with informative events: 2,487/3,008 = 82.68%) |
-| b | base vs head: identical fingerprints, `path:line` sites | 120,099/120,811 = **99.41%**; per-PR median 99.88%, worst PR 76.96% |
-| b | same, function + ordinal sites | 120,434/120,811 = **99.69%**; per-PR median 99.89%, worst 80.57% |
-| c | diverging tests whose first diverging event is in a PR-changed file | all divergences 356/712 = **50.0%**; stable divergences 335/416 = **80.5%**, all 335 line shifts only; with function + ordinal 0/81 |
+| a | base vs base: identical fingerprints | 203,041/204,024 = **99.52%** (tests with informative events: 2,750/3,397 = 80.95%) |
+| b | base vs head: identical fingerprints, `path:line` sites | 203,566/204,321 = **99.63%**; per-PR median 99.88%, worst PR 76.96% |
+| b | same, function + ordinal sites | 203,915/204,321 = **99.80%**; per-PR median 99.89%, worst 80.57% |
+| c | diverging tests whose first diverging event is in a PR-changed file | all divergences 371/755 = **49.1%**; stable divergences 349/439 = **79.5%**, all 349 line shifts only; with function + ordinal 0/90 |
 | d | refactor PRs with zero divergence | raw **1/15**; zero *stable* divergence: 10/15 (`path:line`), **14/15** (function + ordinal) |
 | e | surviving mutants flagged by the trace diff | **2/192 = 1.0%**, both noise (0 real); return-value probe 31/192 = 16.1% |
-| - | tests whose trace has any event beyond outcome + end random state | 3,039/120,811 = **2.52%** |
-| - | tests that ran PR-changed code / of them diverging stably after the site fix in a changed file | 30,461 / **0** |
+| - | tests whose trace has any event beyond outcome + end random state | 3,428/204,321 = **1.68%** |
+| - | tests that ran PR-changed code / of them diverging stably after the site fix in a changed file | 97,978 / **0** |
 
 ## Results
 
 ### (a) base vs base
 
-Two `--det` runs of the base commit: 119,737 of 120,510 tests (99.36%) have the
-same fingerprint. The 773 that differ are concentrated: attrs 646 (Hypothesis
-property tests), structlog 76, werkzeug 17, click 13, others 5 or fewer. Their
-traces contain random and time events (random + time 402 tests, random only
-252, entropy + random 106, file-system 5). Among the 3,008 tests whose trace
-holds anything beyond outcome and end random state, 82.68% are identical: the
-noise is small in count because most traces are nearly empty, not because
-every recorded source is controlled. Outcome changed base vs head: 0 tests.
+Two `--det` runs of the base commit: 203,041 of 204,024 tests (99.52%) have the
+same fingerprint. The 983 that differ are concentrated: attrs 849 (Hypothesis
+property tests), structlog 76, werkzeug 17, click 16, boltons 8, others 5 or
+fewer. Their traces contain random and time events (random + time 521 tests,
+random only 336, entropy + random 109, entropy + random + time 11, with file
+system 6). Among the 3,397 tests whose trace holds anything beyond outcome and
+end random state, 80.95% are identical: the noise is small in count because
+most traces are nearly empty, not because every recorded source is controlled.
 
 ### (b) base vs head, and site identity
 
 | site identity | identical base1 vs head1 | stable change (both pairs self-consistent) | tests noisy in either pair |
 |---|---|---|---|
-| `path:line` (detpy today) | 120,099 (99.41%) | 416 | 1,779 |
-| function + ordinal | 120,434 (99.69%) | 81 | 1,779 |
-| function only | 120,434 (99.69%) | 81 | 1,779 |
-| no site | 120,438 (99.69%) | 81 | 1,769 |
+| `path:line` (detpy today) | 203,566 (99.63%) | 439 | 1,996 |
+| function + ordinal | 203,915 (99.80%) | 90 | 1,996 |
+| function only | 203,915 (99.80%) | 90 | 1,996 |
+| no site | 203,919 (99.80%) | 90 | 1,983 |
 
-13 of 42 PRs show zero divergence under any identity; 31 of 42 show zero
-stable divergence under `path:line`. One PR (packaging-1542, 63,809 tests)
-holds 53% of all common tests; the per-PR medians above are the fairer view.
+17 of 50 PRs show zero divergence under any identity; 36 of 50 show zero
+stable divergence under `path:line`. Two packaging PRs (63,809 tests each)
+hold 62% of all common tests; the per-PR medians above are the fairer view.
 Function + ordinal is as good as dropping the site entirely on this sample and
 keeps a usable location for the reader, so it is the identity to adopt.
+Outcome changed base vs head: 8 tests, all in rich-4251 (fail on base, pass on
+head; the PR changed tests, `uv.lock` and `pyproject.toml`).
 
 ### (c) Where the first diverging event is
 
-Of 712 tests diverging base1 vs head1 (`path:line`):
+Of 755 tests diverging base1 vs head1 (`path:line`):
 
-| location of first diverging event | all (712) | stable (416) | noisy (296) |
+| location of first diverging event | all (755) | stable (439) | noisy (316) |
 |---|---|---|---|
-| PR-changed file | 356 | 335 | 21 |
-| end-of-test random-state digest | 203 | 74 | 129 |
-| unchanged source file | 71 | 0 | 71 |
-| `site-packages` | 52 | 7 | 45 |
-| unchanged test file | 28 | 0 | 28 |
+| PR-changed file | 371 | 349 | 22 |
+| end-of-test random-state digest | 213 | 74 | 139 |
+| unchanged source file | 75 | 1 | 74 |
+| `site-packages` | 55 | 7 | 48 |
+| unchanged test file | 31 | 0 | 31 |
+| outcome only (no other event differs) | 8 | 8 | 0 |
 | stdlib | 2 | 0 | 2 |
 
-Event source of the first diverging event: time 396, random 190, entropy 114,
-file system 12. Every one of the 335 stable "changed-file" divergences is a
-call-site line shift with the same event value (for example `time.time` at
-`src/click/_termui_impl.py:120` on base and `:106` on head, value 1000 on both).
-With function + ordinal the stable divergences are 81, all in one PR
-(isort-2731: 74 end random state, 7 `site-packages/hypothesis`), caused by the
-dependency upgrade in `uv.lock`. So the "50% in changed files" of the raw
-diff is the line-number artefact, not behaviour.
+Event source of the first diverging event: time 411, random 203, entropy 120,
+file system 13, outcome 8. Every one of the 349 stable "changed-file"
+divergences is a call-site line shift with the same event value (for example
+`time.time` at `src/click/_termui_impl.py:120` on base and `:106` on head,
+value 1000 on both). With function + ordinal the stable divergences are 90:
+isort-2731 81 (74 end random state, 7 `site-packages/hypothesis`; dependency
+upgrade in `uv.lock`), rich-4251 8 (outcome only), boltons-513 1 (`os.scandir`
+over the repository's `.git/objects/pack`, whose content differs between the
+two checkouts). So the "49% in changed files" of the raw diff is the
+line-number artefact, not behaviour; what remains is environment drift.
 
 ### (d) Refactor PRs
 
@@ -169,8 +177,8 @@ Which event types would raise it: none of the event types detpy records today
 (time, random, entropy, file system) moved for a real mutant. A return-value
 event would have raised 31; the call sequence adds nothing beyond it on this
 sample (every call-flagged survivor is also return-flagged). The return-value
-probe has its own noise: base vs base it differs on 1,018 of 120,811 PR tests
-(0.84%, vs 0.64% for the trace), and the boltons controls flagged 4 tests, so
+probe has its own noise: base vs base it differs on 1,656 of 204,321 PR tests
+(0.81%, vs 0.48% for the trace), and the boltons controls flagged 4 tests, so
 it needs the same two-runs-or-controls floor.
 
 ## Method
@@ -217,15 +225,10 @@ it needs the same two-runs-or-controls floor.
 
 ## Caveats
 
-* **42 PRs, not 50.** Run 2 ran for 3 hours and was cancelled with 43 of
-  its 80 candidates done (42 ok, 1 collection error on flask-5799). Run 4
-  re-runs 16 more candidates from the saved list; at the time of writing 6 of
-  its 16 jobs had finished and the other 10 had been queued for over 40
-  minutes with no runner (every workflow in the repository was queued). When
-  run 4 publishes, `python3 analyze.py` picks the first 50 by priority and
-  rewrites `summary.json`; the coordinator can check whether the headline
-  numbers move. With 30,461 tests running changed code and 0 stable real
-  divergences, 8 more PRs cannot turn the verdict (ESTIMATED).
+* **PR runs.** Run 2 ran for 3 hours and was cancelled with 43 of its 80
+  candidates done; run 4 re-ran 16 more from the saved list. 59 attempted,
+  58 ok, 1 collection error at base (flask-5799); the first 50 ok by priority
+  are measured (`analyze.py --n 50`).
 * **Sample.** Small and medium pure-Python libraries with fast suites: no
   services, little I/O, no TypeScript. Suites with more I/O would carry more
   events and could look both richer and noisier (UNKNOWN).
