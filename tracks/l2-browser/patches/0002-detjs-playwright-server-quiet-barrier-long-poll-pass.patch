@@ -1,0 +1,169 @@
+From c91efa3be934d8cf34c44c7b868ce3fee9f8c48b Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 06:24:01 +0000
+Subject: [PATCH 2/3] detjs playwright: server quiet barrier, long-poll
+ passthrough, WebSocket frames through the queue
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ node/src/pw/server.js | 41 +++++++++++++++++++++++++++++++
+ node/src/pw/worker.js | 56 +++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 93 insertions(+), 4 deletions(-)
+
+diff --git a/node/src/pw/server.js b/node/src/pw/server.js
+index 2a65b68..c56589a 100644
+--- a/node/src/pw/server.js
++++ b/node/src/pw/server.js
+@@ -48,7 +48,44 @@ function endCurrent() {
+   if (fp) FINISHED[id] = { fingerprint: fp, events };
+ }
+ 
++// Quiet barrier: the worker asks before releasing the next message, so that the
++// server finishes the work of the previous one first (database writes, socket
++// pushes). Quiet = no HTTP request in flight and the event loop idle (utilization
++// under 10%) for `ms` consecutive real milliseconds; gives up after `max` ms.
++let inflight = 0;
++const { performance } = require('node:perf_hooks');
++const REAL_SET_TIMEOUT = require('../clock').REAL.setTimeout;
++
++function waitQuiet(ms, max, done) {
++  const start = Date.now ? performance.now() : 0;
++  let idleSince = null;
++  let prev = performance.eventLoopUtilization();
++  const step = () => {
++    const now = performance.now();
++    const cur = performance.eventLoopUtilization();
++    const d = performance.eventLoopUtilization(cur, prev);
++    prev = cur;
++    const idle = inflight === 0 && d.utilization < 0.1;
++    if (!idle) idleSince = null; else if (idleSince === null) idleSince = now;
++    if (idleSince !== null && now - idleSince >= ms) return done(true, now - start);
++    if (now - start >= max) return done(false, now - start);
++    REAL_SET_TIMEOUT(step, 2);
++  };
++  REAL_SET_TIMEOUT(step, 2);
++}
++
+ function handleControl(req, res) {
++  if (req.url.startsWith('/__detjs/quiet')) {
++    const u = new URL(req.url, 'http://x');
++    const ms = Number(u.searchParams.get('ms') || 20);
++    const max = Number(u.searchParams.get('max') || 3000);
++    waitQuiet(ms, max, (quiet, waited) => {
++      const body = JSON.stringify({ quiet, waited: Math.round(waited) });
++      res.writeHead(200, { 'content-type': 'application/json', 'content-length': Buffer.byteLength(body) });
++      res.end(body);
++    });
++    return true;
++  }
+   if (req.url.startsWith('/__detjs/end')) {
+     endCurrent();
+     const body = JSON.stringify({ pid: process.pid, finished: FINISHED });
+@@ -67,6 +104,10 @@ function patchServer(proto) {
+   proto.emit = function emit(event, req, res) {
+     if (event === 'request' && req && req.headers) {
+       if (typeof req.url === 'string' && req.url.startsWith('/__detjs/')) return handleControl(req, res);
++      inflight++;
++      let counted = true;
++      const dec = () => { if (counted) { counted = false; inflight--; } };
++      if (res && typeof res.once === 'function') { res.once('finish', dec); res.once('close', dec); }
+       const id = req.headers['x-detjs-test'];
+       if (id && id !== STATE.testId) {
+         endCurrent();
+diff --git a/node/src/pw/worker.js b/node/src/pw/worker.js
+index bb7f39e..957b3af 100644
+--- a/node/src/pw/worker.js
++++ b/node/src/pw/worker.js
+@@ -98,12 +98,47 @@ function enqueue(item) {
+   });
+ }
+ 
+-function pump() {
++const QUIET_MS = Number(ENV.DETJS_PW_QUIET_MS || 20);
++const QUIET_MAX = Number(ENV.DETJS_PW_QUIET_MAX || 3000);
++const PASSTHROUGH = new RegExp(ENV.DETJS_PW_PASSTHROUGH || '[?&]transport=polling|/sockjs/|/__vite_ping|/@vite/|hot-update');
++
++function serverQuiet(origin) {
++  return new Promise((resolve) => {
++    let u;
++    try { u = new URL(`/__detjs/quiet?ms=${QUIET_MS}&max=${QUIET_MAX}`, origin); } catch { resolve(null); return; }
++    const req = http.get(u, { timeout: QUIET_MAX + 2000 }, (res) => {
++      const chunks = [];
++      res.on('data', (c) => chunks.push(c));
++      res.on('end', () => { try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); } catch { resolve(null); } });
++    });
++    req.on('error', () => resolve(null));
++    req.on('timeout', () => { req.destroy(); resolve(null); });
++  });
++}
++
++/** Wait until every app server touched so far has finished the work of earlier messages. */
++async function barrier(test) {
++  if (!QUIET_MS) return;
++  for (const origin of [...ORIGINS].sort()) {
++    const r = await serverQuiet(origin);
++    if (r && !r.quiet) rec(test, 'sched', 'server.busy', origin); // still busy after QUIET_MAX: recorded
++  }
++}
++
++async function pump() {
+   QUEUE.timer = null;
+   if (QUEUE.busy || !QUEUE.pending.length) return;
++  QUEUE.busy = true;
++  await barrier(QUEUE.pending[0].test);
++  QUEUE.busy = false;
++  if (!QUEUE.pending.length) return;
+   // Sort the pending set by a stable key (repeated keys keep arrival order: same URL twice
+   // is the same choice either way), then choose: index 0 without a seed, a seeded index with one.
+-  const sorted = QUEUE.pending.map((it, i) => ({ it, i, k: keyOf(it) }))
++  // Frames of one WebSocket keep their order: only the oldest pending frame of a connection is eligible.
++  const head = new Map();
++  for (const it of QUEUE.pending) if (it.conn !== undefined && !head.has(it.conn)) head.set(it.conn, it);
++  const eligible = QUEUE.pending.filter((it) => it.conn === undefined || head.get(it.conn) === it);
++  const sorted = eligible.map((it, i) => ({ it, i, k: keyOf(it) }))
+     .sort((a, b) => (a.k < b.k ? -1 : a.k > b.k ? 1 : a.i - b.i));
+   const testKey = sorted[0].it.test || '<none>';
+   const n = sorted.length;
+@@ -161,6 +196,12 @@ async function routeHandler(route, request) {
+   if (!key || !APP_TYPES.has(type) || !/^https?:/.test(url)) {
+     return route.fallback();
+   }
++  if (PASSTHROUGH.test(url) || /text\/event-stream/.test(request.headers().accept || '')) {
++    // Long-lived requests (long polling, event streams, dev-server pings) would hold the
++    // queue: not ordered, not recorded; they still carry the test bracket.
++    if (!isServerHost(url)) return route.fallback();
++    return route.fallback({ headers: { ...request.headers(), 'x-detjs-test': testIdOf(key) } });
++  }
+   const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()) };
+   const release = await enqueue(item);
+   const page = request.frame && (() => { try { return request.frame().page(); } catch { return null; } })();
+@@ -223,16 +264,23 @@ function wsKeep(text) {
+   return !(typeof text === 'string' && /^[23](probe)?$/.test(text));
+ }
+ 
++let WS_CONNS = 0;
+ async function setupWebSockets(ctx) {
+   if (typeof ctx.routeWebSocket !== 'function') return;
+   await ctx.routeWebSocket(() => true, (ws) => {
+     const key = currentKey();
+     let server;
+     try { server = ws.connectToServer(); } catch { return; }
++    const conn = ++WS_CONNS;
+     rec(key, 'net', 'ws.open', targetOf(ws.url()));
+     ws.onMessage((m) => {
+-      if (wsKeep(m)) rec(currentKey() || key, 'net', 'ws.send', digest(m));
+-      server.send(m);
++      const k = currentKey() || key;
++      if (!wsKeep(m) || !k) { server.send(m); return; }
++      // Page -> server frames are messages to the app like requests: same queue, same barrier.
++      enqueue({ kind: 'ws', conn, test: k, method: 'SEND', target: targetOf(ws.url()), bodyDigest: digest(m) }).then((release) => {
++        rec(k, 'net', 'ws.send', digest(m));
++        try { server.send(m); } finally { release(); }
++      });
+     });
+     server.onMessage((m) => {
+       if (wsKeep(m)) rec(currentKey() || key, 'net', 'ws.recv', digest(m));
+-- 
+2.43.0
+
