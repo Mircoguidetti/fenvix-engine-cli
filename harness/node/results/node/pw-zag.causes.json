@@ -1,0 +1,14 @@
+[
+ {
+  "repo": "pw-zag",
+  "pool": "playwright",
+  "nodeid": "e2e/tabs-links.e2e.ts::manual keyboard navigation follows the link only on Enter",
+  "class": "concurrency/event-order",
+  "evidence": "test source uses async , await ",
+  "documented": "",
+  "under_det": "fails",
+  "baseline_outcomes": "failed=1;passed=2",
+  "det_exception": "Error",
+  "pass_fail_reason": ""
+ }
+]
