@@ -1,0 +1,1800 @@
+{
+ "name": "idoft-panamah-sdk-python",
+ "set": "class-a",
+ "url": "https://github.com/casamagalhaes/panamah-sdk-python",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009334",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "python_requested": [
+  "3.9"
+ ],
+ "commit": "746f3fb7ebcf01810917bf9afa8e7ff5a4efad21",
+ "status": "ok",
+ "detail": "",
+ "python": "3.9",
+ "install": "-e . -r requirements.txt",
+ "collected": 23,
+ "kind": "corpus",
+ "tests": {
+  "tests/test_stream.py::TestStream::test_events": "class a"
+ },
+ "runs": [
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.209,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 1.507,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "60e709091b36de82bb9d8229711f1a11"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.668,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "1167ebaec1d2cac3a5c9ab9c5e12c649"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.662,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.652,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 0.197,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 0.677,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 0.639,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "1167ebaec1d2cac3a5c9ab9c5e12c649"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 0.684,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 0.647,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 0.201,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 0.677,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "1167ebaec1d2cac3a5c9ab9c5e12c649"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 0.726,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "1167ebaec1d2cac3a5c9ab9c5e12c649"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 0.695,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 0.738,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 0.205,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 0.689,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "7cbe3478c03be99e22012c14c95eeca4"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 0.634,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "1167ebaec1d2cac3a5c9ab9c5e12c649"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 0.638,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 0.628,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 0.187,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 0.629,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 0.617,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "e96103544a985ffdeee6c5a6e05b9027"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 0.616,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 0.629,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 0.202,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 0.656,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "1167ebaec1d2cac3a5c9ab9c5e12c649"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 0.646,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 0.684,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 5,
+   "exit": 0,
+   "duration_s": 0.641,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 0.201,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 0.664,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "e96103544a985ffdeee6c5a6e05b9027"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 0.656,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "1167ebaec1d2cac3a5c9ab9c5e12c649"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 0.711,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 6,
+   "exit": 0,
+   "duration_s": 0.676,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 0.208,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 0.662,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 0.631,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "e96103544a985ffdeee6c5a6e05b9027"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 0.628,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 7,
+   "exit": 0,
+   "duration_s": 0.619,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 0.192,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 0.66,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 0.652,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "1167ebaec1d2cac3a5c9ab9c5e12c649"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 0.659,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 8,
+   "exit": 0,
+   "duration_s": 0.646,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "baseline",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 0.191,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 0.64,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "7cbe3478c03be99e22012c14c95eeca4"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "det-u",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 0.662,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "1167ebaec1d2cac3a5c9ab9c5e12c649"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 0.629,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "l1-u",
+   "seed": null,
+   "run": 9,
+   "exit": 0,
+   "duration_s": 0.662,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.426,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 2.017,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 2.074,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 0.492,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 1.735,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 1,
+   "exit": 0,
+   "duration_s": 1.425,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 0.352,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 2.261,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 2,
+   "exit": 0,
+   "duration_s": 1.655,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 0.343,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 1.891,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 3,
+   "exit": 0,
+   "duration_s": 1.98,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-baseline",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 0.369,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": null
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-det-u",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 1.61,
+   "timed_out": false,
+   "stats": null,
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "loaded-l1-u",
+   "seed": null,
+   "run": 4,
+   "exit": 0,
+   "duration_s": 1.728,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 1,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.639,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 2,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.597,
+   "timed_out": false,
+   "stats": {
+    "decisions": 13,
+    "switches": 10,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "8ac1d32a1451ccc71799d48c375fd9eb"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 3,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.618,
+   "timed_out": false,
+   "stats": {
+    "decisions": 3,
+    "switches": 4,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "6a7a21914e5fbcb2c5e34fd97ad7b640"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 4,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.593,
+   "timed_out": false,
+   "stats": {
+    "decisions": 5,
+    "switches": 6,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "ca6d49bbe80b1cb7509ca2ac95763fd6"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 5,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.595,
+   "timed_out": false,
+   "stats": {
+    "decisions": 6,
+    "switches": 4,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "1853677bbacd32132dc2379691b6d6d3"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 6,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.609,
+   "timed_out": false,
+   "stats": {
+    "decisions": 3,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "b95d5fc65f693646e430bc5c7b35172e"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 7,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.6,
+   "timed_out": false,
+   "stats": {
+    "decisions": 8,
+    "switches": 6,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "47d5921b44dd821f6385d66e91d9fd67"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 8,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.599,
+   "timed_out": false,
+   "stats": {
+    "decisions": 6,
+    "switches": 4,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "83983ebb16e024a3a268881546a210be"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 9,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.629,
+   "timed_out": false,
+   "stats": {
+    "decisions": 6,
+    "switches": 4,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "ec6d26577f9a3a8960a5c128e18a6883"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 10,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.628,
+   "timed_out": false,
+   "stats": {
+    "decisions": 6,
+    "switches": 4,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "94c646550071988c2b5b8269607e42b9"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 11,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.647,
+   "timed_out": false,
+   "stats": {
+    "decisions": 6,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "66a65b40612f82a0b94decdcd9d81e00"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 12,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.633,
+   "timed_out": false,
+   "stats": {
+    "decisions": 4,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "ba53709c9ed9ddc2c24ea6c251a6226c"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 13,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.634,
+   "timed_out": false,
+   "stats": {
+    "decisions": 7,
+    "switches": 4,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "1c272b2178089443ad9962588f15ad00"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 14,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.661,
+   "timed_out": false,
+   "stats": {
+    "decisions": 2,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "29bd9b9e689e06ff451875e2332419a0"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 15,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.64,
+   "timed_out": false,
+   "stats": {
+    "decisions": 0,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c5274e91677d737fd0d1900346c08912"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 16,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.659,
+   "timed_out": false,
+   "stats": {
+    "decisions": 1,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "63d95fd455fd6dd490ebeb0775f5ce1e"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 17,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.689,
+   "timed_out": false,
+   "stats": {
+    "decisions": 3,
+    "switches": 4,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "0106d53ab4ac5183cff9e4b7b5b236b4"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 18,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.633,
+   "timed_out": false,
+   "stats": {
+    "decisions": 7,
+    "switches": 4,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "4a2ae62e4f2aa25ef9e3ef34f89523dc"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 19,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.682,
+   "timed_out": false,
+   "stats": {
+    "decisions": 3,
+    "switches": 2,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "5f260987fd596fc35aa19dedf6ac6717"
+   }
+  },
+  {
+   "unit": 0,
+   "mode": "explore",
+   "seed": 20,
+   "run": 0,
+   "exit": 0,
+   "duration_s": 0.644,
+   "timed_out": false,
+   "stats": {
+    "decisions": 11,
+    "switches": 4,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 2
+   },
+   "tail": "",
+   "outcomes": {
+    "tests/test_stream.py::TestStream::test_events": "passed"
+   },
+   "fps": {
+    "tests/test_stream.py::TestStream::test_events": "c665c33a1555ba4ab001b1b51f817771"
+   }
+  }
+ ],
+ "confirm": {},
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
