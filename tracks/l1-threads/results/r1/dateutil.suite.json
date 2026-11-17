@@ -1,0 +1,294 @@
+{
+ "name": "dateutil",
+ "set": "popular",
+ "url": "https://github.com/dateutil/dateutil",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009325",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "a78cbd81d5d03b5f126eb36edb92bca78972c804",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . -r requirements-dev.txt freezegun hypothesis",
+ "collected": 5344,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 17.768,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 5058,
+    "skipped": 266,
+    "xfailed": 17,
+    "failed": 3
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 32.244,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 5058,
+    "skipped": 266,
+    "xfailed": 17,
+    "failed": 3
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 23.174,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 5058,
+    "skipped": 266,
+    "xfailed": 17,
+    "failed": 3
+   },
+   "stats": {
+    "decisions": 2,
+    "switches": 26,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 14
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 77.1,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 5058,
+    "skipped": 266,
+    "xfailed": 17,
+    "failed": 3
+   },
+   "stats": {
+    "decisions": 64,
+    "switches": 61,
+    "escapes": 9,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 14
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 17.175,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 5058,
+    "skipped": 266,
+    "xfailed": 17,
+    "failed": 3
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 23.286,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 5058,
+    "skipped": 266,
+    "xfailed": 17,
+    "failed": 3
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 23.752,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 5058,
+    "skipped": 266,
+    "xfailed": 17,
+    "failed": 3
+   },
+   "stats": {
+    "decisions": 2,
+    "switches": 26,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 14
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 77.451,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 5058,
+    "skipped": 266,
+    "xfailed": 17,
+    "failed": 3
+   },
+   "stats": {
+    "decisions": 35,
+    "switches": 48,
+    "escapes": 9,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 14
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 2,
+   "duration_s": 16.457,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 5058,
+    "skipped": 266,
+    "xfailed": 17,
+    "failed": 3
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 22.065,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 5058,
+    "skipped": 266,
+    "xfailed": 17,
+    "failed": 3
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 2,
+   "duration_s": 22.587,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 5058,
+    "skipped": 266,
+    "xfailed": 17,
+    "failed": 3
+   },
+   "stats": {
+    "decisions": 2,
+    "switches": 26,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 14
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 2,
+   "duration_s": 75.209,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 5058,
+    "skipped": 266,
+    "xfailed": 17,
+    "failed": 3
+   },
+   "stats": {
+    "decisions": 56,
+    "switches": 60,
+    "escapes": 9,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 14
+   },
+   "tail": ""
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
