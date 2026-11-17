@@ -660,6 +660,9 @@ class _DetSession(_Outcomes):
         cfg = _state.STATE.config
         tr.write_line(f"trace: {S.trace_path}  order digest: {S.order_digest}  seed: {cfg.seed}"
                       f"{' (shuffled)' if cfg.shuffle else ''}")
+        if threads.CFG.enabled or threads.S.stats["managed"]:
+            st = threads.stats()
+            tr.write_line("threads: " + " ".join(f"{k}={v}" for k, v in st.items()))
         if S.saved_cassette:
             tr.write_line(f"network: recorded {S.saved_cassette} test(s) into {cfg.cassette_path}")
         rep = S.compare_report

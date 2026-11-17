@@ -216,7 +216,21 @@ def _record(op: str, value: str, source: str = "sched") -> None:
     rec.record(source, op, _site(), value, t)
 
 
+_DEBUG = os.environ.get("DETPY_THREADS_DEBUG")
+
+
+def _dbg(msg: str) -> None:
+    if _DEBUG:
+        line = f"[threads] {msg}\n".encode()
+        if _DEBUG == "1":
+            os.write(2, line)
+        else:
+            with open(f"{_DEBUG}.{os.getpid()}", "ab") as f:
+                f.write(line)
+
+
 def _record_uncontrolled(why: str) -> None:
+    _dbg("uncontrolled: " + why)
     st = _state.STATE
     if st.recorder is not None and st.nodeid is not None:
         st.recorder.record("other", "threads.uncontrolled", "<threads>", why, 0)
@@ -371,6 +385,9 @@ def _locked_hand(me, nxt) -> None:
     if nxt is not me:
         S.since_switch = 0
         S.stats["switches"] += 1
+    if _DEBUG:
+        _dbg(f"hand {getattr(me, 'idx', None)} -> {getattr(nxt, 'idx', None)} runq={[t.idx for t in S.runq]} "
+             f"states={[(t.idx, t.state) for t in S.threads]}")
     if nxt is None:
         S.idle_since = _real_monotonic()
         return
@@ -1198,6 +1215,46 @@ def _idle_duty() -> None:
             _locked_hand(None, cands[0])
 
 
+class _InsertionOrderedSet(set):
+    """A set that iterates in insertion order (ThreadPoolExecutor._threads): the
+    order a set of threads is joined in would otherwise follow their addresses."""
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        self._order = list(super().__iter__())
+
+    def add(self, x):
+        if x not in self:
+            self._order.append(x)
+        super().add(x)
+
+    def discard(self, x):
+        if x in self:
+            self._order.remove(x)
+        super().discard(x)
+
+    def remove(self, x):
+        super().remove(x)
+        self._order.remove(x)
+
+    def clear(self):
+        super().clear()
+        self._order = []
+
+    def __iter__(self):
+        return iter(list(self._order))
+
+
+def _wrap_pool_init(real):
+    def __init__(self, *args, **kwargs):
+        real(self, *args, **kwargs)
+        if _me() is not None and isinstance(getattr(self, "_threads", None), set):
+            self._threads = _InsertionOrderedSet(self._threads)
+
+    __init__.__wrapped__ = real
+    return __init__
+
+
 # ---------------------------------------------------------------------------
 # Installation
 _PATCHED = {"on": False}
@@ -1244,6 +1301,9 @@ def install(patcher, seed: int, grace: float, deadlock: float, preempt: int) -> 
         if cls is not None and "select" in vars(cls):
             patcher.set(cls, "select", _wrap_selector_select(vars(cls)["select"]))
     patcher.set(_select, "select", _select_select)
+    import concurrent.futures.thread as _cft
+
+    patcher.set(_cft.ThreadPoolExecutor, "__init__", _wrap_pool_init(_cft.ThreadPoolExecutor.__init__))
     from . import clock
 
     patcher.set(clock, "_sched_sleep", sleep)
