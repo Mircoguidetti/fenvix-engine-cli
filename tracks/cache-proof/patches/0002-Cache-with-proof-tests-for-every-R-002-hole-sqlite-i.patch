@@ -1,0 +1,825 @@
+From b125a1fe74972ed2acb31d6c4b52228a435df23a Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 06:37:49 +0000
+Subject: [PATCH 2/2] Cache with proof: tests for every R-002 hole, sqlite
+ inputs, written-path tracking, merged saves under a lock, conftest scoping
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ crates/detpy-core/src/proof.rs    | 114 ++++++++-
+ crates/detpy-py/src/proofcache.rs |  35 ++-
+ python/detpy/proofcache.py        |  76 +++++-
+ tests/test_proofcache.py          | 371 ++++++++++++++++++++++++++++++
+ 4 files changed, 583 insertions(+), 13 deletions(-)
+ create mode 100644 tests/test_proofcache.py
+
+diff --git a/crates/detpy-core/src/proof.rs b/crates/detpy-core/src/proof.rs
+index c0855ee..05aa18d 100644
+--- a/crates/detpy-core/src/proof.rs
++++ b/crates/detpy-core/src/proof.rs
+@@ -27,7 +27,7 @@
+ 
+ use crate::fingerprint::digest_bytes;
+ use serde::{Deserialize, Serialize};
+-use std::collections::{BTreeMap, HashMap};
++use std::collections::{BTreeMap, BTreeSet, HashMap};
+ use std::fs;
+ use std::io::{self, Read};
+ use std::path::{Path, PathBuf};
+@@ -97,6 +97,10 @@ pub struct Store {
+     pub files: Vec<CodeFile>,
+     pub sets: Vec<Vec<u32>>,
+     pub tests: BTreeMap<String, Entry>,
++    /// Paths that code run by a session wrote (repository-relative or absolute) and the contexts that wrote
++    /// them: a test that reads one is cached only if every writer is its own code (test, its fixtures).
++    #[serde(default)]
++    pub written: BTreeMap<String, BTreeSet<String>>,
+     #[serde(skip)]
+     file_ix: HashMap<(String, String), u32>,
+     #[serde(skip)]
+@@ -430,6 +434,49 @@ impl Store {
+         self.reindex();
+     }
+ 
++    /// Copy the entries of `touched` (or their removal) into `disk`, remapping
++    /// file and set indices; merge the written paths.
++    pub fn merge_into(&self, disk: &mut Store, touched: &BTreeSet<String>) {
++        for nid in touched {
++            match self.tests.get(nid) {
++                None => {
++                    disk.tests.remove(nid);
++                }
++                Some(e) => {
++                    let mut e = e.clone();
++                    let remap_file = |i: u32, disk: &mut Store| -> u32 {
++                        match self.files.get(i as usize) {
++                            Some(f) => disk.add_file(f.clone()),
++                            None => u32::MAX,
++                        }
++                    };
++                    for id in [&mut e.content, &mut e.skeleton, &mut e.hooks] {
++                        let set: Vec<u32> = self.set(*id).iter().map(|&f| remap_file(f, disk)).collect();
++                        *id = disk.intern(set);
++                    }
++                    for c in e.units.chunks_mut(2) {
++                        c[0] = remap_file(c[0], disk);
++                    }
++                    disk.tests.insert(nid.clone(), e);
++                }
++            }
++        }
++        for (p, w) in &self.written {
++            disk.written.entry(p.clone()).or_default().extend(w.iter().cloned());
++        }
++    }
++
++    /// Merge this session's changes (`touched` entries, written paths) into the
++    /// store on disk under a lock, so that concurrent sessions (one process per
++    /// test file, pytest-xdist workers) sharing a directory lose nothing.
++    pub fn save_merged(&self, dir: &Path, touched: &BTreeSet<String>) -> io::Result<()> {
++        fs::create_dir_all(dir)?;
++        let _lock = DirLock::acquire(dir)?;
++        let mut disk = Store::load(dir);
++        self.merge_into(&mut disk, touched);
++        disk.save(dir)
++    }
++
+     /// Compact and write atomically to `dir`.
+     pub fn save(&mut self, dir: &Path) -> io::Result<()> {
+         self.compact();
+@@ -441,6 +488,43 @@ impl Store {
+     }
+ }
+ 
++struct DirLock(PathBuf);
++
++impl DirLock {
++    fn acquire(dir: &Path) -> io::Result<DirLock> {
++        let path = dir.join(".lock");
++        let start = std::time::Instant::now();
++        loop {
++            match fs::OpenOptions::new().write(true).create_new(true).open(&path) {
++                Ok(_) => return Ok(DirLock(path)),
++                Err(e) if e.kind() == io::ErrorKind::AlreadyExists => {
++                    let stale = fs::metadata(&path)
++                        .and_then(|m| m.modified())
++                        .ok()
++                        .and_then(|t| t.elapsed().ok())
++                        .map(|age| age.as_secs() > 300)
++                        .unwrap_or(false);
++                    if stale {
++                        let _ = fs::remove_file(&path);
++                        continue;
++                    }
++                    if start.elapsed().as_secs() > 600 {
++                        return Err(io::Error::new(io::ErrorKind::TimedOut, "cache directory lock"));
++                    }
++                    std::thread::sleep(std::time::Duration::from_millis(20));
++                }
++                Err(e) => return Err(e),
++            }
++        }
++    }
++}
++
++impl Drop for DirLock {
++    fn drop(&mut self) {
++        let _ = fs::remove_file(&self.0);
++    }
++}
++
+ /// The state of the current session that recorded inputs are compared with.
+ #[derive(Clone, Debug, Default)]
+ pub struct Current {
+@@ -824,6 +908,34 @@ mod tests {
+         assert_eq!(listing_digest(d.path()).unwrap(), digest_bytes(b"a\0b").short());
+     }
+ 
++    #[test]
++    fn concurrent_sessions_merge() {
++        let (d, s, cur) = setup();
++        let dir = d.path().join("cache");
++        s.clone().save(&dir).unwrap();
++        // session 2 records t::x, session 3 removes t::a; both start from the same store
++        let mut s2 = Store::load(&dir);
++        let fi = s2.add_file(CodeFile {
++            path: "n.py".into(),
++            content: "c".into(),
++            skeleton: "s".into(),
++            hooks: "h".into(),
++            units: vec![unit("u", "U")],
++            imports: vec![],
++        });
++        s2.record("t::x", Observed { outcome: "passed".into(), skeleton: vec![fi], units: vec![(fi, 0)], ..Default::default() });
++        s2.written.entry("out.txt".into()).or_default().insert("t|t::x".into());
++        let mut s3 = Store::load(&dir);
++        s3.remove("t::a");
++        s2.save_merged(&dir, &["t::x".to_string()].into_iter().collect()).unwrap();
++        s3.save_merged(&dir, &["t::a".to_string()].into_iter().collect()).unwrap();
++        let m = Store::load(&dir);
++        assert_eq!(m.tests.keys().collect::<Vec<_>>(), vec!["t::x"]);
++        assert_eq!(m.key_of("t::x", &m.tests["t::x"]), s2.tests["t::x"].key);
++        assert!(m.written["out.txt"].contains("t|t::x"));
++        let _ = cur;
++    }
++
+     #[test]
+     fn save_load_compact_roundtrip() {
+         let (d, mut s, cur) = setup();
+diff --git a/crates/detpy-py/src/proofcache.rs b/crates/detpy-py/src/proofcache.rs
+index 7eaab03..8b1d8b5 100644
+--- a/crates/detpy-py/src/proofcache.rs
++++ b/crates/detpy-py/src/proofcache.rs
+@@ -3,13 +3,14 @@
+ use detpy_core::proof::{self, Checker, CodeFile, Current, Observed, Store, Unit};
+ use pyo3::exceptions::{PyKeyError, PyValueError};
+ use pyo3::prelude::*;
+-use std::collections::BTreeMap;
++use std::collections::{BTreeMap, BTreeSet};
+ use std::path::PathBuf;
+ use std::sync::{Mutex, MutexGuard};
+ 
+ struct Inner {
+     store: Store,
+     checker: Checker,
++    touched: BTreeSet<String>,
+ }
+ 
+ /// The on-disk store of one cache directory plus the reuse checker of the
+@@ -57,7 +58,7 @@ impl ProofCache {
+     fn new(dir: PathBuf, root: PathBuf) -> Self {
+         let store = Store::load(&dir);
+         let checker = Checker::new(Current { root, ..Default::default() });
+-        ProofCache { dir, inner: Mutex::new(Inner { store, checker }) }
++        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new() }) }
+     }
+ 
+     /// Set the current session state: configuration and runtime digests, clock
+@@ -71,7 +72,7 @@ impl ProofCache {
+     /// Known code files whose content changed: `[(path, current content digest)]`.
+     fn changed_code_files(&self) -> Vec<(String, String)> {
+         let mut g = lock(&self.inner);
+-        let Inner { store, checker } = &mut *g;
++        let Inner { store, checker, .. } = &mut *g;
+         checker.changed_code_files(store)
+     }
+ 
+@@ -84,7 +85,7 @@ impl ProofCache {
+     /// reused, else `(False, "kind: detail")`.
+     fn check(&self, nodeid: &str) -> PyResult<(bool, String)> {
+         let mut g = lock(&self.inner);
+-        let Inner { store, checker } = &mut *g;
++        let Inner { store, checker, .. } = &mut *g;
+         Ok(match checker.check(store, nodeid) {
+             Ok(r) => (true, serde_json::to_string(&r).map_err(|e| PyValueError::new_err(e.to_string()))?),
+             Err(m) => (false, format!("{}: {}", m.kind, m.detail)),
+@@ -135,14 +136,31 @@ impl ProofCache {
+         units: Vec<(u32, u32)>,
+     ) -> PyResult<String> {
+         let report = serde_json::from_str(report_json).map_err(|e| PyValueError::new_err(format!("report: {e}")))?;
+-        Ok(lock(&self.inner).store.record(
++        let mut g = lock(&self.inner);
++        g.touched.insert(nodeid.to_string());
++        Ok(g.store.record(
+             nodeid,
+             Observed { outcome, report, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units },
+         ))
+     }
+ 
+     fn remove(&self, nodeid: &str) -> bool {
+-        lock(&self.inner).store.remove(nodeid)
++        let mut g = lock(&self.inner);
++        g.touched.insert(nodeid.to_string());
++        g.store.remove(nodeid)
++    }
++
++    /// Paths written by earlier sessions: `{path: [writer contexts]}`.
++    fn written(&self) -> BTreeMap<String, Vec<String>> {
++        lock(&self.inner).store.written.iter().map(|(k, v)| (k.clone(), v.iter().cloned().collect())).collect()
++    }
++
++    /// Note paths this session wrote and their writer contexts.
++    fn add_written(&self, written: BTreeMap<String, Vec<String>>) {
++        let mut g = lock(&self.inner);
++        for (p, w) in written {
++            g.store.written.entry(p).or_default().extend(w);
++        }
+     }
+ 
+     fn __len__(&self) -> usize {
+@@ -154,9 +172,10 @@ impl ProofCache {
+         lock(&self.inner).store.files.len()
+     }
+ 
+-    /// Compact and write the store atomically.
++    /// Merge this session's changes into the store on disk (under a lock) and write it atomically.
+     fn save(&self) -> PyResult<()> {
+-        lock(&self.inner).store.save(&self.dir)?;
++        let g = lock(&self.inner);
++        g.store.save_merged(&self.dir, &g.touched)?;
+         Ok(())
+     }
+ }
+diff --git a/python/detpy/proofcache.py b/python/detpy/proofcache.py
+index c8eb745..7182333 100644
+--- a/python/detpy/proofcache.py
++++ b/python/detpy/proofcache.py
+@@ -52,7 +52,7 @@ AVAILABLE = _mon is not None
+ # "f|<scope>|<baseid>|<name>" setup of a wider-scoped fixture, "t|<nodeid>" a test
+ _GLOBAL_CTX = ("", "s")
+ 
+-_AUDIT_EVENTS = ("exec", "open", "os.listdir", "os.scandir", "socket.connect", "subprocess.Popen", "os.posix_spawn",
++_AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "subprocess.Popen", "os.posix_spawn",
+                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
+                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
+                  "os.link")
+@@ -77,6 +77,9 @@ _VOLATILE_OPTIONS = {
+ }
+ 
+ 
++_DETPY_DIR = os.path.dirname(os.path.abspath(__file__)) + os.sep
++
++
+ def _ctx_file(nodeid: str) -> str:
+     return nodeid.split("::", 1)[0]
+ 
+@@ -278,6 +281,9 @@ class Capture:
+             fn = f.f_code.co_filename
+             if fn.startswith("<frozen importlib") or fn.startswith("<frozen zipimport"):
+                 return "import"
++            if fn.startswith(_DETPY_DIR):  # detpy's own wrappers (network, fsorder, ...) are transparent
++                f = f.f_back
++                continue
+             kind, _ = _sites._classify(fn)
+             if kind == _sites._USER:
+                 return "user"
+@@ -374,6 +380,16 @@ class Capture:
+                 self.read(ctx, p, "f")
+             if writes:
+                 self.wrote(ctx, p)
++        elif event == "sqlite3.connect":
++            # sqlite opens the database read-write in C (no "open" event): its committed content is an input
++            db = args[0] if args else None
++            if isinstance(db, (str, bytes, os.PathLike)) and os.fsdecode(db) not in ("", ":memory:") \
++                    and not os.fsdecode(db).startswith("file:"):
++                p = self._abs(db)
++                if p is not None and not self._ignored(p) and self._caller_kind() not in ("import", "infra"):
++                    ctx = self._cur()
++                    self.read(ctx, p, "f")
++                    self.wrote(ctx, p)
+         elif event in ("os.listdir", "os.scandir"):
+             if self._caller_kind() != "user":
+                 return
+@@ -416,7 +432,16 @@ class Capture:
+         else:
+             fl.add(source)
+ 
+-    def scan_modules(self, index: int) -> None:
++    def scan_modules(self, index: int, plugins=()) -> None:
++        """Note the repository modules loaded so far (``sys.modules`` and conftest plugins, which pytest keeps
++        out of ``sys.modules``) as loaded after the test at ``index`` (-1 = collection)."""
++        for m in plugins:
++            f = getattr(m, "__file__", None)
++            if isinstance(f, str) and self._want(f):
++                rel = self.fnames[self.fid[f]]
++                if rel not in self._seen_mods:
++                    self._seen_mods.add(rel)
++                    self.loaded_order.append((rel, index))
+         mods = sys.modules
+         if len(mods) == self._nmods:
+             return
+@@ -447,6 +472,9 @@ def _env_caller_is_user() -> bool:
+         return True
+     while f is not None:
+         fn = f.f_code.co_filename
++        if fn.startswith(_DETPY_DIR):
++            f = f.f_back
++            continue
+         kind, _ = _sites._classify(fn)
+         if kind == _sites._USER:
+             return True
+@@ -622,6 +650,7 @@ class ProofCachePlugin:
+         self.t_record = 0.0
+         self.recorded = 0
+         self.not_cached: dict[str, str] = {}
++        self.stale_hits: dict[str, str] = {}
+ 
+     # -- setup ----------------------------------------------------------------
+     def configure(self, config) -> None:
+@@ -659,7 +688,7 @@ class ProofCachePlugin:
+     @pytest.hookimpl(trylast=True)
+     def pytest_collection_finish(self, session):
+         self.cap.switch("s")
+-        self.cap.scan_modules(-1)
++        self.cap.scan_modules(-1, self._conftests())
+         t0 = time.perf_counter()
+         try:
+             self._decide(session.items)
+@@ -730,7 +759,7 @@ class ProofCachePlugin:
+         finally:
+             self.dur[nid] = time.perf_counter() - t
+             self.cap.switch("s")
+-            self.cap.scan_modules(self.test_index.get(nid, len(self.ran)))
++            self.cap.scan_modules(self.test_index.get(nid, len(self.ran)), self._conftests())
+             self.ran.append(nid)
+ 
+     def pytest_runtest_logreport(self, report):
+@@ -747,6 +776,14 @@ class ProofCachePlugin:
+             if k == "detpy_fingerprint":
+                 self.fingerprints[report.nodeid] = v
+ 
++    def _conftests(self):
++        pm = self.config.pluginmanager
++        n = len(getattr(pm, "_conftest_plugins", ()))
++        if n == getattr(self, "_n_conftests", -1):
++            return ()
++        self._n_conftests = n
++        return list(getattr(pm, "_conftest_plugins", ()))
++
+     def _reuse(self, item, nextitem, receipt) -> None:
+         from _pytest.reports import TestReport
+         from _pytest.runner import CallInfo
+@@ -886,6 +923,26 @@ class ProofCachePlugin:
+             g_flags |= {f for f in cap.flags.get(c, set()) if f != "proc"}
+ 
+         pre_ix = {fcache[r] for r in cap.preloaded if fcache.get(r) is not None}
++        names_of = cap.ctx_names
++        session_written = {cap._key(p): sorted(names_of[c] for c in w) for p, w in cap.writers.items()}
++        written = {p: set(w) for p, w in store.written().items()}
++        for p, w in session_written.items():
++            written.setdefault(p, set()).update(w)
++        store.add_written(session_written)
++        # results reused in this session whose input files code of this session then wrote: drop them
++        for nid in self.hits:
++            if not session_written:
++                break
++            try:
++                deps = json.loads(store.entry(nid)).get("data", [])
++            except KeyError:
++                continue
++            own = {"t|" + nid}
++            for path, _dep in deps:
++                if path in session_written and not set(session_written[path]) <= own:
++                    self.stale_hits[nid] = path
++                    store.remove(nid)
++                    break
+         loaded_idx = cap.loaded_order  # (rel, index)
+         cfg = _state.STATE.config
+         file_of_ix = {}
+@@ -926,10 +983,17 @@ class ProofCachePlugin:
+             why = _uncacheable(flags, cfg)
+             if why is None:
+                 credited = set(ctxs)
++                names = {names_of[c] for c in ctxs}
+                 for f in sorted(flags):
+                     if f.startswith("rw:") and not cap.writers.get(f[3:], set()) <= credited:
+                         why = f"reads a file another test or fixture wrote: {cap._key(f[3:])}"
+                         break
++                if why is None:
++                    for path in data:
++                        w = written.get(path)
++                        if w and not w <= names:
++                            why = f"reads a file another test or fixture wrote: {path}"
++                            break
+             if why is None and "net-replay" in flags and cfg.cassette_path:
+                 d = _core.file_digest(cfg.cassette_path)
+                 data[cap._key(os.path.realpath(cfg.cassette_path))] = f"f:{d}" if d else "missing"
+@@ -1014,6 +1078,7 @@ class ProofCachePlugin:
+             "config": self.config_digest,
+             "runtime": self.runtime_digest,
+             "verify_mismatches": [v for v in self.verify_results if not v["same"]],
++            "stale_reuses": self.stale_hits,
+             "receipts": self.receipts_path,
+         }
+ 
+@@ -1037,6 +1102,9 @@ class ProofCachePlugin:
+             tr.write_line("not reused: " + ", ".join(f"{k} {v}" for k, v in sorted(s["miss_reasons"].items())))
+         if s["not_cached"]:
+             tr.write_line("not cacheable: " + ", ".join(f"{k} {v}" for k, v in sorted(s["not_cached"].items())))
++        for nid, path in self.stale_hits.items():
++            tr.write_line(f"WARNING reused {nid}, but this session then wrote its input {path}: entry dropped",
++                          yellow=True)
+         if self.verify_results:
+             bad = s["verify_mismatches"]
+             tr.write_line(f"verified {len(self.verify_results)} reusable result(s) by running them: "
+diff --git a/tests/test_proofcache.py b/tests/test_proofcache.py
+new file mode 100644
+index 0000000..ed002b5
+--- /dev/null
++++ b/tests/test_proofcache.py
+@@ -0,0 +1,371 @@
++"""Cache with proof (``--det-cache``): a result is reused only when every input it used is unchanged."""
++
++import json
++import sys
++
++import pytest
++
++pytestmark = pytest.mark.skipif(sys.version_info < (3, 12), reason="--det-cache needs sys.monitoring")
++
++
++@pytest.fixture
++def run_cache(pytester):
++    counter = {"n": 0}
++
++    def run(*args):
++        counter["n"] += 1
++        out = pytester.path / f"out{counter['n']}.json"
++        r = pytester.runpytest_subprocess("--det", f"--det-cache={pytester.path / '.cachedir'}",
++                                          f"--det-outcomes={out}", "-p", "no:cacheprovider", *args)
++        data = json.loads(out.read_text()) if out.exists() else {}
++        c = data.get("cache", {})
++        return r, set(c.get("reused_ids", ())), data
++
++    return run
++
++
++def ids(*names, mod="test_m.py"):
++    return {f"{mod}::{n}" for n in names}
++
++
++def project(pytester, **files):
++    pytester.makeini("[pytest]\n")
++    pytester.mkpydir("pkg")
++    for name, text in files.items():
++        p = pytester.path / name
++        p.parent.mkdir(parents=True, exist_ok=True)
++        import textwrap
++        p.write_text(textwrap.dedent(text))
++
++
++MOD = """
++LIMIT = 10
++
++def f(x):
++    return x + 1
++
++def g(x):
++    return x * 2
++"""
++
++TESTS = """
++from pkg import mod
++
++def test_f():
++    assert mod.f(1) == 2
++
++def test_g():
++    assert mod.g(2) == 4
++
++def test_limit():
++    assert mod.LIMIT == 10
++"""
++
++
++def test_unchanged_suite_is_reused_with_a_receipt(pytester, run_cache):
++    project(pytester, **{"pkg/mod.py": MOD, "test_m.py": TESTS})
++    r, reused, _ = run_cache()
++    r.assert_outcomes(passed=3)
++    assert reused == set()
++    r, reused, data = run_cache("-v")
++    r.assert_outcomes(passed=3)
++    assert reused == ids("test_f", "test_g", "test_limit")
++    r.stdout.fnmatch_lines(["*reused 3 result(s) with proof, ran 0*", "REUSED test_m.py::test_f key=*"])
++    receipts = [json.loads(line) for line in (pytester.path / ".cachedir" / "receipts.jsonl").read_text().splitlines()]
++    f = next(x for x in receipts if x["nodeid"] == "test_m.py::test_f")
++    assert f["reused"] and len(f["key"]) == 32 and f["n_units"] >= 2 and f["n_skeleton"] >= 1
++
++
++def test_function_change_reruns_only_the_tests_that_executed_it(pytester, run_cache):
++    project(pytester, **{"pkg/mod.py": MOD, "test_m.py": TESTS})
++    run_cache()
++    (pytester.path / "pkg/mod.py").write_text(MOD.replace("return x * 2", "return 2 * x"))
++    r, reused, data = run_cache()
++    assert reused == ids("test_f", "test_limit")
++    assert data["cache"]["miss_ids"]["test_m.py::test_g"].startswith("code: pkg/mod.py::g")
++
++
++def test_comment_and_formatting_changes_keep_the_results(pytester, run_cache):
++    project(pytester, **{"pkg/mod.py": MOD, "test_m.py": TESTS})
++    run_cache()
++    (pytester.path / "pkg/mod.py").write_text(MOD.replace("return x * 2", "return x*2  # doubled"))
++    _, reused, _ = run_cache()
++    assert reused == ids("test_f", "test_g", "test_limit")
++
++
++def test_module_level_change_reruns_every_test_that_had_the_module_loaded(pytester, run_cache):
++    # test_limit reads a constant: no line of mod.py runs during the test (the pygments 7c196150 case)
++    project(pytester, **{"pkg/mod.py": MOD, "test_m.py": TESTS})
++    run_cache()
++    (pytester.path / "pkg/mod.py").write_text(MOD.replace("LIMIT = 10", "LIMIT = 11"))
++    r, reused, _ = run_cache()
++    assert reused == set()
++    r.assert_outcomes(passed=2, failed=1)
++
++
++def test_function_run_at_import_time_is_an_input_of_every_reader(pytester, run_cache):
++    # TABLE is built by helpers.build() while test_a imports pkg.table; test_b only reads it
++    project(pytester, **{
++        "pkg/helpers.py": "def build():\n    return [1, 2, 3]\n",
++        "pkg/table.py": "from pkg import helpers\nTABLE = helpers.build()\n",
++        "test_m.py": """
++            def test_a():
++                from pkg import table
++                assert len(table.TABLE) == 3
++
++            def test_b():
++                import pkg.table
++                assert pkg.table.TABLE[0] == 1
++            """,
++    })
++    run_cache()
++    _, reused, _ = run_cache()
++    assert reused == ids("test_a", "test_b")
++    (pytester.path / "pkg/helpers.py").write_text("def build():\n    return [0, 2, 3]\n")
++    r, reused, _ = run_cache()
++    assert reused == set()
++    r.assert_outcomes(passed=1, failed=1)
++
++
++def test_data_file_change_reruns_its_reader(pytester, run_cache):
++    project(pytester, **{"test_m.py": """
++        import os
++        HERE = os.path.dirname(__file__)
++
++        def test_data():
++            with open(os.path.join(HERE, "data.txt")) as fh:
++                assert fh.read() == "hello"
++
++        def test_other():
++            assert True
++        """, "data.txt": "hello"})
++    run_cache()
++    (pytester.path / "data.txt").write_text("world")
++    r, reused, data = run_cache()
++    assert reused == ids("test_other")
++    assert data["cache"]["miss_ids"]["test_m.py::test_data"].startswith("data: data.txt")
++    r.assert_outcomes(passed=1, failed=1)
++
++
++def test_read_write_open_is_an_input(pytester, run_cache):
++    # review R-002 error 1: a fixture opened read-write (sqlite, "r+") was dropped from the inputs
++    import sqlite3
++
++    db = pytester.path / "fixture.db"
++    con = sqlite3.connect(db)
++    con.execute("create table t (v integer)")
++    con.execute("insert into t values (1)")
++    con.commit()
++    con.close()
++    project(pytester, **{"test_m.py": """
++        import os, sqlite3
++        HERE = os.path.dirname(__file__)
++
++        def test_sqlite():
++            con = sqlite3.connect(os.path.join(HERE, "fixture.db"))
++            assert con.execute("select v from t").fetchone() == (1,)
++            con.close()
++
++        def test_rplus():
++            with open(os.path.join(HERE, "counter.txt"), "r+") as fh:
++                assert fh.read() == "1"
++        """, "counter.txt": "1"})
++    run_cache()
++    _, reused, _ = run_cache()
++    assert reused == ids("test_sqlite", "test_rplus")
++    con = sqlite3.connect(db)
++    con.execute("update t set v = 2")
++    con.commit()
++    con.close()
++    (pytester.path / "counter.txt").write_text("2")
++    r, reused, _ = run_cache()
++    assert reused == set()
++    r.assert_outcomes(failed=2)
++
++
++def test_environment_variable_read_is_an_input_and_unread_ones_are_not(pytester, run_cache, monkeypatch):
++    # review R-002 error 2
++    project(pytester, **{"test_m.py": """
++        import os
++
++        def test_flag():
++            assert os.environ.get("DETPY_T_FLAG", "0") == "0"
++
++        def test_other():
++            assert True
++        """})
++    monkeypatch.delenv("DETPY_T_FLAG", raising=False)
++    run_cache()
++    monkeypatch.setenv("DETPY_T_UNREAD", "x")
++    _, reused, _ = run_cache()
++    assert reused == ids("test_flag", "test_other")
++    monkeypatch.setenv("DETPY_T_FLAG", "1")
++    r, reused, data = run_cache()
++    assert reused == ids("test_other")
++    assert data["cache"]["miss_ids"]["test_m.py::test_flag"] == "env: environment variable DETPY_T_FLAG"
++    r.assert_outcomes(passed=1, failed=1)
++
++
++def test_runtime_identity_change_reruns_everything(pytester, run_cache):
++    # review R-002 note N2: the installed distributions are part of the runtime identity
++    project(pytester, **{"test_m.py": "def test_a():\n    assert True\n"})
++    run_cache()
++    d = pytester.path / "detpy_fake_dist-1.0.dist-info"
++    d.mkdir()
++    (d / "METADATA").write_text("Metadata-Version: 2.1\nName: detpy-fake-dist\nVersion: 1.0\n")
++    (d / "RECORD").write_text("")
++    _, reused, data = run_cache()
++    assert reused == set()
++    assert data["cache"]["miss_ids"]["test_m.py::test_a"].startswith("runtime:")
++
++
++def test_cached_failure_is_never_reused(pytester, run_cache):
++    # review R-002 note N4
++    project(pytester, **{"test_m.py": "def test_bad():\n    assert False\n\ndef test_good():\n    pass\n"})
++    run_cache()
++    r, reused, data = run_cache()
++    assert reused == ids("test_good")
++    r.assert_outcomes(passed=1, failed=1)
++    assert data["cache"]["miss_ids"]["test_m.py::test_bad"].startswith("new")
++
++
++def test_network_connection_and_subprocess_are_never_cached(pytester, run_cache):
++    # review R-002 error 3: a test that reaches a service (here loopback) cannot be proven
++    project(pytester, **{"test_m.py": """
++        import socket, subprocess, sys
++
++        def test_loopback():
++            srv = socket.socket()
++            srv.bind(("127.0.0.1", 0))
++            srv.listen(1)
++            c = socket.create_connection(srv.getsockname())
++            c.close()
++            srv.close()
++
++        def test_spawn():
++            subprocess.run([sys.executable, "-c", "pass"], check=True)
++
++        def test_plain():
++            pass
++        """})
++    run_cache()
++    _, reused, data = run_cache()
++    assert reused == ids("test_plain")
++    nc = data["cache"]["not_cached_ids"]
++    assert nc["test_m.py::test_loopback"] == "network connection"
++    assert nc["test_m.py::test_spawn"] == "subprocess"
++
++
++def test_clock_reader_depends_on_the_epoch(pytester, run_cache):
++    project(pytester, **{"test_m.py": """
++        import time
++
++        def test_clock():
++            assert time.time() > 0
++
++        def test_no_clock():
++            pass
++        """})
++    run_cache("--det-epoch=2025-01-01T00:00:00")
++    _, reused, _ = run_cache("--det-epoch=2025-01-01T00:00:00")
++    assert reused == ids("test_clock", "test_no_clock")
++    _, reused, data = run_cache("--det-epoch=2025-06-01T00:00:00")
++    assert reused == ids("test_no_clock")
++    assert data["cache"]["miss_ids"]["test_m.py::test_clock"].startswith("clock")
++
++
++def test_os_entropy_is_cached_only_when_controlled(pytester, run_cache):
++    project(pytester, **{"test_m.py": "import uuid\n\ndef test_uuid():\n    assert uuid.uuid4()\n"})
++    run_cache()
++    _, reused, data = run_cache()
++    assert reused == set()
++    assert data["cache"]["not_cached_ids"]["test_m.py::test_uuid"].startswith("os entropy")
++    run_cache("--det-urandom")
++    _, reused, _ = run_cache("--det-urandom")
++    assert reused == ids("test_uuid")
++
++
++def test_skip_and_xfail_are_reused_with_their_reports(pytester, run_cache):
++    project(pytester, **{"test_m.py": """
++        import pytest
++
++        @pytest.mark.skip(reason="not here")
++        def test_skip_mark():
++            pass
++
++        def test_skip_call():
++            pytest.skip("inside")
++
++        @pytest.mark.xfail(reason="known")
++        def test_xfail():
++            assert False
++        """})
++    r, _, _ = run_cache("-rsx")
++    r.assert_outcomes(skipped=2, xfailed=1)
++    r, reused, _ = run_cache("-rsx")
++    assert reused == ids("test_skip_mark", "test_skip_call", "test_xfail")
++    r.assert_outcomes(skipped=2, xfailed=1)
++    r.stdout.fnmatch_lines(["*SKIPPED*not here*", "*SKIPPED*inside*", "*XFAIL*known*"])
++
++
++def test_new_test_in_one_module_keeps_the_other_modules(pytester, run_cache):
++    project(pytester, **{"test_a.py": "def test_a1():\n    pass\n", "test_b.py": "def test_b1():\n    pass\n"})
++    run_cache()
++    (pytester.path / "test_a.py").write_text("def test_a1():\n    pass\n\ndef test_a2():\n    pass\n")
++    _, reused, _ = run_cache()
++    assert reused == {"test_b.py::test_b1"}
++
++
++def test_conftest_fixture_change_reruns_only_its_directory(pytester, run_cache):
++    project(pytester, **{
++        "sub1/conftest.py": "import pytest\n\n@pytest.fixture\ndef val():\n    return 1\n",
++        "sub1/test_s1.py": "def test_s1(val):\n    assert val == 1\n",
++        "sub2/conftest.py": "import pytest\n\n@pytest.fixture\ndef other():\n    return 2\n",
++        "sub2/test_s2.py": "def test_s2(other):\n    assert other == 2\n",
++    })
++    run_cache()
++    (pytester.path / "sub1/conftest.py").write_text(
++        "import pytest\n\nX = 1\n\n@pytest.fixture\ndef val():\n    return 1\n")
++    _, reused, _ = run_cache()
++    assert reused == {"sub2/test_s2.py::test_s2"}
++    # a new hook in a conftest can act on every test
++    (pytester.path / "sub1/conftest.py").write_text(
++        "import pytest\n\nX = 1\n\ndef pytest_runtest_setup(item):\n    pass\n\n"
++        "@pytest.fixture\ndef val():\n    return 1\n")
++    _, reused, _ = run_cache()
++    assert reused == set()
++
++
++def test_reading_a_file_another_test_wrote_is_not_cached(pytester, run_cache):
++    project(pytester, **{"test_m.py": """
++        import os
++        P = os.path.join(os.path.dirname(__file__), "shared.txt")
++
++        def test_writer():
++            with open(P, "w") as fh:
++                fh.write("x")
++
++        def test_reader():
++            with open(P) as fh:
++                assert fh.read() == "x"
++        """})
++    run_cache()
++    _, reused, data = run_cache()
++    assert "test_m.py::test_reader" not in reused
++    assert data["cache"]["not_cached_ids"]["test_m.py::test_reader"].startswith("reads a file another test")
++
++
++def test_verify_runs_reusable_tests_and_compares(pytester, run_cache):
++    project(pytester, **{"pkg/mod.py": MOD, "test_m.py": TESTS})
++    run_cache()
++    r, reused, data = run_cache("--det-cache-verify=1.0")
++    assert reused == set()
++    assert sorted(data["cache"]["verified_ids"]) == sorted(ids("test_f", "test_g", "test_limit"))
++    assert data["cache"]["verify_mismatches"] == []
++    r.stdout.fnmatch_lines(["*verified 3 reusable result(s) by running them: 0 mismatch(es)*"])
++
++
++def test_det_cache_requires_det(pytester):
++    pytester.makepyfile("def test_a():\n    pass\n")
++    r = pytester.runpytest_subprocess(f"--det-cache={pytester.path / 'c'}")
++    r.stderr.fnmatch_lines(["*--det-cache needs --det*"])
+-- 
+2.43.0
+

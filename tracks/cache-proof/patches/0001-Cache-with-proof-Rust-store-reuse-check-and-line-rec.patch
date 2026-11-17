@@ -1,0 +1,2901 @@
+From 61a87f9f40c593580762a5488ba216e2b3854438 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 06:28:02 +0000
+Subject: [PATCH 1/2] Cache with proof: Rust store, reuse check and line
+ recorder; pytest --det --det-cache=DIR
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ crates/detpy-core/src/lib.rs      |    4 +-
+ crates/detpy-core/src/proof.rs    |  846 +++++++++++++++++++++
+ crates/detpy-py/src/lib.rs        |   10 +
+ crates/detpy-py/src/proofcache.rs |  186 +++++
+ crates/detpy-py/src/sysmon.rs     |  299 ++++++++
+ python/detpy/_codefacts.py        |  135 ++++
+ python/detpy/_state.py            |   15 +-
+ python/detpy/plugin.py            |   40 +-
+ python/detpy/proofcache.py        | 1170 +++++++++++++++++++++++++++++
+ 9 files changed, 2700 insertions(+), 5 deletions(-)
+ create mode 100644 crates/detpy-core/src/proof.rs
+ create mode 100644 crates/detpy-py/src/proofcache.rs
+ create mode 100644 crates/detpy-py/src/sysmon.rs
+ create mode 100644 python/detpy/_codefacts.py
+ create mode 100644 python/detpy/proofcache.py
+
+diff --git a/crates/detpy-core/src/lib.rs b/crates/detpy-core/src/lib.rs
+index 24e5942..fe47737 100644
+--- a/crates/detpy-core/src/lib.rs
++++ b/crates/detpy-core/src/lib.rs
+@@ -7,7 +7,8 @@
+ //! * [`verify`]: cross-run comparison, divergence location and classification.
+ //! * [`order`]: reproducible hierarchical shuffle and seed derivation.
+ //! * [`cassette`]: recorded network conversations for record/replay.
+-//! * [`cache`]: result-cache vocabulary (future work).
++//! * [`cache`]: result-cache vocabulary (key, policy, storage).
++//! * [`proof`]: cache with proof: per-test recorded inputs, reuse check, receipt.
+ //! * [`backend`]: interception backends (Python hooks today, syscalls later).
+ 
+ pub mod backend;
+@@ -16,6 +17,7 @@ pub mod cassette;
+ pub mod event;
+ pub mod fingerprint;
+ pub mod order;
++pub mod proof;
+ pub mod recorder;
+ pub mod trace;
+ pub mod verify;
+diff --git a/crates/detpy-core/src/proof.rs b/crates/detpy-core/src/proof.rs
+new file mode 100644
+index 0000000..c0855ee
+--- /dev/null
++++ b/crates/detpy-core/src/proof.rs
+@@ -0,0 +1,846 @@
++//! Cache with proof: reuse a test's previous result only when every input it
++//! depended on is unchanged.
++//!
++//! The producer (the pytest shell) records, for every test that ran, the
++//! inputs the test actually used:
++//!
++//! * **code**: the functions it executed (one [`Unit`] per outermost function
++//!   of a file, hashed as its syntax tree), the module-level structure
++//!   (*skeleton*: the module with function bodies removed) of every repository
++//!   module it had loaded, the pytest hook surface of every loaded conftest, and
++//!   the whole content of files that cannot be reduced to units (doctest
++//!   modules, modules loaded before the recorder started, non-Python sources);
++//! * **data**: files it opened for reading (content digest; read-write opens
++//!   included), paths it found missing, directories it listed;
++//! * **environment variables** it read (value digest; `*` = the whole
++//!   environment);
++//! * **runtime identity** (interpreter, stdlib, platform, installed packages)
++//!   and **configuration** (pytest options and ini, plugins, Level 0 controls)
++//!   as two digests;
++//! * the virtual clock's epoch, only when the test read the clock.
++//!
++//! [`Entry::key`] folds all of these into one digest: the *receipt*. A later
++//! session asks [`Checker::check`] whether every recorded input still has its
++//! recorded digest; file contents are hashed once per session and a changed
++//! file is compared at the level of its units and skeleton (facts supplied by
++//! the producer for changed files only).
++
++use crate::fingerprint::digest_bytes;
++use serde::{Deserialize, Serialize};
++use std::collections::{BTreeMap, HashMap};
++use std::fs;
++use std::io::{self, Read};
++use std::path::{Path, PathBuf};
++
++pub const STORE_VERSION: u32 = 1;
++const STORE_FILE: &str = "proof-cache.json";
++
++/// One outermost function of a source file: qualified name, body line range
++/// (inclusive) and digest of its syntax tree (decorators and signature are in
++/// the skeleton).
++#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
++pub struct Unit {
++    pub q: String,
++    pub a: u32,
++    pub b: u32,
++    pub d: String,
++}
++
++/// Facts about one version (content digest) of one source file.
++#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
++pub struct CodeFile {
++    /// Path relative to the repository root, `/`-separated.
++    pub path: String,
++    /// Digest of the file's bytes.
++    pub content: String,
++    /// Digest of the module-level structure. Equal to `content` for a file
++    /// that is not valid Python.
++    pub skeleton: String,
++    /// Digest of the pytest hook surface (top-level `pytest_*` functions and
++    /// `pytest_plugins`), used for conftest files.
++    pub hooks: String,
++    pub units: Vec<Unit>,
++    /// Absolute module names this file imports (static, any scope).
++    #[serde(default)]
++    pub imports: Vec<String>,
++}
++
++#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
++pub struct Entry {
++    pub outcome: String,
++    /// What the shell needs to rebuild the reports of a reused result.
++    #[serde(default)]
++    pub report: serde_json::Value,
++    pub fingerprint: String,
++    pub duration: f64,
++    pub run: String,
++    pub key: String,
++    pub config: String,
++    pub runtime: String,
++    pub epoch: Option<i64>,
++    /// (variable, value digest or "-" when unset); "*" = the whole environment.
++    pub env: Vec<(String, String)>,
++    /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>".
++    pub data: Vec<(String, String)>,
++    /// Set ids (see [`Store::sets`]) of code files whose whole content, skeleton
++    /// or hook surface is a dependency.
++    pub content: u32,
++    pub skeleton: u32,
++    pub hooks: u32,
++    /// Flat (file index, unit index) pairs.
++    pub units: Vec<u32>,
++}
++
++#[derive(Clone, Debug, Default, Serialize, Deserialize)]
++pub struct Store {
++    pub version: u32,
++    pub files: Vec<CodeFile>,
++    pub sets: Vec<Vec<u32>>,
++    pub tests: BTreeMap<String, Entry>,
++    #[serde(skip)]
++    file_ix: HashMap<(String, String), u32>,
++    #[serde(skip)]
++    set_ix: HashMap<Vec<u32>, u32>,
++}
++
++/// What a session observed about one test (input of [`Store::record`]).
++#[derive(Clone, Debug, Default)]
++pub struct Observed {
++    pub outcome: String,
++    pub report: serde_json::Value,
++    pub fingerprint: String,
++    pub duration: f64,
++    pub run: String,
++    pub config: String,
++    pub runtime: String,
++    pub epoch: Option<i64>,
++    pub env: Vec<(String, String)>,
++    pub data: Vec<(String, String)>,
++    pub content: Vec<u32>,
++    pub skeleton: Vec<u32>,
++    pub hooks: Vec<u32>,
++    pub units: Vec<(u32, u32)>,
++}
++
++fn push_part(buf: &mut Vec<u8>, part: &str) {
++    buf.extend_from_slice(&(part.len() as u64).to_le_bytes());
++    buf.extend_from_slice(part.as_bytes());
++}
++
++/// Digest of a file's bytes, `None` when it cannot be read (missing, a directory, ...).
++pub fn file_digest(path: &Path) -> Option<String> {
++    let mut f = fs::File::open(path).ok()?;
++    if f.metadata().ok()?.is_dir() {
++        return None;
++    }
++    let mut h = blake3::Hasher::new();
++    let mut buf = vec![0u8; 1 << 16];
++    loop {
++        match f.read(&mut buf) {
++            Ok(0) => break,
++            Ok(n) => {
++                h.update(&buf[..n]);
++            }
++            Err(e) if e.kind() == io::ErrorKind::Interrupted => continue,
++            Err(_) => return None,
++        }
++    }
++    let hex = h.finalize().to_hex();
++    Some(hex.as_str()[..32].to_string())
++}
++
++/// Digest of a directory listing: sorted entry names joined by NUL (the same
++/// as `detpy._core.digest(b"\0".join(sorted(os.listdir(path))))` in Python).
++pub fn listing_digest(path: &Path) -> Option<String> {
++    let mut names: Vec<Vec<u8>> = Vec::new();
++    for e in fs::read_dir(path).ok()? {
++        let e = e.ok()?;
++        names.push(os_bytes(&e.file_name()));
++    }
++    names.sort();
++    Some(digest_bytes(&names.join(&b'\0')).short())
++}
++
++#[cfg(unix)]
++fn os_bytes(s: &std::ffi::OsStr) -> Vec<u8> {
++    use std::os::unix::ffi::OsStrExt;
++    s.as_bytes().to_vec()
++}
++
++#[cfg(not(unix))]
++fn os_bytes(s: &std::ffi::OsStr) -> Vec<u8> {
++    s.to_string_lossy().as_bytes().to_vec()
++}
++
++/// "file", "dir", "other" or "missing" (follows symlinks).
++pub fn stat_kind(path: &Path) -> &'static str {
++    match fs::metadata(path) {
++        Ok(m) if m.is_file() => "file",
++        Ok(m) if m.is_dir() => "dir",
++        Ok(_) => "other",
++        Err(_) => "missing",
++    }
++}
++
++/// Current dependency string of a recorded data dependency of the same kind.
++pub fn data_now(path: &Path, recorded: &str) -> String {
++    if recorded == "missing" || recorded.starts_with("f:") {
++        match file_digest(path) {
++            Some(d) => format!("f:{d}"),
++            None if path.exists() => "unreadable".into(),
++            None => "missing".into(),
++        }
++    } else if recorded.starts_with("d:") {
++        listing_digest(path).map(|d| format!("d:{d}")).unwrap_or_else(|| "missing".into())
++    } else if recorded.starts_with("s:") {
++        format!("s:{}", stat_kind(path))
++    } else {
++        "unknown".into()
++    }
++}
++
++/// Digest of an environment variable's value ("-" when unset).
++pub fn env_value_digest(value: Option<&str>) -> String {
++    match value {
++        None => "-".into(),
++        Some(v) => digest_bytes(v.as_bytes()).short(),
++    }
++}
++
++/// Digest of a whole environment (the `*` dependency).
++pub fn env_all_digest(env: &BTreeMap<String, String>) -> String {
++    let mut buf = Vec::new();
++    for (k, v) in env {
++        push_part(&mut buf, k);
++        push_part(&mut buf, v);
++    }
++    digest_bytes(&buf).short()
++}
++
++impl Store {
++    pub fn new() -> Store {
++        Store { version: STORE_VERSION, ..Default::default() }
++    }
++
++    pub fn path_in(dir: &Path) -> PathBuf {
++        dir.join(STORE_FILE)
++    }
++
++    /// Load the store of `dir`; an absent, unreadable or older-version store is empty.
++    pub fn load(dir: &Path) -> Store {
++        let mut s = fs::read(Self::path_in(dir))
++            .ok()
++            .and_then(|b| serde_json::from_slice::<Store>(&b).ok())
++            .filter(|s| s.version == STORE_VERSION)
++            .unwrap_or_else(Store::new);
++        s.reindex();
++        s
++    }
++
++    fn reindex(&mut self) {
++        self.file_ix =
++            self.files.iter().enumerate().map(|(i, f)| ((f.path.clone(), f.content.clone()), i as u32)).collect();
++        self.set_ix = self.sets.iter().enumerate().map(|(i, s)| (s.clone(), i as u32)).collect();
++    }
++
++    /// Index of the facts of `path` at `content`, if known.
++    pub fn file_index(&self, path: &str, content: &str) -> Option<u32> {
++        self.file_ix.get(&(path.to_string(), content.to_string())).copied()
++    }
++
++    /// Add (or find) the facts of one file version; returns its index.
++    pub fn add_file(&mut self, f: CodeFile) -> u32 {
++        let k = (f.path.clone(), f.content.clone());
++        if let Some(&i) = self.file_ix.get(&k) {
++            return i;
++        }
++        let i = self.files.len() as u32;
++        self.files.push(f);
++        self.file_ix.insert(k, i);
++        i
++    }
++
++    fn intern(&mut self, mut set: Vec<u32>) -> u32 {
++        set.sort_unstable();
++        set.dedup();
++        if let Some(&i) = self.set_ix.get(&set) {
++            return i;
++        }
++        let i = self.sets.len() as u32;
++        self.sets.push(set.clone());
++        self.set_ix.insert(set, i);
++        i
++    }
++
++    pub fn set(&self, id: u32) -> &[u32] {
++        self.sets.get(id as usize).map(|v| v.as_slice()).unwrap_or(&[])
++    }
++
++    /// Record (replace) the entry of `nodeid`; returns its key.
++    pub fn record(&mut self, nodeid: &str, mut o: Observed) -> String {
++        o.env.sort();
++        o.env.dedup();
++        o.data.sort();
++        o.data.dedup();
++        o.units.sort_unstable();
++        o.units.dedup();
++        let content = self.intern(o.content);
++        let skeleton = self.intern(o.skeleton);
++        let hooks = self.intern(o.hooks);
++        let mut e = Entry {
++            outcome: o.outcome,
++            report: o.report,
++            fingerprint: o.fingerprint,
++            duration: o.duration,
++            run: o.run,
++            key: String::new(),
++            config: o.config,
++            runtime: o.runtime,
++            epoch: o.epoch,
++            env: o.env,
++            data: o.data,
++            content,
++            skeleton,
++            hooks,
++            units: o.units.into_iter().flat_map(|(f, u)| [f, u]).collect(),
++        };
++        e.key = self.key_of(nodeid, &e);
++        let k = e.key.clone();
++        self.tests.insert(nodeid.to_string(), e);
++        k
++    }
++
++    pub fn remove(&mut self, nodeid: &str) -> bool {
++        self.tests.remove(nodeid).is_some()
++    }
++
++    /// The receipt digest of an entry: every recorded input at the level it is
++    /// compared (skeleton, unit and hook digests, not raw file bytes, so a
++    /// reformatted but equivalent file keeps the key).
++    pub fn key_of(&self, nodeid: &str, e: &Entry) -> String {
++        let mut b = Vec::new();
++        push_part(&mut b, "detpy-proof-1");
++        push_part(&mut b, nodeid);
++        push_part(&mut b, &e.config);
++        push_part(&mut b, &e.runtime);
++        push_part(&mut b, &e.epoch.map(|x| x.to_string()).unwrap_or_default());
++        for (k, v) in &e.env {
++            push_part(&mut b, k);
++            push_part(&mut b, v);
++        }
++        push_part(&mut b, "|data");
++        for (k, v) in &e.data {
++            push_part(&mut b, k);
++            push_part(&mut b, v);
++        }
++        let file = |i: u32| self.files.get(i as usize);
++        for (tag, id) in [("|content", e.content), ("|skeleton", e.skeleton), ("|hooks", e.hooks)] {
++            push_part(&mut b, tag);
++            let mut parts: Vec<(&str, &str)> = self
++                .set(id)
++                .iter()
++                .filter_map(|&i| file(i))
++                .map(|f| {
++                    (
++                        f.path.as_str(),
++                        match tag {
++                            "|content" => f.content.as_str(),
++                            "|skeleton" => f.skeleton.as_str(),
++                            _ => f.hooks.as_str(),
++                        },
++                    )
++                })
++                .collect();
++            parts.sort();
++            for (p, d) in parts {
++                push_part(&mut b, p);
++                push_part(&mut b, d);
++            }
++        }
++        push_part(&mut b, "|units");
++        let mut units: Vec<(&str, &str, &str)> = e
++            .units
++            .chunks(2)
++            .filter_map(|c| {
++                let f = file(c[0])?;
++                let u = f.units.get(c[1] as usize)?;
++                Some((f.path.as_str(), u.q.as_str(), u.d.as_str()))
++            })
++            .collect();
++        units.sort();
++        for (p, q, d) in units {
++            push_part(&mut b, p);
++            push_part(&mut b, q);
++            push_part(&mut b, d);
++        }
++        digest_bytes(&b).short()
++    }
++
++    /// Drop facts and sets no entry refers to; remap indices.
++    pub fn compact(&mut self) {
++        let mut used_sets = vec![false; self.sets.len()];
++        let mut used_files = vec![false; self.files.len()];
++        for e in self.tests.values() {
++            for id in [e.content, e.skeleton, e.hooks] {
++                if let Some(u) = used_sets.get_mut(id as usize) {
++                    *u = true;
++                }
++            }
++            for c in e.units.chunks(2) {
++                if let Some(u) = used_files.get_mut(c[0] as usize) {
++                    *u = true;
++                }
++            }
++        }
++        for (i, s) in self.sets.iter().enumerate() {
++            if used_sets[i] {
++                for &f in s {
++                    if let Some(u) = used_files.get_mut(f as usize) {
++                        *u = true;
++                    }
++                }
++            }
++        }
++        let mut fmap = vec![u32::MAX; self.files.len()];
++        let mut files = Vec::new();
++        for (i, f) in self.files.drain(..).enumerate() {
++            if used_files[i] {
++                fmap[i] = files.len() as u32;
++                files.push(f);
++            }
++        }
++        let mut smap = vec![u32::MAX; self.sets.len()];
++        let mut sets = Vec::new();
++        for (i, s) in self.sets.drain(..).enumerate() {
++            if used_sets[i] {
++                smap[i] = sets.len() as u32;
++                sets.push(s.into_iter().map(|f| fmap[f as usize]).collect());
++            }
++        }
++        for e in self.tests.values_mut() {
++            e.content = smap[e.content as usize];
++            e.skeleton = smap[e.skeleton as usize];
++            e.hooks = smap[e.hooks as usize];
++            for c in e.units.chunks_mut(2) {
++                c[0] = fmap[c[0] as usize];
++            }
++        }
++        self.files = files;
++        self.sets = sets;
++        self.reindex();
++    }
++
++    /// Compact and write atomically to `dir`.
++    pub fn save(&mut self, dir: &Path) -> io::Result<()> {
++        self.compact();
++        fs::create_dir_all(dir)?;
++        let path = Self::path_in(dir);
++        let tmp = path.with_extension(format!("tmp{}", std::process::id()));
++        fs::write(&tmp, serde_json::to_vec(self).map_err(io::Error::other)?)?;
++        fs::rename(tmp, path)
++    }
++}
++
++/// The state of the current session that recorded inputs are compared with.
++#[derive(Clone, Debug, Default)]
++pub struct Current {
++    pub root: PathBuf,
++    pub config: String,
++    pub runtime: String,
++    pub epoch: i64,
++    pub env: BTreeMap<String, String>,
++}
++
++/// Why a test cannot reuse its result.
++#[derive(Clone, Debug, PartialEq, Eq)]
++pub struct Miss {
++    pub kind: &'static str,
++    pub detail: String,
++}
++
++/// What was checked for a reused result.
++#[derive(Clone, Debug, PartialEq, Default, Serialize)]
++pub struct Receipt {
++    pub key: String,
++    pub run: String,
++    pub outcome: String,
++    pub fingerprint: String,
++    pub duration: f64,
++    pub config: String,
++    pub runtime: String,
++    pub epoch: Option<i64>,
++    pub n_units: usize,
++    pub n_skeleton: usize,
++    pub n_hooks: usize,
++    pub n_content: usize,
++    pub n_data: usize,
++    pub n_env: usize,
++    /// Code files whose bytes changed but whose units and skeleton used by the test did not.
++    pub n_changed_files_proven: usize,
++}
++
++#[derive(Default)]
++pub struct Checker {
++    pub cur: Current,
++    content_now: HashMap<String, Option<String>>,
++    data_now: HashMap<(String, char), String>,
++    /// Facts of the current version of code files whose content changed.
++    pub fresh: HashMap<String, CodeFile>,
++}
++
++/// Outcomes whose results may be reused: never a failure.
++pub fn reusable_outcome(outcome: &str) -> bool {
++    matches!(outcome, "passed" | "skipped" | "xfailed")
++}
++
++impl Checker {
++    pub fn new(cur: Current) -> Self {
++        Checker { cur, content_now: HashMap::new(), data_now: HashMap::new(), fresh: HashMap::new() }
++    }
++
++    /// Current content digest of a code file (memoised for the session).
++    pub fn content(&mut self, rel: &str) -> Option<String> {
++        if let Some(d) = self.content_now.get(rel) {
++            return d.clone();
++        }
++        let d = file_digest(&self.cur.root.join(rel));
++        self.content_now.insert(rel.to_string(), d.clone());
++        d
++    }
++
++    /// Paths of known code files whose content changed and still exist: the
++    /// producer must supply their current facts with [`Checker::set_fresh`].
++    pub fn changed_code_files(&mut self, store: &Store) -> Vec<(String, String)> {
++        let mut seen = std::collections::BTreeMap::new();
++        let mut paths: Vec<String> = store.files.iter().map(|f| f.path.clone()).collect();
++        paths.sort();
++        paths.dedup();
++        for p in paths {
++            if let Some(d) = self.content(&p) {
++                let known = store.file_index(&p, &d).is_some();
++                if !known {
++                    seen.insert(p, d);
++                }
++            }
++        }
++        seen.into_iter().collect()
++    }
++
++    pub fn set_fresh(&mut self, f: CodeFile) {
++        self.fresh.insert(f.path.clone(), f);
++    }
++
++    /// Facts of the current version of `rel`: from the store when the content
++    /// is known, else from [`Checker::fresh`].
++    fn now_facts<'s>(&'s mut self, store: &'s Store, rel: &str) -> Option<&'s CodeFile> {
++        let d = self.content(rel)?;
++        if let Some(i) = store.file_index(rel, &d) {
++            return store.files.get(i as usize);
++        }
++        self.fresh.get(rel).filter(|f| f.content == d)
++    }
++
++    fn data(&mut self, path: &str, recorded: &str) -> String {
++        let kind = recorded.chars().next().unwrap_or('?');
++        let kind = if recorded == "missing" { 'f' } else { kind };
++        let k = (path.to_string(), kind);
++        if let Some(v) = self.data_now.get(&k) {
++            return v.clone();
++        }
++        let v = data_now(&self.cur.root.join(path), recorded);
++        self.data_now.insert(k, v.clone());
++        v
++    }
++
++    /// Reuse decision for `nodeid`.
++    pub fn check(&mut self, store: &Store, nodeid: &str) -> Result<Receipt, Miss> {
++        let Some(e) = store.tests.get(nodeid) else {
++            return Err(Miss { kind: "new", detail: "no recorded result".into() });
++        };
++        if !reusable_outcome(&e.outcome) {
++            return Err(Miss { kind: "failed-before", detail: format!("recorded outcome {}", e.outcome) });
++        }
++        if e.config != self.cur.config {
++            return Err(Miss { kind: "config", detail: "pytest/detpy configuration or plugins changed".into() });
++        }
++        if e.runtime != self.cur.runtime {
++            return Err(Miss { kind: "runtime", detail: "interpreter, platform or installed packages changed".into() });
++        }
++        if let Some(ep) = e.epoch {
++            if ep != self.cur.epoch {
++                return Err(Miss { kind: "clock", detail: "the test read the clock and the epoch changed".into() });
++            }
++        }
++        for (k, v) in &e.env {
++            let now = if k == "*" {
++                env_all_digest(&self.cur.env)
++            } else {
++                env_value_digest(self.cur.env.get(k).map(|s| s.as_str()))
++            };
++            if &now != v {
++                return Err(Miss { kind: "env", detail: format!("environment variable {k}") });
++            }
++        }
++        for (p, dep) in &e.data {
++            if &self.data(p, dep) != dep {
++                return Err(Miss { kind: "data", detail: format!("{p} ({})", dep.split(':').next().unwrap_or("")) });
++            }
++        }
++        let mut proven = std::collections::BTreeSet::new();
++        // whole-content dependencies
++        for &i in store.set(e.content) {
++            let Some(f) = store.files.get(i as usize) else { continue };
++            if self.content(&f.path).as_deref() != Some(f.content.as_str()) {
++                return Err(Miss { kind: "code", detail: format!("{} (content)", f.path) });
++            }
++        }
++        for (tag, id) in [("skeleton", e.skeleton), ("hooks", e.hooks)] {
++            for &i in store.set(id) {
++                let Some(f) = store.files.get(i as usize) else { continue };
++                let now = self.content(&f.path);
++                if now.as_deref() == Some(f.content.as_str()) {
++                    continue;
++                }
++                let path = f.path.clone();
++                let ok = match self.now_facts(store, &path) {
++                    None => false,
++                    Some(n) => {
++                        if tag == "skeleton" {
++                            n.skeleton == f.skeleton
++                        } else {
++                            n.hooks == f.hooks
++                        }
++                    }
++                };
++                if !ok {
++                    let what = if tag == "skeleton" { "module level" } else { "pytest hooks" };
++                    return Err(Miss { kind: "code", detail: format!("{path} ({what})") });
++                }
++                proven.insert(path);
++            }
++        }
++        for c in e.units.chunks(2) {
++            let Some(f) = store.files.get(c[0] as usize) else { continue };
++            let Some(u) = f.units.get(c[1] as usize) else { continue };
++            if self.content(&f.path).as_deref() == Some(f.content.as_str()) {
++                continue;
++            }
++            let path = f.path.clone();
++            let ok = self
++                .now_facts(store, &path)
++                .map(|n| n.units.iter().any(|x| x.q == u.q && x.d == u.d))
++                .unwrap_or(false);
++            if !ok {
++                return Err(Miss { kind: "code", detail: format!("{path}::{}", u.q) });
++            }
++            proven.insert(path);
++        }
++        Ok(Receipt {
++            key: store.key_of(nodeid, e),
++            run: e.run.clone(),
++            outcome: e.outcome.clone(),
++            fingerprint: e.fingerprint.clone(),
++            duration: e.duration,
++            config: e.config.clone(),
++            runtime: e.runtime.clone(),
++            epoch: e.epoch,
++            n_units: e.units.len() / 2,
++            n_skeleton: store.set(e.skeleton).len(),
++            n_hooks: store.set(e.hooks).len(),
++            n_content: store.set(e.content).len(),
++            n_data: e.data.len(),
++            n_env: e.env.len(),
++            n_changed_files_proven: proven.len(),
++        })
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    fn unit(q: &str, d: &str) -> Unit {
++        Unit { q: q.into(), a: 1, b: 2, d: d.into() }
++    }
++
++    fn setup() -> (tempfile::TempDir, Store, Current) {
++        let dir = tempfile::tempdir().unwrap();
++        let root = dir.path().to_path_buf();
++        fs::write(root.join("m.py"), "def f():\n    return 1\n").unwrap();
++        fs::write(root.join("data.txt"), "x").unwrap();
++        let mut s = Store::new();
++        let content = file_digest(&root.join("m.py")).unwrap();
++        let fi = s.add_file(CodeFile {
++            path: "m.py".into(),
++            content,
++            skeleton: "S1".into(),
++            hooks: "H1".into(),
++            units: vec![unit("f", "F1"), unit("g", "G1")],
++            imports: vec![],
++        });
++        let mut env = BTreeMap::new();
++        env.insert("HOME".to_string(), "/root".to_string());
++        let cur = Current { root: root.clone(), config: "C".into(), runtime: "R".into(), epoch: 5, env };
++        s.record(
++            "t::a",
++            Observed {
++                outcome: "passed".into(),
++                config: "C".into(),
++                runtime: "R".into(),
++                env: vec![("HOME".into(), env_value_digest(Some("/root")))],
++                data: vec![("data.txt".into(), format!("f:{}", file_digest(&root.join("data.txt")).unwrap()))],
++                skeleton: vec![fi],
++                units: vec![(fi, 0)],
++                ..Default::default()
++            },
++        );
++        (dir, s, cur)
++    }
++
++    #[test]
++    fn hit_when_nothing_changed_and_key_is_stable() {
++        let (_d, s, cur) = setup();
++        let mut c = Checker::new(cur);
++        let r = c.check(&s, "t::a").unwrap();
++        assert_eq!(r.key, s.tests["t::a"].key);
++        assert_eq!((r.n_units, r.n_skeleton, r.n_data, r.n_env), (1, 1, 1, 1));
++        assert_eq!(c.check(&s, "t::new").unwrap_err().kind, "new");
++    }
++
++    #[test]
++    fn changed_unit_used_by_the_test_misses_other_unit_hits() {
++        let (d, s, cur) = setup();
++        fs::write(d.path().join("m.py"), "def f():\n    return 2\n").unwrap();
++        let mut c = Checker::new(cur.clone());
++        let changed = c.changed_code_files(&s);
++        assert_eq!(changed.len(), 1);
++        let content = changed[0].1.clone();
++        // f changed
++        c.set_fresh(CodeFile {
++            path: "m.py".into(),
++            content: content.clone(),
++            skeleton: "S1".into(),
++            hooks: "H1".into(),
++            units: vec![unit("f", "F2"), unit("g", "G1")],
++            imports: vec![],
++        });
++        let m = c.check(&s, "t::a").unwrap_err();
++        assert_eq!((m.kind, m.detail.as_str()), ("code", "m.py::f"));
++        // only g changed: proven unchanged for the test
++        let mut c = Checker::new(cur.clone());
++        c.set_fresh(CodeFile {
++            path: "m.py".into(),
++            content: content.clone(),
++            skeleton: "S1".into(),
++            hooks: "H1".into(),
++            units: vec![unit("f", "F1"), unit("g", "G2")],
++            imports: vec![],
++        });
++        let r = c.check(&s, "t::a").unwrap();
++        assert_eq!(r.n_changed_files_proven, 1);
++        assert_eq!(r.key, s.tests["t::a"].key);
++        // module level changed
++        let mut c = Checker::new(cur);
++        c.set_fresh(CodeFile {
++            path: "m.py".into(),
++            content,
++            skeleton: "S2".into(),
++            hooks: "H1".into(),
++            units: vec![unit("f", "F1"), unit("g", "G1")],
++            imports: vec![],
++        });
++        assert_eq!(c.check(&s, "t::a").unwrap_err().detail, "m.py (module level)");
++    }
++
++    #[test]
++    fn data_env_runtime_config_clock() {
++        let (d, s, cur) = setup();
++        fs::write(d.path().join("data.txt"), "y").unwrap();
++        assert_eq!(Checker::new(cur.clone()).check(&s, "t::a").unwrap_err().kind, "data");
++        fs::write(d.path().join("data.txt"), "x").unwrap();
++        let mut c2 = cur.clone();
++        c2.env.insert("HOME".into(), "/home/u".into());
++        assert_eq!(Checker::new(c2).check(&s, "t::a").unwrap_err().kind, "env");
++        let mut c3 = cur.clone();
++        c3.env.remove("HOME");
++        assert_eq!(Checker::new(c3).check(&s, "t::a").unwrap_err().kind, "env");
++        let mut c4 = cur.clone();
++        c4.runtime = "R2".into();
++        assert_eq!(Checker::new(c4).check(&s, "t::a").unwrap_err().kind, "runtime");
++        let mut c5 = cur.clone();
++        c5.config = "C2".into();
++        assert_eq!(Checker::new(c5).check(&s, "t::a").unwrap_err().kind, "config");
++        // the epoch matters only to tests that read the clock
++        let mut c6 = cur.clone();
++        c6.epoch = 6;
++        assert!(Checker::new(c6.clone()).check(&s, "t::a").is_ok());
++        let mut s2 = s.clone();
++        let mut e = s2.tests["t::a"].clone();
++        e.epoch = Some(5);
++        s2.tests.insert("t::a".into(), e);
++        assert_eq!(Checker::new(c6).check(&s2, "t::a").unwrap_err().kind, "clock");
++        assert!(Checker::new(cur).check(&s2, "t::a").is_ok());
++    }
++
++    #[test]
++    fn failure_is_never_reused() {
++        let (_d, mut s, cur) = setup();
++        s.record("t::f", Observed { outcome: "failed".into(), config: "C".into(), runtime: "R".into(), ..Default::default() });
++        assert_eq!(Checker::new(cur).check(&s, "t::f").unwrap_err().kind, "failed-before");
++    }
++
++    #[test]
++    fn missing_file_and_listing_dependencies() {
++        let (d, mut s, cur) = setup();
++        let root = d.path();
++        fs::create_dir(root.join("dir")).unwrap();
++        fs::write(root.join("dir/a"), "").unwrap();
++        s.record(
++            "t::b",
++            Observed {
++                outcome: "passed".into(),
++                config: "C".into(),
++                runtime: "R".into(),
++                data: vec![
++                    ("nope.txt".into(), "missing".into()),
++                    ("dir".into(), format!("d:{}", listing_digest(&root.join("dir")).unwrap())),
++                ],
++                ..Default::default()
++            },
++        );
++        assert!(Checker::new(cur.clone()).check(&s, "t::b").is_ok());
++        fs::write(root.join("dir/b"), "").unwrap();
++        assert_eq!(Checker::new(cur.clone()).check(&s, "t::b").unwrap_err().detail, "dir (d)");
++        fs::remove_file(root.join("dir/b")).unwrap();
++        fs::write(root.join("nope.txt"), "").unwrap();
++        assert_eq!(Checker::new(cur).check(&s, "t::b").unwrap_err().kind, "data");
++    }
++
++    #[test]
++    fn listing_digest_matches_python_convention() {
++        let d = tempfile::tempdir().unwrap();
++        fs::write(d.path().join("b"), "").unwrap();
++        fs::write(d.path().join("a"), "").unwrap();
++        assert_eq!(listing_digest(d.path()).unwrap(), digest_bytes(b"a\0b").short());
++    }
++
++    #[test]
++    fn save_load_compact_roundtrip() {
++        let (d, mut s, cur) = setup();
++        s.add_file(CodeFile {
++            path: "unused.py".into(),
++            content: "x".into(),
++            skeleton: "x".into(),
++            hooks: "x".into(),
++            units: vec![],
++            imports: vec![],
++        });
++        let key = s.tests["t::a"].key.clone();
++        let dir = d.path().join("cache");
++        s.save(&dir).unwrap();
++        let l = Store::load(&dir);
++        assert_eq!(l.files.len(), 1);
++        assert_eq!(l.key_of("t::a", &l.tests["t::a"]), key);
++        assert_eq!(Checker::new(cur).check(&l, "t::a").unwrap().key, key);
++    }
++}
+diff --git a/crates/detpy-py/src/lib.rs b/crates/detpy-py/src/lib.rs
+index 7d8e878..1d13e51 100644
+--- a/crates/detpy-py/src/lib.rs
++++ b/crates/detpy-py/src/lib.rs
+@@ -13,6 +13,9 @@ use pyo3::types::PyBytes;
+ use std::path::PathBuf;
+ use std::sync::{Mutex, MutexGuard};
+ 
++mod proofcache;
++mod sysmon;
++
+ fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
+     // A panic while holding the lock must not make every later call fail.
+     m.lock().unwrap_or_else(|e| e.into_inner())
+@@ -242,5 +245,12 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
+     m.add_function(wrap_pyfunction!(order_digest, m)?)?;
+     m.add_function(wrap_pyfunction!(digest, m)?)?;
+     m.add_function(wrap_pyfunction!(backends, m)?)?;
++    m.add_class::<sysmon::LineRecorder>()?;
++    m.add_function(wrap_pyfunction!(sysmon::set_audit_hook, m)?)?;
++    m.add_class::<proofcache::ProofCache>()?;
++    m.add_function(wrap_pyfunction!(proofcache::file_digest, m)?)?;
++    m.add_function(wrap_pyfunction!(proofcache::listing_digest, m)?)?;
++    m.add_function(wrap_pyfunction!(proofcache::env_value_digest, m)?)?;
++    m.add_function(wrap_pyfunction!(proofcache::env_all_digest, m)?)?;
+     Ok(())
+ }
+diff --git a/crates/detpy-py/src/proofcache.rs b/crates/detpy-py/src/proofcache.rs
+new file mode 100644
+index 0000000..7eaab03
+--- /dev/null
++++ b/crates/detpy-py/src/proofcache.rs
+@@ -0,0 +1,186 @@
++//! Python binding of the cache with proof (`detpy._core.ProofCache`).
++
++use detpy_core::proof::{self, Checker, CodeFile, Current, Observed, Store, Unit};
++use pyo3::exceptions::{PyKeyError, PyValueError};
++use pyo3::prelude::*;
++use std::collections::BTreeMap;
++use std::path::PathBuf;
++use std::sync::{Mutex, MutexGuard};
++
++struct Inner {
++    store: Store,
++    checker: Checker,
++}
++
++/// The on-disk store of one cache directory plus the reuse checker of the
++/// current session.
++#[pyclass(module = "detpy._core", frozen)]
++pub struct ProofCache {
++    dir: PathBuf,
++    inner: Mutex<Inner>,
++}
++
++fn lock(m: &Mutex<Inner>) -> MutexGuard<'_, Inner> {
++    m.lock().unwrap_or_else(|e| e.into_inner())
++}
++
++type UnitTuple = (String, u32, u32, String);
++type FactsTuple = (String, String, String, String, Vec<UnitTuple>, Vec<String>);
++
++fn facts_tuple(f: &CodeFile) -> FactsTuple {
++    (
++        f.path.clone(),
++        f.content.clone(),
++        f.skeleton.clone(),
++        f.hooks.clone(),
++        f.units.iter().map(|u| (u.q.clone(), u.a, u.b, u.d.clone())).collect(),
++        f.imports.clone(),
++    )
++}
++
++fn code_file(path: String, content: String, skeleton: String, hooks: String, units: Vec<UnitTuple>, imports: Vec<String>) -> CodeFile {
++    CodeFile {
++        path,
++        content,
++        skeleton,
++        hooks,
++        units: units.into_iter().map(|(q, a, b, d)| Unit { q, a, b, d }).collect(),
++        imports,
++    }
++}
++
++#[pymethods]
++impl ProofCache {
++    /// Load the store of `dir`; the checker compares with the session state
++    /// given to `begin` (until then nothing is reusable).
++    #[new]
++    fn new(dir: PathBuf, root: PathBuf) -> Self {
++        let store = Store::load(&dir);
++        let checker = Checker::new(Current { root, ..Default::default() });
++        ProofCache { dir, inner: Mutex::new(Inner { store, checker }) }
++    }
++
++    /// Set the current session state: configuration and runtime digests, clock
++    /// epoch, environment at session start.
++    fn begin(&self, config: String, runtime: String, epoch: i64, env: BTreeMap<String, String>) {
++        let mut g = lock(&self.inner);
++        let root = g.checker.cur.root.clone();
++        g.checker = Checker::new(Current { root, config, runtime, epoch, env });
++    }
++
++    /// Known code files whose content changed: `[(path, current content digest)]`.
++    fn changed_code_files(&self) -> Vec<(String, String)> {
++        let mut g = lock(&self.inner);
++        let Inner { store, checker } = &mut *g;
++        checker.changed_code_files(store)
++    }
++
++    /// Facts of the current version of a changed code file.
++    fn set_fresh(&self, path: String, content: String, skeleton: String, hooks: String, units: Vec<UnitTuple>, imports: Vec<String>) {
++        lock(&self.inner).checker.set_fresh(code_file(path, content, skeleton, hooks, units, imports));
++    }
++
++    /// `(True, receipt_json)` when the recorded result of `nodeid` may be
++    /// reused, else `(False, "kind: detail")`.
++    fn check(&self, nodeid: &str) -> PyResult<(bool, String)> {
++        let mut g = lock(&self.inner);
++        let Inner { store, checker } = &mut *g;
++        Ok(match checker.check(store, nodeid) {
++            Ok(r) => (true, serde_json::to_string(&r).map_err(|e| PyValueError::new_err(e.to_string()))?),
++            Err(m) => (false, format!("{}: {}", m.kind, m.detail)),
++        })
++    }
++
++    /// Recorded entry of `nodeid` as JSON.
++    fn entry(&self, nodeid: &str) -> PyResult<String> {
++        let g = lock(&self.inner);
++        let e = g.store.tests.get(nodeid).ok_or_else(|| PyKeyError::new_err(nodeid.to_string()))?;
++        serde_json::to_string(e).map_err(|e| PyValueError::new_err(e.to_string()))
++    }
++
++    /// Index of known facts for (`path`, `content`), if any.
++    fn file_index(&self, path: &str, content: &str) -> Option<u32> {
++        lock(&self.inner).store.file_index(path, content)
++    }
++
++    fn file_facts(&self, index: u32) -> PyResult<FactsTuple> {
++        let g = lock(&self.inner);
++        g.store.files.get(index as usize).map(facts_tuple).ok_or_else(|| PyKeyError::new_err(index))
++    }
++
++    /// Add the facts of one file version; returns its index.
++    fn add_file(&self, path: String, content: String, skeleton: String, hooks: String, units: Vec<UnitTuple>, imports: Vec<String>) -> u32 {
++        lock(&self.inner).store.add_file(code_file(path, content, skeleton, hooks, units, imports))
++    }
++
++    /// Record the inputs and result of a test that ran; returns its key.
++    #[allow(clippy::too_many_arguments)]
++    #[pyo3(signature = (nodeid, outcome, report_json, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units))]
++    fn record(
++        &self,
++        nodeid: &str,
++        outcome: String,
++        report_json: &str,
++        fingerprint: String,
++        duration: f64,
++        run: String,
++        config: String,
++        runtime: String,
++        epoch: Option<i64>,
++        env: Vec<(String, String)>,
++        data: Vec<(String, String)>,
++        content: Vec<u32>,
++        skeleton: Vec<u32>,
++        hooks: Vec<u32>,
++        units: Vec<(u32, u32)>,
++    ) -> PyResult<String> {
++        let report = serde_json::from_str(report_json).map_err(|e| PyValueError::new_err(format!("report: {e}")))?;
++        Ok(lock(&self.inner).store.record(
++            nodeid,
++            Observed { outcome, report, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units },
++        ))
++    }
++
++    fn remove(&self, nodeid: &str) -> bool {
++        lock(&self.inner).store.remove(nodeid)
++    }
++
++    fn __len__(&self) -> usize {
++        lock(&self.inner).store.tests.len()
++    }
++
++    #[getter]
++    fn n_files(&self) -> usize {
++        lock(&self.inner).store.files.len()
++    }
++
++    /// Compact and write the store atomically.
++    fn save(&self) -> PyResult<()> {
++        lock(&self.inner).store.save(&self.dir)?;
++        Ok(())
++    }
++}
++
++/// Digest of a file's bytes (None if unreadable).
++#[pyfunction]
++pub fn file_digest(path: PathBuf) -> Option<String> {
++    proof::file_digest(&path)
++}
++
++/// Digest of a directory listing (sorted names joined by NUL), None if not a directory.
++#[pyfunction]
++pub fn listing_digest(path: PathBuf) -> Option<String> {
++    proof::listing_digest(&path)
++}
++
++/// Digest of an environment variable value ("-" for None) and of a whole environment.
++#[pyfunction]
++#[pyo3(signature = (value))]
++pub fn env_value_digest(value: Option<&str>) -> String {
++    proof::env_value_digest(value)
++}
++
++#[pyfunction]
++pub fn env_all_digest(env: BTreeMap<String, String>) -> String {
++    proof::env_all_digest(&env)
++}
+diff --git a/crates/detpy-py/src/sysmon.rs b/crates/detpy-py/src/sysmon.rs
+new file mode 100644
+index 0000000..228112c
+--- /dev/null
++++ b/crates/detpy-py/src/sysmon.rs
+@@ -0,0 +1,299 @@
++//! Per-context line recorder for `sys.monitoring` (Python 3.12+), the
++//! dependency capture of the cache with proof.
++//!
++//! Port of the cache-skip study's C recorder (`harness/cache_skip/_sysmon_rec.c`)
++//! with one addition: *import time*. Module code objects are armed with
++//! `PY_START` and `PY_RETURN`; while a module body is running (an import, an
++//! `exec` of module code) every recorded location is flagged, because what runs
++//! there builds module state that every later reader depends on, whichever test
++//! happened to trigger the import.
++//!
++//! Strategy (MEASURED in the study, +10% median overhead on 3 libraries): the
++//! first hit of a location in the current context appends one value
++//! (`import flag << 63 | file id << 24 | line`) to a flat buffer; the next `hot`
++//! hits only count; past that the callback returns `sys.monitoring.DISABLE` and
++//! remembers the code object, which the Python side re-arms at the next context
++//! switch.
++
++use pyo3::exceptions::PyTypeError;
++use pyo3::ffi;
++use pyo3::prelude::*;
++use pyo3::types::{PyBytes, PyList, PyTuple};
++use std::collections::HashMap;
++use std::ffi::{c_char, c_int, c_void, CStr};
++use std::sync::atomic::{AtomicBool, AtomicPtr, Ordering};
++use std::sync::{Mutex, MutexGuard};
++
++pub const SHIFT: u32 = 24;
++pub const IMPORT_FLAG: u64 = 1 << 63;
++const LINE_MASK: u64 = (1 << SHIFT) - 1;
++
++struct Slot {
++    fid: u64,
++    entry: i64,
++    module: bool,
++    _code: Py<PyAny>,
++}
++
++#[derive(Default)]
++struct Inner {
++    codes: HashMap<usize, Slot>,
++    seen: HashMap<u64, u32>,
++    buf: Vec<u64>,
++    hot_codes: Vec<Py<PyAny>>,
++    hot_ids: HashMap<usize, ()>,
++    import_depth: u32,
++}
++
++#[pyclass(module = "detpy._core", frozen)]
++pub struct LineRecorder {
++    inner: Mutex<Inner>,
++    disable: Py<PyAny>,
++    hot: u32,
++}
++
++fn lock(m: &Mutex<Inner>) -> MutexGuard<'_, Inner> {
++    m.lock().unwrap_or_else(|e| e.into_inner())
++}
++
++impl LineRecorder {
++    fn hit(&self, py: Python<'_>, g: &mut Inner, k: u64, code: &Bound<'_, PyAny>) -> Py<PyAny> {
++        match g.seen.get_mut(&k) {
++            None => {
++                g.seen.insert(k, 0);
++                g.buf.push(k);
++                py.None()
++            }
++            Some(c) if *c < self.hot => {
++                *c += 1;
++                py.None()
++            }
++            Some(_) => {
++                let id = code.as_ptr() as usize;
++                if g.hot_ids.insert(id, ()).is_none() {
++                    g.hot_codes.push(code.clone().unbind());
++                }
++                self.disable.clone_ref(py)
++            }
++        }
++    }
++}
++
++#[pymethods]
++impl LineRecorder {
++    #[new]
++    #[pyo3(signature = (disable, hot = 16))]
++    fn new(disable: Py<PyAny>, hot: u32) -> Self {
++        LineRecorder { inner: Mutex::new(Inner::default()), disable, hot }
++    }
++
++    /// Register a code object: `fid` is the file id (not shifted), `entry` the
++    /// entry line `LINE` never reports (-1 if none), `module` for module bodies.
++    #[pyo3(signature = (code, fid, entry, module = false))]
++    fn add_code(&self, code: &Bound<'_, PyAny>, fid: u64, entry: i64, module: bool) {
++        let mut g = lock(&self.inner);
++        g.codes.insert(
++            code.as_ptr() as usize,
++            Slot { fid: fid << SHIFT, entry, module, _code: code.clone().unbind() },
++        );
++    }
++
++    /// `LINE` callback.
++    fn line(&self, py: Python<'_>, code: &Bound<'_, PyAny>, lineno: i64) -> Py<PyAny> {
++        let mut g = lock(&self.inner);
++        let Some(s) = g.codes.get(&(code.as_ptr() as usize)) else { return py.None() };
++        if lineno < 0 {
++            return py.None();
++        }
++        let flag = if g.import_depth > 0 { IMPORT_FLAG } else { 0 };
++        let k = flag | s.fid | (lineno as u64 & LINE_MASK);
++        self.hit(py, &mut g, k, code)
++    }
++
++    /// `PY_START` callback.
++    fn start(&self, py: Python<'_>, code: &Bound<'_, PyAny>, _offset: i64) -> Py<PyAny> {
++        let mut g = lock(&self.inner);
++        let Some(s) = g.codes.get(&(code.as_ptr() as usize)) else { return py.None() };
++        let (fid, entry, module) = (s.fid, s.entry, s.module);
++        if module {
++            g.import_depth += 1;
++        }
++        if entry < 0 {
++            return py.None();
++        }
++        let flag = if g.import_depth > 0 { IMPORT_FLAG } else { 0 };
++        let r = self.hit(py, &mut g, flag | fid | (entry as u64 & LINE_MASK), code);
++        if module {
++            py.None() // a module's start must keep firing: it drives the import depth
++        } else {
++            r
++        }
++    }
++
++    /// `PY_RETURN` callback (armed on module code objects only).
++    fn ret(&self, py: Python<'_>, code: &Bound<'_, PyAny>, _offset: i64, _value: &Bound<'_, PyAny>) -> Py<PyAny> {
++        let mut g = lock(&self.inner);
++        if g.codes.get(&(code.as_ptr() as usize)).map(|s| s.module).unwrap_or(false) {
++            g.import_depth = g.import_depth.saturating_sub(1);
++        }
++        py.None()
++    }
++
++    /// New context: forget the seen locations and the import depth (an import
++    /// that raised never returned); returns the code objects to re-arm.
++    fn switch<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyList>> {
++        let mut g = lock(&self.inner);
++        g.seen.clear();
++        g.import_depth = 0;
++        g.hot_ids.clear();
++        let codes: Vec<Py<PyAny>> = std::mem::take(&mut g.hot_codes);
++        PyList::new(py, codes)
++    }
++
++    #[getter]
++    fn import_depth(&self) -> u32 {
++        lock(&self.inner).import_depth
++    }
++
++    fn __len__(&self) -> usize {
++        lock(&self.inner).buf.len()
++    }
++
++    fn tobytes<'py>(&self, py: Python<'py>) -> Bound<'py, PyBytes> {
++        let g = lock(&self.inner);
++        let bytes: Vec<u8> = g.buf.iter().flat_map(|v| v.to_ne_bytes()).collect();
++        PyBytes::new(py, &bytes)
++    }
++
++    /// Fold the buffer into units per context.
++    ///
++    /// * `segs`: `[(context index, start position in the buffer)]` in order;
++    /// * `ranges`: per file id, the sorted `[(first line, last line)]` body
++    ///   ranges of the file's units (unit index = position).
++    ///
++    /// Returns `(per_context, imported)`: for every context index, the sorted
++    /// unique `(fid << 32 | unit)` values of its non-flagged locations and the
++    /// sorted unique file ids it executed at all; `imported` is the same pair
++    /// for the flagged (import-time) locations of every context.
++    #[allow(clippy::type_complexity)]
++    fn fold(
++        &self,
++        n_ctx: usize,
++        segs: Vec<(usize, usize)>,
++        ranges: Vec<Vec<(u32, u32)>>,
++    ) -> (Vec<(Vec<u64>, Vec<u64>)>, (Vec<u64>, Vec<u64>)) {
++        let g = lock(&self.inner);
++        let buf = &g.buf;
++        let mut per: Vec<(Vec<u64>, Vec<u64>)> = vec![(Vec::new(), Vec::new()); n_ctx];
++        let mut imp: (Vec<u64>, Vec<u64>) = (Vec::new(), Vec::new());
++        let unit_of = |fid: usize, line: u32| -> Option<u64> {
++            let r = ranges.get(fid)?;
++            // last range whose start <= line
++            let i = r.partition_point(|&(a, _)| a <= line);
++            if i == 0 {
++                return None;
++            }
++            let (a, b) = r[i - 1];
++            (a <= line && line <= b).then_some(((fid as u64) << 32) | (i as u64 - 1))
++        };
++        for (n, &(ctx, start)) in segs.iter().enumerate() {
++            let end = segs.get(n + 1).map(|s| s.1).unwrap_or(buf.len()).min(buf.len());
++            if ctx >= n_ctx || start >= end {
++                continue;
++            }
++            for &v in &buf[start..end] {
++                let flagged = v & IMPORT_FLAG != 0;
++                let v = v & !IMPORT_FLAG;
++                let fid = (v >> SHIFT) as usize;
++                let line = (v & LINE_MASK) as u32;
++                let tgt = if flagged { &mut imp } else { &mut per[ctx] };
++                tgt.1.push(fid as u64);
++                if let Some(u) = unit_of(fid, line) {
++                    tgt.0.push(u);
++                }
++            }
++        }
++        for p in per.iter_mut().chain(std::iter::once(&mut imp)) {
++            p.0.sort_unstable();
++            p.0.dedup();
++            p.1.sort_unstable();
++            p.1.dedup();
++        }
++        (per, imp)
++    }
++}
++
++// ---------------------------------------------------------------------------
++// Audit hook filtered in Rust: only the listed events reach the Python callable
++// (a Python audit hook is called for every event, e.g. the frequent
++// "builtins.id" and "object.__getattr__"). Audit hooks cannot be removed, so
++// one hook is installed per process and dispatches to the current filter,
++// which `set_audit_hook` replaces (None turns it off). Replaced filters are
++// leaked on purpose: another thread may still be reading one.
++
++static INSTALLED: AtomicBool = AtomicBool::new(false);
++static CURRENT: AtomicPtr<AuditFilter> = AtomicPtr::new(std::ptr::null_mut());
++
++struct AuditFilter {
++    callable: *mut ffi::PyObject,
++    names: Vec<Vec<u8>>,
++}
++
++extern "C" {
++    fn PySys_AddAuditHook(
++        hook: Option<unsafe extern "C" fn(*const c_char, *mut ffi::PyObject, *mut c_void) -> c_int>,
++        user_data: *mut c_void,
++    ) -> c_int;
++}
++
++unsafe extern "C" fn audit_hook(event: *const c_char, args: *mut ffi::PyObject, _data: *mut c_void) -> c_int {
++    let f = CURRENT.load(Ordering::Acquire);
++    if f.is_null() || event.is_null() {
++        return 0;
++    }
++    let f = &*f;
++    let ev = CStr::from_ptr(event).to_bytes();
++    if !f.names.iter().any(|n| n.as_slice() == ev) {
++        return 0;
++    }
++    let py_ev = ffi::PyUnicode_FromStringAndSize(event, ev.len() as ffi::Py_ssize_t);
++    if py_ev.is_null() {
++        return -1;
++    }
++    let r = ffi::PyObject_CallFunctionObjArgs(f.callable, py_ev, args, std::ptr::null_mut::<ffi::PyObject>());
++    ffi::Py_DECREF(py_ev);
++    if r.is_null() {
++        return -1;
++    }
++    ffi::Py_DECREF(r);
++    0
++}
++
++/// `set_audit_hook(callable, names)`: call `callable(event, args)` for the listed
++/// audit events only; `set_audit_hook(None, ())` stops calling it.
++#[pyfunction]
++pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>) -> PyResult<()> {
++    let new = if callable.is_none() {
++        std::ptr::null_mut()
++    } else {
++        if !callable.is_callable() {
++            return Err(PyTypeError::new_err("callable or None expected"));
++        }
++        let mut v = Vec::new();
++        for n in names.iter() {
++            let s: String = n.extract()?;
++            v.push(s.into_bytes());
++        }
++        Box::into_raw(Box::new(AuditFilter { callable: callable.clone().into_ptr(), names: v }))
++    };
++    CURRENT.store(new, Ordering::Release);
++    if !INSTALLED.swap(true, Ordering::AcqRel) {
++        let rc = unsafe { PySys_AddAuditHook(Some(audit_hook), std::ptr::null_mut()) };
++        if rc != 0 {
++            INSTALLED.store(false, Ordering::Release);
++            return Err(PyErr::take(callable.py())
++                .unwrap_or_else(|| PyTypeError::new_err("PySys_AddAuditHook failed")));
++        }
++    }
++    Ok(())
++}
+diff --git a/python/detpy/_codefacts.py b/python/detpy/_codefacts.py
+new file mode 100644
+index 0000000..c9029ab
+--- /dev/null
++++ b/python/detpy/_codefacts.py
+@@ -0,0 +1,135 @@
++"""Facts about one version of a source file, for the cache with proof.
++
++* **units**: one per outermost function (methods of classes included, nested
++  functions belong to their enclosing unit), with the line range of its body
++  and the digest of its syntax tree. A line a test executed inside a unit body
++  makes the unit a dependency of the test.
++* **skeleton**: digest of the module with every function body removed
++  (docstrings, signatures, defaults, decorators, class bodies, assignments,
++  imports kept). Module-level state is built from it at import time and can be
++  read by a test without executing a line of the module, so it is a dependency
++  of every test that had the module loaded (the "import-time guard" of the
++  cache-skip study).
++* **hooks**: digest of the pytest hook surface of a conftest (top-level
++  ``pytest_*`` functions and ``pytest_plugins``): hooks can act on every test.
++* **imports**: absolute names of the modules the file imports (any scope).
++
++Syntax trees are compared with :func:`ast.dump`, so comments and formatting do
++not count. A file that is not valid Python (a template compiled to code, ...)
++has no units and its skeleton is its content digest: any change counts.
++"""
++
++from __future__ import annotations
++
++import ast
++
++from . import _core
++
++_FUNCS = (ast.FunctionDef, ast.AsyncFunctionDef)
++
++
++def _digest(text: str) -> str:
++    return _core.digest(text.encode("utf-8", "surrogateescape"))
++
++
++def _is_doc(node) -> bool:
++    return isinstance(node, ast.Expr) and isinstance(getattr(node, "value", None), ast.Constant) \
++        and isinstance(node.value.value, str)
++
++
++class _Skeleton(ast.NodeTransformer):
++    def visit_FunctionDef(self, node):
++        self.generic_visit(node)  # decorators, defaults, annotations
++        node.body = [node.body[0]] if node.body and _is_doc(node.body[0]) else []
++        return node
++
++    visit_AsyncFunctionDef = visit_FunctionDef
++
++
++def _units(body, prefix: str, out: list, seen: dict) -> None:
++    for node in body:
++        if isinstance(node, _FUNCS):
++            q = prefix + node.name
++            n = seen.get(q, 0)
++            seen[q] = n + 1
++            if n:
++                q = f"{q}#{n}"
++            first = node.body[0]
++            start = first.lineno
++            out.append((q, start, node.end_lineno or start, _digest(ast.dump(node))))
++        elif isinstance(node, ast.ClassDef):
++            _units(node.body, prefix + node.name + ".", out, seen)
++        else:
++            # functions defined under if/try/with/for/while at module or class level
++            for field in ("body", "orelse", "finalbody", "handlers"):
++                sub = getattr(node, field, None)
++                if isinstance(sub, list) and sub:
++                    if field == "handlers":
++                        for h in sub:
++                            _units(h.body, prefix, out, seen)
++                    else:
++                        _units(sub, prefix, out, seen)
++            for case in getattr(node, "cases", ()) or ():
++                _units(case.body, prefix, out, seen)
++
++
++def _hooks(tree) -> str:
++    parts = []
++    for node in tree.body:
++        if isinstance(node, _FUNCS) and node.name.startswith("pytest_"):
++            parts.append(ast.dump(node))
++        elif isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
++            targets = node.targets if isinstance(node, ast.Assign) else [node.target]
++            if any(isinstance(t, ast.Name) and t.id == "pytest_plugins" for t in targets):
++                parts.append(ast.dump(node))
++    return _digest("\n".join(parts))
++
++
++def _imports(tree, modname: str | None, is_pkg: bool) -> list:
++    out = set()
++    pkg = (modname or "") if is_pkg else (modname or "").rpartition(".")[0]
++    for node in ast.walk(tree):
++        if isinstance(node, ast.Import):
++            for a in node.names:
++                out.add(a.name)
++        elif isinstance(node, ast.ImportFrom):
++            base = node.module or ""
++            if node.level:
++                parts = pkg.split(".") if pkg else []
++                if node.level - 1:
++                    parts = parts[: len(parts) - (node.level - 1)] if node.level - 1 <= len(parts) else []
++                base = ".".join([*parts, *([base] if base else [])])
++            if base:
++                out.add(base)
++            for a in node.names:
++                if a.name != "*":
++                    out.add(f"{base}.{a.name}" if base else a.name)
++    return sorted(out)
++
++
++def facts(text: str, content: str, modname: str | None = None, is_pkg: bool = False):
++    """``(skeleton, hooks, units, imports)`` of a source text whose bytes digest is ``content``."""
++    try:
++        tree = ast.parse(text)
++    except (SyntaxError, ValueError):
++        return content, content, [], []
++    units: list = []
++    _units(tree.body, "", units, {})
++    units.sort(key=lambda u: u[1])
++    hooks = _hooks(tree)
++    imports = _imports(tree, modname, is_pkg)
++    skeleton = _digest(ast.dump(_Skeleton().visit(tree)))
++    return skeleton, hooks, units, imports
++
++
++def read_facts(path: str, content: str, modname: str | None = None, is_pkg: bool = False):
++    try:
++        with open(path, "rb") as fh:
++            raw = fh.read()
++    except OSError:
++        return None
++    try:
++        text = raw.decode("utf-8")
++    except UnicodeDecodeError:
++        return content, content, [], []
++    return facts(text, content, modname, is_pkg)
+diff --git a/python/detpy/_state.py b/python/detpy/_state.py
+index f8e4b24..94cd45a 100644
+--- a/python/detpy/_state.py
++++ b/python/detpy/_state.py
+@@ -48,6 +48,14 @@ def reset_threads() -> None:
+     STATE.threads = {STATE.test_thread: 0}
+ 
+ 
++_event_listener = None  # set by the cache with proof: called with (source, value) for every user event
++
++
++def set_event_listener(fn) -> None:
++    global _event_listener
++    _event_listener = fn
++
++
+ def record(source: str, op: str, value: str, depth: int = 1) -> None:
+     """Record one event for the running test.
+ 
+@@ -57,11 +65,16 @@ def record(source: str, op: str, value: str, depth: int = 1) -> None:
+     if source != "time" and _on_other_event is not None:
+         _on_other_event()  # breaks the clock's run of consecutive reads
+     rec = STATE.recorder
+-    if rec is None or STATE.nodeid is None or getattr(_tls, "busy", False):
++    listener = _event_listener
++    if ((rec is None or STATE.nodeid is None) and listener is None) or getattr(_tls, "busy", False):
+         return
+     site = _sites.resolve(depth + 1)
+     if site is None:  # infrastructure (pytest, detpy) touched the source
+         return
++    if listener is not None:
++        listener(source, value)
++        if rec is None or STATE.nodeid is None:
++            return
+     tid = _get_ident()
+     threads = STATE.threads
+     t = threads.get(tid)
+diff --git a/python/detpy/plugin.py b/python/detpy/plugin.py
+index eda5583..c1f4f53 100644
+--- a/python/detpy/plugin.py
++++ b/python/detpy/plugin.py
+@@ -11,7 +11,7 @@ import warnings
+ 
+ import pytest
+ 
+-from . import __version__, _core, _sites, _state, clock, fsorder, network, reexec, seeds
++from . import __version__, _core, _sites, _state, clock, fsorder, network, proofcache, reexec, seeds
+ from ._patch import Patcher
+ 
+ CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net")
+@@ -61,6 +61,14 @@ def pytest_addoption(parser, pluginmanager):
+                 help="events stored verbatim per test (the fingerprint always covers all of them)")
+     g.addoption("--det-outcomes", default=None, metavar="PATH",
+                 help="write {nodeid: outcome} as JSON (works without --det; used by the harness)")
++    g.addoption("--det-cache", default=None, metavar="DIR",
++                help="cache with proof (needs --det, Python 3.12+): reuse a test's previous result from DIR only "
++                     "when every input it depended on (code executed, files read, environment variables read, "
++                     "runtime, configuration) is unchanged; failures are never reused; prints a receipt")
++    g.addoption("--det-cache-verify", type=float, default=0.0, metavar="FRACTION",
++                help="run this random fraction of the reusable tests anyway and compare with the cached result")
++    g.addoption("--det-cache-receipts", default=None, metavar="PATH",
++                help="where to write the per-test receipts (JSON lines; default DIR/receipts.jsonl)")
+ 
+ 
+ _BLOCKED_BY_REEXEC: list[str] | None = None
+@@ -238,6 +246,8 @@ def pytest_load_initial_conftests(early_config, parser, args):
+         warnings.warn("detpy: nested in-process pytest session: it runs under the outer --det session")
+         return
+     controls = _controls(ns)
++    if getattr(ns, "det_cache", None) and not proofcache.AVAILABLE:
++        raise pytest.UsageError("--det-cache needs Python 3.12+ (sys.monitoring)")
+     want_bytecode = "bytecode" in controls
+     if "hashseed" in controls:
+         need = reexec.plan(_hashseed(ns), not ns.det_keep_aslr, want_bytecode)
+@@ -269,6 +279,8 @@ def pytest_load_initial_conftests(early_config, parser, args):
+             args.append("--benchmark-max-time=0.000001")
+             S.adjustments.append("pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)")
+     _install(early_config, ns, controls)
++    if getattr(ns, "det_cache", None):
++        proofcache.start(early_config, ns)
+ 
+ 
+ def _install(config, ns, controls) -> None:
+@@ -320,6 +332,8 @@ def _owner(config) -> bool:
+ @pytest.hookimpl(trylast=True)
+ def pytest_configure(config):
+     out = config.getoption("det_outcomes", None)
++    if config.getoption("det_cache", None) and not config.getoption("det", False):
++        raise pytest.UsageError("--det-cache needs --det (the cache relies on Level 0 controls)")
+     if _owner(config):
+         config.pluginmanager.register(_DetSession(config, out), "detpy-session")
+         _configure_det(config)
+@@ -339,6 +353,8 @@ def _configure_det(config) -> None:
+         S.net_mode = network.install(_PATCHER, opt.det_record, cassette, opt.det_allow_host)
+     S.trace_path = opt.det_trace or os.path.join(root, ".detpy", "trace.jsonl")
+     _state.STATE.recorder = _core.Recorder(max_events=opt.det_max_events)
++    if opt.det_cache:
++        proofcache.install(config)
+     factory = getattr(config, "_tmp_path_factory", None)
+     if factory is not None:
+         def basetemp():
+@@ -357,6 +373,7 @@ def pytest_unconfigure(config):
+         _state.STATE.recorder = None
+         _state.STATE.nodeid = None
+         _sites.set_basetemp_provider(None)
++        proofcache.uninstall()
+         S.active = False
+         S.config = None
+ 
+@@ -475,8 +492,13 @@ class _DetSession(_Outcomes):
+ 
+     def extra(self) -> dict:
+         cfg = _state.STATE.config
+-        return {"fingerprints": dict(S.fingerprints), "seed": cfg.seed, "shuffle": cfg.shuffle,
+-                "controls": sorted(cfg.controls), "trace": S.trace_path, "order_missing": S.order_missing}
++        out = {"fingerprints": dict(S.fingerprints), "seed": cfg.seed, "shuffle": cfg.shuffle,
++               "controls": sorted(cfg.controls), "trace": S.trace_path, "order_missing": S.order_missing}
++        pc = proofcache.PLUGIN
++        if pc is not None:
++            out["cache"] = {**pc.summary_data(), "reused_ids": sorted(pc.hits), "verified_ids": sorted(pc.verifying),
++                            "not_cached_ids": pc.not_cached, "miss_ids": pc.misses}
++        return out
+ 
+     def pytest_report_header(self, config):
+         cfg = _state.STATE.config
+@@ -559,6 +581,14 @@ class _DetSession(_Outcomes):
+         if rec is None:  # pragma: no cover - defensive: never break the session
+             yield
+             return
++        pc = proofcache.PLUGIN
++        if pc is not None and item.nodeid in pc.hits:
++            # reused with proof: nothing runs, the recorded fingerprint stands for the test
++            yield
++            fp = pc.hits[item.nodeid].get("fingerprint")
++            if fp:
++                S.fingerprints[item.nodeid] = fp
++            return
+         controls = st.config.controls
+         rec.begin_test(item.nodeid, S.index)
+         S.index += 1
+@@ -584,6 +614,8 @@ class _DetSession(_Outcomes):
+                 item.user_properties.append(("detpy_fingerprint", fp))
+ 
+     def pytest_sessionfinish(self, session, exitstatus):
++        if proofcache.PLUGIN is not None:
++            proofcache.PLUGIN.finish(session)
+         super().pytest_sessionfinish(session, exitstatus)
+         st = _state.STATE
+         if st.recorder is not None:
+@@ -607,6 +639,8 @@ class _DetSession(_Outcomes):
+                       f"{' (shuffled)' if cfg.shuffle else ''}")
+         if S.saved_cassette:
+             tr.write_line(f"network: recorded {S.saved_cassette} test(s) into {cfg.cassette_path}")
++        if proofcache.PLUGIN is not None:
++            proofcache.PLUGIN.terminal_summary(tr)
+         rep = S.compare_report
+         if rep is None:
+             return
+diff --git a/python/detpy/proofcache.py b/python/detpy/proofcache.py
+new file mode 100644
+index 0000000..c8eb745
+--- /dev/null
++++ b/python/detpy/proofcache.py
+@@ -0,0 +1,1170 @@
++"""Cache with proof (``pytest --det --det-cache=DIR``).
++
++A test's previous result is reused only when every input it depended on is
++unchanged; every reused result comes with a receipt (what was checked, the
++digests). What counts as an input (each one recorded while the test runs):
++
++* **code it executed**: per outermost function (``sys.monitoring`` LINE events
++  attributed to the running test, its wider-scoped fixtures and the collection
++  of its file); plus the module-level structure (*skeleton*) of every
++  repository module it had loaded, the pytest hook surface of every conftest,
++  and functions run at import time (those build module state any later reader
++  depends on);
++* **files it read**: content digest, read-write opens included; paths it found
++  missing; directories it listed;
++* **environment variables it read** (value digests; enumerating the environment
++  makes the whole environment an input);
++* **runtime identity**: interpreter (version and binary), platform, installed
++  distributions;
++* **configuration**: pytest version, options and ini, plugins, the Level 0
++  controls. Under ``--det`` the clock, randomness, hash seed and network are
++  controlled, so they are configuration, not hidden inputs; the clock's epoch
++  is an input of the tests that read the clock.
++
++Never reused: a failure (only passed, skipped and xfailed results are
++reused); a test that opened a network connection (loopback included) or
++spawned a process; a test that drew OS entropy without ``--det-urandom``;
++a test that read a file another test wrote in the same session.
++
++The Rust core (``detpy._core``) records executed lines (``LineRecorder``),
++filters audit events, hashes files, stores entries, computes the keys and
++decides reuse (``ProofCache``). This module wires them into pytest.
++"""
++
++from __future__ import annotations
++
++import json
++import os
++import platform
++import random
++import sys
++import time
++from types import CodeType, FunctionType
++
++import pytest
++
++from . import __version__, _codefacts, _core, _sites, _state
++
++_mon = getattr(sys, "monitoring", None)
++AVAILABLE = _mon is not None
++
++# context names: "" startup, "s" between tests, "c|<file>" collection of a file,
++# "f|<scope>|<baseid>|<name>" setup of a wider-scoped fixture, "t|<nodeid>" a test
++_GLOBAL_CTX = ("", "s")
++
++_AUDIT_EVENTS = ("exec", "open", "os.listdir", "os.scandir", "socket.connect", "subprocess.Popen", "os.posix_spawn",
++                 "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
++                 "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
++                 "os.link")
++_SPAWN = {"subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn"}
++_WRITE_EVENTS = {"os.remove": (0,), "os.rename": (0, 1), "os.mkdir": (0,), "os.rmdir": (0,),
++                 "shutil.rmtree": (0,), "shutil.copyfile": (1,), "shutil.move": (0, 1), "os.symlink": (1,),
++                 "os.link": (1,), "os.truncate": (0,)}
++_SKIP_PARTS = (os.sep + "__pycache__" + os.sep, os.sep + ".git" + os.sep, os.sep + ".pytest_cache",
++               os.sep + ".mypy_cache", os.sep + ".hypothesis" + os.sep, os.sep + ".detpy" + os.sep)
++_O_ACC = os.O_RDONLY | os.O_WRONLY | os.O_RDWR
++# options that never change a test's result (output, reporting, selection by path, detpy's own files)
++_VOLATILE_OPTIONS = {
++    "file_or_dir", "verbose", "quiet", "color", "code_highlight", "reportchars", "tbstyle", "showlocals",
++    "durations", "durations_min", "junitxml", "junitprefix", "resultlog", "basetemp", "det_cache",
++    "det_cache_verify", "det_cache_receipts", "det_trace", "det_outcomes", "det_compare", "det_max_events",
++    "showcapture", "fulltrace", "collectonly", "markers", "fixtures", "show_fixtures_per_test", "help", "version",
++    "debug", "traceconfig", "showlocals", "log_file", "log_cli_level", "pastebin", "usepdb", "usepdb_cls",
++    "trace", "xmlpath", "htmlpath", "lf", "failedfirst", "last_failed_no_failures", "newfirst", "cacheclear",
++    "cacheshow", "stepwise", "stepwise_skip", "maxfail", "exitfirst", "no_header", "no_summary", "override_ini",
++    "inifilename", "rootdir", "confcutdir", "keyword", "markexpr", "deselect", "ignore", "ignore_glob",
++    "continue_on_collection_errors", "numprocesses", "dist", "tx", "det_epoch",
++}
++
++
++def _ctx_file(nodeid: str) -> str:
++    return nodeid.split("::", 1)[0]
++
++
++# ---------------------------------------------------------------------------
++# entry line (as in the cache-skip study's tracer)
++import opcode as _opcode  # noqa: E402
++
++_RESUME = _opcode.opmap.get("RESUME", -1)
++_PRELUDE = {_opcode.opmap[n] for n in ("MAKE_CELL", "COPY_FREE_VARS", "RETURN_GENERATOR", "POP_TOP")
++            if n in _opcode.opmap}
++
++
++def entry_line(code) -> int | None:
++    """The line ``LINE`` alone never reports on entry (one-line functions, lambdas, docstring-only bodies)."""
++    co = code.co_code
++    r = 0
++    while r < len(co) and co[r] in _PRELUDE:
++        r += 2
++    if r + 2 >= len(co) or co[r] != _RESUME:
++        return None
++    lr = ln = None
++    for start, end, line in code.co_lines():
++        if start <= r < end:
++            lr = line
++        if start <= r + 2 < end:
++            ln = line
++            break
++    return ln if ln is not None and ln == lr else None
++
++
++# ---------------------------------------------------------------------------
++class Capture:
++    """Records, per context, executed code, data reads, environment reads and events."""
++
++    def __init__(self, root: str, env0: dict, hot: int = 16):
++        self.root = os.path.realpath(root)
++        self.root_sep = self.root + os.sep
++        self.env0 = env0
++        self.ctx = ""
++        self.ctx_ix: dict[str, int] = {"": 0}
++        self.ctx_names: list[str] = [""]
++        self.segs: list[tuple[int, int]] = [(0, 0)]
++        self.tool = None
++        self.rec = None
++        self.hot = hot
++        self._wanted: dict[str, bool] = {}
++        self.fid: dict[str, int] = {}
++        self.fnames: list[str] = []  # fid -> path relative to root
++        self._armed: set[int] = set()
++        self._events: dict[int, int] = {}
++        self.preloaded: set[str] = set()
++        # per context: data deps {path: dep}, flags
++        self.data: dict[int, dict[str, str]] = {}
++        self.env: dict[int, set] = {}
++        self.flags: dict[int, set] = {}  # "net", "spawn", "proc", "time", "entropy", "netrec", "foreign:<path>"
++        self.writers: dict[str, set] = {}  # abs path -> context indices that wrote it
++        self._hashed: dict[str, str] = {}  # abs path -> dep at first read in the session
++        self.loaded_order: list[tuple[str, int]] = []  # (rel module file, index of the test after which it was seen)
++        self._seen_mods: set[str] = set()
++        self._nmods = 0
++        self.basetemp: str | None = None
++        self.site_dirs: tuple = ()
++        self.stdlib_dirs: tuple = ()
++        self.dist_info_ok: tuple = ()
++        self.import_ctx = -1  # pseudo context for import-time data/env/flags
++        self.active = False
++
++    # -- contexts -------------------------------------------------------------
++    def ctx_index(self, name: str) -> int:
++        i = self.ctx_ix.get(name)
++        if i is None:
++            i = self.ctx_ix[name] = len(self.ctx_names)
++            self.ctx_names.append(name)
++        return i
++
++    def switch(self, name: str) -> None:
++        if name == self.ctx:
++            return
++        self.ctx = name
++        i = self.ctx_index(name)
++        if self.rec is None:
++            return
++        n = len(self.rec)
++        if self.segs[-1][1] == n:
++            self.segs[-1] = (i, n)
++        else:
++            self.segs.append((i, n))
++        hot = self.rec.switch()
++        if hot:
++            set_local, tool, ev = _mon.set_local_events, self.tool, self._events
++            for code in hot:
++                set_local(tool, code, 0)
++                set_local(tool, code, ev[id(code)])
++
++    def _cur(self) -> int:
++        if self.rec is not None and self.rec.import_depth:
++            return self.import_ctx
++        return self.ctx_ix[self.ctx]
++
++    # -- code ---------------------------------------------------------------------
++    def _want(self, filename: str) -> bool:
++        w = self._wanted.get(filename)
++        if w is None:
++            w = False
++            if filename and not filename.startswith("<"):
++                try:
++                    p = os.path.realpath(os.path.abspath(filename))
++                except (OSError, ValueError):
++                    p = ""
++                w = p.startswith(self.root_sep) and not any(s in p for s in _SKIP_PARTS)
++                if w:
++                    self.fid[filename] = len(self.fnames)
++                    self.fnames.append(p[len(self.root_sep):].replace(os.sep, "/"))
++            self._wanted[filename] = w
++        return w
++
++    def arm(self, code) -> None:
++        stack = [code]
++        set_local, tool = _mon.set_local_events, self.tool
++        LINE, START, RET = _mon.events.LINE, _mon.events.PY_START, _mon.events.PY_RETURN
++        while stack:
++            c = stack.pop()
++            if id(c) in self._armed:
++                continue
++            fn = c.co_filename
++            w = self._wanted.get(fn)
++            if w is None:
++                w = self._want(fn)
++            if not w:
++                continue
++            self._armed.add(id(c))
++            e = entry_line(c)
++            module = c.co_name == "<module>"
++            ev = LINE
++            if e is not None or module:
++                ev |= START
++            if module:
++                ev |= RET
++            self._events[id(c)] = ev
++            self.rec.add_code(c, self.fid[fn], -1 if e is None else e, module)
++            set_local(tool, c, ev)
++            stack.extend(k for k in c.co_consts if isinstance(k, CodeType))
++
++    def start(self) -> None:
++        for tid in (_mon.COVERAGE_ID, 4, 3, 2, 5):
++            if _mon.get_tool(tid) is None:
++                self.tool = tid
++                break
++        else:
++            raise RuntimeError("detpy --det-cache: sys.monitoring has no free tool id")
++        _mon.use_tool_id(self.tool, "detpy-cache")
++        self.rec = _core.LineRecorder(_mon.DISABLE, self.hot)
++        self.import_ctx = self.ctx_index("i")
++        self.ctx = ""
++        _mon.register_callback(self.tool, _mon.events.LINE, self.rec.line)
++        _mon.register_callback(self.tool, _mon.events.PY_START, self.rec.start)
++        _mon.register_callback(self.tool, _mon.events.PY_RETURN, self.rec.ret)
++        self.active = True
++        _core.set_audit_hook(self._audit, _AUDIT_EVENTS)
++        # code that exists before the start: modules already loaded become whole-content inputs
++        pre = False
++        for m in list(sys.modules.values()):
++            f = getattr(m, "__file__", None)
++            if f and self._want(f):
++                self.preloaded.add(self.fnames[self.fid[f]])
++                pre = True
++        if pre:
++            import gc
++
++            for o in gc.get_objects():
++                if type(o) is FunctionType:
++                    self.arm(o.__code__)
++        f = sys._getframe()
++        while f is not None:
++            self.arm(f.f_code)
++            f = f.f_back
++
++    def stop(self) -> None:
++        if not self.active:
++            return
++        self.active = False
++        _core.set_audit_hook(None, ())
++        if self.tool is not None:
++            for ev in (_mon.events.LINE, _mon.events.PY_START, _mon.events.PY_RETURN):
++                _mon.register_callback(self.tool, ev, None)
++            _mon.set_events(self.tool, 0)
++            _mon.free_tool_id(self.tool)
++            self.tool = None
++
++    # -- data, environment, events ------------------------------------------------------
++    def _caller_kind(self) -> str:
++        """'import' (the import system), 'infra' (pytest, detpy, ...) or 'user', from the calling frames."""
++        try:
++            f = sys._getframe(2)  # 0 this function, 1 the audit callback, 2 the code that raised the event
++        except ValueError:
++            return "user"
++        while f is not None:
++            fn = f.f_code.co_filename
++            if fn.startswith("<frozen importlib") or fn.startswith("<frozen zipimport"):
++                return "import"
++            kind, _ = _sites._classify(fn)
++            if kind == _sites._USER:
++                return "user"
++            if kind == _sites._INFRA:
++                return "infra"
++            f = f.f_back
++        return "user"
++
++    def _abs(self, p) -> str | None:
++        if isinstance(p, int) or p is None:
++            return None
++        try:
++            s = os.fsdecode(os.fspath(p))
++        except (TypeError, ValueError):
++            return None
++        if not s:
++            return None
++        if not os.path.isabs(s):
++            try:
++                s = os.path.join(os.getcwd(), s)
++            except OSError:
++                return None
++        return os.path.normpath(s)
++
++    def _ignored(self, p: str) -> bool:
++        if any(s in p for s in _SKIP_PARTS):
++            return True
++        if self.basetemp and (p == self.basetemp or p.startswith(self.basetemp + os.sep)):
++            return True
++        for d in self.site_dirs:
++            if p.startswith(d):
++                return not any(p.startswith(x) for x in self.dist_info_ok)
++        return any(p.startswith(d) for d in self.stdlib_dirs) or p == os.devnull
++
++    def _key(self, p: str) -> str:
++        return p[len(self.root_sep):] if p.startswith(self.root_sep) else p
++
++    def read(self, ctx: int, p: str, kind: str) -> None:
++        """A read of ``p`` (kind f = file content, d = listing) in context ``ctx``."""
++        if p.startswith(("/proc/", "/sys/", "/dev/")):
++            self.flags.setdefault(ctx, set()).add("proc")
++            return
++        if p in self.writers:
++            # reads what code of this session wrote: allowed only if every writer is credited to the reader
++            self.flags.setdefault(ctx, set()).add("rw:" + p)
++            return
++        hk = kind + p
++        dep = self._hashed.get(hk)
++        if dep is None:
++            if kind == "d":
++                d = _core.listing_digest(p)
++                dep = f"d:{d}" if d is not None else "missing"
++            else:
++                d = _core.file_digest(p)
++                dep = f"f:{d}" if d is not None else ("missing" if not os.path.exists(p) else "s:" + (
++                    "dir" if os.path.isdir(p) else "other"))
++            self._hashed[hk] = dep
++        self.data.setdefault(ctx, {})[self._key(p)] = dep
++
++    def wrote(self, ctx: int, p: str) -> None:
++        self.writers.setdefault(p, set()).add(ctx)
++        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p)):
++            self._hashed.pop(k, None)
++
++    def _audit(self, event, args):
++        if not self.active:
++            return
++        if event == "exec":
++            # every module body (import, runpy, exec) passes here before it runs; the functions and classes
++            # it defines are nested code objects, armed with it
++            code = args[0] if args else None
++            if isinstance(code, CodeType) and id(code) not in self._armed and self.tool is not None:
++                self.arm(code)
++            return
++        if event == "open":
++            p = self._abs(args[0] if args else None)
++            if p is None or self._ignored(p):
++                return
++            mode, flags = (args[1] if len(args) > 1 else None), (args[2] if len(args) > 2 else 0)
++            if isinstance(mode, str):
++                reads = "r" in mode or "+" in mode
++                writes = any(ch in mode for ch in "wax+")
++                trunc = "w" in mode
++            else:
++                acc = (flags or 0) & _O_ACC
++                reads = acc in (os.O_RDONLY, os.O_RDWR)
++                writes = acc in (os.O_WRONLY, os.O_RDWR) or bool((flags or 0) & os.O_CREAT)
++                trunc = bool((flags or 0) & os.O_TRUNC)
++            kind = self._caller_kind()
++            if kind in ("import", "infra"):
++                return
++            ctx = self._cur()
++            if reads and not trunc:
++                self.read(ctx, p, "f")
++            if writes:
++                self.wrote(ctx, p)
++        elif event in ("os.listdir", "os.scandir"):
++            if self._caller_kind() != "user":
++                return
++            p = self._abs(args[0] if args and args[0] is not None else ".")
++            if p is None or self._ignored(p):
++                return
++            self.read(self._cur(), p, "d")
++        elif event == "socket.connect":
++            if self._caller_kind() == "infra":
++                return
++            self.flags.setdefault(self._cur(), set()).add("connect")
++        elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
++            if self._caller_kind() == "infra":
++                return
++            self.flags.setdefault(self._cur(), set()).add("spawn")
++        else:
++            idx = _WRITE_EVENTS.get(event)
++            if idx is None or self._caller_kind() == "infra":
++                return
++            ctx = self._cur()
++            for i in idx:
++                p = self._abs(args[i] if len(args) > i else None)
++                if p is not None and not self._ignored(p):
++                    self.wrote(ctx, p)
++
++    def env_read(self, name: str) -> None:
++        if self.active:
++            self.env.setdefault(self._cur(), set()).add(name)
++
++    def event(self, source: str, value: str) -> None:
++        """A Level 0 event (``detpy._state.record``) by user code."""
++        if not self.active:
++            return
++        fl = self.flags.setdefault(self._cur(), set())
++        if source == "net":
++            if "record#" in value:
++                fl.add("net-record")
++            elif "replay" in value:
++                fl.add("net-replay")
++        else:
++            fl.add(source)
++
++    def scan_modules(self, index: int) -> None:
++        mods = sys.modules
++        if len(mods) == self._nmods:
++            return
++        self._nmods = len(mods)
++        for m in list(mods.values()):
++            f = getattr(m, "__file__", None)
++            if not f:
++                continue
++            if f in self._wanted and not self._wanted[f]:
++                continue
++            if self._want(f):
++                rel = self.fnames[self.fid[f]]
++                if rel not in self._seen_mods:
++                    self._seen_mods.add(rel)
++                    self.loaded_order.append((rel, index))
++
++
++# ---------------------------------------------------------------------------
++# environment reads
++_ENV_CAPTURE: Capture | None = None
++_ENV_PATCHED = False
++
++
++def _env_caller_is_user() -> bool:
++    try:
++        f = sys._getframe(3)
++    except ValueError:
++        return True
++    while f is not None:
++        fn = f.f_code.co_filename
++        kind, _ = _sites._classify(fn)
++        if kind == _sites._USER:
++            return True
++        if kind == _sites._INFRA:
++            return False
++        f = f.f_back
++    return True
++
++
++def _note_env(key) -> None:
++    cap = _ENV_CAPTURE
++    if cap is None or not cap.active or not _env_caller_is_user():
++        return
++    cap.env_read(os.fsdecode(key) if isinstance(key, (str, bytes)) else repr(key))
++
++
++def _patch_environ() -> None:
++    global _ENV_PATCHED
++    if _ENV_PATCHED:
++        return
++    _ENV_PATCHED = True
++
++    def make(base):
++        class _Recorded(base):
++            def __getitem__(self, key):
++                _note_env(key)
++                return base.__getitem__(self, key)
++
++            def __contains__(self, key):
++                _note_env(key)
++                return base.__contains__(self, key)
++
++            def __iter__(self):
++                _note_env("*")
++                return base.__iter__(self)
++
++        _Recorded.__name__ = base.__name__
++        _Recorded.__qualname__ = base.__qualname__
++        return _Recorded
++
++    for name in ("environ", "environb"):
++        o = getattr(os, name, None)
++        if o is not None:
++            try:
++                o.__class__ = make(type(o))
++            except TypeError:
++                pass
++
++
++# ---------------------------------------------------------------------------
++# identities
++def _dist_infos(root: str):
++    """(runtime digest part for installed distributions, dist-info dirs of editable installs of the project)."""
++    from importlib import metadata
++
++    parts, editable = [], []
++    root_sep = os.path.realpath(root) + os.sep
++    for d in metadata.distributions():
++        name = (d.metadata.get("Name") or "?") if d.metadata is not None else "?"
++        path = getattr(d, "_path", None)
++        project = False
++        try:
++            du = d.read_text("direct_url.json")
++            if du:
++                info = json.loads(du)
++                url = info.get("url", "")
++                if url.startswith("file://") and (os.path.realpath(url[7:]) + os.sep).startswith(root_sep):
++                    project = True
++        except Exception:
++            pass
++        if project:
++            if path is not None:
++                editable.append(os.path.realpath(str(path)) + os.sep)
++            continue
++        try:
++            rec = d.read_text("RECORD") or ""
++        except Exception:
++            rec = ""
++        parts.append(f"{name.lower()}=={d.version}:{_core.digest(rec.encode())}")
++    return sorted(parts), editable
++
++
++def runtime_identity(root: str) -> tuple[str, dict, list]:
++    import sysconfig
++
++    exe = os.path.realpath(sys.executable)
++    lib = None
++    libdir, ldlib = sysconfig.get_config_var("LIBDIR"), sysconfig.get_config_var("LDLIBRARY")
++    if libdir and ldlib and os.path.exists(os.path.join(libdir, ldlib)):
++        lib = os.path.join(libdir, ldlib)
++    dists, editable = _dist_infos(root)
++    d = {
++        "python": sys.version,
++        "cache_tag": sys.implementation.cache_tag,
++        "executable": _core.file_digest(exe),
++        "libpython": _core.file_digest(lib) if lib else None,
++        "system": platform.system(),
++        "machine": platform.machine(),
++        "libc": "-".join(platform.libc_ver()),
++        "stdlib": _core.listing_digest(os.path.dirname(os.__file__)),
++        "distributions": _core.digest("\n".join(dists).encode()),
++        "n_distributions": len(dists),
++    }
++    return _core.digest(json.dumps(d, sort_keys=True).encode()), d, editable
++
++
++def config_identity(config) -> tuple[str, dict]:
++    cfg = _state.STATE.config
++    plugins = sorted({f"{dist.project_name}=={dist.version}"
++                      for _, dist in config.pluginmanager.list_plugin_distinfo()})
++    ini = getattr(config, "_inicfg", None)
++    if ini is None:
++        ini = {}
++    ini_items = sorted((str(k), repr(getattr(v, "value", v))) for k, v in dict(ini).items())
++    opts = []
++    for k, v in sorted(vars(config.option).items()):
++        if k in _VOLATILE_OPTIONS:
++            continue
++        r = repr(v)
++        if " at 0x" in r:
++            r = type(v).__name__
++        opts.append((k, r))
++    root = str(config.rootpath)
++    inipath = getattr(config, "inipath", None)
++    d = {
++        "pytest": pytest.__version__,
++        "detpy": __version__,
++        "encoding": _core.ENCODING_VERSION,
++        "plugins": plugins,
++        "ini": ini_items,
++        "inifile": os.path.relpath(str(inipath), root) if inipath else None,
++        "options": opts,
++        "level0": {
++            "seed": cfg.seed, "shuffle": cfg.shuffle, "controls": sorted(cfg.controls), "tick": cfg.tick_ns,
++            "tick_adapt": cfg.tick_adapt, "sleep": cfg.sleep, "urandom": cfg.control_urandom,
++            "record_net": cfg.record_net, "allow_hosts": list(cfg.allow_hosts),
++            "hashseed": os.environ.get("PYTHONHASHSEED"),
++        },
++    }
++    return _core.digest(json.dumps(d, sort_keys=True, default=str).encode()), d
++
++
++# ---------------------------------------------------------------------------
++class ProofCachePlugin:
++    """pytest hooks of ``--det-cache``."""
++
++    def __init__(self, cap: Capture, cache_dir: str, verify: float, receipts: str | None):
++        self.cap = cap
++        self.dir = os.path.abspath(cache_dir)
++        self.verify = verify
++        self.receipts_path = receipts or os.path.join(self.dir, "receipts.jsonl")
++        self.store = None
++        self.config = None
++        self.root = cap.root
++        self.config_digest = ""
++        self.runtime_digest = ""
++        self.runtime_info: dict = {}
++        self.epoch = 0
++        self.hits: dict[str, dict] = {}  # nodeid -> receipt
++        self.verifying: dict[str, dict] = {}  # nodeid -> receipt of a hit re-run for verification
++        self.misses: dict[str, str] = {}
++        self.items: dict[str, object] = {}
++        self.test_index: dict[str, int] = {}
++        self.fixture_ctx: dict[str, list] = {}
++        self.ran: list[str] = []
++        self.parts: dict[str, dict] = {}
++        self.dur: dict[str, float] = {}
++        self.fingerprints: dict[str, str] = {}
++        self.verify_results: list[dict] = []
++        self.summary: dict = {}
++        self.run_id = f"{time.strftime('%Y%m%dT%H%M%S')}-{os.getpid()}"
++        self.t_check = 0.0
++        self.t_record = 0.0
++        self.recorded = 0
++        self.not_cached: dict[str, str] = {}
++
++    # -- setup ----------------------------------------------------------------
++    def configure(self, config) -> None:
++        self.config = config
++        self.root = os.path.realpath(str(config.rootpath))
++        self.config_digest, self.config_info = config_identity(config)
++        self.runtime_digest, self.runtime_info, editable = runtime_identity(self.root)
++        cap = self.cap
++        cap.dist_info_ok = tuple(editable)
++        cap.stdlib_dirs = tuple(d + os.sep for d in _sites._stdlib_dirs)
++        cap.site_dirs = tuple(d + os.sep for d in _sites._site_dirs)
++        factory = getattr(config, "_tmp_path_factory", None)
++        if factory is not None:
++            try:
++                cap.basetemp = os.path.realpath(str(factory.getbasetemp()))
++            except Exception:
++                cap.basetemp = None
++        self.epoch = _state.STATE.config.epoch_ns
++        self.store = _core.ProofCache(self.dir, self.root)
++        self.store.begin(self.config_digest, self.runtime_digest, self.epoch, dict(cap.env0))
++
++    # -- collection -------------------------------------------------------------
++    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
++    def pytest_make_collect_report(self, collector):
++        if not isinstance(collector, (pytest.File, pytest.Class)):
++            yield
++            return
++        prev = self.cap.ctx
++        self.cap.switch("c|" + _ctx_file(collector.nodeid))
++        try:
++            yield
++        finally:
++            self.cap.switch(prev)
++
++    @pytest.hookimpl(trylast=True)
++    def pytest_collection_finish(self, session):
++        self.cap.switch("s")
++        self.cap.scan_modules(-1)
++        t0 = time.perf_counter()
++        try:
++            self._decide(session.items)
++        finally:
++            self.t_check = time.perf_counter() - t0
++
++    def _decide(self, items) -> None:
++        store = self.store
++        for path, content in store.changed_code_files():
++            mod, is_pkg = _module_of(os.path.join(self.root, path))
++            f = _codefacts.read_facts(os.path.join(self.root, path), content, mod, is_pkg)
++            if f is not None:
++                store.set_fresh(path, content, f[0], f[1], f[2], f[3])
++        rng = random.Random(f"detpy-cache-verify:{self.run_id}")
++        for i, item in enumerate(items):
++            nid = item.nodeid
++            self.items[nid] = item
++            self.test_index[nid] = i
++            ok, info = store.check(nid)
++            if ok:
++                receipt = json.loads(info)
++                if self.verify and rng.random() < self.verify:
++                    self.verifying[nid] = receipt
++                else:
++                    self.hits[nid] = receipt
++            else:
++                self.misses[nid] = info
++
++    # -- fixtures and tests ------------------------------------------------------
++    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
++    def pytest_fixture_setup(self, fixturedef, request):
++        if fixturedef.scope == "function":
++            yield
++            return
++        prev = self.cap.ctx
++        self.cap.switch(f"f|{fixturedef.scope}|{fixturedef.baseid}|{fixturedef.argname}")
++        try:
++            yield
++        finally:
++            self.cap.switch(prev)
++
++    @pytest.hookimpl(tryfirst=True)
++    def pytest_runtest_protocol(self, item, nextitem):
++        receipt = self.hits.get(item.nodeid)
++        if receipt is None:
++            return None
++        self._reuse(item, nextitem, receipt)
++        return True
++
++    def _wrap_protocol(self, item, nextitem):  # generator driven by _ProtocolWrapper
++        nid = item.nodeid
++        if nid in self.hits:
++            yield
++            return
++        fx = []
++        info = getattr(item, "_fixtureinfo", None)
++        if info is not None:
++            for name in item.fixturenames:
++                defs = info.name2fixturedefs.get(name)
++                if defs and defs[-1].scope != "function":
++                    d = defs[-1]
++                    fx.append(f"f|{d.scope}|{d.baseid}|{d.argname}")
++        self.fixture_ctx[nid] = sorted(set(fx))
++        self.cap.switch("t|" + nid)
++        t = time.perf_counter()
++        try:
++            yield
++        finally:
++            self.dur[nid] = time.perf_counter() - t
++            self.cap.switch("s")
++            self.cap.scan_modules(self.test_index.get(nid, len(self.ran)))
++            self.ran.append(nid)
++
++    def pytest_runtest_logreport(self, report):
++        if report.nodeid in self.hits:
++            return
++        p = self.parts.setdefault(report.nodeid, {})
++        info = {"outcome": report.outcome}
++        if hasattr(report, "wasxfail"):
++            info["wasxfail"] = report.wasxfail
++        if report.skipped and isinstance(report.longrepr, tuple) and len(report.longrepr) == 3:
++            info["longrepr"] = [str(report.longrepr[0]), report.longrepr[1], str(report.longrepr[2])]
++        p[report.when] = info
++        for k, v in report.user_properties:
++            if k == "detpy_fingerprint":
++                self.fingerprints[report.nodeid] = v
++
++    def _reuse(self, item, nextitem, receipt) -> None:
++        from _pytest.reports import TestReport
++        from _pytest.runner import CallInfo
++
++        e = json.loads(self.store.entry(item.nodeid))
++        rep = e.get("report") or {}
++        ihook = item.ihook
++        ihook.pytest_runtest_logstart(nodeid=item.nodeid, location=item.location)
++        now = time.time()
++        kw = {k: 1 for k in item.keywords}
++        props = [("detpy_cache", "reused"), ("detpy_cache_key", receipt["key"]),
++                 ("detpy_fingerprint", e.get("fingerprint", ""))]
++        reports = []
++        for when in ("setup", "call"):
++            p = rep.get(when)
++            if p is None:
++                continue
++            lr = p.get("longrepr")
++            r = TestReport(item.nodeid, item.location, kw, p["outcome"], tuple(lr) if lr else None, when,
++                           (), 0.0, now, now, list(props))
++            if "wasxfail" in p:
++                r.wasxfail = p["wasxfail"]
++            reports.append(r)
++        for r in reports:
++            ihook.pytest_runtest_logreport(report=r)
++        call = CallInfo.from_call(lambda: item.session._setupstate.teardown_exact(nextitem), when="teardown")
++        if call.excinfo is None:
++            td = TestReport(item.nodeid, item.location, kw, "passed", None, "teardown", (), 0.0, now, now,
++                            list(props))
++        else:
++            td = TestReport.from_item_and_call(item, call)
++        ihook.pytest_runtest_logreport(report=td)
++        ihook.pytest_runtest_logfinish(nodeid=item.nodeid, location=item.location)
++
++    # -- end of session ------------------------------------------------------------
++    def finish(self, session) -> None:
++        from . import plugin as _plugin  # the fingerprints of the tests that ran (Level 0 recorder)
++
++        for nid, fp in _plugin.S.fingerprints.items():
++            if nid not in self.hits:
++                self.fingerprints[nid] = fp
++        cap = self.cap
++        cap.switch("s")
++        cap.stop()
++        t0 = time.perf_counter()
++        try:
++            self._record_all()
++        finally:
++            self.t_record = time.perf_counter() - t0
++        self.compare_verified({n: _final(p) for n, p in self.parts.items()})
++        self._write_receipts()
++
++    def _facts_index(self, rel: str, cache: dict) -> int | None:
++        """Store index of the facts of the current version of ``rel`` (computed once per file)."""
++        if rel in cache:
++            return cache[rel]
++        p = os.path.join(self.root, rel)
++        content = _core.file_digest(p)
++        ix = None
++        if content is not None:
++            ix = self.store.file_index(rel, content)
++            if ix is None:
++                mod, is_pkg = _module_of(p)
++                f = _codefacts.read_facts(p, content, mod, is_pkg)
++                if f is not None:
++                    ix = self.store.add_file(rel, content, f[0], f[1], f[2], f[3])
++        cache[rel] = ix
++        return ix
++
++    def _record_all(self) -> None:
++        cap, store = self.cap, self.store
++        if cap.rec is None:
++            return
++        fcache: dict[str, int | None] = {}
++        rels = cap.fnames
++        # file facts for every executed or loaded repository file
++        needed = set(rels) | {r for r, _ in cap.loaded_order} | cap.preloaded
++        for rel in needed:
++            self._facts_index(rel, fcache)
++        ranges = []
++        for rel in rels:
++            ix = fcache.get(rel)
++            if ix is None:
++                ranges.append([])
++            else:
++                ranges.append([(a, b) for _, a, b, _ in store.file_facts(ix)[4]])
++        per, imp = cap.rec.fold(len(cap.ctx_names), cap.segs, ranges)
++        names = cap.ctx_names
++        ctx_of = {n: i for i, n in enumerate(names)}
++
++        def units_of(fids_units):
++            out = set()
++            for v in fids_units:
++                fid, u = v >> 32, v & 0xFFFFFFFF
++                ix = fcache.get(rels[fid])
++                if ix is not None:
++                    out.add((ix, u))
++            return out
++
++        def unparsable(fids):
++            out = set()
++            for fid in fids:
++                ix = fcache.get(rels[fid])
++                if ix is None or not store.file_facts(ix)[4]:
++                    if ix is not None:
++                        f = store.file_facts(ix)
++                        if f[2] == f[1]:  # not Python: whole content
++                            out.add(ix)
++            return out
++
++        conftests = {r for r in needed if r.rsplit("/", 1)[-1] == "conftest.py"}
++        test_files = {_ctx_file(n) for n in self.items}
++        # import graph: test modules imported by any loaded module are shared, others only serve their own tests
++        imported_names = set()
++        for rel in needed:
++            ix = fcache.get(rel)
++            if ix is not None:
++                imported_names.update(store.file_facts(ix)[5])
++        shared_test_files = set()
++        for tf in test_files:
++            mod, _ = _module_of(os.path.join(self.root, tf))
++            if mod and (mod in imported_names or mod.rsplit(".", 1)[-1] in imported_names):
++                shared_test_files.add(tf)
++
++        # global contexts: startup, between tests, import time
++        g_ctx = [ctx_of[c] for c in _GLOBAL_CTX if c in ctx_of]
++        g_units = units_of(imp[0])
++        g_unparsable = unparsable(imp[1])
++        for c in g_ctx:
++            g_units |= units_of(per[c][0])
++            g_unparsable |= unparsable(per[c][1])
++        g_ctx_all = g_ctx + [cap.import_ctx]
++        g_data, g_env, g_flags = {}, set(), set()
++        for c in g_ctx_all:
++            g_data.update(cap.data.get(c, {}))
++            g_env |= cap.env.get(c, set())
++            g_flags |= {f for f in cap.flags.get(c, set()) if f != "proc"}
++
++        pre_ix = {fcache[r] for r in cap.preloaded if fcache.get(r) is not None}
++        loaded_idx = cap.loaded_order  # (rel, index)
++        cfg = _state.STATE.config
++        file_of_ix = {}
++        for rel, ix in fcache.items():
++            if ix is not None:
++                file_of_ix[ix] = rel
++
++        def in_scope(rel: str, own: str) -> bool:
++            if rel in test_files:
++                return rel == own or rel in shared_test_files
++            if rel in conftests:
++                d = rel.rsplit("/", 1)[0] if "/" in rel else ""
++                return d == "" or own == d or own.startswith(d + "/")
++            return True
++
++        for nid in self.ran:
++            item = self.items.get(nid)
++            if item is None:
++                continue
++            p = self.parts.get(nid, {})
++            outcome = _final(p)
++            if outcome not in ("passed", "skipped", "xfailed"):
++                self._not_cached(nid, f"outcome {outcome}")
++                continue
++            own = _ctx_file(nid)
++            ctxs = [ctx_of[c] for c in ["t|" + nid, "c|" + own, *self.fixture_ctx.get(nid, [])] if c in ctx_of]
++            flags = set(g_flags)
++            data = dict(g_data)
++            env = set(g_env)
++            units = set()
++            content = set(pre_ix) | g_unparsable
++            for c in ctxs:
++                flags |= cap.flags.get(c, set())
++                data.update(cap.data.get(c, {}))
++                env |= cap.env.get(c, set())
++                units |= units_of(per[c][0])
++                content |= unparsable(per[c][1])
++            why = _uncacheable(flags, cfg)
++            if why is None:
++                credited = set(ctxs)
++                for f in sorted(flags):
++                    if f.startswith("rw:") and not cap.writers.get(f[3:], set()) <= credited:
++                        why = f"reads a file another test or fixture wrote: {cap._key(f[3:])}"
++                        break
++            if why is None and "net-replay" in flags and cfg.cassette_path:
++                d = _core.file_digest(cfg.cassette_path)
++                data[cap._key(os.path.realpath(cfg.cassette_path))] = f"f:{d}" if d else "missing"
++            if why:
++                self._not_cached(nid, why)
++                continue
++            idx = self.test_index.get(nid, 0)
++            skeleton, hooks = set(), set()
++            for rel, seen_at in loaded_idx:
++                if seen_at > idx:
++                    continue
++                ix = fcache.get(rel)
++                if ix is None:
++                    continue
++                if rel in conftests:
++                    hooks.add(ix)
++                if in_scope(rel, own):
++                    skeleton.add(ix)
++            for ix, u in g_units:
++                rel = file_of_ix.get(ix)
++                # hooks run outside tests can act on any test; test modules serve their own tests
++                if rel is not None and (rel in conftests or in_scope(rel, own)):
++                    units.add((ix, u))
++            if type(item).__name__ == "DoctestItem" or not hasattr(item, "obj"):
++                ix = fcache.get(own)
++                if ix is None:
++                    ix = self._facts_index(own, fcache)
++                if ix is not None:
++                    content.add(ix)
++            epoch = self.epoch if ("time" in flags and "time" in cfg.controls) else None
++            if "time" in flags and "time" not in cfg.controls:
++                self._not_cached(nid, "real clock")
++                continue
++            env_deps = []
++            for name in sorted(env):
++                if name == "*":
++                    env_deps.append(("*", _core.env_all_digest(dict(cap.env0))))
++                else:
++                    env_deps.append((name, _core.env_value_digest(cap.env0.get(name))))
++            report = {w: p[w] for w in ("setup", "call") if w in p}
++            store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
++                         self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
++                         sorted(data.items()), sorted(content), sorted(skeleton), sorted(hooks), sorted(units))
++            self.recorded += 1
++        store.save()
++
++    def _not_cached(self, nid: str, why: str) -> None:
++        self.not_cached[nid] = why
++        self.store.remove(nid)
++
++    def _write_receipts(self) -> None:
++        try:
++            os.makedirs(os.path.dirname(os.path.abspath(self.receipts_path)), exist_ok=True)
++            with open(self.receipts_path, "w") as fh:
++                for nid, r in self.hits.items():
++                    fh.write(json.dumps({"nodeid": nid, "reused": True, **r}) + "\n")
++                for nid, why in self.misses.items():
++                    fh.write(json.dumps({"nodeid": nid, "reused": False, "why": why}) + "\n")
++        except OSError:
++            pass
++
++    # -- reporting --------------------------------------------------------------------
++    def summary_data(self) -> dict:
++        kinds: dict[str, int] = {}
++        for why in self.misses.values():
++            k = why.split(":", 1)[0]
++            kinds[k] = kinds.get(k, 0) + 1
++        nc: dict[str, int] = {}
++        for why in self.not_cached.values():
++            k = why.split(" ", 1)[0] if why.startswith("outcome") else why.split(":", 1)[0]
++            nc[k] = nc.get(k, 0) + 1
++        return {
++            "reused": len(self.hits),
++            "verified": len(self.verifying),
++            "ran": len(self.ran),
++            "recorded": self.recorded,
++            "miss_reasons": kinds,
++            "not_cached": nc,
++            "reused_recorded_seconds": round(sum(self._entry_duration(n) for n in self.hits), 3),
++            "check_seconds": round(self.t_check, 3),
++            "record_seconds": round(self.t_record, 3),
++            "config": self.config_digest,
++            "runtime": self.runtime_digest,
++            "verify_mismatches": [v for v in self.verify_results if not v["same"]],
++            "receipts": self.receipts_path,
++        }
++
++    def _entry_duration(self, nid: str) -> float:
++        return float(self.hits[nid].get("duration", 0.0) or 0.0)
++
++    def compare_verified(self, outcomes: dict) -> None:
++        for nid, r in self.verifying.items():
++            o = outcomes.get(nid)
++            fp = self.fingerprints.get(nid)
++            self.verify_results.append({"nodeid": nid, "cached": r["outcome"], "fresh": o,
++                                        "same": o == r["outcome"], "same_fingerprint": fp == r["fingerprint"]})
++
++    def terminal_summary(self, tr) -> None:
++        s = self.summary_data()
++        tr.section("detpy cache with proof")
++        tr.write_line(f"reused {s['reused']} result(s) with proof, ran {s['ran']}, recorded {s['recorded']} "
++                      f"(check {s['check_seconds']}s, record {s['record_seconds']}s); config {s['config']}, "
++                      f"runtime {s['runtime']}")
++        if s["miss_reasons"]:
++            tr.write_line("not reused: " + ", ".join(f"{k} {v}" for k, v in sorted(s["miss_reasons"].items())))
++        if s["not_cached"]:
++            tr.write_line("not cacheable: " + ", ".join(f"{k} {v}" for k, v in sorted(s["not_cached"].items())))
++        if self.verify_results:
++            bad = s["verify_mismatches"]
++            tr.write_line(f"verified {len(self.verify_results)} reusable result(s) by running them: "
++                          f"{len(bad)} mismatch(es)", red=bool(bad))
++            for b in bad:
++                tr.write_line(f"  MISMATCH {b['nodeid']}: cached {b['cached']}, fresh {b['fresh']}", red=True)
++        if tr.config.option.verbose > 0:
++            for nid, r in self.hits.items():
++                tr.write_line(f"REUSED {nid} key={r['key']} run={r['run']} outcome={r['outcome']}: checked "
++                              f"{r['n_units']} functions, {r['n_skeleton']} modules, {r['n_hooks']} conftest hook "
++                              f"sets, {r['n_content']} whole files, {r['n_data']} data paths, {r['n_env']} env "
++                              f"vars; runtime {r['runtime']}, config {r['config']}"
++                              f"{'' if r['epoch'] is None else ', epoch ' + str(r['epoch'])}")
++        tr.write_line(f"receipts: {s['receipts']}")
++
++
++def _final(parts: dict) -> str:
++    setup, call, teardown = parts.get("setup"), parts.get("call"), parts.get("teardown")
++    so = setup and setup["outcome"]
++    if so and so != "passed":
++        if so == "skipped":
++            return "xfailed" if "wasxfail" in setup else "skipped"
++        return "error"
++    if call is None:
++        return "unknown"
++    co = call["outcome"]
++    if teardown and teardown["outcome"] == "failed":
++        return "error"
++    if co == "skipped" and "wasxfail" in call:
++        return "xfailed"
++    if co == "passed" and "wasxfail" in call:
++        return "xpassed"
++    return co
++
++
++def _uncacheable(flags: set, cfg) -> str | None:
++    if "spawn" in flags:
++        return "subprocess"
++    if "connect" in flags:
++        return "network connection"
++    if "net-record" in flags:
++        return "network recording (--det-record)"
++    if "entropy" in flags and not cfg.control_urandom:
++        return "os entropy (not controlled; use --det-urandom)"
++    if "proc" in flags:
++        return "reads /proc, /sys or /dev"
++    return None
++
++
++_MODMAP: dict = {}
++_MODMAP_N = [-1]
++
++
++def _module_of(path: str) -> tuple[str | None, bool]:
++    """Module name of a file (from ``sys.modules``) and whether it is a package ``__init__``."""
++    if _MODMAP_N[0] != len(sys.modules):
++        _MODMAP.clear()
++        for name, m in list(sys.modules.items()):
++            f = getattr(m, "__file__", None)
++            if isinstance(f, str):
++                try:
++                    _MODMAP.setdefault(os.path.realpath(f), name)
++                except (OSError, ValueError):
++                    pass
++        _MODMAP_N[0] = len(sys.modules)
++    p = os.path.realpath(path)
++    return _MODMAP.get(p), os.path.basename(p) == "__init__.py"
++
++
++# ---------------------------------------------------------------------------
++CAPTURE: Capture | None = None
++PLUGIN: ProofCachePlugin | None = None
++
++
++def start(early_config, ns) -> None:
++    """Start recording (from ``pytest_load_initial_conftests``, before conftests are imported)."""
++    global CAPTURE, _ENV_CAPTURE
++    if not AVAILABLE:
++        raise pytest.UsageError("--det-cache needs Python 3.12+ (sys.monitoring)")
++    if CAPTURE is not None and CAPTURE.active:
++        return  # nested in-process session: the outer one records
++    root = str(early_config.rootpath)
++    env0 = {k: v for k, v in os.environ.items()}
++    cap = Capture(root, env0)
++    CAPTURE = cap
++    _ENV_CAPTURE = cap
++    _patch_environ()
++    _state.set_event_listener(cap.event)
++    cap.start()
++
++
++def install(config) -> None:
++    """Register the plugin hooks (from ``pytest_configure``)."""
++    global PLUGIN
++    cap = CAPTURE
++    if cap is None or PLUGIN is not None:
++        return
++    opt = config.option
++    plugin = ProofCachePlugin(cap, opt.det_cache, opt.det_cache_verify, opt.det_cache_receipts)
++    plugin.configure(config)
++    PLUGIN = plugin
++    config.pluginmanager.register(plugin, "detpy-cache")
++    config.pluginmanager.register(_ProtocolWrapper(plugin), "detpy-cache-wrapper")
++    cap.switch("s")
++
++
++def uninstall() -> None:
++    global CAPTURE, PLUGIN, _ENV_CAPTURE
++    if CAPTURE is not None:
++        CAPTURE.stop()
++    _state.set_event_listener(None)
++    CAPTURE = None
++    PLUGIN = None
++    _ENV_CAPTURE = None
++
++
++class _ProtocolWrapper:
++    def __init__(self, plugin):
++        self.plugin = plugin
++
++    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
++    def pytest_runtest_protocol(self, item, nextitem):
++        gen = self.plugin._wrap_protocol(item, nextitem)
++        next(gen)
++        try:
++            yield
++        finally:
++            try:
++                next(gen)
++            except StopIteration:
++                pass
+-- 
+2.43.0
+
