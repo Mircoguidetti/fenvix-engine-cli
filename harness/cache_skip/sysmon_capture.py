@@ -353,17 +353,20 @@ class SysmonCapture:
                 set_local(tool, code, 0)
                 set_local(tool, code, ev[id(code)])
 
-    def stop(self) -> None:
+    def stop(self, disarm: bool = True) -> None:
+        """Stop recording. ``disarm=False`` (at exit) only removes the callbacks and keeps the tool id: turning the
+        local events off re-instruments every armed code object, a few ms for nothing when the process is ending."""
         if self.tool is not None:
-            _mon.set_events(self.tool, 0)
-            for code in self._keep:
-                try:
-                    _mon.set_local_events(self.tool, code, 0)
-                except ValueError:
-                    pass
             _mon.register_callback(self.tool, _mon.events.LINE, None)
             _mon.register_callback(self.tool, _mon.events.PY_START, None)
-            _mon.free_tool_id(self.tool)
+            if disarm:
+                _mon.set_events(self.tool, 0)
+                for code in self._keep:
+                    try:
+                        _mon.set_local_events(self.tool, code, 0)
+                    except ValueError:
+                        pass
+                _mon.free_tool_id(self.tool)
             self.tool = None
 
     def raw_data(self) -> dict:
@@ -371,13 +374,13 @@ class SysmonCapture:
         for fn in self._fnames:
             p = os.path.realpath(os.path.abspath(fn))
             rel.append(p[len(self.root_sep):] if p.startswith(self.root_sep) else p)
-        return {"format": "sysmon-raw-1", "files": rel, "segs": self.segs, "buf": self.rec.tobytes() if self.rec is not None else self.buf.tobytes()}
+        return {"format": "sysmon-raw-1", "files": rel, "segs": self.segs, "buf": (self.buf if self.rec is None else self.rec).tobytes()}
 
     def save(self) -> None:
         if self._saved:
             return
         self._saved = True
-        self.stop()
+        self.stop(disarm=False)
         raw = self.raw_data()
         if self.raw:
             with open(self.out, "wb") as fh:

@@ -13,6 +13,10 @@
 #include <stdint.h>
 #include <string.h>
 
+#if PY_VERSION_HEX < 0x030D0000
+#define Py_IsFinalizing _Py_IsFinalizing
+#endif
+
 typedef struct {
     void *code;     /* borrowed: Python keeps every armed code object alive */
     uint64_t fid;   /* file id << 24 */

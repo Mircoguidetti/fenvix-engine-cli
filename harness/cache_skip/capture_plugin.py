@@ -64,7 +64,7 @@ def _pick_tracer() -> str:
 
 
 TRACER = _pick_tracer() if MODE == "capture" else ""
-if TRACER == "sysmon":
+if TRACER == "sysmon" and hasattr(sys, "monitoring"):
     # started at import (``-p capture_plugin`` is imported before conftest files and pytest11 entry points), so
     # repository code run at startup is recorded in the "" context, as under ``coverage run``
     from sysmon_capture import SysmonCapture
@@ -167,6 +167,9 @@ def pytest_configure(config):
             _cov = coverage.Coverage.current()
             if _cov is None:
                 raise pytest.UsageError("CACHE_SKIP_TRACER=coverage needs `coverage run`")
+        elif TRACER == "sysmon" and _sysmon is None:
+            raise pytest.UsageError("CACHE_SKIP_TRACER=sysmon needs Python 3.12+ (sys.monitoring); "
+                                    "use CACHE_SKIP_TRACER=auto under `coverage run`")
         elif _sysmon is None:
             raise pytest.UsageError(f"unknown CACHE_SKIP_TRACER {TRACER!r}")
         if _sysmon is not None and _sysmon.native is not None:
