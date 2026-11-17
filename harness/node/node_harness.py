@@ -153,6 +153,7 @@ class Prepared(H.Prepared):
     source: str = ""
     pw_dir: str = ""
     repo_root: str = ""
+    script: tuple = ()  # (args, env, script name) found in the project's test script, applied on demand
 
 
 def sh_group(cmd, cwd=None, env=None, timeout=None):
@@ -444,10 +445,8 @@ def script_setup(p: Prepared) -> None:
                                                       env={**os.environ, "NODE_OPTIONS": f}, timeout=60)[0] == 0]
             if node_flags:
                 env["NODE_OPTIONS"] = " ".join(["--max-old-space-size=6144", *node_flags])
-            p.env = {**env, **p.env}
-            p.pytest_args = args + p.pytest_args
             if args or env:
-                log(f"{p.name}: from scripts.{key}: args={args} env={sorted(env)}")
+                p.script = (args, env, key)
             return
 
 
@@ -642,6 +641,12 @@ def run_node(p: Prepared, rundir: Path, mode: str, index: int, timeout: float, s
     code, out, dur, to = sh_group(cmd, cwd=cwd, env=node_env(p, extra), timeout=timeout)
     (rundir / f"{tag}.log").write_text(out[-20000:])
     outcomes, exceptions = (parse_playwright(report, p.src) if p.runner == "playwright" else parse_report(report, p.src))
+    if to and outcomes and report.exists():
+        # The runner wrote its complete report and then did not exit (a handle left open: react-testing-
+        # library under Jest workers). The outcomes are whole; the run counts, the hang is noted.
+        to = False
+        DIAG.setdefault("exit_hang_after_report", []).append(tag)
+        log(f"{p.name}: {tag} wrote its report but did not exit within {timeout:.0f}s (killed; outcomes kept)")
     if trace is not None and not trace.exists() and not DIAG.get("missing_trace"):
         DIAG["missing_trace"] = f"{tag}: exit {code}; command {' '.join(map(str, cmd))[-300:]}; output tail: {out[-2500:]}"
         log(f"{p.name}: WARNING no trace written by {tag}: {out[-1500:]}")
@@ -773,14 +778,31 @@ def timing_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
 
 
 def first_run(p: Prepared, args, rundir: Path):
-    """First baseline run; when it is unusable (too few outcomes or mostly failing) and the project has a
-    `build` script, build once and run again (many monorepos test their built packages)."""
+    """First baseline run; when it is unusable (too few outcomes or mostly failing): the flags and
+    variables of the project's own test script (script_setup), then, if the project has a `build`
+    script, build once and run again (many monorepos test their built packages)."""
     r = run_node(p, rundir, "normal", 0, args.run_timeout)
     if p.runner == "playwright" and not r.outcomes and "--project=chromium" in p.pytest_args:
         p.pytest_args = [a for a in p.pytest_args if a != "--project=chromium"]  # no project of that name
         r = run_node(p, rundir, "normal", 0, args.run_timeout)
     min_tests = 10 if p.runner == "playwright" else args.min_tests
-    if len(r.outcomes) < min_tests or sum(H.is_fail(o) for o in r.outcomes.values()) > 0.5 * max(1, len(r.outcomes)):
+
+    def unusable(r):
+        return len(r.outcomes) < min_tests or sum(H.is_fail(o) for o in r.outcomes.values()) > 0.5 * max(1, len(r.outcomes))
+
+    if unusable(r) and p.script:
+        s_args, s_env, key = p.script
+        old = (list(p.pytest_args), dict(p.env))
+        p.pytest_args, p.env = s_args + p.pytest_args, {**s_env, **p.env}
+        r2 = run_node(p, rundir, "normal", 0, args.run_timeout)
+        ok = len(r2.outcomes) - sum(H.is_fail(o) for o in r2.outcomes.values())
+        log(f"{p.name}: first run unusable ({len(r.outcomes)} outcomes): with scripts.{key} args={s_args} "
+            f"env={sorted(s_env)}: {len(r2.outcomes)} outcomes, {ok} passing")
+        if ok > len(r.outcomes) - sum(H.is_fail(o) for o in r.outcomes.values()):
+            r = r2
+        else:
+            p.pytest_args, p.env = old
+    if unusable(r):
         bdir = Path(p.repo_root or p.src)
         scripts = json.loads((bdir / "package.json").read_text()).get("scripts", {})
         if "build" in scripts:

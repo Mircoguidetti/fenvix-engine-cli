@@ -59,9 +59,20 @@ async function main(argv) {
   // --forceExit: in band, a handle left open by the suite keeps this process
   // alive forever (react-testing-library), where Jest's worker mode would kill
   // the workers; exit once the results are reported, as the workers do.
+  // The test runner is loaded through a shim in the project's node_modules that
+  // requires the detjs runner only when Jest calls it: Jest loads testRunner
+  // with its transform hook active, so detjs would otherwise be compiled with
+  // the project's Babel config (found on matrix-js-sdk: plugin-transform-runtime
+  // made every suite fail with "Cannot find module @babel/runtime/...").
+  const shimDir = path.join(root, 'node_modules', '.detjs');
+  fs.mkdirSync(shimDir, { recursive: true });
+  const runnerShim = path.join(shimDir, `jest-runner-${process.pid}.js`);
+  fs.writeFileSync(runnerShim, `'use strict';\nconst real = ${JSON.stringify(path.join(__dirname, 'runner.js'))};\n`
+    + 'module.exports = function detjsRunner(...args) { return require(real)(...args); };\n');
+  process.on('exit', () => { try { fs.rmSync(runnerShim, { force: true }); } catch { /* ignore */ } });
   const extra = ['--runInBand', '--forceExit', '--maxConcurrency=1',
     `--testSequencer=${path.join(__dirname, 'sequencer.js')}`,
-    `--testRunner=${path.join(__dirname, 'runner.js')}`];
+    `--testRunner=${runnerShim}`];
   const help = spawnSync(process.execPath, [jest.bin, '--help'], { encoding: 'utf8', env: { ...process.env, DETJS: '0' } });
   if (/--randomize/.test(help.stdout || '')) extra.push('--no-randomize');
   const isolation = 'jest --runInBand --forceExit: one test file at a time in the main process, each in its own vm context; maxConcurrency=1';
@@ -82,9 +93,15 @@ async function main(argv) {
   }
   const cliReq = require('node:module').createRequire(jest.bin);
   const jestCli = cliReq('jest-cli');
-  await jestCli.run([...rest, ...extra], undefined);
-  finalize();
-  return process.exitCode ?? 0;
+  // Not awaited: an awaiting caller would appear as an extra `at async main`
+  // frame in the async stack traces the tests see (found on babel: stack-trace
+  // inline snapshots); Jest's own bin does not await run() either.
+  return new Promise((resolve, reject) => {
+    jestCli.run([...rest, ...extra], undefined).then(() => {
+      finalize();
+      resolve(process.exitCode ?? 0);
+    }, reject);
+  });
 }
 
 module.exports = { main };
