@@ -1,7 +1,7 @@
 From 344495514855cea2016393cf78c4c3df5fc6e5cc Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 17 Nov 2026 07:23:59 +0000
-Subject: [PATCH 5/7] detjs playwright: tests on a fixture app with three
+Subject: [PATCH 5/8] detjs playwright: tests on a fixture app with three
  cross-process races (fail when the app server goes uncontrolled); app servers
  under a path containing 'playwright' are servers
 
