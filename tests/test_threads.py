@@ -477,3 +477,51 @@ def test_stdlib_time_left_is_virtual(pytester):
     pytester.makepyfile(test_stdlib_time=STDLIB_TIME)
     result = pytester.runpytest_subprocess(*FLAGS, "-p", "no:cacheprovider", timeout=120)
     result.assert_outcomes(passed=3)
+
+
+IO_IN_FLIGHT = r'''
+import asyncio, socket, threading, time
+
+def test_pipelined_loopback_pingpong():
+    # Many small writes before reading: the kernel holds some data back (Nagle,
+    # delayed ACK) for a few real milliseconds. Waiting threads must get that time
+    # instead of the clock jumping to their 10 s timeout.
+    srv = socket.socket()
+    srv.bind(("127.0.0.1", 0))
+    srv.listen(1)
+    def server():
+        c, _ = srv.accept()
+        c.settimeout(10)
+        buf = b""
+        n = 0
+        while n < 300:
+            buf += c.recv(4096)
+            while len(buf) >= 4:
+                buf = buf[4:]
+                c.sendall(b"pong")
+                n += 1
+        c.close()
+    t = threading.Thread(target=server)
+    t.start()
+    cl = socket.create_connection(srv.getsockname())
+    cl.settimeout(10)
+    for _ in range(300):
+        cl.sendall(b"ping")
+    got = b""
+    while len(got) < 1200:
+        got += cl.recv(4096)
+    t.join()
+    assert got == b"pong" * 300
+
+def test_event_loop_sleep_advances_the_clock():
+    t0 = time.monotonic()
+    asyncio.run(asyncio.sleep(0.3))
+    assert time.monotonic() - t0 >= 0.3
+'''
+
+
+@pytest.mark.skipif(WITHOUT_PROTOTYPE, reason="needs --det-threads")
+def test_io_in_flight_and_event_loop_waits(pytester):
+    pytester.makepyfile(test_io=IO_IN_FLIGHT)
+    result = pytester.runpytest_subprocess(*FLAGS, "-p", "no:cacheprovider", timeout=120)
+    result.assert_outcomes(passed=2)

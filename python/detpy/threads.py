@@ -366,8 +366,10 @@ def _locked_candidates(me, inline: bool):
     S.runq = [t for t in S.runq if t.state == RUNNABLE]
     if S.runq or not inline:
         return S.runq
-    if _outside_activity():
-        return S.runq  # idle: the watchdog waits for the outside world, then fires timers
+    if _outside_activity() or _has(IOWAIT):
+        # Idle: the watchdog waits for the outside world (or for the kernel to
+        # deliver data already sent: Nagle, delayed ACKs), then fires timers.
+        return S.runq
     # Nothing outside the managed threads can change anything: time jumps, or
     # nobody can ever be woken.
     if S.timers and _locked_fire_timer():
@@ -1161,6 +1163,12 @@ def _wrap_selector_select(real):
 
         if io_wait(pred, timeout, what="selector", real_time=real_time):
             return real(self, 0)
+        if real_time and timeout:
+            # Same rule as Level 0 (clock._wrap_selector_select): an event-loop wait
+            # that times out advances the virtual clock by its timeout (asyncio.sleep).
+            c = _clock()
+            if c is not None:
+                c.advance(-(-int(timeout * 1e9) // 1_000_000) * 1_000_000)
         return []
 
     select.__wrapped__ = real
@@ -1248,9 +1256,18 @@ def _idle_duty() -> None:
         _locked_hand(None, _locked_choose(None, cands))
         return
     outside = _outside_activity()
+    io = _has(IOWAIT)
     idle = _real_monotonic() - (S.idle_since or _real_monotonic())
     if S.timers:
-        if not outside or idle >= CFG.grace:
+        if outside:
+            limit = CFG.grace
+        elif io:
+            # Only I/O waiters: give data in flight as much real time as the
+            # virtual time to the next timer (at most the grace), as a real run would.
+            limit = min(CFG.grace, max(0.0, (S.timers[0][0] - _now()) / 1e9))
+        else:
+            limit = 0.0
+        if idle >= limit:
             if _locked_fire_timer():
                 if outside:
                     _record_uncontrolled("timer fired while outside work was pending")
@@ -1261,7 +1278,7 @@ def _idle_duty() -> None:
     if _has(EXTERNAL) or any(t.state == IOWAIT and t.real_deadline is not None for t in S.threads):
         return
     blocked = any(t.state in (BLOCKED, IOWAIT) for t in S.threads)
-    if blocked and idle >= (CFG.deadlock if outside else 0):
+    if blocked and idle >= (CFG.deadlock if (outside or io) else 0):
         _locked_raise_deadlock()
         cands = [t for t in S.runq if t.state == RUNNABLE]
         if cands:
