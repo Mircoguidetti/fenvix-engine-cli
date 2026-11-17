@@ -206,6 +206,7 @@ class Driver {
     this.budgetHit = false;
     this.baseline = new Map();
     this.mode = 'virtual';
+    this.deferrals = 0;
   }
 
   takeBaseline() {
@@ -282,6 +283,19 @@ class Driver {
 
   fire(fastMode) {
     this.armed = null;
+    // Fast time only jumps when the event loop is otherwise idle: while other
+    // setImmediate callbacks are pending (React act() / scheduler chains), wait
+    // for them as the real delay would (found on apollo-client: a mocked
+    // response delayed 20 ms arrived before act() had flushed the previous
+    // render). Bounded, so that a setImmediate loop cannot starve the timers.
+    if (fastMode && this.deferrals < MAX_DEFERRALS && pendingImmediates() > 0) {
+      this.deferrals += 1;
+      const h = REAL.setImmediate(() => this.fire(true));
+      if (!this.queue.some((x) => x._ref)) h.unref();
+      this.armed = { kind: 'immediate', handle: h };
+      return;
+    }
+    this.deferrals = 0;
     const t = this.queue.shift();
     if (!t) return;
     if (fastMode) {
@@ -367,6 +381,14 @@ class Driver {
 }
 
 const IGNORED_RESOURCES = new Set(['Timeout', 'Immediate', 'TTYWrap']);
+
+const MAX_DEFERRALS = 1000;
+
+function pendingImmediates() {
+  let n = 0;
+  for (const r of process.getActiveResourcesInfo()) if (r === 'Immediate') n += 1;
+  return n;
+}
 
 function countResources() {
   const m = new Map();

@@ -333,6 +333,18 @@ NOTES = [
 ]
 
 
+def select_only(args) -> None:
+    """Selection of a round launched with `only`: the named repositories, plus (when a prior full
+    selection exists) its discards and prepare records, so the report keeps the whole funnel."""
+    names = [x.strip() for x in args.names.split(",") if x.strip()]
+    prior = json.loads(Path(args.prior).read_text()) if args.prior and Path(args.prior).exists() else {}
+    discarded = [d for d in prior.get("discarded", []) if d.get("name") not in names]
+    out = {"selected": names, "discarded": discarded, "prepare": prior.get("prepare", {}),
+           "only": True, "prior_selected": prior.get("selected", [])}
+    Path(args.selection).write_text(json.dumps(out, indent=2))
+    print(f"selected {len(names)} (only); {len(discarded)} discards carried over from {args.prior}")
+
+
 def aggregate(args) -> None:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -368,6 +380,10 @@ def main() -> None:
     s.add_argument("--per-flaky", type=int, default=-1)
     s.add_argument("--per-popular", type=int, default=-1)
     s.add_argument("--selection", required=True)
+    o = sub.add_parser("select-only")
+    o.add_argument("--names", required=True)
+    o.add_argument("--prior", default="")
+    o.add_argument("--selection", required=True)
     t = sub.add_parser("timing-pick")
     t.add_argument("--dir", required=True)
     t.add_argument("--selection", required=True)
@@ -382,7 +398,7 @@ def main() -> None:
     a.add_argument("--confirm", type=int, default=10)
     a.add_argument("--run-url", default="")
     args = ap.parse_args()
-    {"candidates": candidates, "select": select, "timing-pick": timing_pick, "aggregate": aggregate}[args.cmd](args)
+    {"candidates": candidates, "select": select, "select-only": select_only, "timing-pick": timing_pick, "aggregate": aggregate}[args.cmd](args)
 
 
 if __name__ == "__main__":

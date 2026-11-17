@@ -155,6 +155,35 @@ class Prepared(H.Prepared):
     repo_root: str = ""
 
 
+def sh_group(cmd, cwd=None, env=None, timeout=None):
+    """sh() in a new process group that is killed afterwards: servers a run leaves behind (Playwright
+    web servers, watchers) must not survive into the next run (`port already used`), and a timeout must
+    not wait for grandchildren holding the output pipe."""
+    import signal
+    t0 = time.perf_counter()
+    proc = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                            stdin=subprocess.DEVNULL, start_new_session=True)
+    timed_out = False
+    try:
+        out, _ = proc.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        timed_out = True
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except OSError:
+            pass
+        try:
+            out, _ = proc.communicate(timeout=30)
+        except subprocess.TimeoutExpired:
+            out = b""
+    try:
+        os.killpg(proc.pid, signal.SIGKILL)
+    except OSError:
+        pass
+    text = (out or b"").decode(errors="replace")
+    return (-9 if timed_out else proc.returncode), text, time.perf_counter() - t0, timed_out
+
+
 def git(args, cwd, timeout=900):
     return sh(["git", *args], cwd=cwd, timeout=timeout)
 
@@ -351,6 +380,77 @@ def detect_runner(p: Prepared, repo: dict) -> bool:
     return False
 
 
+TEST_SCRIPTS = ("test", "test:unit", "unit", "test:ci", "test:node", "test:js", "test:jest", "test:vitest")
+SCRIPT_FLAGS = {"--config", "-c", "--project", "--selectProjects", "--dir", "--root", "--environment", "--env"}
+
+
+def script_setup(p: Prepared) -> None:
+    """What the project's own test script adds to the runner (found on apollo-client: `jest --config
+    ./config/jest.config.js`; without it every suite failed to parse): the config / project / root
+    flags after the runner, VAR=value assignments (also after cross-env) and Node flags before it
+    (moved to NODE_OPTIONS). One level of `npm run` / `pnpm` / `yarn` indirection is followed."""
+    import shlex
+    try:
+        scripts = json.loads((Path(p.src) / "package.json").read_text()).get("scripts", {}) or {}
+    except (OSError, ValueError):
+        return
+
+    def segments(text, depth=0):
+        for seg in re.split(r"&&|\|\||;", text):
+            try:
+                toks = shlex.split(seg)
+            except ValueError:
+                continue
+            if depth == 0 and len(toks) >= 2 and toks[0] in ("npm", "pnpm", "yarn"):
+                name = toks[2] if len(toks) > 2 and toks[1] == "run" else toks[1]
+                if name in scripts:
+                    yield from segments(scripts[name], 1)
+                    continue
+            yield toks
+
+    for key in TEST_SCRIPTS:
+        if key not in scripts:
+            continue
+        for toks in segments(scripts[key]):
+            idx = next((i for i, t in enumerate(toks) if re.search(rf"(^|/){p.runner}(\.[cm]?js)?$", t)
+                        or re.search(rf"/{p.runner}/bin/", t)), None)
+            if idx is None:
+                continue
+            env, node_flags, args = {}, [], []
+            for t in toks[:idx]:
+                if re.match(r"^[A-Z_][A-Z0-9_]*=", t):
+                    k, v = t.split("=", 1)
+                    env[k] = v
+                elif t.startswith("--") and not t.startswith(("--inspect", "--debug", "--prof", "--cpu-prof")):
+                    node_flags.append(t)
+            rest = toks[idx + 1:]
+            if p.runner == "vitest" and rest and rest[0] in ("run", "watch", "dev"):
+                rest = rest[1:]
+            i = 0
+            while i < len(rest):
+                t = rest[i]
+                name = t.split("=", 1)[0]
+                if name in SCRIPT_FLAGS:
+                    if "=" in t:
+                        args.append(t)
+                    elif i + 1 < len(rest):
+                        args += [t, rest[i + 1]]
+                        i += 1
+                i += 1
+            if env.get("NODE_OPTIONS"):
+                node_flags.append(env.pop("NODE_OPTIONS"))
+            env = {k: v for k, v in env.items() if k not in ("CI", "PATH", "HOME")}
+            node_flags = [f for f in node_flags if sh([f"{p.node_bin}/node", "-e", "0"],
+                                                      env={**os.environ, "NODE_OPTIONS": f}, timeout=60)[0] == 0]
+            if node_flags:
+                env["NODE_OPTIONS"] = " ".join(["--max-old-space-size=6144", *node_flags])
+            p.env = {**env, **p.env}
+            p.pytest_args = args + p.pytest_args
+            if args or env:
+                log(f"{p.name}: from scripts.{key}: args={args} env={sorted(env)}")
+            return
+
+
 def config_dirs(src: Path) -> list:
     """Directories (depth <= 3, outside node_modules) holding a vitest or jest config, shallowest first."""
     out = []
@@ -384,6 +484,8 @@ def prepare(repo: dict, work: Path, _wheel, _default, max_first_run: float) -> P
     p.python_version = f"node {v.strip()}"
     if not install(p, repo) or not detect_runner(p, repo):
         return p
+    if p.runner != "playwright":
+        script_setup(p)
     p.xdist = True  # two workers in the baseline
     p.has_xdist = True
     p.status = "ok"
@@ -537,7 +639,7 @@ def run_node(p: Prepared, rundir: Path, mode: str, index: int, timeout: float, s
                           "DETJS_DISABLE": ",".join(sorted(off)), "DETJS_NET_MODE": "block",
                           "NODE_OPTIONS": f"--require {ROOT / 'node' / 'src' / 'register.js'} --max-old-space-size=6144"})
         trace = None
-    code, out, dur, to = sh(cmd, cwd=cwd, env=node_env(p, extra), timeout=timeout)
+    code, out, dur, to = sh_group(cmd, cwd=cwd, env=node_env(p, extra), timeout=timeout)
     (rundir / f"{tag}.log").write_text(out[-20000:])
     outcomes, exceptions = (parse_playwright(report, p.src) if p.runner == "playwright" else parse_report(report, p.src))
     if trace is not None and not trace.exists() and not DIAG.get("missing_trace"):
@@ -766,11 +868,13 @@ def main(argv=None) -> int:
                 first_run(p, args, pre)
                 r = timing_pass(p, args, outdir, work)
             else:
-                pre = work / "runs" / f"{p.name}-first"
-                shutil.rmtree(pre, ignore_errors=True)
-                pre.mkdir(parents=True)
-                first_run(p, args, pre)  # same build decision as the selection stage
-                r = H.measure(p, args, outdir, work)
+                # Same build decision and the same checks as the selection stage (projects added
+                # to a round with `only` are checked here; a failed check skips the measurement).
+                chk = prepare_check(p, args, outdir, work)
+                if chk["status"] != "ok":
+                    r = chk
+                else:
+                    r = H.measure(p, args, outdir, work)
                 if r.get("status") != "ok":
                     r.setdefault("detail", "")
         except Exception as e:  # pragma: no cover

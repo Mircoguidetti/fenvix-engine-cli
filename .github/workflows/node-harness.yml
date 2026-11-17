@@ -158,7 +158,7 @@ jobs:
       - id: s
         run: |
           if [ -n "${{ needs.config.outputs.only }}" ]; then
-            python3 -c "import json,sys; m=[x.strip() for x in sys.argv[1].split(',') if x.strip()]; print(json.dumps({'selected': m, 'discarded': []}))" "${{ needs.config.outputs.only }}" > selection.json
+            python3 harness/node/ci.py select-only --names "${{ needs.config.outputs.only }}" --prior "harness/node/results/${{ needs.config.outputs.result_set }}/selection-prepare.json" --selection selection.json
             echo "matrix=$(python3 -c "import json; print(json.dumps(json.load(open('selection.json'))['selected']))")" >> "$GITHUB_OUTPUT"
           else
             python3 harness/node/ci.py select --dir art --per-pool ${{ needs.config.outputs.per_pool }} --per-flaky ${{ needs.config.outputs.per_flaky }} --per-popular ${{ needs.config.outputs.per_popular }} --playwright ${{ needs.config.outputs.per_playwright }} --selection selection.json

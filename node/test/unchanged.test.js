@@ -71,6 +71,14 @@ describe('timers', () => {
     }, 1));
     expect(out).toEqual(['sync', 'tick', 'micro', 'immediate']);
   });
+  test('a setImmediate chain finishes before a later timer (act()-style flushing)', async () => {
+    let steps = 0;
+    const chain = () => { steps += 1; if (steps < 200) setImmediate(chain); };
+    await new Promise((resolve) => {
+      setTimeout(() => setImmediate(chain), 1);
+      setTimeout(() => { expect(steps).toBe(200); resolve(); }, 30);
+    });
+  });
   test('timers/promises with abort', async () => {
     expect(await sleepP(10, 'v')).toBe('v');
     const ac = new AbortController();
