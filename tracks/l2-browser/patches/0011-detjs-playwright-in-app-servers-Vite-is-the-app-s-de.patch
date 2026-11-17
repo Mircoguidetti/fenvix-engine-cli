@@ -1,0 +1,86 @@
+From 6bb5a80d98d71ae2dd60aab1643af3a241e661ff Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 09:06:54 +0000
+Subject: [PATCH 11/11] detjs playwright: in app servers Vite is the app's dev
+ server, not runner infrastructure (its real clock reads leaked into temp file
+ names, ?t= URLs and pages: 28 of 47 solid-start server fingerprints
+ diverged); regression test
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ node/src/sites.js            | 11 +++++++++--
+ node/test/playwright.test.js |  7 +++++--
+ 2 files changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/node/src/sites.js b/node/src/sites.js
+index 8876ec7..f2dec68 100644
+--- a/node/src/sites.js
++++ b/node/src/sites.js
+@@ -7,6 +7,13 @@ const path = require('node:path');
+ 
+ const SHELL_DIR = path.resolve(__dirname) + path.sep; // node/src/
+ const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|playwright|playwright-core|@playwright|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format)[\\/]/;
++// App servers under Level 2 (DETJS_NODE_INFRA=1) are not test runners: Vite there is the app's own dev
++// server, whose clock reads end up in URLs (?t=), temp file names and pages (found on solid-start).
++const INFRA_SERVER = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|tinypool|playwright|playwright-core|@playwright|tinyspy|jest-[a-z-]+|@jest|jest|babel-jest|ts-jest|source-map-support)[\\/]/;
++function isInfra(f) {
++  if (NODE_INFRA === null) NODE_INFRA = process.env.DETJS_NODE_INFRA === '1';
++  return (NODE_INFRA ? INFRA_SERVER : INFRA).test(f);
++}
+ const DEPS = /^(.*[\\/]node_modules[\\/])((?:@[^\\/]+[\\/])?[^\\/]+)[\\/](.*)$/;
+ 
+ let root = process.cwd();
+@@ -63,7 +70,7 @@ function resolveFormatted() {
+     const q = f.indexOf('?');
+     if (q >= 0) f = f.slice(0, q);
+     if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || f === 'native' || !f.includes('/')) continue;
+-    if (INFRA.test(f)) return null;
++    if (isInfra(f)) return null;
+     return `${normPath(f)}:${m[2]}`;
+   }
+   return '<node>';
+@@ -124,7 +131,7 @@ function resolveDepth(depth) {
+   for (const cs of frames) {
+     const f = rawFile(cs);
+     if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || !f.includes('/')) continue;
+-    if (INFRA.test(f)) return null;
++    if (isInfra(f)) return null;
+     const key = `${f}:${cs.getLineNumber()}:${cs.getColumnNumber()}`;
+     let site = CACHE.get(key);
+     if (site === undefined) {
+diff --git a/node/test/playwright.test.js b/node/test/playwright.test.js
+index 139b820..511d525 100644
+--- a/node/test/playwright.test.js
++++ b/node/test/playwright.test.js
+@@ -43,7 +43,7 @@ http.createServer((req, res) => {
+   if (u.pathname === '/ids') {
+     res.setHeader('content-type', 'text/html');
+     return res.end(page('<div id=sid>' + crypto.randomUUID() + '</div><div id=when>' + new Date().toISOString() +
+-      '</div><div id=r></div><script>r.textContent = Math.random().toFixed(6) + " " + crypto.randomUUID() + " " + new Date().toISOString();</script>'));
++      '</div><div id=vite>' + require('vite').stamp() + '</div><div id=r></div><script>r.textContent = Math.random().toFixed(6) + " " + crypto.randomUUID() + " " + new Date().toISOString();</script>'));
+   }
+   if (u.pathname === '/api/slow') { counter++; const n = u.searchParams.get('n'); return setTimeout(() => res.end(n + counter), delay); }
+   if (u.pathname === '/api/note' && req.method === 'POST') {
+@@ -67,7 +67,7 @@ test('race: the last response wins', async ({ page }) => {
+ test('ids', async ({ page }) => {
+   await page.goto('/ids');
+   await expect(page.locator('#r')).not.toBeEmpty();
+-  const v = [await page.locator('#sid').textContent(), await page.locator('#when').textContent(), await page.locator('#r').textContent(), Math.random()];
++  const v = [await page.locator('#sid').textContent(), await page.locator('#when').textContent(), await page.locator('#vite').textContent(), await page.locator('#r').textContent(), Math.random()];
+   fs.appendFileSync(process.env.IDS_FILE, JSON.stringify(v) + '\\n');
+ });
+ test('runner write vs browser read', async ({ page, request }) => {
+@@ -85,6 +85,9 @@ function fixture() {
+   fs.writeFileSync(path.join(DIR, 'package.json'), '{"name":"fixture-pw","private":true}');
+   fs.writeFileSync(path.join(DIR, 'app.js'), APP);
+   fs.mkdirSync(path.join(DIR, 'node_modules', '.bin'), { recursive: true });
++  // A dev server of the app's own (as Vite in solid-start): its clock reads are the app's.
++  fs.mkdirSync(path.join(DIR, 'node_modules', 'vite'), { recursive: true });
++  fs.writeFileSync(path.join(DIR, 'node_modules', 'vite', 'index.js'), 'exports.stamp = () => Date.now();\n');
+   fs.writeFileSync(path.join(DIR, 'node_modules', '.bin', 'fixture-tool'), '#!/bin/sh\nexit 0\n', { mode: 0o755 });
+   fs.writeFileSync(path.join(DIR, 'tests', 'races.spec.js'), SPEC);
+   fs.writeFileSync(path.join(DIR, 'playwright.config.js'), `module.exports = {
+-- 
+2.43.0
+

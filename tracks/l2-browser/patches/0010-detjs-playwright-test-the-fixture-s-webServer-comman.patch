@@ -1,7 +1,7 @@
 From ee6ea078cea8f7b5184eceab03402f2aada48aa8 Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 17 Nov 2026 08:27:37 +0000
-Subject: [PATCH 10/10] detjs playwright test: the fixture's webServer command
+Subject: [PATCH 10/11] detjs playwright test: the fixture's webServer command
  uses a node_modules/.bin tool (fails before the PATH fix)
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
