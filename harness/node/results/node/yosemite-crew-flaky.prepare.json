@@ -1,0 +1,12 @@
+{
+  "name": "yosemite-crew-flaky",
+  "kind": "flaky",
+  "status": "baseline-broken",
+  "node": "node v20.20.2",
+  "runner": "jest",
+  "runner_version": "29.7.0",
+  "tests": 1424,
+  "first_run_s": 36.844642758000006,
+  "commit": "aaf57e0fb680084a98536a3b4da6d5babdca9f77",
+  "detail": "1424/1424 tests fail in the first baseline run"
+}
