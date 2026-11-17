@@ -157,7 +157,9 @@ SPECS = [
     },
     {
         "name": "litellm", "url": GH + "BerriAI/litellm", "lang": "pytest",
-        "install": [venv("3.12"), uvsync("--all-groups --all-extras") + " || " + uvsync("")],
+        # --all-groups pulls litellm-admin-mcp from a GitHub archive that can be unreachable (403): fall back to
+        # every extra plus the dev group, which holds the unit-test dependencies
+        "install": [venv("3.12"), uvsync("--all-groups --all-extras") + " || " + uvsync("--all-extras --group dev")],
         "install_files": ["uv.lock", "pyproject.toml"],
         "units": {"include": ["tests/unit/**/test_*.py"], "sample": 0.1, "seed": "s2"},
         "cmd": ["{py}", *PYTEST, "{unit}"],
