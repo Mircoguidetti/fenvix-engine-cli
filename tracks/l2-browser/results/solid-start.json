@@ -3,7 +3,7 @@
  "repo": "solidjs/solid-start",
  "ref": "68784294b16692adf687c25bcd58c16c8a625cb3",
  "status": "ok",
- "run_id": "44049271859",
+ "run_id": "44052628988",
  "setup_s": 30,
  "params": {
   "baseline": 5,
@@ -30,7 +30,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 45.3,
+   "wall_s": 47.8,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -93,7 +93,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 44.3,
+   "wall_s": 45.7,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -156,7 +156,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 44.1,
+   "wall_s": 46.2,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -219,7 +219,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 44.2,
+   "wall_s": 46.5,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -282,7 +282,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 44.1,
+   "wall_s": 45.8,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -345,7 +345,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 68.2,
+   "wall_s": 69.7,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -408,7 +408,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 69.0,
+   "wall_s": 70.5,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -471,7 +471,7 @@
    "filters": [],
    "extra": [],
    "rc": 0,
-   "wall_s": 66.5,
+   "wall_s": 68.4,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -536,7 +536,7 @@
     "--workers=1"
    ],
    "rc": 0,
-   "wall_s": 48.6,
+   "wall_s": 50.7,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -599,7 +599,7 @@
    "filters": [],
    "extra": [],
    "rc": 1,
-   "wall_s": 97.8,
+   "wall_s": 100.7,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -667,7 +667,7 @@
    "filters": [],
    "extra": [],
    "rc": 1,
-   "wall_s": 98.5,
+   "wall_s": 100.8,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -735,7 +735,7 @@
    "filters": [],
    "extra": [],
    "rc": 1,
-   "wall_s": 87.8,
+   "wall_s": 101.0,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -797,13 +797,13 @@
    }
   }
  ],
- "measured_at": "2026-11-17T08:50:34Z",
+ "measured_at": "2026-11-17T09:34:43Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "tests_baseline": 47,
- "baseline_wall_median_s": 44.2,
- "stress_wall_median_s": 68.2,
- "serial_wall_median_s": 48.6,
- "det_wall_median_s": 97.8,
+ "baseline_wall_median_s": 46.2,
+ "stress_wall_median_s": 69.7,
+ "serial_wall_median_s": 50.7,
+ "det_wall_median_s": 100.8,
  "always_failing_baseline": [],
  "flaky": [],
  "broken_by_controls": [
@@ -850,17 +850,42 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 9e358e193077dedc6d7bdf95d79028e2 56"
+     "v": "http://127.0.0.1:3000 832e0cedbb0765e9396bc81590f76aba 692"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 0066ea78f6bfd015aac16691e6045919 56"
+     "v": "http://127.0.0.1:3000 7940f214ea69cc1db743514195bb214a 691"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 9e358e193077dedc6d7bdf95d79028e2 56\" vs \"http://127.0.0.1:3000 0066ea78f6bfd015aac16691e6045919 56\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 832e0cedbb0765e9396bc81590f76aba 692\" vs \"http://127.0.0.1:3000 7940f214ea69cc1db743514195bb214a 691\""
+   }
+  },
+  {
+   "key": "client-only.test.ts::clientOnly::renders a named export when the loader resolves to the component [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 10,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "server.fingerprint",
+     "at": "",
+     "v": "http://127.0.0.1:3000 5e2805e17f51a62275f8aca5bdefc41e 512"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "server.fingerprint",
+     "at": "",
+     "v": "http://127.0.0.1:3000 ab23035c8ea7ff54010c339e9d1d2ab3 520"
+    },
+    "reason": "other",
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 5e2805e17f51a62275f8aca5bdefc41e 512\" vs \"http://127.0.0.1:3000 ab23035c8ea7ff54010c339e9d1d2ab3 520\""
    }
   },
   {
@@ -875,17 +900,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 b45c9e7c2a6f15aaaa060cb22e959440 3"
+     "v": "http://127.0.0.1:3000 132f316aa5465dac273141f420b49d63 287"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 127c5cd8a5a37c44ada289c0498d53b4 3"
+     "v": "http://127.0.0.1:3000 bec79516fc7d337ed63da409f2d3f42f 287"
     },
     "reason": "other",
-    "description": "event #6: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 b45c9e7c2a6f15aaaa060cb22e959440 3\" vs \"http://127.0.0.1:3000 127c5cd8a5a37c44ada289c0498d53b4 3\""
+    "description": "event #6: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 132f316aa5465dac273141f420b49d63 287\" vs \"http://127.0.0.1:3000 bec79516fc7d337ed63da409f2d3f42f 287\""
    }
   },
   {
@@ -900,46 +925,21 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 eee3ee3d4fc60c1c9574f299a3f50c1e 5"
+     "v": "http://127.0.0.1:3000 0fef5b4c710416547fdb2c08847049f6 281"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 ab0b6194adf77276964dc4b2ac72ac4a 5"
+     "v": "http://127.0.0.1:3000 8d68f154632636847aa389bee5454784 282"
     },
     "reason": "other",
-    "description": "event #6: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 eee3ee3d4fc60c1c9574f299a3f50c1e 5\" vs \"http://127.0.0.1:3000 ab0b6194adf77276964dc4b2ac72ac4a 5\""
+    "description": "event #6: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 0fef5b4c710416547fdb2c08847049f6 281\" vs \"http://127.0.0.1:3000 8d68f154632636847aa389bee5454784 282\""
    }
   },
   {
    "key": "hydration-navigation.test.ts::navigates while the initial route module is still loading [chromium]",
-   "divergence": {
-    "run_a": 0,
-    "run_b": 1,
-    "index": 6,
-    "window": null,
-    "event_a": {
-     "t": 0,
-     "s": "other",
-     "o": "dom.digest",
-     "at": "",
-     "v": "8bb053fad59b51c113e0ca3398efca92"
-    },
-    "event_b": {
-     "t": 0,
-     "s": "other",
-     "o": "dom.digest",
-     "at": "",
-     "v": "05beadf457d028e60587a2001d391f8b"
-    },
-    "reason": "other",
-    "description": "event #6: dom.digest @  returned different values: \"8bb053fad59b51c113e0ca3398efca92\" vs \"05beadf457d028e60587a2001d391f8b\""
-   }
-  },
-  {
-   "key": "hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]",
    "divergence": {
     "run_a": 0,
     "run_b": 1,
@@ -950,17 +950,42 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 317a0f71e13dc32c9b46ec0df882b6cc 3"
+     "v": "http://127.0.0.1:3000 918023b73cab1df6ac8ece6bd36ed318 335"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 848fdc83634b6610930c7b03e0d5e2dd 3"
+     "v": "http://127.0.0.1:3000 04ec2e67cfaf0e1fa23b71269306822b 336"
     },
     "reason": "other",
-    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 317a0f71e13dc32c9b46ec0df882b6cc 3\" vs \"http://127.0.0.1:3000 848fdc83634b6610930c7b03e0d5e2dd 3\""
+    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 918023b73cab1df6ac8ece6bd36ed318 335\" vs \"http://127.0.0.1:3000 04ec2e67cfaf0e1fa23b71269306822b 336\""
+   }
+  },
+  {
+   "key": "hydration-navigation.test.ts::handles a pathname change before hydration [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 6,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "1db70e93688890268bacc38afc2fa0e1"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "0d65c4cbc3e1f394081de3452c8f528e"
+    },
+    "reason": "other",
+    "description": "event #6: dom.digest @  returned different values: \"1db70e93688890268bacc38afc2fa0e1\" vs \"0d65c4cbc3e1f394081de3452c8f528e\""
    }
   },
   {
@@ -975,17 +1000,42 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 c161e2baa1a69cc0654478c836e740ac 6"
+     "v": "http://127.0.0.1:3000 2e029d036df3a4c687d99862a430cfab 322"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 968692e72cfb34131778de708b7b56e8 6"
+     "v": "http://127.0.0.1:3000 71452e25cbcac669eff7a975ce3cb014 322"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 c161e2baa1a69cc0654478c836e740ac 6\" vs \"http://127.0.0.1:3000 968692e72cfb34131778de708b7b56e8 6\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 2e029d036df3a4c687d99862a430cfab 322\" vs \"http://127.0.0.1:3000 71452e25cbcac669eff7a975ce3cb014 322\""
+   }
+  },
+  {
+   "key": "hydration.test.ts::SSR Hydration::should render SSR content and hydrate successfully [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 6,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "9f379fe7d6a3ac1b7e7c132c4424f3e2"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "dom.digest",
+     "at": "",
+     "v": "e1cf32dd8343d8c0642897898678aa79"
+    },
+    "reason": "other",
+    "description": "event #6: dom.digest @  returned different values: \"9f379fe7d6a3ac1b7e7c132c4424f3e2\" vs \"e1cf32dd8343d8c0642897898678aa79\""
    }
   },
   {
@@ -1000,42 +1050,92 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 f5072543983049691e42348738b551c4 12"
+     "v": "http://127.0.0.1:3000 7ea538e28d75943422894d57f6d2b60a 397"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 2423690f4e111129511847ce0ed263ba 12"
+     "v": "http://127.0.0.1:3000 91ebdad0ac551a4f982b6b0b4c6b430c 397"
     },
     "reason": "other",
-    "description": "event #8: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 f5072543983049691e42348738b551c4 12\" vs \"http://127.0.0.1:3000 2423690f4e111129511847ce0ed263ba 12\""
+    "description": "event #8: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 7ea538e28d75943422894d57f6d2b60a 397\" vs \"http://127.0.0.1:3000 91ebdad0ac551a4f982b6b0b4c6b430c 397\""
    }
   },
   {
-   "key": "server-function.test.ts::server-function::should have isServer true in the server function - nested [chromium]",
+   "key": "route-groups.test.ts::route-groups::should resolve `/routes/nested/(ignored)route0.tsx` to `nested/route0` [chromium]",
    "divergence": {
     "run_a": 0,
     "run_b": 1,
-    "index": 10,
+    "index": 7,
     "window": null,
     "event_a": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 8fb3cf2874726b76dc261b313e8954c8 3"
+     "v": "http://127.0.0.1:3000 2264fa37e1267797b19f3ee8ef428a96 289"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 271ca6a609e14f8eac0fcdb0125d392a 3"
+     "v": "http://127.0.0.1:3000 af21d0d79a0a18b2a3d8bf53473c585b 289"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 8fb3cf2874726b76dc261b313e8954c8 3\" vs \"http://127.0.0.1:3000 271ca6a609e14f8eac0fcdb0125d392a 3\""
+    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 2264fa37e1267797b19f3ee8ef428a96 289\" vs \"http://127.0.0.1:3000 af21d0d79a0a18b2a3d8bf53473c585b 289\""
+   }
+  },
+  {
+   "key": "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/(ignored)route2.tsx` to `nested/route2` [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 7,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "server.fingerprint",
+     "at": "",
+     "v": "http://127.0.0.1:3000 441a0702cab59d94aa12c263df4b3701 289"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "server.fingerprint",
+     "at": "",
+     "v": "http://127.0.0.1:3000 3963ddb07d6a008a88921554591c0ab6 289"
+    },
+    "reason": "other",
+    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 441a0702cab59d94aa12c263df4b3701 289\" vs \"http://127.0.0.1:3000 3963ddb07d6a008a88921554591c0ab6 289\""
+   }
+  },
+  {
+   "key": "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/route3.tsx` to `nested/route3` [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 7,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "server.fingerprint",
+     "at": "",
+     "v": "http://127.0.0.1:3000 d75df42a026e2ed465c2bb8df1d4fb94 289"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "server.fingerprint",
+     "at": "",
+     "v": "http://127.0.0.1:3000 fe967542e15a3af3cb13cc7802662fd4 289"
+    },
+    "reason": "other",
+    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 d75df42a026e2ed465c2bb8df1d4fb94 289\" vs \"http://127.0.0.1:3000 fe967542e15a3af3cb13cc7802662fd4 289\""
    }
   },
   {
@@ -1050,17 +1150,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 d0917e63fed90ed5829c6b9e54ab0464 6"
+     "v": "http://127.0.0.1:3000 357a28908ba20c9bd8ef26c600006d19 337"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 ea0b5c3f256806a3584ee15126048173 6"
+     "v": "http://127.0.0.1:3000 5caf4d6dbefdf48b9e0ac411c1ce1ce3 337"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 d0917e63fed90ed5829c6b9e54ab0464 6\" vs \"http://127.0.0.1:3000 ea0b5c3f256806a3584ee15126048173 6\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 357a28908ba20c9bd8ef26c600006d19 337\" vs \"http://127.0.0.1:3000 5caf4d6dbefdf48b9e0ac411c1ce1ce3 337\""
    }
   },
   {
@@ -1075,17 +1175,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 5b14e914284ec29227841773fe210e7c 5"
+     "v": "http://127.0.0.1:3000 d372baf4890c6106790c5cf3084bf78d 341"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 fb2409f2c432ed2cc655d45da6486b6e 5"
+     "v": "http://127.0.0.1:3000 deea9a2e0d3257e3279d32ec6783dd11 341"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 5b14e914284ec29227841773fe210e7c 5\" vs \"http://127.0.0.1:3000 fb2409f2c432ed2cc655d45da6486b6e 5\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 d372baf4890c6106790c5cf3084bf78d 341\" vs \"http://127.0.0.1:3000 deea9a2e0d3257e3279d32ec6783dd11 341\""
    }
   },
   {
@@ -1100,117 +1200,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 42b03449075921962bace02c3f2f385c 6"
+     "v": "http://127.0.0.1:3000 98c50d67c7cd647155b20c3ea35a68f9 336"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 261e4d6dba3d50475a08a5481dadcafb 6"
+     "v": "http://127.0.0.1:3000 eda65c822fba8cf461983f5ed7d75170 336"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 42b03449075921962bace02c3f2f385c 6\" vs \"http://127.0.0.1:3000 261e4d6dba3d50475a08a5481dadcafb 6\""
-   }
-  },
-  {
-   "key": "server-function.test.ts::server-function::should externalize npm module in server function - nested [chromium]",
-   "divergence": {
-    "run_a": 0,
-    "run_b": 1,
-    "index": 10,
-    "window": null,
-    "event_a": {
-     "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
-     "at": "",
-     "v": "http://127.0.0.1:3000 1b08d41e945e6bb26b801753b1a362da 6"
-    },
-    "event_b": {
-     "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
-     "at": "",
-     "v": "http://127.0.0.1:3000 c7b0e6cb1d7b26e4258448748cc4b203 6"
-    },
-    "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 1b08d41e945e6bb26b801753b1a362da 6\" vs \"http://127.0.0.1:3000 c7b0e6cb1d7b26e4258448748cc4b203 6\""
-   }
-  },
-  {
-   "key": "server-function.test.ts::server-function::should have isServer true in the server function - toplevel [chromium]",
-   "divergence": {
-    "run_a": 0,
-    "run_b": 1,
-    "index": 10,
-    "window": null,
-    "event_a": {
-     "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
-     "at": "",
-     "v": "http://127.0.0.1:3000 5dc32d9c41f7eac42c554b10e1a1da75 6"
-    },
-    "event_b": {
-     "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
-     "at": "",
-     "v": "http://127.0.0.1:3000 ab4232d1a8f7ba922e7501246f4983ec 6"
-    },
-    "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 5dc32d9c41f7eac42c554b10e1a1da75 6\" vs \"http://127.0.0.1:3000 ab4232d1a8f7ba922e7501246f4983ec 6\""
-   }
-  },
-  {
-   "key": "server-function.test.ts::server-function::should have an id of type string in the server function meta - toplevel [chromium]",
-   "divergence": {
-    "run_a": 0,
-    "run_b": 1,
-    "index": 10,
-    "window": null,
-    "event_a": {
-     "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
-     "at": "",
-     "v": "http://127.0.0.1:3000 b6366e0bbc0803dfa16374401e2e472e 5"
-    },
-    "event_b": {
-     "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
-     "at": "",
-     "v": "http://127.0.0.1:3000 86cdbba15edb20a5df8200961300ff2f 5"
-    },
-    "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 b6366e0bbc0803dfa16374401e2e472e 5\" vs \"http://127.0.0.1:3000 86cdbba15edb20a5df8200961300ff2f 5\""
-   }
-  },
-  {
-   "key": "server-function.test.ts::server-function::should externalize node builtin in server function - toplevel [chromium]",
-   "divergence": {
-    "run_a": 0,
-    "run_b": 1,
-    "index": 10,
-    "window": null,
-    "event_a": {
-     "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
-     "at": "",
-     "v": "http://127.0.0.1:3000 a9ebb160d4e72f7fcf67ad2571a212ee 5"
-    },
-    "event_b": {
-     "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
-     "at": "",
-     "v": "http://127.0.0.1:3000 daf5dfcb26f9cb7ae3cea8444bfccb3a 5"
-    },
-    "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 a9ebb160d4e72f7fcf67ad2571a212ee 5\" vs \"http://127.0.0.1:3000 daf5dfcb26f9cb7ae3cea8444bfccb3a 5\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 98c50d67c7cd647155b20c3ea35a68f9 336\" vs \"http://127.0.0.1:3000 eda65c822fba8cf461983f5ed7d75170 336\""
    }
   }
  ],
@@ -1246,8 +1246,8 @@
    "PPP"
   ],
   "client-only.test.ts::clientOnly::renders a named export when the loader resolves to the component [chromium]": [
-   "stable",
-   1,
+   "diverged",
+   3,
    "PPP"
   ],
   "http-header.test.ts::http header::should set http header [chromium]": [
@@ -1257,22 +1257,22 @@
   ],
   "http-header.test.ts::http header::should set http header with deferred data [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "hydration-navigation.test.ts::navigates while the initial route module is still loading [chromium]": [
    "diverged",
-   2,
+   3,
    "PPP"
   ],
   "hydration-navigation.test.ts::handles a pathname change before hydration [chromium]": [
-   "stable",
-   1,
+   "diverged",
+   2,
    "PPP"
   ],
   "hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]": [
-   "diverged",
-   3,
+   "stable",
+   1,
    "PPP"
   ],
   "hydration-navigation.test.ts::handles a streaming query string change before hydration [chromium]": [
@@ -1286,8 +1286,8 @@
    "PPP"
   ],
   "hydration.test.ts::SSR Hydration::should render SSR content and hydrate successfully [chromium]": [
-   "stable",
-   1,
+   "diverged",
+   3,
    "PPP"
   ],
   "no-js-action.test.ts::actions without JavaScript::returning json() stays on the submitting page and keeps the result [chromium]": [
@@ -1311,8 +1311,8 @@
    "PPP"
   ],
   "route-groups.test.ts::route-groups::should resolve `/routes/nested/(ignored)route0.tsx` to `nested/route0` [chromium]": [
-   "stable",
-   1,
+   "diverged",
+   2,
    "PPP"
   ],
   "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(ignored)route1.tsx` to `nested/route1` [chromium]": [
@@ -1321,23 +1321,23 @@
    "PPP"
   ],
   "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/(ignored)route2.tsx` to `nested/route2` [chromium]": [
-   "stable",
-   1,
+   "diverged",
+   3,
    "PPP"
   ],
   "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/route3.tsx` to `nested/route3` [chromium]": [
-   "stable",
-   1,
+   "diverged",
+   2,
    "PPP"
   ],
   "server-function.test.ts::server-function::should have isServer true in the server function - nested [chromium]": [
-   "diverged",
-   3,
+   "stable",
+   1,
    "PPP"
   ],
   "server-function.test.ts::server-function::should have isServer true in the server function - const [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "server-function.test.ts::server-function::should have an id of type string in the server function meta - nested [chromium]": [
@@ -1352,27 +1352,27 @@
   ],
   "server-function.test.ts::server-function::should externalize npm module in server function - nested [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "server-function.test.ts::server-function::should have isServer true in the server function - toplevel [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "server-function.test.ts::server-function::should have an id of type string in the server function meta - toplevel [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "server-function.test.ts::server-function::should externalize node builtin in server function - toplevel [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "server-function.test.ts::server-function::should externalize npm module in server function - toplevel [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build when anon default export and server functions [chromium]": [
@@ -1382,7 +1382,7 @@
   ],
   "server-function.test.ts::server-function::should build with generator as server function [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build with a server function ping [chromium]": [
@@ -1391,8 +1391,8 @@
    "FFF"
   ],
   "server-function.test.ts::server-function::should round-trip a custom class through a custom seroval plugin [chromium]": [
-   "diverged",
-   3,
+   "stable",
+   1,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build with a server function w/ form data [chromium]": [
@@ -1402,7 +1402,7 @@
   ],
   "server-function.test.ts::server-function::should build with a server function w/ blob data [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "server-function.test.ts::server-function::should send files next to other arguments [chromium]": [
@@ -1411,28 +1411,28 @@
    "PPP"
   ],
   "server-function.test.ts::server-function::should remove exports for non-function values when top-level use server is used [chromium]": [
-   "diverged",
-   3,
+   "stable",
+   1,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build with a env:server [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build with a server function including an unused try/catch variable [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build with a server function including an unused destructured variable [chromium]": [
-   "diverged",
-   3,
+   "stable",
+   1,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": [
    "diverged",
-   3,
+   2,
    "FFF"
   ],
   "server-function.test.ts::server-function::should propagate a server function error with non-latin1 message [chromium]": [
@@ -1441,8 +1441,8 @@
    "PPP"
   ],
   "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": [
-   "diverged",
-   3,
+   "stable",
+   1,
    "PPP"
   ],
   "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": [
@@ -1452,5 +1452,5 @@
   ]
  },
  "targets": [],
- "elapsed_min": 12.6
+ "elapsed_min": 13.2
 }
