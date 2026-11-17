@@ -52,6 +52,24 @@ Level 0 also has to sleep for real whenever a second thread is alive.
   only I/O waiters left, it declares a deadlock after `--det-threads-deadlock`
   real seconds (default 5) instead of hanging.
 
+## What else had to be controlled (found on easypy, Block 2)
+
+* **Thread exit.** A finished thread still runs interpreter teardown after it hands the
+  baton on. It now leaves the scheduler first (it can no longer consume a seeded choice)
+  and the next baton holder waits until it has really ended, so frees, and with them
+  object addresses, do not race with the running thread.
+* **Address order.** `concurrent.futures` iterates sets of futures and `_AcquireFutures`
+  locks them sorted by `id()`: which future is seen first followed the heap layout. Under
+  `--det-threads` futures hash and sort by creation number; `ThreadPoolExecutor._threads`
+  iterates and pops in insertion order. Other sets of objects with the default hash
+  still follow addresses (see limits).
+* **The standard library's own clock.** `threading._time` and `queue.time` (used by
+  `Condition.wait_for`, `Barrier`, `Semaphore`, `Queue.get` to compute the time left) are
+  the virtual clock, and positive timeouts round up to 1 ns: otherwise a timed-out
+  virtual wait is retried forever.
+* **Entropy in worker threads** (`uuid4()` per thread in easypy) changes the fingerprint
+  but not the interleaving: the verifier names it `entropy`; `--det-urandom` fixes it.
+
 ## Escape hatch (C extensions and uncontrolled blocking)
 
 A managed thread that blocks inside C code (GIL released; a lock bound before
@@ -74,6 +92,9 @@ locks fall back to plain lock behaviour for them.
 * Free-threaded CPython (3.13t) is out of scope: the baton still serialises, but
   C-level atomics are not modelled.
 * Processes (multiprocessing, subprocess) stay external (Level 2 work).
+* Sets and dicts keyed by objects with the default (address) hash, other than futures
+  and pool threads, iterate in an order that can differ between runs: object addresses
+  are not deterministic (Level 2: a deterministic allocator).
 
 ## Compared approaches
 
