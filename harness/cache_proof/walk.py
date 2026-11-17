@@ -71,7 +71,7 @@ def hfrac(seed: str, x: str) -> float:
 
 def commit_results(paths, msg):
     """Commit result files to the current branch with rebase-retry (inside GitHub Actions)."""
-    repo = ROOT
+    repo = Path(os.environ.get("CP_REPO", str(ROOT)))
     branch = os.environ.get("CP_BRANCH", "claude/loving-maxwell-58mv2w")
     for _ in range(12):
         sh(["git", "fetch", "-q", "origin", branch], cwd=repo)
@@ -231,7 +231,7 @@ class Walk:
         tim = self.work / f"t-{tag}.json"
         outp.unlink(missing_ok=True)
         tim.unlink(missing_ok=True)
-        cmd = [self.py, "-m", "pytest", "--det", f"--det-outcomes={outp}"]
+        cmd = [self.py, *self.spec.get("python_flags", []), "-m", "pytest", "--det", f"--det-outcomes={outp}"]
         if cache is not None:
             cmd.append(f"--det-cache={cache}")
             if receipts is not None:

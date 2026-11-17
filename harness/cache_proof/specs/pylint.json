@@ -1,0 +1,14 @@
+{
+ "name": "pylint",
+ "url": "https://github.com/pylint-dev/pylint",
+ "head": "3883d7869bc9",
+ "commits": 51,
+ "mode": "suite",
+ "python": "3.13",
+ "pytest_args": [
+  "tests",
+  "--ignore=tests/benchmark",
+  "--ignore=tests/primer"
+ ],
+ "note": "one more large Python application (a linter CLI, ~2000 test functions incl. functional tests)"
+}
