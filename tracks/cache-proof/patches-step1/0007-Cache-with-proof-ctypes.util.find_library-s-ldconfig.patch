@@ -1,7 +1,7 @@
 From cff98be4310dad70567ca383721df5ee62bf11b2 Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 17 Nov 2026 08:24:15 +0000
-Subject: [PATCH 7/8] Cache with proof: ctypes.util.find_library's `ldconfig
+Subject: [PATCH 7/9] Cache with proof: ctypes.util.find_library's `ldconfig
  -p` reads the linker cache (not a subprocess); walk: --det-urandom, units
  that cannot be collected left out and listed, output tails kept; pylint
  without pytest-benchmark, home-assistant with --continue-on-collection-errors

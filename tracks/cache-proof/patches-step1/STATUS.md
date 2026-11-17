@@ -14,3 +14,6 @@ Updated 2026-11-17 16:50 UTC.
 * Done: 0008 every refusal names its cause (program/address, call site, context): `not_cached_where`, summary `not_cached_detail`.
 * Next: child following (strace), find_library, wall vs monotonic clock reads, opt-in stable epoch; then the full measurement run.
 * Pre-existing: tests/test_clock.py 2 wait-for-child tests fail when stale deterministic temp dirs exist in /tmp (pass with a fresh TMPDIR).
+
+## Handover (2026-11-17, coordinator)
+The agent working on step 1 was stopped and the work moves to a separate long-running session. Patch 0009 is UNFINISHED work in progress: following child processes (python/detpy/follow.py, plugin.py, proofcache.py changes), committed as-is, not tested. Continue from 0001-0009.
