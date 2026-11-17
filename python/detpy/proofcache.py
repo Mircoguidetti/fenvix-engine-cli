@@ -484,6 +484,11 @@ class Capture:
         elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
             if self._caller_kind() == "infra":
                 return
+            if event == "subprocess.Popen" and _is_find_library_ldconfig(args):
+                # ctypes.util.find_library (uuid, ifaddr, ... at import time) asks `ldconfig -p`, which prints the
+                # dynamic linker's cache: that file is the input
+                self.read(self._cur(), _LD_SO_CACHE, "f")
+                return
             self.flags.setdefault(self._cur(), set()).add("spawn")
         else:
             idx = _WRITE_EVENTS.get(event)
@@ -1249,6 +1254,26 @@ def _encodable(s: str) -> bool:
         return True
     except UnicodeEncodeError:
         return False
+
+
+_LD_SO_CACHE = "/etc/ld.so.cache"
+
+
+def _is_find_library_ldconfig(args) -> bool:
+    """``subprocess.Popen(['/sbin/ldconfig', '-p'])`` called by ``ctypes.util.find_library``."""
+    try:
+        argv = list(args[1]) if len(args) > 1 and not isinstance(args[1], (str, bytes)) else None
+    except TypeError:
+        return False
+    if not argv or len(argv) != 2 or os.path.basename(os.fsdecode(argv[0])) != "ldconfig" or argv[1] != "-p":
+        return False
+    f = sys._getframe(2)
+    while f is not None:
+        fn = f.f_code.co_filename
+        if fn.endswith(os.sep + os.path.join("ctypes", "util.py")):
+            return True
+        f = f.f_back
+    return False
 
 
 def _numeric_host(host: str) -> bool:

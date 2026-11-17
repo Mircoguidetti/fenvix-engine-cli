@@ -66,8 +66,10 @@
  "pytest_args": [
   "--timeout=60",
   "-p",
-  "no:sugar"
+  "no:sugar",
+  "--continue-on-collection-errors"
  ],
  "timeout": 5400,
- "note": "sample as in skip study 2 (12% of test files, seed s2); one pytest process per shard over its files, as CI runs groups"
+ "note": "sample as in skip study 2 (12% of test files, seed s2); one pytest process per shard over its files, as CI runs groups",
+ "precollect": true
 }

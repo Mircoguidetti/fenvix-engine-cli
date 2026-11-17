@@ -114,6 +114,7 @@ class Walk:
                        "steps": []}
         self.last_dep = None
         self.args: list[str] = []
+        self.collect_ok: dict[str, bool] = {}
 
     # -- setup -------------------------------------------------------------------
     def fmt(self, s: str) -> str:
@@ -231,7 +232,9 @@ class Walk:
         tim = self.work / f"t-{tag}.json"
         outp.unlink(missing_ok=True)
         tim.unlink(missing_ok=True)
-        cmd = [self.py, *self.spec.get("python_flags", []), "-m", "pytest", "--det", f"--det-outcomes={outp}"]
+        # --det-urandom: under --det the randomness is controlled (os.urandom included), as for the clock
+        cmd = [self.py, *self.spec.get("python_flags", []), "-m", "pytest", "--det", "--det-urandom",
+               f"--det-outcomes={outp}"]
         if cache is not None:
             cmd.append(f"--det-cache={cache}")
             if receipts is not None:
@@ -240,7 +243,7 @@ class Walk:
         env = self.env()
         env["CP_TIMES_OUT"] = str(tim)
         code, out, wall = sh(cmd, cwd=self.src, env=env, timeout=self.spec.get("timeout", 3000))
-        r = {"exit": code, "wall": wall}
+        r = {"exit": code, "wall": wall, "out_tail": out[-2500:]}
         try:
             o = json.loads(outp.read_text())
             r["outcomes"] = o.get("outcomes", {})
@@ -269,11 +272,30 @@ class Walk:
                 return st
             self.args = self.pytest_args()
             self.last_dep = h
+            self.collect_ok = {}
         units = self.units()
+        if self.spec.get("precollect") and units:
+            units = self.collectable(units, st)
         st["units"] = len(units)
         if self.mode == "files":
             return self.step_files(st, units, i)
         return self.step_suite(st, units, i)
+
+    def collectable(self, units: list[str], st: dict) -> list[str]:
+        """Units whose collection works in this environment (one plain ``--collect-only`` per unit not seen since
+        the last install). A unit whose conftest or test module cannot be imported (a requirement dropped by the
+        installer) would abort the whole session: it is left out and listed."""
+        for u in units:
+            if u in self.collect_ok:
+                continue
+            git(self.src, "clean", "-qfd", check=False)
+            code, out, _ = sh([self.py, *self.spec.get("python_flags", []), "-m", "pytest", "--collect-only", "-q",
+                               "-p", "no:cacheprovider", u], cwd=self.src, env=self.env(), timeout=600)
+            self.collect_ok[u] = code in (0, 5)
+        dropped = [u for u in units if not self.collect_ok[u]]
+        if dropped:
+            st["dropped_units"] = dropped
+        return [u for u in units if self.collect_ok[u]]
 
     def compare(self, cached: dict, fresh: dict, ids, confirm) -> dict:
         v = {"checked": 0, "same": 0, "mismatches": []}
@@ -305,7 +327,7 @@ class Walk:
         st["B"] = {"exit": b["exit"], "wall": b["wall"]}
         if not b["outcomes"] or not a["outcomes"]:
             st["status"] = "run-failed"
-            st["tail"] = (a.get("tail") or b.get("tail") or "")[-1500:]
+            st["tail"] = (a.get("tail") or a.get("out_tail") or b.get("tail") or b.get("out_tail") or "")[-2500:]
             return st
         reused = set((a.get("cache") or {}).get("reused_ids", ()))
         tb = b["times"]
