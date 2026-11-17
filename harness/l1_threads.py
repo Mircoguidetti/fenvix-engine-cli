@@ -290,6 +290,13 @@ def measure_suite(project: dict, args) -> dict:
     res["suite_seeds"] = seeds
     snap = _snapshot_mtimes(Path(p.src))
     restored = res["mtimes_restored"] = []
+    # A first --det run pays one-off costs (detpy's modules compiled, caches filled):
+    # measured on Actions, several seconds on small suites. One discarded run first.
+    warm = res["warmup"] = []
+    for _ in range(args.warmup):
+        _restore_mtimes(snap)
+        w = pytest_run(p, suite + ["--det", "--det-threads"], rd / "suite-warmup.json", args.suite_timeout)
+        warm.append({"duration_s": w["duration_s"], "exit": w["exit"], "timed_out": w["timed_out"]})
     for i in range(args.timing_runs):
         for mode, flags in suite_modes(seeds).items():
             restored.append(_restore_mtimes(snap))
@@ -471,6 +478,7 @@ def main(argv=None) -> None:
     ap.add_argument("--confirm", type=int, default=10)
     ap.add_argument("--timing-runs", type=int, default=3)
     ap.add_argument("--suite-seeds", default="1", help="comma separated exploration seeds for suite runs")
+    ap.add_argument("--warmup", type=int, default=1, help="discarded --det runs before the timed suite runs")
     ap.add_argument("--loaded-runs", type=int, default=5)
     ap.add_argument("--run-timeout", type=float, default=600)
     ap.add_argument("--suite-timeout", type=float, default=2400)
