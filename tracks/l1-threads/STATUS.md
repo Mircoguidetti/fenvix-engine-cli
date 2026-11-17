@@ -17,3 +17,6 @@ Patches: `patches/` (`git am` on the base).
 - Fix: zero-timeout polls (select(0)) must let time and other threads progress (anyio checkpoint spin).
 - Fix: outside activity (unmanaged server thread) must not be declared a deadlock after 5 s.
 - Fix: asynchronous exceptions (pytest-timeout) inside scheduler waits.
+
+## Handover (2026-11-17, coordinator)
+The fix-round agent was stopped and the work moves to a separate long-running session. Patches 0001-0017 on base 1573079 are the whole state (worktree clean). Last findings of the stopped agent, not yet committed as fixes: requests passes when the scheduler's wait bound is longer (only the 4 Level 0 network tests remain broken there); the SIGABRT stack dump on timeout works under --det. Next: fix the anyio worker-pool breakages and hangs, then re-measure.
