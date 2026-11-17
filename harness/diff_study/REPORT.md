@@ -36,7 +36,7 @@ What works, and is worth keeping:
    cause 335 of the 416 stable divergences (80.5%); function + call ordinal
    removes all 335 and nothing real is lost.
 2. **The noise floor is low.** 99.36% of tests are identical base vs base;
-   a no-op control flagged 0 tests in 6 of 6 repositories.
+   no-op controls flagged 0 trace changes in 6 of 6 repositories.
 3. **Environment drift is caught and located.** The only PR with stable
    divergence after the site fix (isort-2731, "Small cleanup before release")
    changed `uv.lock`; the diff showed 81 tests whose first diverging event is a
@@ -217,7 +217,7 @@ it needs the same two-runs-or-controls floor.
 
 ## Caveats
 
-* **42 PRs, not 50.** Run 2 queued for 3 hours and was cancelled with 43 of
+* **42 PRs, not 50.** Run 2 ran for 3 hours and was cancelled with 43 of
   its 80 candidates done (42 ok, 1 collection error on flask-5799). Run 4
   re-runs 16 more candidates from the saved list; at the time of writing 6 of
   its 16 jobs had finished and the other 10 had been queued for over 40
