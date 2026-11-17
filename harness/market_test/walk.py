@@ -362,7 +362,7 @@ class Walker:
             req = f"--require {NODEHOOK}"
             if req not in e.get("NODE_OPTIONS", ""):
                 e["NODE_OPTIONS"] = (e.get("NODE_OPTIONS", "") + " " + req).strip()
-        e["CI"] = "true"
+        e["CI"] = self.spec.get("ci_env", "true")  # market test: mlflow-dev measures the developer mode
         return e
 
     def runtime(self):

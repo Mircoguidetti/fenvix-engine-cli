@@ -1,59 +1,14 @@
 {
- "run_id": "m1",
+ "run_id": "m2",
  "walk": [
-  {
-   "spec": "airflow",
-   "shards": 2,
-   "budget_min": 330
-  },
-  {
-   "spec": "integrations-core",
-   "shards": 2,
-   "budget_min": 330
-  },
-  {
-   "spec": "moto",
-   "shards": 2,
-   "budget_min": 330
-  },
   {
    "spec": "transformers",
    "shards": 2,
    "budget_min": 330
   },
   {
-   "spec": "mlflow",
+   "spec": "mlflow-dev",
    "shards": 2,
-   "budget_min": 330
-  },
-  {
-   "spec": "pydantic-ai",
-   "shards": 2,
-   "budget_min": 330
-  },
-  {
-   "spec": "prefect",
-   "shards": 2,
-   "budget_min": 330
-  },
-  {
-   "spec": "esphome",
-   "shards": 1,
-   "budget_min": 330
-  },
-  {
-   "spec": "litellm",
-   "shards": 2,
-   "budget_min": 330
-  },
-  {
-   "spec": "community-general",
-   "shards": 1,
-   "budget_min": 330
-  },
-  {
-   "spec": "haystack",
-   "shards": 1,
    "budget_min": 330
   }
  ]

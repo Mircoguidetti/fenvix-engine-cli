@@ -34,7 +34,7 @@ RES = HERE / "results"
 # git rev-list --first-parent --count --since=2026-08-17T00:00:00Z HEAD on a full clone, 2026-11-17
 COMMITS_92D = {"airflow": 2749, "integrations-core": 728, "moto": 269, "transformers": 1216, "mlflow": 1500,
                "pydantic-ai": 2610, "prefect": 596, "esphome": 3320, "litellm": 4788, "community-general": 287,
-               "haystack": 833, "home-assistant": 9027}
+               "haystack": 833, "mlflow-dev": 1500, "home-assistant": 9027}
 DAYS = 92
 
 

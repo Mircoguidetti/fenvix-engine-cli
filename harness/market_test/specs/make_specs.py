@@ -107,7 +107,9 @@ SPECS = [
         "install": [venv("3.12"),
                     "uv pip install -q --python {py} torch torchvision --index-url https://download.pytorch.org/whl/cpu",
                     "uv pip install -q --python {py} -e '.[testing,sentencepiece,tokenizers,vision,tiktoken]' || "
-                    "uv pip install -q --python {py} -e '.[testing,sentencepiece,vision]'"],
+                    "uv pip install -q --python {py} -e '.[testing,sentencepiece,vision]'",
+                    # torchaudio from PyPI does not load against the CPU torch build: tests skip audio without it
+                    "uv pip uninstall -q --python {py} torchaudio || true"],
         "install_files": ["setup.py", "pyproject.toml"],
         "units": {"include": ["tests/**/test_*.py"], "exclude": ["tests/sagemaker/*", "tests/quantization/*"],
                   "sample": 0.05, "seed": "s2"},
@@ -204,7 +206,14 @@ SPECS = [
     },
 ]
 
-SMOKE_SAMPLE = {"airflow": 0.02, "integrations-core": 0.03, "moto": 0.05, "transformers": 0.03, "mlflow": 0.04,
+# mlflow in developer mode: with CI=true (the walker's default, as in mlflow's CI) a session fixture of every test
+# process builds a wheel of the whole source tree (--serve-wheel), so every test reads every file; CI=false turns
+# it off. Both are measured: "mlflow" (CI mode) and "mlflow-dev".
+_mlflow = next(s for s in SPECS if s["name"] == "mlflow")
+SPECS.append(dict(json.loads(json.dumps(_mlflow)), name="mlflow-dev", ci_env="false"))
+HEADS["mlflow-dev"] = HEADS["mlflow"]
+
+SMOKE_SAMPLE = {"mlflow-dev": 0.04, "airflow": 0.02, "integrations-core": 0.03, "moto": 0.05, "transformers": 0.03, "mlflow": 0.04,
                 "pydantic-ai": 0.05, "prefect": 0.06, "esphome": 0.06, "litellm": 0.015,
                 "community-general": 0.15, "haystack": 0.2}
 
