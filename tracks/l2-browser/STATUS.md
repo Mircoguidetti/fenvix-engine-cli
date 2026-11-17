@@ -17,4 +17,4 @@ Updated 2026-11-17 08:20 UTC. Local branch `track-l2-browser` in a scratch workt
   documenso, actual, rallly, solid-start. Dry run on a local toy project works.
 
 ## Next
-- Batch 3 (run 44043803663, 8 patches, 110-min budget per repository) running; uptime-kuma broke on PATH (fixed in patch 9), rerun as batch 4 with 10 patches. Then REPORT.md.
+- Batch 3 (run 44043803663, 8 patches, 110-min budget per repository) running; uptime-kuma and rallly broke on PATH (fixed in patch 9), rerun as batch 5 with 10 patches. Then REPORT.md.
