@@ -1,0 +1,73 @@
+{
+ "name": "home-assistant",
+ "url": "https://github.com/home-assistant/core",
+ "head": "7c78cc7c2ed0",
+ "commits": 41,
+ "mode": "suite",
+ "apt": [
+  "bluez",
+  "ffmpeg",
+  "libturbojpeg0",
+  "libxml2-utils",
+  "libudev-dev",
+  "libpcap-dev",
+  "libgammu-dev",
+  "portaudio19-dev",
+  "libavformat-dev",
+  "libavcodec-dev",
+  "libavdevice-dev",
+  "libavutil-dev",
+  "libswscale-dev",
+  "libswresample-dev",
+  "libavfilter-dev",
+  "libyaml-dev",
+  "libxml2-dev",
+  "libxslt1-dev"
+ ],
+ "install": [
+  "test -x {py} || uv venv -q --python 3.14 {venv}",
+  "uv pip install -q --python {py} -r requirements.txt",
+  "python3 {harness}/pyinstall.py --python {py} -r requirements_all.txt -r requirements_test.txt",
+  "uv pip install -q --python {py} -e . $(for d in packages/hassfest packages/pytest-homeassistant; do test -d $d && echo -e $d; done) --config-settings editable_mode=compat"
+ ],
+ "install_files": [
+  "requirements*.txt",
+  "pyproject.toml",
+  "homeassistant/package_constraints.txt",
+  "packages/*/pyproject.toml"
+ ],
+ "build": [
+  "{py} -m script.translations develop --all > /dev/null"
+ ],
+ "units": {
+  "include": [
+   "tests/test_*.py",
+   "tests/**/test_*.py"
+  ],
+  "exclude": [
+   "tests/e2e/*",
+   "tests/conftest.py",
+   "tests/common.py",
+   "tests/typing.py",
+   "tests/syrupy.py",
+   "tests/patch_*.py",
+   "tests/__init__.py",
+   "tests/ignore_uncaught_exceptions.py",
+   "tests/pylint/*",
+   "tests/mypy_plugins/*",
+   "tests/non_packaged_scripts/*"
+  ],
+  "sample": 0.12,
+  "seed": "s2"
+ },
+ "python_flags": [
+  "-b"
+ ],
+ "pytest_args": [
+  "--timeout=60",
+  "-p",
+  "no:sugar"
+ ],
+ "timeout": 5400,
+ "note": "sample as in skip study 2 (12% of test files, seed s2); one pytest process per shard over its files, as CI runs groups"
+}

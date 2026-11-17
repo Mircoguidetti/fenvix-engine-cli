@@ -147,6 +147,44 @@ def test_data_file_change_reruns_its_reader(pytester, run_cache):
     r.assert_outcomes(passed=1, failed=1)
 
 
+def test_import_time_read_of_a_test_module_serves_only_its_own_tests(pytester, run_cache):
+    # test_a.py reads version.txt while it is imported; test_b.py does not import test_a
+    project(pytester, **{
+        "pkg/lib.py": "import os\nHERE = os.path.dirname(__file__)\n"
+                      "def conf():\n    return open(os.path.join(HERE, 'conf.txt')).read()\nCONF = conf()\n",
+        "pkg/conf.txt": "1",
+        "version.txt": "1.0",
+        "test_a.py": """
+            import os
+            VERSION = open(os.path.join(os.path.dirname(__file__), "version.txt")).read()
+
+            def test_version():
+                assert VERSION == "1.0"
+            """,
+        "test_b.py": """
+            from pkg import lib
+
+            def test_b():
+                assert lib.CONF == "1"
+            """,
+    })
+    run_cache()
+    _, reused, _ = run_cache()
+    assert reused == ids("test_version", mod="test_a.py") | ids("test_b", mod="test_b.py")
+    (pytester.path / "version.txt").write_text("2.0")
+    r, reused, data = run_cache()
+    assert reused == ids("test_b", mod="test_b.py")
+    assert data["cache"]["miss_ids"]["test_a.py::test_version"].startswith("data: version.txt")
+    r.assert_outcomes(passed=1, failed=1)
+    # a repository module's import-time read stays an input of every test
+    (pytester.path / "version.txt").write_text("1.0")
+    run_cache()
+    (pytester.path / "pkg/conf.txt").write_text("2")
+    r, reused, _ = run_cache()
+    assert reused == set()
+    r.assert_outcomes(passed=1, failed=1)
+
+
 def test_read_write_open_is_an_input(pytester, run_cache):
     # review R-002 error 1: a fixture opened read-write (sqlite, "r+") was dropped from the inputs
     import sqlite3
@@ -254,6 +292,106 @@ def test_network_connection_and_subprocess_are_never_cached(pytester, run_cache)
     nc = data["cache"]["not_cached_ids"]
     assert nc["test_m.py::test_loopback"] == "network connection"
     assert nc["test_m.py::test_spawn"] == "subprocess"
+
+
+@pytest.fixture
+def outside_server():
+    """A loopback HTTP server the tested process tree did not start (stands for a proxy or an external service)."""
+    import http.server
+    import threading
+
+    class H(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.send_header("Content-Length", "2")
+            self.end_headers()
+            self.wfile.write(b"ok")
+
+        def log_message(self, *a):
+            pass
+
+    srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), H)
+    t = threading.Thread(target=srv.serve_forever, daemon=True)
+    t.start()
+    yield srv.server_address[1]
+    srv.shutdown()
+    srv.server_close()
+
+
+def test_external_service_through_a_loopback_proxy_is_never_cached(pytester, run_cache, monkeypatch,
+                                                                    outside_server):
+    # review R-002b: HTTP(S)_PROXY on loopback reaches the outside; "loopback only" proves nothing
+    monkeypatch.setenv("HTTP_PROXY", f"http://127.0.0.1:{outside_server}")
+    monkeypatch.setenv("http_proxy", f"http://127.0.0.1:{outside_server}")
+    monkeypatch.delenv("NO_PROXY", raising=False)
+    monkeypatch.delenv("no_proxy", raising=False)
+    project(pytester, **{"test_m.py": """
+        import urllib.request
+
+        def test_external():
+            with urllib.request.urlopen("http://service.example/", timeout=10) as r:
+                assert r.read() == b"ok"
+
+        def test_plain():
+            pass
+        """})
+    # Level 0 treats the configured proxy as the outside and blocks it: the failure is never reused
+    run_cache()
+    r, reused, data = run_cache()
+    r.assert_outcomes(passed=1, failed=1)
+    assert reused == ids("test_plain")
+    assert data["cache"]["not_cached_ids"]["test_m.py::test_external"] == "outcome failed"
+    # without the proxy the same loopback port is "localhost" to Level 0 and the test passes, but a service the
+    # test process tree did not start is outside too: a connection, loopback or not, is never cached
+    for var in ("HTTP_PROXY", "http_proxy"):
+        monkeypatch.delenv(var)
+    (pytester.path / "test_m.py").write_text((pytester.path / "test_m.py").read_text().replace(
+        "http://service.example/", f"http://127.0.0.1:{outside_server}/"))
+    run_cache()
+    r, reused, data = run_cache()
+    r.assert_outcomes(passed=2)
+    assert reused == ids("test_plain")
+    assert data["cache"]["not_cached_ids"]["test_m.py::test_external"] == "network connection"
+
+
+def test_name_lookup_and_c_level_sockets_are_never_cached(pytester, run_cache, outside_server):
+    # a socket opened by a C extension raises no audit event: one still open when its test or fixture ends counts
+    project(pytester, **{"test_m.py": f"""
+        import ctypes, socket, struct
+
+        import pytest
+
+        KEEP = []
+
+        def test_lookup():
+            assert socket.getaddrinfo("localhost", 80)
+
+        def test_numeric_address_is_not_a_lookup():
+            assert socket.getaddrinfo("127.0.0.1", 80)
+
+        @pytest.fixture(scope="module")
+        def c_connection():
+            libc = ctypes.CDLL(None, use_errno=True)
+            fd = libc.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
+            addr = struct.pack("=H", socket.AF_INET) + struct.pack(">H", {outside_server}) + bytes([127, 0, 0, 1]) + bytes(8)
+            assert libc.connect(fd, addr, len(addr)) == 0, ctypes.get_errno()
+            KEEP.append(fd)
+            return fd
+
+        def test_c_socket(c_connection):
+            assert c_connection > 0
+
+        def test_c_socket_again(c_connection):
+            assert c_connection > 0
+        """})
+    run_cache()
+    r, reused, data = run_cache()
+    r.assert_outcomes(passed=4)
+    assert reused == ids("test_numeric_address_is_not_a_lookup")
+    nc = data["cache"]["not_cached_ids"]
+    assert nc["test_m.py::test_lookup"] == "host name lookup"
+    assert nc["test_m.py::test_c_socket"] == "network socket opened outside Python (C extension)"
+    assert nc["test_m.py::test_c_socket_again"] == "network socket opened outside Python (C extension)"
 
 
 def test_clock_reader_depends_on_the_epoch(pytester, run_cache):

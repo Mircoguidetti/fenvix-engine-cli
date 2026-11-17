@@ -55,7 +55,8 @@ AVAILABLE = _mon is not None
 # "f|<scope>|<baseid>|<name>" setup of a wider-scoped fixture, "t|<nodeid>" a test
 _GLOBAL_CTX = ("", "s")
 
-_AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "subprocess.Popen", "os.posix_spawn",
+_AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
+                 "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
                  "os.link")
@@ -80,6 +81,8 @@ _VOLATILE_OPTIONS = {
 }
 
 
+# detpy's own bookkeeping variables (re-exec, bytecode cache): set by detpy itself, never a test input
+_DETPY_OWN_ENV = frozenset({"DETPY_REEXEC", "DETPY_PRECOMPILE_S", "DETPY_PYC_CACHE", "DETPY_BLOCKED_PLUGINS"})
 _DETPY_DIR = os.path.dirname(os.path.abspath(__file__)) + os.sep
 
 
@@ -150,6 +153,7 @@ class Capture:
         self.dist_info_ok: tuple = ()
         self.import_ctx = -1  # pseudo context for import-time data/env/flags
         self.active = False
+        self._socks: dict | None = None  # fd -> socket inode at the last scan
 
     # -- contexts -------------------------------------------------------------
     def ctx_index(self, name: str) -> int:
@@ -162,6 +166,13 @@ class Capture:
     def switch(self, name: str) -> None:
         if name == self.ctx:
             return
+        if self.active:
+            # startup sockets (pytest, plugins, the runner) are the baseline; the scan's own reads are not inputs
+            self.active = False
+            try:
+                self._scan_sockets(self.ctx_index(self.ctx) if self.ctx else None)
+            finally:
+                self.active = True
         self.ctx = name
         i = self.ctx_index(name)
         if self.rec is None:
@@ -180,8 +191,22 @@ class Capture:
 
     def _cur(self) -> int:
         if self.rec is not None and self.rec.import_depth:
-            return self.import_ctx
+            return self._import_ctx()
         return self.ctx_ix[self.ctx]
+
+    def _import_ctx(self) -> int:
+        """Import time: the context of the innermost repository module body running (``i|<path>``).
+
+        A test module's import-time reads serve only its own tests (unless another module imports it); any
+        other module's are inputs of every test (``_record_all`` decides).
+        """
+        f = sys._getframe(2)
+        while f is not None:
+            c = f.f_code
+            if c.co_name == "<module>" and self._want(c.co_filename):
+                return self.ctx_index("i|" + self.fnames[self.fid[c.co_filename]])
+            f = f.f_back
+        return self.import_ctx
 
     # -- code ---------------------------------------------------------------------
     def _want(self, filename: str) -> bool:
@@ -272,6 +297,45 @@ class Capture:
             _mon.set_events(self.tool, 0)
             _mon.free_tool_id(self.tool)
             self.tool = None
+
+    # -- sockets opened in C ----------------------------------------------------------
+    def _scan_sockets(self, ctx: int | None) -> None:
+        """Internet sockets that appeared among this process's descriptors since the last scan.
+
+        Sockets a C extension opens (libpq, grpc, libcurl, ...) raise no audit event; one still open when its
+        test or fixture ends is seen here and makes the context uncacheable.
+        """
+        try:
+            fds = os.listdir("/proc/self/fd")
+        except OSError:
+            return
+        cur = {}
+        for fd in fds:
+            try:
+                link = os.readlink("/proc/self/fd/" + fd)
+            except OSError:
+                continue
+            if link.startswith("socket:["):
+                cur[fd] = link[8:-1]
+        prev, self._socks = self._socks, cur
+        if prev is None:
+            return
+        new = {ino for fd, ino in cur.items() if prev.get(fd) != ino}
+        if not new:
+            return
+        inet = set()
+        for t in ("tcp", "tcp6", "udp", "udp6"):
+            try:
+                with open("/proc/self/net/" + t, "rb") as fh:
+                    next(fh, None)
+                    for line in fh:
+                        parts = line.split()
+                        if len(parts) > 9:
+                            inet.add(parts[9].decode())
+            except OSError:
+                continue
+        if ctx is not None and new & inet:
+            self.flags.setdefault(ctx, set()).add("csock")
 
     # -- data, environment, events ------------------------------------------------------
     def _caller_kind(self) -> str:
@@ -403,10 +467,20 @@ class Capture:
             if p is None or self._ignored(p):
                 return
             self.read(self._cur(), p, "d")
-        elif event == "socket.connect":
+        elif event in ("socket.connect", "socket.sendto", "socket.sendmsg"):
+            # every connection counts, loopback included: a loopback port can be an HTTP(S) proxy to the outside
+            # (HTTPS_PROXY=http://127.0.0.1:...) or a service the test process tree did not start
             if self._caller_kind() == "infra":
                 return
             self.flags.setdefault(self._cur(), set()).add("connect")
+        elif event in ("socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr"):
+            # a name lookup (DNS, /etc/hosts) is an input from outside; numeric addresses are not
+            host = args[0] if args else None
+            if isinstance(host, bytes):
+                host = host.decode("ascii", "replace")
+            if not isinstance(host, str) or not host or _numeric_host(host) or self._caller_kind() == "infra":
+                return
+            self.flags.setdefault(self._cur(), set()).add("dns")
         elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
             if self._caller_kind() == "infra":
                 return
@@ -928,7 +1002,11 @@ class ProofCachePlugin:
         for c in g_ctx:
             g_units |= units_of(per[c][0])
             g_unparsable |= unparsable(per[c][1])
-        g_ctx_all = g_ctx + [cap.import_ctx]
+        # import-time reads of a test module that no other module imports serve only its own tests
+        own_import = {tf: ctx_of["i|" + tf] for tf in test_files - shared_test_files if "i|" + tf in ctx_of}
+        own_import_ix = set(own_import.values())
+        g_ctx_all = g_ctx + [cap.import_ctx] + [i for n, i in ctx_of.items()
+                                                if n.startswith("i|") and i not in own_import_ix]
         g_data, g_env, g_flags = {}, set(), set()
         for c in g_ctx_all:
             g_data.update(cap.data.get(c, {}))
@@ -984,6 +1062,8 @@ class ProofCachePlugin:
                 continue
             own = _ctx_file(nid)
             ctxs = [ctx_of[c] for c in ["t|" + nid, "c|" + own, *self.fixture_ctx.get(nid, [])] if c in ctx_of]
+            if own in own_import:
+                ctxs.append(own_import[own])
             flags = set(g_flags)
             data = dict(g_data)
             env = set(g_env)
@@ -1171,6 +1251,16 @@ def _encodable(s: str) -> bool:
         return False
 
 
+def _numeric_host(host: str) -> bool:
+    import ipaddress
+
+    try:
+        ipaddress.ip_address(host.split("%", 1)[0])
+        return True
+    except ValueError:
+        return False
+
+
 def _uncacheable(flags: set, cfg) -> str | None:
     if "badpath" in flags:
         return "reads a path that is not valid UTF-8"
@@ -1178,6 +1268,10 @@ def _uncacheable(flags: set, cfg) -> str | None:
         return "subprocess"
     if "connect" in flags:
         return "network connection"
+    if "csock" in flags:
+        return "network socket opened outside Python (C extension)"
+    if "dns" in flags:
+        return "host name lookup"
     if "net-record" in flags:
         return "network recording (--det-record)"
     if "entropy" in flags and not cfg.control_urandom:
@@ -1221,7 +1315,7 @@ def start(early_config, ns) -> None:
         return  # nested in-process session: the outer one records
     root = str(early_config.rootpath)
     # detpy's own variables (set by its re-exec, e.g. the precompile time) are configuration, not inputs
-    env0 = {_safe(k): _safe(v) for k, v in os.environ.items() if not k.startswith("DETPY_")}
+    env0 = {_safe(k): _safe(v) for k, v in os.environ.items() if k not in _DETPY_OWN_ENV}
     cap = Capture(root, env0)
     CAPTURE = cap
     _ENV_CAPTURE = cap
