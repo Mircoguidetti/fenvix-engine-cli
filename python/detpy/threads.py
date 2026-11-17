@@ -1014,7 +1014,7 @@ def _install_tracer(t) -> None:
             t.budget -= 1
             if t.budget <= 0:
                 t.budget = _new_budget()
-                if S.active and S.current is t and S.runq:
+                if S.active and S.current is t and S.runq and not _inside_detpy(frame):
                     _preempt(t)
         return line
 
@@ -1024,6 +1024,18 @@ def _install_tracer(t) -> None:
         return None
 
     sys.settrace(call)
+
+
+def _inside_detpy(frame) -> bool:
+    """True if detpy code is on the stack below ``frame``: project code called from
+    inside the scheduler (a user wrapper around lock.acquire, a predicate) must not
+    be preempted, the scheduler may hold its own lock."""
+    f = frame.f_back
+    while f is not None:
+        if f.f_code.co_filename.startswith(_DETPY_DIR):
+            return True
+        f = f.f_back
+    return False
 
 
 def _preempt(me) -> None:
