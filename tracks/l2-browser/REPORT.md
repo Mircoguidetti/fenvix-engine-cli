@@ -100,7 +100,7 @@ fingerprint). On the real projects measured so far the outcome repeats, but the 
 
 Process-level Level 2 makes browser + Node server runs repeat their **outcome** (most tests, every run), but not their
 **fingerprint** on real apps: dev servers, socket.io pushes and web workers keep real-time behaviour that the shells do
-not order. It breaks 4-15% of tests in socket-heavy apps (etherpad 14/288, uptime-kuma 11/71) and costs x2-x6.5 wall
+not order. It breaks tests in socket-heavy apps (etherpad 14 of 288, uptime-kuma 11 of 71) and costs x2-x6.5 wall
 time. On a purpose-built fixture it does what Level 2 promises. The gap is what a deterministic VM would close.
 
 ## Next

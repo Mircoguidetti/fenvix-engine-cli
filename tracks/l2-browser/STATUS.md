@@ -1,6 +1,6 @@
 # STATUS · track l2-browser (P-014)
 
-Updated 2026-11-17 10:00 UTC. Local branch `track-l2-browser` in a scratch worktree of
+Updated 2026-11-17 11:50 UTC. Local branch `track-l2-browser` in a scratch worktree of
 /home/user/fenvix-engine-cli; base `9ffbb0a` (origin/claude/node-l0, rebased at resume). Patches:
 `patches/` (`git am` on the base; 11 commits).
 
@@ -17,8 +17,8 @@ Updated 2026-11-17 10:00 UTC. Local branch `track-l2-browser` in a scratch workt
   documenso, actual, rallly, solid-start. Dry run on a local toy project works.
 
 ## Next
-- PARTIAL REPORT.md pushed (fixture + solid-start numbers, 5 engine bugs fixed).
-- Final run 44069979210 (nonce 9) launched 11:00 after node-harness and cache-proof r5 started: etherpad, documenso, actual, uptime-kuma, solid-start; 11 patches; harness with known-flaky targets first + ablation; 200-min budget.
-  have started; then ONE final run: etherpad, documenso, solid-start (+ the healthiest of uptime-kuma/actual/rallly
-  from batches 3/6), 11 patches, harness 3c6c260 or later (known flaky targeted first, ablation), budget ~150 min.
-- Batch 8 cancelled. Batches 3 (etherpad, actual) and 6 (uptime-kuma, rallly) still running at 09:55.
+- REPORT.md is PARTIAL (interim real-project numbers from batches 3, 6, 7; fixture numbers).
+- Final run 44069979210 (nonce 9; etherpad, documenso, actual, uptime-kuma, solid-start; 11 patches; harness with
+  known flaky targets first + ablation; 200-min budget) queued since 11:00 behind the shared queue. When it lands:
+  `git pull`, `python3 tracks/l2-browser/harness/aggregate.py`, rewrite REPORT.md headline, first line DONE.
+- Do not push RUN again without the coordinator's go (shared queue).
