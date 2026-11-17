@@ -1,0 +1,76 @@
+{
+  "test": "test/integration/test_flask_multi_redis.py::test_custom_node",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "order",
+  "prefix_length": 8,
+  "minimal_length": 2,
+  "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+  ],
+  "setters": [],
+  "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_custom_node"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "TypeError",
+    "call",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "d9e035a5c4aba859e726f51068371bd0"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [random] random.randint @ flask_multi_redis/main.py:110 = 0  <>  [random] random.state @ <end> = 0cbf81d20f8895c6e516493643c38a9a",
+    "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "random.randint",
+      "at": "flask_multi_redis/main.py:110",
+      "v": "0"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "0cbf81d20f8895c6e516493643c38a9a"
+    },
+    "fingerprints": [
+      "0cfa5dba0550b5f3aff13f0039b6bfcd",
+      "d9e035a5c4aba859e726f51068371bd0"
+    ]
+  },
+  "runs": 16,
+  "seconds": 13.85,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_custom_node-39a3517b/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_custom_node-39a3517b",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_custom_node-39a3517b"
+}
