@@ -140,10 +140,28 @@ _tls = threading.local()
 
 # ---------------------------------------------------------------------------
 # Clock helpers
-def _clock():
-    from . import clock
+_CLOCKMOD: list = []
 
-    return clock.CLOCK
+
+def _clockmod():
+    if not _CLOCKMOD:
+        from . import clock
+
+        _CLOCKMOD.append(clock)
+    return _CLOCKMOD[0]
+
+
+def _clock():
+    return _clockmod().CLOCK
+
+
+def _ns(seconds) -> int:
+    """A timeout in seconds as virtual nanoseconds, rounded up: a positive
+    timeout never becomes 0 (a loop such as Condition.wait_for that recomputes
+    "time left" from a float clock would otherwise spin on a 0 ns wait)."""
+    ns = seconds * 1e9
+    n = int(ns)
+    return n + 1 if n < ns else n
 
 
 def _now() -> int:
@@ -161,15 +179,11 @@ def _advance_to(t: int) -> None:
 
 
 def _real_monotonic() -> float:
-    from . import clock
-
-    return clock.real_monotonic()
+    return _clockmod().real_monotonic()
 
 
 def _real_sleep(s: float) -> None:
-    from . import clock
-
-    clock.real_sleep(s)
+    _clockmod().real_sleep(s)
 
 
 # ---------------------------------------------------------------------------
@@ -618,7 +632,7 @@ def io_wait(pred, timeout=None, what="I/O", real_time=False) -> bool:
         return pred()
     if real_time:
         return _block(me, IOWAIT, what, pred=pred, real_timeout=timeout)
-    return _block(me, IOWAIT, what, pred=pred, timeout_ns=None if timeout is None else int(timeout * 1e9))
+    return _block(me, IOWAIT, what, pred=pred, timeout_ns=None if timeout is None else _ns(timeout))
 
 
 class external:
@@ -696,7 +710,7 @@ class SchedLock:
         if not blocking:
             return False
         if timeout is not None and timeout >= 0:
-            deadline = _now() + int(timeout * 1e9)
+            deadline = _now() + _ns(timeout)
         else:
             deadline = None
         while True:
@@ -934,7 +948,7 @@ def _wrap_join(real):
             S.mu.acquire()
             if S.active and t.state != FINISHED:
                 ok = _block(me, BLOCKED, f"join of thread {t.idx} ({t.name})", obj=t,
-                            timeout_ns=None if timeout is None else int(max(0, timeout) * 1e9))
+                            timeout_ns=None if timeout is None else _ns(max(0, timeout)))
                 if not ok:
                     return None
             else:
@@ -1086,7 +1100,7 @@ def _wrap_ssl_loop(real, kind: str):
             return real(self, *args, **kwargs)
         if kind == "read" and getattr(self, "_sslobj", None) is None:
             return real(self, *args, **kwargs)  # plain socket mode before the handshake
-        deadline = None if to is None else _now() + int(to * 1e9)
+        deadline = None if to is None else _now() + _ns(to)
         self.settimeout(0.0)
         try:
             while True:
@@ -1291,6 +1305,14 @@ class _InsertionOrderedSet(set):
         return iter(list(self._order))
 
 
+def _virtual_monotonic() -> float:
+    """Monotonic seconds on the scheduler's clock (no event recorded: standard
+    library bookkeeping, not an observation by the code under test)."""
+    if S.active:
+        return _now() / 1e9
+    return _real_monotonic()
+
+
 _FUTURE_SEQ = [0]
 
 
@@ -1384,6 +1406,15 @@ def install(patcher, seed: int, grace: float, deadlock: float, preempt: int) -> 
     import concurrent.futures.thread as _cft
 
     patcher.set(_cft.ThreadPoolExecutor, "__init__", _wrap_pool_init(_cft.ThreadPoolExecutor.__init__))
+    # The standard library keeps its own reference to the real monotonic clock
+    # (threading._time, queue.time): Condition.wait_for, Barrier, Semaphore and
+    # Queue.get compute "time left" with it. Their waits are virtual under the
+    # scheduler, so the time left must be virtual too, or a timed-out wait is
+    # retried with the same time left forever (a Barrier timeout never fires).
+    if hasattr(threading, "_time"):
+        patcher.set(threading, "_time", _virtual_monotonic)
+    if callable(getattr(queue, "time", None)):
+        patcher.set(queue, "time", _virtual_monotonic)
     import concurrent.futures._base as _cfb
 
     # Futures hash by address: wait()/as_completed() iterate sets of futures and

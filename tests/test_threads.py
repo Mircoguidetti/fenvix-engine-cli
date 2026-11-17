@@ -418,3 +418,62 @@ def test_thread_exit_is_serialised(pytester):
         _, _, fp = _run(pytester, "--det-threads-seed=3")
         fps.add(json.dumps(fp, sort_keys=True))
     assert len(fps) == 1
+
+
+STDLIB_TIME = r'''
+import queue, threading, time
+
+def test_barrier_timeout_breaks_the_barrier():
+    b = threading.Barrier(3)
+    errors = []
+    def w(i):
+        time.sleep(i / 10)
+        try:
+            b.wait(timeout=0.1)
+        except threading.BrokenBarrierError:
+            errors.append(i)
+    ts = [threading.Thread(target=w, args=(i,)) for i in range(3)]
+    for t in ts:
+        t.start()
+    for t in ts:
+        t.join()
+    assert sorted(errors) == [0, 1, 2]
+
+def test_wait_for_loop_with_timeouts_ends():
+    c = threading.Condition()
+    flag = []
+    def setter():
+        time.sleep(0.35)
+        with c:
+            flag.append(1)
+            c.notify_all()
+    t = threading.Thread(target=setter)
+    t.start()
+    rounds = 0
+    with c:
+        while not c.wait_for(lambda: flag, timeout=0.1):
+            rounds += 1
+    t.join()
+    assert rounds == 3
+
+def test_queue_get_timeout():
+    q = queue.Queue()
+    t = threading.Thread(target=lambda: (time.sleep(1), q.put(1)))
+    t.start()
+    try:
+        q.get(timeout=0.3)
+        assert False, "no item expected yet"
+    except queue.Empty:
+        pass
+    assert q.get(timeout=5) == 1
+    t.join()
+'''
+
+
+@pytest.mark.skipif(WITHOUT_PROTOTYPE, reason="needs --det-threads")
+def test_stdlib_time_left_is_virtual(pytester):
+    """threading._time / queue.time feed Condition.wait_for, Barrier and Queue.get:
+    they must follow the virtual clock, or a timed-out wait is retried forever."""
+    pytester.makepyfile(test_stdlib_time=STDLIB_TIME)
+    result = pytester.runpytest_subprocess(*FLAGS, "-p", "no:cacheprovider", timeout=120)
+    result.assert_outcomes(passed=3)
