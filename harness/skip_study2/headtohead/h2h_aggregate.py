@@ -82,8 +82,9 @@ def summarize(shards):
             dec.update(t["decisions"])
             for r in RULES:
                 ck = t["checks"].get(r)
-                if ck and not ck.get("keys") and dropped:
-                    checks[r].update({k: v for k, v in ck.items() if k != "keys"})   # h1 / h2: no per-unit keys
+                if ck and "keys" not in ck:
+                    # h1 / h2 carry counts only (no per-unit keys): non-test units cannot be removed from them
+                    checks[r].update({k: v for k, v in ck.items() if k != "keys"})
                 elif ck:
                     kk = [(u, ri) for u, ri in ck.get("keys", []) if u not in dropped]
                     ne = sum(1 for u, _ in kk if (t["decisions"].get(u) or {}).get("C"))
