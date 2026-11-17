@@ -1,0 +1,282 @@
+{
+ "name": "click",
+ "set": "popular",
+ "url": "https://github.com/pallets/click",
+ "runner": "ip-10-0-130-28",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009505",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.82.6",
+  "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "e38188e9e205005d5af5f9e59df51904c984586a",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group tests --group tests-random",
+ "collected": 2651,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 3.931,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 9.247,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 5.47,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": {
+    "decisions": 12,
+    "switches": 89,
+    "escapes": 1,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 26
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 9.331,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": {
+    "decisions": 27,
+    "switches": 95,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 26
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 3.778,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 5.222,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 5.284,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": {
+    "decisions": 12,
+    "switches": 89,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 26
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 9.255,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": {
+    "decisions": 27,
+    "switches": 95,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 26
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 2,
+   "duration_s": 3.711,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 5.407,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 2,
+   "duration_s": 5.432,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": {
+    "decisions": 12,
+    "switches": 89,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 26
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 2,
+   "duration_s": 9.275,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": {
+    "decisions": 27,
+    "switches": 95,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 26
+   },
+   "tail": ""
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
