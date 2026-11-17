@@ -1,0 +1,113 @@
+{
+  "name": "excalidraw-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/excalidraw/excalidraw",
+  "commit": "5cf547650b700b35507e83773695098150b810d2",
+  "commit_date": "2026-07-18T00:17:39+02:00",
+  "python": "node v18.20.8",
+  "install": "npx -y yarn@1 install --frozen-lockfile --ignore-engines",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 8,
+  "baseline_mean_s": 144.1198406696251,
+  "det_mean_s": 315.38299634125013,
+  "slowdown_pct": 118.8338502706385,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 1611,
+  "unstable_baseline": 59,
+  "unstable_det": 0,
+  "became_stable": 59,
+  "outcome_changed_by_det": 63,
+  "covered": 1485,
+  "not_covered": 100,
+  "reproduced": 0,
+  "never_fails_under_det": 41,
+  "always_fails_under_det": 8,
+  "fails_sometimes_under_det": 10,
+  "seeds_needed": [],
+  "seeds_explored": 1,
+  "exploration_runs": 6,
+  "exploration_budget_hit": true,
+  "reasons": {
+    "entropy": 61,
+    "beyond-trace": 1,
+    "time": 38
+  },
+  "pass_fail_reasons": {},
+  "broken_by_det": 52,
+  "broken_always": 52,
+  "broken_causes": {
+    "time+timers | Error": 1,
+    "time | Error": 37,
+    "time | AssertionError": 7,
+    "time+timers | AssertionError": 4,
+    "seeds+time+timers+fs+net | AssertionError": 3
+  },
+  "broken_examples": {
+    "time+timers | Error": [
+      "excalidraw-app/tests/collab.test.tsx::collaboration::should allow to undo / redo even on force-deleted elements: Error: Test timed out in 5000ms. (first diverging source: beyond-trace)"
+    ],
+    "time | Error": [
+      "excalidraw-app/tests/collab.test.tsx::collaboration::should emit two ephemeral increments even though updates get batched: Error:  (first diverging source: entropy)",
+      "packages/element/tests/duplicate.test.tsx::duplication z-order::alt-duplicating labeled arrows (out-of-order): Error:  (first diverging source: -)",
+      "packages/element/tests/duplicate.test.tsx::duplication z-order::alt-duplicating text container (out-of-order): Error:  (first diverging source: -)"
+    ],
+    "time | AssertionError": [
+      "packages/excalidraw/tests/cursorHint.test.tsx::cursor hint::cooldown::letter shortcut to another tool is also suppressed during cooldown: AssertionError: expected <div class=\"CursorHint\" \u2026(2)>\u2026(1)</div> to be null (first diverging source: -)",
+      "packages/excalidraw/tests/cursorHint.test.tsx::cursor hint::cooldown::suppresses tool-switch hint during cooldown: AssertionError: expected <div class=\"CursorHint\" \u2026(2)>\u2026(1)</div> to be null (first diverging source: -)",
+      "packages/excalidraw/tests/interactivity.test.tsx::interaction={{ enabled: { embeds / interactiveContent } }}::embeds: hovering & clicking an embeddable activates it: AssertionError: expected { Object (element, state) } to match object { state: 'active' } (first diverging source: -)"
+    ],
+    "time+timers | AssertionError": [
+      "packages/excalidraw/tests/fitToContent.test.tsx::scale-down animated::should stop ticking and settle on the target once complete: AssertionError: expected true to be false // Object.is equality (first diverging source: -)",
+      "packages/excalidraw/tests/scrollConstraints.test.tsx::rubberband overscroll (integration)::continues rubberband snap-back while wheel-zooming: AssertionError: expected true to be false // Object.is equality (first diverging source: -)",
+      "packages/excalidraw/tests/scrollConstraints.test.tsx::setViewport lock (integration)::lets a newer animated lock supersede an older one: AssertionError: expected true to be false // Object.is equality (first diverging source: -)"
+    ],
+    "seeds+time+timers+fs+net | AssertionError": [
+      "packages/excalidraw/tests/search.test.tsx::search::should match frame names: AssertionError: expected undefined to be 3 // Object.is equality (first diverging source: -)",
+      "packages/excalidraw/tests/search.test.tsx::search::should match text and cycle through matches on Enter: AssertionError: expected undefined to be 2 // Object.is equality (first diverging source: -)",
+      "packages/excalidraw/tests/search.test.tsx::search::should match text split across multiple lines: AssertionError: expected undefined to be 1 // Object.is equality (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->failed": [
+      "excalidraw-app/tests/collab.test.tsx::collaboration::should allow to undo / redo even on force-deleted elements",
+      "excalidraw-app/tests/collab.test.tsx::collaboration::should emit two ephemeral increments even though updates get batched"
+    ],
+    "not-reproduced": [
+      "packages/element/src/__tests__/transform.test.ts::Test Transform::Test arrow bindings::should bind arrows to existing elements if ids are correct (seed 1:6/6) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "packages/element/src/__tests__/transform.test.ts::Test Transform::should transform the elements correctly when linear elements have single point (seed 1:6/6) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ],
+    "changed:failed->passed": [
+      "packages/element/src/__tests__/transform.test.ts::Test Transform::Test arrow bindings::should bind arrows to existing shapes when start / end provided with ids",
+      "packages/element/src/__tests__/transform.test.ts::Test Transform::Test arrow bindings::should bind arrows to shapes when start / end provided without ids"
+    ],
+    "always-fails-under-det": [
+      "packages/excalidraw/tests/MermaidToExcalidraw.test.tsx::Test <MermaidToExcalidraw/>::should open mermaid popup when active tool is mermaid (seed 1:6/6)",
+      "packages/excalidraw/tests/contextmenu.test.tsx::contextMenu element::selecting 'Add to library' in context menu adds element to library (seed 1:6/6)"
+    ]
+  },
+  "runner": "vitest 3.0.6",
+  "node": "node v18.20.8",
+  "documented_source": "https://github.com/excalidraw/excalidraw/issues/11713",
+  "documented_hints": [
+    "[Bug] Flaky WYSIWYG text editor and other tests"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.0.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v18.20.8\nJSON report written to /tmp/work/runs/excalidraw-flaky/det_0.json\ndetjs: trace ../../runs/excalidraw-flaky/det_0.jsonl: 1607 tests, order digest 839cae71a532588690fdb0b318e6355b\n"
+  },
+  "not_reproduced_causes": {
+    "l0-gap": 11,
+    "unknown": 41,
+    "concurrency/event-order": 7
+  }
+}
