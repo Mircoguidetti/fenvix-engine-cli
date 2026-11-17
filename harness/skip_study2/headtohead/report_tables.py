@@ -79,7 +79,61 @@ def ci_table(res):
     return "\n".join(out)
 
 
+def compact(sums, names, show_median=True):
+    """One row per project: time skipped per rule (median / mean) and wrong (distinct test files) per rule."""
+    out = ["| project | commits | " + " | ".join(ORDER) + " |", "|---|---:|" + "---:|" * len(ORDER)]
+    for n in names:
+        if n not in sums:
+            continue
+        s = sums[n]
+        cells = []
+        for r in ORDER:
+            if r not in s.get("rules", []):
+                cells.append("n/a")
+                continue
+            x = s[r]
+            t = (f"{pct(x['time']['median'])} / {pct(x['time']['mean'])}" if show_median
+                 else pct(x['time']['mean']))
+            if x["wrong"]:
+                t += f" **({x['wrong']} wrong, {x['wrong_units']} files)**"
+            cells.append(t)
+        out.append(f"| {n} | {s['transitions']} | " + " | ".join(cells) + " |")
+    return "\n".join(out)
+
+
+def ci_compact(res):
+    out = ["| change | project | test files broken | " + " | ".join(ORDER) + " | C: time skipped at landing |",
+           "|---|---|---:|" + "---:|" * len(ORDER) + "---:|"]
+    for arm in ("ci-dep", "ci-data", "ci-env"):
+        for n, s in sorted((res.get(arm) or {}).items()):
+            if n.startswith("_") or not s.get("change"):
+                continue
+            cells = []
+            for r in ORDER:
+                if r not in s.get("rules", []):
+                    cells.append("n/a")
+                    continue
+                x = s[r]
+                cells.append(f"**{len(x.get('broken_missed', []))} / {x['wrong']}**" if x["wrong"] else "0")
+            out.append(f"| {arm[3:]} | {n} | {len(s['broken_by_change'])} | " + " | ".join(cells) +
+                       f" | {pct(s['C'].get('landing_share'))} |")
+    return "\n".join(out)
+
+
 def main(argv):
+    if argv and argv[0] == "--compact":
+        argv = argv[1:]
+        with tempfile.NamedTemporaryFile(suffix=".json") as tf:
+            subprocess.run([sys.executable, str(HERE / "h2h_aggregate.py"), *argv, "--json", tf.name], check=True,
+                           capture_output=True)
+            res = json.loads(Path(tf.name).read_text())
+        print("\n### realistic CI changes (cells: broken test files reported as passing / stale passes)\n")
+        print(ci_compact(res))
+        for arm in ("main", "env", "runtime", "home-root"):
+            if arm in res:
+                print(f"\n### arm `{arm}` (cells: time skipped median / mean; wrong = confirmed stale passes)\n")
+                print(compact(res[arm], list(BIG) + list(LIBS), show_median=(arm == "main")))
+        return
     with tempfile.NamedTemporaryFile(suffix=".json") as tf:
         subprocess.run([sys.executable, str(HERE / "h2h_aggregate.py"), *argv, "--json", tf.name], check=True,
                        capture_output=True)
