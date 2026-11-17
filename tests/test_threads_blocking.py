@@ -390,3 +390,39 @@ def test_recursion_error_is_raised_by_the_test_code():
 def test_preemption_tracer_does_not_move_a_recursion_error(pytester):
     result, _ = _run(pytester, RECURSION, "--det-threads-seed=1", timeout=60)
     result.assert_outcomes(passed=1)
+
+
+# A finalizer run by the garbage collector while a thread is inside the scheduler
+# (it holds the scheduler's lock) takes and releases locks: urllib3's pools do in
+# __del__. That re-entered the scheduler: a self-deadlock (requests, a hung
+# exploration run), then, with re-entry allowed, a corrupted lock.
+FINALIZER = r'''
+import threading, time
+import detpy.threads as T
+
+def test_lock_operations_inside_the_scheduler_are_plain():
+    lock = threading.Lock()
+    cond = threading.Condition()
+    waiter = threading.Thread(target=time.sleep, args=(0.01,))
+    waiter.start()
+    T.S.mu.acquire()  # what the scheduler holds while a finalizer runs
+    try:
+        with lock:
+            pass
+        assert lock.acquire(blocking=False)
+        lock.release()
+        with cond:
+            cond.notify_all()
+        threading.Event().is_set()
+    finally:
+        T.S.mu.release()
+    assert not T.S.mu.locked()
+    waiter.join()
+    with lock:
+        pass
+'''
+
+
+def test_finalizers_inside_the_scheduler_do_not_reenter_it(pytester):
+    result, _ = _run(pytester, FINALIZER, "--det-threads-seed=3", timeout=60)
+    result.assert_outcomes(passed=1)

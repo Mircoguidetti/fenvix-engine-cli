@@ -131,27 +131,34 @@ class _SchedMutex:
         self._lock = _real_allocate()
 
     def acquire(self, blocking=True, timeout=-1):
-        if getattr(_tls, "holds_mu", False):
-            # An asynchronous exception (a signal handler: pytest-timeout,
-            # KeyboardInterrupt) left this thread's earlier hold unreleased: it
-            # still owns the lock. Continue instead of deadlocking on itself.
+        tl = _tls
+        if tl.holds_mu:
+            # Re-entered by the thread that holds it: a finalizer run by the garbage
+            # collector inside the scheduler (urllib3's connection pools release
+            # locks in __del__). It used to deadlock the thread on itself (requests,
+            # exploration seeds: a hung run). Count the nested hold.
+            tl.mu_depth += 1
             return True
-        _tls.in_mu = True
+        tl.in_mu = True
         try:
             got = _lock_acquire(self._lock, blocking, timeout)
         except BaseException:
-            _tls.in_mu = False
+            tl.in_mu = False
             raise
         if got:
-            _tls.holds_mu = True
+            tl.holds_mu = True
         else:
-            _tls.in_mu = False
+            tl.in_mu = False
         return got
 
     def release(self):
-        _tls.holds_mu = False
+        tl = _tls
+        if tl.mu_depth:
+            tl.mu_depth -= 1
+            return
+        tl.holds_mu = False
         self._lock.release()
-        _tls.in_mu = False
+        tl.in_mu = False
 
     def locked(self):
         return self._lock.locked()
@@ -187,7 +194,15 @@ class _Sched:
 
 
 S = _Sched()
-_tls = threading.local()
+class _Local(threading.local):
+    t = None  # the managed record of this thread
+    starting = None  # the Thread object being started by this thread
+    in_mu = False  # from before acquiring the scheduler lock until after releasing it
+    holds_mu = False  # this thread holds the scheduler lock
+    mu_depth = 0  # nested holds (finalizers run inside the scheduler)
+
+
+_tls = _Local()
 
 
 # ---------------------------------------------------------------------------
@@ -244,7 +259,10 @@ def _me():
     """The managed record of the calling thread, or None (unmanaged / inactive)."""
     if not S.active:
         return None
-    return getattr(_tls, "t", None)
+    tl = _tls
+    # Inside the scheduler's critical section (a finalizer run by the garbage
+    # collector) the thread is not scheduled: its lock operations are plain.
+    return None if tl.holds_mu else tl.t
 
 
 def managed() -> bool:
@@ -932,7 +950,7 @@ class SchedLock:
         if self._nwait:
             S.mu.acquire()
             _locked_wake_waiters(self)
-            if S.current is None and S.runq and S.active:
+            if S.current is None and S.runq and S.active and not _tls.mu_depth:
                 # Released by an unmanaged or escaped thread while the scheduler idles.
                 cands = _locked_candidates(None, inline=False)
                 if cands:
