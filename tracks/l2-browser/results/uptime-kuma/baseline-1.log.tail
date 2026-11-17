@@ -1,33 +1,11 @@
-[WebServer] 2026-11-17T08:55:24Z [SERVER] WARN: Node.js Inspector is enabled. You can connect to it via Chrome DevTools or VSCode.
-[WebServer] 2026-11-17T08:55:24Z [SERVER] WARN: Node.js Inspector is listening on: undefined
-[WebServer] Debugger listening on ws://127.0.0.1:9229/f465a1c8-31dd-4516-b154-99d239c9c1ad
+[WebServer] 2026-11-17T12:24:00Z [SERVER] WARN: Node.js Inspector is enabled. You can connect to it via Chrome DevTools or VSCode.
+[WebServer] 2026-11-17T12:24:00Z [SERVER] WARN: Node.js Inspector is listening on: undefined
+[WebServer] Debugger listening on ws://127.0.0.1:9229/0c0631fa-32e4-423d-9cc3-5cc76e771120
 [WebServer] For help, see: https://nodejs.org/learn/getting-started/debugging
 
 Running 71 tests using 1 worker
-···[WebServer] 2026-11-17T08:55:31.180Z WARN [Better Auth]: Invalid password
-·····[WebServer] 2026-11-17T08:55:37.998Z ERROR [Better Auth]: TypeError TypeError: The database connection is not open
-[WebServer]     at Database.prepare (/home/runner/work/_temp/l2_target/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-[WebServer]     at SqliteConnection.executeQuery (file:///home/runner/work/_temp/l2_target/node_modules/kysely/dist/esm/dialect/sqlite/sqlite-driver.js:62:31)
-[WebServer]     at file:///home/runner/work/_temp/l2_target/node_modules/kysely/dist/esm/query-executor/query-executor-base.js:35:45
-[WebServer]     at DefaultConnectionProvider.provideConnection (file:///home/runner/work/_temp/l2_target/node_modules/kysely/dist/esm/driver/default-connection-provider.js:10:26)
-[WebServer]     at async DefaultQueryExecutor.executeQuery (file:///home/runner/work/_temp/l2_target/node_modules/kysely/dist/esm/query-executor/query-executor-base.js:34:16)
-[WebServer]     at async SelectQueryBuilderImpl.execute (file:///home/runner/work/_temp/l2_target/node_modules/kysely/dist/esm/query-builder/select-query-builder.js:318:24)
-[WebServer]     at async Object.findOne (/home/runner/work/_temp/l2_target/node_modules/@better-auth/kysely-adapter/dist/index.mjs:595:18)
-[WebServer]     at async Object.transactionId (/home/runner/work/_temp/l2_target/node_modules/@better-auth/core/dist/db/adapter/factory.mjs:879:10)
-[WebServer]     at async Object.findUserById (/home/runner/work/_temp/l2_target/node_modules/better-auth/dist/db/internal-adapter.mjs:633:11)
-[WebServer]     at async before (/home/runner/work/_temp/l2_target/node_modules/better-auth/dist/plugins/admin/admin.mjs:35:19)
-[WebServer] # SERVER_ERROR:  TypeError: The database connection is not open
-[WebServer]     at Database.prepare (/home/runner/work/_temp/l2_target/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
-[WebServer]     at SqliteConnection.executeQuery (file:///home/runner/work/_temp/l2_target/node_modules/kysely/dist/esm/dialect/sqlite/sqlite-driver.js:62:31)
-[WebServer]     at file:///home/runner/work/_temp/l2_target/node_modules/kysely/dist/esm/query-executor/query-executor-base.js:35:45
-[WebServer]     at DefaultConnectionProvider.provideConnection (file:///home/runner/work/_temp/l2_target/node_modules/kysely/dist/esm/driver/default-connection-provider.js:10:26)
-[WebServer]     at async DefaultQueryExecutor.executeQuery (file:///home/runner/work/_temp/l2_target/node_modules/kysely/dist/esm/query-executor/query-executor-base.js:34:16)
-[WebServer]     at async SelectQueryBuilderImpl.execute (file:///home/runner/work/_temp/l2_target/node_modules/kysely/dist/esm/query-builder/select-query-builder.js:318:24)
-[WebServer]     at async Object.findOne (/home/runner/work/_temp/l2_target/node_modules/@better-auth/kysely-adapter/dist/index.mjs:595:18)
-[WebServer]     at async Object.transactionId (/home/runner/work/_temp/l2_target/node_modules/@better-auth/core/dist/db/adapter/factory.mjs:879:10)
-[WebServer]     at async Object.findUserById (/home/runner/work/_temp/l2_target/node_modules/better-auth/dist/db/internal-adapter.mjs:633:11)
-[WebServer]     at async before (/home/runner/work/_temp/l2_target/node_modules/better-auth/dist/plugins/admin/admin.mjs:35:19)
-·[WebServer] Trace: Error: Unable to acquire a connection
+···[WebServer] 2026-11-17T12:24:09.040Z WARN [Better Auth]: Invalid password
+······[WebServer] Trace: Error: Unable to acquire a connection
 [WebServer]     at Client_BetterSQLite3.acquireConnection (/home/runner/work/_temp/l2_target/node_modules/knex/lib/client.js:462:13)
 [WebServer]     at Runner.ensureConnection (/home/runner/work/_temp/l2_target/node_modules/knex/lib/execution/runner.js:311:46)
 [WebServer]     at Runner.run (/home/runner/work/_temp/l2_target/node_modules/knex/lib/execution/runner.js:30:30)
@@ -40,19 +18,45 @@ Running 71 tests using 1 worker
 [WebServer]     at async beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1095:32)
 [WebServer]     at safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1148:25)
 [WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
-[WebServer] 2026-11-17T08:55:41Z [MONITOR] ERROR: Please report to https://github.com/louislam/uptime-kuma/issues
-····[WebServer] 2026-11-17T08:55:55Z [MONITOR] WARN: Monitor #1 'New Monitor': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
-··········[WebServer] 2026-11-17T08:56:42Z [BASIC-AUTH] WARN: Failed basic auth attempt: invalid username/password
-···········[WebServer] 2026-11-17T08:57:20Z [MONITOR] WARN: Monitor #1 'Example DNS NS': Failing: Servers: carl.ns.cloudflare.com | jean.ns.cloudflare.com | Interval: 60 seconds | Type: dns | Down Count: 0 | Resend Interval: 0
-··[WebServer] 2026-11-17T08:57:26Z [MONITOR] WARN: Monitor #1 'Example Group': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
-·[WebServer] 2026-11-17T08:57:30Z [MONITOR] WARN: Monitor #1 'Group A': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
-[WebServer] 2026-11-17T08:57:31Z [MONITOR] WARN: Monitor #3 'Group B': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
-······[WebServer] 2026-11-17T08:57:53Z [MONITOR] WARN: Monitor #1 'Group A': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
-·[WebServer] 2026-11-17T08:57:57Z [MONITOR] WARN: Monitor #1 'Group B': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
-·[WebServer] 2026-11-17T08:58:02Z [MONITOR] WARN: Monitor #1 'Group C': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
-··[WebServer] 2026-11-17T08:58:13Z [MONITOR] WARN: Monitor #1 'Group One': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
-[WebServer] 2026-11-17T08:58:14Z [MONITOR] WARN: Monitor #3 'Group Two': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
-·········[WebServer] 2026-11-17T08:58:51Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
+[WebServer] 2026-11-17T12:24:19Z [MONITOR] ERROR: Please report to https://github.com/louislam/uptime-kuma/issues
+····[WebServer] Trace: Error: Unable to acquire a connection
+[WebServer]     at Client_BetterSQLite3.acquireConnection (/home/runner/work/_temp/l2_target/node_modules/knex/lib/client.js:462:13)
+[WebServer]     at Runner.ensureConnection (/home/runner/work/_temp/l2_target/node_modules/knex/lib/execution/runner.js:311:46)
+[WebServer]     at Runner.run (/home/runner/work/_temp/l2_target/node_modules/knex/lib/execution/runner.js:30:30)
+[WebServer]     at Target.then (/home/runner/work/_temp/l2_target/node_modules/knex/lib/builder-interface-augmenter.js:24:43)
+[WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[WebServer]     at async UptimeCalculator.upsertStat (/home/runner/work/_temp/l2_target/server/uptime-calculator.js:428:9)
+[WebServer]     at async UptimeCalculator.update (/home/runner/work/_temp/l2_target/server/uptime-calculator.js:313:9)
+[WebServer]     at async beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1095:32)
+[WebServer]     at async safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1146:17)
+[WebServer]     at safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1148:25)
+[WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[WebServer] 2026-11-17T12:24:31Z [MONITOR] ERROR: Please report to https://github.com/louislam/uptime-kuma/issues
+[WebServer] 2026-11-17T12:24:34Z [MONITOR] WARN: Monitor #1 'New Monitor': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
+··········[WebServer] 2026-11-17T12:25:20Z [BASIC-AUTH] WARN: Failed basic auth attempt: invalid username/password
+·····[WebServer] Trace: Error: Unable to acquire a connection
+[WebServer]     at Client_BetterSQLite3.acquireConnection (/home/runner/work/_temp/l2_target/node_modules/knex/lib/client.js:462:13)
+[WebServer]     at Runner.ensureConnection (/home/runner/work/_temp/l2_target/node_modules/knex/lib/execution/runner.js:311:46)
+[WebServer]     at Runner.run (/home/runner/work/_temp/l2_target/node_modules/knex/lib/execution/runner.js:30:30)
+[WebServer]     at Target.then (/home/runner/work/_temp/l2_target/node_modules/knex/lib/builder-interface-augmenter.js:24:43)
+[WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[WebServer]     at async UptimeCalculator.upsertStat (/home/runner/work/_temp/l2_target/server/uptime-calculator.js:428:9)
+[WebServer]     at async UptimeCalculator.update (/home/runner/work/_temp/l2_target/server/uptime-calculator.js:313:9)
+[WebServer]     at async beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1095:32)
+[WebServer]     at async safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1146:17)
+[WebServer]     at safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1148:25)
+[WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[WebServer] 2026-11-17T12:25:33Z [MONITOR] ERROR: Please report to https://github.com/louislam/uptime-kuma/issues
+······[WebServer] 2026-11-17T12:25:59Z [MONITOR] WARN: Monitor #1 'Example DNS NS': Failing: Servers: carl.ns.cloudflare.com | jean.ns.cloudflare.com | Interval: 60 seconds | Type: dns | Down Count: 0 | Resend Interval: 0
+··[WebServer] 2026-11-17T12:26:06Z [MONITOR] WARN: Monitor #1 'Example Group': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
+·[WebServer] 2026-11-17T12:26:10Z [MONITOR] WARN: Monitor #1 'Group A': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
+[WebServer] 2026-11-17T12:26:11Z [MONITOR] WARN: Monitor #3 'Group B': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
+······[WebServer] 2026-11-17T12:26:33Z [MONITOR] WARN: Monitor #1 'Group A': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
+·[WebServer] 2026-11-17T12:26:37Z [MONITOR] WARN: Monitor #1 'Group B': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
+·[WebServer] 2026-11-17T12:26:42Z [MONITOR] WARN: Monitor #1 'Group C': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
+··[WebServer] 2026-11-17T12:26:53Z [MONITOR] WARN: Monitor #1 'Group One': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
+[WebServer] 2026-11-17T12:26:54Z [MONITOR] WARN: Monitor #3 'Group Two': Pending: Group empty | Max retries: 0 | Retry: 0 | Retry Interval: 60 seconds | Type: group
+·········[WebServer] 2026-11-17T12:27:32Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
 [WebServer]   'monitor_id',
 [WebServer]   'monitor_name',
 [WebServer]   'monitor_type',
@@ -67,7 +71,7 @@ Running 71 tests using 1 worker
 [WebServer]     at Proxy.handleTlsInfo (/home/runner/work/_temp/l2_target/server/model/monitor.js:2231:26)
 [WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
 [WebServer]     at async TLSSocket.<anonymous> (/home/runner/work/_temp/l2_target/server/model/monitor.js:700:29)
-[WebServer] 2026-11-17T08:58:51Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
+[WebServer] 2026-11-17T12:27:32Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
 [WebServer]   'monitor_id',
 [WebServer]   'monitor_name',
 [WebServer]   'monitor_type',
@@ -82,7 +86,7 @@ Running 71 tests using 1 worker
 [WebServer]     at Proxy.handleTlsInfo (/home/runner/work/_temp/l2_target/server/model/monitor.js:2231:26)
 [WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
 [WebServer]     at async TLSSocket.<anonymous> (/home/runner/work/_temp/l2_target/server/model/monitor.js:700:29)
-[WebServer] 2026-11-17T08:58:51Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
+[WebServer] 2026-11-17T12:27:32Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
 [WebServer]   'monitor_id',
 [WebServer]   'monitor_name',
 [WebServer]   'monitor_type',
@@ -99,7 +103,7 @@ Running 71 tests using 1 worker
 [WebServer]     at beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1122:17)
 [WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
 [WebServer]     at async safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1146:17)
-[WebServer] 2026-11-17T08:58:51Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
+[WebServer] 2026-11-17T12:27:32Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
 [WebServer]   'monitor_id',
 [WebServer]   'monitor_name',
 [WebServer]   'monitor_type',
@@ -116,7 +120,7 @@ Running 71 tests using 1 worker
 [WebServer]     at beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1122:17)
 [WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
 [WebServer]     at async safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1146:17)
-[WebServer] 2026-11-17T08:58:51Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
+[WebServer] 2026-11-17T12:27:32Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
 [WebServer]   'monitor_id',
 [WebServer]   'monitor_name',
 [WebServer]   'monitor_type',
@@ -133,7 +137,7 @@ Running 71 tests using 1 worker
 [WebServer]     at beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1122:17)
 [WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
 [WebServer]     at async safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1146:17)
-[WebServer] 2026-11-17T08:58:51Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
+[WebServer] 2026-11-17T12:27:32Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
 [WebServer]   'monitor_id',
 [WebServer]   'monitor_name',
 [WebServer]   'monitor_type',
@@ -150,7 +154,7 @@ Running 71 tests using 1 worker
 [WebServer]     at beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1122:17)
 [WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
 [WebServer]     at async safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1146:17)
-[WebServer] 2026-11-17T08:58:51Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
+[WebServer] 2026-11-17T12:27:32Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
 [WebServer]   'monitor_id',
 [WebServer]   'monitor_name',
 [WebServer]   'monitor_type',
@@ -167,7 +171,7 @@ Running 71 tests using 1 worker
 [WebServer]     at beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1122:17)
 [WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
 [WebServer]     at async safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1146:17)
-[WebServer] 2026-11-17T08:58:51Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
+[WebServer] 2026-11-17T12:27:32Z [PROMETHEUS] ERROR: Caught error Error: Added label "team" is not included in initial labelset: [
 [WebServer]   'monitor_id',
 [WebServer]   'monitor_name',
 [WebServer]   'monitor_type',
@@ -184,8 +188,8 @@ Running 71 tests using 1 worker
 [WebServer]     at beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1122:17)
 [WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
 [WebServer]     at async safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1146:17)
-[WebServer] 2026-11-17T08:58:51Z [PROMETHEUS] ERROR: Caught error
-[WebServer] 2026-11-17T08:58:51Z [PROMETHEUS] ERROR: Error: Added label "team" is not included in initial labelset: [
+[WebServer] 2026-11-17T12:27:32Z [PROMETHEUS] ERROR: Caught error
+[WebServer] 2026-11-17T12:27:32Z [PROMETHEUS] ERROR: Error: Added label "team" is not included in initial labelset: [
 [WebServer]   'monitor_id',
 [WebServer]   'monitor_name',
 [WebServer]   'monitor_type',
@@ -201,8 +205,8 @@ Running 71 tests using 1 worker
 [WebServer]     at beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1122:17)
 [WebServer]     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
 [WebServer]     at async safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1146:17)
-[WebServer] 2026-11-17T08:58:51Z [PROMETHEUS] ERROR: Caught error
-[WebServer] 2026-11-17T08:58:51Z [PROMETHEUS] ERROR: Error: Added label "team" is not included in initial labelset: [
+[WebServer] 2026-11-17T12:27:32Z [PROMETHEUS] ERROR: Caught error
+[WebServer] 2026-11-17T12:27:32Z [PROMETHEUS] ERROR: Error: Added label "team" is not included in initial labelset: [
 [WebServer]   'monitor_id',
 [WebServer]   'monitor_name',
 [WebServer]   'monitor_type',
@@ -244,7 +248,7 @@ Running 71 tests using 1 worker
 [WebServer]     at async beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1011:21)
 [WebServer]     at async safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1146:17)
 [WebServer]     at safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1148:25)
-[WebServer] 2026-11-17T08:59:14Z [MONITOR] ERROR: Please report to https://github.com/louislam/uptime-kuma/issues
+[WebServer] 2026-11-17T12:27:54Z [MONITOR] ERROR: Please report to https://github.com/louislam/uptime-kuma/issues
 [WebServer] Trace: Error: Unable to acquire a connection
 [WebServer]     at Client_BetterSQLite3.acquireConnection (/home/runner/work/_temp/l2_target/node_modules/knex/lib/client.js:462:13)
 [WebServer]     at Runner.ensureConnection (/home/runner/work/_temp/l2_target/node_modules/knex/lib/execution/runner.js:311:46)
@@ -256,8 +260,8 @@ Running 71 tests using 1 worker
 [WebServer]     at async beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1011:21)
 [WebServer]     at async safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1146:17)
 [WebServer]     at safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1148:25)
-[WebServer] 2026-11-17T08:59:15Z [MONITOR] ERROR: Please report to https://github.com/louislam/uptime-kuma/issues
-·······[WebServer] 2026-11-17T08:59:43Z [MONITOR] WARN: Monitor #1 'Monitor for Status Page': Failing: Request failed with status code 404 | Interval: 60 seconds | Type: http | Down Count: 0 | Resend Interval: 0
+[WebServer] 2026-11-17T12:27:55Z [MONITOR] ERROR: Please report to https://github.com/louislam/uptime-kuma/issues
+·······[WebServer] 2026-11-17T12:28:24Z [MONITOR] WARN: Monitor #1 'Monitor for Status Page': Failing: Request failed with status code 404 | Interval: 60 seconds | Type: http | Down Count: 0 | Resend Interval: 0
 ·[WebServer] Trace: Error: Unable to acquire a connection
 [WebServer]     at Client_BetterSQLite3.acquireConnection (/home/runner/work/_temp/l2_target/node_modules/knex/lib/client.js:462:13)
 [WebServer]     at Runner.ensureConnection (/home/runner/work/_temp/l2_target/node_modules/knex/lib/execution/runner.js:311:46)
@@ -269,9 +273,9 @@ Running 71 tests using 1 worker
 [WebServer]     at async beat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1011:21)
 [WebServer]     at async safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1146:17)
 [WebServer]     at safeBeat (/home/runner/work/_temp/l2_target/server/model/monitor.js:1148:25)
-[WebServer] 2026-11-17T08:59:49Z [MONITOR] ERROR: Please report to https://github.com/louislam/uptime-kuma/issues
-[WebServer] 2026-11-17T08:59:51Z [MONITOR] WARN: Monitor #1 '<script>alert(1)</script>': Failing: getaddrinfo ENOTFOUND malicious1.example.com | Interval: 60 seconds | Type: http | Down Count: 0 | Resend Interval: 0
-[WebServer] 2026-11-17T08:59:52Z [MONITOR] WARN: Monitor #2 'x</title><script>alert(document.domain)</script><title>': Failing: getaddrinfo ENOTFOUND malicious2.example.com | Interval: 60 seconds | Type: http | Down Count: 0 | Resend Interval: 0
-[WebServer] 2026-11-17T08:59:52Z [MONITOR] WARN: Monitor #3 'Production API Server': Failing: getaddrinfo ENOTFOUND normal.example.com | Interval: 60 seconds | Type: http | Down Count: 0 | Resend Interval: 0
+[WebServer] 2026-11-17T12:28:29Z [MONITOR] ERROR: Please report to https://github.com/louislam/uptime-kuma/issues
+[WebServer] 2026-11-17T12:28:32Z [MONITOR] WARN: Monitor #1 '<script>alert(1)</script>': Failing: getaddrinfo ENOTFOUND malicious1.example.com | Interval: 60 seconds | Type: http | Down Count: 0 | Resend Interval: 0
+[WebServer] 2026-11-17T12:28:33Z [MONITOR] WARN: Monitor #2 'x</title><script>alert(document.domain)</script><title>': Failing: getaddrinfo ENOTFOUND malicious2.example.com | Interval: 60 seconds | Type: http | Down Count: 0 | Resend Interval: 0
+[WebServer] 2026-11-17T12:28:33Z [MONITOR] WARN: Monitor #3 'Production API Server': Failing: getaddrinfo ENOTFOUND normal.example.com | Interval: 60 seconds | Type: http | Down Count: 0 | Resend Interval: 0
 ·
-  71 passed (4.5m)
+  71 passed (4.6m)

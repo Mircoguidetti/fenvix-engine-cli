@@ -1,0 +1,127 @@
+===== 3ecc8822b9bae87e.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/uptime-kuma/server-parts/det-1/3ecc8822b9bae87e.jsonl
+  run 1: /home/runner/work/_temp/l2_out/uptime-kuma/server-parts/det-2/3ecc8822b9bae87e.jsonl
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== a9cb94b8ba3415be.jsonl
+detpy verify: 2 runs, 71 tests
+  run 0: /home/runner/work/_temp/l2_out/uptime-kuma/server-parts/det-1/a9cb94b8ba3415be.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/uptime-kuma/server-parts/det-2/a9cb94b8ba3415be.jsonl (partial)
+order: identical in every run
+covered by Level 0: 3  not covered: 68  missing: 0  outcome-unstable: 0
+reasons: beyond-trace=1 random=1 time=66
+NOT-COVERED test/e2e/specs/setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]  [beyond-trace] outcomes=passed,passed
+    runs 0 vs 1: stored events are identical; first difference in events [16384, 16640) (raise --det-max-events to capture it exactly)
+NOT-COVERED test/e2e/specs/setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #1: [time] Date @ src/util.ts:258 = 1000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 1000
+NOT-COVERED test/e2e/specs/setup-process.once.js::Uptime Kuma Setup::login [run-once setup]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #1: [time] Date @ src/util.ts:258 = 1000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 1000
+NOT-COVERED test/e2e/specs/setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #1: [time] Date @ src/util.ts:258 = 1000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 1000
+NOT-COVERED test/e2e/specs/setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date.now @ server/settings.js:34 = 11000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000
+NOT-COVERED test/e2e/specs/domain-expiry-notification.spec.js::Domain Expiry Notification::TLD enabled for new monitor [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #35: [time] setTimeout @ <deps>/engine.io/build/socket.js:241 = schedule:10000000000  <>  [time] Date @ <deps>/better-auth/dist/api/routes/session.mjs:156 = 100024000
+NOT-COVERED test/e2e/specs/example.spec.js::Example Spec::set up monitor [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 11000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000
+NOT-COVERED test/e2e/specs/example.spec.js::Example Spec::database is reset after previous test [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #33: [time] Date @ <deps>/socket.io/dist/socket.js:134 = 100021000  <>  [time] setTimeout @ <deps>/engine.io/build/socket.js:241 = schedule:10000000000
+NOT-COVERED test/e2e/specs/fridendly-name.spec.js::Friendly Name Tests::hostname [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #27: [time] setTimeout @ <deps>/ws/lib/websocket.js:1310 = schedule:30000000000  <>  [time] Date @ src/util.ts:258 = 100019000
+NOT-COVERED test/e2e/specs/fridendly-name.spec.js::Friendly Name Tests::URL hostname [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [time] setTimeout @ <deps>/engine.io/build/transports/polling.js:318 = schedule:30000000000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 12000
+NOT-COVERED test/e2e/specs/fridendly-name.spec.js::Friendly Name Tests::custom friendly name [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #20: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100015000  <>  [time] setImmediate @ <deps>/express/lib/router/index.js:203 = 
+NOT-COVERED test/e2e/specs/fridendly-name.spec.js::Friendly Name Tests::default friendly name [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #21: [time] Date.now @ <deps>/better-auth/dist/utils/date.mjs:3 = 100015000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100015000
+NOT-COVERED test/e2e/specs/incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #429: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 100080000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100080000
+NOT-COVERED test/e2e/specs/incident-history.spec.js::Incident History::active pinned incidents are shown at top and not in past incidents [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #20: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 100015000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100015000
+NOT-COVERED test/e2e/specs/incident-history.spec.js::Incident History::resolved incidents appear in past incidents section [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] Date.now @ server/settings.js:34 = 10000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 10000
+NOT-COVERED test/e2e/specs/incident-history.spec.js::Incident History::incident history pagination loads more incidents [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 12000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 12000
+NOT-COVERED test/e2e/specs/maintenance-timezone.spec.js::Maintenance timeslot timezone::recurring window is listed in the timezone of the maintenance [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #7: [random] Math.random @ <deps>/knex/lib/util/nanoid.js:26 = 0.004214257559173817  <>  [time] Date @ <deps>/dayjs/dayjs.min.js:1 = 5000
+NOT-COVERED test/e2e/specs/maintenance-timezone.spec.js::Maintenance timeslot timezone::single window keeps its configured wall time [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 12000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 12000
+NOT-COVERED test/e2e/specs/maintenance.spec.js::Maintenance::counts monitors under maintenance in the list filter [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #23: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100017000  <>  [time] setImmediate @ <deps>/express/lib/router/index.js:203 = 
+NOT-COVERED 3b02897063e877fa3a8a-536bdac96b668291035e  [time] outcomes=passed,passed
+    runs 0 vs 1: event #74: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 6000  <>  [time] setTimeout @ src/util.ts:175 = fire:2000005000
+NOT-COVERED test/e2e/specs/metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 without credentials [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #1: [time] Date @ src/util.ts:258 = 1000  <>  [random] Math.random @ <deps>/knex/lib/util/nanoid.js:26 = 0.29829804217127454
+NOT-COVERED test/e2e/specs/metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 with a wrong password [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #501: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100085000  <>  [time] setInterval @ <deps>/engine.io/build/socket.js:255 = schedule:100000000
+NOT-COVERED test/e2e/specs/metrics.spec.js::/metrics::when the Prometheus API is enabled::returns the metrics with the correct credentials [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #106: [time] setInterval @ <deps>/engine.io/build/socket.js:255 = fire:100013000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 14000
+NOT-COVERED test/e2e/specs/monitor-badge.spec.js::Badge endpoints::serve uptime and ping badges for a monitor with heartbeats [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #111: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 100018000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100018000
+NOT-COVERED test/e2e/specs/monitor-details.spec.js::Monitor details::shows the monitor details and opens the edit form [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 11000
+NOT-COVERED test/e2e/specs/monitor-details.spec.js::Monitor details::shows the ping chart [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 12000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 12000
+NOT-COVERED test/e2e/specs/monitor-details.spec.js::Monitor details::pauses and resumes the monitor [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #19: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 100014000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100014000
+NOT-COVERED test/e2e/specs/monitor-details.spec.js::Monitor details::deletes the monitor from its details page [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 11000
+NOT-COVERED test/e2e/specs/monitor-details.spec.js::Monitor details::clears the important events [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 11000
+NOT-COVERED test/e2e/specs/monitor-details.spec.js::Monitor details::clears the heartbeats shown in the monitor list [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 11000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000
+NOT-COVERED test/e2e/specs/monitor-form.spec.js::Monitor Form::condition ui [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 10000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 10000
+NOT-COVERED test/e2e/specs/monitor-form.spec.js::Monitor Form::successful condition [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #21: [time] setTimeout @ <deps>/croner/dist/croner.min.cjs:1 = schedule:30000000000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 100016000
+NOT-COVERED test/e2e/specs/monitor-form.spec.js::Monitor Form::failing condition [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #21: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 100015000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100015000
+NOT-COVERED test/e2e/specs/monitor-form.spec.js::Monitor Form::save response settings persist [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 10000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 10000
+NOT-COVERED test/e2e/specs/monitor-group.spec.js::Monitor Group::lists a group with its child monitor and collapses the child [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #18: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 100013000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100013000
+NOT-COVERED test/e2e/specs/monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date.now @ server/settings.js:34 = 11000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000
+NOT-COVERED test/e2e/specs/monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #21: [time] setTimeout @ <deps>/ws/lib/websocket.js:1310 = schedule:30000000000  <>  [time] Date @ src/util.ts:258 = 100013000
+NOT-COVERED test/e2e/specs/monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 12000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 12000
+NOT-COVERED test/e2e/specs/monitor-history-settings.spec.js::Monitor history settings::shrinks the sqlite database [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #21: [time] setTimeout @ <deps>/ws/lib/websocket.js:1310 = schedule:30000000000  <>  [time] Date @ src/util.ts:258 = 100013000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #24: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 100018000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100018000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 11000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 11000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::deletes a group but keeps its monitors [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #5: [time] setTimeout @ <deps>/engine.io/build/socket.js:241 = schedule:10000000000  <>  [time] Date @ <deps>/socket.io/dist/socket.js:134 = 3000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::deletes a group together with its monitors [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #5: [time] Date @ <deps>/socket.io/dist/socket.js:134 = 3000  <>  [time] setTimeout @ <deps>/engine.io/build/socket.js:241 = schedule:10000000000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000  <>  [time] Date.now @ server/settings.js:34 = 11000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::expands and collapses all groups [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #35: [time] Date @ <deps>/better-auth/dist/api/routes/session.mjs:156 = 100024000  <>  [time] setTimeout @ <deps>/engine.io/build/socket.js:241 = schedule:10000000000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::switches the heartbeat bar theme [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 11000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::connects to the socket over websocket [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 11000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::clears the loading overlay once the list is ready [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #1: [time] setTimeout @ <deps>/engine.io/build/socket.js:181 = schedule:20000000000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 1000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::searches monitors by name [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #342: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 317000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 317000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::filters monitors by status [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #18: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100013000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 100013000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 11000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 11000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::filters monitors by paused state and resumes them in bulk [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 10000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 10000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::deletes selected monitors in bulk [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 12000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 12000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::filters monitors by tag [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #18: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 100013000  <>  [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 100013000
+NOT-COVERED test/e2e/specs/monitor-tags.spec.js::Monitor tags::renames a tag on the monitor list [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 10000  <>  [time] Date @ <deps>/dayjs/dayjs.min.js:1 = 10000
+NOT-COVERED test/e2e/specs/monitor-tags.spec.js::Monitor tags::removes a tag from a monitor [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] Date @ <deps>/croner/dist/croner.min.cjs:1 = 10000  <>  [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 10000

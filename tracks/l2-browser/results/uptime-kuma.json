@@ -3,24 +3,24 @@
  "repo": "louislam/uptime-kuma",
  "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
  "status": "ok",
- "run_id": "44049271859",
- "setup_s": 65,
+ "run_id": "44069979210",
+ "setup_s": 98,
  "params": {
-  "baseline": 5,
-  "stress": 3,
-  "serial": 1,
-  "det": 3,
+  "baseline": 2,
+  "stress": 2,
+  "serial": 0,
+  "det": 2,
   "replays": 10,
-  "seeds": 6,
-  "max_targets": 6,
-  "budget_min": 110,
+  "seeds": 4,
+  "max_targets": 3,
+  "budget_min": 200,
   "run_timeout_min": 45,
-  "target_timeout_min": 8
+  "target_timeout_min": 8,
+  "target_plain": 3,
+  "ablation_tests": 3
  },
  "pw_dir": ".",
- "pw_args": [
-  "--max-failures=0"
- ],
+ "pw_args": [],
  "server_outside_runner": false,
  "runs": [
   {
@@ -29,8 +29,10 @@
    "seed": null,
    "filters": [],
    "extra": [],
+   "server_mode": null,
+   "det_flags": [],
    "rc": 0,
-   "wall_s": 271.8,
+   "wall_s": 276.7,
    "outcomes": {
     "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]": "passed",
     "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]": "passed",
@@ -116,269 +118,10 @@
    "seed": null,
    "filters": [],
    "extra": [],
+   "server_mode": null,
+   "det_flags": [],
    "rc": 0,
-   "wall_s": 273.9,
-   "outcomes": {
-    "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]": "passed",
-    "domain-expiry-notification.spec.js::Domain Expiry Notification::TLD enabled for new monitor [specs]": "passed",
-    "example.spec.js::Example Spec::dashboard [specs]": "passed",
-    "example.spec.js::Example Spec::set up monitor [specs]": "passed",
-    "example.spec.js::Example Spec::database is reset after previous test [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::hostname [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::URL hostname [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::custom friendly name [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::default friendly name [specs]": "passed",
-    "incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]": "passed",
-    "incident-history.spec.js::Incident History::active pinned incidents are shown at top and not in past incidents [specs]": "passed",
-    "incident-history.spec.js::Incident History::resolved incidents appear in past incidents section [specs]": "passed",
-    "incident-history.spec.js::Incident History::incident history pagination loads more incidents [specs]": "passed",
-    "maintenance-timezone.spec.js::Maintenance timeslot timezone::recurring window is listed in the timezone of the maintenance [specs]": "passed",
-    "maintenance-timezone.spec.js::Maintenance timeslot timezone::single window keeps its configured wall time [specs]": "passed",
-    "maintenance.spec.js::Maintenance::counts monitors under maintenance in the list filter [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 without credentials [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 with a wrong password [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns the metrics with the correct credentials [specs]": "passed",
-    "metrics.spec.js::/metrics::is disabled by default [specs]": "passed",
-    "monitor-badge.spec.js::Badge endpoints::serve uptime and ping badges for a monitor with heartbeats [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::shows the monitor details and opens the edit form [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::shows the ping chart [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::pauses and resumes the monitor [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::deletes the monitor from its details page [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::clears the important events [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::clears the heartbeats shown in the monitor list [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::condition ui [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::successful condition [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::failing condition [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::save response settings persist [specs]": "passed",
-    "monitor-group.spec.js::Monitor Group::lists a group with its child monitor and collapses the child [specs]": "passed",
-    "monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::shrinks the sqlite database [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::deletes a group but keeps its monitors [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::deletes a group together with its monitors [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::expands and collapses all groups [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::switches the heartbeat bar theme [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::connects to the socket over websocket [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::clears the loading overlay once the list is ready [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::searches monitors by name [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by status [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by paused state and resumes them in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::deletes selected monitors in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by tag [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::renames a tag on the monitor list [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::removes a tag from a monitor [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::deletes a tag from the tag settings [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::updates the 24h uptime live after each push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::creates a monitor with a push endpoint [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::shows the up state after an up push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::shows the down state after a down push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::rejects an unknown push token [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::rejects a ping outside the allowed range [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows a published monitor to logged-out visitors [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows the uptime badge in green for an up monitor [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": "passed",
-    "status-page.spec.js::Status Page::create and edit [specs]": "passed",
-    "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]": "passed"
-   },
-   "errors": {},
-   "trace": null,
-   "counts": {
-    "passed": 71
-   }
-  },
-  {
-   "label": "baseline-3",
-   "mode": "plain",
-   "seed": null,
-   "filters": [],
-   "extra": [],
-   "rc": 0,
-   "wall_s": 272.9,
-   "outcomes": {
-    "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]": "passed",
-    "domain-expiry-notification.spec.js::Domain Expiry Notification::TLD enabled for new monitor [specs]": "passed",
-    "example.spec.js::Example Spec::dashboard [specs]": "passed",
-    "example.spec.js::Example Spec::set up monitor [specs]": "passed",
-    "example.spec.js::Example Spec::database is reset after previous test [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::hostname [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::URL hostname [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::custom friendly name [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::default friendly name [specs]": "passed",
-    "incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]": "passed",
-    "incident-history.spec.js::Incident History::active pinned incidents are shown at top and not in past incidents [specs]": "passed",
-    "incident-history.spec.js::Incident History::resolved incidents appear in past incidents section [specs]": "passed",
-    "incident-history.spec.js::Incident History::incident history pagination loads more incidents [specs]": "passed",
-    "maintenance-timezone.spec.js::Maintenance timeslot timezone::recurring window is listed in the timezone of the maintenance [specs]": "passed",
-    "maintenance-timezone.spec.js::Maintenance timeslot timezone::single window keeps its configured wall time [specs]": "passed",
-    "maintenance.spec.js::Maintenance::counts monitors under maintenance in the list filter [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 without credentials [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 with a wrong password [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns the metrics with the correct credentials [specs]": "passed",
-    "metrics.spec.js::/metrics::is disabled by default [specs]": "passed",
-    "monitor-badge.spec.js::Badge endpoints::serve uptime and ping badges for a monitor with heartbeats [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::shows the monitor details and opens the edit form [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::shows the ping chart [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::pauses and resumes the monitor [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::deletes the monitor from its details page [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::clears the important events [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::clears the heartbeats shown in the monitor list [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::condition ui [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::successful condition [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::failing condition [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::save response settings persist [specs]": "passed",
-    "monitor-group.spec.js::Monitor Group::lists a group with its child monitor and collapses the child [specs]": "passed",
-    "monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::shrinks the sqlite database [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::deletes a group but keeps its monitors [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::deletes a group together with its monitors [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::expands and collapses all groups [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::switches the heartbeat bar theme [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::connects to the socket over websocket [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::clears the loading overlay once the list is ready [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::searches monitors by name [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by status [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by paused state and resumes them in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::deletes selected monitors in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by tag [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::renames a tag on the monitor list [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::removes a tag from a monitor [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::deletes a tag from the tag settings [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::updates the 24h uptime live after each push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::creates a monitor with a push endpoint [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::shows the up state after an up push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::shows the down state after a down push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::rejects an unknown push token [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::rejects a ping outside the allowed range [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows a published monitor to logged-out visitors [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows the uptime badge in green for an up monitor [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": "passed",
-    "status-page.spec.js::Status Page::create and edit [specs]": "passed",
-    "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]": "passed"
-   },
-   "errors": {},
-   "trace": null,
-   "counts": {
-    "passed": 71
-   }
-  },
-  {
-   "label": "baseline-4",
-   "mode": "plain",
-   "seed": null,
-   "filters": [],
-   "extra": [],
-   "rc": 0,
-   "wall_s": 274.2,
-   "outcomes": {
-    "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]": "passed",
-    "domain-expiry-notification.spec.js::Domain Expiry Notification::TLD enabled for new monitor [specs]": "passed",
-    "example.spec.js::Example Spec::dashboard [specs]": "passed",
-    "example.spec.js::Example Spec::set up monitor [specs]": "passed",
-    "example.spec.js::Example Spec::database is reset after previous test [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::hostname [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::URL hostname [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::custom friendly name [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::default friendly name [specs]": "passed",
-    "incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]": "passed",
-    "incident-history.spec.js::Incident History::active pinned incidents are shown at top and not in past incidents [specs]": "passed",
-    "incident-history.spec.js::Incident History::resolved incidents appear in past incidents section [specs]": "passed",
-    "incident-history.spec.js::Incident History::incident history pagination loads more incidents [specs]": "passed",
-    "maintenance-timezone.spec.js::Maintenance timeslot timezone::recurring window is listed in the timezone of the maintenance [specs]": "passed",
-    "maintenance-timezone.spec.js::Maintenance timeslot timezone::single window keeps its configured wall time [specs]": "passed",
-    "maintenance.spec.js::Maintenance::counts monitors under maintenance in the list filter [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 without credentials [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 with a wrong password [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns the metrics with the correct credentials [specs]": "passed",
-    "metrics.spec.js::/metrics::is disabled by default [specs]": "passed",
-    "monitor-badge.spec.js::Badge endpoints::serve uptime and ping badges for a monitor with heartbeats [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::shows the monitor details and opens the edit form [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::shows the ping chart [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::pauses and resumes the monitor [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::deletes the monitor from its details page [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::clears the important events [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::clears the heartbeats shown in the monitor list [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::condition ui [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::successful condition [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::failing condition [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::save response settings persist [specs]": "passed",
-    "monitor-group.spec.js::Monitor Group::lists a group with its child monitor and collapses the child [specs]": "passed",
-    "monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::shrinks the sqlite database [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::deletes a group but keeps its monitors [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::deletes a group together with its monitors [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::expands and collapses all groups [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::switches the heartbeat bar theme [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::connects to the socket over websocket [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::clears the loading overlay once the list is ready [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::searches monitors by name [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by status [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by paused state and resumes them in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::deletes selected monitors in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by tag [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::renames a tag on the monitor list [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::removes a tag from a monitor [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::deletes a tag from the tag settings [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::updates the 24h uptime live after each push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::creates a monitor with a push endpoint [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::shows the up state after an up push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::shows the down state after a down push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::rejects an unknown push token [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::rejects a ping outside the allowed range [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows a published monitor to logged-out visitors [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows the uptime badge in green for an up monitor [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": "passed",
-    "status-page.spec.js::Status Page::create and edit [specs]": "passed",
-    "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]": "passed"
-   },
-   "errors": {},
-   "trace": null,
-   "counts": {
-    "passed": 71
-   }
-  },
-  {
-   "label": "baseline-5",
-   "mode": "plain",
-   "seed": null,
-   "filters": [],
-   "extra": [],
-   "rc": 0,
-   "wall_s": 272.1,
+   "wall_s": 275.8,
    "outcomes": {
     "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]": "passed",
     "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]": "passed",
@@ -464,98 +207,10 @@
    "seed": null,
    "filters": [],
    "extra": [],
-   "rc": 1,
-   "wall_s": 382.6,
-   "outcomes": {
-    "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]": "passed",
-    "domain-expiry-notification.spec.js::Domain Expiry Notification::TLD enabled for new monitor [specs]": "passed",
-    "example.spec.js::Example Spec::dashboard [specs]": "passed",
-    "example.spec.js::Example Spec::set up monitor [specs]": "passed",
-    "example.spec.js::Example Spec::database is reset after previous test [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::hostname [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::URL hostname [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::custom friendly name [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::default friendly name [specs]": "passed",
-    "incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]": "passed",
-    "incident-history.spec.js::Incident History::active pinned incidents are shown at top and not in past incidents [specs]": "passed",
-    "incident-history.spec.js::Incident History::resolved incidents appear in past incidents section [specs]": "passed",
-    "incident-history.spec.js::Incident History::incident history pagination loads more incidents [specs]": "passed",
-    "maintenance-timezone.spec.js::Maintenance timeslot timezone::recurring window is listed in the timezone of the maintenance [specs]": "passed",
-    "maintenance-timezone.spec.js::Maintenance timeslot timezone::single window keeps its configured wall time [specs]": "passed",
-    "maintenance.spec.js::Maintenance::counts monitors under maintenance in the list filter [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 without credentials [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 with a wrong password [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns the metrics with the correct credentials [specs]": "passed",
-    "metrics.spec.js::/metrics::is disabled by default [specs]": "passed",
-    "monitor-badge.spec.js::Badge endpoints::serve uptime and ping badges for a monitor with heartbeats [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::shows the monitor details and opens the edit form [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::shows the ping chart [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::pauses and resumes the monitor [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::deletes the monitor from its details page [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::clears the important events [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::clears the heartbeats shown in the monitor list [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::condition ui [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::successful condition [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::failing condition [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::save response settings persist [specs]": "passed",
-    "monitor-group.spec.js::Monitor Group::lists a group with its child monitor and collapses the child [specs]": "passed",
-    "monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::shrinks the sqlite database [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::deletes a group but keeps its monitors [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::deletes a group together with its monitors [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]": "failed",
-    "monitor-list-actions.spec.js::Monitor list actions::expands and collapses all groups [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::switches the heartbeat bar theme [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::connects to the socket over websocket [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::clears the loading overlay once the list is ready [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::searches monitors by name [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by status [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by paused state and resumes them in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::deletes selected monitors in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by tag [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::renames a tag on the monitor list [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::removes a tag from a monitor [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::deletes a tag from the tag settings [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::updates the 24h uptime live after each push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::creates a monitor with a push endpoint [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::shows the up state after an up push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::shows the down state after a down push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::rejects an unknown push token [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::rejects a ping outside the allowed range [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows a published monitor to logged-out visitors [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows the uptime badge in green for an up monitor [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": "passed",
-    "status-page.spec.js::Status Page::create and edit [specs]": "passed",
-    "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]": "passed"
-   },
-   "errors": {
-    "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]": "Error: expect(locator).toBeHidden() failed\n\nLocator:  locator('#draftGroupName')\nExpected: hidden\nReceived: visible\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeHidden\" locator('#draftGroupName') with timeout 5000ms\n  - waiting for locator('#draftGroupName')\n    14 \u00d7 locator resolved to <input type=\"text\" id=\"draftGroupName\" class=\"form-control\"/>\n       - unexpected value \"visible\"\n"
-   },
-   "trace": null,
-   "counts": {
-    "passed": 70,
-    "failed": 1
-   }
-  },
-  {
-   "label": "stress-2",
-   "mode": "plain",
-   "seed": null,
-   "filters": [],
-   "extra": [],
+   "server_mode": null,
+   "det_flags": [],
    "rc": 0,
-   "wall_s": 374.1,
+   "wall_s": 386.4,
    "outcomes": {
     "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]": "passed",
     "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]": "passed",
@@ -636,107 +291,15 @@
    }
   },
   {
-   "label": "stress-3",
+   "label": "stress-2",
    "mode": "plain",
    "seed": null,
    "filters": [],
    "extra": [],
-   "rc": 1,
-   "wall_s": 443.4,
-   "outcomes": {
-    "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]": "passed",
-    "domain-expiry-notification.spec.js::Domain Expiry Notification::TLD enabled for new monitor [specs]": "passed",
-    "example.spec.js::Example Spec::dashboard [specs]": "passed",
-    "example.spec.js::Example Spec::set up monitor [specs]": "passed",
-    "example.spec.js::Example Spec::database is reset after previous test [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::hostname [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::URL hostname [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::custom friendly name [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::default friendly name [specs]": "passed",
-    "incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]": "passed",
-    "incident-history.spec.js::Incident History::active pinned incidents are shown at top and not in past incidents [specs]": "passed",
-    "incident-history.spec.js::Incident History::resolved incidents appear in past incidents section [specs]": "passed",
-    "incident-history.spec.js::Incident History::incident history pagination loads more incidents [specs]": "passed",
-    "maintenance-timezone.spec.js::Maintenance timeslot timezone::recurring window is listed in the timezone of the maintenance [specs]": "passed",
-    "maintenance-timezone.spec.js::Maintenance timeslot timezone::single window keeps its configured wall time [specs]": "passed",
-    "maintenance.spec.js::Maintenance::counts monitors under maintenance in the list filter [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 without credentials [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 with a wrong password [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns the metrics with the correct credentials [specs]": "passed",
-    "metrics.spec.js::/metrics::is disabled by default [specs]": "passed",
-    "monitor-badge.spec.js::Badge endpoints::serve uptime and ping badges for a monitor with heartbeats [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::shows the monitor details and opens the edit form [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::shows the ping chart [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::pauses and resumes the monitor [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::deletes the monitor from its details page [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::clears the important events [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::clears the heartbeats shown in the monitor list [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::condition ui [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::successful condition [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::failing condition [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::save response settings persist [specs]": "passed",
-    "monitor-group.spec.js::Monitor Group::lists a group with its child monitor and collapses the child [specs]": "passed",
-    "monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]": "failed",
-    "monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]": "passed",
-    "monitor-history-settings.spec.js::Monitor history settings::shrinks the sqlite database [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::deletes a group but keeps its monitors [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::deletes a group together with its monitors [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::expands and collapses all groups [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::switches the heartbeat bar theme [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::connects to the socket over websocket [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::clears the loading overlay once the list is ready [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::searches monitors by name [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by status [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by paused state and resumes them in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::deletes selected monitors in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by tag [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::renames a tag on the monitor list [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::removes a tag from a monitor [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::deletes a tag from the tag settings [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::updates the 24h uptime live after each push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::creates a monitor with a push endpoint [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::shows the up state after an up push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::shows the down state after a down push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::rejects an unknown push token [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::rejects a ping outside the allowed range [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows a published monitor to logged-out visitors [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows the uptime badge in green for an up monitor [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": "passed",
-    "status-page.spec.js::Status Page::create and edit [specs]": "passed",
-    "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]": "timedOut"
-   },
-   "errors": {
-    "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"18030\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays",
-    "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]": "Test timeout of 60000ms exceeded."
-   },
-   "trace": null,
-   "counts": {
-    "passed": 69,
-    "failed": 1,
-    "timedOut": 1
-   }
-  },
-  {
-   "label": "serial-1",
-   "mode": "plain",
-   "seed": null,
-   "filters": [],
-   "extra": [
-    "--workers=1"
-   ],
+   "server_mode": null,
+   "det_flags": [],
    "rc": 0,
-   "wall_s": 274.2,
+   "wall_s": 390.0,
    "outcomes": {
     "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]": "passed",
     "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]": "passed",
@@ -822,6 +385,111 @@
    "seed": null,
    "filters": [],
    "extra": [],
+   "server_mode": null,
+   "det_flags": [],
+   "rc": 1,
+   "wall_s": 1186.6,
+   "outcomes": {
+    "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]": "passed",
+    "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]": "passed",
+    "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]": "passed",
+    "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]": "passed",
+    "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]": "passed",
+    "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]": "passed",
+    "domain-expiry-notification.spec.js::Domain Expiry Notification::TLD enabled for new monitor [specs]": "passed",
+    "example.spec.js::Example Spec::dashboard [specs]": "passed",
+    "example.spec.js::Example Spec::set up monitor [specs]": "passed",
+    "example.spec.js::Example Spec::database is reset after previous test [specs]": "passed",
+    "fridendly-name.spec.js::Friendly Name Tests::hostname [specs]": "passed",
+    "fridendly-name.spec.js::Friendly Name Tests::URL hostname [specs]": "passed",
+    "fridendly-name.spec.js::Friendly Name Tests::custom friendly name [specs]": "passed",
+    "fridendly-name.spec.js::Friendly Name Tests::default friendly name [specs]": "passed",
+    "incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]": "timedOut",
+    "incident-history.spec.js::Incident History::active pinned incidents are shown at top and not in past incidents [specs]": "passed",
+    "incident-history.spec.js::Incident History::resolved incidents appear in past incidents section [specs]": "passed",
+    "incident-history.spec.js::Incident History::incident history pagination loads more incidents [specs]": "passed",
+    "maintenance-timezone.spec.js::Maintenance timeslot timezone::recurring window is listed in the timezone of the maintenance [specs]": "passed",
+    "maintenance-timezone.spec.js::Maintenance timeslot timezone::single window keeps its configured wall time [specs]": "passed",
+    "maintenance.spec.js::Maintenance::counts monitors under maintenance in the list filter [specs]": "passed",
+    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 without credentials [specs]": "passed",
+    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 with a wrong password [specs]": "passed",
+    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns the metrics with the correct credentials [specs]": "passed",
+    "metrics.spec.js::/metrics::is disabled by default [specs]": "passed",
+    "monitor-badge.spec.js::Badge endpoints::serve uptime and ping badges for a monitor with heartbeats [specs]": "passed",
+    "monitor-details.spec.js::Monitor details::shows the monitor details and opens the edit form [specs]": "passed",
+    "monitor-details.spec.js::Monitor details::shows the ping chart [specs]": "passed",
+    "monitor-details.spec.js::Monitor details::pauses and resumes the monitor [specs]": "passed",
+    "monitor-details.spec.js::Monitor details::deletes the monitor from its details page [specs]": "passed",
+    "monitor-details.spec.js::Monitor details::clears the important events [specs]": "passed",
+    "monitor-details.spec.js::Monitor details::clears the heartbeats shown in the monitor list [specs]": "timedOut",
+    "monitor-form.spec.js::Monitor Form::condition ui [specs]": "passed",
+    "monitor-form.spec.js::Monitor Form::successful condition [specs]": "passed",
+    "monitor-form.spec.js::Monitor Form::failing condition [specs]": "passed",
+    "monitor-form.spec.js::Monitor Form::save response settings persist [specs]": "passed",
+    "monitor-group.spec.js::Monitor Group::lists a group with its child monitor and collapses the child [specs]": "passed",
+    "monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]": "failed",
+    "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]": "failed",
+    "monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]": "timedOut",
+    "monitor-history-settings.spec.js::Monitor history settings::shrinks the sqlite database [specs]": "passed",
+    "monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]": "failed",
+    "monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]": "failed",
+    "monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]": "failed",
+    "monitor-list-actions.spec.js::Monitor list actions::deletes a group but keeps its monitors [specs]": "passed",
+    "monitor-list-actions.spec.js::Monitor list actions::deletes a group together with its monitors [specs]": "passed",
+    "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]": "passed",
+    "monitor-list-actions.spec.js::Monitor list actions::expands and collapses all groups [specs]": "passed",
+    "monitor-list-actions.spec.js::Monitor list actions::switches the heartbeat bar theme [specs]": "passed",
+    "monitor-list.spec.js::Monitor list::connects to the socket over websocket [specs]": "failed",
+    "monitor-list.spec.js::Monitor list::clears the loading overlay once the list is ready [specs]": "passed",
+    "monitor-list.spec.js::Monitor list::searches monitors by name [specs]": "passed",
+    "monitor-list.spec.js::Monitor list::filters monitors by status [specs]": "passed",
+    "monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]": "failed",
+    "monitor-list.spec.js::Monitor list::filters monitors by paused state and resumes them in bulk [specs]": "passed",
+    "monitor-list.spec.js::Monitor list::deletes selected monitors in bulk [specs]": "passed",
+    "monitor-list.spec.js::Monitor list::filters monitors by tag [specs]": "passed",
+    "monitor-tags.spec.js::Monitor tags::renames a tag on the monitor list [specs]": "passed",
+    "monitor-tags.spec.js::Monitor tags::removes a tag from a monitor [specs]": "passed",
+    "monitor-tags.spec.js::Monitor tags::deletes a tag from the tag settings [specs]": "passed",
+    "push-monitor.spec.js::Push monitor::updates the 24h uptime live after each push [specs]": "passed",
+    "push-monitor.spec.js::Push monitor::creates a monitor with a push endpoint [specs]": "passed",
+    "push-monitor.spec.js::Push monitor::shows the up state after an up push [specs]": "passed",
+    "push-monitor.spec.js::Push monitor::shows the down state after a down push [specs]": "passed",
+    "push-monitor.spec.js::Push monitor::rejects an unknown push token [specs]": "passed",
+    "push-monitor.spec.js::Push monitor::rejects a ping outside the allowed range [specs]": "passed",
+    "status-page-public.spec.js::Public status page::shows a published monitor to logged-out visitors [specs]": "passed",
+    "status-page-public.spec.js::Public status page::shows the uptime badge in green for an up monitor [specs]": "passed",
+    "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": "timedOut",
+    "status-page.spec.js::Status Page::create and edit [specs]": "passed",
+    "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]": "passed"
+   },
+   "errors": {
+    "incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]": "Test timeout of 60000ms exceeded.",
+    "monitor-details.spec.js::Monitor details::clears the heartbeats shown in the monitor list [specs]": "Test timeout of 30000ms exceeded.",
+    "monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('#monitorGroupSelector option:checked')\nExpected: \"Group B\"\nReceived: \"Group A\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('#monitorGroupSelector option:checked') with timeout 5000ms\n  - waiting for locator('#monitorGroupSelector option:checked')\n    14 \u00d7 locator resolved to <option value=\"1\">Group A</option>\n  ",
+    "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    3 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/>",
+    "monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]": "Test timeout of 30000ms exceeded.",
+    "monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"New Name\"\nReceived string:    \"78.95%Old Name\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" data-testid=\"monitor-list\" class=\"monitor",
+    "monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"Cloned Monitor\"\nReceived string:    \"100%Clone of Original Monitor80%Original Monitor\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" d",
+    "monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"Renamed Group\"\nReceived string:    \"77.27%Group A\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" data-testid=\"monitor-list\" class=\"mon",
+    "monitor-list.spec.js::Monitor list::connects to the socket over websocket [specs]": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: \"websocket\"\nReceived: \"polling\"",
+    "monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('filter-status-down')\nExpected substring: \"0\"\nReceived string:    \"Down1 \"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('filter-status-down') with timeout 5000ms\n  - waiting for getByTestId('filter-status-down')\n    14 \u00d7 locator resolved to <div tabindex=\"0\" data-v-90d23d88=\"\" class=\"dropdown-item\" dat",
+    "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": "Test timeout of 30000ms exceeded."
+   },
+   "trace": "/home/runner/work/_temp/l2_out/uptime-kuma/traces/det-1.jsonl",
+   "counts": {
+    "passed": 60,
+    "timedOut": 4,
+    "failed": 7
+   }
+  },
+  {
+   "label": "det-2",
+   "mode": "det",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "server_mode": null,
+   "det_flags": [],
    "rc": 1,
    "wall_s": 1183.1,
    "outcomes": {
@@ -881,7 +549,7 @@
     "monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]": "failed",
     "monitor-list.spec.js::Monitor list::filters monitors by paused state and resumes them in bulk [specs]": "passed",
     "monitor-list.spec.js::Monitor list::deletes selected monitors in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by tag [specs]": "passed",
+    "monitor-list.spec.js::Monitor list::filters monitors by tag [specs]": "timedOut",
     "monitor-tags.spec.js::Monitor tags::renames a tag on the monitor list [specs]": "passed",
     "monitor-tags.spec.js::Monitor tags::removes a tag from a monitor [specs]": "passed",
     "monitor-tags.spec.js::Monitor tags::deletes a tag from the tag settings [specs]": "passed",
@@ -893,7 +561,7 @@
     "push-monitor.spec.js::Push monitor::rejects a ping outside the allowed range [specs]": "passed",
     "status-page-public.spec.js::Public status page::shows a published monitor to logged-out visitors [specs]": "passed",
     "status-page-public.spec.js::Public status page::shows the uptime badge in green for an up monitor [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": "timedOut",
+    "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": "passed",
     "status-page.spec.js::Status Page::create and edit [specs]": "passed",
     "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]": "passed"
    },
@@ -903,113 +571,12 @@
     "monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('#monitorGroupSelector option:checked')\nExpected: \"Group B\"\nReceived: \"Group A\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('#monitorGroupSelector option:checked') with timeout 5000ms\n  - waiting for locator('#monitorGroupSelector option:checked')\n    14 \u00d7 locator resolved to <option value=\"1\">Group A</option>\n  ",
     "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/",
     "monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]": "Test timeout of 30000ms exceeded.",
-    "monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"New Name\"\nReceived string:    \"73.08%Old Name\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" data-testid=\"monitor-list\" class=\"monitor",
-    "monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"Cloned Monitor\"\nReceived string:    \"100%Clone of Original Monitor74.07%Original Monitor\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"",
-    "monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"Renamed Group\"\nReceived string:    \"72.41%Group A\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" data-testid=\"monitor-list\" class=\"mon",
+    "monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"New Name\"\nReceived string:    \"71.43%Old Name\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" data-testid=\"monitor-list\" class=\"monitor",
+    "monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"Cloned Monitor\"\nReceived string:    \"100%Clone of Original Monitor72.73%Original Monitor\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"",
+    "monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"Renamed Group\"\nReceived string:    \"70.83%Group A\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" data-testid=\"monitor-list\" class=\"mon",
     "monitor-list.spec.js::Monitor list::connects to the socket over websocket [specs]": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: \"websocket\"\nReceived: \"polling\"",
     "monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('filter-status-down')\nExpected substring: \"0\"\nReceived string:    \"Down1 \"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('filter-status-down') with timeout 5000ms\n  - waiting for getByTestId('filter-status-down')\n    14 \u00d7 locator resolved to <div tabindex=\"0\" data-v-90d23d88=\"\" class=\"dropdown-item\" dat",
-    "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": "Test timeout of 30000ms exceeded."
-   },
-   "trace": "/home/runner/work/_temp/l2_out/uptime-kuma/traces/det-1.jsonl",
-   "counts": {
-    "passed": 60,
-    "timedOut": 4,
-    "failed": 7
-   }
-  },
-  {
-   "label": "det-2",
-   "mode": "det",
-   "seed": null,
-   "filters": [],
-   "extra": [],
-   "rc": 1,
-   "wall_s": 1181.0,
-   "outcomes": {
-    "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]": "passed",
-    "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]": "passed",
-    "domain-expiry-notification.spec.js::Domain Expiry Notification::TLD enabled for new monitor [specs]": "passed",
-    "example.spec.js::Example Spec::dashboard [specs]": "passed",
-    "example.spec.js::Example Spec::set up monitor [specs]": "passed",
-    "example.spec.js::Example Spec::database is reset after previous test [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::hostname [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::URL hostname [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::custom friendly name [specs]": "passed",
-    "fridendly-name.spec.js::Friendly Name Tests::default friendly name [specs]": "passed",
-    "incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]": "timedOut",
-    "incident-history.spec.js::Incident History::active pinned incidents are shown at top and not in past incidents [specs]": "passed",
-    "incident-history.spec.js::Incident History::resolved incidents appear in past incidents section [specs]": "passed",
-    "incident-history.spec.js::Incident History::incident history pagination loads more incidents [specs]": "passed",
-    "maintenance-timezone.spec.js::Maintenance timeslot timezone::recurring window is listed in the timezone of the maintenance [specs]": "passed",
-    "maintenance-timezone.spec.js::Maintenance timeslot timezone::single window keeps its configured wall time [specs]": "passed",
-    "maintenance.spec.js::Maintenance::counts monitors under maintenance in the list filter [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 without credentials [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 with a wrong password [specs]": "passed",
-    "metrics.spec.js::/metrics::when the Prometheus API is enabled::returns the metrics with the correct credentials [specs]": "passed",
-    "metrics.spec.js::/metrics::is disabled by default [specs]": "passed",
-    "monitor-badge.spec.js::Badge endpoints::serve uptime and ping badges for a monitor with heartbeats [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::shows the monitor details and opens the edit form [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::shows the ping chart [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::pauses and resumes the monitor [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::deletes the monitor from its details page [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::clears the important events [specs]": "passed",
-    "monitor-details.spec.js::Monitor details::clears the heartbeats shown in the monitor list [specs]": "timedOut",
-    "monitor-form.spec.js::Monitor Form::condition ui [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::successful condition [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::failing condition [specs]": "passed",
-    "monitor-form.spec.js::Monitor Form::save response settings persist [specs]": "passed",
-    "monitor-group.spec.js::Monitor Group::lists a group with its child monitor and collapses the child [specs]": "passed",
-    "monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]": "failed",
-    "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]": "failed",
-    "monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]": "timedOut",
-    "monitor-history-settings.spec.js::Monitor history settings::shrinks the sqlite database [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]": "failed",
-    "monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]": "failed",
-    "monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]": "failed",
-    "monitor-list-actions.spec.js::Monitor list actions::deletes a group but keeps its monitors [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::deletes a group together with its monitors [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::expands and collapses all groups [specs]": "passed",
-    "monitor-list-actions.spec.js::Monitor list actions::switches the heartbeat bar theme [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::connects to the socket over websocket [specs]": "failed",
-    "monitor-list.spec.js::Monitor list::clears the loading overlay once the list is ready [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::searches monitors by name [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by status [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]": "failed",
-    "monitor-list.spec.js::Monitor list::filters monitors by paused state and resumes them in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::deletes selected monitors in bulk [specs]": "passed",
-    "monitor-list.spec.js::Monitor list::filters monitors by tag [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::renames a tag on the monitor list [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::removes a tag from a monitor [specs]": "passed",
-    "monitor-tags.spec.js::Monitor tags::deletes a tag from the tag settings [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::updates the 24h uptime live after each push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::creates a monitor with a push endpoint [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::shows the up state after an up push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::shows the down state after a down push [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::rejects an unknown push token [specs]": "passed",
-    "push-monitor.spec.js::Push monitor::rejects a ping outside the allowed range [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows a published monitor to logged-out visitors [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows the uptime badge in green for an up monitor [specs]": "passed",
-    "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": "timedOut",
-    "status-page.spec.js::Status Page::create and edit [specs]": "passed",
-    "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]": "passed"
-   },
-   "errors": {
-    "incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]": "Test timeout of 60000ms exceeded.",
-    "monitor-details.spec.js::Monitor details::clears the heartbeats shown in the monitor list [specs]": "Test timeout of 30000ms exceeded.",
-    "monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('#monitorGroupSelector option:checked')\nExpected: \"Group B\"\nReceived: \"Group A\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('#monitorGroupSelector option:checked') with timeout 5000ms\n  - waiting for locator('#monitorGroupSelector option:checked')\n    14 \u00d7 locator resolved to <option value=\"1\">Group A</option>\n  ",
-    "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/",
-    "monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]": "Test timeout of 30000ms exceeded.",
-    "monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"New Name\"\nReceived string:    \"78.57%Old Name\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" data-testid=\"monitor-list\" class=\"monitor",
-    "monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"Cloned Monitor\"\nReceived string:    \"100%Clone of Original Monitor80%Original Monitor\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" d",
-    "monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"Renamed Group\"\nReceived string:    \"76.47%Group A\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" data-testid=\"monitor-list\" class=\"mon",
-    "monitor-list.spec.js::Monitor list::connects to the socket over websocket [specs]": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: \"websocket\"\nReceived: \"polling\"",
-    "monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('filter-status-down')\nExpected substring: \"0\"\nReceived string:    \"Down1 \"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('filter-status-down') with timeout 5000ms\n  - waiting for getByTestId('filter-status-down')\n    14 \u00d7 locator resolved to <div tabindex=\"0\" data-v-90d23d88=\"\" class=\"dropdown-item\" dat",
-    "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": "Test timeout of 30000ms exceeded."
+    "monitor-list.spec.js::Monitor list::filters monitors by tag [specs]": "Test timeout of 30000ms exceeded."
    },
    "trace": "/home/runner/work/_temp/l2_out/uptime-kuma/traces/det-2.jsonl",
    "counts": {
@@ -1019,116 +586,359 @@
    }
   }
  ],
- "measured_at": "2026-11-17T08:55:22Z",
+ "epoch": "2026-11-17T12:23:00Z",
+ "measured_at": "2026-11-17T12:23:58Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
- "tests_baseline": 71,
- "baseline_wall_median_s": 272.9,
- "stress_wall_median_s": 382.6,
- "serial_wall_median_s": 274.2,
- "det_wall_median_s": 1182.05,
- "always_failing_baseline": [],
- "flaky": [
+ "targets": [
   {
-   "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
-   "baseline": "PPPPP",
-   "stress": "PPF",
-   "det": "FF",
-   "location": [
-    "monitor-history-settings.spec.js",
-    33
-   ]
+   "file": "monitor-history-settings.spec.js",
+   "grep": "saves the data retention period",
+   "project": "specs",
+   "source": "flaky in batch 6 (run 44049271859): 5 baseline + 3 stressed runs, PPPPP/PPF",
+   "known": true,
+   "replays": [
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed"
+   ],
+   "seeds": {
+    "1": "failed",
+    "2": "failed",
+    "3": "failed",
+    "4": "failed"
+   },
+   "failing_seed_replays": [
+    "failed",
+    "failed",
+    "failed"
+   ],
+   "matched_key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+   "replay_wall_s": 82.2,
+   "replay_verify": {
+    "status": "diverged",
+    "distinct_fingerprints": 10,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 11,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "POST http://localhost:3001/api/auth/sign-in/username 200 22f16c5ccabf1fff186826918738d627"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "POST http://localhost:3001/api/auth/sign-in/username 200 a108c5b52d95032b1ab9e4ba41be0872"
+     },
+     "reason": "net",
+     "description": "event #11: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 22f16c5ccabf1fff186826918738d627\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 a108c5b52d95032b1ab9e4ba41be0872\""
+    }
+   },
+   "failing_seed": 1,
+   "failing_seed_verify": {
+    "status": "diverged",
+    "distinct_fingerprints": 4,
+    "runs": 4,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 18,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "1/2:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=YjHH7PEPbuCVBnAUAAAI c9e1f846b2fa6240027e5bb5be28dbd2"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "1/2:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=YjHH7PEPbuCVBnAUAAAI e4e58e60da2051bc861ed2458b6696dd"
+     },
+     "reason": "sched",
+     "description": "event #18: first diverging scheduling choice: sched.io 1/2:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=YjHH7PEPbuCVBnAUAAAI c9e1f846b2fa6240027e5bb5be28dbd2 @   <>  sched.io 1/2:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=YjHH7PEPbuCVBnAUAAAI e4e58e60da2051bc861ed2458b6696dd @ "
+    }
+   },
+   "plain_runs": "PPP"
   },
   {
-   "key": "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]",
-   "baseline": "PPPPP",
-   "stress": "FPP",
-   "det": "PP",
-   "location": [
-    "monitor-list-actions.spec.js",
-    143
-   ]
+   "file": "monitor-list-actions.spec.js",
+   "grep": "creates a group from the monitor form",
+   "project": "specs",
+   "source": "flaky in batch 6 (run 44049271859): 5 baseline + 3 stressed runs, PPPPP/FPP",
+   "known": true,
+   "replays": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "seeds": {
+    "1": "passed",
+    "2": "passed",
+    "3": "passed",
+    "4": "passed"
+   },
+   "failing_seed_replays": [],
+   "matched_key": "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]",
+   "replay_wall_s": 86.0,
+   "replay_verify": {
+    "status": "diverged",
+    "distinct_fingerprints": 10,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 36,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=TYlFNbD-0CgLoOA2AAAI 3b3473bf1a24a6632ab0ccae3aa0a599"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "net",
+      "o": "ws.recv",
+      "at": "",
+      "v": "116e43567f3d6047a9eb90e2b84809f9"
+     },
+     "reason": "sched",
+     "description": "event #36: [sched] sched.io @  = 0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=TYlFNbD-0CgLoOA2AAAI 3b3473bf1a24a6632ab0ccae3aa0a599  <>  [net] ws.recv @  = 116e43567f3d6047a9eb90e2b84809f9"
+    }
+   },
+   "plain_runs": "PPP"
   },
   {
-   "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
-   "baseline": "PPPPP",
-   "stress": "PPF",
-   "det": "PP",
-   "location": [
-    "status-page.spec.js",
-    227
-   ]
+   "file": "status-page.spec.js",
+   "grep": "RSS feed escapes malicious monitor names",
+   "project": "specs",
+   "source": "flaky in batch 6 (run 44049271859): 5 baseline + 3 stressed runs, PPPPP/PPF",
+   "known": true,
+   "replays": [
+    "passed",
+    "passed",
+    "passed",
+    "timedOut",
+    "timedOut",
+    "passed",
+    "timedOut",
+    "passed",
+    "passed",
+    "timedOut"
+   ],
+   "seeds": {
+    "1": "timedOut",
+    "2": "passed",
+    "3": "passed"
+   },
+   "failing_seed_replays": [
+    "timedOut",
+    "passed",
+    "failed"
+   ],
+   "matched_key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+   "replay_wall_s": 107.25,
+   "replay_verify": {
+    "status": "diverged",
+    "distinct_fingerprints": 10,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 51,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "net",
+      "o": "ws.recv",
+      "at": "",
+      "v": "4efe5f651d5052e96aaed8ee9ab090a8"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "net",
+      "o": "ws.recv",
+      "at": "",
+      "v": "c11915bf0e35d4d6e254a7d51b865444"
+     },
+     "reason": "net",
+     "description": "event #51: ws.recv @  returned different values: \"4efe5f651d5052e96aaed8ee9ab090a8\" vs \"c11915bf0e35d4d6e254a7d51b865444\""
+    }
+   },
+   "failing_seed": 1,
+   "failing_seed_verify": {
+    "status": "diverged",
+    "distinct_fingerprints": 4,
+    "runs": 4,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 51,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "net",
+      "o": "ws.recv",
+      "at": "",
+      "v": "c039e11875a000141343059bc87daea2"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "net",
+      "o": "ws.recv",
+      "at": "",
+      "v": "c11915bf0e35d4d6e254a7d51b865444"
+     },
+     "reason": "net",
+     "description": "event #51: ws.recv @  returned different values: \"c039e11875a000141343059bc87daea2\" vs \"c11915bf0e35d4d6e254a7d51b865444\""
+    }
+   },
+   "plain_runs": "PPP"
   }
  ],
+ "known_flaky": [
+  {
+   "file": "monitor-history-settings.spec.js",
+   "grep": "saves the data retention period",
+   "project": "specs",
+   "source": "flaky in batch 6 (run 44049271859): 5 baseline + 3 stressed runs, PPPPP/PPF",
+   "known": true
+  },
+  {
+   "file": "monitor-list-actions.spec.js",
+   "grep": "creates a group from the monitor form",
+   "project": "specs",
+   "source": "flaky in batch 6 (run 44049271859): 5 baseline + 3 stressed runs, PPPPP/FPP",
+   "known": true
+  },
+  {
+   "file": "status-page.spec.js",
+   "grep": "RSS feed escapes malicious monitor names",
+   "project": "specs",
+   "source": "flaky in batch 6 (run 44049271859): 5 baseline + 3 stressed runs, PPPPP/PPF",
+   "known": true
+  }
+ ],
+ "tests_baseline": 71,
+ "baseline_wall_median_s": 276.25,
+ "stress_wall_median_s": 388.2,
+ "serial_wall_median_s": null,
+ "det_wall_median_s": 1184.85,
+ "always_failing_baseline": [],
+ "flaky": [],
  "broken_by_controls": [
   {
    "key": "incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]",
    "det": "FF",
-   "always": true
+   "always": true,
+   "error": "Test timeout of 60000ms exceeded."
   },
   {
    "key": "monitor-details.spec.js::Monitor details::clears the heartbeats shown in the monitor list [specs]",
    "det": "FF",
-   "always": true
+   "always": true,
+   "error": "Test timeout of 30000ms exceeded."
   },
   {
    "key": "monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]",
    "det": "FF",
-   "always": true
+   "always": true,
+   "error": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('#monitorGroupSelector option:checked')\nExpected: \"Group B\"\nReceived: \"Group A\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('#monitorGroupSelector option:checked') with timeout 5000ms\n  - waiting for locator('#monitorGroupSelector option:checked')\n    14 \u00d7 locator resolved to <option value=\"1\">Group A</option>\n  "
   },
   {
    "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
    "det": "FF",
-   "always": true
+   "always": true,
+   "error": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    3 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/>"
   },
   {
    "key": "monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]",
    "det": "FF",
-   "always": true
+   "always": true,
+   "error": "Test timeout of 30000ms exceeded."
   },
   {
    "key": "monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]",
    "det": "FF",
-   "always": true
+   "always": true,
+   "error": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"New Name\"\nReceived string:    \"78.95%Old Name\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" data-testid=\"monitor-list\" class=\"monitor"
   },
   {
    "key": "monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]",
    "det": "FF",
-   "always": true
+   "always": true,
+   "error": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"Cloned Monitor\"\nReceived string:    \"100%Clone of Original Monitor80%Original Monitor\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" d"
   },
   {
    "key": "monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]",
    "det": "FF",
-   "always": true
+   "always": true,
+   "error": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('monitor-list')\nExpected substring: \"Renamed Group\"\nReceived string:    \"77.27%Group A\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('monitor-list') with timeout 5000ms\n  - waiting for getByTestId('monitor-list')\n    14 \u00d7 locator resolved to <div data-v-16953b24=\"\" data-testid=\"monitor-list\" class=\"mon"
   },
   {
    "key": "monitor-list.spec.js::Monitor list::connects to the socket over websocket [specs]",
    "det": "FF",
-   "always": true
+   "always": true,
+   "error": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: \"websocket\"\nReceived: \"polling\""
   },
   {
    "key": "monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]",
    "det": "FF",
-   "always": true
+   "always": true,
+   "error": "Error: expect(locator).toContainText(expected) failed\n\nLocator: getByTestId('filter-status-down')\nExpected substring: \"0\"\nReceived string:    \"Down1 \"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" getByTestId('filter-status-down') with timeout 5000ms\n  - waiting for getByTestId('filter-status-down')\n    14 \u00d7 locator resolved to <div tabindex=\"0\" data-v-90d23d88=\"\" class=\"dropdown-item\" dat"
+  },
+  {
+   "key": "monitor-list.spec.js::Monitor list::filters monitors by tag [specs]",
+   "det": "PF",
+   "always": false,
+   "error": "Test timeout of 30000ms exceeded."
   },
   {
    "key": "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]",
-   "det": "FF",
-   "always": true
+   "det": "FP",
+   "always": false,
+   "error": "Test timeout of 30000ms exceeded."
   }
  ],
  "det_tests": 71,
  "det_verify": {
   "runs": 2,
   "tests": 71,
-  "stable": 3,
-  "diverged": 68,
+  "stable": 4,
+  "diverged": 67,
   "missing": 0,
-  "outcome_unstable": 0,
+  "outcome_unstable": 2,
   "order_identical": true,
   "reasons": {
-   "net": 63,
-   "other": 3,
-   "sched": 2
+   "net": 64,
+   "other": 2,
+   "random": 1
   }
  },
  "det_diverged_examples": [
@@ -1144,17 +954,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://localhost:3001 bbd733ca81de2083a2bae1bd609b8494 16880"
+     "v": "http://localhost:3001 1a71d0abc45f3704207baf4c2f1999a5 16870"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://localhost:3001 68c1917c3fe331e1e8218d9a13cedc6d 16870"
+     "v": "http://localhost:3001 a8be100c5e8aae0afeaa72c9720e2320 16868"
     },
     "reason": "other",
-    "description": "event #29: server.fingerprint @  returned different values: \"http://localhost:3001 bbd733ca81de2083a2bae1bd609b8494 16880\" vs \"http://localhost:3001 68c1917c3fe331e1e8218d9a13cedc6d 16870\""
+    "description": "event #29: server.fingerprint @  returned different values: \"http://localhost:3001 1a71d0abc45f3704207baf4c2f1999a5 16870\" vs \"http://localhost:3001 a8be100c5e8aae0afeaa72c9720e2320 16868\""
    }
   },
   {
@@ -1169,17 +979,17 @@
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 58b660c5b680009bbe078678a7a37c3a"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 07b03c8145b99a9c3535d2162b4c55ff"
     },
     "event_b": {
      "t": 0,
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 ca1a6c58dba4bb81dae57b782b5ec873"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 abcd1fab54bfdc2cbb6b60591a6e4868"
     },
     "reason": "net",
-    "description": "event #19: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 58b660c5b680009bbe078678a7a37c3a\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 ca1a6c58dba4bb81dae57b782b5ec873\""
+    "description": "event #19: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 07b03c8145b99a9c3535d2162b4c55ff\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 abcd1fab54bfdc2cbb6b60591a6e4868\""
    }
   },
   {
@@ -1187,24 +997,24 @@
    "divergence": {
     "run_a": 0,
     "run_b": 1,
-    "index": 14,
+    "index": 10,
     "window": null,
     "event_a": {
      "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
+     "s": "random",
+     "o": "page.random",
      "at": "",
-     "v": "http://localhost:3001 b75edc038a161c49ffc1a7544dbe60ce 22"
+     "v": "6/1/0:34686d56"
     },
     "event_b": {
      "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
+     "s": "sched",
+     "o": "sched.io",
      "at": "",
-     "v": "http://localhost:3001 fa684fa834c745eff15b53442c7a039e 21"
+     "v": "0/1:browser POST http://localhost:3001/api/auth/sign-in/username a32ad53c2b1b195c88ad608e14f95b30"
     },
-    "reason": "other",
-    "description": "event #14: server.fingerprint @  returned different values: \"http://localhost:3001 b75edc038a161c49ffc1a7544dbe60ce 22\" vs \"http://localhost:3001 fa684fa834c745eff15b53442c7a039e 21\""
+    "reason": "random",
+    "description": "event #10: [random] page.random @  = 6/1/0:34686d56  <>  [sched] sched.io @  = 0/1:browser POST http://localhost:3001/api/auth/sign-in/username a32ad53c2b1b195c88ad608e14f95b30"
    }
   },
   {
@@ -1212,24 +1022,24 @@
    "divergence": {
     "run_a": 0,
     "run_b": 1,
-    "index": 8,
+    "index": 15,
     "window": null,
     "event_a": {
      "t": 0,
-     "s": "sched",
-     "o": "sched.io",
+     "s": "other",
+     "o": "server.fingerprint",
      "at": "",
-     "v": "0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=xhZ1ci44Dq438-PdAAAE b3372b584dc0df6ce757fa43f459ca1f"
+     "v": "http://localhost:3001 711c6f1e43682caa7724b33c877015c0 23"
     },
     "event_b": {
      "t": 0,
-     "s": "sched",
-     "o": "sched.io",
+     "s": "other",
+     "o": "server.fingerprint",
      "at": "",
-     "v": "0/2:browser POST http://localhost:3001/api/auth/sign-in/username 98ad2ce8167d973bc555c5211eba1d61"
+     "v": "http://localhost:3001 031e1b18b91937ddee2affbc4497cb9e 23"
     },
-    "reason": "sched",
-    "description": "event #8: first diverging scheduling choice: sched.io 0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=xhZ1ci44Dq438-PdAAAE b3372b584dc0df6ce757fa43f459ca1f @   <>  sched.io 0/2:browser POST http://localhost:3001/api/auth/sign-in/username 98ad2ce8167d973bc555c5211eba1d61 @ "
+    "reason": "other",
+    "description": "event #15: server.fingerprint @  returned different values: \"http://localhost:3001 711c6f1e43682caa7724b33c877015c0 23\" vs \"http://localhost:3001 031e1b18b91937ddee2affbc4497cb9e 23\""
    }
   },
   {
@@ -1244,42 +1054,17 @@
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 44ad41782433b749ddb46ef7084d9295"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 eaf98d1b8feb7b27af7ced2c623f0701"
     },
     "event_b": {
      "t": 0,
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 88fafe31512d38d136eef49158f19903"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 1392373444a586f8345b3b11c847703e"
     },
     "reason": "net",
-    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 44ad41782433b749ddb46ef7084d9295\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 88fafe31512d38d136eef49158f19903\""
-   }
-  },
-  {
-   "key": "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]",
-   "divergence": {
-    "run_a": 0,
-    "run_b": 1,
-    "index": 5,
-    "window": null,
-    "event_a": {
-     "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
-     "at": "",
-     "v": "http://localhost:3001 e43cc18629194181fb04a1bddf37c8b3 25"
-    },
-    "event_b": {
-     "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
-     "at": "",
-     "v": "http://localhost:3001 8d58aa1856440838823daa3f7ee0329f 24"
-    },
-    "reason": "other",
-    "description": "event #5: server.fingerprint @  returned different values: \"http://localhost:3001 e43cc18629194181fb04a1bddf37c8b3 25\" vs \"http://localhost:3001 8d58aa1856440838823daa3f7ee0329f 24\""
+    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 eaf98d1b8feb7b27af7ced2c623f0701\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 1392373444a586f8345b3b11c847703e\""
    }
   },
   {
@@ -1294,17 +1079,17 @@
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 100f5e11897033bc48984fbfec3cd083"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 92799f1e7ea3d274b1e10ff0219f39f3"
     },
     "event_b": {
      "t": 0,
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 085d2b93d42a17d8f58c44ae6283e05b"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 0403e99fbbc4f1384f658e68db91560c"
     },
     "reason": "net",
-    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 100f5e11897033bc48984fbfec3cd083\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 085d2b93d42a17d8f58c44ae6283e05b\""
+    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 92799f1e7ea3d274b1e10ff0219f39f3\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 0403e99fbbc4f1384f658e68db91560c\""
    }
   },
   {
@@ -1319,17 +1104,17 @@
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 8438ce4046b48d93e9b3391f8f1fded7"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 376f668d9fd7923c61084f6d7333be71"
     },
     "event_b": {
      "t": 0,
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 6eee611887fa6b967029e4537177809c"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 18fdc4ac56137ca3e19dc8473bbba424"
     },
     "reason": "net",
-    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 8438ce4046b48d93e9b3391f8f1fded7\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 6eee611887fa6b967029e4537177809c\""
+    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 376f668d9fd7923c61084f6d7333be71\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 18fdc4ac56137ca3e19dc8473bbba424\""
    }
   },
   {
@@ -1344,17 +1129,17 @@
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 cb948296575b10c77f693898deb4d048"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 9c12b8e6670c23fb4c1950642cfb176b"
     },
     "event_b": {
      "t": 0,
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 1c2a71dba768f9afaf8299d11659dced"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 3ee0c814348a69dbfbd9ec101f746390"
     },
     "reason": "net",
-    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 cb948296575b10c77f693898deb4d048\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 1c2a71dba768f9afaf8299d11659dced\""
+    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 9c12b8e6670c23fb4c1950642cfb176b\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 3ee0c814348a69dbfbd9ec101f746390\""
    }
   },
   {
@@ -1369,17 +1154,17 @@
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 e68f497b869ff561e53e8b514c5366ed"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 08673d05f6f296b2782c3624c46b39fd"
     },
     "event_b": {
      "t": 0,
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 208da28265b2f14363106a67f5df4b80"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 bd791f24b1ffc136e7a85ef1aec7457a"
     },
     "reason": "net",
-    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 e68f497b869ff561e53e8b514c5366ed\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 208da28265b2f14363106a67f5df4b80\""
+    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 08673d05f6f296b2782c3624c46b39fd\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 bd791f24b1ffc136e7a85ef1aec7457a\""
    }
   },
   {
@@ -1394,17 +1179,17 @@
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 70cadb830be34e12ca7f5e1912b0d4f5"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 14478adeb81ff7ce45636d0a8f62b7a2"
     },
     "event_b": {
      "t": 0,
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 001e849334a1d7997af03c02e7e88ca6"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 0e602a0deafbdd21a90829657cd9dce5"
     },
     "reason": "net",
-    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 70cadb830be34e12ca7f5e1912b0d4f5\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 001e849334a1d7997af03c02e7e88ca6\""
+    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 14478adeb81ff7ce45636d0a8f62b7a2\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 0e602a0deafbdd21a90829657cd9dce5\""
    }
   },
   {
@@ -1419,17 +1204,17 @@
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 abe567f9ea16bfa089940bac1ac8a274"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 f20987a056e31f8ed5ba5aa11f848106"
     },
     "event_b": {
      "t": 0,
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 44a4fe370b7a8e54f2d7125a72d7f4b1"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 bbd763048ec4dd661d8f58240fcc77e1"
     },
     "reason": "net",
-    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 abe567f9ea16bfa089940bac1ac8a274\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 44a4fe370b7a8e54f2d7125a72d7f4b1\""
+    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 f20987a056e31f8ed5ba5aa11f848106\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 bbd763048ec4dd661d8f58240fcc77e1\""
    }
   },
   {
@@ -1444,17 +1229,17 @@
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 919d5a728e915a7736d8150c5399b6b8"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 dd30c88e54e12b7c284fa92faaefecc4"
     },
     "event_b": {
      "t": 0,
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 3d12de5deff22796b3f4a30cafe774b5"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 3aac2655623d754780ae16ed318717d5"
     },
     "reason": "net",
-    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 919d5a728e915a7736d8150c5399b6b8\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 3d12de5deff22796b3f4a30cafe774b5\""
+    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 dd30c88e54e12b7c284fa92faaefecc4\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 3aac2655623d754780ae16ed318717d5\""
    }
   },
   {
@@ -1469,17 +1254,17 @@
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 ec63120f9933c53525c19a992e80b109"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 a3a77560d5a07c71bbce9e466680629f"
     },
     "event_b": {
      "t": 0,
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 af51b7202407dd524f0b79f4bc27d387"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 a8b9a7f6a55b23869ca51b67db3cf916"
     },
     "reason": "net",
-    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 ec63120f9933c53525c19a992e80b109\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 af51b7202407dd524f0b79f4bc27d387\""
+    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 a3a77560d5a07c71bbce9e466680629f\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 a8b9a7f6a55b23869ca51b67db3cf916\""
    }
   },
   {
@@ -1494,17 +1279,42 @@
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 e08643c3bd6e9f9d330ca3a1025b7a01"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 f034b731f89d6fcdb26802c31d85b9ab"
     },
     "event_b": {
      "t": 0,
      "s": "net",
      "o": "browser.done",
      "at": "",
-     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 fcc2fe4820096b684e6ce82ad19f20ec"
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 a21ac8fd8d9a33a9fb2fac1f24ce1ad8"
     },
     "reason": "net",
-    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 e08643c3bd6e9f9d330ca3a1025b7a01\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 fcc2fe4820096b684e6ce82ad19f20ec\""
+    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 f034b731f89d6fcdb26802c31d85b9ab\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 a21ac8fd8d9a33a9fb2fac1f24ce1ad8\""
+   }
+  },
+  {
+   "key": "incident-history.spec.js::Incident History::resolved incidents appear in past incidents section [specs]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 12,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "net",
+     "o": "browser.done",
+     "at": "",
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 32f99b92d6c2e9d1b404faae83dff2e2"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "net",
+     "o": "browser.done",
+     "at": "",
+     "v": "POST http://localhost:3001/api/auth/sign-in/username 200 0a43acf5afd4f335d8a2eaf695a96046"
+    },
+    "reason": "net",
+    "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 32f99b92d6c2e9d1b404faae83dff2e2\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 0a43acf5afd4f335d8a2eaf695a96046\""
    }
   }
  ],
@@ -1535,8 +1345,8 @@
    "PP"
   ],
   "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]": [
-   "diverged",
-   2,
+   "stable",
+   1,
    "PP"
   ],
   "domain-expiry-notification.spec.js::Domain Expiry Notification::TLD enabled for new monitor [specs]": [
@@ -1792,7 +1602,7 @@
   "monitor-list.spec.js::Monitor list::filters monitors by tag [specs]": [
    "diverged",
    2,
-   "PP"
+   "PF"
   ],
   "monitor-tags.spec.js::Monitor tags::renames a tag on the monitor list [specs]": [
    "diverged",
@@ -1852,7 +1662,7 @@
   "status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]": [
    "diverged",
    2,
-   "FF"
+   "FP"
   ],
   "status-page.spec.js::Status Page::create and edit [specs]": [
    "diverged",
@@ -1865,98 +1675,31 @@
    "PP"
   ]
  },
- "targets": [
+ "ablation": [
   {
-   "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
-   "filter": [
-    "monitor-history-settings.spec.js:33"
-   ],
-   "replays": [
-    "failed",
-    "failed",
-    "failed",
-    "failed",
-    "failed",
-    "failed",
-    "failed",
-    "failed",
-    "failed",
-    "failed"
-   ],
-   "seeds": {
-    "1": "failed",
-    "2": "failed",
-    "3": "failed"
-   },
-   "failing_seed_replays": [],
-   "replay_wall_s": 81.25,
-   "replay_verify": {
-    "status": "diverged",
-    "distinct_fingerprints": 10,
-    "runs": 10,
-    "divergence": {
-     "run_a": 0,
-     "run_b": 1,
-     "index": 29,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "sched",
-      "o": "sched.io",
-      "at": "",
-      "v": "0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=s4fCkWLcGNVs1rwUAAAJ 1d61537f16dc9b1eb3eea67d8000bbfc"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "net",
-      "o": "ws.recv",
-      "at": "",
-      "v": "4efc975afedaf5ae9e1740228db4a88e"
-     },
-     "reason": "sched",
-     "description": "event #29: [sched] sched.io @  = 0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=s4fCkWLcGNVs1rwUAAAJ 1d61537f16dc9b1eb3eea67d8000bbfc  <>  [net] ws.recv @  = 4efc975afedaf5ae9e1740228db4a88e"
-    }
-   },
-   "replay_summary": {
-    "runs": 10,
-    "tests": 7,
-    "stable": 1,
-    "diverged": 6,
-    "missing": 0,
-    "outcome_unstable": 0,
-    "order_identical": true,
-    "reasons": {
-     "other": 2,
-     "random": 1,
-     "sched": 3
-    }
-   },
-   "failing_seed": 1
+   "key": "incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]",
+   "all-on": "timedOut",
+   "server-off": "passed",
+   "net-off": "timedOut",
+   "vtime-off": "passed",
+   "seeds-off": "timedOut"
   },
   {
-   "key": "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]",
-   "filter": [
-    "monitor-list-actions.spec.js:143"
-   ],
-   "replays": [
-    "passed"
-   ],
-   "seeds": {},
-   "failing_seed_replays": [],
-   "replay_wall_s": 92.3
+   "key": "monitor-details.spec.js::Monitor details::clears the heartbeats shown in the monitor list [specs]",
+   "all-on": "timedOut",
+   "server-off": "failed",
+   "net-off": "passed",
+   "vtime-off": "failed",
+   "seeds-off": "failed"
   },
   {
-   "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
-   "filter": [
-    "status-page.spec.js:227"
-   ],
-   "replays": [
-    "passed"
-   ],
-   "seeds": {},
-   "failing_seed_replays": [],
-   "replay_wall_s": 100.0
+   "key": "monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]",
+   "all-on": "failed",
+   "server-off": "failed",
+   "net-off": "failed",
+   "vtime-off": "failed",
+   "seeds-off": "failed"
   }
  ],
- "elapsed_min": 107.7
+ "elapsed_min": 153.9
 }
