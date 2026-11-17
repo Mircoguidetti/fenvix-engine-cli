@@ -1,0 +1,48 @@
+From eb7455ca85ea95326ad42afb406839793103f954 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 09:38:11 +0000
+Subject: [PATCH 11/11] L1 threads: no line preemption while detpy code is on
+ the stack (a user wrapper around lock.acquire, e.g. blockbuster, deadlocked
+ on the scheduler lock)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ python/detpy/threads.py | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/python/detpy/threads.py b/python/detpy/threads.py
+index 4ed31a3..ec836fb 100644
+--- a/python/detpy/threads.py
++++ b/python/detpy/threads.py
+@@ -1014,7 +1014,7 @@ def _install_tracer(t) -> None:
+             t.budget -= 1
+             if t.budget <= 0:
+                 t.budget = _new_budget()
+-                if S.active and S.current is t and S.runq:
++                if S.active and S.current is t and S.runq and not _inside_detpy(frame):
+                     _preempt(t)
+         return line
+ 
+@@ -1026,6 +1026,18 @@ def _install_tracer(t) -> None:
+     sys.settrace(call)
+ 
+ 
++def _inside_detpy(frame) -> bool:
++    """True if detpy code is on the stack below ``frame``: project code called from
++    inside the scheduler (a user wrapper around lock.acquire, a predicate) must not
++    be preempted, the scheduler may hold its own lock."""
++    f = frame.f_back
++    while f is not None:
++        if f.f_code.co_filename.startswith(_DETPY_DIR):
++            return True
++        f = f.f_back
++    return False
++
++
+ def _preempt(me) -> None:
+     S.mu.acquire()
+     if not S.active or S.current is not me:
+-- 
+2.43.0
+

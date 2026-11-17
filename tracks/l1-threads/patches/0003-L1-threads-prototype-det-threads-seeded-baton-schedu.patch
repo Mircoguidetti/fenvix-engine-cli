@@ -1,7 +1,7 @@
 From 6dbc09e37ce3344467e193847aaa85079810cf34 Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 17 Nov 2026 06:29:22 +0000
-Subject: [PATCH 03/10] L1 threads prototype: --det-threads, seeded baton
+Subject: [PATCH 03/11] L1 threads prototype: --det-threads, seeded baton
  scheduler for Python threads
 
 One managed thread runs at a time; switches only at lock/condition/queue/
