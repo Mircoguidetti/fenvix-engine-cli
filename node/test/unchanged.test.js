@@ -31,6 +31,18 @@ describe('Date', () => {
     expect(Date.now()).toBeGreaterThan(0);
     expect(new Date().getTime() - Date.now()).toBeLessThan(1000);
   });
+  test('many clock reads (a React scheduler render) do not inflate elapsed time', () => {
+    const t0 = performance.now();
+    let t = t0;
+    for (let i = 0; i < 500; i += 1) t = performance.now();
+    expect(t - t0).toBeLessThan(250);
+  });
+  test('a busy-wait loop on the clock still ends', () => {
+    const t0 = Date.now();
+    let n = 0;
+    while (Date.now() - t0 < 150) n += 1;
+    expect(n).toBeGreaterThan(0);
+  });
   test('elapsed time is non-negative and monotonic', () => {
     const a = performance.now(); const b = performance.now();
     expect(b).toBeGreaterThanOrEqual(a);

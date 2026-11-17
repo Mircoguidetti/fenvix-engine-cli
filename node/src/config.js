@@ -36,7 +36,7 @@ function fromEnv(env = process.env) {
     controls: new Set(controls(env.DETJS_DISABLE)),
     epochNs: parseEpoch(env.DETJS_EPOCH || DEFAULT_EPOCH),
     tickNs: int(env.DETJS_TICK, 1000),
-    tickAdapt: int(env.DETJS_TICK_ADAPT, 8),
+    tickAdapt: int(env.DETJS_TICK_ADAPT, 1000),
     timerBudget: int(env.DETJS_TIMER_BUDGET, 100000),
     timers: env.DETJS_TIMERS === 'real' ? 'real' : 'virtual',
     dir: env.DETJS_DIR || null,

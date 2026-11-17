@@ -20,7 +20,7 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det-allow-host=HOST    external host that may be reached (repeatable)
   --det-epoch=ISO          wall clock at the start of every test (default ${config.DEFAULT_EPOCH})
   --det-tick=NS            nanoseconds per clock read (default 1000)
-  --det-tick-adapt=N       double the tick after N consecutive reads with no other event (default 8, 0 = fixed)
+  --det-tick-adapt=N       double the tick after N consecutive reads with no other event (default 1000, 0 = fixed)
   --det-timers=real        timers wait for real (default: virtual, fast while no I/O is pending)
   --det-timer-budget=N     fast timer firings per test before falling back to real waits (default 100000)
   --det-disable=LIST       controls to turn off: ${config.CONTROLS.join(',')}
@@ -34,7 +34,7 @@ function parseArgs(argv, env = process.env) {
   const opts = {
     det: env.DETJS === '1' || env.DETJS === 'true',
     seed: null, trace: null, compare: null, record: false, cassette: null, allowHosts: [],
-    epoch: config.DEFAULT_EPOCH, tick: 1000, tickAdapt: 8, timers: 'virtual', timerBudget: 100000,
+    epoch: config.DEFAULT_EPOCH, tick: 1000, tickAdapt: 1000, timers: 'virtual', timerBudget: 100000,
     disable: '', urandom: false, maxEvents: 10000, sites: true,
   };
   if (env.DETJS_SEED !== undefined && env.DETJS_SEED !== '') opts.seed = config.int(env.DETJS_SEED, 0);
@@ -57,7 +57,7 @@ function parseArgs(argv, env = process.env) {
       case '--det-allow-host': opts.allowHosts.push(value); break;
       case '--det-epoch': config.parseEpoch(value); opts.epoch = value; break;
       case '--det-tick': opts.tick = config.int(value, 1000); break;
-      case '--det-tick-adapt': opts.tickAdapt = config.int(value, 8); break;
+      case '--det-tick-adapt': opts.tickAdapt = config.int(value, 1000); break;
       case '--det-timers': opts.timers = value === 'real' ? 'real' : 'virtual'; break;
       case '--det-timer-budget': opts.timerBudget = config.int(value, 100000); break;
       case '--det-disable': config.controls(value); opts.disable = value; break;

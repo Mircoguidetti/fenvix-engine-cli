@@ -76,19 +76,26 @@ async function main(argv) {
     `--testSequencer=${path.join(__dirname, 'sequencer.js')}`,
     `--testRunner=${runnerShim}`];
   // A custom Jest `runner` (jest-light-runner: worker threads or child
-  // processes without jest-circus's testRunner hook) would run the tests
-  // outside detjs: Level 0 would silently not apply (found on babel and
-  // prettier: 0 traced tests). Jest's default runner is used instead, and the
-  // replacement is recorded.
+  // processes without jest-circus's testRunner hook) runs the tests outside
+  // detjs: Level 0 does not reach them (found on babel and prettier: 0 traced
+  // tests). Kept by default and recorded; DETJS_JEST_RUNNER=replace uses Jest's
+  // default runner instead (measured: the native-ESM suites of babel and
+  // prettier then fail under --det and the serial reference alike).
   let runnerNote = '';
   if (customRunners.size) {
-    try {
-      const coreReq = require('node:module').createRequire(require('node:module').createRequire(jest.bin).resolve('@jest/core'));
-      extra.push(`--runner=${coreReq.resolve('jest-runner')}`);
-      runnerNote = `; runner ${[...customRunners].join(',')} replaced by jest-runner`;
-    } catch {
-      runnerNote = `; WARNING runner ${[...customRunners].join(',')} kept: tests run outside detjs`;
-      process.stderr.write(`detjs: WARNING custom Jest runner ${[...customRunners].join(',')}: Level 0 controls do not reach its tests\n`);
+    const names = [...customRunners].join(',');
+    let replaced = false;
+    if (process.env.DETJS_JEST_RUNNER === 'replace') {
+      try {
+        const coreReq = require('node:module').createRequire(require('node:module').createRequire(jest.bin).resolve('@jest/core'));
+        extra.push(`--runner=${coreReq.resolve('jest-runner')}`);
+        runnerNote = `; runner ${names} replaced by jest-runner`;
+        replaced = true;
+      } catch { /* keep it */ }
+    }
+    if (!replaced) {
+      runnerNote = `; custom runner ${names}: Level 0 controls NOT applied to its tests`;
+      process.stderr.write(`detjs: WARNING custom Jest runner ${names}: Level 0 controls do not reach its tests (DETJS_JEST_RUNNER=replace uses jest-runner)\n`);
     }
   }
   const help = spawnSync(process.execPath, [jest.bin, '--help'], { encoding: 'utf8', env: { ...process.env, DETJS: '0' } });
