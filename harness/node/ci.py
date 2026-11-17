@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import csv
 import datetime
 import json
 import os
@@ -124,6 +125,61 @@ SUM = ("tests", "unstable_baseline", "unstable_det", "became_stable", "outcome_c
 CAUSES = ("concurrency/event-order", "external", "l0-gap", "unknown")
 
 
+def _hist(text: str) -> dict:
+    return {k: int(v) for k, v in (kv.split("=") for kv in (text or "").split(";") if "=" in kv)}
+
+
+def typecheck_id(nodeid: str) -> bool:
+    """A Vitest type-check task (`*.test-d.ts`, or typecheck mode: the first suite is the file path itself):
+    checked by tsc, no test JavaScript runs, so the runner hooks never see it and there is no fingerprint."""
+    parts = nodeid.split("::")
+    f = parts[0]
+    return bool(re.search(r"\.test-d\.[cm]?tsx?$", f)) or (len(parts) > 2 and f.endswith(parts[1]) and "/" in parts[1])
+
+
+def csv_metrics(out: Path, name: str) -> collections.Counter:
+    """Per-test metrics recomputed from <repo>.csv with the definitions of the Python harness (P-008, e01d707):
+    * id_unstable: unstable in the baseline because absent from some baseline runs (the id contains a
+      run-dependent value, or the test file appeared during the round); not a flaky test, out of the metric;
+    * missing_under_det / only_under_det: an id present in one mode only;
+    * coverage: covered (one fingerprint), not_covered (several), and tests that ran under --det but have no
+      fingerprint at all (nofp_ran, of which nofp_typecheck are Vitest type-check tasks): also not covered.
+    Run counts per mode come from <repo>_runs.csv."""
+    m = collections.Counter()
+    path = out / f"{name}.csv"
+    if path.exists():
+        for r in csv.DictReader(open(path)):
+            b, d = _hist(r["baseline_outcomes"]), _hist(r["det_outcomes"])
+            fp = r.get("fingerprint_covered")
+            if fp == "True":
+                m["covered"] += 1
+            elif r.get("distinct_fingerprints") not in ("", "0", None):
+                m["not_covered"] += 1
+            elif "passed" in d:
+                m["nofp_ran"] += 1
+                if typecheck_id(r["nodeid"]):
+                    m["nofp_typecheck"] += 1
+            if r["baseline_unstable"] == "True" and "missing" in b:
+                m["id_unstable"] += 1
+                continue
+            if "missing" not in b and set(d) == {"missing"}:
+                m["missing_under_det"] += 1
+            if set(b) == {"missing"} and "missing" not in d:
+                m["only_under_det"] += 1
+            if r["baseline_unstable"] == "True":
+                m["unstable_strict"] += 1
+                if r["reproduced"] == "True":
+                    m["reproduced_strict"] += 1
+            if r.get("broken_by_det") == "True":
+                m["broken_strict"] += 1
+    runs = out / f"{name}_runs.csv"
+    if runs.exists():
+        for r in csv.DictReader(open(runs)):
+            if r["mode"] in ("normal", "det"):
+                m[f"runs_{r['mode']}"] += 1
+    return m
+
+
 def write_report(out: Path, meta: dict) -> Path:
     summaries = [json.loads(p.read_text()) for p in sorted(out.glob("*.summary.json"))]
     timings = [json.loads(p.read_text()) for p in sorted(out.glob("*.timing.json"))]
@@ -163,6 +219,13 @@ def write_report(out: Path, meta: dict) -> Path:
         cf = out / f"{s['name']}.causes.json"
         if cf.exists():
             cause_rows += json.loads(cf.read_text())
+    strict = {k: collections.Counter() for k in ("all", "flaky", "popular")}
+    per_repo = {}
+    for s in ok:
+        cm = csv_metrics(out, s["name"])
+        per_repo[s["name"]] = dict(cm)
+        strict["all"].update(cm)
+        strict[s["kind"]].update(cm)
     seeds_needed = [v for s in ok for v in s.get("seeds_needed", [])]
     T = tot["all"]
     med = statistics.median
@@ -178,8 +241,11 @@ def write_report(out: Path, meta: dict) -> Path:
          "DECLARED (with source), UNKNOWN; NOISY = shared host.\n",
          f"Verifier: {', '.join(sorted({s.get('verifier', '?') for s in ok})) or 'n/a'}.\n",
          "## Main metric\n",
-         f"**Baseline-unstable tests made reproducible: {T['reproduced']}/{T['unstable_baseline']} = "
-         f"{_pct(T['reproduced'], T['unstable_baseline'])}** (MEASURED). A test counts as reproduced when some "
+         f"**Baseline-unstable tests made reproducible: {strict['all']['reproduced_strict']}/"
+         f"{strict['all']['unstable_strict']} = {_pct(strict['all']['reproduced_strict'], strict['all']['unstable_strict'])}"
+         f"** (MEASURED). Tests whose id is not present in every baseline run ({strict['all']['id_unstable']}: ids "
+         "built from run-dependent values, or test files written by a run) are not flaky tests and are excluded "
+         f"(including them: {T['reproduced']}/{T['unstable_baseline']}). A test counts as reproduced when some "
          f"`--det-seed` (or the fixed `--det` order) makes it fail {meta.get('confirm')} times out of {meta.get('confirm')} "
          "AND some `--det` configuration makes it pass.\n",
          "| pool | repositories | tests | unstable in baseline | reproduced | % | never fail under --det | "
@@ -326,7 +392,9 @@ def write_report(out: Path, meta: dict) -> Path:
     (out / "summary.json").write_text(json.dumps({"meta": meta, "totals": {k: dict(v) for k, v in tot.items()},
                                                   "reasons": dict(reasons), "pass_fail_reasons": dict(pf),
                                                   "broken_causes": dict(broken), "not_reproduced_causes": dict(causes),
-                                                  "timings": timings, "repos": ok}, indent=1, default=str))
+                                                  "timings": timings, "repos": ok,
+                                                  "strict": {k: dict(v) for k, v in strict.items()},
+                                                  "per_repo_strict": per_repo}, indent=1, default=str))
     return path
 
 
