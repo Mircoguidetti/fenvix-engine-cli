@@ -84,11 +84,13 @@ function fixture() {
   fs.mkdirSync(path.join(DIR, 'tests'), { recursive: true });
   fs.writeFileSync(path.join(DIR, 'package.json'), '{"name":"fixture-pw","private":true}');
   fs.writeFileSync(path.join(DIR, 'app.js'), APP);
+  fs.mkdirSync(path.join(DIR, 'node_modules', '.bin'), { recursive: true });
+  fs.writeFileSync(path.join(DIR, 'node_modules', '.bin', 'fixture-tool'), '#!/bin/sh\nexit 0\n', { mode: 0o755 });
   fs.writeFileSync(path.join(DIR, 'tests', 'races.spec.js'), SPEC);
   fs.writeFileSync(path.join(DIR, 'playwright.config.js'), `module.exports = {
   testDir: './tests', fullyParallel: true, workers: 2, reporter: 'list',
   use: { baseURL: 'http://localhost:${PORT}', launchOptions: { executablePath: ${JSON.stringify(chromium())} } },
-  webServer: { command: 'node app.js', url: 'http://localhost:${PORT}/api/notes', reuseExistingServer: false },
+  webServer: { command: 'fixture-tool && node app.js', url: 'http://localhost:${PORT}/api/notes', reuseExistingServer: false },
 };\n`);
 }
 
@@ -117,6 +119,7 @@ function verify(paths) {
 const outcome = (run, name) => run.trace.tests.find((t) => t.nodeid.includes(name)).outcome;
 const skip = available() || false;
 
+// The webServer command uses a node_modules/.bin tool, as projects do (cross-env): found on uptime-kuma.
 test('playwright without --det: server and page randomness differ between runs', { skip, timeout: 240000 }, () => {
   fixture();
   const a = pw([], 'plain-a');
