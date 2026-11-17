@@ -98,7 +98,20 @@ def proxy_endpoints(env) -> set:
             try:
                 a = ipaddress.ip_address(host)
             except ValueError:
-                continue                     # a named non-local host: its connect is already external
+                # R-002c: a name other than "localhost" can map to loopback (/etc/hosts: "runsc", the machine
+                # name -> 127.0.1.1). Resolve it; if it resolves to loopback, or cannot be resolved here, any
+                # loopback connect to that port counts as the proxy (conservative: never a wrong reuse).
+                import socket
+                try:
+                    infos = socket.getaddrinfo(host, port, proto=socket.IPPROTO_TCP)
+                    addrs = [ipaddress.ip_address(i[4][0].split("%")[0]) for i in infos]
+                except (OSError, ValueError):
+                    addrs = []
+                if not addrs or any(x.is_loopback or x.is_unspecified
+                                    or (getattr(x, "ipv4_mapped", None) and x.ipv4_mapped.is_loopback)
+                                    for x in addrs):
+                    out.add((None, port))
+                continue                     # otherwise a named non-local host: its connect is already external
             if getattr(a, "ipv4_mapped", None):
                 a = a.ipv4_mapped
             if a.is_loopback or a.is_unspecified:
