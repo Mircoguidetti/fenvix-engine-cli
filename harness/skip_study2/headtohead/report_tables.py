@@ -59,11 +59,39 @@ def pooled_table(p, title):
     return "\n".join(out)
 
 
+def ci_table(res):
+    """One row per (arm, project, rule) of the realistic CI change arms."""
+    out = ["| change | project | rule | time skipped at the landing commit | after landing, mean | stale passes "
+           "(test-file x commit, confirmed) | test files broken by the change | broken files the rule reported "
+           "as passing | commits with a stale pass |", "|---|---|---|---:|---:|---:|---:|---:|---:|"]
+    for arm in ("ci-dep", "ci-data", "ci-env"):
+        for n, s in sorted((res.get(arm) or {}).items()):
+            if n.startswith("_") or not s.get("change"):
+                continue
+            for r in ORDER:
+                if r not in s.get("rules", []):
+                    continue
+                x = s[r]
+                out.append(f"| {arm[3:]} | {n} | {r} | {pct(x.get('landing_share'))} | "
+                           f"{pct((x.get('after_share') or {}).get('mean'))} | {cell(x)} | "
+                           f"{len(s['broken_by_change'])} | {len(x.get('broken_missed', []))} | "
+                           f"{x.get('wrong_commits', 0)} of {s.get('after_landing')} |")
+    return "\n".join(out)
+
+
 def main(argv):
     with tempfile.NamedTemporaryFile(suffix=".json") as tf:
         subprocess.run([sys.executable, str(HERE / "h2h_aggregate.py"), *argv, "--json", tf.name], check=True,
                        capture_output=True)
         res = json.loads(Path(tf.name).read_text())
+    if any(a.startswith("ci-") for a in res):
+        print("\n### realistic CI change arms\n")
+        print(ci_table(res))
+        for arm in ("ci-dep", "ci-data", "ci-env"):
+            for n, s in sorted((res.get(arm) or {}).items()):
+                if not n.startswith("_") and s.get("change"):
+                    print(f"\n* {arm} / {n}: {s['change'].get('what')}; broken by the change: {s['broken_by_change']}; "
+                          f"edits: {[e[1] for e in s.get('edits', [])][:1]}")
     for arm in ("main", "env", "runtime", "home-root"):
         if arm not in res:
             continue

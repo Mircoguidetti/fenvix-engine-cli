@@ -69,6 +69,7 @@ def summarize(shards):
             by_i[t["i"]].append(t)
     full = sorted(i for i, ts in by_i.items() if len(ts) == len(shards))
     share = {r: [] for r in RULES}
+    share_at = {r: {} for r in RULES}
     checks = {r: Counter() for r in RULES}
     keys = {r: set() for r in RULES}
     present = {r for d in shards for r in d.get("rules", ["C", "A", "B", "B+"])}
@@ -102,6 +103,7 @@ def summarize(shards):
                 continue
             must = sum(cost[u] for u in live if (dec.get(u) or {}).get(r))
             share[r].append(1 - must / tot if tot else None)
+            share_at[r][i] = share[r][-1]
             skips[r] += sum(1 for u in live if not (dec.get(u) or {}).get(r))
     rech = {}
     for d in shards:
@@ -158,6 +160,14 @@ def summarize(shards):
                   "wrong_examples": [{k: m.get(k) for k in ("unit", "i", "rec_i", "fails", "changes", "c")}
                                      for m in wrong_items[:8]],
                   "share_series": [round(x, 4) if x is not None else None for x in share[r]]}
+        if out.get("change"):
+            land = out["change"].get("land", 3)
+            aft = [v for i, v in share_at[r].items() if i >= land and v is not None]
+            out[r]["landing_share"] = share_at[r].get(land)
+            out[r]["after_share"] = stats(aft)
+            missed = {m["unit"] for m in wrong_items}
+            out[r]["broken_missed"] = sorted(missed & set(out["broken_by_change"]))
+            out[r]["landing_wrong_units"] = sorted({m["unit"] for m in wrong_items if m["i"] == land})
     return out
 
 
