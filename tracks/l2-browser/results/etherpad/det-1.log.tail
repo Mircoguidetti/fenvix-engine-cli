@@ -1,4 +1,68 @@
-d
+detjs 0.1.0: Level 2 browser prototype; playwright 1.65.1; seed 0; epoch 2026-11-17T12:30:00Z; vtime=paced; net=on; server=on; workers=1
+
+Running 289 tests using 1 worker
+·································F····Chat true
+Chat false
+Chat false
+Chat 
+·Chat false
+Chat true
+Chat true
+Chat false
+Chat false
+Chat 
+········T································
+··································F·······FF··············F·T···················
+···F··········°·································××F·××F·························
+·······················TTTF··························
+
+  1) [chromium] › tests/frontend-new/specs/change_user_name.spec.ts:11:1 › Remembers the username after a refresh @feature:username 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  locator('input[data-l10n-id=\'pad.userlist.entername\']')
+    Expected: "😃"
+    Received: ""
+    Timeout:  20000ms
+
+    Call log:
+      - Expect "toHaveValue" locator('input[data-l10n-id=\'pad.userlist.entername\']') with timeout 20000ms
+      - waiting for locator('input[data-l10n-id=\'pad.userlist.entername\']')
+        44 × locator resolved to <input type="text" maxlength="128" id="myusernameedit" data-l10n-aria-label="true" aria-label="Enter your name" placeholder="Enter your name" data-l10n-id="pad.userlist.entername" class="myusernameedithoverable editable editactive"/>
+           - unexpected value ""
+
+
+      19 |   await toggleUserList(page);
+      20 |   const usernameField = page.locator("input[data-l10n-id='pad.userlist.entername']");
+    > 21 |   await expect(usernameField).toHaveValue('😃');
+         |                               ^
+      22 | })
+      23 |
+      24 |
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/change_user_name.spec.ts:21:31
+
+    Error Context: test-results/tests-frontend-new-specs-c-818f2-he-username-after-a-refresh-chromium/error-context.md
+
+  2) [chromium] › tests/frontend-new/specs/collab_client.spec.ts:47:3 › Messages in the COLLABROOM › bug #4978 regression test 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.selectText: Test ended.
+    Call log:
+      - waiting for locator('#innerdocbody').locator('div').first().locator('span')
+
+
+      37 |     await body.click();
+      38 |     // simulate key presses to delete content
+    > 39 |     await div.locator('span').selectText() // select all
+         |                               ^
+      40 |     await page.keyboard.press('Backspace') // clear the first line
+      41 |     // insertText (single input event) instead of per-key keyboard.type
+      42 |     // — Firefox + WITH_PLUGINS load races and drops keystrokes; see
+        at replaceLineText (/home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/collab_client.spec.ts:39:31)
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/collab_client.spec.ts:69:5
+
+    Error Context: test-results/tests-frontend-new-specs-c-7dc30-OM-bug-4978-regression-test-chromium/error-context.md
 
   3) [chromium] › tests/frontend-new/specs/pad_deletion_token.spec.ts:149:3 › pad deletion token with the modal suppressed › no modal; the settings toggle shows and copies a working token, across reloads 
 
@@ -281,51 +345,62 @@ d
 
   11) [chromium] › tests/frontend-new/specs/userlist_click_to_chat.spec.ts:33:3 › userlist click → chat prefill › clicking another user opens chat and prefills @<name> @feature:chat @feature:username 
 
-    Error: expect(locator).toBeVisible() failed
-
-    Locator: locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Alice")')
-    Expected: visible
-    Timeout: 10000ms
-    Error: element(s) not found
-
-    Call log:
-      - Expect "toBeVisible" locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Alice")') with timeout 10000ms
-      - waiting for locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Alice")')
-
-
-      51 |         const aliceRow = page1.locator(
-      52 |             '#otheruserstable tr[data-authorId] .usertdname:has-text("Alice")');
-    > 53 |         await expect(aliceRow).toBeVisible({timeout: 10_000});
-         |                                ^
-      54 |
-      55 |         // Sanity: chat is hidden before the click.
-      56 |         expect(await isChatBoxShown(page1)).toBe(false);
-        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/userlist_click_to_chat.spec.ts:53:32
+    Test timeout of 90000ms exceeded.
 
     Error Context: test-results/tests-frontend-new-specs-u-b1292-ens-chat-and-prefills-name--chromium/error-context.md
 
   12) [chromium] › tests/frontend-new/specs/userlist_click_to_chat.spec.ts:72:3 › userlist click → chat prefill › clicking the swatch opens the color picker, not chat @feature:chat @feature:username 
 
-    Error: expect(locator).toBeVisible() failed
+    Test timeout of 90000ms exceeded.
 
-    Locator: locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Bob")')
-    Expected: visible
-    Timeout: 10000ms
-    Error: element(s) not found
-
+    Error: locator.click: Test ended.
     Call log:
-      - Expect "toBeVisible" locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Bob")') with timeout 10000ms
-      - waiting for locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Bob")')
+      - waiting for locator('#otheruserstable tr[data-authorId] .usertdswatch').first()
+        - locator resolved to <td class="usertdswatch">…</td>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+      - element was detached from the DOM, retrying
+        - locator resolved to <td class="usertdswatch">…</td>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+          - waiting 100ms
+        - waiting for element to be visible, enabled and stable
+        - element is not visible
+      - retrying click action
+        - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+      - element was detached from the DOM, retrying
+        - locator resolved to <td class="usertdswatch">…</td>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not visible
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not visible
+        - retrying click action
+          - waiting 100ms
+        26 × waiting for element to be visible, enabled and stable
+           - element is not visible
+         - retrying click action
+           - waiting 500ms
+        - waiting for element to be visible, enabled and stable
 
 
-      86 |         const bobRow = page1.locator(
-      87 |             '#otheruserstable tr[data-authorId] .usertdname:has-text("Bob")');
-    > 88 |         await expect(bobRow).toBeVisible({timeout: 10_000});
-         |                              ^
-      89 |
       90 |         const swatch = page1.locator(
       91 |             '#otheruserstable tr[data-authorId] .usertdswatch').first();
-        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/userlist_click_to_chat.spec.ts:88:30
+    > 92 |         await swatch.click();
+         |                      ^
+      93 |
+      94 |         // Chat should NOT be opened by a swatch click.
+      95 |         // (We only check the box-state; we don't assert anything about
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/userlist_click_to_chat.spec.ts:92:22
 
     Error Context: test-results/tests-frontend-new-specs-u-29a9f-s-the-color-picker-not-chat-chromium/error-context.md
 
@@ -335,7 +410,32 @@ d
 
     Error Context: test-results/tests-frontend-new-specs-u-c14a9-d-user-does-not-steal-focus-chromium/error-context.md
 
-  13 failed
+  14) [chromium] › tests/frontend-new/specs/userlist_click_to_chat.spec.ts:140:3 › userlist click → chat prefill › partial message in chat input is preserved when prefilling @feature:chat @feature:username 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Dave")')
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Dave")') with timeout 10000ms
+      - waiting for locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Dave")')
+
+
+      164 |         const daveRow = page1.locator(
+      165 |             '#otheruserstable tr[data-authorId] .usertdname:has-text("Dave")');
+    > 166 |         await expect(daveRow).toBeVisible({timeout: 10_000});
+          |                               ^
+      167 |         await daveRow.click();
+      168 |
+      169 |         // Wait for both pieces to land in the input — the prefill fires
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/userlist_click_to_chat.spec.ts:166:31
+
+    Error Context: test-results/tests-frontend-new-specs-u-91ebd-s-preserved-when-prefilling-chromium/error-context.md
+
+  14 failed
     [chromium] › tests/frontend-new/specs/change_user_name.spec.ts:11:1 › Remembers the username after a refresh @feature:username 
     [chromium] › tests/frontend-new/specs/collab_client.spec.ts:47:3 › Messages in the COLLABROOM › bug #4978 regression test 
     [chromium] › tests/frontend-new/specs/pad_deletion_token.spec.ts:149:3 › pad deletion token with the modal suppressed › no modal; the settings toggle shows and copies a working token, across reloads 
@@ -349,6 +449,7 @@ d
     [chromium] › tests/frontend-new/specs/userlist_click_to_chat.spec.ts:33:3 › userlist click → chat prefill › clicking another user opens chat and prefills @<name> @feature:chat @feature:username 
     [chromium] › tests/frontend-new/specs/userlist_click_to_chat.spec.ts:72:3 › userlist click → chat prefill › clicking the swatch opens the color picker, not chat @feature:chat @feature:username 
     [chromium] › tests/frontend-new/specs/userlist_click_to_chat.spec.ts:104:3 › userlist click → chat prefill › clicking the rename input on an unnamed user does not steal focus @feature:chat @feature:username 
+    [chromium] › tests/frontend-new/specs/userlist_click_to_chat.spec.ts:140:3 › userlist click → chat prefill › partial message in chat input is preserved when prefilling @feature:chat @feature:username 
   1 skipped
-  275 passed (20.0m)
+  274 passed (22.8m)
 detjs: trace ../../l2_out/etherpad/traces/det-1.jsonl

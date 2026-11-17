@@ -1,0 +1,127 @@
+===== 093409de2d57b1fb.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/etherpad/server-parts/det-1/093409de2d57b1fb.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/etherpad/server-parts/det-2/093409de2d57b1fb.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== 8bb92e2ed9ba7ebe.jsonl
+detpy verify: 2 runs, 290 tests
+  run 0: /home/runner/work/_temp/l2_out/etherpad/server-parts/det-1/8bb92e2ed9ba7ebe.jsonl
+  run 1: /home/runner/work/_temp/l2_out/etherpad/server-parts/det-2/8bb92e2ed9ba7ebe.jsonl
+order: DIFFERS between runs
+covered by Level 0: 14  not covered: 275  missing: 1  outcome-unstable: 0
+reasons: entropy=19 missing=1 random=1 time=255
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::html element has a non-empty lang attribute [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #16: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 14000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::settings popup has dialog semantics, Escape closes it, focus returns to trigger [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #16: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 14000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::import_export popup has dialog semantics [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::embed popup has dialog semantics [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] Date @ src/node/utils/Minify.ts:208 = 11000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::users popup has dialog semantics with aria-label [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ src/node/utils/Minify.ts:208 = 12000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 12000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::users popup closes on Escape even when focus is outside the popup [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [time] Date @ src/node/utils/Minify.ts:208 = 14000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::export links have a localized aria-label and matching title [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [time] Date @ src/node/utils/Minify.ts:208 = 14000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::chaticon is a button with an accessible name [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::chat header close/pin controls are buttons with accessible names [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #16: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 14000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::otherusers region has aria-live and aria-label (no aria-role typo) [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #16: [time] Date @ src/node/utils/Minify.ts:208 = 14000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::show-more toolbar button has an accessible name and aria-expanded [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 12000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 12000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::editbar toolbars have role=toolbar with accessible names (#7255) [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::toolbar <li>/<a> wrappers are presentational (Lighthouse listitem rule, #7255) [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #20: [entropy] crypto.randomBytes @ <deps>/random-bytes/index.js:77 = 24:345a3a24c5166ea3b82116abb6be05f1  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 21000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::online_count badge has a localized accessible label (#7255) [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 14000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::linemetricsdiv is hidden from screen readers (#7255) [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #20: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 15000  <>  [entropy] crypto.randomBytes @ <deps>/random-bytes/index.js:77 = 24:540117cf449104de30ddd226d40b8905
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::skip-to-content link bypasses toolbar (WCAG 2.4.1, #7255) [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #35: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 36000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 36000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::skip link is the first Tab target from a fresh page (WCAG 2.4.1, #7255) [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::editor-keyboard-hint exists in the editor iframe with localized text (#7255) [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #18: [entropy] crypto.randomBytes @ <deps>/random-bytes/index.js:77 = 24:ba4d21c26055d959814c1696c9e5249e  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 15000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::innerdocbody does not advertise role=textbox / aria-multiline (#7778) [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #19: [entropy] crypto.randomBytes @ <deps>/random-bytes/index.js:77 = 24:fc73d9ead238e913772363eedb0f7b02  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 21000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::pad lines are exposed to AT as separate paragraphs with navigable links (#7778) [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ src/node/utils/Minify.ts:208 = 11000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::line-number sidediv is hidden from screen readers (#7255) [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ src/node/utils/Minify.ts:208 = 11000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000
+NOT-COVERED tests/frontend-new/specs/alphabet.spec.ts::All the alphabet works n stuff::when you enter any char it appears right [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ src/node/utils/Minify.ts:208 = 11000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000
+NOT-COVERED tests/frontend-new/specs/anchor_scroll.spec.ts::anchor scrolling::reapplies #L scroll after earlier content changes height [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #16: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 14000
+NOT-COVERED tests/frontend-new/specs/anchor_scroll.spec.ts::anchor scrolling::reapply loop exits early once the target offset is stable [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #16: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 14000
+NOT-COVERED tests/frontend-new/specs/anchor_scroll.spec.ts::anchor scrolling::user scroll cancels the reapply loop so navigation is not locked [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #16: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 14000
+NOT-COVERED tests/frontend-new/specs/author_token_cookie.spec.ts::author token cookie::author token cookie is HttpOnly and not readable via document.cookie [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 14000
+NOT-COVERED tests/frontend-new/specs/author_token_cookie.spec.ts::author token cookie::authorID is stable across reload in the same context [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/author_token_cookie.spec.ts::author token cookie::authorID differs in an isolated second context [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 12000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 12000
+NOT-COVERED tests/frontend-new/specs/bold_paste.spec.ts::bold text retains formatting after copy-paste [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/bold.spec.ts::bold button::makes text bold on click [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/bold.spec.ts::bold button::makes text bold on keypress [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #15: [entropy] crypto.randomBytes @ <deps>/random-bytes/index.js:77 = 24:6ac0dddc74c51b2cd39a25afaa3e03b8  <>  [time] Date @ src/node/utils/Minify.ts:208 = 13000
+NOT-COVERED tests/frontend-new/specs/change_user_color.spec.ts::change user color::Color picker matches original color and remembers the user color after a refresh [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #31: [time] Date @ src/node/utils/Minify.ts:208 = 26000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 26000
+NOT-COVERED tests/frontend-new/specs/change_user_color.spec.ts::change user color::Own user color is shown when you enter a chat [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/change_user_name.spec.ts::Remembers the username after a refresh [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 14000
+NOT-COVERED tests/frontend-new/specs/change_user_name.spec.ts::Own user name is shown when you enter a chat [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ src/node/utils/Minify.ts:208 = 11000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000
+NOT-COVERED tests/frontend-new/specs/change_user_name.spec.ts::#myusernameform has 10px left margin and is not width-capped [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #19: [entropy] crypto.randomBytes @ <deps>/random-bytes/index.js:77 = 24:381aa7e02c13d60d2b79aa709df4d0ec  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 21000
+NOT-COVERED tests/frontend-new/specs/chat.spec.ts::opens chat, sends a message, makes sure it exists on the page and hides chat [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] Date @ src/node/utils/Minify.ts:208 = 11000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000
+NOT-COVERED tests/frontend-new/specs/chat.spec.ts::makes sure that an empty message can't be sent [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] Date @ src/node/utils/Minify.ts:208 = 11000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000
+NOT-COVERED tests/frontend-new/specs/chat.spec.ts::makes chat stick to right side of the screen via settings, remove sticky via settings, close it [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 14000
+NOT-COVERED tests/frontend-new/specs/chat.spec.ts::makes chat stick to right side of the screen via icon on the top right, remove sticky via icon, close it [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/chat.spec.ts::Checks showChat=false URL Parameter hides chat then when removed it shows chat [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #63: [time] setInterval @ <deps>/engine.io/build/socket.js:226 = schedule:100000000  <>  [random] crypto.getRandomValues @ src/static/js/pad_utils.ts:46 = 16:9e6eb8e7ee4d47e0f1275658a4fb3ce6
+NOT-COVERED tests/frontend-new/specs/chat.spec.ts::chat icon click reveals chatbox after a disable â enable cycle [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 12000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 12000
+NOT-COVERED tests/frontend-new/specs/chat.spec.ts::chat title bar lays out as a centred flex row with underscore minimize [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] Date @ src/node/utils/Minify.ts:208 = 11000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000
+NOT-COVERED tests/frontend-new/specs/chat.spec.ts::chat icon click reliably opens the chat box [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/clear_authorship_color.spec.ts::clear authorship color [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/clear_authorship_color.spec.ts::clear authorship colors can be undone to restore author colors [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #36: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 57000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 57000
+NOT-COVERED tests/frontend-new/specs/clear_authorship_color.spec.ts::clears authorship when first line has line attributes [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ src/node/utils/Minify.ts:208 = 11000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000
+NOT-COVERED tests/frontend-new/specs/collab_client.spec.ts::Messages in the COLLABROOM::bug #4978 regression test [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #28: [time] Date @ src/node/utils/Minify.ts:208 = 23000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 23000
+NOT-COVERED tests/frontend-new/specs/delete.spec.ts::delete keystroke [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/editbar.spec.ts::should go to home on pad [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: [time] Date @ src/node/utils/Minify.ts:208 = 11000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000
+NOT-COVERED tests/frontend-new/specs/embed_value.spec.ts::embed links::read and write::the share link is the actual pad url [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] Date @ src/node/utils/Minify.ts:208 = 11000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000
+NOT-COVERED tests/frontend-new/specs/embed_value.spec.ts::embed links::read and write::is an iframe with the correct url parameters and correct size [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/embed_value.spec.ts::embed links::when read only option is set::the share link shows a read only url [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #16: [time] Date @ src/node/utils/Minify.ts:208 = 14000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000
+NOT-COVERED tests/frontend-new/specs/embed_value.spec.ts::embed links::when read only option is set::the embed as iframe code is an iframe with the correct url parameters and correct size [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 12000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 12000
+NOT-COVERED tests/frontend-new/specs/embed_value.spec.ts::embed links::URL encoding of pad names::share link encodes special characters in pad name [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 11000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 11000
+NOT-COVERED tests/frontend-new/specs/enter.spec.ts::enter keystroke::creates a new line & puts cursor onto a new line [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #0: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 1000  <>  [time] setTimeout @ <deps>/ws/lib/websocket.js:1310 = schedule:30000000000
+NOT-COVERED tests/frontend-new/specs/enter.spec.ts::enter keystroke::enter is always visible after event [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 14000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 14000
