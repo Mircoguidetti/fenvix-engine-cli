@@ -8,6 +8,6 @@ Updated 2026-11-17 07:45 UTC.
   shell `python/detpy/proofcache.py`, `_codefacts.py`); 19 tests in `tests/test_proofcache.py`, full suite 104 passed.
 * Done (3rd patch): walk harness `harness/cache_proof/walk.py` + 14 library specs.
 * Done (4th patch): per-module import-time read scope, DNS/sendto/C-socket guards (reviewer R-002b), env fix; HA + pylint specs.
-* Running: Actions r3 (home-assistant, 16 shards) and r4 (14 libraries + pylint); r1, r2 cancelled. Results in `results/r3/`, `results/r4/`.
+* Running: Actions r5 (14 libraries, pylint, home-assistant 16 shards) on patches 1-7; r1-r4 cancelled. Results in `results/r5/`.
 * Next: aggregate results, REPORT.md. Old line: measurement harness (`harness/cache_proof/`), workflow `.github/workflows/cache-proof.yml` (this branch),
   runs on 14 libraries + home-assistant sample + one large app.

@@ -1,0 +1,207 @@
+From cff98be4310dad70567ca383721df5ee62bf11b2 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 08:24:15 +0000
+Subject: [PATCH 7/7] Cache with proof: ctypes.util.find_library's `ldconfig
+ -p` reads the linker cache (not a subprocess); walk: --det-urandom, units
+ that cannot be collected left out and listed, output tails kept; pylint
+ without pytest-benchmark, home-assistant with --continue-on-collection-errors
+
+* ifaddr (Home Assistant) calls find_library at import time: every test was "subprocess"; now
+  /etc/ld.so.cache is a data input (test fails before, passes after)
+* r3: every Home Assistant shard ended with exit 2 (one test module or conftest that cannot be imported
+  because the installer dropped its requirement aborts the session)
+* pytest-benchmark runs git in pytest_addoption: a startup spawn makes every test uncacheable (pylint smoke:
+  2,494 of 2,495), reported; the pylint walk disables the plugin (its tests are ignored anyway)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ harness/cache_proof/specs/home-assistant.json |  6 ++--
+ harness/cache_proof/specs/pylint.json         |  6 ++--
+ harness/cache_proof/walk.py                   | 28 +++++++++++++++++--
+ python/detpy/proofcache.py                    | 25 +++++++++++++++++
+ tests/test_proofcache.py                      | 17 +++++++++++
+ 5 files changed, 75 insertions(+), 7 deletions(-)
+
+diff --git a/harness/cache_proof/specs/home-assistant.json b/harness/cache_proof/specs/home-assistant.json
+index cf46fae..81a5d88 100644
+--- a/harness/cache_proof/specs/home-assistant.json
++++ b/harness/cache_proof/specs/home-assistant.json
+@@ -66,8 +66,10 @@
+  "pytest_args": [
+   "--timeout=60",
+   "-p",
+-  "no:sugar"
++  "no:sugar",
++  "--continue-on-collection-errors"
+  ],
+  "timeout": 5400,
+- "note": "sample as in skip study 2 (12% of test files, seed s2); one pytest process per shard over its files, as CI runs groups"
++ "note": "sample as in skip study 2 (12% of test files, seed s2); one pytest process per shard over its files, as CI runs groups",
++ "precollect": true
+ }
+\ No newline at end of file
+diff --git a/harness/cache_proof/specs/pylint.json b/harness/cache_proof/specs/pylint.json
+index 65d50cc..6eefd03 100644
+--- a/harness/cache_proof/specs/pylint.json
++++ b/harness/cache_proof/specs/pylint.json
+@@ -8,7 +8,9 @@
+  "pytest_args": [
+   "tests",
+   "--ignore=tests/benchmark",
+-  "--ignore=tests/primer"
++  "--ignore=tests/primer",
++  "-p",
++  "no:benchmark"
+  ],
+- "note": "one more large Python application (a linter CLI, ~2000 test functions incl. functional tests)"
++ "note": "one more large Python application (a linter CLI, ~2000 test functions incl. functional tests); -p no:benchmark: pytest-benchmark runs git at startup (pytest_addoption), a spawn in the startup context makes every test uncacheable"
+ }
+\ No newline at end of file
+diff --git a/harness/cache_proof/walk.py b/harness/cache_proof/walk.py
+index ff20f3c..a892d25 100644
+--- a/harness/cache_proof/walk.py
++++ b/harness/cache_proof/walk.py
+@@ -114,6 +114,7 @@ class Walk:
+                        "steps": []}
+         self.last_dep = None
+         self.args: list[str] = []
++        self.collect_ok: dict[str, bool] = {}
+ 
+     # -- setup -------------------------------------------------------------------
+     def fmt(self, s: str) -> str:
+@@ -231,7 +232,9 @@ class Walk:
+         tim = self.work / f"t-{tag}.json"
+         outp.unlink(missing_ok=True)
+         tim.unlink(missing_ok=True)
+-        cmd = [self.py, *self.spec.get("python_flags", []), "-m", "pytest", "--det", f"--det-outcomes={outp}"]
++        # --det-urandom: under --det the randomness is controlled (os.urandom included), as for the clock
++        cmd = [self.py, *self.spec.get("python_flags", []), "-m", "pytest", "--det", "--det-urandom",
++               f"--det-outcomes={outp}"]
+         if cache is not None:
+             cmd.append(f"--det-cache={cache}")
+             if receipts is not None:
+@@ -240,7 +243,7 @@ class Walk:
+         env = self.env()
+         env["CP_TIMES_OUT"] = str(tim)
+         code, out, wall = sh(cmd, cwd=self.src, env=env, timeout=self.spec.get("timeout", 3000))
+-        r = {"exit": code, "wall": wall}
++        r = {"exit": code, "wall": wall, "out_tail": out[-2500:]}
+         try:
+             o = json.loads(outp.read_text())
+             r["outcomes"] = o.get("outcomes", {})
+@@ -269,12 +272,31 @@ class Walk:
+                 return st
+             self.args = self.pytest_args()
+             self.last_dep = h
++            self.collect_ok = {}
+         units = self.units()
++        if self.spec.get("precollect") and units:
++            units = self.collectable(units, st)
+         st["units"] = len(units)
+         if self.mode == "files":
+             return self.step_files(st, units, i)
+         return self.step_suite(st, units, i)
+ 
++    def collectable(self, units: list[str], st: dict) -> list[str]:
++        """Units whose collection works in this environment (one plain ``--collect-only`` per unit not seen since
++        the last install). A unit whose conftest or test module cannot be imported (a requirement dropped by the
++        installer) would abort the whole session: it is left out and listed."""
++        for u in units:
++            if u in self.collect_ok:
++                continue
++            git(self.src, "clean", "-qfd", check=False)
++            code, out, _ = sh([self.py, *self.spec.get("python_flags", []), "-m", "pytest", "--collect-only", "-q",
++                               "-p", "no:cacheprovider", u], cwd=self.src, env=self.env(), timeout=600)
++            self.collect_ok[u] = code in (0, 5)
++        dropped = [u for u in units if not self.collect_ok[u]]
++        if dropped:
++            st["dropped_units"] = dropped
++        return [u for u in units if self.collect_ok[u]]
++
+     def compare(self, cached: dict, fresh: dict, ids, confirm) -> dict:
+         v = {"checked": 0, "same": 0, "mismatches": []}
+         for nid in ids:
+@@ -305,7 +327,7 @@ class Walk:
+         st["B"] = {"exit": b["exit"], "wall": b["wall"]}
+         if not b["outcomes"] or not a["outcomes"]:
+             st["status"] = "run-failed"
+-            st["tail"] = (a.get("tail") or b.get("tail") or "")[-1500:]
++            st["tail"] = (a.get("tail") or a.get("out_tail") or b.get("tail") or b.get("out_tail") or "")[-2500:]
+             return st
+         reused = set((a.get("cache") or {}).get("reused_ids", ()))
+         tb = b["times"]
+diff --git a/python/detpy/proofcache.py b/python/detpy/proofcache.py
+index 44bcd5e..64236ab 100644
+--- a/python/detpy/proofcache.py
++++ b/python/detpy/proofcache.py
+@@ -484,6 +484,11 @@ class Capture:
+         elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
+             if self._caller_kind() == "infra":
+                 return
++            if event == "subprocess.Popen" and _is_find_library_ldconfig(args):
++                # ctypes.util.find_library (uuid, ifaddr, ... at import time) asks `ldconfig -p`, which prints the
++                # dynamic linker's cache: that file is the input
++                self.read(self._cur(), _LD_SO_CACHE, "f")
++                return
+             self.flags.setdefault(self._cur(), set()).add("spawn")
+         else:
+             idx = _WRITE_EVENTS.get(event)
+@@ -1251,6 +1256,26 @@ def _encodable(s: str) -> bool:
+         return False
+ 
+ 
++_LD_SO_CACHE = "/etc/ld.so.cache"
++
++
++def _is_find_library_ldconfig(args) -> bool:
++    """``subprocess.Popen(['/sbin/ldconfig', '-p'])`` called by ``ctypes.util.find_library``."""
++    try:
++        argv = list(args[1]) if len(args) > 1 and not isinstance(args[1], (str, bytes)) else None
++    except TypeError:
++        return False
++    if not argv or len(argv) != 2 or os.path.basename(os.fsdecode(argv[0])) != "ldconfig" or argv[1] != "-p":
++        return False
++    f = sys._getframe(2)
++    while f is not None:
++        fn = f.f_code.co_filename
++        if fn.endswith(os.sep + os.path.join("ctypes", "util.py")):
++            return True
++        f = f.f_back
++    return False
++
++
+ def _numeric_host(host: str) -> bool:
+     import ipaddress
+ 
+diff --git a/tests/test_proofcache.py b/tests/test_proofcache.py
+index f83ec1b..a2b4187 100644
+--- a/tests/test_proofcache.py
++++ b/tests/test_proofcache.py
+@@ -394,6 +394,23 @@ def test_name_lookup_and_c_level_sockets_are_never_cached(pytester, run_cache, o
+     assert nc["test_m.py::test_c_socket_again"] == "network socket opened outside Python (C extension)"
+ 
+ 
++@pytest.mark.skipif(not __import__("os").path.exists("/etc/ld.so.cache"), reason="needs ldconfig")
++def test_find_library_at_import_time_is_not_a_subprocess(pytester, run_cache):
++    # ctypes.util.find_library runs `ldconfig -p` (ifaddr, uuid, ... at import time): its input is the linker cache
++    project(pytester, **{"test_m.py": """
++        import ctypes.util
++
++        LIBC = ctypes.util.find_library("c")
++
++        def test_libc():
++            assert LIBC
++        """})
++    run_cache()
++    r, reused, data = run_cache()
++    r.assert_outcomes(passed=1)
++    assert reused == ids("test_libc")
++
++
+ def test_clock_reader_depends_on_the_epoch(pytester, run_cache):
+     project(pytester, **{"test_m.py": """
+         import time
+-- 
+2.43.0
+

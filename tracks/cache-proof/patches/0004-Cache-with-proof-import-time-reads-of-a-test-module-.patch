@@ -1,7 +1,7 @@
 From 9ef4e1d89aec2e3259f61590ebb1d408ea74cc5f Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 17 Nov 2026 07:40:21 +0000
-Subject: [PATCH 4/6] Cache with proof: import-time reads of a test module
+Subject: [PATCH 4/7] Cache with proof: import-time reads of a test module
  serve its own tests; name lookups, sendto and C-level sockets are never
  cached; only detpy's own variables leave the environment input;
  home-assistant and pylint specs

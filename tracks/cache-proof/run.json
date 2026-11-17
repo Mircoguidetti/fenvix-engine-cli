@@ -1,10 +1,11 @@
 {
- "run_id": "r4",
- "note": "14 libraries of the first study and pylint, on patches 1-6 (r2 cancelled so its home-assistant jobs, broken on Python 3.14, free the runners); home-assistant is run r3",
+ "run_id": "r5",
+ "note": "all projects on patches 1-7 (r1-r4 cancelled: engine and harness fixes found on their first results)",
  "walk": [
   {"spec": "arrow"}, {"spec": "attrs"}, {"spec": "boltons"}, {"spec": "click"}, {"spec": "flask"},
   {"spec": "isort"}, {"spec": "jinja"}, {"spec": "marshmallow"}, {"spec": "more-itertools"}, {"spec": "pygments"},
   {"spec": "sqlparse"}, {"spec": "structlog"}, {"spec": "toolz"}, {"spec": "werkzeug"},
-  {"spec": "pylint"}
+  {"spec": "pylint"},
+  {"spec": "home-assistant", "shards": 16, "commit_every": 5}
  ]
 }
