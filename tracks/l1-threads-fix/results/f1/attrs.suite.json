@@ -1,0 +1,145 @@
+{
+ "name": "attrs",
+ "set": "popular",
+ "url": "https://github.com/python-attrs/attrs",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009623",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "2a1fb86d44816afcc60e86d57956ce3604820326",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group tests",
+ "collected": 1412,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 12.715,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1405,
+    "skipped": 6,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 22.463,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1405,
+    "skipped": 6,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 13.484,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1405,
+    "skipped": 6,
+    "xfailed": 1
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 2403.275,
+   "exit": -9,
+   "timed_out": true,
+   "counts": {},
+   "stats": null,
+   "tail": "uggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 262 in _main\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 286 in _console_main\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pytest/__main__.py\", line 9 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 203 in _run_module_as_main\n\nExtension modules: _testcapi (total: 1)\n",
+   "hang": "..............................ss........................................................................................................................ [ 10%]\n........................................................................................................................................................ [ 21%]\n........................................................................................................................................................ [ 32%]\n........................................................................................................................................................ [ 43%]\n........................................................................................................................................................ [ 53%]\n........................................................................................................................................................ [ 64%]\n............Timeout (0:05:00)!\nThread 0x00007ffff3bf46c0 (most recent call first):\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/threads.py\", line 238 in _real_sleep\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/threads.py\", line 1507 in _watchdog_loop\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/threads.py\", line 1489 in _watchdog\n\nThread 0x00007ffff7ec8bc0 (most recent call first):\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/clock.py\", line 88 in read\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/clock.py\", line 194 in perf_counter\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/junkdrawer.py\", line 497 in gc_callback\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/clock.py\", line 93 in read\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/clock.py\", line 194 in perf_counter\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/data.py\", line 734 in __init__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/data.py\", line 1557 in draw_choice\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/datatree.py\", line 886 in _draw\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/datatree.py\", line 778 in generate_novel_prefix\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/engine.py\", line 819 in generate_novel_prefix\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/engine.py\", line 1308 in generate_new_test_cases\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/engine.py\", line 1651 in _run\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/engine.py\", line 1018 in run\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/core.py\", line 1461 in run_engine\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/core.py\", line 2282 in wrapped_test\n  File \"/tmp/l1t/src/attrs/tests/test_make.py\", line 1954 in test_metadata_present\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/python.py\", line 187 in pytest_pyfunc_call\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/python.py\", line 1798 in runtest\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/runner.py\", line 184 in pytest_runtest_call\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/runner.py\", line 250 in <lambda>\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/runner.py\", line 361 in from_call\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/runner.py\", line 249 in call_and_report\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/runner.py\", line 139 in runtestprotocol\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/runner.py\", line 118 in pytest_runtest_protocol\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/main.py\", line 411 in pytest_runtestloop\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/main.py\", line 387 in _main\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/main.py\", line 333 in wrap_session\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/main.py\", line 380 in pytest_cmdline_main\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 262 in _main\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 286 in _console_main\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pytest/__main__.py\", line 9 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 203 in _run_module_as_main\nFatal Python error: Aborted\n\nThread 0x00007ffff3bf46c0 (most recent call first):\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/threads.py\", line 238 in _real_sleep\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/threads.py\", line 1507 in _watchdog_loop\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/threads.py\", line 1489 in _watchdog\n\nCurrent thread 0x00007ffff7ec8bc0 (most recent call first):\n  Garbage-collecting\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/clock.py\", line 88 in read\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/clock.py\", line 194 in perf_counter\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/junkdrawer.py\", line 497 in gc_callback\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/clock.py\", line 93 in read\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/detpy/clock.py\", line 194 in perf_counter\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/data.py\", line 734 in __init__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/data.py\", line 1557 in draw_choice\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/datatree.py\", line 886 in _draw\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/datatree.py\", line 778 in generate_novel_prefix\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/engine.py\", line 819 in generate_novel_prefix\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/engine.py\", line 1308 in generate_new_test_cases\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/engine.py\", line 1651 in _run\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/internal/conjecture/engine.py\", line 1018 in run\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/core.py\", line 1461 in run_engine\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/hypothesis/core.py\", line 2282 in wrapped_test\n  File \"/tmp/l1t/src/attrs/tests/test_make.py\", line 1954 in test_metadata_present\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/python.py\", line 187 in pytest_pyfunc_call\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/python.py\", line 1798 in runtest\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/runner.py\", line 184 in pytest_runtest_call\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/runner.py\", line 250 in <lambda>\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/runner.py\", line 361 in from_call\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/runner.py\", line 249 in call_and_report\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/runner.py\", line 139 in runtestprotocol\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/runner.py\", line 118 in pytest_runtest_protocol\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/main.py\", line 411 in pytest_runtestloop\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/main.py\", line 387 in _main\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/main.py\", line 333 in wrap_session\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/main.py\", line 380 in pytest_cmdline_main\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_execution.py\", line 147 in _multicall\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_manager.py\", line 183 in _hookexec\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pluggy/_caller.py\", line 197 in __call__\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 262 in _main\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/_pytest/config/__init__.py\", line 286 in _console_main\n  File \"/tmp/l1t/venvs/attrs/lib/python3.13/site-packages/pytest/__main__.py\", line 9 in <module>\n  File \"<frozen runpy>\", line 88 in _run_code\n  File \"<frozen runpy>\", line 203 in _run_module_as_main\n\nExtension modules: _testcapi (total: 1)\n",
+   "msgs": {}
+  }
+ ],
+ "suite_seeds": [
+  1
+ ],
+ "mtimes_restored": [
+  0,
+  0,
+  0,
+  0
+ ],
+ "broken_by_det": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   1,
+   0
+  ],
+  "broken": [],
+  "sometimes": []
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 1,
+  "loaded_runs": 5
+ }
+}
