@@ -129,6 +129,15 @@ def write_report(out: Path, meta: dict) -> Path:
     timings = [json.loads(p.read_text()) for p in sorted(out.glob("*.timing.json"))]
     sel = meta.get("selection", {})
     order = sel.get("selected", [])
+    # A Vitest/Jest project whose --det runs produced no trace at all was not measured under Level 0 (the
+    # --det process died, or a custom runner bypassed detjs): out of the totals, listed with the failed rounds.
+    for s in summaries:
+        if s.get("status") == "ok" and s.get("kind") != "playwright" and s.get("tests", 0) and not s.get("covered"):
+            s["status"] = "det-no-trace"
+            meta.setdefault("rounds", []).append({
+                "name": s["name"], "kind": s.get("kind", ""), "status": "det-no-trace",
+                "detail": "no `--det` run produced a trace (Jest process died in band, or a custom runner bypassed "
+                          "detjs); first --det log: " + str((s.get("diagnostics") or {}).get("first_det_log_tail", ""))[-300:]})
     pw = [s for s in summaries if s.get("status") == "ok" and s.get("kind") == "playwright"]
     ok = sorted([s for s in summaries if s.get("status") == "ok" and s.get("kind") != "playwright"],
                 key=lambda s: (s["kind"] != "flaky", order.index(s["name"]) if s["name"] in order else 1e9))
