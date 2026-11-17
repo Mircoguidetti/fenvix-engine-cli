@@ -1,4 +1,4 @@
-PARTIAL (all exit numbers measured; 3 server-in-thread suites and the anyio Actions rerun are still running)
+PARTIAL (all exit numbers measured; the anyio and requests full suites are still running on Actions)
 
 # Report · track l1-threads (P-012) · Level 1 for threads (`--det-threads`)
 
@@ -7,18 +7,16 @@ delivered as `tracks/l1-threads/patches/` (`git am` on the base). Final code `c2
 Measured on GitHub Actions, workflow `track-l1-threads` (one runner per project):
 * round r4, code `e29b9fd`, run 44074323368;
 * round r5, code `d447170`, anyio only;
+* round r6, code `c25485d`, requests and werkzeug;
 * round r1, code `4d88a2f`, run 44042691111, where noted.
 
 `d447170` differs from `e29b9fd` only when a tool patches `lock.acquire` on the C type (blockbuster, used by
 anyio's conftest). Raw results are in `results/r4/`, `results/r5/` and `results/r1/`. The r2 and r3 runs were
-cancelled because their code was stale.
+cancelled because their code was stale. r4 was cancelled after 19 of 31 jobs, so that the queue could reach the
+suites never measured.
 
-Still running on Actions when this was written:
-* round r5 (anyio corpus and suite at `d447170`);
-* r4's requests, werkzeug and remaining suites.
-
-The anyio class-a rows are local at the final code. The rows marked r1 are at `4d88a2f`, which
-predates the I/O change in c2596b0.
+Still running on Actions when this was written: the anyio full suite (r5) and the requests full suite
+(r6). Rows marked r1 are at `4d88a2f`, which predates the I/O change in c2596b0.
 
 ## Headline (exit numbers)
 
@@ -27,9 +25,9 @@ predates the I/O change in c2596b0.
 | easypy, 10 Block 2 thread tests: one fingerprint over the runs | **10/10** with `--det --det-threads --det-urandom`, over 10 quiet runs and 5 under CPU load. Level 0 alone 0/10; Level 0 + `--det-urandom` 8/10; `--det-threads` without `--det-urandom` 0/10 | MEASURED (Actions r4) |
 | easypy: replays 10/10 with one fingerprint and passes somewhere | **9/10** ("passes" = the test run alone, i.e. without its polluter: a different order, not a thread seed). The 10th, `test_multiobject_logging`, fails in every detpy mode: a Level 0 false failure | MEASURED |
 | 31 class-a tests: flake reproduced (replay 10/10, one fingerprint, passes with another seed, the baseline's exception) | **0/31**. 18/31 have no stable id (one marshmallow test with the wall-clock time in its id: not a thread problem). Of the 13 measurable: **0/13**. The condition differs from the mixed round, where these flakes were seen 1–2 times in 10 (full suite, xdist, random order). Here only the targets ran, serially, in a fixed order, and plain reruns did not show them either | MEASURED |
-| class-a: failing interleavings found by 20 thread seeds | pymq 1 (seed 9, fails 10/10 but 2 fingerprints, `NoSuchRemoteError` instead of the baseline AssertionError). The anyio failures of r1 and of a local run were all scheduler artefacts; at `d447170` 0/20 seeds fail | MEASURED |
+| class-a: failing interleavings found by 20 thread seeds | pymq 1 (seed 9, fails 10/10 but 2 fingerprints, `NoSuchRemoteError` instead of the baseline AssertionError). The anyio failures of r1 and of a local run were all scheduler artefacts; at `d447170` 0/20 seeds fail for all 10 anyio tests (Actions r5) | MEASURED |
 | plain reruns, same targets and condition (comparison) | 0 failures in 10 quiet runs for all 13; under CPU load pymq failed 1/5 | MEASURED (Actions r4) |
-| tests broken by `--det-threads` (calm), Block 1 popular pool | **0 caused by threads**: 13 suites at the final behaviour (r4) and 9 at `4d88a2f` (r1, before the I/O change). **3 not measured yet: anyio, requests, werkzeug**, which run servers in threads and are the ones that change touches most. r1 showed 3 broken tests: boltons 2, fixed (I/O in flight, event-loop clock; 0 in r4), and jinja 1, a Level 0 cross-run effect (it also fails `--det` after `--det`) | MEASURED |
+| tests broken by `--det-threads` (calm), Block 1 popular pool | **0 caused by threads** in 23/25 suites: 14 at the final behaviour (r4, r6: werkzeug, which runs servers in threads: 0) and 9 at `4d88a2f` (r1, before the I/O change). **anyio and requests are still running.** r1 showed 3 broken tests: boltons 2, fixed (I/O in flight, event-loop clock; 0 in r4), and jinja 1, a Level 0 cross-run effect (it also fails `--det` after `--det`) | MEASURED |
 | tests broken by an exploration seed (seed 1, line preemption on) | 2: structlog `test_recursive` (cause ESTIMATED: the trace function adds stack depth in a recursion test), and jinja (same as above) | MEASURED |
 | slowdown vs `--det`, 5 most thread-heavy popular suites (by managed threads, chosen after the run; easypy left out) | more-itertools **+27.8%** (167 threads), networkx −2.4% (65), structlog +1.3% (41), flask −1.0% (27), click +0.5% (26); **median +0.5%**. vs plain pytest: median +44.7% (`--det` alone +43.1%). With easypy (131 threads, −57.6%) in the top 5 instead of click, the median is −1.0% | MEASURED, NOISY (one runner per project) |
 | slowdown of exploration (seed ≥ 1, line preemption via `sys.settrace`) | median +71.5% on the same 5; more-itertools +1188% | MEASURED |
@@ -82,7 +80,7 @@ One fingerprint over the runs: `--det` 0/10, `--det --det-urandom` 8/10, `--det-
   collection. Its id changes every run ("missing" in the baseline). Under `--det` the clock is frozen
   and the id is stable. This is not a thread problem. The list is in
   `harness/l1/threads-corpus.json`.
-* **13 measured.** Rows for freezegun, panamah and pymq come from Actions r4. Rows are local at `d447170` (MEASURED locally, without the CPU-loaded runs); r5 repeats them on Actions.
+* **13 measured.** Rows for freezegun, panamah and pymq come from Actions r4. anyio rows come from Actions r5 at `d447170`.
 * "Flake reproduced" requires all of the following:
   * the replay fails 10/10 with one fingerprint;
   * the test passes with some seed;
@@ -95,27 +93,26 @@ One fingerprint over the runs: `--det` 0/10, `--det --det-urandom` 8/10, `--det-
 | idoft-freezegun | `test_ticking_time` | passed=8;skipped=2,  | passed=10; passed=5 | 1 | passed=10, 1 | passed=20 |   |  | no |
 | idoft-panamah-sdk-python | `TestStream::test_events` | failed=1;passed=9, JSONDecodeError | passed=10; passed=5 | 4 | passed=10, 1 | passed=20 |   |  | no |
 | idoft-pymq | `RedisRpcTest::test_channel_expire` | failed=2;passed=8, AssertionError | passed=10; failed=1;passed=4 | 10 | passed=10, 7 | failed=4;passed=16 | 10/10 / 2 fp | FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_chan | no |
-| anyio | `TestTLSStream::test_alpn_negotiation[asyncio+uvloop]` | failed=1;passed=9, PytestUnraisableExceptionWarning | passed=10; not run | 10 | passed=10, 2 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_alpn_negotiation[asyncio]` | failed+teardown-error=1;passed=9, RuntimeError | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]` | failed+teardown-error=1;passed=9, RuntimeError | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]` | error=1;passed=9, PytestUnhandledThreadExceptionWarning | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_ragged_eofs[asyncio-neither_standard]` | error=1;passed=9, PytestUnhandledThreadExceptionWarning | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]` | failed+teardown-error=1;passed=9, RuntimeError | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_send_receive[asyncio+eager]` | failed=1;passed=9, ExceptionGroup | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]` | error=1;passed=9, PytestUnhandledThreadExceptionWarning | passed=10; not run | 10 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `:test_unretrieved_future_exception_server_crash[ipv6-asyncio+uvloop]` | failed=1;passed=9, ExceptionGroup | skipped=10; not run | 1 | skipped=10, 1 | skipped=20 |   |  | no |
-| anyio | `Stream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]` | failed=1;passed=9, ExceptionGroup | skipped=10; not run | 1 | skipped=10, 1 | skipped=20 |   |  | no |
+| anyio | `TestTLSStream::test_alpn_negotiation[asyncio+uvloop]` | failed=1;passed=9, PytestUnraisableExceptionWarning | passed=10; passed=5 | 10 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_alpn_negotiation[asyncio]` | failed+teardown-error=1;passed=9, RuntimeError | passed=10; passed=5 | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]` | failed+teardown-error=1;passed=9, RuntimeError | passed=10; passed=5 | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]` | error=1;passed=9, PytestUnhandledThreadExceptionWarning | passed=10; passed=5 | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_ragged_eofs[asyncio-neither_standard]` | error=1;passed=9, PytestUnhandledThreadExceptionWarning | passed=10; passed=5 | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]` | failed+teardown-error=1;passed=9, RuntimeError | passed=10; passed=5 | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_send_receive[asyncio+eager]` | failed=1;passed=9, ExceptionGroup | passed=10; passed=5 | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]` | error=1;passed=9, PytestUnhandledThreadExceptionWarning | passed=10; passed=5 | 10 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `:test_unretrieved_future_exception_server_crash[ipv6-asyncio+uvloop]` | failed=1;passed=9, ExceptionGroup | passed=10; passed=5 | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `Stream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]` | failed=1;passed=9, ExceptionGroup | passed=10; passed=5 | 1 | passed=10, 1 | passed=20 |   |  | no |
 
 * Where Level 1 makes the fingerprint identical and Level 0 did not:
   * panamah: 4 → 1;
-  * anyio `test_unicode_hostname_idna2008`: 10 → 1.
+  * anyio `test_unicode_hostname_idna2008`: 10 → 1;
+  * anyio `test_alpn_negotiation[asyncio+uvloop]`: 10 → 1.
 * The anyio fingerprints are "identical, with uncontrolled events": each calm run records 2
-  escapes (`threads.uncontrolled`: a holder sleeping in C). The uvloop rows stay variable, because
-  uvloop is not controlled.
+  escapes (`threads.uncontrolled`: a holder sleeping in C). uvloop itself is not modelled.
 * pymq: seed 9 fails 10/10 with `NoSuchRemoteError`, while the baseline flake is an AssertionError.
   The fingerprint has 2 variants because the Redis server is a real external process. This is a
   failing interleaving, not the flake.
-* The 2 anyio IPv6 tests are skipped where IPv6 is unavailable.
 * Before the final fixes, r1 and a local run had anyio "failures" in up to 8/10 tests. All were
   artefacts:
   * an instant deadlock when only I/O waiters were left (fixed in c2596b0);
@@ -154,6 +151,7 @@ and fails in every run of the mode. The `code` column gives the round.
 | sqlparse | 540 | r1 | 1.375 | 2.389 | 2.359 | -1.3% | 150.4% | 1 | 0 | 0 | 0 | 0 |
 | structlog | 921 | r4 | 1.2 | 2.198 | 2.227 | 1.3% | 63.0% | 41 | 0 | 0 | 0 | 1 |
 | toolz | 193 | r1 | 0.423 | 1.541 | 1.787 | 16.0% | 35.1% | 4 | 4 | 0 | 0 | 0 |
+| werkzeug | 1016 | r6 | 7.46 | 9.022 | 9.617 | 6.6% | 50.1% | 7 | 3 | 0 | 0 | 0 |
 
 jinja: broken by `--det-threads`: tests/test_loader.py::TestFileSystemLoader::test_caches_template_based_on_mtime
 
