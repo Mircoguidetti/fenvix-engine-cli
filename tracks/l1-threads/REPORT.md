@@ -1,4 +1,4 @@
-PARTIAL (all exit numbers measured; the anyio and requests full suites were still running on Actions at hand-off: runs 44089216622 and 44095974555, results land in results/r5 and results/r6)
+PARTIAL (all exit numbers measured on the 25/25 Block 1 popular suites; the exit "tests broken by --det-threads must trend to 0" is not met: 14 tests broken by threads (anyio 9, requests 5) and calm runs that hang (anyio 2 of 3); class-a flakes reproduced 0/13)
 
 # Report · track l1-threads (P-012) · Level 1 for threads (`--det-threads`)
 
@@ -6,8 +6,8 @@ Engine branch: local `track-l1-threads` (base `1573079` = origin/claude/gracious
 delivered as `tracks/l1-threads/patches/` (`git am` on the base). Final code `c25485d`.
 Measured on GitHub Actions, workflow `track-l1-threads` (one runner per project):
 * round r4, code `e29b9fd`, run 44074323368;
-* round r5, code `d447170`, anyio only;
-* round r6, code `c25485d`, requests and werkzeug;
+* round r5, code `d447170`, anyio only (corpus and full suite, run 44089216622);
+* round r6, code `c25485d`, requests and werkzeug (run 44095974555);
 * round r1, code `4d88a2f`, run 44042691111, where noted.
 
 `d447170` differs from `e29b9fd` only when a tool patches `lock.acquire` on the C type (blockbuster, used by
@@ -15,8 +15,8 @@ anyio's conftest). Raw results are in `results/r4/`, `results/r5/`, `results/r6/
 cancelled because their code was stale. r4 was cancelled after 19 of 31 jobs, so that the queue could reach the
 suites never measured.
 
-Still running on Actions when this was written: the anyio full suite (r5) and the requests full suite
-(r6). Rows marked r1 are at `4d88a2f`, which predates the I/O change in c2596b0.
+All runs have finished; no suite is still running. Rows marked r1 are at `4d88a2f`, which predates the
+I/O change in c2596b0. The anyio full suite never completed before r5 (r1 and r4: `job_failed`).
 
 ## Headline (exit numbers)
 
@@ -27,17 +27,21 @@ Still running on Actions when this was written: the anyio full suite (r5) and th
 | 31 class-a tests: flake reproduced (replay 10/10, one fingerprint, passes with another seed, the baseline's exception) | **0/31**. 18/31 have no stable id (one marshmallow test with the wall-clock time in its id: not a thread problem). Of the 13 measurable: **0/13**. The condition differs from the mixed round, where these flakes were seen 1–2 times in 10 (full suite, xdist, random order). Here only the targets ran, serially, in a fixed order, and plain reruns did not show them either | MEASURED |
 | class-a: failing interleavings found by 20 thread seeds | pymq 1 (seed 9, fails 10/10 but 2 fingerprints, `NoSuchRemoteError` instead of the baseline AssertionError). The anyio failures of r1 and of a local run were all scheduler artefacts; at `d447170` 0/20 seeds fail for all 10 anyio tests (Actions r5) | MEASURED |
 | plain reruns, same targets and condition (comparison) | 0 failures in 10 quiet runs for all 13; under CPU load pymq failed 1/5 | MEASURED (Actions r4) |
-| tests broken by `--det-threads` (calm), Block 1 popular pool | **0 caused by threads** in 23/25 suites: 14 at the final behaviour (r4, r6: werkzeug, which runs servers in threads: 0) and 9 at `4d88a2f` (r1, before the I/O change). **anyio and requests are still running.** r1 showed 3 broken tests: boltons 2, fixed (I/O in flight, event-loop clock; 0 in r4), and jinja 1, a Level 0 cross-run effect (it also fails `--det` after `--det`) | MEASURED |
-| tests broken by an exploration seed (seed 1, line preemption on) | 2: structlog `test_recursive` (cause ESTIMATED: the trace function adds stack depth in a recursion test), and jinja (same as above) | MEASURED |
-| slowdown vs `--det`, 5 most thread-heavy popular suites (by managed threads, chosen after the run; easypy left out) | more-itertools **+27.8%** (167 threads), networkx −2.4% (65), structlog +1.3% (41), flask −1.0% (27), click +0.5% (26); **median +0.5%**. vs plain pytest: median +44.7% (`--det` alone +43.1%). With easypy (131 threads, −57.6%) in the top 5 instead of click, the median is −1.0% | MEASURED, NOISY (one runner per project) |
-| slowdown of exploration (seed ≥ 1, line preemption via `sys.settrace`) | median +71.5% on the same 5; more-itertools +1188% | MEASURED |
+| tests broken by `--det-threads` (calm), Block 1 popular pool | **14 broken by threads, in 2 of 25 suites: anyio 9, requests 5** (plus jinja 1, a Level 0 cross-run effect: it also fails `--det` after `--det`). 23 suites: 0. All 25 measured: 16 at the final behaviour (r4, r5, r6) and 9 at `4d88a2f` (r1). anyio: the 9 are all in `tests/test_to_thread.py` (worker pool shutdown / retirement, loop closed during result report, cyclic references) and come from the **only calm run that finished**; the other **2 of 3 calm runs hung** at 97% (same tail `...FEFFE.......F`) and were killed at the 2400 s timeout. requests: 5 tests fail in 3/3 calm runs (`TestTimeout::test_encoded_methods`, `TestTimeout::test_none_timeout[None]`, `test_urllib3_pool_connection_closed`, `test_urllib3_retries`, `test_should_bypass_proxies_win_registry_ProxyOverride_value`); at `4d88a2f` (r1) requests had 113 broken, so the I/O change fixed 108. Cause of the 14: UNKNOWN (the suite results carry no failure messages); the scheduler reported `deadlocks: 6` per calm run in both suites, so DeadlockError is a candidate (ESTIMATED). r1 boltons 2 were fixed (0 in r4) | MEASURED |
+| tests broken by an exploration seed (seed 1, line preemption on) | 11 in 3 suites besides jinja: structlog `test_recursive` 1 (cause ESTIMATED: the trace function adds stack depth in a recursion test), anyio 4 (+1 sometimes), requests 5 (the same 5 as calm); plus jinja 1 (Level 0, as above). Seed 1 was **not repeatable** on anyio (failed 7, 7, 6 in 3 runs; 2 tests unstable under the same seed) and **1 of 3 requests seed-1 runs hung** (killed at 2400 s, also at r1) | MEASURED |
+| slowdown vs `--det`, 5 most thread-heavy popular suites (by managed threads, chosen after the run; easypy left out) | anyio **+237.4%** (707 threads; one completed run, the 2 hung runs excluded, so a lower bound), more-itertools **+27.8%** (167), networkx −2.4% (65), structlog +1.3% (41), requests **−27.1%** (35; virtual sleeps); **median +1.3%, range −27.1% to +237.4% (lower bound)**. vs plain pytest: median +44.7% (`--det` alone +13.1%). The earlier set without anyio and requests (flask, click instead) had median +0.5% | MEASURED, NOISY (one runner per project; anyio n=1) |
+| slowdown of exploration (seed ≥ 1, line preemption via `sys.settrace`) | median +175.5% on the same 5 (anyio +175.5%, requests −25.8%, more-itertools +1188%) | MEASURED |
+| thread flakes reproduced in the anyio and requests suites | **0**: plain pytest was stable in 3/3 runs of both suites (no unstable test), so there was no thread flake to reproduce; suite mode does not search seeds | MEASURED |
 
 Plainly:
 * Level 1 for threads makes the easypy thread tests replay with one fingerprint, in every run and
   under load.
-* It breaks no measured popular-pool test.
-* In calm mode it costs almost nothing over `--det`. Suites that sleep in threads get faster because
-  sleeps are virtual (easypy −57.6%, rich −45.8%).
+* It breaks 14 tests in 2 of the 25 popular suites (anyio 9, requests 5) and hangs the anyio suite in
+  2 of 3 calm runs, without raising DeadlockError. The other 23 suites: 0 broken. The exit "must trend
+  to 0" is not met; the trend is down (requests 113 → 5 after the I/O change) but not at 0.
+* In calm mode it costs little over `--det` on most suites (median +1.3% on the 5 most thread-heavy),
+  but anyio, the heaviest (707 threads, 882 escapes), is at least +237%. Suites that sleep in threads
+  get faster because sleeps are virtual (easypy −57.6%, rich −45.8%, requests −27.1%).
 * It did **not** reproduce any of the 13 measurable class-a flakes in 20 seeds. Neither did plain
   reruns under the same condition.
 * Those 13 are TLS/socket/asyncio tests (anyio), an external Redis (pymq), a ticking clock
@@ -128,6 +132,7 @@ and fails in every run of the mode. The `code` column gives the round.
 
 | project | tests | code | plain s | `--det` s | `--det-threads` s | vs `--det` | seed 1 vs `--det` | managed threads | escapes | broken by `--det` | broken by `--det-threads` | broken by seed 1 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
+| anyio | 4812 | r5 | 68.25 | 77.204 | 260.479 (1 of 3 runs; 2 hung, 2400 s timeout) | 237.4% | 175.5% | 707 | 882 | 2 | 9 | 4 (+1 sometimes) |
 | arrow | 1904 | r4 | 8.556 | 15.191 | 15.407 | 1.4% | 34.9% | 1 | 0 | 0 | 0 | 0 |
 | attrs | 1412 | r4 | 7.516 | 9.565 | 9.59 | 0.3% | 136.1% | 1 | 0 | 0 | 0 | 0 |
 | boltons | 621 | r4 | 2.323 | 4.125 | 3.596 | -12.8% | 56.7% | 13 | 0 | 0 | 0 | 0 |
@@ -146,6 +151,7 @@ and fails in every run of the mode. The `code` column gives the round.
 | packaging | 63798 | r1 | 29.751 | 39.381 | 39.494 | 0.3% | 198.5% | 1 | 0 | 0 | 0 | 0 |
 | pluggy | 226 | r1 | 0.393 | 1.096 | 1.105 | 0.8% | 28.6% | 1 | 0 | 0 | 0 | 0 |
 | pygments | 5346 | r1 | 11.178 | 11.961 | 12.929 | 8.1% | 225.7% | 1 | 0 | 0 | 0 | 0 |
+| requests | 635 | r6 | 77.739 | 78.648 | 57.317 | -27.1% | -25.8% (2 of 3 runs; 1 hung) | 35 | 0 | 4 | 5 | 5 |
 | rich | 981 | r4 | 4.41 | 5.326 | 2.885 | -45.8% | -3.1% | 12 | 0 | 0 | 0 | 0 |
 | sortedcontainers | 366 | r1 | 4.533 | 6.981 | 7.051 | 1.0% | 490.1% | 1 | 0 | 0 | 0 | 0 |
 | sqlparse | 540 | r1 | 1.375 | 2.389 | 2.359 | -1.3% | 150.4% | 1 | 0 | 0 | 0 | 0 |
@@ -155,9 +161,27 @@ and fails in every run of the mode. The `code` column gives the round.
 
 jinja: broken by `--det-threads`: tests/test_loader.py::TestFileSystemLoader::test_caches_template_based_on_mtime
 
+anyio: broken by `--det-threads` (from the one calm run that finished), all in `tests/test_to_thread.py`:
+`test_asyncio_worker_pool_assignment_during_retirement` [asyncio, asyncio+eager, asyncio+uvloop],
+`test_asyncio_worker_pool_shutdown` [queued-asyncio, running-asyncio, running-asyncio+eager,
+running-asyncio+uvloop], `test_asyncio_worker_thread_loop_closed_during_result_report`,
+`test_run_sync_worker_cyclic_references[asyncio]`.
+
+requests: broken by `--det-threads` (3/3 calm runs, same 5 under seed 1):
+`tests/test_requests.py::TestTimeout::test_encoded_methods`, `TestTimeout::test_none_timeout[None]`,
+`test_urllib3_pool_connection_closed`, `test_urllib3_retries`,
+`tests/test_utils.py::test_should_bypass_proxies_win_registry_ProxyOverride_value`.
+
 * jinja `test_caches_template_based_on_mtime` is not caused by threads (Level 0 finding 2 below).
 * The 20 jinja `[trio]` tests are broken by `--det` itself, not by threads.
-* The escapes (click 1, isort 4, toolz 4) are holders that slept in C code. Each one is recorded as
+* anyio and requests: the cause of the broken tests is UNKNOWN; the suite JSON stores counts and
+  outcomes, not failure messages. Both suites report `deadlocks: 6` per calm run (requests also 52
+  timer jumps), so a DeadlockError or a virtual-time jump past a real server's reply is a candidate
+  (ESTIMATED). anyio runs asyncio worker threads (`to_thread`) under uvloop and blockbuster, with
+  882 escapes per run; the hang at 97% means a wait that neither progressed nor was declared a
+  deadlock. Next step for a fix: run `tests/test_to_thread.py` of anyio and the 5 requests tests
+  alone with `-rfE` to get the messages (not done here: no new runs in this hand-off).
+* The escapes (click 1, isort 4, toolz 4, werkzeug 3, anyio 882) are holders that slept in C code. Each one is recorded as
   `threads.uncontrolled` in the fingerprint.
 
 ## What was built
@@ -208,6 +232,9 @@ jinja: broken by `--det-threads`: tests/test_loader.py::TestFileSystemLoader::te
    same way (MEASURED locally). It shows up as "broken by --det-threads" only because the harness
    runs l1 after det.
 3. **jinja: 20 `[trio]` tests broken by `--det`** (plain passes) in r1. This is not a thread issue.
+   Also broken by `--det` alone (3/3 runs, MEASURED): anyio `test_getaddrinfo` [asyncio, asyncio+eager]
+   (and `test_asyncio_worker_pool_concurrent_loops` sometimes), requests `TestTimeout::test_connect_timeout`
+   and `test_total_timeout_connect` [timeout0, timeout1] (4).
 4. **Seeded tempfile names collide with leftovers.** With about 1,500 `tmp*` entries left in
    /tmp by earlier `--det` runs, `tempfile.mkdtemp` under `--det` exhausts its 100 attempts
    (`FileExistsError: No usable temporary directory name found`). The engine test
@@ -224,9 +251,12 @@ jinja: broken by `--det-threads`: tests/test_loader.py::TestFileSystemLoader::te
 * Sets keyed by objects with the default (address) hash iterate in address order, except futures
   and pool threads.
 * Exploration with line preemption runs under `sys.settrace`:
-  * cost: median +71.5% on the 5 thread-heavy suites, more-itertools ×12;
+  * cost: median +175.5% on the 5 thread-heavy suites, more-itertools ×12;
   * it can change recursion-depth tests.
 * uvloop and free-threaded CPython are not modelled.
+* Known open defects (MEASURED, cause UNKNOWN): anyio's asyncio worker-thread pool (9 tests broken,
+  2 of 3 calm suite runs hang at 97%) and 5 requests tests (3 use urllib3 pools or a
+  timeout; one is a Windows-registry mock); one requests exploration run (seed 1) hangs, at r1 and r6 alike.
 
 ## Reproduce
 
