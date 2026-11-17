@@ -1,0 +1,14 @@
+{
+  "name": "posthog-js-flaky",
+  "kind": "flaky",
+  "status": "too-few-tests",
+  "node": "node v22.23.5",
+  "runner": "jest",
+  "runner_version": "29.7.0",
+  "tests": 8,
+  "first_run_s": 0.7698985789999995,
+  "commit": "3740abc5309b0af105a52aa79472366de1932e95",
+  "detail": "8 test outcomes (exit 1):  (../../node_modules/.pnpm/@jest+transform@29.7.0/node_modules/@jest/transform/build/ScriptTransformer.js:726:19)\n\nSeed:        1000\nTest Suites: 8 failed, 8 total\nTests:       0 total\nSnapshots:   0 total\nTime:        0.434 s\nTest results written to: ../../../../runs/posthog-js-flaky/normal_0.json\n",
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T07:13:32.844742+00:00"
+}
