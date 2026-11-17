@@ -1,0 +1,1006 @@
+From aa761c93fa8c23be77e502c2f67c63d1f82889fc Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 07:53:07 +0000
+Subject: [PATCH 7/8] L1 threads harness: corpus (easypy Block 2 tests, class-a
+ tests) and full-suite jobs (popular pool) for Actions
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ harness/l1/threads-corpus.json | 569 +++++++++++++++++++++++++++++++++
+ harness/l1_threads.py          | 406 +++++++++++++++++++++++
+ 2 files changed, 975 insertions(+)
+ create mode 100644 harness/l1/threads-corpus.json
+ create mode 100644 harness/l1_threads.py
+
+diff --git a/harness/l1/threads-corpus.json b/harness/l1/threads-corpus.json
+new file mode 100644
+index 0000000..16503b3
+--- /dev/null
++++ b/harness/l1/threads-corpus.json
+@@ -0,0 +1,569 @@
++{
++ "_comment": "Track l1-threads (P-012). 'corpus': the 10 easypy thread tests of Block 2 (each with its minimised order) and the class-a tests of the mixed round that have a stable id (the 18 marshmallow class-a rows are one test whose id contains the wall-clock time at collection: no stable id, not a thread problem). 'suites': the Block 1 popular pool (25) plus easypy, full suites, for tests broken by --det-threads and slowdown.",
++ "excluded_class_a": [
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:21:47]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:21:58]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:02]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:06]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:14]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:18]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:22]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:26]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[11-16-2026 15:22:30]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:21:47 2026-11-16]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:21:58 2026-11-16]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:02 2026-11-16]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:06 2026-11-16]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:14 2026-11-16]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:18 2026-11-16]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:22 2026-11-16]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:26 2026-11-16]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  },
++  {
++   "repo": "marshmallow",
++   "nodeid": "tests/test_deserialization.py::TestFieldDeserialization::test_invalid_datetime_deserialization[15:22:30 2026-11-16]",
++   "reason": "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
++  }
++ ],
++ "corpus": [
++  {
++   "name": "idoft-easypy",
++   "set": "easypy-block2",
++   "url": "https://github.com/weka-io/easypy",
++   "sha": "9501c3ee03dc",
++   "python": [
++    "3.9"
++   ],
++   "tests": {
++    "tests/test_concurrency.py::test_multiexception_api[concurrent]": "block2 thread test (order-dependent failure)",
++    "tests/test_concurrency.py::test_multiobject_1": "block2 thread test (order-dependent failure)",
++    "tests/test_concurrency.py::test_multiobject_exceptions": "block2 thread test (order-dependent failure)",
++    "tests/test_concurrency.py::test_multiobject_logging": "block2 thread test (order-dependent failure)",
++    "tests/test_concurrency.py::test_thread_stacks": "block2 thread test (order-dependent failure)",
++    "tests/test_sync.py::test_logged_condition": "block2 thread test (order-dependent failure)",
++    "tests/test_sync.py::test_logged_lock": "block2 thread test (order-dependent failure)",
++    "tests/test_sync.py::test_synchronization_coordinator_failing_context_manager": "block2 thread test (order-dependent failure)",
++    "tests/test_sync.py::test_synchronization_coordinator_timeout": "block2 thread test (order-dependent failure)",
++    "tests/test_sync.py::test_synchronization_coordinator_with_multiobject_exception": "block2 thread test (order-dependent failure)"
++   },
++   "orders": {
++    "tests/test_concurrency.py::test_multiexception_api[concurrent]": [
++     "test_package.py::test_package[properties]",
++     "test_package.py::test_package[logging]",
++     "tests/test_concurrency.py::test_multiexception_api[concurrent]"
++    ],
++    "tests/test_concurrency.py::test_multiobject_1": [
++     "test_package.py::test_package[properties]",
++     "test_package.py::test_package[logging]",
++     "tests/test_concurrency.py::test_multiobject_1"
++    ],
++    "tests/test_concurrency.py::test_multiobject_exceptions": [
++     "test_package.py::test_package[properties]",
++     "test_package.py::test_package[logging]",
++     "tests/test_concurrency.py::test_multiobject_exceptions"
++    ],
++    "tests/test_concurrency.py::test_multiobject_logging": [
++     "tests/test_concurrency.py::test_multiobject_logging"
++    ],
++    "tests/test_concurrency.py::test_thread_stacks": [
++     "test_package.py::test_package[lockstep]",
++     "tests/test_concurrency.py::test_thread_stacks"
++    ],
++    "tests/test_sync.py::test_logged_condition": [
++     "test_package.py::test_package[lockstep]",
++     "tests/test_sync.py::test_logged_condition"
++    ],
++    "tests/test_sync.py::test_logged_lock": [
++     "test_package.py::test_package[lockstep]",
++     "tests/test_sync.py::test_logged_lock"
++    ],
++    "tests/test_sync.py::test_synchronization_coordinator_failing_context_manager": [
++     "test_package.py::test_package[properties]",
++     "test_package.py::test_package[logging]",
++     "tests/test_sync.py::test_synchronization_coordinator_failing_context_manager"
++    ],
++    "tests/test_sync.py::test_synchronization_coordinator_timeout": [
++     "test_package.py::test_package[properties]",
++     "test_package.py::test_package[logging]",
++     "tests/test_sync.py::test_synchronization_coordinator_timeout"
++    ],
++    "tests/test_sync.py::test_synchronization_coordinator_with_multiobject_exception": [
++     "test_package.py::test_package[properties]",
++     "test_package.py::test_package[logging]",
++     "tests/test_sync.py::test_synchronization_coordinator_with_multiobject_exception"
++    ]
++   }
++  },
++  {
++   "name": "anyio",
++   "set": "class-a",
++   "url": "https://github.com/agronholm/anyio",
++   "sha": "9df02f0b8362",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "tests": {
++    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+uvloop]": "class a",
++    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]": "class a",
++    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]": "class a",
++    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]": "class a",
++    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]": "class a",
++    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]": "class a",
++    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]": "class a",
++    "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]": "class a",
++    "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio+uvloop]": "class a",
++    "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]": "class a"
++   }
++  },
++  {
++   "name": "idoft-freezegun",
++   "set": "class-a",
++   "url": "https://github.com/spulec/freezegun",
++   "sha": "b46da782a7a0",
++   "python": [
++    "3.9"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "tests": {
++    "tests/test_ticking.py::test_ticking_time": "class a"
++   }
++  },
++  {
++   "name": "idoft-panamah-sdk-python",
++   "set": "class-a",
++   "url": "https://github.com/casamagalhaes/panamah-sdk-python",
++   "sha": "746f3fb7ebcf",
++   "python": [
++    "3.9"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "tests": {
++    "tests/test_stream.py::TestStream::test_events": "class a"
++   }
++  },
++  {
++   "name": "idoft-pymq",
++   "set": "class-a",
++   "url": "https://github.com/thrau/pymq",
++   "sha": "101857bca2b7",
++   "python": [
++    "3.9"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "tests": {
++    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": "class a"
++   }
++  }
++ ],
++ "suites": [
++  {
++   "name": "anyio",
++   "set": "popular",
++   "url": "https://github.com/agronholm/anyio",
++   "sha": "9df02f0b8362",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {},
++   "suite_args": [
++    "--ignore=tests/test_pytest_plugin.py"
++   ]
++  },
++  {
++   "name": "arrow",
++   "set": "popular",
++   "url": "https://github.com/arrow-py/arrow",
++   "sha": "2224255c4acc",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "attrs",
++   "set": "popular",
++   "url": "https://github.com/python-attrs/attrs",
++   "sha": "2a1fb86d4481",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "boltons",
++   "set": "popular",
++   "url": "https://github.com/mahmoud/boltons",
++   "sha": "d31d821d56c8",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "click",
++   "set": "popular",
++   "url": "https://github.com/pallets/click",
++   "sha": "e38188e9e205",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "dateutil",
++   "set": "popular",
++   "url": "https://github.com/dateutil/dateutil",
++   "sha": "a78cbd81d5d0",
++   "python": [
++    "3.13"
++   ],
++   "install": [
++    "freezegun",
++    "hypothesis"
++   ],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "faker",
++   "set": "popular",
++   "url": "https://github.com/joke2k/faker",
++   "sha": "affa2c5aada2",
++   "python": [
++    "3.13"
++   ],
++   "install": [
++    "freezegun",
++    "validators",
++    "ukpostcodeparser",
++    "sphinx"
++   ],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "flask",
++   "set": "popular",
++   "url": "https://github.com/pallets/flask",
++   "sha": "49943b5a9441",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "humanize",
++   "set": "popular",
++   "url": "https://github.com/python-humanize/humanize",
++   "sha": "a95004512dde",
++   "python": [
++    "3.13"
++   ],
++   "install": [
++    "freezegun"
++   ],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "isort",
++   "set": "popular",
++   "url": "https://github.com/PyCQA/isort",
++   "sha": "eb62da318ea5",
++   "python": [
++    "3.13"
++   ],
++   "install": [
++    "hypothesis",
++    "hypothesmith",
++    "pytest-mock"
++   ],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "jinja",
++   "set": "popular",
++   "url": "https://github.com/pallets/jinja",
++   "sha": "5ef70112a1ff",
++   "python": [
++    "3.13"
++   ],
++   "install": [
++    "trio"
++   ],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "jsonschema",
++   "set": "popular",
++   "url": "https://github.com/python-jsonschema/jsonschema",
++   "sha": "64b62de5df4e",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "marshmallow",
++   "set": "popular",
++   "url": "https://github.com/marshmallow-code/marshmallow",
++   "sha": "777ff66039fd",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "more-itertools",
++   "set": "popular",
++   "url": "https://github.com/more-itertools/more-itertools",
++   "sha": "ceafee8ce96f",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "networkx",
++   "set": "popular",
++   "url": "https://github.com/networkx/networkx",
++   "sha": "2e0ae8ad9578",
++   "python": [
++    "3.13"
++   ],
++   "install": [
++    "numpy",
++    "scipy"
++   ],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "packaging",
++   "set": "popular",
++   "url": "https://github.com/pypa/packaging",
++   "sha": "5a7d3386d277",
++   "python": [
++    "3.13"
++   ],
++   "install": [
++    "pretend"
++   ],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "pluggy",
++   "set": "popular",
++   "url": "https://github.com/pytest-dev/pluggy",
++   "sha": "46a80723004b",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "pygments",
++   "set": "popular",
++   "url": "https://github.com/pygments/pygments",
++   "sha": "156d85fdd18d",
++   "python": [
++    "3.13"
++   ],
++   "install": [
++    "wcag-contrast-ratio"
++   ],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "requests",
++   "set": "popular",
++   "url": "https://github.com/psf/requests",
++   "sha": "3c7baaa05ab4",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "rich",
++   "set": "popular",
++   "url": "https://github.com/Textualize/rich",
++   "sha": "3a109ccdffe5",
++   "python": [
++    "3.13"
++   ],
++   "install": [
++    "attrs"
++   ],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "sortedcontainers",
++   "set": "popular",
++   "url": "https://github.com/grantjenks/python-sortedcontainers",
++   "sha": "3ac358631f58",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "sqlparse",
++   "set": "popular",
++   "url": "https://github.com/andialbrecht/sqlparse",
++   "sha": "09dbe1eec31e",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "structlog",
++   "set": "popular",
++   "url": "https://github.com/hynek/structlog",
++   "sha": "81779f0abe59",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "toolz",
++   "set": "popular",
++   "url": "https://github.com/pytoolz/toolz",
++   "sha": "451af60dec59",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "werkzeug",
++   "set": "popular",
++   "url": "https://github.com/pallets/werkzeug",
++   "sha": "0f43c6ebd426",
++   "python": [
++    "3.13"
++   ],
++   "install": [],
++   "pytest_args": [],
++   "env": {}
++  },
++  {
++   "name": "idoft-easypy",
++   "set": "thread-heavy",
++   "url": "https://github.com/weka-io/easypy",
++   "sha": "9501c3ee03dc",
++   "python": [
++    "3.9"
++   ]
++  }
++ ]
++}
+\ No newline at end of file
+diff --git a/harness/l1_threads.py b/harness/l1_threads.py
+new file mode 100644
+index 0000000..d27884d
+--- /dev/null
++++ b/harness/l1_threads.py
+@@ -0,0 +1,406 @@
++#!/usr/bin/env python3
++"""L1 threads study harness (track l1-threads, P-012): ``--det-threads`` on real projects.
++
++Two kinds of job, one GitHub Actions job per project of ``harness/l1/threads-corpus.json``:
++
++``corpus`` (the 10 easypy thread tests of Block 2 and the class-a tests of the mixed round):
++  per unit (one test with its minimised order, or all the corpus tests of the project in
++  one invocation), serial, fixed order, interleaved so runner load hits every mode alike:
++  * ``runs`` runs of each mode: baseline (plain pytest), ``det`` (Level 0), ``det-u``
++    (Level 0 + ``--det-urandom``), ``l1`` (``--det --det-threads``, calm seed 0) and ``l1-u``
++    (``l1`` + ``--det-urandom``); outcome and execution fingerprint per test;
++  * ``loaded_runs`` runs of baseline / det-u / l1-u under CPU contention (one spinning
++    process per core: a busy CI runner);
++  * exploration: ``--det-threads-seed=1..seeds`` (l1-u flags, preemption on);
++  * confirmation: the first failing seed of each test re-run until ``confirm`` runs; a test
++    is *replayed* when every run fails with one fingerprint, *reproduced* when it is also
++    seen passing (another seed, or the test run alone for the order-dependent easypy tests).
++
++``suite`` (Block 1 popular pool + easypy): the full suite, serial, ``timing_runs`` rounds of
++  plain / det / l1 / l1-s1 (``--det-threads-seed=1``); wall time, outcome counts, tests broken
++  by ``--det-threads`` (pass in every det run, fail in every l1 run), scheduler counters.
++
++Output ``<out>/<name>.<kind>.json``; ``--aggregate DIR`` writes REPORT.md + CSVs.
++"""
++
++from __future__ import annotations
++
++import argparse
++import collections
++import csv
++import json
++import os
++import platform
++import re
++import statistics
++import subprocess
++import sys
++import time
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parent.parent
++sys.path.insert(0, str(ROOT / "harness"))
++
++import detpy_harness as H  # noqa: E402
++import l1_async as A  # noqa: E402  (clone, log, is_fail, hist)
++
++CORPUS = ROOT / "harness" / "l1" / "threads-corpus.json"
++STATS = re.compile(r"threads: decisions=(\d+) switches=(\d+) escapes=(\d+) deadlocks=(\d+) "
++                   r"timer_jumps=(\d+) managed=(\d+)")
++L1 = ["--det", "--det-threads", "--det-threads-seed=0"]
++MODES = {
++    "baseline": [],
++    "det": ["--det"],
++    "det-u": ["--det", "--det-urandom"],
++    "l1": L1,
++    "l1-u": L1 + ["--det-urandom"],
++}
++SUITE_MODES = {"plain": [], "det": ["--det"], "l1": L1, "l1-s1": ["--det", "--det-threads", "--det-threads-seed=1"]}
++log, is_fail, hist = A.log, A.is_fail, A.hist
++
++
++def pytest_run(p, args: list, out_json: Path, timeout: float, trace: Path | None = None) -> dict:
++    cmd = [p.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", "-p", "no:randomly", "-p", "no:xdist",
++           f"--det-outcomes={out_json}", *p.pytest_args, *args]
++    if trace is not None:
++        cmd.append(f"--det-trace={trace}")
++    out_json.unlink(missing_ok=True)
++    t0 = time.monotonic()
++    try:
++        proc = subprocess.run(cmd, cwd=p.src, env=H.clean_env(p.python, p.env), capture_output=True, text=True,
++                              timeout=timeout)
++        code, out, timed_out = proc.returncode, proc.stdout + proc.stderr, False
++    except subprocess.TimeoutExpired as e:
++        code, out, timed_out = -9, (e.stdout or b"").decode() if isinstance(e.stdout, bytes) else str(e.stdout or ""), True
++    dur = time.monotonic() - t0
++    outcomes, fps = {}, {}
++    if out_json.exists():
++        try:
++            data = json.loads(out_json.read_text())
++            outcomes, fps = data.get("outcomes", {}), data.get("fingerprints", {})
++        except Exception:
++            pass
++    m = STATS.search(out)
++    stats = dict(zip(("decisions", "switches", "escapes", "deadlocks", "timer_jumps", "managed"),
++                     map(int, m.groups()))) if m else None
++    return {"exit": code, "duration_s": round(dur, 3), "timed_out": timed_out, "outcomes": outcomes, "fps": fps,
++            "stats": stats, "tail": out[-1500:] if (code not in (0, 1) or timed_out) else ""}
++
++
++def _prepare(project: dict, args):
++    work = Path(args.work)
++    src = work / "src" / project["name"]
++    src.parent.mkdir(parents=True, exist_ok=True)
++    res = {"name": project["name"], "set": project.get("set", ""), "url": project.get("url", ""),
++           "runner": platform.node(), "cpu": H.runner_info(), "python_requested": project.get("python")}
++    try:
++        res["commit"] = A.clone(project, src)
++    except Exception as e:
++        res["status"] = f"clone-failed: {e}"
++        return res, None
++    repo = {"name": project["name"], "url": project.get("url", ""), "kind": "flaky", "sha": "",
++            "python": project.get("python"), "install": project.get("install", []),
++            "pytest_args": project.get("pytest_args", []), "env": project.get("env", {})}
++    p = H.prepare(repo, work, args.wheel, "3.13", 100000)
++    res.update(status=p.status, detail=p.detail, python=p.python_version, install=p.install_cmd,
++               collected=p.collected)
++    if p.status != "ok":
++        log(f"{p.name}: {p.status} {p.detail[-300:]}")
++        return res, None
++    return res, p
++
++
++# ---------------------------------------------------------------------------
++def measure_corpus(project: dict, args) -> dict:
++    res, p = _prepare(project, args)
++    res["kind"] = "corpus"
++    res["tests"] = project["tests"]
++    if p is None:
++        return res
++    rd = Path(args.work) / "runs" / p.name
++    rd.mkdir(parents=True, exist_ok=True)
++    units = []
++    if project.get("orders"):
++        for k, (target, order) in enumerate(project["orders"].items()):
++            f = rd / f"order-{k}.txt"
++            f.write_text("\n".join(order) + "\n")
++            units.append({"id": k, "targets": [target], "nodeids": order, "order_file": str(f)})
++    else:
++        units.append({"id": 0, "targets": list(project["tests"]), "nodeids": list(project["tests"]),
++                      "order_file": None})
++    runs = res["runs"] = []
++    tmo = args.run_timeout
++
++    def go(unit, mode, flags, i, seed=None, trace=None):
++        if flags and unit["order_file"]:
++            sel = [f"--det-order={unit['order_file']}"]
++        else:
++            sel = unit["nodeids"]
++        r = pytest_run(p, sel + flags, rd / f"u{unit['id']}-{mode}-{seed}-{i}.json", tmo, trace)
++        row = {"unit": unit["id"], "mode": mode, "seed": seed, "run": i, "exit": r["exit"],
++               "duration_s": r["duration_s"], "timed_out": r["timed_out"], "stats": r["stats"], "tail": r["tail"][-600:],
++               "outcomes": {t: r["outcomes"].get(t, "missing") for t in unit["targets"]},
++               "fps": {t: r["fps"].get(t) for t in unit["targets"]}}
++        runs.append(row)
++        fails = sum(is_fail(o) for o in row["outcomes"].values())
++        log(f"{p.name} u{unit['id']} {mode} seed={seed} run={i}: {r['duration_s']}s exit={r['exit']} "
++            f"failing={fails}/{len(unit['targets'])} stats={r['stats']}")
++        return row
++
++    for i in range(args.runs):
++        for u in units:
++            for mode, flags in MODES.items():
++                go(u, mode, flags, i)
++    if args.loaded_runs:
++        hogs = [subprocess.Popen([sys.executable, "-c", "while True: pass"]) for _ in range(os.cpu_count() or 2)]
++        try:
++            for i in range(args.loaded_runs):
++                for u in units:
++                    for mode in ("baseline", "det-u", "l1-u"):
++                        go(u, "loaded-" + mode, MODES[mode], i)
++        finally:
++            for h in hogs:
++                h.kill()
++    # The order-dependent targets alone (does the test pass without its polluter?).
++    if project.get("orders"):
++        for u in units:
++            alone = dict(u, nodeids=u["targets"], order_file=None)
++            go(alone, "alone-l1-u", MODES["l1-u"], 0)
++    confirm = res["confirm"] = {}
++    for u in units:
++        first_fail, first_pass = {}, {}
++        for s in range(1, args.seeds + 1):
++            flags = ["--det", "--det-threads", f"--det-threads-seed={s}", "--det-urandom"]
++            r = go(u, "explore", flags, 0, s)
++            for t in u["targets"]:
++                o = r["outcomes"].get(t)
++                if is_fail(o):
++                    first_fail.setdefault(t, s)
++                elif o in ("passed", "xfailed"):
++                    first_pass.setdefault(t, s)
++        by_seed = collections.defaultdict(list)
++        for t, s in first_fail.items():
++            by_seed[s].append(t)
++        for s, tests in sorted(by_seed.items()):
++            flags = ["--det", "--det-threads", f"--det-threads-seed={s}", "--det-urandom"]
++            rows = [next(r for r in runs if r["unit"] == u["id"] and r["mode"] == "explore" and r["seed"] == s)]
++            traces = []
++            for i in range(1, args.confirm):
++                t = rd / f"u{u['id']}-confirm-{s}-{i}.jsonl"
++                rows.append(go(u, "confirm", flags, i, s, trace=t))
++                traces.append(t)
++            verdict = {}
++            try:
++                out = subprocess.run([p.python, "-c", "import sys,detpy._core as c; print(c.verify(sys.argv[1:]))",
++                                      *map(str, traces)], capture_output=True, text=True, timeout=300).stdout
++                verdict = {x["nodeid"]: x for x in json.loads(out)["tests"]}
++            except Exception as e:
++                log(f"verify failed: {e}")
++            for t in tests:
++                fails = sum(is_fail(r["outcomes"].get(t)) for r in rows)
++                fps = {r["fps"].get(t) for r in rows}
++                d = (verdict.get(t) or {}).get("divergence") or {}
++                confirm[t] = {"seed": s, "fails": fails, "runs": len(rows), "distinct_fps": len(fps),
++                              "replayed": fails == len(rows) and len(fps) == 1 and None not in fps,
++                              "passing_seed": first_pass.get(t), "divergence": d.get("description", "")[:300]}
++    return res
++
++
++# ---------------------------------------------------------------------------
++def measure_suite(project: dict, args) -> dict:
++    res, p = _prepare(project, args)
++    res["kind"] = "suite"
++    if p is None:
++        return res
++    rd = Path(args.work) / "runs" / p.name
++    rd.mkdir(parents=True, exist_ok=True)
++    suite = project.get("suite_args", [])
++    per_mode = collections.defaultdict(list)  # mode -> [outcomes dict per run]
++    timing = res["timing"] = []
++    for i in range(args.timing_runs):
++        for mode, flags in SUITE_MODES.items():
++            r = pytest_run(p, suite + flags, rd / f"suite-{mode}-{i}.json", args.suite_timeout)
++            c = collections.Counter(o.split("+", 1)[0] for o in r["outcomes"].values())
++            timing.append({"mode": mode, "run": i, "duration_s": r["duration_s"], "exit": r["exit"],
++                           "timed_out": r["timed_out"], "counts": dict(c), "stats": r["stats"],
++                           "tail": r["tail"][-600:]})
++            if not r["timed_out"] and r["outcomes"]:
++                per_mode[mode].append(r["outcomes"])
++            log(f"{p.name} suite {mode} run={i}: {r['duration_s']}s {dict(c)} stats={r['stats']}")
++
++    def ok(o):
++        return o is not None and not is_fail(o) and o != "missing"
++
++    def fail(o):
++        return o is not None and is_fail(o)
++
++    def compare(a: str, b: str) -> dict:
++        ra, rb = per_mode.get(a, []), per_mode.get(b, [])
++        if not ra or not rb:
++            return {"runs": [len(ra), len(rb)], "broken": [], "sometimes": []}
++        tests = set().union(*ra, *rb)
++        broken = sorted(t for t in tests if all(ok(r.get(t)) for r in ra) and all(fail(r.get(t)) for r in rb))
++        sometimes = sorted(t for t in tests if all(ok(r.get(t)) for r in ra) and any(fail(r.get(t)) for r in rb)
++                           and t not in broken)
++        return {"runs": [len(ra), len(rb)], "broken": broken[:200], "n_broken": len(broken),
++                "sometimes": sometimes[:200], "n_sometimes": len(sometimes)}
++
++    res["broken_by_det"] = compare("plain", "det")
++    res["broken_by_l1"] = compare("det", "l1")
++    res["broken_by_l1_s1"] = compare("det", "l1-s1")
++    unstable = {}
++    for mode, rs in per_mode.items():
++        tests = set().union(*rs) if rs else set()
++        unstable[mode] = sorted(t for t in tests if len({r.get(t) for r in rs}) > 1)[:200]
++    res["unstable"] = unstable
++    return res
++
++
++# ---------------------------------------------------------------------------
++def _median(xs):
++    return round(statistics.median(xs), 3) if xs else None
++
++
++def aggregate(indir: Path, outdir: Path, meta: dict) -> None:
++    outdir.mkdir(parents=True, exist_ok=True)
++    corpus, suites = [], []
++    for f in sorted(indir.rglob("*.json")):
++        try:
++            r = json.loads(f.read_text())
++        except Exception:
++            continue
++        if r.get("kind") == "corpus":
++            corpus.append(r)
++        elif r.get("kind") == "suite":
++            suites.append(r)
++    rows = []
++    for r in corpus:
++        if r.get("status") != "ok":
++            continue
++        for t, cat in r["tests"].items():
++            per = collections.defaultdict(list)
++            fps = collections.defaultdict(set)
++            for run in r["runs"]:
++                if t in run["outcomes"]:
++                    per[run["mode"]].append(run["outcomes"][t])
++                    if run["fps"].get(t):
++                        fps[run["mode"]].add(run["fps"][t])
++            cf = r.get("confirm", {}).get(t, {})
++            row = {"project": r["name"], "set": r["set"], "nodeid": t, "category": cat}
++            for m in ("baseline", "det", "det-u", "l1", "l1-u", "loaded-baseline", "loaded-det-u", "loaded-l1-u",
++                      "alone-l1-u", "explore"):
++                row[m] = hist(per.get(m, []))
++                if m in ("det", "det-u", "l1", "l1-u", "loaded-det-u", "loaded-l1-u"):
++                    row[m + " fps"] = len(fps.get(m, ()))
++            row["baseline_flaky"] = len(set(per["baseline"] + per["loaded-baseline"])) > 1
++            row["seeds_failing"] = sum(map(is_fail, per["explore"]))
++            row["seeds_passing"] = sum(o == "passed" for o in per["explore"])
++            row["repro_seed"] = cf.get("seed")
++            row["confirm"] = f"{cf.get('fails', 0)}/{cf.get('runs', 0)}" if cf else ""
++            row["confirm_fps"] = cf.get("distinct_fps")
++            row["replayed"] = bool(cf.get("replayed"))
++            passes_somewhere = cf.get("passing_seed") is not None or "passed" in row["alone-l1-u"]
++            row["passes_somewhere"] = passes_somewhere
++            row["reproduced"] = row["replayed"] and passes_somewhere
++            row["divergence"] = cf.get("divergence", "")
++            rows.append(row)
++    if rows:
++        with open(outdir / "tests.csv", "w", newline="") as fh:
++            w = csv.DictWriter(fh, fieldnames=list(rows[0]))
++            w.writeheader()
++            w.writerows(rows)
++    srows = []
++    for r in suites:
++        row = {"project": r["name"], "set": r.get("set"), "status": r.get("status"), "python": r.get("python"),
++               "commit": (r.get("commit") or "")[:12]}
++        if r.get("status") == "ok":
++            by = collections.defaultdict(list)
++            managed = []
++            for t in r["timing"]:
++                if not t["timed_out"] and t["exit"] in (0, 1):
++                    by[t["mode"]].append(t["duration_s"])
++                if t["mode"] == "l1" and t.get("stats"):
++                    managed.append(t["stats"]["managed"])
++            for m in SUITE_MODES:
++                row[m + "_s"] = _median(by.get(m, []))
++            d = row["det_s"]
++            row["l1_vs_det_pct"] = round(100 * (row["l1_s"] / d - 1), 1) if d and row["l1_s"] else None
++            row["l1s1_vs_det_pct"] = round(100 * (row["l1-s1_s"] / d - 1), 1) if d and row["l1-s1_s"] else None
++            pl = row["plain_s"]
++            row["det_vs_plain_pct"] = round(100 * (d / pl - 1), 1) if pl and d else None
++            row["l1_vs_plain_pct"] = round(100 * (row["l1_s"] / pl - 1), 1) if pl and row["l1_s"] else None
++            row["managed_threads"] = max(managed) if managed else None
++            st = [t["stats"] for t in r["timing"] if t["mode"] == "l1" and t.get("stats")]
++            row["escapes"] = max((s["escapes"] for s in st), default=None)
++            row["deadlocks"] = max((s["deadlocks"] for s in st), default=None)
++            row["tests"] = sum(next((t["counts"] for t in r["timing"] if t["mode"] == "det"), {}).values())
++            row["broken_by_det"] = r["broken_by_det"].get("n_broken", 0)
++            row["broken_by_l1"] = r["broken_by_l1"].get("n_broken", 0)
++            row["sometimes_by_l1"] = r["broken_by_l1"].get("n_sometimes", 0)
++            row["broken_by_l1_s1"] = r["broken_by_l1_s1"].get("n_broken", 0)
++            row["l1_unstable"] = len(r["unstable"].get("l1", []))
++            row["det_unstable"] = len(r["unstable"].get("det", []))
++            row["broken_l1_tests"] = " ".join(r["broken_by_l1"].get("broken", [])[:20])
++            row["sometimes_l1_tests"] = " ".join(r["broken_by_l1"].get("sometimes", [])[:20])
++        else:
++            row["detail"] = (r.get("detail") or "")[:200]
++        srows.append(row)
++    if srows:
++        keys = list(dict.fromkeys(k for s in srows for k in s))
++        with open(outdir / "suites.csv", "w", newline="") as fh:
++            w = csv.DictWriter(fh, fieldnames=keys)
++            w.writeheader()
++            w.writerows(srows)
++    summary = {"meta": meta, "tests": rows, "suites": srows,
++               "projects": [{k: r.get(k) for k in ("name", "kind", "status", "detail", "python", "commit", "cpu")}
++                            for r in corpus + suites]}
++    (outdir / "summary.json").write_text(json.dumps(summary, indent=1))
++    log(f"aggregate: {len(rows)} corpus tests, {len(srows)} suites -> {outdir}")
++
++
++def main(argv=None) -> None:
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--project")
++    ap.add_argument("--kind", choices=("corpus", "suite"))
++    ap.add_argument("--list", action="store_true", help="print the job matrix as JSON")
++    ap.add_argument("--only", default="", help="comma separated kind:name filter for --list")
++    ap.add_argument("--aggregate", metavar="DIR")
++    ap.add_argument("--corpus", default=str(CORPUS))
++    ap.add_argument("--wheel", default="")
++    ap.add_argument("--work", default="/tmp/l1twork")
++    ap.add_argument("--out", default="out")
++    ap.add_argument("--runs", type=int, default=10)
++    ap.add_argument("--seeds", type=int, default=20)
++    ap.add_argument("--confirm", type=int, default=10)
++    ap.add_argument("--timing-runs", type=int, default=3)
++    ap.add_argument("--loaded-runs", type=int, default=5)
++    ap.add_argument("--run-timeout", type=float, default=600)
++    ap.add_argument("--suite-timeout", type=float, default=2400)
++    ap.add_argument("--run-url", default="")
++    a = ap.parse_args(argv)
++    doc = json.loads(Path(a.corpus).read_text())
++    if a.list:
++        only = {x.strip() for x in a.only.split(",") if x.strip()}
++        inc = [{"kind": "corpus", "name": c["name"]} for c in doc["corpus"]] + \
++              [{"kind": "suite", "name": s["name"]} for s in doc["suites"]]
++        if only:
++            inc = [x for x in inc if f"{x['kind']}:{x['name']}" in only]
++        print(json.dumps({"include": inc}))
++        return
++    if a.aggregate:
++        aggregate(Path(a.aggregate), Path(a.out), {"run_url": a.run_url})
++        return
++    if a.wheel:
++        a.wheel = str(Path(a.wheel).resolve())
++    pool = doc["corpus"] if a.kind == "corpus" else doc["suites"]
++    project = next(p for p in pool if p["name"] == a.project)
++    res = measure_corpus(project, a) if a.kind == "corpus" else measure_suite(project, a)
++    res["args"] = {k: getattr(a, k) for k in ("runs", "seeds", "confirm", "timing_runs", "loaded_runs")}
++    Path(a.out).mkdir(parents=True, exist_ok=True)
++    out = Path(a.out) / f"{project['name']}.{a.kind}.json"
++    out.write_text(json.dumps(res, indent=1))
++    log(f"wrote {out}")
++
++
++if __name__ == "__main__":
++    main()
+-- 
+2.43.0
+

@@ -12,5 +12,10 @@ of /home/user/fenvix-engine-cli; base `1573079` (origin/claude/gracious-rubin-ey
   scheduler and are reaped, futures hash/lock by creation order, verifier: entropy in a worker = Entropy.
 - easypy 10 bundles, local, `--det --det-threads --det-urandom`, 10 runs: 10/10 tests one fingerprint.
 
+- Fix: stdlib time-left clock (threading._time, queue.time) virtual; timeouts round up (easypy sync tests).
+- Harness `harness/l1_threads.py` + corpus `harness/l1/threads-corpus.json`; workflow
+  `.github/workflows/track-l1-threads.yml` (trigger: `tracks/l1-threads/run.json`), round r1 pushed.
+  Results land in `tracks/l1-threads/results/r1/`.
+
 ## Next
-- class-a 31 list, Actions workflow (easypy + class-a + popular pool + slowdown), REPORT.md.
+- Aggregate r1 (`python3 harness/l1_threads.py --aggregate tracks/l1-threads/results/r1 --out ...`), REPORT.md.
