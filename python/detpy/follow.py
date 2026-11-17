@@ -392,6 +392,8 @@ def _parse_one(lines: list[str], cwd: str, res: Result) -> None:
                 continue
             p = _join(base, p, cwd)
             flags = args[i + 1] if len(args) > i + 1 else ""
+            if "O_TMPFILE" in flags:
+                continue  # an unnamed temporary file in that directory: nothing visible changes
             wr = any(f in flags for f in ("O_WRONLY", "O_RDWR", "O_CREAT", "O_TRUNC", "O_APPEND"))
             if not ok or not wr:
                 ops.append(("r", p))

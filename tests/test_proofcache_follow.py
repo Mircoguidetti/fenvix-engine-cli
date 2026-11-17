@@ -504,3 +504,24 @@ def test_facts_in_worker_processes_equal_facts_in_process(tmp_path):
     parallel = _codefacts.read_many(jobs, str(tmp_path / "w"), min_parallel=2)
     assert parallel == serial
     assert not [f for f in os.listdir(tmp_path / "w")]
+
+
+@pytest.mark.skipif(not hasattr(os, "O_TMPFILE"), reason="needs O_TMPFILE")
+def test_unnamed_temporary_file_is_not_a_write_of_its_directory(pytester, run_cache):
+    # tempfile opens the temp directory itself with O_TMPFILE (pylint's tests, and ctypes.util.find_library's
+    # compiler fallback): taken as a write of /tmp it refused every other test that read /tmp
+    project(pytester, **{"test_m.py": """
+        import os
+
+        def test_a_unnamed_tmp():
+            fd = os.open("scratch", os.O_TMPFILE | os.O_RDWR)
+            os.write(fd, b"x")
+            os.close(fd)
+
+        def test_b_reads_tmp():
+            os.listdir("scratch")
+        """})
+    (pytester.path / "scratch").mkdir()
+    run_cache()
+    _, reused, data = run_cache()
+    assert "test_m.py::test_b_reads_tmp" not in nc(data)

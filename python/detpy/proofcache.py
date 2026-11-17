@@ -67,6 +67,7 @@ _WRITE_EVENTS = {"os.remove": (0,), "os.rename": (0, 1), "os.mkdir": (0,), "os.r
 _SKIP_PARTS = (os.sep + "__pycache__" + os.sep, os.sep + ".git" + os.sep, os.sep + ".pytest_cache",
                os.sep + ".mypy_cache", os.sep + ".hypothesis" + os.sep, os.sep + ".detpy" + os.sep)
 _O_ACC = os.O_RDONLY | os.O_WRONLY | os.O_RDWR
+_O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 # options that never change a test's result (output, reporting, selection by path, detpy's own files)
 _VOLATILE_OPTIONS = {
     "file_or_dir", "verbose", "quiet", "color", "code_highlight", "reportchars", "tbstyle", "showlocals",
@@ -439,6 +440,8 @@ class Capture:
             if p is None or self._ignored(p):
                 return
             mode, flags = (args[1] if len(args) > 1 else None), (args[2] if len(args) > 2 else 0)
+            if _O_TMPFILE and isinstance(flags, int) and flags & _O_TMPFILE == _O_TMPFILE:
+                return  # an unnamed temporary file in that directory (NamedTemporaryFile): nothing visible changes
             if isinstance(mode, str):
                 reads = "r" in mode or "+" in mode
                 writes = any(ch in mode for ch in "wax+")
