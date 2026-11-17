@@ -1,0 +1,14 @@
+{
+  "name": "react-router-flaky",
+  "kind": "flaky",
+  "status": "baseline-broken",
+  "node": "node v20.20.2",
+  "runner": "jest",
+  "runner_version": "29.7.0",
+  "tests": 0,
+  "first_run_s": 0.11859402700002875,
+  "commit": "b07dff446a5d0fd82d54c8e8784bb3dee1e958ef",
+  "detail": "0 test outcomes (exit 1): 1266:32)\n    at Module._load (node:internal/modules/cjs/loader:1091:12)\n    at Module.require (node:internal/modules/cjs/loader:1289:19)\n    at require (node:internal/modules/helpers:182:18)\n    at Object.<anonymous> (/tmp/work/src/react-router-flaky/packages/create-react-router/jest.config.js:3:6)\n",
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T07:10:10.578806+00:00"
+}
