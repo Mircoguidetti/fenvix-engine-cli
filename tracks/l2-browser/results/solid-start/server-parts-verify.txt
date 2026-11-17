@@ -1,0 +1,75 @@
+===== 093409de2d57b1fb.jsonl
+detpy verify: 2 runs, 41 tests
+  run 0: /home/runner/work/_temp/l2_out/solid-start/server-parts/det-1/093409de2d57b1fb.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/solid-start/server-parts/det-2/093409de2d57b1fb.jsonl (partial)
+order: identical in every run
+covered by Level 0: 41  not covered: 0  missing: 0  outcome-unstable: 0
+===== fb8e69c1b96f5928.jsonl
+detpy verify: 2 runs, 42 tests
+  run 0: /home/runner/work/_temp/l2_out/solid-start/server-parts/det-1/fb8e69c1b96f5928.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/solid-start/server-parts/det-2/fb8e69c1b96f5928.jsonl (partial)
+order: identical in every run
+covered by Level 0: 11  not covered: 31  missing: 0  outcome-unstable: 0
+reasons: time=31
+NOT-COVERED src/e2e/client-only.test.ts::clientOnly::renders a default export only on the client [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #346: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 246245761000  <>  [fs] fs.readdirSync @ <deps>/@nodelib/fs.scandir/out/providers/sync.js:16 = src/routes|40|3677807af9e6735078c94e426c0d2413
+NOT-COVERED src/e2e/client-only.test.ts::clientOnly::renders a named export when the loader resolves to the component [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #5: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 2000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:10404 = fire:5000000
+NOT-COVERED src/e2e/http-header.test.ts::http header::should set http header [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #183: [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:10404 = fire:50000000  <>  [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 117097168000
+NOT-COVERED src/e2e/http-header.test.ts::http header::should set http header with deferred data [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #281: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 177145787000  <>  [outcome] outcome @  = passed
+NOT-COVERED src/e2e/hydration-navigation.test.ts::navigates while the initial route module is still loading [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 returned different values: "10000" vs "11000"
+NOT-COVERED src/e2e/hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #200: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 127097173000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:34862 = fire:127147172000
+NOT-COVERED src/e2e/hydration.test.ts::SSR Hydration::should render SSR content and hydrate successfully [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 returned different values: "9000" vs "10000"
+NOT-COVERED src/e2e/route-groups.test.ts::route-groups::should resolve `/routes/nested/(ignored)route0.tsx` to `nested/route0` [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #195: [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:10404 = fire:50000000  <>  [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 131097167000
+NOT-COVERED src/e2e/route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/(ignored)route2.tsx` to `nested/route2` [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 returned different values: "9000" vs "10000"
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should have isServer true in the server function - nested [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 returned different values: "9000" vs "10000"
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should have isServer true in the server function - const [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #226: [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:34862 = fire:119147197000  <>  [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 119097235000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should have an id of type string in the server function meta - nested [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 returned different values: "9000" vs "10000"
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should externalize node builtin in server function - nested [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #84: [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:10404 = fire:5000000  <>  [time] setTimeout @ <deps>/.vite-temp/vite.config.ts.timestamp-1794918420000-d7d39c9a14821.mjs:745 = schedule:1000000000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should externalize npm module in server function - nested [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #230: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 122097383000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:34862 = fire:122147313000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should have isServer true in the server function - toplevel [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #236: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 123097514000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:34862 = fire:123147444000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should have an id of type string in the server function meta - toplevel [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #84: [time] setTimeout @ <deps>/.vite-temp/vite.config.ts.timestamp-1794918420000-d7d39c9a14821.mjs:745 = schedule:1000000000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:10404 = fire:5000000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should externalize node builtin in server function - toplevel [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #237: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 125359361000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:34862 = fire:125409323000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should externalize npm module in server function - toplevel [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #84: [time] setTimeout @ <deps>/.vite-temp/vite.config.ts.timestamp-1794918420000-d7d39c9a14821.mjs:745 = schedule:1000000000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:10404 = fire:5000000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should build when anon default export and server functions [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #241: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 128145793000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:34862 = fire:128195755000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should build with generator as server function [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #84: [time] setTimeout @ <deps>/.vite-temp/vite.config.ts.timestamp-1794918420000-d7d39c9a14821.mjs:745 = schedule:1000000000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:10404 = fire:5000000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should build with a server function ping [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #7: [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:10404 = fire:5000000  <>  [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 2000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should round-trip a custom class through a custom seroval plugin [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 returned different values: "10000" vs "9000"
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should build with a server function w/ form data [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 returned different values: "9000" vs "10000"
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should send files next to other arguments [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #250: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 133359351000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:34862 = fire:133409329000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should remove exports for non-function values when top-level use server is used [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #84: [time] setTimeout @ <deps>/.vite-temp/vite.config.ts.timestamp-1794918420000-d7d39c9a14821.mjs:745 = schedule:1000000000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:10404 = fire:5000000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should build with a env:server [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #265: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 144145893000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:34862 = fire:144195759000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should build with a server function including an unused destructured variable [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #264: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 146145783000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:34862 = fire:146195761000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #84: [time] setTimeout @ <deps>/.vite-temp/vite.config.ts.timestamp-1794918420000-d7d39c9a14821.mjs:745 = schedule:1000000000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:10404 = fire:5000000
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should propagate a server function error with non-latin1 message [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #14: Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 returned different values: "9000" vs "10000"
+NOT-COVERED src/e2e/server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #84: [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:10404 = fire:5000000  <>  [time] setTimeout @ <deps>/.vite-temp/vite.config.ts.timestamp-1794918420000-d7d39c9a14821.mjs:745 = schedule:1000000000
+NOT-COVERED src/e2e/single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #268: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 154145768000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:34862 = fire:154195761000

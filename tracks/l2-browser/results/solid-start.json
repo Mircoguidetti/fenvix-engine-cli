@@ -3,19 +3,21 @@
  "repo": "solidjs/solid-start",
  "ref": "68784294b16692adf687c25bcd58c16c8a625cb3",
  "status": "ok",
- "run_id": "44052628988",
- "setup_s": 30,
+ "run_id": "44069979210",
+ "setup_s": 27,
  "params": {
-  "baseline": 5,
-  "stress": 3,
+  "baseline": 3,
+  "stress": 1,
   "serial": 1,
   "det": 3,
   "replays": 10,
-  "seeds": 6,
-  "max_targets": 6,
-  "budget_min": 110,
+  "seeds": 4,
+  "max_targets": 2,
+  "budget_min": 200,
   "run_timeout_min": 45,
-  "target_timeout_min": 8
+  "target_timeout_min": 8,
+  "target_plain": 3,
+  "ablation_tests": 3
  },
  "pw_dir": "./apps/tests",
  "pw_args": [
@@ -29,8 +31,10 @@
    "seed": null,
    "filters": [],
    "extra": [],
+   "server_mode": null,
+   "det_flags": [],
    "rc": 0,
-   "wall_s": 47.8,
+   "wall_s": 43.7,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -92,8 +96,10 @@
    "seed": null,
    "filters": [],
    "extra": [],
+   "server_mode": null,
+   "det_flags": [],
    "rc": 0,
-   "wall_s": 45.7,
+   "wall_s": 42.6,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -155,134 +161,10 @@
    "seed": null,
    "filters": [],
    "extra": [],
+   "server_mode": null,
+   "det_flags": [],
    "rc": 0,
-   "wall_s": 46.2,
-   "outcomes": {
-    "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
-    "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
-    "api-call.test.ts::api calls::should serve the page for HEAD when the GET handler returns nothing [chromium]": "passed",
-    "api-call.test.ts::api calls::should pass an error thrown by an API route to Nitro's error hook [chromium]": "passed",
-    "api-call.test.ts::api calls::should preserve multiple Set-Cookie headers on redirect (RFC 6265) [chromium]": "passed",
-    "client-only.test.ts::clientOnly::renders a default export only on the client [chromium]": "passed",
-    "client-only.test.ts::clientOnly::renders a named export when the loader resolves to the component [chromium]": "passed",
-    "http-header.test.ts::http header::should set http header [chromium]": "passed",
-    "http-header.test.ts::http header::should set http header with deferred data [chromium]": "passed",
-    "hydration-navigation.test.ts::navigates while the initial route module is still loading [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a pathname change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a streaming query string change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]": "passed",
-    "hydration.test.ts::SSR Hydration::should render SSR content and hydrate successfully [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning json() stays on the submitting page and keeps the result [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning reload() stays on the submitting page [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning redirect() follows the given location [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning a plain value stays on the submitting page and keeps the result [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(ignored)route0.tsx` to `nested/route0` [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(ignored)route1.tsx` to `nested/route1` [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/(ignored)route2.tsx` to `nested/route2` [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/route3.tsx` to `nested/route3` [chromium]": "passed",
-    "server-function.test.ts::server-function::should have isServer true in the server function - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should have isServer true in the server function - const [chromium]": "passed",
-    "server-function.test.ts::server-function::should have an id of type string in the server function meta - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize node builtin in server function - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize npm module in server function - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should have isServer true in the server function - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should have an id of type string in the server function meta - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize node builtin in server function - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize npm module in server function - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should build when anon default export and server functions [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with generator as server function [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function ping [chromium]": "passed",
-    "server-function.test.ts::server-function::should round-trip a custom class through a custom seroval plugin [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function w/ form data [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function w/ blob data [chromium]": "passed",
-    "server-function.test.ts::server-function::should send files next to other arguments [chromium]": "passed",
-    "server-function.test.ts::server-function::should remove exports for non-function values when top-level use server is used [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a env:server [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function including an unused try/catch variable [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function including an unused destructured variable [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": "passed",
-    "server-function.test.ts::server-function::should propagate a server function error with non-latin1 message [chromium]": "passed",
-    "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
-    "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
-   },
-   "errors": {},
-   "trace": null,
-   "counts": {
-    "passed": 47
-   }
-  },
-  {
-   "label": "baseline-4",
-   "mode": "plain",
-   "seed": null,
-   "filters": [],
-   "extra": [],
-   "rc": 0,
-   "wall_s": 46.5,
-   "outcomes": {
-    "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
-    "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
-    "api-call.test.ts::api calls::should serve the page for HEAD when the GET handler returns nothing [chromium]": "passed",
-    "api-call.test.ts::api calls::should pass an error thrown by an API route to Nitro's error hook [chromium]": "passed",
-    "api-call.test.ts::api calls::should preserve multiple Set-Cookie headers on redirect (RFC 6265) [chromium]": "passed",
-    "client-only.test.ts::clientOnly::renders a default export only on the client [chromium]": "passed",
-    "client-only.test.ts::clientOnly::renders a named export when the loader resolves to the component [chromium]": "passed",
-    "http-header.test.ts::http header::should set http header [chromium]": "passed",
-    "http-header.test.ts::http header::should set http header with deferred data [chromium]": "passed",
-    "hydration-navigation.test.ts::navigates while the initial route module is still loading [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a pathname change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a streaming query string change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]": "passed",
-    "hydration.test.ts::SSR Hydration::should render SSR content and hydrate successfully [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning json() stays on the submitting page and keeps the result [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning reload() stays on the submitting page [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning redirect() follows the given location [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning a plain value stays on the submitting page and keeps the result [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(ignored)route0.tsx` to `nested/route0` [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(ignored)route1.tsx` to `nested/route1` [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/(ignored)route2.tsx` to `nested/route2` [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/route3.tsx` to `nested/route3` [chromium]": "passed",
-    "server-function.test.ts::server-function::should have isServer true in the server function - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should have isServer true in the server function - const [chromium]": "passed",
-    "server-function.test.ts::server-function::should have an id of type string in the server function meta - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize node builtin in server function - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize npm module in server function - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should have isServer true in the server function - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should have an id of type string in the server function meta - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize node builtin in server function - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize npm module in server function - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should build when anon default export and server functions [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with generator as server function [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function ping [chromium]": "passed",
-    "server-function.test.ts::server-function::should round-trip a custom class through a custom seroval plugin [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function w/ form data [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function w/ blob data [chromium]": "passed",
-    "server-function.test.ts::server-function::should send files next to other arguments [chromium]": "passed",
-    "server-function.test.ts::server-function::should remove exports for non-function values when top-level use server is used [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a env:server [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function including an unused try/catch variable [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function including an unused destructured variable [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": "passed",
-    "server-function.test.ts::server-function::should propagate a server function error with non-latin1 message [chromium]": "passed",
-    "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
-    "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
-   },
-   "errors": {},
-   "trace": null,
-   "counts": {
-    "passed": 47
-   }
-  },
-  {
-   "label": "baseline-5",
-   "mode": "plain",
-   "seed": null,
-   "filters": [],
-   "extra": [],
-   "rc": 0,
-   "wall_s": 45.8,
+   "wall_s": 43.5,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -344,8 +226,10 @@
    "seed": null,
    "filters": [],
    "extra": [],
-   "rc": 0,
-   "wall_s": 69.7,
+   "server_mode": null,
+   "det_flags": [],
+   "rc": 1,
+   "wall_s": 66.9,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -360,7 +244,7 @@
     "hydration-navigation.test.ts::handles a pathname change before hydration [chromium]": "passed",
     "hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]": "passed",
     "hydration-navigation.test.ts::handles a streaming query string change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]": "passed",
+    "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]": "failed",
     "hydration.test.ts::SSR Hydration::should render SSR content and hydrate successfully [chromium]": "passed",
     "no-js-action.test.ts::actions without JavaScript::returning json() stays on the submitting page and keeps the result [chromium]": "passed",
     "no-js-action.test.ts::actions without JavaScript::returning reload() stays on the submitting page [chromium]": "passed",
@@ -395,136 +279,13 @@
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
     "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
    },
-   "errors": {},
-   "trace": null,
-   "counts": {
-    "passed": 47
-   }
-  },
-  {
-   "label": "stress-2",
-   "mode": "plain",
-   "seed": null,
-   "filters": [],
-   "extra": [],
-   "rc": 0,
-   "wall_s": 70.5,
-   "outcomes": {
-    "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
-    "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
-    "api-call.test.ts::api calls::should serve the page for HEAD when the GET handler returns nothing [chromium]": "passed",
-    "api-call.test.ts::api calls::should pass an error thrown by an API route to Nitro's error hook [chromium]": "passed",
-    "api-call.test.ts::api calls::should preserve multiple Set-Cookie headers on redirect (RFC 6265) [chromium]": "passed",
-    "client-only.test.ts::clientOnly::renders a default export only on the client [chromium]": "passed",
-    "client-only.test.ts::clientOnly::renders a named export when the loader resolves to the component [chromium]": "passed",
-    "http-header.test.ts::http header::should set http header [chromium]": "passed",
-    "http-header.test.ts::http header::should set http header with deferred data [chromium]": "passed",
-    "hydration-navigation.test.ts::navigates while the initial route module is still loading [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a pathname change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a streaming query string change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]": "passed",
-    "hydration.test.ts::SSR Hydration::should render SSR content and hydrate successfully [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning json() stays on the submitting page and keeps the result [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning reload() stays on the submitting page [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning redirect() follows the given location [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning a plain value stays on the submitting page and keeps the result [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(ignored)route0.tsx` to `nested/route0` [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(ignored)route1.tsx` to `nested/route1` [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/(ignored)route2.tsx` to `nested/route2` [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/route3.tsx` to `nested/route3` [chromium]": "passed",
-    "server-function.test.ts::server-function::should have isServer true in the server function - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should have isServer true in the server function - const [chromium]": "passed",
-    "server-function.test.ts::server-function::should have an id of type string in the server function meta - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize node builtin in server function - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize npm module in server function - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should have isServer true in the server function - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should have an id of type string in the server function meta - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize node builtin in server function - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize npm module in server function - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should build when anon default export and server functions [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with generator as server function [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function ping [chromium]": "passed",
-    "server-function.test.ts::server-function::should round-trip a custom class through a custom seroval plugin [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function w/ form data [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function w/ blob data [chromium]": "passed",
-    "server-function.test.ts::server-function::should send files next to other arguments [chromium]": "passed",
-    "server-function.test.ts::server-function::should remove exports for non-function values when top-level use server is used [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a env:server [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function including an unused try/catch variable [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function including an unused destructured variable [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": "passed",
-    "server-function.test.ts::server-function::should propagate a server function error with non-latin1 message [chromium]": "passed",
-    "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
-    "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
+   "errors": {
+    "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('#hydration-navigation-counter')\nExpected: \"1\"\nReceived: \"0\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" with timeout 5000ms\n  - waiting for locator('#hydration-navigation-counter')\n    14 \u00d7 locator resolved to <button id=\"hydration-navigation-counter\">0</button>\n       - unexpected value \"0\"\n"
    },
-   "errors": {},
    "trace": null,
    "counts": {
-    "passed": 47
-   }
-  },
-  {
-   "label": "stress-3",
-   "mode": "plain",
-   "seed": null,
-   "filters": [],
-   "extra": [],
-   "rc": 0,
-   "wall_s": 68.4,
-   "outcomes": {
-    "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
-    "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
-    "api-call.test.ts::api calls::should serve the page for HEAD when the GET handler returns nothing [chromium]": "passed",
-    "api-call.test.ts::api calls::should pass an error thrown by an API route to Nitro's error hook [chromium]": "passed",
-    "api-call.test.ts::api calls::should preserve multiple Set-Cookie headers on redirect (RFC 6265) [chromium]": "passed",
-    "client-only.test.ts::clientOnly::renders a default export only on the client [chromium]": "passed",
-    "client-only.test.ts::clientOnly::renders a named export when the loader resolves to the component [chromium]": "passed",
-    "http-header.test.ts::http header::should set http header [chromium]": "passed",
-    "http-header.test.ts::http header::should set http header with deferred data [chromium]": "passed",
-    "hydration-navigation.test.ts::navigates while the initial route module is still loading [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a pathname change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a streaming query string change before hydration [chromium]": "passed",
-    "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]": "passed",
-    "hydration.test.ts::SSR Hydration::should render SSR content and hydrate successfully [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning json() stays on the submitting page and keeps the result [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning reload() stays on the submitting page [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning redirect() follows the given location [chromium]": "passed",
-    "no-js-action.test.ts::actions without JavaScript::returning a plain value stays on the submitting page and keeps the result [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(ignored)route0.tsx` to `nested/route0` [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(ignored)route1.tsx` to `nested/route1` [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/(ignored)route2.tsx` to `nested/route2` [chromium]": "passed",
-    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/route3.tsx` to `nested/route3` [chromium]": "passed",
-    "server-function.test.ts::server-function::should have isServer true in the server function - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should have isServer true in the server function - const [chromium]": "passed",
-    "server-function.test.ts::server-function::should have an id of type string in the server function meta - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize node builtin in server function - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize npm module in server function - nested [chromium]": "passed",
-    "server-function.test.ts::server-function::should have isServer true in the server function - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should have an id of type string in the server function meta - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize node builtin in server function - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should externalize npm module in server function - toplevel [chromium]": "passed",
-    "server-function.test.ts::server-function::should build when anon default export and server functions [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with generator as server function [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function ping [chromium]": "passed",
-    "server-function.test.ts::server-function::should round-trip a custom class through a custom seroval plugin [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function w/ form data [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function w/ blob data [chromium]": "passed",
-    "server-function.test.ts::server-function::should send files next to other arguments [chromium]": "passed",
-    "server-function.test.ts::server-function::should remove exports for non-function values when top-level use server is used [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a env:server [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function including an unused try/catch variable [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function including an unused destructured variable [chromium]": "passed",
-    "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": "passed",
-    "server-function.test.ts::server-function::should propagate a server function error with non-latin1 message [chromium]": "passed",
-    "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
-    "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
-   },
-   "errors": {},
-   "trace": null,
-   "counts": {
-    "passed": 47
+    "passed": 46,
+    "failed": 1
    }
   },
   {
@@ -535,8 +296,10 @@
    "extra": [
     "--workers=1"
    ],
+   "server_mode": null,
+   "det_flags": [],
    "rc": 0,
-   "wall_s": 50.7,
+   "wall_s": 48.1,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -598,8 +361,10 @@
    "seed": null,
    "filters": [],
    "extra": [],
+   "server_mode": null,
+   "det_flags": [],
    "rc": 1,
-   "wall_s": 100.7,
+   "wall_s": 96.1,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -666,8 +431,10 @@
    "seed": null,
    "filters": [],
    "extra": [],
+   "server_mode": null,
+   "det_flags": [],
    "rc": 1,
-   "wall_s": 100.8,
+   "wall_s": 91.7,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -715,17 +482,16 @@
     "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": "failed",
     "server-function.test.ts::server-function::should propagate a server function error with non-latin1 message [chromium]": "passed",
     "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
-    "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "failed"
+    "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
    },
    "errors": {
     "server-function.test.ts::server-function::should build with a server function ping [chromium]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: locator('#server-fn-test')\nExpected substring: \"{\\\"result\\\":true}\"\nReceived string:    \"{}\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" with timeout 5000ms\n  - waiting for locator('#server-fn-test')\n    14 \u00d7 locator resolved to <span id=\"server-fn-test\">{}</span>\n       - unexpected value \"{}\"\n",
-    "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: locator('#server-fn-test')\nExpected substring: \"false\"\nReceived string:    \"Click me\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" with timeout 5000ms\n  - waiting for locator('#server-fn-test')\n    14 \u00d7 locator resolved to <span id=\"server-fn-test\">Click me</span>\n       - unexpected value \"Click me\"\n",
-    "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('#cookie-value')\nExpected: \"1234\"\nReceived: \"none\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" with timeout 5000ms\n  - waiting for locator('#cookie-value')\n    14 \u00d7 locator resolved to <p id=\"cookie-value\">none</p>\n       - unexpected value \"none\"\n"
+    "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": "Error: expect(locator).toContainText(expected) failed\n\nLocator: locator('#server-fn-test')\nExpected substring: \"false\"\nReceived string:    \"Click me\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" with timeout 5000ms\n  - waiting for locator('#server-fn-test')\n    14 \u00d7 locator resolved to <span id=\"server-fn-test\">Click me</span>\n       - unexpected value \"Click me\"\n"
    },
    "trace": "/home/runner/work/_temp/l2_out/solid-start/traces/det-2.jsonl",
    "counts": {
-    "passed": 44,
-    "failed": 3
+    "passed": 45,
+    "failed": 2
    }
   },
   {
@@ -734,8 +500,10 @@
    "seed": null,
    "filters": [],
    "extra": [],
+   "server_mode": null,
+   "det_flags": [],
    "rc": 1,
-   "wall_s": 101.0,
+   "wall_s": 96.3,
    "outcomes": {
     "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
     "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
@@ -797,43 +565,118 @@
    }
   }
  ],
- "measured_at": "2026-11-17T09:34:43Z",
+ "epoch": "2026-11-17T12:27:00Z",
+ "measured_at": "2026-11-17T12:27:14Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "targets": [
+  {
+   "key": "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]",
+   "file": "hydration-navigation.test.ts",
+   "grep": "handles a hash-only change before hydration",
+   "project": "chromium",
+   "known": false,
+   "replays": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "seeds": {
+    "1": "passed",
+    "2": "passed",
+    "3": "passed",
+    "4": "passed"
+   },
+   "failing_seed_replays": [],
+   "matched_key": "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]",
+   "replay_wall_s": 6.5,
+   "replay_verify": {
+    "status": "diverged",
+    "distinct_fingerprints": 10,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 7,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://127.0.0.1:3000 a4cea0629d60f96cce3aa9a86a1117c1 495"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://127.0.0.1:3000 fa8aeb6d3cffeb56cc0fd381480668d8 502"
+     },
+     "reason": "other",
+     "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 a4cea0629d60f96cce3aa9a86a1117c1 495\" vs \"http://127.0.0.1:3000 fa8aeb6d3cffeb56cc0fd381480668d8 502\""
+    }
+   },
+   "plain_runs": "PPP"
+  }
+ ],
+ "known_flaky": [],
  "tests_baseline": 47,
- "baseline_wall_median_s": 46.2,
- "stress_wall_median_s": 69.7,
- "serial_wall_median_s": 50.7,
- "det_wall_median_s": 100.8,
+ "baseline_wall_median_s": 43.5,
+ "stress_wall_median_s": 66.9,
+ "serial_wall_median_s": 48.1,
+ "det_wall_median_s": 96.1,
  "always_failing_baseline": [],
- "flaky": [],
+ "flaky": [
+  {
+   "key": "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]",
+   "baseline": "PPP",
+   "stress": "F",
+   "det": "PPP",
+   "location": [
+    "hydration-navigation.test.ts",
+    62
+   ]
+  }
+ ],
  "broken_by_controls": [
   {
    "key": "server-function.test.ts::server-function::should build with a server function ping [chromium]",
    "det": "FFF",
-   "always": true
+   "always": true,
+   "error": "Error: expect(locator).toContainText(expected) failed\n\nLocator: locator('#server-fn-test')\nExpected substring: \"{\\\"result\\\":true}\"\nReceived string:    \"{}\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" with timeout 5000ms\n  - waiting for locator('#server-fn-test')\n    14 \u00d7 locator resolved to <span id=\"server-fn-test\">{}</span>\n       - unexpected value \"{}\"\n"
   },
   {
    "key": "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]",
    "det": "FFF",
-   "always": true
+   "always": true,
+   "error": "Error: expect(locator).toContainText(expected) failed\n\nLocator: locator('#server-fn-test')\nExpected substring: \"false\"\nReceived string:    \"Click me\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toContainText\" with timeout 5000ms\n  - waiting for locator('#server-fn-test')\n    14 \u00d7 locator resolved to <span id=\"server-fn-test\">Click me</span>\n       - unexpected value \"Click me\"\n"
   },
   {
    "key": "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]",
-   "det": "FFF",
-   "always": true
+   "det": "FPF",
+   "always": false,
+   "error": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('#cookie-value')\nExpected: \"1234\"\nReceived: \"none\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" with timeout 5000ms\n  - waiting for locator('#cookie-value')\n    14 \u00d7 locator resolved to <p id=\"cookie-value\">none</p>\n       - unexpected value \"none\"\n"
   }
  ],
  "det_tests": 47,
  "det_verify": {
   "runs": 3,
   "tests": 47,
-  "stable": 16,
-  "diverged": 31,
+  "stable": 12,
+  "diverged": 35,
   "missing": 0,
-  "outcome_unstable": 0,
+  "outcome_unstable": 1,
   "order_identical": true,
   "reasons": {
-   "other": 28,
+   "other": 31,
+   "random": 1,
    "sched": 3
   }
  },
@@ -850,17 +693,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 832e0cedbb0765e9396bc81590f76aba 692"
+     "v": "http://127.0.0.1:3000 1358ce4c803ba9b1c4c1049606fdd0bf 715"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 7940f214ea69cc1db743514195bb214a 691"
+     "v": "http://127.0.0.1:3000 e1c4eb05e7d08e4d25a9f6bbf691c871 715"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 832e0cedbb0765e9396bc81590f76aba 692\" vs \"http://127.0.0.1:3000 7940f214ea69cc1db743514195bb214a 691\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 1358ce4c803ba9b1c4c1049606fdd0bf 715\" vs \"http://127.0.0.1:3000 e1c4eb05e7d08e4d25a9f6bbf691c871 715\""
    }
   },
   {
@@ -875,17 +718,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 5e2805e17f51a62275f8aca5bdefc41e 512"
+     "v": "http://127.0.0.1:3000 8bd230a91ce11cfea0274e0f93a60844 519"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 ab23035c8ea7ff54010c339e9d1d2ab3 520"
+     "v": "http://127.0.0.1:3000 86b38c7bc46e8b9bbde9fb5086d98bdd 519"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 5e2805e17f51a62275f8aca5bdefc41e 512\" vs \"http://127.0.0.1:3000 ab23035c8ea7ff54010c339e9d1d2ab3 520\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 8bd230a91ce11cfea0274e0f93a60844 519\" vs \"http://127.0.0.1:3000 86b38c7bc46e8b9bbde9fb5086d98bdd 519\""
    }
   },
   {
@@ -900,17 +743,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 132f316aa5465dac273141f420b49d63 287"
+     "v": "http://127.0.0.1:3000 9bc5b239dd4919fe6a58296be1f30cde 287"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 bec79516fc7d337ed63da409f2d3f42f 287"
+     "v": "http://127.0.0.1:3000 9209c713f86f5ba18b27b2d761ce75b8 287"
     },
     "reason": "other",
-    "description": "event #6: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 132f316aa5465dac273141f420b49d63 287\" vs \"http://127.0.0.1:3000 bec79516fc7d337ed63da409f2d3f42f 287\""
+    "description": "event #6: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 9bc5b239dd4919fe6a58296be1f30cde 287\" vs \"http://127.0.0.1:3000 9209c713f86f5ba18b27b2d761ce75b8 287\""
    }
   },
   {
@@ -925,46 +768,21 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 0fef5b4c710416547fdb2c08847049f6 281"
+     "v": "http://127.0.0.1:3000 9cb9392e3399db68985dc877531a3bd1 282"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 8d68f154632636847aa389bee5454784 282"
+     "v": "http://127.0.0.1:3000 1c792c68d7bce5c2560b9effc318a63e 281"
     },
     "reason": "other",
-    "description": "event #6: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 0fef5b4c710416547fdb2c08847049f6 281\" vs \"http://127.0.0.1:3000 8d68f154632636847aa389bee5454784 282\""
+    "description": "event #6: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 9cb9392e3399db68985dc877531a3bd1 282\" vs \"http://127.0.0.1:3000 1c792c68d7bce5c2560b9effc318a63e 281\""
    }
   },
   {
    "key": "hydration-navigation.test.ts::navigates while the initial route module is still loading [chromium]",
-   "divergence": {
-    "run_a": 0,
-    "run_b": 1,
-    "index": 7,
-    "window": null,
-    "event_a": {
-     "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
-     "at": "",
-     "v": "http://127.0.0.1:3000 918023b73cab1df6ac8ece6bd36ed318 335"
-    },
-    "event_b": {
-     "t": 0,
-     "s": "other",
-     "o": "server.fingerprint",
-     "at": "",
-     "v": "http://127.0.0.1:3000 04ec2e67cfaf0e1fa23b71269306822b 336"
-    },
-    "reason": "other",
-    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 918023b73cab1df6ac8ece6bd36ed318 335\" vs \"http://127.0.0.1:3000 04ec2e67cfaf0e1fa23b71269306822b 336\""
-   }
-  },
-  {
-   "key": "hydration-navigation.test.ts::handles a pathname change before hydration [chromium]",
    "divergence": {
     "run_a": 0,
     "run_b": 1,
@@ -975,42 +793,42 @@
      "s": "other",
      "o": "dom.digest",
      "at": "",
-     "v": "1db70e93688890268bacc38afc2fa0e1"
+     "v": "05beadf457d028e60587a2001d391f8b"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "dom.digest",
      "at": "",
-     "v": "0d65c4cbc3e1f394081de3452c8f528e"
+     "v": "8bb053fad59b51c113e0ca3398efca92"
     },
     "reason": "other",
-    "description": "event #6: dom.digest @  returned different values: \"1db70e93688890268bacc38afc2fa0e1\" vs \"0d65c4cbc3e1f394081de3452c8f528e\""
+    "description": "event #6: dom.digest @  returned different values: \"05beadf457d028e60587a2001d391f8b\" vs \"8bb053fad59b51c113e0ca3398efca92\""
    }
   },
   {
-   "key": "hydration-navigation.test.ts::handles a streaming query string change before hydration [chromium]",
+   "key": "hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]",
    "divergence": {
     "run_a": 0,
     "run_b": 1,
-    "index": 10,
+    "index": 7,
     "window": null,
     "event_a": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 2e029d036df3a4c687d99862a430cfab 322"
+     "v": "http://127.0.0.1:3000 a4aba0045ca9a7ba152b82ee762a70d0 313"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 71452e25cbcac669eff7a975ce3cb014 322"
+     "v": "http://127.0.0.1:3000 89d507bdad8cf06348e12b51a0adbd0e 313"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 2e029d036df3a4c687d99862a430cfab 322\" vs \"http://127.0.0.1:3000 71452e25cbcac669eff7a975ce3cb014 322\""
+    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 a4aba0045ca9a7ba152b82ee762a70d0 313\" vs \"http://127.0.0.1:3000 89d507bdad8cf06348e12b51a0adbd0e 313\""
    }
   },
   {
@@ -1025,24 +843,24 @@
      "s": "other",
      "o": "dom.digest",
      "at": "",
-     "v": "9f379fe7d6a3ac1b7e7c132c4424f3e2"
+     "v": "e1cf32dd8343d8c0642897898678aa79"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "dom.digest",
      "at": "",
-     "v": "e1cf32dd8343d8c0642897898678aa79"
+     "v": "9f379fe7d6a3ac1b7e7c132c4424f3e2"
     },
     "reason": "other",
-    "description": "event #6: dom.digest @  returned different values: \"9f379fe7d6a3ac1b7e7c132c4424f3e2\" vs \"e1cf32dd8343d8c0642897898678aa79\""
+    "description": "event #6: dom.digest @  returned different values: \"e1cf32dd8343d8c0642897898678aa79\" vs \"9f379fe7d6a3ac1b7e7c132c4424f3e2\""
    }
   },
   {
    "key": "no-js-action.test.ts::actions without JavaScript::returning json() stays on the submitting page and keeps the result [chromium]",
    "divergence": {
     "run_a": 0,
-    "run_b": 1,
+    "run_b": 2,
     "index": 8,
     "window": null,
     "event_a": {
@@ -1050,17 +868,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 7ea538e28d75943422894d57f6d2b60a 397"
+     "v": "http://127.0.0.1:3000 edc29a9920c97ce34816788e0ce03200 397"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 91ebdad0ac551a4f982b6b0b4c6b430c 397"
+     "v": "http://127.0.0.1:3000 95baccb6a977b34dfc0c873a09b5119b 397"
     },
     "reason": "other",
-    "description": "event #8: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 7ea538e28d75943422894d57f6d2b60a 397\" vs \"http://127.0.0.1:3000 91ebdad0ac551a4f982b6b0b4c6b430c 397\""
+    "description": "event #8: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 edc29a9920c97ce34816788e0ce03200 397\" vs \"http://127.0.0.1:3000 95baccb6a977b34dfc0c873a09b5119b 397\""
    }
   },
   {
@@ -1075,17 +893,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 2264fa37e1267797b19f3ee8ef428a96 289"
+     "v": "http://127.0.0.1:3000 b46d029d128a232cb4ca8d7a4c13ae30 289"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 af21d0d79a0a18b2a3d8bf53473c585b 289"
+     "v": "http://127.0.0.1:3000 189927ab2a3b4f59a9dedcc6ec118615 289"
     },
     "reason": "other",
-    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 2264fa37e1267797b19f3ee8ef428a96 289\" vs \"http://127.0.0.1:3000 af21d0d79a0a18b2a3d8bf53473c585b 289\""
+    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 b46d029d128a232cb4ca8d7a4c13ae30 289\" vs \"http://127.0.0.1:3000 189927ab2a3b4f59a9dedcc6ec118615 289\""
    }
   },
   {
@@ -1100,17 +918,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 441a0702cab59d94aa12c263df4b3701 289"
+     "v": "http://127.0.0.1:3000 394e0d81e108d33824b10337b0b6e8e0 289"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 3963ddb07d6a008a88921554591c0ab6 289"
+     "v": "http://127.0.0.1:3000 6c4acf9c464d6ebf4ac37fcd921af099 289"
     },
     "reason": "other",
-    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 441a0702cab59d94aa12c263df4b3701 289\" vs \"http://127.0.0.1:3000 3963ddb07d6a008a88921554591c0ab6 289\""
+    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 394e0d81e108d33824b10337b0b6e8e0 289\" vs \"http://127.0.0.1:3000 6c4acf9c464d6ebf4ac37fcd921af099 289\""
    }
   },
   {
@@ -1125,17 +943,42 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 d75df42a026e2ed465c2bb8df1d4fb94 289"
+     "v": "http://127.0.0.1:3000 642aad0eaa608318f2dfe6cc57120be4 289"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 fe967542e15a3af3cb13cc7802662fd4 289"
+     "v": "http://127.0.0.1:3000 9b3c40122380c1ee76b9519a10b87d57 289"
     },
     "reason": "other",
-    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 d75df42a026e2ed465c2bb8df1d4fb94 289\" vs \"http://127.0.0.1:3000 fe967542e15a3af3cb13cc7802662fd4 289\""
+    "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 642aad0eaa608318f2dfe6cc57120be4 289\" vs \"http://127.0.0.1:3000 9b3c40122380c1ee76b9519a10b87d57 289\""
+   }
+  },
+  {
+   "key": "server-function.test.ts::server-function::should have isServer true in the server function - nested [chromium]",
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 10,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "server.fingerprint",
+     "at": "",
+     "v": "http://127.0.0.1:3000 8f0a73fa31a7d9ccb0c7b10592895542 329"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "server.fingerprint",
+     "at": "",
+     "v": "http://127.0.0.1:3000 53fab571f819ff2921ca71c537265faa 329"
+    },
+    "reason": "other",
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 8f0a73fa31a7d9ccb0c7b10592895542 329\" vs \"http://127.0.0.1:3000 53fab571f819ff2921ca71c537265faa 329\""
    }
   },
   {
@@ -1150,17 +993,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 357a28908ba20c9bd8ef26c600006d19 337"
+     "v": "http://127.0.0.1:3000 0107288e00ca48e26debbd78a8c62420 337"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 5caf4d6dbefdf48b9e0ac411c1ce1ce3 337"
+     "v": "http://127.0.0.1:3000 40450377cadb30fe76e64ac9306e64d8 337"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 357a28908ba20c9bd8ef26c600006d19 337\" vs \"http://127.0.0.1:3000 5caf4d6dbefdf48b9e0ac411c1ce1ce3 337\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 0107288e00ca48e26debbd78a8c62420 337\" vs \"http://127.0.0.1:3000 40450377cadb30fe76e64ac9306e64d8 337\""
    }
   },
   {
@@ -1175,17 +1018,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 d372baf4890c6106790c5cf3084bf78d 341"
+     "v": "http://127.0.0.1:3000 88066877d2abc9854d1fb471b728b1b0 341"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 deea9a2e0d3257e3279d32ec6783dd11 341"
+     "v": "http://127.0.0.1:3000 ef625f763d898dabfde4273808995ca0 341"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 d372baf4890c6106790c5cf3084bf78d 341\" vs \"http://127.0.0.1:3000 deea9a2e0d3257e3279d32ec6783dd11 341\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 88066877d2abc9854d1fb471b728b1b0 341\" vs \"http://127.0.0.1:3000 ef625f763d898dabfde4273808995ca0 341\""
    }
   },
   {
@@ -1200,17 +1043,17 @@
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 98c50d67c7cd647155b20c3ea35a68f9 336"
+     "v": "http://127.0.0.1:3000 1294623ae720a68f6e9c1c12a03e7e37 336"
     },
     "event_b": {
      "t": 0,
      "s": "other",
      "o": "server.fingerprint",
      "at": "",
-     "v": "http://127.0.0.1:3000 eda65c822fba8cf461983f5ed7d75170 336"
+     "v": "http://127.0.0.1:3000 a938646dd56ad8c3db1bd5c80e3bdc46 336"
     },
     "reason": "other",
-    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 98c50d67c7cd647155b20c3ea35a68f9 336\" vs \"http://127.0.0.1:3000 eda65c822fba8cf461983f5ed7d75170 336\""
+    "description": "event #10: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 1294623ae720a68f6e9c1c12a03e7e37 336\" vs \"http://127.0.0.1:3000 a938646dd56ad8c3db1bd5c80e3bdc46 336\""
    }
   }
  ],
@@ -1252,7 +1095,7 @@
   ],
   "http-header.test.ts::http header::should set http header [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "http-header.test.ts::http header::should set http header with deferred data [chromium]": [
@@ -1266,18 +1109,18 @@
    "PPP"
   ],
   "hydration-navigation.test.ts::handles a pathname change before hydration [chromium]": [
-   "diverged",
-   2,
-   "PPP"
-  ],
-  "hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]": [
    "stable",
    1,
    "PPP"
   ],
-  "hydration-navigation.test.ts::handles a streaming query string change before hydration [chromium]": [
+  "hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]": [
    "diverged",
    3,
+   "PPP"
+  ],
+  "hydration-navigation.test.ts::handles a streaming query string change before hydration [chromium]": [
+   "stable",
+   1,
    "PPP"
   ],
   "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]": [
@@ -1292,7 +1135,7 @@
   ],
   "no-js-action.test.ts::actions without JavaScript::returning json() stays on the submitting page and keeps the result [chromium]": [
    "diverged",
-   3,
+   2,
    "PPP"
   ],
   "no-js-action.test.ts::actions without JavaScript::returning reload() stays on the submitting page [chromium]": [
@@ -1331,13 +1174,13 @@
    "PPP"
   ],
   "server-function.test.ts::server-function::should have isServer true in the server function - nested [chromium]": [
-   "stable",
-   1,
+   "diverged",
+   3,
    "PPP"
   ],
   "server-function.test.ts::server-function::should have isServer true in the server function - const [chromium]": [
    "diverged",
-   2,
+   3,
    "PPP"
   ],
   "server-function.test.ts::server-function::should have an id of type string in the server function meta - nested [chromium]": [
@@ -1357,22 +1200,22 @@
   ],
   "server-function.test.ts::server-function::should have isServer true in the server function - toplevel [chromium]": [
    "diverged",
-   2,
+   3,
    "PPP"
   ],
   "server-function.test.ts::server-function::should have an id of type string in the server function meta - toplevel [chromium]": [
    "diverged",
-   2,
+   3,
    "PPP"
   ],
   "server-function.test.ts::server-function::should externalize node builtin in server function - toplevel [chromium]": [
    "diverged",
-   2,
+   3,
    "PPP"
   ],
   "server-function.test.ts::server-function::should externalize npm module in server function - toplevel [chromium]": [
    "diverged",
-   2,
+   3,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build when anon default export and server functions [chromium]": [
@@ -1382,7 +1225,7 @@
   ],
   "server-function.test.ts::server-function::should build with generator as server function [chromium]": [
    "diverged",
-   2,
+   3,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build with a server function ping [chromium]": [
@@ -1391,8 +1234,8 @@
    "FFF"
   ],
   "server-function.test.ts::server-function::should round-trip a custom class through a custom seroval plugin [chromium]": [
-   "stable",
-   1,
+   "diverged",
+   3,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build with a server function w/ form data [chromium]": [
@@ -1411,13 +1254,13 @@
    "PPP"
   ],
   "server-function.test.ts::server-function::should remove exports for non-function values when top-level use server is used [chromium]": [
-   "stable",
-   1,
+   "diverged",
+   3,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build with a env:server [chromium]": [
    "diverged",
-   2,
+   3,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build with a server function including an unused try/catch variable [chromium]": [
@@ -1426,13 +1269,13 @@
    "PPP"
   ],
   "server-function.test.ts::server-function::should build with a server function including an unused destructured variable [chromium]": [
-   "stable",
-   1,
+   "diverged",
+   3,
    "PPP"
   ],
   "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": [
    "diverged",
-   2,
+   3,
    "FFF"
   ],
   "server-function.test.ts::server-function::should propagate a server function error with non-latin1 message [chromium]": [
@@ -1441,16 +1284,33 @@
    "PPP"
   ],
   "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": [
-   "stable",
-   1,
+   "diverged",
+   3,
    "PPP"
   ],
   "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": [
    "diverged",
    3,
-   "FFF"
+   "FPF"
   ]
  },
- "targets": [],
- "elapsed_min": 13.2
+ "ablation": [
+  {
+   "key": "server-function.test.ts::server-function::should build with a server function ping [chromium]",
+   "all-on": "failed",
+   "server-off": "failed",
+   "net-off": "failed",
+   "vtime-off": "failed",
+   "seeds-off": "failed"
+  },
+  {
+   "key": "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]",
+   "all-on": "passed",
+   "server-off": "passed",
+   "net-off": "passed",
+   "vtime-off": "passed",
+   "seeds-off": "passed"
+  }
+ ],
+ "elapsed_min": 12.2
 }
