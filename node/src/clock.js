@@ -136,9 +136,20 @@ function monoNs(op) {
   return MONO_BASE_NS + readFor(op);
 }
 
+// performance.now() counts from the start of the test file, as in a fresh
+// realm: each Vitest/Jest file normally gets its own worker or context, whose
+// time origin is near 0. Counting from the process start instead made the
+// virtual value grow over a whole run (found on recharts: code comparing it
+// with Vitest's fake requestAnimationFrame timestamps, which start at 0, looped
+// in later files only: 40 tests broken in a full run, none in the file alone).
+let FILE_ORIGIN_NS = 0;
+function startFile() {
+  if (CLOCK) FILE_ORIGIN_NS = CLOCK.elapsed;
+}
+
 function performanceNow() {
   if (callerIsInfra()) return realNowMs();
-  return monoNs('performance.now') / NS_PER_MS - MONO_BASE_NS / NS_PER_MS + 1000;
+  return (monoNs('performance.now') - MONO_BASE_NS - FILE_ORIGIN_NS) / NS_PER_MS + 1000;
 }
 
 function hrtime(prev) {
@@ -536,6 +547,6 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
 }
 
 module.exports = {
-  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout,
+  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, startFile,
   get CLOCK() { return CLOCK; },
 };

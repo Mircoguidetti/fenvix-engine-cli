@@ -162,10 +162,26 @@ describe('fs and local network', () => {
 });
 `;
 
+// performance.now() of a later file starts near 0 again, as in a fresh worker
+// (recharts compares it with fake requestAnimationFrame timestamps): the first
+// file pushes the virtual clock far ahead (adaptive tick), the second checks.
+const CLOCK_A = `
+test('a file that reads the clock a lot', () => {
+  let t = 0;
+  for (let i = 0; i < 3000; i += 1) t = performance.now();
+  expect(t).toBeGreaterThan(0);
+});
+`;
+const CLOCK_B = `
+test('performance.now() of the next file starts near its time origin', () => {
+  expect(performance.now()).toBeLessThan(120000);
+});
+`;
+
 for (const runner of RUNNERS) {
   describe(runner, () => {
     test('deterministic suite: same outcomes without --det, with --det and with --det-seed', T, () => {
-      const dir = project(runner, 'unchanged', { suite: SUITE });
+      const dir = project(runner, 'unchanged', { suite: SUITE, a_clock: CLOCK_A, b_clock: CLOCK_B });
       const results = {
         normal: run(runner, dir),
         det: run(runner, dir, ['--det']),
