@@ -2998,21 +2998,33 @@
  "flaky": {
   "docusaurus": {
    "name": "docusaurus",
+   "sha": "4c4ec4aaabc6d70288d53e10203c6d271f0cac7a",
    "groups": 1,
-   "attempts": 6,
+   "ci_groups": 1,
+   "attempts": 8,
+   "invalid_attempts": 10,
+   "min_attempts_per_group": 8,
+   "tests_per_attempt": 3254.0,
    "flaky_failed_attempts": 0,
+   "stable_failing_tests": 0,
    "always_failing_groups": 0,
    "flaky_job_rate": 0.0,
    "flaky_run_rate": 0.0,
-   "mean_job_min": 1.5461221834023793,
+   "mean_job_min": 1.5112164398034413,
    "wasted_min_per_job": 0.0,
    "flaky_tests": []
   },
   "terraform": {
    "name": "terraform",
+   "sha": "b3fb138b1543722ac0b9680c21bf69172d08bb39",
    "groups": 1,
+   "ci_groups": 1,
    "attempts": 5,
+   "invalid_attempts": 0,
+   "min_attempts_per_group": 5,
+   "tests_per_attempt": 12462,
    "flaky_failed_attempts": 0,
+   "stable_failing_tests": 14,
    "always_failing_groups": 1,
    "flaky_job_rate": 0.0,
    "flaky_run_rate": 0.0,
@@ -3022,9 +3034,15 @@
   },
   "vue-core": {
    "name": "vue-core",
+   "sha": "cbd95955a5362b44060908f6e28ad447c3031b8a",
    "groups": 1,
+   "ci_groups": 1,
    "attempts": 10,
+   "invalid_attempts": 0,
+   "min_attempts_per_group": 10,
+   "tests_per_attempt": 4152.0,
    "flaky_failed_attempts": 0,
+   "stable_failing_tests": 0,
    "always_failing_groups": 0,
    "flaky_job_rate": 0.0,
    "flaky_run_rate": 0.0,
@@ -3034,9 +3052,15 @@
   },
   "home-assistant": {
    "name": "home-assistant",
+   "sha": "cdf3f923c845dedf30f7ff6e41f1735e1ddafbef",
    "groups": 3,
+   "ci_groups": 10,
    "attempts": 8,
+   "invalid_attempts": 0,
+   "min_attempts_per_group": 2,
+   "tests_per_attempt": 11026.0,
    "flaky_failed_attempts": 0,
+   "stable_failing_tests": 0,
    "always_failing_groups": 0,
    "flaky_job_rate": 0.0,
    "flaky_run_rate": 0.0,
@@ -8251,6 +8275,71 @@
       "changed_files": 3,
       "created_at": "2026-11-13T08:21:10Z"
      }
+    },
+    {
+     "name": "openai-agents-python",
+     "lang": "pytest",
+     "sample": 1.0,
+     "units": 226,
+     "tests": 7197,
+     "transitions": 0,
+     "capture_overhead_ratio": null,
+     "ci_workers": 4,
+     "invalidate_all": 0,
+     "invalidate_all_why": {},
+     "verify": {},
+     "wrong_hits": [],
+     "flaky_in_verify": [],
+     "rows": [],
+     "commits_per_day": 28.189354294471944,
+     "closure": {
+      "time": null,
+      "count": null,
+      "ttg_after_s": null,
+      "ttg_after_plain_s": null
+     },
+     "closure~cfg": {
+      "time": null,
+      "count": null,
+      "ttg_after_s": null,
+      "ttg_after_plain_s": null
+     },
+     "func+guard": {
+      "time": null,
+      "count": null,
+      "ttg_after_s": null,
+      "ttg_after_plain_s": null
+     },
+     "func+guard~cfg": {
+      "time": null,
+      "count": null,
+      "ttg_after_s": null,
+      "ttg_after_plain_s": null
+     },
+     "func": {
+      "time": null,
+      "count": null,
+      "ttg_after_s": null,
+      "ttg_after_plain_s": null
+     },
+     "strict": {
+      "time": null,
+      "count": null,
+      "ttg_after_s": null,
+      "ttg_after_plain_s": null
+     },
+     "ttg_before_s": null,
+     "pr": {
+      "number": 5939,
+      "title": "feat(codex): Restore configured child tool checkpoints",
+      "commits": 11,
+      "merged": true,
+      "state": "closed",
+      "author": "markstuart-oai",
+      "head_ref": "codex/native-configured-child-checkpoints-python-20261113",
+      "changed_files": 17,
+      "created_at": "2026-11-13T06:43:33Z"
+     }
     }
    ],
    "pooled_time": {
@@ -9431,9 +9520,9 @@
    "relaxed/closure": {
     "time": {
      "median": 0.0,
-     "mean": 0.19351524566789732,
+     "mean": 0.19288447283147936,
      "min": 0.0,
-     "max": 0.843557775358076,
+     "max": 0.8444827108227153,
      "n": 50
     },
     "count": {
@@ -9449,10 +9538,10 @@
    },
    "strict/line": {
     "time": {
-     "median": 0.641289206804989,
-     "mean": 0.4696832303797527,
+     "median": 0.6467275214285466,
+     "mean": 0.4669648198617,
      "min": 0.0,
-     "max": 0.843557775358076,
+     "max": 0.8444827108227153,
      "n": 50
     },
     "count": {
@@ -9468,10 +9557,10 @@
    },
    "strict/file": {
     "time": {
-     "median": 0.22801937902787725,
-     "mean": 0.33305135288077325,
+     "median": 0.21449043618747954,
+     "mean": 0.32898898923096015,
      "min": 0.0,
-     "max": 0.843557775358076,
+     "max": 0.8444827108227153,
      "n": 50
     },
     "count": {
@@ -9488,9 +9577,9 @@
    "strict/line+guard": {
     "time": {
      "median": 0.0,
-     "mean": 0.16765673685120003,
+     "mean": 0.16766343403734266,
      "min": 0.0,
-     "max": 0.843557775358076,
+     "max": 0.8444827108227153,
      "n": 50
     },
     "count": {
@@ -9507,9 +9596,9 @@
    "strict/file+guard": {
     "time": {
      "median": 0.0,
-     "mean": 0.15472012345270192,
+     "mean": 0.1543359315988757,
      "min": 0.0,
-     "max": 0.843557775358076,
+     "max": 0.8444827108227153,
      "n": 50
     },
     "count": {
@@ -9526,9 +9615,9 @@
    "strict/line+nameguard": {
     "time": {
      "median": 0.0,
-     "mean": 0.2191206830856609,
+     "mean": 0.218564308040988,
      "min": 0.0,
-     "max": 0.843557775358076,
+     "max": 0.8444827108227153,
      "n": 50
     },
     "count": {
@@ -9545,9 +9634,9 @@
    "strict/line+names": {
     "time": {
      "median": 0.0,
-     "mean": 0.16765673685120003,
+     "mean": 0.16766343403734266,
      "min": 0.0,
-     "max": 0.843557775358076,
+     "max": 0.8444827108227153,
      "n": 50
     },
     "count": {
@@ -9564,9 +9653,9 @@
    "relaxed/line+names": {
     "time": {
      "median": 0.0,
-     "mean": 0.2646608533217724,
+     "mean": 0.2642920049312689,
      "min": 0.0,
-     "max": 0.843557775358076,
+     "max": 0.8444827108227153,
      "n": 50
     },
     "count": {
@@ -9583,9 +9672,9 @@
    "relaxed/line+guard": {
     "time": {
      "median": 0.0,
-     "mean": 0.2646608533217724,
+     "mean": 0.2642920049312689,
      "min": 0.0,
-     "max": 0.843557775358076,
+     "max": 0.8444827108227153,
      "n": 50
     },
     "count": {
@@ -9601,10 +9690,10 @@
    },
    "relaxed/line": {
     "time": {
-     "median": 0.6619465831682285,
-     "mean": 0.5862108213723914,
-     "min": 0.00015758847387500104,
-     "max": 0.843557775358076,
+     "median": 0.6669630236107755,
+     "mean": 0.5820511108485247,
+     "min": 0.00014730131069072962,
+     "max": 0.8444827108227153,
      "n": 50
     },
     "count": {
@@ -9621,9 +9710,9 @@
    "strict/closure": {
     "time": {
      "median": 0.0,
-     "mean": 0.09651112919732494,
+     "mean": 0.09625590193755308,
      "min": 0.0,
-     "max": 0.843557775358076,
+     "max": 0.8444827108227153,
      "n": 50
     },
     "count": {
@@ -9641,23 +9730,24 @@
     "config": 11,
     "det-unknown": 46,
     "subprocess": 50,
-    "names-hard": 28,
+    "names-hard": 27,
     "new": 34,
-    "source": 11,
+    "source": 10,
     "not-deterministic": 37,
-    "dir-listing": 5
+    "dir-listing": 5,
+    "names-read": 1
    },
    "names_hard_files": [
     [
-     "dunder",
-     14
-    ],
-    [
-     "compound",
-     2
-    ],
-    [
      "special",
+     3
+    ],
+    [
+     "dunder",
+     3
+    ],
+    [
+     "call",
      2
     ],
     [
@@ -9665,15 +9755,15 @@
      2
     ],
     [
-     "decorator",
-     1
+     "signature",
+     2
     ],
     [
      "class",
      1
     ],
     [
-     "call",
+     "decorator",
      1
     ]
    ],

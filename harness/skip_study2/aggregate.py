@@ -200,38 +200,50 @@ def commits_per_day(shards):
 
 
 def flaky_summary(items, spec):
+    """Reruns of the project's CI test step at one pinned commit.
+
+    A run (one CI group, one attempt) is valid when the step ran tests and its report was read. Per group, the
+    *stable failures* are the tests failing in every valid attempt (broken at that commit, not flaky). An attempt
+    fails from flakiness when it fails a test outside the stable set (or exits non-zero with no failed test while
+    other attempts exit 0)."""
     by_group = defaultdict(list)
+    invalid = 0
     for it in items:
-        if it.get("status") == "ok":
+        if it.get("status") == "ok" and not it.get("report_error") and it.get("tests"):
             by_group[it["group"]].append(it)
+        else:
+            invalid += 1
     attempts = sum(len(v) for v in by_group.values())
-    flaky_fail, broken, wasted_s, job_s = 0, 0, 0.0, []
+    flaky_fail, wasted_s, job_s = 0, 0.0, []
     tests = Counter()
+    stable_fail = 0
+    per_group_rate = {}
     for g, runs in by_group.items():
-        oks = [r for r in runs if r["exit"] == 0]
-        fails = [r for r in runs if r["exit"] != 0]
         job_s += [r["job_s"] for r in runs]
-        if fails and oks:
-            flaky_fail += len(fails)
-            wasted_s += sum(r["job_s"] for r in fails)
-            for r in fails:
-                tests.update(r.get("failed_tests", [])[:50])
-        elif fails and not oks:
-            broken += 1
-            # tests failing in only some attempts of an always-failing group are flaky too
-            common = set.intersection(*[set(r.get("failed_tests", [])) for r in fails]) if fails else set()
-            for r in fails:
-                tests.update(t for t in r.get("failed_tests", []) if t not in common)
+        sets = [set(r.get("failed_tests") or []) for r in runs]
+        common = set.intersection(*sets) if sets else set()
+        stable_fail = max(stable_fail, len(common))
+        n_bad = 0
+        for r, fs in zip(runs, sets):
+            extra = fs - common
+            bad = bool(extra) or (r["exit"] != 0 and not fs and any(x["exit"] == 0 for x in runs))
+            if bad:
+                n_bad += 1
+                wasted_s += r["job_s"]
+                tests.update(sorted(extra)[:50])
+        flaky_fail += n_bad
+        per_group_rate[g] = n_bad / len(runs)
     groups = len(by_group)
-    # a workflow run fails if any group fails: P(run fails flakily) from per-group attempt rates
-    per_group_rate = {g: sum(1 for r in v if r["exit"] != 0) / len(v) for g, v in by_group.items()
-                      if any(r["exit"] == 0 for r in v)}
     p_run_ok = 1.0
-    for g, v in by_group.items():
-        if g in per_group_rate:
-            p_run_ok *= 1 - per_group_rate[g]
-    return {"name": spec["name"], "groups": groups, "attempts": attempts, "flaky_failed_attempts": flaky_fail,
-            "always_failing_groups": broken, "flaky_job_rate": flaky_fail / attempts if attempts else None,
+    for g, rate in per_group_rate.items():
+        p_run_ok *= 1 - rate
+    return {"name": spec["name"], "sha": (items[0].get("sha") if items else None), "groups": groups,
+            "ci_groups": spec.get("ci_groups", 1), "attempts": attempts, "invalid_attempts": invalid,
+            "min_attempts_per_group": min((len(v) for v in by_group.values()), default=0),
+            "tests_per_attempt": statistics.median([r["tests"] for v in by_group.values() for r in v]) if attempts else 0,
+            "flaky_failed_attempts": flaky_fail, "stable_failing_tests": stable_fail,
+            "always_failing_groups": sum(1 for v in by_group.values() if all(r["exit"] != 0 for r in v)),
+            "flaky_job_rate": flaky_fail / attempts if attempts else None,
             "flaky_run_rate": 1 - p_run_ok if groups else None,
             "mean_job_min": statistics.fmean(job_s) / 60 if job_s else None,
             "wasted_min_per_job": wasted_s / 60 / attempts if attempts else None,
@@ -243,6 +255,7 @@ def main(argv):
     argv = [a for a in argv if a != "--md"]
     run_ids = argv or sorted(p.name for p in RES.iterdir() if p.is_dir())
     summary = {"walk": {}, "flaky": {}, "agent": {}, "finer": {}}
+    fl_all = defaultdict(list)
     for rid in run_ids:
         base = RES / rid
         walk = defaultdict(list)
@@ -255,13 +268,9 @@ def main(argv):
             if len(shards) != nsh:
                 print(f"warning: {name}: {len(shards)}/{nsh} shards")
             summary["walk"][name] = walk_summary(shards, spec)
-        fl = defaultdict(list)
         for p in sorted((base / "flaky").glob("*.json")) if (base / "flaky").exists() else []:
             d = load(p)
-            fl[d["name"]].append(d)
-        for name, items in fl.items():
-            spec = json.loads((SPECS / f"{name}.json").read_text())
-            summary["flaky"][name] = flaky_summary(items, spec)
+            fl_all[(d["name"], d.get("sha"))].append(d)  # reruns of one commit pooled across runs
         for p in sorted((base / "agent").glob("*.json*")) if (base / "agent").exists() else []:
             d = load(p)
             key = f"{d['spec']}:{d['label']}"
@@ -285,6 +294,11 @@ def main(argv):
         for p in sorted((base / "finer").glob("*.json*")) if (base / "finer").exists() else []:
             d = load(p)
             summary["finer"][d["repo"]] = finer_summary(d)
+    for (name, sha), items in fl_all.items():
+        spec = json.loads((SPECS / f"{name}.json").read_text())
+        fs = flaky_summary(items, spec)
+        if fs["attempts"] or name not in summary["flaky"]:
+            summary["flaky"][name] = fs
     (RES / "summary.json").write_text(json.dumps(summary, indent=1, default=str))
     if md:
         print_md(summary)
@@ -388,14 +402,16 @@ def print_md(s):
                           f"{ag['verify'].get('checked', 0)} ({ag['verify'].get('wrong', 0)}, {ag['verify'].get('flaky', 0)}) |")
     if s["flaky"]:
         print()
-        print("| suite | CI groups | runs | failed runs, reproducible-flaky | always failing groups | flaky run rate | "
-              "mean job min | wasted min per run | flaky tests |")
+        print("| suite (commit) | CI groups rerun (of) | tests per group run | attempts (min per group) | "
+              "attempts failed by flakiness | tests failing in every attempt | flaky full-run rate | mean job min | "
+              "flaky tests |")
         print("|---|---:|---:|---:|---:|---:|---:|---:|---|")
         for name, f in s["flaky"].items():
             ft = ", ".join(f"{t} x{n}" for t, n in f["flaky_tests"][:4])
-            print(f"| {name} | {f['groups']} | {f['attempts']} | {f['flaky_failed_attempts']} | "
-                  f"{f['always_failing_groups']} | {pct(f['flaky_run_rate'])} | {f['mean_job_min'] or 0:.1f} | "
-                  f"{f['wasted_min_per_job'] or 0:.2f} | {ft or '-'} |")
+            print(f"| {name} ({(f.get('sha') or '')[:8]}) | {f['groups']} ({f.get('ci_groups', 1)}) | "
+                  f"{f.get('tests_per_attempt', 0):.0f} | {f['attempts']} ({f.get('min_attempts_per_group', 0)}) | "
+                  f"{f['flaky_failed_attempts']} | {f.get('stable_failing_tests', 0)} | {pct(f['flaky_run_rate'])} | "
+                  f"{f['mean_job_min'] or 0:.1f} | {ft or '-'} |")
     if s["finer"]:
         keys = ["strict/closure", "relaxed/closure", "strict/file+guard", "strict/line+guard", "strict/line+names", "strict/line",
                 "relaxed/line+guard", "relaxed/line+names", "relaxed/line"]
