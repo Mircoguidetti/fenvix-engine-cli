@@ -282,3 +282,49 @@ def test_next_test_still_scheduled():
 def test_an_interrupted_baton_wait_does_not_wedge_the_scheduler(pytester):
     result, _ = _run(pytester, INTERRUPT, timeout=60)
     result.assert_outcomes(passed=2)
+
+
+# A managed thread's id is reused by the OS for a later unmanaged thread: the
+# scheduler must still see the new thread as work outside the scheduler.
+# (requests: test_lowlevel.py's server threads, then pytest-httpbin's server.)
+HELPER = r"""
+import socket, threading, time
+
+def start_slow_server(delay):
+    srv = socket.socket()
+    srv.bind(("127.0.0.1", 0))
+    srv.listen(5)
+    def serve():
+        c, _ = srv.accept()
+        with c:
+            c.recv(100)
+            time.sleep(delay)
+            c.sendall(b"pong")
+    threading.Thread(target=serve, daemon=True).start()
+    return srv.getsockname()
+"""
+
+REUSE = r"""
+import socket, threading
+import pytest_helper_outside  # an infrastructure-like module: its threads stay unmanaged
+
+def test_managed_threads_come_and_go():
+    for _ in range(5):
+        t = threading.Thread(target=lambda: None)
+        t.start()
+        t.join()
+
+def test_then_an_unmanaged_server_answers_slowly():
+    addr = pytest_helper_outside.start_slow_server(2.0)
+    c = socket.create_connection(addr)
+    with c:
+        c.sendall(b"ping")
+        assert c.recv(100) == b"pong"
+"""
+
+
+def test_reused_thread_ids_are_not_mistaken_for_managed_threads(pytester):
+    pytester.makepyfile(pytest_helper_outside=HELPER)
+    pytester.syspathinsert()
+    result, _ = _run(pytester, REUSE, "--det-threads-deadlock=1", timeout=60)
+    result.assert_outcomes(passed=2)

@@ -163,7 +163,10 @@ class _Sched:
         self.active = False
         self.threads: list = []  # live managed threads (finished ones are dropped)
         self.nthreads = 0
-        self.known_idents: set = set()  # idents of every managed thread (deadlock check)
+        # idents of the live managed threads (deadlock check). An ident is dropped when
+        # its thread exits: the OS reuses thread ids, and a later unmanaged thread
+        # (pytest-httpbin's server) must not be mistaken for a managed one.
+        self.known_idents: set = set()
         self.current = None
         self.runq: list = []  # runnable threads, FIFO by the moment they became runnable
         self.timers: list = []  # heap of (deadline, seq, T, tseq)
@@ -393,7 +396,8 @@ def _unmanaged_threads() -> list:
         ts = threading.enumerate()
     except Exception:  # pragma: no cover
         return []
-    return [th for th in ts if th.ident not in managed_idents and not th.name.startswith("detpy-")]
+    return [th for th in ts if th.ident not in managed_idents and not th.name.startswith("detpy-")
+            and getattr(th, "_detpy_t", None) is None]  # a managed thread still ending
 
 
 def _unmanaged_alive() -> bool:
@@ -1094,6 +1098,7 @@ def _exit(t) -> None:
         S.exiting.append(t.thread)
     was_holder = S.current is t
     t.state = FINISHED
+    S.known_idents.discard(t.ident)
     t.wait_obj = None
     _locked_wake_waiters(t)
     try:
