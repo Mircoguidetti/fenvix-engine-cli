@@ -546,3 +546,39 @@ def test_unmanaged_lock_operations_bypass_a_patched_acquire(pytester):
     pytester.makeconftest(PATCHED_ACQUIRE_CONFTEST)
     result, _ = _run(pytester, PATCHED_ACQUIRE, timeout=60)
     result.assert_outcomes(passed=1)
+
+
+# The Level 0 clock's lock: a garbage collection inside VirtualClock.read() can run
+# a gc callback that reads the clock again (hypothesis measures gc time with
+# perf_counter). A plain lock deadlocked the thread on itself (attrs, exploration
+# seed 1: a hung run). This is Level 0: plain --det.
+GC_CLOCK = r'''
+import gc, time
+
+def test_gc_callback_reads_the_clock():
+    seen = []
+    def cb(phase, info):
+        seen.append(time.perf_counter())
+    old = gc.get_threshold()
+    gc.callbacks.append(cb)
+    gc.set_threshold(1)
+    try:
+        junk = []
+        for i in range(20000):
+            junk.append([time.perf_counter()])
+            if len(junk) > 50:
+                junk = []
+    finally:
+        gc.set_threshold(*old)
+        gc.callbacks.remove(cb)
+    assert seen
+'''
+
+
+def test_a_gc_callback_reading_the_clock_does_not_deadlock(pytester):
+    pytester.makepyfile(test_inner=GC_CLOCK)
+    try:
+        result = pytester.runpytest_subprocess("--det", "-p", "no:cacheprovider", timeout=60)
+    except pytester.TimeoutExpired:
+        pytest.fail("inner run hung")
+    result.assert_outcomes(passed=1)

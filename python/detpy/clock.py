@@ -73,7 +73,10 @@ class VirtualClock:
     """
 
     def __init__(self, epoch_ns: int, tick_ns: int, adapt_after: int = 0) -> None:
-        self._lock = threading.Lock()
+        # Re-entrant: a garbage collection inside read() can run a gc callback that
+        # reads the clock again in the same thread (hypothesis times gc with
+        # perf_counter); a plain lock deadlocked the thread on itself.
+        self._lock = threading.RLock()
         self.epoch_ns = epoch_ns
         self.base_tick_ns = tick_ns
         self.tick_ns = tick_ns
