@@ -11,7 +11,7 @@ import warnings
 
 import pytest
 
-from . import __version__, _core, _sites, _state, clock, fsorder, network, reexec, seeds
+from . import __version__, _core, _sites, _state, clock, fsorder, network, proofcache, reexec, seeds
 from ._patch import Patcher
 
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net")
@@ -61,6 +61,14 @@ def pytest_addoption(parser, pluginmanager):
                 help="events stored verbatim per test (the fingerprint always covers all of them)")
     g.addoption("--det-outcomes", default=None, metavar="PATH",
                 help="write {nodeid: outcome} as JSON (works without --det; used by the harness)")
+    g.addoption("--det-cache", default=None, metavar="DIR",
+                help="cache with proof (needs --det, Python 3.12+): reuse a test's previous result from DIR only "
+                     "when every input it depended on (code executed, files read, environment variables read, "
+                     "runtime, configuration) is unchanged; failures are never reused; prints a receipt")
+    g.addoption("--det-cache-verify", type=float, default=0.0, metavar="FRACTION",
+                help="run this random fraction of the reusable tests anyway and compare with the cached result")
+    g.addoption("--det-cache-receipts", default=None, metavar="PATH",
+                help="where to write the per-test receipts (JSON lines; default DIR/receipts.jsonl)")
 
 
 _BLOCKED_BY_REEXEC: list[str] | None = None
@@ -238,6 +246,8 @@ def pytest_load_initial_conftests(early_config, parser, args):
         warnings.warn("detpy: nested in-process pytest session: it runs under the outer --det session")
         return
     controls = _controls(ns)
+    if getattr(ns, "det_cache", None) and not proofcache.AVAILABLE:
+        raise pytest.UsageError("--det-cache needs Python 3.12+ (sys.monitoring)")
     want_bytecode = "bytecode" in controls
     if "hashseed" in controls:
         need = reexec.plan(_hashseed(ns), not ns.det_keep_aslr, want_bytecode)
@@ -269,6 +279,8 @@ def pytest_load_initial_conftests(early_config, parser, args):
             args.append("--benchmark-max-time=0.000001")
             S.adjustments.append("pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)")
     _install(early_config, ns, controls)
+    if getattr(ns, "det_cache", None):
+        proofcache.start(early_config, ns)
 
 
 def _install(config, ns, controls) -> None:
@@ -320,6 +332,8 @@ def _owner(config) -> bool:
 @pytest.hookimpl(trylast=True)
 def pytest_configure(config):
     out = config.getoption("det_outcomes", None)
+    if config.getoption("det_cache", None) and not config.getoption("det", False):
+        raise pytest.UsageError("--det-cache needs --det (the cache relies on Level 0 controls)")
     if _owner(config):
         config.pluginmanager.register(_DetSession(config, out), "detpy-session")
         _configure_det(config)
@@ -339,6 +353,8 @@ def _configure_det(config) -> None:
         S.net_mode = network.install(_PATCHER, opt.det_record, cassette, opt.det_allow_host)
     S.trace_path = opt.det_trace or os.path.join(root, ".detpy", "trace.jsonl")
     _state.STATE.recorder = _core.Recorder(max_events=opt.det_max_events)
+    if opt.det_cache:
+        proofcache.install(config)
     factory = getattr(config, "_tmp_path_factory", None)
     if factory is not None:
         def basetemp():
@@ -357,6 +373,7 @@ def pytest_unconfigure(config):
         _state.STATE.recorder = None
         _state.STATE.nodeid = None
         _sites.set_basetemp_provider(None)
+        proofcache.uninstall()
         S.active = False
         S.config = None
 
@@ -475,8 +492,13 @@ class _DetSession(_Outcomes):
 
     def extra(self) -> dict:
         cfg = _state.STATE.config
-        return {"fingerprints": dict(S.fingerprints), "seed": cfg.seed, "shuffle": cfg.shuffle,
-                "controls": sorted(cfg.controls), "trace": S.trace_path, "order_missing": S.order_missing}
+        out = {"fingerprints": dict(S.fingerprints), "seed": cfg.seed, "shuffle": cfg.shuffle,
+               "controls": sorted(cfg.controls), "trace": S.trace_path, "order_missing": S.order_missing}
+        pc = proofcache.PLUGIN
+        if pc is not None:
+            out["cache"] = {**pc.summary_data(), "reused_ids": sorted(pc.hits), "verified_ids": sorted(pc.verifying),
+                            "not_cached_ids": pc.not_cached, "miss_ids": pc.misses}
+        return out
 
     def pytest_report_header(self, config):
         cfg = _state.STATE.config
@@ -559,6 +581,14 @@ class _DetSession(_Outcomes):
         if rec is None:  # pragma: no cover - defensive: never break the session
             yield
             return
+        pc = proofcache.PLUGIN
+        if pc is not None and item.nodeid in pc.hits:
+            # reused with proof: nothing runs, the recorded fingerprint stands for the test
+            yield
+            fp = pc.hits[item.nodeid].get("fingerprint")
+            if fp:
+                S.fingerprints[item.nodeid] = fp
+            return
         controls = st.config.controls
         rec.begin_test(item.nodeid, S.index)
         S.index += 1
@@ -584,6 +614,8 @@ class _DetSession(_Outcomes):
                 item.user_properties.append(("detpy_fingerprint", fp))
 
     def pytest_sessionfinish(self, session, exitstatus):
+        if proofcache.PLUGIN is not None:
+            proofcache.PLUGIN.finish(session)
         super().pytest_sessionfinish(session, exitstatus)
         st = _state.STATE
         if st.recorder is not None:
@@ -607,6 +639,8 @@ class _DetSession(_Outcomes):
                       f"{' (shuffled)' if cfg.shuffle else ''}")
         if S.saved_cassette:
             tr.write_line(f"network: recorded {S.saved_cassette} test(s) into {cfg.cassette_path}")
+        if proofcache.PLUGIN is not None:
+            proofcache.PLUGIN.terminal_summary(tr)
         rep = S.compare_report
         if rep is None:
             return

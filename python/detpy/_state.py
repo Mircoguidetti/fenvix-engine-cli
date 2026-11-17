@@ -48,6 +48,14 @@ def reset_threads() -> None:
     STATE.threads = {STATE.test_thread: 0}
 
 
+_event_listener = None  # set by the cache with proof: called with (source, value) for every user event
+
+
+def set_event_listener(fn) -> None:
+    global _event_listener
+    _event_listener = fn
+
+
 def record(source: str, op: str, value: str, depth: int = 1) -> None:
     """Record one event for the running test.
 
@@ -57,11 +65,16 @@ def record(source: str, op: str, value: str, depth: int = 1) -> None:
     if source != "time" and _on_other_event is not None:
         _on_other_event()  # breaks the clock's run of consecutive reads
     rec = STATE.recorder
-    if rec is None or STATE.nodeid is None or getattr(_tls, "busy", False):
+    listener = _event_listener
+    if ((rec is None or STATE.nodeid is None) and listener is None) or getattr(_tls, "busy", False):
         return
     site = _sites.resolve(depth + 1)
     if site is None:  # infrastructure (pytest, detpy) touched the source
         return
+    if listener is not None:
+        listener(source, value)
+        if rec is None or STATE.nodeid is None:
+            return
     tid = _get_ident()
     threads = STATE.threads
     t = threads.get(tid)

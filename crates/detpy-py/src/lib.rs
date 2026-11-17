@@ -13,6 +13,9 @@ use pyo3::types::PyBytes;
 use std::path::PathBuf;
 use std::sync::{Mutex, MutexGuard};
 
+mod proofcache;
+mod sysmon;
+
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     // A panic while holding the lock must not make every later call fail.
     m.lock().unwrap_or_else(|e| e.into_inner())
@@ -242,5 +245,12 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(order_digest, m)?)?;
     m.add_function(wrap_pyfunction!(digest, m)?)?;
     m.add_function(wrap_pyfunction!(backends, m)?)?;
+    m.add_class::<sysmon::LineRecorder>()?;
+    m.add_function(wrap_pyfunction!(sysmon::set_audit_hook, m)?)?;
+    m.add_class::<proofcache::ProofCache>()?;
+    m.add_function(wrap_pyfunction!(proofcache::file_digest, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::listing_digest, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::env_value_digest, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::env_all_digest, m)?)?;
     Ok(())
 }
