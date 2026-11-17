@@ -453,3 +453,90 @@ def test_a_uvloop_loop_runs_outside_the_scheduler(pytester):
     result.assert_outcomes(passed=1)
     assert "escapes=0" in result.stdout.str()  # no per-call escape of a C wait
     assert "uvloop event loop" in trace.read_text()
+
+
+# A managed non-daemon thread still in a timed wait when the session ends: it
+# finishes the wait on a real lock with the time left. That time was computed
+# against a clock already gone (the whole virtual time of the session): the
+# interpreter never exited (anyio's idle pool workers after the full suite).
+AT_EXIT = r'''
+import threading, time
+
+def test_leaves_a_waiting_worker_behind():
+    time.sleep(100_000)  # virtual: the session's clock is far ahead
+    threading.Thread(target=threading.Event().wait, args=(3,)).start()
+'''
+
+
+AT_EXIT_CONFTEST = r'''
+import pytest
+
+@pytest.hookimpl(trylast=True)
+def pytest_unconfigure(config):
+    import detpy.threads as T
+    from detpy import clock
+    # after detpy's own unconfigure: the Level 0 clock is gone
+    with open("now.txt", "w") as f:
+        f.write(f"{clock.CLOCK is None} {T._now()}")
+'''
+
+
+def test_threads_waiting_at_session_end_do_not_hang_the_exit(pytester):
+    pytester.makeconftest(AT_EXIT_CONFTEST)
+    result, dur = _run(pytester, AT_EXIT, timeout=60)
+    result.assert_outcomes(passed=1)
+    assert dur < 30
+    gone, now = (pytester.path / "now.txt").read_text().split()
+    # a wait still running computes its time left against this "now": it must be
+    # the session's virtual time, not 0
+    assert gone == "True" and int(now) >= 100_000 * 10**9
+
+
+# A tool that patches lock.acquire on the C lock type (blockbuster flags blocking
+# calls inside an event loop) never sees `with lock:` on a plain lock (the C slot
+# is used). detpy's lock must behave the same on its unmanaged path too (a uvloop
+# loop runs outside the scheduler): anyio test_run_in_custom_limiter[uvloop].
+PATCHED_ACQUIRE_CONFTEST = r'''
+import _thread
+from detpy._patch import Patcher
+
+CALLS = []
+_orig = _thread.LockType.acquire
+
+
+def acquire(self, *args, **kwargs):  # what blockbuster installs on the C type
+    CALLS.append(1)
+    return _orig(self, *args, **kwargs)
+
+
+P = Patcher()
+P.set_type_attr(_thread.LockType, "acquire", acquire)
+'''
+
+PATCHED_ACQUIRE = r'''
+import threading
+import detpy.threads as T
+from conftest import CALLS
+
+def test_with_lock_does_not_call_a_patched_acquire():
+    lock = threading.Lock()
+    out = []
+    def unmanaged():
+        with lock:
+            out.append(1)
+    lock.acquire()
+    T._real_start_new_thread(unmanaged, ())  # not scheduled: the unmanaged path
+    del CALLS[:]
+    lock.release()
+    while not out:
+        pass
+    with lock:
+        pass
+    assert CALLS == []
+'''
+
+
+def test_unmanaged_lock_operations_bypass_a_patched_acquire(pytester):
+    pytester.makeconftest(PATCHED_ACQUIRE_CONFTEST)
+    result, _ = _run(pytester, PATCHED_ACQUIRE, timeout=60)
+    result.assert_outcomes(passed=1)

@@ -903,7 +903,7 @@ class SchedLock:
     def acquire(self, blocking=True, timeout=-1):
         me = _me()
         if me is None:
-            got = self._real.acquire(blocking, timeout)
+            got = _lock_acquire(self._real, blocking, timeout)
             if not got and blocking and timeout is not None and timeout > 0:
                 c = _clock()
                 if c is not None:
@@ -911,7 +911,7 @@ class SchedLock:
             return got
         _enter(me)
         _point(me)
-        if self._real.acquire(False):
+        if _lock_acquire(self._real, False):
             return True
         if not blocking or timeout == 0:
             poll_miss(me)  # a non-blocking acquire in a loop is a spin
@@ -926,8 +926,8 @@ class SchedLock:
             if not S.active:
                 S.mu.release()
                 rem = -1 if deadline is None else max(0.0, (deadline - _now()) / 1e9)
-                return self._real.acquire(True, rem)
-            if self._real.acquire(False):  # released meanwhile (e.g. by an unmanaged thread)
+                return _lock_acquire(self._real, True, rem)
+            if _lock_acquire(self._real, False):  # released meanwhile (e.g. by an unmanaged thread)
                 S.mu.release()
                 return True
             rem = None if deadline is None else deadline - _now()
@@ -939,7 +939,7 @@ class SchedLock:
                 ok = _block(me, BLOCKED, f"lock {self._name()}", obj=self, timeout_ns=rem)
             finally:
                 self._nwait -= 1
-            if self._real.acquire(False):
+            if _lock_acquire(self._real, False):
                 return True
             if not ok:
                 return False
@@ -1903,6 +1903,11 @@ def uninstall() -> None:
     if not CFG.enabled:
         return
     S.mu.acquire()
+    # Threads woken below finish their timed waits on real locks with the time left
+    # (virtual deadline minus now): keep "now" once the Level 0 clock is gone, or the
+    # time left becomes the whole virtual time of the session (anyio's idle pool
+    # workers kept the interpreter from exiting).
+    S.vclock = _now()
     S.active = False
     for t in S.threads:
         if t.state != FINISHED and t is not S.current and not t.handed:
