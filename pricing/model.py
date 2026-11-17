@@ -212,9 +212,6 @@ def main():
     print("\n".join(md))
 
 
-if __name__ == "__main__":
-    main()
-
 
 def project_tables(path=Path(__file__).resolve().parent / "data" / "results.json"):
     """One table per project type, every scenario as a row (used in REPORT.md)."""
@@ -227,7 +224,7 @@ def project_tables(path=Path(__file__).resolve().parent / "data" / "results.json
     for i, proj in enumerate(PROJECTS):
         p = PROJECTS[proj]
         out += [f"### {proj}", "", f"Run shape: {sum(n for n, *_ in p['test_jobs'])} test jobs; "
-                f"{p['note'] or 'PR run'}.", "",
+                f"{(p['note'] or 'PR run').rstrip('.')}.", "",
                 "| scenario | skip | GitHub $ test jobs / run | GitHub $ whole run | fenvix min / run | fenvix $ / run "
                 "| GitHub $ test jobs / month | fenvix cost / month | price band, >=30% cheaper | price band, >=50% cheaper |",
                 "|---|---:|---:|---:|---:|---:|---:|---:|---|---|"]
@@ -240,5 +237,6 @@ def project_tables(path=Path(__file__).resolve().parent / "data" / "results.json
     return "\n".join(out)
 
 
-if __name__ == "__main__" and False:
-    pass
+if __name__ == "__main__":
+    main()
+    (Path(__file__).resolve().parent / "data" / "project_tables.md").write_text(project_tables())

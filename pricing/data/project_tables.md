@@ -1,6 +1,6 @@
 ### large modular monorepo (home-assistant)
 
-Run shape: 22 test jobs; full run (dev pushes, core changes). HA's own CI already runs only touched integrations on integration-only PRs, so its real average is lower..
+Run shape: 22 test jobs; full run (dev pushes, core changes). HA's own CI already runs only touched integrations on integration-only PRs, so its real average is lower.
 
 | scenario | skip | GitHub $ test jobs / run | GitHub $ whole run | fenvix min / run | fenvix $ / run | GitHub $ test jobs / month | fenvix cost / month | price band, >=30% cheaper | price band, >=50% cheaper |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|
