@@ -1,32 +1,6 @@
 {
- "run_id": "s1",
- "recheck": [
-  {
-   "spec": "home-assistant",
-   "pr": 171334,
-   "rec": "7cf3cba27bec95fc6dfeaeb68b79471ddaaee1b7",
-   "cur": "cbfc323f04360c3bcbb88db837527ae0cd3266c9",
-   "units": [
-    "tests/components/switchbot/test_init.py"
-   ]
-  },
-  {
-   "spec": "home-assistant",
-   "pr": 163164,
-   "rec": "3a0bde5d3e89aa03d362e4894d41a681afc5af19",
-   "cur": "6688281acfa64f0f49cb81528bef7a3ecbf84603",
-   "units": [
-    "tests/components/knx/test_number.py"
-   ]
-  }
- ],
- "agent": [
-  {
-   "spec": "openai-agents-python",
-   "query": "head:codex/",
-   "label": "codex",
-   "max_prs": 12,
-   "budget_min": 300
-  }
+ "run_id": "s2",
+ "flaky": [
+  {"spec": "terraform", "sha": "b3fb138b1543722ac0b9680c21bf69172d08bb39", "rep_start": 5, "reps": 10}
  ]
 }

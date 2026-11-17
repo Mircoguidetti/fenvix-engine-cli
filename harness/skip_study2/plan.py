@@ -4,7 +4,7 @@
 run.json:
   {"run_id": "r1",
    "walk":  [{"spec": "home-assistant", "shards": 4, "budget_min": 320}, ...],
-   "flaky": [{"spec": "vue-core", "reps": 10}, ...]}
+   "flaky": [{"spec": "vue-core", "reps": 10}, ...]}   ("rep_start": k resumes at repetition k)
 """
 
 import json
@@ -40,7 +40,7 @@ def main():
         sha = f.get("sha") or subprocess.run(["git", "ls-remote", spec["url"], "HEAD"], capture_output=True,
                                              text=True).stdout.split()[0]
         groups = f.get("groups", spec.get("ci_groups", 1))
-        for rep in range(f.get("reps", 10)):
+        for rep in range(f.get("rep_start", 0), f.get("reps", 10)):
             for g in [x - 1 for x in f.get("only_groups", range(1, groups + 1))]:
                 flaky.append(entry(f["spec"], {"rep": rep, "group": f"{g + 1}/{groups}", "sha": sha,
                                                "budget": str(f.get("budget_min", 200))}))
