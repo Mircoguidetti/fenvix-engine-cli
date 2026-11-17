@@ -1,0 +1,78 @@
+{
+  "test": "tests/test_concurrency.py::test_concurrent_done_status[True]",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 190,
+  "minimal_length": 3,
+  "polluters": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]",
+    "tests/test_concurrency.py::test_concurrent_done_status[True]"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "a62c7e50ed859904364f866e57800571"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = d269b5af711e4a401a8b77850e4c39af",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "easypy/logging.py:507",
+      "v": "1000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "d269b5af711e4a401a8b77850e4c39af"
+    },
+    "fingerprints": [
+      "eb3b04ed7db28b4b916c431debf6b4c9",
+      "a62c7e50ed859904364f866e57800571"
+    ]
+  },
+  "runs": 30,
+  "seconds": 36.7,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_concurrent_done_status_True_-5f46396c/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_concurrent_done_status_True_-5f46396c",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_concurrent_done_status_True_-5f46396c"
+}

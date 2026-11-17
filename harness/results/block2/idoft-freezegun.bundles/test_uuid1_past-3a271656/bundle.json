@@ -1,0 +1,80 @@
+{
+  "test": "tests/test_uuid.py::test_uuid1_past",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "9",
+  "seed": 9,
+  "kind": "order",
+  "prefix_length": 109,
+  "minimal_length": 4,
+  "polluters": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_uuid.py::test_uuid1_future"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_uuid.py::test_uuid1_future",
+    "tests/test_uuid.py::test_uuid1_past"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert FakeDatetime(2056, 2, 6, 14, 3, 21) == FakeDatetime(1978, 7, 6, 23, 6, 31)",
+    "/tmp/work/src/idoft-freezegun/tests/test_uuid.py:39"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "11590e4e4fa9d3aa9ad4ea7b80c65856"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "random",
+    "description": "event #1: [random] random.getrandbits @ tests/test_uuid.py:43 = 11539  <>  [random] random.state @ <end> = 9a4f4649393e11f978bb188eeeffde4a",
+    "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "random.getrandbits",
+      "at": "tests/test_uuid.py:43",
+      "v": "11539"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "9a4f4649393e11f978bb188eeeffde4a"
+    },
+    "fingerprints": [
+      "0263616249c75418a8e25839a507c36a",
+      "11590e4e4fa9d3aa9ad4ea7b80c65856"
+    ]
+  },
+  "runs": 99,
+  "seconds": 148.18,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+  "command": "pytest --det --det-seed=9 --det-order=/tmp/work/block2/idoft-freezegun/detpy/bundles/test_uuid1_past-3a271656/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/detpy/bundles/test_uuid1_past-3a271656",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-freezegun/detpy/bundles/test_uuid1_past-3a271656"
+}

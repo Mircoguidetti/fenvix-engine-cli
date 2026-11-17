@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_exceptions.py::test_pickle_texception",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "order",
+  "prefix_length": 163,
+  "minimal_length": 2,
+  "polluters": [
+    "test_package.py::test_package[meta]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[meta]",
+    "tests/test_exceptions.py::test_pickle_texception"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "PicklingError",
+    "call",
+    "_pickle.PicklingError: Can't pickle <class 'easypy.bunch.Bunch'>: it's not the same object as easypy.bunch.Bunch",
+    "/tmp/work/src/idoft-easypy/tests/test_exceptions.py:13"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "f7b23ae0ee44c681ee80ca4ff8cca9d9"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "0f5d1b478c0a15707dca49920bcdac01",
+      "f7b23ae0ee44c681ee80ca4ff8cca9d9"
+    ]
+  },
+  "runs": 21,
+  "seconds": 24.44,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_pickle_texception-458fd328/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_pickle_texception-458fd328",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_pickle_texception-458fd328"
+}

@@ -1,0 +1,51 @@
+{
+  "test": "tests/test_cli.py::TestCLI::test_empty_domain",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "fails-alone",
+  "prefix_length": 10,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [],
+  "order": [
+    "tests/test_cli.py::TestCLI::test_empty_domain"
+  ],
+  "outcome": "failed+teardown-error",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: ValueError not raised by <lambda>",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:163"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "df495d1fd0388a3c8f1466ccd968daac"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": null,
+  "runs": 13,
+  "seconds": 9.62,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_empty_domain-31a844ba/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_empty_domain-31a844ba",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_empty_domain-31a844ba"
+}

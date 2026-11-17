@@ -1,0 +1,78 @@
+{
+  "test": "eppy/tests/test_case_insensitive.py::test_del[Building]",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "5",
+  "seed": 5,
+  "kind": "order",
+  "prefix_length": 32,
+  "minimal_length": 3,
+  "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+  ],
+  "setters": [],
+  "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_del[Building]"
+  ],
+  "outcome": "error",
+  "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "a94819712b7369e1a4b9c7abc61cf6f4"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "error"
+    },
+    "fingerprints": [
+      "de2e850ddeb73094895dc6d7d0c0086d",
+      "a94819712b7369e1a4b9c7abc61cf6f4"
+    ]
+  },
+  "runs": 19,
+  "seconds": 77.84,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+  "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/detpy/bundles/test_del_Building_-bac5f559/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/detpy/bundles/test_del_Building_-bac5f559",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-eppy/detpy/bundles/test_del_Building_-bac5f559"
+}

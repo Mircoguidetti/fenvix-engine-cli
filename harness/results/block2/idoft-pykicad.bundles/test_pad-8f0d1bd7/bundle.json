@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_module.py::PadTests::test_pad",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "order",
+  "prefix_length": 36,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::PadTests::test_pad"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'pad'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "6d62915904d480370644d35fa5115f6f"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "457ae9007926a83b50b2c5a757fff8b6",
+      "6d62915904d480370644d35fa5115f6f"
+    ]
+  },
+  "runs": 17,
+  "seconds": 13.68,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_pad-8f0d1bd7/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_pad-8f0d1bd7",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_pad-8f0d1bd7"
+}

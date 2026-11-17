@@ -1,0 +1,51 @@
+{
+  "test": "test/integration/test_flask_multi_redis.py::test_init_app",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "fails-alone",
+  "prefix_length": 22,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [],
+  "order": [
+    "test/integration/test_flask_multi_redis.py::test_init_app"
+  ],
+  "outcome": "error",
+  "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: _thread.allocate_lock() takes no arguments (1 given)",
+    "/tmp/work/venvs/idoft-flask-multi-redis/lib/python3.9/site-packages/detpy/clock.py:468"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "7531f47c054097fdbc2bf20c63757d96"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": null,
+  "runs": 13,
+  "seconds": 9.08,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_init_app-c720f57c/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_init_app-c720f57c",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_init_app-c720f57c"
+}

@@ -1,0 +1,75 @@
+{
+  "test": "examples/test_gen_each_case.py::TestUnittest::test_get",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 23,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+  ],
+  "order": [
+    "examples/test_gen_each_case.py::TestUnittest::test_get"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/idoft-py-autodoc/var/test_get.rst'",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:171"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "9a1f50f548bbf893097c45e894705c87"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = c09a5e08b162c97cb383955169523392  <>  [time] time.time @ <site>/webtest/app.py:617 = 1000",
+    "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "c09a5e08b162c97cb383955169523392"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "<site>/webtest/app.py:617",
+      "v": "1000"
+    },
+    "fingerprints": [
+      "dc5f6582496254bfa328498f7c33a3f7",
+      "9a1f50f548bbf893097c45e894705c87"
+    ]
+  },
+  "runs": 18,
+  "seconds": 20.0,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-py-autodoc/detpy/bundles/test_get-f333f00d/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/detpy/bundles/test_get-f333f00d",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-py-autodoc/detpy/bundles/test_get-f333f00d"
+}

@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_merger.py::test_noccr_commands",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "brittle",
+  "prefix_length": 20,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_merger.py::test_global_extras"
+  ],
+  "order": [
+    "tests/test_merger.py::test_noccr_commands"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "MimicFailure",
+    "call",
+    "dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['dictation', 'testing'].",
+    "/tmp/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "4993241fa8fb64409bdab482e1766d90"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = cece94ab6420c3e173f534536220a34e  <>  [time] time.time @ <site>/dragonfly/grammar/elements_compound.py:163 = 1000",
+    "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "cece94ab6420c3e173f534536220a34e"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "<site>/dragonfly/grammar/elements_compound.py:163",
+      "v": "1000"
+    },
+    "fingerprints": [
+      "4eed2d757713c121ecfa432ea7b4f1e0",
+      "4993241fa8fb64409bdab482e1766d90"
+    ]
+  },
+  "runs": 20,
+  "seconds": 26.37,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-breathe/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-breathe/detpy/bundles/test_noccr_commands-ca74dc28/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-breathe/detpy/bundles/test_noccr_commands-ca74dc28",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-breathe/detpy/bundles/test_noccr_commands-ca74dc28"
+}

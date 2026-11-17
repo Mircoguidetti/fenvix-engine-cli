@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_datetimes.py::test_min_and_max",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "order",
+  "prefix_length": 84,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_utils.py::test_should_skip_non_cpython"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_datetimes.py::test_min_and_max"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert <class 'freezegun.api.FakeDatetime'> == FakeDatetime",
+    "/tmp/work/src/idoft-freezegun/tests/test_datetimes.py:601"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "c8efee82171f63c478832d6e5a5f4592"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "dc9d7f221b218e7ff0ba198f932f9041",
+      "c8efee82171f63c478832d6e5a5f4592"
+    ]
+  },
+  "runs": 22,
+  "seconds": 32.57,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-freezegun/detpy/bundles/test_min_and_max-030d9ecf/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/detpy/bundles/test_min_and_max-030d9ecf",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-freezegun/detpy/bundles/test_min_and_max-030d9ecf"
+}

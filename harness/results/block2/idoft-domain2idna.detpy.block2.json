@@ -1,0 +1,2112 @@
+{
+ "name": "idoft-domain2idna",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_cli.py::TestCLI::test_domain",
+  "tests/test_cli.py::TestCLI::test_domain_output",
+  "tests/test_cli.py::TestCLI::test_empty_domain",
+  "tests/test_cli.py::TestCLI::test_file",
+  "tests/test_cli.py::TestCLI::test_file_output",
+  "tests/test_converter.py::TestConverter::test_commented_line",
+  "tests/test_converter.py::TestConverter::test_hosts_file_format",
+  "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+  "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+  "tests/test_converter.py::TestConverter::test_to_idna_single",
+  "tests/test_helpers.py::TestFile::test_delete_not_exist",
+  "tests/test_helpers.py::TestFile::test_read_delete",
+  "tests/test_helpers.py::TestFile::test_write_delete",
+  "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+  "tests/test_init.py::TestInit::test_get"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008910",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 1.604,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 1.681,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 1.69,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 1.623,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 1.585,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 1.614,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 1.708,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 1.639,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 1.671,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 1.863,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 1.604,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 1.645,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 1.609,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 1.604,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 1.692,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 1.726,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 1.808,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 1.625,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 1.678,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 1.621,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 1.616,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 1.677,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 1.689,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 1.707,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 1.72,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 1.822,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 1.668,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 1.674,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 1.625,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 1.63,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 1.664,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 1.59,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 1.606,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 1.644,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 1.616,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 1.649,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 1.719,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 1.648,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 1.624,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 1.594,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 1.728,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 1.66,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 1.62,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 1.623,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 1.622,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 1.669,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 1.609,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 1.769,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 1.638,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 1.673,
+   "tests": 15,
+   "failing": [
+    "tests/test_cli.py::TestCLI::test_domain",
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file",
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_converter.py::TestConverter::test_commented_line",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+    "tests/test_converter.py::TestConverter::test_to_idna_single",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist",
+    "tests/test_helpers.py::TestFile::test_read_delete",
+    "tests/test_helpers.py::TestFile::test_write_delete",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [
+  "tests/test_cli.py::TestCLI::test_domain_output",
+  "tests/test_cli.py::TestCLI::test_empty_domain",
+  "tests/test_cli.py::TestCLI::test_file_output"
+ ],
+ "flaky_failing": [
+  "tests/test_cli.py::TestCLI::test_domain",
+  "tests/test_cli.py::TestCLI::test_file",
+  "tests/test_converter.py::TestConverter::test_commented_line",
+  "tests/test_converter.py::TestConverter::test_hosts_file_format",
+  "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+  "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+  "tests/test_converter.py::TestConverter::test_to_idna_single",
+  "tests/test_helpers.py::TestFile::test_delete_not_exist",
+  "tests/test_helpers.py::TestFile::test_read_delete",
+  "tests/test_helpers.py::TestFile::test_write_delete",
+  "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+  "tests/test_init.py::TestInit::test_get"
+ ],
+ "bundles": [
+  {
+   "test": "tests/test_cli.py::TestCLI::test_domain",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 13,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_empty_domain"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_domain"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d65f12cfda0e84da63ddef1254c92903"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "07aecfb9c2044fbef11656958f2193e8",
+     "d65f12cfda0e84da63ddef1254c92903"
+    ]
+   },
+   "runs": 17,
+   "seconds": 12.88,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_domain-639bad52/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_domain-639bad52",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_domain-639bad52",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_cli.py::TestCLI::test_domain_output",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "fails-alone",
+   "prefix_length": 11,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "ValueError",
+    "call",
+    "ValueError: I/O operation on closed file.",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:567"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "cc17d9173cd7ade313cbc76d735b2bd3"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": null,
+   "runs": 13,
+   "seconds": 9.74,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_domain_output-06356320/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_domain_output-06356320",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_domain_output-06356320",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_cli.py::TestCLI::test_empty_domain",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "fails-alone",
+   "prefix_length": 10,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_empty_domain"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: ValueError not raised by <lambda>",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:163"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "df495d1fd0388a3c8f1466ccd968daac"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": null,
+   "runs": 13,
+   "seconds": 9.62,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_empty_domain-31a844ba/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_empty_domain-31a844ba",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_empty_domain-31a844ba",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_cli.py::TestCLI::test_file",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 12,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_empty_domain"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_file"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d297daacede5aab69b58576528afe1fb"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "49714c09fb09b75254e8cc34d306ad93",
+     "d297daacede5aab69b58576528afe1fb"
+    ]
+   },
+   "runs": 19,
+   "seconds": 14.22,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_file-be9ea159/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_file-be9ea159",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_file-be9ea159",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_cli.py::TestCLI::test_file_output",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "fails-alone",
+   "prefix_length": 14,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "ValueError",
+    "call",
+    "ValueError: I/O operation on closed file.",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:567"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1bc623b4c4805be069a2265142e3dfba"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": null,
+   "runs": 13,
+   "seconds": 9.68,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_file_output-aa045ad6/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_file_output-aa045ad6",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_file_output-aa045ad6",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_converter.py::TestConverter::test_commented_line",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 15,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_empty_domain"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_converter.py::TestConverter::test_commented_line"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a5e7162391abdeff254aae595b3e5c2c"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "6db1502340dced6e462fbcdf9c79abb0",
+     "a5e7162391abdeff254aae595b3e5c2c"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.0,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_commented_line-0a460251/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_commented_line-0a460251",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_commented_line-0a460251",
+   "first_failing_seed": 3
+  },
+  {
+   "test": "tests/test_converter.py::TestConverter::test_hosts_file_format",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 11,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_empty_domain"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "147d4beb10da8db0e6b7cfe0c3df62a6"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "85e9beb6daf639d3969c23bc08498ba5",
+     "147d4beb10da8db0e6b7cfe0c3df62a6"
+    ]
+   },
+   "runs": 17,
+   "seconds": 12.74,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_hosts_file_format-17138e84/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_hosts_file_format-17138e84",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_hosts_file_format-17138e84",
+   "first_failing_seed": 3
+  },
+  {
+   "test": "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 14,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_empty_domain"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "55aeffcb8915aaa802364ce324fede85"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "0d72f56d7ce5af46c800a79eb4cacd24",
+     "55aeffcb8915aaa802364ce324fede85"
+    ]
+   },
+   "runs": 18,
+   "seconds": 13.48,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_to_idna_multiple-6a29dc0f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_to_idna_multiple-6a29dc0f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_to_idna_multiple-6a29dc0f",
+   "first_failing_seed": 3
+  },
+  {
+   "test": "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 13,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_empty_domain"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "9ae661e0e7aefa7d93950f1ded1fd2e1"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "63ac17d8f31c6aa0728462388a164e9e",
+     "9ae661e0e7aefa7d93950f1ded1fd2e1"
+    ]
+   },
+   "runs": 18,
+   "seconds": 13.76,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_to_idna_multiple_urls-8f0ad8eb/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_to_idna_multiple_urls-8f0ad8eb",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_to_idna_multiple_urls-8f0ad8eb",
+   "first_failing_seed": 3
+  },
+  {
+   "test": "tests/test_converter.py::TestConverter::test_to_idna_single",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 12,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_empty_domain"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_converter.py::TestConverter::test_to_idna_single"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "9f65bb4377bd347061eb836132774cf3"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "90b82ab59ecf02b2987d38e1ade44597",
+     "9f65bb4377bd347061eb836132774cf3"
+    ]
+   },
+   "runs": 19,
+   "seconds": 14.16,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_to_idna_single-891739d5/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_to_idna_single-891739d5",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_to_idna_single-891739d5",
+   "first_failing_seed": 3
+  },
+  {
+   "test": "tests/test_helpers.py::TestFile::test_delete_not_exist",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 14,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6f1c947b6e4072471eecbd33e0458a12"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "94745ec47ac211c82fefd0f2c389d3e5",
+     "6f1c947b6e4072471eecbd33e0458a12"
+    ]
+   },
+   "runs": 16,
+   "seconds": 11.99,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_delete_not_exist-128809cf/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_delete_not_exist-128809cf",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_delete_not_exist-128809cf",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_helpers.py::TestFile::test_read_delete",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 13,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_helpers.py::TestFile::test_read_delete"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c8daed92c48044c13ba1b554b0e646de"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "9a6757eae801aeefa5b9ae939ba479c8",
+     "c8daed92c48044c13ba1b554b0e646de"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.01,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_read_delete-0402cce8/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_read_delete-0402cce8",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_read_delete-0402cce8",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_helpers.py::TestFile::test_write_delete",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 12,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_helpers.py::TestFile::test_write_delete"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "8ccada170c55d3faf169294b23ac311a"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "0c6fd9b81c201c335b393117bc5e321a",
+     "8ccada170c55d3faf169294b23ac311a"
+    ]
+   },
+   "runs": 18,
+   "seconds": 13.55,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_write_delete-91449a85/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_write_delete-91449a85",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_write_delete-91449a85",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 15,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_file_output",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "7912ff88a72d4adff49939e0c6414b88"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "27b1022cfb8c1631dcc6f3db2819d913",
+     "7912ff88a72d4adff49939e0c6414b88"
+    ]
+   },
+   "runs": 19,
+   "seconds": 14.25,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_write_overwrite_delete-a2e7ec65/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_write_overwrite_delete-a2e7ec65",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_write_overwrite_delete-a2e7ec65",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_init.py::TestInit::test_get",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 15,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_empty_domain"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1c7b8786ca0bdb9b4041b3fc7c62e3cd"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "01450e2c55b39835d5f961a34f5f4e6a",
+     "1c7b8786ca0bdb9b4041b3fc7c62e3cd"
+    ]
+   },
+   "runs": 19,
+   "seconds": 14.39,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_get-2a6f0983/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_get-2a6f0983",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_get-2a6f0983",
+   "first_failing_seed": 1
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "tests/test_cli.py::TestCLI::test_domain",
+   "tests/test_cli.py::TestCLI::test_file",
+   "tests/test_converter.py::TestConverter::test_commented_line",
+   "tests/test_converter.py::TestConverter::test_hosts_file_format",
+   "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+   "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+   "tests/test_converter.py::TestConverter::test_to_idna_single",
+   "tests/test_helpers.py::TestFile::test_delete_not_exist",
+   "tests/test_helpers.py::TestFile::test_read_delete",
+   "tests/test_helpers.py::TestFile::test_write_delete",
+   "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+   "tests/test_init.py::TestInit::test_get"
+  ],
+  "None|None|None": [
+   "tests/test_cli.py::TestCLI::test_domain_output",
+   "tests/test_cli.py::TestCLI::test_empty_domain",
+   "tests/test_cli.py::TestCLI::test_file_output"
+  ]
+ },
+ "families_by_polluter": {
+  "tests/test_cli.py::TestCLI::test_empty_domain": [
+   "tests/test_cli.py::TestCLI::test_domain",
+   "tests/test_cli.py::TestCLI::test_file",
+   "tests/test_converter.py::TestConverter::test_commented_line",
+   "tests/test_converter.py::TestConverter::test_hosts_file_format",
+   "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+   "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+   "tests/test_converter.py::TestConverter::test_to_idna_single",
+   "tests/test_init.py::TestInit::test_get"
+  ],
+  "<none>": [
+   "tests/test_cli.py::TestCLI::test_domain_output",
+   "tests/test_cli.py::TestCLI::test_empty_domain",
+   "tests/test_cli.py::TestCLI::test_file_output"
+  ],
+  "tests/test_cli.py::TestCLI::test_file_output": [
+   "tests/test_helpers.py::TestFile::test_delete_not_exist",
+   "tests/test_helpers.py::TestFile::test_read_delete",
+   "tests/test_helpers.py::TestFile::test_write_delete",
+   "tests/test_helpers.py::TestFile::test_write_overwrite_delete"
+  ]
+ },
+ "collected": 15,
+ "seconds": 273.21
+}

@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 394,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "assert 422 == <HTTPStatus.NOT_MODIFIED: 304>",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:275"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "fee4793b5b881755106784a32a509d6d"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "56b32780788c309689efcbcb2d00b98f",
+      "fee4793b5b881755106784a32a509d6d"
+    ]
+  },
+  "runs": 28,
+  "seconds": 19.65,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_error0-HTTPStatus.NOT_MODIFIED_-0910a059/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_error0-HTTPStatus.NOT_MODIFIED_-0910a059",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_error0-HTTPStatus.NOT_MODIFIED_-0910a059"
+}

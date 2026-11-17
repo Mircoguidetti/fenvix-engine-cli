@@ -1,0 +1,78 @@
+{
+  "test": "tests/test_sync.py::test_wait_log_predicate",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 161,
+  "minimal_length": 3,
+  "polluters": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]",
+    "tests/test_sync.py::test_wait_log_predicate"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "b7a98a69ba55c0362094f42d4e71099e"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 24,
+    "reason": "time",
+    "description": "event #24: [time] time.time @ easypy/logging.py:507 = 200014000  <>  [random] random.state @ <end> = 5ba6761a433ae0baecef19a53bc40604",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "easypy/logging.py:507",
+      "v": "200014000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "5ba6761a433ae0baecef19a53bc40604"
+    },
+    "fingerprints": [
+      "0558f48fd0ab9fd95e1fa6e1c46e5bf9",
+      "b7a98a69ba55c0362094f42d4e71099e"
+    ]
+  },
+  "runs": 23,
+  "seconds": 32.23,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_wait_log_predicate-18bf2449/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_wait_log_predicate-18bf2449",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_wait_log_predicate-18bf2449"
+}

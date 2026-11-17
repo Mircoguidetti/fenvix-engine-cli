@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 403,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "assert 422 == 406",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:256"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "24893414120ecf05d8a05800becab49b"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "9dc80be8fd6795a4e5db52059ecd8e5b",
+      "24893414120ecf05d8a05800becab49b"
+    ]
+  },
+  "runs": 25,
+  "seconds": 17.96,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__invalid_headers_r1-406-URI_not_available_in_p-62e04721/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__invalid_headers_r1-406-URI_not_available_in_p-62e04721",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__invalid_headers_r1-406-URI_not_available_in_p-62e04721"
+}

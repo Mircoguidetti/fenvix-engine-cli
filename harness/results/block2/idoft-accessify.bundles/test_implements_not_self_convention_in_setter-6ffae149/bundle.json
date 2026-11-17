@@ -1,0 +1,76 @@
+{
+  "test": "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "5",
+  "seed": 5,
+  "kind": "order",
+  "prefix_length": 26,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/disabling/test_disable.py::test_disabling_accessify"
+  ],
+  "setters": [],
+  "order": [
+    "tests/disabling/test_disable.py::test_disabling_accessify",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "Failed",
+    "call",
+    "Failed: DID NOT RAISE <class 'accessify.errors.InterfaceMemberHasNotBeenImplementedException'>",
+    "/tmp/work/src/idoft-accessify/tests/interfaces/test_implements.py:384"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "447e44c73de07e599027c051e1010d7f"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "85577d1d8bd21cf3c5792c4bdb5bf67f",
+      "447e44c73de07e599027c051e1010d7f"
+    ]
+  },
+  "runs": 21,
+  "seconds": 11.68,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-accessify/bin/python",
+  "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_not_self_convention_in_setter-6ffae149/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_not_self_convention_in_setter-6ffae149",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_not_self_convention_in_setter-6ffae149"
+}

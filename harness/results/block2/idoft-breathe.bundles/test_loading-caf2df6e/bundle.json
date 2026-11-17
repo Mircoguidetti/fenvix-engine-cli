@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_loading.py::test_loading",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "brittle",
+  "prefix_length": 2,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_loading.py::test_loading_failure"
+  ],
+  "order": [
+    "tests/test_loading.py::test_loading"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "MimicFailure",
+    "call",
+    "dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['apple'].",
+    "/tmp/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "d4e806f8fa368ae281b583ef9fc779ac"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = 44cd034c73b3072ba357f6a882a770ac  <>  [time] time.time @ breathe/grammar/master.py:211 = 1000",
+    "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "44cd034c73b3072ba357f6a882a770ac"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "breathe/grammar/master.py:211",
+      "v": "1000"
+    },
+    "fingerprints": [
+      "d06e487fad422f3e7f4383f966c73c60",
+      "d4e806f8fa368ae281b583ef9fc779ac"
+    ]
+  },
+  "runs": 16,
+  "seconds": 21.01,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-breathe/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-breathe/detpy/bundles/test_loading-caf2df6e/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-breathe/detpy/bundles/test_loading-caf2df6e",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-breathe/detpy/bundles/test_loading-caf2df6e"
+}

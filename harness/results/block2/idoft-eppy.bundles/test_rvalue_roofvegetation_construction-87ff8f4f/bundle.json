@@ -1,0 +1,78 @@
+{
+  "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_roofvegetation_construction",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "order",
+  "prefix_length": 155,
+  "minimal_length": 3,
+  "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+  ],
+  "setters": [],
+  "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_roofvegetation_construction"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "31b0be89a365929714253094380c84bf"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "8f74105f0a32c74cbcde42b03235c37f",
+      "31b0be89a365929714253094380c84bf"
+    ]
+  },
+  "runs": 29,
+  "seconds": 125.61,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/detpy/bundles/test_rvalue_roofvegetation_construction-87ff8f4f/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/detpy/bundles/test_rvalue_roofvegetation_construction-87ff8f4f",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-eppy/detpy/bundles/test_rvalue_roofvegetation_construction-87ff8f4f"
+}

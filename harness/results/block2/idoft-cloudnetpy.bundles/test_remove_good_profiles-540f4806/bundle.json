@@ -1,0 +1,76 @@
+{
+  "test": "tests/unit/test_lwc.py::test_remove_good_profiles",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "order",
+  "prefix_length": 404,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/unit/test_lwc.py::test_find_lwp_difference"
+  ],
+  "setters": [],
+  "order": [
+    "tests/unit/test_lwc.py::test_find_lwp_difference",
+    "tests/unit/test_lwc.py::test_remove_good_profiles"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: ",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/contextlib.py:79"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "a909c87f94815eeea9569497cbb42279"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "25a3d0aba487b592ee09bef6d5daba1b",
+      "a909c87f94815eeea9569497cbb42279"
+    ]
+  },
+  "runs": 29,
+  "seconds": 56.96,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-cloudnetpy/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-cloudnetpy/detpy/bundles/test_remove_good_profiles-540f4806/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-cloudnetpy/detpy/bundles/test_remove_good_profiles-540f4806",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-cloudnetpy/detpy/bundles/test_remove_good_profiles-540f4806"
+}

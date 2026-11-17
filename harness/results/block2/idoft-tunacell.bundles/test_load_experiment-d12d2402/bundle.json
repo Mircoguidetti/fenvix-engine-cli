@@ -1,0 +1,76 @@
+{
+  "test": "tunacell/tests/test_experiment.py::test_load_experiment",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 20,
+  "minimal_length": 2,
+  "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+  ],
+  "setters": [],
+  "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_load_experiment"
+  ],
+  "outcome": "error",
+  "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "b95ca24c01a74f31065a2a15a7a6b395"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:a1583253a28a56a3a763a54c06ed6e43  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "tunacell/base/colony.py:85",
+      "v": "16:a1583253a28a56a3a763a54c06ed6e43"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "<site>/tqdm/std.py:1463",
+      "v": "3000"
+    },
+    "fingerprints": [
+      "96b8351b0fde2a9bc4f6669a0b4d89d3",
+      "b95ca24c01a74f31065a2a15a7a6b395"
+    ]
+  },
+  "runs": 21,
+  "seconds": 38.63,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_load_experiment-d12d2402/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_load_experiment-d12d2402",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_load_experiment-d12d2402"
+}

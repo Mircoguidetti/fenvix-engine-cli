@@ -1,0 +1,1292 @@
+{
+ "name": "idoft-devtracker",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "devtracker/test_devtracker.py::test_add_start",
+  "devtracker/test_devtracker.py::test_current_status",
+  "devtracker/test_devtracker.py::test_make_project_csv",
+  "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+  "devtracker/test_devtracker.py::test_start_time",
+  "devtracker/test_devtracker.py::test_today_report_err_one"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008881",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 1.871,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 1.864,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 1.872,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 1.865,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 1.858,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 1.938,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 1.894,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 1.881,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 2.041,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 1.855,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 1.952,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 1.894,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 1.928,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 1.9,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 1.899,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 1.919,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 1.927,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 1.88,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 1.951,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 1.874,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 1.879,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 1.892,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 1.88,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 1.896,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 1.904,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 1.877,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 1.864,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 2.065,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 1.873,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 1.876,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 1.915,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 1.883,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 1.859,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 1.929,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 1.872,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 1.851,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 1.914,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 1.863,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 1.862,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_get_working_dir"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 2.15,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 1.858,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 1.87,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 1.909,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 1.863,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 1.851,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 1.908,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_add_start",
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 1.875,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 1.863,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 1.886,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_current_status",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 1.865,
+   "tests": 19,
+   "failing": [
+    "devtracker/test_devtracker.py::test_end_time_total",
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_get_working_dir",
+    "devtracker/test_devtracker.py::test_make_project_csv",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [
+  "devtracker/test_devtracker.py::test_get_working_dir"
+ ],
+ "flaky_failing": [
+  "devtracker/test_devtracker.py::test_add_start",
+  "devtracker/test_devtracker.py::test_current_status",
+  "devtracker/test_devtracker.py::test_end_time_total",
+  "devtracker/test_devtracker.py::test_full_report",
+  "devtracker/test_devtracker.py::test_make_project_csv",
+  "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+  "devtracker/test_devtracker.py::test_start_time",
+  "devtracker/test_devtracker.py::test_today_report_err_one"
+ ],
+ "bundles": [
+  {
+   "test": "devtracker/test_devtracker.py::test_add_start",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 18,
+   "minimal_length": 2,
+   "polluters": [
+    "devtracker/test_devtracker.py::test_remove"
+   ],
+   "setters": [],
+   "order": [
+    "devtracker/test_devtracker.py::test_remove",
+    "devtracker/test_devtracker.py::test_add_start"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/home/runner/devtrack_projects/test.csv'",
+    "/tmp/work/src/idoft-devtracker/devtracker/time.py:20"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "508b1a94636d1b9c02ae833e9ef3b36d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "62a40ffe17ea23f2b797da46c99ebf46",
+     "508b1a94636d1b9c02ae833e9ef3b36d"
+    ]
+   },
+   "runs": 18,
+   "seconds": 16.82,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-devtracker/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-devtracker/detpy/bundles/test_add_start-9f035ddb/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-devtracker/detpy/bundles/test_add_start-9f035ddb",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-devtracker/detpy/bundles/test_add_start-9f035ddb",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "devtracker/test_devtracker.py::test_current_status",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 19,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "devtracker/test_devtracker.py::test_full_report"
+   ],
+   "order": [
+    "devtracker/test_devtracker.py::test_current_status"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert '[+] You have...is project.\\n' == '[+] Status r...roject yet.\\n'",
+    "/tmp/work/src/idoft-devtracker/devtracker/test_devtracker.py:99"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "22ea5e018a1c8057ca5c212987c3be80"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = c3124761c51b5328f2036470de83c5c3  <>  [time] datetime.now @ devtracker/time_and_date_helpers.py:7 = 1000",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "c3124761c51b5328f2036470de83c5c3"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "datetime.now",
+     "at": "devtracker/time_and_date_helpers.py:7",
+     "v": "1000"
+    },
+    "fingerprints": [
+     "2652ac79bd5b611f5e224cb8b8b48df6",
+     "22ea5e018a1c8057ca5c212987c3be80"
+    ]
+   },
+   "runs": 17,
+   "seconds": 15.99,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-devtracker/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-devtracker/detpy/bundles/test_current_status-8f57f54e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-devtracker/detpy/bundles/test_current_status-8f57f54e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-devtracker/detpy/bundles/test_current_status-8f57f54e",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "devtracker/test_devtracker.py::test_make_project_csv",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 12,
+   "minimal_length": 2,
+   "polluters": [
+    "devtracker/test_devtracker.py::test_remove"
+   ],
+   "setters": [],
+   "order": [
+    "devtracker/test_devtracker.py::test_remove",
+    "devtracker/test_devtracker.py::test_make_project_csv"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert False == True",
+    "/tmp/work/src/idoft-devtracker/devtracker/test_devtracker.py:64"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "f57cce4e1e1bad7d733bc6d7941068cc"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "07087eb1dd3846822509ff9681e487a9",
+     "f57cce4e1e1bad7d733bc6d7941068cc"
+    ]
+   },
+   "runs": 18,
+   "seconds": 16.71,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-devtracker/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-devtracker/detpy/bundles/test_make_project_csv-34c9634f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-devtracker/detpy/bundles/test_make_project_csv-34c9634f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-devtracker/detpy/bundles/test_make_project_csv-34c9634f",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 12,
+   "minimal_length": 2,
+   "polluters": [
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "setters": [],
+   "order": [
+    "devtracker/test_devtracker.py::test_start_time",
+    "devtracker/test_devtracker.py::test_make_project_csv_initalize"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert ['start_date'...ime', 'total'] == ['1999-01-01'...', '00:00:00']",
+    "/tmp/work/src/idoft-devtracker/devtracker/test_devtracker.py:72"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b7181b7e65834bd7e28850894609852c"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "d39270aa6fe850c72bfcd97f6761d994",
+     "b7181b7e65834bd7e28850894609852c"
+    ]
+   },
+   "runs": 15,
+   "seconds": 13.92,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-devtracker/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-devtracker/detpy/bundles/test_make_project_csv_initalize-ffac8965/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-devtracker/detpy/bundles/test_make_project_csv_initalize-ffac8965",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-devtracker/detpy/bundles/test_make_project_csv_initalize-ffac8965",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "devtracker/test_devtracker.py::test_start_time",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "fails-alone",
+   "prefix_length": 1,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [],
+   "order": [
+    "devtracker/test_devtracker.py::test_start_time"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert ['1999-01-02'...', '00:00:01'] == ['2025-01-01', '00:00:00']",
+    "/tmp/work/src/idoft-devtracker/devtracker/test_devtracker.py:80"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "cae28273ba01f39fd2de2e9f634d7bb3"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": null,
+   "runs": 18,
+   "seconds": 16.97,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-devtracker/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-devtracker/detpy/bundles/test_start_time-5466e685/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-devtracker/detpy/bundles/test_start_time-5466e685",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-devtracker/detpy/bundles/test_start_time-5466e685",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "devtracker/test_devtracker.py::test_today_report_err_one",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 11,
+   "minimal_length": 2,
+   "polluters": [
+    "devtracker/test_devtracker.py::test_full_report"
+   ],
+   "setters": [],
+   "order": [
+    "devtracker/test_devtracker.py::test_full_report",
+    "devtracker/test_devtracker.py::test_today_report_err_one"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert '[+] Generati... Way to go!\\n' == '[+] Generati...n a report.\\n'",
+    "/tmp/work/src/idoft-devtracker/devtracker/test_devtracker.py:118"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "283e4aad22e467767f3a013326cfd610"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "0f011c4d7a6c072775df47f0970f6073",
+     "283e4aad22e467767f3a013326cfd610"
+    ]
+   },
+   "runs": 16,
+   "seconds": 15.08,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-devtracker/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-devtracker/detpy/bundles/test_today_report_err_one-4348cda3/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-devtracker/detpy/bundles/test_today_report_err_one-4348cda3",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-devtracker/detpy/bundles/test_today_report_err_one-4348cda3",
+   "first_failing_seed": 1
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "devtracker/test_devtracker.py::test_add_start",
+   "devtracker/test_devtracker.py::test_make_project_csv",
+   "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+   "devtracker/test_devtracker.py::test_today_report_err_one"
+  ],
+  "time|time|devtracker/time_and_date_helpers.py:7": [
+   "devtracker/test_devtracker.py::test_current_status"
+  ],
+  "None|None|None": [
+   "devtracker/test_devtracker.py::test_start_time"
+  ]
+ },
+ "families_by_polluter": {
+  "devtracker/test_devtracker.py::test_remove": [
+   "devtracker/test_devtracker.py::test_add_start",
+   "devtracker/test_devtracker.py::test_make_project_csv"
+  ],
+  "devtracker/test_devtracker.py::test_full_report": [
+   "devtracker/test_devtracker.py::test_current_status",
+   "devtracker/test_devtracker.py::test_today_report_err_one"
+  ],
+  "devtracker/test_devtracker.py::test_start_time": [
+   "devtracker/test_devtracker.py::test_make_project_csv_initalize"
+  ],
+  "<none>": [
+   "devtracker/test_devtracker.py::test_start_time"
+  ]
+ },
+ "collected": 19,
+ "seconds": 192.25
+}

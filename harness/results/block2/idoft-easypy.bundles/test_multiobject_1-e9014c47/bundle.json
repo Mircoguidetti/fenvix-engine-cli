@@ -1,0 +1,87 @@
+{
+  "test": "tests/test_concurrency.py::test_multiobject_1",
+  "configs_searched": 1,
+  "status": "replay-unstable",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 205,
+  "minimal_length": 3,
+  "polluters": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]",
+    "tests/test_concurrency.py::test_multiobject_1"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "06c5345900874a232ea94def2c49992c",
+      "1b191df706b00f213ef43e801db518ae",
+      "47f86375bfdf8ae0ccfd2f1ac8e4e8b0",
+      "5206e26ac478742755d74c94d9b27e23",
+      "6dff4b5165b87836b263751bf7425d59",
+      "9a85ebe8b3b3db83a121f53a4873d684",
+      "9d1756850220edee84ea57606ee8c93b",
+      "9d72bf3f7382480e486794b3b287921d",
+      "b3ce7379031bc742cde522c989dc748f",
+      "d397d0224c9159efa063404e50f30568"
+    ],
+    "identical_fingerprint": false
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "thread",
+    "description": "event #0: os.urandom @ easypy/threadtree.py:39 returned different values: \"16:68fd2aeff5ca81836e7ea10a56219521\" vs \"16:dd13febd1575e7ff1e6842c3de95e9e6\"",
+    "event_a": {
+      "t": 1,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "easypy/threadtree.py:39",
+      "v": "16:68fd2aeff5ca81836e7ea10a56219521"
+    },
+    "event_b": {
+      "t": 1,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "easypy/threadtree.py:39",
+      "v": "16:dd13febd1575e7ff1e6842c3de95e9e6"
+    },
+    "fingerprints": [
+      "3ce2600f1f3425f00bb39d944bd10dcb",
+      "47f86375bfdf8ae0ccfd2f1ac8e4e8b0"
+    ]
+  },
+  "runs": 26,
+  "seconds": 38.61,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_multiobject_1-e9014c47/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_multiobject_1-e9014c47",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_multiobject_1-e9014c47"
+}

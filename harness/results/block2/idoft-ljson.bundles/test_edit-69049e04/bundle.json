@@ -1,0 +1,76 @@
+{
+  "test": "test/test_ljson_disk.py::test_edit",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 24,
+  "minimal_length": 2,
+  "polluters": [
+    "test/test_ljson_mem.py::test_unique_check"
+  ],
+  "setters": [],
+  "order": [
+    "test/test_ljson_mem.py::test_unique_check",
+    "test/test_ljson_disk.py::test_edit"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "ValueError",
+    "call",
+    "ValueError: Value name is not unique: meg",
+    "/tmp/work/src/idoft-ljson/ljson/base/disk.py:112"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "59de1a28350b0791b2daca95b913f500"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "547d83442ee7a5115760c171dc60ccb7",
+      "59de1a28350b0791b2daca95b913f500"
+    ]
+  },
+  "runs": 20,
+  "seconds": 20.2,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-ljson/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-ljson/detpy/bundles/test_edit-69049e04/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-ljson/detpy/bundles/test_edit-69049e04",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-ljson/detpy/bundles/test_edit-69049e04"
+}

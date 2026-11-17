@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_concurrency.py::test_multiexception_pickling",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 194,
+  "minimal_length": 2,
+  "polluters": [
+    "test_package.py::test_package[lockstep]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[lockstep]",
+    "tests/test_concurrency.py::test_multiexception_pickling"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "Empty",
+    "call",
+    "_queue.Empty",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/multiprocessing/queues.py:116"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "94eafc41d8d07827abc678014a1add93"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 2,
+    "reason": "time",
+    "description": "event #2: [time] time.time @ easypy/exceptions.py:25 = 2000  <>  [time] time.monotonic @ tests/test_concurrency.py:170 = 2000",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "easypy/exceptions.py:25",
+      "v": "2000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "time",
+      "o": "time.monotonic",
+      "at": "tests/test_concurrency.py:170",
+      "v": "2000"
+    },
+    "fingerprints": [
+      "8e16ea98add0e374b09f98703e4ebd73",
+      "94eafc41d8d07827abc678014a1add93"
+    ]
+  },
+  "runs": 23,
+  "seconds": 31.79,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_multiexception_pickling-2fa190b0/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_multiexception_pickling-2fa190b0",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_multiexception_pickling-2fa190b0"
+}

@@ -1,0 +1,75 @@
+{
+  "test": "tests/unit/test_drizzle.py::test_calc_lwf",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "brittle",
+  "prefix_length": 22,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/unit/test_drizzle.py::test_find_indices"
+  ],
+  "order": [
+    "tests/unit/test_drizzle.py::test_calc_lwf"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: ",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/contextlib.py:79"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "8be0073508cdd10386c90662181f7be1"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "d87b37bbdd7f14156e3f2e5b312911a1",
+      "8be0073508cdd10386c90662181f7be1"
+    ]
+  },
+  "runs": 25,
+  "seconds": 54.05,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-cloudnetpy/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-cloudnetpy/detpy/bundles/test_calc_lwf-0badb5d8/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-cloudnetpy/detpy/bundles/test_calc_lwf-0badb5d8",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-cloudnetpy/detpy/bundles/test_calc_lwf-0badb5d8"
+}

@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_api_client.py::TestApiClient::test_invalid_request_error",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 57,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_api_client.py::TestApiClient::test_validation_error"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_api_client.py::TestApiClient::test_validation_error",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "ValidationError",
+    "call",
+    "coinbase_commerce.error.ValidationError: Request id <MagicMock name='mock.get().headers.get()' id='140737321360688'>: <empty message>",
+    "/tmp/work/src/idoft-coinbase-commerce-python/coinbase_commerce/client.py:89"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "2d3b0ed09074145bd8c451ed8cd869e3"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "3ae7e48792ffba40f7db5fa7a6c012e4",
+      "2d3b0ed09074145bd8c451ed8cd869e3"
+    ]
+  },
+  "runs": 24,
+  "seconds": 31.58,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_invalid_request_error-b1c8fe08/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_invalid_request_error-b1c8fe08",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_invalid_request_error-b1c8fe08"
+}

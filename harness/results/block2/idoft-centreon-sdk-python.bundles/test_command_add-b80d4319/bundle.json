@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_command.py::TestCommands::test_command_add",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "22",
+  "seed": 22,
+  "kind": "brittle",
+  "prefix_length": 3,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+  ],
+  "order": [
+    "tests/test_command.py::TestCommands::test_command_add"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: expected call not found.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/mock/mock.py:992"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "1aae2abc33c75c5c65a55426b2a94470"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "0904e14c45bc30b3155b98b91661a9e3",
+      "1aae2abc33c75c5c65a55426b2a94470"
+    ]
+  },
+  "runs": 20,
+  "seconds": 24.77,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+  "command": "pytest --det --det-seed=22 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_add-b80d4319/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_add-b80d4319",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_add-b80d4319"
+}

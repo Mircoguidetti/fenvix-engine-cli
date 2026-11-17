@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "brittle",
+  "prefix_length": 3,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+  ],
+  "order": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "ConnectionError",
+    "call",
+    "requests.exceptions.ConnectionError: Connection refused by Responses - the call doesn't match any registered mock.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/responses/__init__.py:1140"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "83fe47ff3b7eb51ddde221d8e0e64d77"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 3,
+    "reason": "time",
+    "description": "event #3: [time] time.time @ <site>/requests/cookies.py:137 = 4000  <>  [random] random.state @ <end> = c208201f505fac1d56694bc50c4ac46b",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "<site>/requests/cookies.py:137",
+      "v": "4000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "c208201f505fac1d56694bc50c4ac46b"
+    },
+    "fingerprints": [
+      "8c000d74d0ad091000e3619a2b3a66ad",
+      "83fe47ff3b7eb51ddde221d8e0e64d77"
+    ]
+  },
+  "runs": 20,
+  "seconds": 24.71,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_building_line-13b1f4a3/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_building_line-13b1f4a3",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_building_line-13b1f4a3"
+}

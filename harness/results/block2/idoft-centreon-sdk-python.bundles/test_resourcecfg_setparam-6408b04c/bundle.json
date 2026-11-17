@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "brittle",
+  "prefix_length": 5,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+  ],
+  "order": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "KeyError",
+    "call",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "f5e64fbde4e9424568845a322c120418"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "d30f64fd3090141df5565edceaeca2f3",
+      "f5e64fbde4e9424568845a322c120418"
+    ]
+  },
+  "runs": 19,
+  "seconds": 23.0,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_setparam-6408b04c/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_setparam-6408b04c",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_setparam-6408b04c"
+}

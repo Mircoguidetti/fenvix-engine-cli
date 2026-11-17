@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "order",
+  "prefix_length": 1883,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert None",
+    "/tmp/work/src/arrow/tests/test_locales.py:42"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "8d0da0e269e72c9cb9ff5f60354e8795"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "3b09cbf873396a716ade802f165b5e13",
+      "8d0da0e269e72c9cb9ff5f60354e8795"
+    ]
+  },
+  "runs": 32,
+  "seconds": 236.42,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/arrow/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/arrow/detpy/bundles/test_locale_name_validation-9cea9591/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/arrow/detpy/bundles/test_locale_name_validation-9cea9591",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/arrow/detpy/bundles/test_locale_name_validation-9cea9591"
+}

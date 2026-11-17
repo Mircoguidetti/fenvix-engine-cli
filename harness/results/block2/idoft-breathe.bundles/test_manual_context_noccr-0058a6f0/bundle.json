@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_command_context.py::test_manual_context_noccr",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 11,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_command_context.py::test_manual_context"
+  ],
+  "order": [
+    "tests/test_command_context.py::test_manual_context_noccr"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "MimicFailure",
+    "call",
+    "dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['spaghetti'].",
+    "/tmp/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "90c8acd1bb604cd84c14990a94acd35f"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "f1d2a2a7fa474ff5d3b8e06d04628425",
+      "90c8acd1bb604cd84c14990a94acd35f"
+    ]
+  },
+  "runs": 20,
+  "seconds": 26.44,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-breathe/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-breathe/detpy/bundles/test_manual_context_noccr-0058a6f0/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-breathe/detpy/bundles/test_manual_context_noccr-0058a6f0",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-breathe/detpy/bundles/test_manual_context_noccr-0058a6f0"
+}

@@ -1,0 +1,78 @@
+{
+  "test": "eppy/tests/test_modeleditor.py::test_idfinmsequence",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "order",
+  "prefix_length": 75,
+  "minimal_length": 3,
+  "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+  ],
+  "setters": [],
+  "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_idfinmsequence"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "d252d3b6fa921c58fc56c9d5255c7c65"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "e5c5da4aa40a2de2d34b75faa3b91f86",
+      "d252d3b6fa921c58fc56c9d5255c7c65"
+    ]
+  },
+  "runs": 25,
+  "seconds": 104.32,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/detpy/bundles/test_idfinmsequence-37323203/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/detpy/bundles/test_idfinmsequence-37323203",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-eppy/detpy/bundles/test_idfinmsequence-37323203"
+}

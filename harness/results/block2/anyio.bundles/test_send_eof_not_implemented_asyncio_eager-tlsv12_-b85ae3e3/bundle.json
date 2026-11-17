@@ -1,0 +1,76 @@
+{
+  "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "order",
+  "prefix_length": 4800,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+  ],
+  "setters": [],
+  "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]"
+  ],
+  "outcome": "failed+teardown-error",
+  "exception": [
+    "SSLError",
+    "call",
+    "ssl.SSLError: [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1035)",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/ssl.py:969"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "30e0321d69c1459b9448fa030a3eceac"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:b6deeb9821f24f453faecab0421e8927  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "<site>/trustme/__init__.py:61",
+      "v": "12:b6deeb9821f24f453faecab0421e8927"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "<site>/blockbuster/blockbuster.py:372",
+      "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+      "5e7423717187d54254179be331a634e5",
+      "30e0321d69c1459b9448fa030a3eceac"
+    ]
+  },
+  "runs": 31,
+  "seconds": 411.95,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/anyio/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv12_-b85ae3e3/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv12_-b85ae3e3",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv12_-b85ae3e3"
+}

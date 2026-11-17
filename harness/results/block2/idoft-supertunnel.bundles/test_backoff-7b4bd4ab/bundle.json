@@ -1,0 +1,75 @@
+{
+  "test": "supertunnel/ssh/continuous_test.py::test_backoff",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 41,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "supertunnel/command_test.py::test_forward"
+  ],
+  "order": [
+    "supertunnel/ssh/continuous_test.py::test_backoff"
+  ],
+  "outcome": "error",
+  "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "756845f546dffb6a5f980e4cc2e2d73b"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] time.time @ supertunnel/ssh/continuous.py:92 = 2000  <>  [random] random.state @ <end> = ead7791673c55f21b8d61c1f18392f6d",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "supertunnel/ssh/continuous.py:92",
+      "v": "2000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "ead7791673c55f21b8d61c1f18392f6d"
+    },
+    "fingerprints": [
+      "f85d1778c01577451e788fe57861f5c5",
+      "756845f546dffb6a5f980e4cc2e2d73b"
+    ]
+  },
+  "runs": 18,
+  "seconds": 25.1,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_backoff-7b4bd4ab/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_backoff-7b4bd4ab",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_backoff-7b4bd4ab"
+}

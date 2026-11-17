@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node10-expected_node10]",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "8",
+  "seed": 8,
+  "kind": "brittle",
+  "prefix_length": 75,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node6-expected_node6]"
+  ],
+  "order": [
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node10-expected_node10]"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AttributeError",
+    "call",
+    "AttributeError: Mock object has no attribute 'make_fn'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/mock.py:630"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "ee073e1dda48e48e971db64c339853a0"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "2ff34503a77da399e101c5c3ec60f7b7",
+      "ee073e1dda48e48e971db64c339853a0"
+    ]
+  },
+  "runs": 20,
+  "seconds": 16.54,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-todo-sync/bin/python",
+  "command": "pytest --det --det-seed=8 --det-order=/tmp/work/block2/idoft-todo-sync/detpy/bundles/test_o2a_behind_make_fn_a_node10-expected_node10_-5d89db9d/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-todo-sync/detpy/bundles/test_o2a_behind_make_fn_a_node10-expected_node10_-5d89db9d",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-todo-sync/detpy/bundles/test_o2a_behind_make_fn_a_node10-expected_node10_-5d89db9d"
+}

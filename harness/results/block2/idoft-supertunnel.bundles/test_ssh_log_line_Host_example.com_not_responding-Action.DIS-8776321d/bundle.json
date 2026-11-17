@@ -1,0 +1,75 @@
+{
+  "test": "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 38,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "supertunnel/command_test.py::test_forward"
+  ],
+  "order": [
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]"
+  ],
+  "outcome": "error",
+  "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "0cf842078399aa1ae2dad01012084c17"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] time.time @ supertunnel/ssh/continuous.py:124 = 2000  <>  [random] random.state @ <end> = d41bf3ce9ef704de1f725c90e4bef131",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "supertunnel/ssh/continuous.py:124",
+      "v": "2000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "d41bf3ce9ef704de1f725c90e4bef131"
+    },
+    "fingerprints": [
+      "ebe7d8bc8fe371181df772f2e1cd3d1d",
+      "0cf842078399aa1ae2dad01012084c17"
+    ]
+  },
+  "runs": 18,
+  "seconds": 25.2,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_Host_example.com_not_responding-Action.DIS-8776321d/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_Host_example.com_not_responding-Action.DIS-8776321d",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_Host_example.com_not_responding-Action.DIS-8776321d"
+}

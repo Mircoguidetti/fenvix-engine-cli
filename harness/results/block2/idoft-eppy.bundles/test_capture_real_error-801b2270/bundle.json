@@ -1,0 +1,51 @@
+{
+  "test": "eppy/tests/test_parse_error.py::test_capture_real_error",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "fails-alone",
+  "prefix_length": 172,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [],
+  "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error"
+  ],
+  "outcome": "error",
+  "exception": [
+    "AssertionError",
+    "setup",
+    "assert (8, 0, 0, 8) == (8, 9, 0)",
+    "/tmp/work/src/idoft-eppy/eppy/tests/conftest.py:35"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "655937ae772f7fc8c475df77d1e864d5"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": null,
+  "runs": 13,
+  "seconds": 59.6,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-eppy/detpy/bundles/test_capture_real_error-801b2270/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/detpy/bundles/test_capture_real_error-801b2270",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-eppy/detpy/bundles/test_capture_real_error-801b2270"
+}

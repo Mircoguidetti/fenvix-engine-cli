@@ -1,0 +1,85 @@
+{
+  "test": "tests/test_sync.py::test_logged_lock",
+  "configs_searched": 1,
+  "status": "replay-unstable",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 152,
+  "minimal_length": 2,
+  "polluters": [
+    "test_package.py::test_package[lockstep]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[lockstep]",
+    "tests/test_sync.py::test_logged_lock"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "assert 0 > 3",
+    "/tmp/work/src/idoft-easypy/tests/test_sync.py:491"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "066fda96423e1cc5e0f5b1e8563911c6",
+      "07c88061dc01a27a90121820cbde767c",
+      "31fcd8d876962f552c85d934a046bf40",
+      "409310b77781dacef1095cb756d5b0ec",
+      "4bb4fcbf64468efe0ce7e18729710c88",
+      "53383f1a61b1403ba8e2acf510d3bc08",
+      "6353d394ce98481967ec13fa06d158ba",
+      "6622af992392c307cee41390131329f0",
+      "913d36767d078b7f9ba6db2adffa4816",
+      "df7f1b2c4ecf09cf4a828c7625b844fd"
+    ],
+    "identical_fingerprint": false
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "thread",
+    "description": "event #1: os.urandom @ easypy/threadtree.py:39 returned different values: \"16:90b7741d96ab62bf05e430fa7c80ef03\" vs \"16:c43e0fe71a254bfe1c4354e69e50c5a3\"",
+    "event_a": {
+      "t": 1,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "easypy/threadtree.py:39",
+      "v": "16:90b7741d96ab62bf05e430fa7c80ef03"
+    },
+    "event_b": {
+      "t": 1,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "easypy/threadtree.py:39",
+      "v": "16:c43e0fe71a254bfe1c4354e69e50c5a3"
+    },
+    "fingerprints": [
+      "c794cbe02994e09cf8f14388e44577ab",
+      "df7f1b2c4ecf09cf4a828c7625b844fd"
+    ]
+  },
+  "runs": 23,
+  "seconds": 45.91,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_logged_lock-3ce53e13/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_logged_lock-3ce53e13",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_logged_lock-3ce53e13"
+}

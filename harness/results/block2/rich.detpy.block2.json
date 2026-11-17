@@ -1,0 +1,1368 @@
+{
+ "name": "rich",
+ "kind": "popular",
+ "status": "ok",
+ "python": "3.13",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_box.py::test_get_row",
+  "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+  "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+  "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+  "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009041",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 10.652,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 10.655,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 10.647,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 10.824,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 10.698,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 10.649,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 10.906,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 10.594,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 10.63,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 10.808,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 10.777,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 10.878,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 10.634,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 10.542,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 10.576,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 10.348,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 10.647,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 10.747,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 10.708,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 10.512,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 10.593,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 10.591,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 10.73,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 10.743,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 10.667,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 10.76,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 10.804,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 10.521,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 10.738,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 10.57,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 10.482,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 10.696,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 10.784,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 10.661,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 10.709,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 10.538,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 10.561,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 10.44,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 10.358,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 10.401,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 10.364,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 10.283,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 10.259,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 10.297,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 10.347,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 10.328,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 10.371,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 10.249,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_box.py::test_get_row",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 10.383,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 10.355,
+   "tests": 981,
+   "failing": [
+    "tests/test_ansi.py::test_decode_example",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+    "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [
+  "tests/test_ansi.py::test_decode_example",
+  "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-ValueError-expected_size5]",
+  "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-ValueError-stderr_size4-expected_size4]",
+  "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-ValueError-stdout_size3-ValueError-expected_size3]",
+  "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-ValueError-stdin_size2-ValueError-ValueError-expected_size2]",
+  "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[False-no_descriptor_size1-ValueError-ValueError-ValueError-expected_size1]",
+  "tests/test_console.py::test_size_can_fall_back_to_std_descriptors[True-no_descriptor_size0-ValueError-ValueError-ValueError-expected_size0]"
+ ],
+ "flaky_failing": [
+  "tests/test_box.py::test_get_row",
+  "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+  "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+  "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+  "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+ ],
+ "bundles": [
+  {
+   "test": "tests/test_box.py::test_get_row",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 975,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]",
+    "tests/test_box.py::test_get_row"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 'ijkjjkjjjl' == '|-+--+---|'",
+    "/tmp/work/src/rich/tests/test_box.py:37"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "41cef8ddaea3745b06a9d44a373f8c70"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "2b0aaca615f54aa89331274cdff23ebd",
+     "41cef8ddaea3745b06a9d44a373f8c70"
+    ]
+   },
+   "runs": 26,
+   "seconds": 56.88,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/rich/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/rich/detpy/bundles/test_get_row-724075fe/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/rich/detpy/bundles/test_get_row-724075fe",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/rich/detpy/bundles/test_get_row-724075fe",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 273,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 'abbbbbbbbbbb...rrrrrrrrrrt\\n' == '+-----------...----------+\\n'",
+    "/tmp/work/src/rich/tests/test_rule_in_table.py:50"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "268f62c4eff224eb975063eb4e650641"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "4618dafdb9aa2290db38048ce422a610",
+     "268f62c4eff224eb975063eb4e650641"
+    ]
+   },
+   "runs": 24,
+   "seconds": 46.46,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/rich/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/rich/detpy/bundles/test_rule_in_expanded_table-81c43516/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/rich/detpy/bundles/test_rule_in_expanded_table-81c43516",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/rich/detpy/bundles/test_rule_in_expanded_table-81c43516",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 274,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 'abbbbbbbbbbb...rrrsrrrrrrt\\n' == '+-----------...----------+\\n'",
+    "/tmp/work/src/rich/tests/test_rule_in_table.py:70"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "971e87cc900a418563201bcf0e30cdb4"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "25ee155539b0a0e25fc24b7a7f690ab4",
+     "971e87cc900a418563201bcf0e30cdb4"
+    ]
+   },
+   "runs": 24,
+   "seconds": 46.37,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/rich/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/rich/detpy/bundles/test_rule_in_ratio_table-c0f66751/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/rich/detpy/bundles/test_rule_in_ratio_table-c0f66751",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/rich/detpy/bundles/test_rule_in_ratio_table-c0f66751",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 275,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 'abbbbbbcbbbb...rrrsrrrrrrt\\n' == '+-----------...----------+\\n'",
+    "/tmp/work/src/rich/tests/test_rule_in_table.py:30"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "dea5bda84d7f9308b3b45097bc029c42"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "087641528037d97f5fa01f5e1be05b71",
+     "dea5bda84d7f9308b3b45097bc029c42"
+    ]
+   },
+   "runs": 24,
+   "seconds": 46.91,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/rich/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/rich/detpy/bundles/test_rule_in_unexpanded_table_expand_kwarg0_-eb6252b8/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/rich/detpy/bundles/test_rule_in_unexpanded_table_expand_kwarg0_-eb6252b8",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/rich/detpy/bundles/test_rule_in_unexpanded_table_expand_kwarg0_-eb6252b8",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 276,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 'abbbbbbcbbbb...rrrsrrrrrrt\\n' == '+-----------...----------+\\n'",
+    "/tmp/work/src/rich/tests/test_rule_in_table.py:30"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "59c53ba060466626e57f80fd4d918206"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "9d2133ce91ea9040ecf879d4bf1f60c3",
+     "59c53ba060466626e57f80fd4d918206"
+    ]
+   },
+   "runs": 24,
+   "seconds": 46.95,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/rich/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/rich/detpy/bundles/test_rule_in_unexpanded_table_expand_kwarg1_-762d72b6/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/rich/detpy/bundles/test_rule_in_unexpanded_table_expand_kwarg1_-762d72b6",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/rich/detpy/bundles/test_rule_in_unexpanded_table_expand_kwarg1_-762d72b6",
+   "first_failing_seed": 1
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "tests/test_box.py::test_get_row",
+   "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+   "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+   "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+   "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+  ]
+ },
+ "families_by_polluter": {
+  "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]": [
+   "tests/test_box.py::test_get_row",
+   "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+   "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+   "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+   "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+  ]
+ },
+ "collected": 981,
+ "seconds": 783.03
+}

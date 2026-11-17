@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_hosts.py::TestHost::test_host_getmacro",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "10",
+  "seed": 10,
+  "kind": "brittle",
+  "prefix_length": 28,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+  ],
+  "order": [
+    "tests/test_hosts.py::TestHost::test_host_getmacro"
+  ],
+  "outcome": "error",
+  "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "e17098f4b3bfb8fa225510c7ddff0574"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ <site>/requests/cookies.py:147 = 1000  <>  [random] random.state @ <end> = 238003de790006a8522a2ed6d2202b64",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "<site>/requests/cookies.py:147",
+      "v": "1000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "238003de790006a8522a2ed6d2202b64"
+    },
+    "fingerprints": [
+      "6278202736df65f06c3b701377c408ab",
+      "e17098f4b3bfb8fa225510c7ddff0574"
+    ]
+  },
+  "runs": 21,
+  "seconds": 26.66,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+  "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getmacro-92ba3489/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getmacro-92ba3489",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getmacro-92ba3489"
+}

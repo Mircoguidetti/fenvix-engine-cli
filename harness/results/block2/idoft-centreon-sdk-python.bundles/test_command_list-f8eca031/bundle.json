@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_command.py::TestCommands::test_command_list",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "22",
+  "seed": 22,
+  "kind": "brittle",
+  "prefix_length": 1,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+  ],
+  "order": [
+    "tests/test_command.py::TestCommands::test_command_list"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "ConnectionError",
+    "call",
+    "requests.exceptions.ConnectionError: Connection refused by Responses - the call doesn't match any registered mock.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/responses/__init__.py:1140"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "da225de0ee835138c3d1169b1ab9d3dd"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 3,
+    "reason": "time",
+    "description": "event #3: [time] time.time @ <site>/requests/cookies.py:137 = 4000  <>  [random] random.state @ <end> = 70c4535333a33bd348d39858b886c026",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "<site>/requests/cookies.py:137",
+      "v": "4000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "70c4535333a33bd348d39858b886c026"
+    },
+    "fingerprints": [
+      "99eaabd8d7f6c9ee954418eed0d956b6",
+      "da225de0ee835138c3d1169b1ab9d3dd"
+    ]
+  },
+  "runs": 20,
+  "seconds": 24.67,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+  "command": "pytest --det --det-seed=22 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_list-f8eca031/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_list-f8eca031",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_list-f8eca031"
+}

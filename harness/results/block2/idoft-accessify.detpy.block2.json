@@ -1,0 +1,1064 @@
+{
+ "name": "idoft-accessify",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/interfaces/test_implements.py::test_implements_no_implementation_getter",
+  "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method",
+  "tests/interfaces/test_implements.py::test_implements_not_self_convention",
+  "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter",
+  "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter",
+  "tests/interfaces/test_implements.py::test_not_implements_private_access",
+  "tests/interfaces/test_implements.py::test_not_implements_protected_access"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008868",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 1.164,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 1.117,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 1.124,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 1.103,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 1.152,
+   "tests": 41,
+   "failing": [
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_deleter",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_getter",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_instance_method",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_setter",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method",
+    "tests/interfaces/test_implements.py::test_implements_not_cls_convention",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_getter",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter",
+    "tests/interfaces/test_implements.py::test_not_implements_private_access",
+    "tests/interfaces/test_implements.py::test_not_implements_protected_access"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 1.169,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 1.155,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 1.146,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 1.152,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 1.166,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 1.112,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 1.125,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 1.149,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 1.175,
+   "tests": 41,
+   "failing": [
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_deleter",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_getter",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_instance_method",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_setter",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method",
+    "tests/interfaces/test_implements.py::test_implements_not_cls_convention",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_getter",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter",
+    "tests/interfaces/test_implements.py::test_not_implements_private_access",
+    "tests/interfaces/test_implements.py::test_not_implements_protected_access"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 1.162,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 1.185,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 1.156,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 1.151,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 1.157,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 1.125,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 1.147,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 1.114,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 1.09,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 1.157,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 1.156,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 1.155,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 1.129,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 1.13,
+   "tests": 41,
+   "failing": [
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_deleter",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_getter",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_instance_method",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_setter",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method",
+    "tests/interfaces/test_implements.py::test_implements_not_cls_convention",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_getter",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter",
+    "tests/interfaces/test_implements.py::test_not_implements_private_access",
+    "tests/interfaces/test_implements.py::test_not_implements_protected_access"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 1.194,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 1.112,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 1.104,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 1.105,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 1.089,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 1.166,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 1.117,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 1.12,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 1.164,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 1.15,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 1.145,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 1.161,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 1.149,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 1.108,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 1.116,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 1.331,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 1.113,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 1.142,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 1.119,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 1.135,
+   "tests": 41,
+   "failing": [
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_deleter",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_getter",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_instance_method",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_setter",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method",
+    "tests/interfaces/test_implements.py::test_implements_not_cls_convention",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_getter",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter",
+    "tests/interfaces/test_implements.py::test_not_implements_private_access",
+    "tests/interfaces/test_implements.py::test_not_implements_protected_access"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 1.286,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 1.117,
+   "tests": 41,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [],
+ "flaky_failing": [
+  "tests/interfaces/test_implements.py::test_implements_no_implementation_deleter",
+  "tests/interfaces/test_implements.py::test_implements_no_implementation_getter",
+  "tests/interfaces/test_implements.py::test_implements_no_implementation_instance_method",
+  "tests/interfaces/test_implements.py::test_implements_no_implementation_setter",
+  "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method",
+  "tests/interfaces/test_implements.py::test_implements_not_cls_convention",
+  "tests/interfaces/test_implements.py::test_implements_not_self_convention",
+  "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter",
+  "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_getter",
+  "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter",
+  "tests/interfaces/test_implements.py::test_not_implements_private_access",
+  "tests/interfaces/test_implements.py::test_not_implements_protected_access"
+ ],
+ "bundles": [
+  {
+   "test": "tests/interfaces/test_implements.py::test_implements_no_implementation_getter",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 27,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/disabling/test_disable.py::test_disabling_accessify"
+   ],
+   "setters": [],
+   "order": [
+    "tests/disabling/test_disable.py::test_disabling_accessify",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_getter"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "Failed",
+    "call",
+    "Failed: DID NOT RAISE <class 'accessify.errors.InterfaceMemberHasNotBeenImplementedException'>",
+    "/tmp/work/src/idoft-accessify/tests/interfaces/test_implements.py:172"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "58350c930ca22a583a2d18519a98970e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "696fc389023a33a0ae4c128afe552438",
+     "58350c930ca22a583a2d18519a98970e"
+    ]
+   },
+   "runs": 20,
+   "seconds": 10.44,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-accessify/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_no_implementation_getter-8f379f06/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_no_implementation_getter-8f379f06",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_no_implementation_getter-8f379f06",
+   "first_failing_seed": 5
+  },
+  {
+   "test": "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 24,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/disabling/test_disable.py::test_disabling_accessify"
+   ],
+   "setters": [],
+   "order": [
+    "tests/disabling/test_disable.py::test_disabling_accessify",
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "Failed",
+    "call",
+    "Failed: DID NOT RAISE <class 'accessify.errors.InterfaceMemberHasNotBeenImplementedException'>",
+    "/tmp/work/src/idoft-accessify/tests/interfaces/test_implements.py:249"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0472ff6d6198360d8dc7dd678b5ea6db"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b78fa3bda6d9692c8a5028cdfbe45f50",
+     "0472ff6d6198360d8dc7dd678b5ea6db"
+    ]
+   },
+   "runs": 19,
+   "seconds": 9.78,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-accessify/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_no_implementation_static_method-c99e0c0b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_no_implementation_static_method-c99e0c0b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_no_implementation_static_method-c99e0c0b",
+   "first_failing_seed": 5
+  },
+  {
+   "test": "tests/interfaces/test_implements.py::test_implements_not_self_convention",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 25,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/disabling/test_disable.py::test_disabling_accessify"
+   ],
+   "setters": [],
+   "order": [
+    "tests/disabling/test_disable.py::test_disabling_accessify",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "Failed",
+    "call",
+    "Failed: DID NOT RAISE <class 'accessify.errors.InterfaceMemberHasNotBeenImplementedException'>",
+    "/tmp/work/src/idoft-accessify/tests/interfaces/test_implements.py:310"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a5f7a295ced4d69048bb02ce738a6d28"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "7671f96f12b533f32b97645061452f21",
+     "a5f7a295ced4d69048bb02ce738a6d28"
+    ]
+   },
+   "runs": 21,
+   "seconds": 10.94,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-accessify/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_not_self_convention-272c9f22/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_not_self_convention-272c9f22",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_not_self_convention-272c9f22",
+   "first_failing_seed": 5
+  },
+  {
+   "test": "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 22,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/disabling/test_disable.py::test_disabling_accessify"
+   ],
+   "setters": [],
+   "order": [
+    "tests/disabling/test_disable.py::test_disabling_accessify",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "Failed",
+    "call",
+    "Failed: DID NOT RAISE <class 'accessify.errors.InterfaceMemberHasNotBeenImplementedException'>",
+    "/tmp/work/src/idoft-accessify/tests/interfaces/test_implements.py:356"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "9c5f586c563e2fc2fc1e4c73c60031cc"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "1165af728a6d7993b5dfb7b584d137e1",
+     "9c5f586c563e2fc2fc1e4c73c60031cc"
+    ]
+   },
+   "runs": 22,
+   "seconds": 11.76,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-accessify/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_not_self_convention_in_deleter-55bfbbe9/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_not_self_convention_in_deleter-55bfbbe9",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_not_self_convention_in_deleter-55bfbbe9",
+   "first_failing_seed": 5
+  },
+  {
+   "test": "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 26,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/disabling/test_disable.py::test_disabling_accessify"
+   ],
+   "setters": [],
+   "order": [
+    "tests/disabling/test_disable.py::test_disabling_accessify",
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "Failed",
+    "call",
+    "Failed: DID NOT RAISE <class 'accessify.errors.InterfaceMemberHasNotBeenImplementedException'>",
+    "/tmp/work/src/idoft-accessify/tests/interfaces/test_implements.py:384"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "447e44c73de07e599027c051e1010d7f"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "85577d1d8bd21cf3c5792c4bdb5bf67f",
+     "447e44c73de07e599027c051e1010d7f"
+    ]
+   },
+   "runs": 21,
+   "seconds": 11.68,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-accessify/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_not_self_convention_in_setter-6ffae149/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_not_self_convention_in_setter-6ffae149",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-accessify/detpy/bundles/test_implements_not_self_convention_in_setter-6ffae149",
+   "first_failing_seed": 5
+  },
+  {
+   "test": "tests/interfaces/test_implements.py::test_not_implements_private_access",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 32,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/disabling/test_disable.py::test_disabling_accessify"
+   ],
+   "setters": [],
+   "order": [
+    "tests/disabling/test_disable.py::test_disabling_accessify",
+    "tests/interfaces/test_implements.py::test_not_implements_private_access"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "Failed",
+    "call",
+    "Failed: DID NOT RAISE <class 'accessify.errors.ImplementedInterfaceMemberHasIncorrectAccessModifierException'>",
+    "/tmp/work/src/idoft-accessify/tests/interfaces/test_implements.py:120"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "008a176d222592ca3638fd5d4e2aec9c"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "ff9ba4965facc55d2df3167629c9a036",
+     "008a176d222592ca3638fd5d4e2aec9c"
+    ]
+   },
+   "runs": 20,
+   "seconds": 10.55,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-accessify/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-accessify/detpy/bundles/test_not_implements_private_access-beed7c8f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-accessify/detpy/bundles/test_not_implements_private_access-beed7c8f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-accessify/detpy/bundles/test_not_implements_private_access-beed7c8f",
+   "first_failing_seed": 5
+  },
+  {
+   "test": "tests/interfaces/test_implements.py::test_not_implements_protected_access",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 28,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/disabling/test_disable.py::test_disabling_accessify"
+   ],
+   "setters": [],
+   "order": [
+    "tests/disabling/test_disable.py::test_disabling_accessify",
+    "tests/interfaces/test_implements.py::test_not_implements_protected_access"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "Failed",
+    "call",
+    "Failed: DID NOT RAISE <class 'accessify.errors.ImplementedInterfaceMemberHasIncorrectAccessModifierException'>",
+    "/tmp/work/src/idoft-accessify/tests/interfaces/test_implements.py:147"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "abe58d724888ed32e9cc5cc072e9f44b"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "36e5e534b2fce021303266199bfb76c0",
+     "abe58d724888ed32e9cc5cc072e9f44b"
+    ]
+   },
+   "runs": 18,
+   "seconds": 9.1,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-accessify/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-accessify/detpy/bundles/test_not_implements_protected_access-ed73dc24/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-accessify/detpy/bundles/test_not_implements_protected_access-ed73dc24",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-accessify/detpy/bundles/test_not_implements_protected_access-ed73dc24",
+   "first_failing_seed": 5
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "tests/interfaces/test_implements.py::test_implements_no_implementation_getter",
+   "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method",
+   "tests/interfaces/test_implements.py::test_implements_not_self_convention",
+   "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter",
+   "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter",
+   "tests/interfaces/test_implements.py::test_not_implements_private_access",
+   "tests/interfaces/test_implements.py::test_not_implements_protected_access"
+  ]
+ },
+ "families_by_polluter": {
+  "tests/disabling/test_disable.py::test_disabling_accessify": [
+   "tests/interfaces/test_implements.py::test_implements_no_implementation_getter",
+   "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method",
+   "tests/interfaces/test_implements.py::test_implements_not_self_convention",
+   "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter",
+   "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter",
+   "tests/interfaces/test_implements.py::test_not_implements_private_access",
+   "tests/interfaces/test_implements.py::test_not_implements_protected_access"
+  ]
+ },
+ "collected": 41,
+ "seconds": 132.7
+}

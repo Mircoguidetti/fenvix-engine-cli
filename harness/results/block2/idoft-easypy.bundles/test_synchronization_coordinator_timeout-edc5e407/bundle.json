@@ -1,0 +1,87 @@
+{
+  "test": "tests/test_sync.py::test_synchronization_coordinator_timeout",
+  "configs_searched": 1,
+  "status": "replay-unstable",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 141,
+  "minimal_length": 3,
+  "polluters": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]",
+    "tests/test_sync.py::test_synchronization_coordinator_timeout"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "37ab8c3c7540b648a9fe3b06dbfd0144",
+      "5a213451722acb839a0ec6d52062af93",
+      "67e5f999996b21f58978ba64b9937205",
+      "755095460444a87ad275b7cf1b4195d6",
+      "7a9ff81242fdeb3bc31a603db031e982",
+      "7e83eacb76da1176a7629f8aac823a6f",
+      "8ca4420094072d1ff6944757b4bcc866",
+      "af732ab9d358e10e8418a75528dda60d",
+      "df15b78fa5b015456189a047c1848f72",
+      "ec00a87f539e68bbd326abd152fa851a"
+    ],
+    "identical_fingerprint": false
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "thread",
+    "description": "event #0: os.urandom @ easypy/threadtree.py:39 returned different values: \"16:1cbda012768b1972d7edeed1f57aea42\" vs \"16:00bfe8dab0f8a04bd89768a43cdcf6a2\"",
+    "event_a": {
+      "t": 1,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "easypy/threadtree.py:39",
+      "v": "16:1cbda012768b1972d7edeed1f57aea42"
+    },
+    "event_b": {
+      "t": 1,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "easypy/threadtree.py:39",
+      "v": "16:00bfe8dab0f8a04bd89768a43cdcf6a2"
+    },
+    "fingerprints": [
+      "42923ffb464baec9f426367c9259e1dc",
+      "8ca4420094072d1ff6944757b4bcc866"
+    ]
+  },
+  "runs": 35,
+  "seconds": 35.83,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_synchronization_coordinator_timeout-edc5e407/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_synchronization_coordinator_timeout-edc5e407",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_synchronization_coordinator_timeout-edc5e407"
+}

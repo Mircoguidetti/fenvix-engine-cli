@@ -1,0 +1,78 @@
+{
+  "test": "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "30",
+  "seed": 30,
+  "kind": "order",
+  "prefix_length": 2085,
+  "minimal_length": 3,
+  "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+  ],
+  "setters": [],
+  "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]"
+  ],
+  "outcome": "error",
+  "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-2 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "4c5564aff24593ab0cac48b5e0df7ae9"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:eccbd8e2cecfc8b983f7948803b6e406  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "<site>/trustme/__init__.py:61",
+      "v": "12:eccbd8e2cecfc8b983f7948803b6e406"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "<site>/blockbuster/blockbuster.py:372",
+      "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+      "8f40cf197114e5eb6b4c730d1ce33cf8",
+      "4c5564aff24593ab0cac48b5e0df7ae9"
+    ]
+  },
+  "runs": 45,
+  "seconds": 242.01,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/anyio/bin/python",
+  "command": "pytest --det --det-seed=30 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_ragged_eofs_asyncio-neither_standard_-b7e6fd05/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_ragged_eofs_asyncio-neither_standard_-b7e6fd05",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_ragged_eofs_asyncio-neither_standard_-b7e6fd05"
+}

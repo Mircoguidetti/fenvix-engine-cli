@@ -1,0 +1,84 @@
+{
+  "test": "tests/test_concurrency.py::test_multiobject_logging",
+  "configs_searched": 1,
+  "status": "replay-unstable",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 202,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "test_package.py::test_package[logging]"
+  ],
+  "order": [
+    "tests/test_concurrency.py::test_multiobject_logging"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 'easypy/tests/test_concurrency.py' in ' - /tmp/work/venvs/idoft-easypy/lib/python3.9/site-packages/detpy/clock.py:227, in sleep(..)'",
+    "/tmp/work/src/idoft-easypy/tests/test_concurrency.py:241"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "092ea3e517b4a2495d1b0920379923b5",
+      "2331a44361e35b14e7155d00d5755e33",
+      "2936854ae2a3fae6d066a8d789cd5ed1",
+      "5e297bc506d3103c2d6b170b69cf8ad2",
+      "5f0858953b5d2f11b2c67541cd9c0e68",
+      "8dc4a8f6c22c2aa360f77f9cabc5349b",
+      "98c3cb3121de23be505a73c629d356aa",
+      "a6773f84ca3c090e94e4416b9f541642",
+      "bcc66362f87c73599e2486f0984d9f3c",
+      "f2126b261d2b35e89d5b2c22339c3310"
+    ],
+    "identical_fingerprint": false
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "thread",
+    "description": "event #0: os.urandom @ easypy/threadtree.py:39 returned different values: \"16:ff92af69e3c79ab992c975ff2e0d1a9d\" vs \"16:32f4169422d3eb26d9d32aa96617920e\"",
+    "event_a": {
+      "t": 1,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "easypy/threadtree.py:39",
+      "v": "16:ff92af69e3c79ab992c975ff2e0d1a9d"
+    },
+    "event_b": {
+      "t": 1,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "easypy/threadtree.py:39",
+      "v": "16:32f4169422d3eb26d9d32aa96617920e"
+    },
+    "fingerprints": [
+      "aec92211f7acafa8878be6b2403135bc",
+      "5e297bc506d3103c2d6b170b69cf8ad2"
+    ]
+  },
+  "runs": 27,
+  "seconds": 50.4,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_multiobject_logging-bc4172ba/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_multiobject_logging-bc4172ba",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_multiobject_logging-bc4172ba"
+}

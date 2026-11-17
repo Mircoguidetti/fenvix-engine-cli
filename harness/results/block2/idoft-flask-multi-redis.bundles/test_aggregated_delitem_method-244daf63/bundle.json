@@ -1,0 +1,51 @@
+{
+  "test": "test/integration/test_flask_multi_redis.py::test_aggregated_delitem_method",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "fails-alone",
+  "prefix_length": 12,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [],
+  "order": [
+    "test/integration/test_flask_multi_redis.py::test_aggregated_delitem_method"
+  ],
+  "outcome": "error",
+  "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: _thread.allocate_lock() takes no arguments (1 given)",
+    "/tmp/work/venvs/idoft-flask-multi-redis/lib/python3.9/site-packages/detpy/clock.py:468"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "11db6e15afdda5efe914a6ddd812de41"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": null,
+  "runs": 13,
+  "seconds": 9.36,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_aggregated_delitem_method-244daf63/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_aggregated_delitem_method-244daf63",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_aggregated_delitem_method-244daf63"
+}
