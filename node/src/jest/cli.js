@@ -48,9 +48,11 @@ async function main(argv) {
   const shown = showConfig(jest.bin, rest);
   const runners = {};
   const projects = [];
+  const customRunners = new Set();
   for (const c of (shown && shown.configs) || []) {
     runners[`${c.rootDir}|${c.displayName ? c.displayName.name : ''}`] = c.testRunner;
-    projects.push({ rootDir: c.rootDir, testRunner: c.testRunner, testEnvironment: c.testEnvironment });
+    projects.push({ rootDir: c.rootDir, testRunner: c.testRunner, testEnvironment: c.testEnvironment, runner: c.runner });
+    if (c.runner && !/(^|[\\/])jest-runner([\\/]|$)/.test(c.runner)) customRunners.add(c.runner);
   }
   // What jest-cli's bin does before run(): many configs (Babel presets) depend on it.
   if (process.env.NODE_ENV == null) process.env.NODE_ENV = 'test';
@@ -73,9 +75,25 @@ async function main(argv) {
   const extra = ['--runInBand', '--forceExit', '--maxConcurrency=1',
     `--testSequencer=${path.join(__dirname, 'sequencer.js')}`,
     `--testRunner=${runnerShim}`];
+  // A custom Jest `runner` (jest-light-runner: worker threads or child
+  // processes without jest-circus's testRunner hook) would run the tests
+  // outside detjs: Level 0 would silently not apply (found on babel and
+  // prettier: 0 traced tests). Jest's default runner is used instead, and the
+  // replacement is recorded.
+  let runnerNote = '';
+  if (customRunners.size) {
+    try {
+      const coreReq = require('node:module').createRequire(require('node:module').createRequire(jest.bin).resolve('@jest/core'));
+      extra.push(`--runner=${coreReq.resolve('jest-runner')}`);
+      runnerNote = `; runner ${[...customRunners].join(',')} replaced by jest-runner`;
+    } catch {
+      runnerNote = `; WARNING runner ${[...customRunners].join(',')} kept: tests run outside detjs`;
+      process.stderr.write(`detjs: WARNING custom Jest runner ${[...customRunners].join(',')}: Level 0 controls do not reach its tests\n`);
+    }
+  }
   const help = spawnSync(process.execPath, [jest.bin, '--help'], { encoding: 'utf8', env: { ...process.env, DETJS: '0' } });
   if (/--randomize/.test(help.stdout || '')) extra.push('--no-randomize');
-  const isolation = 'jest --runInBand --forceExit: one test file at a time in the main process, each in its own vm context; maxConcurrency=1';
+  const isolation = `jest --runInBand --forceExit: one test file at a time in the main process, each in its own vm context; maxConcurrency=1${runnerNote}`;
   let finished = false;
   const finalize = () => {
     if (finished) return;
