@@ -10,7 +10,7 @@ name: skip-study2
 on:
   push:
     branches: [claude/loving-maxwell-58mv2w]
-    paths: [harness/skip_study2/run.json]
+    paths: [harness/skip_study2/run.json, harness/skip_study2/headtohead/run.json]
 
 permissions:
   contents: write
@@ -39,8 +39,15 @@ jobs:
       has_recheck: ${{ steps.p.outputs.has_recheck }}
     steps:
       - uses: actions/checkout@v4
+        with: {fetch-depth: 50}
       - id: p
-        run: python3 harness/skip_study2/plan.py
+        # plan only when this push changed harness/skip_study2/run.json (a head-to-head push must not re-run it)
+        run: |
+          if git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" | grep -qx harness/skip_study2/run.json; then
+            python3 harness/skip_study2/plan.py
+          else
+            echo "harness/skip_study2/run.json unchanged: nothing planned"
+          fi
 
   walk:
     needs: plan
@@ -243,3 +250,75 @@ jobs:
           python3 harness/skip_study2/recheck.py --spec "${{ matrix.spec }}" $pr --rec "${{ matrix.rec }}" \
             --cur "${{ matrix.cur }}" $units --work "$RUNNER_TEMP/r" \
             --out "harness/skip_study2/results/${{ needs.plan.outputs.run_id }}/recheck/${{ matrix.name }}-${{ matrix.idx }}.json"
+
+  # Head-to-head (harness/skip_study2/headtohead/): rules A (coverage shape), B / B+ (files-read shape) and C (closure
+  # v3) on the same commits, each with its own cache. Triggered by a push that changes headtohead/run.json.
+  h2hplan:
+    runs-on: ubuntu-latest
+    outputs:
+      run_id: ${{ steps.p.outputs.run_id }}
+      h2h: ${{ steps.p.outputs.h2h }}
+      has_h2h: ${{ steps.p.outputs.has_h2h }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 50}
+      - id: p
+        run: |
+          if git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" | grep -qx harness/skip_study2/headtohead/run.json; then
+            python3 harness/skip_study2/headtohead/plan.py
+          else
+            echo "headtohead/run.json unchanged: nothing planned"
+          fi
+
+  h2h:
+    needs: h2hplan
+    if: ${{ needs.h2hplan.outputs.has_h2h == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        include: ${{ fromJSON(needs.h2hplan.outputs.h2h) }}
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          df -h / | tail -1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v6
+      - if: ${{ matrix.node != '' }}
+        uses: actions/setup-node@v4
+        with: {node-version: "${{ matrix.node }}"}
+      - name: System packages, services, locale
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq strace locales ${{ matrix.apt }} > /dev/null
+          sudo locale-gen en_US.UTF-8 > /dev/null || true
+          locale -a | head -5
+          for s in ${{ matrix.services }}; do
+            case $s in
+              postgres) docker run -d --name pg -p 5432:5432 -e POSTGRES_USER=saleor -e POSTGRES_PASSWORD=saleor postgres:15-alpine ;;
+              valkey) docker run -d --name vk -p 6379:6379 valkey/valkey:8.1-alpine ;;
+            esac
+          done
+      - name: Head-to-head walk
+        run: |
+          git config user.name "skip-study2-bot"
+          git config user.email "skip-study2-bot@users.noreply.github.com"
+          shard_tag=$(echo "${{ matrix.shard }}" | tr / o)
+          out="harness/skip_study2/headtohead/results/${{ needs.h2hplan.outputs.run_id }}"
+          for arm in ${{ matrix.arms }}; do
+            if [ "$arm" = main ]; then
+              python3 harness/skip_study2/headtohead/h2h_walk.py --spec "${{ matrix.spec }}" --work "$RUNNER_TEMP/w-$arm" \
+                --out "$out/${{ matrix.name }}-main-${shard_tag}.json.gz" --shard "${{ matrix.shard }}" \
+                --budget-min "${{ matrix.budget }}" --run-id "${{ needs.h2hplan.outputs.run_id }}" || true
+            else
+              python3 harness/skip_study2/headtohead/h2h_walk.py --spec "${{ matrix.spec }}" --work "$RUNNER_TEMP/w-$arm" \
+                --out "$out/${{ matrix.name }}-$arm-${shard_tag}.json.gz" --shard "${{ matrix.shard }}" --arm "$arm" \
+                --max-commits "${{ matrix.arm_commits }}" --budget-min "${{ matrix.arm_budget }}" \
+                --run-id "${{ needs.h2hplan.outputs.run_id }}" || true
+            fi
+            rm -rf "$RUNNER_TEMP/w-$arm"
+          done

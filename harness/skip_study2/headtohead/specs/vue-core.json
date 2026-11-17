@@ -1,0 +1,106 @@
+{
+ "name": "vue-core",
+ "url": "https://github.com/vuejs/core",
+ "lang": "vitest",
+ "node": "lts/*",
+ "seq": {
+  "kind": "list",
+  "commits": [
+   "51fd0cbca63c67c5c4454bfdecce7220a33c4073",
+   "fbaa794113a9994041efbf32df0ebb2c3e15ccbe",
+   "0326ed8df5b228f0b8f7c23782c26fcf4609d1ba",
+   "4fd6a6b71dcb610711bad28643c3034f41eb4c87",
+   "2b9a0bbbb17166d91a1d394d9aae551a87360d41",
+   "2629c891931019ebb93faf9e9e7919a108b344e9",
+   "a14aa0bdc5d7640f4941db785d7a51ec7b005f13",
+   "06bea732eb3db651cbe1feeb0a46e8e4c48ecf42",
+   "2dbcea8fd10d6c314fd1b0ac9d0d32da912664f4",
+   "f64bfa57e0acba8150325abe598fe4e287e17692",
+   "85e71c01293a157dbcf6652da2c1ab1cbfed02d1",
+   "716a29eca2e53a51bd2437cfae055c83157d4ca2",
+   "64162077e12dc544608c80c1f7810c3c89b84be5",
+   "b8074de608b241f17ea16a40637722ec720f2aff",
+   "b5abf8c23b48fd276a8611120c12d0676e795762",
+   "ff0b341687dcd8699f1b29b4f64ab5f28c5f9b54",
+   "a47af770142812f04a4637a616cea3dc0d072eaa",
+   "70599b52fbf1a9e91ee2bf112090c7e520937b56",
+   "823c74459a0a9d76be623b5cc335d980dd2d5229",
+   "ef142e96a1bc3af44e34fdb026908004c7eedfaf",
+   "0f20152855296b7e588cc92c8f078ad35a3b536e",
+   "3cee79ad4c2a590a47294ba100bef94a633cb8b1",
+   "21dd33c61c6e26d15c1893dad899f1187a77dc03",
+   "a045acda24053a948e66e09d296a5133f0d34cec",
+   "16124033bb800f3c0baa6557770eb781cb95a419",
+   "34fbeb16fc0029f39d29db94f3f783eddad7a9a6",
+   "d04b66234c7aea96bd4c23aeb4f78d4f72d0c2f1",
+   "1dc8cdf9362ff20345bea6f456a0341e1506b577",
+   "79b80b7a4b986f3e2ba4ec5bf73d345907a4fe59",
+   "0a2f568e653d4be56c1c8b08537f0c440aa47202",
+   "0ce9e1622c1f32359120a30201e34519749f8e4c",
+   "3cb116122ff6ac6951ad5952c9441dd0d948ff50",
+   "923f70d0a07d470558e5ee0ac04ebb7e19395323",
+   "a0d1388773586bd08fbc318c24aae11b1490d11a",
+   "a8ab1f8cafd1d45e8684d943e441de54bfb74546",
+   "91f2625af2a74c4cd39099428b3ade96df677064",
+   "68583ce9f38ebbb68dc936375839fe071936b309",
+   "1d718d2ecbb6aa5ea6d501dbe61c9ea710c274ee",
+   "9f9b71c5c901c2b98994966dca04f667596369a2",
+   "8b479a89445868d474f17e2d837765e7c9ece5e4",
+   "19dd3aa7bf1c9639ed8e4c80b306387ab575763a",
+   "7ef6817112bb420ef47a7252821b37caae016ac9",
+   "b5b2310d88002424af5f404e75e0ca8fc59047bc",
+   "7c8a0f704f6eb762e86bbbcc4af5548e6c7532d2",
+   "e5a217390d1b3be17a76253bbc32f06df2d9b1a7",
+   "6782586546cfe580ef7b5c18d692199d52f13e77",
+   "aec1e052e65b36abea659d553042511917dde211",
+   "21738b527bac4a91eef9cbdfc2cc5ac1f3dbdec9",
+   "cbd95955a5362b44060908f6e28ad447c3031b8a",
+   "f897fa3478ad3e1ba2060933d09af2ba854faebb",
+   "2e2f7c6bef54a85a3ce8db768b11c5562385b65d"
+  ],
+  "from": "results/v3/walk/vue-core-0o1.json.gz"
+ },
+ "install": [
+  "corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent || pnpm install --reporter=silent"
+ ],
+ "install_files": [
+  "pnpm-lock.yaml",
+  "package.json",
+  "packages/*/package.json",
+  "pnpm-workspace.yaml"
+ ],
+ "units": {
+  "include": [
+   "packages/**/__tests__/*.spec.ts",
+   "packages/**/__tests__/**/*.spec.ts",
+   "packages/**/__tests__/*.spec.tsx",
+   "packages/**/__tests__/**/*.spec.tsx",
+   "packages-private/**/__tests__/*.spec.ts",
+   "packages-private/**/__tests__/**/*.spec.ts"
+  ],
+  "exclude": [
+   "packages/vue/__tests__/e2e/*"
+  ],
+  "sample": 1.0
+ },
+ "cmd": [
+  "pnpm",
+  "exec",
+  "vitest",
+  "run",
+  "--project",
+  "unit*",
+  "--reporter=json",
+  "--outputFile={out}",
+  "{unit}"
+ ],
+ "unit_timeout": 600,
+ "verify": 0.1,
+ "ci": {
+  "workers": 4,
+  "source": ".github/workflows/test.yml unit-test: one ubuntu-latest job, pnpm run test-unit (vitest threads)"
+ },
+ "ci_cmd": "pnpm run test-unit --run --reporter=default --reporter=json --outputFile={report}",
+ "ci_report": "vitest",
+ "py_minor": null
+}

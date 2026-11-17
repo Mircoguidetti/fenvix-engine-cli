@@ -1,0 +1,108 @@
+{
+ "name": "docusaurus",
+ "url": "https://github.com/facebook/docusaurus",
+ "lang": "vitest",
+ "node": "26",
+ "seq": {
+  "kind": "list",
+  "commits": [
+   "ecd830be6adf44bc1964970876c62fece8b519e3",
+   "bd5a733336bc1b936a4bd4891f5e77bdf5e99ee9",
+   "07f4fc70b47b7bc2ed5f66cd6813173779b8d088",
+   "f390446c203811d39222caf55325ade70d582a00",
+   "66f80d8167d52c77abe005c740b8ea3584bb30f7",
+   "8cdd4a0c29ead513a485c4107b2434f2aa13d00d",
+   "b3c49fe9ac3339488116d94049c59654b7c4906c",
+   "f92bf4235582e5f9dc3138e81b986ee3b610266a",
+   "e02ab4334f2eb2f47a2356e0f558ed4418c39c08",
+   "f559d7c239e32ca4f0a78da9b035c38e6a3aa434",
+   "a8bbbc43baeba5ea10e5cea38e252e4bbade02be",
+   "c8cf2fb7b383f1286acd1578815864a9fd0d84a2",
+   "dfce5788c175f3dd8159dc33a03f7027bf30c0ed",
+   "07a4785c2be8bc26a05f624866fac0e2bd34aa02",
+   "944e4c1901d52a0eb0b519b3576fb9c2a5577bd0",
+   "74c8363d7591e88c11fd392bd1cd836091f0f93c",
+   "41e8d354b1f2611e3976a04f3296782e6b17226f",
+   "743d2f6b0afe794acd256baba727d859b673cb4e",
+   "c00f04e2376e057090d65d6bfb6a82d49ea3eca6",
+   "f0ab1df5211f41e81f4d57d2f08d5edf1f3df6af",
+   "d46582cfb79a655bdb48f56d562f805b945fcf00",
+   "dccd14a6d4b3ed9333467929433b993aac5fe777",
+   "1dc1ccd554011e16f28dd5fb000b79fc6fdcfbd6",
+   "ac428465199e25afd65e8713554a617e1d0df5c5",
+   "52d0d04a59956b87a51944672b3aa43354ff71fe",
+   "153c997853113bf3ba555c7a58c814911a526696",
+   "879feea2cacd342f3a625df8aea9103d666874cd",
+   "848e3edc267abbe59871b77a4b98749f60e919a4",
+   "033ae1028b81b42fd00a2c9685fe29bb7755a59f",
+   "5de7a386e15015d36a98906149c82890bd8cb6e1",
+   "a524c6dacf9c405e420e76bcf76432839a10ea19",
+   "0ce03e36e86a604f866fe23a7364dd00738ceeaa",
+   "04faec4e63119897477478824af55ddadcd79730",
+   "cc9a6dfc88a203ad9c30831d6c140d0a9038ea5d",
+   "1d5de88e1fe822221872b09cc684c23f73f55459",
+   "6151433dcf3782618f346e2af42d77dd7d57ae97",
+   "eb61084fe117037314a01b1a5db01e21b840c147",
+   "ec5a29ca2b799e7e26fc51ca09d82fc6e582ab8f",
+   "54e5a88df9c8dc83dd67dce286bd096e35587e55",
+   "adcb451374f72abdc7913cf6bffd516a36ea238c",
+   "5b0ef688abfa1c0f5051c5149ae534e221951e46",
+   "1afe748e2e0df1c7e7971f4749b6a5b37d3ebed3",
+   "9e7ac3c0665448a1f454995f854cf7396388d3cc",
+   "42e00a97c919cd355718e67a8f13e630db3a7242",
+   "cabe624c3293bd910860d2ea8cca47f10b2d665d",
+   "5b2eeddca1546815de5df9c147d1cecea1c5bfa3",
+   "c628d8576664fe900ac468e3021b4f328a27a527",
+   "05200e2c1265df1dcaf21c4a976cdca8111403c1",
+   "7106067aa306fc305005ec5423dc226cfa7525de",
+   "c109cebdd8ae7b019bca5833c3082eb665fe8c52",
+   "4c4ec4aaabc6d70288d53e10203c6d271f0cac7a"
+  ],
+  "from": "results/v3/walk/docusaurus-0o1.json.gz"
+ },
+ "install": [
+  "corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent || pnpm install --reporter=silent"
+ ],
+ "install_files": [
+  "pnpm-lock.yaml",
+  "package.json",
+  "packages/*/package.json",
+  "pnpm-workspace.yaml"
+ ],
+ "build": [
+  "pnpm build:packages > /dev/null 2>&1"
+ ],
+ "units": {
+  "include": [
+   "packages/**/*.test.ts",
+   "packages/**/*.test.tsx",
+   "website/**/*.test.ts",
+   "admin/**/*.test.ts",
+   "__tests__/**/*.test.ts"
+  ],
+  "exclude": [
+   "**/__fixtures__/**",
+   "**/lib/**",
+   "**/node_modules/**"
+  ],
+  "sample": 1.0
+ },
+ "cmd": [
+  "pnpm",
+  "exec",
+  "vitest",
+  "run",
+  "--reporter=json",
+  "--outputFile={out}",
+  "{unit}"
+ ],
+ "unit_timeout": 600,
+ "verify": 0.1,
+ "ci": {
+  "workers": 4,
+  "source": ".github/workflows/tests.yml: one ubuntu-latest job per Node version, pnpm test (vitest run)"
+ },
+ "ci_cmd": "pnpm run test --reporter=default --reporter=json --outputFile={report}",
+ "ci_report": "vitest",
+ "py_minor": null
+}

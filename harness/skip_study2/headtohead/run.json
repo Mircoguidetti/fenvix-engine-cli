@@ -1,0 +1,225 @@
+{
+ "run_id": "h1",
+ "jobs": [
+  {
+   "spec": "home-assistant",
+   "shards": 8,
+   "arms": [
+    "main"
+   ],
+   "budget_min": 300
+  },
+  {
+   "spec": "docusaurus",
+   "arms": [
+    "main"
+   ],
+   "budget_min": 300
+  },
+  {
+   "spec": "vue-core",
+   "arms": [
+    "main"
+   ],
+   "budget_min": 300
+  },
+  {
+   "spec": "home-assistant",
+   "shards": 8,
+   "only_shards": [
+    0,
+    1
+   ],
+   "arms": [
+    "env"
+   ],
+   "arm_budget_min": 240,
+   "arm_commits": 11
+  },
+  {
+   "spec": "home-assistant",
+   "shards": 8,
+   "only_shards": [
+    0,
+    1
+   ],
+   "arms": [
+    "runtime"
+   ],
+   "arm_budget_min": 240,
+   "arm_commits": 11
+  },
+  {
+   "spec": "docusaurus",
+   "arms": [
+    "env",
+    "runtime"
+   ],
+   "arm_budget_min": 120,
+   "arm_commits": 11
+  },
+  {
+   "spec": "vue-core",
+   "arms": [
+    "env",
+    "runtime"
+   ],
+   "arm_budget_min": 120,
+   "arm_commits": 11
+  },
+  {
+   "spec": "arrow",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "attrs",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "boltons",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "click",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "flask",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "isort",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "jinja",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "marshmallow",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "more-itertools",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "pygments",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "sqlparse",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "structlog",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "toolz",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  },
+  {
+   "spec": "werkzeug",
+   "arms": [
+    "main",
+    "env",
+    "runtime"
+   ],
+   "budget_min": 150,
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  }
+ ]
+}
