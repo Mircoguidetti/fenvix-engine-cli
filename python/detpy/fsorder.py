@@ -122,8 +122,8 @@ def path_rglob(self, *args, **kwargs):
 def install(patcher: Patcher) -> None:
     patcher.set(os, "listdir", disguise(listdir, "os", "listdir"))
     patcher.set(os, "scandir", disguise(scandir, "os", "scandir"))
-    patcher.set(glob, "glob", disguise(glob_glob, "glob", "glob"))
-    patcher.set(glob, "iglob", disguise(glob_iglob, "glob", "iglob"))
+    patcher.set(glob, "glob", disguise(glob_glob, "glob", "glob", binds=True))
+    patcher.set(glob, "iglob", disguise(glob_iglob, "glob", "iglob", binds=True))
     # Python 3.13+: pathlib globbing binds os.scandir at class creation.
     globber = getattr(glob, "_StringGlobber", None)
     if globber is not None and "scandir" in vars(globber):

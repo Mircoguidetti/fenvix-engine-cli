@@ -21,10 +21,11 @@ import os
 import sys
 import threading
 import time as _time
+import types
 import warnings
 
 from . import _state
-from ._patch import Patcher, disguise, rebind_module_references
+from ._patch import Patcher, disguise, nonbinding, rebind_module_references
 
 NS = 1_000_000_000
 
@@ -468,7 +469,11 @@ def _timed_factory(real):
         return _TimedLock(real(*args, **kwargs))
 
     factory.__wrapped__ = real
-    return factory
+    # threading.Lock before 3.13 is a builtin (does not bind as a method);
+    # threading.RLock is a Python function (binds): keep each one's behaviour.
+    if isinstance(real, types.FunctionType):
+        return factory
+    return nonbinding(factory, "threading", "Lock")
 
 
 # Installation ---------------------------------------------------------------------
@@ -501,8 +506,9 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
         fakes["clock_gettime_ns"] = clock_gettime_ns
     replacements = {}
     for name, fake in fakes.items():
-        real = patcher.set(_time, name, disguise(fake, "time", name))
-        replacements[id(real)] = (real, fake)
+        stand_in = disguise(fake, "time", name)
+        real = patcher.set(_time, name, stand_in)
+        replacements[id(real)] = (real, stand_in)
     patcher.set_type_attr(real_datetime, "now", classmethod(_dt_now))
     patcher.set_type_attr(real_datetime, "utcnow", classmethod(_dt_utcnow))
     patcher.set(threading.Condition, "wait", _condition_wait)

@@ -70,15 +70,48 @@ class Patcher:
         return len(self._undo)
 
 
-def disguise(fn: Any, module: str, name: str) -> Any:
-    """Make a replacement function pickle (by reference) as ``module.name``."""
+def disguise(fn: Any, module: str, name: str, binds: bool = False) -> Any:
+    """Stand-in for ``module.name`` that pickles by reference as ``module.name``.
+
+    The objects detpy replaces (time.time, os.urandom, random.random, ...) are
+    builtins or bound methods: stored as a class attribute and called through an
+    instance they receive no ``self``. A plain Python function would bind
+    (``timer = time.time`` then ``self.timer()`` -> TypeError, DRF throttling).
+    Unless ``binds`` is true (the original is itself a Python function, e.g.
+    glob.glob), the stand-in is a callable object without ``__get__``.
+    """
     try:
         fn.__module__ = module
         fn.__qualname__ = name
         fn.__name__ = name
     except (AttributeError, TypeError):  # pragma: no cover
         pass
-    return fn
+    return fn if binds else nonbinding(fn, module, name)
+
+
+class _NonBinding:
+    """Base of the non-binding stand-ins (see ``disguise``)."""
+
+    def __reduce__(self):
+        return self.__qualname__  # pickled by reference, like the builtin
+
+    def __repr__(self):
+        return f"<built-in function {self.__name__}>"
+
+
+def nonbinding(fn: Any, module: str, name: str) -> Any:
+    """A callable object that calls ``fn`` directly (``__call__`` is a staticmethod:
+    no extra Python frame) and, like a builtin, does not bind as a method."""
+    if isinstance(fn, _NonBinding):
+        return fn
+    cls = type(name, (_NonBinding,), {"__call__": staticmethod(fn), "__module__": module})
+    obj = cls()
+    obj.__name__ = name
+    obj.__qualname__ = name
+    obj.__module__ = module
+    obj.__doc__ = getattr(fn, "__doc__", None)
+    obj.__wrapped__ = getattr(fn, "__wrapped__", fn)
+    return obj
 
 
 def rebind_module_references(
