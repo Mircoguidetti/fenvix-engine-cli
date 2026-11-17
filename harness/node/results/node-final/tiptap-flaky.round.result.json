@@ -1,0 +1,68 @@
+{
+  "name": "tiptap-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/ueberdosis/tiptap",
+  "commit": "1ecf81434f0fa7a40c1b7815719836e82a77d4b9",
+  "commit_date": "2026-07-15T21:38:05+02:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 37.415306773400005,
+  "det_mean_s": 60.407259099300006,
+  "slowdown_pct": 61.45065832320229,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 1420,
+  "unstable_baseline": 1,
+  "unstable_det": 0,
+  "became_stable": 1,
+  "outcome_changed_by_det": 0,
+  "covered": 1420,
+  "not_covered": 0,
+  "reproduced": 1,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    1
+  ],
+  "seeds_explored": 1,
+  "exploration_runs": 10,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "outcome-only": 1
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "reproduced": [
+      "packages/markdown/__tests__/manager.spec.ts::MarkdownManager Direct Tests::does not reopen marks after inline atom that does not carry them (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ]
+  },
+  "runner": "vitest 4.1.2",
+  "node": "node v22.23.5",
+  "documented_source": "https://github.com/ueberdosis/tiptap/issues/8080",
+  "documented_hints": [
+    "Flaky tests in CI verify test stability across the suite"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "/src/tiptap-flaky/node_modules/.pnpm/happy-dom@20.8.9/node_modules/happy-dom/lib/async-task-manager/AsyncTaskManager.js:292:30)\n    at AsyncTaskManager.abort (file:///tmp/work/src/tiptap-flaky/node_modules/.pnpm/happy-dom@20.8.9/node_modules/happy-dom/lib/async-task-manager/AsyncTaskManager.js:52:21)\n    at DetachedBrowserFrame.abort (file:///tmp/work/src/tiptap-flaky/node_modules/.pnpm/happy-dom@20.8.9/node_modules/happy-dom/lib/browser/detached-browser/DetachedBrowserFrame.js:112:58)\n    at DetachedWindowAPI.abort (file:///tmp/work/src/tiptap-flaky/node_modules/.pnpm/happy-dom@20.8.9/node_modules/happy-dom/lib/window/DetachedWindowAPI.js:51:35)\n    at teardownWindow (file:///tmp/work/src/tiptap-flaky/node_modules/.pnpm/vitest@4.1.2_@types+node@25.5.0_@vitest+ui@4.1.2_happy-dom@20.8.9_vite@7.2.1_@types+nod_eb7d161eed871e9719826ea62812e1cd/node_modules/vitest/dist/chunks/index.DC7d2Pf8.js:331:22)\n    at Object.teardown (file:///tmp/work/src/tiptap-flaky/node_modules/.pnpm/vitest@4.1.2_@types+node@25.5.0_@vitest+ui@4.1.2_happy-dom@20.8.9_vite@7.2.1_@types+nod_eb7d161eed871e9719826ea62812e1cd/node_modules/vitest/dist/chunks/index.DC7d2Pf8.js:392:10)\n    at file:///tmp/work/src/tiptap-flaky/node_modules/.pnpm/vitest@4.1.2_@types+node@25.5.0_@vitest+ui@4.1.2_happy-dom@20.8.9_vite@7.2.1_@types+nod_eb7d161eed871e9719826ea62812e1cd/node_modules/vitest/dist/chunks/base.BPik1OqN.js:168:65\n    at Traces.$ (file:///tmp/work/src/tiptap-flaky/node_modules/.pnpm/vitest@4.1.2_@types+node@25.5.0_@vitest+ui@4.1.2_happy-dom@20.8.9_vite@7.2.1_@types+nod_eb7d161eed871e9719826ea62812e1cd/node_modules/vitest/dist/chunks/traces.DT5aQ62U.js:142:27)\nDOMException [NetworkError]: Failed to execute \"fetch()\" on \"Window\" with URL \"http://localhost:3000/assets/app.css\": The operation was aborted.\n    at Fetch.onError (file:///tmp/work/src/tiptap-flaky/node_modules/.pnpm/happy-dom@20.8.9/node_modules/happy-dom/lib/fetch/Fetch.js:540:21)\n    at ClientRequest.emit (node:events:519:28)\n    at emitErrorEvent (node:_http_client:108:11)\n    at Socket.socketErrorListener (node:_http_client:575:5)\n    at Socket.emit (node:events:519:28)\n    at emitErrorNT (node:internal/streams/destroy:170:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\n    at processTicksAndRejections (node:internal/process/task_queues:89:21)\nJSON report written to /tmp/work/runs/tiptap-flaky/det_0.json\ndetjs: trace ../../runs/tiptap-flaky/det_0.jsonl: 1420 tests, order digest 5639195013e68756ccbbddbad79ef60e\n"
+  },
+  "not_reproduced_causes": {},
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T13:04:40.730814+00:00"
+}
