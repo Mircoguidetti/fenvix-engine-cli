@@ -113,6 +113,20 @@ Found on anyio's worker-thread pool and on requests with pytest-httpbin (Block 1
   is held does not deadlock the thread on itself.
 * **The preemption tracer is a C callable** (`detpy._core.LineTracer`): a Python trace
   function moved a test's RecursionError one frame up, inside detpy (structlog).
+* **Finalizers inside the scheduler.** The garbage collector can run `__del__` (urllib3
+  pools release locks) while a thread holds the scheduler's lock: inside that critical
+  section the thread is unmanaged and nested holds are counted (a self-deadlock before:
+  the hung requests exploration runs).
+* **C event loops.** uvloop waits in C (epoll), which the scheduler cannot see: its
+  `run_forever` runs outside the scheduler (one `threads.uncontrolled` event) instead of
+  one escape per `to_thread` call; a holder asleep in C while another thread is runnable is
+  escaped after 5 ms (50 ms otherwise). Internal lock calls use the C method captured at
+  import, so a tool patching `lock.acquire` (blockbuster) sees what a plain `with lock:`
+  shows it: nothing.
+* **Session end.** Threads still in timed waits finish them on real locks: "now" keeps the
+  session's virtual time, and `queue.time` / `threading._time` stay continuous (virtual
+  time at the end plus real time since). Before, anyio's idle pool workers computed their
+  time left across two clocks and the interpreter never exited.
 
 ## What it does not do (yet)
 
