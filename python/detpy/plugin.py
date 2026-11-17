@@ -67,6 +67,9 @@ def pytest_addoption(parser, pluginmanager):
                      "runtime, configuration) is unchanged; failures are never reused; prints a receipt")
     g.addoption("--det-cache-verify", type=float, default=0.0, metavar="FRACTION",
                 help="run this random fraction of the reusable tests anyway and compare with the cached result")
+    g.addoption("--det-cache-follow", action="store_true", default=False,
+                help="with --det-cache: run the processes tests start under strace and record their inputs, "
+                     "instead of never caching those tests")
     g.addoption("--det-cache-receipts", default=None, metavar="PATH",
                 help="where to write the per-test receipts (JSON lines; default DIR/receipts.jsonl)")
 

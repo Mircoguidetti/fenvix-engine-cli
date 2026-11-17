@@ -43,7 +43,7 @@ from types import CodeType, FunctionType
 
 import pytest
 
-from . import __version__, _codefacts, _core, _sites, _state
+from . import __version__, _codefacts, _core, _sites, _state, follow
 
 # real clocks, bound before Level 0 virtualises the time module
 _perf = time.perf_counter
@@ -155,6 +155,9 @@ class Capture:
         self.import_ctx = -1  # pseudo context for import-time data/env/flags
         self.active = False
         self._socks: dict | None = None  # fd -> socket inode at the last scan
+        self.follower: follow.Follower | None = None
+        self.child_entropy = 0  # entropy draws of followed children (not controlled, not refused)
+        self.children = 0  # followed children (spawn calls)
 
     # -- contexts -------------------------------------------------------------
     def ctx_index(self, name: str) -> int:
@@ -485,10 +488,18 @@ class Capture:
         elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
             if self._caller_kind() == "infra":
                 return
-            if event == "subprocess.Popen" and _is_find_library_ldconfig(args):
+            fo = self.follower
+            if event == "subprocess.Popen" and _is_find_library_ldconfig(args) and not (fo and fo.enabled):
                 # ctypes.util.find_library (uuid, ifaddr, ... at import time) asks `ldconfig -p`, which prints the
                 # dynamic linker's cache: that file is the input
                 self.read(self._cur(), _LD_SO_CACHE, "f")
+                if fo is not None:
+                    fo.announce(self._cur(), None, False)
+                return
+            if event == "subprocess.Popen" and fo is not None:
+                # the fork_exec that follows runs it under strace and records its inputs (or refuses the context
+                # when following is off or unavailable)
+                fo.announce(self._cur(), _spawn_detail(event, args))
                 return
             self.flag(self._cur(), "spawn", _spawn_detail(event, args))
         else:
@@ -508,6 +519,78 @@ class Capture:
             if detail is None:
                 detail = _first_user_site()
             self.why[(ctx, flag)] = detail
+
+    def env_read_ctx(self, ctx: int, name: str) -> None:
+        self.env.setdefault(ctx, set()).add(name)
+
+    def child_ignored(self, p: str) -> bool:
+        """Paths a followed child touches that are not inputs: bytecode caches (their source is probed), pytest's
+        temporary directory, this interpreter's standard library and installed distributions (runtime identity)."""
+        if os.sep + "__pycache__" + os.sep in p:
+            return True
+        if self.basetemp and (p == self.basetemp or p.startswith(self.basetemp + os.sep)):
+            return True
+        if self.follower is not None and p.startswith(self.follower.logdir):
+            return True
+        for d in self.site_dirs:
+            if p.startswith(d):
+                return not any(p.startswith(x) for x in self.dist_info_ok)
+        return any(p.startswith(d) for d in self.stdlib_dirs) or p == os.devnull
+
+    def child_read(self, ctx: int, p: str, kind: str = "f") -> None:
+        if not self.child_ignored(p):
+            self.read(ctx, p, kind)
+
+    def collect_children(self) -> None:
+        """Turn the strace logs of the followed children into inputs (or refusals) of the contexts that started them."""
+        fo = self.follower
+        if fo is None:
+            return
+        import time
+
+        budget_end = time.monotonic() + 10.0
+        for sp in fo.spawns:
+            self.children += 1
+            logs = follow._wait_logs(sp.prefix, max(0.0, min(2.0, budget_end - time.monotonic())))
+            ctx = sp.ctx
+            if not logs:
+                self.flag(ctx, "spawn", f"{sp.detail} [not followed: no trace log]")
+                continue
+            res = follow.parse(logs, sp.cwd)
+            for f in logs:
+                try:
+                    os.unlink(f)
+                except OSError:
+                    pass
+            if res.bad:
+                self.flag(ctx, "spawn", f"{sp.detail} [not followed: {res.bad}]")
+            if res.net:
+                self.flag(ctx, "spawn", f"{sp.detail} [network: {res.net}]")
+            self.child_entropy += res.entropy
+            self.child_read(ctx, sp.exe)
+            own = set()
+            for op, p in res.ops:
+                sk = follow.special(p, res.pids)
+                if sk == "skip":
+                    continue
+                if sk == "entropy":
+                    self.child_entropy += 1
+                    continue
+                if sk == "proc":
+                    self.flag(ctx, "spawn", f"{sp.detail} [reads {p}]")
+                    continue
+                if op == "w":
+                    own.add(p)
+                    if not self.child_ignored(p):
+                        self.wrote(ctx, p)
+                    continue
+                if p in own:
+                    continue  # the tree wrote it first: internal
+                if op == "x":
+                    interp = follow.shebang(p)
+                    if interp:
+                        self.child_read(ctx, interp)
+                self.child_read(ctx, p, "d" if op == "d" else "f")
 
     def env_read(self, name: str) -> None:
         if self.active:
@@ -959,6 +1042,7 @@ class ProofCachePlugin:
         cap, store = self.cap, self.store
         if cap.rec is None:
             return
+        cap.collect_children()
         fcache: dict[str, int | None] = {}
         rels = cap.fnames
         # file facts for every executed or loaded repository file
@@ -1204,6 +1288,9 @@ class ProofCachePlugin:
             "miss_reasons": kinds,
             "not_cached": nc,
             "not_cached_detail": top,
+            "children": self.cap.children,
+            "children_not_followed": (self.cap.follower.why_not if self.cap.follower is not None else None),
+            "child_entropy_draws": self.cap.child_entropy,
             "reused_recorded_seconds": round(sum(self._entry_duration(n) for n in self.hits), 3),
             "check_seconds": round(self.t_check, 3),
             "record_seconds": round(self.t_record, 3),
@@ -1442,6 +1529,10 @@ def start(early_config, ns) -> None:
     _ENV_CAPTURE = cap
     _patch_environ()
     _state.set_event_listener(cap.event)
+    # probed before recording starts: the probe's own strace run is not a child of any test
+    cap.follower = follow.Follower(cap, os.path.join(os.path.abspath(ns.det_cache), f"follow-{os.getpid()}"),
+                                   bool(getattr(ns, "det_cache_follow", False)))
+    cap.follower.install()
     cap.start()
 
 
@@ -1464,6 +1555,8 @@ def uninstall() -> None:
     global CAPTURE, PLUGIN, _ENV_CAPTURE
     if CAPTURE is not None:
         CAPTURE.stop()
+        if CAPTURE.follower is not None:
+            CAPTURE.follower.uninstall()
     _state.set_event_listener(None)
     CAPTURE = None
     PLUGIN = None
