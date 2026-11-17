@@ -1,0 +1,127 @@
+===== 3a52e2e7daf71113.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/documenso/server-parts/det-1/3a52e2e7daf71113.jsonl
+  run 1: /home/runner/work/_temp/l2_out/documenso/server-parts/det-2/3a52e2e7daf71113.jsonl
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== bd1ec3bf2406f266.jsonl
+detpy verify: 2 runs, 302 tests
+  run 0: /home/runner/work/_temp/l2_out/documenso/server-parts/det-1/bd1ec3bf2406f266.jsonl
+  run 1: /home/runner/work/_temp/l2_out/documenso/server-parts/det-2/bd1ec3bf2406f266.jsonl
+order: DIFFERS between runs
+covered by Level 0: 10  not covered: 60  missing: 232  outcome-unstable: 0
+reasons: missing=232 random=6 time=54
+MISSING  e2e/api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient email [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+NOT-COVERED e2e/api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:c4211edf842d41874918e4adedd73f78
+NOT-COVERED e2e/api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with empty value returns no results [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:330554a959f6428d42509d6467ae3d6b
+NOT-COVERED e2e/api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with no matches returns no results [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:13c72e74d6dbe207b1fb97d93e3d9631
+MISSING  e2e/api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with numeric value matches by exact recipient ID [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  e2e/api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with nonexistent recipient ID returns no results [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+NOT-COVERED e2e/api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with oversized number falls back to text search [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:be00a5463f908d7c92930971f9eb3ebc
+NOT-COVERED e2e/api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: user and team prefixes with oversized numbers return no results [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:6d1c78c468421c05592a67a06d2d797e
+MISSING  e2e/api/trpc/admin/admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: non-admin authenticated user is rejected with 401 [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+NOT-COVERED e2e/api/trpc/admin/admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: numeric query returns verified user and team rows [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:73e978a891aa9f59a27f13d1d6ddd3cd
+NOT-COVERED e2e/api/trpc/admin/admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: numeric query returns verified document and recipient rows [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:8452170b343144e4d60a1aa8c8b36e7e
+NOT-COVERED e2e/api/trpc/admin/admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: numeric query with no matches returns no groups [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:2519580e8292317b58b476c77ec0c0f4
+NOT-COVERED e2e/api/trpc/admin/admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: oversized number does not error and falls back to text search [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:5698edfbb01c551dc05757f2404d8c5b
+MISSING  e2e/api/trpc/admin/admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: envelope_ and org_ prefixes resolve exact matches [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+NOT-COVERED e2e/api/trpc/admin/admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: text query matches documents by title and users by email [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:dd69e3c0188fa809d4fdb126e6fec027
+NOT-COVERED e2e/api/trpc/admin/admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: gibberish query returns no groups [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:4ca709a6c53f99a53141ae5a37d46e0c
+NOT-COVERED e2e/api/trpc/admin/delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: non-admin authenticated user is rejected with 401 [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:e6e810ef903d4c16799fe90a72f83c2b
+NOT-COVERED e2e/api/trpc/admin/delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: organisation owner (non-admin) cannot delete their own org via admin route [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #10: [time] Date.now @ apps/remix/build/server/hono/packages/auth/server/lib/session/session-cookies.js:76 = 5000  <>  [time] Date @ <deps>/@prisma/client/runtime/library.js:121 = 5000
+NOT-COVERED e2e/api/trpc/admin/delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin call with mismatched name is rejected and org is preserved [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:0a1c71649939a581e270b71b15623da7
+NOT-COVERED e2e/api/trpc/admin/delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin call against non-existent organisation returns NOT_FOUND [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:6a9b2d2cf9d71459810aba2512d032b6
+NOT-COVERED e2e/api/trpc/admin/delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: zod schema rejects malformed input [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:c902bea7410bb92900015dba8d208fae
+NOT-COVERED e2e/api/trpc/admin/delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin can delete via the tRPC endpoint directly [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:ed7c2e0abc09835d1752b30e06a2061b
+NOT-COVERED e2e/api/trpc/admin/delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: a second delete call after deletion is harmless (NOT_FOUND or no-op) [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:ae060dcdccacce00d209cea1d10241ef
+MISSING  e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: unauthenticated request is rejected with 401 [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+NOT-COVERED e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: non-admin authenticated user is rejected with 401 [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:5202b24f599828d795638688c4467ce1
+MISSING  e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin can remove a recipient who has opened the document and inserted fields [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+NOT-COVERED e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient who has completed signing [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:b0e1810f361402945f4c7596bfe58663
+NOT-COVERED e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient from a completed document [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:db0a16a803a628239605af319cce22fc
+NOT-COVERED e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: unknown recipient returns 404 [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:a76df9afcb520885563649bfc430797d
+MISSING  e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document is sealed when every remaining signer has already signed [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+NOT-COVERED e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document with no remaining signers is not sealed [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:119dfe16b11c2b6a2571642eba1a00b9
+NOT-COVERED e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: sequential signing advances to the next recipient [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #2: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:10 = 20:3ebb9dbfd63c563556438fed63774d4b
+MISSING  8968863eaacf470b2a41-70f81a379ad6f3d45c09  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  e2e/api/trpc/create-embedding-envelope-contents.spec.ts::Create envelope with contents::creates a document with contents and images [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-96cd3686940b8b441727  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  e2e/api/trpc/create-embedding-envelope-contents.spec.ts::Create envelope with contents::creates a template with contents and images [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-e00747ac5adf92dd7a77  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  e2e/api/trpc/create-embedding-envelope-contents.spec.ts::Create envelope with contents::places each content on the file it identifies [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-13ce6dbaf34f6eeaad97  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-96e4ab8754d8957dc049  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-c7079c24230b7a4d4ad1  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-8a349f10462d6ae4c375  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-455814a511a174eb7628  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-8425a57f1fb8363ceb06  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-5c095f0c3b3f438c768f  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-a2100ce633e2e8d06405  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-5b4bff8201667abb5be9  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-9e03219c1ba52196c632  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-b0b2614c1a463b4780ad  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-8a03bd8c1e43da269dc9  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  8968863eaacf470b2a41-e4e79b08c971377d1685  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  e2e/api/trpc/embedding/persist-embed-signature.spec.ts::[PERSIST_EMBED_SIGNATURE]: rejects recipients that can no longer sign [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  e2e/api/trpc/envelope/expired-recipient-field-signing.spec.ts::[ENVELOPE_FIELD_SIGN]: rejects field insertion for an expired recipient [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  e2e/api/trpc/envelope/expired-recipient-field-signing.spec.ts::[ENVELOPE_FIELD_SIGN]: accepts field insertion for a recipient within their signing window [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  e2e/api/trpc/find-inbox.spec.ts::Inbox Find - Recipient Scoping::should not return documents the user is not a recipient of, even when searched by title [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
+MISSING  e2e/api/trpc/find-inbox.spec.ts::Inbox Find - Recipient Scoping::should not return documents where the user is only a CC recipient [api]  [missing] outcomes=passed,-
+    runs 0 vs 0: not executed in run(s) 1
