@@ -1,0 +1,258 @@
+{
+ "name": "arrow",
+ "set": "popular",
+ "url": "https://github.com/arrow-py/arrow",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009327",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "2224255c4acc594d734cef0bbc83360452a67983",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e .[test]",
+ "collected": 1904,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 6.773,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1904
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 19.599,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1904
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 11.6,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1904
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 16.102,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 1904
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 6.072,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1904
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 11.581,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1904
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 11.887,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1904
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 15.963,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 1904
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 2,
+   "duration_s": 6.152,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1904
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 11.6,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1904
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 2,
+   "duration_s": 11.914,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 1904
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 2,
+   "duration_s": 16.357,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 1904
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": ""
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
