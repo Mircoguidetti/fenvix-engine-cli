@@ -98,12 +98,47 @@ function enqueue(item) {
   });
 }
 
-function pump() {
+const QUIET_MS = Number(ENV.DETJS_PW_QUIET_MS || 20);
+const QUIET_MAX = Number(ENV.DETJS_PW_QUIET_MAX || 3000);
+const PASSTHROUGH = new RegExp(ENV.DETJS_PW_PASSTHROUGH || '[?&]transport=polling|/sockjs/|/__vite_ping|/@vite/|hot-update');
+
+function serverQuiet(origin) {
+  return new Promise((resolve) => {
+    let u;
+    try { u = new URL(`/__detjs/quiet?ms=${QUIET_MS}&max=${QUIET_MAX}`, origin); } catch { resolve(null); return; }
+    const req = http.get(u, { timeout: QUIET_MAX + 2000 }, (res) => {
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => { try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); } catch { resolve(null); } });
+    });
+    req.on('error', () => resolve(null));
+    req.on('timeout', () => { req.destroy(); resolve(null); });
+  });
+}
+
+/** Wait until every app server touched so far has finished the work of earlier messages. */
+async function barrier(test) {
+  if (!QUIET_MS) return;
+  for (const origin of [...ORIGINS].sort()) {
+    const r = await serverQuiet(origin);
+    if (r && !r.quiet) rec(test, 'sched', 'server.busy', origin); // still busy after QUIET_MAX: recorded
+  }
+}
+
+async function pump() {
   QUEUE.timer = null;
   if (QUEUE.busy || !QUEUE.pending.length) return;
+  QUEUE.busy = true;
+  await barrier(QUEUE.pending[0].test);
+  QUEUE.busy = false;
+  if (!QUEUE.pending.length) return;
   // Sort the pending set by a stable key (repeated keys keep arrival order: same URL twice
   // is the same choice either way), then choose: index 0 without a seed, a seeded index with one.
-  const sorted = QUEUE.pending.map((it, i) => ({ it, i, k: keyOf(it) }))
+  // Frames of one WebSocket keep their order: only the oldest pending frame of a connection is eligible.
+  const head = new Map();
+  for (const it of QUEUE.pending) if (it.conn !== undefined && !head.has(it.conn)) head.set(it.conn, it);
+  const eligible = QUEUE.pending.filter((it) => it.conn === undefined || head.get(it.conn) === it);
+  const sorted = eligible.map((it, i) => ({ it, i, k: keyOf(it) }))
     .sort((a, b) => (a.k < b.k ? -1 : a.k > b.k ? 1 : a.i - b.i));
   const testKey = sorted[0].it.test || '<none>';
   const n = sorted.length;
@@ -160,6 +195,12 @@ async function routeHandler(route, request) {
   const type = request.resourceType();
   if (!key || !APP_TYPES.has(type) || !/^https?:/.test(url)) {
     return route.fallback();
+  }
+  if (PASSTHROUGH.test(url) || /text\/event-stream/.test(request.headers().accept || '')) {
+    // Long-lived requests (long polling, event streams, dev-server pings) would hold the
+    // queue: not ordered, not recorded; they still carry the test bracket.
+    if (!isServerHost(url)) return route.fallback();
+    return route.fallback({ headers: { ...request.headers(), 'x-detjs-test': testIdOf(key) } });
   }
   const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()) };
   const release = await enqueue(item);
@@ -223,16 +264,23 @@ function wsKeep(text) {
   return !(typeof text === 'string' && /^[23](probe)?$/.test(text));
 }
 
+let WS_CONNS = 0;
 async function setupWebSockets(ctx) {
   if (typeof ctx.routeWebSocket !== 'function') return;
   await ctx.routeWebSocket(() => true, (ws) => {
     const key = currentKey();
     let server;
     try { server = ws.connectToServer(); } catch { return; }
+    const conn = ++WS_CONNS;
     rec(key, 'net', 'ws.open', targetOf(ws.url()));
     ws.onMessage((m) => {
-      if (wsKeep(m)) rec(currentKey() || key, 'net', 'ws.send', digest(m));
-      server.send(m);
+      const k = currentKey() || key;
+      if (!wsKeep(m) || !k) { server.send(m); return; }
+      // Page -> server frames are messages to the app like requests: same queue, same barrier.
+      enqueue({ kind: 'ws', conn, test: k, method: 'SEND', target: targetOf(ws.url()), bodyDigest: digest(m) }).then((release) => {
+        rec(k, 'net', 'ws.send', digest(m));
+        try { server.send(m); } finally { release(); }
+      });
     });
     server.onMessage((m) => {
       if (wsKeep(m)) rec(currentKey() || key, 'net', 'ws.recv', digest(m));

@@ -48,7 +48,44 @@ function endCurrent() {
   if (fp) FINISHED[id] = { fingerprint: fp, events };
 }
 
+// Quiet barrier: the worker asks before releasing the next message, so that the
+// server finishes the work of the previous one first (database writes, socket
+// pushes). Quiet = no HTTP request in flight and the event loop idle (utilization
+// under 10%) for `ms` consecutive real milliseconds; gives up after `max` ms.
+let inflight = 0;
+const { performance } = require('node:perf_hooks');
+const REAL_SET_TIMEOUT = require('../clock').REAL.setTimeout;
+
+function waitQuiet(ms, max, done) {
+  const start = Date.now ? performance.now() : 0;
+  let idleSince = null;
+  let prev = performance.eventLoopUtilization();
+  const step = () => {
+    const now = performance.now();
+    const cur = performance.eventLoopUtilization();
+    const d = performance.eventLoopUtilization(cur, prev);
+    prev = cur;
+    const idle = inflight === 0 && d.utilization < 0.1;
+    if (!idle) idleSince = null; else if (idleSince === null) idleSince = now;
+    if (idleSince !== null && now - idleSince >= ms) return done(true, now - start);
+    if (now - start >= max) return done(false, now - start);
+    REAL_SET_TIMEOUT(step, 2);
+  };
+  REAL_SET_TIMEOUT(step, 2);
+}
+
 function handleControl(req, res) {
+  if (req.url.startsWith('/__detjs/quiet')) {
+    const u = new URL(req.url, 'http://x');
+    const ms = Number(u.searchParams.get('ms') || 20);
+    const max = Number(u.searchParams.get('max') || 3000);
+    waitQuiet(ms, max, (quiet, waited) => {
+      const body = JSON.stringify({ quiet, waited: Math.round(waited) });
+      res.writeHead(200, { 'content-type': 'application/json', 'content-length': Buffer.byteLength(body) });
+      res.end(body);
+    });
+    return true;
+  }
   if (req.url.startsWith('/__detjs/end')) {
     endCurrent();
     const body = JSON.stringify({ pid: process.pid, finished: FINISHED });
@@ -67,6 +104,10 @@ function patchServer(proto) {
   proto.emit = function emit(event, req, res) {
     if (event === 'request' && req && req.headers) {
       if (typeof req.url === 'string' && req.url.startsWith('/__detjs/')) return handleControl(req, res);
+      inflight++;
+      let counted = true;
+      const dec = () => { if (counted) { counted = false; inflight--; } };
+      if (res && typeof res.once === 'function') { res.once('finish', dec); res.once('close', dec); }
       const id = req.headers['x-detjs-test'];
       if (id && id !== STATE.testId) {
         endCurrent();
