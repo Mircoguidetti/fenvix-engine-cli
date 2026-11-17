@@ -1,7 +1,7 @@
 From 5eb99fd4cae808e5b0e989fe6efd6c638d1d34cd Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 17 Nov 2026 09:41:42 +0000
-Subject: [PATCH 12/16] L1 threads: mark the scheduler-mutex holder instead of
+Subject: [PATCH 12/17] L1 threads: mark the scheduler-mutex holder instead of
  walking the stack (managed threads always have detpy's boot frame below them)
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

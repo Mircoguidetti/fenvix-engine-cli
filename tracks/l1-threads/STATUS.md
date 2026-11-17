@@ -1,16 +1,19 @@
-# STATUS · track l1-threads (P-012)
+PARTIAL · fix round in progress (track l1-threads, broken tests and hangs under --det-threads)
 
-Updated 2026-11-17. Local branch `track-l1-threads` in worktree `.claude/worktrees/track-l1-threads`
-of /home/user/fenvix-engine-cli; base `1573079` (origin/claude/gracious-rubin-eyswxd). Patches:
-`patches/` (`git am` on the base). Final code c25485d.
+# STATUS · track l1-threads (P-012), fix round
+
+Updated 2026-11-17. Worktree `.claude/worktrees/track-l1-threads` (branch `track-l1-threads`), base `1573079`.
+Patches: `patches/` (`git am` on the base).
 
 ## Done
-- `--det-threads` prototype, design note, tests, harness + workflow, fixes found on easypy/boltons/anyio.
-- All Actions runs finished (r5 run 44089216622: anyio; r6 run 44095974555: requests, werkzeug).
-  Aggregates in r5-aggregate/ and r6-aggregate/.
-- REPORT.md final: PARTIAL. All exit numbers measured on 25/25 popular suites; "broken by
-  --det-threads must trend to 0" not met (anyio 9, requests 5; anyio calm suite hangs 2 of 3 runs).
+- Local reproduction (MEASURED): requests `tests/test_requests.py` + `tests/test_utils.py` under calm
+  `--det-threads`: the 5 broken tests fail with `DeadlockError` (main thread waits for the httpbin socket,
+  the plugin's server thread is still serving an earlier `delay/10` request; declared after 5 s).
+  anyio `tests/test_to_thread.py`: 10 failed + 1 error, 6 deadlocks, 47 escapes.
+- Harness: hang dumps (faulthandler per test, SIGABRT at the suite timeout), l1 failure messages.
+- Actions r7-diag launched: anyio + requests suites on the old scheduler code, to capture the 97% hang stack.
 
-## Next (for a follow-up task, not started)
-- Get failure messages: anyio `tests/test_to_thread.py` and the 5 requests tests alone with `-rfE`
-  under `--det --det-threads`; find why the anyio run hangs at 97% without DeadlockError.
+## Next
+- Fix: zero-timeout polls (select(0)) must let time and other threads progress (anyio checkpoint spin).
+- Fix: outside activity (unmanaged server thread) must not be declared a deadlock after 5 s.
+- Fix: asynchronous exceptions (pytest-timeout) inside scheduler waits.
