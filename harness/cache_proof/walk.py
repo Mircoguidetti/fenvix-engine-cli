@@ -110,6 +110,7 @@ class Walk:
         self.mode = spec.get("mode", "suite")
         self.rng = random.Random(f"cache-proof:{self.name}:{shard}")
         self.result = {"spec": spec, "shard": shard, "nshards": nshards, "runner": os.environ.get("RUNNER_NAME", ""),
+                       "engine": os.environ.get("GITHUB_SHA", ""),
                        "cpus": os.cpu_count(), "started": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                        "steps": []}
         self.last_dep = None
@@ -226,15 +227,17 @@ class Walk:
 
     # -- runs ----------------------------------------------------------------------
     def run(self, targets: list[str], tag: str, cache: Path | None, receipts: Path | None = None,
-            extra: list[str] = ()) -> dict:
+            extra: list[str] = (), det: bool = True) -> dict:
         git(self.src, "clean", "-qfd", check=False)
         outp = self.work / f"o-{tag}.json"
         tim = self.work / f"t-{tag}.json"
         outp.unlink(missing_ok=True)
         tim.unlink(missing_ok=True)
         # --det-urandom: under --det the randomness is controlled (os.urandom included), as for the clock
-        cmd = [self.py, *self.spec.get("python_flags", []), "-m", "pytest", "--det", "--det-urandom",
-               f"--det-outcomes={outp}"]
+        cmd = [self.py, *self.spec.get("python_flags", []), "-m", "pytest"]
+        if det:
+            cmd += ["--det", "--det-urandom"]
+        cmd.append(f"--det-outcomes={outp}")
         if cache is not None:
             cmd.append(f"--det-cache={cache}")
             if receipts is not None:
@@ -318,11 +321,24 @@ class Walk:
     def cache_info(r: dict) -> dict:
         c = r.get("cache") or {}
         return {k: c.get(k) for k in ("reused", "ran", "recorded", "miss_reasons", "not_cached", "not_cached_detail", "check_seconds",
-                                      "record_seconds", "stale_reuses", "reused_recorded_seconds")}
+                                      "record_seconds", "stale_reuses", "reused_recorded_seconds", "children",
+                                      "children_not_followed", "child_entropy_draws", "epoch_ns")}
+
+    @staticmethod
+    def epoch_args(r: dict) -> list[str]:
+        """``--det-epoch`` of the cache run ``r``: the fresh runs that check its reuses use the same configuration."""
+        ep = (r.get("cache") or {}).get("epoch_ns")
+        if not ep:
+            return []
+        import datetime as dt
+        t = dt.datetime.fromtimestamp(ep // 1_000_000_000, tz=dt.timezone.utc)
+        return [f"--det-epoch={t.strftime('%Y-%m-%dT%H:%M:%S')}"]
 
     def step_suite(self, st: dict, units: list[str], i: int) -> dict:
         a = self.run(units, "A", self.cache)
-        b = self.run(units, "B", None)
+        ea = self.epoch_args(a)
+        st["epoch_args"] = ea
+        b = self.run(units, "B", None, extra=ea)
         st["A"] = {"exit": a["exit"], "wall": a["wall"], **self.cache_info(a)}
         st["B"] = {"exit": b["exit"], "wall": b["wall"]}
         if not b["outcomes"] or not a["outcomes"]:
@@ -337,7 +353,7 @@ class Walk:
         st["n_reused"] = len(reused)
         st["n_reused_in_B"] = sum(1 for n in reused if n in b["outcomes"])
         st["verify"] = self.compare(a["outcomes"], b["outcomes"], sorted(reused),
-                                    lambda: self.run(units, "B2", None)["outcomes"])
+                                    lambda: self.run(units, "B2", None, extra=ea)["outcomes"])
         # executed in A but outcome differs from B: an order effect of skipping (a reused test no longer sets
         # state a later test relied on), or flakiness
         diff = [n for n, o in a["outcomes"].items() if n not in reused and n in b["outcomes"] and b["outcomes"][n] != o]
@@ -347,11 +363,24 @@ class Walk:
             cold = self.work / "cold-cache"
             shutil.rmtree(cold, ignore_errors=True)
             c = self.run(units, "C", cold)
-            p2 = self.run(units, "P2", None)
+            p2 = self.run(units, "P2", None, extra=ea)
             shutil.rmtree(cold, ignore_errors=True)
+            # plain pytest (no --det) twice, and --det at the HEAD commit time (the default epoch without a cache)
+            p0 = [self.run(units, "P0", None, det=False)]
+            h = self.run(units, "H", None)
             st["overhead"] = {"cold_wall": c["wall"], "plain_walls": [b["wall"], p2["wall"]],
+                              "pytest_walls": [r["wall"] for r in p0],
+                              "pytest_fail": [sum(1 for o in r["outcomes"].values()
+                                                  if o not in ("passed", "skipped", "xfailed")) for r in p0],
                               "cold_record_s": (c.get("cache") or {}).get("record_seconds"),
-                              "cold_check_s": (c.get("cache") or {}).get("check_seconds")}
+                              "cold_check_s": (c.get("cache") or {}).get("check_seconds"),
+                              "cold_children": (c.get("cache") or {}).get("children"),
+                              "cold_not_followed": (c.get("cache") or {}).get("children_not_followed")}
+            # tests whose outcome differs between the cache's epoch (B) and the HEAD commit time (H)
+            ho = h["outcomes"]
+            ed = [n for n, o in b["outcomes"].items() if n in ho and ho[n] != o]
+            st["epoch_diff"] = {"n": len(ed), "ids": ed[:20], "head_epoch_fail": sum(
+                1 for o in ho.values() if o not in ("passed", "skipped", "xfailed"))}
         st["status"] = "ok"
         return st
 
@@ -389,13 +418,13 @@ class Walk:
                         continue
                     if r.get("reused"):
                         reused[r["nodeid"]] = r.get("duration", 0.0)
-            a_by_unit[u] = (a["outcomes"], ru)
+            a_by_unit[u] = (a["outcomes"], ru, self.epoch_args(a))
         verify_units = units if full else [u for u in units if a_by_unit[u][1] and self.rng.random() < self.spec.get("verify", 0.1)]
         for u in verify_units:
-            b = self.run([u], "B", None)
+            ao, ru, ea = a_by_unit[u]
+            b = self.run([u], "B", None, extra=ea)
             b_wall += b["wall"]
-            ao, ru = a_by_unit[u]
-            v = self.compare(ao, b["outcomes"], sorted(ru), lambda: self.run([u], "B2", None)["outcomes"])
+            v = self.compare(ao, b["outcomes"], sorted(ru), lambda: self.run([u], "B2", None, extra=ea)["outcomes"])
             ver["units"] += 1
             ver["checked"] += v["checked"]
             ver["same"] += v["same"]

@@ -1,0 +1,12 @@
+{
+ "run_id": "s1a",
+ "note": "step 1 measurement: children followed under strace, own loopback servers, cache epoch; home-assistant 16 shards x 50 commits (r5 sample), pylint, structlog, 13 more libraries",
+ "walk": [
+  {"spec": "home-assistant", "shards": 16},
+  {"spec": "pylint"},
+  {"spec": "structlog"},
+  {"spec": "arrow"}, {"spec": "attrs"}, {"spec": "boltons"}, {"spec": "click"}, {"spec": "flask"},
+  {"spec": "isort"}, {"spec": "jinja"}, {"spec": "marshmallow"}, {"spec": "more-itertools"},
+  {"spec": "pygments"}, {"spec": "sqlparse"}, {"spec": "toolz"}, {"spec": "werkzeug"}
+ ]
+}
