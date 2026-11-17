@@ -67,12 +67,23 @@ def pytest_run(p, args: list, out_json: Path, timeout: float, trace: Path | None
         cmd.append(f"--det-trace={trace}")
     out_json.unlink(missing_ok=True)
     t0 = time.monotonic()
+    env = H.clean_env(p.python, p.env)
+    env["PYTHONFAULTHANDLER"] = "1"  # SIGABRT on timeout dumps every thread's stack
+    proc = subprocess.Popen(cmd, cwd=p.src, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                            errors="replace")
     try:
-        proc = subprocess.run(cmd, cwd=p.src, env=H.clean_env(p.python, p.env), capture_output=True, text=True,
-                              timeout=timeout)
-        code, out, timed_out = proc.returncode, proc.stdout + proc.stderr, False
-    except subprocess.TimeoutExpired as e:
-        code, out, timed_out = -9, (e.stdout or b"").decode() if isinstance(e.stdout, bytes) else str(e.stdout or ""), True
+        so, se = proc.communicate(timeout=timeout)
+        code, out, timed_out = proc.returncode, so + se, False
+    except subprocess.TimeoutExpired:
+        import signal
+
+        proc.send_signal(signal.SIGABRT)
+        try:
+            so, se = proc.communicate(timeout=60)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            so, se = proc.communicate()
+        code, out, timed_out = -9, (so or "") + (se or ""), True
     dur = time.monotonic() - t0
     outcomes, fps = {}, {}
     if out_json.exists():
@@ -91,7 +102,16 @@ def pytest_run(p, args: list, out_json: Path, timeout: float, trace: Path | None
     stats = dict(zip(("decisions", "switches", "escapes", "deadlocks", "timer_jumps", "managed"),
                      map(int, m.groups()))) if m else None
     return {"exit": code, "duration_s": round(dur, 3), "timed_out": timed_out, "outcomes": outcomes, "fps": fps,
-            "stats": stats, "msgs": msgs, "tail": out[-1500:] if (code not in (0, 1) or timed_out) else ""}
+            "stats": stats, "msgs": msgs, "tail": out[-1500:] if (code not in (0, 1) or timed_out) else "",
+            # A hung run: the faulthandler dump of the stuck test (every thread's stack).
+            "hang": _hang_dump(out) if timed_out else ""}
+
+
+def _hang_dump(out: str) -> str:
+    i = out.find("Timeout (0:")
+    if i < 0:
+        i = out.find("Fatal Python error: Aborted")
+    return (out[max(0, i - 2000):i + 40000] if i >= 0 else out[-20000:])
 
 
 def _prepare(project: dict, args):
@@ -230,11 +250,14 @@ def measure_suite(project: dict, args) -> dict:
     timing = res["timing"] = []
     for i in range(args.timing_runs):
         for mode, flags in SUITE_MODES.items():
-            r = pytest_run(p, suite + flags, rd / f"suite-{mode}-{i}.json", args.suite_timeout)
+            # faulthandler_timeout: a test stuck for that long dumps every thread's stack.
+            r = pytest_run(p, suite + flags + [f"-o", f"faulthandler_timeout={args.hang_dump}"],
+                           rd / f"suite-{mode}-{i}.json", args.suite_timeout)
             c = collections.Counter(o.split("+", 1)[0] for o in r["outcomes"].values())
             timing.append({"mode": mode, "run": i, "duration_s": r["duration_s"], "exit": r["exit"],
                            "timed_out": r["timed_out"], "counts": dict(c), "stats": r["stats"],
-                           "tail": r["tail"][-600:]})
+                           "tail": r["tail"][-600:], "hang": r["hang"],
+                           "msgs": {t: m for t, m in r["msgs"].items()} if mode in ("l1", "l1-s1") else {}})
             if not r["timed_out"] and r["outcomes"]:
                 per_mode[mode].append(r["outcomes"])
             log(f"{p.name} suite {mode} run={i}: {r['duration_s']}s {dict(c)} stats={r['stats']}")
@@ -397,6 +420,7 @@ def main(argv=None) -> None:
     ap.add_argument("--loaded-runs", type=int, default=5)
     ap.add_argument("--run-timeout", type=float, default=600)
     ap.add_argument("--suite-timeout", type=float, default=2400)
+    ap.add_argument("--hang-dump", type=float, default=300, help="faulthandler_timeout for suite runs (s)")
     ap.add_argument("--run-url", default="")
     a = ap.parse_args(argv)
     doc = json.loads(Path(a.corpus).read_text())
