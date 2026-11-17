@@ -19,6 +19,12 @@ harness `harness/`, raw results `results/<name>.json` (+ `results/<name>/` diagn
   `--det` runs**, slowdown **x2.2** against the configured run and **x2.0** against a serial run (46 s -> 101 s)
   (all MEASURED, GitHub Actions 4 vCPU). The diverging fingerprints are the app server's own events (Vite dev server):
   see Findings.
+- **etherpad** (288 Playwright tests, server started outside the runner under `detjs serve`; run 44043803663, 8 patches,
+  first harness, 2025 epoch): **no flaky test in 5 baseline + 3 stressed runs** (MEASURED; the idle study saw 1 in 6
+  runs); under `--det` **10 tests always broken + 4 sometimes**, **20 of 289 tests with identical fingerprints over 3
+  runs**, slowdown **x6.5** against the configured run (185 s -> 1,200 s) and **x3.6** against a serial run (329 s)
+  (MEASURED). Most broken tests have two users or two devices in one test (collaboration through socket.io).
+- **rallly**: baseline broken in our setup (every test fails or times out also without detjs): no numbers.
 - **Share of real flaky browser tests that replay 10/10 with one fingerprint and pass in some seed**: UNKNOWN yet. The
   final batch (etherpad, documenso; known flaky tests from the idle study targeted first) is waiting for the shared
   Actions queue.
