@@ -8,7 +8,9 @@
  "pytest_args": [
   "tests",
   "--ignore=tests/benchmark",
-  "--ignore=tests/primer"
+  "--ignore=tests/primer",
+  "-p",
+  "no:benchmark"
  ],
- "note": "one more large Python application (a linter CLI, ~2000 test functions incl. functional tests)"
+ "note": "one more large Python application (a linter CLI, ~2000 test functions incl. functional tests); -p no:benchmark: pytest-benchmark runs git at startup (pytest_addoption), a spawn in the startup context makes every test uncacheable"
 }

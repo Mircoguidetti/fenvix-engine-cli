@@ -394,6 +394,23 @@ def test_name_lookup_and_c_level_sockets_are_never_cached(pytester, run_cache, o
     assert nc["test_m.py::test_c_socket_again"] == "network socket opened outside Python (C extension)"
 
 
+@pytest.mark.skipif(not __import__("os").path.exists("/etc/ld.so.cache"), reason="needs ldconfig")
+def test_find_library_at_import_time_is_not_a_subprocess(pytester, run_cache):
+    # ctypes.util.find_library runs `ldconfig -p` (ifaddr, uuid, ... at import time): its input is the linker cache
+    project(pytester, **{"test_m.py": """
+        import ctypes.util
+
+        LIBC = ctypes.util.find_library("c")
+
+        def test_libc():
+            assert LIBC
+        """})
+    run_cache()
+    r, reused, data = run_cache()
+    r.assert_outcomes(passed=1)
+    assert reused == ids("test_libc")
+
+
 def test_clock_reader_depends_on_the_epoch(pytester, run_cache):
     project(pytester, **{"test_m.py": """
         import time
