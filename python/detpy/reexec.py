@@ -131,10 +131,69 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
     env = dict(os.environ)
     env.update(PYTHONHASHSEED=hashseed, PYTHONPYCACHEPREFIX=prefix)
     env.pop("PYTHONDONTWRITEBYTECODE", None)
-    cmd = [sys.executable, "-m", "compileall", "-qq", "-j", "0", "-x", _EXCLUDE, *precompile_dirs(rootdir)]
     t0 = time.perf_counter()
-    subprocess.run(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    dirs = precompile_dirs(rootdir)
+    # The standard library and site-packages hold tens of thousands of modules (home-assistant: compileall's
+    # up-to-date check alone took 7-8 s per run). They are skipped while their top-level state (entries, their
+    # mtimes, each dist-info's RECORD) is the one of the last complete precompile: an installer changes it. A
+    # module edited in place without that is loaded from source under the same fixed seed, in every run alike.
+    # The project is always checked (it changes at every commit).
+    stamps_path = os.path.join(prefix, "stamps.json")
+    try:
+        import json
+
+        with open(stamps_path) as fh:
+            stamps = json.load(fh)
+    except (OSError, ValueError):
+        stamps = {}
+    root_real = os.path.realpath(rootdir) if rootdir else None
+    todo, fresh = [], {}
+    for d in dirs:
+        if root_real is not None and os.path.realpath(d) == root_real:
+            todo.append(d)
+            continue
+        st = dir_stamp(d)
+        fresh[d] = st
+        if stamps.get(d) != st:
+            todo.append(d)
+    if todo:
+        cmd = [sys.executable, "-m", "compileall", "-qq", "-j", "0", "-x", _EXCLUDE, *todo]
+        p = subprocess.run(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL)
+        if p.returncode not in (0, 1):  # 1: some file does not compile (it never will); else: interrupted
+            return time.perf_counter() - t0
+    try:
+        import json
+
+        tmp = f"{stamps_path}.{os.getpid()}.tmp"
+        with open(tmp, "w") as fh:
+            json.dump({**stamps, **fresh}, fh)
+        os.replace(tmp, stamps_path)
+    except OSError:
+        pass
     return time.perf_counter() - t0
+
+
+def dir_stamp(d: str) -> str:
+    """Digest of a library directory's top-level entries with their mtimes and each ``*.dist-info/RECORD``'s."""
+    import hashlib
+
+    h = hashlib.sha256()
+    try:
+        with os.scandir(d) as it:
+            entries = sorted(it, key=lambda e: e.name)
+    except OSError:
+        return "missing"
+    for e in entries:
+        try:
+            st = e.stat(follow_symlinks=False)
+            h.update(f"{e.name}\0{st.st_mtime_ns}\0{st.st_ino}\n".encode("utf-8", "surrogateescape"))
+            if e.name.endswith(".dist-info"):
+                r = os.stat(os.path.join(e.path, "RECORD"))
+                h.update(f"R{r.st_mtime_ns}\0{r.st_size}\0{r.st_ino}\n".encode())
+        except OSError:
+            h.update(f"{e.name}\0?\n".encode("utf-8", "surrogateescape"))
+    return h.hexdigest()
 
 
 BLOCKED_ENV = "DETPY_BLOCKED_PLUGINS"

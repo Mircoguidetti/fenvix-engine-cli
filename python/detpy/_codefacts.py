@@ -133,3 +133,82 @@ def read_facts(path: str, content: str, modname: str | None = None, is_pkg: bool
     except UnicodeDecodeError:
         return content, content, [], []
     return facts(text, content, modname, is_pkg)
+
+
+# ---------------------------------------------------------------------------
+# many files at once (the cold run of a large repository parses every loaded module)
+def _as_tuples(f):
+    if f is None:
+        return None
+    return f[0], f[1], [tuple(u) for u in f[2]], list(f[3])
+
+
+def _worker(inp: str, out: str) -> None:
+    import json
+
+    with open(inp) as fh:
+        jobs = json.load(fh)
+    res = [read_facts(*j) for j in jobs]
+    tmp = out + ".tmp"
+    with open(tmp, "w") as fh:
+        json.dump(res, fh)
+    import os
+
+    os.replace(tmp, out)
+
+
+def read_many(jobs: list, workdir: str, min_parallel: int = 64) -> list:
+    """``read_facts`` of every ``(path, content, modname, is_pkg)`` in ``jobs``, in order.
+
+    With many files the work is split over worker processes (one per CPU, at most 8); this process takes the first
+    share. The facts are a pure function of each file's text, so where they are computed does not matter. Any worker
+    failure falls back to computing its share here.
+    """
+    import json
+    import os
+    import subprocess
+    import sys
+
+    n = min(os.cpu_count() or 1, 8)
+    if n < 2 or len(jobs) < min_parallel:
+        return [read_facts(*j) for j in jobs]
+    shares = [jobs[k::n] for k in range(n)]
+    procs = []
+    os.makedirs(workdir, exist_ok=True)
+    pkg_parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    env = dict(os.environ)
+    env["PYTHONPATH"] = pkg_parent + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else "")
+    for k in range(1, n):
+        inp = os.path.join(workdir, f"facts-{os.getpid()}-{k}.in.json")
+        out = os.path.join(workdir, f"facts-{os.getpid()}-{k}.out.json")
+        with open(inp, "w") as fh:
+            json.dump(shares[k], fh)
+        try:
+            p = subprocess.Popen([sys.executable, "-c", "import sys; from detpy._codefacts import _worker; "
+                                  "_worker(sys.argv[1], sys.argv[2])", inp, out], env=env,
+                                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except OSError:
+            p = None
+        procs.append((k, p, inp, out))
+    results: list = [None] * n
+    results[0] = [read_facts(*j) for j in shares[0]]
+    for k, p, inp, out in procs:
+        got = None
+        if p is not None and p.wait() == 0:
+            try:
+                with open(out) as fh:
+                    got = [_as_tuples(f) for f in json.load(fh)]
+            except (OSError, ValueError, TypeError, IndexError):
+                got = None
+        if got is None or len(got) != len(shares[k]):
+            got = [read_facts(*j) for j in shares[k]]
+        results[k] = got
+        for f in (inp, out):
+            try:
+                os.unlink(f)
+            except OSError:
+                pass
+    merged: list = [None] * len(jobs)
+    for k in range(n):
+        merged[k::n] = results[k]
+    return merged

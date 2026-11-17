@@ -46,10 +46,11 @@ def secs(x):
     return "-" if x is None else f"{x:.1f}s"
 
 
-def project_rows(files):
+def project_rows(files, from_i: int = 0):
     by_project = collections.defaultdict(list)
     for f in files:
         d = load(f)
+        d["steps"] = [st for st in d["steps"] if st.get("i", 0) >= from_i]
         by_project[d["spec"]["name"]].append(d)
     out = {}
     for name, shards in sorted(by_project.items()):
@@ -89,8 +90,23 @@ def project_rows(files):
                 c["cold"] = sum(o["cold_wall"] for o in ov)
                 c["plain"] = sum(mean(o["plain_walls"]) for o in ov)
                 c["record_s"] = sum(o.get("cold_record_s") or 0 for o in ov)
+                if all(o.get("pytest_walls") for o in ov):
+                    c["pytest"] = sum(mean(o["pytest_walls"]) for o in ov)
+                    c["cold_max_ratio"] = max(o["cold_wall"] / mean(o["pytest_walls"]) for o in ov)
+                    c["det_max_ratio"] = max(mean(o["plain_walls"]) / mean(o["pytest_walls"]) for o in ov)
+            ed = [s["epoch_diff"] for s in sts if s.get("epoch_diff")]
+            if ed:
+                c["epoch_diff"] = sum(e["n"] for e in ed)
+                c["epoch_diff_ids"] = [x for e in ed for x in e["ids"]][:10]
+            c["n_reused_checked_possible"] = sum(s.get("n_reused_in_B") or 0 for s in sts)
+            c["children"] = sum(s["A"].get("children") or 0 for s in sts)
+            det = collections.Counter()
+            for s in sts:
+                det.update(s["A"].get("not_cached_detail") or {})
+            c["nc_detail"] = dict(det)
             commits.append(c)
-        later = [c for c in commits if c["i"] > 0 and c["time_total"] > 0]
+        first = min((c["i"] for c in commits), default=0)
+        later = [c for c in commits if c["i"] > first and c["time_total"] > 0]
         shares = [c["time_reused"] / c["time_total"] for c in later]
         nshares = [c["n_reused"] / c["n_tests"] for c in later if c["n_tests"]]
         speed = [c["a_wall_sum"] / c["b_wall_sum"] for c in later if c["b_wall_sum"]]
@@ -104,9 +120,13 @@ def project_rows(files):
                 inval.append({"i": c["i"], "sha": c["sha"][:10], "top_miss": top, "miss": c["miss"]})
         nc_total = collections.Counter()
         miss_total = collections.Counter()
+        detail_total = collections.Counter()
         for c in later:
             nc_total.update(c["nc"])
             miss_total.update(c["miss"])
+            detail_total.update(c["nc_detail"])
+        ov_pytest = [c["cold"] / c["pytest"] for c in commits if c.get("cold") and c.get("pytest")]
+        det_pytest = [c["plain"] / c["pytest"] for c in commits if c.get("plain") and c.get("pytest")]
         out[name] = {
             "shards": nsh, "shards_found": len(shards), "commits_ok": len(commits), "transitions": len(later),
             "tests_median": med([c["n_tests"] for c in commits]),
@@ -119,6 +139,15 @@ def project_rows(files):
             "a_wall_mean": mean([c["a_wall"] for c in later]), "b_wall_mean": mean([c["b_wall"] for c in later]),
             "hit_over_full_median": med(speed), "hit_over_full_mean": mean(speed),
             "capture_overhead_median": med(ovs), "capture_overhead_n": len(ovs),
+            "cold_over_det": [round(c["cold"] / c["plain"], 3) for c in commits if c.get("cold") and c.get("plain")],
+            "cold_over_pytest": [round(x, 3) for x in ov_pytest],
+            "det_over_pytest": [round(x, 3) for x in det_pytest],
+            "cold_over_pytest_worst_shard": [round(c["cold_max_ratio"], 3) for c in commits if c.get("cold_max_ratio")],
+            "epoch_diff": sum(c.get("epoch_diff", 0) for c in commits),
+            "epoch_diff_ids": [x for c in commits for x in c.get("epoch_diff_ids", [])][:20],
+            "reused_total": sum(c["n_reused"] for c in later),
+            "children_total": sum(c["children"] for c in commits),
+            "not_cached_detail": dict(detail_total.most_common(25)),
             "invalidating": inval, "not_cached": dict(nc_total.most_common()), "miss": dict(miss_total.most_common()),
             "per_commit": [{k: c[k] for k in ("i", "sha", "time_total", "time_reused", "n_tests", "n_reused",
                                               "a_wall", "b_wall", "checked")} for c in commits],
@@ -129,9 +158,9 @@ def project_rows(files):
 
 def markdown(rows) -> str:
     lines = ["| project | transitions | tests | time skipped median / mean | tests skipped median / mean | "
-             "cache run vs full run, median (A / B) | capture overhead (median, n) | verified reuses (wrong, flaky) | "
-             "invalidate-all commits |",
-             "|---|---|---|---|---|---|---|---|---|"]
+             "cache run vs full run, median (A / B) | capture overhead (median, n) | cold / plain pytest (median) | "
+             "verified reuses (wrong, flaky) | invalidate-all commits |",
+             "|---|---|---|---|---|---|---|---|---|---|"]
     for name, r in rows.items():
         o = r["capture_overhead_median"]
         ov = "-" if o is None else f"{100 * o:+.0f}%"
@@ -140,7 +169,9 @@ def markdown(rows) -> str:
             f"{pct(r['skip_time_mean'])} | {pct(r['skip_tests_median'])} / {pct(r['skip_tests_mean'])} | "
             f"{pct(r['hit_over_full_median'])} ({secs(r['a_wall_median'])} / {secs(r['b_wall_median'])}) | "
             f"{ov} "
-            f"({r['capture_overhead_n']}) | {r['verified']} ({r['wrong']}, {r['flaky']}) | "
+            f"({r['capture_overhead_n']}) | "
+            f"{'-' if not r['cold_over_pytest'] else format(med(r['cold_over_pytest']), '.2f') + 'x'} | "
+            f"{r['verified']} ({r['wrong']}, {r['flaky']}) | "
             f"{len(r['invalidating'])}/{r['transitions']} |")
     return "\n".join(lines) + "\n"
 
@@ -150,9 +181,10 @@ def main(argv=None):
     ap.add_argument("results")
     ap.add_argument("--md")
     ap.add_argument("--json")
+    ap.add_argument("--from-i", type=int, default=0, help="drop commits before this index (e.g. r5's window)")
     a = ap.parse_args(argv)
     files = sorted(glob.glob(os.path.join(a.results, "*.json*")))
-    rows = project_rows(files)
+    rows = project_rows(files, a.from_i)
     md = markdown(rows)
     print(md)
     if a.md:

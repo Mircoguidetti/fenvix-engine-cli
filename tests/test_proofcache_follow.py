@@ -457,3 +457,50 @@ def test_device_listing_is_an_input_and_device_content_is_refused(pytester, run_
     assert reused >= ids("test_missing_dev_dir")
     # /dev's listing is reused only while it is the same (a device appearing reruns the test)
     assert "test_m.py::test_list_dev" in reused or miss(data)["test_m.py::test_list_dev"].startswith("data")
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# cold-run cost: memoised distribution identity, facts computed in worker processes
+
+
+def test_distribution_identity_memo_follows_every_change(tmp_path, monkeypatch):
+    from detpy import proofcache
+
+    site = tmp_path / "site"
+    di = site / "fakedist-1.0.dist-info"
+    di.mkdir(parents=True)
+    (di / "METADATA").write_text("Metadata-Version: 2.1\nName: fakedist\nVersion: 1.0\n")
+    (di / "RECORD").write_text("fakedist/__init__.py,sha256=aaa,1\n")
+    monkeypatch.syspath_prepend(str(site))
+    memo = str(tmp_path / "memo.json")
+
+    def part():
+        parts, _ = proofcache._dist_infos(str(tmp_path / "proj"), memo)
+        return next(p for p in parts if p.startswith("fakedist=="))
+
+    first = part()
+    assert part() == first and os.path.exists(memo)  # second call served by the memo
+    assert first in proofcache._dist_infos(str(tmp_path / "proj"))[0]  # the same as without a memo
+    # a reinstall rewrites RECORD (same size here): the memo entry no longer matches and the digest changes
+    (di / "RECORD").write_text("fakedist/__init__.py,sha256=bbb,1\n")
+    assert part() != first
+    (di / "METADATA").write_text("Metadata-Version: 2.1\nName: fakedist\nVersion: 2.0\n")
+    assert part().startswith("fakedist==2.0:")
+
+
+def test_facts_in_worker_processes_equal_facts_in_process(tmp_path):
+    from detpy import _codefacts
+
+    jobs = []
+    for k in range(80):
+        p = tmp_path / f"m{k}.py"
+        p.write_text(f"import os\nfrom . import sib\n\nX = {k}\n\nclass C:\n    def f(self):\n        return {k}\n\n"
+                     f"def g():\n    '''doc'''\n    return X\n")
+        jobs.append((str(p), f"digest{k}", f"pkg.m{k}", False))
+    jobs.append((str(tmp_path / "missing.py"), "d", None, False))
+    (tmp_path / "bad.py").write_text("def (:\n")
+    jobs.append((str(tmp_path / "bad.py"), "bad", None, False))
+    serial = [_codefacts.read_facts(*j) for j in jobs]
+    parallel = _codefacts.read_many(jobs, str(tmp_path / "w"), min_parallel=2)
+    assert parallel == serial
+    assert not [f for f in os.listdir(tmp_path / "w")]

@@ -739,38 +739,80 @@ def _patch_environ() -> None:
 
 # ---------------------------------------------------------------------------
 # identities
-def _dist_infos(root: str):
-    """(runtime digest part for installed distributions, dist-info dirs of editable installs of the project)."""
+def _stat_key(path: str):
+    try:
+        st = os.stat(path)
+    except OSError:
+        return None
+    return [st.st_size, st.st_mtime_ns, st.st_ctime_ns, st.st_ino]
+
+
+def _dist_infos(root: str, memo_path: str | None = None):
+    """(runtime digest part for installed distributions, dist-info dirs of editable installs of the project).
+
+    Reading every distribution's metadata and RECORD takes seconds where thousands are installed: each one's
+    result is memoised in ``memo_path`` under the size, mtime, ctime and inode of its metadata files (an installer
+    rewrites them, which changes the ctime), so an unchanged environment is not read again.
+    """
     from importlib import metadata
 
+    memo: dict = {}
+    if memo_path:
+        try:
+            with open(memo_path) as fh:
+                memo = json.load(fh)
+        except (OSError, ValueError):
+            memo = {}
+    fresh: dict = {}
     parts, editable = [], []
     root_sep = os.path.realpath(root) + os.sep
     for d in metadata.distributions():
-        name = (d.metadata.get("Name") or "?") if d.metadata is not None else "?"
         path = getattr(d, "_path", None)
-        project = False
+        key = None
+        if path is not None:
+            base = os.path.realpath(str(path))
+            key = json.dumps([base, root_sep] + [_stat_key(os.path.join(base, f)) for f in (
+                "METADATA", "PKG-INFO", "RECORD", "direct_url.json")])
+        hit = memo.get(key) if key is not None else None
+        if hit is None:
+            name = (d.metadata.get("Name") or "?") if d.metadata is not None else "?"
+            project = False
+            try:
+                du = d.read_text("direct_url.json")
+                if du:
+                    info = json.loads(du)
+                    url = info.get("url", "")
+                    if url.startswith("file://") and (os.path.realpath(url[7:]) + os.sep).startswith(root_sep):
+                        project = True
+            except Exception:
+                pass
+            if project:
+                hit = ["project", os.path.realpath(str(path)) + os.sep if path is not None else None]
+            else:
+                try:
+                    rec = d.read_text("RECORD") or ""
+                except Exception:
+                    rec = ""
+                hit = ["dist", f"{name.lower()}=={d.version}:{_core.digest(rec.encode())}"]
+        if key is not None:
+            fresh[key] = hit
+        if hit[0] == "project":
+            if hit[1] is not None:
+                editable.append(hit[1])
+        else:
+            parts.append(hit[1])
+    if memo_path and fresh != memo:
         try:
-            du = d.read_text("direct_url.json")
-            if du:
-                info = json.loads(du)
-                url = info.get("url", "")
-                if url.startswith("file://") and (os.path.realpath(url[7:]) + os.sep).startswith(root_sep):
-                    project = True
-        except Exception:
+            tmp = f"{memo_path}.{os.getpid()}.tmp"
+            with open(tmp, "w") as fh:
+                json.dump(fresh, fh)
+            os.replace(tmp, memo_path)
+        except OSError:
             pass
-        if project:
-            if path is not None:
-                editable.append(os.path.realpath(str(path)) + os.sep)
-            continue
-        try:
-            rec = d.read_text("RECORD") or ""
-        except Exception:
-            rec = ""
-        parts.append(f"{name.lower()}=={d.version}:{_core.digest(rec.encode())}")
     return sorted(parts), editable
 
 
-def runtime_identity(root: str) -> tuple[str, dict, list]:
+def runtime_identity(root: str, memo_path: str | None = None) -> tuple[str, dict, list]:
     import sysconfig
 
     exe = os.path.realpath(sys.executable)
@@ -778,7 +820,7 @@ def runtime_identity(root: str) -> tuple[str, dict, list]:
     libdir, ldlib = sysconfig.get_config_var("LIBDIR"), sysconfig.get_config_var("LDLIBRARY")
     if libdir and ldlib and os.path.exists(os.path.join(libdir, ldlib)):
         lib = os.path.join(libdir, ldlib)
-    dists, editable = _dist_infos(root)
+    dists, editable = _dist_infos(root, memo_path)
     d = {
         "python": sys.version,
         "cache_tag": sys.implementation.cache_tag,
@@ -872,7 +914,9 @@ class ProofCachePlugin:
         self.config = config
         self.root = os.path.realpath(str(config.rootpath))
         self.config_digest, self.config_info = config_identity(config)
-        self.runtime_digest, self.runtime_info, editable = runtime_identity(self.root)
+        os.makedirs(self.dir, exist_ok=True)
+        self.runtime_digest, self.runtime_info, editable = runtime_identity(
+            self.root, os.path.join(self.dir, "distributions.json"))
         cap = self.cap
         cap.dist_info_ok = tuple(editable)
         cap.stdlib_dirs = tuple(d + os.sep for d in _sites._stdlib_dirs)
@@ -912,9 +956,18 @@ class ProofCachePlugin:
 
     def _decide(self, items) -> None:
         store = self.store
-        for path, content in store.changed_code_files():
+        changed = list(store.changed_code_files())
+        jobs = []
+        for path, content in changed:
             mod, is_pkg = _module_of(os.path.join(self.root, path))
-            f = _codefacts.read_facts(os.path.join(self.root, path), content, mod, is_pkg)
+            jobs.append((os.path.join(self.root, path), content, mod, is_pkg))
+        cap, was = self.cap, self.cap.active
+        cap.active = False  # detpy's own reads and workers are not inputs of any test
+        try:
+            facts = _codefacts.read_many(jobs, os.path.join(self.dir, "tmp"))
+        finally:
+            cap.active = was
+        for (path, content), f in zip(changed, facts):
             if f is not None:
                 store.set_fresh(path, content, f[0], f[1], f[2], f[3])
         rng = random.Random(f"detpy-cache-verify:{self.run_id}")
@@ -1074,6 +1127,29 @@ class ProofCachePlugin:
         cache[rel] = ix
         return ix
 
+    def _prefetch_facts(self, rels, cache: dict) -> None:
+        """Facts of every file in ``rels`` whose current version the store does not have yet, computed together."""
+        jobs, meta = [], []
+        for rel in rels:
+            if rel in cache:
+                continue
+            p = os.path.join(self.root, rel)
+            content = _core.file_digest(p)
+            if content is None:
+                cache[rel] = None
+                continue
+            ix = self.store.file_index(rel, content)
+            if ix is not None:
+                cache[rel] = ix
+                continue
+            mod, is_pkg = _module_of(p)
+            jobs.append((p, content, mod, is_pkg))
+            meta.append((rel, content))
+        if not jobs:
+            return
+        for (rel, content), f in zip(meta, _codefacts.read_many(jobs, os.path.join(self.dir, "tmp"))):
+            cache[rel] = None if f is None else self.store.add_file(rel, content, f[0], f[1], f[2], f[3])
+
     def _record_all(self) -> None:
         cap, store = self.cap, self.store
         if cap.rec is None:
@@ -1081,8 +1157,9 @@ class ProofCachePlugin:
         cap.collect_children()
         fcache: dict[str, int | None] = {}
         rels = cap.fnames
-        # file facts for every executed or loaded repository file
+        # file facts for every executed or loaded repository file (new versions parsed in parallel)
         needed = set(rels) | {r for r, _ in cap.loaded_order} | cap.preloaded
+        self._prefetch_facts(sorted(needed), fcache)
         for rel in needed:
             self._facts_index(rel, fcache)
         ranges = []
