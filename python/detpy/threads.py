@@ -30,6 +30,10 @@ import threading
 from . import _sites, _state
 
 _real_allocate = _thread.allocate_lock
+# The scheduler's own blocking waits call the C method captured at import: tools
+# that patch lock.acquire on the C type (blockbuster flags blocking calls inside an
+# event loop) must not see the baton hand-over as a blocking call of the test.
+_lock_acquire = _thread.LockType.acquire
 _real_start_new_thread = _thread.start_new_thread
 _real_join = threading.Thread.join
 _real_is_alive = threading.Thread.is_alive
@@ -95,7 +99,7 @@ class T:
         self.name = name
         self.sid = sid  # stable id: creation site + per-site counter, "main" for the test thread
         self.gate = _real_allocate()
-        self.gate.acquire()
+        _lock_acquire(self.gate)
         self.handed = False
         self.state = RUNNABLE
         self.wait = ""  # what it waits for (deadlock message)
@@ -123,7 +127,7 @@ class _SchedMutex:
 
     def acquire(self, blocking=True, timeout=-1):
         _tls.in_mu = True
-        got = self._lock.acquire(blocking, timeout)
+        got = _lock_acquire(self._lock, blocking, timeout)
         if not got:
             _tls.in_mu = False
         return got
@@ -449,7 +453,7 @@ def _locked_hand(me, nxt) -> None:
 
 def _wait_gate(me) -> None:
     """Wait (no lock held) until the baton is handed to ``me``."""
-    me.gate.acquire()
+    _lock_acquire(me.gate)
     me.handed = False
     if S.exiting:
         _reap()

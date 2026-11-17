@@ -57,7 +57,7 @@ MODES = {
 }
 SUITE_MODES = {"plain": [], "det": ["--det"], "l1": L1, "l1-s1": ["--det", "--det-threads", "--det-threads-seed=1"]}
 log, is_fail, hist = A.log, A.is_fail, A.hist
-ARTIFACT_MARKERS = ("DeadlockError", "Timeout (>", "deadlock", "detpy")
+ARTIFACT_MARKERS = ("DeadlockError", "Timeout (>", "deadlock", "detpy", "BlockingError")
 
 
 def pytest_run(p, args: list, out_json: Path, timeout: float, trace: Path | None = None) -> dict:
