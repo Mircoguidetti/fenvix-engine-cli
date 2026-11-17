@@ -1,0 +1,56 @@
+[WebServer] $ vite dev --host 127.0.0.1 --port 3000 --strictPort
+[WebServer] 
+[WebServer]   VITE v8.1.5  ready in 662 ms
+[WebServer] 
+[WebServer]   ➜  Local:   http://127.0.0.1:3000/
+
+Running 47 tests using 2 workers
+···[WebServer] Error: thrown by an API route
+[WebServer]     at fn (/home/runner/work/_temp/l2_target/apps/tests/src/routes/api/throws.ts?pick=GET&lang.ts:2:9)
+[WebServer]     ... 3 lines matching cause stack trace ...
+[WebServer]     at Module.fetch (file:///home/runner/work/_temp/l2_target/node_modules/.pnpm/nitro@3.0.260610-beta_chokidar@5.0.0_dotenv@17.3.1_giget@2.0.0_ioredis@5.10.0_jiti@2.7._94b07a99448419b9ed3ed774a5c51e76/node_modules/nitro/dist/runtime/internal/vite/dev-worker.mjs:154:12) {
+[WebServer]   cause: Error: thrown by an API route
+[WebServer]       at fn (/home/runner/work/_temp/l2_target/apps/tests/src/routes/api/throws.ts?pick=GET&lang.ts:2:9)
+[WebServer]       at /home/runner/work/_temp/l2_target/packages/start/src/server/handler.ts:57:29
+[WebServer]       at captureUnhandledError (/home/runner/work/_temp/l2_target/packages/start/src/server/handler.ts:175:14)
+[WebServer]       at app.fetch (/home/runner/work/_temp/l2_target/packages/start/src/server/handler.ts:235:22)
+[WebServer]       at Module.fetch (file:///home/runner/work/_temp/l2_target/node_modules/.pnpm/nitro@3.0.260610-beta_chokidar@5.0.0_dotenv@17.3.1_giget@2.0.0_ioredis@5.10.0_jiti@2.7._94b07a99448419b9ed3ed774a5c51e76/node_modules/nitro/dist/runtime/internal/vite/dev-worker.mjs:154:12),
+[WebServer]   status: 500,
+[WebServer]   statusText: undefined,
+[WebServer]   headers: undefined,
+[WebServer]   data: undefined,
+[WebServer]   body: undefined,
+[WebServer]   unhandled: true
+[WebServer] }
+[WebServer] [error] [request error] [GET] http://localhost:3000/api/throws
+[WebServer] 
+[WebServer]  
+[WebServer] ℹ HTTPError: thrown by an API route
+[WebServer] 
+[WebServer]  ⁃ at fn (src/routes/api/throws.ts?pick=GET&lang.ts:2:9)
+[WebServer]  ⁃ (/home/runner/work/_temp/l2_target/packages/start/src/server/handler.ts:57:29)
+[WebServer]  ⁃ at captureUnhandledError (/home/runner/work/_temp/l2_target/packages/start/src/server/handler.ts:175:14)
+[WebServer]  ⁃ at app.fetch (/home/runner/work/_temp/l2_target/packages/start/src/server/handler.ts:235:22)
+[WebServer]  ⁃ at Module.fetch (/home/runner/work/_temp/l2_target/node_modules/.pnpm/nitro@3.0.260610-beta_chokidar@5.0.0_dotenv@17.3.1_giget@2.0.0_ioredis@5.10.0_jiti@2.7._94b07a99448419b9ed3ed774a5c51e76/node_modules/nitro/dist/runtime/internal/vite/dev-worker.mjs:154:12)
+[WebServer] 
+[WebServer] [CAUSE]
+[WebServer] Error {
+[WebServer]   stack: 'thrown by an API route\n' +
+[WebServer]   'at fn (./src/routes/api/throws.ts?pick=GET&lang.ts:2:9)\n' +
+[WebServer]   'at /home/runner/work/_temp/l2_target/packages/start/src/server/handler.ts:57:29)\n' +
+[WebServer]   'at captureUnhandledError (/home/runner/work/_temp/l2_target/packages/start/src/server/handler.ts:175:14)\n' +
+[WebServer]   'at app.fetch (/home/runner/work/_temp/l2_target/packages/start/src/server/handler.ts:235:22)\n' +
+[WebServer]   'at Module.fetch (/home/runner/work/_temp/l2_target/node_modules/.pnpm/nitro@3.0.260610-beta_chokidar@5.0.0_dotenv@17.3.1_giget@2.0.0_ioredis@5.10.0_jiti@2.7._94b07a99448419b9ed3ed774a5c51e76/node_modules/nitro/dist/runtime/internal/vite/dev-worker.mjs:154:12)',
+[WebServer]   message: 'thrown by an API route',
+[WebServer] }
+[WebServer] 
+··[WebServer] 8:26:09 AM [vite] (client) hmr update /src/app.tsx
+[WebServer] 8:26:10 AM [vite] (client) dependency optimized: h3
+···································[WebServer] 8:26:40 AM [vite] (ssr) warning: A "use server" module can only serve the functions it declares, so this export is left out of the client build (line 6). "testQuery" is not a function.
+[WebServer]   Plugin: solid-start:server-functions/compiler
+[WebServer]   File: /home/runner/work/_temp/l2_target/apps/tests/src/functions/solid-router-query.ts
+[WebServer] 8:26:40 AM [vite] (client) warning: A "use server" module can only serve the functions it declares, so this export is left out of the client build (line 6). "testQuery" is not a function.
+[WebServer]   Plugin: solid-start:server-functions/compiler
+[WebServer]   File: /home/runner/work/_temp/l2_target/apps/tests/src/functions/solid-router-query.ts
+·······
+  47 passed (46.5s)
