@@ -1,0 +1,13 @@
+{
+ "name": "isort",
+ "url": "https://github.com/PyCQA/isort",
+ "head": "eb62da318ea5",
+ "commits": 51,
+ "mode": "suite",
+ "python": "3.13",
+ "pip": [
+  "hypothesis",
+  "hypothesmith",
+  "pytest-mock"
+ ]
+}
