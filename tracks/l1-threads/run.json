@@ -1,1 +1,1 @@
-{"nonce": "r5", "code": "d447170", "note": "anyio only, after the blockbuster fix; other projects: r4 (same behaviour without a patched lock.acquire)", "only": ["corpus:anyio", "suite:anyio"], "runs": 10, "seeds": 20, "confirm": 10, "timing_runs": 3, "loaded_runs": 5}
+{"nonce": "r6", "code": "c25485d", "note": "the two popular suites never measured (servers in threads); r4 cancelled after 19 jobs (its anyio jobs ran without the blockbuster fix)", "only": ["suite:requests", "suite:werkzeug"], "runs": 10, "seeds": 20, "confirm": 10, "timing_runs": 3, "loaded_runs": 5}
