@@ -1,201 +1,276 @@
 # Skip-with-proof study 2: where are the minutes?
 
-**Status (2026-11-17 01:55 UTC): version 2, partial.** Final: setting 1 for docusaurus, vue-core,
-terraform, prometheus (50 commits each) and Home Assistant (50 commits, 12% sample); setting 3 v1 (14
-libraries); the verdict on the two verification mismatches (both flaky, 0 wrong hits). Partial: setting 2
-(4 agent/repository pairs, 145 pushes; openai-agents-python, vue-core Codex and Home Assistant Claude Code
-still running), setting 4 reruns (vue-core 10 runs and docusaurus 8 final; terraform 5 of 10, Home
-Assistant 8 of 30 group runs), saleor (10 shard-complete commits), name rule v2 (6 of 14 libraries). Every
-number is labelled. Raw data: `harness/skip_study2/results/<run>/`; summary:
-`harness/skip_study2/results/summary.json`; tables: `python3 harness/skip_study2/aggregate.py --md`.
+**Status (2026-11-17 03:05 UTC): version 3, partial.**
 
-## Headline
+* **Final:**
+  * the R-002 code fixes: 3 proven errors and 6 notes, each with a test; 14 of 14 tests pass (MEASURED, `harness/skip_study2/tests/`);
+  * setting 1 on the **v2 capture** (docusaurus, vue-core, terraform, prometheus, Home Assistant 12% sample);
+  * the verdict on the two verification mismatches, now also re-checked on GitHub Actions: both flaky, 0 wrong;
+  * setting 3 v1.
+* **Pending: setting 1 on the v3 capture.** This is run `v3` (GitHub Actions run 44004047856). It has been queued behind the account's concurrency limit since 02:35 UTC, with 18 jobs of earlier runs queued ahead of it. Results are expected around 09:00-12:00 UTC (ESTIMATED: queue plus a 330-minute walk budget). The v3 column of the before/after table says "pending". When the bot has committed `results/v3/walk/`, run `python3 harness/skip_study2/aggregate.py --compare r1,r2,r3,r5,r6,r7,r8 v3` to fill it in.
+* **Partial:**
+  * saleor (v2 capture; shards 6-7 were restarted, so right now no commit has been reached by all 8 shards);
+  * the reruns (41 attempts);
+  * setting 2 agent PRs (**v2 capture**, 170 pushes; not re-walked with v3);
+  * name rule v2 (10 of 14 libraries).
 
-Rule `closure` (proof: nothing the unit read changed) unless stated. "Verified skips" = skippable units
-run anyway and compared with the cached outcome; "wrong" = a different outcome that reproduces and whose
-cached outcome also reproduces at its own commit.
+Every number is labelled. Raw data: `harness/skip_study2/results/<run>/`. Tables: `python3 harness/skip_study2/aggregate.py --md`.
 
-| setting | time skipped with proof per commit / push, median / mean | wrong hits (verified skips) | status | label |
+## Headline: before / after the R-002 fixes
+
+"v2" = the walks of version 2 (capture v2). "v3" = the same commits re-walked with the fixed capture (run v3).
+
+* **Proof rule** = `closure`. In Go, `closure` = go test cache hit AND no runtime read changed AND (v3) no connection to a non-loopback address AND (v3) the same runtime and environment.
+* The **go test cache alone is "no proof"**. It is shown separately and is never counted as proof.
+* **Verified skips** = skips of that rule that were run anyway and compared with the cached outcome.
+
+| setting | rule | v2: time skipped with proof, median / mean | v2: wrong hits (verified skips) | v3: time skipped, median / mean | v3: wrong hits (verified skips) | label |
+|---|---|---:|---|---:|---|---|
+| reference: first study, 14 small Python libraries | closure | 0% / 22% | 0 | - | - | MEASURED |
+| 1. home-assistant (pytest, 50 commits, 12% sample) | closure | **98% / 85%** | 0 (2573) | pending (run v3) | pending | MEASURED / pending |
+| 1. docusaurus (vitest, 50 commits) | closure | **98% / 81%** | 0 (829) | pending | pending | MEASURED / pending |
+| 1. vue-core (vitest, 50 commits) | closure | 25% / 28% | 0 (371) | pending | pending | MEASURED / pending |
+| 1. terraform (Go, 50 commits) | closure (proof; v3 adds the net guard) | **35% / 31%** | 0 (475) | pending; lower bound 22% / 20% | pending | MEASURED; bound ESTIMATED |
+| 1. terraform | go test cache (**no proof**) | 72% / 61% | 0 (697) in the sample; **1 wrong found by the reviewer** (`internal/cloud`, network) | pending | pending | MEASURED |
+| 1. prometheus (Go, 50 commits) | closure (proof; v3 adds the net guard) | **56% / 52%** | 0 (313) | pending; lower bound 41% / 37% | pending | MEASURED; bound ESTIMATED |
+| 1. prometheus | go test cache (**no proof**) | 56% / 52% | 0 (313) | pending | pending | MEASURED |
+| 1. saleor (pytest + Django, 10 commits, 15% sample) | closure | 0% / 9% | 0 (7) | not in run v3 | - | MEASURED, partial |
+| 2. coding-agent PR pushes, 170 pushes pooled | closure | 52% / 51% | 0 (1408), 2 flaky | not re-walked (v2 capture); with the Go net guard at least 29% / 42% | - | MEASURED; bound ESTIMATED |
+| 2. the same 170 pushes | go test cache for Go (**no proof**), closure otherwise | 76% / 53% | - | - | - | MEASURED |
+
+**How to read the before/after:**
+
+* **The v2 "0 wrong" was a sample result, not a proof.** The reviewer found:
+  * 1 real wrong hit outside the sample: terraform `internal/cloud`, a cached PASS of a test that needs app.terraform.io (go test cache);
+  * 1 wrong hit reproduced on a demo repository: a sqlite fixture opened read-write;
+  * 3 docusaurus files that are latent wrong hits whenever `$HOME` differs between the recording and the reusing runner.
+
+  The v3 capture closes all three (next section). The v3 verification count is what this delivery owes.
+* **Lower bounds for Go** (ESTIMATED from v2 data):
+  * The bound treats every package that made *any* `connect()`, loopback included, as never skippable. The v2 data cannot tell loopback from external connections; v3 records the address.
+  * terraform: 14 of 125 packages connect, which forces 540 closure skips to rerun. prometheus: 30 of 90 packages connect, 1 310 skips (MEASURED, the same counts as the reviewer).
+  * v3 will land between the bound and the v2 value.
+  * On github-mcp-server (agent PRs) the bound is very loose: 47% -> 18% median. Most of its connections are probably `httptest` servers on loopback (ESTIMATED).
+* **Python and Node** (ESTIMATED, until v3 lands):
+  * The v3 key adds environment variables read, runtime identity, read-write fixtures and cached failures.
+  * In a single runner image the variables and the runtime do not change between commits, so the share should move little.
+  * Cached failures: their effect on the v2 data is MEASURED (aggregator toggle `S2_V2_NO_FAILURE_RULE`):
+    * setting 1: no change in any median or mean;
+    * Home Assistant Copilot PRs: 100% / 95% -> 97% / 93%;
+    * the setting 2 pooled 52% / 51%: unchanged.
+
+## R-002 fixes (each with its test)
+
+Code: `strace_deps.py`, `pyhooks/sitecustomize.py`, `nodehooks/envrec.cjs`, `walk.py` and `aggregate.py`, in commits 39d89da, 43359a2, dfbf300 and 9c73d3a. Tests: `tests/test_r002_capture.py` (the reviewer's 2 tests, unchanged) and `tests/test_r002_fixes.py`. Run them with `python3 -m pytest -q harness/skip_study2/tests/`: **14 passed** (MEASURED, 2026-11-17 02:50 UTC, this container).
+
+| # | review item | fix | test(s) | status |
 |---|---|---|---|---|
-| reference: first study, 14 small Python libraries | 0% / 22% | 0 | final | MEASURED |
-| 1. home-assistant (pytest, 50 commits, 12% sample) | **98% / 85%** | 0 (2573) | final | MEASURED |
-| 1. docusaurus (vitest, 50 commits) | **98% / 81%** | 0 (829) | final | MEASURED |
-| 1. vue-core (vitest, 50 commits) | 25% / 28% | 0 (371) | final | MEASURED |
-| 1. terraform (Go, go test cache as remote cache, 50 commits) | 72% / 61% (`closure` incl. runtime reads: 35% / 31%) | 0 (697) | final | MEASURED |
-| 1. prometheus (Go, go test cache, 50 commits) | 56% / 52% | 0 (313) | final | MEASURED |
-| 1. saleor (pytest + Django, 10 commits, 15% sample) | 0% / 9% (`func+guard` 0% / 16%) | 0 (7) | partial | MEASURED |
-| 2. coding-agent PR pushes, all 145 pushes pooled | 75% / 54% (Go go-cache: 78% / 56%) | 0 (1097), 2 flaky | partial | MEASURED |
-| 2. Copilot on github-mcp-server (15 PRs, 101 pushes) | 47% / 49% (go-cache 68% / 52%) | 0 (287) | partial | MEASURED |
-| 2. Copilot on typescript-go (2 PRs, 20 pushes) | 30% / 54% | 0 (145) | partial | MEASURED |
-| 2. Copilot on home-assistant (3 PRs, 12 pushes) | 100% / 95% | 0 (407), 2 flaky | partial | MEASURED |
-| 2. Codex on home-assistant (3 PRs, 12 pushes) | 49% / 50% | 0 (258) | partial | MEASURED |
-| 3. finer rule `line+names`, 14 libraries (strict config rule) | 0% / 25% (proof `file+guard` 0% / 21%; coverage-only `line` 48% / 46%) | 0; pygments 7c196150 caught | v1 final, v2 partial | MEASURED |
-| 4. time to green per commit, before -> after, median | home-assistant 417 s -> 35 s; docusaurus 30 s -> 3 s; terraform 95 s -> 48 s; vue-core no gain | - | final | ESTIMATED (schedule of MEASURED unit costs) |
-| 4. full CI reruns on one commit, attempts failed by flakiness | 0 of 31 (vue-core 0/10, docusaurus 0/8, terraform 0/5, home-assistant 0/8 group runs) | - | partial | MEASURED |
+| E1 | read-write opens dropped from the dependencies (sqlite fixture) | An open of an existing file with `O_RDWR` / `O_APPEND` is a read. The dependency is the file's **committed** content, even if the test rewrites it. `O_TRUNC`, `O_CREAT\|O_EXCL` and files that did not exist are outputs, not dependencies. | `test_r002_capture::test_sqlite_fixture_change_is_a_dependency` (reviewer); `test_parse_rdwr_is_read_but_trunc_and_new_are_not`; `test_rdwr_dependency_is_the_committed_content` | fixed, pass |
+| E2 | environment variables not captured | Python hook: `os.environ` / `os.getenv` / `os.environb` reads, recorded by name. Enumerating the whole environment records `*`; a stdlib proxy lookup records `~proxy`. Node hook: `process.env` reads. Go: variables in go's test log, plus a fixed set per language (PATH, TZ, LANG, LANGUAGE, LC_\*, and PYTHON\* / NODE\_\* / UV\_\*). The key holds the value hash of each. | `test_r002_capture::test_environment_variable_is_a_dependency` (reviewer); `test_unread_environment_variable_does_not_invalidate`; `test_whole_environment_enumeration_is_a_dependency`; `test_docusaurus_home_case_reruns_when_home_changes` (the real docusaurus `$HOME` case) | fixed, pass |
+| E3 | Go: no network guard | A Go package whose last run connected to a non-loopback address is never a `closure` skip (reason `network`). This is the same rule as pytest / vitest. The go test cache alone keeps no guard and is labelled "no proof". | `test_local_address_classification`; `test_go_package_with_external_connect_is_never_skipped` | fixed, pass |
+| N1 | Go "go-cache" labelled as proof | The aggregator prints "go test cache (no proof)", and the headline uses Go `closure`. | aggregator tables (label) | fixed |
+| N2 | the interpreter, stdlib and shared libraries were not in the key | The key now holds a **runtime identity**: interpreter path, version and binary; the stdlib tree; libpython; the Node binary; the Go version and GOROOT; tzdata; the shared libraries the interpreter / Node link; libssl and libcrypto. | `test_interpreter_change_invalidates`; `test_runtime_identity_covers_node_binary_and_tzdata` | fixed, pass |
+| N3 | verification covered only `closure` skips | Every extra skip of `func+guard`, `func` and `~cfg` beyond `closure` is now run and compared in full (`xverify`). Walks without it, which means every v2 walk, print **n/a** for those rows. | `test_extra_skips_of_func_rules_are_verified` | fixed, pass |
+| N4 | cached failures reused without verification | A unit whose last outcome was a failure always reruns. v2 data is approximated: every unit that ever failed reruns at every transition. | `test_cached_failure_is_never_reused` | fixed, pass |
+| N5 | the aggregator override was too permissive | The verdicts accepted as "flaky" are an explicit allow-list (`aggregate.FLAKY_VERDICTS`). Anything else stays a wrong hit. | `test_recheck_verdicts_allow_list` | fixed, pass |
+| N6 | `kind_of` labelled node_modules as `env` | Paths are now classed `installed` (venv, node_modules) or `system`. The v2 docusaurus "read:env 1" is a node_modules file changed after a `package.json` bump, **not** an environment variable. | none (label only) | fixed in v3 walks |
+| N7 | the GitHub Actions re-check was still queued | It ran (run 43990865851): `results/s1/recheck/home-assistant-{0,1}.json`. See the next section. | - | done |
+| N8 | Home Assistant 12% sample on agent PRs leaves out the PR's own integration tests | **Not fixed**: agent PRs were not re-walked. The HA Copilot 97% median is an upper bound. | - | open |
+| N9 | `.git/` reads excluded; wall-clock not a dependency | Documented in the method (below). Wall-clock is covered only under `detpy --det` (virtual clock), not by this capture. | - | documented |
 
-**Zero wrong hits holds** (MEASURED): 5 887 verified skips across settings 1 and 2, 0 wrong. The two
-mismatches on the Home Assistant Copilot PRs are flaky outcomes, not missed dependencies (next section).
+## The two verification mismatches: verdict (updated with the GitHub Actions re-check)
 
-## The two verification mismatches: verdict
+In both cases a skipped unit's cached outcome was a **failure**, recorded at the PR's base commit, and the fresh run at a later push passed.
 
-Both were a skipped unit whose cached outcome was a **failure** recorded at the PR's base commit and whose
-fresh run at a later push passed. Re-check (local, 4 vCPU, Python 3.14.6, HA's `--timeout=9`; evidence in
-`results/s1/recheck/*-local.json`; the GitHub Actions re-check job `recheck.py`, run s1, is still queued):
+There are two re-checks:
+* **Local** (4 vCPU, Python 3.14.6): `results/s1/recheck/*-local.json`.
+* **GitHub Actions** (`recheck.py`, run 43990865851): 3 plain runs, 1 traced run alone and 4 traced runs at once, at each commit.
 
-| unit (PR) | failing test | base commit, plain runs failed | PR commit, plain runs failed | traced (strace) runs failed | verdict |
+| unit (PR) | local: plain failed at base / PR commit | local: traced failed | GitHub Actions: plain failed at base / PR commit | GitHub Actions: traced alone / traced 4 at once failed, at base; at PR commit | verdict |
 |---|---|---|---|---|---|
-| `tests/components/switchbot/test_init.py` (171334) | `test_exception_handling_for_device_initialization[...wrong model]`, error at teardown | 2 / 20 | 2 / 30 | not needed | **flaky test** (MEASURED) |
-| `tests/components/knx/test_number.py` (163164) | `test_number_ui_load`: "No Telegram found. Expected: GroupValueRead - 2/0/0" | 0 / 20 | 0 / 20 | base 6 / 8 alone, 15 / 20 four at once; PR commit 6 / 8 alone, 6 / 12 four at once; import hooks without strace 0 / 8 | **failure caused by the capture** (MEASURED) |
+| `tests/components/switchbot/test_init.py` (171334) | 2 / 20; 2 / 30 | not needed | 0 / 3; 0 / 3 | 0 / 1, 2 / 4; 0 / 1, 0 / 4 | **flaky** (teardown race; `not-reproducible (load-sensitive)`) (MEASURED) |
+| `tests/components/knx/test_number.py` (163164) | 0 / 20; 0 / 20 | base 6 / 8, PR 6 / 8 | 0 / 3; **2 / 3** | 1 / 1, 0 / 4; 1 / 1, 3 / 4 | **flaky** (`flaky (plain runs disagree)`) (MEASURED) |
 
-* switchbot: the test passes, then the `hass` fixture teardown re-raises an exception from a background
-  task the integration left running (PySwitchbot's lock update tries to connect to the mock BLE device,
-  bleak's BlueZ backend raises `KeyError: 'path'`). Same error, same rate, at both commits. The push
-  changed only `homeassistant/components/hassio/const.py`.
-* knx: the test asserts that xknx's StateUpdater already sent its initial read when the telegram queue
-  drains. Plainly it always has; under strace (syscalls slowed) it often has not. Same at both commits;
-  the push changed only `homeassistant/components/zwave_js/cover.py`.
-* **No dependency was missed; the proof rule does not change.** Two harness/product rules change:
-  1. **A cached failure is never reused**: a unit whose last outcome was a failure always reruns (Bazel
-     does the same). Both mismatches disappear; cost on these PRs: 1 to 3 failing units of 189 to 216.
-  2. **A failure observed under dependency capture is confirmed by a plain rerun before it is recorded.**
-     strace changes timing enough to flip a race (knx: 0% -> 75% failure). Product consequence: capture
-     must be cheap enough not to perturb tests (in-process audit hooks, eBPF or fanotify instead of
-     ptrace), or the recorded outcome must come from a plain run.
-* The aggregator now applies re-check verdicts: a mismatch whose cached outcome does not reproduce at
-  its own commit counts as flaky, not wrong.
+* **knx is not only capture-induced.** On a GitHub runner it also fails in plain runs: 2 of 3 at the PR commit (MEASURED). Locally it never failed plainly in 40 runs. It is a timing race, which strace makes more likely.
+* **Result:**
+  * no dependency was missed;
+  * both verdicts are on the allow-list;
+  * the v2 verification count stays **0 wrong, 2 flaky**.
+* **Product rules that follow** (both are in the v3 walker):
+  1. a cached failure is never reused;
+  2. a failure observed under dependency capture is confirmed by a plain rerun before it is recorded.
 
 ## 0. Question and answer
 
-The first study (`docs/CACHE-SKIP-STUDY.md`, 14 small Python libraries x 50 commits) found that a median
-0% / mean 22% of test time per commit could be skipped **with proof**. Where are the skippable minutes?
+The first study (`docs/CACHE-SKIP-STUDY.md`) asked how much test time per commit can be skipped **with proof**. On 14 small Python libraries over 50 commits the answer was a median 0% / mean 22%. This study asks where the skippable minutes are.
 
-Answer: **in large repositories made of many loosely coupled parts, and in the pushes of coding agents.**
-Home Assistant 98% median (MEASURED), Docusaurus 98% (MEASURED). Tightly coupled code skips little even
-when large: vue-core 25%, saleor 0% (Django loads every app in every test process) (MEASURED). In Go the
-toolchain's own test cache, used as a remote cache across commits, skips 56-72% median and was never
-wrong on 1 010 verified hits (MEASURED). Coding-agent PRs: a median 75% / mean 54% of test time per push
-(MEASURED, 145 pushes, partial).
+**Answer: in large repositories made of many loosely coupled parts, and in the pushes of coding agents.**
+* Home Assistant and Docusaurus: 98% median each (MEASURED, v2 capture; v3 pending).
+* Tightly coupled code skips little, even when it is large (MEASURED):
+  * vue-core: 25%;
+  * saleor: 0% (Django loads every app in every test process).
+* **Go**, with proof (`closure`): terraform 35%, prometheus 56% median (MEASURED, v2).
+  * The v3 network guard will lower both, to no less than 22% and 41% (ESTIMATED).
+  * The go test cache alone skips more (terraform 72%), but it is **not a proof**: the reviewer found a wrong hit in it.
+* Coding-agent PRs: a median 52% / mean 51% of test time per push (MEASURED, 170 pushes, v2 capture, partial).
 
-## 1. Method (same proof discipline as the first study)
+## 1. Method (corrected in version 3)
 
-Harness: `walk.py` (Python, TypeScript and Go walks), `strace_deps.py` and `pyhooks/` (dependency
-capture), `flaky.py` (reruns), `finer/` (setting 3), `agent_walk.py` (setting 2), `aggregate.py`. All
-runs on GitHub Actions `ubuntu-latest` (4 vCPU), workflow `.github/workflows/skip-study2.yml`.
+**Harness:**
+* `walk.py`: Python, TypeScript and Go walks;
+* `strace_deps.py`, `pyhooks/` and `nodehooks/`: dependency capture;
+* `flaky.py`: reruns;
+* `recheck.py`: mismatch re-check;
+* `finer/`: setting 3;
+* `agent_walk.py`: setting 2;
+* `aggregate.py`: tables.
 
-* **Unit** = one test file run in its own process (pytest, vitest) or one Go package.
-* **Commits**: consecutive first-parent commits of the default branch (50 transitions per repository
-  unless stated). At every commit the walker checks out, reinstalls when a dependency spec changed,
-  builds, decides per unit, then really runs every unit it cannot skip.
-* **Proof rule `closure`**: a unit reuses its last result only if nothing it read changed: every file it
-  opened (strace: sources, node_modules, interpreter, shared libraries), every path it found missing (now
-  created?), every path it stat'ed, every directory it listed, every module name it looked up, every
-  environment variable it read, new pytest plugin entry points. Python also records imports via hooks.
-* **`strict`** = `closure` plus the first study's config rule (any lockfile, config or CI file change
-  reruns everything): the rule a cautious product would ship first.
-* **Python only**: `func+guard` (a changed `.py` file with unchanged module skeleton forces a rerun only
-  if a function whose definition changed was executed: still a proof at the Python level), `~cfg`
-  variants (a root config file whose pytest section is unchanged does not count: near-proof), and
-  **`func` = coverage-only, NOT a proof**, reported as asked.
-* **Go**: `go-cache` = the go command's own test cache (GOCACHE persisted across commits, i.e. a remote
-  cache restored into cold CI). Go `closure` = go-cache hit AND no file the test read at runtime (strace)
-  changed. A go-cache hit whose runtime reads changed is a *potential* wrong hit and is always verified.
-* **Verification**: at every commit a random sample of skippable units (plus every potential Go wrong hit)
-  runs anyway. A **wrong hit** is a fresh outcome that differs from the cached one and reproduces on a
-  second fresh run (if it does not reproduce it is counted as flaky, not wrong).
-* **Shares** per commit: skipped unit time / total unit time (unit time = test durations, or unit wall
-  minus the fixed process start-up, whichever is larger: per-file imports and transforms are paid in CI
-  too), and skipped tests / total tests. Median and mean over commits.
-* **Time to green** (ESTIMATED from MEASURED unit costs): longest-processing-time-first schedule of the
-  units on the project's CI worker count, before (all units) and after (units that must run). "After" is
-  shown with the MEASURED dependency-capture overhead applied to every unit that runs, and in brackets
-  without it (capture only on a sampled share of runs). Unit costs come from one measured run per unit,
-  so "before" is constant across commits.
-* **Sampling of very large suites**: Home Assistant (12% of test files: 776 units, 11 889 tests) and
-  saleor (15%) use a fixed-seed sample of test files; the walk runs as 4 / 8 parallel shards over
-  disjoint unit sets. Time to green schedules the sample on the same share of CI workers (same load per
-  worker as the full suite).
+Everything runs on GitHub Actions `ubuntu-latest` (4 vCPU), workflow `.github/workflows/skip-study2.yml`.
 
-## 2. Setting 1: large repositories
+**Basics:**
+* **Unit** = one test file run in its own process (pytest, vitest), or one Go package.
+* **Commits** = consecutive first-parent commits of the default branch; 50 transitions per repository unless stated. At every commit the walker:
+  * checks out;
+  * reinstalls when a dependency spec changed;
+  * builds;
+  * decides per unit;
+  * really runs every unit it cannot skip.
 
-Skip shares MEASURED on the stated sample; time to green ESTIMATED (see method). Go `strict` = go cache plus
-the config rule (it is not a subset of Go `closure`, which adds runtime reads).
+**What IS a dependency of a unit under `closure` (capture v3).** A unit reuses its last result only if none of these changed:
+* every file under the capture roots that it opened for reading. The roots are the repository, the virtualenv or node_modules, and spec roots. Since v3 this includes files opened **read-write** (`O_RDWR`, `O_APPEND`), keyed by their committed content;
+* every path it found missing (has it been created since?), every path it `stat`ed, and every directory it listed after the test file was opened;
+* every module name it looked up (Python import hooks), and new pytest plugin entry points;
+* **(v3)** every environment variable it read, by value hash:
+  * Python: `os.environ` / `getenv` reads; enumerating the whole environment counts as reading all of it;
+  * Node: `process.env` reads;
+  * Go: variables in go's test log;
+  * plus a fixed set per language: PATH, TZ, LANG, LANGUAGE, LC_\*, and PYTHON\* / NODE\_\* / UV\_\*;
+* **(v3)** the runtime identity: the interpreter or Node binary and version, the stdlib tree, libpython, the Go toolchain, tzdata, the linked shared libraries, libssl and libcrypto;
+* a unit that connected to a **non-loopback address** is never skipped. This held in v2 for pytest and vitest; **v3 extends it to Go**;
+* a unit whose last outcome was a **failure** is never reused (v3).
+
+**What is NOT a dependency (known limits, stated for the product):**
+* **Wall-clock time.** A test that starts failing on a date (a certificate expiry, a year boundary) is reused as a pass. This capture does not cover it. Only `detpy --det` (virtual clock) does.
+* Reads under `.git/`, `.pytest_cache`, `.mypy_cache`, `.hypothesis` and the Vite cache (`SKIP_PARTS`).
+* Files outside the capture roots and outside the runtime identity, for example `/etc/hosts`, CA bundles other than libssl/libcrypto, and locale files.
+* Environment variables read from C code (`getenv` inside an extension module) and not through `os.environ`.
+* Services reached on loopback (a database in a container), except where a spec lists `db_inputs`.
+* Randomness and thread timing. Flakiness is handled by verification and reruns, not by the key.
+
+**Rules:**
+* **`strict`** = `closure` plus the first study's config rule: any lockfile, config or CI file change reruns everything.
+* **Python only:**
+  * `func+guard`: a proof at the Python level;
+  * `~cfg`: near-proof;
+  * `func`: **coverage-only, NOT a proof**.
+  * The extra skips of these three rules are verified in full from v3 on. In every v2 walk they show **n/a**.
+* **Go:**
+  * `go test cache (no proof)` = the go command's own test cache persisted across commits, i.e. a remote cache restored into a cold CI.
+  * Go `closure` (proof) = a go test cache hit AND no runtime read changed (strace) AND the same runtime and environment AND no external connection.
+  * A go-cache hit whose runtime reads changed is a *potential* wrong hit and is always verified.
+
+**Verification:**
+* At every commit a random sample of the `closure` skips runs anyway. The sample is Bernoulli 8-15% per spec, the same for every unit. On Go it also includes every potential wrong hit.
+* A **wrong hit** is a fresh outcome that:
+  * differs from the cached one;
+  * reproduces on 2 more fresh runs;
+  * and whose cached outcome reproduces at its own commit.
+
+  Otherwise it counts as **flaky**: an allow-listed re-check verdict, or a fresh outcome that does not reproduce.
+
+**Shares and time to green:**
+* **Shares** per commit:
+  * skipped unit time / total unit time. Unit time = the test durations, or the unit wall time minus the fixed process start-up, whichever is larger;
+  * skipped tests / total tests;
+  * then median and mean over commits.
+* **Time to green** (ESTIMATED from MEASURED unit costs): a longest-first schedule on the project's CI worker count. "After" includes the MEASURED capture overhead on every unit that runs; the value without it is in brackets.
+* **Samples:**
+  * Home Assistant: 12% of the test files (776 units, 11 889 tests);
+  * saleor: 15% of the test files;
+  * both use fixed-seed per-file samples, run as 4 / 8 parallel shards.
+
+## 2. Setting 1: large repositories (v2 capture; v3 pending)
+
+Skip shares are MEASURED on the stated sample. Time to green is ESTIMATED. The saleor rows come from report version 2: at the moment no commit has been reached by all 8 shards, because shards 6-7 were restarted.
 
 | project | lang | transitions | units (sample) | rule | time skipped median / mean | tests skipped median / mean | time to green before -> after (after without capture overhead), median / mean | invalidate all (why) | verified skips (wrong, flaky) |
 |---|---|---:|---|---|---:|---:|---|---|---|
 | docusaurus | vitest | 50 | 202 (100%) | closure | 98% / 81% | 100% / 81% | 30s -> 3s (2s) / 30s -> 10s (6s) | 7/50 (read:config 6, read:env 1) | 829 (0, 0) |
 | docusaurus | vitest | 50 | 202 (100%) | strict | 97% / 60% | 98% / 61% | 30s -> 4s (2s) / 30s -> 19s (13s) | 7/50 (read:config 6, read:env 1) | 829 (0, 0) |
 | home-assistant | pytest | 50 | 776 (12%) | closure | 98% / 85% | 98% / 85% | 417s -> 35s (16s) / 417s -> 142s (67s) | 0/50 (-) | 2573 (0, 0) |
-| home-assistant | pytest | 50 | 776 (12%) | func+guard | 98% / 85% | 98% / 85% | 417s -> 35s (16s) / 417s -> 142s (66s) | 0/50 (-) | 2573 (0, 0) |
-| home-assistant | pytest | 50 | 776 (12%) | func | 98% / 89% | 98% / 90% | 417s -> 35s (16s) / 417s -> 106s (50s) | 0/50 (-) | 2573 (0, 0) |
+| home-assistant | pytest | 50 | 776 (12%) | func+guard | 98% / 85% | 98% / 85% | 417s -> 35s (16s) / 417s -> 142s (66s) | 0/50 (-) | n/a |
+| home-assistant | pytest | 50 | 776 (12%) | func | 98% / 89% | 98% / 90% | 417s -> 35s (16s) / 417s -> 107s (50s) | 0/50 (-) | n/a |
 | home-assistant | pytest | 50 | 776 (12%) | strict | 97% / 67% | 97% / 67% | 417s -> 35s (16s) / 417s -> 299s (140s) | 0/50 (-) | 2573 (0, 0) |
-| prometheus | go | 50 | 90 (100%) | go-cache | 56% / 52% | 84% / 73% | 135s -> 118s (118s) / 135s -> 118s (118s) | 0/50 (-) | 313 (0, 0) |
+| prometheus | go | 50 | 90 (100%) | go test cache (no proof) | 56% / 52% | 84% / 73% | 135s -> 118s (118s) / 135s -> 118s (118s) | 0/50 (-) | 313 (0, 0) |
 | prometheus | go | 50 | 90 (100%) | closure | 56% / 52% | 84% / 73% | 135s -> 118s (118s) / 135s -> 118s (118s) | 0/50 (-) | 313 (0, 0) |
 | prometheus | go | 50 | 90 (100%) | strict | 52% / 48% | 82% / 67% | 135s -> 118s (118s) / 135s -> 119s (119s) | 0/50 (-) | 313 (0, 0) |
-| saleor | pytest | 10 | 112 (15%) | closure | 0% / 9% | 0% / 8% | 289s -> 819s (289s) / 289s -> 746s (263s) | 9/10 (listing:data 4, py-source:source 4, read:config 1) | 7 (0, 0) |
-| saleor | pytest | 10 | 112 (15%) | func+guard | 0% / 16% | 0% / 16% | 289s -> 819s (289s) / 289s -> 687s (243s) | 9/10 (listing:data 4, py-source:source 4, read:config 1) | 7 (0, 0) |
-| saleor | pytest | 10 | 112 (15%) | func | 32% / 38% | 37% / 40% | 289s -> 559s (197s) / 289s -> 506s (179s) | 9/10 (listing:data 4, py-source:source 4, read:config 1) | 7 (0, 0) |
-| saleor | pytest | 10 | 112 (15%) | strict | 0% / 9% | 0% / 8% | 289s -> 819s (289s) / 289s -> 746s (263s) | 9/10 (listing:data 4, py-source:source 4, read:config 1) | 7 (0, 0) |
-| terraform | go | 50 | 125 (100%) | go-cache | 72% / 61% | 80% / 73% | 95s -> 48s (48s) / 95s -> 68s (68s) | 0/50 (-) | 697 (0, 0) |
-| terraform | go | 50 | 125 (100%) | closure | 35% / 31% | 79% / 72% | 95s -> 95s (95s) / 95s -> 95s (95s) | 0/50 (-) | 697 (0, 0) |
+| terraform | go | 50 | 125 (100%) | go test cache (no proof) | 72% / 61% | 80% / 73% | 95s -> 48s (48s) / 95s -> 68s (68s) | 0/50 (-) | 697 (0, 0) |
+| terraform | go | 50 | 125 (100%) | closure | 35% / 31% | 79% / 72% | 95s -> 95s (95s) / 95s -> 95s (95s) | 0/50 (-) | 475 (0, 0) |
 | terraform | go | 50 | 125 (100%) | strict | 66% / 57% | 78% / 69% | 95s -> 48s (48s) / 95s -> 70s (70s) | 0/50 (-) | 697 (0, 0) |
 | vue-core | vitest | 50 | 185 (100%) | closure | 25% / 28% | 46% / 39% | 31s -> 37s (24s) / 32s -> 35s (23s) | 15/50 (read:config 10, read:source 5) | 371 (0, 0) |
 | vue-core | vitest | 50 | 185 (100%) | strict | 25% / 26% | 46% / 37% | 31s -> 37s (24s) / 32s -> 36s (23s) | 15/50 (read:config 10, read:source 5) | 371 (0, 0) |
+| saleor | pytest | 10 | 112 (15%) | closure | 0% / 9% | 0% / 8% | 289s -> 819s (289s) / 289s -> 746s (263s) | 9/10 (listing:data 4, py-source:source 4, read:config 1) | 7 (0, 0) (v2 report, 01:55 UTC) |
+| saleor | pytest | 10 | 112 (15%) | func+guard | 0% / 16% | 0% / 16% | 289s -> 819s (289s) / 289s -> 687s (243s) | 9/10 (listing:data 4, py-source:source 4, read:config 1) | n/a |
+| saleor | pytest | 10 | 112 (15%) | func | 32% / 38% | 37% / 40% | 289s -> 559s (197s) / 289s -> 506s (179s) | 9/10 (listing:data 4, py-source:source 4, read:config 1) | n/a |
+| saleor | pytest | 10 | 112 (15%) | strict | 0% / 9% | 0% / 8% | 289s -> 819s (289s) / 289s -> 746s (263s) | 9/10 (listing:data 4, py-source:source 4, read:config 1) | 7 (0, 0) (v2 report, 01:55 UTC) |
 
-Observations:
+**Observations** (MEASURED, v2 capture):
 
-* **Home Assistant** (MEASURED, 50 commits): 35 of 50 commits let at least 90% of test time be skipped;
-  no commit forced everything. The repository is about a thousand integrations, each with tests that load
-  the core plus one integration; most commits touch one integration. The coverage-only rule adds 4 points
-  of mean over the proof (`func` 89% vs `closure` 85%): on this shape of code the proof is not the
-  bottleneck. The config rule costs 18 points of mean (14 of 50 commits touched a strict-config file).
-* **Docusaurus** (MEASURED): 39 of 50 commits skip at least 90%; 7 of 50 invalidate everything, 6 because
-  a configuration file every test reads changed, 1 because an environment variable every test reads
-  changed. 18 of 50 commits touch a strict-config file, hence the 21-point drop of the mean under `strict`.
-* **vue-core** (MEASURED): a compact core (`runtime-core`, `shared`, `reactivity`) read by nearly every
-  test file; 15 of 50 commits invalidate everything. Time to green does not improve: the capture overhead
-  (x1.55, MEASURED) eats the saving, and even without it the longest units dominate (31 s -> 24 s).
-* **Go** (MEASURED): the go test cache persisted across commits hits a median 72% (terraform) / 56%
-  (prometheus, 50 commits) of package test time. **Ever wrong? No**: 697 + 313 verified hits, 0 wrong. On terraform
-  222 of the verified hits were *potential* wrong hits (strace saw a file the test read change, and the go
-  cache key did not include it); all 222 reproduced the cached outcome. Terraform's time to green is set by
-  one long package that most commits invalidate, so `closure` (35%) gives no wall-time gain while
-  `go-cache` halves the median.
-* **saleor** (MEASURED, 10 commits reached by every finished shard, 15% sample; partial): 9 of 10 commits
-  invalidate everything (a data directory listing changed 4, a shared Python source changed 4, a config
-  file read 1). Django loads the whole project (settings, every app's models) in every test process, so
-  every test reads nearly every module. Even coverage-only `func` skips only 32% / 38%. The capture
-  overhead is x2.8 (MEASURED), so with capture on every run the time to green gets worse. Shards 0-5 have
-  10-30 commits, shards 6-7 started at 01:45 UTC; the walk ends about 07:30 UTC.
+* **Home Assistant** (50 commits):
+  * 35 of 50 commits let at least 90% of test time be skipped, and no commit forced everything. The repository holds about a thousand integrations, each tested by loading the core plus one integration, and most commits touch one integration.
+  * The coverage-only rule adds 4 points of mean (`func` 89% vs `closure` 85%), but its extra skips were not verified (n/a).
+  * The config rule costs 18 points of mean.
+* **Docusaurus:**
+  * 39 of 50 commits skip at least 90%.
+  * 7 of 50 invalidate everything. In 6 of them a configuration file every test reads changed. In 1 a **node_modules file** changed after a `package.json` bump. Version 2 labelled that commit "env"; it was not an environment variable.
+* **vue-core:**
+  * A compact core is read by nearly every test file, and 15 of 50 commits invalidate everything.
+  * Time to green does not improve: the capture overhead (x1.55) eats the saving.
+* **Go:**
+  * With proof (`closure`), terraform skips 35% / 31% and prometheus 56% / 52%.
+  * The go test cache alone (no proof) skips terraform 72% / 61%. On terraform, 222 of its verified hits were *potential* wrong hits: a file the test read changed, and the go key did not include it. All 222 reproduced the cached outcome.
+  * The go cache was wrong at least once outside the verification sample: terraform `internal/cloud` (reviewer, MEASURED). Hence "no proof".
+  * Terraform's time to green is set by one long package that most commits invalidate.
+* **saleor** (10 commits, partial): 9 of 10 commits invalidate everything, because Django loads the whole project in every test process. Even coverage-only `func` skips only 32% / 38%.
 
-## 3. Setting 2: commits inside pull requests opened by coding agents
+## 3. Setting 2: commits inside pull requests opened by coding agents (v2 capture; not re-walked)
 
-Each push of an agent PR is a transition from the previous push; the PR's base commit runs every unit
-first (MEASURED; Home Assistant on its 12% sample; Go packages in full):
+Each push of an agent PR is a transition from the previous push. At the PR's base commit every unit runs first. Home Assistant is walked on its 12% sample, Go packages in full (MEASURED, snapshot 03:00 UTC):
 
 | repository : agent | PRs | pushes | rule | time skipped per push median / mean | verified (wrong, flaky) |
 |---|---:|---:|---|---:|---|
-| github-mcp-server:copilot | 15 | 101 | go-cache | 68% / 52% | 287 (0, 0) |
-| github-mcp-server:copilot | 15 | 101 | closure | 47% / 49% | 287 (0, 0) |
+| github-mcp-server:copilot | 15 | 101 | go test cache (no proof) | 68% / 52% | 287 (0, 0) |
+| github-mcp-server:copilot | 15 | 101 | closure | 47% / 49% | 283 (0, 0) |
 | github-mcp-server:copilot | 15 | 101 | strict | 14% / 43% | 287 (0, 0) |
-| home-assistant:codex | 3 | 12 | closure | 49% / 50% | 258 (0, 0) |
-| home-assistant:codex | 3 | 12 | strict | 0% / 41% | 258 (0, 0) |
-| home-assistant:copilot | 3 | 12 | closure | 100% / 95% | 407 (0, 2) |
-| home-assistant:copilot | 3 | 12 | strict | 100% / 95% | 407 (0, 2) |
-| typescript-go:copilot | 2 | 20 | go-cache | 30% / 54% | 145 (0, 0) |
-| typescript-go:copilot | 2 | 20 | closure | 30% / 54% | 145 (0, 0) |
-| typescript-go:copilot | 2 | 20 | strict | 30% / 54% | 145 (0, 0) |
+| home-assistant:codex | 8 | 20 | closure | 98% / 55% | 476 (0, 0) |
+| home-assistant:codex | 8 | 20 | func+guard | 98% / 55% | n/a |
+| home-assistant:codex | 8 | 20 | func | 98% / 55% | n/a |
+| home-assistant:codex | 8 | 20 | strict | 49% / 50% | 476 (0, 0) |
+| home-assistant:copilot | 3 | 12 | closure | 97% / 93% | 407 (0, 2) |
+| home-assistant:copilot | 3 | 12 | func+guard | 97% / 93% | n/a |
+| home-assistant:copilot | 3 | 12 | func | 98% / 98% | n/a |
+| home-assistant:copilot | 3 | 12 | strict | 97% / 93% | 407 (0, 2) |
+| typescript-go:copilot | 5 | 37 | go test cache (no proof) | 28% / 42% | 242 (0, 0) |
+| typescript-go:copilot | 5 | 37 | closure | 28% / 42% | 242 (0, 0) |
+| typescript-go:copilot | 5 | 37 | strict | 28% / 42% | 242 (0, 0) |
 
-* Pooled over the 145 pushes: `closure` median 75% / mean 54%; with the go cache for the Go repositories
-  78% / 56% (MEASURED). The distribution is two-humped (github-mcp-server p25 4%, p75 87%): a push either
-  touches something every test reads or almost nothing.
-* Home Assistant Copilot PRs are small, single-integration fixes: a median push skips 100%. Codex PRs on
-  Home Assistant touch shared code more often: 49%.
+* **Pooled over the 170 pushes** (MEASURED):
+  * `closure`: median 52% / mean 51%;
+  * with the go test cache (no proof) for the Go repositories: 76% / 53%;
+  * with a net guard on every connecting Go package: at least 29% / 42% (ESTIMATED lower bound).
+
+  The distribution has two humps: a push either touches something every test reads or almost nothing.
+* **Home Assistant:**
+  * The Copilot PRs are small single-integration fixes: 97% median.
+  * The Codex PRs (8 PRs): 98% median, but a 55% mean.
+  * Both are upper bounds. The 12% sample mostly leaves out the PR's own integration tests (R-002 note N8, open).
 * The 2 flaky verifications are the two mismatches above.
-* Still running (partial): Codex on openai-agents-python (relaunched in run s1 after a walker fix: these
-  PRs target a non-default branch), Codex on vue-core, more Copilot on typescript-go, Claude Code on Home
-  Assistant (run r9).
+* Still running or not yet counted:
+  * Codex on openai-agents-python (0 pushes walked so far);
+  * Claude Code on Home Assistant;
+  * more Copilot on typescript-go.
 
-## 4. Setting 3: finer proof rule (module-level names actually read)
+## 4. Setting 3: finer proof rule (module-level names actually read) (unchanged from version 2; not affected by R-002)
 
 Rule `line+names` (`finer/names.py`): a module-level change no longer reruns every test that loaded the
 module; the change is reduced to the names whose value changed, propagated through module-level code, and
@@ -252,8 +327,10 @@ workers; "after" with the MEASURED capture overhead on every unit that runs, in 
 | home-assistant (12% sample on 12% of the workers) | closure | 417 s | 35 s (16 s) | 142 s (67 s) |
 | docusaurus | closure | 30 s | 3 s (2 s) | 10 s (6 s) |
 | vue-core | closure | 31 s | 37 s (24 s) | 35 s (23 s) |
-| terraform | go-cache | 95 s | 48 s | 68 s |
-| prometheus | go-cache | 135 s | 118 s | 118 s |
+| terraform | closure (proof) | 95 s | 95 s | 95 s |
+| terraform | go test cache (no proof) | 95 s | 48 s | 68 s |
+| prometheus | closure (proof) | 135 s | 118 s | 118 s |
+| prometheus | go test cache (no proof) | 135 s | 118 s | 118 s |
 | saleor (15% sample) | closure | 289 s | 819 s (289 s) | 746 s (263 s) |
 
 Where most units are skipped (Home Assistant, docusaurus) time to green falls 10x at the median. Where
@@ -261,38 +338,35 @@ one long unit is usually invalidated (prometheus, terraform's longest package) o
 (saleor), it barely moves, and the capture overhead (x1.55 vitest, x2.8 saleor, MEASURED) makes it worse
 unless capture runs only on a sample of runs.
 
-**Reruns**: the project's own CI test step, the same commit, repeated on fresh GitHub runners. An attempt
-"fails from flakiness" when it fails a test that does not fail in every attempt of that group (MEASURED):
+
+**Reruns.** The project's own CI test step is rerun at one fixed commit on fresh GitHub runners. An attempt "fails from flakiness" when it fails a test that does not fail in every attempt of that group (MEASURED):
 
 | suite (commit) | CI groups rerun (of) | tests per group run | attempts (min per group) | attempts failed by flakiness | tests failing in every attempt | flaky full-run rate | mean job min | flaky tests |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| docusaurus (4c4ec4aa) | 1 (1) | 3254 | 8 (8) | 0 | 0 | 0% | 1.5 | - |
+| docusaurus (4c4ec4aa) | 1 (1) | 3254 | 10 (10) | 0 | 0 | 0% | 1.5 | - |
 | terraform (b3fb138b) | 1 (1) | 12462 | 5 (5) | 0 | 14 | 0% | 5.6 | - |
 | vue-core (cbd95955) | 1 (1) | 4152 | 10 (10) | 0 | 0 | 0% | 0.7 | - |
-| home-assistant (cdf3f923) | 3 (10) | 11026 | 8 (2) | 0 | 0 | 0% | 8.4 | - |
+| home-assistant (cdf3f923) | 3 (10) | 11026 | 16 (5) | 0 | 0 | 0% | 8.8 | - |
 
-* **0 flaky failures in 31 valid attempts so far** (MEASURED): vue-core 10 full runs, docusaurus 8 full
-  runs, terraform 5 full runs, Home Assistant 8 runs of 3 of its 10 CI groups (11 026 tests each).
-* terraform fails the **same 14 tests in every run** (MEASURED): environment defects (a lockfile test run
-  as root, gzip output), deterministic and replayable, not flaky. Test wall time of that one commit spans
-  246 s - 370 s across runners (MEASURED): a 50% spread with no code change.
-* Partial: terraform repetitions 5-9 (run s2), Home Assistant 22 more group runs (to 10 per group),
-  docusaurus 2 more. Prometheus and saleor reruns were cancelled (run r2) to free runners for the
-  mismatch re-check; saleor full-suite reruns cost hours each.
-* What the reruns say so far: on these suites, at these commits, flakiness is rarer than 1 in 31 attempts
-  (UNKNOWN beyond that). The flaky outcomes this study did see came from the study's own runs: a
-  teardown race in switchbot (10% of plain runs, MEASURED) and a timing race in knx that only strace
-  triggers.
+* **0 flaky failures in 41 valid attempts so far** (MEASURED):
+  * vue-core: 10 full runs;
+  * docusaurus: 10 full runs;
+  * terraform: 5 full runs;
+  * Home Assistant: 16 runs of 3 of its 10 CI groups.
+* **terraform fails the same 14 tests in every run** (MEASURED). These are environment defects (for example, a lockfile test run as root), not flakiness.
+* Still to run: terraform repetitions 5-9 (queued), and more Home Assistant group runs. The prometheus and saleor reruns were cancelled.
 
 ## 6. Caveats
 
-* Home Assistant and saleor use a 12% / 15% fixed sample of test files; shares are per sample.
-* Unit costs are from one run each; time to green is a schedule simulation, not a measured CI wall.
-* Docusaurus and vue-core suites are short (about 30 s of test time per commit on 4 workers): the skip
-  share is high on docusaurus but the absolute minutes are small. The minutes are on suites shaped like
-  Home Assistant.
-* Go `closure` is stricter than the go cache (runtime reads included). The go cache was never wrong in
-  this sample: 1 010 verified hits on 2 projects.
-* The mismatch re-check ran locally (4 vCPU container), not on GitHub runners; the same re-check on
-  GitHub Actions (run s1, `recheck.py`) is queued behind the account's concurrency limit.
-* Agent PRs: 145 pushes, 101 of them from one repository (github-mcp-server); pooled numbers lean on it.
+* **Sampling.** Home Assistant and saleor use a 12% / 15% fixed sample of test files, so the shares are per sample. On agent PRs the HA sample leaves out the PR's own integration tests (open note N8).
+* **Time to green** is a schedule simulation from one measured run per unit, not a measured CI wall time.
+* **Statistical power.** 0 wrong in 5 976 verified `closure` skips puts the per-skip error rate below about 0.05% (95% upper bound, ESTIMATED as 3 / n). That bound holds for these repositories, in one runner environment, under the v2 capture. Those 5 976 are: setting 1 = 2573 + 829 + 371 + 475 + 313 + 7, plus setting 2 = 1408 (MEASURED).
+* **What the bound does not cover.** The holes the reviewer proved only fire when one of these changes:
+  * a read-write fixture;
+  * an environment variable;
+  * the runtime;
+  * an external service.
+
+  The v3 key closes these holes, but v3 has **not yet been measured** (run v3 pending).
+* **Wall-clock is not a dependency** of this capture (only `detpy --det` covers it). A shared cache that runs for a long time will reuse passes of date-dependent tests.
+* **Agent PRs** are on the v2 capture. 101 of the 170 pushes come from github-mcp-server, so the pooled numbers lean on it.
