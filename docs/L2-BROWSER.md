@@ -1,0 +1,58 @@
+# Level 2 for browser tests (prototype)
+
+Goal: a Playwright test that touches a browser and an app server gives the same result and the same
+fingerprint in every run with the same seed, and a seeded change of the free choices (which message arrives
+first) explores the orders a real run can take. This is Level 2 of `docs/ARCHITECTURE.md` reached from the
+outside: instead of one deterministic VM around every process, each process of the run is controlled by its
+own shell and the messages between them go through one ordered queue. Command: `detjs playwright --det
+[--det-seed=N] [playwright test args]` (`node/src/pw/`); servers started outside the runner: `detjs serve
+--det -- <command>`.
+
+## Why
+
+Every flaky e2e test found by the idle study (6 of 6, `harness/idle_study/REPORT.md` on
+`claude/loving-maxwell-58mv2w`, MEASURED) is cross-process: browser vs server, runner vs app server under load,
+two workers on one filesystem. Level 0/1 control one process; these need the browser, the server and the
+messages between them under one schedule.
+
+## What is controlled
+
+| Source of difference | Control | Where |
+|---|---|---|
+| Browser time (Date, performance.now, setTimeout, requestAnimationFrame, CSS animations) | CDP `Emulation.setVirtualTimePolicy`, policy `advance` with a budget: virtual time is granted in chunks of 20 ms, starting at the run's epoch; `paced` (default) never lets it run ahead of real time, `fast` skips idle time | `worker.js` `setupPage` |
+| Randomness in pages (Math.random, crypto.getRandomValues, crypto.randomUUID) | init script in every frame: xoshiro128** seeded from (seed, test id, document URL); draw counters and a digest go into the fingerprint | `page-init.js` |
+| Randomness in test code (random names, e-mails) | the Level 0 generators of detjs in the Playwright worker, reseeded per test | `worker.js` `installWorkerSeeds` |
+| App server (Node) | Level 0 of detjs in the server process: seeded Math.random, crypto and OS entropy, one virtual wall clock for the run, virtual timers, sorted readdir; network left open (databases). Per-test bracket: the first request carrying `x-detjs-test` switches the server's fingerprint and generators to that test | `server.js` |
+| Order of HTTP messages (documents, fetch, XHR from pages; `request` fixture calls from the runner) | one queue per worker: a request waits for a 15 ms quiet window, then one pending request is chosen (sorted by method, URL and body digest; with `--det-seed`, a seeded choice) and runs to completion before the next one. Before each release the worker waits for the app server to be quiet (`/__detjs/quiet`: no request in flight, event loop idle 20 ms) | `worker.js` `pump`, `barrier` |
+| WebSocket frames | `routeWebSocket` relay: page-to-server frames go through the same queue; server-to-page frames are recorded (heartbeats excluded) | `worker.js` `setupWebSockets` |
+| Responses vs page timers | the queue releases only between two virtual time chunks: a response always lands at a chunk boundary, never in the middle of a timer burst | `whenPaused`, `whenQueueIdle` |
+| Workers | `workers=1`, `fullyParallel=false`, `retries=0` forced through a wrapper config | `wrap.cjs` |
+
+Fingerprint (one shared trace, `.detjs/trace.jsonl`, same format and Rust verifier as Level 0): per test, the
+queue choices, request and response digests, WebSocket frame digests, page random stats, a digest of the final
+DOM of every page, the server's per-test fingerprint and the outcome. `detjs verify A B ...` compares runs.
+
+## What is not controlled (prototype limits)
+
+- B1 Server written in another language: only `detpy` (Python) has the same controls; the bracket header and
+  the quiet barrier are not implemented there yet (the order of requests still is).
+- B2 Databases, caches, mail catchers and other services: real time and their own scheduling. The quiet
+  barrier waits for the app server, not for them.
+- B3 Web workers, service workers, iframes of other origins: not seeded; their timers follow the page's
+  virtual time only where Chrome applies it.
+- B4 Firefox and WebKit: no CDP virtual time; only Chromium is controlled.
+- B5 Pages opened by the app (popups) get virtual time when Playwright reports them, a few milliseconds late.
+- B6 Rendering and layout (fonts, GPU, viewport races such as "element is outside of the viewport"): the
+  same inputs at the same virtual instants, but the compositor still runs in real time.
+- B7 Long-lived requests (long polling, event streams, dev-server pings) pass outside the queue
+  (`DETJS_PW_PASSTHROUGH`).
+- B8 Parallel workers: serialised (`--workers=1`), which also removes load-induced failures instead of replaying them.
+
+## What a full VM would add later
+
+A deterministic VM (one core, recorded inputs: Antithesis-style, or rr/Hermit for Linux processes) would cover
+B1, B2, B3 and B6 at once: databases and non-Node servers, the compositor, thread scheduling inside Chrome, and
+exact replay of load-induced failures (the scheduler can slow one process on purpose). Costs: a whole-run
+slowdown on CPU-bound suites (the idle study measured 1.04 to 3.9 busy cores per suite, MEASURED, all of which
+a one-core VM serialises), a custom hypervisor or kernel, and container images instead of the customer's
+runner. The prototype keeps the customer's runner and measures how far process-level control gets.
