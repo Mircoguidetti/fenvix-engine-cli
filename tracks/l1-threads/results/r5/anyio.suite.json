@@ -1,0 +1,294 @@
+{
+ "name": "anyio",
+ "set": "popular",
+ "url": "https://github.com/agronholm/anyio",
+ "runner": "ip-10-0-134-1",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009517",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.82.6",
+  "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "9df02f0b8362e9f4a1fc3a4404052d0d7016e4f0",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group test",
+ "collected": 4852,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 70.698,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 3615,
+    "skipped": 1192,
+    "xfailed": 5
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 78.656,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 3613,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 2
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 260.479,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 3604,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 11
+   },
+   "stats": {
+    "decisions": 406,
+    "switches": 8070,
+    "escapes": 882,
+    "deadlocks": 6,
+    "timer_jumps": 30,
+    "managed": 707
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 213.334,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 3608,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 7
+   },
+   "stats": {
+    "decisions": 1495,
+    "switches": 8610,
+    "escapes": 888,
+    "deadlocks": 4,
+    "timer_jumps": 28,
+    "managed": 717
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 68.25,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 3615,
+    "skipped": 1192,
+    "xfailed": 5
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 77.204,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 3612,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 3
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 2400.017,
+   "exit": -9,
+   "timed_out": true,
+   "counts": {},
+   "stats": null,
+   "tail": "sxxxs...s......ss...s...s......ss...s...s......ss...s...s...s...s...s......s...s...s...s...s.... [ 88%]\n..s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s............s...s...s.......s...s...s.......................................s [ 91%]\n...s...s...s...s...s...s...s...s...s...s...s...s........s...s...sssssss...s...s...s...s...s...s......ss...s...s.........sss.........sss......ss...s...s. [ 94%]\n..s...s...s...s......ss...s...s...s...s...s...s...s...s...s...s...s...s...s......ss......ss...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s. [ 97%]\n...FEFFE.......F"
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 212.693,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 3608,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 7
+   },
+   "stats": {
+    "decisions": 1473,
+    "switches": 8660,
+    "escapes": 879,
+    "deadlocks": 4,
+    "timer_jumps": 28,
+    "managed": 716
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 2,
+   "duration_s": 66.667,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 3615,
+    "skipped": 1192,
+    "xfailed": 5
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 75.648,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 3612,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 3
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 2,
+   "duration_s": 2400.069,
+   "exit": -9,
+   "timed_out": true,
+   "counts": {},
+   "stats": null,
+   "tail": "sxxxs...s......ss...s...s......ss...s...s......ss...s...s...s...s...s......s...s...s...s...s.... [ 88%]\n..s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s............s...s...s.......s...s...s.......................................s [ 91%]\n...s...s...s...s...s...s...s...s...s...s...s...s........s...s...sssssss...s...s...s...s...s...s......ss...s...s.........sss.........sss......ss...s...s. [ 94%]\n..s...s...s...s......ss...s...s...s...s...s...s...s...s...s...s...s...s...s......ss......ss...s...s...s...s...s...s...s...s...s...s...s...s...s...s...s. [ 97%]\n...FEFFE.......F"
+  },
+  {
+   "mode": "l1-s1",
+   "run": 2,
+   "duration_s": 204.076,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 3609,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 6
+   },
+   "stats": {
+    "decisions": 1484,
+    "switches": 8690,
+    "escapes": 892,
+    "deadlocks": 2,
+    "timer_jumps": 28,
+    "managed": 719
+   },
+   "tail": ""
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [
+   "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+   "tests/test_sockets.py::test_getaddrinfo[asyncio]"
+  ],
+  "n_broken": 2,
+  "sometimes": [
+   "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+  ],
+  "n_sometimes": 1
+ },
+ "broken_by_l1": {
+  "runs": [
+   3,
+   1
+  ],
+  "broken": [
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+eager]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+uvloop]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[queued-asyncio]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio+eager]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio+uvloop]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio]",
+   "tests/test_to_thread.py::test_asyncio_worker_thread_loop_closed_during_result_report",
+   "tests/test_to_thread.py::test_run_sync_worker_cyclic_references[asyncio]"
+  ],
+  "n_broken": 9,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+eager]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_shutdown[running-asyncio]",
+   "tests/test_to_thread.py::test_run_sync_worker_cyclic_references[asyncio]"
+  ],
+  "n_broken": 4,
+  "sometimes": [
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+uvloop]"
+  ],
+  "n_sometimes": 1
+ },
+ "unstable": {
+  "plain": [],
+  "det": [
+   "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+  ],
+  "l1": [],
+  "l1-s1": [
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio+uvloop]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_assignment_during_retirement[asyncio]"
+  ]
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
