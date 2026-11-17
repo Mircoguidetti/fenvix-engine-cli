@@ -1,6 +1,6 @@
 # STATUS · track l2-browser (P-014)
 
-Updated 2026-11-17 09:30 UTC. Local branch `track-l2-browser` in a scratch worktree of
+Updated 2026-11-17 10:00 UTC. Local branch `track-l2-browser` in a scratch worktree of
 /home/user/fenvix-engine-cli; base `9ffbb0a` (origin/claude/node-l0, rebased at resume). Patches:
 `patches/` (`git am` on the base; 11 commits).
 
@@ -17,7 +17,8 @@ Updated 2026-11-17 09:30 UTC. Local branch `track-l2-browser` in a scratch workt
   documenso, actual, rallly, solid-start. Dry run on a local toy project works.
 
 ## Next
-- Runs: batch 3 (44043803663: etherpad, actual still running; documenso broke: maxFailures=1 on CI and a 2025
-  epoch against real-time Postgres/test worker -> harness now passes --max-failures=0 and a job-start epoch);
-  batch 6 (44049271859: uptime-kuma, rallly running); batch 7 (44052628988: solid-start, 11 patches);
-  batch 8 (documenso, new harness). Then REPORT.md (harness/aggregate.py prints the tables).
+- PARTIAL REPORT.md pushed (fixture + solid-start numbers, 5 engine bugs fixed).
+- Coordinator 09:50: shared queue blocked; no new batch until node-harness 44050766953 and cache-proof 44046443902
+  have started; then ONE final run: etherpad, documenso, solid-start (+ the healthiest of uptime-kuma/actual/rallly
+  from batches 3/6), 11 patches, harness 3c6c260 or later (known flaky targeted first, ablation), budget ~150 min.
+- Batch 8 cancelled. Batches 3 (etherpad, actual) and 6 (uptime-kuma, rallly) still running at 09:55.
