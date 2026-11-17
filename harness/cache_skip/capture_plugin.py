@@ -107,6 +107,10 @@ def _rel(path) -> str | None:
     return p[len(ROOT_SEP):]
 
 
+_SPAWN_EVENTS = ("subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.spawn")
+_AUDIT_EVENTS = ("open", "os.listdir", "os.scandir", *_SPAWN_EVENTS, "socket.connect")
+
+
 def _audit(event, args):
     if event == "open":
         r = _rel(args[0])
@@ -123,7 +127,7 @@ def _audit(event, args):
         if r is None or any(s in os.sep + r for s in _SKIP_PARTS):
             return
         _fs.setdefault(_ctx[0], {}).setdefault("list", set()).add(r)
-    elif event in ("subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.spawn"):
+    elif event in _SPAWN_EVENTS:
         _spawn[_ctx[0]] = _spawn.get(_ctx[0], 0) + 1
     elif event == "socket.connect":
         addr = args[1] if len(args) > 1 else None
@@ -165,7 +169,12 @@ def pytest_configure(config):
                 raise pytest.UsageError("CACHE_SKIP_TRACER=coverage needs `coverage run`")
         elif _sysmon is None:
             raise pytest.UsageError(f"unknown CACHE_SKIP_TRACER {TRACER!r}")
-        sys.addaudithook(_audit)
+        if _sysmon is not None and _sysmon.native is not None:
+            # same events, but the others (``builtins.id``, ``object.__getattr__``, ...) never reach Python
+            from sysmon_capture import add_audit_hook
+            add_audit_hook(_audit, _AUDIT_EVENTS, _sysmon.native)
+        else:
+            sys.addaudithook(_audit)
         _switch("s|session")
 
 

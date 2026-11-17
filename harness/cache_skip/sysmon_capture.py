@@ -116,6 +116,14 @@ def load_native(build: bool = True):
         return None
 
 
+def add_audit_hook(hook, events: tuple, native=None) -> None:
+    """``sys.addaudithook(hook)``, or, with the native module, a C hook that calls ``hook`` for ``events`` only."""
+    if native is not None:
+        native.add_audit_hook(hook, tuple(events))
+    else:
+        sys.addaudithook(hook)
+
+
 def entry_line(code) -> int | None:
     """The line ``LINE`` alone never reports on entry, which ``sys.settrace`` (hence coverage.py) does.
 
@@ -161,6 +169,7 @@ class SysmonCapture:
         self._seen: dict[int, int] = {}  # recorded value -> repeat hits in the current context ("count" strategy)
         self._hot: dict = {}  # id -> code objects with a location disabled in the current context
         self.restart = "restart" in _DBG
+        self.native = None  # the ``_sysmon_rec`` module, when loaded
         self.rec = None  # native recorder (``_sysmon_rec.Recorder``), set by start() when it can be loaded
         self._len = self.buf.__len__
         self._saved = False
@@ -299,7 +308,7 @@ class SysmonCapture:
         else:
             raise RuntimeError("sys.monitoring: no free tool id")
         _mon.use_tool_id(self.tool, "cache_skip_capture")
-        native = None if self.restart or "python" in _DBG else load_native()
+        native = self.native = None if self.restart or "python" in _DBG else load_native()
         if native is not None:
             self.rec = native.Recorder(_mon.DISABLE, _HOT)
             self._len = self.rec.__len__
@@ -308,7 +317,7 @@ class SysmonCapture:
             line, start = self._make_callbacks()
         _mon.register_callback(self.tool, _mon.events.LINE, line)
         _mon.register_callback(self.tool, _mon.events.PY_START, start)
-        sys.addaudithook(self._audit)
+        add_audit_hook(self._audit, ("exec",), native)
         self._arm_existing()
         atexit.register(self.save)
 

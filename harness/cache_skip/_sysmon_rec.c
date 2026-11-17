@@ -231,7 +231,72 @@ static PyTypeObject RecType = {
     .tp_as_sequence = &rec_seq,
 };
 
-static struct PyModuleDef mod = {PyModuleDef_HEAD_INIT, .m_name = "_sysmon_rec", .m_size = -1};
+/* Audit hook filtered in C: only the listed events reach the Python callable (a Python audit hook is called for
+ * every event, e.g. the frequent "builtins.id" and "object.__getattr__"). Hooks cannot be removed; the callable and
+ * the names stay referenced for the life of the process. */
+typedef struct {
+    PyObject *callable;
+    Py_ssize_t n;
+    const char **names;
+} AuditFilter;
+
+static int audit_hook(const char *event, PyObject *args, void *data) {
+    AuditFilter *f = (AuditFilter *)data;
+    if (Py_IsFinalizing()) return 0;
+    for (Py_ssize_t i = 0; i < f->n; i++) {
+        if (event[0] == f->names[i][0] && strcmp(event, f->names[i]) == 0) {
+            PyObject *ev = PyUnicode_FromString(event);
+            if (!ev) return -1;
+            PyObject *a[2] = {ev, args};
+            PyObject *r = PyObject_Vectorcall(f->callable, a, 2, NULL);
+            Py_DECREF(ev);
+            if (!r) return -1;
+            Py_DECREF(r);
+            return 0;
+        }
+    }
+    return 0;
+}
+
+static PyObject *add_audit_hook(PyObject *self, PyObject *const *args, Py_ssize_t nargs) {
+    if (nargs != 2 || !PyCallable_Check(args[0]) || !PyTuple_Check(args[1])) {
+        PyErr_SetString(PyExc_TypeError, "add_audit_hook(callable, tuple of event names)");
+        return NULL;
+    }
+    Py_ssize_t n = PyTuple_GET_SIZE(args[1]);
+    AuditFilter *f = PyMem_RawCalloc(1, sizeof(AuditFilter));
+    const char **names = PyMem_RawCalloc(n ? n : 1, sizeof(char *));
+    if (!f || !names) { PyMem_RawFree(f); PyMem_RawFree(names); return PyErr_NoMemory(); }
+    for (Py_ssize_t i = 0; i < n; i++) {
+        PyObject *o = PyTuple_GET_ITEM(args[1], i);
+        const char *c = PyUnicode_Check(o) ? PyUnicode_AsUTF8(o) : NULL;
+        if (!c || !*c) {
+            PyMem_RawFree(f); PyMem_RawFree(names);
+            if (!PyErr_Occurred()) PyErr_SetString(PyExc_TypeError, "event names must be non-empty str");
+            return NULL;
+        }
+        size_t len = strlen(c) + 1;
+        char *cp = PyMem_RawMalloc(len);
+        if (!cp) { PyMem_RawFree(f); PyMem_RawFree(names); return PyErr_NoMemory(); }
+        memcpy(cp, c, len);
+        names[i] = cp;
+    }
+    Py_INCREF(args[0]);
+    f->callable = args[0];
+    f->n = n;
+    f->names = names;
+    if (PySys_AddAuditHook(audit_hook, f) < 0) return NULL;
+    Py_RETURN_NONE;
+}
+
+static PyMethodDef mod_methods[] = {
+    {"add_audit_hook", (PyCFunction)(void (*)(void))add_audit_hook, METH_FASTCALL,
+     "add_audit_hook(callable, names): call callable(event, args) for the listed audit events only"},
+    {NULL},
+};
+
+static struct PyModuleDef mod = {PyModuleDef_HEAD_INIT, .m_name = "_sysmon_rec", .m_size = -1,
+                                 .m_methods = mod_methods};
 
 PyMODINIT_FUNC PyInit__sysmon_rec(void) {
     if (PyType_Ready(&RecType) < 0) return NULL;
