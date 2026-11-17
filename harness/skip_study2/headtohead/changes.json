@@ -70,6 +70,12 @@
      ]
     }
    ]
+  },
+  "env": {
+   "what": "the CI job turns warnings into errors: PYTHONWARNINGS=error",
+   "env": {
+    "PYTHONWARNINGS": "error"
+   }
   }
  },
  "pygments": {
@@ -84,6 +90,12 @@
      ]
     }
    ]
+  },
+  "env": {
+   "what": "the CI job turns warnings into errors: PYTHONWARNINGS=error",
+   "env": {
+    "PYTHONWARNINGS": "error"
+   }
   }
  },
  "click": {
@@ -134,6 +146,22 @@
      ]
     }
    ]
+  }
+ },
+ "boltons": {
+  "env": {
+   "what": "the CI job turns warnings into errors: PYTHONWARNINGS=error",
+   "env": {
+    "PYTHONWARNINGS": "error"
+   }
+  }
+ },
+ "toolz": {
+  "env": {
+   "what": "the CI job turns warnings into errors: PYTHONWARNINGS=error",
+   "env": {
+    "PYTHONWARNINGS": "error"
+   }
   }
  }
 }

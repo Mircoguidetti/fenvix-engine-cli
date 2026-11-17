@@ -1,0 +1,135 @@
+== env-arrow.log
+arrow 3a6cd95389 units 7 base bad: ['tests/test_api.py', 'tests/test_arrow.py', 'tests/test_factory.py', 'tests/test_formatter.py', 'tests/test_locales.py', 'tests/test_parser.py', 'tests/test_util.py']
+  FORCE_COLOR: flips 0/7 [] []
+  WARN_ERR: flips 0/7 [] []
+  TZ: flips 0/7 [] []
+  LANG_C: flips 0/7 [] []
+  COLUMNS200: flips 0/7 [] []
+  NO_COLOR: flips 0/7 [] []
+== env-attrs.log
+attrs c27ba27258 units 25 base bad: ['tests/test_forward_references.py', 'tests/test_pyright.py']
+  FORCE_COLOR: flips 0/25 [] []
+  WARN_ERR: flips 0/25 [] []
+  TZ: flips 0/25 [] []
+  LANG_C: flips 0/25 [] []
+  COLUMNS200: flips 0/25 [] []
+  NO_COLOR: flips 0/25 [] []
+== env-boltons.log
+boltons 609cabe932 units 28 base bad: []
+  FORCE_COLOR: flips 0/28 [] []
+  WARN_ERR: flips 3/28 ['tests/test_ioutils.py', 'tests/test_jsonutils.py', 'tests/test_socketutils.py'] [['1 failed, 81 passed in 0.06s'], ['2 failed in 0.01s'], ['9 failed, 2 passed, 1 error in 0.27s']]
+  TZ: flips 0/28 [] []
+  LANG_C: flips 0/28 [] []
+  COLUMNS200: flips 0/28 [] []
+  NO_COLOR: flips 0/28 [] []
+== env-isort.log
+isort 00febaee26 units 38 base bad: ['tests/benchmark/test_api.py', 'tests/integration/test_hypothesmith.py', 'tests/integration/test_literal.py', 'tests/integration/test_projects_using_isort.py', 'tests/integration/test_setting_combinations.py', 'tests/integration/test_ticketed_features.py', 'tests/unit/profiles/test_attrs.py', 'tests/unit/profiles/test_black.py', 'tests/unit/profiles/test_django
+  FORCE_COLOR: flips 0/38 [] []
+  WARN_ERR: flips 0/38 [] []
+  TZ: flips 0/38 [] []
+  LANG_C: flips 0/38 [] []
+  COLUMNS200: flips 0/38 [] []
+  NO_COLOR: flips 0/38 [] []
+== env-marshmallow.log
+marshmallow 046416de8a units 15 base bad: ['tests/mypy_test_cases/test_class_registry.py', 'tests/mypy_test_cases/test_validation_error.py']
+  FORCE_COLOR: flips 0/15 [] []
+  WARN_ERR: flips 0/15 [] []
+  TZ: flips 0/15 [] []
+  LANG_C: flips 0/15 [] []
+  COLUMNS200: flips 0/15 [] []
+  NO_COLOR: flips 0/15 [] []
+== env-more-itertools.log
+more-itertools d82024d025 units 2 base bad: []
+  FORCE_COLOR: flips 0/2 [] []
+  WARN_ERR: flips 0/2 [] []
+  TZ: flips 0/2 [] []
+  LANG_C: flips 0/2 [] []
+  COLUMNS200: flips 0/2 [] []
+  NO_COLOR: flips 0/2 [] []
+== env-pygments.log
+pygments a0204f6906 units 35 base bad: ['tests/contrast/test_contrasts.py']
+  FORCE_COLOR: flips 0/35 [] []
+  WARN_ERR: flips 1/35 ['tests/test_basic_api.py'] [['1 error in 0.07s']]
+  TZ: flips 0/35 [] []
+  LANG_C: flips 0/35 [] []
+  COLUMNS200: flips 0/35 [] []
+  NO_COLOR: flips 0/35 [] []
+== env-sqlparse.log
+sqlparse f1d2d688bc units 10 base bad: []
+  FORCE_COLOR: flips 0/10 [] []
+  WARN_ERR: flips 1/10 ['tests/test_cli.py'] [['1 failed, 16 passed in 0.08s']]
+  TZ: flips 0/10 [] []
+  LANG_C: flips 0/10 [] []
+  COLUMNS200: flips 0/10 [] []
+  NO_COLOR: flips 0/10 [] []
+== env-toolz.log
+toolz 20c6430d1c units 14 base bad: ['toolz/tests/test_functoolz.py', 'toolz/tests/test_inspect_args.py', 'toolz/tests/test_itertoolz.py', 'toolz/tests/test_tlz.py']
+  FORCE_COLOR: flips 0/14 [] []
+  WARN_ERR: flips 10/14 ['toolz/sandbox/tests/test_core.py', 'toolz/sandbox/tests/test_parallel.py', 'toolz/tests/test_compatibility.py', 'toolz/tests/test_curried.py', 'toolz/tests/test_curried_doctests.py', 'toolz/tests/test_dicttoolz.py', 'toolz/tests/test_recipes.py', 'toolz/tests/test_serialization.py', 'toolz/tests/test_signatures.py', 'toolz/tests/test_utils.py'] [['1 error in 0.06s'], ['1 
+  TZ: flips 0/14 [] []
+  LANG_C: flips 0/14 [] []
+  COLUMNS200: flips 0/14 [] []
+  NO_COLOR: flips 0/14 [] []
+== env-werkzeug.log
+werkzeug 6a604e005d units 24 base bad: []
+  FORCE_COLOR: flips 0/24 [] []
+  WARN_ERR: flips 0/24 [] []
+  TZ: flips 0/24 [] []
+  LANG_C: flips 0/24 [] []
+  COLUMNS200: flips 0/24 [] []
+  NO_COLOR: flips 0/24 [] []
+== dep-arrow.log
+arrow 3a6cd95389 units 7 base bad: ['tests/test_api.py', 'tests/test_arrow.py', 'tests/test_factory.py', 'tests/test_formatter.py', 'tests/test_locales.py', 'tests/test_parser.py', 'tests/test_util.py']
+  pytest84: good->bad vs base 0 [] | bad->good 0 [] []
+  dateutil27: good->bad vs base 0 [] | bad->good 0 [] []
+  tzdata2022: good->bad vs base 0 [] | bad->good 0 [] []
+== dep-attrs.log
+attrs c27ba27258 units 25 base bad: ['tests/test_forward_references.py', 'tests/test_pyright.py']
+  pytest84: good->bad vs base 0 [] | bad->good 0 [] []
+  hyp680: good->bad vs base 0 [] | bad->good 0 [] []
+== dep-boltons.log
+boltons 609cabe932 units 28 base bad: []
+  pytest84: good->bad vs base 0 [] | bad->good 0 [] []
+== dep-click.log
+click 3a40e43e8f units 21 base bad: ['tests/test_basic.py']
+  pytest84: good->bad vs base 0 [] | bad->good 1 ['tests/test_basic.py'] []
+== dep-flask.log
+flask 88a65bb374 units 22 base bad: ['tests/test_appctx.py', 'tests/test_async.py', 'tests/test_basic.py', 'tests/test_blueprints.py', 'tests/test_cli.py', 'tests/test_config.py', 'tests/test_converters.py', 'tests/test_helpers.py', 'tests/test_instance_config.py', 'tests/test_json.py', 'tests/test_json_tag.py', 'tests/test_logging.py', 'tests/test_regression.py', 'tests/test_reqctx.py', 'tests/te
+  pytest84: good->bad vs base 0 [] | bad->good 21 ['tests/test_appctx.py', 'tests/test_async.py', 'tests/test_basic.py', 'tests/test_blueprints.py', 'tests/test_cli.py', 'tests/test_config.py', 'tests/test_converters.py', 'tests/test_helpers.py'] []
+  werkzeug310: good->bad vs base 0 [] | bad->good 0 [] []
+  click81: good->bad vs base 0 [] | bad->good 0 [] []
+  jinja312: good->bad vs base 0 [] | bad->good 21 ['tests/test_appctx.py', 'tests/test_async.py', 'tests/test_basic.py', 'tests/test_blueprints.py', 'tests/test_cli.py', 'tests/test_config.py', 'tests/test_converters.py', 'tests/test_helpers.py'] []
+== dep-isort.log
+isort 00febaee26 units 38 base bad: ['tests/benchmark/test_api.py', 'tests/integration/test_hypothesmith.py', 'tests/integration/test_literal.py', 'tests/integration/test_projects_using_isort.py', 'tests/integration/test_setting_combinations.py', 'tests/integration/test_ticketed_features.py', 'tests/unit/profiles/test_attrs.py', 'tests/unit/profiles/test_black.py', 'tests/unit/profiles/test_django
+  pytest84: good->bad vs base 0 [] | bad->good 0 [] []
+== dep-jinja.log
+jinja 2a2bfb7f95 units 22 base bad: ['tests/test_async.py', 'tests/test_async_filters.py', 'tests/test_loader.py']
+  pytest84: good->bad vs base 0 [] | bad->good 0 [] []
+  markupsafe201: good->bad vs base 0 [] | bad->good 0 [] []
+  markupsafe211: good->bad vs base 0 [] | bad->good 0 [] []
+== dep-marshmallow.log
+marshmallow 046416de8a units 15 base bad: ['tests/mypy_test_cases/test_class_registry.py', 'tests/mypy_test_cases/test_validation_error.py']
+  pytest84: good->bad vs base 0 [] | bad->good 0 [] []
+  simplejson: good->bad vs base 0 [] | bad->good 0 [] []
+== dep-more-itertools.log
+more-itertools d82024d025 units 2 base bad: []
+  pytest84: good->bad vs base 0 [] | bad->good 0 [] []
+== dep-pygments.log
+pygments a0204f6906 units 35 base bad: ['tests/contrast/test_contrasts.py']
+  pytest84: good->bad vs base 0 [] | bad->good 0 [] []
+== dep-sqlparse.log
+sqlparse f1d2d688bc units 10 base bad: []
+  pytest84: good->bad vs base 0 [] | bad->good 0 [] []
+== dep-structlog.log
+structlog 3763c623c1 units 17 base bad: ['tests/processors/test_processors.py']
+  pytest84: good->bad vs base 0 [] | bad->good 0 [] []
+  rich13: good->bad vs base 1 ['tests/test_dev.py'] | bad->good 0 [] [['3 failed, 90 passed, 7 skipped in 0.07s']]
+  freezegun12: good->bad vs base 0 [] | bad->good 0 [] []
+== dep-toolz.log
+toolz 20c6430d1c units 14 base bad: ['toolz/tests/test_functoolz.py', 'toolz/tests/test_inspect_args.py', 'toolz/tests/test_itertoolz.py', 'toolz/tests/test_tlz.py']
+  pytest84: good->bad vs base 0 [] | bad->good 0 [] []
+== dep-werkzeug.log
+werkzeug 6a604e005d units 25 base bad: ['tests/test_serving.py']
+  pytest84: good->bad vs base 0 [] | bad->good 0 [] []
+  markupsafe211: good->bad vs base 0 [] | bad->good 0 [] []
+  watchdog2: good->bad vs base 0 [] | bad->good 0 [] []

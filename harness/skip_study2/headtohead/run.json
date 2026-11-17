@@ -1,14 +1,19 @@
 {
- "run_id": "h4",
- "note": "h1 = main + env + runtime arms (run 44123885253); h2 = home-root arm (run 44136144219); h3 = main re-walk of the Python projects with the per-test coverage rules Ae / Af (run 44150209225); h4 = realistic CI change arms (changes.json: ci-dep, ci-data, ci-env; 11 commits, the change lands at commit 3 and stays, every unit verified fresh at every commit; branch claude/sweet-mendel-rtdg7f) + flask main re-walk with pytest pinned to 8.4.2",
+ "run_id": "h5",
+ "note": "h5 = ci-env arm (PYTHONWARNINGS=error, the one realistic CI variable that flipped test verdicts in the local probe of 14 libraries: FORCE_COLOR, NO_COLOR, TZ, LANG=C, COLUMNS=200 flipped none) on the libraries where it flips (click is in h4)",
  "jobs": [
-  {"spec": "flask", "arms": ["main", "ci-dep", "ci-data"], "budget_min": 75, "arm_budget_min": 75, "arm_commits": 11},
-  {"spec": ["jinja", "werkzeug", "sqlparse", "pygments"], "arms": ["ci-data"], "arm_budget_min": 60, "arm_commits": 11},
-  {"spec": "structlog", "arms": ["ci-dep"], "arm_budget_min": 60, "arm_commits": 11},
-  {"spec": "click", "arms": ["ci-env"], "arm_budget_min": 60, "arm_commits": 11},
-  {"spec": "docusaurus", "arms": ["ci-data"], "arm_budget_min": 200, "arm_commits": 11},
-  {"spec": "docusaurus", "arms": ["ci-env"], "arm_budget_min": 200, "arm_commits": 11},
-  {"spec": "vue-core", "arms": ["ci-env"], "arm_budget_min": 200, "arm_commits": 11},
-  {"spec": "home-assistant", "shards": 8, "only_shards": [0, 1], "arms": ["ci-data"], "arm_budget_min": 200, "arm_commits": 11}
+  {
+   "spec": [
+    "toolz",
+    "boltons",
+    "sqlparse",
+    "pygments"
+   ],
+   "arms": [
+    "ci-env"
+   ],
+   "arm_budget_min": 60,
+   "arm_commits": 11
+  }
  ]
 }
