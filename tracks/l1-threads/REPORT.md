@@ -1,4 +1,4 @@
-PARTIAL (all exit numbers measured; the anyio and requests full suites are still running on Actions)
+PARTIAL (all exit numbers measured; the anyio and requests full suites were still running on Actions at hand-off: runs 44089216622 and 44095974555, results land in results/r5 and results/r6)
 
 # Report · track l1-threads (P-012) · Level 1 for threads (`--det-threads`)
 
@@ -11,7 +11,7 @@ Measured on GitHub Actions, workflow `track-l1-threads` (one runner per project)
 * round r1, code `4d88a2f`, run 44042691111, where noted.
 
 `d447170` differs from `e29b9fd` only when a tool patches `lock.acquire` on the C type (blockbuster, used by
-anyio's conftest). Raw results are in `results/r4/`, `results/r5/` and `results/r1/`. The r2 and r3 runs were
+anyio's conftest). Raw results are in `results/r4/`, `results/r5/`, `results/r6/` and `results/r1/`. The r2 and r3 runs were
 cancelled because their code was stale. r4 was cancelled after 19 of 31 jobs, so that the queue could reach the
 suites never measured.
 
@@ -108,7 +108,7 @@ One fingerprint over the runs: `--det` 0/10, `--det --det-urandom` 8/10, `--det-
   * panamah: 4 → 1;
   * anyio `test_unicode_hostname_idna2008`: 10 → 1;
   * anyio `test_alpn_negotiation[asyncio+uvloop]`: 10 → 1.
-* The anyio fingerprints are "identical, with uncontrolled events": each calm run records 2
+* The anyio fingerprints are "identical, with uncontrolled events": each calm run records 3
   escapes (`threads.uncontrolled`: a holder sleeping in C). uvloop itself is not modelled.
 * pymq: seed 9 fails 10/10 with `NoSuchRemoteError`, while the baseline flake is an AssertionError.
   The fingerprint has 2 variants because the Redis server is a real external process. This is a
