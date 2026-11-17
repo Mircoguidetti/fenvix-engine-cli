@@ -45,6 +45,9 @@ import pytest
 
 from . import __version__, _codefacts, _core, _sites, _state
 
+# real clocks, bound before Level 0 virtualises the time module
+_perf = time.perf_counter
+_now = time.time
 _mon = getattr(sys, "monitoring", None)
 AVAILABLE = _mon is not None
 
@@ -323,6 +326,9 @@ class Capture:
 
     def read(self, ctx: int, p: str, kind: str) -> None:
         """A read of ``p`` (kind f = file content, d = listing) in context ``ctx``."""
+        if not _encodable(p):
+            self.flags.setdefault(ctx, set()).add("badpath")
+            return
         if p.startswith(("/proc/", "/sys/", "/dev/")):
             self.flags.setdefault(ctx, set()).add("proc")
             return
@@ -645,12 +651,13 @@ class ProofCachePlugin:
         self.fingerprints: dict[str, str] = {}
         self.verify_results: list[dict] = []
         self.summary: dict = {}
-        self.run_id = f"{time.strftime('%Y%m%dT%H%M%S')}-{os.getpid()}"
+        self.run_id = f"{time.strftime('%Y%m%dT%H%M%S', time.gmtime(_now()))}-{os.getpid()}"
         self.t_check = 0.0
         self.t_record = 0.0
         self.recorded = 0
         self.not_cached: dict[str, str] = {}
         self.stale_hits: dict[str, str] = {}
+        self.error: str | None = None
 
     # -- setup ----------------------------------------------------------------
     def configure(self, config) -> None:
@@ -689,11 +696,11 @@ class ProofCachePlugin:
     def pytest_collection_finish(self, session):
         self.cap.switch("s")
         self.cap.scan_modules(-1, self._conftests())
-        t0 = time.perf_counter()
+        t0 = _perf()
         try:
             self._decide(session.items)
         finally:
-            self.t_check = time.perf_counter() - t0
+            self.t_check = _perf() - t0
 
     def _decide(self, items) -> None:
         store = self.store
@@ -753,11 +760,11 @@ class ProofCachePlugin:
                     fx.append(f"f|{d.scope}|{d.baseid}|{d.argname}")
         self.fixture_ctx[nid] = sorted(set(fx))
         self.cap.switch("t|" + nid)
-        t = time.perf_counter()
+        t = _perf()
         try:
             yield
         finally:
-            self.dur[nid] = time.perf_counter() - t
+            self.dur[nid] = _perf() - t
             self.cap.switch("s")
             self.cap.scan_modules(self.test_index.get(nid, len(self.ran)), self._conftests())
             self.ran.append(nid)
@@ -792,7 +799,7 @@ class ProofCachePlugin:
         rep = e.get("report") or {}
         ihook = item.ihook
         ihook.pytest_runtest_logstart(nodeid=item.nodeid, location=item.location)
-        now = time.time()
+        now = _now()
         kw = {k: 1 for k in item.keywords}
         props = [("detpy_cache", "reused"), ("detpy_cache_key", receipt["key"]),
                  ("detpy_fingerprint", e.get("fingerprint", ""))]
@@ -828,11 +835,17 @@ class ProofCachePlugin:
         cap = self.cap
         cap.switch("s")
         cap.stop()
-        t0 = time.perf_counter()
+        t0 = _perf()
         try:
             self._record_all()
+        except Exception as e:  # never break the test session: nothing is recorded this time
+            import traceback
+            import warnings
+
+            self.error = f"{type(e).__name__}: {e}"
+            warnings.warn(f"detpy --det-cache: results not recorded: {self.error}\n{traceback.format_exc()}")
         finally:
-            self.t_record = time.perf_counter() - t0
+            self.t_record = _perf() - t0
         self.compare_verified({n: _final(p) for n, p in self.parts.items()})
         self._write_receipts()
 
@@ -924,11 +937,13 @@ class ProofCachePlugin:
 
         pre_ix = {fcache[r] for r in cap.preloaded if fcache.get(r) is not None}
         names_of = cap.ctx_names
-        session_written = {cap._key(p): sorted(names_of[c] for c in w) for p, w in cap.writers.items()}
+        session_written = {cap._key(p): sorted(names_of[c] for c in w) for p, w in cap.writers.items()
+                           if _encodable(p)}
         written = {p: set(w) for p, w in store.written().items()}
         for p, w in session_written.items():
             written.setdefault(p, set()).update(w)
-        store.add_written(session_written)
+        # persisted for the next sessions: paths in the repository only (temporary files have fresh names)
+        store.add_written({p: w for p, w in session_written.items() if not os.path.isabs(p)})
         # results reused in this session whose input files code of this session then wrote: drop them
         for nid in self.hits:
             if not session_written:
@@ -982,8 +997,10 @@ class ProofCachePlugin:
                 content |= unparsable(per[c][1])
             why = _uncacheable(flags, cfg)
             if why is None:
-                credited = set(ctxs)
-                names = {names_of[c] for c in ctxs}
+                # writers credited to the test: its own contexts and the global ones (startup, between tests,
+                # import time), whose code is an input of every test
+                credited = set(ctxs) | set(g_ctx_all)
+                names = {names_of[c] for c in credited}
                 for f in sorted(flags):
                     if f.startswith("rw:") and not cap.writers.get(f[3:], set()) <= credited:
                         why = f"reads a file another test or fixture wrote: {cap._key(f[3:])}"
@@ -1028,11 +1045,11 @@ class ProofCachePlugin:
                 self._not_cached(nid, "real clock")
                 continue
             env_deps = []
-            for name in sorted(env):
+            for name in sorted(n for n in env if _encodable(n)):
                 if name == "*":
                     env_deps.append(("*", _core.env_all_digest(dict(cap.env0))))
                 else:
-                    env_deps.append((name, _core.env_value_digest(cap.env0.get(name))))
+                    env_deps.append((name, _core.env_value_digest(cap.env0.get(name))))  # env0 is sanitised
             report = {w: p[w] for w in ("setup", "call") if w in p}
             store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
                          self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
@@ -1079,6 +1096,7 @@ class ProofCachePlugin:
             "runtime": self.runtime_digest,
             "verify_mismatches": [v for v in self.verify_results if not v["same"]],
             "stale_reuses": self.stale_hits,
+            "error": self.error,
             "receipts": self.receipts_path,
         }
 
@@ -1140,7 +1158,22 @@ def _final(parts: dict) -> str:
     return co
 
 
+def _safe(s: str) -> str:
+    """``s`` as valid UTF-8 text (undecodable bytes of environment strings escaped)."""
+    return s if _encodable(s) else s.encode("utf-8", "surrogateescape").decode("utf-8", "backslashreplace")
+
+
+def _encodable(s: str) -> bool:
+    try:
+        s.encode("utf-8")
+        return True
+    except UnicodeEncodeError:
+        return False
+
+
 def _uncacheable(flags: set, cfg) -> str | None:
+    if "badpath" in flags:
+        return "reads a path that is not valid UTF-8"
     if "spawn" in flags:
         return "subprocess"
     if "connect" in flags:
@@ -1187,7 +1220,8 @@ def start(early_config, ns) -> None:
     if CAPTURE is not None and CAPTURE.active:
         return  # nested in-process session: the outer one records
     root = str(early_config.rootpath)
-    env0 = {k: v for k, v in os.environ.items()}
+    # detpy's own variables (set by its re-exec, e.g. the precompile time) are configuration, not inputs
+    env0 = {_safe(k): _safe(v) for k, v in os.environ.items() if not k.startswith("DETPY_")}
     cap = Capture(root, env0)
     CAPTURE = cap
     _ENV_CAPTURE = cap

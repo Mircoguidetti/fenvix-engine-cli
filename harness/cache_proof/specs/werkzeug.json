@@ -1,0 +1,11 @@
+{
+ "name": "werkzeug",
+ "url": "https://github.com/pallets/werkzeug",
+ "head": "0f43c6ebd426",
+ "commits": 51,
+ "mode": "suite",
+ "python": "3.13",
+ "deselect": [
+  "tests/test_serving.py::test_reloader_sys_path[watchdog]"
+ ]
+}
