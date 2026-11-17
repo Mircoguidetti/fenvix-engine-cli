@@ -12,6 +12,7 @@ Every Playwright run goes through `detjs playwright` (without --det it runs the 
 """
 import json
 import os
+import re
 import shutil
 import signal
 import statistics
@@ -107,7 +108,11 @@ def parse_json(path):
                 if t.get("status") == "skipped" and not res:
                     status = "skipped"
                 key = norm(spec.get("file") or file, titles + [spec.get("title", "")], t.get("projectName", ""))
-                out[key] = (status, spec.get("file") or file, spec.get("line"))
+                err = ""
+                if res and status in FAIL:
+                    e = res[-1].get("error") or (res[-1].get("errors") or [{}])[0]
+                    err = re.sub(r"\x1b\[[0-9;]*m", "", e.get("message") or "")[:400] if isinstance(e, dict) else ""
+                out[key] = (status, spec.get("file") or file, spec.get("line"), err)
 
     for s in d.get("suites", []) or []:
         walk(s, [], s.get("file") or s.get("title"))
@@ -169,9 +174,16 @@ def run_pw(label, mode, seed=None, filters=(), extra=(), timeout_s=None):
     rec["wall_s"] = round(time.time() - t, 1)
     if HAS_SERVER:
         fn("server_stop")
+    if mode == "det" and label in ("det-1", "det-2"):
+        for src in (OUT / "traces" / "server-parts", WORK / ".detjs" / "serve" / "parts"):
+            if src.is_dir():
+                dst = OUT / "server-parts" / label
+                shutil.rmtree(dst, ignore_errors=True)
+                shutil.copytree(src, dst)
     oc = parse_json(jsonf)
     rec["outcomes"] = {k: v[0] for k, v in oc.items()}
     rec["locations"] = {k: [v[1], v[2]] for k, v in oc.items()}
+    rec["errors"] = dict(list({k: v[3] for k, v in oc.items() if v[3]}.items())[:25])
     rec["trace"] = str(trace) if trace.exists() else None
     counts = {}
     for s in rec["outcomes"].values():
@@ -372,10 +384,16 @@ save()
 diag = RESULT.parent / NAME
 shutil.rmtree(diag, ignore_errors=True)
 diag.mkdir(parents=True, exist_ok=True)
-for r in DET[:1] + BASE[:1]:
+for r, cap in [(x, 300000) for x in DET[:1]] + [(x, 60000) for x in BASE[:1]]:
     lf = OUT / "logs" / f"{r['label']}.log"
     if lf.exists():
-        (diag / f"{r['label']}.log.tail").write_text(lf.read_text(errors="replace")[-20000:])
+        (diag / f"{r['label']}.log.tail").write_text(lf.read_text(errors="replace")[-cap:])
+total = 0
+for f in sorted((OUT / "server-parts").glob("*/*.jsonl")) if (OUT / "server-parts").is_dir() else []:
+    if f.stat().st_size < 1_500_000 and total + f.stat().st_size < 6_000_000:
+        (diag / "server-parts" / f.parent.name).mkdir(parents=True, exist_ok=True)
+        shutil.copy(f, diag / "server-parts" / f.parent.name / f.name)
+        total += f.stat().st_size
 if DET and DET[0].get("trace"):
     t = Path(DET[0]["trace"])
     if t.stat().st_size < 3_000_000:
