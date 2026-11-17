@@ -23,4 +23,5 @@ of /home/user/fenvix-engine-cli; base `1573079` (origin/claude/gracious-rubin-ey
 - Round r4 at the final code (all jobs, thread-heavy first): `tracks/l1-threads/results/r4/`.
 
 ## Next
-- Aggregate r4 (and r1); REPORT.md (`python3 harness/l1_threads.py --aggregate tracks/l1-threads/results/r1 --out ...`), REPORT.md.
+- r5: anyio corpus + suite after the blockbuster fix (d447170).
+- Aggregate r4 + r5; REPORT.md (`python3 harness/l1_threads.py --aggregate tracks/l1-threads/results/r1 --out ...`), REPORT.md.

@@ -1,1 +1,1 @@
-{"nonce": "r4", "code": "e29b9fd", "only": [], "runs": 10, "seeds": 20, "confirm": 10, "timing_runs": 3, "loaded_runs": 5}
+{"nonce": "r5", "code": "d447170", "note": "anyio only, after the blockbuster fix; other projects: r4 (same behaviour without a patched lock.acquire)", "only": ["corpus:anyio", "suite:anyio"], "runs": 10, "seeds": 20, "confirm": 10, "timing_runs": 3, "loaded_runs": 5}

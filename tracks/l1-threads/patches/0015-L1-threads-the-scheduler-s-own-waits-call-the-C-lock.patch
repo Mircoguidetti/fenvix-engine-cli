@@ -1,0 +1,73 @@
+From d44717083e74e50bd25766360faa3482ff46360c Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 13:04:55 +0000
+Subject: [PATCH 15/15] L1 threads: the scheduler's own waits call the C lock
+ acquire captured at import (blockbuster flagged the baton hand-over inside an
+ event loop as a blocking call: anyio exploration false failures); harness:
+ BlockingError is a scheduler artefact
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ harness/l1_threads.py   |  2 +-
+ python/detpy/threads.py | 10 +++++++---
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/harness/l1_threads.py b/harness/l1_threads.py
+index 222b789..6a92213 100644
+--- a/harness/l1_threads.py
++++ b/harness/l1_threads.py
+@@ -57,7 +57,7 @@ MODES = {
+ }
+ SUITE_MODES = {"plain": [], "det": ["--det"], "l1": L1, "l1-s1": ["--det", "--det-threads", "--det-threads-seed=1"]}
+ log, is_fail, hist = A.log, A.is_fail, A.hist
+-ARTIFACT_MARKERS = ("DeadlockError", "Timeout (>", "deadlock", "detpy")
++ARTIFACT_MARKERS = ("DeadlockError", "Timeout (>", "deadlock", "detpy", "BlockingError")
+ 
+ 
+ def pytest_run(p, args: list, out_json: Path, timeout: float, trace: Path | None = None) -> dict:
+diff --git a/python/detpy/threads.py b/python/detpy/threads.py
+index c04202c..a909c20 100644
+--- a/python/detpy/threads.py
++++ b/python/detpy/threads.py
+@@ -30,6 +30,10 @@ import threading
+ from . import _sites, _state
+ 
+ _real_allocate = _thread.allocate_lock
++# The scheduler's own blocking waits call the C method captured at import: tools
++# that patch lock.acquire on the C type (blockbuster flags blocking calls inside an
++# event loop) must not see the baton hand-over as a blocking call of the test.
++_lock_acquire = _thread.LockType.acquire
+ _real_start_new_thread = _thread.start_new_thread
+ _real_join = threading.Thread.join
+ _real_is_alive = threading.Thread.is_alive
+@@ -95,7 +99,7 @@ class T:
+         self.name = name
+         self.sid = sid  # stable id: creation site + per-site counter, "main" for the test thread
+         self.gate = _real_allocate()
+-        self.gate.acquire()
++        _lock_acquire(self.gate)
+         self.handed = False
+         self.state = RUNNABLE
+         self.wait = ""  # what it waits for (deadlock message)
+@@ -123,7 +127,7 @@ class _SchedMutex:
+ 
+     def acquire(self, blocking=True, timeout=-1):
+         _tls.in_mu = True
+-        got = self._lock.acquire(blocking, timeout)
++        got = _lock_acquire(self._lock, blocking, timeout)
+         if not got:
+             _tls.in_mu = False
+         return got
+@@ -449,7 +453,7 @@ def _locked_hand(me, nxt) -> None:
+ 
+ def _wait_gate(me) -> None:
+     """Wait (no lock held) until the baton is handed to ``me``."""
+-    me.gate.acquire()
++    _lock_acquire(me.gate)
+     me.handed = False
+     if S.exiting:
+         _reap()
+-- 
+2.43.0
+
