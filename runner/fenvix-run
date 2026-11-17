@@ -1,0 +1,330 @@
+#!/usr/bin/env python3
+"""fenvix-run: run a project's pytest suite inside the fenvix engine on a `runs-on: fenvix` machine.
+
+What it does, in order:
+
+1. ``pytest --det --det-cache=<persistent dir>`` in the project directory. The cache directory lives on the machine
+   (``$FENVIX_CACHE_ROOT/<project key>``), so it survives between jobs: a test whose inputs did not change since a
+   previous job is not run again, its result is reused *with a receipt* (what was checked).
+2. Every test that failed is run once more, alone, without the cache. A test that passes alone but failed in the
+   suite is reported as **flaky (order-dependent)** with its replay command; a test that fails again is a failure.
+3. A summary is written to ``$GITHUB_STEP_SUMMARY`` (Markdown) and to ``<out>/summary.json``: tests run, tests
+   skipped with proof, test time saved, failures, flaky tests with their replay command, and where the receipts are.
+
+Exit status: pytest's (0 when every test passed or was reused as passed), so a failing suite fails the job.
+Standard library only: the wrapper runs with any Python 3.9+; pytest runs with ``--python``.
+
+    fenvix-run --project . --python .venv/bin/python [--key owner/repo] [--out DIR] [-- extra pytest args]
+    fenvix-run verify --project . --python PY --summary DIR/summary.json [--out DIR]
+"""
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import hashlib
+import json
+import os
+import re
+import shlex
+import subprocess
+import sys
+import time
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+DEFAULT_ROOT = os.environ.get("FENVIX_CACHE_ROOT") or os.path.join(os.path.expanduser("~"), ".fenvix", "cache")
+
+
+def log(msg: str) -> None:
+    print(f"[fenvix] {msg}", flush=True)
+
+
+def project_key(project: Path, given: str | None) -> str:
+    """Directory name of the project's cache: the given key (e.g. ``owner/repo``), else the ``origin`` remote URL,
+    else the directory name. One cache per project and Python version: a cache never mixes interpreters (the engine
+    also checks the runtime digest on every reuse; this only keeps unrelated entries apart)."""
+    key = given
+    if not key:
+        try:
+            key = subprocess.run(["git", "-C", str(project), "remote", "get-url", "origin"], capture_output=True,
+                                 text=True, check=True).stdout.strip()
+        except (OSError, subprocess.CalledProcessError):
+            key = project.resolve().name
+    key = re.sub(r"^(https?://|git@)", "", key).removesuffix(".git").replace(":", "/")
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "_", key).strip("_")
+    return safe[:80] + "-" + hashlib.sha256(key.encode()).hexdigest()[:8]
+
+
+def python_tag(py: str) -> str:
+    out = subprocess.run([py, "-c", "import sys; print('py%d%d' % sys.version_info[:2])"], capture_output=True,
+                         text=True)
+    return out.stdout.strip() or "py"
+
+
+def git_head(project: Path) -> str:
+    r = subprocess.run(["git", "-C", str(project), "rev-parse", "HEAD"], capture_output=True, text=True)
+    return r.stdout.strip() if r.returncode == 0 else ""
+
+
+def run_pytest(py: str, project: Path, args: list[str], env: dict) -> tuple[int, float]:
+    cmd = [py, "-m", "pytest", *args]
+    log("$ " + " ".join(shlex.quote(c) for c in cmd))
+    t0 = time.monotonic()
+    code = subprocess.run(cmd, cwd=project, env=env).returncode
+    return code, time.monotonic() - t0
+
+
+def junit_times(path: Path) -> dict[str, float]:
+    """Per-test durations from a JUnit XML file, keyed by a ``file::name`` approximation of the node id (classname
+    dots are not file paths, so durations are matched by test name suffix when needed)."""
+    out: dict[str, float] = {}
+    try:
+        root = ET.parse(path).getroot()
+    except (OSError, ET.ParseError):
+        return out
+    for tc in root.iter("testcase"):
+        out[f"{tc.get('classname', '')}::{tc.get('name', '')}"] = float(tc.get("time") or 0.0)
+    return out
+
+
+def total_time(times: dict[str, float]) -> float:
+    return round(sum(times.values()), 3)
+
+
+def read_receipts(path: Path) -> list[dict]:
+    rows = []
+    try:
+        with open(path) as fh:
+            for line in fh:
+                line = line.strip()
+                if line:
+                    rows.append(json.loads(line))
+    except OSError:
+        pass
+    return rows
+
+
+def fmt_s(s: float) -> str:
+    if s >= 120:
+        return f"{s / 60:.1f} min"
+    return f"{s:.1f} s"
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
+    project = Path(a.project).resolve()
+    out = Path(a.out or (Path(os.environ.get("RUNNER_TEMP", project)) / "fenvix")).resolve()
+    out.mkdir(parents=True, exist_ok=True)
+    key = project_key(project, a.key)
+    cache = Path(a.cache) if a.cache else Path(DEFAULT_ROOT) / f"{key}-{python_tag(a.python)}"
+    cache.mkdir(parents=True, exist_ok=True)
+    had_cache = any(cache.iterdir())
+    receipts = out / "receipts.jsonl"
+    outcomes_p, junit_p = out / "outcomes.json", out / "junit.xml"
+    for p in (receipts, outcomes_p, junit_p):
+        p.unlink(missing_ok=True)
+
+    env = dict(os.environ)
+    env.pop("PYTHONHASHSEED", None)  # the engine fixes it itself (re-exec)
+    base = ["--det", "--det-urandom", "-p", "no:cacheprovider", "-q", "-rN", "--tb=short"]
+    args = base + [f"--det-cache={cache}", f"--det-cache-receipts={receipts}", f"--det-outcomes={outcomes_p}",
+                   f"--junitxml={junit_p}", *extra]
+    log(f"project {project} @ {git_head(project)[:12]}; cache {cache} ({'warm' if had_cache else 'cold'})")
+    code, wall = run_pytest(a.python, project, args, env)
+
+    try:
+        res = json.loads(outcomes_p.read_text())
+    except (OSError, ValueError):
+        res = {}
+    outcomes: dict[str, str] = res.get("outcomes", {})
+    cache_s: dict = res.get("cache") or {}
+    rec = read_receipts(receipts)
+    reused = [r for r in rec if r.get("reused")]
+    saved = round(sum(float(r.get("duration") or 0.0) for r in reused), 3)
+    times = junit_times(junit_p)
+    ran_time = total_time(times)  # reused tests report ~0 s
+    failed = sorted(n for n, o in outcomes.items() if o in ("failed", "error"))
+
+    # Failures: once more, alone, without the cache. Passes alone -> flaky (order-dependent), with its replay.
+    flaky, real = [], list(failed)
+    if failed and not a.no_rerun:
+        again_p = out / "outcomes-rerun.json"
+        again_p.unlink(missing_ok=True)
+        epoch = cache_s.get("epoch_ns")
+        ep = []
+        if epoch:
+            t = dt.datetime.fromtimestamp(epoch // 1_000_000_000, tz=dt.timezone.utc)
+            ep = [f"--det-epoch={t.strftime('%Y-%m-%dT%H:%M:%S')}"]
+        rr_args = ["--det", "--det-urandom", "-p", "no:cacheprovider", "-q", "--tb=no", *ep,
+                   f"--det-outcomes={again_p}", *[x for x in extra if not x.startswith("--det-cache")]]
+        real, flaky = [], []
+        for nid in failed[: a.max_reruns]:
+            run_pytest(a.python, project, rr_args + [nid], env)
+            try:
+                o2 = json.loads(again_p.read_text()).get("outcomes", {}).get(nid)
+            except (OSError, ValueError):
+                o2 = None
+            (flaky if o2 == "passed" else real).append(nid)
+        real += failed[a.max_reruns:]
+
+    rel_cache = f"--det-cache={cache}"
+    replay_full = " ".join(shlex.quote(x) for x in ["python", "-m", "pytest", *base, *extra])
+    summary = {
+        "project": str(project), "commit": git_head(project), "cache_dir": str(cache), "cache_was_warm": had_cache,
+        "exit": code, "wall_seconds": round(wall, 3),
+        "tests": len(outcomes),
+        "reused_with_proof": len(reused),
+        "ran": len(outcomes) - len(reused),
+        "test_seconds_saved": saved,
+        "test_seconds_run": ran_time,
+        "share_of_test_time_saved": round(saved / (saved + ran_time), 4) if (saved + ran_time) else 0.0,
+        "failed": real, "flaky": [{"nodeid": n, "replay": f"{replay_full}  # whole suite, same order: fails again",
+                                   "minimise": f"detpy repro {shlex.quote(n)} --seed fixed"} for n in flaky],
+        "outcome_counts": {k: sum(1 for o in outcomes.values() if o == k) for k in sorted(set(outcomes.values()))},
+        "not_cached": cache_s.get("not_cached", {}),
+        "not_reused_reasons": cache_s.get("miss_reasons", {}),
+        "cache_check_seconds": cache_s.get("check_seconds"), "cache_record_seconds": cache_s.get("record_seconds"),
+        "epoch_ns": cache_s.get("epoch_ns"),
+        "receipts": str(receipts), "outcomes_file": str(outcomes_p),
+        "outcomes": outcomes,
+        "reused_outcomes": {r["nodeid"]: r.get("outcome") for r in reused},
+        "pytest_args": args, "cache_arg": rel_cache,
+    }
+    (out / "summary.json").write_text(json.dumps(summary, indent=1))
+    write_step_summary(summary, a.title)
+    log(f"tests {summary['tests']}, reused with proof {summary['reused_with_proof']}, ran {summary['ran']}, "
+        f"saved {fmt_s(saved)} of test time ({summary['share_of_test_time_saved']:.1%}), failed {len(real)}, "
+        f"flaky {len(flaky)}")
+    return code
+
+
+def run_link() -> str | None:
+    s, r, i = (os.environ.get(k) for k in ("GITHUB_SERVER_URL", "GITHUB_REPOSITORY", "GITHUB_RUN_ID"))
+    return f"{s}/{r}/actions/runs/{i}#artifacts" if s and r and i else None
+
+
+def write_step_summary(s: dict, title: str | None) -> None:
+    L = [f"## {title or 'fenvix'}: tests with proof", ""]
+    L.append(f"Commit `{s['commit'][:12]}` · cache {'warm' if s['cache_was_warm'] else 'cold (first job on this machine)'}"
+             f" · machine `{os.uname().nodename}`")
+    L += ["", "| | |", "|---|---|",
+          f"| Tests | **{s['tests']}** |",
+          f"| Run | {s['ran']} |",
+          f"| Skipped with proof (result reused, receipt kept) | **{s['reused_with_proof']}** |",
+          f"| Test time saved | **{fmt_s(s['test_seconds_saved'])}** ({s['share_of_test_time_saved']:.1%} of test time) |",
+          f"| Test time spent | {fmt_s(s['test_seconds_run'])} |",
+          f"| Failures | {len(s['failed'])} |",
+          f"| Flaky (fail in the suite, pass alone) | {len(s['flaky'])} |",
+          f"| Job wall time (pytest) | {fmt_s(s['wall_seconds'])} |", ""]
+    oc = ", ".join(f"{k} {v}" for k, v in s["outcome_counts"].items())
+    L.append(f"Outcomes: {oc or 'none'}.")
+    link = run_link()
+    L.append("")
+    L.append("Receipts: one line per test (what was checked before a result was reused, or why a test ran): "
+             + (f"artifact `fenvix-receipts` on [this run]({link})." if link else f"`{s['receipts']}`."))
+    if s["failed"]:
+        L += ["", "### Failures", ""] + [f"- `{n}`" for n in s["failed"][:50]]
+    if s["flaky"]:
+        L += ["", "### Flaky tests (reproducible: the run is deterministic)", ""]
+        for f in s["flaky"][:20]:
+            L += [f"- `{f['nodeid']}`", f"  - replay: `{f['replay']}`", f"  - minimise: `{f['minimise']}`"]
+    why = {**s["not_reused_reasons"]}
+    if why or s["not_cached"]:
+        L += ["", "<details><summary>Why the other tests ran</summary>", ""]
+        if why:
+            L.append("Not reused (an input changed or no entry yet): "
+                     + ", ".join(f"{k} {v}" for k, v in sorted(why.items(), key=lambda kv: -kv[1])) + ".")
+        if s["not_cached"]:
+            L.append("")
+            L.append("Not cacheable (the test touched something the engine cannot prove): "
+                     + ", ".join(f"{k} {v}" for k, v in sorted(s["not_cached"].items(), key=lambda kv: -kv[1])) + ".")
+        L += ["", "</details>"]
+    text = "\n".join(L) + "\n"
+    target = os.environ.get("GITHUB_STEP_SUMMARY")
+    if target:
+        with open(target, "a") as fh:
+            fh.write(text)
+    else:
+        print(text)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+def cmd_verify(a: argparse.Namespace, extra: list[str]) -> int:
+    """Run the full suite again *without* the cache, at the same epoch and with the same arguments, and check that
+    every reused outcome is the outcome a real run gives. A mismatch is run a second time: if the second fresh run
+    agrees with the first, the reuse was wrong; otherwise the test is flaky."""
+    project = Path(a.project).resolve()
+    s = json.loads(Path(a.summary).read_text())
+    out = Path(a.out or Path(a.summary).parent).resolve()
+    reused: dict[str, str] = s["reused_outcomes"]
+    ep = []
+    if s.get("epoch_ns"):
+        t = dt.datetime.fromtimestamp(s["epoch_ns"] // 1_000_000_000, tz=dt.timezone.utc)
+        ep = [f"--det-epoch={t.strftime('%Y-%m-%dT%H:%M:%S')}"]
+    keep = [x for x in s["pytest_args"] if not x.startswith(("--det-cache", "--det-outcomes", "--junitxml"))]
+    env = dict(os.environ)
+    env.pop("PYTHONHASHSEED", None)
+
+    def fresh(tag: str, ids: list[str] | None = None) -> dict:
+        p = out / f"outcomes-verify-{tag}.json"
+        p.unlink(missing_ok=True)
+        run_pytest(a.python, project, keep + ep + [f"--det-outcomes={p}"] + (ids or []), env)
+        try:
+            return json.loads(p.read_text()).get("outcomes", {})
+        except (OSError, ValueError):
+            return {}
+
+    f1 = fresh("1")
+    checked = [n for n in reused if n in f1]
+    mism = [n for n in checked if f1[n] != reused[n]]
+    wrong, flaky = [], []
+    if mism:
+        f2 = fresh("2")
+        for n in mism:
+            (wrong if f2.get(n) == f1[n] else flaky).append(n)
+    v = {"reused": len(reused), "checked": len(checked), "same": len(checked) - len(mism), "wrong": wrong,
+         "flaky": flaky, "missing_in_fresh_run": sorted(set(reused) - set(f1)),
+         "all_outcomes_same": all(f1.get(n) == o for n, o in s["outcomes"].items() if n in f1)}
+    (out / "verify.json").write_text(json.dumps(v, indent=1))
+    text = (f"## fenvix: every skip checked\n\nThe whole suite was run again without the cache. Of "
+            f"**{v['reused']}** results reused with proof, **{v['checked']}** were checked, **{v['same']}** matched; "
+            f"**wrong: {len(wrong)}**, flaky: {len(flaky)}, not in the fresh run: {len(v['missing_in_fresh_run'])}.\n")
+    if wrong:
+        text += "\nWrong reuses:\n" + "".join(f"- `{n}`: reused {reused[n]}, real {f1[n]}\n" for n in wrong)
+    target = os.environ.get("GITHUB_STEP_SUMMARY")
+    if target:
+        with open(target, "a") as fh:
+            fh.write(text)
+    print(text)
+    return 1 if wrong or v["checked"] < v["reused"] else 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    extra: list[str] = []
+    if "--" in argv:
+        i = argv.index("--")
+        argv, extra = argv[:i], argv[i + 1:]
+    verify = bool(argv) and argv[0] == "verify"
+    if verify:
+        argv = argv[1:]
+    p = argparse.ArgumentParser(prog="fenvix-run" + (" verify" if verify else ""))
+    p.add_argument("--project", default=".", help="project directory (default: .)")
+    p.add_argument("--python", default=sys.executable, help="interpreter with the project, pytest and detpy installed")
+    p.add_argument("--out", default=None, help="where summary.json, receipts.jsonl and outcomes go "
+                                               "(default: $RUNNER_TEMP/fenvix)")
+    if verify:
+        p.add_argument("--summary", required=True, help="summary.json written by the cache run")
+        a = p.parse_args(argv)
+        return cmd_verify(a, extra)
+    p.add_argument("--key", default=None, help="cache key of the project (default: its origin URL)")
+    p.add_argument("--cache", default=None, help=f"cache directory (default: {DEFAULT_ROOT}/<key>-<python>)")
+    p.add_argument("--title", default=None, help="heading of the step summary")
+    p.add_argument("--no-rerun", action="store_true", help="do not re-run failures alone")
+    p.add_argument("--max-reruns", type=int, default=20, help="failures re-run alone at most (default 20)")
+    a = p.parse_args(argv)
+    return cmd_run(a, extra)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
