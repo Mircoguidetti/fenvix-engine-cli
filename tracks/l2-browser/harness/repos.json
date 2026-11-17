@@ -18,7 +18,10 @@
    "baseline": 4,
    "stress": 2,
    "serial": 1,
-   "det": 2
+   "det": 2,
+   "seeds": 4,
+   "target_plain": 3,
+   "max_targets": 3
   }
  },
  "uptime-kuma": {
@@ -68,7 +71,10 @@
    "baseline": 4,
    "stress": 2,
    "serial": 0,
-   "det": 2
+   "det": 2,
+   "seeds": 4,
+   "target_plain": 3,
+   "max_targets": 5
   }
  },
  "actual": {
@@ -76,7 +82,38 @@
   "ref": "abe8ea7851518a88245fd78b53b427b54eba734e",
   "node": "24.22.1",
   "why": "CI and local retries 1; app logic in the browser and a web worker (limit B3)",
-  "ci_retries": 1
+  "ci_retries": 1,
+  "known_flaky": [
+   {
+    "file": "accounts.mobile.test.ts",
+    "grep": "keeps the search after opening a transaction and going back",
+    "source": "flaky in batch 3 (run 44043803663): 5 baseline + 3 stressed runs, PPPPP/FFF"
+   },
+   {
+    "file": "budget.mobile.test.ts",
+    "grep": "applies budget template",
+    "source": "flaky in batch 3 (run 44043803663): 5 baseline + 3 stressed runs, Tracking PPFPP/FFF and Envelope PPPPP/PPF (the grep selects both)"
+   },
+   {
+    "file": "automatic-budget-range.test.ts",
+    "grep": "extends after budgeting the last month",
+    "source": "flaky in batch 3 (run 44043803663): 5 baseline + 3 stressed runs, PPPPF/PPP"
+   },
+   {
+    "file": "accounts.mobile.test.ts",
+    "grep": "reconciles an account",
+    "source": "flaky in batch 3 (run 44043803663): 5 baseline + 3 stressed runs, PPPPP/FFF"
+   }
+  ],
+  "params": {
+   "baseline": 3,
+   "stress": 2,
+   "serial": 0,
+   "det": 2,
+   "max_targets": 4,
+   "seeds": 4,
+   "target_plain": 3
+  }
  },
  "rallly": {
   "repo": "lukevella/rallly",
@@ -88,6 +125,15 @@
   "repo": "solidjs/solid-start",
   "ref": "68784294b16692adf687c25bcd58c16c8a625cb3",
   "node": "22",
-  "why": "Node harness pw-solid-start: Vite dev server, 47 tests, baseline stable"
+  "why": "Node harness pw-solid-start: Vite dev server, 47 tests, baseline stable",
+  "params": {
+   "baseline": 3,
+   "stress": 1,
+   "serial": 1,
+   "det": 3,
+   "max_targets": 2,
+   "seeds": 4,
+   "target_plain": 3
+  }
  }
 }

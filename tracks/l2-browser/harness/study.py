@@ -283,9 +283,10 @@ def outcome_for(spec, run):
 
 def target_args(spec):
     filt = [js_escape(spec["file"]), "--grep", js_escape(spec["grep"])]
-    args = None
+    # A shard of a one-test selection may be empty: no --shard for targeted runs.
+    args = [a for a in PW_ARGS if not a.startswith("--shard")]
     if spec.get("project"):
-        args = [a for a in PW_ARGS if not a.startswith("--project")] + [f"--project={spec['project']}"]
+        args = [a for a in args if not a.startswith("--project")] + [f"--project={spec['project']}"]
     return filt, args
 
 
