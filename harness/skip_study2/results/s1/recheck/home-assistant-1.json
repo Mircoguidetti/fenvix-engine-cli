@@ -1,0 +1,262 @@
+{
+ "spec": "home-assistant",
+ "pr": 163164,
+ "rec": "3a0bde5d3e89aa03d362e4894d41a681afc5af19",
+ "cur": "6688281acfa64f0f49cb81528bef7a3ecbf84603",
+ "units": [
+  "tests/components/knx/test_number.py"
+ ],
+ "runs": {
+  "rec": {
+   "sha": "3a0bde5d3e89aa03d362e4894d41a681afc5af19",
+   "units": {
+    "tests/components/knx/test_number.py": {
+     "plain": [
+      {
+       "code": 0,
+       "wall": 6.88,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 3.04,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 3.02,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "pass"
+       },
+       "tail": ""
+      }
+     ],
+     "traced": {
+      "code": 1,
+      "wall": 10.32,
+      "tests": {
+       "tests/components/knx/test_number.py::test_number_set_value": "pass",
+       "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+       "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+       "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+       "tests/components/knx/test_number.py::test_number_ui_load": "fail"
+      },
+      "tail": "ome/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n::error file=tests/components/knx/test_number.py,line=189::test_number_ui_load%0A%0AAssertionError: No Telegram found. Expected: GroupValueRead - 2/0/0 - None\n::warning file=/home/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n"
+     },
+     "loaded": [
+      {
+       "code": 0,
+       "wall": 11.3,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 9.89,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 11.31,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 9.92,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "pass"
+       },
+       "tail": ""
+      }
+     ]
+    }
+   }
+  },
+  "cur": {
+   "sha": "6688281acfa64f0f49cb81528bef7a3ecbf84603",
+   "units": {
+    "tests/components/knx/test_number.py": {
+     "plain": [
+      {
+       "code": 0,
+       "wall": 2.99,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 1,
+       "wall": 3.08,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "fail"
+       },
+       "tail": "ome/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n::error file=tests/components/knx/test_number.py,line=189::test_number_ui_load%0A%0AAssertionError: No Telegram found. Expected: GroupValueRead - 2/0/0 - None\n::warning file=/home/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n"
+      },
+      {
+       "code": 1,
+       "wall": 3.07,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "fail"
+       },
+       "tail": "ome/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n::error file=tests/components/knx/test_number.py,line=189::test_number_ui_load%0A%0AAssertionError: No Telegram found. Expected: GroupValueRead - 2/0/0 - None\n::warning file=/home/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n"
+      }
+     ],
+     "traced": {
+      "code": 1,
+      "wall": 10.02,
+      "tests": {
+       "tests/components/knx/test_number.py::test_number_set_value": "pass",
+       "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+       "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+       "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+       "tests/components/knx/test_number.py::test_number_ui_load": "fail"
+      },
+      "tail": "ome/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n::error file=tests/components/knx/test_number.py,line=189::test_number_ui_load%0A%0AAssertionError: No Telegram found. Expected: GroupValueRead - 2/0/0 - None\n::warning file=/home/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n"
+     },
+     "loaded": [
+      {
+       "code": 1,
+       "wall": 11.73,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "fail"
+       },
+       "tail": "ome/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n::error file=tests/components/knx/test_number.py,line=189::test_number_ui_load%0A%0AAssertionError: No Telegram found. Expected: GroupValueRead - 2/0/0 - None\n::warning file=/home/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n"
+      },
+      {
+       "code": 0,
+       "wall": 9.72,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 1,
+       "wall": 10.93,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "fail"
+       },
+       "tail": "ome/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n::error file=tests/components/knx/test_number.py,line=189::test_number_ui_load%0A%0AAssertionError: No Telegram found. Expected: GroupValueRead - 2/0/0 - None\n::warning file=/home/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n"
+      },
+      {
+       "code": 1,
+       "wall": 11.73,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "fail"
+       },
+       "tail": "ome/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n::error file=tests/components/knx/test_number.py,line=189::test_number_ui_load%0A%0AAssertionError: No Telegram found. Expected: GroupValueRead - 2/0/0 - None\n::warning file=/home/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n"
+      }
+     ]
+    }
+   }
+  },
+  "rec2": {
+   "sha": "3a0bde5d3e89aa03d362e4894d41a681afc5af19",
+   "units": {
+    "tests/components/knx/test_number.py": {
+     "plain": [
+      {
+       "code": 0,
+       "wall": 3.03,
+       "tests": {
+        "tests/components/knx/test_number.py::test_number_set_value": "pass",
+        "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+        "tests/components/knx/test_number.py::test_number_ui_load": "pass"
+       },
+       "tail": ""
+      }
+     ],
+     "traced": {
+      "code": 1,
+      "wall": 10.06,
+      "tests": {
+       "tests/components/knx/test_number.py::test_number_set_value": "pass",
+       "tests/components/knx/test_number.py::test_number_restore_and_respond": "pass",
+       "tests/components/knx/test_number.py::test_number_ui_create[knx_config0-50.0-expected_telegram0-expected_state0]": "pass",
+       "tests/components/knx/test_number.py::test_number_ui_create[knx_config1-21.5-expected_telegram1-expected_state1]": "pass",
+       "tests/components/knx/test_number.py::test_number_ui_load": "fail"
+      },
+      "tail": "ome/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n::error file=tests/components/knx/test_number.py,line=189::test_number_ui_load%0A%0AAssertionError: No Telegram found. Expected: GroupValueRead - 2/0/0 - None\n::warning file=/home/runner/work/_temp/r/src/homeassistant/components/http/__init__.py,line=402::It is recommended to use web.AppKey instances for keys.%0Ahttps://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config\n"
+     },
+     "loaded": []
+    }
+   }
+  }
+ },
+ "verdict": {
+  "tests/components/knx/test_number.py": "flaky (plain runs disagree)"
+ }
+}
