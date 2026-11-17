@@ -1,6 +1,10 @@
 {
- "run_id": "s2",
- "flaky": [
-  {"spec": "terraform", "sha": "b3fb138b1543722ac0b9680c21bf69172d08bb39", "rep_start": 5, "reps": 10}
+ "run_id": "v3",
+ "walk": [
+  {"spec": "home-assistant", "shards": 8, "budget_min": 330},
+  {"spec": "docusaurus", "shards": 1, "budget_min": 330},
+  {"spec": "terraform", "shards": 2, "budget_min": 330},
+  {"spec": "vue-core", "shards": 1, "budget_min": 330},
+  {"spec": "prometheus", "shards": 2, "budget_min": 330}
  ]
 }
