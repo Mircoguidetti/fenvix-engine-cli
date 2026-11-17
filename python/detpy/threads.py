@@ -1683,8 +1683,16 @@ def _virtual_monotonic() -> float:
     library bookkeeping, not an observation by the code under test)."""
     if S.active:
         return _now() / 1e9
-    return _real_monotonic()
+    return _real_monotonic() + _MONO_AFTER[0]
 
+
+# After the session: seconds to add to the real clock so that _virtual_monotonic
+# continues from the session's virtual time. A Queue.get(timeout) running when the
+# session ends computed its deadline on the virtual clock; when the module's clock
+# went back to the real one, "time left" became the gap between the two clocks
+# (anyio's idle pool workers kept the interpreter from exiting). So the two module
+# references are never restored: the function stays and stays continuous.
+_MONO_AFTER = [0.0]
 
 _FUTURE_SEQ = [0]
 
@@ -1790,9 +1798,9 @@ def install(patcher, seed: int, grace: float, deadlock: float, preempt: int, stu
     # scheduler, so the time left must be virtual too, or a timed-out wait is
     # retried with the same time left forever (a Barrier timeout never fires).
     if hasattr(threading, "_time"):
-        patcher.set(threading, "_time", _virtual_monotonic)
+        threading._time = _virtual_monotonic
     if callable(getattr(queue, "time", None)):
-        patcher.set(queue, "time", _virtual_monotonic)
+        queue.time = _virtual_monotonic
     import concurrent.futures._base as _cfb
 
     # Futures hash by address: wait()/as_completed() iterate sets of futures and
@@ -1908,6 +1916,7 @@ def uninstall() -> None:
     # time left becomes the whole virtual time of the session (anyio's idle pool
     # workers kept the interpreter from exiting).
     S.vclock = _now()
+    _MONO_AFTER[0] = S.vclock / 1e9 - _real_monotonic()
     S.active = False
     for t in S.threads:
         if t.state != FINISHED and t is not S.current and not t.handed:

@@ -460,11 +460,17 @@ def test_a_uvloop_loop_runs_outside_the_scheduler(pytester):
 # against a clock already gone (the whole virtual time of the session): the
 # interpreter never exited (anyio's idle pool workers after the full suite).
 AT_EXIT = r'''
-import threading, time
+import queue, threading, time
 
-def test_leaves_a_waiting_worker_behind():
-    time.sleep(100_000)  # virtual: the session's clock is far ahead
+def test_leaves_waiting_workers_behind():
+    time.sleep(10_000_000)  # virtual: the session's clock is far ahead of the real one
     threading.Thread(target=threading.Event().wait, args=(3,)).start()
+    def idle():
+        try:
+            queue.Queue().get(timeout=3)  # its deadline is on the session's clock
+        except queue.Empty:
+            pass
+    threading.Thread(target=idle).start()
 '''
 
 
@@ -489,7 +495,7 @@ def test_threads_waiting_at_session_end_do_not_hang_the_exit(pytester):
     gone, now = (pytester.path / "now.txt").read_text().split()
     # a wait still running computes its time left against this "now": it must be
     # the session's virtual time, not 0
-    assert gone == "True" and int(now) >= 100_000 * 10**9
+    assert gone == "True" and int(now) >= 10_000_000 * 10**9
 
 
 # A tool that patches lock.acquire on the C lock type (blockbuster flags blocking
