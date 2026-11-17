@@ -18,7 +18,7 @@ Updated 2026-11-17 10:00 UTC. Local branch `track-l2-browser` in a scratch workt
 
 ## Next
 - PARTIAL REPORT.md pushed (fixture + solid-start numbers, 5 engine bugs fixed).
-- Coordinator 09:50: shared queue blocked; no new batch until node-harness 44050766953 and cache-proof 44046443902
+- Final run (nonce 9) launched 11:00 after node-harness and cache-proof r5 started: etherpad, documenso, actual, uptime-kuma, solid-start; 11 patches; harness with known-flaky targets first + ablation; 200-min budget.
   have started; then ONE final run: etherpad, documenso, solid-start (+ the healthiest of uptime-kuma/actual/rallly
   from batches 3/6), 11 patches, harness 3c6c260 or later (known flaky targeted first, ablation), budget ~150 min.
 - Batch 8 cancelled. Batches 3 (etherpad, actual) and 6 (uptime-kuma, rallly) still running at 09:55.
