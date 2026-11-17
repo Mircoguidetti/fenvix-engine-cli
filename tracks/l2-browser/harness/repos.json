@@ -30,7 +30,36 @@
   "node": "26",
   "why": "CI retries 2; socket.io app server in webServer; real sleeps (idle 31%)",
   "ci_retries": 2,
-  "ci_trace": "on-first-retry"
+  "ci_trace": "on-first-retry",
+  "known_flaky": [
+   {
+    "file": "monitor-history-settings.spec.js",
+    "grep": "saves the data retention period",
+    "project": "specs",
+    "source": "flaky in batch 6 (run 44049271859): 5 baseline + 3 stressed runs, PPPPP/PPF"
+   },
+   {
+    "file": "monitor-list-actions.spec.js",
+    "grep": "creates a group from the monitor form",
+    "project": "specs",
+    "source": "flaky in batch 6 (run 44049271859): 5 baseline + 3 stressed runs, PPPPP/FPP"
+   },
+   {
+    "file": "status-page.spec.js",
+    "grep": "RSS feed escapes malicious monitor names",
+    "project": "specs",
+    "source": "flaky in batch 6 (run 44049271859): 5 baseline + 3 stressed runs, PPPPP/PPF"
+   }
+  ],
+  "params": {
+   "baseline": 2,
+   "stress": 2,
+   "serial": 0,
+   "det": 2,
+   "max_targets": 3,
+   "seeds": 4,
+   "target_plain": 3
+  }
  },
  "documenso": {
   "repo": "documenso/documenso",
