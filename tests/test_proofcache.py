@@ -524,3 +524,23 @@ def test_det_cache_requires_det(pytester):
     pytester.makepyfile("def test_a():\n    pass\n")
     r = pytester.runpytest_subprocess(f"--det-cache={pytester.path / 'c'}")
     r.stderr.fnmatch_lines(["*--det-cache needs --det*"])
+
+
+def test_refusal_names_the_program_and_the_context(pytester, run_cache):
+    # step 1: a refusal says what caused it and where (r5: every home-assistant and pylint test was "subprocess")
+    project(pytester, **{"pkg/spawner.py": """
+        import subprocess, sys
+
+        subprocess.run([sys.executable, "-c", "pass"], check=True)
+        """, "test_m.py": """
+        import pkg.spawner
+
+        def test_a():
+            pass
+        """})
+    _, _, data = run_cache()
+    c = data["cache"]
+    assert c["not_cached_ids"]["test_m.py::test_a"] == "subprocess"
+    where = c["not_cached_where"]["test_m.py::test_a"]
+    assert where.startswith("python") and "pkg/spawner.py:4" in where and where.endswith("(import of pkg/spawner.py)")
+    assert c["not_cached_detail"] == {f"subprocess: {where}": 1}

@@ -142,6 +142,7 @@ class Capture:
         self.data: dict[int, dict[str, str]] = {}
         self.env: dict[int, set] = {}
         self.flags: dict[int, set] = {}  # "net", "spawn", "proc", "time", "entropy", "netrec", "foreign:<path>"
+        self.why: dict[tuple, str] = {}  # (context, flag) -> first occurrence (what and where), for the reports
         self.writers: dict[str, set] = {}  # abs path -> context indices that wrote it
         self._hashed: dict[str, str] = {}  # abs path -> dep at first read in the session
         self.loaded_order: list[tuple[str, int]] = []  # (rel module file, index of the test after which it was seen)
@@ -335,7 +336,7 @@ class Capture:
             except OSError:
                 continue
         if ctx is not None and new & inet:
-            self.flags.setdefault(ctx, set()).add("csock")
+            self.flag(ctx, "csock", "an internet socket left open")
 
     # -- data, environment, events ------------------------------------------------------
     def _caller_kind(self) -> str:
@@ -394,7 +395,7 @@ class Capture:
             self.flags.setdefault(ctx, set()).add("badpath")
             return
         if p.startswith(("/proc/", "/sys/", "/dev/")):
-            self.flags.setdefault(ctx, set()).add("proc")
+            self.flag(ctx, "proc", p)
             return
         if p in self.writers:
             # reads what code of this session wrote: allowed only if every writer is credited to the reader
@@ -472,7 +473,7 @@ class Capture:
             # (HTTPS_PROXY=http://127.0.0.1:...) or a service the test process tree did not start
             if self._caller_kind() == "infra":
                 return
-            self.flags.setdefault(self._cur(), set()).add("connect")
+            self.flag(self._cur(), "connect", f"{event} {_addr(args)} at {_first_user_site()}")
         elif event in ("socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr"):
             # a name lookup (DNS, /etc/hosts) is an input from outside; numeric addresses are not
             host = args[0] if args else None
@@ -480,7 +481,7 @@ class Capture:
                 host = host.decode("ascii", "replace")
             if not isinstance(host, str) or not host or _numeric_host(host) or self._caller_kind() == "infra":
                 return
-            self.flags.setdefault(self._cur(), set()).add("dns")
+            self.flag(self._cur(), "dns", f"{event} {host} at {_first_user_site()}")
         elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
             if self._caller_kind() == "infra":
                 return
@@ -489,7 +490,7 @@ class Capture:
                 # dynamic linker's cache: that file is the input
                 self.read(self._cur(), _LD_SO_CACHE, "f")
                 return
-            self.flags.setdefault(self._cur(), set()).add("spawn")
+            self.flag(self._cur(), "spawn", _spawn_detail(event, args))
         else:
             idx = _WRITE_EVENTS.get(event)
             if idx is None or self._caller_kind() == "infra":
@@ -499,6 +500,14 @@ class Capture:
                 p = self._abs(args[i] if len(args) > i else None)
                 if p is not None and not self._ignored(p):
                     self.wrote(ctx, p)
+
+    def flag(self, ctx: int, flag: str, detail: str | None = None) -> None:
+        fl = self.flags.setdefault(ctx, set())
+        if flag not in fl:
+            fl.add(flag)
+            if detail is None:
+                detail = _first_user_site()
+            self.why[(ctx, flag)] = detail
 
     def env_read(self, name: str) -> None:
         if self.active:
@@ -735,6 +744,7 @@ class ProofCachePlugin:
         self.t_record = 0.0
         self.recorded = 0
         self.not_cached: dict[str, str] = {}
+        self.not_cached_where: dict[str, str] = {}  # nodeid -> first occurrence of the cause (what, where, context)
         self.stale_hits: dict[str, str] = {}
         self.error: str | None = None
 
@@ -1081,6 +1091,8 @@ class ProofCachePlugin:
                 units |= units_of(per[c][0])
                 content |= unparsable(per[c][1])
             why = _uncacheable(flags, cfg)
+            if why is not None:
+                self.not_cached_where[nid] = self._where(why, g_ctx_all + ctxs)
             if why is None:
                 # writers credited to the test: its own contexts and the global ones (startup, between tests,
                 # import time), whose code is an input of every test
@@ -1142,6 +1154,17 @@ class ProofCachePlugin:
             self.recorded += 1
         store.save()
 
+    def _where(self, why: str, ctxs) -> str:
+        """``why`` with the first occurrence of its cause: what (command, address...) and in which context."""
+        flag = _FLAG_OF.get(why)
+        if flag is None:
+            return why
+        for c in ctxs:
+            d = self.cap.why.get((c, flag))
+            if d is not None:
+                return f"{d} ({_ctx_label(self.cap.ctx_names[c])})"
+        return ""
+
     def _not_cached(self, nid: str, why: str) -> None:
         self.not_cached[nid] = why
         self.store.remove(nid)
@@ -1164,9 +1187,15 @@ class ProofCachePlugin:
             k = why.split(":", 1)[0]
             kinds[k] = kinds.get(k, 0) + 1
         nc: dict[str, int] = {}
-        for why in self.not_cached.values():
+        detail: dict[str, int] = {}
+        for nid, why in self.not_cached.items():
             k = why.split(" ", 1)[0] if why.startswith("outcome") else why.split(":", 1)[0]
             nc[k] = nc.get(k, 0) + 1
+            if not why.startswith("outcome"):
+                w = self.not_cached_where.get(nid)
+                full = f"{why}: {w}" if w else why
+                detail[full] = detail.get(full, 0) + 1
+        top = dict(sorted(detail.items(), key=lambda kv: (-kv[1], kv[0]))[:40])
         return {
             "reused": len(self.hits),
             "verified": len(self.verifying),
@@ -1174,6 +1203,7 @@ class ProofCachePlugin:
             "recorded": self.recorded,
             "miss_reasons": kinds,
             "not_cached": nc,
+            "not_cached_detail": top,
             "reused_recorded_seconds": round(sum(self._entry_duration(n) for n in self.hits), 3),
             "check_seconds": round(self.t_check, 3),
             "record_seconds": round(self.t_record, 3),
@@ -1284,6 +1314,72 @@ def _numeric_host(host: str) -> bool:
         return True
     except ValueError:
         return False
+
+
+_FLAG_OF = {"subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
+            "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc"}
+
+
+def _ctx_label(name: str) -> str:
+    if name == "":
+        return "startup"
+    if name == "s":
+        return "between tests"
+    if name == "i":
+        return "import time"
+    kind, _, rest = name.partition("|")
+    if kind == "i":
+        return "import of " + rest
+    if kind == "c":
+        return "collection of " + rest
+    if kind == "f":
+        return "fixture " + rest.rsplit("|", 1)[-1]
+    return "test"
+
+
+def _first_user_site() -> str:
+    """``file:line`` of the innermost frame outside detpy and the standard library (else the innermost one)."""
+    try:
+        f = sys._getframe(1)
+    except ValueError:
+        return "?"
+    first = None
+    while f is not None:
+        fn = f.f_code.co_filename
+        if not fn.startswith(_DETPY_DIR):
+            kind, norm = _sites._classify(fn)
+            if first is None:
+                first = f"{norm}:{f.f_lineno}"
+            if kind == _sites._USER:
+                return f"{norm}:{f.f_lineno}"
+        f = f.f_back
+    return first or "?"
+
+
+def _spawn_detail(event: str, args) -> str:
+    """The program a spawn event starts and where it was called from."""
+    prog = None
+    try:
+        if event == "subprocess.Popen":
+            prog = args[0] if args[0] is not None else (args[1] if isinstance(args[1], (str, bytes)) else list(args[1])[0])
+        elif event == "os.system":
+            prog = os.fsdecode(args[0]).split()[0]
+        elif event.startswith("os.spawn"):
+            prog = args[1]
+        elif event in ("os.posix_spawn", "os.exec") or event.startswith("os.exec"):
+            prog = args[0]
+    except (IndexError, TypeError, ValueError):
+        prog = None
+    name = os.path.basename(os.fsdecode(prog)) if isinstance(prog, (str, bytes, os.PathLike)) else event
+    return f"{name} ({event}) at {_first_user_site()}"
+
+
+def _addr(args) -> str:
+    try:
+        a = args[1]
+        return f"{a[0]}:{a[1]}" if isinstance(a, tuple) else str(a)
+    except (IndexError, TypeError):
+        return "?"
 
 
 def _uncacheable(flags: set, cfg) -> str | None:

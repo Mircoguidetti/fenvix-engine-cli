@@ -317,7 +317,7 @@ class Walk:
     @staticmethod
     def cache_info(r: dict) -> dict:
         c = r.get("cache") or {}
-        return {k: c.get(k) for k in ("reused", "ran", "recorded", "miss_reasons", "not_cached", "check_seconds",
+        return {k: c.get(k) for k in ("reused", "ran", "recorded", "miss_reasons", "not_cached", "not_cached_detail", "check_seconds",
                                       "record_seconds", "stale_reuses", "reused_recorded_seconds")}
 
     def step_suite(self, st: dict, units: list[str], i: int) -> dict:
@@ -357,7 +357,7 @@ class Walk:
 
     def step_files(self, st: dict, units: list[str], i: int) -> dict:
         full = i % 10 == 0 or i == self.n - 1
-        agg = {"wall": 0.0, "reused": 0, "ran": 0, "recorded": 0, "miss_reasons": {}, "not_cached": {},
+        agg = {"wall": 0.0, "reused": 0, "ran": 0, "recorded": 0, "miss_reasons": {}, "not_cached": {}, "not_cached_detail": {},
                "check_seconds": 0.0, "record_seconds": 0.0, "failed_units": 0}
         outcomes, reused, times = {}, {}, {}
         b_wall = 0.0
@@ -375,7 +375,7 @@ class Walk:
                 agg[k] += c.get(k) or 0
             for k in ("check_seconds", "record_seconds"):
                 agg[k] += c.get(k) or 0.0
-            for k in ("miss_reasons", "not_cached"):
+            for k in ("miss_reasons", "not_cached", "not_cached_detail"):
                 for kk, vv in (c.get(k) or {}).items():
                     agg[k][kk] = agg[k].get(kk, 0) + vv
             outcomes.update(a["outcomes"])
