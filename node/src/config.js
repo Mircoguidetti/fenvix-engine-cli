@@ -48,6 +48,7 @@ function fromEnv(env = process.env) {
     maxEvents: int(env.DETJS_MAX_EVENTS, 10000),
     sites: env.DETJS_SITES !== '0',
     runner: env.DETJS_RUNNER || null,
+    wallReset: env.DETJS_WALL_RESET !== '0',
   };
 }
 

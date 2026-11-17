@@ -50,8 +50,9 @@ const REAL = {
 const realNowMs = () => REAL.perfNow();
 
 class VirtualClock {
-  constructor(epochNs, tickNs, adaptAfter) {
+  constructor(epochNs, tickNs, adaptAfter, wallReset = true) {
     this.epochMs = Number(epochNs / 1000000n);
+    this.wallReset = wallReset; // false for long-lived app servers (Level 2 browser): one wall clock for the run
     this.baseTick = tickNs;
     this.tick = tickNs;
     this.adaptAfter = adaptAfter;
@@ -87,7 +88,7 @@ class VirtualClock {
   }
 
   wallMs(e) {
-    return this.epochMs + (e - this.testStart) / NS_PER_MS;
+    return this.epochMs + (e - (this.wallReset ? this.testStart : 0)) / NS_PER_MS;
   }
 
   rel(e) {
@@ -494,7 +495,7 @@ function wrapPerformance(hostPerf) {
 /** Process-wide installation (once per process). */
 function installProcess(patcher, cfg) {
   if (!CLOCK) {
-    CLOCK = new VirtualClock(cfg.epochNs, cfg.tickNs, cfg.tickAdapt);
+    CLOCK = new VirtualClock(cfg.epochNs, cfg.tickNs, cfg.tickAdapt, cfg.wallReset !== false);
     if (cfg.tickAdapt) STATE.onOtherEvent = () => CLOCK.otherEvent();
     DRIVER.budget = cfg.timerBudget;
     DRIVER.mode = cfg.timers;
