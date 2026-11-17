@@ -23,7 +23,7 @@
  },
  "structlog": {
   "dep": {
-   "what": "lockfile change of a test dependency: rich (latest) -> rich 13.0.0",
+   "what": "a dependency resolution change adds rich 13.0.0 to the test environment (it was absent; e.g. another dev tool pulls it in with an upper bound); structlog's dev console renderer uses rich when it can import it, and rich 13.0 lacks newer keywords (rich 15.0 passes)",
    "pins0": [],
    "pins1": [
     "rich==13.0.0"

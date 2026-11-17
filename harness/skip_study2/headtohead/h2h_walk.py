@@ -50,7 +50,8 @@ Installs and builds always run in profile 0's environment.
 
 ``--arm ci-dep`` / ``ci-data`` / ``ci-env`` (realistic CI changes, ``changes.json``): the first ``--max-commits`` commits
 of the window, profile 0 until commit ``--land`` and profile 1 from there on (the change lands and stays, as a merged
-change does). Profile 1 is the project's scenario of that kind:
+change does). The change lands as a commit of its own: the landing transition repeats commit ``--land - 1``'s code with
+only the change applied (a lockfile bump or a fixture edit merged alone), then the window continues with the change. Profile 1 is the project's scenario of that kind:
 
 * ``ci-dep``: the resolved version of a dependency changes (a lockfile bump; for these libraries, which install
   unpinned, also what a new release does to the next CI run). Each profile has its own virtualenv at the same path:
@@ -459,7 +460,13 @@ class H2H(Walker):
     # -- main loop ---------------------------------------------------------------------------------------------------
     def walk(self):
         commits = self.commits()
-        if self.max_commits:
+        if self.arm.startswith("ci-"):
+            # the change lands as a commit of its own (as a lockfile bump or a fixture edit does): the landing
+            # transition repeats the previous commit's code with only the change applied
+            n = self.max_commits or len(commits) + 1
+            commits = commits[:self.land] + [commits[self.land - 1]] + commits[self.land:n - 1]
+            self.result["change"]["land"] = self.land   # index of the landing commit (profile 1 from here on)
+        elif self.max_commits:
             commits = commits[:self.max_commits]
         log(f"{self.spec['name']} shard {self.shard}/{self.nshards} arm '{self.arm}': {len(commits)} commits")
         verify = 1.0 if self.arm.startswith("ci-") else self.spec.get("verify", 0.1)

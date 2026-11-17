@@ -9,7 +9,7 @@ name: skip-study2
 
 on:
   push:
-    branches: [claude/loving-maxwell-58mv2w]
+    branches: [claude/loving-maxwell-58mv2w, claude/sweet-mendel-rtdg7f]
     paths: [harness/skip_study2/run.json, harness/skip_study2/headtohead/run.json]
 
 permissions:
@@ -18,7 +18,7 @@ permissions:
 env:
   PYTHONUNBUFFERED: "1"
   S2_COMMIT: "1"
-  S2_BRANCH: claude/loving-maxwell-58mv2w
+  S2_BRANCH: ${{ github.ref_name }}
   GOTOOLCHAIN: auto
   UV_PYTHON_PREFERENCE: managed
 
