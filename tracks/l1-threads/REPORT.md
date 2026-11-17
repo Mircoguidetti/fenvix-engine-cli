@@ -1,38 +1,51 @@
-PARTIAL (all exit numbers measured; still running on Actions: requests, werkzeug and anyio full suites at the final code, and round r5 re-running the anyio corpus on Actions; the anyio class-a rows below are local at the final code)
+PARTIAL (all exit numbers measured; 3 server-in-thread suites and the anyio Actions rerun are still running)
 
 # Report · track l1-threads (P-012) · Level 1 for threads (`--det-threads`)
 
 Engine branch: local `track-l1-threads` (base `1573079` = origin/claude/gracious-rubin-eyswxd),
-delivered as `tracks/l1-threads/patches/` (`git am` on the base). Final code `d447170`.
+delivered as `tracks/l1-threads/patches/` (`git am` on the base). Final code `c25485d`.
 Measured on GitHub Actions, workflow `track-l1-threads` (one runner per project):
 * round r4, code `e29b9fd`, run 44074323368;
-* round r1, code `4d88a2f`, run 44042691111, for the 9 suites r4 has not reached yet.
+* round r5, code `d447170`, anyio only;
+* round r1, code `4d88a2f`, run 44042691111, where noted.
 
 `d447170` differs from `e29b9fd` only when a tool patches `lock.acquire` on the C type (blockbuster, used by
-anyio's conftest). Raw results are in `results/r4/` and `results/r1/`. The r2 and r3 runs were cancelled
-because their code was stale.
+anyio's conftest). Raw results are in `results/r4/`, `results/r5/` and `results/r1/`. The r2 and r3 runs were
+cancelled because their code was stale.
+
+Still running on Actions when this was written:
+* round r5 (anyio corpus and suite at `d447170`);
+* r4's requests, werkzeug and remaining suites.
+
+The anyio class-a rows are local at the final code. The rows marked r1 are at `4d88a2f`, which
+predates the I/O change in c2596b0.
 
 ## Headline (exit numbers)
 
 | exit number | result | label |
 |---|---|---|
-| easypy, 10 Block 2 thread tests: one fingerprint in 10/10 runs | **10/10** with `--det --det-threads --det-urandom`, quiet runs and under CPU load. Level 0 alone 0/10; Level 0 + `--det-urandom` 8/10; `--det-threads` without `--det-urandom` 0/10 | MEASURED (Actions r4) |
+| easypy, 10 Block 2 thread tests: one fingerprint over the runs | **10/10** with `--det --det-threads --det-urandom`, over 10 quiet runs and 5 under CPU load. Level 0 alone 0/10; Level 0 + `--det-urandom` 8/10; `--det-threads` without `--det-urandom` 0/10 | MEASURED (Actions r4) |
 | easypy: replays 10/10 with one fingerprint and passes somewhere | **9/10** ("passes" = the test run alone, i.e. without its polluter: a different order, not a thread seed). The 10th, `test_multiobject_logging`, fails in every detpy mode: a Level 0 false failure | MEASURED |
-| 31 class-a tests: flake reproduced (replay 10/10, one fingerprint, passes with another seed, same exception as the baseline flake) | **0/31**. 18/31 have no stable id (one marshmallow test with the wall-clock time in its id: not a thread problem). Of the 13 measurable: **0/13** | MEASURED |
-| class-a: failing interleavings found by 20 thread seeds | pymq 1 (seed 9, fails 10/10 but 2 fingerprints, different exception than the baseline). The anyio failures seen in r1 and locally were all scheduler artefacts and disappear at the final code (0/20 seeds fail) | MEASURED |
-| plain reruns, same tests (comparison) | 0 failures in 10 quiet runs for all 13; under CPU load pymq failed 1/5 | MEASURED (Actions r4) |
-| tests broken by `--det-threads` (calm), Block 1 popular pool | **0 caused by threads** in 22/25 suites. r1 showed 3: boltons 2, fixed (I/O in flight, event-loop clock), now 0 in r4. jinja 1, a Level 0 cross-run effect (also fails `--det` after `--det`) | MEASURED (r4: 13 suites, r1: 9) |
-| tests broken by an exploration seed (seed 1, line preemption on) | 2: structlog `test_recursive` (preemption plus a recursion test), jinja (same as above) | MEASURED |
-| slowdown vs `--det`, 5 most thread-heavy suites (by managed threads, chosen after the run) | more-itertools **+27.8%** (167 threads), networkx −2.4% (65), structlog +1.3% (41), flask −1.0% (27), click +0.5% (26); **median +0.5%**. vs plain pytest: median +44.7% (`--det` alone: +43.1%) | MEASURED, NOISY (one runner per project) |
+| 31 class-a tests: flake reproduced (replay 10/10, one fingerprint, passes with another seed, the baseline's exception) | **0/31**. 18/31 have no stable id (one marshmallow test with the wall-clock time in its id: not a thread problem). Of the 13 measurable: **0/13**. The condition differs from the mixed round, where these flakes were seen 1–2 times in 10 (full suite, xdist, random order). Here only the targets ran, serially, in a fixed order, and plain reruns did not show them either | MEASURED |
+| class-a: failing interleavings found by 20 thread seeds | pymq 1 (seed 9, fails 10/10 but 2 fingerprints, `NoSuchRemoteError` instead of the baseline AssertionError). The anyio failures of r1 and of a local run were all scheduler artefacts; at `d447170` 0/20 seeds fail | MEASURED |
+| plain reruns, same targets and condition (comparison) | 0 failures in 10 quiet runs for all 13; under CPU load pymq failed 1/5 | MEASURED (Actions r4) |
+| tests broken by `--det-threads` (calm), Block 1 popular pool | **0 caused by threads**: 13 suites at the final behaviour (r4) and 9 at `4d88a2f` (r1, before the I/O change). **3 not measured yet: anyio, requests, werkzeug**, which run servers in threads and are the ones that change touches most. r1 showed 3 broken tests: boltons 2, fixed (I/O in flight, event-loop clock; 0 in r4), and jinja 1, a Level 0 cross-run effect (it also fails `--det` after `--det`) | MEASURED |
+| tests broken by an exploration seed (seed 1, line preemption on) | 2: structlog `test_recursive` (cause ESTIMATED: the trace function adds stack depth in a recursion test), and jinja (same as above) | MEASURED |
+| slowdown vs `--det`, 5 most thread-heavy popular suites (by managed threads, chosen after the run; easypy left out) | more-itertools **+27.8%** (167 threads), networkx −2.4% (65), structlog +1.3% (41), flask −1.0% (27), click +0.5% (26); **median +0.5%**. vs plain pytest: median +44.7% (`--det` alone +43.1%). With easypy (131 threads, −57.6%) in place of click the median is +1.3% | MEASURED, NOISY (one runner per project) |
 | slowdown of exploration (seed ≥ 1, line preemption via `sys.settrace`) | median +71.5% on the same 5; more-itertools +1188% | MEASURED |
 
-Plainly: Level 1 for threads makes the easypy thread tests replay with one fingerprint, every run
-and under load. It breaks no popular-pool test. It costs almost nothing over `--det` in calm mode,
-and suites that sleep in threads get faster (easypy −57.6%, rich −45.8%, because sleeps are virtual).
-It did **not** reproduce any of the 13 measurable class-a flakes in 20 seeds. Neither did plain reruns, in
-quiet runs. They are TLS/socket/asyncio tests (anyio), an external Redis (pymq), a ticking clock
-(freezegun), and a stream test (panamah). Their flakiness lives in real I/O timing and asyncio, which
-`--det-threads` does not control (asyncio needs `--det-async` with it; external processes are Level 2).
+Plainly:
+* Level 1 for threads makes the easypy thread tests replay with one fingerprint, in every run and
+  under load.
+* It breaks no measured popular-pool test.
+* In calm mode it costs almost nothing over `--det`. Suites that sleep in threads get faster because
+  sleeps are virtual (easypy −57.6%, rich −45.8%).
+* It did **not** reproduce any of the 13 measurable class-a flakes in 20 seeds. Neither did plain
+  reruns under the same condition.
+* Those 13 are TLS/socket/asyncio tests (anyio), an external Redis (pymq), a ticking clock
+  (freezegun) and a stream test (panamah). Their flakiness lives in real I/O timing and asyncio,
+  which `--det-threads` does not control: asyncio needs `--det-async` with it, and external
+  processes are Level 2.
 
 ## easypy: the 10 Block 2 thread tests (each with its minimised order)
 
@@ -51,59 +64,70 @@ quiet runs. They are TLS/socket/asyncio tests (anyio), an external Redis (pymq),
 
 One fingerprint over the runs: `--det` 0/10, `--det --det-urandom` 8/10, `--det-threads` 0/10, `--det-threads --det-urandom` 10/10 (quiet) and 10/10 (under CPU load).
 
-* Failure messages of the replays: RecursionError (7: logging polluted by an earlier test),
-  `assert False`, `assert 0 > 3`, and the Level 0 false failure.
-* The failure itself comes from the order: plain pytest with the same order fails 10/10 too, but
-  gives no fingerprint. Without `--det-urandom` every run differs because easypy draws `uuid4()` per
-  thread. The verifier now names that `entropy`, not `thread`.
+* Failure messages of the replays:
+  * RecursionError, 7 tests: logging polluted by an earlier test;
+  * `assert False` and `assert 0 > 3`, one test each;
+  * the Level 0 false failure.
+* The failure itself comes from the order. Plain pytest with the same order fails 10/10 too, but
+  gives no fingerprint.
+* Without `--det-urandom` every run differs, because easypy draws `uuid4()` per thread. The verifier
+  now names this `entropy`, not `thread`.
 * What Level 1 adds over Level 0 + `--det-urandom`: `test_multiobject_1` (5 fingerprints → 1) and
-  `test_logged_condition` (2 → 1). The interleaving changed the execution there; on the other 8 it
-  did not.
+  `test_logged_condition` (2 → 1). On these two the interleaving changed the execution; on the
+  other 8 it did not.
 
 ## class a (31 tests of the mixed round)
 
-* **18/31 excluded**: one marshmallow test parametrised with the wall-clock time at collection. Its
-  id changes every run ("missing" in the baseline); under `--det` the clock is frozen and the id is
-  stable. This is not a thread problem and is listed in `harness/l1/threads-corpus.json`.
-* **13 measured.** Rows: Actions r4 for freezegun, panamah and pymq. anyio is local at the final code
-  (MEASURED locally, without loaded runs); r5 repeats it on Actions.
-* "Flake reproduced" requires all of these: replay 10/10 failing, one fingerprint, a passing seed,
-  no scheduler artefact (DeadlockError, pytest-timeout, BlockingError, a `threads.uncontrolled`
-  deadlock), and the exception of the baseline flake.
+* **18/31 excluded.** They are one marshmallow test parametrised with the wall-clock time at
+  collection. Its id changes every run ("missing" in the baseline). Under `--det` the clock is frozen
+  and the id is stable. This is not a thread problem. The list is in
+  `harness/l1/threads-corpus.json`.
+* **13 measured.** Rows for freezegun, panamah and pymq come from Actions r4. Rows are local at `d447170` (MEASURED locally, without the CPU-loaded runs); r5 repeats them on Actions.
+* "Flake reproduced" requires all of the following:
+  * the replay fails 10/10 with one fingerprint;
+  * the test passes with some seed;
+  * the failure is not a scheduler artefact (DeadlockError, pytest-timeout, BlockingError, a
+    `threads.uncontrolled` deadlock);
+  * the exception is the one the baseline flake raised.
 
-| project | test | baseline exception (mixed round) | plain (10 + 5 loaded) | `--det` fp | `--det-threads --det-urandom` outcome, fp | 20 thread seeds | replay (fails, fp) | failure message of the replay | flake reproduced |
+| project | test | mixed round: baseline (full suite, xdist, random order) and exception | this harness: plain (10 + 5 loaded; targets only, serial, fixed order) | `--det` fp | `--det-threads --det-urandom` outcome, fp | 20 thread seeds | replay (fails, fp) | failure message of the replay | flake reproduced |
 |---|---|---|---|---|---|---|---|---|---|
-| idoft-freezegun | `test_ticking_time` |  | passed=10; passed=5 | 1 | passed=10, 1 | passed=20 |   |  | no |
-| idoft-panamah-sdk-python | `TestStream::test_events` | JSONDecodeError | passed=10; passed=5 | 4 | passed=10, 1 | passed=20 |   |  | no |
-| idoft-pymq | `RedisRpcTest::test_channel_expire` | AssertionError | passed=10; failed=1;passed=4 | 10 | passed=10, 7 | failed=4;passed=16 | 10/10 / 2 fp | FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_chan | no |
-| anyio | `TestTLSStream::test_alpn_negotiation[asyncio+uvloop]` | PytestUnraisableExceptionWarning | passed=10; not run | 10 | passed=10, 2 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_alpn_negotiation[asyncio]` | RuntimeError | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]` | RuntimeError | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]` | PytestUnhandledThreadExceptionWarning | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_ragged_eofs[asyncio-neither_standard]` | PytestUnhandledThreadExceptionWarning | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]` | RuntimeError | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_send_receive[asyncio+eager]` | ExceptionGroup | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]` | PytestUnhandledThreadExceptionWarning | passed=10; not run | 10 | passed=10, 1 | passed=20 |   |  | no |
-| anyio | `:test_unretrieved_future_exception_server_crash[ipv6-asyncio+uvloop]` | ExceptionGroup | skipped=10; not run | 1 | skipped=10, 1 | skipped=20 |   |  | no |
-| anyio | `Stream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]` | ExceptionGroup | skipped=10; not run | 1 | skipped=10, 1 | skipped=20 |   |  | no |
+| idoft-freezegun | `test_ticking_time` | passed=8;skipped=2,  | passed=10; passed=5 | 1 | passed=10, 1 | passed=20 |   |  | no |
+| idoft-panamah-sdk-python | `TestStream::test_events` | failed=1;passed=9, JSONDecodeError | passed=10; passed=5 | 4 | passed=10, 1 | passed=20 |   |  | no |
+| idoft-pymq | `RedisRpcTest::test_channel_expire` | failed=2;passed=8, AssertionError | passed=10; failed=1;passed=4 | 10 | passed=10, 7 | failed=4;passed=16 | 10/10 / 2 fp | FAILED pymq.exceptions.NoSuchRemoteError: tests.test_provider_redis.RedisRpcTest.test_chan | no |
+| anyio | `TestTLSStream::test_alpn_negotiation[asyncio+uvloop]` | failed=1;passed=9, PytestUnraisableExceptionWarning | passed=10; not run | 10 | passed=10, 2 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_alpn_negotiation[asyncio]` | failed+teardown-error=1;passed=9, RuntimeError | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]` | failed+teardown-error=1;passed=9, RuntimeError | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]` | error=1;passed=9, PytestUnhandledThreadExceptionWarning | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_ragged_eofs[asyncio-neither_standard]` | error=1;passed=9, PytestUnhandledThreadExceptionWarning | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]` | failed+teardown-error=1;passed=9, RuntimeError | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_send_receive[asyncio+eager]` | failed=1;passed=9, ExceptionGroup | passed=10; not run | 1 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]` | error=1;passed=9, PytestUnhandledThreadExceptionWarning | passed=10; not run | 10 | passed=10, 1 | passed=20 |   |  | no |
+| anyio | `:test_unretrieved_future_exception_server_crash[ipv6-asyncio+uvloop]` | failed=1;passed=9, ExceptionGroup | skipped=10; not run | 1 | skipped=10, 1 | skipped=20 |   |  | no |
+| anyio | `Stream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]` | failed=1;passed=9, ExceptionGroup | skipped=10; not run | 1 | skipped=10, 1 | skipped=20 |   |  | no |
 
-* Fingerprints: Level 1 makes them identical where Level 0 did not: panamah (4 → 1), anyio
-  `test_unicode_hostname_idna2008` (10 → 1). anyio uvloop rows stay variable: uvloop is not
-  controlled.
-* pymq: seed 9 makes `test_channel_expire` fail 10/10 with `NoSuchRemoteError` (the baseline flake
-  is an AssertionError). The fingerprint has 2 variants because the Redis server is a real external
-  process. This is a failing interleaving, not the flake.
+* Where Level 1 makes the fingerprint identical and Level 0 did not:
+  * panamah: 4 → 1;
+  * anyio `test_unicode_hostname_idna2008`: 10 → 1.
+* The anyio fingerprints are "identical, with uncontrolled events": each calm run records 2
+  escapes (`threads.uncontrolled`: a holder sleeping in C). The uvloop rows stay variable, because
+  uvloop is not controlled.
+* pymq: seed 9 fails 10/10 with `NoSuchRemoteError`, while the baseline flake is an AssertionError.
+  The fingerprint has 2 variants because the Redis server is a real external process. This is a
+  failing interleaving, not the flake.
 * The 2 anyio IPv6 tests are skipped where IPv6 is unavailable.
 * Before the final fixes, r1 and a local run had anyio "failures" in up to 8/10 tests. All were
-  artefacts: an instant deadlock with only I/O waiters (fixed in c2596b0), and blockbuster flagging
-  the baton hand-over as a blocking call (fixed in d447170). The exception check in the harness was
-  added for that reason.
+  artefacts:
+  * an instant deadlock when only I/O waiters were left (fixed in c2596b0);
+  * blockbuster flagging the baton hand-over as a blocking call (fixed in d447170).
+
+  This is why the harness now checks the exception.
 
 ## Popular pool (Block 1, 25) and easypy: broken tests and slowdown
 
-Medians of 3 runs per mode, interleaved plain → `--det` → `--det-threads` (calm) → seed 1. "Broken"
-means passing in every run of the reference mode and failing in every run of the mode. Missing:
-anyio, requests and werkzeug (still queued on Actions).
+Each value is the median of 3 runs per mode. The modes are interleaved: plain → `--det` →
+`--det-threads` (calm) → seed 1. "Broken" means the test passes in every run of the reference mode
+and fails in every run of the mode. The `code` column gives the round.
 
 | project | tests | code | plain s | `--det` s | `--det-threads` s | vs `--det` | seed 1 vs `--det` | managed threads | escapes | broken by `--det` | broken by `--det-threads` | broken by seed 1 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -135,7 +159,7 @@ jinja: broken by `--det-threads`: tests/test_loader.py::TestFileSystemLoader::te
 
 * jinja `test_caches_template_based_on_mtime` is not caused by threads (Level 0 finding 2 below).
 * The 20 jinja `[trio]` tests are broken by `--det` itself, not by threads.
-* escapes (click 1, isort 4, toolz 4) are holders that slept in C code; each is recorded as
+* The escapes (click 1, isort 4, toolz 4) are holders that slept in C code. Each one is recorded as
   `threads.uncontrolled` in the fingerprint.
 
 ## What was built
@@ -153,24 +177,27 @@ jinja: broken by `--det-threads`: tests/test_loader.py::TestFileSystemLoader::te
   explicitly.
 * Options: `--det-threads`, `--det-threads-seed` (0 = calm; default = `--det-seed`),
   `--det-threads-grace`, `--det-threads-deadlock`, `--det-threads-preempt`.
-* Tests: `tests/test_threads.py`, 13 tests. Each control fails without it (or with Level 0
-  alone) and passes with it. The full engine suite on Actions passes.
+* Tests: `tests/test_threads.py`, 15 test functions (18 cases). Each control test fails without its
+  control or fix (or with Level 0 alone) and passes with it. Two exceptions are marked in the table
+  below: they are guard tests that did not fail before. The full engine suite on Actions at
+  `e29b9fd` gives 115 passed, 5 skipped (MEASURED, `results/r4/engine-tests.txt`).
 * Harness: `harness/l1_threads.py`, `harness/l1/threads-corpus.json`, workflow
   `.github/workflows/track-l1-threads.yml`. The workflow is triggered by
   `tracks/l1-threads/run.json` and builds the engine from the base plus `patches/`.
 
-## What real code needed beyond the design (each found on a measured project, each with a test)
+## What real code needed beyond the design (each found on a measured project)
 
-| found on | problem | fix |
-|---|---|---|
-| easypy | `threadtree` captures `_thread.start_new_thread` | patch the low-level entry points too |
-| easypy multiobject_1 (3 fingerprints in 25 runs) | an exiting thread's teardown consumed seeded choices and ran beside the next holder | an exiting thread leaves the scheduler; the next holder waits until it has really ended |
-| easypy multiobject_1 | `concurrent.futures` iterates futures in `id()` order (`_AcquireFutures` sorts by id; `wait`/`as_completed` use sets) | futures hash and sort by creation number; pool threads pop in insertion order |
-| easypy coordinator_timeout, logged_condition | `threading._time` / `queue.time` were real while waits were virtual, so a Barrier timeout never fired; a 1e-17 s wait spun | stdlib time-left clock is virtual; positive timeouts round up to 1 ns |
-| boltons netstring (r1) | only socket waiters left, so the clock jumped to their 10 s timeout while data was still in the kernel (Nagle / delayed ACK) | I/O waiters get up to min(grace, time to next timer) of real time; deadlock with only I/O waiters after `--det-threads-deadlock` |
-| boltons wraps_async (r1) | event-loop selector timeout did not advance the virtual clock under the scheduler | same rule as Level 0 |
-| anyio + blockbuster (local, exploration) | a Python wrapper around `lock.acquire`, traced as project code, was preempted while holding the scheduler lock | no line preemption while the thread holds the scheduler mutex |
-| easypy suite, exploration seeds (r3, local) | a RecursionError raised inside the scheduler (lock held, state half changed) wedged every thread | near the recursion limit, raise RecursionError before entering the scheduler (slow paths only; an uncontended lock costs the same, MEASURED locally) |
+| found on | problem | fix | test (before → after) |
+|---|---|---|---|
+| easypy | `threadtree` captures `_thread.start_new_thread` | patch the low-level entry points too | covered by the easypy runs (no unit test) |
+| easypy multiobject_1 (3 fingerprints in 25 runs) | an exiting thread's teardown consumed seeded choices and ran beside the next holder | an exiting thread leaves the scheduler; the next holder waits until it has really ended | `test_thread_exit_is_serialised`: guard, did not fail before |
+| easypy multiobject_1 | `concurrent.futures` iterates futures in `id()` order (`_AcquireFutures` sorts by id; `wait`/`as_completed` use sets) | futures hash and sort by creation number; pool threads pop in insertion order | `test_futures_follow_creation_order_not_addresses`: fail → pass |
+| easypy coordinator_timeout, logged_condition | `threading._time` / `queue.time` were real while waits were virtual, so a Barrier timeout never fired; a 1e-17 s wait spun | stdlib time-left clock is virtual; positive timeouts round up to 1 ns | `test_stdlib_time_left_is_virtual`: fail → pass |
+| boltons netstring (r1) | only socket waiters left, so the clock jumped to their 10 s timeout while data was still in the kernel (Nagle / delayed ACK) | I/O waiters get up to min(grace, time to next timer) of real time; deadlock with only I/O waiters after `--det-threads-deadlock` | `test_io_in_flight_and_event_loop_waits`, ping-pong part: guard, did not fail before |
+| boltons wraps_async (r1) | event-loop selector timeout did not advance the virtual clock under the scheduler | same rule as Level 0 | same test, event-loop part: fail → pass |
+| anyio + blockbuster (local, exploration) | a Python wrapper around `lock.acquire`, traced as project code, was preempted while holding the scheduler lock | no line preemption while the thread holds the scheduler mutex | no unit test (found locally; `test_preemption_finds_a_lost_update_and_replays_it` checks preemption still works) |
+| anyio exploration (r1, local) | blockbuster flagged the baton hand-over inside an event loop as a blocking call: false failures in up to 8/10 anyio tests | the scheduler's own waits call the C `lock.acquire` captured at import | `test_scheduler_waits_bypass_a_patched_lock_acquire`: fail → pass |
+| easypy suite, exploration seeds (r3, local) | a RecursionError raised inside the scheduler (lock held, state half changed) wedged every thread | near the recursion limit, raise RecursionError before entering the scheduler (slow paths only; an uncontended lock costs the same, MEASURED locally) | `test_recursion_limit_does_not_wedge_the_scheduler`: hang → pass |
 
 ## Level 0 findings for the coordinator (not caused by `--det-threads`, not fixed here)
 
@@ -194,16 +221,19 @@ jinja: broken by `--det-threads`: tests/test_loader.py::TestFileSystemLoader::te
 
 ## Limits (what `--det-threads` does not control)
 
-* asyncio stays on real time unless `--det-async` is also given. External processes and real network
-  (pymq's Redis) are outside, which is Level 2.
-* Sets keyed by objects with the default (address) hash still iterate in address order. Futures and
-  pool threads are the exceptions.
-* Exploration with line preemption costs `sys.settrace`: median +71.5% on the 5 thread-heavy suites,
-  more-itertools ×12. It can also change recursion-depth tests (structlog `test_recursive`).
+* asyncio keeps real time unless `--det-async` is also given.
+* External processes and real network (pymq's Redis) are outside the scheduler: Level 2.
+* Sets keyed by objects with the default (address) hash iterate in address order, except futures
+  and pool threads.
+* Exploration with line preemption runs under `sys.settrace`:
+  * cost: median +71.5% on the 5 thread-heavy suites, more-itertools ×12;
+  * it can change recursion-depth tests.
 * uvloop and free-threaded CPython are not modelled.
 
 ## Reproduce
 
-* `pytest --det --det-threads [--det-urandom] [--det-threads-seed=N]`; replay = the same command.
+* Run: `pytest --det --det-threads [--det-urandom] [--det-threads-seed=N]`. A replay is the same
+  command.
 * Harness: `python harness/l1_threads.py --kind corpus|suite --project NAME --wheel W` (the
-  workflow runs it). Aggregate: `--aggregate results/r4 --out DIR`.
+  workflow runs this).
+* Aggregate: `--aggregate results/r4 --out DIR`.

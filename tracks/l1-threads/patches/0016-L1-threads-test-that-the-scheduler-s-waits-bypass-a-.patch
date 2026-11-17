@@ -1,0 +1,76 @@
+From c25485d97acdac398e10d61415f545032859f6cc Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Nov 2026 13:44:11 +0000
+Subject: [PATCH 16/16] L1 threads: test that the scheduler's waits bypass a
+ patched lock.acquire (fails on e29b9fd, passes on d447170)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dgp7MTxUYBRZseFL3V
+---
+ tests/test_threads.py | 53 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
+
+diff --git a/tests/test_threads.py b/tests/test_threads.py
+index 7e88cfd..735dd81 100644
+--- a/tests/test_threads.py
++++ b/tests/test_threads.py
+@@ -566,3 +566,56 @@ def test_recursion_limit_does_not_wedge_the_scheduler(pytester, seed):
+     pytester.makepyfile(test_deep=DEEP_RECURSION)
+     result = pytester.runpytest_subprocess(*FLAGS, f"--det-threads-seed={seed}", "-p", "no:cacheprovider", timeout=90)
+     result.assert_outcomes(passed=1)
++
++
++PATCHED_LOCK_CONFTEST = r'''
++import _thread, threading
++from detpy._patch import Patcher
++
++FLAG = threading.local()
++_orig = _thread.LockType.acquire
++
++
++def acquire(self, blocking=True, timeout=-1):
++    # Like blockbuster inside an event loop: a blocking acquire is an error.
++    if getattr(FLAG, "on", False) and blocking:
++        raise RuntimeError("blocking lock.acquire seen by a lock.acquire patch")
++    return _orig(self, blocking, timeout)
++
++
++P = Patcher()
++P.set_type_attr(_thread.LockType, "acquire", acquire)
++'''
++
++PATCHED_LOCK_TEST = r'''
++import threading, time
++from conftest import FLAG
++
++def test_handover_is_not_a_blocking_call_of_the_test():
++    l = threading.Lock()
++    l.acquire()
++    done = []
++    def w():
++        with l:
++            done.append(1)
++    t = threading.Thread(target=w)
++    t.start()
++    FLAG.on = True
++    try:
++        time.sleep(0.01)  # the baton goes to the worker and comes back
++    finally:
++        FLAG.on = False
++    l.release()
++    t.join()
++    assert done == [1]
++'''
++
++
++@pytest.mark.skipif(WITHOUT_PROTOTYPE, reason="needs --det-threads")
++def test_scheduler_waits_bypass_a_patched_lock_acquire(pytester):
++    """Tools that patch lock.acquire on the C type (blockbuster) must not see the
++    scheduler's own baton hand-over as a blocking call of the test."""
++    pytester.makeconftest(PATCHED_LOCK_CONFTEST)
++    pytester.makepyfile(test_patched=PATCHED_LOCK_TEST)
++    result = pytester.runpytest_subprocess(*FLAGS, "-p", "no:cacheprovider", timeout=60)
++    result.assert_outcomes(passed=1)
+-- 
+2.43.0
+

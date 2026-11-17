@@ -1,7 +1,7 @@
 From eb7455ca85ea95326ad42afb406839793103f954 Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 17 Nov 2026 09:38:11 +0000
-Subject: [PATCH 11/15] L1 threads: no line preemption while detpy code is on
+Subject: [PATCH 11/16] L1 threads: no line preemption while detpy code is on
  the stack (a user wrapper around lock.acquire, e.g. blockbuster, deadlocked
  on the scheduler lock)
 
