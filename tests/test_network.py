@@ -198,3 +198,31 @@ def test_local_name_detection():
     assert network._is_local_name("api.localhost")
     assert not network._is_local_name("example.com")
     assert not network._is_local_name("10.0.0.1")
+
+
+def test_proxy_named_other_than_localhost_that_maps_to_loopback(monkeypatch):
+    # review R-002c: HTTPS_PROXY=http://runsc:41047 with /etc/hosts mapping runsc to 127.0.0.1 (or the machine name
+    # to 127.0.1.1): any loopback connect to that port is the proxy, so it is external
+    real = network._real_getaddrinfo
+
+    def fake(host, port, *a, **k):
+        if host == "runsc":
+            return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("127.0.1.1", port))]
+        if host == "proxy.unresolvable.invalid":
+            raise socket.gaierror("no such name")
+        if host == "corp-proxy.example":
+            return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("203.0.113.7", port))]
+        return real(host, port, *a, **k)
+
+    monkeypatch.setattr(network, "_real_getaddrinfo", fake)
+    for var in ("http_proxy", "https_proxy", "all_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY"):
+        monkeypatch.delenv(var, raising=False)
+    monkeypatch.setenv("HTTPS_PROXY", "http://runsc:41047")
+    monkeypatch.setenv("HTTP_PROXY", "http://proxy.unresolvable.invalid:3128")
+    monkeypatch.setenv("ALL_PROXY", "http://corp-proxy.example:8080")
+    policy = network._Policy("block", None, [])
+    for host in ("127.0.0.1", "127.0.1.1", "::1", "localhost"):
+        assert policy.external(host, 41047)
+        assert policy.external(host, 3128)  # not resolvable here: conservatively loopback
+    assert not policy.external("127.0.0.1", 8080)  # the proxy is not on loopback: its address is external anyway
+    assert not policy.external("127.0.0.1", 5432)  # other loopback ports stay local

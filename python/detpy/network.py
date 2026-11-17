@@ -84,10 +84,31 @@ def _proxy_endpoints() -> set:
         except ValueError:
             continue
         host = (parts.hostname or "").lower()
-        if host and _is_local_name(host):
-            for h in (host, "127.0.0.1", "::1", "localhost"):
-                out.add((h, port))
+        if host and (_is_local_name(host) or _resolves_local(host, port)):
+            # any loopback address on that port is the proxy (127.0.1.1, ::1, a name mapped in /etc/hosts)
+            out.add(("*", port))
+            out.add((host, port))
     return out
+
+
+def _resolves_local(host: str, port: int) -> bool:
+    """A proxy name other than localhost that maps to loopback (/etc/hosts: "runsc", the machine name ->
+    127.0.1.1), or that cannot be resolved here: conservatively local (review R-002c)."""
+    if _is_ip(host):
+        return False
+    try:
+        infos = _real_getaddrinfo(host, port, proto=socket.IPPROTO_TCP)
+    except (OSError, UnicodeError):
+        return True
+    for info in infos:
+        try:
+            ip = ipaddress.ip_address(str(info[4][0]).split("%", 1)[0])
+        except ValueError:
+            continue
+        mapped = getattr(ip, "ipv4_mapped", None)
+        if ip.is_loopback or ip.is_unspecified or (mapped is not None and mapped.is_loopback):
+            return True
+    return not infos
 
 
 class _Policy:
@@ -111,7 +132,7 @@ class _Policy:
         return self.host_of_fake.get(host) or self.host_of_ip.get(host) or host
 
     def external(self, host: str, port) -> bool:
-        if (host.lower(), port) in self.proxies:
+        if (host.lower(), port) in self.proxies or (("*", port) in self.proxies and _is_local_name(host)):
             return True
         if _is_local_name(host):
             return False
