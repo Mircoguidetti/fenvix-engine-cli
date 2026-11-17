@@ -17,4 +17,4 @@ Updated 2026-11-17 08:20 UTC. Local branch `track-l2-browser` in a scratch workt
   documenso, actual, rallly, solid-start. Dry run on a local toy project works.
 
 ## Next
-- Batch 1 cancelled (old patches); batch 2 started 08:30 with 8 patches. Then REPORT.md.
+- Batches 1-2 cancelled (old patches; 300-min budgets too long for the shared queue); batch 3: 8 patches, 110-min budget per repository. Then REPORT.md.
