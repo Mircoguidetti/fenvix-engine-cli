@@ -1,60 +1,60 @@
 {
- "run_id": "smoke2",
+ "run_id": "m1",
  "walk": [
   {
-   "spec": "smoke/airflow",
-   "shards": 1,
-   "budget_min": 60
+   "spec": "airflow",
+   "shards": 2,
+   "budget_min": 330
   },
   {
-   "spec": "smoke/integrations-core",
-   "shards": 1,
-   "budget_min": 60
+   "spec": "integrations-core",
+   "shards": 2,
+   "budget_min": 330
   },
   {
-   "spec": "smoke/moto",
-   "shards": 1,
-   "budget_min": 60
+   "spec": "moto",
+   "shards": 2,
+   "budget_min": 330
   },
   {
-   "spec": "smoke/transformers",
-   "shards": 1,
-   "budget_min": 60
+   "spec": "transformers",
+   "shards": 2,
+   "budget_min": 330
   },
   {
-   "spec": "smoke/mlflow",
-   "shards": 1,
-   "budget_min": 60
+   "spec": "mlflow",
+   "shards": 2,
+   "budget_min": 330
   },
   {
-   "spec": "smoke/pydantic-ai",
-   "shards": 1,
-   "budget_min": 60
+   "spec": "pydantic-ai",
+   "shards": 2,
+   "budget_min": 330
   },
   {
-   "spec": "smoke/prefect",
-   "shards": 1,
-   "budget_min": 60
+   "spec": "prefect",
+   "shards": 2,
+   "budget_min": 330
   },
   {
-   "spec": "smoke/esphome",
+   "spec": "esphome",
    "shards": 1,
-   "budget_min": 60
+   "budget_min": 330
   },
   {
-   "spec": "smoke/litellm",
-   "shards": 1,
-   "budget_min": 60
+   "spec": "litellm",
+   "shards": 2,
+   "budget_min": 330
   },
   {
-   "spec": "smoke/community-general",
+   "spec": "community-general",
    "shards": 1,
-   "budget_min": 60
+   "budget_min": 330
   },
   {
-   "spec": "smoke/haystack",
+   "spec": "haystack",
    "shards": 1,
-   "budget_min": 60
+   "budget_min": 330
   }
  ]
 }

@@ -4,7 +4,7 @@
  "lang": "pytest",
  "install": [
   "test -x {py} || uv venv -q --python 3.11 {venv}",
-  "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.11 --frozen --group test --all-extras || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.11 --group test --all-extras || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.11 --frozen --group test || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.11 --group test",
+  "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.11 --frozen --group test --group build --all-extras || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.11 --group test --group build --all-extras || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.11 --frozen --group test --group build || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.11 --group test --group build",
   "{py} -m compileall -q -j 4 {venv}/lib > /dev/null 2>&1 || true"
  ],
  "install_files": [
@@ -21,7 +21,7 @@
    "tests/examples/*",
    "tests/db/*"
   ],
-  "sample": 0.12,
+  "sample": 0.1,
   "seed": "s2"
  },
  "cmd": [
