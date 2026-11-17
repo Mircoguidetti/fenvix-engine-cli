@@ -1,0 +1,45 @@
+{
+ "name": "haystack",
+ "url": "https://github.com/deepset-ai/haystack",
+ "lang": "pytest",
+ "install": [
+  "test -x {py} || uv venv -q --python 3.12 {venv}",
+  "uv pip install -q --python {py} torch --index-url https://download.pytorch.org/whl/cpu",
+  "python3 {harness}/hatchdeps.py pyproject.toml test > {work}/hs-reqs.txt && python3 {harness}/pyinstall.py --python {py} -r {work}/hs-reqs.txt",
+  "uv pip install -q --python {py} -e ."
+ ],
+ "install_files": [
+  "pyproject.toml"
+ ],
+ "units": {
+  "include": [
+   "test/**/test_*.py"
+  ],
+  "sample": 0.2,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "-m",
+  "pytest",
+  "-q",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "-m",
+  "not integration",
+  "{unit}"
+ ],
+ "unit_timeout": 900,
+ "verify": 0.08,
+ "ci": {
+  "workers": 4,
+  "source": "tests.yml unit job: hatch run test:unit on one runner"
+ },
+ "seq": {
+  "kind": "first-parent",
+  "n": 3,
+  "head": "050a979caca073da3b6d62662b766fb804575ebf"
+ }
+}

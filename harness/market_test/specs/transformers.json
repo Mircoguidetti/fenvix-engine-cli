@@ -1,0 +1,52 @@
+{
+ "name": "transformers",
+ "url": "https://github.com/huggingface/transformers",
+ "lang": "pytest",
+ "apt": [
+  "ffmpeg"
+ ],
+ "install": [
+  "test -x {py} || uv venv -q --python 3.12 {venv}",
+  "uv pip install -q --python {py} torch torchvision --index-url https://download.pytorch.org/whl/cpu",
+  "uv pip install -q --python {py} -e '.[testing,sentencepiece,tokenizers,vision,tiktoken]' || uv pip install -q --python {py} -e '.[testing,sentencepiece,vision]'"
+ ],
+ "install_files": [
+  "setup.py",
+  "pyproject.toml"
+ ],
+ "units": {
+  "include": [
+   "tests/**/test_*.py"
+  ],
+  "exclude": [
+   "tests/sagemaker/*",
+   "tests/quantization/*"
+  ],
+  "sample": 0.08,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "-m",
+  "pytest",
+  "-q",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "-o",
+  "addopts=",
+  "{unit}"
+ ],
+ "unit_timeout": 900,
+ "verify": 0.08,
+ "ci": {
+  "workers": 8,
+  "source": "CircleCI tests_torch: parallel containers; 8 workers assumed"
+ },
+ "seq": {
+  "kind": "first-parent",
+  "n": 51,
+  "head": "a2a53c3be2828dfb0c4f89648a406e58d31d1230"
+ }
+}

@@ -1,0 +1,48 @@
+{
+ "name": "esphome",
+ "url": "https://github.com/esphome/esphome",
+ "lang": "pytest",
+ "install": [
+  "test -x {py} || uv venv -q --python 3.12 {venv}",
+  "uv pip install -q --python {py} -r requirements.txt -r requirements_test.txt -e ."
+ ],
+ "install_files": [
+  "requirements*.txt",
+  "pyproject.toml",
+  "setup.py"
+ ],
+ "units": {
+  "include": [
+   "tests/**/test_*.py"
+  ],
+  "exclude": [
+   "tests/integration/*",
+   "tests/benchmarks/*"
+  ],
+  "sample": 0.3,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "-m",
+  "pytest",
+  "-q",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "--no-cov",
+  "{unit}"
+ ],
+ "unit_timeout": 900,
+ "verify": 0.08,
+ "ci": {
+  "workers": 4,
+  "source": "ci.yml pytest job: -n auto on one runner"
+ },
+ "seq": {
+  "kind": "first-parent",
+  "n": 51,
+  "head": "141789d2400fb9f465d95263167c367a79aa8277"
+ }
+}

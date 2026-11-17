@@ -1,0 +1,94 @@
+name: market-test
+
+# Market test (harness/market_test/, a copy of harness/skip_study2 v3.1). Triggered by a push that changes harness/market_test/run.json.
+#   plan   -> job matrices from run.json
+#   walk   -> one job per (repository, shard): commit walk with dependency capture (walk.py)
+#   flaky  -> one job per (repository, CI test group, repetition): the project's own CI test step at a pinned
+#             commit (flaky.py)
+# Every job commits its JSON result to harness/market_test/results/<run_id>/ with rebase-retry.
+
+on:
+  push:
+    branches: [claude/market-test]
+    paths: [harness/market_test/run.json]
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+  S2_COMMIT: "1"
+  S2_BRANCH: claude/market-test
+  GOTOOLCHAIN: auto
+  UV_PYTHON_PREFERENCE: managed
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      run_id: ${{ steps.p.outputs.run_id }}
+      walk: ${{ steps.p.outputs.walk }}
+      flaky: ${{ steps.p.outputs.flaky }}
+      has_walk: ${{ steps.p.outputs.has_walk }}
+      has_flaky: ${{ steps.p.outputs.has_flaky }}
+      finer: ${{ steps.p.outputs.finer }}
+      agent: ${{ steps.p.outputs.agent }}
+      has_agent: ${{ steps.p.outputs.has_agent }}
+      has_finer: ${{ steps.p.outputs.has_finer }}
+      recheck: ${{ steps.p.outputs.recheck }}
+      has_recheck: ${{ steps.p.outputs.has_recheck }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 50}
+      - id: p
+        # plan only when this push changed harness/market_test/run.json
+        run: |
+          if git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" | grep -qx harness/market_test/run.json; then
+            python3 harness/market_test/plan.py
+          else
+            echo "harness/market_test/run.json unchanged: nothing planned"
+          fi
+
+  walk:
+    needs: plan
+    if: ${{ needs.plan.outputs.has_walk == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 18
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.walk) }}
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          df -h / | tail -1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v6
+      - if: ${{ matrix.lang == 'go' }}
+        uses: actions/setup-go@v5
+        with: {go-version: stable, cache: false}
+      - if: ${{ matrix.node != '' }}
+        uses: actions/setup-node@v4
+        with: {node-version: "${{ matrix.node }}"}
+      - name: System packages and services
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq strace ${{ matrix.apt }} > /dev/null
+          for s in ${{ matrix.services }}; do
+            case $s in
+              postgres) docker run -d --name pg -p 5432:5432 -e POSTGRES_USER=saleor -e POSTGRES_PASSWORD=saleor postgres:15-alpine ;;
+              valkey) docker run -d --name vk -p 6379:6379 valkey/valkey:8.1-alpine ;;
+            esac
+          done
+          strace -V | head -1
+      - name: Walk
+        run: |
+          git config user.name "skip-study2-bot"
+          git config user.email "skip-study2-bot@users.noreply.github.com"
+          shard_tag=$(echo "${{ matrix.shard }}" | tr / of)
+          python3 harness/market_test/walk.py --spec "${{ matrix.spec }}" --work "$RUNNER_TEMP/w" \
+            --out "harness/market_test/results/${{ needs.plan.outputs.run_id }}/walk/${{ matrix.name }}-${shard_tag}.json.gz" \
+            --shard "${{ matrix.shard }}" --budget-min "${{ matrix.budget }}" --run-id "${{ needs.plan.outputs.run_id }}"

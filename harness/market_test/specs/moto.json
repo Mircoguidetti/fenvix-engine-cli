@@ -1,0 +1,44 @@
+{
+ "name": "moto",
+ "url": "https://github.com/getmoto/moto",
+ "lang": "pytest",
+ "install": [
+  "test -x {py} || uv venv -q --python 3.12 {venv}",
+  "uv pip install -q --python {py} -e '.[all,server]' -r requirements-tests.txt"
+ ],
+ "install_files": [
+  "setup.cfg",
+  "setup.py",
+  "pyproject.toml",
+  "requirements*.txt"
+ ],
+ "units": {
+  "include": [
+   "tests/**/test_*.py"
+  ],
+  "sample": 0.15,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "-m",
+  "pytest",
+  "-q",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "{unit}"
+ ],
+ "unit_timeout": 900,
+ "verify": 0.08,
+ "ci": {
+  "workers": 4,
+  "source": "Makefile test-only: serial pytest plus one -n 4 group, one runner"
+ },
+ "seq": {
+  "kind": "first-parent",
+  "n": 51,
+  "head": "96f50b1aa902eccb0a3763b80f37d7af265d9130"
+ }
+}

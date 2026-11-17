@@ -1,0 +1,42 @@
+{
+ "name": "prefect",
+ "url": "https://github.com/PrefectHQ/prefect",
+ "lang": "pytest",
+ "install": [
+  "test -x {py} || uv venv -q --python 3.12 {venv}",
+  "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --frozen  || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 "
+ ],
+ "install_files": [
+  "uv.lock",
+  "pyproject.toml"
+ ],
+ "units": {
+  "include": [
+   "tests/**/test_*.py"
+  ],
+  "sample": 0.06,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "-m",
+  "pytest",
+  "-q",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "{unit}"
+ ],
+ "unit_timeout": 900,
+ "verify": 0.08,
+ "ci": {
+  "workers": 4,
+  "source": "python-tests.yaml: -n auto per job, 4 vCPU assumed"
+ },
+ "seq": {
+  "kind": "first-parent",
+  "n": 3,
+  "head": "5e8ca118fc514ffe9ab3355ea5cf1c28c347de11"
+ }
+}

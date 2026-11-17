@@ -1,0 +1,48 @@
+{
+ "name": "mlflow",
+ "url": "https://github.com/mlflow/mlflow",
+ "lang": "pytest",
+ "install": [
+  "test -x {py} || uv venv -q --python 3.11 {venv}",
+  "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.11 --frozen --group test --all-extras || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.11 --group test --all-extras || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.11 --frozen --group test || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.11 --group test"
+ ],
+ "install_files": [
+  "uv.lock",
+  "pyproject.toml",
+  "requirements/*.txt",
+  "requirements/*.yaml"
+ ],
+ "units": {
+  "include": [
+   "tests/**/test_*.py"
+  ],
+  "exclude": [
+   "tests/examples/*",
+   "tests/db/*"
+  ],
+  "sample": 0.04,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "-m",
+  "pytest",
+  "-q",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "{unit}"
+ ],
+ "unit_timeout": 900,
+ "verify": 0.08,
+ "ci": {
+  "workers": 4,
+  "source": "GitHub Actions python job groups, 4 vCPU each assumed"
+ },
+ "seq": {
+  "kind": "first-parent",
+  "n": 3,
+  "head": "c365f861ff68cd85d8be17103748d60c3d14c63e"
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "name": "pydantic-ai",
+ "url": "https://github.com/pydantic/pydantic-ai",
+ "lang": "pytest",
+ "install": [
+  "test -x {py} || uv venv -q --python 3.12 {venv}",
+  "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --frozen --all-extras --no-extra mcp-tasks --all-packages || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --all-extras --no-extra mcp-tasks --all-packages"
+ ],
+ "install_files": [
+  "uv.lock",
+  "pyproject.toml",
+  "*/pyproject.toml"
+ ],
+ "env": {
+  "PYTEST_TEST_BUDGET_SECONDS": "100000"
+ },
+ "units": {
+  "include": [
+   "tests/**/test_*.py"
+  ],
+  "sample": 0.15,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "-m",
+  "pytest",
+  "-q",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "{unit}"
+ ],
+ "unit_timeout": 900,
+ "verify": 0.08,
+ "ci": {
+  "workers": 4,
+  "source": "Makefile test: pytest -n auto --dist=loadgroup on one runner"
+ },
+ "seq": {
+  "kind": "first-parent",
+  "n": 51,
+  "head": "62e7b66c9f4da5c788eb360e49522a98e8fa0c86"
+ }
+}
