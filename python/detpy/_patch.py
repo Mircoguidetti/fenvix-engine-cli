@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import types
 from typing import Any, Callable
 
 _MISSING = object()
@@ -15,8 +16,17 @@ class Patcher:
         self._undo: list[tuple[Any, str, Any]] = []
 
     def set(self, obj: Any, name: str, value: Any) -> Any:
-        """Replace ``obj.name`` with ``value`` and return the original."""
+        """Replace ``obj.name`` with ``value`` and return the original.
+
+        On a module, a replacement keeps the binding behaviour of the original:
+        if the original does not bind as a method when stored as a class
+        attribute (builtins, bound methods), a Python-function replacement is
+        made non-binding too (review E4: os.system, socket.gethostbyname, ...).
+        """
         previous = getattr(obj, name, None)
+        if (isinstance(obj, types.ModuleType) and isinstance(value, types.FunctionType)
+                and previous is not None and callable(previous) and not binds_as_method(previous)):
+            value = nonbinding(value, obj.__name__, name)
         own = obj.__dict__.get(name, _MISSING) if hasattr(obj, "__dict__") else _MISSING
         # Inherited attribute (own is _MISSING): restoring means deleting our override.
         self._undo.append((obj, name, own))
@@ -97,6 +107,28 @@ class _NonBinding:
 
     def __repr__(self):
         return f"<built-in function {self.__name__}>"
+
+
+class _Probe:
+    pass
+
+
+def binds_as_method(obj: Any) -> bool:
+    """True when ``obj`` stored as a class attribute is bound on instance access
+    (it receives ``self``): Python functions, cython binding functions... False
+    for builtins, bound methods, classes and other plain callables."""
+    if isinstance(obj, type):
+        return False
+    try:
+        _Probe.attr = obj
+        return _Probe().attr is not obj
+    except Exception:  # pragma: no cover - exotic descriptors
+        return False
+    finally:
+        try:
+            del _Probe.attr
+        except AttributeError:  # pragma: no cover
+            pass
 
 
 def nonbinding(fn: Any, module: str, name: str) -> Any:

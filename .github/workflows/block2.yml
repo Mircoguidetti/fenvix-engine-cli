@@ -8,6 +8,7 @@ on:
       seeds: {description: "seeds per repository", default: "50"}
       confirm: {description: "replays per reproduced test", default: "10"}
       result_set: {description: "results directory under harness/results", default: "block2"}
+      tools: {description: "JSON list of tools: detpy, randomly, standalone", default: '["detpy", "randomly"]'}
 
 permissions:
   contents: write
@@ -46,7 +47,7 @@ jobs:
       max-parallel: 20
       matrix:
         repo: ${{ fromJSON(needs.build.outputs.matrix) }}
-        tool: [detpy, randomly]
+        tool: ${{ fromJSON(inputs.tools) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

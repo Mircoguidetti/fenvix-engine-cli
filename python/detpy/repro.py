@@ -290,7 +290,12 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
             kind = "fails-alone"
             minimal = []
             # Brittle test: name what makes it pass, from a passing configuration.
-            for pconf in passing or ([FIXED] if config != FIXED else []):
+            # Configurations already seen passing first, then every other one of
+            # the search space (review E6: when the target fails in the fixed
+            # order, a standalone repro has seen no passing configuration yet).
+            all_configs = [FIXED] + [str(s) for s in range(1, seeds + 1)]
+            candidates = list(dict.fromkeys(list(passing) + [c for c in all_configs if c != config]))
+            for pconf in candidates:
                 porder = prefix_through(runner.order_of(pconf), target)
                 pbefore = porder[: porder.index(target)]
                 if not pbefore:

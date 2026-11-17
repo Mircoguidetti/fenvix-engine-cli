@@ -37,18 +37,25 @@ def first_fail(seeds_log: list) -> dict:
     return out
 
 
-def load(d: Path):
-    det = {json.loads(p.read_text())["name"]: json.loads(p.read_text()) for p in d.glob("*.detpy.block2.json")}
-    rnd = {json.loads(p.read_text())["name"]: json.loads(p.read_text()) for p in d.glob("*.randomly.block2.json")}
-    return det, rnd
+def load(dirs: list):
+    """Per (repository, tool) results; a later directory overrides an earlier one
+    (a repository re-measured at a newer commit)."""
+    det, rnd, sta, origin = {}, {}, {}, {}
+    for d in dirs:
+        for tool, store in (("detpy", det), ("randomly", rnd), ("standalone", sta)):
+            for p in Path(d).glob(f"*.{tool}.block2.json"):
+                data = json.loads(p.read_text())
+                store[data["name"]] = data
+                origin[(data["name"], tool)] = str(d)
+    return det, rnd, sta, origin
 
 
 def pct(a, b):
     return f"{100 * a / b:.1f}%" if b else "n/a"
 
 
-def main(d: Path) -> dict:
-    det, rnd = load(d)
+def main(d: Path, extra: list | None = None) -> dict:
+    det, rnd, sta, origin = load([d, *(extra or [])])
     repos = sorted(set(det) | set(rnd))
     rows = []
     per_repo = {}
@@ -58,12 +65,19 @@ def main(d: Path) -> dict:
         dff = first_fail(D["seeds_log"]) if D else {}
         rff = first_fail(Rn["seeds_log"]) if Rn else {}
         bundles = {b["test"]: b for b in (D or {}).get("bundles", [])}
+        # Block 1 rule (review E3): a target that fails under every --det seed is
+        # broken by Level 0, not found; same view for pytest-randomly's runs.
+        d_always = set((D or {}).get("always_failing", []))
+        r_always = {t for t in targets if Rn and Rn["seeds_log"] and all(t in x["failing"] for x in Rn["seeds_log"])}
         for t in targets:
             b = bundles.get(t, {})
             rp = (Rn or {}).get("replays", {}).get(t, {})
+            status = b.get("status", "not-failed" if D else "no-data")
+            if t in d_always:
+                status = "broken-by-L0 (fails under every seed)"
             rows.append({
-                "repo": name, "test": t,
-                "detpy_first_fail_seed": dff.get(t), "detpy_status": b.get("status", "not-failed" if D else "no-data"),
+                "repo": name, "test": t, "randomly_always_fails": t in r_always,
+                "detpy_first_fail_seed": dff.get(t) if t not in d_always else None, "detpy_status": status,
                 "detpy_config": b.get("config"), "detpy_kind": b.get("kind"),
                 "prefix_length": b.get("prefix_length"), "minimal_length": b.get("minimal_length"),
                 "polluters": " ; ".join(b.get("polluters") or []), "setters": " ; ".join(b.get("setters") or []),
@@ -95,7 +109,16 @@ def main(d: Path) -> dict:
             "bundles_reproduced": sum(1 for b in bundles.values() if b.get("status") == "reproduced"),
             "flaky_failing_all": len((D or {}).get("flaky_failing", [])),
             "flaky_failing_non_target": len(set((D or {}).get("flaky_failing", [])) - set(targets)),
-            "randomly_replay_s": sum(sum(r.get("seconds", [])) for r in (Rn or {}).get("replays", {}).values()),
+            # Reruns are paid once per distinct first-failing seed, shared by the
+            # targets of that seed (review E1).
+            "randomly_replay_s": sum(sum(secs) for secs in {r["seed"]: r.get("seconds", [])
+                                                         for r in (Rn or {}).get("replays", {}).values()}.values()),
+            "detpy_explore_s": sum(x["seconds"] for x in (D or {}).get("seeds_log", [])),
+            "detpy_repro_s": sum(b.get("seconds") or 0 for b in bundles.values()),
+            "randomly_seeds_s": sum(x["seconds"] for x in (Rn or {}).get("seeds_log", [])),
+            "origin_detpy": origin.get((name, "detpy")), "origin_randomly": origin.get((name, "randomly")),
+            "cpu_detpy": (D or {}).get("runner", {}).get("cpu_model"),
+            "cpu_randomly": (Rn or {}).get("runner", {}).get("cpu_model"),
         }
     with open(d / "per-target.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys()) if rows else ["repo"])
@@ -116,7 +139,30 @@ def main(d: Path) -> dict:
         dmin = [per_repo[n]["cost"][K].get("detpy_explore_s", 0) + per_repo[n]["cost"][K].get("detpy_repro_s", 0)
                 for n in repos if n in det and n in rnd]
         rmin = [per_repo[n]["cost"][K].get("randomly_s", 0) for n in repos if n in det and n in rnd]
-        S["by_K"][K] = {"detpy_failed": dfail, "detpy_found_replayed": dfound, "randomly_failed": rfail,
+        dany = sum(1 for r in both if r["detpy_first_fail_seed"] and r["detpy_first_fail_seed"] <= K
+                   and r["detpy_status"] in ("reproduced", "replay-unstable") and r["replay_runs"]
+                   and r["replay_fails"] == r["replay_runs"])
+        # pytest-randomly reruns paid for the seeds that first failed a target <= K (once per seed).
+        rr_s = 0.0
+        for n in repos:
+            if n in rnd:
+                seen = {}
+                for r in rnd[n].get("replays", {}).values():
+                    if r["seed"] <= K:
+                        seen[r["seed"]] = sum(r.get("seconds", []))
+                rr_s += sum(seen.values())
+        rflaky = sum(1 for r in both if r["randomly_first_fail_seed"] and r["randomly_first_fail_seed"] <= K
+                     and not r["randomly_always_fails"])
+        rflaky10 = sum(1 for r in both if r["randomly_first_fail_seed"] and r["randomly_first_fail_seed"] <= K
+                       and not r["randomly_always_fails"] and r["randomly_replay_runs"]
+                       and r["randomly_replay_fails"] == r["randomly_replay_runs"])
+        S["by_K"][K] = {"detpy_failed": dfail, "detpy_found_replayed": dfound, "detpy_found_any_fp": dany,
+                        "randomly_failed_not_always": rflaky, "randomly_10_of_10_not_always": rflaky10,
+                        "randomly_failed": rfail, "randomly_rerun_minutes_total": rr_s / 60,
+                        "detpy_explore_minutes_total": sum(per_repo[n]["cost"][K].get("detpy_explore_s", 0)
+                                                           for n in repos if n in det) / 60,
+                        "detpy_repro_minutes_total": sum(per_repo[n]["cost"][K].get("detpy_repro_s", 0)
+                                                         for n in repos if n in det) / 60,
                         "randomly_failed_and_replays_10_of_10": rrep,
                         "detpy_minutes_per_repo_median": st.median(dmin) / 60 if dmin else None,
                         "detpy_minutes_per_repo_max": max(dmin) / 60 if dmin else None,
@@ -149,6 +195,24 @@ def main(d: Path) -> dict:
     S["randomly_replay_some"] = sum(1 for r in rr if 0 < r["randomly_replay_fails"] < r["randomly_replay_runs"])
     S["randomly_replay_none"] = sum(1 for r in rr if r["randomly_replay_fails"] == 0)
     S["randomly_replay_minutes_total"] = sum(p["randomly_replay_s"] for p in per_repo.values()) / 60
+    sb = [b for x in sta.values() for b in x.get("bundles", [])]
+    srep = [b for b in sb if b.get("status") == "reproduced"]
+    S["standalone"] = {
+        "repos": len(sta), "targets": len(sb), "statuses": dict(collections.Counter(b.get("status") for b in sb)),
+        "reproduced": len(srep),
+        "kinds": dict(collections.Counter(b.get("kind") for b in srep)),
+        "polluter_named": sum(1 for b in srep if b.get("polluters")),
+        "setter_named": sum(1 for b in srep if b.get("setters")),
+        "cause_named": sum(1 for b in srep if b.get("polluters") or b.get("setters")),
+        "identical_fingerprint": sum(1 for b in srep if (b.get("replay") or {}).get("identical_fingerprint")),
+        "minimal_length_median": st.median([b["minimal_length"] for b in srep]) if srep else None,
+        "minimal_length_max": max([b["minimal_length"] for b in srep]) if srep else None,
+        "configs_searched_median": st.median([b.get("configs_searched", 0) for b in srep]) if srep else None,
+        "seconds_median": st.median([b.get("seconds") or 0 for b in srep]) if srep else None,
+        "minutes_total": sum(x.get("seconds", 0) for x in sta.values()) / 60,
+    } if sta else None
+    S["cpu_differs"] = sum(1 for p in per_repo.values() if p["cpu_detpy"] and p["cpu_randomly"]
+                           and p["cpu_detpy"] != p["cpu_randomly"])
     S["per_repo"] = per_repo
     (d / "summary.json").write_text(json.dumps(S, indent=1))
     write_md(d, S, rows, per_repo)
@@ -164,16 +228,30 @@ def write_md(d: Path, S: dict, rows: list, per_repo: dict) -> None:
          f"{meta.get('confirm', 10)} replays. Every number MEASURED (timings NOISY: hosted runners). "
          f"Comparison on the {n} targets of the {S['repos_with_both']} repositories measured with both tools.\n",
          "## Share found within K seeds\n",
-         "| K | detpy: failed | detpy: found (bundle replays 10/10, one fingerprint) | pytest-randomly: failed | "
-         "pytest-randomly: failed and same-seed rerun fails 10/10 | detpy min/repo (median, max) | randomly min/repo (median, max) |",
-         "|---:|---:|---:|---:|---:|---|---|"]
+         "A target that fails under **every** seed of a tool is not counted as found by that tool (Block 1 rule: "
+         "under detpy it is broken by Level 0; under pytest-randomly it always fails in that environment).\n",
+         "| K | detpy: fails | detpy: replays 10/10 | detpy: replays 10/10, one fingerprint | pytest-randomly: fails | "
+         "pytest-randomly: seed rerun fails 10/10 | detpy explore / repro min (total) | randomly seeds / reruns min (total) |",
+         "|---:|---:|---:|---:|---:|---:|---|---|"]
     for K, v in S["by_K"].items():
-        L.append(f"| {K} | {v['detpy_failed']} ({pct(v['detpy_failed'], n)}) | {v['detpy_found_replayed']} "
-                 f"({pct(v['detpy_found_replayed'], n)}) | {v['randomly_failed']} ({pct(v['randomly_failed'], n)}) | "
-                 f"{v['randomly_failed_and_replays_10_of_10']} ({pct(v['randomly_failed_and_replays_10_of_10'], n)}) | "
-                 f"{v['detpy_minutes_per_repo_median']:.1f}, {v['detpy_minutes_per_repo_max']:.1f} | "
-                 f"{v['randomly_minutes_per_repo_median']:.1f}, {v['randomly_minutes_per_repo_max']:.1f} |")
+        L.append(f"| {K} | {v['detpy_failed']} ({pct(v['detpy_failed'], n)}) | {v['detpy_found_any_fp']} "
+                 f"({pct(v['detpy_found_any_fp'], n)}) | {v['detpy_found_replayed']} ({pct(v['detpy_found_replayed'], n)}) | "
+                 f"{v['randomly_failed_not_always']} ({pct(v['randomly_failed_not_always'], n)}) | "
+                 f"{v['randomly_10_of_10_not_always']} ({pct(v['randomly_10_of_10_not_always'], n)}) | "
+                 f"{v['detpy_explore_minutes_total']:.1f} / {v['detpy_repro_minutes_total']:.1f} | "
+                 f"{v['randomly_minutes_total']:.1f} / {v['randomly_rerun_minutes_total']:.1f} |")
     L.append("")
+    L.append(f"Timings NOISY: in {S['cpu_differs']} of {S['repos']} repositories the two tools ran on different CPU models.\n")
+    if S.get("standalone"):
+        sa = S["standalone"]
+        L.append("## Standalone `detpy repro <target>` (the developer's command, no exploration hint)\n")
+        L.append(f"* {sa['targets']} targets in {sa['repos']} repositories: {sa['statuses']}")
+        L.append(f"* reproduced {sa['reproduced']}; cause named {sa['cause_named']} ({pct(sa['cause_named'], sa['reproduced'])}): "
+                 f"polluter {sa['polluter_named']}, state setter {sa['setter_named']}; kinds {sa['kinds']}")
+        L.append(f"* identical fingerprint over the replays: {sa['identical_fingerprint']}; minimal order median "
+                 f"{sa['minimal_length_median']}, max {sa['minimal_length_max']}; configurations searched median "
+                 f"{sa['configs_searched_median']}; seconds per target median {sa['seconds_median']}; "
+                 f"{sa['minutes_total']:.1f} min in total\n")
     L.append("## Bundles\n")
     L.append(f"* reproduced (bundle written, {S['replay_10_of_10_identical']} replay 10/10 with one fingerprint): "
              f"{S['reproduced']}; statuses {S['detpy_status']}")
@@ -208,5 +286,5 @@ def write_md(d: Path, S: dict, rows: list, per_repo: dict) -> None:
 
 
 if __name__ == "__main__":
-    s = main(Path(sys.argv[1]))
+    s = main(Path(sys.argv[1]), [Path(x) for x in sys.argv[2:]])
     print(json.dumps({k: v for k, v in s.items() if k != "per_repo"}, indent=1))

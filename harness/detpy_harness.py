@@ -615,6 +615,21 @@ def block2_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
             dest = outdir / f"{p.name}.bundles"
             shutil.rmtree(dest, ignore_errors=True)
             shutil.copytree(bdir, dest, ignore=shutil.ignore_patterns("*.jsonl"))
+    elif args.tool == "standalone":
+        # The developer's command: `detpy repro <target>` per target, with no
+        # hint from an exploration (search from the fixed order, seeds 1..N).
+        runner = R.Runner(cwd=Path(p.src), workdir=rundir / ".work", python=p.python,
+                          pytest_args=[*p.pytest_args, *serial], timeout=args.run_timeout, env=env, keep_traces=False)
+        bundles = []
+        for t in targets:
+            if time.monotonic() - t0 > args.repo_budget:
+                bundles.append({"test": t, "status": "budget"})
+                continue
+            b = R.reproduce(runner, t, seeds=args.seeds, confirm=args.confirm, max_runs=args.max_repro_runs,
+                            out_dir=rundir / "bundles")
+            bundles.append(b)
+            runner.drop_traces()
+        res.update(bundles=bundles, seconds=round(time.monotonic() - t0, 2))
     else:
         seeds_log, first_fail = [], {}
         for s in range(1, args.seeds + 1):
@@ -1298,7 +1313,7 @@ def main(argv=None) -> int:
                          "timing: quiet timing pass; orderonly: re-run reproduced tests with every Level 0 "
                          "control disabled except the order (--targets); baseline: --runs baseline runs only, "
                          "with the installed package versions")
-    ap.add_argument("--tool", choices=("detpy", "randomly"), default="detpy",
+    ap.add_argument("--tool", choices=("detpy", "randomly", "standalone"), default="detpy",
                     help="block2: which seed search to measure")
     ap.add_argument("--block2-targets", default=str(HERE / "block2_targets.json"))
     ap.add_argument("--targets", default=str(HERE / "order_only_targets.json"),
