@@ -4,9 +4,13 @@ repository and, at every commit, run its pytest suite twice:
 
 1. ``time``: plain serial run (fixed collection order, no coverage) -> per-test
    durations and outcomes, wall time;
-2. ``capture``: the same run under ``coverage run`` with the capture plugin ->
-   per-test executed lines, data files opened, directories listed,
-   subprocesses, sockets, module first-load index; wall time.
+2. ``capture``: the same run with the capture plugin, executed lines recorded
+   under ``coverage run`` (``--tracer coverage``, as in the study) or by the
+   plugin's ``sys.monitoring`` tracer (``--tracer sysmon``, Python 3.12+; the
+   default when available) -> per-test executed lines, data files opened,
+   directories listed, subprocesses, sockets, module first-load index; wall
+   time. ``--tracer both`` runs both (sys.monitoring files as ``<stem>.sm.*``)
+   for equivalence checks (``analyze.py --tag .sm``, ``compare_skips.py``).
 
 Everything is written below ``<work>/<repo>/caps/<i>-<sha>.*``; ``analyze.py``
 turns it into skip decisions.
@@ -32,6 +36,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 sys.path.insert(0, str(HERE.parent))
 from detpy_harness import detect_install, clean_env  # noqa: E402
+from sysmon_capture import fold_file  # noqa: E402  (same directory as this script)
 
 # Study-local pytest arguments: tests that hang in a serial run (each would cost the full --timeout per run).
 EXTRA_ARGS = {
@@ -187,6 +192,13 @@ def main(argv=None) -> int:
     ap.add_argument("--wheel", default="", help="detpy wheel: enables the --det determinism check")
     ap.add_argument("--det-every", type=int, default=10, help="--det check at commits i %% N == 0 (and the last)")
     ap.add_argument("--det-runs", type=int, default=2)
+    ap.add_argument("--deselect", action="append", default=[],
+                    help="test node id left out of every run (e.g. a test whose duration is a thread-scheduling "
+                         "lottery: more-itertools TestConcurrentTee::test_concurrent_consumers, 1 s to 3 min)")
+    ap.add_argument("--tracer", choices=("auto", "coverage", "sysmon", "both"), default="auto",
+                    help="capture with coverage.py (as in the study), the sys.monitoring tracer (Python 3.12+), or "
+                         "both (coverage files as <stem>.*, sys.monitoring files as <stem>.sm.*); auto = sysmon "
+                         "when the repository's Python has sys.monitoring")
     a = ap.parse_args(argv)
 
     cfg = json.loads((ROOT / "harness" / "repos.json").read_text())
@@ -208,6 +220,7 @@ def main(argv=None) -> int:
 
     rc = work / "coveragerc"
     last_hash, args, py = None, None, str(venv / "bin" / "python")
+    tracers: list[str] = []
     for i, sha in enumerate(commits):
         step = {"i": i, "sha": sha, "date": git(src, "show", "-s", "--format=%cI", sha).strip()}
         meta["steps"].append(step)
@@ -233,6 +246,8 @@ def main(argv=None) -> int:
                 stem.with_suffix(".done").write_text(json.dumps({"status": step["status"]}))
                 continue
             args, n, why = pytest_args(repo, py, src, env)
+            if args:
+                args = [*args, *(x for d in a.deselect for x in ("--deselect", d))]
             if not args:
                 step["status"] = "collect-failed"
                 step["detail"] = why[-500:]
@@ -241,6 +256,15 @@ def main(argv=None) -> int:
                 stem.with_suffix(".done").write_text(json.dumps({"status": step["status"]}))
                 continue
             last_hash = h
+        if not tracers:
+            if a.tracer == "auto":
+                has_mon = sh([py, "-c", "import sys; sys.monitoring"])[0] == 0
+                tracers = ["sysmon" if has_mon else "coverage"]
+            else:
+                tracers = ["coverage", "sysmon"] if a.tracer == "both" else [a.tracer]
+            meta["tracers"] = tracers
+            if "sysmon" in tracers:  # build the C recorder once, outside the timed runs
+                meta["sysmon_native"] = sh([py, str(HERE / "sysmon_capture.py"), "--build"], env=env)[1].strip()
         step["args"] = args
         freeze = [x for x in sh(["uv", "pip", "freeze", "--python", py])[1].splitlines() if not x.startswith("detpy")]
         step["freeze"] = hashlib.sha256("\n".join(freeze).encode()).hexdigest()[:16]
@@ -248,33 +272,56 @@ def main(argv=None) -> int:
         env_t = dict(env, CACHE_SKIP_MODE="time", CACHE_SKIP_OUT=str(stem) + ".time.json")
         code, out, wall_t = sh([py, "-m", "pytest", *args], cwd=src, env=env_t, timeout=a.timeout)
         step["time_exit"], step["time_wall"] = code, wall_t
-        # 2. capture run
-        git(src, "clean", "-qfd")
-        covdata = work / ".coverage"
-        covdata.unlink(missing_ok=True)
-        rc.write_text(f"[run]\nsource = {src}\ndata_file = {covdata}\nconcurrency = thread\n"
-                      f"disable_warnings = no-data-collected, module-not-imported, module-not-measured, "
-                      f"couldnt-parse, already-imported\n")
-        env_c = dict(env, CACHE_SKIP_MODE="capture", CACHE_SKIP_OUT=str(stem) + ".cap.json")
-        code, out2, wall_c = sh([py, "-m", "coverage", "run", f"--rcfile={rc}", "-m", "pytest", *args], cwd=src,
-                                env=env_c, timeout=a.timeout)
-        step["cap_exit"], step["cap_wall"] = code, wall_c
-        ok = Path(str(stem) + ".time.json").exists() and Path(str(stem) + ".cap.json").exists() and covdata.exists()
+        # 2. capture run(s): coverage.py (as in the study) and/or the sys.monitoring tracer
+        ok = Path(str(stem) + ".time.json").exists()
+        outs = [out]
+        for tracer in tracers:
+            tag = "" if tracer == tracers[0] else ".sm"
+            git(src, "clean", "-qfd")
+            env_c = dict(env, CACHE_SKIP_MODE="capture", CACHE_SKIP_TRACER=tracer,
+                         CACHE_SKIP_OUT=f"{stem}{tag}.cap.json", CACHE_SKIP_COV=f"{stem}{tag}.cov.pkl.gz")
+            if tracer == "coverage":
+                covdata = work / ".coverage"
+                covdata.unlink(missing_ok=True)
+                rc.write_text(f"[run]\nsource = {src}\ndata_file = {covdata}\nconcurrency = thread\n"
+                              f"disable_warnings = no-data-collected, module-not-imported, module-not-measured, "
+                              f"couldnt-parse, already-imported\n")
+                code, out2, wall_c = sh([py, "-m", "coverage", "run", f"--rcfile={rc}", "-m", "pytest", *args],
+                                        cwd=src, env=env_c, timeout=a.timeout)
+                if covdata.exists():
+                    t1 = time.perf_counter()
+                    cov = extract_coverage(covdata, src)
+                    with gzip.open(f"{stem}{tag}.cov.pkl.gz", "wb", compresslevel=3) as fh:
+                        pickle.dump(cov, fh, protocol=pickle.HIGHEST_PROTOCOL)
+                    step[f"extract_s{tag}"] = time.perf_counter() - t1
+                covdata.unlink(missing_ok=True)
+            else:
+                raw = Path(f"{stem}{tag}.smraw")
+                env_c["CACHE_SKIP_SMRAW"] = str(raw)
+                code, out2, wall_c = sh([py, "-m", "pytest", *args], cwd=src, env=env_c, timeout=a.timeout)
+                if raw.exists():
+                    t1 = time.perf_counter()
+                    fold_file(str(raw), f"{stem}{tag}.cov.pkl.gz")
+                    step[f"extract_s{tag}"] = time.perf_counter() - t1
+                raw.unlink(missing_ok=True)
+            step[f"cap_exit{tag}"], step[f"cap_wall{tag}"] = code, wall_c
+            step[f"cap_tracer{tag}"] = tracer
+            outs.append(out2)
+            ok = ok and Path(f"{stem}{tag}.cap.json").exists() and Path(f"{stem}{tag}.cov.pkl.gz").exists()
         if ok:
-            t0 = time.perf_counter()
-            cov = extract_coverage(covdata, src)
-            with gzip.open(str(stem) + ".cov.pkl.gz", "wb", compresslevel=3) as fh:
-                pickle.dump(cov, fh, protocol=pickle.HIGHEST_PROTOCOL)
-            step["extract_s"] = time.perf_counter() - t0
+            with gzip.open(str(stem) + ".cov.pkl.gz", "rb") as fh:
+                nblobs = len(pickle.load(fh)["blobs"])
             nt = len(json.loads(Path(str(stem) + ".time.json").read_text())["tests"])
             step["status"] = "ok"
-            log(f"[{i}] {sha[:10]} ok: {nt} tests, plain {wall_t:.1f}s, capture {wall_c:.1f}s "
-                f"(+{100 * (wall_c / wall_t - 1):.0f}%), {len(cov['blobs'])} blobs")
+            log(f"[{i}] {sha[:10]} ok: {nt} tests, plain {wall_t:.1f}s, "
+                + ", ".join(f"{step['cap_tracer' + t]} {step['cap_wall' + t]:.1f}s "
+                            f"(+{100 * (step['cap_wall' + t] / wall_t - 1):.0f}%)"
+                            for t in ([""] + [".sm"] * (len(tracers) > 1)))
+                + f", {nblobs} blobs")
         else:
             step["status"] = "run-failed"
-            step["detail"] = (out[-800:], out2[-800:])
-            log(f"[{i}] {sha[:10]} run failed: exit {step['time_exit']}/{step['cap_exit']}\n{out2[-600:]}")
-        covdata.unlink(missing_ok=True)
+            step["detail"] = [o[-800:] for o in outs]
+            log(f"[{i}] {sha[:10]} run failed: exit {step['time_exit']}/{step.get('cap_exit')}\n{outs[-1][-600:]}")
         if ok and a.wheel and (i % a.det_every == 0 or i == len(commits) - 1):
             step["det"] = det_check(py, src, args, env, a, stem, work)
         stem.with_suffix(".done").write_text(json.dumps({k: v for k, v in step.items() if k not in ("i", "sha", "date")}))

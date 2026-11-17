@@ -5,9 +5,10 @@ Environment:
 * ``CACHE_SKIP_OUT``  JSON file written at the end of the session.
 * ``CACHE_SKIP_ROOT`` repository root (only paths below it are recorded).
 * ``CACHE_SKIP_MODE`` ``time`` (durations and outcomes only) or ``capture``
-  (also per-test dependency capture). In ``capture`` mode the session must run
-  under ``coverage run`` so that ``coverage.Coverage.current()`` exists; the
-  plugin switches the coverage *dynamic context* so that every executed line is
+  (also per-test dependency capture). In ``capture`` mode executed lines are
+  recorded by a tracer (``CACHE_SKIP_TRACER`` below: coverage.py under
+  ``coverage run``, or the plugin's own ``sys.monitoring`` tracer), and the
+  plugin switches the tracer's *context* so that every executed line is
   attributed to:
 
   - ``t|<nodeid>``: the test (setup, call, teardown, function-scoped fixtures);
@@ -21,6 +22,18 @@ Environment:
   the root that are opened (non-Python data inputs), directories that are
   listed, subprocesses spawned and inet sockets connected. ``sys.modules`` is
   scanned after each test to know when each repository module was first loaded.
+
+* ``CACHE_SKIP_TRACER`` (capture mode) ``coverage`` (the session runs under
+  ``coverage run``, as in the study) or ``sysmon`` (Python 3.12+: the plugin
+  records the same per-context executed lines itself with ``sys.monitoring``,
+  see ``sysmon_capture.py``, and no ``coverage run`` is needed). ``auto``
+  (default) picks ``sysmon`` when ``sys.monitoring`` exists and the session is
+  not under coverage, else ``coverage``.
+* ``CACHE_SKIP_COV`` (``sysmon`` tracer) output file for the executed lines, in
+  the compact pickle format of ``run_repo.extract_coverage``.
+* ``CACHE_SKIP_SMRAW`` (``sysmon`` tracer) if set, the raw capture is written
+  there instead and ``CACHE_SKIP_COV`` is not written: the caller folds it with
+  ``sysmon_capture.fold_file`` outside the test process.
 """
 
 from __future__ import annotations
@@ -39,6 +52,26 @@ ROOT_SEP = ROOT + os.sep
 
 _ctx = ["s|session"]
 _cov = None
+_sysmon = None
+
+
+def _pick_tracer() -> str:
+    t = os.environ.get("CACHE_SKIP_TRACER", "auto")
+    if t == "auto":
+        under_coverage = "coverage" in sys.modules and sys.modules["coverage"].Coverage.current() is not None
+        t = "sysmon" if hasattr(sys, "monitoring") and not under_coverage else "coverage"
+    return t
+
+
+TRACER = _pick_tracer() if MODE == "capture" else ""
+if TRACER == "sysmon" and hasattr(sys, "monitoring"):
+    # started at import (``-p capture_plugin`` is imported before conftest files and pytest11 entry points), so
+    # repository code run at startup is recorded in the "" context, as under ``coverage run``
+    from sysmon_capture import SysmonCapture
+
+    _raw = os.environ.get("CACHE_SKIP_SMRAW", "")
+    _sysmon = SysmonCapture(ROOT, _raw or os.environ.get("CACHE_SKIP_COV", OUT + ".cov.pkl.gz"), raw=bool(_raw))
+    _sysmon.start()
 _fs: dict[str, dict[str, set]] = {}  # ctx -> {"open": set, "list": set}
 _spawn: dict[str, int] = {}
 _net: dict[str, int] = {}
@@ -74,6 +107,10 @@ def _rel(path) -> str | None:
     return p[len(ROOT_SEP):]
 
 
+_SPAWN_EVENTS = ("subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.spawn")
+_AUDIT_EVENTS = ("open", "os.listdir", "os.scandir", *_SPAWN_EVENTS, "socket.connect")
+
+
 def _audit(event, args):
     if event == "open":
         r = _rel(args[0])
@@ -90,7 +127,7 @@ def _audit(event, args):
         if r is None or any(s in os.sep + r for s in _SKIP_PARTS):
             return
         _fs.setdefault(_ctx[0], {}).setdefault("list", set()).add(r)
-    elif event in ("subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.spawn"):
+    elif event in _SPAWN_EVENTS:
         _spawn[_ctx[0]] = _spawn.get(_ctx[0], 0) + 1
     elif event == "socket.connect":
         addr = args[1] if len(args) > 1 else None
@@ -102,6 +139,8 @@ def _switch(ctx: str) -> None:
     _ctx[0] = ctx
     if _cov is not None:
         _cov.switch_context(ctx)
+    elif _sysmon is not None:
+        _sysmon.switch_context(ctx)
 
 
 def _scan_modules(index: int) -> None:
@@ -123,11 +162,22 @@ def pytest_configure(config):
     global _cov
     _marks["configure"] = time.perf_counter() - _t0
     if MODE == "capture":
-        import coverage
-        _cov = coverage.Coverage.current()
-        if _cov is None:
-            raise pytest.UsageError("CACHE_SKIP_MODE=capture needs `coverage run`")
-        sys.addaudithook(_audit)
+        if TRACER == "coverage":
+            import coverage
+            _cov = coverage.Coverage.current()
+            if _cov is None:
+                raise pytest.UsageError("CACHE_SKIP_TRACER=coverage needs `coverage run`")
+        elif TRACER == "sysmon" and _sysmon is None:
+            raise pytest.UsageError("CACHE_SKIP_TRACER=sysmon needs Python 3.12+ (sys.monitoring); "
+                                    "use CACHE_SKIP_TRACER=auto under `coverage run`")
+        elif _sysmon is None:
+            raise pytest.UsageError(f"unknown CACHE_SKIP_TRACER {TRACER!r}")
+        if _sysmon is not None and _sysmon.native is not None:
+            # same events, but the others (``builtins.id``, ``object.__getattr__``, ...) never reach Python
+            from sysmon_capture import add_audit_hook
+            add_audit_hook(_audit, _AUDIT_EVENTS, _sysmon.native)
+        else:
+            sys.addaudithook(_audit)
         _switch("s|session")
 
 
