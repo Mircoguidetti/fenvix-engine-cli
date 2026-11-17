@@ -1,9 +1,9 @@
 # Skip-with-proof study 2: where are the minutes?
 
-**Status (2026-11-17 UTC): version 3. Setting 1 on the v3 capture is final (run v3, 14 of 14 shards); saleor, the reruns, setting 2 and the name rule stay partial.**
+**Status (2026-11-17 UTC): version 3.1 (R-002 re-check fixes, next section but one). Setting 1 on the v3 capture is final (run v3, 14 of 14 shards); saleor, the reruns, setting 2 and the name rule stay partial.**
 
 * **Final:**
-  * the R-002 code fixes: 3 proven errors and 6 notes, each with a test; 14 of 14 tests pass (MEASURED, `harness/skip_study2/tests/`);
+  * the R-002 code fixes: 3 proven errors and 6 notes, each with a test; plus the R-002 re-check fix (loopback proxy); 17 of 17 tests pass (MEASURED, `harness/skip_study2/tests/`);
   * setting 1 on the **v2 capture** (docusaurus, vue-core, terraform, prometheus, Home Assistant 12% sample);
   * the verdict on the two verification mismatches, now also re-checked on GitHub Actions: both flaky, 0 wrong;
   * setting 3 v1.
@@ -20,7 +20,7 @@ Every number is labelled. Raw data: `harness/skip_study2/results/<run>/`. Tables
 
 "v2" = the walks of version 2 (capture v2). "v3" = the same commits re-walked with the fixed capture (run v3).
 
-* **Proof rule** = `closure`. In Go, `closure` = go test cache hit AND no runtime read changed AND (v3) no connection to a non-loopback address AND (v3) the same runtime and environment.
+* **Proof rule** = `closure`. In Go, `closure` = go test cache hit AND no runtime read changed AND (v3) no connection to a non-loopback address AND (v3.1) no connection to a configured HTTP(S) proxy on loopback AND (v3) the same runtime and environment.
 * The **go test cache alone is "no proof"**. It is shown separately and is never counted as proof.
 * **Verified skips** = skips of that rule that were run anyway and compared with the cached outcome.
 
@@ -34,7 +34,7 @@ Every number is labelled. Raw data: `harness/skip_study2/results/<run>/`. Tables
 | 1. terraform | go test cache (**no proof**) | 72% / 61% | 0 (697) in the sample; **1 wrong found by the reviewer** (`internal/cloud`, network) | 73% / 60% | 0 (677) in the sample; still no proof | MEASURED |
 | 1. prometheus (Go, 50 commits) | closure (proof; v3 adds the net guard) | **56% / 52%** | 0 (313) | **56% / 49%** (v2 lower bound was 41% / 37%) | 0 (314) | MEASURED; bound ESTIMATED |
 | 1. prometheus | go test cache (**no proof**) | 56% / 52% | 0 (313) | 57% / 54% | 0 (322) in the sample; still no proof | MEASURED |
-| 1. saleor (pytest + Django, 10 commits, 15% sample) | closure | 0% / 9% | 0 (7) | not in run v3 | - | MEASURED, partial |
+| 1. saleor (pytest + Django, 10 commits, 15% sample) | closure | 0% / 9% | 0 (7) | not in run v3 | - | MEASURED, **stale and partial** (v2 report snapshot; the walk is still running, see §2) |
 | 2. coding-agent PR pushes, 170 pushes pooled | closure | 52% / 51% | 0 (1408), 2 flaky | not re-walked (v2 capture); with the Go net guard at least 29% / 42% | - | MEASURED; bound ESTIMATED |
 | 2. the same 170 pushes | go test cache for Go (**no proof**), closure otherwise | 76% / 53% | - | - | - | MEASURED |
 
@@ -67,6 +67,25 @@ Every number is labelled. Raw data: `harness/skip_study2/results/<run>/`. Tables
     * setting 1: no change in any median or mean;
     * Home Assistant Copilot PRs: 100% / 95% -> 97% / 93%;
     * the setting 2 pooled 52% / 51%: unchanged.
+
+## R-002 re-check fixes (version 3.1)
+
+The reviewer's re-check (R-002b) found 1 proven error and 3 notes. Tests: `tests/test_r002b_go_proxy.py` (the reviewer's 2 tests, copied, plus 1 unit check). 17 of 17 tests pass; the 3 new ones fail without the fix (MEASURED).
+
+* **Proven error: the network guard did not fire behind a proxy on loopback.**
+  * Cause: with `HTTPS_PROXY=http://127.0.0.1:<port>` a test reaches the outside service through one loopback connect (the proxy resolves the name, so there is no DNS connect either). The guard took every loopback connect as local, so terraform `internal/cloud` (app.terraform.io) would again be a `closure` skip.
+  * Fix: `strace_deps.external(net, env)` now counts a connect to the address and port of `HTTPS_PROXY`, `HTTP_PROXY` or `ALL_PROXY` (upper and lower case; `localhost` matches any loopback address; default ports 80 / 443 / 1080) as external. `walk.py` passes the unit's environment in both places: the pytest/vitest record (`normalize`) and the Go package record.
+* **Effect on the v3 numbers: 0 change, ESTIMATED; a recomputation from the data is not possible (UNKNOWN by recomputation).**
+  * Why no recomputation: the v3 records keep only the count of connects (`net`) and the external addresses (`net_ext_addr`, address only). Loopback connects are stored without address or port, so the data cannot tell a proxy connect from an `httptest` server.
+  * Why 0 is the estimate (evidence, MEASURED from the files): all 14 v3 shards ran on GitHub-hosted `ubuntu-latest` runners (`runner` = "GitHub Actions"); `.github/workflows/skip-study2.yml` sets no proxy variable; and the units that reached outside services did so directly, by public address plus port-53 DNS, which a client behind a proxy does not do (terraform `internal/cloud`: 75.2.98.97, 99.83.150.238, 127.0.0.53:53; `internal/command`: three 2600:9000:... CloudFront addresses).
+  * Units that could flip if a proxy had been set (upper bound of the exposure, MEASURED): units with a connect but no external one: home-assistant 119 of 776, prometheus 26 of 90, terraform 10 of 125, docusaurus 1 of 202, vue-core 0 of 185.
+  * The fix matters for the product claim, not for this study: corporate CI runners and sidecar proxies are exactly the loopback-proxy setup.
+* **Note: Go `strict` relabelled.** In Go, `strict` = go test cache + config rule, not `closure` + config rule. Rows now read "go test cache + config (no proof)" (aggregator `rule_label`; §1, §2 and §3 tables). The numbers do not change.
+* **Note: Home Assistant v3 reruns everything at 8 of 50 commits** (v2 printed 0 of 50), MEASURED with `aggregate.py --md v3`:
+  * reasons: `py-source:source` 4 (i = 17, 24, 33, 43: a Python module every HA test imports changed), `exists:installed` 3 (i = 9, 32, 50) and `read:installed` 1 (i = 44) (an installed package every test touches changed after a requirements bump);
+  * **why v2 showed 0:** the same commits invalidated everything in v2 too. In `results/r5`, shards 0, 2 and 3 rerun all their units at 8d331d64, 093f076f, d22efd4d, e362a965 and 0c98254c (MEASURED). But v2 shard 1 walked a different window (it starts at 182d5bfb, the others at 5165401a), and the aggregator merges shards by transition index, so each v2 "commit" mixed two commits and never reached 0%. v3's 8 shards share one window (all start at 9bf68ccb), so v3's 8 of 50 is the right count. 7 of the 8 commits are in both windows (5aaa6c4a is v3 only).
+  * Consequence: the v2 Home Assistant row is a mix of two commit windows (ESTIMATED effect on the 98% median: small, since the v3 median on aligned shards is 97%). The v2 "0 of 50" is withdrawn.
+* **Note: saleor rows marked stale and partial** (headline and §2). They are the version-2 snapshot; the walk is still running.
 
 ## R-002 fixes (each with its test)
 
@@ -167,7 +186,7 @@ Everything runs on GitHub Actions `ubuntu-latest` (4 vCPU), workflow `.github/wo
 * Randomness and thread timing. Flakiness is handled by verification and reruns, not by the key.
 
 **Rules:**
-* **`strict`** = `closure` plus the first study's config rule: any lockfile, config or CI file change reruns everything.
+* **`strict`** = `closure` plus the first study's config rule: any lockfile, config or CI file change reruns everything. **In Go, `strict` is built on the go test cache (not on `closure`) plus the config rule, so it is no proof; its rows read "go test cache + config (no proof)"** (R-002b note; `aggregate.rule_label`).
 * **Python only:**
   * `func+guard`: a proof at the Python level;
   * `~cfg`: near-proof;
@@ -200,7 +219,7 @@ Everything runs on GitHub Actions `ubuntu-latest` (4 vCPU), workflow `.github/wo
 
 ## 2. Setting 1: large repositories (v2 capture; v3 results in the headline table)
 
-Skip shares are MEASURED on the stated sample. Time to green is ESTIMATED. The saleor rows come from report version 2: at the moment no commit has been reached by all 8 shards, because shards 6-7 were restarted.
+Skip shares are MEASURED on the stated sample. Time to green is ESTIMATED. **The saleor rows are stale and partial:** they come from report version 2 (10 commits, 7 verified skips). The saleor walk is still running; at version 3.1 the aggregator prints 29 transitions, `closure` 0% / 13%, 56 (0, 0) verified, 25 of 29 invalidate everything (MEASURED snapshot, moves while shards land).
 
 | project | lang | transitions | units (sample) | rule | time skipped median / mean | tests skipped median / mean | time to green before -> after (after without capture overhead), median / mean | invalidate all (why) | verified skips (wrong, flaky) |
 |---|---|---:|---|---|---:|---:|---|---|---|
@@ -212,10 +231,10 @@ Skip shares are MEASURED on the stated sample. Time to green is ESTIMATED. The s
 | home-assistant | pytest | 50 | 776 (12%) | strict | 97% / 67% | 97% / 67% | 417s -> 35s (16s) / 417s -> 299s (140s) | 0/50 (-) | 2573 (0, 0) |
 | prometheus | go | 50 | 90 (100%) | go test cache (no proof) | 56% / 52% | 84% / 73% | 135s -> 118s (118s) / 135s -> 118s (118s) | 0/50 (-) | 313 (0, 0) |
 | prometheus | go | 50 | 90 (100%) | closure | 56% / 52% | 84% / 73% | 135s -> 118s (118s) / 135s -> 118s (118s) | 0/50 (-) | 313 (0, 0) |
-| prometheus | go | 50 | 90 (100%) | strict | 52% / 48% | 82% / 67% | 135s -> 118s (118s) / 135s -> 119s (119s) | 0/50 (-) | 313 (0, 0) |
+| prometheus | go | 50 | 90 (100%) | go test cache + config (no proof) | 52% / 48% | 82% / 67% | 135s -> 118s (118s) / 135s -> 119s (119s) | 0/50 (-) | 313 (0, 0) |
 | terraform | go | 50 | 125 (100%) | go test cache (no proof) | 72% / 61% | 80% / 73% | 95s -> 48s (48s) / 95s -> 68s (68s) | 0/50 (-) | 697 (0, 0) |
 | terraform | go | 50 | 125 (100%) | closure | 35% / 31% | 79% / 72% | 95s -> 95s (95s) / 95s -> 95s (95s) | 0/50 (-) | 475 (0, 0) |
-| terraform | go | 50 | 125 (100%) | strict | 66% / 57% | 78% / 69% | 95s -> 48s (48s) / 95s -> 70s (70s) | 0/50 (-) | 697 (0, 0) |
+| terraform | go | 50 | 125 (100%) | go test cache + config (no proof) | 66% / 57% | 78% / 69% | 95s -> 48s (48s) / 95s -> 70s (70s) | 0/50 (-) | 697 (0, 0) |
 | vue-core | vitest | 50 | 185 (100%) | closure | 25% / 28% | 46% / 39% | 31s -> 37s (24s) / 32s -> 35s (23s) | 15/50 (read:config 10, read:source 5) | 371 (0, 0) |
 | vue-core | vitest | 50 | 185 (100%) | strict | 25% / 26% | 46% / 37% | 31s -> 37s (24s) / 32s -> 36s (23s) | 15/50 (read:config 10, read:source 5) | 371 (0, 0) |
 | saleor | pytest | 10 | 112 (15%) | closure | 0% / 9% | 0% / 8% | 289s -> 819s (289s) / 289s -> 746s (263s) | 9/10 (listing:data 4, py-source:source 4, read:config 1) | 7 (0, 0) (v2 report, 01:55 UTC) |
@@ -226,7 +245,7 @@ Skip shares are MEASURED on the stated sample. Time to green is ESTIMATED. The s
 **Observations** (MEASURED, v2 capture):
 
 * **Home Assistant** (50 commits):
-  * 35 of 50 commits let at least 90% of test time be skipped, and no commit forced everything. The repository holds about a thousand integrations, each tested by loading the core plus one integration, and most commits touch one integration.
+  * 35 of 50 commits let at least 90% of test time be skipped. The table says no commit forced everything, but that is an aggregation artefact of v2; see "Home Assistant: 8 of 50 commits rerun everything" in the R-002 re-check section. The repository holds about a thousand integrations, each tested by loading the core plus one integration, and most commits touch one integration.
   * The coverage-only rule adds 4 points of mean (`func` 89% vs `closure` 85%), but its extra skips were not verified (n/a).
   * The config rule costs 18 points of mean.
 * **Docusaurus:**
@@ -250,7 +269,7 @@ Each push of an agent PR is a transition from the previous push. At the PR's bas
 |---|---:|---:|---|---:|---|
 | github-mcp-server:copilot | 15 | 101 | go test cache (no proof) | 68% / 52% | 287 (0, 0) |
 | github-mcp-server:copilot | 15 | 101 | closure | 47% / 49% | 283 (0, 0) |
-| github-mcp-server:copilot | 15 | 101 | strict | 14% / 43% | 287 (0, 0) |
+| github-mcp-server:copilot | 15 | 101 | go test cache + config (no proof) | 14% / 43% | 287 (0, 0) |
 | home-assistant:codex | 8 | 20 | closure | 98% / 55% | 476 (0, 0) |
 | home-assistant:codex | 8 | 20 | func+guard | 98% / 55% | n/a |
 | home-assistant:codex | 8 | 20 | func | 98% / 55% | n/a |
@@ -261,7 +280,7 @@ Each push of an agent PR is a transition from the previous push. At the PR's bas
 | home-assistant:copilot | 3 | 12 | strict | 97% / 93% | 407 (0, 2) |
 | typescript-go:copilot | 5 | 37 | go test cache (no proof) | 28% / 42% | 242 (0, 0) |
 | typescript-go:copilot | 5 | 37 | closure | 28% / 42% | 242 (0, 0) |
-| typescript-go:copilot | 5 | 37 | strict | 28% / 42% | 242 (0, 0) |
+| typescript-go:copilot | 5 | 37 | go test cache + config (no proof) | 28% / 42% | 242 (0, 0) |
 
 * **Pooled over the 170 pushes** (MEASURED):
   * `closure`: median 52% / mean 51%;
@@ -374,7 +393,7 @@ unless capture runs only on a sample of runs.
   * a read-write fixture;
   * an environment variable;
   * the runtime;
-  * an external service.
+  * an external service (since v3.1 also when it is reached through an HTTP(S) proxy on loopback).
 
   The v3 key closes these holes. On the v3 capture setting 1 adds 0 wrong in 4 464 verified `closure` skips (MEASURED), so v2 + v3 together give 0 wrong in 10 440 (per-skip error rate below about 0.03%, 95% upper bound, ESTIMATED as 3 / n). The v3 runs still share one runner image, so env-var and runtime changes were not exercised (0 reruns from either, MEASURED).
 * **Wall-clock is not a dependency** of this capture (only `detpy --det` covers it). A shared cache that runs for a long time will reuse passes of date-dependent tests.

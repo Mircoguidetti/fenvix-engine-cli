@@ -92,6 +92,13 @@ def recheck_says_flaky(verdict) -> bool:
 RULE_LABEL = {"go-cache": "go test cache (no proof)", "closure": "closure", "strict": "strict"}
 
 
+def rule_label(r, lang=None):
+    """Go ``strict`` is built on the go test cache plus the config rule, not on ``closure``: no proof (R-002b)."""
+    if lang == "go" and r == "strict":
+        return "go test cache + config (no proof)"
+    return RULE_LABEL.get(r, r)
+
+
 def recheck_verdicts():
     """(unit, commit) -> verdict of every re-check of a verification mismatch under results/*/recheck/."""
     global _RECHECK
@@ -367,7 +374,7 @@ def print_compare(before_ids, after_ids):
         lang = (wa or wb)["lang"]
         rules = ["closure", "go-cache"] if lang == "go" else ["closure"]
         for r in rules:
-            label = "closure (proof; v3 adds the net guard)" if (lang == "go" and r == "closure") else RULE_LABEL.get(r, r)
+            label = "closure (proof; v3 adds the net guard)" if (lang == "go" and r == "closure") else rule_label(r, lang)
             why = (wa or {}).get("closure_rerun_why") or {}
             new = ", ".join(str(why.get(k, 0)) for k in NEW_KEY) if (wa and r == "closure") else "-"
             print(f"| {name} | {label} | {(wb or {}).get('transitions', '-')} / {(wa or {}).get('transitions', '-')} | "
@@ -534,7 +541,7 @@ def print_md(s):
             tp = x.get("ttg_after_plain_s") or {}
             ttg = (f"{tb.get('median', 0):.0f}s -> {ta.get('median', 0):.0f}s ({tp.get('median', 0):.0f}s) / "
                    f"{tb.get('mean', 0):.0f}s -> {ta.get('mean', 0):.0f}s ({tp.get('mean', 0):.0f}s)") if tb else "n/a"
-            print(f"| {name} | {w['lang']} | {w['transitions']} | {w['units']} ({w['sample']:.0%}) | {RULE_LABEL.get(r, r)} | "
+            print(f"| {name} | {w['lang']} | {w['transitions']} | {w['units']} ({w['sample']:.0%}) | {rule_label(r, w['lang'])} | "
                   f"{ms(x['time'])} | {ms(x['count'])} | {ttg} | {inv} | {ver} |")
     if s["agent"]:
         print()
@@ -545,7 +552,7 @@ def print_md(s):
                 if st:
                     v = ag.get("verify_by_rule", {}).get(r, ag["verify"]) if ag.get("verify_by_rule") else ag["verify"]
                     ver = "n/a" if v is None else f"{v.get('checked', 0)} ({v.get('wrong', 0)}, {v.get('flaky', 0)})"
-                    print(f"| {k} | {len(ag['prs'])} | {ag['pushes']} | {RULE_LABEL.get(r, r)} | {ms(st)} | {ver} |")
+                    print(f"| {k} | {len(ag['prs'])} | {ag['pushes']} | {rule_label(r, 'go' if 'go-cache' in ag['pooled_time'] else None)} | {ms(st)} | {ver} |")
     if s.get("agent_pooled"):
         ap = s["agent_pooled"]
         print()
