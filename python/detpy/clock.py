@@ -273,8 +273,22 @@ def _mark_external(real):
     return wrapper
 
 
+_WAITID = getattr(os, "waitid", None)
+
+
 def _children_alive() -> bool:
-    """True if this process has live child processes (Linux: /proc children lists)."""
+    """True if this process has child processes (running, or exited and not yet
+    reaped). One waitid() call that reaps nothing (WNOWAIT); it runs on every sleep,
+    and the /proc scan it replaces opened one file per thread (more-itertools: 1.9 s
+    of a 5 s test with 50 threads). The /proc scan stays as the fallback."""
+    if _WAITID is not None:
+        try:
+            _WAITID(os.P_ALL, 0, os.WEXITED | os.WNOHANG | os.WNOWAIT)
+            return True  # None: children, none exited; a result: an unreaped child
+        except ChildProcessError:
+            return False
+        except OSError:
+            pass
     try:
         for tid in _real_listdir("/proc/self/task"):
             with open(f"/proc/self/task/{tid}/children") as f:

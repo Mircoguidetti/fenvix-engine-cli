@@ -582,3 +582,23 @@ def test_a_gc_callback_reading_the_clock_does_not_deadlock(pytester):
     except pytester.TimeoutExpired:
         pytest.fail("inner run hung")
     result.assert_outcomes(passed=1)
+
+
+def test_children_alive_sees_children_without_reaping_them():
+    """Level 0 asks on every sleep whether a child process is alive (then sleeps are
+    real). One waitid() call that must not reap the child (Popen.wait still works)."""
+    import subprocess
+
+    from detpy import clock
+
+    assert clock._children_alive() is False
+    p = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(0.5)"])
+    try:
+        assert clock._children_alive() is True
+    finally:
+        assert p.wait(10) == 0  # not reaped by the check
+    q = subprocess.Popen([sys.executable, "-c", "pass"])
+    while q.poll() is None and clock._children_alive():
+        time.sleep(0.01)
+    assert q.wait(10) == 0
+    assert clock._children_alive() is False
