@@ -16,9 +16,10 @@ on:
     paths: [".github/workflows/fenvix-demo*.yml", "runner/**"]
   workflow_dispatch:
     inputs:
-      target: {description: "public pytest project (owner/repo)", default: "pallets/click"}
-      commit_n: {description: "commit N", default: "e38188e9e205005d5af5f9e59df51904c984586a"}
-      commit_n1: {description: "commit N+1", default: "08b803cf32ceb2ae6a772c62d5da42757a897d44"}
+      target: {description: "public pytest project (owner/repo)", default: "pygments/pygments"}
+      commit_n: {description: "commit N", default: "9c436b34ccafdf9376527f66c6e587ffe0d1b84c"}
+      commit_n1: {description: "commit N+1", default: "b6aaaca75fd3bd30c2a2c0e5eb4e1bf0c325e101"}
+      extra_pip: {description: "extra test requirements of the target", default: "wcag-contrast-ratio"}
 
 permissions:
   contents: read
@@ -36,6 +37,7 @@ jobs:
     with:
       runs_on: '["self-hosted", "fenvix"]'
       hosted: false
-      target: ${{ inputs.target || 'pallets/click' }}
-      commit_n: ${{ inputs.commit_n || 'e38188e9e205005d5af5f9e59df51904c984586a' }}
-      commit_n1: ${{ inputs.commit_n1 || '08b803cf32ceb2ae6a772c62d5da42757a897d44' }}
+      target: ${{ inputs.target || 'pygments/pygments' }}
+      commit_n: ${{ inputs.commit_n || '9c436b34ccafdf9376527f66c6e587ffe0d1b84c' }}
+      commit_n1: ${{ inputs.commit_n1 || 'b6aaaca75fd3bd30c2a2c0e5eb4e1bf0c325e101' }}
+      extra_pip: ${{ inputs.extra_pip || 'wcag-contrast-ratio' }}
