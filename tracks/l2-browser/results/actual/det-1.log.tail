@@ -1,15 +1,86 @@
-detjs 0.1.0: Level 2 browser prototype; playwright 1.61.1; seed 0; epoch 2025-01-01T00:00:00Z; vtime=paced; net=on; server=on; workers=1
+detjs 0.1.0: Level 2 browser prototype; playwright 1.61.1; seed 0; epoch 2026-11-17T12:27:00Z; vtime=paced; net=on; server=on; workers=1
 [WebServer] (!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
 [WebServer]   - `__dirname` (vite.config.mts:7:31). Use `import.meta.dirname` instead
 [WebServer] Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+Running 74 tests using 1 worker, shard 1 of 3
 [WebServer] (!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
 [WebServer]   - `__dirname` (vite.config.mts:57:31). Use `import.meta.dirname` instead
 [WebServer] Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+·········································F········T··········F············
 
-Running 74 tests using 1 worker, shard 1 of 3
-·····························································F············
+  1) [chromium] › e2e/budget.mobile.test.ts:296:9 › Mobile Budget [Envelope] › moves a category to another group with drag and drop 
 
-  1) [chromium] › e2e/budget.mobile.test.ts:296:9 › Mobile Budget [Tracking] › moves a category to another group with drag and drop 
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: getByRole('grid', { name: 'Bills expense group categories' }).getByTestId('category-name')
+    Timeout: 10000ms
+    - Expected  - 1
+    + Received  + 0
+
+      Array [
+        "Cell",
+    -   "Gift",
+        "Internet",
+        "Mortgage",
+        "Water",
+        "Power",
+      ]
+
+    Call log:
+      - Expect "toHaveText" with timeout 10000ms
+      - waiting for getByRole('grid', { name: 'Bills expense group categories' }).getByTestId('category-name')
+        24 × locator resolved to 5 elements
+
+
+      311 |           .getByRole('grid', { name: 'Bills expense group categories' })
+      312 |           .getByTestId('category-name'),
+    > 313 |       ).toHaveText(['Cell', 'Gift', 'Internet', 'Mortgage', 'Water', 'Power']);
+          |         ^
+      314 |     });
+      315 |
+      316 |     test('opens the transfer confirmation when deleting a category group with transactions', async () => {
+        at /home/runner/work/_temp/l2_target/packages/desktop-client/e2e/budget.mobile.test.ts:313:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/budget.mobile-Mobile-Budge-016b9-er-group-with-drag-and-drop-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/budget.mobile-Mobile-Budge-016b9-er-group-with-drag-and-drop-chromium/error-context.md
+
+    Error Context: test-results/budget.mobile-Mobile-Budge-016b9-er-group-with-drag-and-drop-chromium/error-context.md
+
+  2) [chromium] › e2e/budget.mobile.test.ts:433:9 › Mobile Budget [Envelope] › applies budget template 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: locator.click: Target page, context or browser has been closed
+    Call log:
+      - waiting for getByRole('button', { name: 'Back' })
+
+
+       at page-models/settings-page.ts:47
+
+      45 |     const isNarrow = viewport != null && viewport.width < 512;
+      46 |     if (isNarrow && !(await sectionLink.isVisible())) {
+    > 47 |       await this.backButton.click();
+         |                             ^
+      48 |     }
+      49 |
+      50 |     await sectionLink.click();
+        at SettingsPage.goToSection (/home/runner/work/_temp/l2_target/packages/desktop-client/e2e/page-models/settings-page.ts:47:29)
+        at SettingsPage.enableExperimentalFeature (/home/runner/work/_temp/l2_target/packages/desktop-client/e2e/page-models/settings-page.ts:69:5)
+        at /home/runner/work/_temp/l2_target/packages/desktop-client/e2e/budget.mobile.test.ts:435:7
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/budget.mobile-Mobile-Budget-Envelope-applies-budget-template-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/budget.mobile-Mobile-Budget-Envelope-applies-budget-template-chromium/error-context.md
+
+    Error Context: test-results/budget.mobile-Mobile-Budget-Envelope-applies-budget-template-chromium/error-context.md
+
+  3) [chromium] › e2e/budget.mobile.test.ts:296:9 › Mobile Budget [Tracking] › moves a category to another group with drag and drop 
 
     Error: expect(locator).toHaveText(expected) failed
 
@@ -50,7 +121,9 @@ Running 74 tests using 1 worker, shard 1 of 3
 
     Error Context: test-results/budget.mobile-Mobile-Budge-cb0e1-er-group-with-drag-and-drop-chromium/error-context.md
 
-  1 failed
+  3 failed
+    [chromium] › e2e/budget.mobile.test.ts:296:9 › Mobile Budget [Envelope] › moves a category to another group with drag and drop 
+    [chromium] › e2e/budget.mobile.test.ts:433:9 › Mobile Budget [Envelope] › applies budget template 
     [chromium] › e2e/budget.mobile.test.ts:296:9 › Mobile Budget [Tracking] › moves a category to another group with drag and drop 
-  73 passed (16.4m)
+  71 passed (14.8m)
 detjs: trace ../../../l2_out/actual/traces/det-1.jsonl

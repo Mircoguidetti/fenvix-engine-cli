@@ -1,0 +1,75 @@
+===== 0308ad24da655492.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/actual/server-parts/det-1/0308ad24da655492.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/actual/server-parts/det-2/0308ad24da655492.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== 12c7fff6a7eb53b2.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/actual/server-parts/det-1/12c7fff6a7eb53b2.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/actual/server-parts/det-2/12c7fff6a7eb53b2.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== 39a8100b6d970fbc.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/actual/server-parts/det-1/39a8100b6d970fbc.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/actual/server-parts/det-2/39a8100b6d970fbc.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== 46284abbf4618181.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/actual/server-parts/det-1/46284abbf4618181.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/actual/server-parts/det-2/46284abbf4618181.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== 816007c88cbe7f88.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/actual/server-parts/det-1/816007c88cbe7f88.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/actual/server-parts/det-2/816007c88cbe7f88.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== 935031356d1400fa.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/actual/server-parts/det-1/935031356d1400fa.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/actual/server-parts/det-2/935031356d1400fa.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== 9a66385f15c79e04.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/actual/server-parts/det-1/9a66385f15c79e04.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/actual/server-parts/det-2/9a66385f15c79e04.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== 9f18f6720f0ad599.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/actual/server-parts/det-1/9f18f6720f0ad599.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/actual/server-parts/det-2/9f18f6720f0ad599.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== a4a2c3f6389a698d.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/actual/server-parts/det-1/a4a2c3f6389a698d.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/actual/server-parts/det-2/a4a2c3f6389a698d.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== c158f26700517bc0.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/actual/server-parts/det-1/c158f26700517bc0.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/actual/server-parts/det-2/c158f26700517bc0.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== eac66826c0fb81d0.jsonl
+detpy verify: 2 runs, 74 tests
+  run 0: /home/runner/work/_temp/l2_out/actual/server-parts/det-1/eac66826c0fb81d0.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/actual/server-parts/det-2/eac66826c0fb81d0.jsonl (partial)
+order: identical in every run
+covered by Level 0: 73  not covered: 1  missing: 0  outcome-unstable: 0
+reasons: time=1
+NOT-COVERED e2e/accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #0: setTimeout @ <deps>/vite/dist/node/chunks/node.js:12314 returned different values: "schedule:100000000" vs "schedule:1000000"
+===== f777291bb2818d93.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/actual/server-parts/det-1/f777291bb2818d93.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/actual/server-parts/det-2/f777291bb2818d93.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
