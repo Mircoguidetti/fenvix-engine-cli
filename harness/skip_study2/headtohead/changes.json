@@ -1,0 +1,139 @@
+{
+ "_doc": "Realistic CI changes for the head-to-head ci-* arms (h2h_walk.py --arm ci-dep | ci-data | ci-env). Each scenario was probed before the run and changes test behaviour at the walked commits: the question is whether each skip rule notices. pins0 / pins1: dependency pins installed after the normal install, before / after the change lands (one virtualenv per profile). edits: byte-level text replacement in a data or fixture file, applied after every checkout from the landing commit on; no test or source file changes with it. env: variables the CI job exports from the landing commit on.",
+ "flask": {
+  "dep": {
+   "what": "lockfile bump of the test runner: pytest 8.4.2 -> 9.1.1 (pytest 9.1 removed _pytest.monkeypatch.notset, which flask's conftest used until July 2026)",
+   "pins0": [],
+   "pins1": [
+    "pytest==9.1.1"
+   ]
+  },
+  "data": {
+   "what": "shared template fixture tests/templates/simple_template.html: <h1> -> <h2>",
+   "edits": [
+    {
+     "path": "tests/templates/simple_template.html",
+     "replace": [
+      "<h1>{{ whiskey }}</h1>",
+      "<h2>{{ whiskey }}</h2>"
+     ]
+    }
+   ]
+  }
+ },
+ "structlog": {
+  "dep": {
+   "what": "lockfile change of a test dependency: rich (latest) -> rich 13.0.0",
+   "pins0": [],
+   "pins1": [
+    "rich==13.0.0"
+   ]
+  }
+ },
+ "jinja": {
+  "data": {
+   "what": "shared template fixture tests/res/templates/test.html: BAR -> BAZ",
+   "edits": [
+    {
+     "path": "tests/res/templates/test.html",
+     "replace": [
+      "BAR",
+      "BAZ"
+     ]
+    }
+   ]
+  }
+ },
+ "werkzeug": {
+  "data": {
+   "what": "recorded HTTP request fixture tests/multipart/firefox3-2png1txt/request.http: the text field 'example text' -> 'example text v2'",
+   "edits": [
+    {
+     "path": "tests/multipart/firefox3-2png1txt/request.http",
+     "replace": [
+      "example text",
+      "example text v2"
+     ]
+    }
+   ]
+  }
+ },
+ "sqlparse": {
+  "data": {
+   "what": "shared SQL fixture tests/files/begintag.sql gains a statement",
+   "edits": [
+    {
+     "path": "tests/files/begintag.sql",
+     "replace": [
+      "commit;",
+      "commit;\nselect 1;"
+     ]
+    }
+   ]
+  }
+ },
+ "pygments": {
+  "data": {
+   "what": "example input tests/examplefiles/awk/test.awk: a comment is reworded, its golden .output is not regenerated",
+   "edits": [
+    {
+     "path": "tests/examplefiles/awk/test.awk",
+     "replace": [
+      "# It is not possible",
+      "# It is impossible"
+     ]
+    }
+   ]
+  }
+ },
+ "click": {
+  "env": {
+   "what": "the CI job turns warnings into errors: PYTHONWARNINGS=error",
+   "env": {
+    "PYTHONWARNINGS": "error"
+   }
+  }
+ },
+ "docusaurus": {
+  "data": {
+   "what": "blog content fixture (website/blog/2018-12-14-Happy-First-Birthday-Slash.md): post title reworded",
+   "edits": [
+    {
+     "path": "packages/docusaurus-plugin-content-blog/src/__tests__/__fixtures__/website/blog/2018-12-14-Happy-First-Birthday-Slash.md",
+     "replace": [
+      "title: Happy 1st Birthday Slash!",
+      "title: Happy First Birthday Slash!"
+     ]
+    }
+   ]
+  },
+  "env": {
+   "what": "NODE_ENV=production exported by the CI job (e.g. for a build step) and inherited by the test step",
+   "env": {
+    "NODE_ENV": "production"
+   }
+  }
+ },
+ "vue-core": {
+  "env": {
+   "what": "NODE_ENV=production exported by the CI job (e.g. for a build step) and inherited by the test step",
+   "env": {
+    "NODE_ENV": "production"
+   }
+  }
+ },
+ "home-assistant": {
+  "data": {
+   "what": "shared integration fixture tests/components/bring/fixtures/items.json: the first item's 'urgent' flag true -> false",
+   "edits": [
+    {
+     "path": "tests/components/bring/fixtures/items.json",
+     "replace": [
+      "\"urgent\": true",
+      "\"urgent\": false"
+     ]
+    }
+   ]
+  }
+ }
+}

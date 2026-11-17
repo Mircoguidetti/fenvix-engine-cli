@@ -48,6 +48,18 @@ two profiles at every commit (commit 0 in profile 0):
 
 Installs and builds always run in profile 0's environment.
 
+``--arm ci-dep`` / ``ci-data`` / ``ci-env`` (realistic CI changes, ``changes.json``): the first ``--max-commits`` commits
+of the window, profile 0 until commit ``--land`` and profile 1 from there on (the change lands and stays, as a merged
+change does). Profile 1 is the project's scenario of that kind:
+
+* ``ci-dep``: the resolved version of a dependency changes (a lockfile bump; for these libraries, which install
+  unpinned, also what a new release does to the next CI run). Each profile has its own virtualenv at the same path:
+  the normal install, then ``uv pip install`` of the profile's pins (``pins0`` / ``pins1``);
+* ``ci-data``: a data / fixture file read by the tests is edited (no test or source file changes with it);
+* ``ci-env``: the CI job exports one more variable that the tests read (``env``).
+
+In these arms every unit runs fresh at every commit (verification sample 100%), so every skip of every rule is checked.
+
     python3 headtohead/h2h_walk.py --spec headtohead/specs/toolz.json --work /tmp/w --out x.json.gz [--arm env]
 """
 
@@ -87,9 +99,13 @@ def good(code):
 
 
 class H2H(Walker):
-    def __init__(self, spec, work, out, shard, nshards, budget_min, run_id, arm="", max_commits=0, max_rechecks=80):
+    def __init__(self, spec, work, out, shard, nshards, budget_min, run_id, arm="", max_commits=0, max_rechecks=80,
+                 land=3):
         super().__init__(spec, work, out, shard, nshards, budget_min, run_id)
         self.arm = arm or ""
+        self.land = land
+        self.change = None
+        self.edit_log = []
         self.max_commits = max_commits
         self.max_rechecks = max_rechecks
         self.profile = 0
@@ -133,6 +149,16 @@ class H2H(Walker):
                 log(f"/root not writable: {e}")
             self.alt = {"HOME": str(home)}
             self.result["profiles"] = {"0": {"HOME": os.path.expanduser("~")}, "1": self.alt}
+        elif self.arm.startswith("ci-"):
+            kind = self.arm[3:]
+            sc = json.loads((HERE / "changes.json").read_text()).get(self.spec["name"], {}).get(kind)
+            if not sc:
+                raise SystemExit(f"no {kind} scenario for {self.spec['name']} in changes.json")
+            if kind == "dep" and self.lang != "pytest":
+                raise SystemExit("ci-dep: Python projects only")
+            self.change = sc
+            self.result["change"] = dict(sc, land=self.land)
+            self.result["profiles"] = {"0": {"before": True}, "1": {"change": sc.get("what")}}
         elif self.arm == "runtime":
             if self.lang == "pytest":
                 minor = self.spec.get("py_minor") or "3.13"
@@ -188,14 +214,23 @@ class H2H(Walker):
             log(f"alternate node unavailable: {e}")
             return None, None, cur
 
+    def separate_venvs(self):
+        return self.lang == "pytest" and self.arm in ("runtime", "ci-dep")
+
     def dep_key(self):
-        """Profiles have separate installs only in the Python runtime arm (one virtualenv per interpreter)."""
-        return self.profile if (self.arm == "runtime" and self.lang == "pytest") else 0
+        """Profiles have separate installs only in the Python runtime arm (one virtualenv per interpreter) and in the
+        dependency-change arm (one virtualenv per resolved dependency set)."""
+        return self.profile if self.separate_venvs() else 0
+
+    def profile_at(self, i):
+        if self.arm.startswith("ci-"):
+            return 0 if i < self.land else 1
+        return i % 2 if self.arm else 0
 
     def set_profile(self, k):
         if k == self.profile:
             return
-        if self.arm == "runtime" and self.lang == "pytest":
+        if self.separate_venvs():
             park = self.work / f"venv-p{self.profile}"
             nxt = self.work / f"venv-p{k}"
             if self.venv.exists():
@@ -210,6 +245,8 @@ class H2H(Walker):
         if self.profile == 1 and not self.base_env:
             if self.arm in ("env", "home-root"):
                 e.update(self.alt)
+            elif self.arm == "ci-env":
+                e.update(self.change["env"])
             elif self.arm == "runtime" and self.lang != "pytest" and self.alt.get("node_bin"):
                 e["PATH"] = self.alt["node_bin"] + ":" + e.get("PATH", "")
         return e
@@ -221,10 +258,41 @@ class H2H(Walker):
                     and not (self.venv / "bin" / "python").exists():
                 code, out, _ = sh(["uv", "venv", "-q", "--python", self.alt["python"], str(self.venv)], timeout=900)
                 log(f"alt venv {self.alt['python']} -> {code} {out[-300:]}")
-            return super().install()
+            ok, why = super().install()
+            if ok and self.arm == "ci-dep":
+                pins = self.change.get(f"pins{self.profile}") or []
+                if pins:
+                    code, out, _ = sh(["uv", "pip", "install", "-q", "--python", str(self.venv / "bin" / "python"),
+                                       *pins], cwd=self.src, env=self.env(), timeout=1500)
+                    log(f"pins p{self.profile} {pins} -> {code} {out[-300:]}")
+                    if code:
+                        return False, out[-3000:]
+                _, fr, _ = sh(["uv", "pip", "freeze", "--python", str(self.venv / "bin" / "python")], timeout=300)
+                self.result.setdefault("freeze", {})[str(self.profile)] = fr.splitlines()[:400]
+            return ok, why
         finally:
             self.base_env = False
             self._runtime = None
+
+    def checkout(self, sha):
+        super().checkout(sha)
+        if self.arm == "ci-data" and self.profile == 1:
+            st = []
+            for ed in self.change["edits"]:
+                f = self.src / ed["path"]
+                try:
+                    t = f.read_bytes()   # bytes: keep line endings (CRLF in recorded HTTP fixtures) as they are
+                except OSError:
+                    st.append([ed["path"], "missing"])
+                    continue
+                old, new = (x.encode() for x in ed["replace"])
+                if old not in t:
+                    st.append([ed["path"], "old-text-not-found"])
+                    continue
+                f.write_bytes(t.replace(old, new, ed.get("count", 1)))
+                st.append([ed["path"], "applied"])
+            self.edit_log.append([sha[:12], st])
+            self.result["edits"] = self.edit_log
 
     def build(self):
         self.base_env = True
@@ -394,7 +462,7 @@ class H2H(Walker):
         if self.max_commits:
             commits = commits[:self.max_commits]
         log(f"{self.spec['name']} shard {self.shard}/{self.nshards} arm '{self.arm}': {len(commits)} commits")
-        verify = self.spec.get("verify", 0.1)
+        verify = 1.0 if self.arm.startswith("ci-") else self.spec.get("verify", 0.1)
         for i, sha in enumerate(commits):
             if time.time() - W.T_START > self.budget:
                 self.result["notes"].append(f"budget reached before commit {i}")
@@ -402,7 +470,7 @@ class H2H(Walker):
                 break
             t_commit = time.time()
             prev = commits[i - 1] if i else None
-            self.set_profile(i % 2 if self.arm else 0)
+            self.set_profile(self.profile_at(i))
             self.checkout(sha)
             row = {"i": i, "sha": sha, "profile": self.profile,
                    "date": git(self.src, "show", "-s", "--format=%cI", sha).strip()}
@@ -526,6 +594,9 @@ class H2H(Walker):
                     "decisions": {u: {r: dec[u][r] for r in self.rules_h if dec[u][r]} for u in units
                                   if any(dec[u].values())},
                     "checks": checks, "mismatch": mism, "verify_sample": len(ver),
+                    "fresh_bad": sorted(u for u, r in runs.items() if not good(r["code"]) or
+                                        any(v == "fail" for v in outcome_summary(r["tests"] or {}).values())),
+                    "ran": len(runs),
                     "tests": {u: self.costs.get(u, {}).get("n", 0) for u in units}})
             row.update(status="ok", ran=len(runs), seconds=time.time() - t_commit,
                        fails=sum(1 for u in units if not good((runs.get(u) or self.records.get(u) or {}).get("code"))))
@@ -588,13 +659,14 @@ def main(argv=None):
     ap.add_argument("--shard", default="0/1")
     ap.add_argument("--budget-min", type=float, default=330)
     ap.add_argument("--run-id", default="local")
-    ap.add_argument("--arm", default="", choices=("", "env", "runtime", "home-root"))
+    ap.add_argument("--arm", default="", choices=("", "env", "runtime", "home-root", "ci-dep", "ci-data", "ci-env"))
+    ap.add_argument("--land", type=int, default=3, help="ci-* arms: index of the commit where the change lands")
     ap.add_argument("--max-commits", type=int, default=0)
     ap.add_argument("--max-rechecks", type=int, default=80)
     a = ap.parse_args(argv)
     spec = json.loads(Path(a.spec).read_text())
     s, n = (int(x) for x in a.shard.split("/"))
-    w = H2H(spec, a.work, a.out, s, n, a.budget_min, a.run_id, a.arm, a.max_commits, a.max_rechecks)
+    w = H2H(spec, a.work, a.out, s, n, a.budget_min, a.run_id, a.arm, a.max_commits, a.max_rechecks, a.land)
     w.walk()
     return 0
 

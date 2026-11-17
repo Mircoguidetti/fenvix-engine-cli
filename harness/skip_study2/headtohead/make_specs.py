@@ -46,7 +46,7 @@ def lib(name):
             continue
         clean.append(args[k])
         k += 1
-    extra = repos.get(name, {}).get("install", [])
+    extra = repos.get(name, {}).get("install", []) + EXTRA.get(name, [])
     dsel = []
     for t in DESELECT.get(name, []):
         dsel += ["--deselect", t]
@@ -69,6 +69,11 @@ def lib(name):
         "plain_baseline": True,
     }
 
+
+# extra install arguments (h4): flask's conftest uses _pytest.monkeypatch.notset, removed in pytest 9.1, until flask
+# fixed it in July 2026 (commit 35 of the window): pin the pytest its lockfile had (8.4.2) so that the comparison runs
+# on passing units (h1 / h3 ran pytest 9.2.0: 25 of 37 units failed at commits 0-34 and every rule reran them).
+EXTRA = {"flask": ["pytest==8.4.2"]}
 
 # data-driven tests collected by a conftest from non-Python files: one unit per directory (pygments golden files)
 DIR_UNITS = {"pygments": ["tests/examplefiles", "tests/snippets"]}

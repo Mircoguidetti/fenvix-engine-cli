@@ -62,7 +62,7 @@
  "py_minor": "3.13",
  "install": [
   "test -x {py} || uv venv -q --python 3.13 {venv}",
-  "python3 {harness}/headtohead/libinstall.py --py {py} --src {src} "
+  "python3 {harness}/headtohead/libinstall.py --py {py} --src {src} --extra pytest==8.4.2"
  ],
  "install_files": [
   "pyproject.toml",

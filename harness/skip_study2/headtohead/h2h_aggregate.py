@@ -112,10 +112,22 @@ def summarize(shards):
            "profiles": shards[0].get("profiles"), "interp": sorted({c.get("interp", "") for d in shards
                                                                     for c in d["commits"] if c.get("interp")}),
            "notes": sorted({n for d in shards for n in d.get("notes", [])})}
+    if shards[0].get("change"):
+        out["change"] = shards[0]["change"]
+        out["edits"] = [e for d in shards for e in d.get("edits", [])]
+        out["after_landing"] = sum(1 for i in full if by_i[i][0].get("profile") == 1)
+        # units that fail fresh after the change landed but passed fresh before it (what the change broke)
+        before = set().union(*[set(t.get("fresh_bad", [])) for i in full for t in by_i[i] if t.get("profile") == 0]) \
+            if any(by_i[i][0].get("profile") == 0 for i in full) else set()
+        after = set().union(*[set(t.get("fresh_bad", [])) for i in full for t in by_i[i] if t.get("profile") == 1]) \
+            if out["after_landing"] else set()
+        out["broken_by_change"] = sorted((after - before) & set(cost))
+        out["units_ran_per_commit"] = [sum(t.get("ran", 0) for t in by_i[i]) for i in full]
     out["rules"] = [r for r in RULES if r in present]
     for r in out["rules"]:
         cls = Counter()
         wrong_items, incidents, why = [], set(), Counter()
+        wrong_units, wrong_tr = set(), set()
         for m in mism[r]:
             if m["kind"] == "set":
                 cls["set"] += 1
@@ -129,6 +141,8 @@ def summarize(shards):
                 cls["wrong"] += 1
                 wrong_items.append(m)
                 incidents.add((m["unit"], m["rec_sha"]))
+                wrong_units.add(m["unit"])
+                wrong_tr.add(m["i"])
                 why.update(m.get("changes") or [])
             elif st.startswith("flaky"):
                 cls["flaky"] += 1
@@ -138,6 +152,7 @@ def summarize(shards):
                   "checked_distinct": len(keys[r]),
                   "checked_extra": checks[r]["extra"], "checked_sample": checks[r]["sample"],
                   "wrong": cls["wrong"], "wrong_incidents": len(incidents), "flaky": cls["flaky"],
+                  "wrong_units": len(wrong_units), "wrong_commits": len(wrong_tr),
                   "unconfirmed": cls["unconfirmed"], "set_diff": cls["set"],
                   "wrong_why": dict(why.most_common(12)),
                   "wrong_examples": [{k: m.get(k) for k in ("unit", "i", "rec_i", "fails", "changes", "c")}
@@ -178,8 +193,8 @@ def pooled(sums, names):
                   "mean_of_means": statistics.fmean([sums[n][r]["time"]["mean"] for n in ns
                                                      if sums[n][r]["time"]["mean"] is not None] or [0])}
         for k in ("skips", "checked", "checked_distinct", "checked_extra", "checked_sample", "wrong",
-                  "wrong_incidents", "flaky", "unconfirmed", "set_diff"):
-            out[r][k] = sum(sums[n][r][k] for n in ns)
+                  "wrong_incidents", "flaky", "unconfirmed", "set_diff", "wrong_units", "wrong_commits"):
+            out[r][k] = sum(sums[n][r].get(k, 0) for n in ns)
     out["transitions"] = sum(sums[n]["transitions"] for n in names if n in sums)
     return out
 
