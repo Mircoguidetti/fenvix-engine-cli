@@ -192,6 +192,9 @@ def main(argv=None) -> int:
     ap.add_argument("--wheel", default="", help="detpy wheel: enables the --det determinism check")
     ap.add_argument("--det-every", type=int, default=10, help="--det check at commits i %% N == 0 (and the last)")
     ap.add_argument("--det-runs", type=int, default=2)
+    ap.add_argument("--deselect", action="append", default=[],
+                    help="test node id left out of every run (e.g. a test whose duration is a thread-scheduling "
+                         "lottery: more-itertools TestConcurrentTee::test_concurrent_consumers, 1 s to 3 min)")
     ap.add_argument("--tracer", choices=("auto", "coverage", "sysmon", "both"), default="auto",
                     help="capture with coverage.py (as in the study), the sys.monitoring tracer (Python 3.12+), or "
                          "both (coverage files as <stem>.*, sys.monitoring files as <stem>.sm.*); auto = sysmon "
@@ -243,6 +246,8 @@ def main(argv=None) -> int:
                 stem.with_suffix(".done").write_text(json.dumps({"status": step["status"]}))
                 continue
             args, n, why = pytest_args(repo, py, src, env)
+            if args:
+                args = [*args, *(x for d in a.deselect for x in ("--deselect", d))]
             if not args:
                 step["status"] = "collect-failed"
                 step["detail"] = why[-500:]
