@@ -56,6 +56,14 @@ MODES = {
     "l1-u": L1 + ["--det-urandom"],
 }
 SUITE_MODES = {"plain": [], "det": ["--det"], "l1": L1, "l1-s1": ["--det", "--det-threads", "--det-threads-seed=1"]}
+
+
+def suite_modes(seeds) -> dict:
+    """plain, det, l1 (calm) and one exploration mode per seed (l1-s<N>)."""
+    modes = {"plain": [], "det": ["--det"], "l1": L1}
+    for sd in seeds:
+        modes[f"l1-s{sd}"] = ["--det", "--det-threads", f"--det-threads-seed={sd}"]
+    return modes
 log, is_fail, hist = A.log, A.is_fail, A.hist
 ARTIFACT_MARKERS = ("DeadlockError", "Timeout (>", "deadlock", "detpy", "BlockingError")
 
@@ -238,6 +246,36 @@ def measure_corpus(project: dict, args) -> dict:
 
 
 # ---------------------------------------------------------------------------
+def _snapshot_mtimes(src: Path) -> dict:
+    """File times of the checkout. A test that stamps a repository file with the
+    (virtual, identical every run) time leaks into the next run: jinja's
+    test_caches_template_based_on_mtime fails in any --det run that follows another
+    --det run. Each suite run starts from the checkout's own times instead."""
+    snap = {}
+    for root, dirs, files in os.walk(src):
+        dirs[:] = [d for d in dirs if d not in (".git", ".venv", "node_modules", "__pycache__", ".detpy")]
+        for f in files:
+            p = os.path.join(root, f)
+            try:
+                st = os.stat(p)
+            except OSError:
+                continue
+            snap[p] = (st.st_atime_ns, st.st_mtime_ns)
+    return snap
+
+
+def _restore_mtimes(snap: dict) -> int:
+    n = 0
+    for p, (a, m) in snap.items():
+        try:
+            if os.stat(p).st_mtime_ns != m:
+                os.utime(p, ns=(a, m))
+                n += 1
+        except OSError:
+            pass
+    return n
+
+
 def measure_suite(project: dict, args) -> dict:
     res, p = _prepare(project, args)
     res["kind"] = "suite"
@@ -248,8 +286,13 @@ def measure_suite(project: dict, args) -> dict:
     suite = project.get("suite_args", [])
     per_mode = collections.defaultdict(list)  # mode -> [outcomes dict per run]
     timing = res["timing"] = []
+    seeds = [int(x) for x in str(args.suite_seeds).split(",") if x.strip()]
+    res["suite_seeds"] = seeds
+    snap = _snapshot_mtimes(Path(p.src))
+    restored = res["mtimes_restored"] = []
     for i in range(args.timing_runs):
-        for mode, flags in SUITE_MODES.items():
+        for mode, flags in suite_modes(seeds).items():
+            restored.append(_restore_mtimes(snap))
             # faulthandler_timeout: a test stuck for that long dumps every thread's stack.
             r = pytest_run(p, suite + flags + [f"-o", f"faulthandler_timeout={args.hang_dump}"],
                            rd / f"suite-{mode}-{i}.json", args.suite_timeout)
@@ -257,7 +300,7 @@ def measure_suite(project: dict, args) -> dict:
             timing.append({"mode": mode, "run": i, "duration_s": r["duration_s"], "exit": r["exit"],
                            "timed_out": r["timed_out"], "counts": dict(c), "stats": r["stats"],
                            "tail": r["tail"][-600:], "hang": r["hang"],
-                           "msgs": {t: m for t, m in r["msgs"].items()} if mode in ("l1", "l1-s1") else {}})
+                           "msgs": {t: m for t, m in r["msgs"].items()} if mode.startswith("l1") else {}})
             if not r["timed_out"] and r["outcomes"]:
                 per_mode[mode].append(r["outcomes"])
             log(f"{p.name} suite {mode} run={i}: {r['duration_s']}s {dict(c)} stats={r['stats']}")
@@ -281,7 +324,8 @@ def measure_suite(project: dict, args) -> dict:
 
     res["broken_by_det"] = compare("plain", "det")
     res["broken_by_l1"] = compare("det", "l1")
-    res["broken_by_l1_s1"] = compare("det", "l1-s1")
+    for sd in seeds:
+        res[f"broken_by_l1_s{sd}"] = compare("det", f"l1-s{sd}")
     unstable = {}
     for mode, rs in per_mode.items():
         tests = set().union(*rs) if rs else set()
@@ -365,11 +409,16 @@ def aggregate(indir: Path, outdir: Path, meta: dict) -> None:
                     by[t["mode"]].append(t["duration_s"])
                 if t["mode"] == "l1" and t.get("stats"):
                     managed.append(t["stats"]["managed"])
-            for m in SUITE_MODES:
+            seeds = r.get("suite_seeds", [1])
+            for m in suite_modes(seeds):
                 row[m + "_s"] = _median(by.get(m, []))
+                row[m + "_timeouts"] = sum(1 for t in r["timing"] if t["mode"] == m and t["timed_out"])
+                row[m + "_runs"] = sum(1 for t in r["timing"] if t["mode"] == m)
             d = row["det_s"]
             row["l1_vs_det_pct"] = round(100 * (row["l1_s"] / d - 1), 1) if d and row["l1_s"] else None
-            row["l1s1_vs_det_pct"] = round(100 * (row["l1-s1_s"] / d - 1), 1) if d and row["l1-s1_s"] else None
+            for sd in seeds:
+                v = row.get(f"l1-s{sd}_s")
+                row[f"l1s{sd}_vs_det_pct"] = round(100 * (v / d - 1), 1) if d and v else None
             pl = row["plain_s"]
             row["det_vs_plain_pct"] = round(100 * (d / pl - 1), 1) if pl and d else None
             row["l1_vs_plain_pct"] = round(100 * (row["l1_s"] / pl - 1), 1) if pl and row["l1_s"] else None
@@ -381,7 +430,11 @@ def aggregate(indir: Path, outdir: Path, meta: dict) -> None:
             row["broken_by_det"] = r["broken_by_det"].get("n_broken", 0)
             row["broken_by_l1"] = r["broken_by_l1"].get("n_broken", 0)
             row["sometimes_by_l1"] = r["broken_by_l1"].get("n_sometimes", 0)
-            row["broken_by_l1_s1"] = r["broken_by_l1_s1"].get("n_broken", 0)
+            for sd in seeds:
+                b = r.get(f"broken_by_l1_s{sd}", {})
+                row[f"broken_by_l1_s{sd}"] = b.get("n_broken", 0)
+                row[f"sometimes_by_l1_s{sd}"] = b.get("n_sometimes", 0)
+                row[f"broken_l1_s{sd}_tests"] = " ".join(b.get("broken", [])[:20])
             row["l1_unstable"] = len(r["unstable"].get("l1", []))
             row["det_unstable"] = len(r["unstable"].get("det", []))
             row["broken_l1_tests"] = " ".join(r["broken_by_l1"].get("broken", [])[:20])
@@ -417,6 +470,7 @@ def main(argv=None) -> None:
     ap.add_argument("--seeds", type=int, default=20)
     ap.add_argument("--confirm", type=int, default=10)
     ap.add_argument("--timing-runs", type=int, default=3)
+    ap.add_argument("--suite-seeds", default="1", help="comma separated exploration seeds for suite runs")
     ap.add_argument("--loaded-runs", type=int, default=5)
     ap.add_argument("--run-timeout", type=float, default=600)
     ap.add_argument("--suite-timeout", type=float, default=2400)

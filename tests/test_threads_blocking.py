@@ -328,3 +328,34 @@ def test_reused_thread_ids_are_not_mistaken_for_managed_threads(pytester):
     pytester.syspathinsert()
     result, _ = _run(pytester, REUSE, "--det-threads-deadlock=1", timeout=60)
     result.assert_outcomes(passed=2)
+
+
+# The watchdog sees the scheduler idle (the holder runs outside it), then the same
+# holder takes the baton back without a switch: an internal error there killed
+# the watchdog thread (anyio suite: every later timer and escape stopped).
+WATCHDOG = r'''
+import _thread, threading, time
+import detpy.threads
+
+def test_holder_rejoins_after_an_escape():
+    t = threading.Thread(target=time.sleep, args=(10,))  # a pending timer, nobody runnable
+    t.start()
+    raw = _thread.allocate_lock()  # not a detpy lock: waiting on it is uncontrolled
+    raw.acquire()
+    lock = threading.Lock()
+    for _ in range(2):
+        raw.acquire(timeout=0.3)  # blocked in C: the watchdog escapes the holder
+        end = detpy.threads._real_monotonic() + 0.1
+        while detpy.threads._real_monotonic() < end:  # rejoins, then controlled operations
+            with lock:
+                pass
+    beats = detpy.threads.S.watchdog_beats
+    raw.acquire(timeout=0.2)
+    assert detpy.threads.S.watchdog_beats > beats  # the watchdog still runs
+    t.join()
+'''
+
+
+def test_the_watchdog_survives_a_holder_that_rejoins(pytester):
+    result, _ = _run(pytester, WATCHDOG, timeout=60)
+    result.assert_outcomes(passed=1)

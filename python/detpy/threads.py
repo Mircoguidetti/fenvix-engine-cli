@@ -182,6 +182,7 @@ class _Sched:
                       "managed": 0, "spin_yields": 0, "spin_ticks": 0, "interrupted": 0}
         self.spin_ns = 0  # virtual time the next failed poll of a spinning holder charges
         self.watchdog_on = False
+        self.watchdog_beats = 0  # rounds of the watchdog (tests check it still runs)
         self.exiting: list = []  # Thread objects finished for the scheduler, not yet ended
 
 
@@ -1455,6 +1456,22 @@ def _task_state(native) -> str:
 
 
 def _watchdog() -> None:
+    """The scheduler's watchdog thread. An error in one round must not stop it: without
+    it nobody fires timers for an idle scheduler or escapes a stuck holder."""
+    while True:
+        try:
+            _watchdog_loop()
+            return
+        except Exception as e:  # pragma: no cover - defensive
+            _dbg(f"watchdog error: {e!r}")
+            try:
+                if S.mu.locked() and getattr(_tls, "holds_mu", False):
+                    S.mu.release()
+            except Exception:
+                pass
+
+
+def _watchdog_loop() -> None:
     last_ops = -1
     last_cur = None
     last_switches = -1
@@ -1462,6 +1479,7 @@ def _watchdog() -> None:
     held_since = None
     while True:
         _real_sleep(0.005)
+        S.watchdog_beats += 1
         if not S.active:
             S.watchdog_on = False
             return
@@ -1476,7 +1494,7 @@ def _watchdog() -> None:
                 _idle_duty()
                 continue
             now = _real_monotonic()
-            if cur is not last_cur or S.stats["switches"] != last_switches:
+            if cur is not last_cur or S.stats["switches"] != last_switches or held_since is None:
                 last_cur, last_switches, last_ops = cur, S.stats["switches"], S.ops
                 stalled_since, held_since = None, now
                 continue

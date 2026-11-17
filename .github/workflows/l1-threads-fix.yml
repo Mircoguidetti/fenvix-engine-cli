@@ -1,0 +1,146 @@
+name: l1-threads-fix
+
+# Fix round of P-012 (--det-threads): measured on real projects.
+# Triggered by a push to claude/l1-threads-fix that changes tracks/l1-threads-fix/run.json:
+#   {"nonce": "<results folder>", "only": ["corpus:idoft-easypy", "suite:flask"] (empty = every job),
+#    "runs": 10, "seeds": 20, "confirm": 10, "timing_runs": 3, "loaded_runs": 5,
+#    "timing_runs_by": {"anyio": 3}, "suite_seeds_by": {"anyio": [1, 2, 3]}}
+# The engine is this branch's code at the pushed commit. Each job commits
+# tracks/l1-threads-fix/results/<nonce>/<name>.<kind>.json back to this branch.
+
+on:
+  push:
+    branches: [claude/l1-threads-fix]
+    paths: [tracks/l1-threads-fix/run.json]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: l1-threads-fix-${{ github.sha }}
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  UV_PYTHON_PREFERENCE: managed
+  RUN: tracks/l1-threads-fix/run.json
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {path: engine}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: pip install maturin
+      - run: cd engine && git log --oneline -3 | cat && maturin build --release --compatibility linux -o ../dist
+      - name: pack
+        run: |
+          cp engine/$RUN run.json
+          rm -rf engine/.git engine/tracks
+          tar czf engine.tgz engine dist run.json
+      - uses: actions/upload-artifact@v4
+        with: {name: engine, path: engine.tgz}
+      - id: m
+        run: |
+          ONLY=$(jq -r '(.only // []) | join(",")' run.json)
+          echo "matrix=$(python3 engine/harness/l1_threads.py --list --only "$ONLY")" >> "$GITHUB_OUTPUT"
+
+  tests:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {name: engine}
+      - run: tar xzf engine.tgz
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - name: engine tests
+        run: |
+          cd engine
+          (cargo test -q -p detpy-core 2>&1 | tail -5) > ../tests.txt
+          python -m venv .venv && . .venv/bin/activate
+          pip install -q maturin pytest numpy requests pytest-benchmark
+          maturin develop -q --release
+          export TMPDIR=$(mktemp -d)
+          python -m pytest tests -q -p no:randomly 2>&1 | tail -25 >> ../tests.txt || true
+          cat ../tests.txt
+      - uses: actions/checkout@v4
+        if: always()
+        with: {path: repo, fetch-depth: 1}
+      - name: commit result
+        if: always()
+        run: |
+          N=$(jq -r '.nonce' run.json)
+          cp tests.txt /tmp/tests.txt 2>/dev/null || echo "tests job failed" > /tmp/tests.txt
+          cd repo
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in $(seq 1 40); do
+            git fetch -q --depth=1 origin "$GITHUB_REF_NAME" && git checkout -q -f -B pub FETCH_HEAD || { sleep 5; continue; }
+            mkdir -p "tracks/l1-threads-fix/results/$N"
+            cp /tmp/tests.txt "tracks/l1-threads-fix/results/$N/engine-tests.txt"
+            git add "tracks/l1-threads-fix/results/$N"
+            git commit -q -m "l1-threads-fix: engine tests ($N, run ${GITHUB_RUN_ID})" || exit 0
+            git push -q origin "pub:$GITHUB_REF_NAME" && exit 0
+            sleep $(( (RANDOM % 20) + 5 ))
+          done
+          exit 1
+
+  measure:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJSON(needs.build.outputs.matrix) }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {name: engine}
+      - run: tar xzf engine.tgz
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v6
+      - name: measure
+        run: |
+          R=run.json
+          NAME=${{ matrix.name }}
+          TR=$(jq -r --arg n "$NAME" '(.timing_runs_by[$n] // .timing_runs // 3)' $R)
+          SS=$(jq -r --arg n "$NAME" '(.suite_seeds_by[$n] // .suite_seeds // [1]) | map(tostring) | join(",")' $R)
+          python3 engine/harness/l1_threads.py --kind ${{ matrix.kind }} --project "$NAME" \
+            --wheel "$(ls dist/*.whl | head -1)" --work /tmp/l1t --out out \
+            --runs "$(jq -r '.runs // 10' $R)" --seeds "$(jq -r '.seeds // 20' $R)" \
+            --confirm "$(jq -r '.confirm // 10' $R)" --timing-runs "$TR" --suite-seeds "$SS" \
+            --loaded-runs "$(jq -r '.loaded_runs // 5' $R)" \
+            --run-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+      - uses: actions/checkout@v4
+        if: always()
+        with: {path: repo, fetch-depth: 1}
+      - name: commit result
+        if: always()
+        run: |
+          N=$(jq -r '.nonce' run.json)
+          F="${{ matrix.name }}.${{ matrix.kind }}.json"
+          if [ ! -f "out/$F" ]; then
+            mkdir -p out
+            jq -n --arg n "${{ matrix.name }}" --arg k "${{ matrix.kind }}" '{name:$n, kind:$k, status:"job_failed", run_id: env.GITHUB_RUN_ID}' > "out/$F"
+          fi
+          cp "out/$F" /tmp/result.json
+          cd repo
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in $(seq 1 40); do
+            git fetch -q --depth=1 origin "$GITHUB_REF_NAME" && git checkout -q -f -B pub FETCH_HEAD || { sleep 5; continue; }
+            mkdir -p "tracks/l1-threads-fix/results/$N"
+            cp /tmp/result.json "tracks/l1-threads-fix/results/$N/$F"
+            git add "tracks/l1-threads-fix/results/$N/$F"
+            git commit -q -m "l1-threads-fix: result $F ($N, run ${GITHUB_RUN_ID})" || exit 0
+            git push -q origin "pub:$GITHUB_REF_NAME" && exit 0
+            sleep $(( (RANDOM % 20) + 5 ))
+          done
+          exit 1
