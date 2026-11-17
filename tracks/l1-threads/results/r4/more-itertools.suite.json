@@ -1,0 +1,258 @@
+{
+ "name": "more-itertools",
+ "set": "popular",
+ "url": "https://github.com/more-itertools/more-itertools",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009465",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "ceafee8ce96f4bc1eb74c528bc247c91d648a0bb",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . -r requirements/testing.txt",
+ "collected": 771,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 13.182,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 771
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 20.878,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 771
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 18.783,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 771
+   },
+   "stats": {
+    "decisions": 7116,
+    "switches": 16353,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 5009,
+    "managed": 167
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 189.282,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 771
+   },
+   "stats": {
+    "decisions": 547719,
+    "switches": 548418,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 5009,
+    "managed": 167
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 12.985,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 771
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 14.692,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 771
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 18.565,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 771
+   },
+   "stats": {
+    "decisions": 7116,
+    "switches": 16353,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 5009,
+    "managed": 167
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 190.689,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 771
+   },
+   "stats": {
+    "decisions": 547719,
+    "switches": 548418,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 5009,
+    "managed": 167
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 2,
+   "duration_s": 12.767,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 771
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 14.554,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 771
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 2,
+   "duration_s": 18.832,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 771
+   },
+   "stats": {
+    "decisions": 7116,
+    "switches": 16353,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 5009,
+    "managed": 167
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 2,
+   "duration_s": 186.817,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 771
+   },
+   "stats": {
+    "decisions": 547719,
+    "switches": 548418,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 5009,
+    "managed": 167
+   },
+   "tail": ""
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
