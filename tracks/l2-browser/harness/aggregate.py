@@ -37,7 +37,7 @@ def main():
         nd_runs = sum(1 for x in runs if x["label"].startswith("det"))
         rows.append(
             f"| {r['name']} | {r.get('tests_baseline')} | {nb_runs}+{ns_runs} | {len(r.get('flaky') or [])} | "
-            f"{bw:.0f} | {sw and f'{sw:.0f}' or '-'} | {dw and f'{dw:.0f}' or '-'} | "
+            f"{bw and f'{bw:.0f}' or '-'} | {sw and f'{sw:.0f}' or '-'} | {dw and f'{dw:.0f}' or '-'} | "
             f"{f'x{dw / bw:.1f}' if dw and bw else '-'} / {f'x{dw / sw:.1f}' if dw and sw else '-'} | "
             f"{vd.get('stable', '-')}/{vd.get('tests', '-')} ({nd_runs} runs) | {nb} ({nba} always) |")
         targets = {t["key"]: t for t in r.get("targets") or []}
@@ -80,6 +80,21 @@ def main():
     print("| Project | Flaky test | Baseline | Stress | Det full runs | 10 replays (default seed) | Distinct fp | Seeds | Failing seed replays |")
     print("|---|---|---|---|---|---|---|---|---|")
     print("\n".join(flaky_rows))
+    print()
+    print("| Project | Flaky test | p (baseline, retries 0) | CI retries r | P(failure reported) = p^(r+1) | P(hidden by retries) = p(1-p^r) | CI trace setting | P(a failing attempt traced) |")
+    print("|---|---|---|---|---|---|---|---|")
+    repos = json.loads((Path(__file__).resolve().parent / "repos.json").read_text())
+    for f in sorted(RES.glob("*.json")):
+        r = json.loads(f.read_text())
+        cfg = repos.get(r.get("name"), {})
+        rr, tr = cfg.get("ci_retries"), cfg.get("ci_trace", "-")
+        for fl in r.get("flaky") or []:
+            b = fl["baseline"]
+            p = b.count("F") / len(b) if b else 0
+            rep = f"{p ** (rr + 1):.3f}" if rr is not None else "-"
+            hid = f"{p * (1 - p ** rr):.3f}" if rr is not None else "-"
+            traced = {"on-first-retry": f"{p ** 2:.3f}", "retain-on-failure": f"{p:.3f}"}.get(tr, "-")
+            print(f"| {r['name']} | `{fl['key'][:80]}` | {b.count('F')}/{len(b)} = {p:.2f} | {rr if rr is not None else '-'} | {rep} | {hid} | {tr} | {traced} |")
     print()
     print("totals:", json.dumps(tot))
     print(f"- flaky tests: {tot['flaky']}; replayed 10 times: {tot['replay10']}; identical fingerprint 10/10: "

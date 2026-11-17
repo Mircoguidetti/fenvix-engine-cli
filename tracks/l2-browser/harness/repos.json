@@ -1,15 +1,47 @@
 {
- "etherpad": {"repo": "ether/etherpad-lite", "ref": "263e4a5b5977c0abffbc70d2aea243a721e9c053", "node": "24",
-              "why": "known flaky (idle study: embed_value.spec.ts, 1 of 6 runs); CI retries 2; server started before the runner"},
- "uptime-kuma": {"repo": "louislam/uptime-kuma", "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b", "node": "26",
-              "why": "CI retries 2; socket.io app server in webServer; real sleeps (idle 31%)"},
- "documenso": {"repo": "documenso/documenso", "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb", "node": "24",
-              "os": "ubuntu-22.04", "free_disk": true,
-              "why": "known flaky (idle study: 3 API tests ECONNRESET under load, 1 UI); CI retries 4, local retries 1"},
- "actual": {"repo": "actualbudget/actual", "ref": "abe8ea7851518a88245fd78b53b427b54eba734e", "node": "24.22.1",
-              "why": "CI and local retries 1; app logic in the browser and a web worker (limit B3)"},
- "rallly": {"repo": "lukevella/rallly", "ref": "e96c4c5c1d92f4db14e59c8e1f0cde934c94c419", "node": "24",
-              "why": "Next.js server on Postgres + Mailpit (limit B2)"},
- "solid-start": {"repo": "solidjs/solid-start", "ref": "68784294b16692adf687c25bcd58c16c8a625cb3", "node": "22",
-              "why": "Node harness pw-solid-start: Vite dev server, 47 tests, baseline stable"}
+ "etherpad": {
+  "repo": "ether/etherpad-lite",
+  "ref": "263e4a5b5977c0abffbc70d2aea243a721e9c053",
+  "node": "24",
+  "why": "known flaky (idle study: embed_value.spec.ts, 1 of 6 runs); CI retries 2; server started before the runner",
+  "ci_retries": 2,
+  "ci_trace": "on-first-retry"
+ },
+ "uptime-kuma": {
+  "repo": "louislam/uptime-kuma",
+  "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
+  "node": "26",
+  "why": "CI retries 2; socket.io app server in webServer; real sleeps (idle 31%)",
+  "ci_retries": 2,
+  "ci_trace": "on-first-retry"
+ },
+ "documenso": {
+  "repo": "documenso/documenso",
+  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+  "node": "24",
+  "os": "ubuntu-22.04",
+  "free_disk": true,
+  "why": "known flaky (idle study: 3 API tests ECONNRESET under load, 1 UI); CI retries 4, local retries 1",
+  "ci_retries": 4,
+  "ci_trace": "retain-on-failure"
+ },
+ "actual": {
+  "repo": "actualbudget/actual",
+  "ref": "abe8ea7851518a88245fd78b53b427b54eba734e",
+  "node": "24.22.1",
+  "why": "CI and local retries 1; app logic in the browser and a web worker (limit B3)",
+  "ci_retries": 1
+ },
+ "rallly": {
+  "repo": "lukevella/rallly",
+  "ref": "e96c4c5c1d92f4db14e59c8e1f0cde934c94c419",
+  "node": "24",
+  "why": "Next.js server on Postgres + Mailpit (limit B2)"
+ },
+ "solid-start": {
+  "repo": "solidjs/solid-start",
+  "ref": "68784294b16692adf687c25bcd58c16c8a625cb3",
+  "node": "22",
+  "why": "Node harness pw-solid-start: Vite dev server, 47 tests, baseline stable"
+ }
 }
