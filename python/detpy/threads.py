@@ -30,6 +30,7 @@ import threading
 from . import _sites, _state
 
 _real_allocate = _thread.allocate_lock
+_real_start_new_thread = _thread.start_new_thread
 _get_ident = _thread.get_ident
 _real_poll = getattr(_select, "poll", None)
 _real_select = _select.select
@@ -1279,6 +1280,12 @@ def install(patcher, seed: int, grace: float, deadlock: float, preempt: int) -> 
     for name in ("_start_new_thread", "_start_joinable_thread"):
         if hasattr(threading, name):
             patcher.set(threading, name, _wrap_start_thread(getattr(threading, name)))
+    # Libraries that wrap thread creation (easypy's threadtree) capture
+    # _thread.start_new_thread at import and install their own
+    # threading._start_new_thread: patch the low-level entry points too.
+    for name in ("start_new_thread", "start_new", "start_joinable_thread"):
+        if hasattr(_thread, name):
+            patcher.set(_thread, name, _wrap_start_thread(getattr(_thread, name)))
     patcher.set(threading.Thread, "start", _wrap_thread_start(threading.Thread.start))
     patcher.set(threading.Thread, "join", _wrap_join(threading.Thread.join))
     patcher.set(threading.Thread, "is_alive", _wrap_is_alive(threading.Thread.is_alive))
@@ -1330,7 +1337,7 @@ def activate() -> None:
     _tls.t = main
     if not S.watchdog_on:
         S.watchdog_on = True
-        _thread.start_new_thread(_watchdog, ())
+        _real_start_new_thread(_watchdog, ())
 
 
 def start_test() -> None:

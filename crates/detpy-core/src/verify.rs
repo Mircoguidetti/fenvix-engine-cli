@@ -226,7 +226,12 @@ fn is_terminal(e: &Event) -> bool {
 fn classify(a: Option<&Event>, b: Option<&Event>) -> Reason {
     match (a, b) {
         (Some(ea), Some(eb)) => {
-            if ea.thread != eb.thread || ea.thread != 0 {
+            let same_call = ea.thread == eb.thread && ea.op == eb.op && ea.site == eb.site;
+            if ea.thread != 0 && same_call && ea.source == Source::Entropy {
+                // Same thread, same call, different OS entropy: the value does not
+                // depend on how threads interleaved (shared clocks and generators do).
+                Reason::Entropy
+            } else if ea.thread != eb.thread || ea.thread != 0 {
                 Reason::Thread
             } else if ea.source == Source::Outcome && eb.source == Source::Outcome {
                 Reason::OutcomeOnly
@@ -540,6 +545,21 @@ mod tests {
         let b = trace(vec![rec("x", &[t("1").with_thread(1), t("2")], "passed", 100)]);
         let r = verify(&[a, b], &[]);
         assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Thread);
+    }
+
+    #[test]
+    fn entropy_in_a_worker_thread_is_entropy() {
+        let u = |v: &str| Event {
+            thread: 1,
+            source: Source::Entropy,
+            op: "os.urandom".into(),
+            site: "a.py:1".into(),
+            value: v.into(),
+        };
+        let a = trace(vec![rec("x", &[t("1"), u("16:aa")], "passed", 100)]);
+        let b = trace(vec![rec("x", &[t("1"), u("16:bb")], "passed", 100)]);
+        let r = verify(&[a, b], &[]);
+        assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Entropy);
     }
 
     #[test]
