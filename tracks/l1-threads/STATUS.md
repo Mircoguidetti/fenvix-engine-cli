@@ -19,7 +19,8 @@ of /home/user/fenvix-engine-cli; base `1573079` (origin/claude/gracious-rubin-ey
 
 - r1 findings fixed: I/O waiters get real time before a timer jump (boltons netstring), event-loop
   select timeout advances the clock (boltons wraps_async); jinja mtime test = Level 0 cross-run issue.
-- r2 cancelled (stale code); round r3 at HEAD (all jobs) pushed: `tracks/l1-threads/results/r3/`.
+- r2, r3 cancelled (stale code: preemption deadlock under blockbuster; RecursionError inside the scheduler hung easypy).
+- Round r4 at the final code (all jobs, thread-heavy first): `tracks/l1-threads/results/r4/`.
 
 ## Next
-- Aggregate r3 (and r1) (`python3 harness/l1_threads.py --aggregate tracks/l1-threads/results/r1 --out ...`), REPORT.md.
+- Aggregate r4 (and r1); REPORT.md (`python3 harness/l1_threads.py --aggregate tracks/l1-threads/results/r1 --out ...`), REPORT.md.

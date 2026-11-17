@@ -1,7 +1,7 @@
 From 25f6bc32c68d43e97ed73c9031de355ac772dd9c Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 17 Nov 2026 07:15:56 +0000
-Subject: [PATCH 05/13] L1 threads: patch _thread.start_new_thread too (easypy
+Subject: [PATCH 05/14] L1 threads: patch _thread.start_new_thread too (easypy
  threadtree); verifier calls entropy in a worker thread Entropy, not Thread
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

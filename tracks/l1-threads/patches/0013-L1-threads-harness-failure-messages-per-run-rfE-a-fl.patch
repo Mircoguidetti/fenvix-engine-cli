@@ -1,7 +1,7 @@
 From 749f16ab1e56735eed7e30ca6a2887515083fb4e Mon Sep 17 00:00:00 2001
 From: Claude <noreply@anthropic.com>
 Date: Tue, 17 Nov 2026 09:56:02 +0000
-Subject: [PATCH 13/13] L1 threads harness: failure messages per run (-rfE); a
+Subject: [PATCH 13/14] L1 threads harness: failure messages per run (-rfE); a
  flake counts as reproduced only without scheduler artefacts and with the
  baseline's exception
 
