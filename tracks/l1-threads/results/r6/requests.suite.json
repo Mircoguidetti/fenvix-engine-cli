@@ -1,0 +1,296 @@
+{
+ "name": "requests",
+ "set": "popular",
+ "url": "https://github.com/psf/requests",
+ "runner": "ip-10-0-140-181",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009520",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.82.6",
+  "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "3c7baaa05ab4aa49cc819ce3a819d260de19c157",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group test -r requirements-dev.txt",
+ "collected": 635,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 78.545,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 619,
+    "skipped": 15,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 83.498,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 57.264,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 611,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 8
+   },
+   "stats": {
+    "decisions": 1,
+    "switches": 860,
+    "escapes": 0,
+    "deadlocks": 6,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 58.348,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 611,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 8
+   },
+   "stats": {
+    "decisions": 9,
+    "switches": 898,
+    "escapes": 0,
+    "deadlocks": 6,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": ""
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 77.715,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 619,
+    "skipped": 15,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 78.609,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 57.317,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 611,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 8
+   },
+   "stats": {
+    "decisions": 1,
+    "switches": 862,
+    "escapes": 0,
+    "deadlocks": 6,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 2400.047,
+   "exit": -9,
+   "timed_out": true,
+   "counts": {},
+   "stats": null,
+   "tail": ".................."
+  },
+  {
+   "mode": "plain",
+   "run": 2,
+   "duration_s": 77.739,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 619,
+    "skipped": 15,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 78.648,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": null,
+   "tail": ""
+  },
+  {
+   "mode": "l1",
+   "run": 2,
+   "duration_s": 57.346,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 611,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 8
+   },
+   "stats": {
+    "decisions": 1,
+    "switches": 860,
+    "escapes": 0,
+    "deadlocks": 6,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": ""
+  },
+  {
+   "mode": "l1-s1",
+   "run": 2,
+   "duration_s": 58.361,
+   "exit": 1,
+   "timed_out": false,
+   "counts": {
+    "passed": 611,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 8
+   },
+   "stats": {
+    "decisions": 9,
+    "switches": 896,
+    "escapes": 0,
+    "deadlocks": 6,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": ""
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [
+   "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]",
+   "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]",
+   "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]",
+   "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]"
+  ],
+  "n_broken": 4,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [
+   "tests/test_requests.py::TestTimeout::test_encoded_methods",
+   "tests/test_requests.py::TestTimeout::test_none_timeout[None]",
+   "tests/test_requests.py::test_urllib3_pool_connection_closed",
+   "tests/test_requests.py::test_urllib3_retries",
+   "tests/test_utils.py::test_should_bypass_proxies_win_registry_ProxyOverride_value"
+  ],
+  "n_broken": 5,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   3,
+   2
+  ],
+  "broken": [
+   "tests/test_requests.py::TestTimeout::test_encoded_methods",
+   "tests/test_requests.py::TestTimeout::test_none_timeout[None]",
+   "tests/test_requests.py::test_urllib3_pool_connection_closed",
+   "tests/test_requests.py::test_urllib3_retries",
+   "tests/test_utils.py::test_should_bypass_proxies_win_registry_ProxyOverride_value"
+  ],
+  "n_broken": 5,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
