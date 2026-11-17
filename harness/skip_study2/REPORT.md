@@ -1,13 +1,13 @@
 # Skip-with-proof study 2: where are the minutes?
 
-**Status (2026-11-17 02:57 UTC): version 3, partial.**
+**Status (2026-11-17 UTC): version 3. Setting 1 on the v3 capture is final (run v3, 14 of 14 shards); saleor, the reruns, setting 2 and the name rule stay partial.**
 
 * **Final:**
   * the R-002 code fixes: 3 proven errors and 6 notes, each with a test; 14 of 14 tests pass (MEASURED, `harness/skip_study2/tests/`);
   * setting 1 on the **v2 capture** (docusaurus, vue-core, terraform, prometheus, Home Assistant 12% sample);
   * the verdict on the two verification mismatches, now also re-checked on GitHub Actions: both flaky, 0 wrong;
   * setting 3 v1.
-* **Pending: setting 1 on the v3 capture.** This is run `v3` (GitHub Actions run 44004047856). It has been queued behind the account's concurrency limit since 02:35 UTC, with 18 jobs of earlier runs queued ahead of it. Results are expected around 09:00-12:00 UTC (ESTIMATED: queue plus a 330-minute walk budget). The v3 column of the before/after table says "pending". When the bot has committed `results/v3/walk/`, run `python3 harness/skip_study2/aggregate.py --compare r1,r2,r3,r5,r6,r7,r8 v3` to fill it in.
+  * setting 1 on the **v3 capture**: run `v3` (GitHub Actions run 44004047856), home-assistant 8 shards, docusaurus, terraform 2 shards, vue-core, prometheus 2 shards. All 14 walk jobs succeeded and all 14 shard files are in `results/v3/walk/`; every project reached 50 of 50 transitions (MEASURED). Table: `python3 harness/skip_study2/aggregate.py --compare r1,r2,r3,r5,r6,r7,r8 v3`. saleor was not in run v3.
 * **Partial:**
   * saleor (v2 capture; shards 6-7 were restarted, so right now no commit has been reached by all 8 shards);
   * the reruns (41 attempts);
@@ -27,13 +27,13 @@ Every number is labelled. Raw data: `harness/skip_study2/results/<run>/`. Tables
 | setting | rule | v2: time skipped with proof, median / mean | v2: wrong hits (verified skips) | v3: time skipped, median / mean | v3: wrong hits (verified skips) | label |
 |---|---|---:|---|---:|---|---|
 | reference: first study, 14 small Python libraries | closure | 0% / 22% | 0 | - | - | MEASURED |
-| 1. home-assistant (pytest, 50 commits, 12% sample) | closure | **98% / 85%** | 0 (2573) | pending (run v3) | pending | MEASURED / pending |
-| 1. docusaurus (vitest, 50 commits) | closure | **98% / 81%** | 0 (829) | pending | pending | MEASURED / pending |
-| 1. vue-core (vitest, 50 commits) | closure | 25% / 28% | 0 (371) | pending | pending | MEASURED / pending |
-| 1. terraform (Go, 50 commits) | closure (proof; v3 adds the net guard) | **35% / 31%** | 0 (475) | pending; lower bound 22% / 20% | pending | MEASURED; bound ESTIMATED |
-| 1. terraform | go test cache (**no proof**) | 72% / 61% | 0 (697) in the sample; **1 wrong found by the reviewer** (`internal/cloud`, network) | pending | pending | MEASURED |
-| 1. prometheus (Go, 50 commits) | closure (proof; v3 adds the net guard) | **56% / 52%** | 0 (313) | pending; lower bound 41% / 37% | pending | MEASURED; bound ESTIMATED |
-| 1. prometheus | go test cache (**no proof**) | 56% / 52% | 0 (313) | pending | pending | MEASURED |
+| 1. home-assistant (pytest, 50 commits, 12% sample) | closure | **98% / 85%** | 0 (2573) | **97% / 82%** | 0 (2488) | MEASURED |
+| 1. docusaurus (vitest, 50 commits) | closure | **98% / 81%** | 0 (829) | **98% / 81%** | 0 (829) | MEASURED |
+| 1. vue-core (vitest, 50 commits) | closure | 25% / 28% | 0 (371) | 25% / 31% | 0 (391) | MEASURED |
+| 1. terraform (Go, 50 commits) | closure (proof; v3 adds the net guard) | **35% / 31%** | 0 (475) | **25% / 23%** (v2 lower bound was 22% / 20%) | 0 (442) | MEASURED; bound ESTIMATED |
+| 1. terraform | go test cache (**no proof**) | 72% / 61% | 0 (697) in the sample; **1 wrong found by the reviewer** (`internal/cloud`, network) | 73% / 60% | 0 (677) in the sample; still no proof | MEASURED |
+| 1. prometheus (Go, 50 commits) | closure (proof; v3 adds the net guard) | **56% / 52%** | 0 (313) | **56% / 49%** (v2 lower bound was 41% / 37%) | 0 (314) | MEASURED; bound ESTIMATED |
+| 1. prometheus | go test cache (**no proof**) | 56% / 52% | 0 (313) | 57% / 54% | 0 (322) in the sample; still no proof | MEASURED |
 | 1. saleor (pytest + Django, 10 commits, 15% sample) | closure | 0% / 9% | 0 (7) | not in run v3 | - | MEASURED, partial |
 | 2. coding-agent PR pushes, 170 pushes pooled | closure | 52% / 51% | 0 (1408), 2 flaky | not re-walked (v2 capture); with the Go net guard at least 29% / 42% | - | MEASURED; bound ESTIMATED |
 | 2. the same 170 pushes | go test cache for Go (**no proof**), closure otherwise | 76% / 53% | - | - | - | MEASURED |
@@ -45,15 +45,24 @@ Every number is labelled. Raw data: `harness/skip_study2/results/<run>/`. Tables
   * 1 wrong hit reproduced on a demo repository: a sqlite fixture opened read-write;
   * 3 docusaurus files that are latent wrong hits whenever `$HOME` differs between the recording and the reusing runner.
 
-  The v3 capture closes all three (next section). The v3 verification count is what this delivery owes.
+  The v3 capture closes all three (next section). Under v3, setting 1 has **0 wrong and 0 flaky in 4 464 verified `closure` skips** (829 + 2488 + 314 + 442 + 391, MEASURED).
+* **What changed v2 -> v3 and why** (reruns by reason from the aggregator's `closure_rerun_why`, MEASURED; the link from reason to R-002 fix is by the reason code):
+  * **terraform, the only change bigger than 5 points: 35% / 31% -> 25% / 23% (-10 / -8 points, MEASURED).** Cause: **E3, the Go net guard**. v3 reruns 110 package-transitions with reason `network` (0 in v2); the other reasons barely move (`go-miss` 500 -> 498, `runtime-read-changed` 222 -> 226). These packages used to be closure skips on a go test cache hit. The reviewer's `internal/cloud` (app.terraform.io) is the kind of package this catches.
+  * **prometheus: 56% / 52% -> 56% / 49%** (mean -3, under 5 points). The net guard adds 139 `network` reruns; `go-miss` fell 465 -> 438, so the median holds.
+  * **The Go guard cost far less than the v2 lower bound** (terraform 25% vs bound 22%, prometheus 56% vs 41%, MEASURED vs ESTIMATED): v3 records the address, and most `connect()` calls were to loopback (`httptest`), which is not guarded.
+  * **home-assistant: 98% / 85% -> 97% / 82%** (-1 / -3 points, under 5). Reasons that grew: `network` 50 -> 150 (pytest already had the guard in v2; v3 sees more connections), `cached-failure` 0 -> 50 (**N4, never reuse failures**: one rerun per transition), `read` 205 -> 782 and `exists` 1771 -> 2424 (attributed to **E1, read-write opens** and the wider capture; ESTIMATED, the reason code does not name the open mode). Verified skips 2573 -> 2488 follow the smaller skip count.
+  * **docusaurus: unchanged** (98% / 81%, same 1784 `read` + 3 `new` reruns). The `$HOME` case (E2) did not fire: one runner image, so `$HOME` was the same on every commit.
+  * **vue-core: 25% / 28% -> 25% / 31%** (mean +3, under 5). `read` reruns fell 5479 -> 5322 (ESTIMATED cause: the `installed` / `system` path classes of N6 and run-to-run variation); 1 `cached-failure` rerun.
+  * **Environment variables (E2) and runtime identity (N2): 0 reruns in every project** (MEASURED). In one runner image neither changes between commits; they matter when the cache is shared across images or machines.
+  * **go test cache (no proof)** moved by at most 2 points (terraform 72% / 61% -> 73% / 60%, prometheus 56% / 52% -> 57% / 54%). It is never counted as proof.
 * **Lower bounds for Go** (ESTIMATED from v2 data):
   * The bound treats every package that made *any* `connect()`, loopback included, as never skippable. The v2 data cannot tell loopback from external connections; v3 records the address.
   * terraform: 14 of 125 packages connect, which forces 540 closure skips to rerun. prometheus: 30 of 90 packages connect, 1 310 skips (MEASURED, the same counts as the reviewer).
   * v3 will land between the bound and the v2 value.
   * On github-mcp-server (agent PRs) the bound is very loose: 47% -> 18% median. Most of its connections are probably `httptest` servers on loopback (ESTIMATED).
-* **Python and Node** (ESTIMATED, until v3 lands):
+* **Python and Node** (v2 forecast, now confirmed by v3, MEASURED: every Python and Node row moved by 3 points or less):
   * The v3 key adds environment variables read, runtime identity, read-write fixtures and cached failures.
-  * In a single runner image the variables and the runtime do not change between commits, so the share should move little.
+  * In a single runner image the variables and the runtime do not change between commits, so the share moves little.
   * Cached failures: their effect on the v2 data is MEASURED (aggregator toggle `S2_V2_NO_FAILURE_RULE`):
     * setting 1: no change in any median or mean;
     * Home Assistant Copilot PRs: 100% / 95% -> 97% / 93%;
@@ -105,12 +114,12 @@ There are two re-checks:
 The first study (`docs/CACHE-SKIP-STUDY.md`) asked how much test time per commit can be skipped **with proof**. On 14 small Python libraries over 50 commits the answer was a median 0% / mean 22%. This study asks where the skippable minutes are.
 
 **Answer: in large repositories made of many loosely coupled parts, and in the pushes of coding agents.**
-* Home Assistant and Docusaurus: 98% median each (MEASURED, v2 capture; v3 pending).
+* Home Assistant and Docusaurus: 98% median each on the v2 capture; 97% and 98% on the v3 capture (MEASURED).
 * Tightly coupled code skips little, even when it is large (MEASURED):
   * vue-core: 25%;
   * saleor: 0% (Django loads every app in every test process).
 * **Go**, with proof (`closure`): terraform 35%, prometheus 56% median (MEASURED, v2).
-  * The v3 network guard will lower both, to no less than 22% and 41% (ESTIMATED).
+  * With the v3 network guard: terraform 25%, prometheus 56% median (MEASURED, v3).
   * The go test cache alone skips more (terraform 72%), but it is **not a proof**: the reviewer found a wrong hit in it.
 * Coding-agent PRs: a median 52% / mean 51% of test time per push (MEASURED, 170 pushes, v2 capture, partial).
 
@@ -189,7 +198,7 @@ Everything runs on GitHub Actions `ubuntu-latest` (4 vCPU), workflow `.github/wo
   * saleor: 15% of the test files;
   * both use fixed-seed per-file samples, run as 4 / 8 parallel shards.
 
-## 2. Setting 1: large repositories (v2 capture; v3 pending)
+## 2. Setting 1: large repositories (v2 capture; v3 results in the headline table)
 
 Skip shares are MEASURED on the stated sample. Time to green is ESTIMATED. The saleor rows come from report version 2: at the moment no commit has been reached by all 8 shards, because shards 6-7 were restarted.
 
@@ -367,6 +376,6 @@ unless capture runs only on a sample of runs.
   * the runtime;
   * an external service.
 
-  The v3 key closes these holes, but v3 has **not yet been measured** (run v3 pending).
+  The v3 key closes these holes. On the v3 capture setting 1 adds 0 wrong in 4 464 verified `closure` skips (MEASURED), so v2 + v3 together give 0 wrong in 10 440 (per-skip error rate below about 0.03%, 95% upper bound, ESTIMATED as 3 / n). The v3 runs still share one runner image, so env-var and runtime changes were not exercised (0 reruns from either, MEASURED).
 * **Wall-clock is not a dependency** of this capture (only `detpy --det` covers it). A shared cache that runs for a long time will reuse passes of date-dependent tests.
 * **Agent PRs** are on the v2 capture. 101 of the 170 pushes come from github-mcp-server, so the pooled numbers lean on it.
