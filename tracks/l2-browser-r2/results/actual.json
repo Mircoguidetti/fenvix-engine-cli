@@ -1639,7 +1639,7 @@
      "description": "event #199: page.random @  returned different values: \"587/1/412:ad3fd9a3.78e98681\" vs \"589/1/412:fa515411.78e98681\""
     }
    },
-   "replay_cmd": "npx detjs playwright --det --det-seed=1 --det-epoch=2026-11-18T10:27:00Z test e2e/accounts.mobile.test.ts:67 --project=chromium",
+   "replay_cmd": "npx detjs playwright --det --det-seed=1 --det-epoch=2026-11-18T14:49:00Z test e2e/accounts.mobile.test.ts:67 --project=chromium --browser=chromium",
    "failing_seed": 1,
    "failing_seed_verify": {
     "status": "diverged",
@@ -1668,35 +1668,18 @@
      "description": "event #227: page.random @  returned different values: \"587/1/412:cb87ae68.c4bb448d\" vs \"590/1/452:68ce71.7817fa37\""
     }
    },
-   "replay_cmd_outcome": "missing",
-   "replay_cmd_verify": {
-    "status": "diverged",
-    "distinct_fingerprints": 7,
-    "runs": 11,
-    "divergence": {
-     "run_a": 0,
-     "run_b": 1,
-     "index": 227,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "random",
-      "o": "page.random",
-      "at": "",
-      "v": "587/1/412:cb87ae68.c4bb448d"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "random",
-      "o": "page.random",
-      "at": "",
-      "v": "590/1/452:68ce71.7817fa37"
-     },
-     "reason": "random",
-     "description": "event #227: page.random @  returned different values: \"587/1/412:cb87ae68.c4bb448d\" vs \"590/1/452:68ce71.7817fa37\""
-    }
-   },
-   "plain_runs": "PPP"
+   "replay_cmd_outcome": "timedOut",
+   "replay_cmd_verify": null,
+   "plain_runs": "PPP",
+   "replay_cmd_outcome_r2": "missing",
+   "replay_cmd_r2": "npx detjs playwright --det --det-seed=1 --det-epoch=2026-11-18T10:27:00Z test e2e/accounts.mobile.test.ts:67 --project=chromium",
+   "replay_cmd_remeasured": {
+    "why": "review R-011 H3: the round-2 command dropped --browser=chromium, matched no project, ran no test",
+    "run_id": "44327291710",
+    "engine_commit": "221593dc240c87b907b3f28ecd7e574f5cfade79",
+    "seed_outcome": "timedOut",
+    "label": "MEASURED"
+   }
   },
   {
    "key": "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]",

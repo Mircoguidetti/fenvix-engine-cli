@@ -34,7 +34,20 @@
      "project": null,
      "seed": 1
     }
-   ]
+   ],
+   "e6_targets": [
+    {
+     "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]",
+     "file": "automatic-budget-range.test.ts",
+     "grep": "(desktop) extends after budgeting the last month",
+     "project": null
+    }
+   ],
+   "e6": {
+    "seeds": 8,
+    "fail_replays": 5,
+    "budget_min": 200
+   }
   }
  },
  "documenso": {
@@ -82,6 +95,18 @@
     "plain": 20,
     "stress": 10,
     "det": 2
+   },
+   "e6_targets": [
+    {
+     "file": "monitor-history-settings.spec.js",
+     "grep": "saves the data retention period",
+     "project": "specs"
+    }
+   ],
+   "e6": {
+    "seeds": 8,
+    "fail_replays": 5,
+    "budget_min": 200
    }
   }
  },

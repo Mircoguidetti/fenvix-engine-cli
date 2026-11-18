@@ -358,6 +358,47 @@ if JOB == "e1":
             X["printed_outcome"] = outcome_for(spec, rr)[1]
             X["printed_log_tail"] = (OUT / "logs" / "rc-printed.log").read_text(errors="replace")[-1500:]
         save()
+elif JOB == "e6":
+    # E6 on real targets: does any seed reproduce the real failure? Seeds 1..N with the round-2 latency list and with
+    # a list that reaches the deadline (D); the first failing seed of each list replayed R times. The failure message
+    # is kept so that it can be compared with the real (plain) failure.
+    R["e6"] = []
+    for spec in CFG["r3"].get("e6_targets", []):
+        T = {**spec, "lists": []}
+        R["e6"].append(T)
+        args = target_args(spec)
+        for lname, lat in (("round2", "0,0,0,1,5,25"), ("deadline", "0,0,1,5,25,D")):
+            Lr = {"list": lname, "latency": lat, "seeds": {}, "errors": {}, "fail_seed": None, "fail_replays": [], "fail_errors": []}
+            T["lists"].append(Lr)
+            for sd in range(1, P.get("seeds", 8) + 1):
+                if not budget_for(300):
+                    break
+                r = run_pw(f"e6-{len(R['e6'])}-{lname}-s{sd}", "det", seed=sd, args=args, det_flags=(f"--det-latency={lat}",),
+                           timeout_s=P["target_timeout_min"] * 60)
+                k, o = outcome_for(spec, r)
+                Lr["seeds"][str(sd)] = o
+                if o in FAIL:
+                    Lr["errors"][str(sd)] = (r.get("errors") or {}).get(k, "")[:400]
+                    if Lr["fail_seed"] is None:
+                        Lr["fail_seed"] = sd
+                save()
+            if Lr["fail_seed"] is not None:
+                traces = []
+                for i in range(P.get("fail_replays", 5)):
+                    if not budget_for(300):
+                        break
+                    r = run_pw(f"e6-{len(R['e6'])}-{lname}-rep{i + 1}", "det", seed=Lr["fail_seed"], args=args,
+                               det_flags=(f"--det-latency={lat}",), timeout_s=P["target_timeout_min"] * 60)
+                    k, o = outcome_for(spec, r)
+                    Lr["fail_replays"].append(o)
+                    Lr["fail_errors"].append((r.get("errors") or {}).get(k, "")[:300])
+                    traces.append(r.get("trace"))
+                vv = verify(traces)
+                for t in (vv or {}).get("tests", []) if isinstance(vv, dict) else []:
+                    if matches(spec, trace_key(t["nodeid"])):
+                        Lr["fail_verify"] = {"status": t["status"], "distinct_fingerprints": t["distinct_fingerprints"],
+                                             "divergence": t.get("divergence")}
+            save()
 elif JOB == "e5":
     # E5: the database clock (Postgres) and the app server's process clock (Prisma's Rust engine) under libfaketime,
     # pinned to the run's epoch: frozen, or advancing 1 ms per clock call. 10 --det replays of 2 targets per variant,
