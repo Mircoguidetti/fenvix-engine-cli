@@ -3,8 +3,8 @@
  "repo": "actualbudget/actual",
  "ref": "abe8ea7851518a88245fd78b53b427b54eba734e",
  "status": "ok",
- "run_id": "44275149752",
- "setup_s": 106,
+ "run_id": "44279789112",
+ "setup_s": 126,
  "params": {
   "baseline": 3,
   "stress": 2,
@@ -27,8 +27,8 @@
  ],
  "server_outside_runner": false,
  "runs": [],
- "epoch": "2026-11-18T09:25:00Z",
- "measured_at": "2026-11-18T09:25:26Z",
+ "epoch": "2026-11-18T09:55:00Z",
+ "measured_at": "2026-11-18T09:55:39Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "diagnosis": [
   {
@@ -38,16 +38,15 @@
    "project": null,
    "known": true,
    "replays": [
-    "timedOut",
+    "passed",
     "timedOut"
    ],
    "walls": [
-    68.0,
-    66.5
+    46.2,
+    67.6
    ],
    "matched_key": "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]",
    "errors": [
-    "Test timeout of 60000ms exceeded.",
     "Test timeout of 60000ms exceeded."
    ],
    "browser": {
@@ -57,24 +56,24 @@
     "divergence": {
      "run_a": 0,
      "run_b": 1,
-     "index": 203,
+     "index": 202,
      "window": null,
      "event_a": {
       "t": 0,
-      "s": "other",
-      "o": "dom.digest",
+      "s": "random",
+      "o": "page.random",
       "at": "",
-      "v": "2df1a4a2d0161a67406792fb1e920c32"
+      "v": "592/1/452:80a7eeed"
      },
      "event_b": {
       "t": 0,
-      "s": "other",
-      "o": "dom.digest",
+      "s": "sched",
+      "o": "sched.io",
       "at": "",
-      "v": "2cd352333cc0056aa22f35dea293f86d"
+      "v": "0/1:ws SEND ws://localhost:3001/?token=DxTbzUg4IP5t 94a9dcccb91992796ad856126fa32332"
      },
-     "reason": "other",
-     "description": "event #203: dom.digest @  returned different values: \"2df1a4a2d0161a67406792fb1e920c32\" vs \"2cd352333cc0056aa22f35dea293f86d\""
+     "reason": "random",
+     "description": "event #202: [random] page.random @  = 592/1/452:80a7eeed  <>  [sched] sched.io @  = 0/1:ws SEND ws://localhost:3001/?token=DxTbzUg4IP5t 94a9dcccb91992796ad856126fa32332"
     }
    },
    "server": [
@@ -244,19 +243,19 @@
         "event_a": {
          "t": 0,
          "s": "time",
-         "o": "Date.now",
-         "at": "<deps>/vite/dist/node/chunks/node.js:3135",
-         "v": "1000"
+         "o": "setTimeout",
+         "at": "<deps>/vite/dist/node/chunks/node.js:12314",
+         "v": "schedule:1000000"
         },
         "event_b": {
          "t": 0,
          "s": "time",
          "o": "setTimeout",
          "at": "<deps>/vite/dist/node/chunks/node.js:12314",
-         "v": "schedule:100000000"
+         "v": "schedule:1000000000"
         },
         "reason": "time",
-        "description": "event #0: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3135 = 1000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:12314 = schedule:100000000"
+        "description": "event #0: setTimeout @ <deps>/vite/dist/node/chunks/node.js:12314 returned different values: \"schedule:1000000\" vs \"schedule:1000000000\""
        }
       }
      ]
@@ -288,8 +287,8 @@
     "passed"
    ],
    "walls": [
-    52.7,
-    53.8
+    61.9,
+    62.2
    ],
    "matched_key": "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]",
    "browser": {
@@ -299,24 +298,24 @@
     "divergence": {
      "run_a": 0,
      "run_b": 1,
-     "index": 200,
+     "index": 3,
      "window": null,
      "event_a": {
       "t": 0,
-      "s": "random",
-      "o": "page.random",
+      "s": "net",
+      "o": "ws.open",
       "at": "",
-      "v": "674/1/631:d2a55be4"
+      "v": "ws://localhost:3001/?token=DxTbzUg4IP5t"
      },
      "event_b": {
       "t": 0,
-      "s": "random",
-      "o": "page.random",
+      "s": "sched",
+      "o": "server.busy",
       "at": "",
-      "v": "676/1/631:2d6582c1"
+      "v": "http://localhost:3001"
      },
-     "reason": "random",
-     "description": "event #200: page.random @  returned different values: \"674/1/631:d2a55be4\" vs \"676/1/631:2d6582c1\""
+     "reason": "net",
+     "description": "event #3: [net] ws.open @  = ws://localhost:3001/?token=DxTbzUg4IP5t  <>  [sched] server.busy @  = http://localhost:3001"
     }
    },
    "server": [
@@ -487,18 +486,18 @@
          "t": 0,
          "s": "time",
          "o": "Date.now",
-         "at": "<deps>/vite/dist/node/chunks/node.js:3135",
+         "at": "<deps>/sass/sass.dart.js:99671",
          "v": "1000"
         },
         "event_b": {
          "t": 0,
          "s": "time",
-         "o": "Date.now",
-         "at": "<deps>/sass/sass.dart.js:99671",
-         "v": "1000"
+         "o": "setTimeout",
+         "at": "<deps>/vite/dist/node/chunks/node.js:12314",
+         "v": "schedule:1000000"
         },
         "reason": "time",
-        "description": "event #0: [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3135 = 1000  <>  [time] Date.now @ <deps>/sass/sass.dart.js:99671 = 1000"
+        "description": "event #0: [time] Date.now @ <deps>/sass/sass.dart.js:99671 = 1000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:12314 = schedule:1000000"
        }
       }
      ]
@@ -530,8 +529,8 @@
     "passed"
    ],
    "walls": [
-    72.6,
-    71.8
+    86.8,
+    85.4
    ],
    "matched_key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]",
    "browser": {
@@ -541,24 +540,24 @@
     "divergence": {
      "run_a": 0,
      "run_b": 1,
-     "index": 398,
+     "index": 400,
      "window": null,
      "event_a": {
       "t": 0,
       "s": "other",
       "o": "dom.digest",
       "at": "",
-      "v": "884f92fa15e2d6c2e5002ffe0f0f7e42"
+      "v": "de61ebd6825330dff1ec87953232f6d4"
      },
      "event_b": {
       "t": 0,
       "s": "other",
       "o": "dom.digest",
       "at": "",
-      "v": "781f4b1a0712b9dcabcc095d4716d630"
+      "v": "259a325d518d76e7e19968b0482c487f"
      },
      "reason": "other",
-     "description": "event #398: dom.digest @  returned different values: \"884f92fa15e2d6c2e5002ffe0f0f7e42\" vs \"781f4b1a0712b9dcabcc095d4716d630\""
+     "description": "event #400: dom.digest @  returned different values: \"de61ebd6825330dff1ec87953232f6d4\" vs \"259a325d518d76e7e19968b0482c487f\""
     }
    },
    "server": [
@@ -737,10 +736,10 @@
          "s": "time",
          "o": "setTimeout",
          "at": "<deps>/vite/dist/node/chunks/node.js:12314",
-         "v": "schedule:1000000"
+         "v": "schedule:1000000000"
         },
         "reason": "time",
-        "description": "event #0: [time] Date.now @ <deps>/sass/sass.dart.js:99671 = 1000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:12314 = schedule:1000000"
+        "description": "event #0: [time] Date.now @ <deps>/sass/sass.dart.js:99671 = 1000  <>  [time] setTimeout @ <deps>/vite/dist/node/chunks/node.js:12314 = schedule:1000000000"
        }
       }
      ]
@@ -772,8 +771,8 @@
     "passed"
    ],
    "walls": [
-    37.7,
-    37.1
+    44.9,
+    44.5
    ],
    "matched_key": "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]",
    "browser": {
@@ -783,14 +782,14 @@
     "divergence": {
      "run_a": 0,
      "run_b": 1,
-     "index": 200,
+     "index": 202,
      "window": null,
      "event_a": {
       "t": 0,
       "s": "random",
       "o": "page.random",
       "at": "",
-      "v": "599/1/532:e79307d1"
+      "v": "600/1/532:dc1e5be5"
      },
      "event_b": {
       "t": 0,
@@ -800,7 +799,7 @@
       "v": "600/1/532:1fc76365"
      },
      "reason": "random",
-     "description": "event #200: page.random @  returned different values: \"599/1/532:e79307d1\" vs \"600/1/532:1fc76365\""
+     "description": "event #202: page.random @  returned different values: \"600/1/532:dc1e5be5\" vs \"600/1/532:1fc76365\""
     }
    },
    "server": [
@@ -955,7 +954,7 @@
       "outcome_unstable": 0,
       "order_identical": true,
       "reasons": {
-       "time": 1
+       "random": 1
       }
      },
      "tests": [
@@ -965,24 +964,24 @@
        "divergence": {
         "run_a": 0,
         "run_b": 1,
-        "index": 0,
+        "index": 1,
         "window": null,
         "event_a": {
          "t": 0,
-         "s": "time",
-         "o": "setTimeout",
-         "at": "<deps>/vite/dist/node/chunks/node.js:12314",
-         "v": "schedule:100000000"
+         "s": "random",
+         "o": "Math.random",
+         "at": "<deps>/sass/sass.dart.js:1985",
+         "v": "0.10029283283247536"
         },
         "event_b": {
          "t": 0,
          "s": "time",
-         "o": "setTimeout",
-         "at": "<deps>/vite/dist/node/chunks/node.js:12314",
-         "v": "schedule:1000000000"
+         "o": "setImmediate",
+         "at": "<deps>/sass/sass.dart.js:21",
+         "v": ""
         },
-        "reason": "time",
-        "description": "event #0: setTimeout @ <deps>/vite/dist/node/chunks/node.js:12314 returned different values: \"schedule:100000000\" vs \"schedule:1000000000\""
+        "reason": "random",
+        "description": "event #1: [random] Math.random @ <deps>/sass/sass.dart.js:1985 = 0.10029283283247536  <>  [time] setImmediate @ <deps>/sass/sass.dart.js:21 = "
        }
       }
      ]
@@ -1004,5 +1003,5 @@
    ]
   }
  ],
- "elapsed_min": 7.7
+ "elapsed_min": 8.4
 }
