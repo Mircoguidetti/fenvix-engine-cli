@@ -14,7 +14,7 @@ anywhere else; fenvix-app untouched (item 5 is a patch file here).
 | 3 | mixed repository: one job per language | done | fixture `mixed` (pytest + Vitest/pnpm), test + 2 hosted jobs |
 | 4 | Vitest and Jest fixtures with an order-dependent flaky test; summary correct; the replay reproduces | done | the tests run each replay command and require the test to fail again |
 | 5 | AWS image: exact recipe change as a patch file | done, with a limit | `image.patch` (a new Image Builder component, every phase run here); fenvix-app could not be read (see Limits) |
-| 6 | one hosted Actions run with a public Vitest project | triggered, not run yet | [run 44346012832](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44346012832): queued since 16:20Z (see below) |
+| 6 | one hosted Actions run with a public Vitest project | half run | [run 44346012832](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44346012832): `engines` passed on a hosted machine (bootstrap in 48 s); the ufo, mixed and fixtures jobs were still queued for a machine when this report was written (see below) |
 
 ## What changed
 
@@ -100,8 +100,11 @@ of the summaries is run and must fail the flaky test again; then `tests/test_run
 Pushed at 16:20Z: [run 44346012832](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44346012832).
 It has been **queued** since then: every run of the repository created after ~16:20Z is queued (go-tests,
 go-harness, jvm-tests, node-cache-proof), while the l2-browser-r3 runs started at 14:47Z hold the account's hosted
-machines (their `experiment` jobs run for hours). This run is the oldest in the queue; it starts when a machine
-frees, nothing needs to be re-pushed. Until it has run, item 6 is not shown on GitHub; what it runs was run in this
+machines (their `experiment` jobs run for hours). The run got a machine at 17:04Z: the **`engines` job passed** (job 134948472904: `runner/bootstrap.sh engines` with
+`FENVIX_LANGS="python node"` on ubuntu-latest in 48 s: Node 26.13.1 checksum, corepack, detjs fetched at `8e9209b`
+and built, detpy wheel; artifact `fenvix-engines` kept 3 days). The four test jobs (`ufo`, `mixed-python`,
+`mixed-node`, `fixtures`) were created at 17:04:58Z and were still **queued** at 17:45Z for the same reason. They run
+when machines free (the artifact outlives the wait); nothing needs to be re-pushed. Their results are on the run page. Until it has run, item 6 is not shown on GitHub; what it runs was run in this
 container (Measurements: bootstrap, ufo 491 passed, mixed, fixtures, wrapper tests).
 
 ## Limits and open points
