@@ -310,7 +310,7 @@ class Prof:
         self.res.update(sha=sha, units=len(units), dropped=st.get("dropped_units", []))
         # old vs new pure functions on this environment (the last engine given is the one tested)
         self.use(list(self.engines)[-1])
-        code, out, _ = W.sh([w.py, str(HERE / "equiv_probe.py"), "--root", str(w.src)], cwd=str(w.work),
+        code, out, _ = (1, "skipped (--no-probe)", 0) if self.a.no_probe else W.sh([w.py, str(HERE / "equiv_probe.py"), "--root", str(w.src)], cwd=str(w.work),
                             env=self.env(), timeout=3600)
         try:
             self.res["probe"] = json.loads(out.strip().splitlines()[-1])
@@ -367,6 +367,7 @@ def main(argv=None):
     ap.add_argument("--shard", default="0/1")
     ap.add_argument("--reps", type=int, default=3)
     ap.add_argument("--pyspy", action="store_true")
+    ap.add_argument("--no-probe", action="store_true", help="skip the equivalence probe (equiv_probe.py)")
     ap.add_argument("--engine-env", action="append", help="NAME:VAR=VALUE, environment of one engine's runs")
     Prof(ap.parse_args(argv)).main()
     return 0
