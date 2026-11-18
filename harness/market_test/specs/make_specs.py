@@ -215,7 +215,7 @@ HEADS["mlflow-dev"] = HEADS["mlflow"]
 
 # late windows: the newest commits of repositories whose 51-commit walk stops at the time budget (every commit
 # reruns most units). Merged with the early window by commit in market.py.
-LATE = {"litellm": 28, "integrations-core": 16}
+LATE = {"litellm": 28, "integrations-core": 16, "mlflow-dev": 33}
 for _n, _k in LATE.items():
     _s = next(s for s in SPECS if s["name"] == _n)
     SPECS.append(dict(json.loads(json.dumps(_s)), name=f"{_n}-late", late_n=_k))
@@ -227,7 +227,7 @@ _s = next(s for s in SPECS if s["name"] == "litellm")
 SPECS.append(dict(json.loads(json.dumps(_s)), name="litellm-mid", late_n=16))
 HEADS["litellm-mid"] = "1efd8b38d30881534ef409de99637664d95e6c9b"
 
-SMOKE_SAMPLE = {"mlflow-dev": 0.04, "litellm-mid": 0.015, "litellm-late": 0.015, "integrations-core-late": 0.03, "airflow": 0.02, "integrations-core": 0.03, "moto": 0.05, "transformers": 0.03, "mlflow": 0.04,
+SMOKE_SAMPLE = {"mlflow-dev": 0.04, "mlflow-dev-late": 0.04, "litellm-mid": 0.015, "litellm-late": 0.015, "integrations-core-late": 0.03, "airflow": 0.02, "integrations-core": 0.03, "moto": 0.05, "transformers": 0.03, "mlflow": 0.04,
                 "pydantic-ai": 0.05, "prefect": 0.06, "esphome": 0.06, "litellm": 0.015,
                 "community-general": 0.15, "haystack": 0.2}
 
