@@ -68,12 +68,14 @@ def fn(name, *args, timeout=900):
     return bash(f'if [ "$(type -t {name})" = function ]; then {name} "$@"; fi', *args, timeout=timeout)
 
 
-_, v = bash('printf "%s\\0%s\\0%s\\0%s" "${PW_DIR:-}" "${PW_ARGS:-}" "${PW_ENV:-}" "$(type -t server_start)"')
-PW_DIR, PW_ARGS, PW_ENV, HAS_SERVER = (v.split("\0") + ["", "", "", ""])[:4]
+_, v = bash('printf "%s\\0%s\\0%s\\0%s\\0%s\\0%s" "${PW_DIR:-}" "${PW_ARGS:-}" "${PW_ENV:-}" "$(type -t server_start)" "${STATE_SPEC:-}" "${STATE_WHERE:-runner}"')
+PW_DIR, PW_ARGS, PW_ENV, HAS_SERVER, STATE_SPEC, STATE_WHERE = (v.split("\0") + ["", "", "", "", "", ""])[:6]
 PW_CWD = WORK / (PW_DIR or ".")
 PW_ARGS = PW_ARGS.split()
 PW_ENV = dict(kv.split("=", 1) for kv in PW_ENV.split() if "=" in kv)
 HAS_SERVER = HAS_SERVER.strip() == "function"
+STATE_SPEC = str(WORK / STATE_SPEC) if STATE_SPEC.strip() else None
+STATE_WHERE = STATE_WHERE.strip() or "runner"
 for d in ("json", "traces", "logs"):
     (OUT / d).mkdir(parents=True, exist_ok=True)
 
@@ -147,11 +149,16 @@ def kill_group(p):
 
 
 def run_pw(label, mode, seed=None, filters=(), extra=(), timeout_s=None, server_mode=None, pw_args=None, det_flags=(),
-           env_extra=None, keep_parts=None):
+           env_extra=None, keep_parts=None, raw_args=None):
     """One Playwright run (fresh app state and server). Returns the run record."""
     rec = {"label": label, "mode": mode, "seed": seed, "filters": list(filters), "extra": list(extra),
            "server_mode": server_mode, "det_flags": list(det_flags)}
     fn("reset")
+    if STATE_SPEC and (STATE_WHERE == "outside" or mode != "det" or raw_args is not None):
+        # The start state of every run (plain or --det) is the snapshot saved after setup (round 2).
+        rs = subprocess.run(["node", DETJS, "state", "restore", f"--det-state={STATE_SPEC}"], cwd=WORK, capture_output=True, text=True)
+        if rs.returncode != 0:
+            rec["state_error"] = (rs.stdout + rs.stderr)[-800:]
     if HAS_SERVER:
         rc, out = fn("server_start", server_mode or mode, "none" if seed is None else str(seed), timeout=600)
         if rc != 0:
@@ -164,10 +171,16 @@ def run_pw(label, mode, seed=None, filters=(), extra=(), timeout_s=None, server_
     trace.unlink(missing_ok=True)
     env = {**os.environ, **PW_ENV, "PLAYWRIGHT_JSON_OUTPUT_NAME": str(jsonf), "DETJS_ROOT": str(PW_CWD), **(env_extra or {})}
     args = ["node", DETJS, "playwright"]
-    if mode == "det":
-        args += ["--det", f"--det-trace={trace}", f"--det-epoch={EPOCH}", *det_flags] + ([f"--det-seed={seed}"] if seed is not None else [])
-    # --max-failures=0: configs that stop at the first failure on CI (documenso) would hide the rest.
-    args += ["test", *(PW_ARGS if pw_args is None else pw_args), *filters, "--retries=0", "--max-failures=0", "--reporter=dot,json", *extra]
+    if raw_args is not None:
+        # A printed replay command, as the developer would run it (only the trace path and the JSON report added).
+        args += [*raw_args, f"--det-trace={trace}", "--reporter=dot,json"]
+    else:
+        if mode == "det":
+            args += ["--det", f"--det-trace={trace}", f"--det-epoch={EPOCH}", *det_flags] + ([f"--det-seed={seed}"] if seed is not None else [])
+            if STATE_SPEC and STATE_WHERE == "runner":
+                args.append(f"--det-state={STATE_SPEC}")
+        # --max-failures=0: configs that stop at the first failure on CI (documenso) would hide the rest.
+        args += ["test", *(PW_ARGS if pw_args is None else pw_args), *filters, "--retries=0", "--max-failures=0", "--reporter=dot,json", *extra]
     timeout_s = timeout_s or P["run_timeout_min"] * 60
     timeout_s = max(60, min(timeout_s, remaining() - 120))
     logf = OUT / "logs" / f"{label}.log"
@@ -199,6 +212,9 @@ def run_pw(label, mode, seed=None, filters=(), extra=(), timeout_s=None, server_
     rec["counts"] = counts
     if not oc:
         rec["log_tail"] = logf.read_text(errors="replace")[-3000:]
+    if mode == "det":
+        txt = logf.read_text(errors="replace")
+        rec["replay_cmds"] = re.findall(r"detjs: replay [^\n]*:\n  (npx detjs playwright [^\n]*)", txt)[:20]
     log(f"{label}: rc={rec['rc']} wall={rec['wall_s']}s {counts}")
     return rec
 
@@ -340,14 +356,26 @@ def run_target(spec):
             break
     if fail_seed:
         fr = []
-        for i in range(3):
+        for i in range(P.get("fail_replays", 3)):
             if not budget_for(1, (est or 60) * 1.2):
                 break
             r = run_pw(f"{slug}-failseed-{fail_seed[0]}-{i + 1}", "det", seed=fail_seed[0], filters=filt, pw_args=args, timeout_s=TT)
             T["failing_seed_replays"].append(outcome_for(spec, r)[1])
             fr.append(r.get("trace"))
+            if not T.get("replay_cmd") and r.get("replay_cmds"):
+                T["replay_cmd"] = r["replay_cmds"][0]
         T["failing_seed"] = fail_seed[0]
         T["failing_seed_verify"] = verify_for(spec, [fail_seed[1]] + fr)
+        # The printed replay command, run as printed after removing every run artefact (.detjs except the
+        # state snapshot, test-results): same outcome and fingerprint as the failing seed's replays?
+        if T.get("replay_cmd") and budget_for(1, (est or 60) * 1.2):
+            subprocess.run(["bash", "-c", "find . -name .detjs -type d -prune -not -path './node_modules/*' | while read d; do "
+                            "find \"$d\" -mindepth 1 -maxdepth 1 -not -name state -exec rm -rf {} +; done; "
+                            "find . -name test-results -type d -prune -not -path '*/node_modules/*' -exec rm -rf {} +"], cwd=WORK)
+            cmd = T["replay_cmd"].split()[3:]  # after "npx detjs playwright"
+            r = run_pw(f"{slug}-replaycmd", "det", raw_args=cmd, timeout_s=TT)
+            T["replay_cmd_outcome"] = outcome_for(spec, r)[1]
+            T["replay_cmd_verify"] = verify_for(spec, [fail_seed[1]] + fr + [r.get("trace")])
     # Without the controls, same filter: how often does it fail on its own (the baseline for this selection)?
     plain = []
     for i in range(P["target_plain"]):
@@ -358,6 +386,11 @@ def run_target(spec):
     T["plain_runs"] = letters(plain)
     save()
 
+
+if STATE_SPEC:
+    rs = subprocess.run(["node", DETJS, "state", "save", f"--det-state={STATE_SPEC}"], cwd=WORK, capture_output=True, text=True)
+    R["state"] = {"spec": STATE_SPEC, "where": STATE_WHERE, "save_rc": rs.returncode, "save_log": (rs.stdout + rs.stderr)[-600:]}
+    log(f"state snapshot: rc={rs.returncode} {(rs.stdout + rs.stderr).strip()[-200:]}")
 
 # ------------------------------------------------------------------ diagnosis
 def diagnose(spec, idx):
@@ -457,7 +490,7 @@ base_wall = statistics.median(r["wall_s"] for r in BASE if r.get("outcomes"))
 
 # Known flaky tests (repos.json known_flaky: idle study, GitHub issues) first, then tests flaky in this
 # job's baseline runs: the targets get their budget before the long full-suite phases.
-known = [{**k, "known": True} for k in CFG.get("known_flaky", [])]
+known = [{**k, "known": True} for k in (CFG.get("targets") or CFG.get("known_flaky", []))]
 detected = [spec_of_key(k) for k in flaky_of(BASE)]
 detected = [d for d in detected if not any(matches(kn, d["key"]) for kn in known)]
 R["known_flaky"] = known

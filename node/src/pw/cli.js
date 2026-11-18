@@ -137,10 +137,21 @@ async function main(argv) {
   }
   args.push(`--config=${wrapper}`, '--workers=1', '--retries=0');
   const boot = path.join(__dirname, 'boot.js');
+  // The replay command printed for every failing test (reporter.js): the options that decide the run.
+  const replay = ['--det'];
+  if (opts.seed !== null) replay.push(`--det-seed=${opts.seed}`);
+  replay.push(`--det-epoch=${opts.epoch}`);
+  if (pwEnv.DETJS_PW_STATE) replay.push(`--det-state=${path.relative(cwd, pwEnv.DETJS_PW_STATE) || '.'}`);
+  for (const [flag, envName] of Object.entries(PW_FLAGS)) {
+    if (pwEnv[envName] !== undefined) replay.push(`${flag}=${pwEnv[envName] === '1' ? 'on' : pwEnv[envName] === '0' || pwEnv[envName] === 'off' ? 'off' : pwEnv[envName]}`);
+  }
+  if (cfg.index >= 0) replay.push(`--config=${path.relative(cwd, cfg.file)}`);
   const env = {
     ...process.env,
     ...pwEnv,
     DETJS_PW_REPORTER: hasReporter ? '' : reporter,
+    DETJS_PW_REPLAY: JSON.stringify(replay),
+    DETJS_PW_CWD: cwd,
     DETJS_PW_TRACE: runEnv.tracePath,
     DETJS_PW_META: JSON.stringify({
       seed: Number(runEnv.cfg.seed), shuffle: runEnv.cfg.shuffle, epoch: opts.epoch,

@@ -6,6 +6,9 @@ export NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH=./example/cert.p12 DANGEROUS_BYPASS_
 PW_DIR=packages/app-tests
 PW_ARGS="--project=api --project=license"
 PW_ENV="NODE_OPTIONS=--import=tsx NODE_ENV=test"
+# Round 2: every run starts from the database as seeded by setup (detjs state, Postgres template copy).
+STATE_SPEC=detjs-state.json
+STATE_WHERE=outside
 
 setup() {
   cp .env.example .env
@@ -18,6 +21,7 @@ setup() {
   sleep 5
   npm run prisma:migrate-dev
   npm run prisma:seed
+  echo '{"postgres": ["postgres://documenso:password@127.0.0.1:54320/documenso"]}' > detjs-state.json
 }
 
 server_start() {  # MODE SEED

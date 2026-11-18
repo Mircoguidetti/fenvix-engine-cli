@@ -89,6 +89,28 @@ class DetjsReporter {
       rec.endTest(r ? OUTCOME[r.status] || r.status : 'error');
     }
     rec.close();
+    this.printReplays();
+  }
+
+  /** One replay command per failing test: same seed, epoch, state and controls, that test only. */
+  printReplays() {
+    let base;
+    try { base = JSON.parse(process.env.DETJS_PW_REPLAY || 'null'); } catch { base = null; }
+    if (!base) return;
+    const cwd = process.env.DETJS_PW_CWD || process.cwd();
+    const lines = [];
+    for (const t of this.order) {
+      const r = this.results.get(t.id);
+      if (!r || (r.status !== 'failed' && r.status !== 'timedOut')) continue;
+      const file = path.relative(cwd, t.location.file).split(path.sep).join('/');
+      const project = t.parent && t.parent.project ? t.parent.project().name : '';
+      const cmd = ['npx', 'detjs', 'playwright', ...base, 'test', `${file}:${t.location.line}`];
+      if (project) cmd.push(`--project=${project}`);
+      lines.push(`detjs: replay ${this.idOf(t)}:\n  ${cmd.map((a) => (/^[\w@%+=:,./-]+$/.test(a) ? a : `'${a.replace(/'/g, "'\\''")}'`)).join(' ')}`);
+    }
+    if (!lines.length) return;
+    process.stderr.write(`${lines.join('\n')}\n`);
+    try { fs.writeFileSync(path.join(path.dirname(this.trace), 'replay.txt'), `${lines.join('\n')}\n`); } catch { /* ignore */ }
   }
 }
 
