@@ -744,8 +744,26 @@ fn record_impl(py: Python<'_>, source: Text<'_, '_>, op: Text<'_, '_>, value: Te
     Ok(())
 }
 
-fn record_from_rust(py: Python<'_>, source: &str, op: &str, value: String, skip: usize) -> PyResult<()> {
+pub(crate) fn record_from_rust(py: Python<'_>, source: &str, op: &str, value: String, skip: usize) -> PyResult<()> {
     record_impl(py, Text::Rust(source), Text::Rust(op), Text::Rust(&value), skip)
+}
+
+/// `_state.record(source, op, value)` from a Rust stand-in whose value is a Python string (a `repr`, a text that may
+/// hold surrogates): the listener gets the object itself and a string the recorder cannot encode fails where it
+/// failed before (at the push).
+pub(crate) fn record_from_rust_obj(
+    py: Python<'_>,
+    source: &str,
+    op: &str,
+    value: &Bound<'_, PyAny>,
+    skip: usize,
+) -> PyResult<()> {
+    record_impl(py, Text::Rust(source), Text::Rust(op), Text::Py(value), skip)
+}
+
+/// `_state.STATE.<name>`.
+pub(crate) fn state_attr<'py>(py: Python<'py>, name: &Bound<'py, PyString>) -> PyResult<Bound<'py, PyAny>> {
+    hub()?.get(py, name)
 }
 
 /// `_state.record(source, op, value, depth=1)`: record one event for the running test. `depth` is the number of

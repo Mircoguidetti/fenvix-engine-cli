@@ -18,6 +18,10 @@ mod precompile;
 mod proofcache;
 mod sysmon;
 
+// Level 0 seeds and filesystem order (rust-hotpaths round 3)
+mod seeds;
+mod standin;
+
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     // A panic while holding the lock must not make every later call fail.
     m.lock().unwrap_or_else(|e| e.into_inner())
@@ -266,5 +270,8 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(proofcache::env_all_digest, m)?)?;
     level0::register(m)?;
     precompile::register(m)?;
+    // Level 0 seeds and filesystem order (rust-hotpaths round 3)
+    standin::register(m)?;
+    seeds::register(m)?;
     Ok(())
 }
