@@ -160,23 +160,39 @@ class Walk:
         return rc, dt
 
     def nx_affected(self, base, head):
+        """Projects Nx's affected selection keeps for base..head (Nx installed aside, linked in only for this step)."""
         nxv = self.spec.get("nx_version", "22")
+        tool = os.path.join(self.work, "nxtool")
+        if not os.path.exists(os.path.join(tool, "node_modules", "nx", "package.json")):
+            os.makedirs(tool, exist_ok=True)
+            with open(os.path.join(tool, "package.json"), "w") as fh:
+                fh.write('{"private": true}\n')
+            sh(["npm", "install", f"nx@{nxv}", "--no-audit", "--no-fund", "--silent"], cwd=tool, timeout=900, env=self.env)
+        link = os.path.join(self.repo, "node_modules", "nx")
+        made_link = False
+        if not os.path.exists(link):
+            os.makedirs(os.path.dirname(link), exist_ok=True)
+            os.symlink(os.path.join(tool, "node_modules", "nx"), link)
+            made_link = True
         created = False
         if not os.path.exists(os.path.join(self.repo, "nx.json")) and not os.path.exists(os.path.join(self.repo, "lerna.json")):
             with open(os.path.join(self.repo, "nx.json"), "w") as fh:
                 fh.write("{}\n")
             created = True
-        env = dict(self.env, NX_DAEMON="false", NX_NO_CLOUD="true", NX_SKIP_NX_CACHE="true", NX_TUI="false")
+        env = dict(self.env, NX_DAEMON="false", NX_NO_CLOUD="true", NX_SKIP_NX_CACHE="true", NX_TUI="false", NX_ISOLATE_PLUGINS="false")
+        binrel = (load_json(os.path.join(tool, "node_modules", "nx", "package.json")) or {}).get("bin", {}).get("nx", "bin/nx.js")
+        nx = ["node", os.path.join(link, binrel)]
         try:
-            rc, out, dt = sh(["npx", "-y", f"nx@{nxv}", "show", "projects", "--json"], cwd=self.repo, timeout=600, env=env)
+            rc, out, dt = sh(nx + ["show", "projects", "--json"], cwd=self.repo, timeout=600, env=env)
             allp = json.loads(out[out.index("["):]) if rc == 0 and "[" in out else None
-            rc2, out2, dt2 = sh(["npx", "-y", f"nx@{nxv}", "show", "projects", "--affected", f"--base={base}", f"--head={head}", "--json"],
+            rc2, out2, dt2 = sh(nx + ["show", "projects", "--affected", f"--base={base}", f"--head={head}", "--json"],
                                 cwd=self.repo, timeout=600, env=env)
             aff = json.loads(out2[out2.index("["):]) if rc2 == 0 and "[" in out2 else None
             roots = {}
+            gfile = os.path.join(self.work, "nx-graph.json")
             if allp:
-                rc3, out3, _ = sh(["npx", "-y", f"nx@{nxv}", "graph", "--file=/tmp/nx-graph.json"], cwd=self.repo, timeout=600, env=env)
-                g = load_json("/tmp/nx-graph.json") or {}
+                sh(nx + ["graph", f"--file={gfile}"], cwd=self.repo, timeout=600, env=env)
+                g = load_json(gfile) or {}
                 for name, node in (g.get("graph", {}).get("nodes", {}) or {}).items():
                     roots[name] = (node.get("data") or {}).get("root")
             return {"all": allp, "affected": aff, "roots": roots, "seconds": round(dt + dt2, 1),
@@ -184,6 +200,9 @@ class Walk:
         finally:
             if created:
                 os.remove(os.path.join(self.repo, "nx.json"))
+            if made_link:
+                os.remove(link)
+            shutil.rmtree(os.path.join(self.repo, ".nx"), ignore_errors=True)
 
     def run(self, shas):
         done = {c["sha"] for c in self.res["commits"]}
@@ -278,8 +297,25 @@ def main():
     ap.add_argument("--run-timeout", type=int, default=3600)
     ap.add_argument("--nx", action="store_true")
     ap.add_argument("--budget", type=int, default=19800, help="stop starting commits after this many seconds")
+    ap.add_argument("--nx-only", action="store_true", help="only Nx affected per transition (no install, no test runs)")
     a = ap.parse_args()
     shas = load_json(a.commits)
+    if a.nx_only:
+        a.shard = 0
+        w = Walk(a)
+        w.res = {"spec": w.spec, "mode": "nx-only", "transitions": []}
+        for i in range(1, len(shas)):
+            sh(["git", "checkout", "-q", "-f", shas[i]], cwd=w.repo, check=True)
+            sh(["git", "clean", "-q", "-ffdx", "-e", "node_modules"], cwd=w.repo)
+            try:
+                r = w.nx_affected(shas[i - 1], shas[i])
+            except Exception as e:  # noqa: BLE001
+                r = {"error": str(e)[-1500:]}
+            r.update(i=i, sha=shas[i])
+            w.res["transitions"].append(r)
+            w.save()
+            print(f"[{i}] {shas[i][:10]} affected {None if r.get('affected') is None else len(r['affected'])} of {len(r.get('all') or [])}", flush=True)
+        return
     n = len(shas)
     # shards overlap by one commit so that every transition i-1 -> i is measured once
     per = -(-(n - 1) // a.nshards)
