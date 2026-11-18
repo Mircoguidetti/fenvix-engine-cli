@@ -3,8 +3,8 @@
  "repo": "solidjs/solid-start",
  "ref": "68784294b16692adf687c25bcd58c16c8a625cb3",
  "status": "ok",
- "run_id": "44275149752",
- "setup_s": 38,
+ "run_id": "44279789112",
+ "setup_s": 34,
  "params": {
   "baseline": 3,
   "stress": 1,
@@ -26,8 +26,8 @@
  ],
  "server_outside_runner": false,
  "runs": [],
- "epoch": "2026-11-18T09:24:00Z",
- "measured_at": "2026-11-18T09:24:13Z",
+ "epoch": "2026-11-18T09:54:00Z",
+ "measured_at": "2026-11-18T09:54:03Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "diagnosis": [
   {
@@ -41,36 +41,15 @@
     "passed"
    ],
    "walls": [
-    7.1,
-    6.0
+    6.6,
+    6.1
    ],
    "matched_key": "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]",
    "browser": {
-    "status": "diverged",
-    "distinct_fingerprints": 2,
+    "status": "stable",
+    "distinct_fingerprints": 1,
     "runs": 2,
-    "divergence": {
-     "run_a": 0,
-     "run_b": 1,
-     "index": 7,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
-      "at": "",
-      "v": "http://127.0.0.1:3000 c86c857fb2612b294ff43ecc80245361 501"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
-      "at": "",
-      "v": "http://127.0.0.1:3000 e46cb274adb0e936d4bb11e02d77b22d 501"
-     },
-     "reason": "other",
-     "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 c86c857fb2612b294ff43ecc80245361 501\" vs \"http://127.0.0.1:3000 e46cb274adb0e936d4bb11e02d77b22d 501\""
-    }
+    "divergence": null
    },
    "server": [
     {
@@ -98,7 +77,7 @@
       "outcome_unstable": 0,
       "order_identical": true,
       "reasons": {
-       "fs": 1
+       "time": 1
       }
      },
      "tests": [
@@ -108,24 +87,24 @@
        "divergence": {
         "run_a": 0,
         "run_b": 1,
-        "index": 156,
+        "index": 275,
         "window": null,
         "event_a": {
          "t": 0,
-         "s": "fs",
-         "o": "fs.readdirSync",
-         "at": "<deps>/@nodelib/fs.scandir/out/providers/sync.js:16",
-         "v": "src/routes|40|3677807af9e6735078c94e426c0d2413"
+         "s": "time",
+         "o": "setTimeout",
+         "at": "<deps>/.vite-temp/vite.config.ts.timestamp-1794995640000-e4907c104bc94.mjs:745",
+         "v": "fire+1000000000"
         },
         "event_b": {
          "t": 0,
          "s": "time",
          "o": "Date.now",
          "at": "<deps>/vite/dist/node/chunks/node.js:3092",
-         "v": "118098589000"
+         "v": "268000"
         },
-        "reason": "fs",
-        "description": "event #156: [fs] fs.readdirSync @ <deps>/@nodelib/fs.scandir/out/providers/sync.js:16 = src/routes|40|3677807af9e6735078c94e426c0d2413  <>  [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 118098589000"
+        "reason": "time",
+        "description": "event #275: [time] setTimeout @ <deps>/.vite-temp/vite.config.ts.timestamp-1794995640000-e4907c104bc94.mjs:745 = fire+1000000000  <>  [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 268000"
        }
       }
      ]
