@@ -323,3 +323,52 @@ def test_tracer_prefixes_lists_live_log_writers_only(tmp_path):
         p.wait()
         q.wait()
     assert _core.tracer_prefixes(logdir) == []
+
+
+# ---------------------------------------------------------------------------
+# file facts: statement-list walks instead of full-tree traversals
+def _corpus(limit=1500):
+    import sysconfig
+
+    dirs = [sysconfig.get_paths()["stdlib"], sysconfig.get_paths()["purelib"],
+            str(Path(__file__).resolve().parents[1])]
+    out = []
+    for d in dirs:
+        for root, subdirs, files in os.walk(d):
+            subdirs[:] = sorted(x for x in subdirs if x not in ("__pycache__", ".git", "target"))
+            for f in sorted(files):
+                if f.endswith(".py"):
+                    out.append(os.path.join(root, f))
+                    if len(out) >= limit:
+                        return out
+    return out
+
+
+def test_codefacts_match_reference_on_a_corpus():
+    import _ref_codefacts as ref
+
+    from detpy import _codefacts as new
+
+    extra = {
+        "nested.py": "def f():\n    '''doc'''\n    def g():\n        import a.b\n    class C:\n        def m(self):\n"
+                     "            from .x import y\n    return g\n",
+        "blocks.py": "try:\n    import a\nexcept* E:\n    def h(): pass\nelse:\n    def i(): pass\nfinally:\n"
+                     "    import z\nmatch v:\n    case 1:\n        def k(): pass\n        from q import w\n"
+                     "with c:\n    async def a(): pass\nwhile x:\n    def b(): 'd'\nelse:\n    import e\n",
+        "lambdas.py": "@deco(lambda x: x)\ndef f(a=lambda: 1) -> int:\n    return a()\nclass K[T]:\n"
+                      "    def m[U](self, x: U = (lambda: 0)()): ...\n",
+        "bad.py": "def (:\n",
+    }
+    n = 0
+    for name, text in extra.items():
+        assert new.facts(text, "c", "pkg.mod", False) == ref.facts(text, "c", "pkg.mod", False), name
+    for path in _corpus():
+        try:
+            with open(path, encoding="utf-8") as fh:
+                text = fh.read()
+        except (OSError, UnicodeDecodeError, ValueError):
+            continue
+        for mod, pkg in (("pkg.sub.mod", False), ("pkg.sub", True)):
+            assert new.facts(text, "c", mod, pkg) == ref.facts(text, "c", mod, pkg), path
+        n += 1
+    assert n > 500

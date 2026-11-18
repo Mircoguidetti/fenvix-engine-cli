@@ -37,13 +37,30 @@ def _is_doc(node) -> bool:
         and isinstance(node.value.value, str)
 
 
-class _Skeleton(ast.NodeTransformer):
-    def visit_FunctionDef(self, node):
-        self.generic_visit(node)  # decorators, defaults, annotations
-        node.body = [node.body[0]] if node.body and _is_doc(node.body[0]) else []
-        return node
+_BLOCKS = (ast.stmt, ast.excepthandler, ast.match_case)
 
-    visit_AsyncFunctionDef = visit_FunctionDef
+
+def _blocks(node):
+    """Statements (and except/case clauses) directly nested in ``node``'s statement lists. Statements only occur
+    in such lists, never inside an expression, so a walk over these reaches every statement of a tree without
+    visiting expression nodes."""
+    for f in node._fields:
+        v = getattr(node, f, None)
+        if isinstance(v, list):
+            for x in v:
+                if isinstance(x, _BLOCKS):
+                    yield x
+
+
+def _skeletonize(tree) -> None:
+    """Remove every function body (a docstring is kept), in place: the module-level structure."""
+    stack = [tree]
+    while stack:
+        for x in _blocks(stack.pop()):
+            if isinstance(x, _FUNCS):
+                x.body = [x.body[0]] if x.body and _is_doc(x.body[0]) else []
+            else:
+                stack.append(x)
 
 
 def _units(body, prefix: str, out: list, seen: dict) -> None:
@@ -88,7 +105,10 @@ def _hooks(tree) -> str:
 def _imports(tree, modname: str | None, is_pkg: bool) -> list:
     out = set()
     pkg = (modname or "") if is_pkg else (modname or "").rpartition(".")[0]
-    for node in ast.walk(tree):
+    stack = [tree]
+    while stack:
+        node = stack.pop()
+        stack.extend(_blocks(node))
         if isinstance(node, ast.Import):
             for a in node.names:
                 out.add(a.name)
@@ -118,7 +138,8 @@ def facts(text: str, content: str, modname: str | None = None, is_pkg: bool = Fa
     units.sort(key=lambda u: u[1])
     hooks = _hooks(tree)
     imports = _imports(tree, modname, is_pkg)
-    skeleton = _digest(ast.dump(_Skeleton().visit(tree)))
+    _skeletonize(tree)
+    skeleton = _digest(ast.dump(tree))
     return skeleton, hooks, units, imports
 
 
