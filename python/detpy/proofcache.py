@@ -14,8 +14,8 @@ digests). What counts as an input (each one recorded while the test runs):
   missing; directories it listed;
 * **environment variables it read** (value digests; enumerating the environment
   makes the whole environment an input);
-* **runtime identity**: interpreter (version and binary), platform, installed
-  distributions;
+* **runtime identity**: interpreter, native libraries, standard library and installed
+  distributions, by content (``detpy.runtime_id``);
 * **configuration**: pytest version, options and ini, plugins, the Level 0
   controls. Under ``--det`` the clock, randomness, hash seed and network are
   controlled, so they are configuration, not hidden inputs; the clock's epoch
@@ -651,28 +651,12 @@ def _dist_infos(root: str):
     return sorted(parts), editable
 
 
-def runtime_identity(root: str) -> tuple[str, dict, list]:
-    import sysconfig
+def runtime_identity(root: str, memo_path: str | None = "default") -> tuple[str, dict, list]:
+    """The runtime identity, keyed on content (interpreter, native libraries, standard library, installed
+    distributions, import path): see ``detpy.runtime_id``."""
+    from . import runtime_id
 
-    exe = os.path.realpath(sys.executable)
-    lib = None
-    libdir, ldlib = sysconfig.get_config_var("LIBDIR"), sysconfig.get_config_var("LDLIBRARY")
-    if libdir and ldlib and os.path.exists(os.path.join(libdir, ldlib)):
-        lib = os.path.join(libdir, ldlib)
-    dists, editable = _dist_infos(root)
-    d = {
-        "python": sys.version,
-        "cache_tag": sys.implementation.cache_tag,
-        "executable": _core.file_digest(exe),
-        "libpython": _core.file_digest(lib) if lib else None,
-        "system": platform.system(),
-        "machine": platform.machine(),
-        "libc": "-".join(platform.libc_ver()),
-        "stdlib": _core.listing_digest(os.path.dirname(os.__file__)),
-        "distributions": _core.digest("\n".join(dists).encode()),
-        "n_distributions": len(dists),
-    }
-    return _core.digest(json.dumps(d, sort_keys=True).encode()), d, editable
+    return runtime_id.runtime_identity(root, memo_path)
 
 
 def config_identity(config) -> tuple[str, dict]:
