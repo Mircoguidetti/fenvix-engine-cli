@@ -9,7 +9,7 @@ Labels: MEASURED (numbers from runs named here), ESTIMATED (derived), not marked
 engine and method: [INTERMEDIATE-1.md](INTERMEDIATE-1.md).
 
 PARTIAL because the home-assistant target (cold run <= 1.1x plain pytest) is not reached: **1.27-1.41x** on the
-profiled shards and **1.29x** in the walk, from 1.41-1.57x and 1.47x. Every reuse checked so far is right (0 wrong);
+profiled shards and **1.30x** in the walk, from 1.41-1.57x and 1.47x. Every reuse checked so far is right (0 wrong);
 the home-assistant verification walk was still running when this was written (status under "Verification walk").
 
 ## Exit numbers
@@ -48,12 +48,12 @@ Cold run / plain pytest, the price-relevant number:
 | home-assistant 0/16 | 1.50x (p3), 1.57x (p2) | **1.28x** (p3), 1.37x (p2) | 1.1x |
 | home-assistant 5/16 | 1.41x (p2) | **1.27x** (p2) | 1.1x |
 | home-assistant 10/16 | 1.44x (p3), 1.51x (p2) | **1.41x** (p3), 1.31x (p2) | 1.1x |
-| home-assistant, walk (16 shards, every 10th commit, median) | 1.47x (s1f) | **1.29x** (w1) | 1.1x |
+| home-assistant, walk (16 shards, every 10th commit, median) | 1.47x (s1f) | **1.30x** (w1) | 1.1x |
 | click, walk | 1.72x (w0) | **1.08x** (w1) | 1.1x |
-| pygments, walk | 1.37x (w0, 9 commits so far) | **1.23x** (w1, same 9 commits) | 1.1x |
+| pygments, walk | 1.46x (w0) | **1.31x** (w1) | 1.1x |
 
 Home-assistant: **1.27-1.41x, target 1.1x not reached.** Click reaches it in the walk (1.08x) but not at its HEAD
-commit (1.30x: more tests, more followed children); pygments 1.23-1.30x.
+commit (1.30x: more tests, more followed children); pygments 1.30-1.31x.
 
 ### Verification walk (MEASURED, workflow `rust-hotpaths-walk`, run `w1`, engine f7501bf)
 
@@ -64,18 +64,20 @@ mismatch re-run once to tell wrong from flaky (`harness/cache_proof/walk.py`, un
 | project | commits compared | reused results base / new | reused test time base / new | commits with a different reuse count | verified reuses (wrong, flaky) | cache run A, median base / new | cold / plain pytest, median base / new |
 |---|---|---|---|---|---|---|---|
 | click (w0 = base engine 24b6d15, same commits) | 43 | 28,700 / 28,700 | 31.5% / 31.5% | **0** | 28,700 (**0**, 0) | 12.8s / 7.6s | 1.72x / 1.08x |
-| pygments (w0, first 9 transitions; rest running) | 9 | 15,760 / 15,760 | 33.0% / 32.9% | **0** | 58,136 over 51 commits (**0**, 0) | 21.6s / 19.6s | 1.37x / 1.23x |
-| home-assistant (s1f = base walk, same commits) | 19 with all 16 shards | 140,768 / 140,760 | 61.6% / 62.3% | 5 (1-2 results of ~9,600 each) | 342,785 (**0**, 1) | 500.2s / 388.1s | 1.47x / 1.29x |
+| pygments (w0 = base engine, same commits) | 49 | 52,813 / 52,813 | 20.2% / 20.2% | **0** | 58,136 (**0**, 0) | 21.4s / 18.5s | 1.46x / 1.31x |
+| home-assistant (s1f = base walk, same commits) | 29 with all 16 shards in both | 213,929 / 213,918 | 61.3% / 62.1% | 7 (1-2 results of ~9,600 each) | 374,425 (**0**, 1) | 507.2s / 395.3s | 1.47x / 1.30x |
 
 * **0 wrong reuses** in every walk so far (MEASURED). The one home-assistant mismatch is flaky
   (`tests/components/mqtt/test_sensor.py::test_cleanup_triggers_and_restoring_state[hass_config0]`: cached passed,
   fresh failed, fresh again passed).
-* Reuse share: identical at every commit on click (w0 vs w1) and on pygments so far; on home-assistant within 1-2
+* Reuse share: identical at every commit on click and pygments (w0, base engine, vs w1); on home-assistant within 1-2
   results per commit, the size of the base's own run-to-run variation (finding 2).
-* Walk status when written: click and pygments w1 complete (51 commits); home-assistant w1: 11 shards at 50
-  commits, shards 0, 11, 12 at 40, 7 at 30, 4 at 20 (still running; results commit themselves to
-  `tracks/rust-hotpaths/walk/w1/`); w0 pygments at 10 of 51. The w1 engine (f7501bf) lacks changes 8, 9 and the
-  shared-string part of 3, all output-identical (click: identical stores and receipts against the base).
+* Walk status when written: click and pygments complete (51 commits, w0 and w1); home-assistant w1: 15 shards at
+  50 commits, shard 4 at 30 (still running; results commit themselves to `tracks/rust-hotpaths/walk/w1/`; the
+  base walk s1f has one shard at 40, so 29 commits have all 16 shards in both). The w1 engine (f7501bf) lacks
+  changes 8, 9, 11 and the shared-string part of 3 (8, 9 and 3 are output-identical; click: identical stores and
+  receipts against the base) and df409cb from `claude/cache-proof-step1`; p3's engine (3131a06) lacks 11 and
+  df409cb.
 * The s1d click walk (older engine) reused 336 more: 24 `less` children that the base's R-009 F4 fix refuses
   ("reads the real clock"), not this branch (w0, with the base engine, reuses exactly what w1 does).
 
