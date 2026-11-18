@@ -30,7 +30,8 @@ import time
 ADDR_NO_RANDOMIZE = 0x0040000
 MARKER = "DETPY_REEXEC"
 PRECOMPILE_ENV = "DETPY_PRECOMPILE_S"
-_EXCLUDE = r"[/\\](\.git|\.hg|\.tox|\.nox|node_modules|\.venv|venv|\.eggs|\.mypy_cache|\.detpy)[/\\]"
+_EXCLUDE_NAMES = (".git", ".hg", ".tox", ".nox", "node_modules", ".venv", "venv", ".eggs", ".mypy_cache", ".detpy")
+_EXCLUDE = r"[/\\](" + "|".join(n.replace(".", r"\.") for n in _EXCLUDE_NAMES) + r")[/\\]"
 
 # Number of pytest sessions currently configured in this process. A nested,
 # in-process session (``pytest.main()`` from a test, pytester inline runs)
@@ -168,6 +169,15 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
         if not dirs_:
             continue
         cmd = [sys.executable, "-m", "compileall", "-qq", "-j", "0", *extra, *dirs_]
+        if dirs_ is project and _project_check_in_rust():
+            # compileall's walk and up-to-date test in Rust (MEASURED on home-assistant: ~2 s of every run):
+            # compileall runs only for the files it would compile (compile_file on each, as compile_dir does),
+            # or on the whole tree when there are many (it compiles a tree in parallel)
+            stale = _stale_project_sources(dirs_, prefix)
+            if not stale:
+                continue
+            if len(stale) <= _STALE_LIST_MAX:
+                cmd = [sys.executable, "-m", "compileall", "-qq", *extra, *stale]
         p = subprocess.run(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
                            stderr=subprocess.DEVNULL)
         if p.returncode not in (0, 1):  # 1: some file does not compile (it never will); else: interrupted
@@ -184,6 +194,38 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
     except OSError:
         pass
     return time.perf_counter() - t0
+
+
+# More stale project files than this: compileall on the whole tree (it compiles in parallel; a list is compiled in
+# one process).
+_STALE_LIST_MAX = 64
+
+
+def _core():
+    from . import _core as c
+
+    return c
+
+
+def _project_check_in_rust() -> bool:
+    """The Rust walks reproduce compileall's and os.walk's on POSIX paths, for the default optimization level
+    (``cache_from_source`` names ``.opt-N.pyc`` files otherwise)."""
+    return os.name == "posix" and not os.environ.get("PYTHONOPTIMIZE") and sys.flags.optimize == 0
+
+
+def _stale_project_sources(dirs: list, prefix: str) -> list:
+    """Project sources ``compileall -qq -x _EXCLUDE <dirs>`` would compile into ``prefix``."""
+    import importlib.util
+    import re
+
+    exclude = re.compile(_EXCLUDE)
+    out = []
+    for d in dirs:
+        for f in _core().pyc_stale(d, prefix, sys.implementation.cache_tag, importlib.util.MAGIC_NUMBER,
+                                   os.getcwd()):
+            if not exclude.search(f):
+                out.append(f)
+    return out
 
 
 def _drop_fresh_pycs(dirs: list, prefix: str, t_compile: float) -> None:
@@ -203,18 +245,21 @@ def _drop_fresh_pycs(dirs: list, prefix: str, t_compile: float) -> None:
     sys.pycache_prefix = prefix
     try:
         for d in dirs:
-            for root, subdirs, files in os.walk(d):
-                subdirs[:] = [x for x in subdirs if not exclude.search(os.path.join(root, x) + os.sep)]
-                for f in files:
-                    if not f.endswith(".py"):
+            if _project_check_in_rust():
+                # the walk and the mtime test in Rust (_core.fresh_sources: the same walk, pruning and test)
+                fresh = _core().fresh_sources(d, list(_EXCLUDE_NAMES), limit)
+            else:
+                fresh = []
+                for root, subdirs, files in os.walk(d):
+                    subdirs[:] = [x for x in subdirs if not exclude.search(os.path.join(root, x) + os.sep)]
+                    fresh += [os.path.join(root, f) for f in files if f.endswith(".py")]
+            for src in fresh:
+                try:
+                    if os.stat(src).st_mtime < limit:
                         continue
-                    src = os.path.join(root, f)
-                    try:
-                        if os.stat(src).st_mtime < limit:
-                            continue
-                        os.unlink(importlib.util.cache_from_source(src))
-                    except (OSError, ValueError, NotImplementedError):
-                        continue
+                    os.unlink(importlib.util.cache_from_source(src))
+                except (OSError, ValueError, NotImplementedError):
+                    continue
     finally:
         sys.pycache_prefix = saved
 

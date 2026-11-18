@@ -18,7 +18,9 @@ def test_library_dirs_are_precompiled_again_only_when_they_change(tmp_path, monk
     real = subprocess.run
 
     def run(cmd, **kw):
-        calls.append([c for c in cmd if c in (str(site), str(proj))])
+        # the project's files compileall is given (round 2: only the stale ones) count as the project
+        calls.append(sorted({str(proj) if c.startswith(str(proj) + os.sep) else c for c in cmd
+                             if c in (str(site), str(proj)) or c.startswith(str(proj) + os.sep)}))
         return real(cmd, **kw)
 
     monkeypatch.setattr(subprocess, "run", run)
@@ -30,20 +32,25 @@ def test_library_dirs_are_precompiled_again_only_when_they_change(tmp_path, monk
 
     assert precompile() == [str(site), str(proj)]
     prefix = reexec.pyc_cache_dir("0")
+    os.utime(proj / "m.py", (1, 1))  # older than 2 s: kept, and from now on up to date (round 2: not recompiled)
+    precompile()
     assert any(f.endswith(".pyc") for _, _, fs in os.walk(prefix + str(site)) for f in fs)
-    # unchanged library: only the project is checked
+    # unchanged library and project: nothing to compile (the project is checked, in Rust, without compileall)
+    assert precompile() == []
+    # a project edit: only the project is compiled
+    os.utime(proj / "m.py", (2, 2))
     assert precompile() == [str(proj)]
     # an installer adds a package (or rewrites a dist-info RECORD): the library is checked again
     (site / "lib2").mkdir()
     (site / "lib2" / "__init__.py").write_text("Z = 1\n")
-    assert precompile() == [str(site), str(proj)]
+    assert precompile() == [str(site)]
     di = site / "lib2-1.0.dist-info"
     di.mkdir()
     (di / "RECORD").write_text("a\n")
     precompile()
-    assert precompile() == [str(proj)]
+    assert precompile() == []
     os.utime(di / "RECORD", ns=(1, 1))
-    assert precompile() == [str(site), str(proj)]
+    assert precompile() == [str(site)]
 
 
 def test_library_dirs_inside_a_virtual_environment_are_precompiled(tmp_path, monkeypatch):

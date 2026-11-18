@@ -14,6 +14,7 @@ use std::path::PathBuf;
 use std::sync::{Mutex, MutexGuard};
 
 mod level0;
+mod precompile;
 mod proofcache;
 mod sysmon;
 
@@ -264,5 +265,6 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(proofcache::env_value_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::env_all_digest, m)?)?;
     level0::register(m)?;
+    precompile::register(m)?;
     Ok(())
 }
