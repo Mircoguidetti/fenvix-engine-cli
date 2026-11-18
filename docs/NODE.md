@@ -19,6 +19,9 @@ detjs --det-help                             # every option
 Without `--det` (and without `DETJS=1`) `detjs vitest|jest` runs the project's
 own CLI unchanged.
 
+`--det-cache=DIR|URL` adds the cache with proof (skip test files whose every recorded input is unchanged, with a
+receipt per reused result): [NODE-CACHE.md](NODE-CACHE.md).
+
 ## Layout
 
 ```
