@@ -1,0 +1,77 @@
+{
+ "name": "documenso",
+ "job": "e5",
+ "repo": "documenso/documenso",
+ "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+ "status": "ok",
+ "run_id": "44370101839",
+ "engine_commit": "921c43226d10dd6685facddb0c4616ebed121d8f",
+ "setup_s": 331,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 200,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "replays": 10,
+  "control": 5,
+  "variants": [
+   "start",
+   "frozen",
+   "tick"
+  ]
+ },
+ "pw_dir": "packages/app-tests",
+ "pw_args": [
+  "--project=api",
+  "--project=license"
+ ],
+ "runs": [],
+ "epoch": "2026-11-18T19:35:00Z",
+ "measured_at": "2026-11-18T19:35:58Z",
+ "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
+ "state": {
+  "spec": "/home/runner/work/_temp/l2_target/detjs-state.json",
+  "save_rc": 0,
+  "save_log": "detjs state: save snapshot .detjs/state; files digest 55c5bcb888f463ca\n"
+ },
+ "e1_args": [
+  "--project=api",
+  "--project=license"
+ ],
+ "e5_prepare": {
+  "rc": 0,
+  "log": ""
+ },
+ "e5": [
+  {
+   "variant": "start",
+   "faketime": "@2026-11-18 19:35:00",
+   "db_rc": 1,
+   "db_now": "nt\npossible system security compromise.  See the documentation for\nmore information on how to properly start the server.\nwait_cmd: 'docker exec database pg_isready -U documenso' did not succeed in 90s",
+   "db_log": "CONTAINER ID   IMAGE         COMMAND                  CREATED              STATUS                          PORTS     NAMES\naf09cce7e7db   pg-faketime   \"docker-entrypoint.s\u2026\"   About a minute ago   Exited (1) About a minute ago             database\n\"root\" execution of the PostgreSQL server is not permitted.\nThe server must be started under an unprivileged user ID to prevent\npossible system security compromise.  See the documentation for\nmore information on how to properly start the server.\nwait_cmd: 'docker exec database pg_isready -U documenso' did not succeed in 90s\n",
+   "targets": []
+  },
+  {
+   "variant": "frozen",
+   "faketime": "2026-11-18 19:35:00",
+   "db_rc": 1,
+   "db_now": "nt\npossible system security compromise.  See the documentation for\nmore information on how to properly start the server.\nwait_cmd: 'docker exec database pg_isready -U documenso' did not succeed in 90s",
+   "db_log": "CONTAINER ID   IMAGE         COMMAND                  CREATED              STATUS                          PORTS     NAMES\nad28090712c3   pg-faketime   \"docker-entrypoint.s\u2026\"   About a minute ago   Exited (1) About a minute ago             database\n\"root\" execution of the PostgreSQL server is not permitted.\nThe server must be started under an unprivileged user ID to prevent\npossible system security compromise.  See the documentation for\nmore information on how to properly start the server.\nwait_cmd: 'docker exec database pg_isready -U documenso' did not succeed in 90s\n",
+   "targets": []
+  },
+  {
+   "variant": "tick",
+   "faketime": "@2026-11-18 19:35:00 i0.001",
+   "db_rc": 1,
+   "db_now": "nt\npossible system security compromise.  See the documentation for\nmore information on how to properly start the server.\nwait_cmd: 'docker exec database pg_isready -U documenso' did not succeed in 90s",
+   "db_log": "CONTAINER ID   IMAGE         COMMAND                  CREATED              STATUS                          PORTS     NAMES\na2aea7ee381c   pg-faketime   \"docker-entrypoint.s\u2026\"   About a minute ago   Exited (1) About a minute ago             database\n\"root\" execution of the PostgreSQL server is not permitted.\nThe server must be started under an unprivileged user ID to prevent\npossible system security compromise.  See the documentation for\nmore information on how to properly start the server.\nwait_cmd: 'docker exec database pg_isready -U documenso' did not succeed in 90s\n",
+   "targets": []
+  }
+ ],
+ "elapsed_min": 4.8
+}
