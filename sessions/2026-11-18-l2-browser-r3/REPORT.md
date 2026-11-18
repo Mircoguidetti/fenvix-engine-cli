@@ -43,7 +43,35 @@ Regression suites after the fixes (local, MEASURED): `node/test/l2r2.test.js` + 
 
 ## 3. E1: the target set re-established
 
-PENDING
+Each project's suite selection as its CI runs it (configured Playwright workers, retries 0), **20 runs plain and 10
+runs under round 1's CPU stress** (one busy process per core), failure message kept for every failure. Run 44327291710
+(5 round-1/2 projects) and 44326636551 (new project), MEASURED. Selection differences from round 2: actual runs its 3
+target files (47 tests, 4 workers) instead of shard 1/3, because "keeps the search" is outside shard 1/3; documenso adds
+the ui target file to its api + license selection.
+
+| Project | Tests | Flaky without load (fail in plain runs) | Flaky only under stress | Round-1/2 targets that failed at all |
+|---|---|---|---|---|
+| actual (3 target files) | 47 | 3: "extends after budgeting" desktop **4/20**, "applies budget template" Tracking **8/20**, Envelope 1/20 | 6: every `accounts.mobile` test and 2 more time out under stress (beforeEach 60 s, 9-10 of 10) | **4 of 4**: 2 without load ("extends", "applies budget template"), 2 under stress only ("keeps the search", "reconciles": 0/20 plain, 10/10 stressed) |
+| documenso (api + license + ui file) | 599 | **31**: 27 `read ECONNRESET` on runner API requests, 2 `update-envelope-items` (`toBeFalsy`, **15/20** and 7/20), 2 EMAIL_TRANSPORT (`Element is outside of the viewport`, 5/20 each, never both in one run) | 10: 9 ECONNRESET, 1 `template-field-prefill` toBeVisible | **2 of 5**: EMAIL_TRANSPORT (5/20 plain), DELETE_RECIPIENT "a missing reason" (4/20 plain, ECONNRESET). FIND_DOCUMENTS x2 and SEARCH: 0/30 |
+| etherpad | 289 | 0 | 0 | **0 of 2** (0/30 each) |
+| solid-start | 47 | 0 | 0 | **0 of 1** (0/30) |
+| uptime-kuma (1 worker, as configured) | 71 | 1: "saves the data retention period" **1/20** (3/10 stressed) | 1: "RSS feed escapes" (0/20, 1/10: test timeout) | **2 of 3**; "creates a group": 0/30 |
+| **sveltekit** (new, `basics` app, CI leg `pw:dev` js 1/2, 4 workers) | 254 | 0 | 3: INP "does not block next paint" (403.6 ms vs a 400 ms budget), `data-sveltekit-preload-code` (2/10), `preload-data` (1/10) | - (no prior targets) |
+
+**What this says (MEASURED):** of round 1/2's 15 targets, **7 never failed** in 30 runs each (etherpad 2, solid-start 1,
+documenso FIND_DOCUMENTS x2 and SEARCH, uptime-kuma "creates a group"): the reviewer's ceiling of 8 of 15 holds with
+one change (uptime-kuma "data retention" did fail plain this time, actual "reconciles" and "keeps the search" only
+under stress). Across the 6 projects there are **55 flaky tests** in 30 runs each (plain + stressed), by mechanism (from
+the failure messages; mechanism ESTIMATED where marked):
+
+| Mechanism | Tests | Projects | Without load? | What reproduces it |
+|---|---|---|---|---|
+| M1 `read ECONNRESET` on a runner API request (keep-alive socket closed by the server while the runner reuses it; ESTIMATED) | 36 | documenso | yes (27 of 36) | parallel API workers + a network layer that can make the server's close cross the runner's reuse |
+| M2 parallel-worker data interference (`update-envelope-items`, passes with `--workers=1` in round 2) | 2 | documenso | yes | one scheduler across N workers |
+| M3 shared UI list + random names + parallel workers (EMAIL_TRANSPORT; mechanism UNKNOWN) | 2 | documenso | yes | multi-worker scheduling, maybe seeds alone (UNKNOWN) |
+| M4 runner vs app ordering in one worker (uptime-kuma: the test's fill lands before the page loads the saved value: received "18030"; actual "Failed to navigate to the next month") | 2 | uptime-kuma, actual | yes | seeded latency on the right response, under a runner-gated clock (lockstep) for one fingerprint |
+| M5 timeouts under CPU starvation (actual 8 incl. "applies budget template", uptime-kuma RSS, documenso 1) | 10 | actual, uptime-kuma, documenso | 2 of 10 (actual "applies budget template", slow even unstressed) | a seed space that reaches the deadlines (E6) + one fingerprint per replay |
+| M6 perf budget / counters under load (sveltekit) | 3 | sveltekit | no | INP: CPU time as virtual time (VM-class); preload counters: seeded latency (ESTIMATED) |
 
 ## 4. E2, E5, E6
 
