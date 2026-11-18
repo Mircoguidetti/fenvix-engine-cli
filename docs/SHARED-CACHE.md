@@ -101,10 +101,19 @@ FENVIX_CACHE_TOKEN=... pytest --det --det-cache=https://cache.example/acme/repo
   the path cannot substitute content under a known address. A candidate must list its test's own file among its
   inputs (floor check; every entry the engine records does).
 
-## Measured (see the session report)
+## Measured (see the session reports)
 
-GitHub-hosted machines, workflow `.github/workflows/fenvix-shared-cache.yml`: job 2 on another machine reuses as
-much as job 2 on the same machine (pygments, click, marshmallow), every reuse checked by a full fresh run, 0 wrong.
+GitHub-hosted machines, workflow `.github/workflows/fenvix-shared-cache.yml` (pygments, click, marshmallow; job 2 on
+the same machine vs job 2 on another machine through the service; every reuse checked by a fresh full run):
+
+* Before review R-008 (runs 44262651294, 44263752890, 44264885597): 100% of the one-machine reuse on all pairs, 0
+  wrong.
+* After R-008, instruction-set level keyed (default; runs 44299953107, 44300528610): pairs at the same level reuse
+  100% of the one-machine reuse (2 of 6 pairs); pairs at different levels (x86-64-v3 vs v4) reuse nothing, and the
+  identities differ only in `cpu`. 0 wrong.
+* After R-008, `FENVIX_RUNTIME_ISA=off` (run 44300539734): 100% on all three pairs, two of them across v3/v4
+  machines; identities equal. 0 wrong.
+
 Locally: `runner/local-shared-demo.sh <repo-url> <N> <N+1>` runs the same comparison on one host;
 `runner/shared-cache-compare ROOT...` prints the table.
 
