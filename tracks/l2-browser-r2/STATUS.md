@@ -13,12 +13,18 @@ replay-command check). Workflow `.github/workflows/l2-browser-r2.yml` (push chan
 - S6 settled final DOM (DETJS_PW_SETTLE_MS).
 - Exploration: seeded latency in chunks (DETJS_PW_LATENCY).
 - Replay command printed per failing test.
-- Tests: node/test/l2r2.test.js (6), node/test/playwright.test.js (5) pass locally.
+- Tests: node/test/l2r2.test.js (8), node/test/playwright.test.js (5) pass locally.
 
 - Diagnosis run 2 (44279789112): solid-start target one fingerprint; documenso 5 targets pass again (state), diverge on
   DB-engine timestamps; uptime-kuma/actual: page timing (S6 root).
 - Worker clock for test code, API-only tests fingerprinted, per-stream page digests, HMR passthrough.
 - Run 3 cancelled (worker clock reached the driver's pacing: fixed + regression test).
 
+- Run 4 (44284824592): all 5 projects measured. Found: test data repeated across tests (worker reseed only on
+  Math.random, every test's clock at the epoch): documenso 266/595 broken. Fixed in 697c9729 + regression test.
+- Run 5 (44301381294): documenso after the fix: broken 8/595 (1.3%), slowdown x4.6.
+- Final report: fenvix-brain-cli sessions/2026-11-18-l2-browser-r2/REPORT.md (PARTIAL: 0 of 15 targets meet the exit
+  number; remaining divergence = runner acting in real time (lockstep proposal) and database clocks).
+
 ## Next
-- Measurement run 4 (nonce 4) running; then REPORT.md via `python3 harness/aggregate.py`.
+- Founder/coordinator decision on lockstep virtual time (ESTIMATED 7-11 days), see the report.
