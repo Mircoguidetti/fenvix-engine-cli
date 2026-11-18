@@ -1,3 +1,5 @@
+> Superseded on 2026-11-18 by `sessions/2026-11-18-pricing-v2/REPORT.md` (prices read from the vendors' pages; `model.py` rewritten). The numbers below are version 1, from memory.
+
 # Pricing study: what one CI run costs on GitHub Actions, and on fenvix
 
 Status: 2026-11-17, version 1. Model: `pricing/model.py` (run `python3 pricing/model.py`; it writes
