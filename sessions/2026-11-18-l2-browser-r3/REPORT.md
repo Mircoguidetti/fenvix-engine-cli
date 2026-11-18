@@ -128,7 +128,7 @@ Real targets (run 44383743101, MEASURED): the two real flakes that fail without 
 | Target (real failure) | Round-2 list, seeds 1-8 | Deadline list, seeds 1-8 | Failing seed replayed 5x | Same failure as the real one? |
 |---|---|---|---|---|
 | actual "extends after budgeting" ("Failed to navigate to the next month", 4/20 plain) | 8 P | 8 F (7 "selected-budget-month not found", 1 timeout) | 5 F, 3 fp | **no**: the hold breaks the page before the step that flakes |
-| uptime-kuma "data retention" (received "18030", 1/20 plain) | 1 P, 7 F (received "180" or "") | 8 F (field not found / "180") | 5 F, 5 fp (round-2 list), 5 F, 3 fp (deadline) | **no** |
+| uptime-kuma "data retention" (received "18030", 1/20 plain) | 1 P, 6 F (received "180" or ""), 1 skipped | 8 F (field not found / "180") | 5 F, 5 fp (round-2 list), 5 F, 3 fp (deadline) | **no** |
 
 **Decision (MEASURED):** a seed space that reaches the deadlines reproduces a timeout on a fixture, but on the two real
 targets it produces failures of our own (earlier steps, other values) and never the real one. Holding any message
