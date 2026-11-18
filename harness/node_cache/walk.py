@@ -105,7 +105,9 @@ class Walk:
                                            "cpus": os.cpu_count(), "node": None}
         self.install_digest = None
         self.env = dict(os.environ)
-        self.env.pop("CI", None) if self.spec.get("unset_ci") else None
+        if self.spec.get("unset_ci"):
+            for k in ("CI", "GITHUB_ACTIONS"):
+                self.env.pop(k, None)
         self.env["FENVIX_RUNTIME_MEMO"] = os.path.join(self.work, "runtime-memo.json")
 
     def save(self):
@@ -118,6 +120,8 @@ class Walk:
         info = {}
         sh(["git", "checkout", "-q", "-f", sha], cwd=self.repo, check=True)
         sh(["git", "clean", "-q", "-ffdx", "-e", "node_modules", "-e", ".detjs"], cwd=self.repo)
+        for dst, srcf in (self.spec.get("setup_files") or {}).items():
+            shutil.copyfile(os.path.join(ENGINE, srcf), os.path.join(self.repo, dst))
         d = files_digest(self.repo, self.spec.get("install_files", ["package.json"]))
         if d != self.install_digest:
             t0 = time.time()
@@ -180,7 +184,7 @@ class Walk:
                 fh.write("{}\n")
             created = True
         env = dict(self.env, NX_DAEMON="false", NX_NO_CLOUD="true", NX_SKIP_NX_CACHE="true", NX_TUI="false", NX_ISOLATE_PLUGINS="false")
-        binrel = (load_json(os.path.join(tool, "node_modules", "nx", "package.json")) or {}).get("bin", {}).get("nx", "bin/nx.js")
+        binrel = (load_json(os.path.join(link, "package.json")) or {}).get("bin", {}).get("nx", "bin/nx.js")
         nx = ["node", os.path.join(link, binrel)]
         try:
             rc, out, dt = sh(nx + ["show", "projects", "--json"], cwd=self.repo, timeout=600, env=env)
