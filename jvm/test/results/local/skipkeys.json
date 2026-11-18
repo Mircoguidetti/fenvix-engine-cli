@@ -1,0 +1,317 @@
+[
+ {
+  "scenario": "none",
+  "ok": true,
+  "expected_rerun": {
+   "sk.NeverTest::network()": "network",
+   "sk.NeverTest::writesItsInput()": "writes"
+  },
+  "decisions": {
+   "sk.DepTest::library()": null,
+   "sk.KeysTest::unchanged()": null,
+   "sk.KeysTest::fileProbe()": null,
+   "sk.KeysTest::fileRead()": null,
+   "sk.KeysTest::resource()": null,
+   "sk.KeysTest::env()": null,
+   "sk.KeysTest::code()": null,
+   "sk.KeysTest::prop()": null,
+   "sk.KeysTest::dirList()": null,
+   "sk.NeverTest::writesItsInput()": "writes",
+   "sk.NeverTest::network()": "network",
+   "sk.StaticATest::writer()": null,
+   "sk.StaticBTest::reader()": null
+  }
+ },
+ {
+  "scenario": "code",
+  "ok": true,
+  "expected_rerun": {
+   "sk.KeysTest::code()": "code",
+   "sk.NeverTest::network()": "network",
+   "sk.NeverTest::writesItsInput()": "writes"
+  },
+  "decisions": {
+   "sk.DepTest::library()": null,
+   "sk.KeysTest::unchanged()": null,
+   "sk.KeysTest::fileProbe()": null,
+   "sk.KeysTest::fileRead()": null,
+   "sk.KeysTest::resource()": null,
+   "sk.KeysTest::env()": null,
+   "sk.KeysTest::code()": "code",
+   "sk.KeysTest::prop()": null,
+   "sk.KeysTest::dirList()": null,
+   "sk.NeverTest::writesItsInput()": "writes",
+   "sk.NeverTest::network()": "network",
+   "sk.StaticATest::writer()": null,
+   "sk.StaticBTest::reader()": null
+  }
+ },
+ {
+  "scenario": "file-content",
+  "ok": true,
+  "expected_rerun": {
+   "sk.KeysTest::fileRead()": "file",
+   "sk.NeverTest::network()": "network",
+   "sk.NeverTest::writesItsInput()": "writes"
+  },
+  "decisions": {
+   "sk.DepTest::library()": null,
+   "sk.KeysTest::unchanged()": null,
+   "sk.KeysTest::fileProbe()": null,
+   "sk.KeysTest::fileRead()": "file",
+   "sk.KeysTest::resource()": null,
+   "sk.KeysTest::env()": null,
+   "sk.KeysTest::code()": null,
+   "sk.KeysTest::prop()": null,
+   "sk.KeysTest::dirList()": null,
+   "sk.NeverTest::writesItsInput()": "writes",
+   "sk.NeverTest::network()": "network",
+   "sk.StaticATest::writer()": null,
+   "sk.StaticBTest::reader()": null
+  }
+ },
+ {
+  "scenario": "file-created",
+  "ok": true,
+  "expected_rerun": {
+   "sk.KeysTest::fileProbe()": "file",
+   "sk.NeverTest::network()": "network",
+   "sk.NeverTest::writesItsInput()": "writes"
+  },
+  "decisions": {
+   "sk.DepTest::library()": null,
+   "sk.KeysTest::unchanged()": null,
+   "sk.KeysTest::fileProbe()": "file",
+   "sk.KeysTest::fileRead()": null,
+   "sk.KeysTest::resource()": null,
+   "sk.KeysTest::env()": null,
+   "sk.KeysTest::code()": null,
+   "sk.KeysTest::prop()": null,
+   "sk.KeysTest::dirList()": null,
+   "sk.NeverTest::writesItsInput()": "writes",
+   "sk.NeverTest::network()": "network",
+   "sk.StaticATest::writer()": null,
+   "sk.StaticBTest::reader()": null
+  }
+ },
+ {
+  "scenario": "dir-listing",
+  "ok": true,
+  "expected_rerun": {
+   "sk.KeysTest::dirList()": "file",
+   "sk.NeverTest::network()": "network",
+   "sk.NeverTest::writesItsInput()": "writes"
+  },
+  "decisions": {
+   "sk.DepTest::library()": null,
+   "sk.KeysTest::unchanged()": null,
+   "sk.KeysTest::fileProbe()": null,
+   "sk.KeysTest::fileRead()": null,
+   "sk.KeysTest::resource()": null,
+   "sk.KeysTest::env()": null,
+   "sk.KeysTest::code()": null,
+   "sk.KeysTest::prop()": null,
+   "sk.KeysTest::dirList()": "file",
+   "sk.NeverTest::writesItsInput()": "writes",
+   "sk.NeverTest::network()": "network",
+   "sk.StaticATest::writer()": null,
+   "sk.StaticBTest::reader()": null
+  }
+ },
+ {
+  "scenario": "resource",
+  "ok": true,
+  "expected_rerun": {
+   "sk.KeysTest::resource()": [
+    "resource",
+    "file"
+   ],
+   "sk.NeverTest::network()": "network",
+   "sk.NeverTest::writesItsInput()": "writes"
+  },
+  "decisions": {
+   "sk.DepTest::library()": null,
+   "sk.KeysTest::unchanged()": null,
+   "sk.KeysTest::fileProbe()": null,
+   "sk.KeysTest::fileRead()": null,
+   "sk.KeysTest::resource()": "file",
+   "sk.KeysTest::env()": null,
+   "sk.KeysTest::code()": null,
+   "sk.KeysTest::prop()": null,
+   "sk.KeysTest::dirList()": null,
+   "sk.NeverTest::writesItsInput()": "writes",
+   "sk.NeverTest::network()": "network",
+   "sk.StaticATest::writer()": null,
+   "sk.StaticBTest::reader()": null
+  }
+ },
+ {
+  "scenario": "env-var",
+  "ok": true,
+  "expected_rerun": {
+   "sk.KeysTest::env()": "env",
+   "sk.NeverTest::network()": "network",
+   "sk.NeverTest::writesItsInput()": "writes"
+  },
+  "decisions": {
+   "sk.DepTest::library()": null,
+   "sk.KeysTest::unchanged()": null,
+   "sk.KeysTest::fileProbe()": null,
+   "sk.KeysTest::fileRead()": null,
+   "sk.KeysTest::resource()": null,
+   "sk.KeysTest::env()": "env",
+   "sk.KeysTest::code()": null,
+   "sk.KeysTest::prop()": null,
+   "sk.KeysTest::dirList()": null,
+   "sk.NeverTest::writesItsInput()": "writes",
+   "sk.NeverTest::network()": "network",
+   "sk.StaticATest::writer()": null,
+   "sk.StaticBTest::reader()": null
+  }
+ },
+ {
+  "scenario": "system-property",
+  "ok": true,
+  "expected_rerun": {
+   "sk.KeysTest::prop()": "prop",
+   "sk.NeverTest::network()": "network",
+   "sk.NeverTest::writesItsInput()": "writes"
+  },
+  "decisions": {
+   "sk.DepTest::library()": null,
+   "sk.KeysTest::unchanged()": null,
+   "sk.KeysTest::fileProbe()": null,
+   "sk.KeysTest::fileRead()": null,
+   "sk.KeysTest::resource()": null,
+   "sk.KeysTest::env()": null,
+   "sk.KeysTest::code()": null,
+   "sk.KeysTest::prop()": "prop",
+   "sk.KeysTest::dirList()": null,
+   "sk.NeverTest::writesItsInput()": "writes",
+   "sk.NeverTest::network()": "network",
+   "sk.StaticATest::writer()": null,
+   "sk.StaticBTest::reader()": null
+  }
+ },
+ {
+  "scenario": "static-writer",
+  "ok": true,
+  "expected_rerun": {
+   "sk.StaticATest::writer()": "code",
+   "sk.StaticBTest::reader()": "after",
+   "sk.NeverTest::network()": "network",
+   "sk.NeverTest::writesItsInput()": "writes"
+  },
+  "decisions": {
+   "sk.DepTest::library()": null,
+   "sk.KeysTest::unchanged()": null,
+   "sk.KeysTest::fileProbe()": null,
+   "sk.KeysTest::fileRead()": null,
+   "sk.KeysTest::resource()": null,
+   "sk.KeysTest::env()": null,
+   "sk.KeysTest::code()": null,
+   "sk.KeysTest::prop()": null,
+   "sk.KeysTest::dirList()": null,
+   "sk.NeverTest::writesItsInput()": "writes",
+   "sk.NeverTest::network()": "network",
+   "sk.StaticATest::writer()": "code",
+   "sk.StaticBTest::reader()": "after"
+  }
+ },
+ {
+  "scenario": "runtime-jvm-flag",
+  "ok": true,
+  "expected_rerun": {
+   "sk.KeysTest::code()": "runtime",
+   "sk.KeysTest::fileRead()": "runtime",
+   "sk.KeysTest::fileProbe()": "runtime",
+   "sk.KeysTest::dirList()": "runtime",
+   "sk.KeysTest::resource()": "runtime",
+   "sk.KeysTest::env()": "runtime",
+   "sk.KeysTest::prop()": "runtime",
+   "sk.KeysTest::unchanged()": "runtime",
+   "sk.StaticATest::writer()": "runtime",
+   "sk.StaticBTest::reader()": "runtime",
+   "sk.DepTest::library()": "runtime"
+  },
+  "decisions": {
+   "sk.DepTest::library()": "runtime",
+   "sk.KeysTest::unchanged()": "runtime",
+   "sk.KeysTest::fileProbe()": "runtime",
+   "sk.KeysTest::fileRead()": "runtime",
+   "sk.KeysTest::resource()": "runtime",
+   "sk.KeysTest::env()": "runtime",
+   "sk.KeysTest::code()": "runtime",
+   "sk.KeysTest::prop()": "runtime",
+   "sk.KeysTest::dirList()": "runtime",
+   "sk.NeverTest::writesItsInput()": "runtime",
+   "sk.NeverTest::network()": "runtime",
+   "sk.StaticATest::writer()": "runtime",
+   "sk.StaticBTest::reader()": "runtime"
+  }
+ },
+ {
+  "scenario": "dependency-version",
+  "ok": true,
+  "expected_rerun": {
+   "sk.KeysTest::code()": "config",
+   "sk.KeysTest::fileRead()": "config",
+   "sk.KeysTest::fileProbe()": "config",
+   "sk.KeysTest::dirList()": "config",
+   "sk.KeysTest::resource()": "config",
+   "sk.KeysTest::env()": "config",
+   "sk.KeysTest::prop()": "config",
+   "sk.KeysTest::unchanged()": "config",
+   "sk.StaticATest::writer()": "config",
+   "sk.StaticBTest::reader()": "config",
+   "sk.DepTest::library()": "config"
+  },
+  "decisions": {
+   "sk.DepTest::library()": "config",
+   "sk.KeysTest::unchanged()": "config",
+   "sk.KeysTest::fileProbe()": "config",
+   "sk.KeysTest::fileRead()": "config",
+   "sk.KeysTest::resource()": "config",
+   "sk.KeysTest::env()": "config",
+   "sk.KeysTest::code()": "config",
+   "sk.KeysTest::prop()": "config",
+   "sk.KeysTest::dirList()": "config",
+   "sk.NeverTest::writesItsInput()": "config",
+   "sk.NeverTest::network()": "config",
+   "sk.StaticATest::writer()": "config",
+   "sk.StaticBTest::reader()": "config"
+  }
+ },
+ {
+  "scenario": "config-junit-properties",
+  "ok": true,
+  "expected_rerun": {
+   "sk.KeysTest::code()": "config",
+   "sk.KeysTest::fileRead()": "config",
+   "sk.KeysTest::fileProbe()": "config",
+   "sk.KeysTest::dirList()": "config",
+   "sk.KeysTest::resource()": "config",
+   "sk.KeysTest::env()": "config",
+   "sk.KeysTest::prop()": "config",
+   "sk.KeysTest::unchanged()": "config",
+   "sk.StaticATest::writer()": "config",
+   "sk.StaticBTest::reader()": "config",
+   "sk.DepTest::library()": "config"
+  },
+  "decisions": {
+   "sk.DepTest::library()": "config",
+   "sk.KeysTest::unchanged()": "config",
+   "sk.KeysTest::fileProbe()": "config",
+   "sk.KeysTest::fileRead()": "config",
+   "sk.KeysTest::resource()": "config",
+   "sk.KeysTest::env()": "config",
+   "sk.KeysTest::code()": "config",
+   "sk.KeysTest::prop()": "config",
+   "sk.KeysTest::dirList()": "config",
+   "sk.NeverTest::writesItsInput()": "config",
+   "sk.NeverTest::network()": "config",
+   "sk.StaticATest::writer()": "config",
+   "sk.StaticBTest::reader()": "config"
+  }
+ }
+]

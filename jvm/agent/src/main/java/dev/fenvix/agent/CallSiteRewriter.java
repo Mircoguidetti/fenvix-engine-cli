@@ -87,6 +87,13 @@ final class CallSiteRewriter implements ClassFileTransformer {
         VIRTUAL.put("sleep(J)V@java/util/concurrent/TimeUnit", new String[] {"timeUnitSleep", "(Ljava/util/concurrent/TimeUnit;J" + S + ")V"});
         VIRTUAL.put("wait(J)V@*", new String[] {"objectWait", "(Ljava/lang/Object;J" + S + ")V"});
         VIRTUAL.put("join(J)V@java/lang/Thread", new String[] {"threadJoin", "(Ljava/lang/Thread;J" + S + ")V"});
+        VIRTUAL.put("join()V@java/lang/Thread", new String[] {"threadJoinUntimed", "(Ljava/lang/Thread;" + S + ")V"});
+        VIRTUAL.put("await()V@java/util/concurrent/CountDownLatch",
+                new String[] {"latchAwaitUntimed", "(Ljava/util/concurrent/CountDownLatch;" + S + ")V"});
+        VIRTUAL.put("get()Ljava/lang/Object;@future",
+                new String[] {"futureGetUntimed", "(Ljava/util/concurrent/Future;" + S + ")Ljava/lang/Object;"});
+        VIRTUAL.put("take()Ljava/lang/Object;@queue",
+                new String[] {"queueTake", "(Ljava/util/concurrent/BlockingQueue;" + S + ")Ljava/lang/Object;"});
         VIRTUAL.put("await(JLjava/util/concurrent/TimeUnit;)Z@java/util/concurrent/CountDownLatch",
                 new String[] {"latchAwait", "(Ljava/util/concurrent/CountDownLatch;JLjava/util/concurrent/TimeUnit;" + S + ")Z"});
         VIRTUAL.put("await(JLjava/util/concurrent/TimeUnit;)Z@java/util/concurrent/locks/Condition",
@@ -123,6 +130,8 @@ final class CallSiteRewriter implements ClassFileTransformer {
         String[] r = VIRTUAL.get(nd + "@" + owner);
         if (r != null) return r;
         if (nd.equals("get(JLjava/util/concurrent/TimeUnit;)Ljava/lang/Object;") && in(FUTURES, owner)) return VIRTUAL.get(nd + "@future");
+        if (nd.equals("get()Ljava/lang/Object;") && in(FUTURES, owner)) return VIRTUAL.get(nd + "@future");
+        if (nd.equals("take()Ljava/lang/Object;") && in(QUEUES, owner)) return VIRTUAL.get(nd + "@queue");
         if (nd.equals("poll(JLjava/util/concurrent/TimeUnit;)Ljava/lang/Object;") && in(QUEUES, owner)) return VIRTUAL.get(nd + "@queue");
         if (nd.equals("awaitTermination(JLjava/util/concurrent/TimeUnit;)Z") && in(EXECUTORS, owner)) return VIRTUAL.get(nd + "@executor");
         if (owner.equals("java/util/concurrent/locks/ReentrantLock$ConditionObject")

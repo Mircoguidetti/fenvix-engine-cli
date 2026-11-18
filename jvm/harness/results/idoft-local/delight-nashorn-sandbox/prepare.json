@@ -1,0 +1,31 @@
+{
+ "name": "delight-nashorn-sandbox",
+ "url": "https://github.com/javadelight/delight-nashorn-sandbox",
+ "sha": "da35edc0a75424bad8cbf60959fae253202154c4",
+ "module": ".",
+ "status": "build-failed",
+ "build_jdk8": {
+  "rc": 1,
+  "seconds": 10.7
+ },
+ "build_jdk8_compat": {
+  "rc": 1,
+  "seconds": 4.9
+ },
+ "build_jdk11": {
+  "rc": 1,
+  "seconds": 5.7
+ },
+ "build_jdk11_compat": {
+  "rc": 1,
+  "seconds": 6.3
+ },
+ "build_jdk17": {
+  "rc": 1,
+  "seconds": 5.3
+ },
+ "build_jdk17_compat": {
+  "rc": 1,
+  "seconds": 5.1
+ }
+}

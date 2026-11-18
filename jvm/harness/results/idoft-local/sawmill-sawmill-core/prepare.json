@@ -1,0 +1,31 @@
+{
+ "name": "sawmill-sawmill-core",
+ "url": "https://github.com/logzio/sawmill",
+ "sha": "e493c2e279b8820c0fdc2c79ab760d6759eb5a4a",
+ "module": "sawmill-core",
+ "status": "build-failed",
+ "build_jdk8": {
+  "rc": 1,
+  "seconds": 18.2
+ },
+ "build_jdk8_compat": {
+  "rc": 1,
+  "seconds": 5.6
+ },
+ "build_jdk11": {
+  "rc": 1,
+  "seconds": 6.4
+ },
+ "build_jdk11_compat": {
+  "rc": 1,
+  "seconds": 5.7
+ },
+ "build_jdk17": {
+  "rc": 1,
+  "seconds": 7.3
+ },
+ "build_jdk17_compat": {
+  "rc": 1,
+  "seconds": 7.7
+ }
+}

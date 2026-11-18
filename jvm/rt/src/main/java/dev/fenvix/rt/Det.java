@@ -193,8 +193,21 @@ public final class Det {
     }
 
     /** Record one event of the current test (dropped outside tests). */
+    /** Test epoch in which a thread was first seen (0 = outside any test). */
+    static final ThreadLocal<int[]> BIRTH = ThreadLocal.withInitial(() -> new int[] {-1});
+    /** Events of threads left over from earlier tests, not part of the current fingerprint. */
+    public static volatile long LEAKED_EVENTS;
+
     public static void record(String source, String op, String site, String value) {
+        int[] birth = BIRTH.get();
+        if (birth[0] < 0) birth[0] = TEST == null ? 0 : TEST_EPOCH;
         if (TEST == null || RECORDER == 0) return;
+        if (birth[0] != TEST_EPOCH && Thread.currentThread() != TEST_THREAD) {
+            // a thread born before this test (leaked by an earlier test, or a shared pool
+            // created outside tests): its activity is timed by other tests, not by this one
+            LEAKED_EVENTS++;
+            return;
+        }
         int th = threadNo();
         if (!"time".equals(source)) clockOtherEvent();
         int[] f = IN_HOOK.get();
@@ -495,11 +508,59 @@ public final class Det {
         timedOut(t0, vstart, ns, "LockSupport.parkNanos", site);
     }
 
+    // untimed waits: tracked so that a released waiter counts as about to run
+    public static void latchAwaitUntimed(CountDownLatch l, String site) throws InterruptedException {
+        if (!TIME) {
+            l.await();
+            return;
+        }
+        waitingOn(Long.MAX_VALUE / 4, l);
+        try {
+            l.await();
+        } finally {
+            done();
+        }
+    }
+
+    public static Object futureGetUntimed(java.util.concurrent.Future<?> f, String site)
+            throws InterruptedException, java.util.concurrent.ExecutionException {
+        if (!TIME) return f.get();
+        waitingOn(Long.MAX_VALUE / 4, f);
+        try {
+            return f.get();
+        } finally {
+            done();
+        }
+    }
+
+    public static Object queueTake(java.util.concurrent.BlockingQueue<?> q, String site) throws InterruptedException {
+        if (!TIME) return q.take();
+        waitingOn(Long.MAX_VALUE / 4, q);
+        try {
+            return q.take();
+        } finally {
+            done();
+        }
+    }
+
+    public static void threadJoinUntimed(Thread th, String site) throws InterruptedException {
+        if (!TIME) {
+            th.join();
+            return;
+        }
+        waitingOn(Long.MAX_VALUE / 4, th);
+        try {
+            th.join();
+        } finally {
+            done();
+        }
+    }
+
     public static boolean latchAwait(CountDownLatch l, long t, TimeUnit u, String site) throws InterruptedException {
         if (!TIME) return l.await(t, u);
         boolean ok;
         long vstart = clockPeek();
-        waiting(u.toNanos(t));
+        waitingOn(u.toNanos(t), l);
         try {
             ok = l.await(t, u);
         } finally {
@@ -550,7 +611,7 @@ public final class Det {
             throws InterruptedException, java.util.concurrent.ExecutionException, java.util.concurrent.TimeoutException {
         if (!TIME) return f.get(t, u);
         long vstart = clockPeek();
-        waiting(u.toNanos(t));
+        waitingOn(u.toNanos(t), f);
         try {
             return f.get(t, u);
         } catch (java.util.concurrent.TimeoutException e) {
@@ -566,7 +627,7 @@ public final class Det {
         if (!TIME) return q.poll(t, u);
         Object o;
         long vstart = clockPeek();
-        waiting(u.toNanos(t));
+        waitingOn(u.toNanos(t), q);
         try {
             o = q.poll(t, u);
         } finally {
@@ -583,7 +644,7 @@ public final class Det {
         if (!TIME) return e.awaitTermination(t, u);
         boolean ok;
         long vstart = clockPeek();
-        waiting(u.toNanos(t));
+        waitingOn(u.toNanos(t), e);
         try {
             ok = e.awaitTermination(t, u);
         } finally {
@@ -602,7 +663,7 @@ public final class Det {
             return;
         }
         long vstart = clockPeek();
-        waiting(ms * 1_000_000L);
+        waitingOn(ms * 1_000_000L, th);
         try {
             th.join(ms);
         } finally {
@@ -662,6 +723,7 @@ public final class Det {
             if (DEBUG) System.err.println("fenvix-quiet " + self.getName() + " sees " + t.getName() + " " + s + " " + java.util.Arrays.toString(t.getStackTrace()));
             if (s == Thread.State.WAITING || s == Thread.State.TERMINATED || s == Thread.State.NEW) continue;
             if (REAL_SLEEPING.containsKey(t)) return false; // emulating real time: another thread may depend on it
+            if (WAITERS.containsKey(t) && released(t)) return false; // released, not yet running
             if (s == Thread.State.TIMED_WAITING && (WAITERS.containsKey(t) || waitingInInfra(t))) continue;
             return false;
         }
@@ -690,6 +752,8 @@ public final class Det {
 
     /** Threads inside a rewritten timed wait (waiting for another thread, not working). */
     static final java.util.concurrent.ConcurrentHashMap<Thread, Long> WAITERS = new java.util.concurrent.ConcurrentHashMap<>();
+    /** What a waiter waits on, when known: a satisfied target means the waiter is about to run. */
+    static final java.util.concurrent.ConcurrentHashMap<Thread, Object> WAIT_TARGET = new java.util.concurrent.ConcurrentHashMap<>();
 
     /** Enter a timed wait with no known timeout (treated as idle, no deadline). */
     static void waiting() {
@@ -699,6 +763,23 @@ public final class Det {
     /** Enter a timed wait that times out at virtual now + ns. */
     static void waiting(long ns) {
         WAITERS.put(Thread.currentThread(), ns <= 0 ? monoNow() : monoNow() + ns);
+    }
+
+    static void waitingOn(long ns, Object target) {
+        if (target != null) WAIT_TARGET.put(Thread.currentThread(), target);
+        waiting(ns);
+    }
+
+    /** The waiter's condition already holds: it has been released and will run. */
+    static boolean released(Thread t) {
+        Object o = WAIT_TARGET.get(t);
+        if (o == null) return false;
+        if (o instanceof CountDownLatch) return ((CountDownLatch) o).getCount() == 0;
+        if (o instanceof java.util.concurrent.Future) return ((java.util.concurrent.Future<?>) o).isDone();
+        if (o instanceof java.util.concurrent.BlockingQueue) return !((java.util.concurrent.BlockingQueue<?>) o).isEmpty();
+        if (o instanceof java.util.concurrent.ExecutorService) return ((java.util.concurrent.ExecutorService) o).isTerminated();
+        if (o instanceof Thread) return !((Thread) o).isAlive();
+        return false;
     }
 
     /**
@@ -714,6 +795,7 @@ public final class Det {
 
     static void done() {
         WAITERS.remove(Thread.currentThread());
+        WAIT_TARGET.remove(Thread.currentThread());
     }
 
     /** One more fast (virtual) timer firing; false once the per-test budget is spent. */

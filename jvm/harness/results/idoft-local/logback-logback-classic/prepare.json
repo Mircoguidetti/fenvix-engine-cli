@@ -1,0 +1,31 @@
+{
+ "name": "logback-logback-classic",
+ "url": "https://github.com/qos-ch/logback",
+ "sha": "0f57531977287fd3d8c9046e9f68e281715f3b10",
+ "module": "logback-classic",
+ "status": "build-failed",
+ "build_jdk8": {
+  "rc": 1,
+  "seconds": 33.7
+ },
+ "build_jdk8_compat": {
+  "rc": 1,
+  "seconds": 11.7
+ },
+ "build_jdk11": {
+  "rc": 1,
+  "seconds": 12.1
+ },
+ "build_jdk11_compat": {
+  "rc": 1,
+  "seconds": 12.3
+ },
+ "build_jdk17": {
+  "rc": 1,
+  "seconds": 7.0
+ },
+ "build_jdk17_compat": {
+  "rc": 1,
+  "seconds": 4.7
+ }
+}
