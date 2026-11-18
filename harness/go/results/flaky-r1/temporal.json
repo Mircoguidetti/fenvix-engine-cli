@@ -1,0 +1,461 @@
+{
+ "spec": {
+  "name": "temporal",
+  "repo": "temporalio/temporal",
+  "sha": "e05a6a88a31a663c9fbc65de8ea5c28d2259c553",
+  "fix_commit": "e27983de5d795fb0df887bcd7515cf81f027f77b",
+  "fix_date": "2026-06-03T17:25:43.000-07:00",
+  "title": "Fix flaky TestNewServer (#10511)",
+  "tests": [
+   "TestNewServer"
+  ],
+  "source": "github commit search 'repo:temporalio/temporal flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "started",
+ "notes": [],
+ "module_dir": ".",
+ "packages": [
+  "./temporal",
+  "./temporaltest"
+ ],
+ "imports": [
+  "go.temporal.io/server/temporal",
+  "go.temporal.io/server/temporaltest"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 136.1,
+ "build_det_s": 215.3,
+ "baseline": {
+  "go.temporal.io/server/temporaltest::TestBaseServerOptions": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::TestSearchAttributeRegistration": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::TestNewWorkerWithOptions": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::TestClientWithCustomInterceptor": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::TestDefaultWorkerOptions": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::TestNewServer": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::ExampleNewServer": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestNewServer": [
+   "passed",
+   "passed",
+   "passed",
+   "failed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestInitCurrentClusterMetadataRecord": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestOverwriteCurrentClusterMetadataWithDBRecord": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestNewServerWithJSONEncoding": [
+   "passed",
+   "failed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "failed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestUpdateIndexSearchAttributes": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestNewServerWithOTEL": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestTaskCategoryRegistryProvider": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestUpdateCurrentClusterMetadataRecord": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestErrorLogDetector": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestNewClusterMetadataLoader": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "seconds": 682.2,
+ "det0": {
+  "go.temporal.io/server/temporaltest::TestNewWorkerWithOptions": [
+   [
+    "passed",
+    "f30964e8ad4b0ee81388ccf900e31560"
+   ],
+   [
+    "passed",
+    "245be5d07bf4e5ddde0e19bd29e7f3f9"
+   ],
+   [
+    "passed",
+    "5dade6bd7a7c2b31d8da9464f946f8cd"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestTaskCategoryRegistryProvider": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestNewServerWithJSONEncoding": [
+   [
+    "passed",
+    "139179ee48c5ff3b5bd263992114bac9"
+   ],
+   [
+    "passed",
+    "f875b80d0a3782edf3543ec925cfae65"
+   ],
+   [
+    "failed",
+    "e35e11c2e71a06fd54b9711f92e9deff"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestUpdateCurrentClusterMetadataRecord": [
+   [
+    "passed",
+    "cd120e60469ec1538d08f5f3395955a4"
+   ],
+   [
+    "passed",
+    "cd120e60469ec1538d08f5f3395955a4"
+   ],
+   [
+    "passed",
+    "cd120e60469ec1538d08f5f3395955a4"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestNewClusterMetadataLoader": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestUpdateIndexSearchAttributes": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.temporal.io/server/temporaltest::TestBaseServerOptions": [
+   [
+    "passed",
+    "9b2531e1535e745426455f641f7c5e43"
+   ],
+   [
+    "passed",
+    "0fbe2d2283fd36200702882b2172de41"
+   ],
+   [
+    "passed",
+    "93eac0dd9a679058a863e1167f62e706"
+   ]
+  ],
+  "go.temporal.io/server/temporaltest::TestSearchAttributeRegistration": [
+   [
+    "failed",
+    "1963f538e71e91520895b91a8c413e2c"
+   ],
+   [
+    "failed",
+    "755f6ccac602cd96d75cac111fa68078"
+   ],
+   [
+    "failed",
+    "e3e559e365d37a496e70f6e74db33454"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestInitCurrentClusterMetadataRecord": [
+   [
+    "passed",
+    "61b05ac3e3bf7168be5b1cf58c8abeaa"
+   ],
+   [
+    "passed",
+    "61b05ac3e3bf7168be5b1cf58c8abeaa"
+   ],
+   [
+    "passed",
+    "61b05ac3e3bf7168be5b1cf58c8abeaa"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestOverwriteCurrentClusterMetadataWithDBRecord": [
+   [
+    "passed",
+    "cd120e60469ec1538d08f5f3395955a4"
+   ],
+   [
+    "passed",
+    "cd120e60469ec1538d08f5f3395955a4"
+   ],
+   [
+    "passed",
+    "cd120e60469ec1538d08f5f3395955a4"
+   ]
+  ],
+  "go.temporal.io/server/temporaltest::TestNewServer": [
+   [
+    "failed",
+    "b3b5ceb372a84b5ec27aaa0c787ae8b9"
+   ],
+   [
+    "passed",
+    "bdaf800068a334ff8a1f343ff19b3fa0"
+   ],
+   [
+    "passed",
+    "9c193c83a898eb34636e3a616d0a574f"
+   ]
+  ],
+  "go.temporal.io/server/temporaltest::TestDefaultWorkerOptions": [
+   [
+    "passed",
+    "0ef6878528b956161a39776dbbd255ff"
+   ],
+   [
+    "passed",
+    "5da10b3902c67deae7d7beeb09548031"
+   ],
+   [
+    "passed",
+    "61d0863e995a1d00ba501e795cb97287"
+   ]
+  ],
+  "go.temporal.io/server/temporaltest::TestClientWithCustomInterceptor": [
+   [
+    "passed",
+    "398597f47c25e92b6a87b5ab7626aabb"
+   ],
+   [
+    "passed",
+    "b2f8a5542e32c162497acf3ef96bf481"
+   ],
+   [
+    "passed",
+    "34cf951e6d34e9cc70ae964c63dd2ac6"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestNewServerWithOTEL": [
+   [
+    "passed",
+    "14088a19ebcf466e2b3e6e3555c31c16"
+   ],
+   [
+    "passed",
+    "44fd2c49b200c23ef1bd5fc651089873"
+   ],
+   [
+    "failed",
+    "26f2f6197e74099785421dd0aea1eb3e"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestErrorLogDetector": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestNewServer": [
+   [
+    "passed",
+    "04924478d9153eb67c4f2c2c580111c0"
+   ],
+   [
+    "failed",
+    "a452144ab6776c9231220b304297b782"
+   ],
+   [
+    "passed",
+    "857b2f0183be25223e640e91f15a7158"
+   ]
+  ]
+ }
+}
