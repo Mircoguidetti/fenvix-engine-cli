@@ -252,6 +252,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<proofcache::ProofCache>()?;
     m.add_function(wrap_pyfunction!(proofcache::file_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::listing_digest, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::dist_identity, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::env_value_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::env_all_digest, m)?)?;
     Ok(())

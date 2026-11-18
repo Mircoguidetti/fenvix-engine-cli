@@ -372,3 +372,67 @@ def test_codefacts_match_reference_on_a_corpus():
             assert new.facts(text, "c", mod, pkg) == ref.facts(text, "c", mod, pkg), path
         n += 1
     assert n > 500
+
+
+# ---------------------------------------------------------------------------
+# runtime identity: name, version and RECORD digest of every distribution
+def _old_identity(d):
+    from detpy import _core
+
+    name = (d.metadata.get("Name") or "?") if d.metadata is not None else "?"
+    try:
+        rec = d.read_text("RECORD") or ""
+    except Exception:
+        rec = ""
+    return name, d.version, _core.digest(rec.encode())
+
+
+def test_dist_identity_matches_importlib_metadata(tmp_path):
+    from importlib import metadata
+
+    from detpy import _core
+
+    n = 0
+    for d in metadata.distributions():
+        got = _core.dist_identity(d._path)
+        if got is not None:
+            assert got == _old_identity(d), d._path
+            n += 1
+    assert n > 0
+    # crafted cases: plain ones must match, unusual ones must fall back (None)
+    cases = {
+        "plain": ("Metadata-Version: 2.1\nName: Foo-Bar\nVersion: 1.0\n\nbody\nName: no\n", "a,b\r\nc,d\r"),
+        "crlf": ("Metadata-Version: 2.1\r\nName: foo\r\nVersion: 2.0 \r\n\r\n", ""),
+        "noname": ("Metadata-Version: 2.1\nVersion: 3\n", "x"),
+        "dup": ("Name: a\nName: b\nversion: 1\nVersion: 2\n", "x\n"),
+        "folded": ("Name: a\n  b\nVersion: 1\n", "x"),
+        "folded-other": ("Name: a\nSummary: s\n  more\nVersion: 1\n", "x"),
+        "bom": ("﻿Name: a\nVersion: 1\n", "x"),
+        "noversion": ("Name: a\n", "x"),
+        "badline": ("Name: a\nnot a header\nVersion: 1\n", "x"),
+        "colon-space": ("Name : a\nVersion: 1\n", "x"),
+        "tabbed": ("Name:\ta\t\nVersion:  \t1\n", "x"),
+    }
+    for k, (meta, record) in cases.items():
+        p = tmp_path / f"{k}-1.0.dist-info"
+        p.mkdir()
+        (p / "METADATA").write_bytes(meta.encode())
+        (p / "RECORD").write_bytes(record.encode())
+        d = metadata.PathDistribution(p)
+        got = _core.dist_identity(p)
+        try:
+            old = _old_identity(d)
+        except Exception:
+            old = None
+        if got is not None:
+            assert got == old, k
+        else:
+            assert k in ("folded", "bom", "noversion", "badline", "colon-space"), k
+    # PKG-INFO when METADATA is missing or empty; undecodable RECORD digests as empty
+    p = tmp_path / "egg.egg-info"
+    p.mkdir()
+    (p / "METADATA").write_text("")
+    (p / "PKG-INFO").write_text("Name: egg\nVersion: 0.1\n")
+    (p / "RECORD").write_bytes(b"\xff\xfe")
+    d = metadata.PathDistribution(p)
+    assert _core.dist_identity(p) == _old_identity(d)

@@ -839,7 +839,13 @@ def _dist_infos(root: str, memo_path: str | None = None):
                 "METADATA", "PKG-INFO", "RECORD", "direct_url.json")])
         hit = memo.get(key) if key is not None else None
         if hit is None:
-            name = (d.metadata.get("Name") or "?") if d.metadata is not None else "?"
+            # name, version and RECORD digest read in Rust where the plain reading is certain to match
+            # importlib.metadata's (simple header block); else importlib.metadata itself
+            fast = _core.dist_identity(path) if type(d) is metadata.PathDistribution and path is not None else None
+            if fast is not None:
+                name = fast[0]
+            else:
+                name = (d.metadata.get("Name") or "?") if d.metadata is not None else "?"
             project = False
             try:
                 du = d.read_text("direct_url.json")
@@ -852,6 +858,8 @@ def _dist_infos(root: str, memo_path: str | None = None):
                 pass
             if project:
                 hit = ["project", os.path.realpath(str(path)) + os.sep if path is not None else None]
+            elif fast is not None:
+                hit = ["dist", f"{name.lower()}=={fast[1]}:{fast[2]}"]
             else:
                 try:
                     rec = d.read_text("RECORD") or ""

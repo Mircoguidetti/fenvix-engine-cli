@@ -238,3 +238,77 @@ pub fn env_value_digest(value: Option<&str>) -> String {
 pub fn env_all_digest(env: BTreeMap<String, String>) -> String {
     proof::env_all_digest(&env)
 }
+
+/// Text of a file as `pathlib.Path.read_text(encoding="utf-8")` returns it (universal newlines), `Err` when that
+/// raises a decoding error, `Ok(None)` when the file cannot be read.
+fn read_text_universal(path: &std::path::Path) -> Result<Option<String>, ()> {
+    let Ok(raw) = std::fs::read(path) else { return Ok(None) };
+    let s = String::from_utf8(raw).map_err(|_| ())?;
+    if !s.contains('\r') {
+        return Ok(Some(s));
+    }
+    Ok(Some(s.replace("\r\n", "\n").replace('\r', "\n")))
+}
+
+/// First `Name` and `Version` header values of a core-metadata text, as `email.message_from_string(...).get()`
+/// gives them through `importlib.metadata`; `None` whenever the header block is not plain (folded or unusual
+/// lines, a byte-order mark, a missing version): the caller then uses `importlib.metadata` itself.
+fn name_version(text: &str) -> Option<(Option<String>, String)> {
+    if text.starts_with('\u{feff}') || text.starts_with("From ") {
+        return None;
+    }
+    let mut name: Option<String> = None;
+    let mut version: Option<String> = None;
+    let mut last: Option<String> = None;
+    for line in text.split('\n') {
+        if line.is_empty() {
+            break;
+        }
+        if line.starts_with(' ') || line.starts_with('\t') {
+            // continuation of the previous header: only harmless for headers we do not read
+            match last.as_deref() {
+                Some("name") | Some("version") | None => return None,
+                _ => continue,
+            }
+        }
+        let (h, v) = line.split_once(':')?;
+        if !h.bytes().all(|b| (0x21..=0x7e).contains(&b) && b != b':') {
+            return None;
+        }
+        let key = h.to_ascii_lowercase();
+        let val = v.trim_start_matches([' ', '\t']).trim_end_matches(['\r', '\n']).to_string();
+        if key == "name" && name.is_none() {
+            name = Some(val);
+        } else if key == "version" && version.is_none() {
+            version = Some(val);
+        }
+        last = Some(key);
+    }
+    Some((name, version?))
+}
+
+/// `(name or "?", version, digest of RECORD's text)` of a `*.dist-info` / `*.egg-info` directory, read as
+/// `importlib.metadata` reads it; `None` when the plain reading is not certain to match it (the caller falls
+/// back to `importlib.metadata`).
+#[pyfunction]
+pub fn dist_identity(py: Python<'_>, path: PathBuf) -> Option<(String, String, String)> {
+    py.detach(|| {
+        if !path.is_dir() {
+            return None;
+        }
+        let mut meta = None;
+        for f in ["METADATA", "PKG-INFO"] {
+            match read_text_universal(&path.join(f)) {
+                Err(()) => return None,
+                Ok(Some(t)) if !t.is_empty() => {
+                    meta = Some(t);
+                    break;
+                }
+                Ok(_) => {}
+            }
+        }
+        let (name, version) = name_version(&meta?)?;
+        let rec = read_text_universal(&path.join("RECORD")).unwrap_or(None).unwrap_or_default();
+        Some((name.unwrap_or_else(|| "?".into()), version, detpy_core::fingerprint::digest_bytes(rec.as_bytes()).short()))
+    })
+}
