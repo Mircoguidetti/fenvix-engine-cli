@@ -221,7 +221,13 @@ for _n, _k in LATE.items():
     SPECS.append(dict(json.loads(json.dumps(_s)), name=f"{_n}-late", late_n=_k))
     HEADS[f"{_n}-late"] = HEADS[_n]
 
-SMOKE_SAMPLE = {"mlflow-dev": 0.04, "litellm-late": 0.015, "integrations-core-late": 0.03, "airflow": 0.02, "integrations-core": 0.03, "moto": 0.05, "transformers": 0.03, "mlflow": 0.04,
+# middle window: litellm shard 0 of the early walk stopped at commit 9 (time budget); commits 9..24 of the 51
+# (baseline 5008a9a1, head 1efd8b38, the late window's baseline)
+_s = next(s for s in SPECS if s["name"] == "litellm")
+SPECS.append(dict(json.loads(json.dumps(_s)), name="litellm-mid", late_n=16))
+HEADS["litellm-mid"] = "1efd8b38d30881534ef409de99637664d95e6c9b"
+
+SMOKE_SAMPLE = {"mlflow-dev": 0.04, "litellm-mid": 0.015, "litellm-late": 0.015, "integrations-core-late": 0.03, "airflow": 0.02, "integrations-core": 0.03, "moto": 0.05, "transformers": 0.03, "mlflow": 0.04,
                 "pydantic-ai": 0.05, "prefect": 0.06, "esphome": 0.06, "litellm": 0.015,
                 "community-general": 0.15, "haystack": 0.2}
 

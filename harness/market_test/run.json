@@ -1,14 +1,9 @@
 {
- "run_id": "m4",
+ "run_id": "m5",
  "walk": [
   {
-   "spec": "litellm-late",
+   "spec": "litellm-mid",
    "shards": 4,
-   "budget_min": 330
-  },
-  {
-   "spec": "integrations-core-late",
-   "shards": 2,
    "budget_min": 330
   }
  ]

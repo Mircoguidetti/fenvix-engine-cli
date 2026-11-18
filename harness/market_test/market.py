@@ -177,7 +177,8 @@ def merge_late(early, late):
     rows_all = early["rows_all"] + [r for r in late["rows_all"] if r["sha"] not in seen_all]
     m = dict(early)
     m["rows"], m["rows_all"], m["transitions"] = rows, rows_all, len(rows)
-    m["windows"] = f"early {len(early['rows'])} + late {len(rows) - len(early['rows'])} transitions"
+    m["windows"] = (early.get("windows", f"early {len(early['rows'])}") +
+                    f" + {late['name'].rsplit('-', 1)[-1]} {len(rows) - len(early['rows'])}")
     m["skip_time_ok"] = aggregate.stats([r["closure"] for r in rows])
     m["skip_time_all"] = aggregate.stats([r["closure"] for r in rows_all])
     m["invalidate_all_ok"] = sum(1 for r in rows if r["closure"] < 0.01)
@@ -228,11 +229,12 @@ def main(argv):
         except Exception as e:  # noqa: BLE001
             print(f"{name}: {type(e).__name__}: {e}", file=sys.stderr)
     by = {r["name"]: r for r in rows}
-    for r in list(rows):
-        if r["name"].endswith("-late") and r["name"][:-5] in by:
-            base = r["name"][:-5]
-            by[base] = merge_late(by[base], r)
-    rows = [by[r["name"]] for r in rows if not (r["name"].endswith("-late") and r["name"][:-5] in by)]
+    extra = [r for r in rows if r["name"].rsplit("-", 1)[-1] in ("mid", "late")
+             and r["name"].rsplit("-", 1)[0] in by]
+    for r in sorted(extra, key=lambda r: r["name"].endswith("-late")):  # mid before late
+        base = r["name"].rsplit("-", 1)[0]
+        by[base] = merge_late(by[base], r)
+    rows = [by[r["name"]] for r in rows if r not in extra]
     if js:
         Path(js).write_text(json.dumps(rows, indent=1, default=str))
     print_md(rows)

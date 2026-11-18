@@ -1,0 +1,43 @@
+{
+ "name": "litellm-mid",
+ "url": "https://github.com/BerriAI/litellm",
+ "lang": "pytest",
+ "install": [
+  "test -x {py} || uv venv -q --python 3.12 {venv}",
+  "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --frozen --all-groups --all-extras || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --all-groups --all-extras || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --frozen --all-extras --group dev || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --all-extras --group dev",
+  "{py} -m compileall -q -j 4 {venv}/lib > /dev/null 2>&1 || true"
+ ],
+ "install_files": [
+  "uv.lock",
+  "pyproject.toml"
+ ],
+ "units": {
+  "include": [
+   "tests/unit/**/test_*.py"
+  ],
+  "sample": 0.015,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "-m",
+  "pytest",
+  "-q",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "{unit}"
+ ],
+ "unit_timeout": 900,
+ "verify": 0.08,
+ "ci": {
+  "workers": 4,
+  "source": "Makefile test-unit-* groups: pytest -n 4 per group"
+ },
+ "seq": {
+  "kind": "first-parent",
+  "n": 3,
+  "head": "1efd8b38d30881534ef409de99637664d95e6c9b"
+ }
+}
