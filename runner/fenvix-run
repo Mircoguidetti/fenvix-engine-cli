@@ -228,6 +228,9 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
     log(f"tests {summary['tests']}, reused with proof {summary['reused_with_proof']}, ran {summary['ran']}, "
         f"saved {fmt_s(saved)} of test time ({summary['share_of_test_time_saved']:.1%}), failed {len(real)}, "
         f"flaky {len(flaky)}")
+    if rt_changed:
+        log("runtime changed since the previous job on this cache: " + ", ".join(rt_changed))
+    log(f"runtime {rt.get('digest')}: " + json.dumps({k: v for k, v in rt.items() if k not in ("dist_list", "digest")}))
     return code
 
 
