@@ -7,7 +7,7 @@
 //! on a class and read through an instance they are not bound, like the builtins and bound methods they replace.
 //! `method_stand_in` (for `random.Random.seed`, which replaced a Python method) binds like a function.
 
-use crate::seeds;
+use crate::{fsorder, seeds};
 use pyo3::exceptions::{PyTypeError, PyValueError};
 use pyo3::ffi;
 use pyo3::intern;
@@ -31,6 +31,10 @@ pub(crate) enum Kind {
     Urandom,
     /// `seeds._numpy_default_rng`: `numpy.random.default_rng(seed=None)`.
     DefaultRng,
+    /// `fsorder.listdir(path=None)` (`real` is `fsorder`'s globals).
+    Listdir,
+    /// `fsorder.scandir(path=None)` (`real` is `fsorder`'s globals).
+    Scandir,
 }
 
 impl Kind {
@@ -43,6 +47,8 @@ impl Kind {
             "random_seed" => Kind::RandomSeed,
             "urandom" => Kind::Urandom,
             "default_rng" => Kind::DefaultRng,
+            "listdir" => Kind::Listdir,
+            "scandir" => Kind::Scandir,
             _ => return Err(PyValueError::new_err(format!("unknown stand-in kind {s:?}"))),
         })
     }
@@ -64,7 +70,10 @@ impl Target {
         args: &Bound<'py, PyTuple>,
         kwargs: Option<&Bound<'py, PyDict>>,
     ) -> PyResult<Bound<'py, PyAny>> {
-        seeds::call(py, self, args, kwargs)
+        match self.kind {
+            Kind::Listdir | Kind::Scandir => fsorder::call(py, self, args, kwargs),
+            _ => seeds::call(py, self, args, kwargs),
+        }
     }
 }
 
@@ -220,7 +229,7 @@ impl MethodStandIn {
 /// `stand_in(kind, real, module, name, qualname=None, doc=None, wrapped=None, fname=None)`: a disguised recording
 /// stand-in for `module.name` (`qualname` defaults to `name`, `wrapped` to `real`, `fname` (the name its argument
 /// errors use) to `name`). `real` is the real callable, or the module globals the kind reads it from (`urandom`:
-/// `seeds`). Kind `random_seed` binds as a method; the others do not.
+/// `seeds`, `listdir` / `scandir`: `fsorder`). Kind `random_seed` binds as a method; the others do not.
 #[pyfunction]
 #[pyo3(signature = (kind, real, module, name, qualname = None, doc = None, wrapped = None, fname = None))]
 #[allow(clippy::too_many_arguments)]
@@ -244,6 +253,8 @@ pub(crate) fn stand_in<'py>(
         Kind::RandomSeed => "Random.seed(None)".into(),
         Kind::Urandom => "os.urandom".into(),
         Kind::DefaultRng => "numpy.default_rng(None)".into(),
+        Kind::Listdir => "os.listdir".into(),
+        Kind::Scandir => "os.scandir".into(),
     };
     let target = Target { kind, op, fname: fname.unwrap_or_else(|| n.clone()), real: real.clone().unbind() };
     let obj = if kind == Kind::RandomSeed {

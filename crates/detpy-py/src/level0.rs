@@ -761,6 +761,11 @@ pub(crate) fn record_from_rust_obj(
     record_impl(py, Text::Rust(source), Text::Rust(op), Text::Py(value), skip)
 }
 
+/// The module globals of `detpy._sites` (as wired by `l0_configure`).
+pub(crate) fn sites_globals(py: Python<'_>) -> PyResult<Bound<'_, PyDict>> {
+    Ok(hub()?.sites_globals.bind(py).clone())
+}
+
 /// `_state.STATE.<name>`.
 pub(crate) fn state_attr<'py>(py: Python<'py>, name: &Bound<'py, PyString>) -> PyResult<Bound<'py, PyAny>> {
     hub()?.get(py, name)

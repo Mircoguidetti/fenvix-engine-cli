@@ -18,7 +18,8 @@ mod precompile;
 mod proofcache;
 mod sysmon;
 
-// Level 0 seeds and filesystem order (rust-hotpaths round 3)
+// Level 0 seeds and filesystem order
+mod fsorder;
 mod seeds;
 mod standin;
 
@@ -270,8 +271,9 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(proofcache::env_all_digest, m)?)?;
     level0::register(m)?;
     precompile::register(m)?;
-    // Level 0 seeds and filesystem order (rust-hotpaths round 3)
+    // Level 0 seeds and filesystem order
     standin::register(m)?;
     seeds::register(m)?;
+    fsorder::register(m)?;
     Ok(())
 }

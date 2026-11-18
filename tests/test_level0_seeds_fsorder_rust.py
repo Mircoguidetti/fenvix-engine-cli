@@ -260,7 +260,7 @@ def test_reference_plugin_installs_seeds_and_fsorder(pytester, ref_env):
     ref = _run(pytester, "ref")
     new = _run(pytester, "new")
     assert "REF random urandom listdir True True" in ref.stdout.str()
-    assert "REF stand_in stand_in listdir True False" in new.stdout.str()
+    assert "REF stand_in stand_in stand_in True False" in new.stdout.str()
 
 
 @pytest.mark.parametrize("urandom", [True, False], ids=["det-urandom", "os-urandom"])
@@ -330,7 +330,11 @@ def _ref_module(name: str, file: str):
     spec = importlib.util.spec_from_file_location(f"detpy._ref_{name}", REF / file)
     m = importlib.util.module_from_spec(spec)
     m.__package__ = "detpy"
-    spec.loader.exec_module(m)
+    sys.modules[spec.name] = m  # dataclasses look their module up while the class is made
+    try:
+        spec.loader.exec_module(m)
+    finally:
+        del sys.modules[spec.name]
     return m
 
 
@@ -547,6 +551,142 @@ def test_stand_in_disguise(monkeypatch):
     p.undo_all()
 
 
+def _outcome(f, x):
+    try:
+        return ("ok", f(x))
+    except Exception as e:  # the same exception, or the same text
+        return ("err", type(e).__name__)
+
+
+class _FsPathInt:
+    def __fspath__(self):
+        return 3
+
+
+class _FsPathRaises:
+    def __fspath__(self):
+        raise ValueError("no path")
+
+
+def test_norm_path_matches_reference(tmp_path, monkeypatch):
+    """_sites.norm_path / _shorten (Rust) against the Python original, on the same configuration."""
+    from detpy import _sites
+
+    ref = _ref_module("sites_norm", "_ref_l0_sites_norm.py")
+    monkeypatch.chdir(tmp_path)
+    home = str(tmp_path / "home")
+    configs = [
+        dict(_basetemp_provider=None, _rootdir=None),
+        dict(_basetemp_provider=lambda: str(tmp_path / "bt"), _rootdir=str(tmp_path / "root"), _HOME=home),
+        dict(_basetemp_provider=lambda: "", _rootdir="", _HOME="/"),
+        dict(_basetemp_provider=lambda: None, _rootdir="/", _HOME="", _TMP=str(tmp_path)),
+        dict(_basetemp_provider=lambda: tmp_path, _rootdir=None),     # not a str: the same TypeError
+        dict(_basetemp_provider=None, _rootdir=str(tmp_path), _site_dirs=[str(tmp_path / "site")],
+             _stdlib_dirs=[str(tmp_path / "lib"), str(tmp_path / "lib2")]),
+    ]
+    rnd = random.Random(3)
+    parts = ["a", "..", ".", "", "b c", "é", "\udcff", "home", "root", "bt", "site", "lib", "x" * 3,
+             "pytest-of-u", "pytest-12"]
+    paths = [0, 7, True, None, "", ".", "..", "/", "//", "///", "//a//b", "a/../..", "/x//y/./z/..", b"rel",
+             b"\xff\xfe/x", bytearray(b"x"), 3.5, object(), _FsPathInt(), Path("p/q"), Path(),
+             str(tmp_path), str(tmp_path / "bt" / "k"), str(tmp_path / "bt"), str(tmp_path / "root" / "m"),
+             str(tmp_path / "home" / "h"), str(tmp_path / "site" / "pkg" / "m.py"), str(tmp_path / "lib2" / "os.py"),
+             "/tmp/pytest-of-someone/pytest-42/test_x0/f", "/var/pytest-of-a\\b/pytest-1/z", "pytest-of-x/pytest-3"]
+    for _ in range(400):
+        p = "/".join(rnd.choice(parts) for _ in range(rnd.randint(0, 6)))
+        p = rnd.choice(["", "/", "//", str(tmp_path) + "/"]) + p
+        paths += [p, p.encode("utf-8", "surrogateescape")]
+    for cfg in configs:
+        full = {"_site_dirs": list(_sites._site_dirs), "_stdlib_dirs": list(_sites._stdlib_dirs), "_TMP": _sites._TMP,
+                "_HOME": _sites._HOME, **cfg}
+        for k, v in full.items():
+            monkeypatch.setattr(_sites, k, v)
+            monkeypatch.setattr(ref, k, v)
+        for p in paths:
+            assert _outcome(_sites.norm_path, p) == _outcome(ref.norm_path, p), (cfg, p)
+            if isinstance(p, str) and p.startswith("/"):
+                assert _outcome(_sites._shorten, p) == _outcome(ref._shorten, p), (cfg, p)
+    with pytest.raises(ValueError, match="no path"):
+        _sites.norm_path(_FsPathRaises())
+
+
+def test_digest_names_matches_reference():
+    from detpy import _state
+
+    ref = _ref_module("state", "_ref_l0_state.py")
+    cases = [[], ["a"], ["a", "b"], [b"x", "y", 3, None], ["café", "\udcff\udc80"], [Path("p"), b""],
+             ["", ""], ["\x00"]]
+    for names in cases:
+        assert _state.digest_names(names) == ref.digest_names(names)
+        assert _state.digest_names(tuple(names)) == ref.digest_names(tuple(names))
+    for bad in (["\ud800"], [object.__new__(type("S", (), {"__str__": lambda s: 1}))]):
+        assert _outcome(_state.digest_names, bad) == _outcome(ref.digest_names, bad)
+
+
+def test_fs_stand_ins_match_reference(capture, tmp_path, monkeypatch):
+    """The listdir / scandir stand-ins and the glob / pathlib wrappers against the reference fsorder (same events:
+    sites, values, order; quiet calls record nothing)."""
+    import glob
+
+    from detpy import _state, fsorder
+
+    ref = _ref_module("fsorder", "_ref_l0_fsorder.py")
+    for n in ["b", "a", "C", "é", "z z"]:
+        (tmp_path / n).mkdir()
+        (tmp_path / n / "f.txt").write_text(n)
+    monkeypatch.chdir(tmp_path)
+    fd = os.open(tmp_path, os.O_RDONLY)
+    try:
+        for mod in (ref, fsorder):
+            for arg in ((), (str(tmp_path),), (tmp_path,), (b".",), ("a",), (fd,)):
+                r = _same_site(mod.listdir, *arg)
+                assert r == sorted(r)
+            _same_site(mod.listdir, path="b")
+            with _same_site(mod.scandir, tmp_path) as it:
+                names = [e.name for e in it]
+            assert names == sorted(names)
+            assert [e.name for e in _same_site(mod.scandir)] == names
+            it = _same_site(mod.scandir, b"a")
+            next(it)
+            it.close()
+            assert list(it) == []
+            _same_site(mod.glob_glob, "*/f.txt")
+            _same_site(mod.glob_glob, pathname=str(tmp_path / "**"), recursive=True)
+            _same_site(list, mod.glob_iglob("*", root_dir="a"))
+            _same_site(list, mod.path_iterdir(tmp_path))
+            _same_site(list, mod.path_glob(tmp_path, "*/*.txt"))
+            _same_site(list, mod.path_rglob(Path("."), "*.txt"))
+            with _state.quiet():
+                _same_site(mod.listdir, tmp_path)
+                _same_site(list, mod.path_glob(tmp_path, "*"))
+            with pytest.raises(FileNotFoundError):
+                _same_site(mod.listdir, "missing")
+            with pytest.raises(TypeError):
+                _same_site(mod.listdir, 1, 2)
+    finally:
+        os.close(fd)
+    ev = capture.events
+    half = len(ev) // 2
+    assert len(ev) == 2 * half and half >= 15
+    assert ev[:half] == ev[half:]
+    assert {e[1] for e in ev} == {"os.listdir", "os.scandir", "glob.glob", "glob.iglob", "Path.iterdir", "Path.glob",
+                                  "Path.rglob"}
+    assert any(e[3].startswith("<fd>|") for e in ev) and any(e[3].startswith(".|") for e in ev)
+    # quietly: the wrappers' own scandir calls (pathlib globbing) are not recorded
+    assert sum(e[1] == "os.scandir" for e in ev[:half]) == 3
+
+
+def test_sorted_scandir_without_a_test_records_nothing(tmp_path):
+    from detpy import _state, fsorder
+
+    (tmp_path / "b").touch()
+    (tmp_path / "a").touch()
+    assert _state.STATE.nodeid is None
+    with fsorder.scandir(tmp_path) as it:
+        assert isinstance(it, fsorder.SortedScandir) and iter(it) is it
+        assert [e.name for e in it] == ["a", "b"]
+
+
 # -- timing ----------------------------------------------------------------------------------------------------------
 
 
@@ -588,4 +728,4 @@ def test_t(tmp_path):
                 _, label, ns = line[line.index("NSPERCALL"):].split()[:3]
                 res.setdefault(label, {})[mode] = int(ns)
     print("ns per call in a test (best of 3):", res)
-    assert res["random"]["new"] < res["random"]["ref"] and res["choice"]["new"] < res["choice"]["ref"]
+    assert all(res[k]["new"] < res[k]["ref"] for k in ("random", "choice", "listdir")), res

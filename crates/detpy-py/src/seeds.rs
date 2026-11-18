@@ -275,6 +275,7 @@ pub(crate) fn call<'py>(
             };
             t.real.bind(py).call1((seed,))
         }
+        Kind::Listdir | Kind::Scandir => unreachable!("seeds::call: a filesystem stand-in"),
     }
 }
 
