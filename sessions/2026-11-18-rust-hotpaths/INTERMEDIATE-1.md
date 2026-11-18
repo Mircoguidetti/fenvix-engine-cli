@@ -49,15 +49,16 @@ the click and pygments differences are small against run-to-run noise):
 | not attributed (interpreter slowdown under sys.monitoring, noise) | 831 (43%) | 689 (28%) | 5865 (48%) | -1090 (noise) |
 | **sample difference** | 1926 | 2492 | 12217 | 786 |
 
-Timers and ablations (MEASURED, local, base engine):
+Timers and ablations (MEASURED): click locally (4 CPUs) with the phase timers of this branch at 095126f, whose
+children and facts code is the base's; pygments from the p1 cache summary on Actions:
 
-| | click | pygments |
+| | click (local) | pygments (Actions p1) |
 |---|---|---|
-| cold wall - `--det` wall | 5.5 s | 4.5 s |
+| cold wall - `--det` wall | 5.5 s | 6.1 s |
 | end-of-session recording (`record_seconds`) | 4.4 s | 2.9 s |
-| of which: waiting for children's trace logs | **3.0 s** (13 pager children killed before strace wrote a log, each waited for until the timeout) | 0 |
-| of which: file facts | 0.6 s | 1.6 s |
-| LINE events off (ablation) | -0.45 s | n/a |
+| of which: waiting for children's trace logs | **3.0 s** (13 pager children killed before strace wrote a log, each waited for until its timeout) | no children |
+| of which: file facts | 0.6 s | not timed in the base |
+| LINE events off (ablation, venv copy only) | -0.45 s | not measured |
 
 Where the overhead goes, in order of size:
 
