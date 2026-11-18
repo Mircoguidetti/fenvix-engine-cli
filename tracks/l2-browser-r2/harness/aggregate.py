@@ -9,6 +9,7 @@ FAIL = set("F")
 # Left out of every table and total: rallly's baseline is broken in our setup (every test fails or times out
 # also without detjs), so its "identical" fingerprints are meaningless.
 EXCLUDE = {"rallly"}
+RES = Path(sys.argv[1]) if len(sys.argv) > 1 else RES
 
 
 def pct(a, b):
@@ -48,7 +49,8 @@ def main():
             f"| {r['name']} | {r.get('tests_baseline')} | {nb_runs}+{ns_runs} | {len(r.get('flaky') or [])} | "
             f"{bw and f'{bw:.0f}' or '-'} | {sw and f'{sw:.0f}' or '-'} | {dw and f'{dw:.0f}' or '-'} | "
             f"{f'x{dw / bw:.1f}' if dw and bw else '-'} / {f'x{dw / sw:.1f}' if dw and sw else '-'} | "
-            f"{vd.get('stable', '-')}/{vd.get('tests', '-')} ({stable_pass} passing; {nd_runs} runs) | {nb} ({nba} always) |")
+            f"{vd.get('stable', '-')}/{vd.get('tests', '-')} ({stable_pass} passing; {nd_runs} runs) | {nb} ({nba} always) = "
+            f"{pct(nb, r.get('tests_baseline') or 0)} |")
         base_runs = [x for x in runs if x["label"].startswith("baseline")]
         stress_runs = [x for x in runs if x["label"].startswith("stress")]
         L = lambda o: "P" if o == "passed" else "F" if o in ("failed", "timedOut") else "S" if o == "skipped" else "?"
@@ -70,12 +72,17 @@ def main():
             fv = t.get("failing_seed_verify") or {}
             repro = bool(fr) and all(o in ("failed", "timedOut") for o in fr) and fv.get("distinct_fingerprints") == 1
             tot["fail_seed_repro"] += repro
+            rc = t.get("replay_cmd_verify") or {}
+            rc_ok = t.get("replay_cmd_outcome") in ("failed", "timedOut") and rc.get("distinct_fingerprints") == 1
+            tot["replay_cmd_ok"] = tot.get("replay_cmd_ok", 0) + bool(rc_ok)
+            tot["replay_cmd_tried"] = tot.get("replay_cmd_tried", 0) + bool(t.get("replay_cmd_outcome"))
             rl = "".join(L(o) for o in reps)
             sdl = " ".join(f"{sd}:{L(o)}" for sd, o in seeds.items())
             flaky_rows.append(
                 f"| {r['name']} | `{str(k)[:80]}` | {'known' if t.get('known') else 'this job'} | {bl} | {sl} | {t.get('plain_runs', '-')} | {rl} | "
                 f"{rv.get('distinct_fingerprints', '-')} | {sdl} | "
-                f"{t.get('failing_seed', '-')}: {''.join(L(o) for o in fr)} ({fv.get('distinct_fingerprints', '-')} fp) |"
+                f"{t.get('failing_seed', '-')}: {''.join(L(o) for o in fr)} ({fv.get('distinct_fingerprints', '-')} fp) | "
+                f"{L(t['replay_cmd_outcome']) if t.get('replay_cmd_outcome') else '-'} ({rc.get('distinct_fingerprints', '-')} fp with the seed's runs) |"
                 + (f" {t['error'][:80]}" if t.get("error") else ""))
         for a in r.get("ablation") or []:
             abl_rows.append(f"| {r['name']} | `{a['key'][:80]}` | {a.get('all-on')} | {a.get('server-off')} | {a.get('net-off')} | {a.get('vtime-off')} | {a.get('seeds-off')} |")
@@ -84,8 +91,8 @@ def main():
     print("|---|---|---|---|---|---|---|---|---|---|")
     print("\n".join(rows))
     print()
-    print("| Project | Flaky test | Source | Baseline (suite) | Stress (suite) | Plain runs (same filter) | Replays --det | Distinct fp | Seeds | Failing seed replays |")
-    print("|---|---|---|---|---|---|---|---|---|---|")
+    print("| Project | Flaky test | Source | Baseline (suite) | Stress (suite) | Plain runs (same filter) | Replays --det | Distinct fp | Seeds | Failing seed replays | Printed replay command |")
+    print("|---|---|---|---|---|---|---|---|---|---|---|")
     print("\n".join(flaky_rows))
     print()
     print("| Project | Broken test | All controls | Server off | Net off | Vtime off | Seeds off |")
@@ -112,7 +119,8 @@ def main():
     print("totals:", json.dumps(tot))
     print(f"- flaky tests: {tot['flaky']}; replayed 10 times: {tot['replay10']}; identical fingerprint 10/10: "
           f"{tot['identical']} ({pct(tot['identical'], tot['flaky'])}); pass in some seed: {tot['pass_seed']}; "
-          f"fail in some seed: {tot['fail_seed']}; failing seed replays fail with one fingerprint: {tot['fail_seed_repro']}")
+          f"fail in some seed: {tot['fail_seed']}; failing seed replays fail with one fingerprint: {tot['fail_seed_repro']} "
+          f"({pct(tot['fail_seed_repro'], tot['flaky'])}); printed replay command reproduces: {tot.get('replay_cmd_ok', 0)} of {tot.get('replay_cmd_tried', 0)}")
     print(f"- full suites under --det: {tot['stable']}/{tot['det_tests']} tests identical fingerprints "
           f"({pct(tot['stable'], tot['det_tests'])}; {tot.get('stable_pass', 0)} of them passing in every run); broken by controls {tot['broken']} ({tot['broken_always']} always) "
           f"of {tot['tests']} tests")
