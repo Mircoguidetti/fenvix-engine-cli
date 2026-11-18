@@ -1,0 +1,43 @@
+{
+ "name": "c2mon-c2mon-daq-core",
+ "url": "https://github.com/c2mon/c2mon",
+ "sha": "d80687b119c713dd177a58cf53a997d8cc5ca264",
+ "module": "c2mon-daq/c2mon-daq-core",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 125,
+ "documented": 2,
+ "documented_present": 2,
+ "documented_categories": {
+  "NDOD": 1,
+  "NOD;UD": 1
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 2,
+ "broken_by_det": 2,
+ "broken_tests": [
+  "cern.c2mon.daq.common.messaging.impl.AliveTimerTest::testAliveTimer",
+  "cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest::testAverage"
+ ],
+ "fingerprint_coverage": "23/125",
+ "fingerprint_covered": 23,
+ "fingerprinted": 125,
+ "timing_base_s": [
+  10.118,
+  11.037,
+  11.605000000000002
+ ],
+ "timing_det_s": [
+  12.599,
+  11.992000000000003,
+  11.574
+ ],
+ "slowdown": 0.0865,
+ "seconds": 907.2
+}

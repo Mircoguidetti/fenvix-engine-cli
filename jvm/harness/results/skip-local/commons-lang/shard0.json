@@ -557,6 +557,191 @@
    "module_cache_hits": 1,
    "modules": 1,
    "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "adc2e69162ba6bb4ddaf356a5ebc502cfceda2f0",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 326.5,
+   "tests": 98039,
+   "test_ms": 210524,
+   "failed": 22,
+   "prev": "8d22ce831edd3f59e486db32675633621391a6ce",
+   "reused": 94813,
+   "verified": 94813,
+   "wrong": [],
+   "flaky": [
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testCloseWithCheckedException()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testCloseWithRuntimeException()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "share_time_skipped": 0.9719,
+   "share_tests_skipped": 0.9671,
+   "rerun_reasons": {
+    "prop": 422,
+    "not-passed": 38,
+    "after": 89,
+    "code": 2670
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "ef7586831c7842c97ad4be8693ddef6f94bb8b64",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 298.4,
+   "tests": 98039,
+   "test_ms": 186275,
+   "failed": 19,
+   "prev": "adc2e69162ba6bb4ddaf356a5ebc502cfceda2f0",
+   "reused": 97489,
+   "verified": 97489,
+   "wrong": [],
+   "flaky": [
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testIsInitialized()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "share_time_skipped": 0.9758,
+   "share_tests_skipped": 0.9944,
+   "rerun_reasons": {
+    "code": 1,
+    "prop": 422,
+    "not-passed": 38,
+    "after": 89
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "355f246760cad21ca597424b49bb1151c0a63a96",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 269.8,
+   "tests": 98058,
+   "test_ms": 167279,
+   "failed": 22,
+   "prev": "ef7586831c7842c97ad4be8693ddef6f94bb8b64",
+   "reused": 97450,
+   "verified": 97450,
+   "wrong": [],
+   "flaky": [
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testCloseWithTwoExceptions()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testClose()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testCloseWithCheckedException()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "failed"
+     ]
+    },
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testCloseWithRuntimeException()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "failed",
+      "passed"
+     ]
+    }
+   ],
+   "share_time_skipped": 0.9833,
+   "share_tests_skipped": 0.9938,
+   "rerun_reasons": {
+    "prop": 422,
+    "not-passed": 35,
+    "after": 89,
+    "code": 43
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "85ec85ab1a223735e39c490bd6c5e498f4e2011d",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 295.2,
+   "tests": 108874,
+   "test_ms": 186304,
+   "failed": 21,
+   "prev": "355f246760cad21ca597424b49bb1151c0a63a96",
+   "reused": 97447,
+   "verified": 97447,
+   "wrong": [],
+   "flaky": [
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testIsInitialized()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerTest::testIsInitialized()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "share_time_skipped": 0.968,
+   "share_tests_skipped": 0.895,
+   "rerun_reasons": {
+    "prop": 422,
+    "not-passed": 38,
+    "after": 89,
+    "code": 62
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
   }
  ]
 }

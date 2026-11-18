@@ -1,0 +1,2730 @@
+[
+ {
+  "test": "tk.mybatis.mapper.base.delete.DeleteByPrimaryKeyMapperTest::testDeleteByPrimaryKey",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.delete.SafeDeleteByFieldTest::testSafeDelete",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.delete.SafeDeleteByFieldTest::testSafeDeleteByExample",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.delete.SafeDeleteByFieldTest::testSafeDeleteByExampleNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.delete.SafeDeleteByFieldTest::testSafeDeleteNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.delete.SafeDeleteByMethodTest::testSafeDelete",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.delete.SafeDeleteByMethodTest::testSafeDeleteByExample",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.delete.SafeDeleteByMethodTest::testSafeDeleteByExampleNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.delete.SafeDeleteByMethodTest::testSafeDeleteNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.genid.InsertGenIdTest::testGenId",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.genid.InsertGenIdTest::testGenIdWithExistsId",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.genid.InsertGenIdTest::testUUID",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.update.SafeUpdateByFieldTest::testSafeUpdate",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.update.SafeUpdateByFieldTest::testSafeUpdateByExample",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.update.SafeUpdateByFieldTest::testSafeUpdateByExampleNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.update.SafeUpdateByFieldTest::testSafeUpdateNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.update.SafeUpdateByFieldTest::testSafeUpdateNull2",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.update.SafeUpdateByMethodTest::testSafeUpdate",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.update.SafeUpdateByMethodTest::testSafeUpdateByExample",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.update.SafeUpdateByMethodTest::testSafeUpdateByExampleNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.update.SafeUpdateByMethodTest::testSafeUpdateNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.base.update.SafeUpdateByMethodTest::testSafeUpdateNull2",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.cache.CacheTest::testCountryCacheRefMapper",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.cache.CacheTest::testCountryCacheWithXmlMapper",
+  "documented": "",
+  "baseline": "0F/0P",
+  "det": "0F/0P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.cache.CacheTest::testNoCache",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.cache.CacheTest::testSingleInterfaceCache",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.defaultenumtypehandler.DefaultEnumTypeHandlerTest::testDelete",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.defaultenumtypehandler.DefaultEnumTypeHandlerTest::testInsert",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.defaultenumtypehandler.DefaultEnumTypeHandlerTest::testSelect",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.defaultenumtypehandler.DefaultEnumTypeHandlerTest::testUpdate",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.generatedvalue.GeneratedValueTest::",
+  "documented": "",
+  "baseline": "0F/0P",
+  "det": "0F/0P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.helper.CamelCaseTest::testCamelhumpToUnderline",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.helper.FieldHelperTest::test1",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.helper.FieldHelperTest::test2",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.helper.FieldTest::test2",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.issues._216_datetime.DateTimeTest::testInsert",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.issues._216_datetime.DateTimeTest::testInsert2",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.issues._216_datetime.DateTimeTest::testInsert3",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.issues._216_datetime.DateTimeTest::testSelect",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.issues._216_datetime.DateTimeTest::testSelect2",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.issues._216_datetime.DateTimeTest::testSelect3",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.keysql.KeySqlTest::",
+  "documented": "",
+  "baseline": "0F/0P",
+  "det": "0F/0P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.able.TestBasicAble::testInsert",
+  "documented": "OD",
+  "baseline": "6F/4P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   2,
+   3,
+   5,
+   7,
+   8,
+   9,
+   10,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.able.TestBasicAble::testUpdateByPrimaryKey",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.able.TestBasicAble::testUpdateByPrimaryKeySelective",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestCache::testCache",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestCache::testCache2",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestDeleteByPrimaryKey::testDynamicDelete",
+  "documented": "OD",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   8,
+   15,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestDeleteByPrimaryKey::testDynamicDeleteEntity",
+  "documented": "OD",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   8,
+   15,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestDeleteByPrimaryKey::testDynamicDeleteException",
+  "documented": "OD",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   8,
+   15,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestDeleteByPrimaryKey::testDynamicDeleteMap",
+  "documented": "OD",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   8,
+   15,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestDeleteByPrimaryKey::testDynamicDeleteNotFoundKeyProperties",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestDeleteByPrimaryKey::testDynamicDeleteZero",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestExistsWithPrimaryKey::testDynamicExistsWithPrimaryKey",
+  "documented": "OD-Vic",
+  "baseline": "2F/8P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   3,
+   4,
+   17
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestInsert::testDynamicInsert",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   1,
+   8,
+   15
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestInsert::testDynamicInsertAll",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestInsert::testDynamicInsertAllByNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestInsert::testDynamicInsertNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestInsertSelective::testDynamicInsertAll",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestInsertSelective::testDynamicInsertSelective",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   1,
+   9,
+   17,
+   19
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestInsertSelective::testDynamicInsertSelectiveAllByNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestInsertSelective::testDynamicInsertSelectiveNull",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   1,
+   9,
+   17,
+   19
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelect::testAllColumns",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   4,
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelect::testDynamicSelect",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   4,
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelect::testDynamicSelectAll",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   4,
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelect::testDynamicSelectAllByNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelect::testDynamicSelectNotFoundKeyProperties",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   4,
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelect::testDynamicSelectPage",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   4,
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelect::testDynamicSelectZero",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectAll::testDynamicSelectPage",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   8,
+   11,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectAll::testDynamicSelectPage2",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   8,
+   11,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectByPrimaryKey::testDynamicDeleteException",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectByPrimaryKey::testDynamicDeleteNotFoundKeyProperties",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectByPrimaryKey::testDynamicSelectByPrimaryKey",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   8
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectByPrimaryKey::testDynamicSelectByPrimaryKey2",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   8
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectByPrimaryKey::testDynamicSelectByPrimaryKeyZero",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectByPrimaryKey::testSelectByPrimaryKeyMap",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   8
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectCount::testDynamicSelect",
+  "documented": "OD-Vic",
+  "baseline": "3F/7P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   8,
+   11,
+   14,
+   15
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectCount::testDynamicSelectAllByNull",
+  "documented": "OD-Vic",
+  "baseline": "3F/7P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   8,
+   11,
+   14,
+   15
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectCount::testDynamicSelectCount",
+  "documented": "OD-Vic",
+  "baseline": "3F/7P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   8,
+   11,
+   14,
+   15
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectCount::testDynamicSelectZero",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectOne::testDynamicSelect",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectOne::testDynamicSelectAll",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectOne::testDynamicSelectAllByNull",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestSelectOne::testDynamicSelectZero",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKey::testDynamicUpdateByPrimaryKey",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   11,
+   17
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKey::testDynamicUpdateByPrimaryKeyAll",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKey::testDynamicUpdateByPrimaryKeyAllByNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKey::testDynamicUpdateByPrimaryKeyNotFoundKeyProperties",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   11,
+   17
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKey::testUpdateByPrimaryKeyAndVersion",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   11,
+   17
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKeySelective::testDynamicUpdateByPrimaryKeySelective",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   1,
+   2,
+   9,
+   11,
+   19
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKeySelective::testDynamicUpdateByPrimaryKeySelectiveAll",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKeySelective::testDynamicUpdateByPrimaryKeySelectiveAllByNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKeySelective::testDynamicUpdateByPrimaryKeySelectiveNotFoundKeyProperties",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   1,
+   2,
+   9,
+   11,
+   19
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country2.TestInsert::testDynamicInsert",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country2.TestInsert::testDynamicInsertAll",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country2.TestInsert::testDynamicInsertAllByNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country2.TestInsert::testDynamicInsertNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country2.TestInsertSelective::testDynamicInsertAll",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country2.TestInsertSelective::testDynamicInsertSelective",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country2.TestInsertSelective::testDynamicInsertSelectiveAllByNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.country2.TestInsertSelective::testDynamicInsertSelectiveNull",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestDeleteByExample::testDeleteByExample",
+  "documented": "OD-Vic",
+  "baseline": "2F/8P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestDeleteByExample::testDeleteByExample2",
+  "documented": "OD-Vic",
+  "baseline": "2F/8P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestDeleteByExample::testDeleteByExample3",
+  "documented": "OD-Vic",
+  "baseline": "2F/8P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestExampleBuilder::testBetween",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestExampleBuilder::testDistinct",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestExampleBuilder::testEqualTo",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestExampleBuilder::testExampleBuilder",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestExampleBuilder::testForUpdate",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestExampleBuilder::testIn",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestExampleBuilder::testMultiWhereCompound",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestExampleBuilder::testOrderBy",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestExampleBuilder::testWhereAndWhereCompound",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestExampleBuilder::testWhereCompound0",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestExampleBuilder::testWhereCompound1",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestExampleBuilder::testWhereOrWhereCompound",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testAndExample",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testAndOr",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testExcludeColumnsByExample",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testExcludePropertisCheckTransient",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testExcludePropertisCheckWrongSpell",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testOrderBy",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectByExample",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectByExample2",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectByExample3",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectByExample4",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectByExampleException",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectByExampleForUpdate",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectByExampleInNotIn",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectByExampleInNotIn2",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectColumnsByExample",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectPropertisCheckCorrect",
+  "documented": "OD-Vic",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   9,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectPropertisCheckSpellWrong",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectPropertisCheckTransient1",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectByExample::testSelectPropertisCheckTransient2",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectCountByExample::testSelectCountByExample",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   3,
+   10,
+   17
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectCountByExample::testSelectCountByExample2",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   3,
+   10,
+   17
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectCountByExample::testSelectCountByExample3",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   3,
+   10,
+   17
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectCountByExample::testSelectCountByExampleForUpdate",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   3,
+   10,
+   17
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectOneByExample::testSelectByExample",
+  "documented": "OD-Vic",
+  "baseline": "3F/7P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   3
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestSelectOneByExample::testSelectOneByExampleException",
+  "documented": "OD-Vic",
+  "baseline": "3F/7P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   3
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestUpdateByExample::testUpdateByExample",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   4,
+   5,
+   8,
+   15,
+   17,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestUpdateByExample::testUpdateByExample2",
+  "documented": "OD-Vic",
+  "baseline": "1F/9P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   4,
+   5,
+   8,
+   15,
+   17,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestUpdateByExampleSelective::testUpdateByExampleSelective",
+  "documented": "OD-Vic",
+  "baseline": "3F/7P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   4,
+   8
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestUpdateByExampleSelective::testUpdateByExampleSelective2",
+  "documented": "OD-Vic",
+  "baseline": "3F/7P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   4,
+   8
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.example.TestUpdateByExampleSelective::testUpdateByExampleSelective3",
+  "documented": "OD-Vic",
+  "baseline": "3F/7P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   4,
+   8
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.identity.TestIndentity::testINDENTITYInsert",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.identity.TestIndentity::testINDENTITYInsert2",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.identity.TestIndentity::testINDENTITYInsertSelective",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.identity.TestIndentity::testINDENTITYInsertSelective2",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.ids.TestIds::testDeleteByIds",
+  "documented": "OD-Vic",
+  "baseline": "2F/8P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.ids.TestIds::testSelectByIds",
+  "documented": "OD-Vic",
+  "baseline": "2F/8P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   8,
+   20
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::selectCount",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testExampleWithNoCriteria",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testExistsWithPrimaryKey",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testInsert",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testInsertSelective",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testLogicDelete",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testLogicDeleteByExample",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testLogicDeleteByPrimaryKey",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testSelect",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testSelectAll",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testSelectByExample",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testSelectByExample2",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testSelectByPrimaryKey",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testUpdate",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testUpdateByExample",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testUpdateByExampleSelective",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.logic.TestLogicDelete::testUpdateSelective",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.othres.StyleTest::testCamelhump",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.othres.StyleTest::testCamelhumpLowercase",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.othres.StyleTest::testCamelhumpUppercase",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.othres.StyleTest::testLowercase",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.othres.StyleTest::testNormal",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.othres.StyleTest::testUppercase",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.othres.TestDelimiter::test",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.rowbounds.TestSelectRowBounds::testSelectByExample",
+  "documented": "OD-Vic",
+  "baseline": "2F/8P",
+  "det": "0F/10P",
+  "baseline_unstable": true,
+  "seeds_failing": [
+   11,
+   17
+  ],
+  "reproduced": true,
+  "confirm": "10/10",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.transientc.TestTransient::testDynamicInsert",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.transientc.TestTransient::testDynamicSelect",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.transientc.TestTransient::testDynamicUpdateByPrimaryKey",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestBasic::testDelete",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestBasic::testInsert",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestBasic::testSelect",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestBasic::testUpdateByPrimaryKey",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestBasic::testUpdateByPrimaryKeySelective",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestDelete::testDynamicDelete",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestUserLogin2::testDelete",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestUserLogin2::testInsert",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestUserLogin2::testSelect",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestUserLogin2::testUpdateByPrimaryKey",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestUserLogin2::testUpdateByPrimaryKeySelective",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestUserLogin::testDelete",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestUserLogin::testInsert",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestUserLogin::testSelect",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestUserLogin::testUpdateByPrimaryKey",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.test.user.TestUserLogin::testUpdateByPrimaryKeySelective",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.typehandler.TypeHandlerTest::testDelete",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.typehandler.TypeHandlerTest::testInsert",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.typehandler.TypeHandlerTest::testSelect",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.typehandler.TypeHandlerTest::testUpdate",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.version.VersionTest::testInsert",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.version.VersionTest::testUpdate",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.version.VersionTest::testUpdateByPrimaryKeySelective",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.version.VersionTest::testUpdateInt",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ },
+ {
+  "test": "tk.mybatis.mapper.version.VersionTest::testUpdateIntByPrimaryKeySelective",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": true,
+  "broken_by_det": false
+ }
+]
