@@ -93,6 +93,8 @@ jobs:
 
   commit-n1:
     needs: commit-n
+    # The skipped `engine` job (our machine) is an ancestor: without this, GitHub skips job 2 too.
+    if: ${{ !cancelled() && needs.commit-n.result == 'success' }}
     runs-on: ${{ fromJSON(inputs.runs_on) }}
     timeout-minutes: 90
     steps:
