@@ -1,7 +1,7 @@
-detjs 0.1.0: Level 2 browser prototype; playwright 1.64.1; seed 0; epoch 2026-11-18T09:30:00Z; vtime=paced; net=on; server=on; workers=1
-◇ injected env (102) from ../../.env // tip: ◈ encrypted .env [www.dotenvx.com]
+detjs 0.1.0: Level 2 browser prototype; playwright 1.64.1; seed 0; epoch 2026-11-18T09:59:00Z; vtime=paced; net=on; server=on; workers=1
+◇ injected env (102) from ../../.env // tip: ⌘ enable debugging { debug: true }
 ◇ injected env (0) from ../../.env.local // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
-◇ injected env (0) from ../../.env.test // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from ../../.env.test // tip: ⌘ custom filepath { path: '/custom/path/.env' }
 [JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
 [JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
 [JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
@@ -21,45 +21,6 @@ Running 1 test using 1 worker
 [JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
 [JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
 [JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
-F
-
-  1) [ui] › e2e/admin/email-transports/email-transport-claims.spec.ts:2:4327 › [ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims 
-
-    PrismaClientKnownRequestError: 
-    Invalid `prisma.user.create()` invocation:
-
-
-    Unique constraint failed on the fields: (`email`)
-
-       at ../../prisma/seed/users.ts:2
-
-      1 | import { hashSync } from '@documenso/lib/server-only/auth/hash';
-    > 2 | import { createPersonalOrganisation } from '@documenso/lib/server-only/organisation/create-organisation';
-        |                                                                                                                                                  ^
-      3 | import { OrganisationType, Role } from '@prisma/client';
-      4 | import { customAlphabet } from 'nanoid';
-      5 |
-        at ei.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/@prisma/client/src/runtime/RequestHandler.ts:228:13)
-        at ei.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/@prisma/client/src/runtime/RequestHandler.ts:174:12)
-        at ei.request (/home/runner/work/_temp/l2_target/node_modules/@prisma/client/src/runtime/RequestHandler.ts:143:12)
-        at a (/home/runner/work/_temp/l2_target/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:833:24)
-        at seedUser (/home/runner/work/_temp/l2_target/packages/prisma/seed/users.ts:2:1743)
-        at /home/runner/work/_temp/l2_target/packages/app-tests/e2e/admin/email-transports/email-transport-claims.spec.ts:2:4472
-
-    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
-    test-results/admin-email-transports-ema-52a6b-ates-to-organisation-claims-ui/video.webm
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-    Error Context: test-results/admin-email-transports-ema-52a6b-ates-to-organisation-claims-ui/error-context.md
-
-    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
-    test-results/admin-email-transports-ema-52a6b-ates-to-organisation-claims-ui/trace.zip
-    Usage:
-
-        npx playwright show-trace test-results/admin-email-transports-ema-52a6b-ates-to-organisation-claims-ui/trace.zip
-
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-  1 failed
-    [ui] › e2e/admin/email-transports/email-transport-claims.spec.ts:2:4327 › [ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims 
+·
+  1 passed (7.0s)
 detjs: trace ../../../l2_out/documenso/traces/d4-r2.jsonl

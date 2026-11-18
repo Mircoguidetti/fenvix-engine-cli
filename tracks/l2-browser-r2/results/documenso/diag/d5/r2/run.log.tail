@@ -1,7 +1,7 @@
-detjs 0.1.0: Level 2 browser prototype; playwright 1.64.1; seed 0; epoch 2026-11-18T09:30:00Z; vtime=paced; net=on; server=on; workers=1
-◇ injected env (102) from ../../.env // tip: ◈ secrets for agents [www.dotenvx.com]
-◇ injected env (0) from ../../.env.local // tip: ⌁ auth for agents [www.vestauth.com]
-◇ injected env (0) from ../../.env.test // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+detjs 0.1.0: Level 2 browser prototype; playwright 1.64.1; seed 0; epoch 2026-11-18T09:59:00Z; vtime=paced; net=on; server=on; workers=1
+◇ injected env (102) from ../../.env // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from ../../.env.local // tip: ⌘ override existing { override: true }
+◇ injected env (0) from ../../.env.test // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
 [JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
 [JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
 [JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
@@ -21,45 +21,6 @@ Running 1 test using 1 worker
 [JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
 [JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
 [JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
-F
-
-  1) [api] › e2e/api/trpc/admin/delete-recipient.spec.ts:2:7731 › [ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 
-
-    PrismaClientKnownRequestError: 
-    Invalid `prisma.user.create()` invocation:
-
-
-    Unique constraint failed on the fields: (`email`)
-
-       at ../../prisma/seed/users.ts:2
-
-      1 | import { hashSync } from '@documenso/lib/server-only/auth/hash';
-    > 2 | import { createPersonalOrganisation } from '@documenso/lib/server-only/organisation/create-organisation';
-        |                                                                                                                                                  ^
-      3 | import { OrganisationType, Role } from '@prisma/client';
-      4 | import { customAlphabet } from 'nanoid';
-      5 |
-        at ei.handleRequestError (/home/runner/work/_temp/l2_target/node_modules/@prisma/client/src/runtime/RequestHandler.ts:228:13)
-        at ei.handleAndLogRequestError (/home/runner/work/_temp/l2_target/node_modules/@prisma/client/src/runtime/RequestHandler.ts:174:12)
-        at ei.request (/home/runner/work/_temp/l2_target/node_modules/@prisma/client/src/runtime/RequestHandler.ts:143:12)
-        at a (/home/runner/work/_temp/l2_target/node_modules/@prisma/client/src/runtime/getPrismaClient.ts:833:24)
-        at seedUser (/home/runner/work/_temp/l2_target/packages/prisma/seed/users.ts:2:1743)
-        at /home/runner/work/_temp/l2_target/packages/app-tests/e2e/api/trpc/admin/delete-recipient.spec.ts:2:7843
-
-    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
-    test-results/api-trpc-admin-delete-reci-3cc83-reason-is-rejected-with-400-api/video.webm
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-    Error Context: test-results/api-trpc-admin-delete-reci-3cc83-reason-is-rejected-with-400-api/error-context.md
-
-    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
-    test-results/api-trpc-admin-delete-reci-3cc83-reason-is-rejected-with-400-api/trace.zip
-    Usage:
-
-        npx playwright show-trace test-results/api-trpc-admin-delete-reci-3cc83-reason-is-rejected-with-400-api/trace.zip
-
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-  1 failed
-    [api] › e2e/api/trpc/admin/delete-recipient.spec.ts:2:7731 › [ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 
+·
+  1 passed (5.7s)
 detjs: trace ../../../l2_out/documenso/traces/d5-r2.jsonl
