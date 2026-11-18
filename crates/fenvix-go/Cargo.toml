@@ -1,0 +1,18 @@
+[package]
+name = "fenvix-go"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "C ABI over detpy-core (cgo-callable), used by the fenvix-go shell for `go test`."
+
+[lib]
+# staticlib: linked into the fenvix-go binary by cgo; cdylib: for other C callers.
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[dependencies]
+detpy-core = { path = "../detpy-core" }
+serde_json = "1"
+
+[dev-dependencies]
+tempfile = "3"
