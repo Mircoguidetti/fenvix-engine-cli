@@ -72,7 +72,7 @@ def test_cmd(spec, out):
 
 
 def module_cache_keys(repo, spec, deps_dir):
-    """ESTIMATED model of a per-module test-task cache: digest of the module's build output files plus its jar list."""
+    """ESTIMATED model of a per-module test-task cache: digest of the build output files plus the jar list (Gradle) or poms (Maven; the whole reactor, one key)."""
     mods = fenvix_skip.load(deps_dir)
     keys = {}
     for mn, m in mods.items():
@@ -80,7 +80,19 @@ def module_cache_keys(repo, spec, deps_dir):
         if not jvm:
             continue
         h = hashlib.sha256()
-        for entry in jvm.get("classpath", []):
+        entries = list(jvm.get("classpath", []))
+        if spec["tool"] == "maven":
+            # Surefire's class path is a manifest-only booter jar: use the reactor's build output
+            # directories and the poms (dependency versions) instead
+            for root, dirs, files in sorted(os.walk(repo)):
+                dirs[:] = sorted(d for d in dirs if not d.startswith("."))
+                if os.path.basename(root) == "target":
+                    entries += [os.path.join(root, d) for d in ("classes", "test-classes") if d in dirs]
+                    dirs[:] = []
+                if "pom.xml" in files:
+                    with open(os.path.join(root, "pom.xml"), "rb") as fh:
+                        h.update(hashlib.sha256(fh.read()).digest())
+        for entry in entries:
             if entry.endswith(".jar"):
                 h.update(("jar:" + entry.split("/.m2/")[-1].split("/files-2.1/")[-1] + "\n").encode())
             elif os.path.isdir(entry):
