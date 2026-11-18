@@ -1,0 +1,1199 @@
+From 53847c7b83789916f80da6dfc778a8ccef311afa Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 18 Nov 2026 16:24:30 +0000
+Subject: [PATCH 1/2] Cache audit: summary audit block, wrong-skip alert (ERROR
+ line + ci_audit_alerts row), audit on runs and the overview
+
+The engine (fenvix-engine-cli claude/audit-reruns) runs a seeded share of the skippable tests fresh and reports
+audit {share, seed, checked, matched, wrong, flaky_evidence, wrong_tests} in summary.json. The App parses it, stores
+the counts on ci_runs, writes one ci_audit_alerts row per wrong skip and logs it at ERROR; the check run and the PR
+comment show it. Audited tests ran: never counted as skipped or billed as skipped. The dashboard shows this month's
+audits per project and over all projects with the 95% upper bound, and the open alerts. Migration 0014 with its RLS
+test (supabase/tests/audit-rls.sql).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dfpa6pw8ofzmBuEkrk
+---
+ docs/data-contract.md                         |  16 ++
+ github-app/scripts/prepare-test-db.sh         |   6 +-
+ github-app/src/results/render.ts              |  14 ++
+ github-app/src/results/summary.ts             |  45 +++++
+ github-app/src/service.ts                     |  26 ++-
+ github-app/tests/fixtures/runner/README.md    |   4 +
+ .../runner/job4-audit-wrong-skip.summary.json | 159 ++++++++++++++++++
+ github-app/tests/integration/results.test.ts  |  34 ++++
+ github-app/tests/unit/results.test.ts         |  31 ++++
+ src/data/ci-rows.ts                           |  11 +-
+ src/data/ci.ts                                |  42 ++++-
+ src/data/mock.ts                              |   2 +
+ src/data/supabase.ts                          |  15 +-
+ src/data/types.ts                             |  45 +++++
+ src/pages/Overview.tsx                        |  29 ++++
+ src/pages/Run.tsx                             |   8 +
+ supabase/migrations/0014_cache_audit.sql      |  65 +++++++
+ supabase/tests/audit-rls.sql                  | 111 ++++++++++++
+ supabase/tests/run-local.sh                   |   3 +
+ tests/unit/ci.test.ts                         |  47 +++++-
+ 20 files changed, 697 insertions(+), 16 deletions(-)
+ create mode 100644 github-app/tests/fixtures/runner/job4-audit-wrong-skip.summary.json
+ create mode 100644 supabase/migrations/0014_cache_audit.sql
+ create mode 100644 supabase/tests/audit-rls.sql
+
+diff --git a/docs/data-contract.md b/docs/data-contract.md
+index c42d7c0..8a9c01e 100644
+--- a/docs/data-contract.md
++++ b/docs/data-contract.md
+@@ -102,2 +102,16 @@ the cent the same way.
+ 
++**Skip audit (migration 0014).** In every run the engine runs a seeded random share of the tests it could skip
++(default 5%) and compares the fresh result with the cached one (outcome and test ids). Audited tests ran: they are in
++`tests.ran`, never in `tests.skippedWithProof`, so neither the dashboard nor the billing counts them as skipped.
++
++| Field | Type | Notes |
++| --- | --- | --- |
++| `audit` | `{ share, seed, checked, matched, wrong, flakyEvidence }` | `audit_*` columns of `ci_runs`, from `summary.json` → `audit`; `matched + wrong + flakyEvidence = checked ≤ tests.ran` |
++
++A **wrong skip** (two fresh runs contradicted the cached result) is one row of `ci_audit_alerts` (test id, cached and
++fresh outcomes, proof key, seed, `state` open or acknowledged) and an ERROR log line of the GitHub App
++(`alert: "cache_audit_wrong_skip"`). The overview shows this month's audits over all projects and per project with the
++one-sided 95% upper bound on the wrong-skip rate (3 / checked when none is wrong, else Clopper-Pearson), and the open
++alerts.
++
+ ## Per-test outcome
+@@ -309,2 +323,4 @@ tables directly through Supabase (row level security) or uses the mock.
+ 
++- 2026-11-18: skip audit: `audit` on the run summary, `ci_audit_alerts` (migration 0014).
++
+ - 2026-11-18: GitHub App records (installation, repository, usage event) and the mapping from the runner's
+diff --git a/github-app/scripts/prepare-test-db.sh b/github-app/scripts/prepare-test-db.sh
+index 18e3cc2..8ba7bfa 100755
+--- a/github-app/scripts/prepare-test-db.sh
++++ b/github-app/scripts/prepare-test-db.sh
+@@ -1,3 +1,3 @@
+ #!/usr/bin/env bash
+-# Applies the Supabase stand-ins and every migration up to 0013 (each twice: they must be safe to repeat) to an EMPTY
++# Applies the Supabase stand-ins and every migration up to 0014 (each twice: they must be safe to repeat) to an EMPTY
+ # SCRATCH Postgres 15+ database, then gives the role fenvix_github_app a password for the tests. Refuses anything that
+@@ -19,3 +19,3 @@ for i in 1 2; do
+            0007_database_users 0008_organizations 0009_ip_allowlist 0010_public_api_keys 0011_ci_runs \
+-           0012_ci_explorations 0013_github_app; do
++           0012_ci_explorations 0013_github_app 0014_cache_audit; do
+     psql_run -f "supabase/migrations/$f.sql" >/dev/null 2>"/tmp/gh-prepare-$f.err" || { cat "/tmp/gh-prepare-$f.err" >&2; exit 1; }
+@@ -25,2 +25,2 @@ done
+ psql_run -c "alter role fenvix_github_app password 'local-test-only'" >/dev/null
+-echo "scratch database ready: 0001 to 0013 applied twice (0006 is on another branch)"
++echo "scratch database ready: 0001 to 0014 applied twice (0006 is on another branch)"
+diff --git a/github-app/src/results/render.ts b/github-app/src/results/render.ts
+index 033fc91..330941a 100644
+--- a/github-app/src/results/render.ts
++++ b/github-app/src/results/render.ts
+@@ -69,2 +69,3 @@ function table(s: RunSummary, ctx: RenderContext): string[] {
+     `| Flaky, reproducible | ${n(s.flaky.length)} |`,
++    ...(s.audit && s.audit.checked > 0 ? [`| Skips audited (run anyway, compared) | ${n(s.audit.checked)}: ${n(s.audit.matched)} matched${s.audit.wrong ? `, **${n(s.audit.wrong)} wrong**` : ""}${s.audit.flakyEvidence ? `, ${n(s.audit.flakyEvidence)} flaky` : ""} |`] : []),
+   ];
+@@ -72,2 +73,13 @@ function table(s: RunSummary, ctx: RenderContext): string[] {
+ 
++/** Wrong skips the audit found: each test ran in this job (its real result is above); its cached result is no longer used. */
++function wrongSkips(s: RunSummary, max: number): string[] {
++  if (!s.audit || !s.audit.wrongTests.length) return [];
++  const f = limit(s.audit.wrongTests, max);
++  const L = ["", "### Skips the audit found wrong", "",
++    "fenvix runs a random share of the tests it could skip and compares. These gave another result than the cached one twice: they ran in this job, and their cached result is not used again until a fresh run records it.", ""];
++  for (const w of f.shown) L.push(`- ${code(w.nodeid)}: cached ${w.cached || "?"}, fresh ${w.fresh || "?"}`);
++  if (f.more) L.push(`- and ${n(f.more)} more`);
++  return L;
++}
++
+ function failures(s: RunSummary, maxFailed: number, maxFlaky: number): string[] {
+@@ -106,2 +118,3 @@ export function checkRunOutput(s: RunSummary | null, ctx: RenderContext): { titl
+     ...failures(s, 50, 20),
++    ...wrongSkips(s, 50),
+   ];
+@@ -116,2 +129,3 @@ export function checkRunOutput(s: RunSummary | null, ctx: RenderContext): { titl
+   T.push("Test time: run " + minutes(s.testSecondsRun) + ", skipped with proof " + minutes(s.testSecondsSaved) + ".");
++  if (s.audit) T.push(`Skip audit: ${pct(s.audit.share)} of the skippable tests ran anyway (seed ${code(s.audit.seed)}); ${n(s.audit.checked)} checked, ${n(s.audit.wrong)} wrong, ${n(s.audit.flakyEvidence)} flaky with evidence.`);
+   if (s.engineVersion) T.push(`Engine: detpy ${s.engineVersion}.`);
+diff --git a/github-app/src/results/summary.ts b/github-app/src/results/summary.ts
+index af1a8ad..64d3158 100644
+--- a/github-app/src/results/summary.ts
++++ b/github-app/src/results/summary.ts
+@@ -8,2 +8,20 @@ export interface FlakyTest { nodeid: string; replay: string; minimise: string |
+ 
++/** One result the cache audit found wrong: two fresh runs contradicted the cached result. */
++export interface WrongSkip { nodeid: string; key: string; cached: string; fresh: string; fresh2: string | null }
++
++/**
++ * The engine's cache audit (fenvix-engine-cli claude/audit-reruns, `summary.json` → `audit`): a seeded share of the
++ * tests that could be skipped with proof ran fresh and was compared with the cached result. Audited tests ran: they are
++ * in `ran`, never in `reusedWithProof`.
++ */
++export interface AuditSummary {
++  share: number;
++  seed: string;
++  checked: number;
++  matched: number;
++  wrong: number;
++  flakyEvidence: number;
++  wrongTests: WrongSkip[];
++}
++
+ export interface RunSummary {
+@@ -28,2 +46,4 @@ export interface RunSummary {
+   runtimeChanged: string[];
++  /** Null for runners older than the audit. */
++  audit: AuditSummary | null;
+ }
+@@ -83,2 +103,26 @@ function engineVersionOf(raw: Record<string, unknown>): string {
+ 
++function parseAudit(o: Record<string, unknown>, ran: number): AuditSummary | null {
++  const a = o.audit;
++  if (a === undefined || a === null) return null;
++  if (typeof a !== "object" || Array.isArray(a)) throw new SummaryError("summary.audit must be an object");
++  const x = a as Record<string, unknown>;
++  const share = num(x, "share");
++  if (share > 1) throw new SummaryError("summary.audit.share must be between 0 and 1");
++  const checked = num(x, "checked", { int: true });
++  const matched = num(x, "matched", { int: true });
++  const wrong = num(x, "wrong", { int: true });
++  const flakyEvidence = num(x, "flaky_evidence", { int: true });
++  if (matched + wrong + flakyEvidence !== checked) throw new SummaryError("summary.audit: matched + wrong + flaky_evidence must equal checked");
++  if (checked > ran) throw new SummaryError("summary.audit: more tests checked than ran (audited tests ran)");
++  const wt = x.wrong_tests ?? [];
++  if (!Array.isArray(wt)) throw new SummaryError("summary.audit.wrong_tests must be a list");
++  const wrongTests: WrongSkip[] = wt.slice(0, 200).map((w, i) => {
++    const ww = (w ?? {}) as Record<string, unknown>;
++    const nodeid = str(ww.nodeid, 2000);
++    if (!nodeid) throw new SummaryError(`summary.audit.wrong_tests[${i}] needs nodeid`);
++    return { nodeid, key: str(ww.key, 128) ?? "", cached: str(ww.cached, 40) ?? "", fresh: str(ww.fresh, 40) ?? "", fresh2: str(ww.fresh2, 40) };
++  });
++  return { share, seed: str(x.seed, 200) ?? "", checked, matched, wrong, flakyEvidence, wrongTests };
++}
++
+ export function parseSummary(raw: unknown): RunSummary {
+@@ -125,2 +169,3 @@ export function parseSummary(raw: unknown): RunSummary {
+     runtimeChanged: Array.isArray(rc) ? rc.filter((x): x is string => typeof x === "string").slice(0, 50) : [],
++    audit: parseAudit(o, ran),
+   };
+diff --git a/github-app/src/service.ts b/github-app/src/service.ts
+index 0c9a7ff..3dba07d 100644
+--- a/github-app/src/service.ts
++++ b/github-app/src/service.ts
+@@ -4,3 +4,3 @@ import { onboardRepository, type OnboardingResult } from "./onboarding/onboard.t
+ import { CHECK_NAME, COMMENT_MARKER, checkRunOutput, conclusionOf, prComment, type RenderContext } from "./results/render.ts";
+-import { parseSummary, type RunSummary } from "./results/summary.ts";
++import { parseSummary, type AuditSummary, type RunSummary } from "./results/summary.ts";
+ import type { KeyObject } from "node:crypto";
+@@ -542,2 +542,3 @@ export class GitHubService {
+           if (!ciRunId && billable) ciRunId = await this.insertRun(c, projectId, job, summary, run, pr?.number ?? null, startedAt, completedAt, durationMs, otherStepMinutes);
++          if (summary?.audit?.wrongTests.length) await this.insertAuditAlerts(c, projectId, ciRunId, job, summary.audit);
+           if (summary) await c.query("update ci_projects set setup_state = 'active' where id = $1", [projectId]);
+@@ -584,2 +585,8 @@ export class GitHubService {
+     }
++    if (summary?.audit?.wrong) {
++      // The alert: an ERROR line (paging reads these later) and the rows the dashboard shows (ci_audit_alerts).
++      this.log.error({ alert: "cache_audit_wrong_skip", repository: repo.full_name, job: job.job_id, run: ciRunId, wrong: summary.audit.wrong,
++        checked: summary.audit.checked, seed: summary.audit.seed, tests: summary.audit.wrongTests.slice(0, 20).map((w) => ({ test: w.nodeid, cached: w.cached, fresh: w.fresh, key: w.key })) },
++      "cache audit: a test skipped with proof gave another result when run fresh (wrong skip)");
++    }
+     this.log.info({ repository: repo.full_name, job: job.job_id, conclusion, billable, pr: pr?.number ?? null }, "run published");
+@@ -587,2 +594,11 @@ export class GitHubService {
+ 
++  private async insertAuditAlerts(c: Client, projectId: string, runId: string | null, job: JobRow, a: AuditSummary): Promise<void> {
++    for (const w of a.wrongTests) {
++      await c.query(
++        `insert into ci_audit_alerts (workspace_id, project_id, run_id, github_job_id, test_id, cached_outcome, fresh_outcome, fresh2_outcome, proof_key, audit_seed)
++         values (public.cp_workspace(), $1, $2, $3, $4, $5, $6, $7, $8, $9) on conflict (github_job_id, test_id) do nothing`,
++        [projectId, runId, job.job_id, w.nodeid, w.cached, w.fresh, w.fresh2, w.key, a.seed]);
++    }
++  }
++
+   private async insertRun(c: Client, projectId: string, job: JobRow, s: RunSummary | null, run: { event?: string; created_at?: string; head_commit?: { message?: string } | null } | null,
+@@ -599,5 +615,6 @@ export class GitHubService {
+          finished_at, duration_ms, tests_total, tests_ran, tests_passed, tests_failed, tests_skipped, tests_flaky_defects, test_time_ran_ms,
+-         test_time_skipped_ms, other_step_minutes, engine_version, skip_misses)
++         test_time_skipped_ms, other_step_minutes, engine_version, skip_misses, audit_share, audit_seed, audit_checked, audit_matched, audit_wrong,
++         audit_flaky_evidence)
+        values (public.cp_workspace(), $1, (select coalesce(max(number), 0) + 1 from ci_runs where project_id = $1), $2, $3, $4, $5, $6, $7, $8, $9,
+-         $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, round($20::numeric, 2), $21, $22)
++         $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, round($20::numeric, 2), $21, $22, $23, $24, $25, $26, $27, $28)
+        returning id`,
+@@ -606,3 +623,4 @@ export class GitHubService {
+         Math.round((s?.testSecondsRun ?? 0) * 1000), Math.round((s?.testSecondsSaved ?? 0) * 1000), otherStepMinutes, s?.engineVersion ?? "",
+-        JSON.stringify(s?.notReusedReasons ?? {})]);
++        JSON.stringify(s?.notReusedReasons ?? {}), s?.audit?.share ?? 0, s?.audit?.seed ?? "", s?.audit?.checked ?? 0, s?.audit?.matched ?? 0,
++        s?.audit?.wrong ?? 0, s?.audit?.flakyEvidence ?? 0]);
+     return r.rows[0]!.id;
+diff --git a/github-app/tests/fixtures/runner/README.md b/github-app/tests/fixtures/runner/README.md
+index 2907a65..5b4bcb4 100644
+--- a/github-app/tests/fixtures/runner/README.md
++++ b/github-app/tests/fixtures/runner/README.md
+@@ -16 +16,5 @@ three commits on one machine with the cache kept between jobs:
+ | `job3-warm-pass` | N+2 (the fix) | 46 of 56 reused with proof, 10 ran, all pass |
++| `job4-audit-wrong-skip` | another small project (12 tests), warm cache with one entry planted wrong (recorded as skipped, the test passes) | cache audit at 25%, seed `fixture-seed`: 5 of 12 reusable results ran fresh, 4 matched, 1 wrong skip (`tests/test_math.py::test_case_7`, cached skipped, fresh passed twice); 7 reused, 5 ran |
++
++`job4-audit-wrong-skip` was written by `runner/fenvix-run` from fenvix-engine-cli branch `claude/audit-reruns` (the cache
++audit), on 2026-11-18 in the session container; the planted entry stands for a skip the engine got wrong.
+diff --git a/github-app/tests/fixtures/runner/job4-audit-wrong-skip.summary.json b/github-app/tests/fixtures/runner/job4-audit-wrong-skip.summary.json
+new file mode 100644
+index 0000000..9f9e008
+--- /dev/null
++++ b/github-app/tests/fixtures/runner/job4-audit-wrong-skip.summary.json
+@@ -0,0 +1,159 @@
++{
++ "project": "/home/fenvix/work/shop",
++ "project_key": "acme_shop-d21b2cdf",
++ "commit": "824f93a914880211f4f5ca563a10cc7d8a4c4faf",
++ "cache_dir": "/home/fenvix/.fenvix/cache/acme_shop-d21b2cdf-py313",
++ "cache_was_warm": true,
++ "exit": 0,
++ "wall_seconds": 2.459,
++ "tests": 12,
++ "reused_with_proof": 7,
++ "ran": 5,
++ "test_seconds_saved": 0.003,
++ "test_seconds_run": 0.0,
++ "share_of_test_time_saved": 1.0,
++ "failed": [],
++ "flaky": [],
++ "outcome_counts": {
++  "passed": 12
++ },
++ "not_cached": {
++  "audit": 1
++ },
++ "not_reused_reasons": {},
++ "cache_check_seconds": 0.0,
++ "cache_record_seconds": 0.004,
++ "epoch_ns": null,
++ "receipts": "/home/fenvix/work/_temp/fenvix/receipts.jsonl",
++ "outcomes_file": "/home/fenvix/work/_temp/fenvix/outcomes.json",
++ "outcomes": {
++  "tests/test_math.py::test_case_1": "passed",
++  "tests/test_math.py::test_case_2": "passed",
++  "tests/test_math.py::test_case_3": "passed",
++  "tests/test_math.py::test_case_4": "passed",
++  "tests/test_math.py::test_case_5": "passed",
++  "tests/test_math.py::test_case_6": "passed",
++  "tests/test_math.py::test_case_7": "passed",
++  "tests/test_math.py::test_case_8": "passed",
++  "tests/test_math.py::test_case_9": "passed",
++  "tests/test_math.py::test_case_10": "passed",
++  "tests/test_math.py::test_case_11": "passed",
++  "tests/test_math.py::test_case_12": "passed"
++ },
++ "reused_outcomes": {
++  "tests/test_math.py::test_case_2": "passed",
++  "tests/test_math.py::test_case_3": "passed",
++  "tests/test_math.py::test_case_4": "passed",
++  "tests/test_math.py::test_case_5": "passed",
++  "tests/test_math.py::test_case_6": "passed",
++  "tests/test_math.py::test_case_9": "passed",
++  "tests/test_math.py::test_case_11": "passed"
++ },
++ "pytest_args": [
++  "--det",
++  "--det-urandom",
++  "-p",
++  "no:cacheprovider",
++  "-q",
++  "-rN",
++  "--tb=short",
++  "--det-cache=/home/fenvix/.fenvix/cache/acme_shop-d21b2cdf-py313",
++  "--det-cache-receipts=/home/fenvix/work/_temp/fenvix/receipts.jsonl",
++  "--det-outcomes=/home/fenvix/work/_temp/fenvix/outcomes.json",
++  "--junitxml=/home/fenvix/work/_temp/fenvix/junit.xml",
++  "--det-cache-audit=25%",
++  "--det-cache-audit-seed=fixture-seed"
++ ],
++ "cache_arg": "--det-cache=/home/fenvix/.fenvix/cache/acme_shop-d21b2cdf-py313",
++ "runtime": {
++  "digest": "7844fbc8aac57be13770099053f7d0d3",
++  "identity": "fenvix-runtime-3",
++  "python": "df63c507223cc34cd921ae5afd3157f6",
++  "executable": "9c6072d84559aa791447a41f5d7c485d",
++  "libpython": "7a0dc73982e2d102cfe39646cc88de24",
++  "libc": "glibc-2.39:25674ceea26f2f5085569c18a8153a62",
++  "native": "49fad6959812e1c6a17af7342c849677",
++  "stdlib": "338f8e8a357be2f5cb68deef7c3d4664",
++  "distributions": "ad8b440f5b000347258a69c5fc23b552",
++  "site_tree": "cdf2cf43e1097f7811f73268afc1dac4",
++  "extra_paths": "d415b17faf7666ca74a1468b142f2dea",
++  "sys_path": "3398db083946d68ba869fde513e71c38",
++  "locale": "5f58c62cea971058d1d5a44d936ff535",
++  "tz": "cfbc40b21683f0f35ee39f846a2c28c7",
++  "cpu": "d566a45174d7b13d61a3f2eded1f9b22",
++  "dist_list": [
++   "detpy==0.1.0:853f2f088e240dfcbda04feb3b1e598a",
++   "iniconfig==2.3.1:35e78c34f83538d5fb1cc85c35483805",
++   "maturin==1.16.0:1cb209ee154cda967d8ca6930abe77fe",
++   "packaging==26.3:0a4132d45de03282c5dda69afdd2f31f",
++   "pip==26.2.2:59e83bb4f586dc62b534478f3b4c3176",
++   "pluggy==1.7.0:2f41dc83a6efa611fde9fb112044007c",
++   "pygments==2.21.0:0824e403d6c27211ff697d407bbac7b2",
++   "pytest==9.2.0:e0b48ffcfa5a626ce74e2bd0e666235e"
++  ],
++  "native_list": [
++   "ld-linux-x86-64.so.2:cd2e626bebe0b47e9d8add1e6d2b41a0",
++   "libc.so.6:25674ceea26f2f5085569c18a8153a62",
++   "libdl.so.2:9caaebdfcf9a969933597e2465433c24",
++   "libgcc_s.so.1:9fe88127ef9db8d09e9594e3397fb707",
++   "libm.so.6:eff7394b4841514220f64677a46376e3",
++   "libpthread.so.0:9a6c8fa7e920cd6db0e3a4bca482506d",
++   "librt.so.1:fed3eb3fe9c5ffbfe79c5ff8cf8bc596",
++   "libutil.so.1:9b6d87fb21c2512712718186c17b10ff",
++   "libz.so.1:79a514fb04dc91d80b0ca07ef848bda5"
++  ],
++  "python_version": "3.13.18",
++  "identity_seconds": 0.0427,
++  "cpu_detail": {
++   "cpu_count": 4,
++   "affinity": 4,
++   "process_cpu_count": 4,
++   "isa": "x86-64-v4"
++  },
++  "extra_paths_list": [
++   "/home/fenvix/engine/python (20 files)"
++  ],
++  "previous_identity": "9666a6b820a872fd6c40d52c20ceba5e",
++  "previous_dist_list": [
++   "detpy==0.1.0:ae1f53459a4617ded142951c2c0ba438",
++   "iniconfig==2.3.1:2ba3db2cb94954b1d4f2eb487e27a8e4",
++   "maturin==1.16.0:7e35a632c7a12d78a75ab2d9dccd3999",
++   "packaging==26.3:288268ea7be2465d39ad5b9d63a769ab",
++   "pip==26.2.2:0775e7432c7d6acb7e0f543612e6f60f",
++   "pluggy==1.7.0:61a93dfa47b3fc537a737016c509fca6",
++   "pygments==2.21.0:1e075785fbfb35d489f5d73afd10d91b",
++   "pytest==9.2.0:5ed2a1d4c3d7b70a5a3e7bcb5982646f"
++  ]
++ },
++ "runtime_changed_since_previous_job": [],
++ "machine": {
++  "hostname": "vm",
++  "runner_name": null,
++  "machine_id": "a0a011aeb8aa",
++  "boot_id": "d1ac47aac12b",
++  "cpu": "Intel(R) Xeon(R) Processor @ 2.30GHz",
++  "cpus": 4
++ },
++ "shared_cache": null,
++ "reused_from_shared_cache": 0,
++ "audit": {
++  "share": 0.25,
++  "seed": "fixture-seed",
++  "candidates": 12,
++  "checked": 5,
++  "matched": 4,
++  "wrong": 1,
++  "flaky_evidence": 0,
++  "upper_bound_95": 0.6574083180011387,
++  "wrong_tests": [
++   {
++    "nodeid": "tests/test_math.py::test_case_7",
++    "key": "e3cf71a5eb3cbd4679b0744f5d8e9494",
++    "cached": "skipped",
++    "fresh": "passed",
++    "fresh2": "passed"
++   }
++  ],
++  "flaky_tests": []
++ }
++}
+diff --git a/github-app/tests/integration/results.test.ts b/github-app/tests/integration/results.test.ts
+index 783b1d4..f69f6f2 100644
+--- a/github-app/tests/integration/results.test.ts
++++ b/github-app/tests/integration/results.test.ts
+@@ -132,2 +132,36 @@ describe("run results on GitHub, runs and usage events", () => {
+ 
++  it("a wrong skip found by the cache audit: an ERROR log line, a row the dashboard shows, audited tests not billed as skipped", async () => {
++    const svc = h.app.service as unknown as { log: { error: (o: object, m: string) => void } };
++    const errors: { o: Record<string, unknown>; m: string }[] = [];
++    const saved = svc.log.error;
++    svc.log.error = (o, m) => { errors.push({ o: o as Record<string, unknown>, m }); };
++    try {
++      const sha = "a".repeat(40);
++      h.gh.addRun("acme/shop", 9010, { event: "push", headSha: sha, headBranch: "main", message: "audit" });
++      await h.send("workflow_job", workflowJob("in_progress", { id: 610, runId: 9010, sha, branch: "main" }));
++      await h.summary({ runId: 9010, summary: summary("job4-audit-wrong-skip") });
++      await h.send("workflow_job", workflowJob("completed", { id: 610, runId: 9010, sha, branch: "main", conclusion: "success" }));
++      const alert = errors.find((e) => e.o.alert === "cache_audit_wrong_skip");
++      assert.ok(alert, "an ERROR line for the wrong skip");
++      assert.match(alert.m, /wrong skip/);
++      assert.equal(alert.o.wrong, 1);
++      assert.deepEqual(alert.o.tests, [{ test: "tests/test_math.py::test_case_7", cached: "skipped", fresh: "passed", key: "e3cf71a5eb3cbd4679b0744f5d8e9494" }]);
++      const run = (await admin.query("select id, tests_total, tests_ran, tests_skipped, audit_share, audit_seed, audit_checked, audit_matched, audit_wrong, audit_flaky_evidence from ci_runs where commit_sha = $1", [sha])).rows[0];
++      assert.deepEqual({ ...run, id: undefined, audit_share: Number(run.audit_share) },
++        { id: undefined, tests_total: 12, tests_ran: 5, tests_skipped: 7, audit_share: 0.25, audit_seed: "fixture-seed", audit_checked: 5, audit_matched: 4, audit_wrong: 1, audit_flaky_evidence: 0 });
++      const rows = (await admin.query("select workspace_id, run_id, github_job_id, test_id, cached_outcome, fresh_outcome, fresh2_outcome, proof_key, audit_seed, state from ci_audit_alerts")).rows;
++      assert.deepEqual(rows, [{ workspace_id: org.workspaceId, run_id: run.id, github_job_id: 610, test_id: "tests/test_math.py::test_case_7", cached_outcome: "skipped",
++        fresh_outcome: "passed", fresh2_outcome: "passed", proof_key: "e3cf71a5eb3cbd4679b0744f5d8e9494", audit_seed: "fixture-seed", state: "open" }]);
++      // billing: the usage event's minutes saved are the reused tests' only (audited tests ran)
++      const ev = (await admin.query("select minutes_saved, test_minutes_ran from ci_usage_events where github_job_id = 610")).rows[0];
++      const s4 = summary("job4-audit-wrong-skip");
++      assert.equal(Number(ev.minutes_saved), Number(((s4.test_seconds_saved as number) / 60).toFixed(2)));
++      // the same completed event again: no second alert
++      await h.send("workflow_job", workflowJob("completed", { id: 610, runId: 9010, sha, branch: "main", conclusion: "success" }));
++      assert.equal((await admin.query("select count(*)::int as n from ci_audit_alerts")).rows[0].n, 1);
++    } finally {
++      svc.log.error = saved;
++    }
++  });
++
+   it("the comment is found again by its marker when our record of it is lost", async () => {
+diff --git a/github-app/tests/unit/results.test.ts b/github-app/tests/unit/results.test.ts
+index d97e436..0c35891 100644
+--- a/github-app/tests/unit/results.test.ts
++++ b/github-app/tests/unit/results.test.ts
+@@ -52,2 +52,33 @@ describe("the runner's summary", () => {
+ 
++describe("the cache audit in the summary", () => {
++  it("reads the audit of a real run: audited tests ran, they are never skipped", () => {
++    const s = parseSummary(fixture("job4-audit-wrong-skip"));
++    assert.deepEqual({ tests: s.tests, ran: s.ran, reused: s.reusedWithProof }, { tests: 12, ran: 5, reused: 7 });
++    assert.ok(s.audit);
++    assert.deepEqual({ ...s.audit, wrongTests: undefined }, { share: 0.25, seed: "fixture-seed", checked: 5, matched: 4, wrong: 1, flakyEvidence: 0, wrongTests: undefined });
++    assert.deepEqual(s.audit.wrongTests, [{ nodeid: "tests/test_math.py::test_case_7", key: "e3cf71a5eb3cbd4679b0744f5d8e9494", cached: "skipped", fresh: "passed", fresh2: "passed" }]);
++    // the older runners' summaries have no audit
++    assert.equal(parseSummary(fixture("job3-warm-pass")).audit, null);
++  });
++
++  it("refuses an audit that does not add up", () => {
++    const base = { tests: 10, reused_with_proof: 6, ran: 4 };
++    assert.throws(() => parseSummary({ ...base, audit: { share: 0.05, checked: 3, matched: 1, wrong: 1, flaky_evidence: 0 } }), /must equal checked/);
++    assert.throws(() => parseSummary({ ...base, audit: { share: 0.05, checked: 5, matched: 5, wrong: 0, flaky_evidence: 0 } }), /more tests checked than ran/);
++    assert.throws(() => parseSummary({ ...base, audit: { share: 2, checked: 0, matched: 0, wrong: 0, flaky_evidence: 0 } }), /between 0 and 1/);
++    assert.throws(() => parseSummary({ ...base, audit: { share: 0.05, checked: 1, matched: 0, wrong: 1, flaky_evidence: 0, wrong_tests: [{}] } }), /needs nodeid/);
++  });
++
++  it("the check run shows the audit and the wrong skips; a wrong skip alone does not fail the check", () => {
++    const s = parseSummary(fixture("job4-audit-wrong-skip"));
++    const out = checkRunOutput(s, { ...ctx, jobConclusion: "success" });
++    assert.equal(out.title, "7 of 12 tests skipped with proof · under 0.1 min (0.0 s) saved · no failures");
++    assert.match(out.summary, /\| Skips audited \(run anyway, compared\) \| 5: 4 matched, \*\*1 wrong\*\* \|/);
++    assert.match(out.summary, /### Skips the audit found wrong[\s\S]*`tests\/test_math\.py::test_case_7`: cached skipped, fresh passed/);
++    assert.match(out.text, /Skip audit: 25\.0% of the skippable tests ran anyway \(seed `fixture-seed`\); 5 checked, 1 wrong, 0 flaky with evidence\./);
++    assert.equal(conclusionOf(s, "success"), "success");
++    assert.match(prComment(s, ctx), /\| Skips audited \(run anyway, compared\) \| 5: 4 matched, \*\*1 wrong\*\* \|/);
++  });
++});
++
+ describe("check run and comment", () => {
+diff --git a/src/data/ci-rows.ts b/src/data/ci-rows.ts
+index 0203517..a9c3e1a 100644
+--- a/src/data/ci-rows.ts
++++ b/src/data/ci-rows.ts
+@@ -4,3 +4,3 @@
+  */
+-import type { Exploration, Defect, GitHubRate, Plan, Project, Run, SkipReceipt, TestResult, TestRunner } from "./types";
++import type { AuditAlert, Exploration, Defect, GitHubRate, Plan, Project, Run, SkipReceipt, TestResult, TestRunner } from "./types";
+ import { familyKeyOf } from "./ci.ts";
+@@ -50,2 +50,11 @@ export function mapRun(r: Row): Run {
+     skipMisses: obj(r.skip_misses) as Run["skipMisses"], missDetails: arr(r.miss_details),
++    audit: { share: num(r.audit_share), seed: str(r.audit_seed), checked: num(r.audit_checked), matched: num(r.audit_matched), wrong: num(r.audit_wrong), flakyEvidence: num(r.audit_flaky_evidence) },
++  };
++}
++
++/** A row of ci_audit_alerts (0014_cache_audit.sql). */
++export function mapAuditAlert(r: Row, projectName: string): AuditAlert {
++  return {
++    id: str(r.id), projectId: str(r.project_id), projectName, runId: r.run_id ? str(r.run_id) : null, testId: str(r.test_id),
++    cachedOutcome: str(r.cached_outcome), freshOutcome: str(r.fresh_outcome), state: str(r.state) === "acknowledged" ? "acknowledged" : "open", createdAt: str(r.created_at),
+   };
+diff --git a/src/data/ci.ts b/src/data/ci.ts
+index a194c0b..77eb0e2 100644
+--- a/src/data/ci.ts
++++ b/src/data/ci.ts
+@@ -5,3 +5,3 @@
+ import type {
+-  ActivityItem, Exploration, MissKind,
++  ActivityItem, AuditAlert, AuditTotals, Exploration, MissKind,
+   BillingOverview, DayPoint, Defect, DefectFamily, GitHubRate, MinuteBreakdown, Overview, Plan, Project, ProjectRow, Run, SetupChange, UsageProjectRow, UsageReport,
+@@ -100,2 +100,38 @@ export function medianTimeToGreen(runs: Run[], from: Date, to: Date): { medianS:
+ 
++/**
++ * One-sided 95% upper bound on the share of wrong skips after `checked` audited skips found `wrong` wrong: 3 / checked
++ * when none (rule of three), else the exact Clopper-Pearson bound. Null when nothing was checked. The engine
++ * (detpy_core::audit::upper_bound_95) and the cache service use the same rule.
++ */
++export function upperBound95(checked: number, wrong: number): number | null {
++  if (checked <= 0) return null;
++  if (wrong <= 0) return Math.min(1, 3 / checked);
++  if (wrong >= checked) return 1;
++  const cdf = (p: number) => {
++    const lp = Math.log(p), lq = Math.log1p(-p);
++    let lc = 0;
++    const terms: number[] = [];
++    for (let i = 0; i <= wrong; i++) {
++      if (i) lc += Math.log(checked - i + 1) - Math.log(i);
++      terms.push(lc + i * lp + (checked - i) * lq);
++    }
++    const m = Math.max(...terms);
++    return Math.min(1, Math.exp(m + Math.log(terms.reduce((a, t) => a + Math.exp(t - m), 0))));
++  };
++  let lo = wrong / checked, hi = 1;
++  for (let k = 0; k < 200; k++) {
++    const mid = (lo + hi) / 2;
++    if (cdf(mid) > 0.05) lo = mid; else hi = mid;
++  }
++  return hi;
++}
++
++/** Cache audits summed over runs, with the bound. */
++export function auditTotals(runs: Run[]): AuditTotals {
++  const withAudit = runs.filter((r) => r.audit && r.audit.share > 0);
++  const checked = withAudit.reduce((a, r) => a + r.audit.checked, 0);
++  const wrong = withAudit.reduce((a, r) => a + r.audit.wrong, 0);
++  return { runs: withAudit.length, checked, wrong, flakyEvidence: withAudit.reduce((a, r) => a + r.audit.flakyEvidence, 0), upperBound95: upperBound95(checked, wrong) };
++}
++
+ export function projectRow(project: Project, runs: Run[], defects: Defect[], now: Date): ProjectRow {
+@@ -115,2 +151,3 @@ export function projectRow(project: Project, runs: Run[], defects: Defect[], now
+     lastRunStatus: last?.status ?? null,
++    audit: auditTotals(thisMonth),
+   };
+@@ -130,3 +167,3 @@ export const githubUsd = (minutes: number, rate: GitHubRate) => round(minutes *
+ /** The overview of the current month. `runs` must cover this month and the month before. */
+-export function overviewFrom(projects: Project[], runs: Run[], defects: Defect[], plan: Plan | null, rate: GitHubRate, now: Date): Overview {
++export function overviewFrom(projects: Project[], runs: Run[], defects: Defect[], plan: Plan | null, rate: GitHubRate, now: Date, alerts: AuditAlert[] = []): Overview {
+   const month = monthOf(now);
+@@ -160,2 +197,3 @@ export function overviewFrom(projects: Project[], runs: Run[], defects: Defect[]
+     recentDefects: [...open].sort((a, b) => b.lastSeenAt.localeCompare(a.lastSeenAt)).slice(0, 5),
++    audit: { totals: auditTotals(thisMonth), alerts: alerts.filter((a) => a.state === "open").sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 10) },
+   };
+diff --git a/src/data/mock.ts b/src/data/mock.ts
+index c97cdb9..cf64361 100644
+--- a/src/data/mock.ts
++++ b/src/data/mock.ts
+@@ -452,2 +452,4 @@ function buildSample(owner: string, orgName: string, planId: string): Store {
+           ...missesFor(spec, ran, ranTests, skipShare, lastFailed, rng(seed)),
++          // 5% of the skippable tests run anyway (they are in ranTests); none found wrong in the sample data
++          audit: { share: 0.05, seed: hex(`${sha}a`, 16), checked: Math.min(ranTests, Math.round((total - ranTests) * 0.05)), matched: Math.min(ranTests, Math.round((total - ranTests) * 0.05)), wrong: 0, flakyEvidence: 0 },
+         };
+diff --git a/src/data/supabase.ts b/src/data/supabase.ts
+index 60b0138..edecc3f 100644
+--- a/src/data/supabase.ts
++++ b/src/data/supabase.ts
+@@ -12,3 +12,4 @@ import { PUBLIC_API_NOT_SET_UP } from "./public-keys";
+ import { activityFrom, billingFrom, dayStart, familiesOf, median, monthBounds, monthOf, overviewFrom, projectRow, setupChange, usageCsv, usageCsvName, usageFrom } from "./ci";
+-import { mapExploration, mapDefect, mapPlan, mapProject, mapRate, mapReceipt, mapRun, mapTestResult, friendlyError, type Row } from "./ci-rows";
++import { mapAuditAlert, mapExploration, mapDefect, mapPlan, mapProject, mapRate, mapReceipt, mapRun, mapTestResult, friendlyError, type Row } from "./ci-rows";
++import type { AuditAlert } from "./types";
+ 
+@@ -62,2 +63,9 @@ async function defects(): Promise<Defect[]> {
+ 
++/** Open wrong-skip alerts, newest first. A database without 0014_cache_audit.sql has none: the overview still loads. */
++async function auditAlerts(): Promise<AuditAlert[]> {
++  const { data, error } = await db().from("ci_audit_alerts").select("*").eq("workspace_id", await ws()).eq("state", "open").order("created_at", { ascending: false }).limit(20);
++  if (error) return [];
++  return ((data as Row[]) ?? []).map((r) => mapAuditAlert(r, ""));
++}
++
+ async function plans(): Promise<Plan[]> {
+@@ -81,4 +89,5 @@ export const supabaseClient: DataClient = {
+     const now = new Date();
+-    const [ps, rs, ds, pl, rt] = await Promise.all([projects(), runsSince(new Date(Math.min(startOfPreviousMonth(now).getTime(), now.getTime() - 30 * DAY))), defects(), plans(), rate()]);
+-    return overviewFrom(ps, rs, ds, pl.find((p) => p.current) ?? null, rt, now);
++    const [ps, rs, ds, pl, rt, al] = await Promise.all([projects(), runsSince(new Date(Math.min(startOfPreviousMonth(now).getTime(), now.getTime() - 30 * DAY))), defects(), plans(), rate(), auditAlerts()]);
++    const names = new Map(ps.map((p) => [p.id, p.fullName]));
++    return overviewFrom(ps, rs, ds, pl.find((p) => p.current) ?? null, rt, now, al.map((a) => ({ ...a, projectName: names.get(a.projectId) ?? "" })));
+   },
+diff --git a/src/data/types.ts b/src/data/types.ts
+index 0ff82a0..d64745a 100644
+--- a/src/data/types.ts
++++ b/src/data/types.ts
+@@ -77,2 +77,4 @@ export interface ProjectRow extends Project {
+   lastRunStatus: RunStatus | null;
++  /** This month's cache audits of the project. */
++  audit: AuditTotals;
+ }
+@@ -138,2 +140,43 @@ export interface Run {
+   missDetails: { kind: MissKind; detail: string; tests: number }[];
++  /** The engine's cache audit of this run: a seeded share of the skippable tests ran anyway and was compared. */
++  audit: RunAudit;
++}
++
++/**
++ * The cache audit of one run (summary.json `audit`). Audited tests ran: they are in `tests.ran`, never in
++ * `tests.skippedWithProof`, so they are never billed or shown as skipped.
++ */
++export interface RunAudit {
++  /** Share of the skippable tests run anyway, 0 to 1 (0.05 by default). */
++  share: number;
++  seed: string;
++  checked: number;
++  matched: number;
++  /** Two fresh runs contradicted the cached result: the skip was wrong. */
++  wrong: number;
++  /** The second fresh run did not reproduce the first: the test is flaky, the skip is not shown wrong. */
++  flakyEvidence: number;
++}
++
++/** Audits summed over runs, with the one-sided 95% upper bound on the share of skips that are wrong. */
++export interface AuditTotals {
++  runs: number;
++  checked: number;
++  wrong: number;
++  flakyEvidence: number;
++  /** 3 / checked when nothing was wrong (rule of three), else the exact Clopper-Pearson bound; null with no check. */
++  upperBound95: number | null;
++}
++
++/** A wrong skip found by the cache audit (ci_audit_alerts). */
++export interface AuditAlert {
++  id: string;
++  projectId: string;
++  projectName: string;
++  runId: string | null;
++  testId: string;
++  cachedOutcome: string;
++  freshOutcome: string;
++  state: "open" | "acknowledged";
++  createdAt: string;
+ }
+@@ -329,2 +372,4 @@ export interface Overview {
+   recentDefects: Defect[];
++  /** This month's cache audits over all projects, and the open wrong-skip alerts. */
++  audit: { totals: AuditTotals; alerts: AuditAlert[] };
+ }
+diff --git a/src/pages/Overview.tsx b/src/pages/Overview.tsx
+index 1d3f8f6..87fa8c2 100644
+--- a/src/pages/Overview.tsx
++++ b/src/pages/Overview.tsx
+@@ -181,2 +181,31 @@ export function OverviewPage() {
+             </div>
++            <Card
++              id="audit"
++              title="Skip audit"
++              description="In every run fenvix also runs a random share of the tests it could skip (5% by default) and compares the result with the one it would have reused. Audited tests ran: they are not counted as skipped."
++            >
++              <p>
++                {o.audit.totals.checked === 0
++                  ? "No skip audited this month yet."
++                  : `${formatCount(o.audit.totals.checked)} skips audited in ${month} over ${formatCount(o.audit.totals.runs)} runs: ${formatCount(o.audit.totals.wrong)} wrong${o.audit.totals.flakyEvidence ? `, ${formatCount(o.audit.totals.flakyEvidence)} flaky` : ""}. At most ${formatPercent(o.audit.totals.upperBound95 ?? 1)} of skips are wrong (95% upper bound).`}
++              </p>
++              {o.audit.alerts.length > 0 && (
++                <ul className="defect-mini" aria-label="Wrong skips">
++                  {o.audit.alerts.map((a) => (
++                    <li key={a.id}>
++                      {a.runId ? (
++                        <Link to={`/projects/${a.projectId}/runs/${a.runId}`} className="row-link mono break-anywhere" title={a.testId}>
++                          {shortTest(a.testId)}
++                        </Link>
++                      ) : (
++                        <span className="mono break-anywhere" title={a.testId}>{shortTest(a.testId)}</span>
++                      )}
++                      <span className="muted small">
++                        {a.projectName} · wrong skip: cached {a.cachedOutcome}, ran {a.freshOutcome} · {formatRelative(a.createdAt, now)}
++                      </span>
++                    </li>
++                  ))}
++                </ul>
++              )}
++            </Card>
+             <Card id="activity" title="Live activity" description="Every project, newest first.">
+diff --git a/src/pages/Run.tsx b/src/pages/Run.tsx
+index 44c4e2d..366603f 100644
+--- a/src/pages/Run.tsx
++++ b/src/pages/Run.tsx
+@@ -284,2 +284,10 @@ export function RunPage() {
+           </div>
++          <div>
++            <dt>Skips audited</dt>
++            <dd>
++              {run.audit.share > 0
++                ? `${formatCount(run.audit.checked)} run anyway: ${formatCount(run.audit.matched)} matched, ${formatCount(run.audit.wrong)} wrong${run.audit.flakyEvidence ? `, ${formatCount(run.audit.flakyEvidence)} flaky` : ""}`
++                : "off"}
++            </dd>
++          </div>
+         </dl>
+diff --git a/supabase/migrations/0014_cache_audit.sql b/supabase/migrations/0014_cache_audit.sql
+new file mode 100644
+index 0000000..7091663
+--- /dev/null
++++ b/supabase/migrations/0014_cache_audit.sql
+@@ -0,0 +1,65 @@
++-- Cache audit (fenvix-engine-cli, claude/audit-reruns): in every run the engine runs a seeded random share (default 5%)
++-- of the tests it could skip with proof, and compares the fresh result with the cached one. The runner's summary.json
++-- carries `audit: {share, seed, checked, matched, wrong, flaky_evidence, wrong_tests, ...}`.
++--
++--   * ci_runs gets the run's audit counts. Audited tests ran: they are in tests_ran, never in tests_skipped, so the
++--     dashboard and the billing never count them as skipped.
++--   * ci_audit_alerts: one row per wrong skip (two fresh runs contradicted the cached result). The GitHub App writes it
++--     and logs the alert at ERROR; the dashboard shows it. Paging is configured later.
++--
++-- Safe to run again.
++
++alter table public.ci_runs add column if not exists audit_share numeric(6, 5) not null default 0 check (audit_share between 0 and 1);
++alter table public.ci_runs add column if not exists audit_seed text not null default '';
++alter table public.ci_runs add column if not exists audit_checked int not null default 0 check (audit_checked >= 0);
++alter table public.ci_runs add column if not exists audit_matched int not null default 0 check (audit_matched >= 0);
++alter table public.ci_runs add column if not exists audit_wrong int not null default 0 check (audit_wrong >= 0);
++alter table public.ci_runs add column if not exists audit_flaky_evidence int not null default 0 check (audit_flaky_evidence >= 0);
++do $$
++begin
++  alter table public.ci_runs add constraint ci_runs_audit_adds_up
++    check (audit_matched + audit_wrong + audit_flaky_evidence = audit_checked and audit_checked <= tests_ran);
++exception when duplicate_object then null;
++end $$;
++
++create table if not exists public.ci_audit_alerts (
++  id uuid primary key default gen_random_uuid(),
++  workspace_id uuid not null,
++  project_id uuid not null references public.ci_projects (id) on delete cascade,
++  run_id uuid references public.ci_runs (id) on delete cascade,
++  github_job_id bigint not null,
++  test_id text not null check (length(test_id) between 1 and 2000),
++  cached_outcome text not null default '',
++  fresh_outcome text not null default '',
++  fresh2_outcome text,
++  proof_key text not null default '',
++  audit_seed text not null default '',
++  -- open: just found; acknowledged: someone at fenvix looked at it (engine bug filed or explained)
++  state text not null default 'open' check (state in ('open', 'acknowledged')),
++  created_at timestamptz not null default now(),
++  unique (github_job_id, test_id)
++);
++create index if not exists ci_audit_alerts_workspace on public.ci_audit_alerts (workspace_id, created_at desc);
++create index if not exists ci_audit_alerts_project on public.ci_audit_alerts (project_id, created_at desc);
++
++alter table public.ci_audit_alerts enable row level security;
++revoke all on public.ci_audit_alerts from public, anon, authenticated;
++
++-- Members read their organization's alerts.
++grant select on public.ci_audit_alerts to authenticated;
++drop policy if exists ci_audit_alerts_member_read on public.ci_audit_alerts;
++create policy ci_audit_alerts_member_read on public.ci_audit_alerts for select to authenticated
++  using (workspace_id in (select public.my_workspace_ids()));
++
++-- The GitHub App writes them for the one organization it acts for.
++do $$
++begin
++  if exists (select 1 from pg_roles where rolname = 'fenvix_github_app') then
++    grant select, insert on public.ci_audit_alerts to fenvix_github_app;
++    drop policy if exists ci_audit_alerts_github_app on public.ci_audit_alerts;
++    create policy ci_audit_alerts_github_app on public.ci_audit_alerts for all to fenvix_github_app
++      using (workspace_id = public.cp_workspace()) with check (workspace_id = public.cp_workspace());
++  end if;
++end $$;
++
++notify pgrst, 'reload schema';
+diff --git a/supabase/tests/audit-rls.sql b/supabase/tests/audit-rls.sql
+new file mode 100644
+index 0000000..8c7a8a5
+--- /dev/null
++++ b/supabase/tests/audit-rls.sql
+@@ -0,0 +1,111 @@
++-- Row level security of the cache audit alerts (0014_cache_audit.sql). Run AFTER 0001, 0002, 0008, 0011, 0012, 0013 and
++-- 0014. One transaction, rolled back; a failed assertion stops the script naming the check; a clean run ends with
++-- "AUDIT RLS OK".
++--
++--   owner O and member M share workspace W; outsider X owns workspace XW. Each workspace has a project, a run and one
++--   wrong-skip alert.
++
++begin;
++
++insert into auth.users (id, email, raw_user_meta_data, email_confirmed_at) values
++  ('3aaaaaaa-0000-4000-8000-000000000001', 'audit.owner@fenvix.invalid', '{"full_name":"Audit Owner"}', now()),
++  ('3bbbbbbb-0000-4000-8000-000000000002', 'audit.member@fenvix.invalid', '{"full_name":"Audit Member"}', now()),
++  ('3ddddddd-0000-4000-8000-000000000004', 'audit.outsider@fenvix.invalid', '{"full_name":"Audit Outsider"}', now());
++
++create temporary table au_ids on commit drop as
++select
++  (select workspace_id from public.workspace_members where user_id = '3aaaaaaa-0000-4000-8000-000000000001') as w,
++  (select workspace_id from public.workspace_members where user_id = '3ddddddd-0000-4000-8000-000000000004') as xw,
++  null::uuid as p, null::uuid as run;
++grant select on au_ids to authenticated, anon, fenvix_github_app;
++
++do $$
++declare r au_ids%rowtype; v_p uuid; v_xp uuid; v_run uuid; v_xrun uuid;
++begin
++  select * into r from au_ids;
++  delete from public.workspaces where id = (select workspace_id from public.workspace_members where user_id = '3bbbbbbb-0000-4000-8000-000000000002');
++  insert into public.workspace_members (workspace_id, user_id, role) values (r.w, '3bbbbbbb-0000-4000-8000-000000000002', 'member');
++  insert into public.ci_projects (workspace_id, full_name, language, test_runner, installation_id) values (r.w, 'northwind/audit', 'python', 'pytest', 71) returning id into v_p;
++  insert into public.ci_projects (workspace_id, full_name, language, test_runner, installation_id) values (r.xw, 'outsider/audit', 'python', 'pytest', 72) returning id into v_xp;
++  insert into public.ci_runs (project_id, number, commit_sha, branch, trigger, status, pushed_at, started_at, tests_total, tests_ran, tests_skipped, audit_checked, audit_matched, audit_wrong)
++    values (v_p, 1, repeat('a', 40), 'main', 'push', 'passed', now(), now(), 10, 4, 6, 3, 2, 1) returning id into v_run;
++  insert into public.ci_runs (project_id, number, commit_sha, branch, trigger, status, pushed_at, started_at)
++    values (v_xp, 1, repeat('b', 40), 'main', 'push', 'passed', now(), now()) returning id into v_xrun;
++  update au_ids set p = v_p, run = v_run;
++  insert into public.ci_audit_alerts (workspace_id, project_id, run_id, github_job_id, test_id, cached_outcome, fresh_outcome) values
++    (r.w, v_p, v_run, 7001, 'tests/test_a.py::test_x', 'passed', 'failed'),
++    (r.xw, v_xp, v_xrun, 7002, 'tests/test_b.py::test_y', 'skipped', 'passed');
++  -- the counts must add up, and audited tests ran
++  begin
++    insert into public.ci_runs (project_id, number, commit_sha, branch, trigger, status, pushed_at, started_at, tests_total, tests_ran, tests_skipped, audit_checked, audit_matched)
++      values (v_p, 2, repeat('c', 40), 'main', 'push', 'passed', now(), now(), 10, 4, 6, 3, 2);
++    assert false, 'an audit that does not add up was stored';
++  exception when check_violation then null; end;
++  begin
++    insert into public.ci_runs (project_id, number, commit_sha, branch, trigger, status, pushed_at, started_at, tests_total, tests_ran, tests_skipped, audit_checked, audit_matched)
++      values (v_p, 3, repeat('d', 40), 'main', 'push', 'passed', now(), now(), 10, 2, 8, 3, 3);
++    assert false, 'more audited tests than tests that ran were stored';
++  exception when check_violation then null; end;
++end $$;
++
++-- ---------------------------------------------------------------- anonymous: nothing
++set local role anon;
++do $$
++declare n int;
++begin
++  begin
++    select count(*) into n from public.ci_audit_alerts;
++    assert false, 'anon can read ci_audit_alerts';
++  exception when insufficient_privilege then null; end;
++end $$;
++reset role;
++
++-- ---------------------------------------------------------------- the member: reads W's alert only, writes nothing
++set local role authenticated;
++set local request.jwt.claims = '{"sub":"3bbbbbbb-0000-4000-8000-000000000002","role":"authenticated"}';
++do $$
++declare r au_ids%rowtype;
++begin
++  select * into r from au_ids;
++  assert (select count(*) from public.ci_audit_alerts) = 1, 'the member does not see exactly their alert';
++  assert (select test_id from public.ci_audit_alerts) = 'tests/test_a.py::test_x', 'the member sees another organization''s alert';
++  assert (select audit_wrong from public.ci_runs where id = r.run) = 1, 'the member does not see the run''s audit counts';
++  begin
++    insert into public.ci_audit_alerts (workspace_id, project_id, github_job_id, test_id) values (r.w, r.p, 7003, 'x');
++    assert false, 'a member wrote an alert';
++  exception when insufficient_privilege then null; end;
++end $$;
++reset role;
++
++-- ---------------------------------------------------------------- the outsider: their own alert only
++set local role authenticated;
++set local request.jwt.claims = '{"sub":"3ddddddd-0000-4000-8000-000000000004","role":"authenticated"}';
++do $$
++begin
++  assert (select count(*) from public.ci_audit_alerts) = 1, 'the outsider does not see exactly their alert';
++  assert (select test_id from public.ci_audit_alerts) = 'tests/test_b.py::test_y', 'the outsider sees W''s alert';
++end $$;
++reset role;
++
++-- ---------------------------------------------------------------- the GitHub App: writes for the organization it acts for only
++set local role fenvix_github_app;
++do $$
++declare r au_ids%rowtype;
++begin
++  select * into r from au_ids;
++  perform set_config('app.workspace_id', r.w::text, true);
++  insert into public.ci_audit_alerts (workspace_id, project_id, run_id, github_job_id, test_id) values (public.cp_workspace(), r.p, r.run, 7004, 'tests/test_a.py::test_z');
++  assert (select count(*) from public.ci_audit_alerts) = 2, 'the App does not see exactly W''s alerts';
++  begin
++    insert into public.ci_audit_alerts (workspace_id, project_id, github_job_id, test_id) values (r.xw, r.p, 7005, 'x');
++    assert false, 'the App wrote an alert into another organization';
++  exception when insufficient_privilege or check_violation then null; end;
++  begin
++    update public.ci_audit_alerts set state = 'acknowledged';
++    assert false, 'the App changed an alert';
++  exception when insufficient_privilege then null; end;
++end $$;
++reset role;
++
++select 'AUDIT RLS OK';
++rollback;
+diff --git a/supabase/tests/run-local.sh b/supabase/tests/run-local.sh
+index f17a256..6cc2755 100755
+--- a/supabase/tests/run-local.sh
++++ b/supabase/tests/run-local.sh
+@@ -40,2 +40,5 @@ psql_run -f supabase/migrations/0013_github_app.sql >/dev/null 2>&1; psql_run -f
+ psql_run -f supabase/tests/gh-rls.sql 2>&1 | grep -E "GH RLS OK" >/dev/null && echo "     GH RLS OK"
++echo "   Cache audit: 0014 (twice), then its row level security"
++psql_run -f supabase/migrations/0014_cache_audit.sql >/dev/null 2>&1; psql_run -f supabase/migrations/0014_cache_audit.sql >/dev/null 2>&1
++psql_run -f supabase/tests/audit-rls.sql 2>&1 | grep -E "AUDIT RLS OK" >/dev/null && echo "     AUDIT RLS OK"
+ echo "7/7 seed (twice: the second run must change nothing)"
+diff --git a/tests/unit/ci.test.ts b/tests/unit/ci.test.ts
+index 5a7a318..700860f 100644
+--- a/tests/unit/ci.test.ts
++++ b/tests/unit/ci.test.ts
+@@ -3,4 +3,4 @@ import test from "node:test";
+ import assert from "node:assert/strict";
+-import { billingFrom, daysBetween, minuteBreakdown, roundToSum, runMinutes, familiesOf, familyKeyOf, median, medianTimeToGreen, overviewFrom, projectRow, replayCommand, setupChange, setupSnippet, suggestPlan, usageCsv, usageFrom } from "../../src/data/ci.ts";
+-import { fileOfTest, friendlyError, mapDefect, mapPlan, mapProject, mapReceipt, mapRun, mapTestResult } from "../../src/data/ci-rows.ts";
++import { auditTotals, upperBound95, billingFrom, daysBetween, minuteBreakdown, roundToSum, runMinutes, familiesOf, familyKeyOf, median, medianTimeToGreen, overviewFrom, projectRow, replayCommand, setupChange, setupSnippet, suggestPlan, usageCsv, usageFrom } from "../../src/data/ci.ts";
++import { fileOfTest, friendlyError, mapAuditAlert, mapDefect, mapPlan, mapProject, mapReceipt, mapRun, mapTestResult } from "../../src/data/ci-rows.ts";
+ import type { Defect, GitHubRate, Plan, Project, Run } from "../../src/data/types.ts";
+@@ -25,3 +25,4 @@ function run(p: string, startedAt: string, o: Partial<Run> = {}): Run {
+     tests: { total: 100, ran: 3, passed: 3, failed: 0, skippedWithProof: 97, flakyDefects: 0 }, testTimeMs: { ran, skipped }, skipShare: skipped / (ran + skipped), minutesSaved: skipped / 60000,
+-    otherStepMinutes: 2, githubEquivalentMinutes: ran / 60000 + skipped / 60000 + 2, engineVersion: "detpy 0.1.0", seed: 3, ...o,
++    otherStepMinutes: 2, githubEquivalentMinutes: ran / 60000 + skipped / 60000 + 2, engineVersion: "detpy 0.1.0", seed: 3,
++    skipMisses: {}, missDetails: [], audit: { share: 0.05, seed: "s", checked: 0, matched: 0, wrong: 0, flakyEvidence: 0 }, ...o,
+   };
+@@ -188 +189,41 @@ test("errors read as sentences", () => {
+ });
++
++test("the skip audit: the 95% upper bound (rule of three when nothing is wrong, exact otherwise)", () => {
++  assert.equal(upperBound95(0, 0), null);
++  assert.equal(upperBound95(300, 0), 0.01);
++  assert.equal(upperBound95(3, 3), 1);
++  // the same values as the engine core (detpy_core::audit tests) and the cache service
++  assert.ok(Math.abs(upperBound95(100, 1)! - 0.04656) < 1e-4);
++  assert.ok(Math.abs(upperBound95(1000, 5)! - 0.0105) < 5e-4);
++});
++
++test("the skip audit per project and over all projects; audited tests are never counted as skipped", () => {
++  const a = (checked: number, wrong: number, share = 0.05) => ({ share, seed: "s", checked, matched: checked - wrong, wrong, flakyEvidence: 0 });
++  const runs = [
++    run("p1", "2026-11-03T10:00:00Z", { audit: a(150, 0) }), run("p1", "2026-11-04T10:00:00Z", { audit: a(150, 0) }),
++    run("p2", "2026-11-05T10:00:00Z", { audit: a(99, 1) }), run("p2", "2026-11-06T10:00:00Z", { audit: a(0, 0, 0) }),
++    run("p2", "2026-10-06T10:00:00Z", { audit: a(500, 5) }), // last month: not in this month's numbers
++  ];
++  const t = auditTotals(runs.slice(0, 4));
++  assert.deepEqual({ ...t, upperBound95: undefined }, { runs: 3, checked: 399, wrong: 1, flakyEvidence: 0, upperBound95: undefined });
++  const alerts = [
++    mapAuditAlert({ id: "al1", project_id: "p2", run_id: "r3", test_id: "tests/test_b.py::test_y", cached_outcome: "passed", fresh_outcome: "failed", state: "open", created_at: "2026-11-05T10:01:00Z" }, "acme/p2"),
++    mapAuditAlert({ id: "al0", project_id: "p2", run_id: null, test_id: "tests/test_b.py::test_old", cached_outcome: "passed", fresh_outcome: "failed", state: "acknowledged", created_at: "2026-11-01T10:01:00Z" }, "acme/p2"),
++  ];
++  const o = overviewFrom([project("p1"), project("p2")], runs, [], plans[1], RATE, NOW, alerts);
++  assert.equal(o.audit.totals.checked, 399);
++  assert.equal(o.audit.totals.wrong, 1);
++  assert.equal(o.audit.totals.upperBound95, upperBound95(399, 1));
++  assert.deepEqual(o.audit.alerts.map((x) => x.id), ["al1"], "only open alerts");
++  assert.equal(o.audit.alerts[0]!.projectName, "acme/p2");
++  const p1 = o.projects.find((p) => p.id === "p1")!;
++  assert.deepEqual(p1.audit, { runs: 2, checked: 300, wrong: 0, flakyEvidence: 0, upperBound95: 0.01 });
++  assert.equal(o.projects.find((p) => p.id === "p2")!.audit.checked, 99);
++  // a run's audit from its row; the skipped count is the reused tests only
++  const r = mapRun({ id: "r", project_id: "x", tests_total: 12, tests_ran: 5, tests_skipped: 7, audit_share: "0.25000", audit_seed: "fixture-seed", audit_checked: 5, audit_matched: 4, audit_wrong: 1, audit_flaky_evidence: 0 });
++  assert.deepEqual(r.audit, { share: 0.25, seed: "fixture-seed", checked: 5, matched: 4, wrong: 1, flakyEvidence: 0 });
++  assert.equal(r.tests.skippedWithProof, 7);
++  assert.equal(r.tests.ran, 5);
++  // a row from before 0014: audit off
++  assert.deepEqual(mapRun({ id: "old" }).audit, { share: 0, seed: "", checked: 0, matched: 0, wrong: 0, flakyEvidence: 0 });
++});
+-- 
+2.43.0
+
+
+From 2f0f02af7ddd38d4cd0068b5edaee06228f3a71c Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 18 Nov 2026 16:28:20 +0000
+Subject: [PATCH 2/2] Shared cache service: vendor the engine's cache audit
+ version (untrusted keys, GET /v1/audit); runners and service at the same
+ engine commit
+
+python/detpy/cache_service.py from fenvix-engine-cli claude/audit-reruns cf33351 byte for byte; engineCliCommit
+bumped to the same commit (the runners' client and the service go together). Apply only once the engine branch is
+approved.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YAF6Dfpa6pw8ofzmBuEkrk
+---
+ docs/DEPLOY-AWS.md                          |   2 +-
+ infra/github-app/cdk.json                   |   2 +-
+ infra/github-app/lib/cache/PROVENANCE.md    |   4 +-
+ infra/github-app/lib/cache/cache_service.py | 118 +++++++++++++++++++-
+ infra/github-app/test/cache.test.ts         |  13 ++-
+ 5 files changed, 129 insertions(+), 10 deletions(-)
+
+diff --git a/docs/DEPLOY-AWS.md b/docs/DEPLOY-AWS.md
+index 48fba30..ef1b9ff 100644
+--- a/docs/DEPLOY-AWS.md
++++ b/docs/DEPLOY-AWS.md
+@@ -289,3 +289,3 @@ The other settings keep their defaults:
+ - `demoMaxHours` `12`: the reaper terminates a demo machine somebody forgot to take down;
+-- `engineCliCommit` `a20b93d` (`claude/shared-cache`);
++- `engineCliCommit` `cf33351` (`claude/audit-reruns`: the shared cache with the cache audit);
+ - `domainName` `github.fenvix.dev`, `logRetentionDays` `14`, `summaryWaitSeconds` `600`.
+diff --git a/infra/github-app/cdk.json b/infra/github-app/cdk.json
+index 0bb0778..7c1eb32 100644
+--- a/infra/github-app/cdk.json
++++ b/infra/github-app/cdk.json
+@@ -44,3 +44,3 @@
+     "runnerVolumeGb": "30",
+-    "engineCliCommit": "a20b93d7f840b23f71c73c03efdaee3d6a233252",
++    "engineCliCommit": "cf33351336144531b87e6d22e7497c137870446a",
+     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
+diff --git a/infra/github-app/lib/cache/PROVENANCE.md b/infra/github-app/lib/cache/PROVENANCE.md
+index 0c4b149..cd015a1 100644
+--- a/infra/github-app/lib/cache/PROVENANCE.md
++++ b/infra/github-app/lib/cache/PROVENANCE.md
+@@ -3,4 +3,4 @@
+ `cache_service.py` is `python/detpy/cache_service.py` from `Mircoguidetti/fenvix-engine-cli` at commit
+-`a20b93d7f840b23f71c73c03efdaee3d6a233252` (branch `claude/shared-cache`), byte for byte (standard library only).
+-SHA-256 `2b93cd9aac59ba160bc28ae0e9c4b725b0abd29ec6784e5ed910f479eeea33a8` (checked by `test/cache.test.ts`). To update:
++`cf33351336144531b87e6d22e7497c137870446a` (branch `claude/audit-reruns`: the shared cache plus the cache audit's untrusted keys and `GET /v1/audit`), byte for byte (standard library only).
++SHA-256 `5f09e9098464abcf8c6087e1147850f044d80ab25997a282c42709defc76b9f9` (checked by `test/cache.test.ts`). To update:
+ copy the file from the new commit, change the commit and the SHA-256 here and in the test, and bump `engineCliCommit`
+diff --git a/infra/github-app/lib/cache/cache_service.py b/infra/github-app/lib/cache/cache_service.py
+index 1ad68b4..53c399e 100644
+--- a/infra/github-app/lib/cache/cache_service.py
++++ b/infra/github-app/lib/cache/cache_service.py
+@@ -18,2 +18,7 @@ Model (every request is scoped to the organization of its token; a token never r
+ * **runs**: an append-only log of runs with their receipts blob and summary.
++* **untrusted**: an append-only log of proof keys a cache audit found wrong (a reusable result that two fresh runs
++  contradicted). A lookup leaves out every entry filed under a proof key before that key was marked; an entry
++  filed after the mark (a fresh run that recorded the key again) is returned. Any token of the organization may
++  mark a key: a mark only stops reuse. ``GET /v1/audit`` sums the runs' audit counts per namespace (project) and
++  over all of them, with the 95% upper bound on the wrong-skip rate.
+ 
+@@ -34,2 +39,5 @@ Endpoints (JSON in, JSON out)::
+     GET  /v1/ns/<ns>/runs                                              -> {"runs": [...]}
++    POST /v1/ns/<ns>/untrusted {"put": [{"proof_key", "nodeid", "run", "reason"}]} -> {"added": n}
++    GET  /v1/ns/<ns>/untrusted                                         -> {"untrusted": [...]}
++    GET  /v1/audit                                                     -> {"projects": {ns: {...}}, "all": {...}}
+     GET  /v1/stats                                                     -> counts for the token's organization
+@@ -76,2 +84,35 @@ def _valid_ns(s: str) -> bool:
+ 
++def upper_bound_95(checked: int, wrong: int) -> float:
++    """One-sided 95% upper bound on the wrong-skip rate: 3/n when no wrong skip (rule of three), else the exact
++    Clopper-Pearson bound. Same rule as the engine core (``detpy._core.audit_upper_bound``); kept here so the service
++    stays standard library only."""
++    import math
++
++    if checked <= 0:
++        return 1.0
++    if wrong <= 0:
++        return min(1.0, 3.0 / checked)
++    if wrong >= checked:
++        return 1.0
++
++    def cdf(p: float) -> float:
++        lp, lq = math.log(p), math.log1p(-p)
++        terms, lc = [], 0.0
++        for i in range(wrong + 1):
++            if i:
++                lc += math.log(checked - i + 1) - math.log(i)
++            terms.append(lc + i * lp + (checked - i) * lq)
++        m = max(terms)
++        return min(1.0, math.exp(m + math.log(sum(math.exp(t - m) for t in terms))))
++
++    lo, hi = wrong / checked, 1.0
++    for _ in range(200):
++        mid = (lo + hi) / 2
++        if cdf(mid) > 0.05:
++            lo = mid
++        else:
++            hi = mid
++    return hi
++
++
+ # ---------------------------------------------------------------------------------------------------------------------
+@@ -140,2 +181,10 @@ class Store:
+                 ns TEXT NOT NULL, run TEXT NOT NULL, receipts TEXT, summary TEXT, at REAL NOT NULL);
++            CREATE TABLE IF NOT EXISTS untrusted (seq INTEGER PRIMARY KEY AUTOINCREMENT, org TEXT NOT NULL,
++                ns TEXT NOT NULL, proof_key TEXT NOT NULL, nodeid TEXT, run TEXT, reason TEXT, label TEXT,
++                keys_seq INTEGER NOT NULL, at REAL NOT NULL);
++            CREATE INDEX IF NOT EXISTS untrusted_key ON untrusted (org, ns, proof_key, keys_seq);
++            CREATE TRIGGER IF NOT EXISTS untrusted_append_only_u BEFORE UPDATE ON untrusted
++                BEGIN SELECT RAISE(ABORT, 'append-only'); END;
++            CREATE TRIGGER IF NOT EXISTS untrusted_append_only_d BEFORE DELETE ON untrusted
++                BEGIN SELECT RAISE(ABORT, 'append-only'); END;
+             CREATE TRIGGER IF NOT EXISTS blobs_append_only_u BEFORE UPDATE ON blobs
+@@ -153,2 +202,6 @@ class Store:
+         """)
++        # the proof key of each key row (stores created before the audit have none: the client still checks them)
++        if "proof_key" not in {r[1] for r in db.execute("PRAGMA table_info(keys)")}:
++            db.execute("ALTER TABLE keys ADD COLUMN proof_key TEXT")
++        db.execute("CREATE INDEX IF NOT EXISTS keys_proof ON keys (org, ns, proof_key)")
+         db.commit()
+@@ -206,6 +259,10 @@ class Store:
+             raise ValueError(f"{len(absent)} entry documents are not stored (upload them first)")
++        # the proof key is read from the stored entry document itself, never taken from the request
++        pk = {i: (d.get("proof_key") if isinstance(d, dict) and isinstance(d.get("proof_key"), str) else None)
++              for i, d in self.get(org, sorted(set(docs))).items()}
+         with db:
+             for r in rows:
+-                cur = db.execute("INSERT OR IGNORE INTO keys (org, ns, key, doc, run, at) VALUES (?,?,?,?,?,?)",
+-                                 (org, ns, r["key"], r["doc"], str(r.get("run") or ""), now))
++                cur = db.execute("INSERT OR IGNORE INTO keys (org, ns, key, doc, run, at, proof_key) "
++                                 "VALUES (?,?,?,?,?,?,?)",
++                                 (org, ns, r["key"], r["doc"], str(r.get("run") or ""), now, pk.get(r["doc"])))
+                 added += cur.rowcount
+@@ -213,2 +270,43 @@ class Store:
+ 
++    def add_untrusted(self, org: str, ns: str, rows: list[dict], label: str = "") -> int:
++        db, now, added = self.db(), time.time(), 0
++        with db:
++            # entries filed up to now under these keys are out of every later lookup
++            top = db.execute("SELECT COALESCE(MAX(seq), 0) FROM keys").fetchone()[0]
++            for r in rows:
++                db.execute("INSERT INTO untrusted (org, ns, proof_key, nodeid, run, reason, label, keys_seq, at) "
++                           "VALUES (?,?,?,?,?,?,?,?,?)",
++                           (org, ns, r["proof_key"], str(r.get("nodeid") or "")[:2000], str(r.get("run") or "")[:200],
++                            str(r.get("reason") or "")[:2000], label[:200], top, now))
++                added += 1
++        return added
++
++    def untrusted(self, org: str, ns: str, limit: int = 1000) -> list[dict]:
++        rows = self.db().execute("SELECT proof_key, nodeid, run, reason, at FROM untrusted WHERE org=? AND ns=? "
++                                 "ORDER BY seq DESC LIMIT ?", (org, ns, limit)).fetchall()
++        return [{"proof_key": r[0], "nodeid": r[1], "run": r[2], "reason": r[3], "at": r[4]} for r in rows]
++
++    def audit(self, org: str) -> dict:
++        """Audit counts of every run of the organization, per namespace (project) and over all of them."""
++        per: dict[str, dict] = {}
++        for ns, summary in self.db().execute("SELECT ns, summary FROM runs WHERE org=? ORDER BY seq", (org,)):
++            try:
++                a = (json.loads(summary or "null") or {}).get("audit")
++            except (ValueError, AttributeError):
++                a = None
++            if not isinstance(a, dict):
++                continue
++            p = per.setdefault(ns, {"runs": 0, "checked": 0, "matched": 0, "wrong": 0, "flaky_evidence": 0})
++            p["runs"] += 1
++            for k in ("checked", "matched", "wrong", "flaky_evidence"):
++                v = a.get(k)
++                p[k] += v if isinstance(v, int) and v >= 0 else 0
++        total = {"runs": 0, "checked": 0, "matched": 0, "wrong": 0, "flaky_evidence": 0}
++        for p in per.values():
++            for k in total:
++                total[k] += p[k]
++            p["upper_bound_95"] = upper_bound_95(p["checked"], p["wrong"])
++        total["upper_bound_95"] = upper_bound_95(total["checked"], total["wrong"])
++        return {"projects": per, "all": total}
++
+     def lookup(self, org: str, ns: str, keys: list[str], limit: int) -> dict:
+@@ -216,4 +314,5 @@ class Store:
+         for k in keys:
+-            rows = db.execute("SELECT doc FROM keys WHERE org=? AND ns=? AND key=? ORDER BY seq DESC LIMIT ?",
+-                              (org, ns, k, limit)).fetchall()
++            rows = db.execute("SELECT doc FROM keys k WHERE org=? AND ns=? AND key=? AND NOT EXISTS (SELECT 1 FROM "
++                              "untrusted u WHERE u.org=k.org AND u.ns=k.ns AND u.proof_key=k.proof_key AND "
++                              "u.keys_seq >= k.seq) ORDER BY seq DESC LIMIT ?", (org, ns, k, limit)).fetchall()
+             if rows:
+@@ -325,2 +424,6 @@ class Handler(BaseHTTPRequestHandler):
+             return self._send(200, {"runs": self.app.store.runs(tok["org"], ns)})
++        if route == "ns:untrusted" and ns and _valid_ns(ns):
++            return self._send(200, {"untrusted": self.app.store.untrusted(tok["org"], ns)})
++        if route == "audit":
++            return self._send(200, self.app.store.audit(tok["org"]))
+         self._error(404, "not found")
+@@ -373,2 +476,9 @@ class Handler(BaseHTTPRequestHandler):
+                 return self._send(200, {"found": st.lookup(org, ns, keys, limit)})
++            if route == "ns:untrusted":
++                rows = body.get("put", [])
++                if not isinstance(rows, list) or len(rows) > 10_000 or not all(
++                        isinstance(r, dict) and isinstance(r.get("proof_key"), str) and 0 < len(r["proof_key"]) <= 128
++                        for r in rows):
++                    return self._error(400, "bad untrusted keys")
++                return self._send(200, {"added": st.add_untrusted(org, ns, rows, str(tok.get("label") or ""))})
+             if route == "ns:runs":
+diff --git a/infra/github-app/test/cache.test.ts b/infra/github-app/test/cache.test.ts
+index 5169857..570414a 100644
+--- a/infra/github-app/test/cache.test.ts
++++ b/infra/github-app/test/cache.test.ts
+@@ -18,5 +18,5 @@ describe("the shared cache service (vendored, pinned)", () => {
+     const sha = createHash("sha256").update(readFileSync(FILE)).digest("hex");
+-    assert.equal(sha, "2b93cd9aac59ba160bc28ae0e9c4b725b0abd29ec6784e5ed910f479eeea33a8");
++    assert.equal(sha, "5f09e9098464abcf8c6087e1147850f044d80ab25997a282c42709defc76b9f9");
+     assert.match(readFileSync(new URL("../lib/cache/PROVENANCE.md", import.meta.url), "utf8"), new RegExp(sha));
+-    assert.match(readFileSync(new URL("../cdk.json", import.meta.url), "utf8"), /"engineCliCommit": "a20b93d7f840b23f71c73c03efdaee3d6a233252"/);
++    assert.match(readFileSync(new URL("../cdk.json", import.meta.url), "utf8"), /"engineCliCommit": "cf33351336144531b87e6d22e7497c137870446a"/);
+   });
+@@ -71,2 +71,11 @@ describe("the shared cache service (vendored, pinned)", () => {
+       assert.equal((await call("/v1/stats", null)).status, 401);
++      // The cache audit: a pull request's read-only token marks a key untrusted in its own organization (a mark only
++      // stops reuse); another customer sees none of it; GET /v1/audit sums the organization's audited runs.
++      const mark = await call("/v1/ns/acme%2Fshop/untrusted", acmeRead, { put: [{ proof_key: "k".repeat(32), nodeid: "t::a", run: "r1", reason: "cached passed, fresh failed" }] });
++      assert.equal(mark.status, 200);
++      const marks = async (t: string) => ((await (await call("/v1/ns/acme%2Fshop/untrusted", t)).json()) as { untrusted: { proof_key: string }[] }).untrusted.map((m) => m.proof_key);
++      assert.deepEqual(await marks(acmeWrite), ["k".repeat(32)]);
++      assert.deepEqual(await marks(globexRead), [], "another customer sees no mark");
++      const audit = await (await call("/v1/audit", acmeRead)).json() as { all: Record<string, number> };
++      assert.deepEqual(audit.all, { runs: 0, checked: 0, matched: 0, wrong: 0, flaky_evidence: 0, upper_bound_95: 1 });
+     } finally {
+-- 
+2.43.0
+
