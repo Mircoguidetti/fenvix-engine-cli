@@ -43,6 +43,7 @@ var fenvix struct {
 	goroot    string
 	maxEv     int
 	recording bool
+	explore   bool
 	inTest    bool
 	testGoid  uint64
 	goids     map[uint64]uint32
@@ -117,6 +118,8 @@ func fenvixInit() {
 				fenvix.root = v
 			case "goroot":
 				fenvix.goroot = v
+			case "explore":
+				fenvix.explore = v == "1"
 			case "maxev":
 				if ok && n > 0 {
 					fenvix.maxEv = int(n)
@@ -129,6 +132,13 @@ func fenvixInit() {
 		fenvix.testT0 = fenvix.elapsed
 		fenvix.goids = make(map[uint64]uint32)
 	})
+}
+
+// Fenvix_Explore reports whether the run explores (seed != 0): directory
+// listings are then shuffled with the test's seed instead of sorted.
+func Fenvix_Explore() bool {
+	fenvixInit()
+	return fenvix.explore
 }
 
 // Fenvix_On reports whether all control bits in c are active.

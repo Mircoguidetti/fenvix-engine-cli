@@ -1,0 +1,302 @@
+[
+ {
+  "name": "teleport",
+  "repo": "gravitational/teleport",
+  "sha": "dce19fa553cd62066b57fb7e8dfd793cc6ed21db",
+  "fix_commit": "ac5bdf78840681b46f6a3ca0f6679ad593944392",
+  "fix_date": "2026-08-13T08:18:51.000Z",
+  "title": "Fix TestNewWebSessionScopedTrustedDeviceRequirement flakiness (#69506)",
+  "tests": [
+   "TestNewWebSessionScopedTrustedDeviceRequirement"
+  ],
+  "source": "github commit search 'repo:gravitational/teleport flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "quic-go",
+  "repo": "quic-go/quic-go",
+  "sha": "82b5d81b06a99b63c1a435b84bbf43b1eb2d67d5",
+  "fix_commit": "42cba33383fe63011ebf846643421e4a7512bacc",
+  "fix_date": "2026-11-07T13:17:11.000+01:00",
+  "title": "fix flaky TestHTTP3ListenerGracefulShutdown (#6164)",
+  "tests": [
+   "TestHTTP3ListenerGracefulShutdown"
+  ],
+  "source": "github commit search 'repo:quic-go/quic-go flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "cortex",
+  "repo": "cortexproject/cortex",
+  "sha": "a3773c2dcce7de96b865c04d6405c5e2dee5da49",
+  "fix_commit": "1317cd038865003d083595135ff0d80cf896730b",
+  "fix_date": "2026-09-29T11:24:44.000-07:00",
+  "title": "Fix flaky TestGetRules: stop scheduled evaluations from racing pre-evaluation state assertions (#7857)",
+  "tests": [
+   "TestGetRules"
+  ],
+  "source": "github commit search 'repo:cortexproject/cortex flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "prometheus",
+  "repo": "prometheus/prometheus",
+  "sha": "ef78ff64267724c8ecd1a1283cad49b365a8b67f",
+  "fix_commit": "2a12aec285a4f3d19c5fc76829b06faae845672c",
+  "fix_date": "2026-11-01T12:56:28.000+05:30",
+  "title": "rules: fix flaky TestUpdateWhenStopped panic",
+  "tests": [
+   "TestUpdateWhenStopped"
+  ],
+  "source": "github commit search 'repo:prometheus/prometheus flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "tailscale",
+  "repo": "tailscale/tailscale",
+  "sha": "46f938791d5de3534179b48df7db912bc263049f",
+  "fix_commit": "b31eb1c9bc582b9251d515ef634cfc99e1fc44e4",
+  "fix_date": "2026-11-06T19:31:20.000-08:00",
+  "title": "ipn/ipnlocal,ipn/localapi: fix flaky TestResumeIPNBus",
+  "tests": [
+   "TestResumeIPNBus"
+  ],
+  "source": "github commit search 'repo:tailscale/tailscale flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "temporal",
+  "repo": "temporalio/temporal",
+  "sha": "e05a6a88a31a663c9fbc65de8ea5c28d2259c553",
+  "fix_commit": "e27983de5d795fb0df887bcd7515cf81f027f77b",
+  "fix_date": "2026-06-03T17:25:43.000-07:00",
+  "title": "Fix flaky TestNewServer (#10511)",
+  "tests": [
+   "TestNewServer"
+  ],
+  "source": "github commit search 'repo:temporalio/temporal flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "go-ethereum",
+  "repo": "ethereum/go-ethereum",
+  "sha": "7d0a3d848b82959eb14d5eb4b65cc0c26ae97418",
+  "fix_commit": "85494461066fed119207379928c757ee98aa1fcd",
+  "fix_date": "2026-10-29T14:15:24.000+08:00",
+  "title": "accounts/abi/abigen: fix flaky TestOverload (#36038)",
+  "tests": [
+   "TestOverload"
+  ],
+  "source": "github commit search 'repo:ethereum/go-ethereum flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "grpc-go",
+  "repo": "grpc/grpc-go",
+  "sha": "d619b5d0208981a4c74c418fe03f486ad6595862",
+  "fix_commit": "5210090b567328709f04666131c8c539ea93f5bb",
+  "fix_date": "2026-10-26T22:52:19.000-07:00",
+  "title": "autosharding: fix flaky test TestAggregatedConnectivityStateAndAutoConnect (#9516)",
+  "tests": [
+   "TestAggregatedConnectivityStateAndAutoConnect"
+  ],
+  "source": "github commit search 'repo:grpc/grpc-go flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "opentelemetry-collector",
+  "repo": "open-telemetry/opentelemetry-collector",
+  "sha": "15cb0b7bec6e89c9a4d6cdb07a592a9b92db9ce0",
+  "fix_commit": "7b3b1f0bfa48f717f72fade94243608ef871e6c2",
+  "fix_date": "2026-11-16T20:37:30.000Z",
+  "title": "[chore][confmap/provider/httpprovider] Fix flaky TestRetrieveContext (#16420)",
+  "tests": [
+   "TestRetrieveContext"
+  ],
+  "source": "github commit search 'repo:open-telemetry/opentelemetry-collector flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "pebble",
+  "repo": "cockroachdb/pebble",
+  "sha": "521683eeeb9b910d1c0a85fc1fcc6015a2895c58",
+  "fix_commit": "babd2f323b0e38dfbd6f6098133a7ab5ac78eff5",
+  "fix_date": "2026-04-27T13:14:42.000-07:00",
+  "title": "wal: fix flaky TestConcurrentWritersWithManyRecords",
+  "tests": [
+   "TestConcurrentWritersWithManyRecords"
+  ],
+  "source": "github commit search 'repo:cockroachdb/pebble flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "etcd",
+  "repo": "etcd-io/etcd",
+  "sha": "5b75ac62cf042a185e902530c25fd3d59c095232",
+  "fix_commit": "e5a789dad1ca9a684dbafd2cfbc07ca508bd155f",
+  "fix_date": "2026-08-18T16:04:02.000-07:00",
+  "title": " mvcc: Reduces Flakiness From TestValidateLinearizableOperationsTimeoutIsRespected",
+  "tests": [
+   "TestValidateLinearizableOperationsTimeoutIsRespected"
+  ],
+  "source": "github commit search 'repo:etcd-io/etcd flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "cli",
+  "repo": "docker/cli",
+  "sha": "6d274590f2f63276a54da8adf475a455d21c1fdd",
+  "fix_commit": "dd50814004d1e3c9d6e0b2aae0e50dd1bb57f136",
+  "fix_date": "2026-10-22T10:04:59.000-07:00",
+  "title": "fix: flaky `TestPrunePromptTermination` test",
+  "tests": [
+   "TestPrunePromptTermination"
+  ],
+  "source": "github commit search 'repo:docker/cli flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "argo-cd",
+  "repo": "argoproj/argo-cd",
+  "sha": "03e9000aa49871d97a7d170a974b8580e2bbd647",
+  "fix_commit": "856c607e1da2122125d1c8524bd2c621bde72f1e",
+  "fix_date": "2026-10-23T19:37:13.000Z",
+  "title": "test(notification-controller): fix flaky TestInitTimeout (#30401) (#30406)",
+  "tests": [
+   "TestInitTimeout"
+  ],
+  "source": "github commit search 'repo:argoproj/argo-cd flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "gitea",
+  "repo": "go-gitea/gitea",
+  "sha": "5badd1bdeef0e22bc6d001c763a5baf506156298",
+  "fix_commit": "3223d919b04818cc3aea24562c12e17de2516be3",
+  "fix_date": "2026-05-26T05:06:54.000Z",
+  "title": "test: fix flaky `TestResourceIndex` and reduce its runtime (#37847)",
+  "tests": [
+   "TestResourceIndex"
+  ],
+  "source": "github commit search 'repo:go-gitea/gitea flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "traefik",
+  "repo": "traefik/traefik",
+  "sha": "5e2b393ceb77528263ad19f914c4979e1188e8a6",
+  "fix_commit": "f3ecfa82bca823397059b99bc55c351e43c595b4",
+  "fix_date": "2025-10-23T14:30:05.000+02:00",
+  "title": "Mitigate TestShutdown flakyness",
+  "tests": [
+   "TestShutdown"
+  ],
+  "source": "github commit search 'repo:traefik/traefik flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "loki",
+  "repo": "grafana/loki",
+  "sha": "55ac7b4a5b05dde1b363a6456cf74c97fcdb06ab",
+  "fix_commit": "88478940140066161bf1d7c885e95e6e99feed80",
+  "fix_date": "2026-09-16T13:36:54.000+01:00",
+  "title": "test(compactor): Fix flaky TestRunTenantLoop_DisablingLogMidRunStopsLogMerge (#24462)",
+  "tests": [
+   "TestRunTenantLoop_DisablingLogMidRunStopsLogMerge"
+  ],
+  "source": "github commit search 'repo:grafana/loki flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "tempo",
+  "repo": "grafana/tempo",
+  "sha": "503e48ed63fecb983f8a72d5b2a279c5974cf6fa",
+  "fix_commit": "6274182fb779375d435df382d75b5a6833d4a19a",
+  "fix_date": "2026-02-11T12:50:42.000+01:00",
+  "title": "[bugfix] Fix flaky TestLogClusterCache_MaxSizeEviction (#6425)",
+  "tests": [
+   "TestLogClusterCache_MaxSizeEviction"
+  ],
+  "source": "github commit search 'repo:grafana/tempo flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "terraform",
+  "repo": "hashicorp/terraform",
+  "sha": "098bbe717127eb6ebfd6a4c129629cf652a916f6",
+  "fix_commit": "90809dc7e816ebfd74d06555f4ab78358e74a9eb",
+  "fix_date": "2025-09-11T13:57:06.000Z",
+  "title": "Skip TestTest_Parallel due to flakiness (#37594)",
+  "tests": [
+   "TestTest_Parallel"
+  ],
+  "source": "github commit search 'repo:hashicorp/terraform flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "rclone",
+  "repo": "rclone/rclone",
+  "sha": "dd5250ca55f1e5a5cc407ee768fb7f3f76b1df41",
+  "fix_commit": "bf55d5e6d37fd86164a87782191f9e1ffcaafa82",
+  "fix_date": "2026-04-13T18:21:22.000+01:00",
+  "title": "bisync: fix flaky TestBisyncConcurrent by increasing random name entropy",
+  "tests": [
+   "TestBisyncConcurrent"
+  ],
+  "source": "github commit search 'repo:rclone/rclone flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "alertmanager",
+  "repo": "prometheus/alertmanager",
+  "sha": "6ceb38d06d4fd6ecfbbd11510c7bdf591d92a917",
+  "fix_commit": "c3ade988ceda30b1d6263ae52ad7821be00b9a3c",
+  "fix_date": "2025-11-05T23:30:32.000+01:00",
+  "title": "Fix more flaky tests in TestClusterJoinAndReconnect (#4701)",
+  "tests": [
+   "TestClusterJoinAndReconnect"
+  ],
+  "source": "github commit search 'repo:prometheus/alertmanager flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "nats.go",
+  "repo": "nats-io/nats.go",
+  "sha": "a460b81aa6ccb73294a99b4655a0ec32bdb23878",
+  "fix_commit": "31953ef9f98a5a45e0cb0829ab3acb8a0baebede",
+  "fix_date": "2026-03-25T14:26:26.000+01:00",
+  "title": "[FIXED] Fix flaky TestKeyValueWithSources test (#2036)",
+  "tests": [
+   "TestKeyValueWithSources"
+  ],
+  "source": "github commit search 'repo:nats-io/nats.go flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "nats-server",
+  "repo": "nats-io/nats-server",
+  "sha": "b55d969381aa05a7a59c563797b454d1b6b5fa37",
+  "fix_commit": "eefad219017c3ca35756e40e6d5ce25008f9bae8",
+  "fix_date": "2026-11-02T18:09:10.000-08:00",
+  "title": "Fix flaky TestJetStreamClusterAccountUsageDrifts",
+  "tests": [
+   "TestJetStreamClusterAccountUsageDrifts"
+  ],
+  "source": "github commit search 'repo:nats-io/nats-server flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "telegraf",
+  "repo": "influxdata/telegraf",
+  "sha": "21a1201c06eed66c046ff909035637190c1a0e1f",
+  "fix_commit": "c94d897db758dd065ada3d1c7625f39dac67e4af",
+  "fix_date": "2026-03-12T10:54:18.000-06:00",
+  "title": "test(internal.clock): Fix flaky TestUnalignedTicker race condition (#18515)",
+  "tests": [
+   "TestUnalignedTicker"
+  ],
+  "source": "github commit search 'repo:influxdata/telegraf flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "opentelemetry-go",
+  "repo": "open-telemetry/opentelemetry-go",
+  "sha": "a54721cc8052fcd497d6f637a463d1aba787012c",
+  "fix_commit": "61765e78a620994b5922e34e776e029da1a2b983",
+  "fix_date": "2025-12-07T07:16:23.000-08:00",
+  "title": "Fix flaky `TestClientInstrumentation` (#7677)",
+  "tests": [
+   "TestClientInstrumentation"
+  ],
+  "source": "github commit search 'repo:open-telemetry/opentelemetry-go flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ {
+  "name": "coredns",
+  "repo": "coredns/coredns",
+  "sha": "0e9a51410aa76e7c9a7276cd8065887a70a807d8",
+  "fix_commit": "0ba8e3c8504cce4ef05f85e20f9344435df7c098",
+  "fix_date": "2026-03-29T17:03:08.000-07:00",
+  "title": "test(dnstap): fix flaky TestReconnect (#7982)",
+  "tests": [
+   "TestReconnect"
+  ],
+  "source": "github commit search 'repo:coredns/coredns flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ }
+]

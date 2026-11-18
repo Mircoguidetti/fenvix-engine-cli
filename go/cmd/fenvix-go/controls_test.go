@@ -168,7 +168,7 @@ func TestControlsFlakyWithoutDet(t *testing.T) {
 
 func TestControlsDeterministicWithDet(t *testing.T) {
 	dir := copyFixture(t, "controls")
-	seeds := []int{0, 1, 2, 3, 4, 5, 6, 7}
+	seeds := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
 	passedIn := map[string]bool{}
 	failedIn := map[string]bool{}
 	for _, seed := range seeds {
@@ -208,7 +208,14 @@ func TestControlsDeterministicWithDet(t *testing.T) {
 	}
 	for name, ctl := range controlTests {
 		if !passedIn[name] {
-			t.Errorf("%s (%s): failed under --det with every seed 0..7: broken by --det", name, ctl)
+			t.Errorf("%s (%s): failed under --det with every seed 0..11: broken by --det", name, ctl)
+		}
+	}
+	// exploration (seeds != 0 also move the epoch and tick and shuffle
+	// directory listings) must find every one of them
+	for name, ctl := range controlTests {
+		if !failedIn[name] {
+			t.Errorf("%s (%s): passed with every seed 0..11: exploration cannot find it", name, ctl)
 		}
 	}
 	t.Logf("failing in some seed (exploration finds them): %v", failedIn)

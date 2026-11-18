@@ -226,8 +226,12 @@ func cmdExec(args []string) int {
 	var state *skip.State
 	childEnv := os.Environ()
 	initSeed := core.DeriveSeed(sess.Seed, pkg+"::<init>")
-	cfg := fmt.Sprintf("ctl=%d;epoch=%d;tick=%d;adapt=%d;seed=%d;root=%s;goroot=%s;maxev=%d",
-		sess.Ctl, sess.Epoch, sess.Tick, sess.Adapt, initSeed, sess.Root, sess.Goroot, sess.MaxEvents)
+	explore := 0
+	if sess.Det && sess.Seed != 0 {
+		explore = 1
+	}
+	cfg := fmt.Sprintf("ctl=%d;epoch=%d;tick=%d;adapt=%d;seed=%d;root=%s;goroot=%s;maxev=%d;explore=%d",
+		sess.Ctl, sess.Epoch, sess.Tick, sess.Adapt, initSeed, sess.Root, sess.Goroot, sess.MaxEvents, explore)
 	childEnv = append(childEnv, "FENVIX_GO_DET="+cfg, "FENVIX_GO_FDS=3,4,5")
 	if sess.GoMaxProcs != "" {
 		childEnv = append(childEnv, "GOMAXPROCS="+sess.GoMaxProcs)

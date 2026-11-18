@@ -1,0 +1,128 @@
+# Go measurement rounds (P-021 step 5). Started by a push that changes
+# harness/go/RUN (JSON: {"mode": "flaky"|"skip", "set": "<results dir>",
+# "only": [names], "shards": {"repo": n}}). Each job commits its result to
+# harness/go/results/<set>/ on this branch.
+name: go-harness
+
+on:
+  push:
+    branches: [claude/go-l0]
+    paths: [harness/go/RUN]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: go-harness-${{ github.sha }}
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  GOTOOLCHAIN: auto
+
+jobs:
+  config:
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.c.outputs.mode }}
+      set: ${{ steps.c.outputs.set }}
+      matrix: ${{ steps.c.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: c
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          cfg = json.load(open("harness/go/RUN"))
+          mode, only = cfg["mode"], cfg.get("only") or []
+          if mode == "flaky":
+              items = [p["name"] for p in json.load(open("harness/go/flaky_projects.json"))]
+              items = [x for x in items if not only or x in only]
+          else:
+              items = []
+              for p in json.load(open("harness/go/skip_repos.json")):
+                  if only and p["name"] not in only:
+                      continue
+                  n = cfg.get("shards", {}).get(p["name"], p.get("shards", 1))
+                  items += [f'{p["name"]}:{i}:{n}' for i in range(n)]
+          print("mode=" + mode)
+          print("set=" + cfg["set"])
+          print("matrix=" + json.dumps(items))
+          PY
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: {go-version: "1.26", cache: false}
+      - run: cargo build -q -p fenvix-go --release && cd go && go build -o ../fenvix-go ./cmd/fenvix-go
+      - uses: actions/upload-artifact@v4
+        with: {name: fenvix-go, path: fenvix-go}
+
+  flaky:
+    if: ${{ needs.config.outputs.mode == 'flaky' }}
+    needs: [config, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        name: ${{ fromJSON(needs.config.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: {go-version: "1.26", cache: false}
+      - uses: actions/download-artifact@v4
+        with: {name: fenvix-go, path: /tmp/bin}
+      - name: Round
+        run: |
+          chmod +x /tmp/bin/fenvix-go
+          python3 -c "import json,sys; [json.dump(p, open('/tmp/spec.json','w')) for p in json.load(open('harness/go/flaky_projects.json')) if p['name']=='${{ matrix.name }}']"
+          python3 harness/go/flaky_round.py --spec /tmp/spec.json --fenvix /tmp/bin/fenvix-go --work /tmp/work \
+            --out "harness/go/results/${{ needs.config.outputs.set }}/${{ matrix.name }}.json" --budget 10200 || true
+      - name: Commit
+        if: always()
+        run: |
+          d="harness/go/results/${{ needs.config.outputs.set }}"
+          [ -d "$d" ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$d" && git commit -qm "Go harness: ${{ matrix.name }} (${{ needs.config.outputs.set }}) from run ${{ github.run_id }}" || exit 0
+          for i in 1 2 3 4 5 6 7 8; do git pull --rebase -q && git push -q && break; sleep $((i * 5 + RANDOM % 7)); done
+
+  skip:
+    if: ${{ needs.config.outputs.mode == 'skip' }}
+    needs: [config, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        item: ${{ fromJSON(needs.config.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: {go-version: "1.26", cache: false}
+      - uses: actions/download-artifact@v4
+        with: {name: fenvix-go, path: /tmp/bin}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq strace
+      - name: Walk
+        run: |
+          chmod +x /tmp/bin/fenvix-go
+          IFS=: read name shard shards <<< "${{ matrix.item }}"
+          python3 -c "import json; [json.dump(p, open('/tmp/spec.json','w')) for p in json.load(open('harness/go/skip_repos.json')) if p['name']=='$name']"
+          python3 harness/go/skip_walk.py --spec /tmp/spec.json --shard $shard --shards $shards --fenvix /tmp/bin/fenvix-go \
+            --work /tmp/work --out "harness/go/results/${{ needs.config.outputs.set }}/$name-$shard-of-$shards.json.gz" --budget 19800 || true
+      - name: Commit
+        if: always()
+        run: |
+          d="harness/go/results/${{ needs.config.outputs.set }}"
+          [ -d "$d" ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$d" && git commit -qm "Go harness: ${{ matrix.item }} (${{ needs.config.outputs.set }}) from run ${{ github.run_id }}" || exit 0
+          for i in 1 2 3 4 5 6 7 8; do git pull --rebase -q && git push -q && break; sleep $((i * 5 + RANDOM % 7)); done

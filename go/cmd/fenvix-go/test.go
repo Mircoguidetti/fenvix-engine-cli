@@ -41,6 +41,7 @@ type opts struct {
 	disable                            map[string]bool
 	trace, epoch, gomaxprocs           string
 	tick, adapt                        int64
+	tickSet                            bool
 	maxEvents                          int
 	skipCache, skipCapture, skipReport string
 	skipCommit, fenvixDir              string
@@ -98,6 +99,7 @@ func parseOpts(args []string) (*opts, []string, error) {
 			var v string
 			if v, err = need(); err == nil {
 				o.tick, err = strconv.ParseInt(v, 10, 64)
+				o.tickSet = true
 			}
 		case "det-adapt":
 			var v string
@@ -319,6 +321,17 @@ func cmdTest(args []string) int {
 		ctl |= overlay.Bits[c]
 	}
 	epoch := int64(1735689600) * 1e9
+	if o.det && o.seed != 0 {
+		// exploration also moves the clock: the epoch anywhere in the year
+		// after 2025-01-01 and a tick between 0.5 and 10 µs, both derived from
+		// the seed (seed 0 keeps the fixed epoch and tick)
+		if o.epoch == "" {
+			epoch += int64(core.DeriveSeed(o.seed, "<epoch>")%(365*24*3600)) * 1e9
+		}
+		if !o.tickSet {
+			o.tick = 500 + int64(core.DeriveSeed(o.seed, "<tick>")%9500)
+		}
+	}
 	if o.epoch != "" {
 		t, err := time.Parse(time.RFC3339, o.epoch)
 		if err != nil {
