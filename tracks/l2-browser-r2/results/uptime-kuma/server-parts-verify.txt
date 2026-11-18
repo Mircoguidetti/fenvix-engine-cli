@@ -1,0 +1,127 @@
+===== 3ecc8822b9bae87e.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/uptime-kuma/server-parts/det-1/3ecc8822b9bae87e.jsonl
+  run 1: /home/runner/work/_temp/l2_out/uptime-kuma/server-parts/det-2/3ecc8822b9bae87e.jsonl
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== a9cb94b8ba3415be.jsonl
+detpy verify: 2 runs, 71 tests
+  run 0: /home/runner/work/_temp/l2_out/uptime-kuma/server-parts/det-1/a9cb94b8ba3415be.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/uptime-kuma/server-parts/det-2/a9cb94b8ba3415be.jsonl (partial)
+order: DIFFERS between runs
+covered by Level 0: 12  not covered: 59  missing: 0  outcome-unstable: 0
+reasons: random=18 time=41
+NOT-COVERED test/e2e/specs/setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #0: [outcome] outcome @  = passed  <>  [time] setImmediate @ <deps>/express/lib/router/index.js:203 = 
+NOT-COVERED test/e2e/specs/domain-expiry-notification.spec.js::Domain Expiry Notification::TLD enabled for new monitor [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #5: [time] setInterval @ <deps>/engine.io/build/socket.js:255 = schedule:100000000  <>  [time] setImmediate @ <deps>/express/lib/router/index.js:203 = 
+NOT-COVERED test/e2e/specs/example.spec.js::Example Spec::set up monitor [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #25: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.5023465989690965" vs "0.5792396063651271"
+NOT-COVERED test/e2e/specs/fridendly-name.spec.js::Friendly Name Tests::hostname [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [time] setTimeout @ <deps>/tarn/dist/PendingOperation.js:41 = schedule:120000000000  <>  [time] Date.now @ server/model/domain_expiry.js:41 = 1000
+NOT-COVERED test/e2e/specs/fridendly-name.spec.js::Friendly Name Tests::URL hostname [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [time] setTimeout @ <deps>/tarn/dist/PendingOperation.js:41 = schedule:120000000000  <>  [time] Date.now @ server/model/domain_expiry.js:41 = 1000
+NOT-COVERED test/e2e/specs/fridendly-name.spec.js::Friendly Name Tests::custom friendly name [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [outcome] outcome @  = passed  <>  [time] setInterval @ <deps>/engine.io/build/socket.js:255 = schedule:100000000
+NOT-COVERED test/e2e/specs/fridendly-name.spec.js::Friendly Name Tests::default friendly name [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #19: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.5246024333845505" vs "0.1222623515938257"
+NOT-COVERED test/e2e/specs/incident-history.spec.js::Incident History::past incidents section is hidden when no incidents exist [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [time] setInterval @ <deps>/engine.io/build/socket.js:255 = schedule:100000000
+NOT-COVERED test/e2e/specs/incident-history.spec.js::Incident History::active pinned incidents are shown at top and not in past incidents [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [time] setInterval @ <deps>/engine.io/build/socket.js:255 = schedule:100000000
+NOT-COVERED test/e2e/specs/incident-history.spec.js::Incident History::resolved incidents appear in past incidents section [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [time] setInterval @ <deps>/engine.io/build/socket.js:255 = schedule:100000000
+NOT-COVERED test/e2e/specs/incident-history.spec.js::Incident History::incident history pagination loads more incidents [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #15: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [time] setInterval @ <deps>/engine.io/build/socket.js:255 = schedule:100000000
+NOT-COVERED test/e2e/specs/maintenance-timezone.spec.js::Maintenance timeslot timezone::recurring window is listed in the timezone of the maintenance [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #766: [time] setInterval @ <deps>/engine.io/build/socket.js:255 = fire+100000000  <>  [time] Date @ src/util.ts:258 = 1000
+NOT-COVERED test/e2e/specs/maintenance-timezone.spec.js::Maintenance timeslot timezone::single window keeps its configured wall time [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #775: [time] setInterval @ <deps>/engine.io/build/socket.js:255 = fire+100000000  <>  [time] Date @ src/util.ts:258 = 1000
+NOT-COVERED test/e2e/specs/maintenance.spec.js::Maintenance::counts monitors under maintenance in the list filter [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #564: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [random] Math.random @ <deps>/knex/lib/util/nanoid.js:26 = 0.13459908730027081
+NOT-COVERED test/e2e/specs/metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 without credentials [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #1: [random] Math.random @ <deps>/knex/lib/util/nanoid.js:26 = 0.06729200002713831  <>  [time] Date @ src/util.ts:258 = 1000
+NOT-COVERED test/e2e/specs/metrics.spec.js::/metrics::when the Prometheus API is enabled::returns 401 with a wrong password [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #62: [time] setInterval @ <deps>/engine.io/build/socket.js:255 = fire+100000000  <>  [random] Math.random @ <deps>/knex/lib/util/nanoid.js:26 = 0.9730966575029483
+NOT-COVERED test/e2e/specs/metrics.spec.js::/metrics::when the Prometheus API is enabled::returns the metrics with the correct credentials [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #62: [time] setInterval @ <deps>/engine.io/build/socket.js:255 = fire+100000000  <>  [random] Math.random @ <deps>/knex/lib/util/nanoid.js:26 = 0.2823255012333429
+NOT-COVERED test/e2e/specs/monitor-badge.spec.js::Badge endpoints::serve uptime and ping badges for a monitor with heartbeats [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #65: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.6640078839598779" vs "0.7876203799378475"
+NOT-COVERED test/e2e/specs/monitor-details.spec.js::Monitor details::shows the monitor details and opens the edit form [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #20: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.6269224386110605" vs "0.9260484724673641"
+NOT-COVERED test/e2e/specs/monitor-details.spec.js::Monitor details::shows the ping chart [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #20: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.7783173396044366" vs "0.005661478454921043"
+NOT-COVERED test/e2e/specs/monitor-details.spec.js::Monitor details::pauses and resumes the monitor [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #20: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.8534899751074964" vs "0.2293044529831587"
+NOT-COVERED test/e2e/specs/monitor-details.spec.js::Monitor details::deletes the monitor from its details page [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #20: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.5703672544986848" vs "0.7154044846862763"
+NOT-COVERED test/e2e/specs/monitor-form.spec.js::Monitor Form::condition ui [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [outcome] outcome @  = passed  <>  [time] Date.now @ server/server.js:1536 = 1000
+NOT-COVERED test/e2e/specs/monitor-form.spec.js::Monitor Form::successful condition [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #18: [time] setTimeout @ <deps>/tarn/dist/PendingOperation.js:41 = schedule:120000000000  <>  [time] Date.now @ server/server.js:1536 = 1000
+NOT-COVERED test/e2e/specs/monitor-form.spec.js::Monitor Form::failing condition [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #20: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.0817899126443199" vs "0.6550229073855115"
+NOT-COVERED test/e2e/specs/monitor-form.spec.js::Monitor Form::save response settings persist [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #0: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [outcome] outcome @  = passed
+NOT-COVERED test/e2e/specs/monitor-group.spec.js::Monitor Group::lists a group with its child monitor and collapses the child [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #5: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [time] setInterval @ <deps>/engine.io/build/socket.js:255 = schedule:100000000
+NOT-COVERED test/e2e/specs/monitor-group.spec.js::Monitor Group::moves a monitor to another group by drag and drop [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #558: [time] setTimeout @ <deps>/tarn/dist/PendingOperation.js:41 = schedule:120000000000  <>  [time] Date.now @ server/model/domain_expiry.js:41 = 1000
+NOT-COVERED test/e2e/specs/monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #23: [time] Date @ src/util.ts:258 = 1000  <>  [time] Date.now @ server/server.js:1536 = 1000
+NOT-COVERED test/e2e/specs/monitor-history-settings.spec.js::Monitor history settings::clears all statistics and heartbeats [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #19: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.03647096595229815" vs "0.07582225167713641"
+NOT-COVERED test/e2e/specs/monitor-history-settings.spec.js::Monitor history settings::shrinks the sqlite database [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #19: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.2817829290340843" vs "0.6267227322008927"
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::shows a renamed monitor in the list [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #551: [time] Date.now @ server/model/domain_expiry.js:41 = 3000  <>  [time] Date @ <deps>/dayjs/dayjs.min.js:1 = 28000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::clones a monitor into the list [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #1977: [random] Math.random @ <deps>/knex/lib/util/nanoid.js:26 = 0.24369644293796777  <>  [time] setTimeout @ <deps>/tarn/dist/PendingOperation.js:41 = schedule:120000000000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::renames a group and keeps its child [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #558: [time] Date.now @ server/model/domain_expiry.js:41 = 1000  <>  [time] setTimeout @ <deps>/tarn/dist/PendingOperation.js:41 = schedule:120000000000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::deletes a group but keeps its monitors [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [time] Date.now @ server/server.js:1536 = 1000  <>  [time] setTimeout @ <deps>/tarn/dist/PendingOperation.js:41 = schedule:120000000000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::deletes a group together with its monitors [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #19: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.6739801322263566" vs "0.9760328403043341"
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [time] Date.now @ server/model/domain_expiry.js:41 = 1000  <>  [time] setTimeout @ <deps>/tarn/dist/PendingOperation.js:41 = schedule:120000000000
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::expands and collapses all groups [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #1142: [time] Date @ <deps>/dayjs/dayjs.min.js:1 = 28000  <>  [time] setImmediate @ <deps>/express/lib/router/index.js:203 = 
+NOT-COVERED test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::switches the heartbeat bar theme [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #553: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [time] Date @ <deps>/dayjs/dayjs.min.js:1 = 28000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::clears the loading overlay once the list is ready [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #16: [time] Date.now @ server/model/domain_expiry.js:41 = 1000  <>  [time] setInterval @ <deps>/engine.io/build/socket.js:255 = fire+100000000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::searches monitors by name [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #6: [time] Date.now @ <deps>/better-auth/dist/utils/date.mjs:3 = 1000  <>  [random] Math.random @ <deps>/knex/lib/util/nanoid.js:26 = 0.37501992861994793
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::filters monitors by status [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #1: [random] Math.random @ <deps>/knex/lib/util/nanoid.js:26 = 0.2484231444599756  <>  [time] Date @ src/util.ts:258 = 1000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::status filter excludes a paused monitor that went down [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #16: [time] setTimeout @ <deps>/tarn/dist/PendingOperation.js:41 = schedule:120000000000  <>  [time] setInterval @ <deps>/engine.io/build/socket.js:255 = fire+100000000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::filters monitors by paused state and resumes them in bulk [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #553: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [time] Date @ <deps>/dayjs/dayjs.min.js:1 = 28000
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::deletes selected monitors in bulk [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #20: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.09607720395564046" vs "0.091662552842243"
+NOT-COVERED test/e2e/specs/monitor-list.spec.js::Monitor list::filters monitors by tag [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #17: [time] Date.now @ server/model/domain_expiry.js:41 = 1000  <>  [time] setTimeout @ <deps>/croner/dist/croner.min.cjs:1 = fire+4300000000
+NOT-COVERED test/e2e/specs/monitor-tags.spec.js::Monitor tags::renames a tag on the monitor list [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #20: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.8520716056955422" vs "0.5441767042794076"
+NOT-COVERED test/e2e/specs/monitor-tags.spec.js::Monitor tags::removes a tag from a monitor [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #598: [time] Date @ <deps>/dayjs/dayjs.min.js:1 = 28000  <>  [time] setTimeout @ <deps>/tarn/dist/PendingOperation.js:41 = schedule:120000000000
+NOT-COVERED test/e2e/specs/monitor-tags.spec.js::Monitor tags::deletes a tag from the tag settings [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #20: Math.random @ <deps>/knex/lib/util/nanoid.js:26 returned different values: "0.8145099067288835" vs "0.05230295665571716"
+NOT-COVERED test/e2e/specs/push-monitor.spec.js::Push monitor::updates the 24h uptime live after each push [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #564: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [random] Math.random @ <deps>/knex/lib/util/nanoid.js:26 = 0.8294142842316404
+NOT-COVERED test/e2e/specs/push-monitor.spec.js::Push monitor::creates a monitor with a push endpoint [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #0: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [outcome] outcome @  = passed
+NOT-COVERED test/e2e/specs/push-monitor.spec.js::Push monitor::shows the up state after an up push [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #5: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [time] setInterval @ <deps>/engine.io/build/socket.js:255 = schedule:100000000
+NOT-COVERED test/e2e/specs/push-monitor.spec.js::Push monitor::shows the down state after a down push [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #564: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [random] Math.random @ <deps>/knex/lib/util/nanoid.js:26 = 0.16059226474091493
+NOT-COVERED test/e2e/specs/push-monitor.spec.js::Push monitor::rejects a ping outside the allowed range [specs]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #1: [random] Math.random @ <deps>/knex/lib/util/nanoid.js:26 = 0.661142471697155  <>  [time] Date @ src/util.ts:258 = 1000
+NOT-COVERED test/e2e/specs/status-page-public.spec.js::Public status page::shows a published monitor to logged-out visitors [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #551: [time] Date.now @ server/model/domain_expiry.js:41 = 3000  <>  [time] Date @ <deps>/dayjs/dayjs.min.js:1 = 28000
+NOT-COVERED test/e2e/specs/status-page-public.spec.js::Public status page::shows the uptime badge in green for an up monitor [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #5: [time] setImmediate @ <deps>/express/lib/router/index.js:203 =   <>  [time] setInterval @ <deps>/engine.io/build/socket.js:255 = schedule:100000000
+NOT-COVERED test/e2e/specs/status-page-public.spec.js::Public status page::shows an active maintenance window to logged-out visitors [specs]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #5: [time] setInterval @ <deps>/engine.io/build/socket.js:255 = schedule:100000000  <>  [time] setImmediate @ <deps>/express/lib/router/index.js:203 = 
