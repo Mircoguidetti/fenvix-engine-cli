@@ -137,6 +137,11 @@ def summarize(name, shards):
         top = inv.get(i, {}).get("top") or []
         if top:
             inval_paths[top[0][0]] += 1
+    shas = {t["i"]: t["sha"] for sh in shards for t in sh.get("transitions", [])}
+    for rows_ in (s_ok["rows"], s_all["rows"]):
+        for r in rows_:
+            r["sha"] = shas.get(r["i"])
+    out_rows_all = s_all["rows"]
     cl_ok, cl_all = s_ok["closure"]["time"], s_all["closure"]["time"]
     vr = s_all["verify"]
     out = {
@@ -149,7 +154,7 @@ def summarize(name, shards):
         "wrong_hits": s_all["wrong_hits"], "flaky_in_verify": s_all["flaky_in_verify"],
         "full_suite_test_s": full_all, "full_suite_test_s_ok": full_ok, "full_suite_unit_wall_s": wall_all,
         "commits_per_day": cpd, "capture_overhead": s_all["capture_overhead_ratio"],
-        "rerun_kinds": kinds, "rerun_paths": paths, "rows": s_ok["rows"],
+        "rerun_kinds": kinds, "rerun_paths": paths, "rows": s_ok["rows"], "rows_all": out_rows_all,
     }
     if name in COMMITS_92D:
         cpd = COMMITS_92D[name] / DAYS  # the 92-day rate, not the 50-commit window (too noisy)
@@ -160,6 +165,33 @@ def summarize(name, shards):
         out["full_suite_min_month"] = per_month * full_ok / 60
         out["saved_min_month"] = per_month * full_ok / 60 * cl_ok["mean"]
     return out
+
+
+def merge_late(early, late):
+    """Early window (the 51-commit walk, stopped by the time budget) + late window (the newest commits, walked
+    from a fresh baseline): transitions of the late window whose commit the early window already reached are
+    dropped. Verified skips add up (they are separate fresh reruns)."""
+    seen = {r["sha"] for r in early["rows"]}
+    rows = early["rows"] + [r for r in late["rows"] if r["sha"] not in seen]
+    seen_all = {r["sha"] for r in early["rows_all"]}
+    rows_all = early["rows_all"] + [r for r in late["rows_all"] if r["sha"] not in seen_all]
+    m = dict(early)
+    m["rows"], m["rows_all"], m["transitions"] = rows, rows_all, len(rows)
+    m["windows"] = f"early {len(early['rows'])} + late {len(rows) - len(early['rows'])} transitions"
+    m["skip_time_ok"] = aggregate.stats([r["closure"] for r in rows])
+    m["skip_time_all"] = aggregate.stats([r["closure"] for r in rows_all])
+    m["invalidate_all_ok"] = sum(1 for r in rows if r["closure"] < 0.01)
+    for k in ("verified", "wrong", "flaky"):
+        m[k] = early[k] + late[k]
+    m["wrong_hits"] = early["wrong_hits"] + late["wrong_hits"]
+    m["flaky_in_verify"] = early["flaky_in_verify"] + late["flaky_in_verify"]
+    m["rerun_kinds"] = (Counter(dict(early["rerun_kinds"])) + Counter(dict(late["rerun_kinds"]))).most_common(12)
+    m["rerun_paths"] = (Counter(dict(early["rerun_paths"])) + Counter(dict(late["rerun_paths"]))).most_common(12)
+    ip = Counter(early["invalidate_all_why_path"]) + Counter(late["invalidate_all_why_path"])
+    m["invalidate_all_why_path"] = dict(ip.most_common(8))
+    if m.get("full_suite_min_month") is not None:
+        m["saved_min_month"] = m["full_suite_min_month"] * m["skip_time_ok"]["mean"]
+    return m
 
 
 def pct(x):
@@ -195,6 +227,12 @@ def main(argv):
             rows.append(summarize(name, shards))
         except Exception as e:  # noqa: BLE001
             print(f"{name}: {type(e).__name__}: {e}", file=sys.stderr)
+    by = {r["name"]: r for r in rows}
+    for r in list(rows):
+        if r["name"].endswith("-late") and r["name"][:-5] in by:
+            base = r["name"][:-5]
+            by[base] = merge_late(by[base], r)
+    rows = [by[r["name"]] for r in rows if not (r["name"].endswith("-late") and r["name"][:-5] in by)]
     if js:
         Path(js).write_text(json.dumps(rows, indent=1, default=str))
     print_md(rows)
