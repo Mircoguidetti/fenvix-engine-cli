@@ -97,7 +97,7 @@ function crun(runner, dir, args = [], env = {}) {
 }
 
 function show(r) {
-  return `status=${r.status}\nsummary=${JSON.stringify(r.summary && { ...r.summary, runtime_parts: undefined, packages: undefined }, null, 1)}\nstdout=${(r.stdout || '').slice(-3000)}\nstderr=${(r.stderr || '').slice(-3000)}`;
+  return `status=${r.status}\nsummary=${JSON.stringify(r.summary && { ...r.summary, packages: undefined }, null, 1)}\nstdout=${(r.stdout || '').slice(-3000)}\nstderr=${(r.stderr || '').slice(-3000)}`;
 }
 
 function reused(r) {
@@ -297,7 +297,7 @@ for (const runner of RUNNERS) {
       const dir = fixture(runner, 'uncacheable', {
         ...tfile(runner, 'spawn', "test('s', () => { expect(cp.execFileSync(process.execPath, ['-e', 'process.stdout.write(\"1\")']).toString()).toBe('1'); });"),
         ...tfile(runner, 'git', "test('g', () => { let v = ''; try { v = cp.execSync('git --version').toString(); } catch {} expect(typeof v).toBe('string'); });"),
-        ...tfile(runner, 'worker', "const { Worker } = require('node:worker_threads');\ntest('w', async () => { const w = new Worker('postMessage(1)', { eval: true }); const v = await new Promise((r) => w.on('message', r)); await w.terminate(); expect(v).toBe(1); });".replace("const { Worker } = require('node:worker_threads');", runner === 'vitest' ? "import { Worker } from 'node:worker_threads';" : "const { Worker } = require('node:worker_threads');")),
+        ...tfile(runner, 'worker', "const { Worker } = require('node:worker_threads');\ntest('w', async () => { const w = new Worker(\"require('node:worker_threads').parentPort.postMessage(1)\", { eval: true }); const v = await new Promise((r) => w.on('message', r)); await w.terminate(); expect(v).toBe(1); });".replace("const { Worker } = require('node:worker_threads');", runner === 'vitest' ? "import { Worker } from 'node:worker_threads';" : "const { Worker } = require('node:worker_threads');")),
         ...tfile(runner, 'loopback', `${runner === 'vitest' ? "import http from 'node:http';" : "const http = require('node:http');"}\ntest('l', async () => { const s = http.createServer((q, r) => r.end('ok')); await new Promise((r) => s.listen(0, '127.0.0.1', r)); const body = await new Promise((res) => http.get({ host: '127.0.0.1', port: s.address().port }, (r) => { let d = ''; r.on('data', (c) => d += c); r.on('end', () => res(d)); })); s.close(); expect(body).toBe('ok'); });`),
         ...tfile(runner, 'entropy', `${runner === 'vitest' ? "import crypto from 'node:crypto';" : "const crypto = require('node:crypto');"}\ntest('e', () => { expect(crypto.randomBytes(4).length).toBe(4); });`),
         ...tfile(runner, 'plain', "test('p', () => { expect(1).toBe(1); });"),
@@ -305,7 +305,7 @@ for (const runner of RUNNERS) {
       const files = ['spawn', 'git', 'worker', 'loopback', 'entropy', 'plain'].map((n) => F(runner, n));
       crun(runner, dir);
       const r2 = crun(runner, dir);
-      assert.deepEqual(ran(r2, files), files.filter((f) => !f.includes('plain')), show(r2));
+      assert.deepEqual(ran(r2, files), files.filter((f) => !f.includes('plain')).sort(), show(r2));
       const nc = JSON.stringify(r2.summary.not_cached_detail);
       for (const why of ['subprocess', 'worker thread', 'network connection', 'os entropy']) assert.match(nc, new RegExp(why), `${why}\n${nc}`);
     });

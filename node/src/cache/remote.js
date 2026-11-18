@@ -519,4 +519,28 @@ class RemoteCache {
   }
 }
 
-module.exports = { RemoteCache, canonical, docId, lookupKey, pyFloat, Docs, ownFile };
+/**
+ * Push from a child process, synchronously (the session is exiting: Jest --forceExit). The token goes over stdin.
+ */
+function pushSync(client) {
+  const { spawnSync } = require('node:child_process');
+  const s = client.session;
+  const job = { url: client.url, localDir: client.localDir, token: client.http.token, receiptsPath: s.receiptsPath, runId: s.runId,
+    summary: s.summary(), pulledDocs: [...client.pulledDocs] };
+  const env = { ...process.env };
+  for (const k of Object.keys(env)) if (/^(FENVIX_CACHE_|DETJS)/.test(k)) delete env[k];
+  const r = spawnSync(process.execPath, [__filename, '--push'], { input: JSON.stringify(job), encoding: 'utf8', env, timeout: 600000 });
+  try { Object.assign(client.stats, JSON.parse(r.stdout).stats || {}); } catch { client.fail('push', new ServiceError(`push process: ${(r.stderr || '').slice(-500)}`)); }
+}
+
+module.exports = { RemoteCache, canonical, docId, lookupKey, pyFloat, Docs, ownFile, pushSync };
+
+if (require.main === module && process.argv[2] === '--push') {
+  const job = JSON.parse(fs.readFileSync(0, 'utf8'));
+  process.env.FENVIX_CACHE_LOCAL = job.localDir;
+  const session = { receiptsPath: job.receiptsPath, runId: job.runId, summary: () => job.summary };
+  const c = new RemoteCache(job.url, session);
+  c.http.token = job.token;
+  for (const d of job.pulledDocs || []) c.pulledDocs.add(d);
+  c.push().then(() => { process.stdout.write(JSON.stringify({ stats: c.report() })); }, (e) => { process.stdout.write(JSON.stringify({ stats: { error: String(e) } })); });
+}

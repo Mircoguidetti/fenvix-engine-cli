@@ -53,8 +53,8 @@ function digest(x) {
 
 // detjs' own per-session values inside a runner configuration (runner shim path, sequencer, the run's seed)
 const OWN_STRING = /[\\/]node_modules[\\/]\.detjs[\\/]runner-\d+\.mjs$/;
-const ANY_VOLATILE = new Set(['webSocketToken']);
-const NESTED_VOLATILE = new Set(['sequence.seed', 'sequence.sequencer', 'sequence.shuffle', 'sequence.concurrent']);
+const ANY_VOLATILE = new Set(['webSocketToken', 'tokenCreated']);
+const NESTED_VOLATILE = new Set(['api.token', 'sequence.seed', 'sequence.sequencer', 'sequence.shuffle', 'sequence.concurrent']);
 
 /** Deterministic, cycle-safe digestable form of a configuration value (`volatile`: top-level keys left out). */
 function stable(v, volatile, depth = 0, seen = new WeakSet(), parent = '') {
@@ -327,6 +327,11 @@ class ProofSession {
       try { this.store.save(); } catch (e) { this.error = `save: ${e.message}`; }
       this.writeReceipts();
     });
+    if (this.remote && this.exiting && !this.pushed) {
+      // the process is exiting (Jest --forceExit): push from a child process, synchronously
+      this.pushed = true;
+      this.quiet(() => require('./remote').pushSync(this.remote));
+    }
     return this.writeSummary();
   }
 

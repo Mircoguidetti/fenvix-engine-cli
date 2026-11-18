@@ -119,6 +119,7 @@ async function main(argv) {
     if (finished) return;
     finished = true;
     if (pc) {
+      pc.exiting = !pc.pushed;
       for (const l of pc.finishSync()) fs.writeSync(1, `${l}\n`);
       if (pc.noTestsFound && !rest.includes('--passWithNoTests')) process.exitCode = 1;
     }

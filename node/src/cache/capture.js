@@ -156,6 +156,18 @@ class Capture {
     require('node:module').syncBuiltinESMExports();
   }
 
+  /** Wrap again what Level 0 replaced after the capture was installed (Jest installs the controls per file). */
+  reinstall() {
+    if (!this.active) return;
+    installFs(this);
+    installEnv(this, process);
+    installOs(this);
+    installSpawn(this);
+    installNet(this);
+    installDlopen(this);
+    require('node:module').syncBuiltinESMExports();
+  }
+
   setCtx(ctx, label) {
     this.ctx = ctx;
     if (label !== undefined) this.label = label;
@@ -183,6 +195,7 @@ class Capture {
   /** 'skip' (covered elsewhere or detjs' own), 'root' (project file), 'outside', 'proc'. */
   where(abs) {
     if (abs === this.nullDev) return 'skip';
+    for (const d of this.skipDirs) if (abs.startsWith(d) || abs + path.sep === d) return 'skip'; // tool caches
     if (this.inRoot(abs)) {
       const r = this.rel(abs);
       if (r === '.detjs' || r.startsWith('.detjs/') || r.startsWith('node_modules/') || r.includes('/node_modules/')) return 'skip';
@@ -193,7 +206,6 @@ class Capture {
     if (abs.includes(`${path.sep}node_modules${path.sep}.detjs${path.sep}`)) return 'skip';
     if (abs.startsWith('/proc/') || abs.startsWith('/sys/') || abs.startsWith('/dev/') || abs === '/proc' || abs === '/sys') return 'proc';
     if (abs.startsWith(ENGINE_DIR)) return 'skip'; // detjs itself: in the configuration digest
-    for (const d of this.skipDirs) if (abs.startsWith(d) || abs + path.sep === d) return 'skip'; // tool caches
     return 'outside';
   }
 
@@ -227,7 +239,10 @@ class Capture {
       if (INFRA.test(f)) { infra = true; continue; }
       if (this.inRoot(f) && !f.includes(`${path.sep}node_modules${path.sep}`)) return 'user';
     }
-    return infra ? 'infra' : 'user';
+    // no project frame and no runner frame (callback chains inside Node): in the main process, project code that
+    // calls fs has its own frame on the stack, so such chains are the runner's (Vitest's async cleanup); in a test
+    // process they may be a library working for the test, so they count
+    return infra || this.role === 'main' ? 'infra' : 'user';
   }
 
   // -- logging -------------------------------------------------------------------------------------------------
@@ -344,6 +359,7 @@ class Capture {
       let s = this.written.get(abs);
       if (!s) this.written.set(abs, (s = new Set()));
       s.add(global ? '' : this.label);
+      if (global && process.env.DETJS_CACHE_DEBUG) process.stderr.write(`detjs cache debug: start-up write ${abs}\n${new Error().stack}\n`);
       this.add(['write', this.key(abs)], global);
       for (const k of ['f', 'd', 's', 'l']) this.memo.delete(k + abs);
       this.memo.delete(`d${path.dirname(abs)}`);
@@ -359,9 +375,9 @@ class Capture {
   env(name) {
     if (!this.active || this.busy || typeof name !== 'string' || OWN_ENV.test(name)) return;
     const global = this.isGlobal;
-    if (global || name === '*') {
+    if (global || name === '*' || this.role === 'main') {
       // the main process reads its environment for itself, and runners copy the whole environment (workers,
-      // child processes): only project code's reads count there
+      // child processes, Jest's per-file copy): only project code's reads count there
       const seen = global ? this.gseen : this.seen;
       if (seen.has(`env\u0000${name}`)) return;
       this.busy++;
@@ -403,6 +419,16 @@ class Capture {
       const d = native.fileDigest(f);
       if (d === null || d === undefined) return; // virtual module or vanished
       this.add(['code', this.rel(f), d], this.isGlobal);
+      // resolution: a new file with the same name stem could shadow this module (extension probing: m.mjs before
+      // m.ts; m.ts before m/index.ts); the entries sharing the stem are an input
+      const stem = (dir, base) => {
+        const k = path.join(dir, base);
+        const x = native.stemListingDigest(k);
+        this.add(['data', this.rel(k), x === null || x === undefined ? 'missing' : `g:${x}`], this.isGlobal);
+      };
+      const base = path.basename(f).replace(/\.[^.]*$/, '');
+      stem(path.dirname(f), base);
+      if (base === 'index' && this.inRoot(path.dirname(f))) stem(path.dirname(path.dirname(f)), path.basename(path.dirname(f)));
       const pkg = this.nearestPackageJson(path.dirname(f));
       if (pkg) this.add(['data', this.rel(pkg), this.dep('f', pkg)], this.isGlobal);
     } finally {

@@ -23,7 +23,7 @@ const path = require('node:path');
 const native = require('../native');
 
 const TREE_EXCLUDE = ['.cache', '.vite', '.vite-temp', '.vitest', '.detjs', '.modules.yaml', '.pnpm-workspace-state.json',
-  '.pnpm-workspace-state-v1.json', '.yarn-state.yml', '.yarn-integrity', '.package-lock.json', '.tmp', '.eslintcache', '.nx'];
+  '.pnpm-workspace-state-v1.json', '.vitest-cache', '.yarn-state.yml', '.yarn-integrity', '.package-lock.json', '.tmp', '.eslintcache', '.nx'];
 const LOCKFILES = ['package-lock.json', 'npm-shrinkwrap.json', 'pnpm-lock.yaml', 'yarn.lock', 'bun.lock', 'bun.lockb'];
 const SKIP_DIRS = new Set(['node_modules', '.git', '.detjs', '.hg', '.svn']);
 
@@ -74,7 +74,13 @@ function nodeModulesDirs(root, limit = 20000) {
     for (const e of ents) {
       if (!e.isDirectory()) continue;
       const r = rel ? `${rel}/${e.name}` : e.name;
-      if (e.name === 'node_modules') { out.push([r, path.join(dir, e.name)]); continue; }
+      if (e.name === 'node_modules') {
+        // a node_modules holding only bookkeeping (Vite's cache, detjs' runner shim) installs nothing
+        let names = [];
+        try { names = fs.readdirSync(path.join(dir, e.name)); } catch { /* unreadable */ }
+        if (names.some((x) => !TREE_EXCLUDE.includes(x))) out.push([r, path.join(dir, e.name)]);
+        continue;
+      }
       if (SKIP_DIRS.has(e.name) || e.name.startsWith('.')) continue;
       walk(path.join(dir, e.name), r);
     }
@@ -129,7 +135,9 @@ function runtimeIdentity(root, env = process.env) {
   // Node's resolution also walks up from the project: node_modules of every ancestor directory
   for (let dir = path.dirname(root), up = '..'; dir !== path.dirname(dir); dir = path.dirname(dir), up += '/..') {
     const nm = path.join(dir, 'node_modules');
-    if (native.statKind(nm) === 'dir') roots.push([`${up}/node_modules`, nm]);
+    let names = [];
+    try { names = fs.readdirSync(nm); } catch { /* none */ }
+    if (names.some((x) => !TREE_EXCLUDE.includes(x))) roots.push([`${up}/node_modules`, nm]);
   }
   for (const [i, p] of String(env.NODE_PATH || '').split(path.delimiter).filter(Boolean).entries()) roots.push([`NODE_PATH#${i}`, path.resolve(p)]);
   const threads = Math.max(2, Math.min(16, os.availableParallelism ? os.availableParallelism() : 4));

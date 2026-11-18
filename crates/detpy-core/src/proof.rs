@@ -205,9 +205,31 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         format!("s:{}", stat_kind(path))
     } else if recorded.starts_with("l:") {
         link_dep(path)
+    } else if recorded.starts_with("g:") {
+        stem_listing_digest(path).map(|d| format!("g:{d}")).unwrap_or_else(|| "missing".into())
     } else {
         "unknown".into()
     }
+}
+
+/// Digest of the entries of `path`'s directory whose name is `path`'s file name or starts with it followed by a
+/// dot (`src/m` -> `m`, `m.ts`, `m.mjs`, `m.d.ts`, ...): what module resolution can find for that stem. `None`
+/// when the directory cannot be listed.
+pub fn stem_listing_digest(path: &Path) -> Option<String> {
+    let dir = path.parent()?;
+    let stem = os_bytes(path.file_name()?);
+    let mut dotted = stem.clone();
+    dotted.push(b'.');
+    let mut names: Vec<Vec<u8>> = Vec::new();
+    for e in fs::read_dir(dir).ok()? {
+        let e = e.ok()?;
+        let n = os_bytes(&e.file_name());
+        if n == stem || n.starts_with(&dotted) {
+            names.push(n);
+        }
+    }
+    names.sort();
+    Some(digest_bytes(&names.join(&b'\0')).short())
 }
 
 /// Dependency string of a symbolic link's target text (`readlink`): "l:<digest>", "s:<kind>" when the path is not

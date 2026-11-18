@@ -71,6 +71,7 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
   const c = controls.cfg();
   if (!c.active) return run(globalConfig, config, environment, runtime, testPath, sendMessageToJest);
   controls.installProcess();
+  if (CAP) CAP.reinstall();
   controls.installRealm(environment.global, { sameRealm: environment.global === globalThis });
   if (environment.fakeTimersModern) {
     try {
