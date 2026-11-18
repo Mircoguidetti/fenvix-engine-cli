@@ -74,27 +74,40 @@ def test_library_dirs_inside_a_virtual_environment_are_precompiled(tmp_path, mon
     assert not any(os.path.basename(c).startswith("v.") for c in compiled)
 
 
-def test_project_bytecode_of_fresh_sources_is_dropped(tmp_path, monkeypatch):
-    """A source modified within 2 s of the precompile keeps no cached bytecode: a same-size edit in the same second
-    would not change the timestamp pyc's (mtime in seconds, size) and stale code would run."""
+def test_project_bytecode_is_checked_against_the_source_content(tmp_path, monkeypatch):
+    """Every cached .pyc is a checked-hash pyc of its source (review R-015 F2/F3): a same-size edit that keeps the
+    mtime (restored, foreign or same-second) is compiled again at the next precompile, and the import system, which
+    hashes the source before it uses a pyc, never runs the old bytecode in between."""
     import importlib.util
     import sys
-    import time
 
     proj = tmp_path / "proj"
     proj.mkdir()
-    old, fresh = proj / "old.py", proj / "fresh.py"
-    old.write_text("X = 10\n")
-    fresh.write_text("Y = 10\n")
-    t = time.time() - 3600
-    os.utime(old, (t, t))
+    src = proj / "m.py"
+    src.write_text("X = 1\n")
+    os.utime(src, (1, 1))
     monkeypatch.setenv("DETPY_PYC_CACHE", str(tmp_path / "pyc"))
     monkeypatch.setattr(reexec, "precompile_dirs", lambda rootdir: [str(proj)])
     reexec.precompile("0", str(proj))
-    prefix = reexec.pyc_cache_dir("0")
-    monkeypatch.setattr(sys, "pycache_prefix", prefix)
-    assert os.path.exists(importlib.util.cache_from_source(str(old)))
-    assert not os.path.exists(importlib.util.cache_from_source(str(fresh)))
-    os.utime(fresh, (t, t))
+    monkeypatch.setattr(sys, "pycache_prefix", reexec.pyc_cache_dir("0"))
+    pyc = importlib.util.cache_from_source(str(src))
+
+    def header():
+        with open(pyc, "rb") as fh:
+            return fh.read(16)
+
+    h1 = header()
+    assert h1[4:8] == (3).to_bytes(4, "little")  # hash-based, checked
+    assert h1[8:] == importlib.util.source_hash(src.read_bytes())
+    mtime_before = os.stat(pyc).st_mtime_ns
+    reexec.precompile("0", str(proj))  # unchanged source: not compiled again
+    assert os.stat(pyc).st_mtime_ns == mtime_before
+    src.write_text("X = 2\n")
+    os.utime(src, (1, 1))
+    # before the next precompile: the import system rejects the pyc (source hash) and compiles from source
+    probe = subprocess.run([sys.executable, "-c", "import m; print(m.X)"], cwd=proj, capture_output=True, text=True,
+                           env={**os.environ, "PYTHONPYCACHEPREFIX": reexec.pyc_cache_dir("0"),
+                                "PYTHONDONTWRITEBYTECODE": "1"})
+    assert probe.stdout.strip() == "2", probe.stderr
     reexec.precompile("0", str(proj))
-    assert os.path.exists(importlib.util.cache_from_source(str(fresh)))
+    assert header()[8:] == importlib.util.source_hash(src.read_bytes())

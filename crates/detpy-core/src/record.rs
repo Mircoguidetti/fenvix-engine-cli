@@ -75,6 +75,10 @@ pub struct Plan {
     /// Every executed or loaded repository file.
     #[serde(default)]
     pub needed: Vec<String>,
+    /// Repository code files changed since the session first read their source or ran their module body: a test
+    /// whose code inputs include one ran other code than the current version (review R-015 F1); not recorded.
+    #[serde(default)]
+    pub changed: Vec<String>,
     /// Test files of every collected item, and their module names (from `sys.modules`).
     #[serde(default)]
     pub test_modules: BTreeMap<String, Option<String>>,
@@ -391,6 +395,97 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
     };
     let env_all = env_all_digest(&plan.env0);
 
+    // code changed during the session: the files, by file id, and those every test (or every test in scope) uses
+    let changed: BTreeSet<&str> = plan.changed.iter().map(|s| s.as_str()).collect();
+    let changed_fid: HashSet<u64> = plan
+        .fnames
+        .iter()
+        .enumerate()
+        .filter(|(_, r)| changed.contains(r.as_str()))
+        .map(|(i, _)| i as u64)
+        .collect();
+    let changed_rel = |fid: u64| -> Option<&str> {
+        if changed_fid.contains(&fid) {
+            plan.fnames.get(fid as usize).map(|s| s.as_str())
+        } else {
+            None
+        }
+    };
+    // global units: inputs of the tests in scope; global unparsable files and preloaded ones: of every test
+    let mut g_changed_scoped: BTreeSet<&str> = BTreeSet::new();
+    let mut g_changed_all: Option<&str> = None;
+    if !changed.is_empty() {
+        let mut scan_units = |vals: &[u64]| {
+            for &v in vals {
+                if let Some(r) = changed_rel(v >> 32) {
+                    g_changed_scoped.insert(r);
+                }
+            }
+        };
+        scan_units(&plan.imp.0);
+        for &c in &g_ctx {
+            scan_units(&per(c).0);
+        }
+        // files executed at import time or between tests are inputs of every test as a whole only when they
+        // cannot be reduced to units (or have no facts at the end of the session: deleted, unreadable)
+        for &fid in plan.imp.1.iter().chain(g_ctx.iter().flat_map(|&c| per(c).1.iter())) {
+            if let Some(r) = changed_rel(fid) {
+                let whole = match fix.get(fid as usize) {
+                    Some(Some(ix)) => whole_ix.contains(ix),
+                    _ => true,
+                };
+                if whole {
+                    g_changed_all = g_changed_all.or(Some(r));
+                } else {
+                    g_changed_scoped.insert(r);
+                }
+            }
+        }
+        for r in &plan.preloaded {
+            if changed.contains(r.as_str()) {
+                g_changed_all = g_changed_all.or(Some(r.as_str()));
+            }
+        }
+    }
+    let code_changed = |t: &TestRun, ctxs: &[u32]| -> Option<String> {
+        if changed.is_empty() {
+            return None;
+        }
+        let own = ctx_file(&t.nodeid);
+        let mut hit: Option<&str> = g_changed_all;
+        if hit.is_none() && t.whole && changed.contains(own) {
+            hit = Some(own);
+        }
+        if hit.is_none() {
+            hit = g_changed_scoped.iter().copied().find(|r| conftests.contains(r) || in_scope(r, own));
+        }
+        if hit.is_none() {
+            'ctx: for &c in ctxs {
+                for &v in &per(c).0 {
+                    if let Some(r) = changed_rel(v >> 32) {
+                        hit = Some(r);
+                        break 'ctx;
+                    }
+                }
+                for &fid in &per(c).1 {
+                    if let Some(r) = changed_rel(fid) {
+                        hit = Some(r);
+                        break 'ctx;
+                    }
+                }
+            }
+        }
+        if hit.is_none() {
+            hit = plan
+                .loaded_order
+                .iter()
+                .filter(|(_, seen_at)| *seen_at <= t.index)
+                .map(|(r, _)| r.as_str())
+                .find(|r| changed.contains(r) && (conftests.contains(r) || in_scope(r, own)));
+        }
+        hit.map(|r| format!("source changed during the session: {r}"))
+    };
+
     for t in &plan.tests {
         let nid = t.nodeid.as_str();
         if !reusable_outcome(&t.outcome) {
@@ -494,6 +589,11 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             if let Some(&ix) = plan.file_ix.get(own) {
                 content.insert(ix);
             }
+        }
+        if let Some(w) = code_changed(t, &ctxs) {
+            store.remove(nid);
+            out.not_cached.push((nid.to_string(), w, Vec::new()));
+            continue;
         }
         let clock = flags.contains("time");
         if clock && !plan.time_controlled {
