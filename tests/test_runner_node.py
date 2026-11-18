@@ -287,3 +287,13 @@ def test_verify_reads_a_node_summary(tmp_path):
                        timeout=600)
     v = json.loads((tmp_path / "job" / "verify.json").read_text())
     assert r.returncode == 0 and v["reused"] == 0 and v["wrong"] == [] and v["all_outcomes_same"] is True
+
+
+def test_runner_flags_come_from_the_test_script():
+    sa = FR.script_args
+    assert sa({"scripts": {"test": "pnpm lint && vitest run --typecheck"}}, "vitest") == ["--typecheck"]
+    assert sa({"scripts": {"test": "vitest --run --project node"}}, "vitest") == ["--project", "node"]
+    assert sa({"scripts": {"test": "npx jest --runInBand --coverage --selectProjects unit"}}, "jest") == \
+        ["--selectProjects", "unit"]
+    assert sa({"scripts": {"test": "cross-env TZ=UTC jest"}}, "jest") == []  # not a plain call: nothing taken
+    assert sa({"scripts": {"test": "vitest run"}}, "vitest") == [] and sa({}, "jest") == []

@@ -3,6 +3,9 @@ import os
 
 import pytest
 
+# Projects used as inputs by the runner tests (they are run inside a copy, never collected here).
+collect_ignore = ["fixtures"]
+
 
 def load_trace(path):
     lines = [json.loads(line) for line in open(path) if line.strip()]

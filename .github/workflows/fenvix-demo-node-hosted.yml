@@ -1,0 +1,189 @@
+name: fenvix-demo-node-hosted
+
+# Node rehearsal of fenvix-demo on GitHub-hosted machines (free: the repository is public), same pattern as
+# fenvix-demo-hosted.yml: one job builds the engines with runner/bootstrap.sh (as our machines do), the test jobs
+# fetch them as an artifact (the stand-in for $FENVIX_HOME on our machine) and run the same wrapper, which writes the
+# same step summary and summary.json as the Python jobs.
+#
+#   ufo           a public Vitest project (unjs/ufo, pnpm), as a customer's Node job would run it
+#   mixed-python  \ a repository with Python and Node tests: one job per language, as its workflow defines them
+#   mixed-node    /
+#   fixtures      the order-dependent flaky tests of the Vitest and Jest fixtures: reported with a replay command
+#                 that this job runs again (it must fail again), plus the wrapper tests
+#
+# Never runs on pull requests (see docs/RUNNER-PROTOTYPE.md, "Security").
+
+on:
+  push:
+    branches: [claude/runner-node]
+    paths: [".github/workflows/fenvix-demo-node-hosted.yml", "runner/**", "tests/fixtures/runner-node/**",
+            "tests/test_runner_node.py"]
+  workflow_dispatch:
+    inputs:
+      target: {description: "public Vitest or Jest project", default: "unjs/ufo"}
+      commit: {description: "commit of the target", default: "f06c800d0c59f2a4a1b9ba65eb6cb61a84419be6"}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fenvix-demo-node-hosted
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  FH: /home/runner/work/_temp/fh   # $FENVIX_HOME of the rehearsal (same path in every hosted job)
+
+jobs:
+  engines:
+    if: github.repository == 'Mircoguidetti/fenvix-engine-cli'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: runner/bootstrap.sh engines (Node LTS, detjs from claude/node-l0, detpy wheel)
+        run: FENVIX_HOME="$FH" FENVIX_LANGS="python node" runner/bootstrap.sh engines
+      - name: Pack the engines
+        run: |
+          tar -C "$FH" -czf "$RUNNER_TEMP/engines.tgz" detjs bin wheels
+          "$FH/node/bin/node" --version && cat "$FH/detjs/COMMIT" && ls "$FH/wheels"
+      - uses: actions/upload-artifact@v4
+        with: {name: fenvix-engines, path: "${{ runner.temp }}/engines.tgz", retention-days: 3}
+
+  ufo:
+    needs: engines
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {path: engine}
+      - uses: actions/checkout@v4
+        with: {repository: "${{ inputs.target || 'unjs/ufo' }}", ref: "${{ inputs.commit || 'f06c800d0c59f2a4a1b9ba65eb6cb61a84419be6' }}",
+               path: target, fetch-depth: 1, persist-credentials: false}
+      # What the customer's job does: its own Node (here the LTS) and its package manager.
+      - uses: actions/setup-node@v4
+        with: {node-version: "lts/*"}
+      - run: command -v corepack || npm install -g corepack@0.36.0; corepack enable
+      - uses: actions/download-artifact@v4
+        with: {name: fenvix-engines, path: "${{ runner.temp }}"}
+      - name: fenvix engines in place (our machine has them in $FENVIX_HOME)
+        run: |
+          mkdir -p "$FH" && tar -C "$FH" -xzf "$RUNNER_TEMP/engines.tgz"
+          echo "$FH/bin" >> "$GITHUB_PATH"
+          echo "FENVIX_DETJS=$FH/detjs/bin/detjs.js" >> "$GITHUB_ENV"
+          echo "FENVIX_CACHE_ROOT=$RUNNER_TEMP/fenvix-cache" >> "$GITHUB_ENV"
+      - name: Tests in the fenvix engine (detjs --det)
+        run: >
+          python3 engine/runner/fenvix-run --project target --lang node --key "${{ inputs.target || 'unjs/ufo' }}"
+          --out "$RUNNER_TEMP/fenvix" --title "fenvix · ${{ inputs.target || 'unjs/ufo' }} (Node)"
+      - name: Check the summary
+        run: |
+          python3 - "$RUNNER_TEMP/fenvix/summary.json" <<'EOF'
+          import json, sys
+          s = json.load(open(sys.argv[1]))
+          print({k: s[k] for k in ("language", "runner", "tests", "ran", "outcome_counts", "install", "cache_status")})
+          assert s["language"] == "node" and s["tests"] > 0 and s["exit"] == 0
+          assert set(s["fingerprints"]) == set(s["outcomes"]), "every test has a fingerprint"
+          EOF
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: fenvix-receipts-ufo, path: "${{ runner.temp }}/fenvix", retention-days: 14}
+
+  mixed-python:
+    needs: engines
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/download-artifact@v4
+        with: {name: fenvix-engines, path: "${{ runner.temp }}"}
+      - name: Project environment (pytest + detpy)
+        run: |
+          mkdir -p "$FH" && tar -C "$FH" -xzf "$RUNNER_TEMP/engines.tgz"
+          python -m venv "$RUNNER_TEMP/venv" && "$RUNNER_TEMP/venv/bin/pip" install -q pytest "$FH"/wheels/detpy-*.whl
+          echo "FENVIX_CACHE_ROOT=$RUNNER_TEMP/fenvix-cache" >> "$GITHUB_ENV"
+      - name: Python tests of the mixed repository (fenvix-run --lang python)
+        run: >
+          "$RUNNER_TEMP/venv/bin/python" runner/fenvix-run --project tests/fixtures/runner-node/mixed --lang python
+          --python "$RUNNER_TEMP/venv/bin/python" --out "$RUNNER_TEMP/fenvix" --title "fenvix · mixed repository (Python job)"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: fenvix-receipts-mixed-python, path: "${{ runner.temp }}/fenvix", retention-days: 14}
+
+  mixed-node:
+    needs: engines
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "lts/*"}
+      - run: command -v corepack || npm install -g corepack@0.36.0; corepack enable
+      - uses: actions/download-artifact@v4
+        with: {name: fenvix-engines, path: "${{ runner.temp }}"}
+      - run: |
+          mkdir -p "$FH" && tar -C "$FH" -xzf "$RUNNER_TEMP/engines.tgz"
+          echo "$FH/bin" >> "$GITHUB_PATH"
+          echo "FENVIX_DETJS=$FH/detjs/bin/detjs.js" >> "$GITHUB_ENV"
+          echo "FENVIX_CACHE_ROOT=$RUNNER_TEMP/fenvix-cache" >> "$GITHUB_ENV"
+      - name: Node tests of the mixed repository (fenvix-run --lang node)
+        run: >
+          python3 runner/fenvix-run --project tests/fixtures/runner-node/mixed --lang node
+          --out "$RUNNER_TEMP/fenvix" --title "fenvix · mixed repository (Node job)"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: fenvix-receipts-mixed-node, path: "${{ runner.temp }}/fenvix", retention-days: 14}
+
+  fixtures:
+    needs: engines
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "lts/*"}
+      - run: command -v corepack || npm install -g corepack@0.36.0; corepack enable
+      - uses: actions/download-artifact@v4
+        with: {name: fenvix-engines, path: "${{ runner.temp }}"}
+      - run: |
+          mkdir -p "$FH" && tar -C "$FH" -xzf "$RUNNER_TEMP/engines.tgz"
+          echo "$FH/bin" >> "$GITHUB_PATH"
+          echo "FENVIX_DETJS=$FH/detjs/bin/detjs.js" >> "$GITHUB_ENV"
+          echo "FENVIX_CACHE_ROOT=$RUNNER_TEMP/fenvix-cache" >> "$GITHUB_ENV"
+          python -m pip install -q pytest "$FH"/wheels/detpy-*.whl
+      - name: Vitest fixture (order-dependent flaky test) - the suite fails, the summary explains it
+        run: |
+          cp -r tests/fixtures/runner-node/vitest-app "$RUNNER_TEMP/vitest-app"
+          python runner/fenvix-run --project "$RUNNER_TEMP/vitest-app" --out "$RUNNER_TEMP/fenvix/vitest" \
+            --title "fenvix · Vitest fixture (flaky on purpose)" || echo "exit $? (expected: the flaky test failed in the suite)"
+      - name: Jest fixture (order-dependent flaky test + a real failure)
+        run: |
+          cp -r tests/fixtures/runner-node/jest-app "$RUNNER_TEMP/jest-app"
+          python runner/fenvix-run --project "$RUNNER_TEMP/jest-app" --out "$RUNNER_TEMP/fenvix/jest" \
+            --title "fenvix · Jest fixture (flaky and failing on purpose)" || echo "exit $? (expected)"
+      - name: Run every replay command from the summaries (each must fail the flaky test again)
+        run: |
+          python - <<'EOF'
+          import json, os, subprocess
+          for name in ("vitest", "jest"):
+              s = json.load(open(f"{os.environ['RUNNER_TEMP']}/fenvix/{name}/summary.json"))
+              assert len(s["flaky"]) == 1, s["flaky"]
+              f = s["flaky"][0]
+              for cmd in (f["replay"], f["minimise"]):
+                  proj = s["project"]
+                  trace = f"{proj}/.detjs/trace.jsonl"
+                  subprocess.run(["bash", "-c", cmd], cwd=proj)
+                  rows = [json.loads(l) for l in open(trace) if l.startswith('{"type":"test"')]
+                  out = {r["nodeid"]: r["outcome"] for r in rows}[f["nodeid"]]
+                  print(f"{name}: `{cmd}` -> {f['nodeid']}: {out}")
+                  assert out == "failed"
+          EOF
+      - name: Wrapper tests (Python and Node paths)
+        run: python -m pytest -q -p no:cacheprovider tests/test_runner_node.py tests/test_runner_wrapper.py
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: fenvix-receipts-fixtures, path: "${{ runner.temp }}/fenvix", retention-days: 14}

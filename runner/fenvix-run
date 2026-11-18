@@ -385,6 +385,32 @@ def node_runner_of(pkg: dict | None) -> str | None:
     return None
 
 
+SCRIPT_DROP = {"--watch", "-w", "--run", "--coverage", "--ui", "--open", "--silent", "--passWithNoTests",
+               "--detectOpenHandles", "--forceExit", "--runInBand", "-i"}
+
+
+def script_args(pkg: dict | None, runner: str) -> list[str]:
+    """Runner flags of the project's ``test`` script (``"test": "pnpm lint && vitest run --typecheck"`` ->
+    ``["--typecheck"]``): the suite is run as the project's CI runs it. Flags that only concern the terminal or that
+    the engine sets itself (watch, coverage, run in band, force exit) are dropped; a script that is not a plain call
+    of the runner (env assignments, wrappers) gives nothing."""
+    script = ((pkg or {}).get("scripts") or {}).get("test") or ""
+    for seg in re.split(r"&&|\|\||;", script):
+        try:
+            toks = shlex.split(seg)
+        except ValueError:
+            return []
+        while toks and toks[0] in ("npx", "pnpm", "yarn", "bunx", "exec", "dlx", "--no-install"):
+            toks = toks[1:]
+        if not toks or os.path.basename(toks[0]) != runner:
+            continue
+        toks = toks[1:]
+        if runner == "vitest" and toks[:1] in (["run"], ["watch"]):
+            toks = toks[1:]
+        return [t for t in toks if t.split("=", 1)[0] not in SCRIPT_DROP and not t.startswith("--coverage")]
+    return []
+
+
 def detect_languages(project: Path) -> list[str]:
     langs = []
     if any((project / m).exists() for m in PY_MARKERS):
@@ -646,6 +672,10 @@ def cmd_run_node(a: argparse.Namespace, extra: list[str]) -> int:
     head = ["vitest", "run", "--det"] if runner == "vitest" else ["jest", "--det"]
     report = (["--reporter=default", "--reporter=json", f"--outputFile.json={report_p}"] if runner == "vitest"
               else ["--json", f"--outputFile={report_p}"])
+    from_script = [] if a.no_script_args else script_args(pkg, runner)
+    if from_script:
+        log(f"runner flags from the project's test script: {' '.join(from_script)}")
+    extra = [*from_script, *extra]
     args = [*head, f"--det-trace={trace_p}", *cache_args, *report, *extra]
     log(f"project {project} @ {git_head(project)[:12]}; {runner} under detjs; cache {cache} "
         f"({'warm' if had_cache else 'cold'}; {cache_status})")
@@ -898,6 +928,8 @@ def main(argv: list[str] | None = None) -> int:
     g.add_argument("--install", choices=("auto", "always", "never"), default="auto",
                    help="install dependencies from the lockfile, as CI does (auto: when node_modules is missing)")
     g.add_argument("--install-cmd", default=None, help="install command to run instead of the lockfile's")
+    g.add_argument("--no-script-args", action="store_true",
+                   help="do not take the runner flags of package.json's test script (default: take them)")
     g.add_argument("--det-cache", action="store_true",
                    help="Node: pass --det-cache=<cache dir> to detjs when it supports it (no-op until then). Python "
                         "always uses the cache")
