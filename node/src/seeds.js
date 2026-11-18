@@ -69,6 +69,16 @@ const MATH = new Xoshiro128();
 const CRYPTO = new Xoshiro128();
 const ENTROPY = new Xoshiro128();
 
+// Level 2 app servers draw from streams scoped to the message being handled (pw/server.js):
+// the hook returns a generator for 'math' | 'crypto' | 'entropy', or null for the default streams.
+let STREAM_HOOK = null;
+function setStreamHook(f) { STREAM_HOOK = f; }
+function gen(kind) {
+  const g = STREAM_HOOK && STREAM_HOOK(kind);
+  if (g) return g;
+  return kind === 'math' ? MATH : kind === 'crypto' ? CRYPTO : ENTROPY;
+}
+
 function reseed(key) {
   const base = STATE.config.seed;
   const [h1, l1] = native.deriveSeedWords(base, key);
@@ -80,7 +90,7 @@ function reseed(key) {
 }
 
 function mathRandom() {
-  const v = MATH.nextDouble();
+  const v = gen('math').nextDouble();
   STATE.record('random', 'Math.random', String(v));
   return v;
 }
@@ -102,7 +112,7 @@ function getRandomValues(arr) {
   }
   if (arr.byteLength > 65536) return real.getRandomValues(arr); // native QuotaExceededError
   const bytes = new Uint8Array(arr.buffer, arr.byteOffset, arr.byteLength);
-  CRYPTO.fill(bytes);
+  gen('crypto').fill(bytes);
   STATE.record('random', 'crypto.getRandomValues', `${bytes.length}:${native.digest(Buffer.from(bytes))}`);
   return arr;
 }
@@ -110,7 +120,7 @@ function getRandomValues(arr) {
 function randomUUID(options) {
   if (options !== undefined && (options === null || typeof options !== 'object')) return real.randomUUID(options);
   const b = new Uint8Array(16);
-  CRYPTO.fill(b);
+  gen('crypto').fill(b);
   b[6] = (b[6] & 0x0f) | 0x40;
   b[8] = (b[8] & 0x3f) | 0x80;
   const h = Buffer.from(b).toString('hex');
@@ -144,7 +154,7 @@ function randomInt(min, max, cb) {
   if (STATE.config.urandom) {
     if (max === undefined) { max = min; min = 0; }
     const range = max - min;
-    const v = min + Math.floor(ENTROPY.nextDouble() * range);
+    const v = min + Math.floor(gen('entropy').nextDouble() * range);
     STATE.record('entropy', 'crypto.randomInt', String(v));
     return v;
   }
@@ -154,7 +164,7 @@ function randomInt(min, max, cb) {
 }
 
 function observe(op, buf) {
-  if (STATE.config.urandom) ENTROPY.fill(buf);
+  if (STATE.config.urandom) gen('entropy').fill(buf);
   STATE.record('entropy', op, `${buf.length}:${native.digest(Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength))}`);
   return buf;
 }
@@ -201,4 +211,4 @@ function seedFile(fileKey) {
   reseed(`<file>\0${fileKey}`);
 }
 
-module.exports = { Xoshiro128, installProcess, installRealm, seedFile, reseed, mathRandom };
+module.exports = { Xoshiro128, installProcess, installRealm, seedFile, reseed, mathRandom, setStreamHook };

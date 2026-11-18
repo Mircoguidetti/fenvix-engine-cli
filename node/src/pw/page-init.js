@@ -12,13 +12,16 @@
 // Date, performance.now and timers are not touched here: the browser's own
 // virtual time (CDP Emulation.setVirtualTimePolicy) controls them, so that
 // they stay consistent with layout, animations and requestAnimationFrame.
-// Web workers and service workers are not reached (limit B3 in docs/L2-BROWSER.md).
+// Dedicated and shared workers get the same script prepended to their main script (worker.js,
+// round 2); service workers are not reached (limit B3 in docs/L2-BROWSER.md).
 
 function pageInit(seedHi, seedLo) {
   // Stringified and evaluated in the page: no closures over Node values.
   /* eslint-disable no-var */
   (function () {
-    if (window.__detjs) return;
+    // Pages and (round 2) dedicated/shared workers: `self` is the global of both.
+    var G = typeof self !== 'undefined' ? self : window;
+    if (G.__detjs) return;
     var SEED_HI = __SEED_HI__ >>> 0;
     var SEED_LO = __SEED_LO__ >>> 0;
     function rotl(x, k) { return ((x << k) | (x >>> (32 - k))) >>> 0; }
@@ -60,7 +63,7 @@ function pageInit(seedHi, seedLo) {
     };
     try { Object.defineProperty(Math, 'random', { value: random, writable: true, configurable: true }); } catch (e) { /* frozen */ }
 
-    var C_PROTO = window.Crypto && window.Crypto.prototype;
+    var C_PROTO = G.Crypto && G.Crypto.prototype;
     if (C_PROTO && typeof C_PROTO.getRandomValues === 'function') {
       var realGRV = C_PROTO.getRandomValues;
       var grv = function getRandomValues(arr) {
@@ -90,7 +93,7 @@ function pageInit(seedHi, seedLo) {
         Object.defineProperty(C_PROTO, 'randomUUID', { value: uuid, writable: true, configurable: true });
       }
     }
-    Object.defineProperty(window, '__detjs', {
+    Object.defineProperty(G, '__detjs', {
       value: { stats: function () { return { random: stats.random, crypto: stats.crypto, uuid: stats.uuid, digest: stats.digest.toString(16) }; } },
       enumerable: false,
     });

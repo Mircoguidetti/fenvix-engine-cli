@@ -215,12 +215,31 @@ async function pump() {
   let idx = 0;
   if (SHUFFLE && n > 1) idx = native.shuffleIndices(n, SEED, `${testKey}\0net\0${d}`)[0];
   const chosen = sorted[idx].it;
+  // Seeded latency (round 2, exploration): with --det-seed a released message may first wait a
+  // seeded number of virtual-time chunks while the pages keep running: "slow server" schedules are
+  // explored, and the failing one replays. Never for main-frame navigations (they gate the chunks).
+  if (SHUFFLE && LATENCY.length > 1 && !chosen.nav && !chosen.delayed && HOLD.pages > 0) {
+    chosen.delayed = true;
+    const c = LATENCY[native.shuffleIndices(LATENCY.length, SEED, `${testKey}\0lat\0${d}`)[0]];
+    if (c > 0) {
+      QUEUE.pending.splice(QUEUE.pending.indexOf(chosen), 1);
+      chosen.until = HOLD.grants + c;
+      HOLD.items.push(chosen);
+      rec(chosen.test, 'sched', 'sched.delay', `${c}:${keyOf(chosen)}`);
+      dbg('delay', c, keyOf(chosen));
+      QUEUE.busy = false;
+      schedule();
+      return;
+    }
+  }
   QUEUE.pending.splice(QUEUE.pending.indexOf(chosen), 1);
   rec(chosen.test, 'sched', 'sched.io', `${idx}/${n}:${keyOf(chosen)}`);
   diag(chosen.test, 'sched.io', keyOf(chosen), sorted.map((x) => x.k).join('\n'));
   dbg('release', keyOf(chosen));
   QUEUE.busy = true;
+  lastTest = chosen.test;
   const done = () => {
+    PUSH.dirty = true;
     QUEUE.busy = false;
     schedule();
   };
@@ -256,13 +275,70 @@ function serverEnd(origin) {
   });
 }
 
+// ------------------------------------------------- round 2: frames and pushes
+const SCOPE = ENV.DETJS_PW_SCOPE !== '0';
+const GATE_PUSH = ENV.DETJS_PW_GATE_PUSH !== '0';
+function announceFrame(wsUrl, testId) {
+  return new Promise((resolve) => {
+    let u;
+    try {
+      const w = new URL(wsUrl);
+      u = new URL(`/__detjs/frame?test=${encodeURIComponent(testId)}`, `${w.protocol === 'wss:' ? 'https:' : 'http:'}//${w.host}`);
+    } catch { resolve(); return; }
+    const req = http.get(u, { timeout: 3000 }, (res) => { res.resume(); res.on('end', resolve); });
+    req.on('error', () => resolve());
+    req.on('timeout', () => { req.destroy(); resolve(); });
+  });
+}
+// Held server-to-page frames, delivered in arrival order at the next chunk boundary.
+const PUSH = { held: [], dirty: false, fallback: null };
+function flushPushes() {
+  const list = PUSH.held;
+  PUSH.held = [];
+  for (const f of list) f();
+}
+function armPushFallback() {
+  // No page is granting virtual time (all paused for long, or none): deliver after a real second.
+  if (PUSH.fallback) return;
+  PUSH.fallback = setTimeout(() => { PUSH.fallback = null; if (PUSH.held.length) { dbg('push fallback', PUSH.held.length); flushPushes(); } }, 1000);
+}
+/** At a chunk boundary: after a message completed, wait for the servers to be quiet, then deliver pushes. */
+async function boundary() {
+  if (PUSH.dirty) {
+    PUSH.dirty = false;
+    await barrier(lastTest);
+  }
+  if (PUSH.held.length) flushPushes();
+}
+let lastTest = null;
+
 // ----------------------------------------------------- browser contexts
 const CONTEXTS = new WeakSet();
+
+async function seedWorkerScript(route, request, key) {
+  // Dedicated / shared workers: the page's seed script prepended to the worker's main script
+  // (round 2, source S4: actual makes its ids in a web worker). Same key as the test's pages; the
+  // stream differs per document through the script URL.
+  try {
+    const resp = await route.fetch();
+    const body = await resp.text();
+    const [hi, lo] = native.deriveSeedWords(SEED, `${testIdOf(key)}\0page`);
+    rec(key, 'random', 'worker.seeded', targetOf(request.url()));
+    return route.fulfill({ response: resp, body: `${pageInitSource(hi, lo)}\n${body}` });
+  } catch (e) {
+    dbg('worker seed failed', request.url(), e && e.message);
+    return route.fallback();
+  }
+}
 
 async function routeHandler(route, request) {
   const key = currentKey();
   const url = request.url();
   const type = request.resourceType();
+  if (SEEDS && key && /^https?:/.test(url)) {
+    const dest = (request.headers()['sec-fetch-dest'] || '').toLowerCase();
+    if (dest === 'worker' || dest === 'sharedworker') return seedWorkerScript(route, request, key);
+  }
   if (!key || !APP_TYPES.has(type) || !/^https?:/.test(url)) {
     return route.fallback();
   }
@@ -354,15 +430,24 @@ async function setupWebSockets(ctx) {
       const k = currentKey() || key;
       if (!wsKeep(m) || !k) { server.send(m); return; }
       // Page -> server frames are messages to the app like requests: same queue, same barrier.
-      enqueue({ kind: 'ws', conn, test: k, method: 'SEND', target: targetOf(ws.url()), bodyDigest: digest(m) }).then((release) => {
+      enqueue({ kind: 'ws', conn, test: k, method: 'SEND', target: targetOf(ws.url()), bodyDigest: digest(m) }).then(async (release) => {
         rec(k, 'net', 'ws.send', digest(m));
+        // The app server handles the frame in its own message context (server.js, round 2).
+        if (SCOPE && isServerHost(ws.url())) await announceFrame(ws.url(), testIdOf(k));
         diag(k, 'ws.send', targetOf(ws.url()), m, 1500);
         try { server.send(m); } finally { release(); }
       });
     });
     server.onMessage((m) => {
-      if (wsKeep(m)) { rec(currentKey() || key, 'net', 'ws.recv', digest(m)); diag(currentKey() || key, 'ws.recv', targetOf(ws.url()), m, 1500); }
-      ws.send(m);
+      // Server pushes reach the page only between two virtual-time chunks, after the server is
+      // quiet (round 2, source S5): a push no longer lands before or after a response by chance.
+      const deliver = () => {
+        if (wsKeep(m)) { rec(currentKey() || key, 'net', 'ws.recv', digest(m)); diag(currentKey() || key, 'ws.recv', targetOf(ws.url()), m, 1500); }
+        try { ws.send(m); } catch { /* closed */ }
+      };
+      if (!wsKeep(m) || !GATE_PUSH || VTIME === 'off') return deliver();
+      PUSH.held.push(deliver);
+      armPushFallback();
     });
     ws.onClose((code, reason) => { try { server.close({ code, reason }); } catch { /* closed */ } });
     server.onClose((code, reason) => { try { ws.close({ code, reason }); } catch { /* closed */ } });
@@ -381,6 +466,18 @@ async function setupWebSockets(ctx) {
 // paced: virtual time never runs ahead of real time (the app server and
 // WebSocket peers live in real time); fast: idle time is skipped.
 const CHUNK_MS = Number(ENV.DETJS_PW_VTIME_CHUNK || 20);
+// Seeded latency choices, in chunks (DETJS_PW_LATENCY=0: off).
+const LATENCY = String(ENV.DETJS_PW_LATENCY || '0,0,0,1,5,25').split(',').map(Number).filter((x) => x >= 0);
+const HOLD = { items: [], grants: 0, pages: 0 };
+function releaseHeld() {
+  if (!HOLD.items.length) return;
+  const due = HOLD.items.filter((it) => it.until <= HOLD.grants);
+  if (!due.length) return;
+  HOLD.items = HOLD.items.filter((it) => it.until > HOLD.grants);
+  for (const it of due) QUEUE.pending.push(it);
+  if (QUEUE.timer) { clearTimeout(QUEUE.timer); QUEUE.timer = null; }
+  schedule();
+}
 const SETTLE_MS = Number(ENV.DETJS_PW_VTIME_SETTLE || 10);
 const VT = { running: 0, waiters: [] };
 function whenPaused() {
@@ -419,14 +516,16 @@ async function setupPage(ctx, page, key) {
       if (ahead > 0) await sleep(ahead);
       await whenQueueIdle();
     }
+    if (!first && GATE_PUSH) { await boundary(); await whenQueueIdle(); }
     if (stopped) return;
+    if (!first) { HOLD.grants++; releaseHeld(); if (QUEUE.pending.length || QUEUE.busy) await whenQueueIdle(); }
     granted += CHUNK_MS;
     const params = { policy: 'advance', budget: CHUNK_MS };
     if (first) params.initialVirtualTime = EPOCH_MS / 1000;
     inChunk = true;
     VT.running++;
     dbg('grant', granted, first ? 'first' : '');
-    try { await cdp.send('Emulation.setVirtualTimePolicy', params); } catch { stopped = true; end(); }
+    try { await cdp.send('Emulation.setVirtualTimePolicy', params); } catch { if (!stopped) HOLD.pages--; stopped = true; end(); }
   };
   cdp.on('Emulation.virtualTimeBudgetExpired', () => {
     if (!inChunk) return; // a chunk already ended by a stall
@@ -440,7 +539,13 @@ async function setupPage(ctx, page, key) {
     page.on('crash', () => dbg('crash'));
     page.on('request', (r) => dbg('request', r.resourceType(), r.url()));
   }
-  page.on('close', () => { stopped = true; end(); });
+  HOLD.pages++;
+  page.on('close', () => {
+    if (!stopped) HOLD.pages--;
+    stopped = true;
+    end();
+    if (HOLD.pages <= 0 && HOLD.items.length) { HOLD.grants += 1e9; releaseHeld(); } // no page left to wait for
+  });
   await grant(true);
 }
 
@@ -483,11 +588,31 @@ async function setupContext(ctx) {
   };
 }
 
+// The final DOM is taken once it stops changing (round 2, source S6: a toast captured mid-animation):
+// up to SETTLE_TRIES snapshots SETTLE_GAP real ms apart (virtual time keeps running in between).
+const SETTLE_GAP = Number(ENV.DETJS_PW_SETTLE_MS || 100);
+const SETTLE_TRIES = Number(ENV.DETJS_PW_SETTLE_TRIES || 10);
+async function settle(page) {
+  if (!SETTLE_GAP) return;
+  let prev = null;
+  for (let i = 0; i < SETTLE_TRIES; i++) {
+    let dom;
+    try {
+      dom = await Promise.race([page.evaluate(() => (document.documentElement ? document.documentElement.outerHTML : '')),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 2000))]);
+    } catch { return; }
+    if (dom === prev) return;
+    prev = dom;
+    await sleep(SETTLE_GAP);
+  }
+}
+
 async function finishContext(ctx) {
   const key = currentKey();
   if (!key) return;
   for (const page of ctx.pages()) {
     try {
+      await settle(page);
       const res = await Promise.race([
         page.evaluate(() => ({
           stats: window.__detjs ? window.__detjs.stats() : null,

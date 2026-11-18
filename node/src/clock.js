@@ -105,7 +105,19 @@ function callerIsInfra() {
 }
 
 // Clock reads ------------------------------------------------------------------
+// Level 2 app servers scope clock values to the message being handled (pw/server.js): the hook
+// returns { e: elapsed ns, rel: recorded value } or null for the default single counter.
+let VALUE_HOOK = null;
+function setValueHook(f) { VALUE_HOOK = f; }
+
 function readFor(op) {
+  if (VALUE_HOOK) {
+    const r = VALUE_HOOK(op);
+    if (r) {
+      STATE.record('time', op, r.rel);
+      return r.e;
+    }
+  }
   const e = CLOCK.read();
   STATE.record('time', op, CLOCK.rel(e));
   return e;
@@ -309,7 +321,8 @@ class Driver {
     t._active = false;
     CLOCK.advanceTo(t._due);
     CLOCK.otherEvent();
-    STATE.recordAt('time', t._repeat ? 'setInterval' : 'setTimeout', t._site, `fire:${CLOCK.rel(t._due)}`);
+    // With scoped values (Level 2 servers) the global counter is not part of the fingerprint: the delay is.
+    STATE.recordAt('time', t._repeat ? 'setInterval' : 'setTimeout', t._site, VALUE_HOOK ? `fire+${t._delayMs * NS_PER_MS}` : `fire:${CLOCK.rel(t._due)}`);
     if (!t._repeat) BY_ID.delete(t.id); // intervals are rescheduled after the callback
     try {
       t._fn.apply(undefined, t._args);
@@ -537,6 +550,6 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
 }
 
 module.exports = {
-  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout,
+  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, setValueHook,
   get CLOCK() { return CLOCK; },
 };

@@ -22,6 +22,133 @@ const controls = require('../controls');
 const { STATE } = controls;
 const FINISHED = {};
 
+// ------------------------------------------------------------ message scope (round 2)
+// Each message the worker releases (an HTTP request carrying `x-detjs-test`, or a WebSocket frame
+// announced with /__detjs/frame) is handled in its own async context (AsyncLocalStorage). Inside it:
+//   * clock values = the message's logical instant (epoch + n x STEP, n = messages received by this
+//     server so far) + reads at the same call site x tick: a background job reading the clock no
+//     longer shifts the values a request sees (round 2 diagnosis, source S1);
+//   * random values from a stream per (test, message index, call site, kind);
+//   * events go into the message's own list; the test's server fingerprint is the digest of its
+//     messages in order, each message digested as the sorted list of its events (order between
+//     concurrent chains of one message is not fingerprinted: values no longer depend on it).
+// Events outside every message context (timers of earlier work, pool reapers, heartbeats, file
+// watchers) are background: counted, not fingerprinted (source S2). Their effects on later
+// responses and frames remain visible in the browser side of the fingerprint.
+// DETJS_PW_SCOPE=0 restores round 1 (one counter, every event in the fingerprint).
+const { AsyncLocalStorage } = require('node:async_hooks');
+const net = require('node:net');
+const native = require('../native');
+const sites = require('../sites');
+const seedsMod = require('../seeds');
+const clockMod = require('../clock');
+
+const SCOPE = process.env.DETJS_PW_SCOPE !== '0';
+const STEP_NS = Number(process.env.DETJS_PW_SERVER_STEP_MS || 100) * 1e6;
+const TICK_NS = Number(process.env.DETJS_TICK || 1000);
+const MSG = new AsyncLocalStorage();
+const SCOPED = { n: 0, perTest: new Map(), messages: new Map(), bg: { counts: new Map(), gens: new Map(), n: -1, events: 0 }, pendingFrame: null };
+
+function newMessage(test, kind) {
+  SCOPED.n += 1;
+  const idx = (SCOPED.perTest.get(test) || 0) + 1;
+  SCOPED.perTest.set(test, idx);
+  const st = { test, idx, kind, base: SCOPED.n * STEP_NS, counts: new Map(), gens: new Map(), events: [] };
+  let list = SCOPED.messages.get(test);
+  if (!list) SCOPED.messages.set(test, (list = []));
+  list.push(st);
+  return st;
+}
+
+function siteNow() {
+  return STATE.quiet(() => sites.resolve());
+}
+
+function bgStore() {
+  const bg = SCOPED.bg;
+  if (bg.n !== SCOPED.n) { bg.n = SCOPED.n; bg.counts.clear(); bg.gens.clear(); }
+  bg.base = SCOPED.n * STEP_NS;
+  return bg;
+}
+
+function valueHook(op) {
+  const site = siteNow();
+  if (site === null) return null; // infrastructure: default path (real values)
+  const st = MSG.getStore() || bgStore();
+  const k = `${site}\0${op === 'Date.now' || op === 'Date' ? 'wall' : 'mono'}`;
+  const c = (st.counts.get(k) || 0) + 1;
+  st.counts.set(k, c);
+  return { e: st.base + c * TICK_NS, rel: String(c * TICK_NS) };
+}
+
+function streamHook(kind) {
+  const site = siteNow();
+  const st = MSG.getStore() || bgStore();
+  const k = `${site}\0${kind}`;
+  let g = st.gens.get(k);
+  if (!g) {
+    g = new seedsMod.Xoshiro128();
+    const key = st === SCOPED.bg ? `<bg>\0${st.n}\0${k}` : `${st.test}\0${st.idx}\0${k}`;
+    const [hi, lo] = native.deriveSeedWords(STATE.config.seed, key);
+    g.seed(hi, lo);
+    st.gens.set(k, g);
+  }
+  return g;
+}
+
+const FS_ = '\u001f';
+function installScope() {
+  clockMod.setValueHook(valueHook);
+  seedsMod.setStreamHook(streamHook);
+  // Every recorded event also goes to the message it belongs to (or counts as background).
+  const origRecord = STATE.record.bind(STATE);
+  STATE.record = function record(source, op, value) {
+    const st = MSG.getStore();
+    if (!st) { SCOPED.bg.events++; return origRecord(source, op, value); }
+    if (this.quietDepth > 0) return undefined;
+    let site = '';
+    if (this.config.sites) {
+      site = siteNow();
+      if (site === null) return undefined;
+    }
+    st.events.push(source + FS_ + op + FS_ + site + FS_ + value);
+    if (this.testId !== null && this.recorder !== null) {
+      if (this.onOtherEvent && source !== 'time') this.onOtherEvent();
+      this.buffer.push(source + FS_ + op + FS_ + site + FS_ + value);
+      if (this.buffer.length >= 256) this.flush();
+    }
+    return undefined;
+  };
+  const origAt = STATE.recordAt.bind(STATE);
+  STATE.recordAt = function recordAt(source, op, site, value) {
+    const st = MSG.getStore();
+    if (st) st.events.push(source + FS_ + op + FS_ + site + FS_ + value); else SCOPED.bg.events++;
+    return origAt(source, op, site, value);
+  };
+  // WebSocket frames: the worker announces the next frame (/__detjs/frame); the next data chunk
+  // read from an upgraded socket is handled in that message's context.
+  const origSockEmit = net.Socket.prototype.emit;
+  net.Socket.prototype.emit = function emit(event, ...args) {
+    if (event === 'data' && this.__detjsWs && SCOPED.pendingFrame) {
+      const st = SCOPED.pendingFrame;
+      SCOPED.pendingFrame = null;
+      return MSG.run(st, () => origSockEmit.call(this, event, ...args));
+    }
+    return origSockEmit.call(this, event, ...args);
+  };
+}
+
+/** Scoped fingerprint of one test: its messages in arrival order, each the digest of its sorted events. */
+function scopedFingerprint(test) {
+  const list = SCOPED.messages.get(test) || [];
+  SCOPED.messages.delete(test);
+  const parts = list.map((m) => {
+    const ev = m.events.slice().sort();
+    return `${m.idx}:${m.kind}:${ev.length}:${native.digest(Buffer.from(ev.join('\u001e')))}`;
+  });
+  return { fingerprint: native.digest(Buffer.from(parts.join('\n'))), messages: parts.length, events: list.reduce((a, m) => a + m.events.length, 0) };
+}
+
 function install() {
   // Server settings (inherited by the server's own child processes): one wall clock for the
   // run, OS entropy seeded (session ids, CSRF tokens), network open, no ordering/isolation.
@@ -46,7 +173,10 @@ function endCurrent() {
   const ce = STATE.recorder ? STATE.recorder.currentEvents : 0;
   const events = typeof ce === 'function' ? ce.call(STATE.recorder) : ce;
   const fp = STATE.endTest('passed');
-  if (fp) FINISHED[id] = { fingerprint: fp, events };
+  if (SCOPE) {
+    const sc = scopedFingerprint(id);
+    FINISHED[id] = { fingerprint: sc.fingerprint, events: sc.events, messages: sc.messages, raw: fp, raw_events: events, background: SCOPED.bg.events };
+  } else if (fp) FINISHED[id] = { fingerprint: fp, events };
 }
 
 // Quiet barrier: the worker asks before releasing the next message, so that the
@@ -89,6 +219,18 @@ function handleControl(req, res) {
     });
     return true;
   }
+  if (req.url.startsWith('/__detjs/frame')) {
+    // The next WebSocket frame the worker sends belongs to this test.
+    const u = new URL(req.url, 'http://x');
+    const test = u.searchParams.get('test');
+    if (SCOPE && test) {
+      if (test !== STATE.testId) { endCurrent(); STATE.beginTest(String(test)); }
+      SCOPED.pendingFrame = newMessage(test, 'ws');
+    }
+    res.writeHead(204);
+    res.end();
+    return true;
+  }
   if (req.url.startsWith('/__detjs/end')) {
     endCurrent();
     const body = JSON.stringify({ pid: process.pid, finished: FINISHED });
@@ -116,12 +258,19 @@ function patchServer(proto) {
         endCurrent();
         STATE.beginTest(String(id));
       }
+      if (SCOPE && id) {
+        const st = newMessage(String(id), 'http');
+        const args = arguments;
+        return MSG.run(st, () => origEmit.apply(this, args));
+      }
     }
+    if (event === 'upgrade' && req && req.socket) req.socket.__detjsWs = true;
     return origEmit.apply(this, arguments);
   };
 }
 
 if (install()) {
+  if (SCOPE) installScope();
   patchServer(http.Server.prototype);
   if (https.Server.prototype.emit !== http.Server.prototype.emit) patchServer(https.Server.prototype);
   process.on('exit', () => {
