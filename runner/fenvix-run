@@ -304,6 +304,7 @@ def new_summary(*, language, runner, project, cache, had_cache, cache_status, co
                 ran_time, real, flaky, cache_s, receipts, outcomes_p, trace_p, fingerprints, timings, args, cache_arg,
                 install, rt, rt_changed, epoch_ns) -> dict:
     """summary.json: the same keys for every language (tests/summary-schema in the wrapper tests checks it)."""
+    reused_ids = {r["nodeid"] for r in reused}
     try:
         epoch_ns = int(epoch_ns) if epoch_ns is not None else None
     except (TypeError, ValueError):
@@ -329,6 +330,9 @@ def new_summary(*, language, runner, project, cache, had_cache, cache_status, co
         "outcomes": outcomes,
         "reused_outcomes": {r["nodeid"]: r.get("outcome") for r in reused},
         "fingerprints": fingerprints,
+        # Tests the runner reported but the engine did not trace (no fingerprint): e.g. Vitest type checks
+        # (*.test-d.ts, checked by tsc, never executed). Reused tests are not listed (their proof is the receipt).
+        "not_traced": sorted(n for n in outcomes if n not in fingerprints and n not in reused_ids),
         "timings": timings,
         "runner_args": args, "pytest_args": None, "cache_arg": cache_arg,
         "install": install,
@@ -581,7 +585,10 @@ def node_report(path: Path, project: Path) -> dict[str, tuple[str, float]]:
             rel = str(f.get("name"))
         seen: dict[str, int] = {}
         for t in f.get("assertionResults") or []:
-            base = "::".join([rel, *(t.get("ancestorTitles") or []), t.get("title") or ""])
+            anc = list(t.get("ancestorTitles") or [])
+            if anc[:1] == [rel]:  # Vitest type-check tasks (*.test-d.ts) repeat the file as a suite
+                anc = anc[1:]
+            base = "::".join([rel, *anc, t.get("title") or ""])
             seen[base] = seen.get(base, 0) + 1
             nid = base if seen[base] == 1 else f"{base} #{seen[base]}"
             out[nid] = (NODE_STATUS.get(t.get("status"), t.get("status") or "unknown"),
@@ -788,6 +795,10 @@ def write_step_summary(s: dict, title: str | None) -> None:
     L.append(f"Outcomes: {oc or 'none'}.")
     if s.get("cache_status", "on") != "on":
         L += ["", f"Cache with proof: {s['cache_status']}."]
+    if s.get("not_traced"):
+        L += ["", f"{len(s['not_traced'])} test(s) reported by the runner were not traced by the engine (no "
+              "fingerprint; e.g. type checks): " + ", ".join(f"`{n}`" for n in s["not_traced"][:5])
+              + (" ..." if len(s["not_traced"]) > 5 else "") + "."]
     link = run_link()
     L.append("")
     if s.get("cache_status", "on") == "on":

@@ -83,7 +83,11 @@ jobs:
           s = json.load(open(sys.argv[1]))
           print({k: s[k] for k in ("language", "runner", "tests", "ran", "outcome_counts", "install", "cache_status")})
           assert s["language"] == "node" and s["tests"] > 0 and s["exit"] == 0
-          assert set(s["fingerprints"]) == set(s["outcomes"]), "every test has a fingerprint"
+          print("not traced (no fingerprint):", s["not_traced"])
+          assert set(s["fingerprints"]) | set(s["not_traced"]) == set(s["outcomes"])
+          assert all(n.split("::")[0].endswith((".test-d.ts", ".test-d.tsx")) for n in s["not_traced"]), \
+              "only type checks may run outside the engine's trace"
+          assert len(s["fingerprints"]) > 0
           EOF
       - if: always()
         uses: actions/upload-artifact@v4

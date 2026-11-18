@@ -160,7 +160,7 @@ def test_vitest_project_summary_and_flaky_replay(tmp_path):
     }
     assert s["outcome_counts"] == {"failed": 1, "passed": 5, "skipped": 1, "todo": 1}
     assert s["failed"] == []
-    assert set(s["fingerprints"]) == set(s["outcomes"])
+    assert set(s["fingerprints"]) == set(s["outcomes"]) and s["not_traced"] == []
     assert all(re.fullmatch(r"[0-9a-f]{32}", f) for f in s["fingerprints"].values())
     assert set(s["timings"]) == set(s["outcomes"]) and all(v >= 0 for v in s["timings"].values())
     assert s["epoch_ns"] == 1735689600000000000
@@ -297,3 +297,13 @@ def test_runner_flags_come_from_the_test_script():
         ["--selectProjects", "unit"]
     assert sa({"scripts": {"test": "cross-env TZ=UTC jest"}}, "jest") == []  # not a plain call: nothing taken
     assert sa({"scripts": {"test": "vitest run"}}, "vitest") == [] and sa({}, "jest") == []
+
+
+def test_report_ids_of_vitest_type_checks(tmp_path):
+    """Vitest's report repeats the file as a suite for type-check tasks (*.test-d.ts): same id scheme as detjs."""
+    rep = tmp_path / "r.json"
+    rep.write_text(json.dumps({"testResults": [{"name": str(tmp_path / "test/types.test-d.ts"), "assertionResults": [
+        {"ancestorTitles": ["test/types.test-d.ts", "query"], "title": "generic", "status": "passed", "duration": 2},
+        {"ancestorTitles": ["query"], "title": "generic", "status": "passed", "duration": 1}]}]}))
+    assert FR.node_report(rep, tmp_path) == {"test/types.test-d.ts::query::generic": ("passed", 0.002),
+                                             "test/types.test-d.ts::query::generic #2": ("passed", 0.001)}
