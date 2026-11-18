@@ -64,6 +64,8 @@ def base_env(venv: Path, extra: dict | None = None, drop=()) -> dict:
 def outcome_of(code: int, outcomes: dict, nodeid: str) -> str:
     """'fail', 'pass' or 'missing' for one test from pytest's exit code and the --det-outcomes map."""
     o = outcomes.get(nodeid)
+    if o is None and code in (0, 1, 5):
+        return {0: "pass", 1: "fail", 5: "missing"}[code]
     if o is None:
         # parametrised ids or a collection error: any listed failure counts
         if any(v in ("failed", "error") for v in outcomes.values()):
@@ -90,6 +92,7 @@ def run_det(repo, venv: Path, nodeid: str, extra_env: dict | None = None, keys: 
     try:
         with open(outp) as fh:
             outcomes = json.load(fh)
+        outcomes = outcomes.get("outcomes", outcomes)
     except (OSError, ValueError):
         outcomes = {}
     shutil.rmtree(tmp, ignore_errors=True)
@@ -117,8 +120,14 @@ def git_bisect(repo, venv: Path, good: str, bad: str, script_args: list[str], ex
     env = base_env(venv, extra_env)
     t0 = time.perf_counter()
     sh(["git", "-C", str(repo), "bisect", "start", "--first-parent", bad, good], env=env)
-    script = [str(venv / "bin" / "python"), "-m", "pytest", "-q", "-p", "no:cacheprovider", *script_args]
+    counter = tempfile.NamedTemporaryFile("w", suffix=".count", delete=False)
+    counter.close()
+    script = ["sh", "-c", 'echo x >> "$0"; exec "$@"', counter.name,
+              str(venv / "bin" / "python"), "-m", "pytest", "-q", "-p", "no:cacheprovider", *script_args]
     code, out = sh(["git", "-C", str(repo), "bisect", "run", *script], cwd=repo, env=env, timeout=timeout)
+    with open(counter.name) as fh:
+        runs = sum(1 for _ in fh)
+    os.unlink(counter.name)
     wall = time.perf_counter() - t0
     log = git(repo, "bisect", "log", check=False)
     git(repo, "bisect", "reset", check=False)
@@ -129,5 +138,5 @@ def git_bisect(repo, venv: Path, good: str, bad: str, script_args: list[str], ex
     for line in out.splitlines():
         if "is the first bad commit" in line:
             named = line.split()[0]
-    return {"named": named, "executions": max(0, steps - 2), "wall": wall, "exit": code,
+    return {"named": named, "executions": runs, "log_steps": steps, "wall": wall, "exit": code,
             "tail": out[-600:] if named is None else ""}

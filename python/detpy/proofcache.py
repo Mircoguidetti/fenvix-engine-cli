@@ -1581,8 +1581,18 @@ class ProofCachePlugin:
                     loaded_dists.add(dname.lower().replace("_", "-"))
         except Exception:
             pass
+        # interpreter start-up settings (PYTHON* variables, -W/-X options, flags): read by C at start-up, so no
+        # os.environ event records them and they are not in the config or runtime digest
+        interp = {
+            "warnoptions": list(sys.warnoptions),
+            "xoptions": {str(k): str(v) for k, v in getattr(sys, "_xoptions", {}).items()},
+            "flags": repr(sys.flags),
+            "env": {k: _core.env_value_digest(v) for k, v in sorted(cap.env0.items())
+                    if k.startswith("PYTHON") and k not in ("PYTHONHASHSEED",)},
+        }
         out = {
             "root": self.root,
+            "interpreter": interp,
             "config": self.config_digest,
             "config_info": self.config_info,
             "runtime": self.runtime_digest,

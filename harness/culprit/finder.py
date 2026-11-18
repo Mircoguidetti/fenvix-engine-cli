@@ -30,6 +30,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import checkout, git, git_out, run_det, sh  # noqa: E402
 
 _FACTS_CACHE: dict = {}
+# detpy's own files that a key may list as data: the bytecode cache (derived from the sources, which are inputs
+# themselves) and the per-run cache directory of this harness (clock shim)
+_OWN_FILES = ("/.cache/detpy/", "/detrun-")
 
 
 # ---------------------------------------------------------------------------- keys
@@ -55,7 +58,7 @@ def load_key(path: str, nodeid: str) -> dict | None:
     return {"test": t, "config_info": d.get("config_info", {}), "runtime": d.get("runtime"),
             "runtime_info": d.get("runtime_info", {}), "dists": dists,
             "loaded": {norm_dist(x) for x in d.get("loaded_distributions", [])}, "epoch": d.get("epoch"),
-            "root": d.get("root")}
+            "root": d.get("root"), "interpreter": d.get("interpreter") or {}}
 
 
 def diff_keys(g: dict, r: dict) -> list[dict]:
@@ -69,6 +72,8 @@ def diff_keys(g: dict, r: dict) -> list[dict]:
                 ch.append({"kind": "code", "id": k, "what": kind, "path": rest.split("::", 1)[0],
                            "unit": rest.split("::", 1)[1] if "::" in rest else None})
         for p in sorted(set(gt.get("data", {})) | set(rt.get("data", {}))):
+            if any(x in p for x in _OWN_FILES):
+                continue  # detpy's own derived files (bytecode cache, the run's cache dir)
             if gt["data"].get(p) != rt["data"].get(p):
                 ch.append({"kind": "data", "id": f"data:{p}", "path": p, "inrepo": not os.path.isabs(p)})
         for n in sorted(set(gt.get("env", {})) | set(rt.get("env", {}))):
@@ -86,6 +91,14 @@ def diff_keys(g: dict, r: dict) -> list[dict]:
         if g["dists"].get(n) != r["dists"].get(n):
             ch.append({"kind": "dist", "id": f"dist:{n}", "name": n,
                        "green": (g["dists"].get(n) or (None,))[0], "red": (r["dists"].get(n) or (None,))[0]})
+    gp, rp = g.get("interpreter", {}), r.get("interpreter", {})
+    gpe, rpe = gp.get("env", {}), rp.get("env", {})
+    for n in sorted(set(gpe) | set(rpe)):
+        if gpe.get(n) != rpe.get(n):
+            ch.append({"kind": "env", "id": f"env:{n}", "name": n, "startup": True})
+    for f in ("xoptions", "flags"):
+        if json.dumps(gp.get(f), sort_keys=True) != json.dumps(rp.get(f), sort_keys=True):
+            ch.append({"kind": "interp", "id": f"interpreter:{f}", "field": f})
     gc, rc = g["config_info"], r["config_info"]
     for f in ("ini", "inifile", "options", "level0"):
         if json.dumps(gc.get(f), sort_keys=True) != json.dumps(rc.get(f), sort_keys=True):
@@ -94,7 +107,12 @@ def diff_keys(g: dict, r: dict) -> list[dict]:
     for v in sorted(set(gtz) | set(rtz)):
         if gtz.get(v) != rtz.get(v):
             ch.append({"kind": "tzlocale", "id": f"tzlocale:{v}", "name": v})
-    return ch
+    seen, out = set(), []
+    for c in ch:
+        if c["id"] not in seen:
+            seen.add(c["id"])
+            out.append(c)
+    return out
 
 
 # ---------------------------------------------------------------------------- commit pruning
@@ -198,11 +216,18 @@ class EnvBuilder:
         self.python = python
         self.root.mkdir(parents=True, exist_ok=True)
 
-    def venv_for(self, repo, dists: dict) -> tuple[Path, float, bool]:
-        """A virtualenv with exactly ``dists`` (name -> version) plus detpy and the project (editable)."""
+    def venv_for(self, repo, dists: dict, at: Path | None = None) -> tuple[Path, float, bool]:
+        """A virtualenv with exactly ``dists`` (name -> version) plus detpy and the project (editable).
+
+        ``at``: build it at that path (the green job's own virtualenv path, free because its machine is gone):
+        console scripts embed the virtualenv path, so a rebuild elsewhere never has the same runtime identity.
+        """
         spec = sorted(f"{n}=={v}" for n, v in dists.items() if n not in ("detpy",) and v)
         h = hashlib.sha256("\n".join(spec).encode()).hexdigest()[:16]
-        venv = self.root / h
+        venv = Path(at) if at else self.root / h
+        if at and (venv / ".ok").exists() and (venv / ".spec").read_text() != h:
+            import shutil
+            shutil.rmtree(venv)
         if (venv / ".ok").exists():
             return venv, 0.0, False
         t0 = time.perf_counter()
@@ -217,6 +242,7 @@ class EnvBuilder:
                         *self.project_install], cwd=repo, timeout=1800)
         if code != 0:
             raise RuntimeError(f"project install failed: {out[-1500:]}")
+        (venv / ".spec").write_text(h)
         (venv / ".ok").write_text("ok")
         return venv, time.perf_counter() - t0, True
 
@@ -239,7 +265,8 @@ class Finder:
     def _replay(self, sha: str, env_vars: dict, dists: dict | None, venv: Path | None, expect_runtime=None,
                 why=""):
         if dists is not None:
-            venv, secs, fresh = self.builder.venv_for(self.repo, dists)
+            at = self.green.get("prefix") if dists == self._green_dists else None
+            venv, secs, fresh = self.builder.venv_for(self.repo, dists, at=at)
             if fresh:
                 self.rebuilds.append({"seconds": secs})
         checkout(self.repo, sha)
@@ -299,8 +326,22 @@ class Finder:
         red_env = dict(self.red.get("env") or {})
         need_env = bool(inputs)
         green_dists = {n: v for n, (v, _) in g["dists"].items()}
+        self._green_dists = green_dists
+        # "env:*" (the test enumerated the environment): the candidates are the variables the two jobs set
+        # differently, known from the job definitions
+        if any(c["id"] == "env:*" for c in inputs):
+            named = {c["name"] for c in inputs if c["kind"] == "env"}
+            ge, re_ = self.green.get("env") or {}, self.red.get("env") or {}
+            extra = [{"kind": "env", "id": f"env:{n}", "name": n} for n in sorted(set(ge) | set(re_))
+                     if ge.get(n) != re_.get(n) and n not in named]
+            inputs = [c for c in inputs if c["id"] != "env:*"] + extra
+            if not any(c["kind"] == "env" for c in inputs):
+                inputs.append({"kind": "env", "id": "env:*", "name": "*"})
+            res["input_candidates"] = [c["id"] for c in inputs]
         g_venv = self.green.get("venv")
-        build = self.builder is not None and any(c["kind"] == "dist" for c in inputs)
+        # the green environment is rebuilt from the green key's distribution list when a distribution is a
+        # candidate, or when no green environment is at hand (the honest case: the CI machine is gone)
+        build = self.builder is not None and (any(c["kind"] == "dist" for c in inputs) or g_venv is None)
         culprit = None
         if cands and need_env:
             # does the code alone explain the red? red commit, green environment
@@ -350,7 +391,10 @@ class Finder:
         env_vars = dict(green_env)
         dists = dict(green_dists)
         for c in subset:
-            if c["kind"] in ("env", "tzlocale"):
+            if c["id"] == "env:*":
+                env_vars.update(red_env)
+                env_vars.update({k: None for k in green_env if k not in red_env})
+            elif c["kind"] in ("env", "tzlocale"):
                 env_vars[c["name"]] = red_env.get(c["name"])
             elif c["kind"] == "dist":
                 if c["red"] is None:
