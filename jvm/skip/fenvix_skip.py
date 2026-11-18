@@ -86,9 +86,16 @@ class State:
         self._classes = {}
         self._jars = {}
 
-    def jvm(self, module):
+    def jvm(self, module, test_id=None):
+        """The JVM record of the run that executed test_id now (a module can have several test JVMs)."""
         m = self.mods.get(module)
-        return m["jvm"] if m else None
+        if not m:
+            return None
+        if test_id is not None:
+            rec = m["tests"].get(test_id)
+            if rec is not None and rec.get("_jvm") is not None:
+                return rec["_jvm"]
+        return m["jvm"]
 
     def path(self, key):
         if key.startswith("root:"):
@@ -129,11 +136,11 @@ class State:
             return "read:" + st
         return value
 
-    def class_digest(self, module, name):
-        jvm = self.jvm(module)
+    def class_digest(self, module, name, test_id=None):
+        jvm = self.jvm(module, test_id)
         if jvm and name in jvm["classes"]:
             return jvm["classes"][name].split(" ")[0]
-        key = (module, name)
+        key = (module, name, id(jvm))
         if key in self._classes:
             return self._classes[key]
         d = None
@@ -177,7 +184,7 @@ def why_not(mod_name, mod_a, rec, b: State):
     if rec.get("outcome") != "passed":
         return ("not-passed", rec.get("outcome"))
     jvm_a = rec["_jvm"]
-    jvm_b = b.jvm(mod_name)
+    jvm_b = b.jvm(mod_name, rec["id"])
     if jvm_a is None or jvm_b is None:
         return ("no-jvm-record", mod_name)
     if jvm_a["runtime"] != jvm_b["runtime"]:
@@ -195,7 +202,7 @@ def why_not(mod_name, mod_a, rec, b: State):
             da = jvm_a["classes"].get(name)
             if da is None:
                 continue  # generated at run time (no code source)
-            if b.class_digest(mod_name, name) != da.split(" ")[0]:
+            if b.class_digest(mod_name, name, rec["id"]) != da.split(" ")[0]:
                 return ("code", name)
         for k, v in s.get("files", {}).items():
             if v == "write":
