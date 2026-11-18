@@ -11,8 +11,10 @@
 //!   `x = (first 8 bytes of h as u64 big-endian) >> 11`; audited iff
 //!   `x < share * 2^53` (share clamped to [0, 1]).
 //! * [`verdict`]: outcome and set of test ids compared; a mismatch is *wrong*
-//!   only when a second fresh run reproduces the first fresh run, otherwise it
-//!   is *flaky with evidence*.
+//!   whenever the second fresh run also differs from the cached result (both
+//!   fresh runs contradict it, whether or not they agree with each other); it is
+//!   *flaky with evidence* only when the second fresh run reproduces the cached
+//!   result.
 //! * [`upper_bound_95`]: one-sided 95% upper bound on the wrong-skip rate from
 //!   `checked` audits with `wrong` wrong skips (rule of three when none).
 
@@ -68,10 +70,12 @@ pub enum Verdict {
     Matched,
     /// The fresh run differs: run it once more, then call [`verdict`] again with the second run.
     NeedsSecondRun,
-    /// Two fresh runs agree with each other and not with the cache: the skip was wrong.
+    /// Neither fresh run gives the cached result (they may or may not agree with each other): the skip was
+    /// wrong. How the second run is made (same process, new process, alone) can change its result for
+    /// order-dependent tests, so agreement between the two fresh runs is not required (review R-013, defect 5).
     Wrong,
-    /// The second fresh run did not reproduce the first: the test is flaky (with evidence), the skip is not
-    /// shown wrong.
+    /// The second fresh run reproduced the cached result while the first did not: the test is flaky (with
+    /// evidence), the skip is not shown wrong.
     FlakyEvidence,
 }
 
@@ -93,8 +97,8 @@ pub fn verdict(cached: &Observation, first: &Observation, second: Option<&Observ
     }
     match second {
         None => Verdict::NeedsSecondRun,
-        Some(s) if s == first => Verdict::Wrong,
-        Some(_) => Verdict::FlakyEvidence,
+        Some(s) if s == cached => Verdict::FlakyEvidence,
+        Some(_) => Verdict::Wrong,
     }
 }
 
@@ -239,6 +243,8 @@ mod tests {
         assert_eq!(verdict(&c, &f, None), Verdict::NeedsSecondRun);
         assert_eq!(verdict(&c, &f, Some(&f)), Verdict::Wrong);
         assert_eq!(verdict(&c, &f, Some(&c)), Verdict::FlakyEvidence);
+        let other = Observation::new("error", ["t::a".to_string()]);
+        assert_eq!(verdict(&c, &f, Some(&other)), Verdict::Wrong, "both fresh runs contradict the cache: wrong");
         let more = Observation::new("passed", ["t::a".to_string(), "t::b".to_string()]);
         assert_eq!(verdict(&c, &more, Some(&more)), Verdict::Wrong, "another set of test ids is a mismatch");
     }

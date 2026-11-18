@@ -33,9 +33,10 @@ a test that read a file another test wrote in the same session.
 
 Cache audit (``--det-cache-audit=SHARE``, default 5%): a seeded random share of the results that would be
 reused is run fresh instead and compared with the cached result (outcome and the set of test ids). A mismatch is
-run once more: if the second fresh run gives what the first gave, the skip was **wrong** (the entry is dropped and
-its proof key marked *untrusted*: no entry with that key is reused, here or through the shared cache, until a fresh
-run records the key again); otherwise the test is **flaky with evidence**. The seed and the chosen tests are in the
+run once more, in a new process: if the second fresh run also differs from the cached result, the skip was
+**wrong** (the entry is dropped and its proof key marked *untrusted*: no entry with that key is reused, here or
+through the shared cache, until a fresh run records the key again); if it reproduces the cached result, the test is
+**flaky with evidence**. The seed and the chosen tests are in the
 receipts (first line), so ``--det-cache-audit-seed=SEED`` reproduces the choice. Audited tests ran: they are never
 counted as skipped.
 
@@ -1152,8 +1153,10 @@ class ProofCachePlugin:
     def audit_after_run(self, item, rerun) -> None:
         """Compare an audited test's fresh run with the result reuse would have shown (the phases of the entry's
         ``report``, which ``_reuse`` replays, and the test ids the recorded run produced); on a mismatch run it once
-        more, in a new process (``rerun()`` gives (outcome, test ids)), to tell a wrong skip from a flaky test. Any
-        mismatch drops the entry: a fresh run contradicted it. Never breaks the session."""
+        more, in a new process (``rerun()`` gives (outcome, test ids)): wrong unless that second run reproduces the
+        cached result (then flaky with evidence), so an order-dependent test that runs differently alone cannot hide
+        a wrong skip (review R-013b, defect 5). Any mismatch drops the entry: a fresh run contradicted it. Never
+        breaks the session."""
         nid = item.nodeid
         r = self.auditing[nid]
         try:
@@ -1185,7 +1188,7 @@ class ProofCachePlugin:
             self.store.mark_untrusted(r["key"], nid, self.run_id, why)
             self.audit_keep.add(nid)
         elif v == "flaky-evidence":
-            # two fresh runs disagree with each other and the first with the entry: neither is recorded and the
+            # the first fresh run contradicts the entry, the second reproduces it: neither is recorded and the
             # entry is dropped (the next run runs the test)
             self.audit_keep.add(nid)
 
@@ -1405,7 +1408,7 @@ class ProofCachePlugin:
                 if v == "wrong":
                     self._not_cached(nid, "audit: wrong skip (key marked untrusted)")
                 else:
-                    self._not_cached(nid, "audit: flaky with evidence (two fresh runs disagree; entry dropped)")
+                    self._not_cached(nid, "audit: flaky with evidence (the second fresh run reproduced the cached result; entry dropped)")
                 continue
             p = self.parts.get(nid, {})
             outcome = _final(p)

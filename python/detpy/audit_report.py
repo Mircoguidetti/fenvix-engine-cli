@@ -5,8 +5,8 @@ projects.
     python -m detpy.audit_report --service URL               # every run the service knows (GET /v1/audit)
     ... [--json OUT]
 
-A *wrong skip* is a reusable result that two fresh runs contradicted; a mismatch the second fresh run did not
-reproduce is *flaky with evidence* and not counted as wrong. The bound is one-sided at 95%: 3/checked when no wrong
+A *wrong skip* is a reusable result that two fresh runs contradicted (whether or not they agree with each other); a
+mismatch whose second fresh run reproduced the cached result is *flaky with evidence* and not counted as wrong. The bound is one-sided at 95%: 3/checked when no wrong
 skip was found (rule of three), else the exact Clopper-Pearson bound. Each audited test is one Bernoulli trial; the
 trials of one project are not independent draws from all projects, so the overall bound assumes the audited tests
 are a fair sample of all reused results (the audit's random choice makes them one within each run).

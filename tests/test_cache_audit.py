@@ -67,6 +67,19 @@ def plant_skip(pytester, nodeid: str) -> dict:
     return e
 
 
+COUNTER_TEST = """
+    import os
+
+    COUNTER = os.path.join(os.path.dirname(__file__), ".detpy", "flaky-counter")
+
+    def test_alternates():
+        os.makedirs(os.path.dirname(COUNTER), exist_ok=True)
+        n = int(open(COUNTER).read()) + 1 if os.path.exists(COUNTER) else 1
+        with open(COUNTER, "w") as fh:
+            fh.write(str(n))
+        assert n % 2 == 1
+"""
+
 PLANT = """
     def test_planted():
         assert 1 + 1 == 2
@@ -132,36 +145,44 @@ def test_untrusted_key_stops_reuse_until_a_fresh_run_records_it_again(pytester, 
     assert set(d["cache"]["reused_ids"]) == {"test_m.py::test_planted", "test_m.py::test_other"}
 
 
-def test_mismatch_the_second_fresh_run_does_not_reproduce_is_flaky_with_evidence(pytester, run_cache):
+def test_mismatch_the_second_fresh_run_reproduces_the_cache_is_flaky_with_evidence(pytester, run_cache):
     """A test whose result changes from one process to the next (a counter kept on disk, where the cache does not
-    look): the second fresh run, in a new process, disagrees with the first. Flaky with evidence: nothing marked,
-    and the entry, which a fresh run contradicted, is dropped (review R-013, defect 2)."""
-    write(pytester.path, {"pytest.ini": "[pytest]\n", "test_m.py": """
-        import os
-
-        COUNTER = os.path.join(os.path.dirname(__file__), ".detpy", "flaky-counter")
-
-        def test_alternates():
-            os.makedirs(os.path.dirname(COUNTER), exist_ok=True)
-            n = int(open(COUNTER).read()) + 1 if os.path.exists(COUNTER) else 1
-            with open(COUNTER, "w") as fh:
-                fh.write(str(n))
-            assert n % 2 == 1
-    """})
+    look): recorded passing, the first fresh run fails, the second, in a new process, passes again and so reproduces
+    the cached result. Flaky with evidence: nothing marked, and the entry, which a fresh run contradicted, is
+    dropped (review R-013, defect 2). Only a second run that reproduces the cached result makes a mismatch flaky
+    (review R-013b, defect 5)."""
+    write(pytester.path, {"pytest.ini": "[pytest]\n", "test_m.py": COUNTER_TEST})
     run_cache()  # 1: passes, recorded
-    planted = plant_skip(pytester, "test_m.py::test_alternates")
-    r, d = run_cache("--det-cache-audit=1")  # 2: fails; 3 (second run, new process): passes
+    r, d = run_cache("--det-cache-audit=1")  # 2: fails; 3 (second run, new process): passes, as cached
     a = d["cache"]["audit"]
-    assert (a["checked"], a["wrong"], a["flaky_evidence"]) == (1, 0, 1)
+    assert (a["checked"], a["wrong"], a["flaky_evidence"]) == (1, 0, 1), a
     f = a["flaky_tests"][0]
-    assert (f["cached"]["outcome"], f["fresh"]["outcome"], f["fresh2"]["outcome"]) == ("skipped", "failed", "passed")
+    assert (f["cached"]["outcome"], f["fresh"]["outcome"], f["fresh2"]["outcome"]) == ("passed", "failed", "passed")
     assert f["fresh2"]["process"] == "new"
     st = json.loads(store_path(pytester).read_text())
     assert st.get("untrusted", {}) == {}  # not shown wrong: no key marked
     assert "test_m.py::test_alternates" not in st["tests"]  # contradicted by a fresh run: dropped
     assert d["cache"]["not_cached_ids"]["test_m.py::test_alternates"].startswith("audit: flaky with evidence")
     r.assert_outcomes(failed=1)  # the run reports the first fresh run; the second is evidence only
-    assert planted["key"]
+
+
+def test_mismatch_both_fresh_runs_contradict_although_they_disagree_is_wrong(pytester, run_cache):
+    """The same flaky test with a planted skipped result: the fresh runs fail then pass, neither gives the cached
+    "skipped". Both contradict the cache, so the skip is wrong even though the two fresh runs disagree with each
+    other (review R-013b, defect 5): the key is marked untrusted."""
+    write(pytester.path, {"pytest.ini": "[pytest]\n", "test_m.py": COUNTER_TEST})
+    run_cache()  # 1: passes, recorded
+    plant_skip(pytester, "test_m.py::test_alternates")
+    r, d = run_cache("--det-cache-audit=1")  # 2: fails; 3 (second run, new process): passes
+    a = d["cache"]["audit"]
+    assert (a["checked"], a["wrong"], a["flaky_evidence"]) == (1, 1, 0), a
+    w = a["wrong_tests"][0]
+    assert (w["cached"]["outcome"], w["fresh"]["outcome"], w["fresh2"]["outcome"]) == ("skipped", "failed", "passed")
+    st = json.loads(store_path(pytester).read_text())
+    assert list(st.get("untrusted", {})) == [w["key"]]
+    assert "test_m.py::test_alternates" not in st["tests"]  # contradicted by a fresh run: dropped
+    assert d["cache"]["not_cached_ids"]["test_m.py::test_alternates"].startswith("audit: wrong skip")
+    r.assert_outcomes(failed=1)  # the run reports the first fresh run; the second is evidence only
 
 
 def test_seed_in_the_receipts_reproduces_the_choice(pytester, run_cache):

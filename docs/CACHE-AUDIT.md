@@ -19,11 +19,16 @@ list of inputs the engine saw; the audit checks it in every customer run, not on
      (order, seeds, hash seed, clock epoch, network), and nothing the first run left in the process. The second
      process has no proof cache; its outcomes, trace, basetemp and pytest cache go to a scratch directory; it is not
      reported;
-     * the second run gives what the first gave: **wrong skip**. The entry is dropped, the fresh runs are not
-       recorded, and the proof key is marked **untrusted**;
-     * the second run differs from the first: **flaky with evidence**. Nothing is recorded or marked, and the entry,
-       which a fresh run contradicted, is **dropped** (the next run runs the test); the run reports the first fresh
-       result.
+     * the second run also differs from the cached result (whether or not it agrees with the first): **wrong
+       skip**. The entry is dropped, the fresh runs are not recorded, and the proof key is marked **untrusted**
+       (pushed to the shared cache). Both fresh runs contradicting the cache is enough; they need not agree,
+       because how the second run is made changes its result for some tests: alone in a new process, a test that
+       needs state left by earlier tests in the session (order-dependent) fails where it passed in the session; in
+       the same process, a test that leaves state behind can change too. Neither may hide a wrong skip (review
+       R-013b, defect 5). A false "wrong" costs only reruns of that key;
+     * the second run reproduces the cached result: **flaky with evidence**. Nothing is recorded or marked, and the
+       entry, which a fresh run contradicted, is **dropped** (the next run runs the test); the run reports the
+       first fresh result.
      * the second run cannot be made (no outcome, timeout): **wrong** (an unexplained mismatch is never trusted).
 4. The run reports what it did: terminal summary, `--det-outcomes` → `cache.audit`, `fenvix-run`'s `summary.json` →
    `audit: {share, seed, candidates, checked, matched, wrong, flaky_evidence, upper_bound_95, wrong_tests,
@@ -96,8 +101,10 @@ under 0.1%, 30,000 under 0.01%. At 5% of the reusable tests, a project that reus
 
 * The second fresh run is a new pytest process: it costs a start-up (re-exec, collection of the test's file) per
   mismatch, never per audited test. State outside the process that the first run changed (a file outside the
-  inputs the engine tracks, a database) can still make it differ: then the verdict is "flaky with evidence" and the
-  entry is dropped all the same.
+  inputs the engine tracks, a database) can still make it differ: if it then reproduces the cached result the
+  verdict is "flaky with evidence" and the entry is dropped all the same; otherwise it is "wrong".
+* "Wrong" is conservative: a flaky test whose two fresh runs both differ from the cached result (fail, then pass,
+  against a cached skip) is called wrong, its key is marked, and the 95% bound counts it as a wrong skip.
 * A mark lifted by a fresh record on one machine is lifted for the service (NOTE 3 of review R-013); a write token
   can still file a wrong entry under the right key after a mark (NOTE 2, residual).
 * pytest-xdist: each worker draws its own seed (written in its receipts).
