@@ -71,10 +71,19 @@ function bgStore() {
   return bg;
 }
 
+const DIAG_BG = !!process.env.DETJS_PW_DIAG_DIR;
 function valueHook(op) {
+  const msg = MSG.getStore();
+  if (!msg) {
+    // Background: not fingerprinted, so no call-site resolution (its cost kept busy servers busy).
+    const bg = bgStore();
+    bg.reads = (bg.n === bg.readsN ? bg.reads : 0) + 1;
+    bg.readsN = bg.n;
+    return { e: bg.base + bg.reads * TICK_NS, rel: String(bg.reads * TICK_NS) };
+  }
   const site = siteNow();
   if (site === null) return null; // infrastructure: default path (real values)
-  const st = MSG.getStore() || bgStore();
+  const st = msg;
   const k = `${site}\0${op === 'Date.now' || op === 'Date' ? 'wall' : 'mono'}`;
   const c = (st.counts.get(k) || 0) + 1;
   st.counts.set(k, c);
@@ -82,9 +91,9 @@ function valueHook(op) {
 }
 
 function streamHook(kind) {
-  const site = siteNow();
-  const st = MSG.getStore() || bgStore();
-  const k = `${site}\0${kind}`;
+  const msg = MSG.getStore();
+  const st = msg || bgStore();
+  const k = msg ? `${siteNow()}\0${kind}` : `<bg>\0${kind}`;
   let g = st.gens.get(k);
   if (!g) {
     g = new seedsMod.Xoshiro128();
@@ -105,7 +114,10 @@ function installScope() {
   const origRecord = STATE.record.bind(STATE);
   STATE.record = function record(source, op, value) {
     const st = MSG.getStore();
-    if (!st) { SCOPED.bg.events++; return origRecord(source, op, value); }
+    if (!st) {
+      SCOPED.bg.events++;
+      return DIAG_BG ? origRecord(source, op, value) : undefined; // raw background events only when diagnosing
+    }
     if (this.quietDepth > 0) return undefined;
     let site = '';
     if (this.config.sites) {
@@ -123,7 +135,8 @@ function installScope() {
   const origAt = STATE.recordAt.bind(STATE);
   STATE.recordAt = function recordAt(source, op, site, value) {
     const st = MSG.getStore();
-    if (st) st.events.push(source + FS_ + op + FS_ + site + FS_ + value); else SCOPED.bg.events++;
+    if (st) st.events.push(source + FS_ + op + FS_ + site + FS_ + value);
+    else { SCOPED.bg.events++; if (!DIAG_BG) return undefined; }
     return origAt(source, op, site, value);
   };
   // WebSocket frames: the worker announces the next frame (/__detjs/frame); the next data chunk

@@ -161,7 +161,7 @@ function enqueue(item) {
 }
 
 const QUIET_MS = Number(ENV.DETJS_PW_QUIET_MS || 20);
-const QUIET_MAX = Number(ENV.DETJS_PW_QUIET_MAX || 3000);
+const QUIET_MAX = Number(ENV.DETJS_PW_QUIET_MAX || 1000); // round 2: 3000 kept busy servers' tests waiting (uptime-kuma)
 const PASSTHROUGH = new RegExp(ENV.DETJS_PW_PASSTHROUGH || '[?&]transport=polling|/sockjs/|/__vite_ping|/@vite/|hot-update');
 // Dev-server channels (Vite HMR `/?token=`, webpack/Next HMR): relayed as is, not app traffic (round 2: actual's
 // Vite HMR pings entered the queue).
