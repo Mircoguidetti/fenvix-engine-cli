@@ -86,3 +86,25 @@ background work is visible only through its effects on later messages.
 Known limit (round 2): Playwright actions reach the page after a number of virtual-time chunks that depends on real
 time (the runner is not on the virtual clock). Lockstep time (page time advances only while the runner waits on the
 page, and the runner's own waits are virtual) would close it; see the round 2 report.
+
+## Round 3 (review R-011): fixes and experiment switches
+
+- **Test-code clock** (`worker.js` `installWorkerSeeds`): one clock for test code and app server. Value =
+  max(previous value + 1 ms, epoch + released messages x `DETJS_PW_SERVER_STEP_MS` + real time since the test's first
+  clock read floored to `DETJS_PW_WORKER_CLOCK_WAIT_MS` (default 1000)). The server's clock is epoch + messages
+  received x STEP, so test code and server agree on "now" to within the time one test waited (round 2: up to 24.8 days
+  apart); an elapsed-time budget missed by a real wait of >= 1 s still fails (round 2: 1 ms per read, waits invisible);
+  values are strictly increasing over the run, also across worker restarts (`<DETJS_DIR>/worker-clock.json`).
+  Residual (DECLARED): a budget missed by less than 1 s can pass under `--det`; values read more than 1 s after the
+  test's first read depend on real time (not deterministic); the server's clock still does not advance with waits.
+- **Replay command** (`cli.js`, `reporter.js`): carries `--browser`, `--timeout`, `--ignore-snapshots` (a config
+  without projects run with `--browser=chromium` has a project only through that flag).
+- **`--det-freeze=on`** (experiment E2): at the end of the test function (Playwright's didFinishTestFunction
+  callbacks) every page of the test stops receiving virtual time and the final DOM and page-random stats are taken at
+  once, without the real-time settle loop.
+- **`--det-latency=LIST`** (experiment E6): seeded latency choices in 20 ms chunks; `D[factor]` holds a message for
+  factor (default 1.5) x the test's deadline (`DETJS_PW_DEADLINE_MS`, else the project's expect timeout, else 5000 ms).
+  The default list `0,0,0,1,5,25` (max 500 ms) never reaches a deadline.
+- Found on a fixture while building E6 (MEASURED, not fixed): a page `fetch` whose body the page never reads does not
+  complete (`requestfinished` never fires), so the network queue holds every later message until the 5 s completion
+  timeout (`DETJS_PW_COMPLETE_TIMEOUT`): a test with a 2 s deadline failed under `--det` in every seed and passes plain.
