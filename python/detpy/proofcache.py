@@ -756,7 +756,9 @@ class ProofCachePlugin:
         plan = json.dumps(self._plan())
         ph["plan"] = _perf() - t - ph.get("facts", 0.0)
         t = _perf()
-        recorded, not_cached, stale, g_ctx_all = store.record_session(plan)
+        # the capture's part of the plan (contexts, data, env, flags, writers, loaded modules) comes from the
+        # Rust capture itself
+        recorded, not_cached, stale, g_ctx_all = store.record_captured(plan, self.cap)
         ph["assemble"] = _perf() - t
         for nid, path in stale:
             self.stale_hits[nid] = path
@@ -806,19 +808,12 @@ class ProofCachePlugin:
         if cfg.cassette_path:
             d = _core.file_digest(cfg.cassette_path)
             cassette = (cap._key(os.path.realpath(cfg.cassette_path)), f"f:{d}" if d else "missing")
-        names = cap.ctx_names
         return {
-            "ctx_names": names, "import_ctx": cap.import_ctx, "fnames": rels,
+            # filled by ProofCache.record_captured from the capture: ctx_names, import_ctx, fnames, data, env, flags,
+            # writers, session_written, loaded_order, preloaded, changed
+            "ctx_names": [], "import_ctx": 0, "fnames": [],
             "file_ix": {r: ix for r, ix in fcache.items() if ix is not None},
-            "per": per, "imp": imp,
-            "data": {c: list(d.items()) for c, d in cap.data.items()},
-            "env": {c: [n for n in e if _encodable(n)] for c, e in cap.env.items()},
-            "flags": {c: sorted(f) for c, f in cap.flags.items()},
-            "writers": {p: sorted(w) for p, w in cap.writers.items() if _encodable(p)},
-            "session_written": {cap._key(p): sorted(names[c] for c in w) for p, w in cap.writers.items()
-                                if _encodable(p)},
-            "loaded_order": cap.loaded_order, "preloaded": sorted(cap.preloaded), "needed": sorted(needed),
-            "changed": cap.changed_code(),
+            "per": per, "imp": imp, "needed": sorted(needed),
             "test_modules": test_modules, "tests": tests, "hits": list(self.hits),
             "root_sep": cap.root_sep, "control_urandom": bool(cfg.control_urandom),
             "time_controlled": "time" in cfg.controls, "epoch": self.epoch, "cassette": cassette,

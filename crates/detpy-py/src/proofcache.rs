@@ -292,6 +292,29 @@ impl ProofCache {
         Ok((out.recorded, out.not_cached, out.stale, out.global_ctx))
     }
 
+    /// `record_session` with the capture's part of the plan taken from `cap` (`CaptureCore.fill_plan`); `plan_json`
+    /// holds the rest (tests, file indices, folded lines, configuration).
+    #[allow(clippy::type_complexity)]
+    fn record_captured(
+        &self,
+        py: Python<'_>,
+        plan_json: &str,
+        cap: &Bound<'_, crate::capture::CaptureCore>,
+    ) -> PyResult<(usize, Vec<(String, String, Vec<u32>)>, Vec<(String, String)>, Vec<u32>)> {
+        let mut plan: record::Plan =
+            serde_json::from_str(plan_json).map_err(|e| PyValueError::new_err(format!("plan: {e}")))?;
+        cap.get().fill_plan(py, &mut plan)?;
+        let mut g = lock(&self.inner);
+        for t in &plan.tests {
+            g.touched.insert(t.nodeid.clone());
+        }
+        let out = record::record_session(&mut g.store, &plan);
+        for (n, _) in &out.stale {
+            g.touched.insert(n.clone());
+        }
+        Ok((out.recorded, out.not_cached, out.stale, out.global_ctx))
+    }
+
     fn remove(&self, nodeid: &str) -> bool {
         let mut g = lock(&self.inner);
         g.touched.insert(nodeid.to_string());

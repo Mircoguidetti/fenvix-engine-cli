@@ -1547,7 +1547,7 @@ impl CaptureCore {
 
     /// Repository code files (relative paths) changed since their source was first read or their module body
     /// first ran in this session.
-    fn changed_code<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyList>> {
+    pub(crate) fn changed_code<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyList>> {
         let items: Vec<(W, StatKey)> = {
             let st = lock(&self.st);
             st.code_stat_order.iter().map(|p| (p.clone(), st.code_stat[p])).collect()
@@ -2041,6 +2041,64 @@ impl CaptureCore {
             }
             self.child_read_w(py, logdir, ctx, &p, if op == b"d" { b'd' } else { b'f' })?;
         }
+        Ok(())
+    }
+}
+
+fn utf8(w: &[u8]) -> PyResult<String> {
+    // a str with surrogates: json.dumps escaped it and the plan's parser refused it ("lone surrogate")
+    String::from_utf8(w.to_vec())
+        .map_err(|_| pyo3::exceptions::PyValueError::new_err("plan: lone surrogate in a capture string"))
+}
+
+impl CaptureCore {
+    /// The capture's part of the record plan (`ProofCachePlugin._plan`'s `ctx_names`, `import_ctx`, `fnames`,
+    /// `data`, `env`, `flags`, `writers`, `session_written`, `loaded_order`, `preloaded`, `changed`), straight
+    /// from the capture instead of through Python dicts and JSON.
+    pub(crate) fn fill_plan(&self, py: Python<'_>, plan: &mut detpy_core::record::Plan) -> PyResult<()> {
+        let changed: Vec<String> = self.changed_code(py)?.extract()?;
+        let st = lock(&self.st);
+        plan.ctx_names = st.ctx_names.iter().map(|n| utf8(n)).collect::<PyResult<_>>()?;
+        plan.import_ctx = st.import_ctx.max(0) as u32;
+        plan.fnames = st.fnames.iter().map(|n| utf8(n)).collect::<PyResult<_>>()?;
+        plan.data = st
+            .data
+            .iter()
+            .map(|(c, d)| Ok((*c as u32, d.items.iter().map(|(k, v)| Ok((utf8(k)?, utf8(v)?))).collect::<PyResult<Vec<_>>>()?)))
+            .collect::<PyResult<_>>()?;
+        plan.env = st
+            .env
+            .iter()
+            .map(|(c, e)| (*c as u32, e.items.iter().filter_map(|n| String::from_utf8(n.clone()).ok()).collect()))
+            .collect();
+        plan.flags = st
+            .flags
+            .iter()
+            .map(|(c, f)| {
+                let mut v = f.items.iter().map(|x| utf8(x)).collect::<PyResult<Vec<_>>>()?;
+                v.sort();
+                Ok((*c as u32, v))
+            })
+            .collect::<PyResult<_>>()?;
+        plan.writers = st
+            .writers
+            .iter()
+            .map(|(p, w)| Ok((utf8(p)?, w.iter().map(|c| *c as u32).collect())))
+            .collect::<PyResult<_>>()?;
+        plan.session_written = st
+            .writers
+            .iter()
+            .map(|(p, w)| {
+                let mut names = w.iter().map(|c| utf8(&st.ctx_names[*c])).collect::<PyResult<Vec<_>>>()?;
+                names.sort();
+                Ok((utf8(st.key(p))?, names))
+            })
+            .collect::<PyResult<_>>()?;
+        plan.loaded_order = st.loaded_order.iter().map(|(r, i)| Ok((utf8(r)?, *i))).collect::<PyResult<_>>()?;
+        let mut pre = st.preloaded.items.iter().map(|r| utf8(r)).collect::<PyResult<Vec<_>>>()?;
+        pre.sort();
+        plan.preloaded = pre;
+        plan.changed = changed;
         Ok(())
     }
 }
