@@ -406,6 +406,20 @@ describe('cache with proof: Vitest start-up and resolution', () => {
     cycle(runner, dir, ['a', 'b'].map((n) => F(runner, n)), { 'src/m.mjs': 'export const v = 1;\n' }, [F(runner, 'a')]);
   });
 
+  test("a package.json is a resolution input through its resolution fields only (version and engines are not)", T, () => {
+    const dir = fixture(runner, 'pkgjson', {
+      'pkg/package.json': JSON.stringify({ name: 'pkg', version: '1.0.0', exports: { '.': './src/m.mjs' } }),
+      'pkg/src/m.mjs': 'export const v = 1;\n',
+      ...tfile(runner, 'a', "import { v } from '../pkg/src/m.mjs';\ntest('a', () => { expect(v).toBe(1); });"),
+      ...tfile(runner, 'b', "test('b', () => { expect(1).toBe(1); });"),
+    });
+    const files = ['a', 'b'].map((n) => F(runner, n));
+    cycle(runner, dir, files, { 'pkg/package.json': JSON.stringify({ name: 'pkg', version: '2.0.0', engines: { node: '>=26' }, exports: { '.': './src/m.mjs' } }) }, []);
+    write(dir, { 'pkg/package.json': JSON.stringify({ name: 'pkg', version: '2.0.0', type: 'module', exports: { '.': './src/m.mjs' } }) });
+    const r = crun(runner, dir);
+    assert.deepEqual(ran(r, files), [F(runner, 'a')], show(r));
+  });
+
   test('snapshot files are inputs', T, () => {
     const dir = fixture(runner, 'snapshot', {
       ...tfile(runner, 'snap', "test('s', () => { expect({ a: 1 }).toMatchSnapshot(); });"),

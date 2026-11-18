@@ -205,10 +205,56 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         format!("s:{}", stat_kind(path))
     } else if recorded.starts_with("l:") {
         link_dep(path)
+    } else if recorded.starts_with("p:") {
+        package_resolution_digest(path).map(|d| format!("p:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("g:") {
         stem_listing_digest(path).map(|d| format!("g:{d}")).unwrap_or_else(|| "missing".into())
     } else {
         "unknown".into()
+    }
+}
+
+/// Fields of a package.json that module resolution reads (Node, Vite, bundlers): a package.json is a *resolution*
+/// input through these only; code that reads or imports the file depends on its whole content (recorded apart).
+pub const RESOLUTION_FIELDS: [&str; 11] =
+    ["name", "type", "main", "module", "browser", "exports", "imports", "types", "typings", "jsnext:main", "react-native"];
+
+/// Digest of the resolution fields of a package.json (`None` when missing or not a JSON object: then "missing" or a
+/// whole-content digest is what the caller records).
+pub fn package_resolution_digest(path: &Path) -> Option<String> {
+    let bytes = fs::read(path).ok()?;
+    // raw text of each field: key order inside `exports` (condition order) is significant
+    let obj: HashMap<String, Box<serde_json::value::RawValue>> = serde_json::from_slice(&bytes).ok()?;
+    let mut buf = Vec::new();
+    for k in RESOLUTION_FIELDS {
+        push_part(&mut buf, k);
+        match obj.get(k) {
+            Some(v) => push_part(&mut buf, v.get()),
+            None => push_part(&mut buf, "\u{0}absent"),
+        }
+    }
+    Some(digest_bytes(&buf).short())
+}
+
+#[cfg(test)]
+mod resolution_tests {
+    use super::*;
+
+    #[test]
+    fn package_resolution_fields_only() {
+        let d = tempfile::tempdir().unwrap();
+        let p = d.path().join("package.json");
+        fs::write(&p, r#"{"name":"a","version":"1.0.0","exports":{"import":"./a.mjs","require":"./a.cjs"}}"#).unwrap();
+        let a = package_resolution_digest(&p).unwrap();
+        fs::write(&p, r#"{"name":"a","version":"2.0.0","engines":{"node":">=26"},"exports":{"import":"./a.mjs","require":"./a.cjs"}}"#).unwrap();
+        assert_eq!(package_resolution_digest(&p).unwrap(), a, "version and engines are not resolution fields");
+        fs::write(&p, r#"{"name":"a","exports":{"require":"./a.cjs","import":"./a.mjs"}}"#).unwrap();
+        assert_ne!(package_resolution_digest(&p).unwrap(), a, "condition order is significant");
+        fs::write(&p, r#"{"name":"a","type":"module","exports":{"import":"./a.mjs","require":"./a.cjs"}}"#).unwrap();
+        assert_ne!(package_resolution_digest(&p).unwrap(), a);
+        fs::write(&p, "not json").unwrap();
+        assert_eq!(package_resolution_digest(&p), None);
+        assert_eq!(data_now(&p, "p:x"), "missing");
     }
 }
 

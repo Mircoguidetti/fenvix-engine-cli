@@ -430,7 +430,12 @@ class Capture {
       stem(path.dirname(f), base);
       if (base === 'index' && this.inRoot(path.dirname(f))) stem(path.dirname(path.dirname(f)), path.basename(path.dirname(f)));
       const pkg = this.nearestPackageJson(path.dirname(f));
-      if (pkg) this.add(['data', this.rel(pkg), this.dep('f', pkg)], this.isGlobal);
+      if (pkg) {
+        // resolution reads only some fields (exports, main, type, ...): those are the input; a test that reads or
+        // imports the package.json itself depends on its whole content through that read
+        const x = native.packageResolutionDigest(pkg);
+        this.add(['data', this.rel(pkg), x === null || x === undefined ? this.dep('f', pkg) : `p:${x}`], this.isGlobal);
+      }
     } finally {
       this.busy--;
     }

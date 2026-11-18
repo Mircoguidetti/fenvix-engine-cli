@@ -559,6 +559,11 @@ pub fn data_now(path: String, recorded: String) -> String {
 }
 
 #[napi]
+pub fn package_resolution_digest(path: String) -> Option<String> {
+    pf::package_resolution_digest(std::path::Path::new(&path))
+}
+
+#[napi]
 pub fn stem_listing_digest(path: String) -> Option<String> {
     pf::stem_listing_digest(std::path::Path::new(&path))
 }
