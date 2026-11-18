@@ -169,6 +169,7 @@ def main():
 
     # 3. baseline
     base = {}
+    base_fail_output = {}
     for i in range(a.baseline):
         code, out, err = sh(["go", "test", "-count=1", "-shuffle=on", "-json", f"-timeout={timeout}", *extra, *pkgs],
                             cwd=moddir, env=env, timeout=3600)
@@ -176,10 +177,15 @@ def main():
         for p, tests in res.items():
             for t_, o in tests.items():
                 base.setdefault(f"{p}::{t_}", []).append(o)
+                if o == "failed" and f"{p}::{t_}" not in base_fail_output:
+                    outl = [json.loads(l).get("Output", "") for l in out.splitlines() if l.startswith("{") and
+                            f'"Test":"{t_}' in l and '"Action":"output"' in l]
+                    base_fail_output[f"{p}::{t_}"] = "".join(outl)[-2000:]
         if i == 0 and not res:
             result["baseline_error"] = (out + err)[-3000:]
         log("baseline", i, sum(len(v) for v in res.values()), "tests")
     result["baseline"] = base
+    result["baseline_fail_output"] = base_fail_output
     flush()
 
     def det_run(seed, tag, run_filter=None):
@@ -191,13 +197,40 @@ def main():
         tests, order = read_trace(trace)
         return tests, (out + err)[-1500:]
 
-    # 4. --det seed 0 x3
+    # 4. --det seed 0 x3 (with -json: the failure output of every test is kept for diagnosis)
     det0 = []
+    det0_fail_output = {}
     for r in range(3):
-        tests, tail = det_run(0, f"s0-r{r}")
+        trace = work / f"trace-s0-r{r}.jsonl"
+        code, out, err = sh([a.fenvix, "test", "--det", "--det-seed=0", f"--det-trace={trace}", "-json", f"-timeout={timeout}",
+                             *extra, *pkgs], cwd=moddir, env=env, timeout=3600)
+        tests, _ = read_trace(trace)
         det0.append(tests)
-        if r == 0 and not tests:
-            result["det_error"] = tail
+        if r == 0:
+            if not tests:
+                result["det_error"] = (out + err)[-3000:]
+            lines = {}
+            for line in out.splitlines():
+                try:
+                    ev = json.loads(line)
+                except ValueError:
+                    continue
+                if ev.get("Test") and ev.get("Action") == "output":
+                    k = f"{ev.get('Package')}::{ev['Test'].split('/')[0]}"
+                    lines.setdefault(k, []).append(ev.get("Output", ""))
+            for k, v in tests.items():
+                if v[0] == "failed":
+                    det0_fail_output[k] = "".join(lines.get(k, []))[-2500:]
+    result["det0_fail_output"] = det0_fail_output
+    # verifier over the 3 seed-0 runs: every test whose fingerprint differs, with the first diverging event
+    code, out, err = sh([a.fenvix, "verify", "--json", *[str(work / f"trace-s0-r{r}.jsonl") for r in range(3)]], timeout=600)
+    try:
+        rep = json.loads(out)
+        result["det0_divergences"] = [{"nodeid": t["nodeid"], "status": t["status"], "outcomes": t["outcomes"],
+                                       "divergence": (t.get("divergence") or {})} for t in rep["tests"] if t["status"] != "stable"]
+        result["det0_summary"] = rep.get("summary")
+    except (ValueError, KeyError):
+        result["det0_verify_error"] = (out + err)[-1500:]
     result["det0"] = {k: [d.get(k) for d in det0] for k in set().union(*[d.keys() for d in det0])}
     flush()
     # 5. exploration
