@@ -365,7 +365,8 @@ def main():
     a = ap.parse_args()
     cands = json.load(open(a.candidates))
     c = next(x for x in cands if name_of(x) == a.name)
-    out = os.path.join(a.out, a.name)
+    out = os.path.abspath(os.path.join(a.out, a.name))  # the runs' cwd is the project checkout
+    a.work = os.path.abspath(a.work)
     os.makedirs(out, exist_ok=True)
     res, r = prepare(c, a.work, out, a.max_first_run, a.jdks.split(","))
     json.dump(res, open(os.path.join(out, "prepare.json"), "w"), indent=1)

@@ -130,7 +130,8 @@ def main():
     a = ap.parse_args()
     spec = REPOS[a.repo]
     t_start = time.time()
-    out = os.path.join(a.out, a.repo)
+    a.work = os.path.abspath(a.work)
+    out = os.path.abspath(os.path.join(a.out, a.repo))
     os.makedirs(out, exist_ok=True)
     log = os.path.join(out, f"shard{a.shard}.log")
     repo = os.path.join(a.work, a.repo)
