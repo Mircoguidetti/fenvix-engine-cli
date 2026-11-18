@@ -197,10 +197,19 @@ public final class Det {
         if (TEST == null || RECORDER == 0) return;
         int th = threadNo();
         if (!"time".equals(source)) clockOtherEvent();
+        int[] f = IN_HOOK.get();
+        int prev = f[0];
+        f[0] = 1; // resolving the site may list directories: no nested events
+        String at;
+        try {
+            at = Sites.resolve(site);
+        } finally {
+            f[0] = prev;
+        }
         synchronized (LOCK) {
             if (TEST == null) return;
             BUF.append(th).append('\u001f').append(source).append('\u001f').append(op).append('\u001f')
-                    .append(Sites.resolve(site)).append('\u001f').append(value).append('\u001e');
+                    .append(at).append('\u001f').append(value).append('\u001e');
             if (BUF.length() > 1 << 16) flush();
         }
     }
@@ -604,7 +613,7 @@ public final class Det {
             }
             if (infraThread(t) || VirtualScheduler.isDispatcher(t)) continue;
             Thread.State s = t.getState();
-            if (DEBUG) System.err.println("fenvix-quiet " + self.getName() + " sees " + t.getName() + " " + s);
+            if (DEBUG) System.err.println("fenvix-quiet " + self.getName() + " sees " + t.getName() + " " + s + " " + java.util.Arrays.toString(t.getStackTrace()));
             if (s == Thread.State.WAITING || s == Thread.State.TERMINATED || s == Thread.State.NEW) continue;
             if (s == Thread.State.TIMED_WAITING && (WAITERS.containsKey(t) || waitingInInfra(t))) continue;
             return false;
@@ -618,7 +627,8 @@ public final class Det {
     /**
      * A thread in a timed wait whose innermost non-JDK frame is test
      * infrastructure (JUnit waiting for a preemptive-timeout thread, the runner's
-     * own polling): it is waiting for the test, not working.
+     * own polling), or that has no non-JDK frame at all (an idle JDK pool
+     * thread): it is waiting, not working.
      */
     static boolean waitingInInfra(Thread t) {
         StackTraceElement[] st = t.getStackTrace();
@@ -627,7 +637,8 @@ public final class Det {
             if (c.startsWith("java.") || c.startsWith("jdk.") || c.startsWith("sun.")) continue;
             return Infra.isInfraDotted(c);
         }
-        return false;
+        // only JDK frames: an idle JDK pool thread (ForkJoinPool.awaitWork, a pool worker's keep-alive poll)
+        return true;
     }
 
     /** Threads inside a rewritten timed wait (waiting for another thread, not working). */

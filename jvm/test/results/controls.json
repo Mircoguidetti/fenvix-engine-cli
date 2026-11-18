@@ -1,0 +1,1002 @@
+{
+ "gradle": {
+  "rows": [
+   {
+    "test": "fx.FsControlTest::directoryStream()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.FsControlTest::fileList()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.FsControlTest::fileListFiles()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.FsControlTest::filesList()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.FsControlTest::filesWalk()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.NetControlTest::externalChannelConnectIsRefused()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.NetControlTest::externalConnectIsRefused()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.NetControlTest::externalDnsIsRefused()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.NetControlTest::loopbackIsAllowed()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.OrderControlTest::polluter()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.OrderControlTest::victim()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::collectionsShuffle()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::mathRandom()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::newRandom()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::secureRandom()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::secureRandomStrong()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::splittableRandom()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::threadLocalRandom()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::threadLocalRandomInPool()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::uuid()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SchedControlTest::delayedTaskFiresWithoutWaiting()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SchedControlTest::fixedRateTicksWithoutWaiting()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SchedControlTest::shorterTimeoutStillExpiresFirst()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SchedControlTest::timersFireInDueOrder()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SleepControlTest::busyWaitOnTheClockEnds()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SleepControlTest::threadSleepIsVirtual()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SleepControlTest::timeUnitSleepIsVirtual()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::calendar()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::clockSystemUtc()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::currentTimeMillis()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::instantNow()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::localDateTimeNow()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::nanoTimeDelta()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::newDate()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::zonedDateTimeNow()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.UnchangedTest::arithmetic()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.UnchangedTest::sortedCollections()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.UnchangedTest::stringFormat()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   }
+  ],
+  "verify": "detpy verify: 2 runs, 38 tests\n  run 0: /home/user/fenvix-engine-cli/jvm/test/results/logs/gradle-det-1.jsonl\n  run 1: /home/user/fenvix-engine-cli/jvm/test/results/logs/gradle-det-2.jsonl\norder: identical in every run\ncovered by Level 0: 38  not covered: 0  missing: 0  outcome-unstable: 0\n",
+  "fingerprints_identical": true
+ },
+ "maven": {
+  "rows": [
+   {
+    "test": "fx.FsControlTest::directoryStream()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.FsControlTest::fileList()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.FsControlTest::fileListFiles()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.FsControlTest::filesList()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.FsControlTest::filesWalk()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.NetControlTest::externalChannelConnectIsRefused()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.NetControlTest::externalConnectIsRefused()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.NetControlTest::externalDnsIsRefused()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.NetControlTest::loopbackIsAllowed()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.OrderControlTest::polluter()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.OrderControlTest::victim()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::collectionsShuffle()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::mathRandom()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::newRandom()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::secureRandom()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::secureRandomStrong()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::splittableRandom()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::threadLocalRandom()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::threadLocalRandomInPool()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.RandomControlTest::uuid()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SchedControlTest::delayedTaskFiresWithoutWaiting()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SchedControlTest::fixedRateTicksWithoutWaiting()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SchedControlTest::shorterTimeoutStillExpiresFirst()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SchedControlTest::timersFireInDueOrder()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SleepControlTest::busyWaitOnTheClockEnds()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SleepControlTest::threadSleepIsVirtual()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.SleepControlTest::timeUnitSleepIsVirtual()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::calendar()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::clockSystemUtc()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::currentTimeMillis()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::instantNow()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::localDateTimeNow()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::nanoTimeDelta()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::newDate()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.TimeControlTest::zonedDateTimeNow()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.UnchangedTest::arithmetic()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.UnchangedTest::sortedCollections()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.UnchangedTest::stringFormat()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   }
+  ],
+  "verify": "detpy verify: 2 runs, 38 tests\n  run 0: /home/user/fenvix-engine-cli/jvm/test/results/logs/maven-det-1.jsonl\n  run 1: /home/user/fenvix-engine-cli/jvm/test/results/logs/maven-det-2.jsonl\norder: identical in every run\ncovered by Level 0: 38  not covered: 0  missing: 0  outcome-unstable: 0\n",
+  "fingerprints_identical": true
+ }
+}
