@@ -117,24 +117,58 @@ def main():
         return
     sh(["git", "checkout", "-q", "FETCH_HEAD"], cwd=src)
     env = dict(os.environ)
-    env.setdefault("GOFLAGS", "-mod=mod")
     for k, v in (spec.get("env") or {}).items():
         env[k] = v
-    # 2. packages that contain the documented tests, and their module
+    # 2. packages that contain the documented tests, and their module. A test can be a plain function, a
+    # method run as a subtest of a top-level test (grpc-go: `func (s) TestX(t *testing.T)` under
+    # `func Test(t *testing.T) { grpctest.RunSubTests(t, s{}) }`), or not be found at the pinned commit (then
+    # the package named in the fix commit's title is used and its unstable tests are the targets).
     pkgs, moddir = set(), None
+    toplevel = set()
+    located = {}
+
+    def add_file(f):
+        nonlocal moddir
+        d = (src / f).parent
+        m = d
+        while m != src and not (m / "go.mod").exists():
+            m = m.parent
+        if moddir is None:
+            moddir = m
+        if m != moddir:
+            return None
+        rel = os.path.relpath(d, moddir)
+        pkgs.add("." if rel == "." else "./" + rel)
+        return d
+
     for t in spec["tests"]:
-        code, out, _ = sh(["grep", "-rl", "--include=*_test.go", f"func {t}(", "."], cwd=src)
-        for f in out.split():
-            d = (src / f).parent
-            m = d
-            while m != src and not (m / "go.mod").exists():
-                m = m.parent
-            if moddir is None:
-                moddir = m
-            if m != moddir:
-                continue
-            rel = os.path.relpath(d, moddir)
-            pkgs.add("." if rel == "." else "./" + rel)
+        code, out, _ = sh(["grep", "-rlE", "--include=*_test.go", f"func {t}\\(", "."], cwd=src)
+        if out.split():
+            for f in out.split():
+                add_file(f)
+            toplevel.add(t)
+            located[t] = "function"
+            continue
+        code, out, _ = sh(["grep", "-rlE", "--include=*_test.go", f"func \\([^)]*\\) {t}\\(", "."], cwd=src)
+        if out.split():
+            for f in out.split():
+                d = add_file(f)
+                if d is None:
+                    continue
+                for tf in d.glob("*_test.go"):
+                    text = tf.read_text(errors="replace")
+                    for m in re.finditer(r"^func (Test\w*)\(t \*testing\.T\) \{(.*?)^}", text, re.S | re.M):
+                        if "RunSubTests(" in m.group(2):
+                            toplevel.add(m.group(1))
+            located[t] = "method (subtest of " + ",".join(sorted(toplevel)) + ")"
+            continue
+        title_pkg = spec.get("title", "").split(":")[0].strip()
+        if title_pkg and (src / title_pkg).is_dir() and list((src / title_pkg).glob("*_test.go")):
+            add_file(os.path.join(title_pkg, next((src / title_pkg).glob("*_test.go")).name))
+            located[t] = f"not found; package {title_pkg} from the fix commit title"
+        else:
+            located[t] = "not found"
+    result["located"] = located
     if not pkgs:
         result["status"] = "tests-not-found"
         flush()
@@ -150,7 +184,7 @@ def main():
         return
     imports = out.split()
     result["imports"] = imports
-    targets = {f"{p}::{t}" for p in imports for t in spec["tests"]}
+    targets = {f"{p}::{t}" for p in imports for t in toplevel}
     gv = sh(["go", "env", "GOVERSION"], cwd=moddir, env=env)[1].strip()
     result["go_version"] = gv
     log(spec["repo"], spec["sha"][:10], gv, pkgs)
