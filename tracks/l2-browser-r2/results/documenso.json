@@ -1,0 +1,501 @@
+{
+ "name": "documenso",
+ "repo": "documenso/documenso",
+ "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+ "status": "ok",
+ "run_id": "44275149752",
+ "setup_s": 323,
+ "params": {
+  "baseline": 4,
+  "stress": 2,
+  "serial": 0,
+  "det": 2,
+  "replays": 10,
+  "seeds": 4,
+  "max_targets": 5,
+  "budget_min": 150,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "target_plain": 3,
+  "ablation_tests": 3,
+  "mode": "diagnose"
+ },
+ "pw_dir": "packages/app-tests",
+ "pw_args": [
+  "--project=api",
+  "--project=license"
+ ],
+ "server_outside_runner": true,
+ "runs": [],
+ "epoch": "2026-11-18T09:30:00Z",
+ "measured_at": "2026-11-18T09:30:25Z",
+ "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
+ "diagnosis": [
+  {
+   "key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401 [api]",
+   "file": "admin-find-documents.spec.ts",
+   "grep": "[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401",
+   "project": "api",
+   "known": true,
+   "replays": [
+    "passed",
+    "failed"
+   ],
+   "walls": [
+    9.5,
+    6.4
+   ],
+   "matched_key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401 [api]",
+   "errors": [
+    "PrismaClientKnownRequestError: \nInvalid `prisma.user.create()` invocation:\n\n\nUnique constraint failed on the fields: (`email`)"
+   ],
+   "browser": {
+    "status": "diverged",
+    "distinct_fingerprints": 2,
+    "runs": 2,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 0,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/1:api GET http://localhost:3000/api/auth/csrf -"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "page.random",
+      "at": "",
+      "v": "0/0/0:811c9dc5"
+     },
+     "reason": "sched",
+     "description": "event #0: [sched] sched.io @  = 0/1:api GET http://localhost:3000/api/auth/csrf -  <>  [random] page.random @  = 0/0/0:811c9dc5"
+    }
+   },
+   "server": [
+    {
+     "part": "3a52e2e7daf71113.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 0,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": true,
+      "reasons": {}
+     },
+     "tests": []
+    },
+    {
+     "part": "bd1ec3bf2406f266.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 1,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 1,
+      "outcome_unstable": 0,
+      "order_identical": false,
+      "reasons": {
+       "missing": 1
+      }
+     },
+     "tests": [
+      {
+       "nodeid": "e2e/api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401 [api]",
+       "status": "missing",
+       "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": null,
+        "window": null,
+        "event_a": null,
+        "event_b": null,
+        "reason": "missing",
+        "description": "not executed in run(s) 1"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with numeric value matches by exact recipient ID [api]",
+   "file": "admin-find-documents.spec.ts",
+   "grep": "[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with numeric value matches by exact recipient ID",
+   "project": "api",
+   "known": true,
+   "replays": [
+    "passed",
+    "failed"
+   ],
+   "walls": [
+    8.4,
+    6.4
+   ],
+   "matched_key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with numeric value matches by exact recipient ID [api]",
+   "errors": [
+    "PrismaClientKnownRequestError: \nInvalid `prisma.user.create()` invocation:\n\n\nUnique constraint failed on the fields: (`email`)"
+   ],
+   "browser": {
+    "status": "diverged",
+    "distinct_fingerprints": 2,
+    "runs": 2,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 0,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/1:api GET http://localhost:3000/api/auth/csrf -"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "page.random",
+      "at": "",
+      "v": "0/0/0:811c9dc5"
+     },
+     "reason": "sched",
+     "description": "event #0: [sched] sched.io @  = 0/1:api GET http://localhost:3000/api/auth/csrf -  <>  [random] page.random @  = 0/0/0:811c9dc5"
+    }
+   },
+   "server": [
+    {
+     "part": "3a52e2e7daf71113.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 0,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": true,
+      "reasons": {}
+     },
+     "tests": []
+    },
+    {
+     "part": "bd1ec3bf2406f266.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 1,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 1,
+      "outcome_unstable": 0,
+      "order_identical": false,
+      "reasons": {
+       "missing": 1
+      }
+     },
+     "tests": [
+      {
+       "nodeid": "e2e/api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with numeric value matches by exact recipient ID [api]",
+       "status": "missing",
+       "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": null,
+        "window": null,
+        "event_a": null,
+        "event_b": null,
+        "reason": "missing",
+        "description": "not executed in run(s) 1"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: non-admin authenticated user is rejected with 401 [api]",
+   "file": "admin-search.spec.ts",
+   "grep": "[ADMIN][TRPC][SEARCH]: non-admin authenticated user is rejected with 401",
+   "project": "api",
+   "known": true,
+   "replays": [
+    "passed",
+    "failed"
+   ],
+   "walls": [
+    8.6,
+    6.4
+   ],
+   "matched_key": "admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: non-admin authenticated user is rejected with 401 [api]",
+   "errors": [
+    "PrismaClientKnownRequestError: \nInvalid `prisma.user.create()` invocation:\n\n\nUnique constraint failed on the fields: (`email`)"
+   ],
+   "browser": {
+    "status": "diverged",
+    "distinct_fingerprints": 2,
+    "runs": 2,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 0,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/1:api GET http://localhost:3000/api/auth/csrf -"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "page.random",
+      "at": "",
+      "v": "0/0/0:811c9dc5"
+     },
+     "reason": "sched",
+     "description": "event #0: [sched] sched.io @  = 0/1:api GET http://localhost:3000/api/auth/csrf -  <>  [random] page.random @  = 0/0/0:811c9dc5"
+    }
+   },
+   "server": [
+    {
+     "part": "3a52e2e7daf71113.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 0,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": true,
+      "reasons": {}
+     },
+     "tests": []
+    },
+    {
+     "part": "bd1ec3bf2406f266.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 1,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 1,
+      "outcome_unstable": 0,
+      "order_identical": false,
+      "reasons": {
+       "missing": 1
+      }
+     },
+     "tests": [
+      {
+       "nodeid": "e2e/api/trpc/admin/admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: non-admin authenticated user is rejected with 401 [api]",
+       "status": "missing",
+       "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": null,
+        "window": null,
+        "event_a": null,
+        "event_b": null,
+        "reason": "missing",
+        "description": "not executed in run(s) 1"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims [ui]",
+   "file": "email-transport-claims.spec.ts",
+   "grep": "[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims",
+   "project": "ui",
+   "known": true,
+   "replays": [
+    "passed",
+    "failed"
+   ],
+   "walls": [
+    8.8,
+    3.8
+   ],
+   "matched_key": "email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims [ui]",
+   "errors": [
+    "PrismaClientKnownRequestError: \nInvalid `prisma.user.create()` invocation:\n\n\nUnique constraint failed on the fields: (`email`)"
+   ],
+   "browser": {
+    "status": "diverged",
+    "distinct_fingerprints": 2,
+    "runs": 2,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 0,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/1:api GET http://localhost:3000/api/auth/csrf -"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "page.random",
+      "at": "",
+      "v": "0/0/0:811c9dc5"
+     },
+     "reason": "sched",
+     "description": "event #0: [sched] sched.io @  = 0/1:api GET http://localhost:3000/api/auth/csrf -  <>  [random] page.random @  = 0/0/0:811c9dc5"
+    }
+   },
+   "server": [
+    {
+     "part": "3a52e2e7daf71113.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 0,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": true,
+      "reasons": {}
+     },
+     "tests": []
+    },
+    {
+     "part": "bd1ec3bf2406f266.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 1,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 1,
+      "outcome_unstable": 0,
+      "order_identical": false,
+      "reasons": {
+       "missing": 1
+      }
+     },
+     "tests": [
+      {
+       "nodeid": "e2e/admin/email-transports/email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims [ui]",
+       "status": "missing",
+       "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": null,
+        "window": null,
+        "event_a": null,
+        "event_b": null,
+        "reason": "missing",
+        "description": "not executed in run(s) 1"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]",
+   "file": "delete-recipient.spec.ts",
+   "grep": "[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400",
+   "project": "api",
+   "known": false,
+   "replays": [
+    "passed",
+    "failed"
+   ],
+   "walls": [
+    8.5,
+    6.4
+   ],
+   "matched_key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]",
+   "errors": [
+    "PrismaClientKnownRequestError: \nInvalid `prisma.user.create()` invocation:\n\n\nUnique constraint failed on the fields: (`email`)"
+   ],
+   "browser": {
+    "status": "diverged",
+    "distinct_fingerprints": 2,
+    "runs": 2,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 0,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/1:api GET http://localhost:3000/api/auth/csrf -"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "page.random",
+      "at": "",
+      "v": "0/0/0:811c9dc5"
+     },
+     "reason": "sched",
+     "description": "event #0: [sched] sched.io @  = 0/1:api GET http://localhost:3000/api/auth/csrf -  <>  [random] page.random @  = 0/0/0:811c9dc5"
+    }
+   },
+   "server": [
+    {
+     "part": "3a52e2e7daf71113.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 0,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": true,
+      "reasons": {}
+     },
+     "tests": []
+    },
+    {
+     "part": "bd1ec3bf2406f266.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 1,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 1,
+      "outcome_unstable": 0,
+      "order_identical": false,
+      "reasons": {
+       "missing": 1
+      }
+     },
+     "tests": [
+      {
+       "nodeid": "e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]",
+       "status": "missing",
+       "divergence": {
+        "run_a": 0,
+        "run_b": 0,
+        "index": null,
+        "window": null,
+        "event_a": null,
+        "event_b": null,
+        "reason": "missing",
+        "description": "not executed in run(s) 1"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "elapsed_min": 2.2
+}

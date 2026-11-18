@@ -1,0 +1,137 @@
+{
+ "name": "solid-start",
+ "repo": "solidjs/solid-start",
+ "ref": "68784294b16692adf687c25bcd58c16c8a625cb3",
+ "status": "ok",
+ "run_id": "44275149752",
+ "setup_s": 38,
+ "params": {
+  "baseline": 3,
+  "stress": 1,
+  "serial": 1,
+  "det": 3,
+  "replays": 10,
+  "seeds": 4,
+  "max_targets": 2,
+  "budget_min": 150,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "target_plain": 3,
+  "ablation_tests": 3,
+  "mode": "diagnose"
+ },
+ "pw_dir": "./apps/tests",
+ "pw_args": [
+  "--project=chromium"
+ ],
+ "server_outside_runner": false,
+ "runs": [],
+ "epoch": "2026-11-18T09:24:00Z",
+ "measured_at": "2026-11-18T09:24:13Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "diagnosis": [
+  {
+   "key": "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]",
+   "file": "hydration-navigation.test.ts",
+   "grep": "handles a hash-only change before hydration",
+   "project": "chromium",
+   "known": false,
+   "replays": [
+    "passed",
+    "passed"
+   ],
+   "walls": [
+    7.1,
+    6.0
+   ],
+   "matched_key": "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]",
+   "browser": {
+    "status": "diverged",
+    "distinct_fingerprints": 2,
+    "runs": 2,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 7,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://127.0.0.1:3000 c86c857fb2612b294ff43ecc80245361 501"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://127.0.0.1:3000 e46cb274adb0e936d4bb11e02d77b22d 501"
+     },
+     "reason": "other",
+     "description": "event #7: server.fingerprint @  returned different values: \"http://127.0.0.1:3000 c86c857fb2612b294ff43ecc80245361 501\" vs \"http://127.0.0.1:3000 e46cb274adb0e936d4bb11e02d77b22d 501\""
+    }
+   },
+   "server": [
+    {
+     "part": "093409de2d57b1fb.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 0,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": true,
+      "reasons": {}
+     },
+     "tests": []
+    },
+    {
+     "part": "fb8e69c1b96f5928.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 1,
+      "stable": 0,
+      "diverged": 1,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": true,
+      "reasons": {
+       "fs": 1
+      }
+     },
+     "tests": [
+      {
+       "nodeid": "src/e2e/hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]",
+       "status": "diverged",
+       "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": 156,
+        "window": null,
+        "event_a": {
+         "t": 0,
+         "s": "fs",
+         "o": "fs.readdirSync",
+         "at": "<deps>/@nodelib/fs.scandir/out/providers/sync.js:16",
+         "v": "src/routes|40|3677807af9e6735078c94e426c0d2413"
+        },
+        "event_b": {
+         "t": 0,
+         "s": "time",
+         "o": "Date.now",
+         "at": "<deps>/vite/dist/node/chunks/node.js:3092",
+         "v": "118098589000"
+        },
+        "reason": "fs",
+        "description": "event #156: [fs] fs.readdirSync @ <deps>/@nodelib/fs.scandir/out/providers/sync.js:16 = src/routes|40|3677807af9e6735078c94e426c0d2413  <>  [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 118098589000"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "elapsed_min": 0.2
+}

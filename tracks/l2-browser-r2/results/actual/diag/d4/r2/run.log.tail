@@ -1,0 +1,12 @@
+detjs 0.1.0: Level 2 browser prototype; playwright 1.61.1; seed 0; epoch 2026-11-18T09:25:00Z; vtime=paced; net=on; server=on; workers=1
+[WebServer] (!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+[WebServer]   - `__dirname` (vite.config.mts:7:31). Use `import.meta.dirname` instead
+[WebServer] Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+Running 1 test using 1 worker
+[WebServer] (!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+[WebServer]   - `__dirname` (vite.config.mts:57:31). Use `import.meta.dirname` instead
+[WebServer] Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+·
+  1 passed (36.7s)
+detjs: trace ../../../l2_out/actual/traces/d4-r2.jsonl
