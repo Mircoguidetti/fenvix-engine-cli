@@ -1062,5 +1062,289 @@
    "same_tests": true,
    "ok": true
   }
+ },
+ "junit4-gradle": {
+  "rows": [
+   {
+    "test": "fx4.Junit4ControlTest::currentTimeMillis()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4ControlTest::externalConnectIsRefused()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4ControlTest::listingIsSorted()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4ControlTest::newRandom()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4ControlTest::sleepIsVirtual()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4ControlTest::uuid()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4UnchangedTest::a()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4UnchangedTest::b()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4UnchangedTest::c()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4UnchangedTest::d()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   }
+  ],
+  "verify": "detpy verify: 2 runs, 10 tests\n  run 0: test/results/local/logs/gradle-det-1.jsonl\n  run 1: test/results/local/logs/gradle-det-2.jsonl\norder: identical in every run\ncovered by Level 0: 10  not covered: 0  missing: 0  outcome-unstable: 0\n",
+  "fingerprints_identical": true,
+  "seed_exploration": {
+   "same_order_same_seed": true,
+   "seed5_differs_from_seed0": true,
+   "same_tests": true,
+   "ok": true
+  }
+ },
+ "junit4-maven": {
+  "rows": [
+   {
+    "test": "fx4.Junit4ControlTest::currentTimeMillis()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4ControlTest::externalConnectIsRefused()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4ControlTest::listingIsSorted()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4ControlTest::newRandom()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4ControlTest::sleepIsVirtual()",
+    "kind": "control",
+    "without_det": [
+     "failed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4ControlTest::uuid()",
+    "kind": "control",
+    "without_det": [
+     "passed",
+     "failed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4UnchangedTest::a()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4UnchangedTest::b()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4UnchangedTest::c()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx4.Junit4UnchangedTest::d()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   }
+  ],
+  "verify": "detpy verify: 2 runs, 10 tests\n  run 0: test/results/local/logs/maven-det-1.jsonl\n  run 1: test/results/local/logs/maven-det-2.jsonl\norder: identical in every run\ncovered by Level 0: 10  not covered: 0  missing: 0  outcome-unstable: 0\n",
+  "fingerprints_identical": true,
+  "seed_exploration": {
+   "same_order_same_seed": true,
+   "seed5_differs_from_seed0": true,
+   "same_tests": true,
+   "ok": true
+  }
  }
 }

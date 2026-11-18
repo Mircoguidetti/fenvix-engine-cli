@@ -23,6 +23,7 @@ final class Installer {
         if (dev.fenvix.rt.Compat.javaMajor() >= 9) Modules.open(inst);
         Det.configure();
         if (!Det.ON && !Det.DEPS) return;
+        System.setProperty("junit.jupiter.execution.parallel.enabled", "false");
         if (Det.ON) {
             // JUnit Jupiter configuration parameters (system properties are a source of them)
             setIfAbsent("junit.jupiter.testclass.order.default", "dev.fenvix.junit.DetClassOrderer");

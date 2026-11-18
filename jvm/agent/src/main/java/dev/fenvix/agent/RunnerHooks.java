@@ -18,10 +18,46 @@ import org.objectweb.asm.Opcodes;
  * </ul>
  */
 final class RunnerHooks implements ClassFileTransformer {
+    /**
+     * Jupiter: isParallelExecutionEnabled() returns false, whatever the configuration
+     * (system property, junit-platform.properties, Surefire configurationParameters):
+     * per-test brackets and the capture need one test at a time (found on jsoup).
+     */
+    static byte[] serialJupiter(byte[] bytes) {
+        try {
+            ClassReader cr = new ClassReader(bytes);
+            ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
+            cr.accept(new ClassVisitor(Opcodes.ASM9, cw) {
+                @Override
+                public MethodVisitor visitMethod(int access, String m, String desc, String sig, String[] exc) {
+                    MethodVisitor mv = super.visitMethod(access, m, desc, sig, exc);
+                    if (m.equals("isParallelExecutionEnabled") && desc.equals("()Z")) {
+                        // replace the body: emit "return false", drop the original instructions
+                        mv.visitCode();
+                        mv.visitInsn(Opcodes.ICONST_0);
+                        mv.visitInsn(Opcodes.IRETURN);
+                        mv.visitMaxs(1, 1);
+                        mv.visitEnd();
+                        return null;
+                    }
+                    return mv;
+                }
+            }, 0);
+            return cw.toByteArray();
+        } catch (Throwable t) {
+            System.err.println("fenvix: Jupiter serial hook failed: " + t);
+            return null;
+        }
+    }
+
     static final String HOOK = "dev/fenvix/junit/Junit4Hook";
 
     @Override
     public byte[] transform(ClassLoader loader, String name, Class<?> redefined, ProtectionDomain pd, byte[] bytes) {
+        if ("org/junit/jupiter/engine/config/DefaultJupiterConfiguration".equals(name)
+                || "org/junit/jupiter/engine/config/CachingJupiterConfiguration".equals(name)) {
+            return serialJupiter(bytes);
+        }
         if (!"org/junit/runner/notification/RunNotifier".equals(name) && !"org/junit/runners/ParentRunner".equals(name)) return null;
         try {
             ClassReader cr = new ClassReader(bytes);

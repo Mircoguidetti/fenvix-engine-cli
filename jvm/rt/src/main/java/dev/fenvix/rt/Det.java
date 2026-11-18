@@ -245,8 +245,33 @@ public final class Det {
     /** Threads inside a real sleep slice of Det.sleep. */
     static final java.util.concurrent.ConcurrentHashMap<Thread, Boolean> REAL_SLEEPING = new java.util.concurrent.ConcurrentHashMap<>();
 
+    /** A clock-polling loop runs while another thread works: its clock follows real time. */
+    static boolean pollingOthers;
+    static long lastRealRead;
+
     static long clockRead() {
+        boolean check = false;
         synchronized (CLK) {
+            if (ADAPT_AFTER > 0 && streak >= ADAPT_AFTER && (streak - ADAPT_AFTER) % 1024 == 0) check = true;
+        }
+        // outside the clock lock: looks at the other threads (every 1024 reads of a streak)
+        boolean others = check ? !quiet(Thread.currentThread()) : false;
+        synchronized (CLK) {
+            if (check) {
+                pollingOthers = others;
+                lastRealRead = System.nanoTime();
+            }
+            if (pollingOthers && streak >= ADAPT_AFTER) {
+                // waiting for another thread by polling the clock (a busy deadline loop): advance by
+                // the real time spent, never faster, so the deadline means what it means in real time
+                long now = System.nanoTime();
+                long real = now - lastRealRead;
+                lastRealRead = now;
+                CLOCK_TICK = TICK_NS;
+                elapsed += Math.max(TICK_NS, real);
+                ++streak;
+                return elapsed;
+            }
             elapsed += CLOCK_TICK;
             // no acceleration while a thread sleeps for real: it lets another thread work in
             // real time, and that thread's clock polling must not race ahead of it
@@ -264,8 +289,9 @@ public final class Det {
     }
 
     static void clockOtherEvent() {
-        if (streak == 0 && CLOCK_TICK == TICK_NS) return;
+        if (streak == 0 && CLOCK_TICK == TICK_NS && !pollingOthers) return;
         synchronized (CLK) {
+            pollingOthers = false;
             streak = 0;
             CLOCK_TICK = TICK_NS;
         }
@@ -338,6 +364,7 @@ public final class Det {
     static void clockStartTest() {
         synchronized (CLK) {
             streak = 0;
+            pollingOthers = false;
             CLOCK_TICK = TICK_NS;
             testStart = elapsed;
             wallOffsetNs = EPOCH_MS * 1_000_000L - elapsed;

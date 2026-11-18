@@ -1,0 +1,31 @@
+{
+ "name": "mercury-platform-core",
+ "url": "https://github.com/Accenture/mercury",
+ "sha": "8586dc79f8bf75a929896f0aac03fe95824d9578",
+ "module": "system/platform-core",
+ "status": "build-failed",
+ "build_jdk8_install": {
+  "rc": 1,
+  "seconds": 55.0
+ },
+ "build_jdk8_install_compat": {
+  "rc": 1,
+  "seconds": 52.8
+ },
+ "build_jdk11_install": {
+  "rc": 1,
+  "seconds": 58.7
+ },
+ "build_jdk11_install_compat": {
+  "rc": 1,
+  "seconds": 56.9
+ },
+ "build_jdk17_install": {
+  "rc": 1,
+  "seconds": 55.3
+ },
+ "build_jdk17_install_compat": {
+  "rc": 1,
+  "seconds": 48.8
+ }
+}

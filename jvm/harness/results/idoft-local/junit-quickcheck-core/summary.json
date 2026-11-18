@@ -1,0 +1,41 @@
+{
+ "name": "junit-quickcheck-core",
+ "url": "https://github.com/pholser/junit-quickcheck",
+ "sha": "9361b6dae25b193782604d071754eb7fc566390a",
+ "module": "core",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 484,
+ "documented": 122,
+ "documented_present": 122,
+ "documented_categories": {
+  "ID;NIO": 3,
+  "NIO": 118,
+  "NIO;OD": 1
+ },
+ "documented_reproduced": 3,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 0,
+ "broken_tests": [],
+ "fingerprint_coverage": "734/734",
+ "fingerprint_covered": 734,
+ "fingerprinted": 734,
+ "timing_base_s": [
+  8.276000000000002,
+  9.358,
+  6.326
+ ],
+ "timing_det_s": [
+  3.1959999999999984,
+  5.584999999999998,
+  6.468000000000001
+ ],
+ "slowdown": -0.3252,
+ "seconds": 808.4
+}

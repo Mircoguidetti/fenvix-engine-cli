@@ -1,0 +1,1506 @@
+{
+ "repo": "jsoup",
+ "spec": {
+  "url": "https://github.com/jhy/jsoup",
+  "tool": "maven",
+  "jdk": "17",
+  "before": "2026-11-15"
+ },
+ "shard": 0,
+ "shards": 1,
+ "rows": [
+  {
+   "sha": "d8c49e5ec72a08ca1ac4e08740e70dc0f47ad911",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 38.9,
+   "tests": 1971,
+   "test_ms": 15951,
+   "failed": 0
+  },
+  {
+   "sha": "a682fd5bc8acdf841e5f858e8a19e3d2c92c4df8",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 32.4,
+   "tests": 1999,
+   "test_ms": 14162,
+   "failed": 0,
+   "prev": "d8c49e5ec72a08ca1ac4e08740e70dc0f47ad911",
+   "reused": 421,
+   "verified": 421,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.1063,
+   "share_tests_skipped": 0.2106,
+   "rerun_reasons": {
+    "code": 1543,
+    "network": 4,
+    "prop": 3
+   },
+   "rerun_details": {
+    "code: org/jsoup/parser/HtmlTreeBuilder": 1537,
+    "prop: jsoup.useRe2j": 3,
+    "code: org/jsoup/parser/HtmlTreeBuilderStateTest": 2,
+    "code: org/jsoup/parser/PositionTest": 2,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "92f1aca552548b484bc7d4b94c51e48b8e6eca70",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 41.4,
+   "tests": 1999,
+   "test_ms": 18769,
+   "failed": 0,
+   "prev": "a682fd5bc8acdf841e5f858e8a19e3d2c92c4df8",
+   "reused": 364,
+   "verified": 364,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0324,
+   "share_tests_skipped": 0.1821,
+   "rerun_reasons": {
+    "code": 1628,
+    "network": 4,
+    "prop": 3
+   },
+   "rerun_details": {
+    "code: org/jsoup/parser/Token$TokenType": 1566,
+    "code: org/jsoup/parser/TagSet": 62,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "4a06e755344b1bb18b4877b55f808a12ec5a1af9",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 39.6,
+   "tests": 1999,
+   "test_ms": 18488,
+   "failed": 0,
+   "prev": "92f1aca552548b484bc7d4b94c51e48b8e6eca70",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "config": 1999
+   },
+   "rerun_details": {
+    "config: classpath": 1999
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "db040e7fc208c8bd3d5bcd4281883095f6ad9f20",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 42.3,
+   "tests": 1999,
+   "test_ms": 21095,
+   "failed": 0,
+   "prev": "4a06e755344b1bb18b4877b55f808a12ec5a1af9",
+   "reused": 1912,
+   "verified": 1912,
+   "wrong": [
+    {
+     "test": "org.jsoup.integration.ConnectTest::combinesSameHeadersWithComma()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.8419,
+   "share_tests_skipped": 0.9565,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 82,
+    "not-passed": 1
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 78,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1,
+    "network: dns:custom": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "805e427e82ad670958957f6bc5e8b22ce2a6be04",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 43.3,
+   "tests": 1998,
+   "test_ms": 26030,
+   "failed": 0,
+   "prev": "db040e7fc208c8bd3d5bcd4281883095f6ad9f20",
+   "reused": 1910,
+   "verified": 1910,
+   "wrong": [
+    {
+     "test": "org.jsoup.nodes.ElementTest::cssSelectorWithBracket()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "test": "org.jsoup.parser.HtmlParserTest::handlesControlCodeInAttributeName()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.8982,
+   "share_tests_skipped": 0.956,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 82,
+    "not-passed": 1,
+    "after": 1
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 78,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1,
+    "network: dns:custom": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "46b2dce97de32d43b5a3785bc770c2030537544f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 39.1,
+   "tests": 1999,
+   "test_ms": 17935,
+   "failed": 0,
+   "prev": "805e427e82ad670958957f6bc5e8b22ce2a6be04",
+   "reused": 1909,
+   "verified": 1909,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.8226,
+   "share_tests_skipped": 0.955,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 82,
+    "after": 1,
+    "not-passed": 2
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 78,
+    "prop: jsoup.useRe2j": 3,
+    "not-passed: None": 2,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "a71fc858063290882267e6f3644d042ce8e19f0d",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 38.1,
+   "tests": 1999,
+   "test_ms": 17397,
+   "failed": 0,
+   "prev": "46b2dce97de32d43b5a3785bc770c2030537544f",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 1999
+   },
+   "rerun_details": {
+    "runtime: tool:plugins": 1999
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "4e3811479fdf1cd3ce2c3a8fbc42ffa579b52763",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 38.2,
+   "tests": 2034,
+   "test_ms": 18160,
+   "failed": 0,
+   "prev": "a71fc858063290882267e6f3644d042ce8e19f0d",
+   "reused": 1767,
+   "verified": 1767,
+   "wrong": [
+    {
+     "test": "org.jsoup.nodes.ElementTest::nextElementSibling()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.5791,
+   "share_tests_skipped": 0.8687,
+   "rerun_reasons": {
+    "code": 223,
+    "network": 4,
+    "prop": 4,
+    "after": 1
+   },
+   "rerun_details": {
+    "code: org/jsoup/integration/ConnectTest": 147,
+    "code: org/jsoup/helper/HttpConnectionTest": 42,
+    "code: org/jsoup/helper/HttpConnection": 23,
+    "code: org/jsoup/helper/HttpConnection$KeyVal": 7,
+    "code: org/jsoup/helper/HttpConnection$Base": 3,
+    "prop: jsoup.useRe2j": 3
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "3c8350e2299802991df1b665d5440d2f48a11aa3",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 34.9,
+   "tests": 2039,
+   "test_ms": 17130,
+   "failed": 0,
+   "prev": "4e3811479fdf1cd3ce2c3a8fbc42ffa579b52763",
+   "reused": 1767,
+   "verified": 1767,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.5904,
+   "share_tests_skipped": 0.8666,
+   "rerun_reasons": {
+    "code": 255,
+    "network": 4,
+    "prop": 7,
+    "not-passed": 1
+   },
+   "rerun_details": {
+    "code: org/jsoup/integration/ConnectTest": 181,
+    "code: org/jsoup/helper/HttpConnectionTest": 43,
+    "code: org/jsoup/helper/HttpConnection": 23,
+    "code: org/jsoup/helper/HttpConnection$KeyVal": 7,
+    "prop: jsoup.useHttpClient": 3,
+    "prop: jsoup.useRe2j": 3
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "d24b16d952530f3aefe87e91c344b23fe4b8a7fc",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 38.0,
+   "tests": 2039,
+   "test_ms": 17068,
+   "failed": 0,
+   "prev": "3c8350e2299802991df1b665d5440d2f48a11aa3",
+   "reused": 1931,
+   "verified": 1931,
+   "wrong": [
+    {
+     "test": "org.jsoup.internal.QuietAppendableTest::wrap()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.8218,
+   "share_tests_skipped": 0.947,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 101,
+    "not-passed": 1,
+    "after": 2
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 97,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1,
+    "network: dns:custom": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "fa492001fab9ddd25796adf7997d1dc32d60cb0f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 39.4,
+   "tests": 2039,
+   "test_ms": 18546,
+   "failed": 0,
+   "prev": "d24b16d952530f3aefe87e91c344b23fe4b8a7fc",
+   "reused": 1868,
+   "verified": 1868,
+   "wrong": [
+    {
+     "test": "org.jsoup.parser.HtmlParserTest::emptyNoscriptFallbackDoesNotBlockFrameset()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.819,
+   "share_tests_skipped": 0.9161,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 101,
+    "after": 1,
+    "code": 63,
+    "not-passed": 1
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 97,
+    "code: org/jsoup/safety/CleanerTest": 58,
+    "code: org/jsoup/safety/Cleaner": 5,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "8996fce0844e852b1e8979f5cbdb0699ac540e0a",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 38.1,
+   "tests": 2042,
+   "test_ms": 23373,
+   "failed": 0,
+   "prev": "fa492001fab9ddd25796adf7997d1dc32d60cb0f",
+   "reused": 440,
+   "verified": 440,
+   "wrong": [
+    {
+     "test": "org.jsoup.select.SelectorTest::parseExceptionOnEmptyAbsKey(java.lang.String)[2]",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.063,
+   "share_tests_skipped": 0.2155,
+   "rerun_reasons": {
+    "code": 1568,
+    "network": 4,
+    "prop": 26,
+    "not-passed": 1
+   },
+   "rerun_details": {
+    "code: org/jsoup/nodes/Element": 1546,
+    "prop: jsoup.useHttpClient": 23,
+    "code: org/jsoup/nodes/Document$OutputSettings$Syntax": 13,
+    "code: org/jsoup/nodes/Node": 9,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "be8c37562cffa48c36a0f0bda93fc6502fb79b1f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 38.1,
+   "tests": 2046,
+   "test_ms": 21370,
+   "failed": 0,
+   "prev": "8996fce0844e852b1e8979f5cbdb0699ac540e0a",
+   "reused": 409,
+   "verified": 409,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0305,
+   "share_tests_skipped": 0.1999,
+   "rerun_reasons": {
+    "code": 1624,
+    "network": 4,
+    "prop": 3,
+    "not-passed": 2
+   },
+   "rerun_details": {
+    "code: org/jsoup/parser/Tokeniser": 1475,
+    "code: org/jsoup/parser/HtmlTreeBuilder": 119,
+    "code: org/jsoup/nodes/ElementTest": 14,
+    "code: org/jsoup/parser/TokeniserTest": 13,
+    "prop: jsoup.useRe2j": 3,
+    "not-passed: None": 2
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "3475afc43aae34001dc45f1697dcf3d389ebb9c4",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 42.9,
+   "tests": 2047,
+   "test_ms": 21458,
+   "failed": 0,
+   "prev": "be8c37562cffa48c36a0f0bda93fc6502fb79b1f",
+   "reused": 813,
+   "verified": 813,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.16,
+   "share_tests_skipped": 0.3972,
+   "rerun_reasons": {
+    "code": 1200,
+    "network": 4,
+    "prop": 26,
+    "after": 1,
+    "not-passed": 2
+   },
+   "rerun_details": {
+    "code: org/jsoup/nodes/Attributes": 1165,
+    "code: org/jsoup/select/SelectorTest": 35,
+    "prop: jsoup.useHttpClient": 23,
+    "prop: jsoup.useRe2j": 3,
+    "not-passed: None": 2,
+    "network: dns:system.proxy": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "1fb2c97f34add3bab499bc603848d9c183df37ef",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 43.4,
+   "tests": 2047,
+   "test_ms": 21318,
+   "failed": 0,
+   "prev": "3475afc43aae34001dc45f1697dcf3d389ebb9c4",
+   "reused": 1835,
+   "verified": 1835,
+   "wrong": [
+    {
+     "test": "org.jsoup.integration.ConnectTest::sendsRequestBodyJsonWithoutData()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.7794,
+   "share_tests_skipped": 0.8964,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 50,
+    "code": 157,
+    "not-passed": 1
+   },
+   "rerun_details": {
+    "code: org/jsoup/helper/HttpConnection$KeyVal": 113,
+    "prop: jsoup.useHttpClient": 46,
+    "code: org/jsoup/helper/HttpConnectionTest": 44,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "ec9c8798c08cbddc7c0f03b9c2321b469152a2c9",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 40.6,
+   "tests": 2047,
+   "test_ms": 19489,
+   "failed": 0,
+   "prev": "1fb2c97f34add3bab499bc603848d9c183df37ef",
+   "reused": 1939,
+   "verified": 1939,
+   "wrong": [
+    {
+     "test": "org.jsoup.integration.ProxyTest::fetchViaProxy(java.lang.String)[2]",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.786,
+   "share_tests_skipped": 0.9472,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 101,
+    "not-passed": 2,
+    "after": 1
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 97,
+    "prop: jsoup.useRe2j": 3,
+    "not-passed: None": 2,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "aea4a1b9af15af96f6aab50d51390a1bc68bb3f1",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 42.6,
+   "tests": 2047,
+   "test_ms": 19468,
+   "failed": 0,
+   "prev": "ec9c8798c08cbddc7c0f03b9c2321b469152a2c9",
+   "reused": 1938,
+   "verified": 1938,
+   "wrong": [
+    {
+     "test": "org.jsoup.parser.TagSetTest::canCustomizeSome()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.8361,
+   "share_tests_skipped": 0.9468,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 100,
+    "not-passed": 2,
+    "after": 3
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 96,
+    "prop: jsoup.useRe2j": 3,
+    "not-passed: None": 2,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "0fcc3691ac3b686dc2e90e15c536273c920136d2",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 41.0,
+   "tests": 2047,
+   "test_ms": 18875,
+   "failed": 0,
+   "prev": "aea4a1b9af15af96f6aab50d51390a1bc68bb3f1",
+   "reused": 1938,
+   "verified": 1938,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.8161,
+   "share_tests_skipped": 0.9468,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 101,
+    "after": 3,
+    "not-passed": 1
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 97,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1,
+    "network: dns:custom": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "b86b282eeacaaf2bf1f440b17e713fcbeeafe176",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 36.8,
+   "tests": 2048,
+   "test_ms": 15810,
+   "failed": 0,
+   "prev": "0fcc3691ac3b686dc2e90e15c536273c920136d2",
+   "reused": 1915,
+   "verified": 1915,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.7673,
+   "share_tests_skipped": 0.9351,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 98,
+    "code": 30
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 97,
+    "code: org/jsoup/helper/Re2jRegex": 24,
+    "code: org/jsoup/helper/RegexTest": 6,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "cdb5579d50b32ce464e08260f14dbd3994b05059",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 39.2,
+   "tests": 2048,
+   "test_ms": 18292,
+   "failed": 0,
+   "prev": "b86b282eeacaaf2bf1f440b17e713fcbeeafe176",
+   "reused": 1939,
+   "verified": 1939,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.8373,
+   "share_tests_skipped": 0.9468,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 98,
+    "code": 7
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 97,
+    "code: org/jsoup/helper/RegexTest": 7,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1,
+    "network: dns:custom": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "bb077a8b0da1203cf11d5139967f0d52fe8f5a59",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 37.7,
+   "tests": 2048,
+   "test_ms": 17483,
+   "failed": 0,
+   "prev": "cdb5579d50b32ce464e08260f14dbd3994b05059",
+   "reused": 1941,
+   "verified": 1941,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.8064,
+   "share_tests_skipped": 0.9478,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 101,
+    "after": 2
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 97,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1,
+    "network: dns:custom": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "b25b89a103636cd2082c23dd78768f4eaeda6d65",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 35.4,
+   "tests": 2048,
+   "test_ms": 17003,
+   "failed": 0,
+   "prev": "bb077a8b0da1203cf11d5139967f0d52fe8f5a59",
+   "reused": 1941,
+   "verified": 1941,
+   "wrong": [
+    {
+     "test": "org.jsoup.parser.HtmlParserTest::handlesNestedImplicitTable()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.741,
+   "share_tests_skipped": 0.9478,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 101,
+    "after": 2
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 97,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1,
+    "network: dns:custom": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "0af9c71b54679fa5c8e131032aa11c10d1112f5a",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 45.6,
+   "tests": 2048,
+   "test_ms": 19770,
+   "failed": 0,
+   "prev": "b25b89a103636cd2082c23dd78768f4eaeda6d65",
+   "reused": 1941,
+   "verified": 1941,
+   "wrong": [
+    {
+     "test": "org.jsoup.integration.ConnectTest::bodyAfterParseThrowsValidationError()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.8515,
+   "share_tests_skipped": 0.9478,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 100,
+    "not-passed": 2,
+    "after": 1
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 96,
+    "prop: jsoup.useRe2j": 3,
+    "not-passed: None": 2,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "568b605d74bb413dd31055d7518a2e4ba8981db5",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 39.0,
+   "tests": 2048,
+   "test_ms": 19268,
+   "failed": 1,
+   "prev": "0af9c71b54679fa5c8e131032aa11c10d1112f5a",
+   "reused": 1940,
+   "verified": 1940,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.84,
+   "share_tests_skipped": 0.9473,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 100,
+    "not-passed": 2,
+    "after": 2
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 96,
+    "prop: jsoup.useRe2j": 3,
+    "not-passed: None": 2,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "dd3556768b2b39353a6c3244aba917c3d2e29987",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 42.8,
+   "tests": 2050,
+   "test_ms": 19121,
+   "failed": 0,
+   "prev": "568b605d74bb413dd31055d7518a2e4ba8981db5",
+   "reused": 1834,
+   "verified": 1834,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.6452,
+   "share_tests_skipped": 0.8946,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 5,
+    "code": 203,
+    "resource": 1,
+    "not-passed": 1
+   },
+   "rerun_details": {
+    "code: org/jsoup/integration/ConnectTest": 185,
+    "code: org/jsoup/integration/TestServer$Endpoint": 16,
+    "prop: jsoup.useRe2j": 3,
+    "code: org/jsoup/helper/HttpClientExecutor": 2,
+    "network: dns:system.proxy": 1,
+    "prop: jsoup.useHttpClient": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "9d2241ff467d03accbf902a650adc60513bf5c11",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 48.7,
+   "tests": 2060,
+   "test_ms": 27810,
+   "failed": 0,
+   "prev": "dd3556768b2b39353a6c3244aba917c3d2e29987",
+   "reused": 1783,
+   "verified": 1783,
+   "wrong": [
+    {
+     "test": "org.jsoup.select.StructuralEvaluatorTest::selectorMemoIsClearedOnReset(java.lang.String, boolean)[3]",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.5752,
+   "share_tests_skipped": 0.8655,
+   "rerun_reasons": {
+    "code": 256,
+    "network": 4,
+    "prop": 7
+   },
+   "rerun_details": {
+    "code: org/jsoup/integration/ConnectTest": 187,
+    "code: org/jsoup/helper/HttpConnection": 54,
+    "code: org/jsoup/helper/HttpConnection$KeyVal": 8,
+    "code: org/jsoup/helper/HttpConnection$Response": 7,
+    "prop: jsoup.useHttpClient": 3,
+    "prop: jsoup.useRe2j": 3
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "b6aed3bf2f4fe265099d4c89413435dcd53ab674",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 39.1,
+   "tests": 2077,
+   "test_ms": 18311,
+   "failed": 0,
+   "prev": "9d2241ff467d03accbf902a650adc60513bf5c11",
+   "reused": 423,
+   "verified": 423,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0879,
+   "share_tests_skipped": 0.2037,
+   "rerun_reasons": {
+    "code": 1628,
+    "network": 4,
+    "prop": 3,
+    "not-passed": 2
+   },
+   "rerun_details": {
+    "code: org/jsoup/parser/TreeBuilder": 1619,
+    "code: org/jsoup/parser/HtmlTreeBuilderTest": 9,
+    "prop: jsoup.useRe2j": 3,
+    "not-passed: None": 2,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "34b72bc8412a971c38f59c0e52fcfdb09a286feb",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 52.5,
+   "tests": 0,
+   "test_ms": 0,
+   "failed": 0,
+   "prev": "b6aed3bf2f4fe265099d4c89413435dcd53ab674",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": null,
+   "share_tests_skipped": null,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 107,
+    "after": 1
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 103,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1,
+    "network: dns:custom": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": null
+  },
+  {
+   "sha": "5d9d785f4f6aec8e241e4b3f2d53317021ca7dfc",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 45.5,
+   "tests": 2077,
+   "test_ms": 19611,
+   "failed": 0,
+   "prev": "34b72bc8412a971c38f59c0e52fcfdb09a286feb",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {},
+   "rerun_details": {},
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "8b6d5bbd09f4645f7f13d9bbe73508091f3d8fee",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 51.2,
+   "tests": 2077,
+   "test_ms": 24938,
+   "failed": 0,
+   "prev": "5d9d785f4f6aec8e241e4b3f2d53317021ca7dfc",
+   "reused": 1950,
+   "verified": 1950,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.7715,
+   "share_tests_skipped": 0.9389,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 107,
+    "after": 4,
+    "not-passed": 2,
+    "code": 10
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 103,
+    "code: org/jsoup/parser/HtmlTreeBuilderTest": 10,
+    "prop: jsoup.useRe2j": 3,
+    "not-passed: None": 2,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "89d31b4c87b3270b11031f823a723e2eca0fbcbb",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 51.1,
+   "tests": 2081,
+   "test_ms": 24403,
+   "failed": 0,
+   "prev": "8b6d5bbd09f4645f7f13d9bbe73508091f3d8fee",
+   "reused": 1795,
+   "verified": 1795,
+   "wrong": [
+    {
+     "test": "org.jsoup.nodes.DocumentTest::testHtmlAppendable()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "test": "org.jsoup.nodes.ElementTest::prettyPrintsBlockChildrenWithinEdits(java.lang.String)[2]",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.6515,
+   "share_tests_skipped": 0.8626,
+   "rerun_reasons": {
+    "code": 272,
+    "network": 4,
+    "prop": 4,
+    "not-passed": 2
+   },
+   "rerun_details": {
+    "code: org/jsoup/helper/HttpConnection": 217,
+    "code: org/jsoup/helper/HttpConnectionTest": 44,
+    "code: org/jsoup/helper/HttpConnection$KeyVal": 7,
+    "code: org/jsoup/helper/HttpConnection$Base": 3,
+    "prop: jsoup.useRe2j": 3,
+    "not-passed: None": 2
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "862ba2f1d48ee95609183dbcfc848c9fd7afc76a",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 42.2,
+   "tests": 2084,
+   "test_ms": 19250,
+   "failed": 0,
+   "prev": "89d31b4c87b3270b11031f823a723e2eca0fbcbb",
+   "reused": 1774,
+   "verified": 1774,
+   "wrong": [
+    {
+     "test": "org.jsoup.nodes.DocumentTest::testMetaCharsetUpdateCleanup()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.6472,
+   "share_tests_skipped": 0.8512,
+   "rerun_reasons": {
+    "code": 195,
+    "network": 4,
+    "prop": 98,
+    "not-passed": 3,
+    "after": 7
+   },
+   "rerun_details": {
+    "code: org/jsoup/parser/XmlTreeBuilder": 142,
+    "prop: jsoup.useHttpClient": 95,
+    "code: org/jsoup/parser/XmlTreeBuilderTest": 53,
+    "prop: jsoup.useRe2j": 3,
+    "not-passed: None": 3,
+    "network: dns:system.proxy": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "38ea7f89179094432dcbabb873e7fff407f28c1a",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 44.2,
+   "tests": 2084,
+   "test_ms": 21131,
+   "failed": 0,
+   "prev": "862ba2f1d48ee95609183dbcfc848c9fd7afc76a",
+   "reused": 1953,
+   "verified": 1953,
+   "wrong": [
+    {
+     "test": "org.jsoup.nodes.NodeTest::literalAbsPrefix()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.8017,
+   "share_tests_skipped": 0.9371,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 107,
+    "code": 19,
+    "not-passed": 1
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 103,
+    "code: org/jsoup/helper/Re2jRegex$Re2jMatcher": 19,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "d7ee3f8b2f132930f7f3b2e9c26d0c2675098b7d",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 44.0,
+   "tests": 2086,
+   "test_ms": 23630,
+   "failed": 0,
+   "prev": "38ea7f89179094432dcbabb873e7fff407f28c1a",
+   "reused": 424,
+   "verified": 424,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0728,
+   "share_tests_skipped": 0.2033,
+   "rerun_reasons": {
+    "code": 1652,
+    "network": 4,
+    "prop": 3,
+    "not-passed": 1
+   },
+   "rerun_details": {
+    "code: org/jsoup/parser/Tokeniser": 1515,
+    "code: org/jsoup/parser/TreeBuilder": 125,
+    "code: org/jsoup/parser/HtmlTreeBuilderTest": 11,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "90673664ac4b1e56d8fc1709a95d9df7150bc355",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 43.5,
+   "tests": 2086,
+   "test_ms": 21417,
+   "failed": 0,
+   "prev": "d7ee3f8b2f132930f7f3b2e9c26d0c2675098b7d",
+   "reused": 1972,
+   "verified": 1972,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.8,
+   "share_tests_skipped": 0.9453,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 107,
+    "not-passed": 3
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 103,
+    "prop: jsoup.useRe2j": 3,
+    "not-passed: None": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "e87be9dbf2eb0f484f986ada3a8b6f38372c56b7",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 45.8,
+   "tests": 2092,
+   "test_ms": 21718,
+   "failed": 0,
+   "prev": "90673664ac4b1e56d8fc1709a95d9df7150bc355",
+   "reused": 457,
+   "verified": 457,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0883,
+   "share_tests_skipped": 0.2185,
+   "rerun_reasons": {
+    "code": 1595,
+    "network": 4,
+    "prop": 29,
+    "after": 1
+   },
+   "rerun_details": {
+    "code: org/jsoup/nodes/Node": 1595,
+    "prop: jsoup.useHttpClient": 26,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "209151fddc9ea1be665176a5dd142ab68260af48",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 41.9,
+   "tests": 2106,
+   "test_ms": 20159,
+   "failed": 0,
+   "prev": "e87be9dbf2eb0f484f986ada3a8b6f38372c56b7",
+   "reused": 1752,
+   "verified": 1752,
+   "wrong": [
+    {
+     "test": "org.jsoup.select.SelectorTest::elementsViaNodeInterface()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.6152,
+   "share_tests_skipped": 0.8319,
+   "rerun_reasons": {
+    "code": 233,
+    "network": 4,
+    "prop": 97,
+    "after": 6
+   },
+   "rerun_details": {
+    "code: org/jsoup/parser/XmlTreeBuilder": 141,
+    "prop: jsoup.useHttpClient": 94,
+    "code: org/jsoup/parser/XmlTreeBuilderTest": 56,
+    "code: org/jsoup/helper/W3CDomTest": 21,
+    "code: org/jsoup/helper/W3CDom": 15,
+    "prop: jsoup.useRe2j": 3
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "5ee2e11a8f5b6f3c32b7edef246d5623223aa53e",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 49.6,
+   "tests": 2107,
+   "test_ms": 24693,
+   "failed": 0,
+   "prev": "209151fddc9ea1be665176a5dd142ab68260af48",
+   "reused": 1939,
+   "verified": 1939,
+   "wrong": [
+    {
+     "test": "org.jsoup.integration.ConnectTest::doesNotReplayMultipartStream()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.828,
+   "share_tests_skipped": 0.9203,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 105,
+    "code": 57,
+    "not-passed": 1
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 102,
+    "code: org/jsoup/helper/W3CDomTest": 37,
+    "code: org/jsoup/helper/W3CDom$W3CBuilder": 20,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "b87fd364dc72ab11f088583df2079f26a350fd93",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 43.0,
+   "tests": 2107,
+   "test_ms": 23256,
+   "failed": 0,
+   "prev": "5ee2e11a8f5b6f3c32b7edef246d5623223aa53e",
+   "reused": 1761,
+   "verified": 1761,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.6347,
+   "share_tests_skipped": 0.8358,
+   "rerun_reasons": {
+    "code": 243,
+    "network": 4,
+    "prop": 97,
+    "not-passed": 1,
+    "after": 1
+   },
+   "rerun_details": {
+    "code: org/jsoup/parser/XmlTreeBuilder": 197,
+    "prop: jsoup.useHttpClient": 94,
+    "code: org/jsoup/helper/W3CDom$W3CBuilder": 46,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "179776482f1ffa1b1727c671aa1559d712982d10",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 41.1,
+   "tests": 2107,
+   "test_ms": 18551,
+   "failed": 0,
+   "prev": "b87fd364dc72ab11f088583df2079f26a350fd93",
+   "reused": 1996,
+   "verified": 1996,
+   "wrong": [
+    {
+     "test": "org.jsoup.nodes.AttributeTest::canSetValueToNull()",
+     "module": "",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.799,
+   "share_tests_skipped": 0.9473,
+   "rerun_reasons": {
+    "network": 4,
+    "prop": 107
+   },
+   "rerun_details": {
+    "prop: jsoup.useHttpClient": 103,
+    "prop: jsoup.useRe2j": 3,
+    "network: dns:system.proxy": 1,
+    "network: dns:x": 1,
+    "network: dns:per.request": 1,
+    "network: dns:custom": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  }
+ ]
+}
