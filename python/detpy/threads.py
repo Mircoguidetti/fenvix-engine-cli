@@ -1076,7 +1076,7 @@ def _wrap_start_thread(real):
         if thread_obj is not None:
             thread_obj._detpy_t = t
 
-        def boot(*a, **k):
+        def prologue():
             _tls.t = t
             _state._tls.tkey = t.key
             t.ident = _get_ident()
@@ -1090,12 +1090,35 @@ def _wrap_start_thread(real):
                 _after_wake(t)
                 if CFG.seed and CFG.preempt:
                     _install_tracer(t)
-            try:
-                return function(*a, **k)
-            finally:
-                if CFG.seed and CFG.preempt:
-                    _remove_tracer(t)
-                _exit(t)
+
+        def epilogue():
+            if CFG.seed and CFG.preempt:
+                _remove_tracer(t)
+            _exit(t)
+
+        # The thread starts in C (detpy._core.ThreadEntry): prologue() returns before
+        # the thread's own function runs, so no detpy frame stays under it.
+        try:
+            from ._core import ThreadEntry
+        except ImportError:  # pragma: no cover - older compiled core
+            ThreadEntry = None
+        joinable = "joinable" in getattr(real, "__name__", "")
+        if ThreadEntry is not None and joinable and not args:
+            # _start_joinable_thread(function, handle=..., daemon=...): no arguments
+            # for the function; the keywords are for _thread.
+            boot = ThreadEntry(prologue, function, (), None, epilogue)
+        elif ThreadEntry is not None and not joinable and not kwargs and 1 <= len(args) <= 2 \
+                and isinstance(args[0], tuple) and (len(args) == 1 or isinstance(args[1], (dict, type(None)))):
+            # start_new_thread(function, args[, kwargs])
+            boot = ThreadEntry(prologue, function, args[0], args[1] if len(args) == 2 else None, epilogue)
+            args = ((),)
+        else:  # pragma: no cover - unusual call shapes, older compiled core
+            def boot(*a, **k):
+                prologue()
+                try:
+                    return function(*a, **k)
+                finally:
+                    epilogue()
 
         try:
             res = real(boot, *args, **kwargs)

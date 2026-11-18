@@ -10,7 +10,7 @@ use detpy_core::{backend::EventSink, order, trace, verify as v};
 use pyo3::exceptions::{PyKeyError, PyRecursionError, PyRuntimeError, PyValueError};
 use pyo3::intern;
 use pyo3::prelude::*;
-use pyo3::types::{PyBytes, PyDict, PyString};
+use pyo3::types::{PyBytes, PyDict, PyString, PyTuple};
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicI64, Ordering};
 use std::sync::{Mutex, MutexGuard};
@@ -223,6 +223,60 @@ impl LineMonitor {
             });
         }
         Ok(())
+    }
+}
+
+/// Entry point of a managed thread (`detpy.threads`). Called by `_thread` with no
+/// arguments; it runs `prologue()` (the scheduler's set-up: wait for the baton,
+/// install the line hook), which returns, then calls `function(*args, **kwargs)`
+/// itself, then `epilogue()` whatever happened. A C callable: no detpy frame stays
+/// at the bottom of the thread's stack, so a whole-stack dump of a worker shows
+/// what a plain run shows (review R-007 round 2: a Python `boot` frame stayed
+/// under threading's `_bootstrap`).
+#[pyclass(module = "detpy._core", frozen)]
+struct ThreadEntry {
+    prologue: Py<PyAny>,
+    function: Py<PyAny>,
+    args: Py<PyTuple>,
+    kwargs: Option<Py<PyDict>>,
+    epilogue: Py<PyAny>,
+}
+
+#[pymethods]
+impl ThreadEntry {
+    #[new]
+    #[pyo3(signature = (prologue, function, args, kwargs, epilogue))]
+    fn new(
+        prologue: Py<PyAny>,
+        function: Py<PyAny>,
+        args: Py<PyTuple>,
+        kwargs: Option<Py<PyDict>>,
+        epilogue: Py<PyAny>,
+    ) -> Self {
+        ThreadEntry {
+            prologue,
+            function,
+            args,
+            kwargs,
+            epilogue,
+        }
+    }
+
+    fn __call__(&self, py: Python<'_>) -> PyResult<Py<PyAny>> {
+        let result = match self.prologue.bind(py).call0() {
+            Ok(_) => self
+                .function
+                .bind(py)
+                .call(self.args.bind(py), self.kwargs.as_ref().map(|k| k.bind(py)))
+                .map(|r| r.unbind()),
+            Err(e) => Err(e),
+        };
+        let end = self.epilogue.bind(py).call0();
+        match (result, end) {
+            (Ok(r), Ok(_)) => Ok(r),
+            (Ok(_), Err(e)) => Err(e),
+            (Err(e), _) => Err(e),
+        }
     }
 }
 
@@ -481,6 +535,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<Cassette>()?;
     m.add_class::<LineTracer>()?;
     m.add_class::<LineMonitor>()?;
+    m.add_class::<ThreadEntry>()?;
     m.add_function(wrap_pyfunction!(verify, m)?)?;
     m.add_function(wrap_pyfunction!(verify_text, m)?)?;
     m.add_function(wrap_pyfunction!(derive_seed, m)?)?;
