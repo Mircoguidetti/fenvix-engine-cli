@@ -56,3 +56,33 @@ exact replay of load-induced failures (the scheduler can slow one process on pur
 slowdown on CPU-bound suites (the idle study measured 1.04 to 3.9 busy cores per suite, MEASURED, all of which
 a one-core VM serialises), a custom hypervisor or kernel, and container images instead of the customer's
 runner. The prototype keeps the customer's runner and measures how far process-level control gets.
+
+## Round 2 (P-019): controls added after the diagnosis
+
+The round 2 diagnosis (two `--det` replays of each of 15 real flaky targets, first diverging event below the
+digests) found six sources; each control below has a fixture test in `node/test/l2r2.test.js` that fails with the
+round 1 behaviour and passes with the control.
+
+| Source | Control | Switch |
+|---|---|---|
+| S3 start state (a replay finds the rows of the previous one) | `--det-state=FILE`: files and Postgres databases restored to one snapshot before every run (first run saves it; Postgres via `CREATE DATABASE ... TEMPLATE`); `detjs state save|restore` for servers started before the runner | `--det-state` |
+| S1 server clock and random shared with background work | every message the queue releases is handled in its own async context on the server; clock values = the message's logical instant (epoch + n x 100 ms, n = messages the server received) + reads at the same call site x tick; random from a stream per (test, message, call site) | `DETJS_PW_SCOPE=0` restores round 1 |
+| S2 background jobs in the server fingerprint | the test's server fingerprint is the list of its messages, each digested as the sorted events of its own context; events outside every message context (heartbeats, pool reapers, watchers) are counted, not fingerprinted. WebSocket frames are announced (`/__detjs/frame`) so their handling gets a context too | same |
+| S5 server push vs response order | server-to-page frames are held and delivered at the next virtual-time chunk boundary, after the server is quiet | `DETJS_PW_GATE_PUSH=0` |
+| S4 web workers | `Worker`/`SharedWorker` URLs created by a page are marked; the worker script is served with the seed script prepended | `DETJS_PW_WORKER_SEEDS=0` |
+| S6 final DOM mid-animation | the DOM digest is taken once two snapshots 100 ms apart are equal (at most 10 tries) | `DETJS_PW_SETTLE_MS=0` |
+
+Exploration: with `--det-seed=N` a released message may first wait a seeded number of virtual-time chunks (0, 0, 0,
+1, 5 or 25; `DETJS_PW_LATENCY`), so slow-server schedules are explored and the failing one replays. Every failing
+test prints its replay command (`detjs: replay <test>:` + `npx detjs playwright --det --det-seed=N
+--det-epoch=... [--det-state=...] test <file>:<line> --project=<p>`), also written to `.detjs/replay.txt`.
+
+What the fingerprint now means: the same messages crossed the process boundaries in the same order with the same
+contents (requests, responses, frames), the pages drew the same random values and ended in the same DOM, and the
+server handled every message of the test with the same events and values. The order of events between concurrent
+chains inside one message is not fingerprinted (values no longer depend on it: they are keyed by call site);
+background work is visible only through its effects on later messages.
+
+Known limit (round 2): Playwright actions reach the page after a number of virtual-time chunks that depends on real
+time (the runner is not on the virtual clock). Lockstep time (page time advances only while the runner waits on the
+page, and the runner's own waits are virtual) would close it; see the round 2 report.
