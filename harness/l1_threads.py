@@ -110,7 +110,7 @@ def pytest_run(p, args: list, out_json: Path, timeout: float, trace: Path | None
     stats = dict(zip(("decisions", "switches", "escapes", "deadlocks", "timer_jumps", "managed"),
                      map(int, m.groups()))) if m else None
     return {"exit": code, "duration_s": round(dur, 3), "timed_out": timed_out, "outcomes": outcomes, "fps": fps,
-            "stats": stats, "msgs": msgs, "tail": out[-1500:] if (code not in (0, 1) or timed_out) else "",
+            "stats": stats, "msgs": msgs, "tail": out[-1500:] if (code != 0 or timed_out) else "",
             # A hung run: the faulthandler dump of the stuck test (every thread's stack).
             "hang": _hang_dump(out) if timed_out else ""}
 
@@ -246,6 +246,15 @@ def measure_corpus(project: dict, args) -> dict:
 
 
 # ---------------------------------------------------------------------------
+def broken_runs(timing: list, a: str, b: str) -> list:
+    """Runs of mode b that failed as a session (non-zero exit, no failing test: for
+    example coverage's --cov-fail-under) while no run of the reference mode a did.
+    Per-test comparisons cannot see them (review R-007 FIX 3, arrow under seeds)."""
+    if any(t.get("session_failed") for t in timing if t["mode"] == a):
+        return []
+    return [t["run"] for t in timing if t["mode"] == b and t.get("session_failed")]
+
+
 def _snapshot_mtimes(src: Path) -> dict:
     """File times of the checkout. A test that stamps a repository file with the
     (virtual, identical every run) time leaks into the next run: jinja's
@@ -304,7 +313,12 @@ def measure_suite(project: dict, args) -> dict:
             r = pytest_run(p, suite + flags + [f"-o", f"faulthandler_timeout={args.hang_dump}"],
                            rd / f"suite-{mode}-{i}.json", args.suite_timeout)
             c = collections.Counter(o.split("+", 1)[0] for o in r["outcomes"].values())
+            # A run that exits non-zero with no failing test failed as a session (for
+            # example coverage's --cov-fail-under): no per-test comparison can see it.
+            session_failed = (not r["timed_out"] and r["exit"] != 0
+                              and not any(is_fail(o) for o in r["outcomes"].values()))
             timing.append({"mode": mode, "run": i, "duration_s": r["duration_s"], "exit": r["exit"],
+                           "session_failed": session_failed,
                            "timed_out": r["timed_out"], "counts": dict(c), "stats": r["stats"],
                            "tail": r["tail"][-600:], "hang": r["hang"],
                            "msgs": {t: m for t, m in r["msgs"].items()} if mode.startswith("l1") else {}})
@@ -329,10 +343,19 @@ def measure_suite(project: dict, args) -> dict:
         return {"runs": [len(ra), len(rb)], "broken": broken[:200], "n_broken": len(broken),
                 "sometimes": sometimes[:200], "n_sometimes": len(sometimes)}
 
-    res["broken_by_det"] = compare("plain", "det")
-    res["broken_by_l1"] = compare("det", "l1")
+    def with_runs(a: str, b: str) -> dict:
+        """compare(), plus runs of b that failed as a session (non-zero exit, no
+        failing test) while no run of a did: a broken run (review R-007 FIX 3)."""
+        d = compare(a, b)
+        d["broken_runs"] = broken_runs(timing, a, b)
+        d["n_broken_runs"] = len(d["broken_runs"])
+        d["session_failed_tails"] = [t["tail"][-300:] for t in timing if t["mode"] == b and t.get("session_failed")][:2]
+        return d
+
+    res["broken_by_det"] = with_runs("plain", "det")
+    res["broken_by_l1"] = with_runs("det", "l1")
     for sd in seeds:
-        res[f"broken_by_l1_s{sd}"] = compare("det", f"l1-s{sd}")
+        res[f"broken_by_l1_s{sd}"] = with_runs("det", f"l1-s{sd}")
     unstable = {}
     for mode, rs in per_mode.items():
         tests = set().union(*rs) if rs else set()
@@ -435,6 +458,8 @@ def aggregate(indir: Path, outdir: Path, meta: dict) -> None:
             row["deadlocks"] = max((s["deadlocks"] for s in st), default=None)
             row["tests"] = sum(next((t["counts"] for t in r["timing"] if t["mode"] == "det"), {}).values())
             row["broken_by_det"] = r["broken_by_det"].get("n_broken", 0)
+            for key in [k for k in r if k.startswith("broken_by_")]:
+                row["broken_runs_" + key[len("broken_by_"):]] = r[key].get("n_broken_runs")
             row["broken_by_l1"] = r["broken_by_l1"].get("n_broken", 0)
             row["sometimes_by_l1"] = r["broken_by_l1"].get("n_sometimes", 0)
             for sd in seeds:

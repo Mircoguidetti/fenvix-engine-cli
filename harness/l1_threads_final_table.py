@@ -1,3 +1,5 @@
+"""Final table of the l1-threads-fix rounds: per suite, calm and seed slowdown vs --det,
+broken tests and broken runs, hangs. Usage: RESULTS_DIR ROUNDS(comma, later wins) [OUT_JSON]."""
 import json, glob, statistics, sys
 base = sys.argv[1]  # results dir
 rounds = sys.argv[2].split(",")  # later rounds override earlier ones per suite
@@ -30,14 +32,18 @@ for name in sorted(S):
                hung={m: sum(t["timed_out"] for t in v) for m, v in by.items() if any(t["timed_out"] for t in v)},
                nruns={m: len(v) for m, v in by.items()},
                managed=max((s["managed"] for s in st), default=None), escapes=max((s["escapes"] for s in st), default=None),
-               deadlocks=max((s["deadlocks"] for s in st), default=None))
+               deadlocks=max((s["deadlocks"] for s in st), default=None),
+               broken_runs={k[len("broken_by_"):]: r[k].get("n_broken_runs") for k in r if k.startswith("broken_by_")})
     rows.append(row)
-json.dump(rows, open("/tmp/claude-0/final.json", "w"), indent=1)
+json.dump(rows, open(sys.argv[3] if len(sys.argv) > 3 else "final-table.json", "w"), indent=1)
 for r in rows:
-    print(r["name"], r["round"], r["runs"], r["det"], r["l1"], r["l1_vs_det"], "brk", r["broken_det"], r["broken_l1"], r["some_l1"], r["broken_seeds"], r["some_seeds"], "hung", r["hung"], r["managed"], r["escapes"], r["deadlocks"], r["seed_vs_det"])
+    print(r["name"], r["round"], r["runs"], r["det"], r["l1"], r["l1_vs_det"], "brk", r["broken_det"], r["broken_l1"], r["some_l1"], r["broken_seeds"], r["some_seeds"], "hung", r["hung"], r["managed"], r["escapes"], r["deadlocks"], r["seed_vs_det"], "broken runs", r["broken_runs"])
 h = [r for r in rows if r["name"] in heavy]
 v = [r["l1_vs_det"] for r in h if r["l1_vs_det"] is not None]
 print("heavy:", [(r["name"], r["l1_vs_det"], r["managed"]) for r in h], "median", statistics.median(v) if v else None, "worst", max(v) if v else None)
-sv = [x for r in h for x in r["seed_vs_det"].values() if x is not None]
-print("heavy seeds median", statistics.median(sv) if sv else None, "worst", max(sv) if sv else None)
+# One value per suite (review R-007 FIX 2: pooling counted anyio and requests 3 times
+# each): the median over that suite's seeds.
+sv = [statistics.median(xs) for r in h if (xs := [x for x in r["seed_vs_det"].values() if x is not None])]
+print("heavy seeds (one value per suite):", [(r["name"], r["seed_vs_det"]) for r in h],
+      "median", statistics.median(sv) if sv else None, "worst", max(sv) if sv else None)
 print("by managed:", sorted([(r["managed"] or 0, r["name"]) for r in rows], reverse=True)[:7])

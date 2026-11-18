@@ -67,7 +67,7 @@ jobs:
           pip install -q maturin pytest numpy requests pytest-benchmark uvloop
           maturin develop -q --release
           export TMPDIR=$(mktemp -d)
-          python -m pytest tests -q -p no:randomly 2>&1 | tail -25 >> ../tests.txt || true
+          python -m pytest tests -q -rs -p no:randomly 2>&1 | tail -40 >> ../tests.txt || true
           cat ../tests.txt
       - uses: actions/checkout@v4
         if: always()

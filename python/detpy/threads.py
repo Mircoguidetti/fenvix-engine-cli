@@ -199,6 +199,7 @@ class _Local(threading.local):
     t = None  # the managed record of this thread
     starting = None  # the Thread object being started by this thread
     in_mu = False  # from before acquiring the scheduler lock until after releasing it
+    prev_trace = None  # the trace function line preemption chained to (Python < 3.12)
     holds_mu = False  # this thread holds the scheduler lock
     mu_depth = 0  # nested holds (finalizers run inside the scheduler)
 
@@ -1089,7 +1090,7 @@ def _wrap_start_thread(real):
                 return function(*a, **k)
             finally:
                 if CFG.seed and CFG.preempt:
-                    sys.settrace(None)
+                    _remove_tracer(t)
                 _exit(t)
 
         try:
@@ -1222,12 +1223,15 @@ def _new_budget() -> int:
 
 
 def _install_tracer(t) -> None:
-    """Line preemption in project code (exploration). The trace function is
-    ``detpy._core.LineTracer``, a C callable: a Python trace function runs at the
-    depth of the traced code, so near the recursion limit the test's RecursionError
-    was raised inside it, one frame early (structlog test_recursive checks the last
-    frame of a recursion traceback). The Python fallback below is used only with an
-    older compiled core."""
+    """Line preemption in project code (exploration seeds), for the calling thread.
+
+    Python 3.12+: ``sys.monitoring`` with its own tool id (``detpy._core.LineMonitor``).
+    It leaves ``sys.settrace`` alone: replacing the project's trace function turned
+    coverage off (arrow's ``--cov-fail-under`` failed under seeds, review R-007 FIX 3).
+    Older Pythons: ``sys.settrace`` with ``detpy._core.LineTracer``, chained to the
+    trace function already installed. Both callbacks are C callables: a Python
+    callback runs at the depth of the traced code and moved a test's RecursionError
+    one frame up, inside detpy (structlog test_recursive)."""
 
     def on_budget():
         nb = _new_budget()
@@ -1236,13 +1240,59 @@ def _install_tracer(t) -> None:
             _preempt(t)
         return nb
 
+    mon = _monitor()
+    if mon is not None:
+        mon.enter(on_budget, _new_budget())
+        return
+    prev = sys.gettrace()
+    _tls.prev_trace = prev
     try:
         from ._core import LineTracer
     except ImportError:  # pragma: no cover - older compiled core
         LineTracer = None
     if LineTracer is not None:
-        sys.settrace(LineTracer(_USER_CODE, _is_project_code, on_budget, _new_budget()))
+        mine = LineTracer(_USER_CODE, _is_project_code, on_budget, _new_budget())
+    else:  # pragma: no cover
+        mine = _py_line_tracer(t, on_budget)
+    sys.settrace(mine if prev is None else _chain(prev, mine))
+
+
+def _remove_tracer(t) -> None:
+    mon = _MON["obj"]
+    if mon is not None:
+        mon.leave()
         return
+    sys.settrace(getattr(_tls, "prev_trace", None))
+    _tls.prev_trace = None
+
+
+def _chain(prev, mine):
+    """A global trace function that keeps the project's own (coverage) working and
+    adds ours: each frame gets both local trace functions."""
+
+    def pair(p, m):
+        def local(frame, event, arg):
+            nonlocal p, m
+            if p is not None:
+                p = p(frame, event, arg)
+            if m is not None:
+                m = m(frame, event, arg)
+            return local if (p is not None or m is not None) else None
+        return local
+
+    def call(frame, event, arg):
+        p = prev(frame, event, arg)
+        m = mine(frame, event, arg)
+        if m is None:
+            return p
+        if p is None:
+            return m
+        return pair(p, m)
+
+    return call
+
+
+def _py_line_tracer(t, on_budget):  # pragma: no cover - older compiled core only
     t.budget = _new_budget()
 
     def line(frame, event, arg):
@@ -1265,7 +1315,58 @@ def _install_tracer(t) -> None:
                 return line
         return None
 
-    sys.settrace(call)
+    return call
+
+
+_MON = {"obj": None, "tool": None, "tried": False}
+
+
+def _monitor():
+    """The sys.monitoring line monitor (Python 3.12+), set up on first use; None
+    when unavailable (older Python, older compiled core, no free tool id)."""
+    if _MON["tried"]:
+        return _MON["obj"]
+    _MON["tried"] = True
+    mon = getattr(sys, "monitoring", None)
+    try:
+        from ._core import LineMonitor
+    except ImportError:  # pragma: no cover
+        return None
+    if mon is None:
+        return None
+    for tool in (4, 3):  # not the debugger (0), coverage (1), profiler (2) or optimizer (5) ids
+        if mon.get_tool(tool) is None:
+            break
+    else:
+        return None
+    mon.use_tool_id(tool, "detpy")
+    obj = LineMonitor(_USER_CODE, _is_project_code, mon.set_local_events, tool, mon.events.LINE, mon.DISABLE)
+    mon.register_callback(tool, mon.events.PY_START, obj.py_start)
+    mon.register_callback(tool, mon.events.LINE, obj.line)
+    mon.set_events(tool, mon.events.PY_START)
+    _MON.update(obj=obj, tool=tool)
+    return obj
+
+
+def _monitor_off() -> None:
+    tool = _MON["tool"]
+    if tool is None:
+        return
+    mon = sys.monitoring
+    try:
+        mon.set_events(tool, 0)
+        for code, hit in list(_USER_CODE.items()):
+            if hit:
+                try:
+                    mon.set_local_events(tool, code, 0)
+                except Exception:
+                    pass
+        mon.register_callback(tool, mon.events.PY_START, None)
+        mon.register_callback(tool, mon.events.LINE, None)
+        mon.free_tool_id(tool)
+    except Exception:  # pragma: no cover - defensive
+        pass
+    _MON.update(obj=None, tool=None, tried=False)
 
 
 def _preempt(me) -> None:
@@ -1903,7 +2004,7 @@ def start_test() -> None:
 def end_test() -> None:
     me = _me()
     if me is not None and CFG.seed and CFG.preempt and me.idx == 0:
-        sys.settrace(None)
+        _remove_tracer(me)
 
 
 def uninstall() -> None:
@@ -1930,6 +2031,7 @@ def uninstall() -> None:
     S.timers = []
     S.mu.release()
     _tls.t = None
+    _monitor_off()
     CFG.enabled = False
     _PATCHED["on"] = False
 

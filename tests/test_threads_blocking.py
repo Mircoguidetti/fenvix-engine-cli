@@ -602,3 +602,52 @@ def test_children_alive_sees_children_without_reaping_them():
         time.sleep(0.01)
     assert q.wait(10) == 0
     assert clock._children_alive() is False
+
+
+# Exploration seeds preempt project code with a line tracer. It replaced the
+# project's own trace function (coverage): arrow's --cov-fail-under failed under
+# every seed (review R-007 FIX 3). The project's tracer must keep working.
+KEEP_TRACER_CONFTEST = r'''
+import sys, threading
+
+SEEN = []
+
+def tracer(frame, event, arg):
+    if event == "call" and frame.f_code.co_name == "target_function":
+        SEEN.append(frame.f_code.co_name)
+    return None
+
+def pytest_configure(config):
+    sys.settrace(tracer)
+    threading.settrace(tracer)
+'''
+
+KEEP_TRACER = r'''
+import sys, threading
+from conftest import SEEN, tracer
+
+def target_function():
+    return 1
+
+def test_project_tracer_still_sees_calls():
+    w = threading.Thread(target=lambda: None)  # a second thread: preemption is on
+    w.start()
+    for _ in range(50):
+        target_function()
+    w.join()
+    if sys.version_info >= (3, 12):  # sys.monitoring: settrace is not touched at all
+        assert sys.gettrace() is tracer
+    assert len(SEEN) >= 50
+
+def test_and_after_the_previous_test():
+    n = len(SEEN)
+    target_function()
+    assert len(SEEN) == n + 1
+'''
+
+
+@pytest.mark.parametrize("seed", [0, 1, 2])
+def test_preemption_keeps_the_projects_trace_function(pytester, seed):
+    pytester.makeconftest(KEEP_TRACER_CONFTEST)
+    result, _ = _run(pytester, KEEP_TRACER, f"--det-threads-seed={seed}", timeout=60)
+    result.assert_outcomes(passed=2)

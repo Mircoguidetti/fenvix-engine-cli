@@ -108,6 +108,124 @@ impl LineTracer {
     }
 }
 
+thread_local! {
+    /// Per-thread state of [`LineMonitor`]: the budget callback and the lines left.
+    static MON_THREAD: std::cell::RefCell<Option<(Py<PyAny>, i64)>> = const { std::cell::RefCell::new(None) };
+}
+
+/// Line preemption through `sys.monitoring` (Python 3.12+), for exploration seeds.
+/// Unlike `sys.settrace` it does not replace the project's own trace function
+/// (coverage: arrow's `--cov-fail-under` failed under seeds, review R-007 FIX 3).
+/// Its callbacks are C callables (no Python frame, as with [`LineTracer`]).
+///
+/// * `py_start(code, offset)`: project code (per code object, `cache` filled by
+///   `classify`) gets LINE events through `set_local_events`; the PY_START event
+///   is then disabled at that location.
+/// * `line(code, line)`: in a thread that called `enter`, one unit of its budget;
+///   at zero `on_budget()` returns the next one (and may switch threads). Other
+///   threads are ignored. A RecursionError of the callback is swallowed.
+#[pyclass(module = "detpy._core", frozen)]
+struct LineMonitor {
+    cache: Py<PyDict>,
+    classify: Py<PyAny>,
+    set_local_events: Py<PyAny>,
+    tool: i64,
+    line_event: i64,
+    disable: Py<PyAny>,
+}
+
+#[pymethods]
+impl LineMonitor {
+    #[new]
+    fn new(
+        cache: Py<PyDict>,
+        classify: Py<PyAny>,
+        set_local_events: Py<PyAny>,
+        tool: i64,
+        line_event: i64,
+        disable: Py<PyAny>,
+    ) -> Self {
+        LineMonitor {
+            cache,
+            classify,
+            set_local_events,
+            tool,
+            line_event,
+            disable,
+        }
+    }
+
+    /// The calling thread starts counting lines.
+    fn enter(&self, on_budget: Py<PyAny>, budget: i64) {
+        MON_THREAD.with(|c| *c.borrow_mut() = Some((on_budget, budget.max(1))));
+    }
+
+    /// The calling thread stops counting lines.
+    fn leave(&self) {
+        let old = MON_THREAD.with(|c| c.borrow_mut().take());
+        drop(old);
+    }
+
+    fn py_start(
+        &self,
+        py: Python<'_>,
+        code: &Bound<'_, PyAny>,
+        _offset: &Bound<'_, PyAny>,
+    ) -> PyResult<Py<PyAny>> {
+        let hit = match self.cache.bind(py).get_item(code)? {
+            Some(v) => v.is_truthy()?,
+            None => match self.classify.bind(py).call1((code,)) {
+                Ok(v) => v.is_truthy()?,
+                Err(e) if is_recursion_error(py, &e) => return Ok(py.None()),
+                Err(e) => return Err(e),
+            },
+        };
+        if hit {
+            self.set_local_events
+                .bind(py)
+                .call1((self.tool, code, self.line_event))?;
+        }
+        Ok(self.disable.clone_ref(py))
+    }
+
+    fn line(
+        &self,
+        py: Python<'_>,
+        _code: &Bound<'_, PyAny>,
+        _line: &Bound<'_, PyAny>,
+    ) -> PyResult<()> {
+        // Count without holding the borrow across the Python call below.
+        let due = MON_THREAD.with(|c| {
+            let mut b = c.borrow_mut();
+            match b.as_mut() {
+                Some((cb, left)) => {
+                    *left -= 1;
+                    if *left <= 0 {
+                        *left = 1;
+                        Some(cb.clone_ref(py))
+                    } else {
+                        None
+                    }
+                }
+                None => None,
+            }
+        });
+        if let Some(cb) = due {
+            let next = match cb.bind(py).call0() {
+                Ok(nb) => nb.extract::<i64>().unwrap_or(1).max(1),
+                Err(e) if is_recursion_error(py, &e) => 1,
+                Err(e) => return Err(e),
+            };
+            MON_THREAD.with(|c| {
+                if let Some((_, left)) = c.borrow_mut().as_mut() {
+                    *left = next;
+                }
+            });
+        }
+        Ok(())
+    }
+}
+
 /// Per-test fingerprinting recorder that streams a trace file.
 #[pyclass(module = "detpy._core")]
 struct Recorder {
@@ -362,6 +480,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<Recorder>()?;
     m.add_class::<Cassette>()?;
     m.add_class::<LineTracer>()?;
+    m.add_class::<LineMonitor>()?;
     m.add_function(wrap_pyfunction!(verify, m)?)?;
     m.add_function(wrap_pyfunction!(verify_text, m)?)?;
     m.add_function(wrap_pyfunction!(derive_seed, m)?)?;
