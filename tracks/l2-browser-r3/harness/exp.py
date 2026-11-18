@@ -366,12 +366,16 @@ elif JOB == "e5":
     R["e5_prepare"] = {"rc": rc, "log": out[-1500:]}
     ft = EPOCH.replace("T", " ").replace("Z", "")
     R["e5"] = []
-    for vname, fake in (("control", ""), ("frozen", ft), ("tick", f"@{ft} i0.001")):
+    for vname, fake in [v for v in (("control", ""), ("start", f"@{ft}"), ("frozen", ft), ("tick", f"@{ft} i0.001"))
+                        if v[0] in P.get("variants", ["control", "frozen", "tick"])]:
         if rc != 0 and fake:
             break
         rc2, out2 = fn("e5_db", fake, timeout=600)
-        V = {"variant": vname, "faketime": fake, "db_rc": rc2, "db_now": out2.strip()[-200:], "targets": []}
+        V = {"variant": vname, "faketime": fake, "db_rc": rc2, "db_now": out2.strip()[-200:], "db_log": out2[-3000:] if rc2 else "", "targets": []}
         R["e5"].append(V)
+        if rc2 != 0:
+            save()
+            continue
         os.environ["E5_FAKETIME"] = fake
         for spec in CFG["r3"]["e5_targets"]:
             T = {**spec, "replays": [], "errors": []}

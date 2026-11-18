@@ -25,17 +25,22 @@ e5_prepare() {  # once: libfaketime on the runner and a Postgres 15 image with i
 }
 
 e5_db() {  # e5_db [FAKETIME]: restart the database container on the same data volume, with or without libfaketime
-  local vol img=postgres:15 env=()
+  # Round 3 second attempt: LD_PRELOAD only on the postgres command (not the container env, which docker exec and the
+  # entrypoint inherit); container logs kept on failure (first attempt: no server, no log).
+  local vol img=postgres:15 cmd=(postgres)
   vol=$(cat "$L2_OUT/pg-volume")
   if [ -n "${1:-}" ]; then
     img=pg-faketime
-    env=(-e "LD_PRELOAD=$FAKELIB" -e "FAKETIME=$1" -e FAKETIME_DONT_FAKE_MONOTONIC=1 -e FAKETIME_NO_CACHE=1)
+    cmd=(env "LD_PRELOAD=$FAKELIB" "FAKETIME=$1" FAKETIME_DONT_FAKE_MONOTONIC=1 FAKETIME_NO_CACHE=1 postgres)
   fi
   docker rm -f database >/dev/null 2>&1 || true
   docker run -d --name database -p 54320:5432 -v "$vol:/var/lib/postgresql/data" \
-    -e POSTGRES_USER=documenso -e POSTGRES_PASSWORD=password -e POSTGRES_DB=documenso "${env[@]}" "$img" >/dev/null
-  wait_cmd 90 docker exec database pg_isready -U documenso
+    -e POSTGRES_USER=documenso -e POSTGRES_PASSWORD=password -e POSTGRES_DB=documenso "$img" "${cmd[@]}" >/dev/null
+  if ! wait_cmd 90 docker exec database pg_isready -U documenso; then
+    docker ps -a --filter name=database
+    docker logs database 2>&1 | tail -40
+    return 1
+  fi
   sleep 2
-  wait_cmd 60 docker exec database pg_isready -U documenso
-  docker exec database psql -U documenso -tAc "select now()" | tee "$L2_OUT/pg-now"
+  docker exec database psql -U documenso -tAc "select now(), clock_timestamp()" | tee "$L2_OUT/pg-now"
 }
