@@ -2,23 +2,24 @@
  "name": "etherpad",
  "repo": "ether/etherpad-lite",
  "ref": "263e4a5b5977c0abffbc70d2aea243a721e9c053",
- "status": "ok",
- "run_id": "44279789112",
- "setup_s": 29,
+ "status": "running",
+ "run_id": "44283131715",
+ "setup_s": 25,
  "params": {
-  "baseline": 4,
-  "stress": 2,
+  "baseline": 3,
+  "stress": 0,
   "serial": 1,
   "det": 2,
   "replays": 10,
-  "seeds": 4,
+  "seeds": 8,
   "max_targets": 3,
-  "budget_min": 150,
+  "budget_min": 320,
   "run_timeout_min": 45,
   "target_timeout_min": 8,
   "target_plain": 3,
-  "ablation_tests": 3,
-  "mode": "diagnose"
+  "ablation_tests": 2,
+  "diagnose_first": true,
+  "fail_replays": 10
  },
  "pw_dir": "src",
  "pw_args": [
@@ -26,8 +27,8 @@
  ],
  "server_outside_runner": true,
  "runs": [],
- "epoch": "2026-11-18T09:53:00Z",
- "measured_at": "2026-11-18T09:53:58Z",
+ "epoch": "2026-11-18T10:14:00Z",
+ "measured_at": "2026-11-18T10:14:43Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "diagnosis": [
   {
@@ -37,203 +38,15 @@
    "project": "chromium",
    "known": true,
    "replays": [
-    "passed",
-    "passed"
+    "timedOut"
    ],
    "walls": [
-    4.2,
-    3.7
+    91.2
    ],
    "matched_key": "embed_value.spec.ts::embed links::when read only option is set::the embed as iframe code is an iframe with the correct url parameters and correct size [chromium]",
-   "browser": {
-    "status": "diverged",
-    "distinct_fingerprints": 2,
-    "runs": 2,
-    "divergence": {
-     "run_a": 0,
-     "run_b": 1,
-     "index": 53,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
-      "at": "",
-      "v": "http://localhost:9001 5542bf605f3cbd6c41bcd276ecae33e2 89"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
-      "at": "",
-      "v": "http://localhost:9001 6be93a5c19bb01e49e69721a83631b36 87"
-     },
-     "reason": "other",
-     "description": "event #53: server.fingerprint @  returned different values: \"http://localhost:9001 5542bf605f3cbd6c41bcd276ecae33e2 89\" vs \"http://localhost:9001 6be93a5c19bb01e49e69721a83631b36 87\""
-    }
-   },
-   "server": [
-    {
-     "part": "093409de2d57b1fb.jsonl",
-     "summary": {
-      "runs": 2,
-      "tests": 0,
-      "stable": 0,
-      "diverged": 0,
-      "missing": 0,
-      "outcome_unstable": 0,
-      "order_identical": true,
-      "reasons": {}
-     },
-     "tests": []
-    },
-    {
-     "part": "8bb92e2ed9ba7ebe.jsonl",
-     "summary": {
-      "runs": 2,
-      "tests": 1,
-      "stable": 0,
-      "diverged": 1,
-      "missing": 0,
-      "outcome_unstable": 0,
-      "order_identical": true,
-      "reasons": {
-       "time": 1
-      }
-     },
-     "tests": [
-      {
-       "nodeid": "tests/frontend-new/specs/embed_value.spec.ts::embed links::when read only option is set::the embed as iframe code is an iframe with the correct url parameters and correct size [chromium]",
-       "status": "diverged",
-       "divergence": {
-        "run_a": 0,
-        "run_b": 1,
-        "index": 10,
-        "window": null,
-        "event_a": {
-         "t": 0,
-         "s": "time",
-         "o": "Date.now",
-         "at": "<deps>/tsx/dist/register-B1c7OH6V.cjs:19",
-         "v": "3000"
-        },
-        "event_b": {
-         "t": 0,
-         "s": "time",
-         "o": "process.hrtime",
-         "at": "<deps>/measured-core/lib/util/Stopwatch.js:46",
-         "v": "2000"
-        },
-        "reason": "time",
-        "description": "event #10: [time] Date.now @ <deps>/tsx/dist/register-B1c7OH6V.cjs:19 = 3000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 2000"
-       }
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "key": "embed_value.spec.ts::embed links::URL encoding of pad names::share link encodes special characters in pad name [chromium]",
-   "file": "embed_value.spec.ts",
-   "grep": "share link encodes special characters in pad name",
-   "project": "chromium",
-   "known": false,
-   "replays": [
-    "passed",
-    "passed"
-   ],
-   "walls": [
-    3.8,
-    3.5
-   ],
-   "matched_key": "embed_value.spec.ts::embed links::URL encoding of pad names::share link encodes special characters in pad name [chromium]",
-   "browser": {
-    "status": "diverged",
-    "distinct_fingerprints": 2,
-    "runs": 2,
-    "divergence": {
-     "run_a": 0,
-     "run_b": 1,
-     "index": 42,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "random",
-      "o": "page.random",
-      "at": "",
-      "v": "22/1/0:ef32be65"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "random",
-      "o": "page.random",
-      "at": "",
-      "v": "21/1/0:3f38f77c"
-     },
-     "reason": "random",
-     "description": "event #42: page.random @  returned different values: \"22/1/0:ef32be65\" vs \"21/1/0:3f38f77c\""
-    }
-   },
-   "server": [
-    {
-     "part": "093409de2d57b1fb.jsonl",
-     "summary": {
-      "runs": 2,
-      "tests": 0,
-      "stable": 0,
-      "diverged": 0,
-      "missing": 0,
-      "outcome_unstable": 0,
-      "order_identical": true,
-      "reasons": {}
-     },
-     "tests": []
-    },
-    {
-     "part": "8bb92e2ed9ba7ebe.jsonl",
-     "summary": {
-      "runs": 2,
-      "tests": 1,
-      "stable": 0,
-      "diverged": 1,
-      "missing": 0,
-      "outcome_unstable": 0,
-      "order_identical": true,
-      "reasons": {
-       "time": 1
-      }
-     },
-     "tests": [
-      {
-       "nodeid": "tests/frontend-new/specs/embed_value.spec.ts::embed links::URL encoding of pad names::share link encodes special characters in pad name [chromium]",
-       "status": "diverged",
-       "divergence": {
-        "run_a": 0,
-        "run_b": 1,
-        "index": 17,
-        "window": null,
-        "event_a": {
-         "t": 0,
-         "s": "time",
-         "o": "process.hrtime",
-         "at": "<deps>/measured-core/lib/util/Stopwatch.js:46",
-         "v": "2000"
-        },
-        "event_b": {
-         "t": 0,
-         "s": "time",
-         "o": "Date",
-         "at": "src/node/utils/Minify.ts:208",
-         "v": "1000"
-        },
-        "reason": "time",
-        "description": "event #17: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 2000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 1000"
-       }
-      }
-     ]
-    }
+   "errors": [
+    "Test timeout of 90000ms exceeded while running \"beforeEach\" hook."
    ]
   }
- ],
- "elapsed_min": 0.8
+ ]
 }
