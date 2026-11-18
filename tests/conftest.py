@@ -42,6 +42,6 @@ def _clean_env(monkeypatch, pyc_cache):
     monkeypatch.delenv("PYTHONHASHSEED", raising=False)
     # The cache audit (default 5% of the reusable results run fresh) would make the reuse counts of the other suites
     # random: off unless a test asks for it (tests/test_cache_audit.py).
-    monkeypatch.setenv("FENVIX_CACHE_AUDIT", "0")
+    monkeypatch.setenv("FENVIX_AUDIT_SHARE", "0")
     for var in ("http_proxy", "https_proxy", "all_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY"):
         monkeypatch.delenv(var, raising=False)

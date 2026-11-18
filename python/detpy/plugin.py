@@ -69,7 +69,7 @@ def pytest_addoption(parser, pluginmanager):
                 help="run this random fraction of the reusable tests anyway and compare with the cached result")
     g.addoption("--det-cache-audit", default=None, metavar="SHARE",
                 help="cache audit: run this seeded random share of the results that would be reused with proof "
-                     "fresh instead, and compare (outcome, test ids); 0.05 or 5%% (default: FENVIX_CACHE_AUDIT, "
+                     "fresh instead, and compare (outcome, test ids); 0.05 or 5%% (default: FENVIX_AUDIT_SHARE, "
                      "else 5%%; 0 turns it off). A mismatch that a second fresh run reproduces is a wrong skip: "
                      "its key is marked untrusted")
     g.addoption("--det-cache-audit-seed", default=None, metavar="SEED",

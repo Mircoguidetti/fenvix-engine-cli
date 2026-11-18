@@ -178,7 +178,7 @@ def test_seed_in_the_receipts_reproduces_the_choice(pytester, run_cache):
 
 
 def test_default_share_is_five_percent(pytester, run_cache, monkeypatch):
-    monkeypatch.delenv("FENVIX_CACHE_AUDIT", raising=False)
+    monkeypatch.delenv("FENVIX_AUDIT_SHARE", raising=False)
     write(pytester.path, {"pytest.ini": "[pytest]\n",
                           "test_m.py": "".join(f"def test_{i}():\n    pass\n\n" for i in range(200))})
     run_cache()
@@ -353,3 +353,17 @@ def test_fenvix_run_counts_audited_tests_as_run_and_reports_the_audit(tmp_path):
 def test_bounds_agree_between_the_core_and_the_service():
     for n, k in [(0, 0), (1, 0), (3, 0), (300, 0), (2, 1), (100, 1), (1000, 5), (50, 7), (10, 10)]:
         assert cs.upper_bound_95(n, k) == pytest.approx(_core.audit_upper_bound(n, k), abs=1e-9), (n, k)
+
+
+def test_the_javascript_reference_chooses_like_the_core():
+    """detjs (Node) chooses the same tests as the Rust core for the same seed: one audit rule in every shell."""
+    import shutil
+
+    node = shutil.which("node")
+    if node is None:
+        pytest.skip("node is not installed")
+    cases = [(f"seed-{i % 7}", f"tests/test_{i % 13}.py::test_{i}[é{i}]", (0.05, 0.3, 0.5, 1.0, 0.0)[i % 5])
+             for i in range(3000)]
+    ref = Path(__file__).resolve().parents[1] / "docs" / "audit" / "chosen.mjs"
+    out = subprocess.run([node, str(ref), "--check"], input=json.dumps(cases), capture_output=True, text=True, check=True)
+    assert json.loads(out.stdout) == [_core.audit_chosen(s, t, x) for s, t, x in cases]

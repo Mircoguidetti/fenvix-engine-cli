@@ -1603,9 +1603,9 @@ class ProofCachePlugin:
 
 
 def audit_share(value) -> float:
-    """``--det-cache-audit`` value as a fraction: ``0.05``, ``5%``; None -> ``FENVIX_CACHE_AUDIT``, else 5%."""
+    """``--det-cache-audit`` value as a fraction: ``0.05``, ``5%``; None -> ``FENVIX_AUDIT_SHARE``, else 5%."""
     if value is None or value == "":
-        value = os.environ.get("FENVIX_CACHE_AUDIT", "") or "0.05"
+        value = os.environ.get("FENVIX_AUDIT_SHARE", "") or "0.05"
     v = str(value).strip()
     try:
         x = float(v[:-1]) / 100 if v.endswith("%") else float(v)

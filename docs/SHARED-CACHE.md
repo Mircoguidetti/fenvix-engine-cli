@@ -101,6 +101,16 @@ FENVIX_CACHE_TOKEN=... pytest --det --det-cache=https://cache.example/acme/repo
   the path cannot substitute content under a known address. A candidate must list its test's own file among its
   inputs (floor check; every entry the engine records does).
 
+## Untrusted keys (cache audit)
+
+A cache audit (`docs/CACHE-AUDIT.md`) that finds a wrong skip marks its proof key **untrusted**. The client pushes the
+mark before any entry (`POST /v1/ns/<ns>/untrusted`, any token of the organization: a mark only stops reuse); a lookup
+then leaves out every entry filed under that key before the mark, and returns entries filed after it (a fresh run
+that recorded the key again). `GET /v1/ns/<ns>/untrusted` lists the marks; `GET /v1/audit` sums the audit counts of
+the runs per namespace and over all of them, with the 95% upper bound on the wrong-skip rate. Stores created before
+the audit get the `untrusted` table and the `keys.proof_key` column on start; their old key rows have no proof key, so
+only the client's own check (local marks) covers them.
+
 ## Measured (see the session reports)
 
 GitHub-hosted machines, workflow `.github/workflows/fenvix-shared-cache.yml` (pygments, click, marshmallow; job 2 on
