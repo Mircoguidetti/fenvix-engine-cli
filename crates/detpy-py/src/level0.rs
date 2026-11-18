@@ -391,7 +391,7 @@ pub fn clock_state(py: Python<'_>) -> PyResult<Bound<'_, PyDict>> {
 // Event recording (`_state.record`) and call sites (`_sites.resolve`)
 
 #[derive(Clone, Copy, PartialEq, Eq)]
-enum Kind {
+pub(crate) enum Kind {
     Stdlib,
     Infra,
     User,
@@ -403,7 +403,7 @@ type Norm = (Py<PyAny>, Kind, Result<String, ()>);
 
 /// What `_state.record` reads: the `STATE` object, `_state`'s and `_sites`' module globals (`_event_listener`,
 /// `_on_other_event`; `_cache`, `_classify`) and the kind constants of `_sites`.
-struct Hub {
+pub(crate) struct Hub {
     state: Py<PyAny>,
     state_globals: Py<PyDict>,
     sites_globals: Py<PyDict>,
@@ -529,7 +529,7 @@ pub fn l0_is_busy() -> bool {
     BUSY.with(|b| b.get())
 }
 
-fn hub() -> PyResult<Arc<Hub>> {
+pub(crate) fn hub() -> PyResult<Arc<Hub>> {
     lock(&HUB).clone().ok_or_else(|| PyRuntimeError::new_err("detpy._state not configured"))
 }
 
@@ -539,13 +539,13 @@ fn global<'py>(py: Python<'py>, d: &Py<PyDict>, k: &Bound<'py, PyString>) -> PyR
         .ok_or_else(|| pyo3::exceptions::PyNameError::new_err(format!("name '{k}' is not defined")))
 }
 
-fn back<'py>(f: &Bound<'py, PyAny>) -> PyResult<Option<Bound<'py, PyAny>>> {
+pub(crate) fn back<'py>(f: &Bound<'py, PyAny>) -> PyResult<Option<Bound<'py, PyAny>>> {
     let b = f.getattr(intern!(f.py(), "f_back"))?;
     Ok(if b.is_none() { None } else { Some(b) })
 }
 
 /// `"{norm}:{f.f_lineno}"`.
-fn site_of(f: &Bound<'_, PyAny>, norm: &str) -> PyResult<String> {
+pub(crate) fn site_of(f: &Bound<'_, PyAny>, norm: &str) -> PyResult<String> {
     let n = unsafe { ffi::PyFrame_GetLineNumber(f.as_ptr().cast()) };
     if n >= 0 {
         return Ok(format!("{norm}:{n}"));
@@ -556,7 +556,7 @@ fn site_of(f: &Bound<'_, PyAny>, norm: &str) -> PyResult<String> {
 
 impl Hub {
     /// `_sites._classify(filename)` through `_sites._cache` (the same cache the Python callers use).
-    fn classify(&self, py: Python<'_>, filename: &Bound<'_, PyAny>) -> PyResult<(Kind, Result<String, ()>)> {
+    pub(crate) fn classify(&self, py: Python<'_>, filename: &Bound<'_, PyAny>) -> PyResult<(Kind, Result<String, ()>)> {
         let g = self.sites_globals.bind(py);
         let cache = g.get_item(intern!(py, "_cache"))?;
         let mut hit = None;

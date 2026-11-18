@@ -384,11 +384,21 @@ pub struct SocketScan {
     prev: Mutex<Option<HashMap<String, String>>>,
 }
 
+impl SocketScan {
+    pub(crate) fn create() -> Self {
+        SocketScan { prev: Mutex::new(None) }
+    }
+
+    pub(crate) fn scan_now(&self, py: Python<'_>) -> bool {
+        self.scan(py)
+    }
+}
+
 #[pymethods]
 impl SocketScan {
     #[new]
     fn new() -> Self {
-        SocketScan { prev: Mutex::new(None) }
+        SocketScan::create()
     }
 
     /// Scan the descriptors; True when an internet socket appeared since the last scan (False at the first scan,

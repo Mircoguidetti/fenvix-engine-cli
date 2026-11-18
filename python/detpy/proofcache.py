@@ -39,7 +39,7 @@ import platform
 import random
 import sys
 import time
-from types import CodeType, FunctionType
+from types import FunctionType
 
 import pytest
 
@@ -148,161 +148,26 @@ _CO_OPTIMIZED = 0x1
 
 
 # ---------------------------------------------------------------------------
-class Capture:
-    """Records, per context, executed code, data reads, environment reads and events."""
+class Capture(_core.CaptureCore):
+    """Records, per context, executed code, data reads, environment reads and events.
+
+    The capture itself is Rust (``_core.CaptureCore``, ``crates/detpy-py/src/capture.rs``): the audit hook, reads
+    and writes, contexts and switches, environment reads, Level 0 events, the arming of code objects. This class
+    keeps what is interface: ``sys.monitoring`` and audit-hook registration, the ``sqlite3.connect`` patch and the
+    child follower's crediting. The Python original is ``tests/rust_hotpaths_ref/_ref_proofcache.py``.
+    """
+
+    def __new__(cls, root: str, env0: dict, hot: int = 16):
+        return super().__new__(cls, os.path.realpath(root), env0, hot, _DETPY_DIR, _RESUME, sorted(_PRELUDE),
+                               _CODE_LEVEL, (os.O_RDONLY, os.O_WRONLY, os.O_RDWR, os.O_CREAT, os.O_EXCL, os.O_TRUNC,
+                                             _O_TMPFILE))
 
     def __init__(self, root: str, env0: dict, hot: int = 16):
-        self.root = os.path.realpath(root)
-        self.root_sep = self.root + os.sep
-        self.env0 = env0
-        self.ctx = ""
-        self.ctx_ix: dict[str, int] = {"": 0}
-        self.ctx_names: list[str] = [""]
-        self.segs: list[tuple[int, int]] = [(0, 0)]
-        self.tool = None
-        self.rec = None
         self.hot = hot
-        self._wanted: dict[str, bool] = {}
-        self.fid: dict[str, int] = {}
-        self.fnames: list[str] = []  # fid -> path relative to root
-        self._armed: set[int] = set()
-        self._events: dict[int, int] = {}
-        self.preloaded: set[str] = set()
-        # per context: data deps {path: dep}, flags
-        self.data: dict[int, dict[str, str]] = {}
-        self.env: dict[int, set] = {}
-        self.flags: dict[int, set] = {}  # "net", "spawn", "proc", "time", "entropy", "netrec", "foreign:<path>"
-        self.why: dict[tuple, str] = {}  # (context, flag) -> first occurrence (what and where), for the reports
-        self.writers: dict[str, set] = {}  # abs path -> context indices that wrote it
-        self._hashed: dict[str, str] = {}  # abs path -> dep at first read in the session
-        # repository code file (abs path) -> stat key when its source was first read (open by the import system,
-        # before the read) or its module body first ran: a file changed after that ran other code than the one
-        # its digest at the end of the session says (review R-015 F1)
-        self.code_stat: dict[str, list | None] = {}
-        self.loaded_order: list[tuple[str, int]] = []  # (rel module file, index of the test after which it was seen)
-        self._seen_mods: set[str] = set()
-        self._nmods = 0
-        self.basetemp: str | None = None
-        self.site_dirs: tuple = ()
-        self.stdlib_dirs: tuple = ()
-        self.dist_info_ok: tuple = ()
-        self.import_ctx = -1  # pseudo context for import-time data/env/flags
-        self.active = False
-        self._socks = _core.SocketScan()  # socket descriptors at the last scan
         self.follower: follow.Follower | None = None
-        self.child_entropy = 0  # entropy draws of followed children (not controlled, not refused)
-        self.children = 0  # followed children (spawn calls)
-        self.timeline: list[tuple[float, int]] = [(_now(), 0)]  # (real time, context) at every switch
+        self._sqlite_saved: list = []
 
-    # -- contexts -------------------------------------------------------------
-    def ctx_index(self, name: str) -> int:
-        i = self.ctx_ix.get(name)
-        if i is None:
-            i = self.ctx_ix[name] = len(self.ctx_names)
-            self.ctx_names.append(name)
-        return i
-
-    def switch(self, name: str) -> None:
-        if name == self.ctx:
-            return
-        if self.active:
-            # startup sockets (pytest, plugins, the runner) are the baseline; the scan's own reads are not inputs
-            self.active = False
-            try:
-                self._scan_sockets(self.ctx_index(self.ctx) if self.ctx else None)
-            finally:
-                self.active = True
-        self.ctx = name
-        _core.l0_listener_reset()
-        i = self.ctx_index(name)
-        self.timeline.append((_now(), i))
-        if self.rec is None:
-            return
-        n = len(self.rec)
-        if self.segs[-1][1] == n:
-            self.segs[-1] = (i, n)
-        else:
-            self.segs.append((i, n))
-        hot = self.rec.switch()
-        if hot:
-            set_local, tool, ev = _mon.set_local_events, self.tool, self._events
-            for code in hot:
-                set_local(tool, code, 0)
-                set_local(tool, code, ev[id(code)])
-
-    def _cur(self) -> int:
-        if self.rec is not None and self.rec.import_depth:
-            return self._import_ctx()
-        return self.ctx_ix[self.ctx]
-
-    def _import_ctx(self) -> int:
-        """Import time: the context of the innermost repository module body running (``i|<path>``).
-
-        A test module's import-time reads serve only its own tests (unless another module imports it); any
-        other module's are inputs of every test (``_record_all`` decides).
-        """
-        f = _getframe(2)
-        while f is not None:
-            c = f.f_code
-            if c.co_name == "<module>" and self._want(c.co_filename):
-                return self.ctx_index("i|" + self.fnames[self.fid[c.co_filename]])
-            f = f.f_back
-        return self.import_ctx
-
-    # -- code ---------------------------------------------------------------------
-    def _want(self, filename: str) -> bool:
-        w = self._wanted.get(filename)
-        if w is None:
-            w = False
-            if filename and not filename.startswith("<"):
-                try:
-                    p = os.path.realpath(os.path.abspath(filename))
-                except (OSError, ValueError):
-                    p = ""
-                w = p.startswith(self.root_sep) and not any(s in p for s in _SKIP_PARTS)
-                if w:
-                    self.fid[filename] = len(self.fnames)
-                    self.fnames.append(p[len(self.root_sep):].replace(os.sep, "/"))
-            self._wanted[filename] = w
-        return w
-
-    def arm(self, code) -> None:
-        stack = [code]
-        set_local, tool = _mon.set_local_events, self.tool
-        LINE, START, RET = _mon.events.LINE, _mon.events.PY_START, _mon.events.PY_RETURN
-        while stack:
-            c = stack.pop()
-            if id(c) in self._armed:
-                continue
-            fn = c.co_filename
-            w = self._wanted.get(fn)
-            if w is None:
-                w = self._want(fn)
-            if not w:
-                continue
-            self._armed.add(id(c))
-            e = entry_line(c)
-            module = c.co_name == "<module>"
-            rep = None
-            if _CODE_LEVEL and not module and c.co_flags & _CO_OPTIMIZED and not c.co_flags & _CO_PLAIN_EXCLUDE:
-                rep = rep_line(c)
-            if rep is not None:
-                ev = START
-                self._events[id(c)] = ev
-                self.rec.add_code(c, self.fid[fn], -1, False, rep)
-                set_local(tool, c, ev)
-                stack.extend(k for k in c.co_consts if isinstance(k, CodeType))
-                continue
-            ev = LINE
-            if e is not None or module:
-                ev |= START
-            if module:
-                ev |= RET
-            self._events[id(c)] = ev
-            self.rec.add_code(c, self.fid[fn], -1 if e is None else e, module)
-            set_local(tool, c, ev)
-            stack.extend(k for k in c.co_consts if isinstance(k, CodeType))
-
+    # -- start and stop -----------------------------------------------------------------
     def start(self) -> None:
         for tid in (_mon.COVERAGE_ID, 4, 3, 2, 5):
             if _mon.get_tool(tid) is None:
@@ -313,22 +178,19 @@ class Capture:
         _mon.use_tool_id(self.tool, "detpy-cache")
         self.rec = _core.LineRecorder(_mon.DISABLE, self.hot)
         self.import_ctx = self.ctx_index("i")
-        self.ctx = ""
         lst = _state._event_listener  # the object the Rust event path calls (a bound method is made per access)
         _core.l0_listener_memo(lst if lst is not None and lst == self.event else None, self.rec)
         _mon.register_callback(self.tool, _mon.events.LINE, self.rec.line)
         _mon.register_callback(self.tool, _mon.events.PY_START, self.rec.start)
         _mon.register_callback(self.tool, _mon.events.PY_RETURN, self.rec.ret)
         self.active = True
-        _core.set_audit_hook(self._audit, _AUDIT_EVENTS)
+        _core.set_audit_hook(self.audit, _AUDIT_EVENTS)
         self._patch_sqlite()
         # code that exists before the start: modules already loaded become whole-content inputs
         pre = False
         for m in list(sys.modules.values()):
             f = getattr(m, "__file__", None)
-            if f and self._want(f):
-                self.preloaded.add(self.fnames[self.fid[f]])
-                self._note_code(f)
+            if f and self.note_preloaded(f):
                 pre = True
         if pre:
             import gc
@@ -357,264 +219,7 @@ class Capture:
             _mon.free_tool_id(self.tool)
             self.tool = None
 
-    # -- sockets opened in C ----------------------------------------------------------
-    def _scan_sockets(self, ctx: int | None) -> None:
-        """Internet sockets that appeared among this process's descriptors since the last scan.
-
-        Sockets a C extension opens (libpq, grpc, libcurl, ...) raise no audit event; one still open when its
-        test or fixture ends is seen here and makes the context uncacheable. (The scan of /proc is in Rust:
-        ``_core.SocketScan``.)
-        """
-        if self._socks.scan() and ctx is not None:
-            self.flag(ctx, "csock", "an internet socket left open")
-
-    # -- data, environment, events ------------------------------------------------------
-    def _caller_kind(self) -> str:
-        """'import' (the import system), 'infra' (pytest, detpy, ...) or 'user', from the calling frames."""
-        try:
-            f = _getframe(2)  # 0 this function, 1 the audit callback, 2 the code that raised the event
-        except ValueError:
-            return "user"
-        while f is not None:
-            fn = f.f_code.co_filename
-            if fn.startswith("<frozen importlib") or fn.startswith("<frozen zipimport"):
-                return "import"
-            if fn.startswith(_DETPY_DIR):  # detpy's own wrappers (network, fsorder, ...) are transparent
-                f = f.f_back
-                continue
-            kind, _ = _sites._classify(fn)
-            if kind == _sites._USER:
-                return "user"
-            if kind == _sites._INFRA:
-                return "infra"
-            f = f.f_back
-        return "user"
-
-    def _abs(self, p) -> str | None:
-        if isinstance(p, int) or p is None:
-            return None
-        try:
-            s = os.fsdecode(os.fspath(p))
-        except (TypeError, ValueError):
-            return None
-        if not s:
-            return None
-        if not os.path.isabs(s):
-            try:
-                s = os.path.join(os.getcwd(), s)
-            except OSError:
-                return None
-        return os.path.normpath(s)
-
-    def _ignored(self, p: str) -> bool:
-        if any(s in p for s in _SKIP_DATA):
-            return True
-        if self.basetemp and (p == self.basetemp or p.startswith(self.basetemp + os.sep)):
-            return True
-        for d in self.site_dirs:
-            if p.startswith(d):
-                return not any(p.startswith(x) for x in self.dist_info_ok)
-        return any(p.startswith(d) for d in self.stdlib_dirs) or p == os.devnull
-
-    def _note_code(self, filename: str) -> None:
-        p = self._abs(filename)
-        if p is not None and p not in self.code_stat:
-            self.code_stat[p] = _stat_key(p)
-
-    def changed_code(self) -> list:
-        """Repository code files (relative paths) changed since their source was first read or their module body
-        first ran in this session."""
-        out = set()
-        for p, k in self.code_stat.items():
-            if _stat_key(p) == k:
-                continue
-            try:
-                r = os.path.realpath(p)
-            except (OSError, ValueError):
-                continue
-            if r.startswith(self.root_sep):
-                out.add(r[len(self.root_sep):].replace(os.sep, "/"))
-        return sorted(out)
-
-    def _key(self, p: str) -> str:
-        return p[len(self.root_sep):] if p.startswith(self.root_sep) else p
-
-    def read(self, ctx: int, p: str, kind: str) -> None:
-        """A read of ``p`` (kind f = file content, d = listing) in context ``ctx``."""
-        if not _encodable(p):
-            self.flags.setdefault(ctx, set()).add("badpath")
-            return
-        if kind == "m":
-            kind = "f"  # a machine identity file under /sys read on purpose (uuid.getnode): its content is the input
-        elif p.startswith(("/proc/", "/sys/", "/dev/")) and not p.startswith("/dev/shm/") \
-                and (kind != "d" and os.path.exists(p)):
-            # the content of a pseudo-file (process state, kernel tunables, a device) is not a file's content;
-            # a listing (device enumeration such as /dev/bus/usb) and a missing path are ordinary inputs
-            self.flag(ctx, "proc", p)
-            return
-        if p in self.writers:
-            # reads what code of this session wrote: allowed only if every writer is credited to the reader
-            self.flags.setdefault(ctx, set()).add("rw:" + p)
-            return
-        hk = kind + p
-        dep = self._hashed.get(hk)
-        if dep is None:
-            if kind == "d":
-                d = _core.listing_digest(p)
-                dep = f"d:{d}" if d is not None else "missing"
-            else:
-                d = _core.file_digest(p)
-                dep = f"f:{d}" if d is not None else ("missing" if not os.path.exists(p) else "s:" + (
-                    "dir" if os.path.isdir(p) else "other"))
-            self._hashed[hk] = dep
-        self.data.setdefault(ctx, {})[self._key(p)] = dep
-
-    def wrote(self, ctx: int, p: str) -> None:
-        self.writers.setdefault(p, set()).add(ctx)
-        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p)):
-            self._hashed.pop(k, None)
-
-    def _audit(self, event, args):
-        if not self.active:
-            return
-        if event == "exec":
-            # every module body (import, runpy, exec) passes here before it runs; the functions and classes
-            # it defines are nested code objects, armed with it
-            code = args[0] if args else None
-            if isinstance(code, CodeType):
-                if code.co_name == "<module>" and self._want(code.co_filename):
-                    self._note_code(code.co_filename)
-                if id(code) not in self._armed and self.tool is not None:
-                    self.arm(code)
-            return
-        if event == "open":
-            p = self._abs(args[0] if args else None)
-            if p is None:
-                return
-            mode, flags = (args[1] if len(args) > 1 else None), (args[2] if len(args) > 2 else 0)
-            if p.endswith(".py") and p.startswith(self.root_sep) and p not in self.code_stat and (
-                    ("r" in mode and "+" not in mode) if isinstance(mode, str)
-                    else isinstance(flags, int) and flags & _O_ACC == os.O_RDONLY):
-                # before the read: the source the import system (or pytest's rewrite, runpy...) is about to read
-                self.code_stat[p] = _stat_key(p)
-            if self._ignored(p):
-                return
-            if _O_TMPFILE and isinstance(flags, int) and flags & _O_TMPFILE == _O_TMPFILE:
-                return  # an unnamed temporary file in that directory (NamedTemporaryFile): nothing visible changes
-            if isinstance(mode, str):
-                reads = "r" in mode or "+" in mode
-                writes = any(ch in mode for ch in "wax+")
-                trunc = "w" in mode or "x" in mode  # "x": created here, nothing to read
-            else:
-                acc = (flags or 0) & _O_ACC
-                reads = acc in (os.O_RDONLY, os.O_RDWR)
-                writes = acc in (os.O_WRONLY, os.O_RDWR) or bool((flags or 0) & os.O_CREAT)
-                # O_CREAT|O_EXCL (NamedTemporaryFile, mkstemp): the file did not exist, so it is an output only
-                trunc = bool((flags or 0) & os.O_TRUNC) or (flags or 0) & (os.O_CREAT | os.O_EXCL) == (
-                    os.O_CREAT | os.O_EXCL)
-            kind = self._caller_kind()
-            if kind in ("import", "infra"):
-                return
-            ctx = self._cur()
-            if reads and not trunc:
-                self.read(ctx, p, "f")
-            if writes:
-                self.wrote(ctx, p)
-        elif event == "sqlite3.connect":
-            # sqlite opens the database read-write in C (no "open" event): its committed content is an input
-            db = args[0] if args else None
-            if isinstance(db, (str, bytes, os.PathLike)) and os.fsdecode(db) not in ("", ":memory:") \
-                    and not os.fsdecode(db).startswith("file:"):
-                p = self._abs(db)
-                if p is not None and not self._ignored(p) and self._caller_kind() not in ("import", "infra"):
-                    ctx = self._cur()
-                    self.read(ctx, p, "f")
-                    self.wrote(ctx, p)
-        elif event in ("os.listdir", "os.scandir"):
-            if self._caller_kind() != "user":
-                return
-            p = self._abs(args[0] if args and args[0] is not None else ".")
-            if p is None or self._ignored(p):
-                return
-            self.read(self._cur(), p, "d")
-        elif event in ("socket.connect", "socket.sendto", "socket.sendmsg"):
-            # every connection counts, loopback included: a loopback port can be an HTTP(S) proxy to the outside
-            # (HTTPS_PROXY=http://127.0.0.1:...) or a service the test process tree did not start
-            if self._caller_kind() == "infra":
-                return
-            if event == "socket.sendmsg" and len(args) > 1 and args[1] is None and self._both_ends_mine(args[0]):
-                return  # a write on a connected socket whose peer is a socket of this process
-            if event == "socket.connect" and self._own_listener(args):
-                # a server this process runs (aiohttp's test server, an in-process HTTP stub): what it answers is
-                # computed by recorded code from recorded inputs. A loopback port of another process (a proxy, a
-                # database, a sidecar) stays a network input.
-                return
-            self.flag(self._cur(), "connect", f"{event} {_addr(args)} at {_first_user_site()}")
-        elif event in ("socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr"):
-            # a name lookup (DNS, /etc/hosts) is an input from outside; numeric addresses are not
-            host = args[0] if args else None
-            if isinstance(host, bytes):
-                host = host.decode("ascii", "replace")
-            if not isinstance(host, str) or not host or _numeric_host(host) or self._caller_kind() == "infra":
-                return
-            self.flag(self._cur(), "dns", f"{event} {host} at {_first_user_site()}")
-        elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
-            if self._caller_kind() == "infra":
-                return
-            fo = self.follower
-            if event == "subprocess.Popen" and _is_find_library_ldconfig(args):
-                # ctypes.util.find_library (uuid, ifaddr, ... at import time) asks `ldconfig -p`, which prints the
-                # dynamic linker's cache: that file is the input. (Not followed: ldconfig is a static binary, so the
-                # clock shim cannot load into it.)
-                self.read(self._cur(), _LD_SO_CACHE, "f")
-                if fo is not None:
-                    fo.announce(self._cur(), None, False)
-                return
-            if event == "subprocess.Popen" and _called_from(_UUID_PY):
-                # uuid.getnode() runs `ip link`, `ifconfig`, `arp`... to find this machine's MAC address: the
-                # machine's network identity is the input (each interface's name and address), not a process
-                ctx = self._cur()
-                self.read(ctx, "/sys/class/net", "d")
-                try:
-                    for name in sorted(os.listdir("/sys/class/net")):
-                        self.read(ctx, f"/sys/class/net/{name}/address", "m")
-                except OSError:
-                    pass
-                if fo is not None:
-                    fo.announce(ctx, None, False)
-                return
-            if event == "subprocess.Popen" and fo is not None:
-                # the fork_exec that follows runs it under strace and records its inputs (or refuses the context
-                # when following is off or unavailable). find_library's helpers (gcc, ld, objdump) are followed for
-                # their files, but a real-clock read there is not refused: find_library returns the path of a
-                # library file matched in their output (DECLARED by ctypes/util.py)
-                fo.announce(self._cur(), _spawn_detail(event, args), True, _called_from(_CTYPES_UTIL))
-                return
-            self.flag(self._cur(), "spawn", _spawn_detail(event, args))
-        else:
-            idx = _WRITE_EVENTS.get(event)
-            if idx is None or self._caller_kind() == "infra":
-                return
-            ctx = self._cur()
-            for i in idx:
-                p = self._abs(args[i] if len(args) > i else None)
-                if p is not None and not self._ignored(p):
-                    self.wrote(ctx, p)
-
-    def _own_listener(self, args) -> bool:
-        self.active = False  # the check's own /proc reads are not inputs
-        try:
-            return _own_listener(args)
-        finally:
-            self.active = True
-
-    def _both_ends_mine(self, sock) -> bool:
-        self.active = False
-        try:
-            return _both_ends_mine(sock)
-        finally:
-            self.active = True
-
+    # -- sqlite ----------------------------------------------------------------------------
     def _patch_sqlite(self) -> None:
         """review R-009 F4: sqlite evaluates 'now' (date('now'), CURRENT_TIMESTAMP, date() without a time value) on
         the real clock in C. Every connection made through sqlite3.connect traces its statements; one that may read
@@ -643,17 +248,6 @@ class Capture:
     def _sql_trace(self, statement) -> None:
         if self.active and isinstance(statement, str) and _SQL_REAL_CLOCK.search(statement):
             self.flag(self._cur(), "rclock", f"sqlite: {statement.strip()[:80]} at {_first_user_site()}")
-
-    def flag(self, ctx: int, flag: str, detail: str | None = None) -> None:
-        fl = self.flags.setdefault(ctx, set())
-        if flag not in fl:
-            fl.add(flag)
-            if detail is None:
-                detail = _first_user_site()
-            self.why[(ctx, flag)] = detail
-
-    def env_read_ctx(self, ctx: int, name: str) -> None:
-        self.env.setdefault(ctx, set()).add(name)
 
     def child_ignored(self, p: str) -> bool:
         """Paths a followed child touches that are not inputs: bytecode caches (their source is probed), pytest's
@@ -727,19 +321,6 @@ class Capture:
         except OSError:
             pass
 
-    def _contexts_during(self, t0: float | None, t1: float | None) -> set:
-        """Non-global contexts (tests, fixtures, collection of a file) active at some time in [t0, t1]."""
-        if t0 is None or t1 is None:
-            return set()
-        out = set()
-        tl = self.timeline
-        glob = {self.ctx_ix.get(n) for n in _GLOBAL_CTX}
-        for k, (tk, ck) in enumerate(tl):
-            nxt = tl[k + 1][0] if k + 1 < len(tl) else float("inf")
-            if tk <= t1 and nxt > t0 and ck not in glob:
-                out.add(ck)
-        return out
-
     def _credit_child(self, ctx: int, sp, res) -> None:
         """The inputs, writes and refusals of one followed process tree, as inputs of context ``ctx``."""
         if res.bad:
@@ -781,93 +362,12 @@ class Capture:
             self.child_read(ctx, p, "d" if op == "d" else "f")
 
 
-    def env_read(self, name: str) -> None:
-        if self.active:
-            self.env.setdefault(self._cur(), set()).add(name)
-
-    def event(self, source: str, value: str) -> bool:
-        """A Level 0 event (``detpy._state.record``) by user code. True when calling again for ``source`` changes
-        nothing until the next switch (the Rust event path then skips the call): the source is flagged in a context
-        that is not import time."""
-        if not self.active:
-            return False
-        fl = self.flags.setdefault(self._cur(), set())
-        if source == "net":
-            if "record#" in value:
-                fl.add("net-record")
-            elif "replay" in value:
-                fl.add("net-replay")
-            return False
-        fl.add(source)
-        return not (self.rec is not None and self.rec.import_depth)
-
-    def scan_modules(self, index: int, plugins=()) -> None:
-        """Note the repository modules loaded so far (``sys.modules`` and conftest plugins, which pytest keeps
-        out of ``sys.modules``) as loaded after the test at ``index`` (-1 = collection)."""
-        for m in plugins:
-            f = getattr(m, "__file__", None)
-            if isinstance(f, str) and self._want(f):
-                rel = self.fnames[self.fid[f]]
-                if rel not in self._seen_mods:
-                    self._seen_mods.add(rel)
-                    self.loaded_order.append((rel, index))
-        mods = sys.modules
-        if len(mods) == self._nmods:
-            return
-        self._nmods = len(mods)
-        for m in list(mods.values()):
-            f = getattr(m, "__file__", None)
-            if not f:
-                continue
-            if f in self._wanted and not self._wanted[f]:
-                continue
-            if self._want(f):
-                rel = self.fnames[self.fid[f]]
-                if rel not in self._seen_mods:
-                    self._seen_mods.add(rel)
-                    self.loaded_order.append((rel, index))
-
 
 # ---------------------------------------------------------------------------
-# environment reads
-_ENV_CAPTURE: Capture | None = None
+# environment reads: the recorded os.environ calls _note_env (Rust: CaptureCore.note_env of the capture set by
+# _core.cap_set_env_capture)
 _ENV_PATCHED = False
-
-
-def _env_caller_is_user() -> bool:
-    try:
-        f = _getframe(3)
-    except ValueError:
-        return True
-    while f is not None:
-        fn = f.f_code.co_filename
-        if fn.startswith(_DETPY_DIR):
-            f = f.f_back
-            continue
-        kind, _ = _sites._classify(fn)
-        if kind == _sites._USER:
-            return True
-        if kind == _sites._INFRA:
-            return False
-        f = f.f_back
-    return True
-
-
-def _note_env(key) -> None:
-    cap = _ENV_CAPTURE
-    if cap is None or not cap.active:
-        return
-    name = os.fsdecode(key) if isinstance(key, (str, bytes)) else repr(key)
-    # a variable the current context already read: recording it again changes nothing, whoever reads it, so the
-    # walk over the calling frames is skipped
-    rec = cap.rec
-    if rec is not None and not rec.import_depth:  # (during an import the context is found by a frame walk)
-        seen = cap.env.get(cap.ctx_ix[cap.ctx])
-        if seen is not None and name in seen:
-            return
-    if not _env_caller_is_user():
-        return
-    cap.env_read(name)
+_note_env = _core.cap_note_env
 
 
 def _patch_environ() -> None:
@@ -1891,7 +1391,7 @@ PLUGIN: ProofCachePlugin | None = None
 
 def start(early_config, ns) -> None:
     """Start recording (from ``pytest_load_initial_conftests``, before conftests are imported)."""
-    global CAPTURE, _ENV_CAPTURE
+    global CAPTURE
     if not AVAILABLE:
         raise pytest.UsageError("--det-cache needs Python 3.12+ (sys.monitoring)")
     if CAPTURE is not None and CAPTURE.active:
@@ -1901,7 +1401,7 @@ def start(early_config, ns) -> None:
     env0 = {_safe(k): _safe(v) for k, v in os.environ.items() if k not in _DETPY_OWN_ENV}
     cap = Capture(root, env0)
     CAPTURE = cap
-    _ENV_CAPTURE = cap
+    _core.cap_set_env_capture(cap)
     _patch_environ()
     _state.set_event_listener(cap.event)
     # probed before recording starts: the probe's own strace run is not a child of any test
@@ -1929,7 +1429,7 @@ def install(config) -> None:
 
 
 def uninstall() -> None:
-    global CAPTURE, PLUGIN, _ENV_CAPTURE
+    global CAPTURE, PLUGIN
     if CAPTURE is not None:
         CAPTURE.stop()
         if CAPTURE.follower is not None:
@@ -1937,7 +1437,7 @@ def uninstall() -> None:
     _state.set_event_listener(None)
     CAPTURE = None
     PLUGIN = None
-    _ENV_CAPTURE = None
+    _core.cap_set_env_capture(None)
 
 
 class _ProtocolWrapper:
