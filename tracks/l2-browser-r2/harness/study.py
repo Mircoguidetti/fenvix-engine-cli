@@ -596,7 +596,9 @@ R["elapsed_min"] = round((time.time() - T0) / 60, 1)
 save()
 # Small diagnostic files next to the result: the first det trace's server parts and the det logs' tails.
 diag = RESULT.parent / NAME
-shutil.rmtree(diag, ignore_errors=True)
+for old in diag.iterdir() if diag.is_dir() else []:
+    if old.name != "diag":  # keep the diagnosis evidence saved above
+        shutil.rmtree(old, ignore_errors=True) if old.is_dir() else old.unlink()
 diag.mkdir(parents=True, exist_ok=True)
 for r, cap in [(x, 300000) for x in DET[:1]] + [(x, 60000) for x in BASE[:1]]:
     lf = OUT / "logs" / f"{r['label']}.log"
