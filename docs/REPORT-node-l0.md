@@ -4,13 +4,13 @@ Session node-l0, 2026-11-16/17. Repository fenvix-engine-cli, branch `claude/nod
 
 ## Summary
 
-* **Main metric (MEASURED):** baseline-unstable tests made reproducible by `--det` / `--det-seed`: **129/421 = 30.6%** over 41 projects (16 with documented flaky tests, 25 popular at HEAD; jest 8, vitest 33). Documented-flaky pool: 51/192 = 26.6%; popular pool: 78/229 = 34.1%.
-* **Fingerprint coverage (MEASURED):** 79661 tests had an identical fingerprint in every fixed-order `--det` run, 988 did not (98.8% covered): `time` 807, `fs` 91, `entropy` 87, `random` 2, `beyond-trace` 1.
-* **Tests broken by `--det` (MEASURED):** 48 after the L0 fixes of this session, 41 of them failing in every `--det` run.
+* **Main metric (MEASURED):** tests unstable in our baseline that `--det` / `--det-seed` makes reproducible (fail 10/10 under some seed or the fixed order, pass under some `--det` configuration): **239/341 = 70.1%** over 41 projects (16 with documented flaky tests, 25 popular at HEAD; jest 8, vitest 33). Tests whose id is not present in every baseline run (70) are not flaky tests and are excluded, as in the Python harness (P-008). Documented-flaky pool: 98/192 = 51.0%; popular pool: 141/149 = 94.6%. This is about tests that were flaky in our own baseline runs; none of the flaky tests named by the projects' issues was flaky in our baseline (see below).
+* **Fingerprint coverage (MEASURED):** 79615 of 82619 tests that ran under `--det` had one identical fingerprint in every fixed-order `--det` run (96.4%); 1078 had several, and 1926 ran without any fingerprint (1923 of them Vitest type-check tasks, checked by tsc without executing test code, so the runner hooks never see them; zod runs every test file a second time in type-check mode). Reasons for several fingerprints: `time` 893, `fs` 94, `entropy` 87, `random` 2, `beyond-trace` 2.
+* **Tests broken by `--det` (MEASURED):** 44 after the L0 fixes of this session (fail under fixed-order `--det` but at most once in the baseline).
 * **Slowdown of `--det` (MEASURED, NOISY):** median 3.1% over 9 projects (serial runner without `--det` vs `--det`, quiet timing pass).
 * **Playwright (MEASURED, measured only):** 3 projects; see the Playwright section.
 * **Shortfalls (MEASURED):** documented-flaky pool 16/25 projects, Playwright 3/5 (see Projects and Playwright). Not in the numbers: babel and prettier (custom Jest runner, Level 0 not applied, J16) and matrix-js-sdk (`--det` runs crash in band, UNKNOWN cause).
-* Shell tests: per-control tests for Vitest and Jest, 20/20 pass locally and on CI (MEASURED).
+* Shell tests (MEASURED): per-control tests for Vitest and Jest, regression tests for every defect fixed in this session: 27/27 pass locally; the CI tests job of the last round ran the 20 tests that existed then (20/20).
 
 ## What was built (steps 1–3)
 
@@ -32,13 +32,15 @@ Details in `docs/NODE.md` and `docs/REPORT-node-l0-INTERMEDIATE-1.md`.
 
 | pool | projects | tests | unstable in baseline | reproduced | % | never fail under --det | fail sometimes | always fail |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| documented flaky | 16 | 43250 | 192 | 51 | 26.6% | 99 | 41 | 1 |
-| popular | 25 | 41986 | 229 | 78 | 34.1% | 63 | 52 | 36 |
-| total | 41 | 85236 | 421 | 129 | 30.6% | 162 | 93 | 37 |
+| documented flaky | 16 | 43250 | 192 | 98 | 51.0% | 53 | 41 | 0 |
+| popular | 25 | 41996 | 149 | 141 | 94.6% | 6 | 2 | 0 |
+| total | 41 | 85246 | 341 | 239 | 70.1% | 59 | 43 | 0 |
 
-Seeds explored before the reproducing seed (MEASURED): 1: 70, 11-20: 11, 2-5: 21, 6-10: 27; median 1.
+Runs per project (MEASURED): every project has the full 10 baseline and 10 `--det` runs. Tests with ids absent from some baseline runs, excluded: happy-dom-flaky 10, recharts 20, yup 40.
 
-First diverging event between a passing and a failing `--det` run (MEASURED): `outcome-only` 98, `time` 13, `random` 12, `fs` 5.
+Seeds explored before the reproducing seed (MEASURED): 0 (fixed order): 1, 1: 146, 11-20: 11, 2-5: 53, 6-10: 28; median 1.
+
+First diverging event between a passing and a failing `--det` run (MEASURED): `outcome-only` 106, `random` 72, `time` 54, `fs` 6.
 
 Documented flaky tests found in the measured suites: 31; flaky in our baseline: 0; reproduced: 0 (MEASURED; issue titles often name no test).
 
@@ -73,7 +75,7 @@ Per project, the latest measurement before the last fixes (round on d3075a1 and 
 | cheerio | 0 | 0 |
 | date-fns | 0 | 0 |
 | dom-testing-library | 0 | 0 |
-| excalidraw-flaky | 52 | 14 |
+| excalidraw-flaky | 14 | 14 |
 | growi-flaky | 0 | 0 |
 | h3 | 0 | 0 |
 | happy-dom-flaky | 2 | 2 |
@@ -92,17 +94,17 @@ Per project, the latest measurement before the last fixes (round on d3075a1 and 
 | react-admin-flaky | 24 | 5 |
 | react-redux | 1 | 1 |
 | react-testing-library-flaky | 0 | 0 |
-| recharts | 40 | 0 |
+| recharts | 0 | 0 |
 | redux | 0 | 0 |
 | svelte-flaky | 0 | 0 |
 | tanstack-form | 0 | 0 |
-| tanstack-table | 4 | 4 |
+| tanstack-table | 4 | 0 |
 | tiptap-flaky | 0 | 0 |
 | ufo | 0 | 0 |
 | unstorage | 5 | 5 |
 | user-event | 2 | 2 |
 | valibot | 0 | 0 |
-| vercel-flaky | 2 | 1 |
+| vercel-flaky | 1 | 1 |
 | vue-core | 0 | 0 |
 | vueuse | 0 | 0 |
 | xstate | 0 | 0 |
@@ -119,7 +121,6 @@ Remaining causes (`fixed-order` = also fails under `--det` with every Level 0 co
 | `time+timers &#124; Error` | 5 |
 | `net &#124; Error` | 5 |
 | `time+timers &#124; AssertionError` | 4 |
-| `fixed-order (fails without --det too) &#124; unknown` | 4 |
 | `seeds+time+timers+fs+net &#124; AssertionError` | 3 |
 | `unexplained &#124; Error` | 2 |
 | `time+timers &#124; TypeError` | 2 |
@@ -132,7 +133,7 @@ Remaining causes (`fixed-order` = also fails under `--det` with every Level 0 co
 
 | concurrency / event order | external | L0 gap | unknown |
 |---:|---:|---:|---:|
-| 30 | 38 | 52 | 172 |
+| 26 | 1 | 42 | 103 |
 
 Evidence per test in `harness/node/results/node-final/<repo>.causes.json`.
 

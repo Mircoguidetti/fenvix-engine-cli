@@ -9,31 +9,38 @@
   "install": "pnpm install --frozen-lockfile",
   "pytest_args": [],
   "xdist": true,
-  "runs": 5,
-  "baseline_mean_s": 302.81886311439996,
-  "det_mean_s": 455.4831243577999,
-  "slowdown_pct": 50.41438293285114,
+  "runs": 10,
+  "baseline_mean_s": 247.94281766740005,
+  "det_mean_s": 364.14964615570005,
+  "slowdown_pct": 46.868398762889065,
   "precompile_first_s": null,
   "precompile_rest_median_s": null,
   "tests": 5043,
-  "unstable_baseline": 6,
+  "unstable_baseline": 7,
   "unstable_det": 0,
-  "became_stable": 6,
+  "became_stable": 7,
   "outcome_changed_by_det": 0,
   "covered": 5037,
   "not_covered": 5,
-  "reproduced": 0,
-  "never_fails_under_det": 3,
+  "reproduced": 3,
+  "never_fails_under_det": 2,
   "always_fails_under_det": 0,
-  "fails_sometimes_under_det": 3,
-  "seeds_needed": [],
-  "seeds_explored": 1,
-  "exploration_runs": 4,
+  "fails_sometimes_under_det": 2,
+  "seeds_needed": [
+    1,
+    1,
+    1
+  ],
+  "seeds_explored": 8,
+  "exploration_runs": 34,
   "exploration_budget_hit": true,
   "reasons": {
     "fs": 5
   },
-  "pass_fail_reasons": {},
+  "pass_fail_reasons": {
+    "random": 2,
+    "fs": 1
+  },
   "broken_by_det": 0,
   "broken_always": 0,
   "broken_causes": {},
@@ -45,9 +52,14 @@
   "known_reproduced": 0,
   "known_categories": {},
   "examples": {
+    "reproduced": [
+      "examples/effect-workflows/test/inspection.test.ts::destroys the inspector if connection fails (seed 1): event #0: crypto.randomUUID @ <deps>/@statelyai/sdk/dist/inspect-DU-gHyef.mjs:42 returned different values: \"171f1f23-48ee-47bd-aadb-cb893de31132\" vs \"a3470897-",
+      "examples/effect-workflows/test/inspection.test.ts::inspects the workflow and invoked child, then destroys the inspector (seed 1): event #0: crypto.randomUUID @ <deps>/@statelyai/sdk/dist/inspect-DU-gHyef.mjs:42 returned different values: \"b6b35411-4f16-483c-9a68-5f62afba56ca\" vs \"be42e5dd-",
+      "packages/xstate-test/test/vitest.test.ts::@xstate/test/vitest::saved the expected failure under the test file and name (seed 1): event #0: fs.readdirSync @ packages/xstate-test/test/vitest.test.ts:79 returned different values: \"<tmp>/|1|e705cbc3af8b1ec81a322f6b6cf5d2c2\" vs \"<tmp>/|1|4b78b"
+    ],
     "not-reproduced": [
-      "examples/effect-workflows/test/inspection.test.ts::destroys the inspector if connection fails (seed 1:4/4) event #0: crypto.randomUUID @ <deps>/@statelyai/sdk/dist/inspect-DU-gHyef.mjs:42 returned different values: \"171f1f23-48",
-      "examples/effect-workflows/test/inspection.test.ts::inspects the workflow and invoked child, then destroys the inspector (seed 1:4/4) event #0: crypto.randomUUID @ <deps>/@statelyai/sdk/dist/inspect-DU-gHyef.mjs:42 returned different values: \"b6b35411-4f"
+      "packages/core/test/errors.test.ts::error handling::handled sync errors thrown when starting a child actor should not be reported globally when all of its own observers come with an error listener (seed 2:7/10) event #1: [time] setTimeout @ packages/core/test/errors.test.ts:780 = fire:10000000  <>  [time] performance.now @ <deps>",
+      "packages/core/test/errors.test.ts::error handling::uncaught error and an error thrown by the error listener should both be reported globally when not every observer comes with an error listener (seed 8:9/9) event #2: [time] setTimeout @ packages/core/test/errors.test.ts:27 = fire:1000000  <>  [time] performance.now @ <deps>/h"
     ]
   },
   "runner": "vitest 3.2.7",
@@ -57,11 +69,11 @@
   "random_order_baseline": true,
   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
   "diagnostics": {
-    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.7; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/xstate/det_0.json\ndetjs: trace ../../runs/xstate/det_0.jsonl: 5077 tests, order digest 14a1d52c076588149c9feca5bf110c15\n"
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.7; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/xstate/det_0.json\ndetjs: trace ../../runs/xstate/det_0.jsonl: 5077 tests, order digest 14a1d52c076588149c9feca5bf110c15\n",
+    "tree_entries_cleaned": 43
   },
   "not_reproduced_causes": {
-    "l0-gap": 3,
     "concurrency/event-order": 2,
-    "unknown": 1
+    "l0-gap": 2
   }
 }

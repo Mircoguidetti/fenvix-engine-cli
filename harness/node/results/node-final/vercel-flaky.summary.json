@@ -9,10 +9,10 @@
   "install": "pnpm install --frozen-lockfile",
   "pytest_args": [],
   "xdist": true,
-  "runs": 7,
-  "baseline_mean_s": 182.55008987185715,
-  "det_mean_s": 311.796343731,
-  "slowdown_pct": 70.80043288385589,
+  "runs": 10,
+  "baseline_mean_s": 184.03067579939997,
+  "det_mean_s": 309.53970152139993,
+  "slowdown_pct": 68.20005696159552,
   "precompile_first_s": null,
   "precompile_rest_median_s": null,
   "tests": 3212,
@@ -20,21 +20,25 @@
   "unstable_det": 0,
   "became_stable": 1,
   "outcome_changed_by_det": 1,
-  "covered": 2384,
-  "not_covered": 32,
-  "reproduced": 0,
+  "covered": 2381,
+  "not_covered": 35,
+  "reproduced": 1,
   "never_fails_under_det": 0,
   "always_fails_under_det": 0,
-  "fails_sometimes_under_det": 1,
-  "seeds_needed": [],
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    4
+  ],
   "seeds_explored": 4,
-  "exploration_runs": 7,
-  "exploration_budget_hit": true,
+  "exploration_runs": 13,
+  "exploration_budget_hit": false,
   "reasons": {
-    "fs": 24,
+    "fs": 27,
     "entropy": 8
   },
-  "pass_fail_reasons": {},
+  "pass_fail_reasons": {
+    "outcome-only": 1
+  },
   "broken_by_det": 1,
   "broken_always": 1,
   "broken_causes": {
@@ -55,8 +59,8 @@
     "changed:passed->failed": [
       "packages/cli/test/unit/util/events.test.ts::printEvents()::does not signal alias assignment when the stream errors"
     ],
-    "not-reproduced": [
-      "packages/passport/test/unit/index.test.ts::getIdentity::synthesizes a development identity by default outside Vercel (seed 4:4/4) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    "reproduced": [
+      "packages/passport/test/unit/index.test.ts::getIdentity::synthesizes a development identity by default outside Vercel (seed 4): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
     ]
   },
   "runner": "vitest 2.0.3",
@@ -68,9 +72,8 @@
   "random_order_baseline": true,
   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
   "diagnostics": {
-    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 2.0.3; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/vercel-flaky/det_0.json\ndetjs: trace ../../runs/vercel-flaky/det_0.jsonl: 2419 tests, order digest 967621106baee3b62d94995d8e5ca102\n"
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 2.0.3; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/vercel-flaky/det_0.json\ndetjs: trace ../../runs/vercel-flaky/det_0.jsonl: 2419 tests, order digest 967621106baee3b62d94995d8e5ca102\n",
+    "tree_entries_cleaned": 28
   },
-  "not_reproduced_causes": {
-    "concurrency/event-order": 1
-  }
+  "not_reproduced_causes": {}
 }

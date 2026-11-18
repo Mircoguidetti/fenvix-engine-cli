@@ -1,22 +1,22 @@
 # detjs Level 0 (Node / TypeScript): measurement report (`node-final`)
 
-Generated 2026-11-17 17:41 UTC with detjs 0.1.0 on GitHub Actions (ubuntu-latest) ([run](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44050766953)). Per repository: 10 baseline runs interleaved with 10 `--det` runs. Baseline = the realistic configuration: random order with a different seed per run where the runner supports it (Vitest `--sequence.shuffle --sequence.seed=N`; Jest `--randomize --seed=N`, Jest >= 29.2 only) and two parallel workers (`--maxWorkers=2`). `--det` = fixed order (files sorted by path, tests in declaration order), one worker, files in sequence, all Level 0 controls. Then, for every test unstable in the baseline, `--det --det-seed=1..20` with 10/10 confirmation of the seed that makes it fail. Labels: MEASURED (by this harness), DECLARED (with source), UNKNOWN; NOISY = shared host.
+Generated 2026-11-18 04:45 UTC with detjs 0.1.0 on GitHub Actions (ubuntu-latest) ([run](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44050766953)). Per repository: 10 baseline runs interleaved with 10 `--det` runs. Baseline = the realistic configuration: random order with a different seed per run where the runner supports it (Vitest `--sequence.shuffle --sequence.seed=N`; Jest `--randomize --seed=N`, Jest >= 29.2 only) and two parallel workers (`--maxWorkers=2`). `--det` = fixed order (files sorted by path, tests in declaration order), one worker, files in sequence, all Level 0 controls. Then, for every test unstable in the baseline, `--det --det-seed=1..20` with 10/10 confirmation of the seed that makes it fail. Labels: MEASURED (by this harness), DECLARED (with source), UNKNOWN; NOISY = shared host.
 
 Verifier: Rust verifier through the Python binding (detpy 0.1.0).
 
 ## Main metric
 
-**Baseline-unstable tests made reproducible: 129/421 = 30.6%** (MEASURED). A test counts as reproduced when some `--det-seed` (or the fixed `--det` order) makes it fail 10 times out of 10 AND some `--det` configuration makes it pass.
+**Baseline-unstable tests made reproducible: 239/341 = 70.1%** (MEASURED). Tests whose id is not present in every baseline run (70: ids built from run-dependent values, or test files written by a run) are not flaky tests and are excluded (including them: 239/411). A test counts as reproduced when some `--det-seed` (or the fixed `--det` order) makes it fail 10 times out of 10 AND some `--det` configuration makes it pass.
 
 | pool | repositories | tests | unstable in baseline | reproduced | % | never fail under --det | always fail under --det | fail sometimes under --det |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| documented flaky | 16 | 43250 | 192 | 51 | 26.6% | 99 | 1 | 41 |
-| popular (HEAD) | 25 | 41986 | 229 | 78 | 34.1% | 63 | 36 | 52 |
-| total | 41 | 85236 | 421 | 129 | 30.6% | 162 | 37 | 93 |
+| documented flaky | 16 | 43250 | 202 | 98 | 48.5% | 63 | 0 | 41 |
+| popular (HEAD) | 25 | 41996 | 209 | 141 | 67.5% | 66 | 0 | 2 |
+| total | 41 | 85246 | 411 | 239 | 58.2% | 129 | 0 | 43 |
 
-**Seeds explored before the reproducing seed was found** (reproduced tests, MEASURED): 1: 70, 2-5: 21, 6-10: 27, 11-20: 11; median 1.
+**Seeds explored before the reproducing seed was found** (reproduced tests, MEASURED): 0 (fixed order): 1, 1: 146, 2-5: 53, 6-10: 28, 11-20: 11; median 1.
 
-**First diverging event between the fingerprints of a passing and a failing `--det` run** (MEASURED): `outcome-only` 98, `time` 13, `random` 12, `fs` 5.
+**First diverging event between the fingerprints of a passing and a failing `--det` run** (MEASURED): `outcome-only` 106, `random` 72, `time` 54, `fs` 6.
 
 ## Documented flaky tests (MEASURED)
 
@@ -32,18 +32,18 @@ Classes: `concurrency/event-order` (async ordering, timers racing real I/O, time
 
 | pool | concurrency/event-order | external | l0-gap | unknown |
 |---|---:|---:|---:|---:|
-| flaky | 25 | 1 | 40 | 75 |
-| popular | 5 | 37 | 12 | 97 |
-| total | 30 | 38 | 52 | 172 |
+| flaky | 22 | 1 | 40 | 41 |
+| popular | 4 | 0 | 2 | 62 |
+| total | 26 | 1 | 42 | 103 |
 
 * `concurrency/event-order`: apollo-client-flaky `pLink.ts::SharedHttpTest::passes all arguments to multiple fetch body including extensions` (test source uses settimeout); apollo-client-flaky `h-http/__tests__/batchHttpLink.ts::SharedHttpTest::unsubscribes without calling subscriber` (test source uses settimeout); apollo-client-flaky `eQuery.test.tsx::useQuery Hook::Error handling::should render data and errors with refetch` (test source uses async , await , waitfor; also fetch()
-* `external`: apollo-client-flaky `rc/link/batch-http/__tests__/batchHttpLink.ts::SharedHttpTest::allows uri to be a function` (test source uses fetch(); recharts `test/component/Text.spec.tsx::scaleToFit=true::scales text to fit the width` (test source uses https://); tanstack-table `.cache/e2e-artifacts-96sIYJ/first/tests/e2e/failure.spec.ts::<file>` (exception unknown / diverging event -)
+* `external`: apollo-client-flaky `rc/link/batch-http/__tests__/batchHttpLink.ts::SharedHttpTest::allows uri to be a function` (test source uses fetch()
 * `l0-gap`: apollo-client-flaky `st.tsx::useQuery Hook::Refetching::refetchWritePolicy::should support explicit "overwrite"` (diverging event `time`: a controlled source still differs between runs); apollo-client-flaky `useSubscription.test.tsx::useSubscription Hook::only warns once using `onSubscriptionData`` (diverging event `time`: a controlled source still differs between runs); happy-dom-flaky `::Object.keys()::Returns an array of storage's own enumerable string-keyed property names.` (shared state not reset by Level 0: mockimplementation, spyon)
 * `unknown`: apollo-client-flaky `ests__/batchHttpLink.ts::SharedHttpTest::adds fetchOptions to the request from the context` (no marker in the source, exception or fingerprint); apollo-client-flaky `hHttpLink.ts::SharedHttpTest::adds headers w/ preserved case to the request from the setup` (no marker in the source, exception or fingerprint); apollo-client-flaky `pLink.ts::SharedHttpTest::prioritizes context headers w/ preserved case over setup headers` (no marker in the source, exception or fingerprint)
 
 ## Tests broken by Level 0
 
-A test is *broken by `--det`* when it fails in at least one fixed-order `--det` run but in at most one baseline run (and less often than under `--det`). **48 tests** (MEASURED), of which 41 fail in every `--det` run.
+A test is *broken by `--det`* when it fails in at least one fixed-order `--det` run but in at most one baseline run (and less often than under `--det`). **44 tests** (MEASURED), of which 41 fail in every `--det` run.
 
 Cause: `fixed-order` = the test also fails under `--det` with every Level 0 control disabled (only the fixed order and serial execution remain): an order/isolation dependency hidden by the random parallel baseline, not a Level 0 control; otherwise the controls whose `--det-disable` makes it pass; `unexplained` = none does.
 
@@ -54,7 +54,6 @@ Cause: `fixed-order` = the test also fails under `--det` with every Level 0 cont
 | `time+timers &#124; Error` | 5 | apollo-client-flaky: src/link/persisted-queries/__tests__/persisted-queries.test.ts::failure path::clears the cache when receiving NotSupported error (error code): Error: thrown: "Exceeded timeout of <br>apollo-client-flaky: src/link/persisted-queries/__tests__/persisted-queries.test.ts::failure path::clears the cache when receiving NotSupported error (error message): Error: thrown: "Exceeded timeout  |
 | `net &#124; Error` | 5 | react-admin-flaky: examples/crm/src/providers/commons/getContactAvatar.spec.ts::should return gravatar URL for anthony@marmelab.com: Error: expect(received).toBe(expected) // Object.is equality (first<br>unstorage: test/drivers/github.test.ts::drivers: github::can check for a file presence: Error: [unstorage] [github] Failed to fetch git tree (first diverging source: -) |
 | `time+timers &#124; AssertionError` | 4 | assistant-ui-flaky: lib/xulux/fetch-sandbox.test.ts::fetchSandboxResource::keeps the deadline over the response body by default: AssertionError: expected false to be true // Object.is equality (first <br>assistant-ui-flaky: lib/xulux/fetch-sandbox.test.ts::fetchSandboxResource::rejects at the budget rather than waiting out the backoff: AssertionError: expected "vi.fn()" to be called 1 times, but got 3 |
-| `fixed-order (fails without --det too) &#124; unknown` | 4 | tanstack-table: .cache/e2e-artifacts-LvUzfv/first/tests/e2e/failure.spec.ts::<file>: Playwright Test did not expect test() to be called here. (first diverging source: -)<br>tanstack-table: .cache/e2e-artifacts-LvUzfv/second/tests/e2e/failure.spec.ts::<file>: Playwright Test did not expect test() to be called here. (first diverging source: -) |
 | `seeds+time+timers+fs+net &#124; AssertionError` | 3 | excalidraw-flaky: packages/excalidraw/tests/search.test.tsx::search::should match frame names: AssertionError: expected undefined to be 3 // Object.is equality (first diverging source: time)<br>excalidraw-flaky: packages/excalidraw/tests/search.test.tsx::search::should match text and cycle through matches on Enter: AssertionError: expected undefined to be 2 // Object.is equality (first diver |
 | `unexplained &#124; Error` | 2 | react-admin-flaky: examples/crm/src/providers/commons/getCompanyAvatar.spec.ts::should return favicon URL if website url exist: Error: expect(received).toStrictEqual(expected) // deep equality (first <br>react-admin-flaky: examples/crm/src/providers/commons/getContactAvatar.spec.ts::should return favicon URL if gravatar does not exist: Error: expect(received).toBe(expected) // Object.is equality (firs |
 | `time+timers &#124; TypeError` | 2 | vercel-flaky: packages/cli/test/unit/util/events.test.ts::printEvents()::does not signal alias assignment when the stream errors: TypeError: Invalid state: ReadableStream is locked (first diverging so<br>unstorage: test/drivers/mongodb.test.ts::drivers: mongodb::should have different dates when an entry was updated: TypeError: The "callback" argument must be of type function. Received type number (100 |
@@ -79,13 +78,13 @@ Quiet timing pass: 9 repositories, one per GitHub-hosted runner, 3 serial runs w
 | happy-dom-flaky | vitest 4.1.8 | 8096 | 187.58 | 192.89 | 2.8 |
 | immer | vitest 3.2.6 | 4192 | 9.33 | 10.01 | 7.3 |
 
-* Round timings, serial `--det` vs the random parallel baseline: median 61.5% — **NOT COMPARABLE** (different parallelism and order).
+* Round timings, serial `--det` vs the random parallel baseline: median 63.1% — **NOT COMPARABLE** (different parallelism and order).
 
 ## Other metrics (MEASURED)
 
-* tests unstable under `--det` (fixed order, 10 runs): 39; unstable in the baseline and stable under `--det`: 387
-* stable in both modes but with a different majority outcome: 94
-* identical fingerprint in every fixed-order `--det` run (covered by Level 0): 79661 (98.8%); not covered: 988 (`time` 807, `fs` 91, `entropy` 87, `random` 2, `beyond-trace` 1)
+* tests unstable under `--det` (fixed order, 10 runs): 3; unstable in the baseline and stable under `--det`: 411
+* stable in both modes but with a different majority outcome: 90
+* identical fingerprint in every fixed-order `--det` run (covered by Level 0): 79615 (98.7%); not covered: 1078 (`time` 893, `fs` 94, `entropy` 87, `random` 2, `beyond-trace` 2)
 
 ## Per repository (MEASURED)
 
@@ -93,7 +92,7 @@ Quiet timing pass: 9 repositories, one per GitHub-hosted runner, 3 serial runs w
 |---|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---|
 | [apollo-client-flaky](https://github.com/apollographql/apollo-client) | flaky | [cde7e247f1](https://github.com/apollographql/apollo-client/commit/cde7e247f145d759d67d8596ec98b9aaafda04da) ([doc](https://github.com/apollographql/apollo-client/issues/11782)) | node v20.20.2 | jest 29.7.0 | yes | 2632 | 24 | 3 | 3 (budget) | 6 | 237 | 26 / 0 / 0 |
 | [assistant-ui-flaky](https://github.com/assistant-ui/assistant-ui) | flaky | [b8c5e68298](https://github.com/assistant-ui/assistant-ui/commit/b8c5e68298a81ff6c9c99b504bc57479c5dd4f05) ([doc](https://github.com/assistant-ui/assistant-ui/issues/7007)) | node v22.23.5 | vitest 4.1.11 | yes | 702 | 0 | 0 | 0 | 8 | 1 | 0 / 0 / 0 |
-| [growi-flaky](https://github.com/growilabs/growi) | flaky | [3fc185a4e6](https://github.com/growilabs/growi/commit/3fc185a4e696d614d08f3e9cfd4040226f9d772f) ([doc](https://github.com/growilabs/growi/issues/12252)) | node v22.23.5 | vitest 3.2.6 | yes | 5959 | 2 | 0 | 1 (budget) | 0 | 11 | 1 / 0 / 0 |
+| [growi-flaky](https://github.com/growilabs/growi) | flaky | [3fc185a4e6](https://github.com/growilabs/growi/commit/3fc185a4e696d614d08f3e9cfd4040226f9d772f) ([doc](https://github.com/growilabs/growi/issues/12252)) | node v22.23.5 | vitest 3.2.6 | yes | 5959 | 2 | 2 | 10 | 0 | 11 | 1 / 0 / 0 |
 | [happy-dom-flaky](https://github.com/capricorn86/happy-dom) | flaky | [875ef5c647](https://github.com/capricorn86/happy-dom/commit/875ef5c647b336cc933c82426c9d780a5aab84f9) ([doc](https://github.com/capricorn86/happy-dom/issues/2526)) | node v20.20.2 | vitest 4.1.8 | yes | 8106 | 21 | 2 | 2 (budget) | 2 | 25 | 0 / 0 / 0 |
 | [mermaid-flaky](https://github.com/mermaid-js/mermaid) | flaky | [89818e854e](https://github.com/mermaid-js/mermaid/commit/89818e854e6e517726e49e6625b3a1ccd62e1935) ([doc](https://github.com/mermaid-js/mermaid/issues/7729)) | node v22.23.5 | vitest 3.2.4 | yes | 4015 | 17 | 6 | 2 (budget) | 0 | 4 | 0 / 0 / 0 |
 | [msw-flaky](https://github.com/mswjs/msw) | flaky | [d3113a9556](https://github.com/mswjs/msw/commit/d3113a95564292c4d180b3e1f50b8f3a536d26e0) ([doc](https://github.com/mswjs/msw/issues/2557)) | node v20.20.2 | vitest 3.1.4 | yes | 254 | 1 | 1 | 2 | 0 | 2 | 0 / 0 / 0 |
@@ -105,8 +104,8 @@ Quiet timing pass: 9 repositories, one per GitHub-hosted runner, 3 serial runs w
 | [tiptap-flaky](https://github.com/ueberdosis/tiptap) | flaky | [1ecf81434f](https://github.com/ueberdosis/tiptap/commit/1ecf81434f0fa7a40c1b7815719836e82a77d4b9) ([doc](https://github.com/ueberdosis/tiptap/issues/8080)) | node v22.23.5 | vitest 4.1.2 | yes | 1420 | 1 | 1 | 1 | 0 | 0 | 0 / 0 / 0 |
 | [zod-flaky](https://github.com/colinhacks/zod) | flaky | [ead9fcb310](https://github.com/colinhacks/zod/commit/ead9fcb310bf65a70427f92ca76545efe954037e) ([doc](https://github.com/colinhacks/zod/issues/6359)) | node v22.23.5 | vitest 4.1.5 | yes | 3817 | 1 | 1 | 2 | 0 | 1 | 4 / 0 / 0 |
 | [react-testing-library-flaky](https://github.com/testing-library/react-testing-library) | flaky | [1c931a6c03](https://github.com/testing-library/react-testing-library/commit/1c931a6c03091d725eccee7767d9ec696d5d33c6) ([doc](https://github.com/testing-library/react-testing-library/issues/1419)) | node v18.20.8 | jest 29.7.0 | yes | 250 | 2 | 2 | 7 | 0 | 0 | 0 / 0 / 0 |
-| [vercel-flaky](https://github.com/vercel/vercel) | flaky | [17d9ebaf8e](https://github.com/vercel/vercel/commit/17d9ebaf8e9b335d550dea1a243743a74edc772e) ([doc](https://github.com/vercel/vercel/issues/17501)) | node v22.23.5 | vitest 2.0.3 | yes | 3212 | 1 | 0 | 4 (budget) | 1 | 32 | 0 / 0 / 0 |
-| [excalidraw-flaky](https://github.com/excalidraw/excalidraw) | flaky | [5cf547650b](https://github.com/excalidraw/excalidraw/commit/5cf547650b700b35507e83773695098150b810d2) ([doc](https://github.com/excalidraw/excalidraw/issues/11713)) | node v18.20.8 | vitest 3.0.6 | yes | 1611 | 57 | 0 | 1 (budget) | 14 | 461 | 0 / 0 / 0 |
+| [vercel-flaky](https://github.com/vercel/vercel) | flaky | [17d9ebaf8e](https://github.com/vercel/vercel/commit/17d9ebaf8e9b335d550dea1a243743a74edc772e) ([doc](https://github.com/vercel/vercel/issues/17501)) | node v22.23.5 | vitest 2.0.3 | yes | 3212 | 1 | 1 | 4 | 1 | 35 | 0 / 0 / 0 |
+| [excalidraw-flaky](https://github.com/excalidraw/excalidraw) | flaky | [5cf547650b](https://github.com/excalidraw/excalidraw/commit/5cf547650b700b35507e83773695098150b810d2) ([doc](https://github.com/excalidraw/excalidraw/issues/11713)) | node v18.20.8 | vitest 3.0.6 | yes | 1611 | 67 | 44 | 4 (budget) | 14 | 548 | 0 / 0 / 0 |
 | [cheerio](https://github.com/cheeriojs/cheerio) | popular | [d013f2b6f7](https://github.com/cheeriojs/cheerio/commit/d013f2b6f735b324aa66fba88804d6edc37d8136) | node v22.23.5 | vitest 5.1.0 | yes | 846 | 0 | 0 | 0 | 0 | 0 |  |
 | [date-fns](https://github.com/date-fns/date-fns) | popular | [a9739fb3e5](https://github.com/date-fns/date-fns/commit/a9739fb3e5384a810e90d7376446f6d84ecc5029) | node v22.23.5 | vitest 5.0.1 | yes | 222 | 0 | 0 | 0 | 0 | 0 |  |
 | [dom-testing-library](https://github.com/testing-library/dom-testing-library) | popular | [6049cc0bc7](https://github.com/testing-library/dom-testing-library/commit/6049cc0bc7cf2201625c476c95fa6299d0e2fa8b) | node v18.20.8 | jest 29.7.0 | yes | 664 | 4 | 4 | 1 | 0 | 0 |  |
@@ -119,17 +118,17 @@ Quiet timing pass: 9 repositories, one per GitHub-hosted runner, 3 serial runs w
 | [pinia](https://github.com/vuejs/pinia) | popular | [4817135a25](https://github.com/vuejs/pinia/commit/4817135a25431172d363bd928476db7cdbf875c4) | node v22.23.5 | vitest 4.1.11 | yes | 276 | 0 | 0 | 0 | 0 | 0 |  |
 | [preact-signals](https://github.com/preactjs/signals) | popular | [395fd7ebd4](https://github.com/preactjs/signals/commit/395fd7ebd440cbc4d1ced05b4b498b08f3ed33d0) | node v22.23.5 | vitest 4.0.17 | yes | 1099 | 0 | 0 | 0 | 0 | 0 |  |
 | [react-redux](https://github.com/reduxjs/react-redux) | popular | [8e54f5b9db](https://github.com/reduxjs/react-redux/commit/8e54f5b9dbbdcc972c120ad3ce3c1c57fc2e89fd) | node v22.23.5 | vitest 4.1.11 | yes | 140 | 0 | 0 | 0 | 1 | 0 |  |
-| [recharts](https://github.com/recharts/recharts) | popular | [f27aeba629](https://github.com/recharts/recharts/commit/f27aeba6293c66c0e8b602e4351faf6d2de42875) | node v22.23.5 | vitest 4.1.11 | yes | 9348 | 67 | 0 | 1 (budget) | 0 | 0 |  |
+| [recharts](https://github.com/recharts/recharts) | popular | [548327520b](https://github.com/recharts/recharts/commit/548327520b0d643178287eaf03d40a35e0ebf37b) | node v22.23.5 | vitest 4.1.11 | yes | 9398 | 82 | 60 | 13 (budget) | 0 | 0 |  |
 | [redux](https://github.com/reduxjs/redux) | popular | [39bd88011b](https://github.com/reduxjs/redux/commit/39bd88011b0c7c6f67cec8230ada49fac20ad989) | node v22.23.5 | vitest 4.0.5 | yes | 82 | 0 | 0 | 0 | 0 | 0 |  |
 | [tanstack-form](https://github.com/TanStack/form) | popular | [eba4084b70](https://github.com/TanStack/form/commit/eba4084b706699e4c4d8cfc39f895f722ea9cdfc) | node v22.23.5 | vitest 5.0.5 | yes | 474 | 2 | 2 | 3 | 0 | 0 |  |
-| [tanstack-table](https://github.com/TanStack/table) | popular | [564a459b74](https://github.com/TanStack/table/commit/564a459b74834c77631e0d6fdba7661383bbc1b4) | node v22.23.5 | vitest 5.1.0 | yes | 1856 | 36 | 0 | 7 (budget) | 4 | 0 |  |
+| [tanstack-table](https://github.com/TanStack/table) | popular | [564a459b74](https://github.com/TanStack/table/commit/564a459b74834c77631e0d6fdba7661383bbc1b4) | node v22.23.5 | vitest 5.1.0 | yes | 1816 | 0 | 0 | 0 | 0 | 0 |  |
 | [ufo](https://github.com/unjs/ufo) | popular | [f06c800d0c](https://github.com/unjs/ufo/commit/f06c800d0c59f2a4a1b9ba65eb6cb61a84419be6) | node v22.23.5 | vitest 4.1.5 | yes | 487 | 0 | 0 | 0 | 0 | 0 |  |
 | [unstorage](https://github.com/unjs/unstorage) | popular | [5781aae96f](https://github.com/unjs/unstorage/commit/5781aae96f7f34820a99e447df29ceead97e9210) | node v22.23.5 | vitest 5.0.5 | yes | 885 | 1 | 1 | 2 | 5 | 41 |  |
 | [user-event](https://github.com/testing-library/user-event) | popular | [930fb1ee1a](https://github.com/testing-library/user-event/commit/930fb1ee1a6ccb2a492bfd3f790b60619af9d872) | node v18.20.8 | jest 28.1.3 | no (Jest < 29.2) | 569 | 0 | 0 | 0 | 2 | 0 |  |
 | [valibot](https://github.com/fabian-hiller/valibot) | popular | [d72f76fcf7](https://github.com/fabian-hiller/valibot/commit/d72f76fcf70ccfa0a5ca341b80da1d440ac60b11) | node v22.23.5 | vitest 4.1.8 | yes | 3220 | 51 | 51 | 11 | 0 | 0 |  |
 | [vue-core](https://github.com/vuejs/core) | popular | [2e2f7c6bef](https://github.com/vuejs/core/commit/2e2f7c6bef54a85a3ce8db768b11c5562385b65d) | node v20.20.2 | vitest 4.1.11 | yes | 3168 | 6 | 4 | 20 | 0 | 0 |  |
 | [vueuse](https://github.com/vueuse/vueuse) | popular | [bed1dce149](https://github.com/vueuse/vueuse/commit/bed1dce149ce6760fec13d4798c047f51a563180) | node v22.23.5 | vitest 5.1.0 | yes | 1023 | 0 | 0 | 0 | 0 | 4 |  |
-| [xstate](https://github.com/statelyai/xstate) | popular | [8e53990c2f](https://github.com/statelyai/xstate/commit/8e53990c2f9318d2d649b8af1a3c96af970d9bf2) | node v22.23.5 | vitest 3.2.7 | yes | 5043 | 6 | 0 | 1 (budget) | 0 | 5 |  |
+| [xstate](https://github.com/statelyai/xstate) | popular | [8e53990c2f](https://github.com/statelyai/xstate/commit/8e53990c2f9318d2d649b8af1a3c96af970d9bf2) | node v22.23.5 | vitest 3.2.7 | yes | 5043 | 7 | 3 | 8 (budget) | 0 | 5 |  |
 | [yaml](https://github.com/eemeli/yaml) | popular | [528ef30d6d](https://github.com/eemeli/yaml/commit/528ef30d6ded4bd9f2c3521b670eb2b29d503c5c) | node v20.20.2 | vitest 4.1.11 | yes | 988 | 1 | 1 | 1 | 0 | 0 |  |
 | [yup](https://github.com/jquense/yup) | popular | [ff31eee8a2](https://github.com/jquense/yup/commit/ff31eee8a2b10c938bb3a22544d9e33957a8cf01) | node v22.23.5 | vitest 3.2.4 | yes | 476 | 42 | 2 | 20 | 0 | 0 |  |
 
@@ -262,7 +261,7 @@ Quiet timing pass: 9 repositories, one per GitHub-hosted runner, 3 serial runs w
 | [pw-solid-start](https://github.com/solidjs/solid-start) | playwright 1.62.0 | 47 | 0 | 0 | 0 | 0 |
 | [pw-starlight](https://github.com/withastro/starlight) | playwright 1.61.1 | 26 | 0 | 0 | 0 | 0 |
 
-Share of the baseline-unstable tests of this round that are browser tests: 1/422 = 0.2% (MEASURED, not weighted by project size).
+Share of the baseline-unstable tests of this round that are browser tests: 1/412 = 0.2% (MEASURED, not weighted by project size).
 
 ## Notes
 

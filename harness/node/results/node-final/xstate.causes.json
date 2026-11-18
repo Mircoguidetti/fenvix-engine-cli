@@ -2,50 +2,38 @@
  {
   "repo": "xstate",
   "pool": "popular",
-  "nodeid": "examples/effect-workflows/test/inspection.test.ts::destroys the inspector if connection fails",
-  "class": "l0-gap",
-  "evidence": "diverging event `random`: a controlled source still differs between runs",
-  "documented": "",
-  "under_det": "never fails",
-  "baseline_outcomes": "failed=2;passed=3",
-  "det_exception": "",
-  "pass_fail_reason": "random"
- },
- {
-  "repo": "xstate",
-  "pool": "popular",
-  "nodeid": "examples/effect-workflows/test/inspection.test.ts::inspects the workflow and invoked child, then destroys the inspector",
-  "class": "l0-gap",
-  "evidence": "diverging event `random`: a controlled source still differs between runs",
-  "documented": "",
-  "under_det": "never fails",
-  "baseline_outcomes": "failed=2;passed=3",
-  "det_exception": "",
-  "pass_fail_reason": "random"
- },
- {
-  "repo": "xstate",
-  "pool": "popular",
   "nodeid": "examples/effect-workflows/test/inspection.test.ts::runs offline by default",
   "class": "concurrency/event-order",
   "evidence": "test source uses async , await , waitfor",
   "documented": "",
   "under_det": "never fails",
-  "baseline_outcomes": "failed=2;passed=3",
+  "baseline_outcomes": "failed=3;passed=7",
   "det_exception": "",
   "pass_fail_reason": ""
  },
  {
   "repo": "xstate",
   "pool": "popular",
-  "nodeid": "packages/core/test/errors.test.ts::error handling::uncaught error and an error thrown by the error listener should both be reported globally when not every observer comes with an error listener",
-  "class": "unknown",
-  "evidence": "no marker in the source, exception or fingerprint",
+  "nodeid": "packages/core/test/errors.test.ts::error handling::handled sync errors thrown when starting a child actor should not be reported globally when all of its own observers come with an error listener",
+  "class": "l0-gap",
+  "evidence": "diverging event `time`: a controlled source still differs between runs",
   "documented": "",
   "under_det": "never fails",
-  "baseline_outcomes": "failed=1;passed=4",
+  "baseline_outcomes": "failed=1;passed=9",
   "det_exception": "",
-  "pass_fail_reason": ""
+  "pass_fail_reason": "time"
+ },
+ {
+  "repo": "xstate",
+  "pool": "popular",
+  "nodeid": "packages/core/test/errors.test.ts::error handling::uncaught error and an error thrown by the error listener should both be reported globally when not every observer comes with an error listener",
+  "class": "l0-gap",
+  "evidence": "diverging event `time`: a controlled source still differs between runs",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=1;passed=9",
+  "det_exception": "",
+  "pass_fail_reason": "time"
  },
  {
   "repo": "xstate",
@@ -55,20 +43,8 @@
   "evidence": "test source uses async ",
   "documented": "",
   "under_det": "never fails",
-  "baseline_outcomes": "failed=1;passed=4",
+  "baseline_outcomes": "failed=1;passed=9",
   "det_exception": "",
   "pass_fail_reason": ""
- },
- {
-  "repo": "xstate",
-  "pool": "popular",
-  "nodeid": "packages/xstate-test/test/vitest.test.ts::@xstate/test/vitest::saved the expected failure under the test file and name",
-  "class": "l0-gap",
-  "evidence": "diverging event `fs`: a controlled source still differs between runs",
-  "documented": "",
-  "under_det": "never fails",
-  "baseline_outcomes": "failed=3;passed=2",
-  "det_exception": "",
-  "pass_fail_reason": "fs"
  }
 ]

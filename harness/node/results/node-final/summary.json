@@ -8,7 +8,7 @@
   "executor": "GitHub Actions (ubuntu-latest)",
   "run_url": "https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44050766953",
   "detjs": "0.1.0",
-  "date": "2026-11-17 17:41 UTC",
+  "date": "2026-11-18 04:45 UTC",
   "selection": {
    "selected": [
     "apollo-client-flaky",
@@ -2804,32 +2804,81 @@
     "install": "npx -y yarn@1 install --frozen-lockfile --ignore-engines",
     "pytest_args": [],
     "xdist": true,
-    "runs": 6,
-    "baseline_mean_s": 180.74764530899995,
-    "det_mean_s": 405.4802223651667,
-    "slowdown_pct": 124.33499571846242,
+    "runs": 10,
+    "baseline_mean_s": 160.68104080969994,
+    "det_mean_s": 354.20222799659996,
+    "slowdown_pct": 120.43809662404028,
     "precompile_first_s": null,
     "precompile_rest_median_s": null,
     "tests": 1611,
-    "unstable_baseline": 57,
+    "unstable_baseline": 67,
     "unstable_det": 3,
-    "became_stable": 57,
-    "outcome_changed_by_det": 24,
-    "covered": 1124,
-    "not_covered": 461,
-    "reproduced": 0,
-    "never_fails_under_det": 41,
+    "became_stable": 67,
+    "outcome_changed_by_det": 22,
+    "covered": 1037,
+    "not_covered": 548,
+    "reproduced": 44,
+    "never_fails_under_det": 5,
     "always_fails_under_det": 0,
-    "fails_sometimes_under_det": 16,
-    "seeds_needed": [],
-    "seeds_explored": 1,
-    "exploration_runs": 5,
+    "fails_sometimes_under_det": 18,
+    "seeds_needed": [
+     1,
+     2,
+     1,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     3,
+     3,
+     1,
+     2,
+     2,
+     2,
+     1,
+     2,
+     2,
+     1,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     1,
+     2,
+     3,
+     2,
+     2,
+     2,
+     2,
+     2,
+     3,
+     1,
+     2
+    ],
+    "seeds_explored": 4,
+    "exploration_runs": 37,
     "exploration_budget_hit": true,
     "reasons": {
      "entropy": 61,
-     "time": 400
+     "time": 486,
+     "beyond-trace": 1
     },
-    "pass_fail_reasons": {},
+    "pass_fail_reasons": {
+     "outcome-only": 3,
+     "time": 41
+    },
     "broken_by_det": 14,
     "broken_always": 11,
     "broken_causes": {
@@ -2855,9 +2904,10 @@
     "known_reproduced": 0,
     "known_categories": {},
     "examples": {
-     "not-reproduced": [
-      "packages/element/src/__tests__/transform.test.ts::Test Transform::Test arrow bindings::should bind arrows to existing elements if ids are correct (seed 1:5/5) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
-      "packages/element/src/__tests__/transform.test.ts::Test Transform::should transform the elements correctly when linear elements have single point (seed 1:5/5) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+     "reproduced": [
+      "packages/element/src/__tests__/transform.test.ts::Test Transform::Test arrow bindings::should bind arrows to existing elements if ids are correct (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "packages/element/src/__tests__/transform.test.ts::Test Transform::Test arrow bindings::should bind arrows to existing text elements when start / end provided with ids (seed 2): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "packages/element/src/__tests__/transform.test.ts::Test Transform::should transform the elements correctly when linear elements have single point (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
      ],
      "changed:failed->passed": [
       "packages/element/src/__tests__/transform.test.ts::Test Transform::Test arrow bindings::should bind arrows to existing shapes when start / end provided with ids",
@@ -2866,6 +2916,10 @@
      "changed:passed->failed": [
       "packages/excalidraw/tests/history.test.tsx::history::multiplayer undo/redo::conflicts in bound text elements and their containers::should preserve latest remotely added binding and unbind previous one when the container is added through the history",
       "packages/excalidraw/tests/history.test.tsx::history::multiplayer undo/redo::conflicts in bound text elements and their containers::should preserve latest remotely added binding and unbind previous one when the text is added through history"
+     ],
+     "not-reproduced": [
+      "packages/excalidraw/tests/regressionTests.test.tsx::regression tests::adjusts z order when grouping (seed 4:7/7) event #28: [time] performance.now @ <deps>/scheduler/cjs/scheduler.development.js:186 = 26000  <>  [time] Date.now @ <de",
+      "packages/excalidraw/tests/regressionTests.test.tsx::regression tests::can drag element that covers another element, while another elem is selected (seed 4:7/7) event #28: [time] performance.now @ <deps>/scheduler/cjs/scheduler.development.js:186 = 26000  <>  [time] Date.now @ <de"
      ]
     },
     "runner": "vitest 3.0.6",
@@ -2877,15 +2931,16 @@
     "random_order_baseline": true,
     "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
     "diagnostics": {
-     "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.0.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v18.20.8\nJSON report written to /tmp/work/runs/excalidraw-flaky/det_0.json\ndetjs: trace ../../runs/excalidraw-flaky/det_0.jsonl: 1607 tests, order digest 839cae71a532588690fdb0b318e6355b\n"
+     "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.0.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v18.20.8\nJSON report written to /tmp/work/runs/excalidraw-flaky/det_0.json\ndetjs: trace ../../runs/excalidraw-flaky/det_0.jsonl: 1607 tests, order digest 839cae71a532588690fdb0b318e6355b\n",
+     "tree_entries_cleaned": 52
     },
     "not_reproduced_causes": {
+     "concurrency/event-order": 2,
      "l0-gap": 20,
-     "unknown": 35,
-     "concurrency/event-order": 2
+     "unknown": 1
     },
     "executor": "GitHub Actions",
-    "date": "2026-11-17T15:59:48.121849+00:00"
+    "date": "2026-11-18T04:04:09.145965+00:00"
    },
    {
     "name": "growi-flaky",
@@ -2898,10 +2953,10 @@
     "install": "pnpm install --frozen-lockfile",
     "pytest_args": [],
     "xdist": true,
-    "runs": 6,
-    "baseline_mean_s": 221.1472005576667,
-    "det_mean_s": 349.8915374988334,
-    "slowdown_pct": 58.21658000486201,
+    "runs": 10,
+    "baseline_mean_s": 170.41035183359992,
+    "det_mean_s": 277.97355793580005,
+    "slowdown_pct": 63.12011268378346,
     "precompile_first_s": null,
     "precompile_rest_median_s": null,
     "tests": 5959,
@@ -2911,19 +2966,24 @@
     "outcome_changed_by_det": 0,
     "covered": 5570,
     "not_covered": 11,
-    "reproduced": 0,
+    "reproduced": 2,
     "never_fails_under_det": 0,
-    "always_fails_under_det": 1,
-    "fails_sometimes_under_det": 1,
-    "seeds_needed": [],
-    "seeds_explored": 1,
-    "exploration_runs": 6,
-    "exploration_budget_hit": true,
+    "always_fails_under_det": 0,
+    "fails_sometimes_under_det": 0,
+    "seeds_needed": [
+     0,
+     1
+    ],
+    "seeds_explored": 10,
+    "exploration_runs": 19,
+    "exploration_budget_hit": false,
     "reasons": {
      "entropy": 10,
      "fs": 1
     },
-    "pass_fail_reasons": {},
+    "pass_fail_reasons": {
+     "outcome-only": 2
+    },
     "broken_by_det": 0,
     "broken_always": 0,
     "broken_causes": {},
@@ -2937,11 +2997,9 @@
      "issue": 1
     },
     "examples": {
-     "always-fails-under-det": [
-      "packages/logger/src/http-logger.spec.ts::createHttpLoggerMiddleware::does not apply morganLikeFormatOptions in production mode (seed 1:6/6)"
-     ],
-     "not-reproduced": [
-      "packages/pluginkit/src/v4/client/utils/growi-facade/growi-react.spec.ts::growiReact()::returns the given react instance in development mode (seed 1:6/6) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+     "reproduced": [
+      "packages/logger/src/http-logger.spec.ts::createHttpLoggerMiddleware::does not apply morganLikeFormatOptions in production mode (seed fixed): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "packages/pluginkit/src/v4/client/utils/growi-facade/growi-react.spec.ts::growiReact()::returns the given react instance in development mode (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
      ]
     },
     "runner": "vitest 3.2.6",
@@ -2953,13 +3011,12 @@
     "random_order_baseline": true,
     "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
     "diagnostics": {
-     "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33mThe workspace file is deprecated and will be removed in the next major. Please, use the `test.projects` field in the root config file instead.\u001b[39m\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"environmentMatchGlobs\" is deprecated. Use `test.projects` to define different configurations instead.\u001b[39m\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"environmentMatchGlobs\" is deprecated. Use `test.projects` to define different configurations instead.\u001b[39m\nJSON report written to /tmp/work/runs/growi-flaky/det_0.json\ndetjs: trace ../../runs/growi-flaky/det_0.jsonl: 7185 tests, order digest d42c98c28c406f5042f114c73e11f925\n"
+     "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33mThe workspace file is deprecated and will be removed in the next major. Please, use the `test.projects` field in the root config file instead.\u001b[39m\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"environmentMatchGlobs\" is deprecated. Use `test.projects` to define different configurations instead.\u001b[39m\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"environmentMatchGlobs\" is deprecated. Use `test.projects` to define different configurations instead.\u001b[39m\nJSON report written to /tmp/work/runs/growi-flaky/det_0.json\ndetjs: trace ../../runs/growi-flaky/det_0.jsonl: 7185 tests, order digest d42c98c28c406f5042f114c73e11f925\n",
+     "tree_entries_cleaned": 28
     },
-    "not_reproduced_causes": {
-     "concurrency/event-order": 2
-    },
+    "not_reproduced_causes": {},
     "executor": "GitHub Actions",
-    "date": "2026-11-17T13:22:56.748581+00:00"
+    "date": "2026-11-18T00:18:33.870950+00:00"
    },
    {
     "name": "h3",
@@ -4495,35 +4552,99 @@
     "kind": "popular",
     "status": "ok",
     "url": "https://github.com/recharts/recharts",
-    "commit": "f27aeba6293c66c0e8b602e4351faf6d2de42875",
-    "commit_date": "2026-11-16T22:46:48+09:00",
+    "commit": "548327520b0d643178287eaf03d40a35e0ebf37b",
+    "commit_date": "2026-11-18T06:12:52+09:00",
     "python": "node v22.23.5",
     "install": "npm ci --no-audit --no-fund",
     "pytest_args": [],
     "xdist": true,
-    "runs": 7,
-    "baseline_mean_s": 184.45958688442855,
-    "det_mean_s": 295.4926367451429,
-    "slowdown_pct": 60.19369973450124,
+    "runs": 10,
+    "baseline_mean_s": 205.26544993639988,
+    "det_mean_s": 321.05138267980004,
+    "slowdown_pct": 56.40790146577306,
     "precompile_first_s": null,
     "precompile_rest_median_s": null,
-    "tests": 9348,
-    "unstable_baseline": 67,
+    "tests": 9398,
+    "unstable_baseline": 82,
     "unstable_det": 0,
-    "became_stable": 67,
-    "outcome_changed_by_det": 4,
-    "covered": 9206,
+    "became_stable": 82,
+    "outcome_changed_by_det": 2,
+    "covered": 9250,
     "not_covered": 0,
-    "reproduced": 0,
-    "never_fails_under_det": 18,
+    "reproduced": 60,
+    "never_fails_under_det": 22,
     "always_fails_under_det": 0,
-    "fails_sometimes_under_det": 49,
-    "seeds_needed": [],
-    "seeds_explored": 1,
-    "exploration_runs": 7,
+    "fails_sometimes_under_det": 0,
+    "seeds_needed": [
+     8,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     2,
+     1,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "seeds_explored": 13,
+    "exploration_runs": 40,
     "exploration_budget_hit": true,
     "reasons": {},
-    "pass_fail_reasons": {},
+    "pass_fail_reasons": {
+     "outcome-only": 2,
+     "random": 58
+    },
     "broken_by_det": 0,
     "broken_always": 0,
     "broken_causes": {},
@@ -4535,13 +4656,10 @@
     "known_reproduced": 0,
     "known_categories": {},
     "examples": {
-     "not-reproduced": [
-      "test/cartesian/YAxis/YAxis.label.spec.tsx::<YAxis /> Label::label prop::should render label if label prop is a React element (seed 1:7/7) event #106: [time] Date.now @ <deps>/@reduxjs/toolkit/dist/redux-toolkit.cjs.development.js:285 = 107000  <>  [time] per",
-      "test/cartesian/YAxis/YAxis.spec.tsx::<YAxis />::Render ticks reversed (seed 1:7/7) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
-     ],
-     "changed:failed->passed": [
-      "test/chart/LineChart.spec.tsx::<LineChart /> - Pure Rendering::should only render Line once when the brush moves but doesn't change start/end indices",
-      "test/chart/LineChart.spec.tsx::<LineChart /> - Pure Rendering::should only render Line once when the mouse enters and moves"
+     "reproduced": [
+      "omnidoc/readProject.spec.ts::readProject::should return \"readonly\" modifier in props if they are defined in Readonly<> (seed 8): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "test/cartesian/Bar/Bar.spec.tsx::Bar background zIndex::should handle negative zIndex values in background prop (seed 1): event #0: Math.random @ <deps>/@reduxjs/toolkit/dist/redux-toolkit.cjs.development.js:1254 returned different values: \"0.719268222521077\" vs \"0.661569730031521\"",
+      "test/cartesian/YAxis/YAxis.spec.tsx::<YAxis />::Render ticks reversed (seed 1): event #0: Math.random @ <deps>/@reduxjs/toolkit/dist/redux-toolkit.cjs.development.js:1254 returned different values: \"0.7800997949401307\" vs \"0.109320722538269"
      ],
      "changed:None->passed": [
       "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Wed Jan 01 2025 00:00:00 GMT+0000 (Coordinated Universal Time)",
@@ -4555,16 +4673,14 @@
     "random_order_baseline": true,
     "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
     "diagnostics": {
-     "first_det_log_tail": "e canvas npm package\nNot implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package\nNot implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package\nJSON report written to /tmp/work/runs/recharts/det_0.json\nerror during close browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/firefox-1538/firefox/firefox\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     npx playwright install                                 \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n    at /tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:941:55\n    at PlaywrightBrowserProvider.createContext (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1077:19)\n    at PlaywrightBrowserProvider.openBrowserPage (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1147:19)\n    at PlaywrightBrowserProvider.openPage (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1161:23)\n    at TestProject._openBrowserPage (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:11040:3)\n    at BrowserPool.openPage (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2578:3)\n    at BrowserPool.runTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2573:3)\n    at runWorkspaceTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2473:3)\n    at executeTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:3779:25)\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13657:7\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13684:11\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13546:19\n    at Object.main (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/vitest/cli.js:132:5) {\n  log: [],\n  name: 'Error',\n  type: 'Unhandled Error'\n}\ndetjs: trace ../../runs/recharts/det_0.jsonl: 9278 tests, order digest 76a7fd11ecd376d63d706a8fca7d06d9\n"
+     "first_det_log_tail": "e canvas npm package\nNot implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package\nNot implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package\nJSON report written to /tmp/work/runs/recharts/det_0.json\nerror during close browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/firefox-1538/firefox/firefox\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     npx playwright install                                 \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n    at /tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:941:55\n    at PlaywrightBrowserProvider.createContext (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1077:19)\n    at PlaywrightBrowserProvider.openBrowserPage (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1147:19)\n    at PlaywrightBrowserProvider.openPage (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1161:23)\n    at TestProject._openBrowserPage (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:11040:3)\n    at BrowserPool.openPage (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2578:3)\n    at BrowserPool.runTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2573:3)\n    at runWorkspaceTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2473:3)\n    at executeTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:3779:25)\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13657:7\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13684:11\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13546:19\n    at Object.main (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/vitest/cli.js:132:5) {\n  log: [],\n  name: 'Error',\n  type: 'Unhandled Error'\n}\ndetjs: trace ../../runs/recharts/det_0.jsonl: 9322 tests, order digest 843b5151762e0cbd0355beae02c30abc\n",
+     "tree_entries_cleaned": 49
     },
     "not_reproduced_causes": {
-     "unknown": 56,
-     "concurrency/event-order": 1,
-     "l0-gap": 9,
-     "external": 1
+     "unknown": 22
     },
     "executor": "GitHub Actions",
-    "date": "2026-11-17T16:26:00.925741+00:00"
+    "date": "2026-11-18T02:45:35.496201+00:00"
    },
    {
     "name": "redux",
@@ -4796,52 +4912,39 @@
     "pytest_args": [],
     "xdist": true,
     "runs": 10,
-    "baseline_mean_s": 95.74190647909997,
-    "det_mean_s": 173.95627636400002,
-    "slowdown_pct": 81.69293129960171,
+    "baseline_mean_s": 154.1666560765001,
+    "det_mean_s": 282.9344301371999,
+    "slowdown_pct": 83.5250483715513,
     "precompile_first_s": null,
     "precompile_rest_median_s": null,
-    "tests": 1856,
-    "unstable_baseline": 36,
-    "unstable_det": 36,
-    "became_stable": 2,
+    "tests": 1816,
+    "unstable_baseline": 0,
+    "unstable_det": 0,
+    "became_stable": 0,
     "outcome_changed_by_det": 0,
     "covered": 1367,
     "not_covered": 0,
     "reproduced": 0,
     "never_fails_under_det": 0,
-    "always_fails_under_det": 36,
+    "always_fails_under_det": 0,
     "fails_sometimes_under_det": 0,
     "seeds_needed": [],
-    "seeds_explored": 7,
-    "exploration_runs": 16,
-    "exploration_budget_hit": true,
+    "seeds_explored": 0,
+    "exploration_runs": 0,
+    "exploration_budget_hit": false,
     "reasons": {},
     "pass_fail_reasons": {},
-    "broken_by_det": 4,
+    "broken_by_det": 0,
     "broken_always": 0,
-    "broken_causes": {
-     "fixed-order (fails without --det too) | unknown": 4
-    },
-    "broken_examples": {
-     "fixed-order (fails without --det too) | unknown": [
-      ".cache/e2e-artifacts-LvUzfv/first/tests/e2e/failure.spec.ts::<file>: Playwright Test did not expect test() to be called here. (first diverging source: -)",
-      ".cache/e2e-artifacts-LvUzfv/second/tests/e2e/failure.spec.ts::<file>: Playwright Test did not expect test() to be called here. (first diverging source: -)",
-      ".cache/e2e-artifacts-mNXALs/first/tests/e2e/failure.spec.ts::<file>: Playwright Test did not expect test() to be called here. (first diverging source: -)"
-     ]
-    },
-    "ablation_runs": 6,
+    "broken_causes": {},
+    "broken_examples": {},
+    "ablation_runs": 0,
     "known_flaky": 0,
     "known_present": 0,
     "known_unstable_baseline": 0,
     "known_reproduced": 0,
     "known_categories": {},
-    "examples": {
-     "always-fails-under-det": [
-      ".cache/e2e-artifacts-96sIYJ/first/tests/e2e/failure.spec.ts::<file> (fixed:8/10)",
-      ".cache/e2e-artifacts-96sIYJ/second/tests/e2e/failure.spec.ts::<file> (fixed:8/10)"
-     ]
-    },
+    "examples": {},
     "runner": "vitest 5.1.0",
     "node": "node v22.23.5",
     "documented_source": "",
@@ -4849,13 +4952,12 @@
     "random_order_baseline": true,
     "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
     "diagnostics": {
+     "tree_entries_cleaned": 29,
      "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nCannot parse /tmp/work/src/tanstack-table/packages/table-devtools/tests/styles.test.tsx:\nParse failed with 1 error:\nUnexpected JSX expression\n18:     }\n19:     const element = document.createElement(\"div\");\n20:     const dispose = render(() => <ThemeContextProvider theme={theme()}>\n                                     ^\n21:           <Consumer />\n22:         </ThemeContextProvider>, element);.\nTAP version 13\nTAP version 13\nJSON report written to /tmp/work/runs/tanstack-table/det_0.json\ndetjs: trace ../../runs/tanstack-table/det_0.jsonl: 1367 tests, order digest f4d117a7a4eea9b058196842c129dfc0\n"
     },
-    "not_reproduced_causes": {
-     "external": 36
-    },
+    "not_reproduced_causes": {},
     "executor": "GitHub Actions",
-    "date": "2026-11-17T14:31:46.838799+00:00"
+    "date": "2026-11-17T23:49:06.791858+00:00"
    },
    {
     "name": "tiptap-flaky",
@@ -5268,10 +5370,10 @@
     "install": "pnpm install --frozen-lockfile",
     "pytest_args": [],
     "xdist": true,
-    "runs": 7,
-    "baseline_mean_s": 182.55008987185715,
-    "det_mean_s": 311.796343731,
-    "slowdown_pct": 70.80043288385589,
+    "runs": 10,
+    "baseline_mean_s": 184.03067579939997,
+    "det_mean_s": 309.53970152139993,
+    "slowdown_pct": 68.20005696159552,
     "precompile_first_s": null,
     "precompile_rest_median_s": null,
     "tests": 3212,
@@ -5279,21 +5381,25 @@
     "unstable_det": 0,
     "became_stable": 1,
     "outcome_changed_by_det": 1,
-    "covered": 2384,
-    "not_covered": 32,
-    "reproduced": 0,
+    "covered": 2381,
+    "not_covered": 35,
+    "reproduced": 1,
     "never_fails_under_det": 0,
     "always_fails_under_det": 0,
-    "fails_sometimes_under_det": 1,
-    "seeds_needed": [],
+    "fails_sometimes_under_det": 0,
+    "seeds_needed": [
+     4
+    ],
     "seeds_explored": 4,
-    "exploration_runs": 7,
-    "exploration_budget_hit": true,
+    "exploration_runs": 13,
+    "exploration_budget_hit": false,
     "reasons": {
-     "fs": 24,
+     "fs": 27,
      "entropy": 8
     },
-    "pass_fail_reasons": {},
+    "pass_fail_reasons": {
+     "outcome-only": 1
+    },
     "broken_by_det": 1,
     "broken_always": 1,
     "broken_causes": {
@@ -5314,8 +5420,8 @@
      "changed:passed->failed": [
       "packages/cli/test/unit/util/events.test.ts::printEvents()::does not signal alias assignment when the stream errors"
      ],
-     "not-reproduced": [
-      "packages/passport/test/unit/index.test.ts::getIdentity::synthesizes a development identity by default outside Vercel (seed 4:4/4) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+     "reproduced": [
+      "packages/passport/test/unit/index.test.ts::getIdentity::synthesizes a development identity by default outside Vercel (seed 4): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
      ]
     },
     "runner": "vitest 2.0.3",
@@ -5327,13 +5433,12 @@
     "random_order_baseline": true,
     "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
     "diagnostics": {
-     "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 2.0.3; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/vercel-flaky/det_0.json\ndetjs: trace ../../runs/vercel-flaky/det_0.jsonl: 2419 tests, order digest 967621106baee3b62d94995d8e5ca102\n"
+     "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 2.0.3; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/vercel-flaky/det_0.json\ndetjs: trace ../../runs/vercel-flaky/det_0.jsonl: 2419 tests, order digest 967621106baee3b62d94995d8e5ca102\n",
+     "tree_entries_cleaned": 28
     },
-    "not_reproduced_causes": {
-     "concurrency/event-order": 1
-    },
+    "not_reproduced_causes": {},
     "executor": "GitHub Actions",
-    "date": "2026-11-17T15:45:35.524947+00:00"
+    "date": "2026-11-18T00:43:35.973260+00:00"
    },
    {
     "name": "vue-core",
@@ -5479,31 +5584,38 @@
     "install": "pnpm install --frozen-lockfile",
     "pytest_args": [],
     "xdist": true,
-    "runs": 5,
-    "baseline_mean_s": 302.81886311439996,
-    "det_mean_s": 455.4831243577999,
-    "slowdown_pct": 50.41438293285114,
+    "runs": 10,
+    "baseline_mean_s": 247.94281766740005,
+    "det_mean_s": 364.14964615570005,
+    "slowdown_pct": 46.868398762889065,
     "precompile_first_s": null,
     "precompile_rest_median_s": null,
     "tests": 5043,
-    "unstable_baseline": 6,
+    "unstable_baseline": 7,
     "unstable_det": 0,
-    "became_stable": 6,
+    "became_stable": 7,
     "outcome_changed_by_det": 0,
     "covered": 5037,
     "not_covered": 5,
-    "reproduced": 0,
-    "never_fails_under_det": 3,
+    "reproduced": 3,
+    "never_fails_under_det": 2,
     "always_fails_under_det": 0,
-    "fails_sometimes_under_det": 3,
-    "seeds_needed": [],
-    "seeds_explored": 1,
-    "exploration_runs": 4,
+    "fails_sometimes_under_det": 2,
+    "seeds_needed": [
+     1,
+     1,
+     1
+    ],
+    "seeds_explored": 8,
+    "exploration_runs": 34,
     "exploration_budget_hit": true,
     "reasons": {
      "fs": 5
     },
-    "pass_fail_reasons": {},
+    "pass_fail_reasons": {
+     "random": 2,
+     "fs": 1
+    },
     "broken_by_det": 0,
     "broken_always": 0,
     "broken_causes": {},
@@ -5515,9 +5627,14 @@
     "known_reproduced": 0,
     "known_categories": {},
     "examples": {
+     "reproduced": [
+      "examples/effect-workflows/test/inspection.test.ts::destroys the inspector if connection fails (seed 1): event #0: crypto.randomUUID @ <deps>/@statelyai/sdk/dist/inspect-DU-gHyef.mjs:42 returned different values: \"171f1f23-48ee-47bd-aadb-cb893de31132\" vs \"a3470897-",
+      "examples/effect-workflows/test/inspection.test.ts::inspects the workflow and invoked child, then destroys the inspector (seed 1): event #0: crypto.randomUUID @ <deps>/@statelyai/sdk/dist/inspect-DU-gHyef.mjs:42 returned different values: \"b6b35411-4f16-483c-9a68-5f62afba56ca\" vs \"be42e5dd-",
+      "packages/xstate-test/test/vitest.test.ts::@xstate/test/vitest::saved the expected failure under the test file and name (seed 1): event #0: fs.readdirSync @ packages/xstate-test/test/vitest.test.ts:79 returned different values: \"<tmp>/|1|e705cbc3af8b1ec81a322f6b6cf5d2c2\" vs \"<tmp>/|1|4b78b"
+     ],
      "not-reproduced": [
-      "examples/effect-workflows/test/inspection.test.ts::destroys the inspector if connection fails (seed 1:4/4) event #0: crypto.randomUUID @ <deps>/@statelyai/sdk/dist/inspect-DU-gHyef.mjs:42 returned different values: \"171f1f23-48",
-      "examples/effect-workflows/test/inspection.test.ts::inspects the workflow and invoked child, then destroys the inspector (seed 1:4/4) event #0: crypto.randomUUID @ <deps>/@statelyai/sdk/dist/inspect-DU-gHyef.mjs:42 returned different values: \"b6b35411-4f"
+      "packages/core/test/errors.test.ts::error handling::handled sync errors thrown when starting a child actor should not be reported globally when all of its own observers come with an error listener (seed 2:7/10) event #1: [time] setTimeout @ packages/core/test/errors.test.ts:780 = fire:10000000  <>  [time] performance.now @ <deps>",
+      "packages/core/test/errors.test.ts::error handling::uncaught error and an error thrown by the error listener should both be reported globally when not every observer comes with an error listener (seed 8:9/9) event #2: [time] setTimeout @ packages/core/test/errors.test.ts:27 = fire:1000000  <>  [time] performance.now @ <deps>/h"
      ]
     },
     "runner": "vitest 3.2.7",
@@ -5527,15 +5644,15 @@
     "random_order_baseline": true,
     "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
     "diagnostics": {
-     "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.7; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/xstate/det_0.json\ndetjs: trace ../../runs/xstate/det_0.jsonl: 5077 tests, order digest 14a1d52c076588149c9feca5bf110c15\n"
+     "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.7; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/xstate/det_0.json\ndetjs: trace ../../runs/xstate/det_0.jsonl: 5077 tests, order digest 14a1d52c076588149c9feca5bf110c15\n",
+     "tree_entries_cleaned": 43
     },
     "not_reproduced_causes": {
-     "l0-gap": 3,
      "concurrency/event-order": 2,
-     "unknown": 1
+     "l0-gap": 2
     },
     "executor": "GitHub Actions",
-    "date": "2026-11-17T14:29:22.327026+00:00"
+    "date": "2026-11-18T03:54:39.551246+00:00"
    },
    {
     "name": "yaml",
@@ -5764,35 +5881,35 @@
  },
  "totals": {
   "all": {
-   "tests": 85236,
-   "unstable_baseline": 421,
-   "unstable_det": 39,
-   "became_stable": 387,
-   "outcome_changed_by_det": 94,
-   "covered": 79661,
-   "not_covered": 988,
-   "reproduced": 129,
-   "never_fails_under_det": 162,
-   "always_fails_under_det": 37,
-   "fails_sometimes_under_det": 93,
+   "tests": 85246,
+   "unstable_baseline": 411,
+   "unstable_det": 3,
+   "became_stable": 411,
+   "outcome_changed_by_det": 90,
+   "covered": 79615,
+   "not_covered": 1078,
+   "reproduced": 239,
+   "never_fails_under_det": 129,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 43,
    "known_flaky": 31,
    "known_present": 31,
    "known_unstable_baseline": 0,
    "known_reproduced": 0,
-   "broken_by_det": 48,
+   "broken_by_det": 44,
    "broken_always": 41
   },
   "flaky": {
    "tests": 43250,
-   "unstable_baseline": 192,
+   "unstable_baseline": 202,
    "unstable_det": 3,
-   "became_stable": 192,
-   "outcome_changed_by_det": 68,
-   "covered": 38806,
-   "not_covered": 931,
-   "reproduced": 51,
-   "never_fails_under_det": 99,
-   "always_fails_under_det": 1,
+   "became_stable": 202,
+   "outcome_changed_by_det": 66,
+   "covered": 38716,
+   "not_covered": 1021,
+   "reproduced": 98,
+   "never_fails_under_det": 63,
+   "always_fails_under_det": 0,
    "fails_sometimes_under_det": 41,
    "known_flaky": 31,
    "known_present": 31,
@@ -5802,37 +5919,37 @@
    "broken_always": 33
   },
   "popular": {
-   "tests": 41986,
-   "unstable_baseline": 229,
-   "unstable_det": 36,
-   "became_stable": 195,
-   "outcome_changed_by_det": 26,
-   "covered": 40855,
+   "tests": 41996,
+   "unstable_baseline": 209,
+   "unstable_det": 0,
+   "became_stable": 209,
+   "outcome_changed_by_det": 24,
+   "covered": 40899,
    "not_covered": 57,
-   "reproduced": 78,
-   "never_fails_under_det": 63,
-   "always_fails_under_det": 36,
-   "fails_sometimes_under_det": 52,
+   "reproduced": 141,
+   "never_fails_under_det": 66,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 2,
    "known_flaky": 0,
    "known_present": 0,
    "known_unstable_baseline": 0,
    "known_reproduced": 0,
-   "broken_by_det": 12,
+   "broken_by_det": 8,
    "broken_always": 8
   }
  },
  "reasons": {
-  "time": 807,
+  "time": 893,
   "random": 2,
-  "beyond-trace": 1,
-  "fs": 91,
+  "beyond-trace": 2,
+  "fs": 94,
   "entropy": 87
  },
  "pass_fail_reasons": {
-  "time": 13,
-  "outcome-only": 98,
-  "random": 12,
-  "fs": 5
+  "time": 54,
+  "outcome-only": 106,
+  "random": 72,
+  "fs": 6
  },
  "broken_causes": {
   "time | ApolloError": 1,
@@ -5844,14 +5961,13 @@
   "net | Error": 5,
   "time | Error": 15,
   "time+timers | TypeError": 2,
-  "seeds+time+timers+fs+net | AssertionError": 3,
-  "fixed-order (fails without --det too) | unknown": 4
+  "seeds+time+timers+fs+net | AssertionError": 3
  },
  "not_reproduced_causes": {
-  "unknown": 172,
-  "external": 38,
-  "concurrency/event-order": 30,
-  "l0-gap": 52
+  "unknown": 103,
+  "external": 1,
+  "concurrency/event-order": 26,
+  "l0-gap": 42
  },
  "timings": [
   {
@@ -6327,10 +6443,10 @@
    "install": "pnpm install --frozen-lockfile",
    "pytest_args": [],
    "xdist": true,
-   "runs": 6,
-   "baseline_mean_s": 221.1472005576667,
-   "det_mean_s": 349.8915374988334,
-   "slowdown_pct": 58.21658000486201,
+   "runs": 10,
+   "baseline_mean_s": 170.41035183359992,
+   "det_mean_s": 277.97355793580005,
+   "slowdown_pct": 63.12011268378346,
    "precompile_first_s": null,
    "precompile_rest_median_s": null,
    "tests": 5959,
@@ -6340,19 +6456,24 @@
    "outcome_changed_by_det": 0,
    "covered": 5570,
    "not_covered": 11,
-   "reproduced": 0,
+   "reproduced": 2,
    "never_fails_under_det": 0,
-   "always_fails_under_det": 1,
-   "fails_sometimes_under_det": 1,
-   "seeds_needed": [],
-   "seeds_explored": 1,
-   "exploration_runs": 6,
-   "exploration_budget_hit": true,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "seeds_needed": [
+    0,
+    1
+   ],
+   "seeds_explored": 10,
+   "exploration_runs": 19,
+   "exploration_budget_hit": false,
    "reasons": {
     "entropy": 10,
     "fs": 1
    },
-   "pass_fail_reasons": {},
+   "pass_fail_reasons": {
+    "outcome-only": 2
+   },
    "broken_by_det": 0,
    "broken_always": 0,
    "broken_causes": {},
@@ -6366,11 +6487,9 @@
     "issue": 1
    },
    "examples": {
-    "always-fails-under-det": [
-     "packages/logger/src/http-logger.spec.ts::createHttpLoggerMiddleware::does not apply morganLikeFormatOptions in production mode (seed 1:6/6)"
-    ],
-    "not-reproduced": [
-     "packages/pluginkit/src/v4/client/utils/growi-facade/growi-react.spec.ts::growiReact()::returns the given react instance in development mode (seed 1:6/6) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    "reproduced": [
+     "packages/logger/src/http-logger.spec.ts::createHttpLoggerMiddleware::does not apply morganLikeFormatOptions in production mode (seed fixed): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+     "packages/pluginkit/src/v4/client/utils/growi-facade/growi-react.spec.ts::growiReact()::returns the given react instance in development mode (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
     ]
    },
    "runner": "vitest 3.2.6",
@@ -6382,11 +6501,10 @@
    "random_order_baseline": true,
    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
    "diagnostics": {
-    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33mThe workspace file is deprecated and will be removed in the next major. Please, use the `test.projects` field in the root config file instead.\u001b[39m\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"environmentMatchGlobs\" is deprecated. Use `test.projects` to define different configurations instead.\u001b[39m\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"environmentMatchGlobs\" is deprecated. Use `test.projects` to define different configurations instead.\u001b[39m\nJSON report written to /tmp/work/runs/growi-flaky/det_0.json\ndetjs: trace ../../runs/growi-flaky/det_0.jsonl: 7185 tests, order digest d42c98c28c406f5042f114c73e11f925\n"
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33mThe workspace file is deprecated and will be removed in the next major. Please, use the `test.projects` field in the root config file instead.\u001b[39m\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"environmentMatchGlobs\" is deprecated. Use `test.projects` to define different configurations instead.\u001b[39m\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"environmentMatchGlobs\" is deprecated. Use `test.projects` to define different configurations instead.\u001b[39m\nJSON report written to /tmp/work/runs/growi-flaky/det_0.json\ndetjs: trace ../../runs/growi-flaky/det_0.jsonl: 7185 tests, order digest d42c98c28c406f5042f114c73e11f925\n",
+    "tree_entries_cleaned": 28
    },
-   "not_reproduced_causes": {
-    "concurrency/event-order": 2
-   }
+   "not_reproduced_causes": {}
   },
   {
    "name": "happy-dom-flaky",
@@ -7280,10 +7398,10 @@
    "install": "pnpm install --frozen-lockfile",
    "pytest_args": [],
    "xdist": true,
-   "runs": 7,
-   "baseline_mean_s": 182.55008987185715,
-   "det_mean_s": 311.796343731,
-   "slowdown_pct": 70.80043288385589,
+   "runs": 10,
+   "baseline_mean_s": 184.03067579939997,
+   "det_mean_s": 309.53970152139993,
+   "slowdown_pct": 68.20005696159552,
    "precompile_first_s": null,
    "precompile_rest_median_s": null,
    "tests": 3212,
@@ -7291,21 +7409,25 @@
    "unstable_det": 0,
    "became_stable": 1,
    "outcome_changed_by_det": 1,
-   "covered": 2384,
-   "not_covered": 32,
-   "reproduced": 0,
+   "covered": 2381,
+   "not_covered": 35,
+   "reproduced": 1,
    "never_fails_under_det": 0,
    "always_fails_under_det": 0,
-   "fails_sometimes_under_det": 1,
-   "seeds_needed": [],
+   "fails_sometimes_under_det": 0,
+   "seeds_needed": [
+    4
+   ],
    "seeds_explored": 4,
-   "exploration_runs": 7,
-   "exploration_budget_hit": true,
+   "exploration_runs": 13,
+   "exploration_budget_hit": false,
    "reasons": {
-    "fs": 24,
+    "fs": 27,
     "entropy": 8
    },
-   "pass_fail_reasons": {},
+   "pass_fail_reasons": {
+    "outcome-only": 1
+   },
    "broken_by_det": 1,
    "broken_always": 1,
    "broken_causes": {
@@ -7326,8 +7448,8 @@
     "changed:passed->failed": [
      "packages/cli/test/unit/util/events.test.ts::printEvents()::does not signal alias assignment when the stream errors"
     ],
-    "not-reproduced": [
-     "packages/passport/test/unit/index.test.ts::getIdentity::synthesizes a development identity by default outside Vercel (seed 4:4/4) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    "reproduced": [
+     "packages/passport/test/unit/index.test.ts::getIdentity::synthesizes a development identity by default outside Vercel (seed 4): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
     ]
    },
    "runner": "vitest 2.0.3",
@@ -7339,11 +7461,10 @@
    "random_order_baseline": true,
    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
    "diagnostics": {
-    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 2.0.3; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/vercel-flaky/det_0.json\ndetjs: trace ../../runs/vercel-flaky/det_0.jsonl: 2419 tests, order digest 967621106baee3b62d94995d8e5ca102\n"
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 2.0.3; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/vercel-flaky/det_0.json\ndetjs: trace ../../runs/vercel-flaky/det_0.jsonl: 2419 tests, order digest 967621106baee3b62d94995d8e5ca102\n",
+    "tree_entries_cleaned": 28
    },
-   "not_reproduced_causes": {
-    "concurrency/event-order": 1
-   }
+   "not_reproduced_causes": {}
   },
   {
    "name": "excalidraw-flaky",
@@ -7356,32 +7477,81 @@
    "install": "npx -y yarn@1 install --frozen-lockfile --ignore-engines",
    "pytest_args": [],
    "xdist": true,
-   "runs": 6,
-   "baseline_mean_s": 180.74764530899995,
-   "det_mean_s": 405.4802223651667,
-   "slowdown_pct": 124.33499571846242,
+   "runs": 10,
+   "baseline_mean_s": 160.68104080969994,
+   "det_mean_s": 354.20222799659996,
+   "slowdown_pct": 120.43809662404028,
    "precompile_first_s": null,
    "precompile_rest_median_s": null,
    "tests": 1611,
-   "unstable_baseline": 57,
+   "unstable_baseline": 67,
    "unstable_det": 3,
-   "became_stable": 57,
-   "outcome_changed_by_det": 24,
-   "covered": 1124,
-   "not_covered": 461,
-   "reproduced": 0,
-   "never_fails_under_det": 41,
+   "became_stable": 67,
+   "outcome_changed_by_det": 22,
+   "covered": 1037,
+   "not_covered": 548,
+   "reproduced": 44,
+   "never_fails_under_det": 5,
    "always_fails_under_det": 0,
-   "fails_sometimes_under_det": 16,
-   "seeds_needed": [],
-   "seeds_explored": 1,
-   "exploration_runs": 5,
+   "fails_sometimes_under_det": 18,
+   "seeds_needed": [
+    1,
+    2,
+    1,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    3,
+    1,
+    2,
+    2,
+    2,
+    1,
+    2,
+    2,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    2,
+    3,
+    2,
+    2,
+    2,
+    2,
+    2,
+    3,
+    1,
+    2
+   ],
+   "seeds_explored": 4,
+   "exploration_runs": 37,
    "exploration_budget_hit": true,
    "reasons": {
     "entropy": 61,
-    "time": 400
+    "time": 486,
+    "beyond-trace": 1
    },
-   "pass_fail_reasons": {},
+   "pass_fail_reasons": {
+    "outcome-only": 3,
+    "time": 41
+   },
    "broken_by_det": 14,
    "broken_always": 11,
    "broken_causes": {
@@ -7407,9 +7577,10 @@
    "known_reproduced": 0,
    "known_categories": {},
    "examples": {
-    "not-reproduced": [
-     "packages/element/src/__tests__/transform.test.ts::Test Transform::Test arrow bindings::should bind arrows to existing elements if ids are correct (seed 1:5/5) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
-     "packages/element/src/__tests__/transform.test.ts::Test Transform::should transform the elements correctly when linear elements have single point (seed 1:5/5) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    "reproduced": [
+     "packages/element/src/__tests__/transform.test.ts::Test Transform::Test arrow bindings::should bind arrows to existing elements if ids are correct (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+     "packages/element/src/__tests__/transform.test.ts::Test Transform::Test arrow bindings::should bind arrows to existing text elements when start / end provided with ids (seed 2): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+     "packages/element/src/__tests__/transform.test.ts::Test Transform::should transform the elements correctly when linear elements have single point (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
     ],
     "changed:failed->passed": [
      "packages/element/src/__tests__/transform.test.ts::Test Transform::Test arrow bindings::should bind arrows to existing shapes when start / end provided with ids",
@@ -7418,6 +7589,10 @@
     "changed:passed->failed": [
      "packages/excalidraw/tests/history.test.tsx::history::multiplayer undo/redo::conflicts in bound text elements and their containers::should preserve latest remotely added binding and unbind previous one when the container is added through the history",
      "packages/excalidraw/tests/history.test.tsx::history::multiplayer undo/redo::conflicts in bound text elements and their containers::should preserve latest remotely added binding and unbind previous one when the text is added through history"
+    ],
+    "not-reproduced": [
+     "packages/excalidraw/tests/regressionTests.test.tsx::regression tests::adjusts z order when grouping (seed 4:7/7) event #28: [time] performance.now @ <deps>/scheduler/cjs/scheduler.development.js:186 = 26000  <>  [time] Date.now @ <de",
+     "packages/excalidraw/tests/regressionTests.test.tsx::regression tests::can drag element that covers another element, while another elem is selected (seed 4:7/7) event #28: [time] performance.now @ <deps>/scheduler/cjs/scheduler.development.js:186 = 26000  <>  [time] Date.now @ <de"
     ]
    },
    "runner": "vitest 3.0.6",
@@ -7429,12 +7604,13 @@
    "random_order_baseline": true,
    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
    "diagnostics": {
-    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.0.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v18.20.8\nJSON report written to /tmp/work/runs/excalidraw-flaky/det_0.json\ndetjs: trace ../../runs/excalidraw-flaky/det_0.jsonl: 1607 tests, order digest 839cae71a532588690fdb0b318e6355b\n"
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.0.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v18.20.8\nJSON report written to /tmp/work/runs/excalidraw-flaky/det_0.json\ndetjs: trace ../../runs/excalidraw-flaky/det_0.jsonl: 1607 tests, order digest 839cae71a532588690fdb0b318e6355b\n",
+    "tree_entries_cleaned": 52
    },
    "not_reproduced_causes": {
+    "concurrency/event-order": 2,
     "l0-gap": 20,
-    "unknown": 35,
-    "concurrency/event-order": 2
+    "unknown": 1
    }
   },
   {
@@ -8194,35 +8370,99 @@
    "kind": "popular",
    "status": "ok",
    "url": "https://github.com/recharts/recharts",
-   "commit": "f27aeba6293c66c0e8b602e4351faf6d2de42875",
-   "commit_date": "2026-11-16T22:46:48+09:00",
+   "commit": "548327520b0d643178287eaf03d40a35e0ebf37b",
+   "commit_date": "2026-11-18T06:12:52+09:00",
    "python": "node v22.23.5",
    "install": "npm ci --no-audit --no-fund",
    "pytest_args": [],
    "xdist": true,
-   "runs": 7,
-   "baseline_mean_s": 184.45958688442855,
-   "det_mean_s": 295.4926367451429,
-   "slowdown_pct": 60.19369973450124,
+   "runs": 10,
+   "baseline_mean_s": 205.26544993639988,
+   "det_mean_s": 321.05138267980004,
+   "slowdown_pct": 56.40790146577306,
    "precompile_first_s": null,
    "precompile_rest_median_s": null,
-   "tests": 9348,
-   "unstable_baseline": 67,
+   "tests": 9398,
+   "unstable_baseline": 82,
    "unstable_det": 0,
-   "became_stable": 67,
-   "outcome_changed_by_det": 4,
-   "covered": 9206,
+   "became_stable": 82,
+   "outcome_changed_by_det": 2,
+   "covered": 9250,
    "not_covered": 0,
-   "reproduced": 0,
-   "never_fails_under_det": 18,
+   "reproduced": 60,
+   "never_fails_under_det": 22,
    "always_fails_under_det": 0,
-   "fails_sometimes_under_det": 49,
-   "seeds_needed": [],
-   "seeds_explored": 1,
-   "exploration_runs": 7,
+   "fails_sometimes_under_det": 0,
+   "seeds_needed": [
+    8,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    1,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "seeds_explored": 13,
+   "exploration_runs": 40,
    "exploration_budget_hit": true,
    "reasons": {},
-   "pass_fail_reasons": {},
+   "pass_fail_reasons": {
+    "outcome-only": 2,
+    "random": 58
+   },
    "broken_by_det": 0,
    "broken_always": 0,
    "broken_causes": {},
@@ -8234,13 +8474,10 @@
    "known_reproduced": 0,
    "known_categories": {},
    "examples": {
-    "not-reproduced": [
-     "test/cartesian/YAxis/YAxis.label.spec.tsx::<YAxis /> Label::label prop::should render label if label prop is a React element (seed 1:7/7) event #106: [time] Date.now @ <deps>/@reduxjs/toolkit/dist/redux-toolkit.cjs.development.js:285 = 107000  <>  [time] per",
-     "test/cartesian/YAxis/YAxis.spec.tsx::<YAxis />::Render ticks reversed (seed 1:7/7) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
-    ],
-    "changed:failed->passed": [
-     "test/chart/LineChart.spec.tsx::<LineChart /> - Pure Rendering::should only render Line once when the brush moves but doesn't change start/end indices",
-     "test/chart/LineChart.spec.tsx::<LineChart /> - Pure Rendering::should only render Line once when the mouse enters and moves"
+    "reproduced": [
+     "omnidoc/readProject.spec.ts::readProject::should return \"readonly\" modifier in props if they are defined in Readonly<> (seed 8): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+     "test/cartesian/Bar/Bar.spec.tsx::Bar background zIndex::should handle negative zIndex values in background prop (seed 1): event #0: Math.random @ <deps>/@reduxjs/toolkit/dist/redux-toolkit.cjs.development.js:1254 returned different values: \"0.719268222521077\" vs \"0.661569730031521\"",
+     "test/cartesian/YAxis/YAxis.spec.tsx::<YAxis />::Render ticks reversed (seed 1): event #0: Math.random @ <deps>/@reduxjs/toolkit/dist/redux-toolkit.cjs.development.js:1254 returned different values: \"0.7800997949401307\" vs \"0.109320722538269"
     ],
     "changed:None->passed": [
      "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Wed Jan 01 2025 00:00:00 GMT+0000 (Coordinated Universal Time)",
@@ -8254,13 +8491,11 @@
    "random_order_baseline": true,
    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
    "diagnostics": {
-    "first_det_log_tail": "e canvas npm package\nNot implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package\nNot implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package\nJSON report written to /tmp/work/runs/recharts/det_0.json\nerror during close browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/firefox-1538/firefox/firefox\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     npx playwright install                                 \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n    at /tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:941:55\n    at PlaywrightBrowserProvider.createContext (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1077:19)\n    at PlaywrightBrowserProvider.openBrowserPage (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1147:19)\n    at PlaywrightBrowserProvider.openPage (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1161:23)\n    at TestProject._openBrowserPage (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:11040:3)\n    at BrowserPool.openPage (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2578:3)\n    at BrowserPool.runTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2573:3)\n    at runWorkspaceTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2473:3)\n    at executeTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:3779:25)\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13657:7\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13684:11\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13546:19\n    at Object.main (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/vitest/cli.js:132:5) {\n  log: [],\n  name: 'Error',\n  type: 'Unhandled Error'\n}\ndetjs: trace ../../runs/recharts/det_0.jsonl: 9278 tests, order digest 76a7fd11ecd376d63d706a8fca7d06d9\n"
+    "first_det_log_tail": "e canvas npm package\nNot implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package\nNot implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package\nJSON report written to /tmp/work/runs/recharts/det_0.json\nerror during close browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/firefox-1538/firefox/firefox\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     npx playwright install                                 \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n    at /tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:941:55\n    at PlaywrightBrowserProvider.createContext (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1077:19)\n    at PlaywrightBrowserProvider.openBrowserPage (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1147:19)\n    at PlaywrightBrowserProvider.openPage (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1161:23)\n    at TestProject._openBrowserPage (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:11040:3)\n    at BrowserPool.openPage (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2578:3)\n    at BrowserPool.runTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2573:3)\n    at runWorkspaceTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2473:3)\n    at executeTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:3779:25)\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13657:7\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13684:11\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13546:19\n    at Object.main (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/vitest/cli.js:132:5) {\n  log: [],\n  name: 'Error',\n  type: 'Unhandled Error'\n}\ndetjs: trace ../../runs/recharts/det_0.jsonl: 9322 tests, order digest 843b5151762e0cbd0355beae02c30abc\n",
+    "tree_entries_cleaned": 49
    },
    "not_reproduced_causes": {
-    "unknown": 56,
-    "concurrency/event-order": 1,
-    "l0-gap": 9,
-    "external": 1
+    "unknown": 22
    }
   },
   {
@@ -8397,52 +8632,39 @@
    "pytest_args": [],
    "xdist": true,
    "runs": 10,
-   "baseline_mean_s": 95.74190647909997,
-   "det_mean_s": 173.95627636400002,
-   "slowdown_pct": 81.69293129960171,
+   "baseline_mean_s": 154.1666560765001,
+   "det_mean_s": 282.9344301371999,
+   "slowdown_pct": 83.5250483715513,
    "precompile_first_s": null,
    "precompile_rest_median_s": null,
-   "tests": 1856,
-   "unstable_baseline": 36,
-   "unstable_det": 36,
-   "became_stable": 2,
+   "tests": 1816,
+   "unstable_baseline": 0,
+   "unstable_det": 0,
+   "became_stable": 0,
    "outcome_changed_by_det": 0,
    "covered": 1367,
    "not_covered": 0,
    "reproduced": 0,
    "never_fails_under_det": 0,
-   "always_fails_under_det": 36,
+   "always_fails_under_det": 0,
    "fails_sometimes_under_det": 0,
    "seeds_needed": [],
-   "seeds_explored": 7,
-   "exploration_runs": 16,
-   "exploration_budget_hit": true,
+   "seeds_explored": 0,
+   "exploration_runs": 0,
+   "exploration_budget_hit": false,
    "reasons": {},
    "pass_fail_reasons": {},
-   "broken_by_det": 4,
+   "broken_by_det": 0,
    "broken_always": 0,
-   "broken_causes": {
-    "fixed-order (fails without --det too) | unknown": 4
-   },
-   "broken_examples": {
-    "fixed-order (fails without --det too) | unknown": [
-     ".cache/e2e-artifacts-LvUzfv/first/tests/e2e/failure.spec.ts::<file>: Playwright Test did not expect test() to be called here. (first diverging source: -)",
-     ".cache/e2e-artifacts-LvUzfv/second/tests/e2e/failure.spec.ts::<file>: Playwright Test did not expect test() to be called here. (first diverging source: -)",
-     ".cache/e2e-artifacts-mNXALs/first/tests/e2e/failure.spec.ts::<file>: Playwright Test did not expect test() to be called here. (first diverging source: -)"
-    ]
-   },
-   "ablation_runs": 6,
+   "broken_causes": {},
+   "broken_examples": {},
+   "ablation_runs": 0,
    "known_flaky": 0,
    "known_present": 0,
    "known_unstable_baseline": 0,
    "known_reproduced": 0,
    "known_categories": {},
-   "examples": {
-    "always-fails-under-det": [
-     ".cache/e2e-artifacts-96sIYJ/first/tests/e2e/failure.spec.ts::<file> (fixed:8/10)",
-     ".cache/e2e-artifacts-96sIYJ/second/tests/e2e/failure.spec.ts::<file> (fixed:8/10)"
-    ]
-   },
+   "examples": {},
    "runner": "vitest 5.1.0",
    "node": "node v22.23.5",
    "documented_source": "",
@@ -8450,11 +8672,10 @@
    "random_order_baseline": true,
    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
    "diagnostics": {
+    "tree_entries_cleaned": 29,
     "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nCannot parse /tmp/work/src/tanstack-table/packages/table-devtools/tests/styles.test.tsx:\nParse failed with 1 error:\nUnexpected JSX expression\n18:     }\n19:     const element = document.createElement(\"div\");\n20:     const dispose = render(() => <ThemeContextProvider theme={theme()}>\n                                     ^\n21:           <Consumer />\n22:         </ThemeContextProvider>, element);.\nTAP version 13\nTAP version 13\nJSON report written to /tmp/work/runs/tanstack-table/det_0.json\ndetjs: trace ../../runs/tanstack-table/det_0.jsonl: 1367 tests, order digest f4d117a7a4eea9b058196842c129dfc0\n"
    },
-   "not_reproduced_causes": {
-    "external": 36
-   }
+   "not_reproduced_causes": {}
   },
   {
    "name": "ufo",
@@ -8920,31 +9141,38 @@
    "install": "pnpm install --frozen-lockfile",
    "pytest_args": [],
    "xdist": true,
-   "runs": 5,
-   "baseline_mean_s": 302.81886311439996,
-   "det_mean_s": 455.4831243577999,
-   "slowdown_pct": 50.41438293285114,
+   "runs": 10,
+   "baseline_mean_s": 247.94281766740005,
+   "det_mean_s": 364.14964615570005,
+   "slowdown_pct": 46.868398762889065,
    "precompile_first_s": null,
    "precompile_rest_median_s": null,
    "tests": 5043,
-   "unstable_baseline": 6,
+   "unstable_baseline": 7,
    "unstable_det": 0,
-   "became_stable": 6,
+   "became_stable": 7,
    "outcome_changed_by_det": 0,
    "covered": 5037,
    "not_covered": 5,
-   "reproduced": 0,
-   "never_fails_under_det": 3,
+   "reproduced": 3,
+   "never_fails_under_det": 2,
    "always_fails_under_det": 0,
-   "fails_sometimes_under_det": 3,
-   "seeds_needed": [],
-   "seeds_explored": 1,
-   "exploration_runs": 4,
+   "fails_sometimes_under_det": 2,
+   "seeds_needed": [
+    1,
+    1,
+    1
+   ],
+   "seeds_explored": 8,
+   "exploration_runs": 34,
    "exploration_budget_hit": true,
    "reasons": {
     "fs": 5
    },
-   "pass_fail_reasons": {},
+   "pass_fail_reasons": {
+    "random": 2,
+    "fs": 1
+   },
    "broken_by_det": 0,
    "broken_always": 0,
    "broken_causes": {},
@@ -8956,9 +9184,14 @@
    "known_reproduced": 0,
    "known_categories": {},
    "examples": {
+    "reproduced": [
+     "examples/effect-workflows/test/inspection.test.ts::destroys the inspector if connection fails (seed 1): event #0: crypto.randomUUID @ <deps>/@statelyai/sdk/dist/inspect-DU-gHyef.mjs:42 returned different values: \"171f1f23-48ee-47bd-aadb-cb893de31132\" vs \"a3470897-",
+     "examples/effect-workflows/test/inspection.test.ts::inspects the workflow and invoked child, then destroys the inspector (seed 1): event #0: crypto.randomUUID @ <deps>/@statelyai/sdk/dist/inspect-DU-gHyef.mjs:42 returned different values: \"b6b35411-4f16-483c-9a68-5f62afba56ca\" vs \"be42e5dd-",
+     "packages/xstate-test/test/vitest.test.ts::@xstate/test/vitest::saved the expected failure under the test file and name (seed 1): event #0: fs.readdirSync @ packages/xstate-test/test/vitest.test.ts:79 returned different values: \"<tmp>/|1|e705cbc3af8b1ec81a322f6b6cf5d2c2\" vs \"<tmp>/|1|4b78b"
+    ],
     "not-reproduced": [
-     "examples/effect-workflows/test/inspection.test.ts::destroys the inspector if connection fails (seed 1:4/4) event #0: crypto.randomUUID @ <deps>/@statelyai/sdk/dist/inspect-DU-gHyef.mjs:42 returned different values: \"171f1f23-48",
-     "examples/effect-workflows/test/inspection.test.ts::inspects the workflow and invoked child, then destroys the inspector (seed 1:4/4) event #0: crypto.randomUUID @ <deps>/@statelyai/sdk/dist/inspect-DU-gHyef.mjs:42 returned different values: \"b6b35411-4f"
+     "packages/core/test/errors.test.ts::error handling::handled sync errors thrown when starting a child actor should not be reported globally when all of its own observers come with an error listener (seed 2:7/10) event #1: [time] setTimeout @ packages/core/test/errors.test.ts:780 = fire:10000000  <>  [time] performance.now @ <deps>",
+     "packages/core/test/errors.test.ts::error handling::uncaught error and an error thrown by the error listener should both be reported globally when not every observer comes with an error listener (seed 8:9/9) event #2: [time] setTimeout @ packages/core/test/errors.test.ts:27 = fire:1000000  <>  [time] performance.now @ <deps>/h"
     ]
    },
    "runner": "vitest 3.2.7",
@@ -8968,12 +9201,12 @@
    "random_order_baseline": true,
    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
    "diagnostics": {
-    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.7; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/xstate/det_0.json\ndetjs: trace ../../runs/xstate/det_0.jsonl: 5077 tests, order digest 14a1d52c076588149c9feca5bf110c15\n"
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.7; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/xstate/det_0.json\ndetjs: trace ../../runs/xstate/det_0.jsonl: 5077 tests, order digest 14a1d52c076588149c9feca5bf110c15\n",
+    "tree_entries_cleaned": 43
    },
    "not_reproduced_causes": {
-    "l0-gap": 3,
     "concurrency/event-order": 2,
-    "unknown": 1
+    "l0-gap": 2
    }
   },
   {
@@ -9112,5 +9345,350 @@
     "unknown": 40
    }
   }
- ]
+ ],
+ "strict": {
+  "all": {
+   "covered": 79615,
+   "not_covered": 1078,
+   "broken_strict": 44,
+   "unstable_strict": 341,
+   "reproduced_strict": 239,
+   "runs_normal": 410,
+   "runs_det": 410,
+   "id_unstable": 70,
+   "only_under_det": 5,
+   "nofp_ran": 1926,
+   "nofp_typecheck": 1923
+  },
+  "flaky": {
+   "covered": 38716,
+   "not_covered": 1021,
+   "broken_strict": 36,
+   "unstable_strict": 192,
+   "reproduced_strict": 98,
+   "runs_normal": 160,
+   "runs_det": 160,
+   "id_unstable": 10,
+   "only_under_det": 1,
+   "nofp_ran": 1850,
+   "nofp_typecheck": 1847
+  },
+  "popular": {
+   "covered": 40899,
+   "nofp_ran": 76,
+   "nofp_typecheck": 76,
+   "runs_normal": 250,
+   "runs_det": 250,
+   "unstable_strict": 149,
+   "reproduced_strict": 141,
+   "not_covered": 57,
+   "broken_strict": 8,
+   "id_unstable": 60,
+   "only_under_det": 4
+  }
+ },
+ "per_repo_strict": {
+  "apollo-client-flaky": {
+   "covered": 2395,
+   "not_covered": 237,
+   "broken_strict": 6,
+   "unstable_strict": 24,
+   "reproduced_strict": 3,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "assistant-ui-flaky": {
+   "covered": 691,
+   "broken_strict": 8,
+   "not_covered": 1,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "growi-flaky": {
+   "covered": 5570,
+   "not_covered": 11,
+   "unstable_strict": 2,
+   "reproduced_strict": 2,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "happy-dom-flaky": {
+   "covered": 8047,
+   "not_covered": 25,
+   "broken_strict": 2,
+   "id_unstable": 10,
+   "only_under_det": 1,
+   "unstable_strict": 11,
+   "reproduced_strict": 2,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "mermaid-flaky": {
+   "covered": 4007,
+   "unstable_strict": 17,
+   "reproduced_strict": 6,
+   "not_covered": 4,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "msw-flaky": {
+   "covered": 252,
+   "unstable_strict": 1,
+   "reproduced_strict": 1,
+   "not_covered": 2,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "nuxt-flaky": {
+   "covered": 420,
+   "not_covered": 15,
+   "unstable_strict": 1,
+   "reproduced_strict": 1,
+   "nofp_ran": 3,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "quasar-flaky": {
+   "covered": 1039,
+   "not_covered": 2,
+   "unstable_strict": 17,
+   "reproduced_strict": 15,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "query-flaky": {
+   "covered": 407,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "react-admin-flaky": {
+   "covered": 2035,
+   "broken_strict": 5,
+   "unstable_strict": 27,
+   "reproduced_strict": 11,
+   "not_covered": 52,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "svelte-flaky": {
+   "covered": 6796,
+   "not_covered": 88,
+   "unstable_strict": 20,
+   "reproduced_strict": 8,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "tiptap-flaky": {
+   "covered": 1420,
+   "unstable_strict": 1,
+   "reproduced_strict": 1,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "zod-flaky": {
+   "covered": 1969,
+   "nofp_ran": 1847,
+   "nofp_typecheck": 1847,
+   "not_covered": 1,
+   "unstable_strict": 1,
+   "reproduced_strict": 1,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "react-testing-library-flaky": {
+   "covered": 250,
+   "unstable_strict": 2,
+   "reproduced_strict": 2,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "vercel-flaky": {
+   "covered": 2381,
+   "not_covered": 35,
+   "broken_strict": 1,
+   "unstable_strict": 1,
+   "reproduced_strict": 1,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "excalidraw-flaky": {
+   "not_covered": 548,
+   "covered": 1037,
+   "unstable_strict": 67,
+   "reproduced_strict": 44,
+   "broken_strict": 14,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "cheerio": {
+   "covered": 830,
+   "nofp_ran": 16,
+   "nofp_typecheck": 16,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "date-fns": {
+   "covered": 218,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "dom-testing-library": {
+   "covered": 664,
+   "unstable_strict": 4,
+   "reproduced_strict": 4,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "h3": {
+   "covered": 3311,
+   "not_covered": 7,
+   "unstable_strict": 5,
+   "reproduced_strict": 5,
+   "nofp_ran": 45,
+   "nofp_typecheck": 45,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "immer": {
+   "covered": 4192,
+   "unstable_strict": 1,
+   "reproduced_strict": 1,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "immutable-js": {
+   "covered": 899,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "jotai": {
+   "covered": 412,
+   "unstable_strict": 1,
+   "reproduced_strict": 1,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "luxon": {
+   "covered": 1204,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "mobx": {
+   "covered": 1001,
+   "unstable_strict": 6,
+   "reproduced_strict": 6,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "pinia": {
+   "covered": 263,
+   "nofp_ran": 8,
+   "nofp_typecheck": 8,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "preact-signals": {
+   "covered": 1095,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "react-redux": {
+   "covered": 140,
+   "broken_strict": 1,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "recharts": {
+   "covered": 9250,
+   "unstable_strict": 62,
+   "reproduced_strict": 60,
+   "id_unstable": 20,
+   "only_under_det": 2,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "redux": {
+   "covered": 82,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "tanstack-form": {
+   "covered": 445,
+   "unstable_strict": 2,
+   "reproduced_strict": 2,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "tanstack-table": {
+   "covered": 1367,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "ufo": {
+   "covered": 487,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "unstorage": {
+   "covered": 614,
+   "not_covered": 41,
+   "broken_strict": 5,
+   "unstable_strict": 1,
+   "reproduced_strict": 1,
+   "nofp_ran": 7,
+   "nofp_typecheck": 7,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "user-event": {
+   "covered": 569,
+   "broken_strict": 2,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "valibot": {
+   "covered": 3220,
+   "unstable_strict": 51,
+   "reproduced_strict": 51,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "vue-core": {
+   "covered": 3164,
+   "unstable_strict": 6,
+   "reproduced_strict": 4,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "vueuse": {
+   "covered": 1017,
+   "not_covered": 4,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "xstate": {
+   "covered": 5037,
+   "unstable_strict": 7,
+   "reproduced_strict": 3,
+   "not_covered": 5,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "yaml": {
+   "covered": 982,
+   "unstable_strict": 1,
+   "reproduced_strict": 1,
+   "runs_normal": 10,
+   "runs_det": 10
+  },
+  "yup": {
+   "covered": 436,
+   "only_under_det": 2,
+   "id_unstable": 40,
+   "unstable_strict": 2,
+   "reproduced_strict": 2,
+   "runs_normal": 10,
+   "runs_det": 10
+  }
+ }
 }

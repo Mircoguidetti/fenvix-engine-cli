@@ -9,10 +9,10 @@
   "install": "pnpm install --frozen-lockfile",
   "pytest_args": [],
   "xdist": true,
-  "runs": 6,
-  "baseline_mean_s": 221.1472005576667,
-  "det_mean_s": 349.8915374988334,
-  "slowdown_pct": 58.21658000486201,
+  "runs": 10,
+  "baseline_mean_s": 170.41035183359992,
+  "det_mean_s": 277.97355793580005,
+  "slowdown_pct": 63.12011268378346,
   "precompile_first_s": null,
   "precompile_rest_median_s": null,
   "tests": 5959,
@@ -22,19 +22,24 @@
   "outcome_changed_by_det": 0,
   "covered": 5570,
   "not_covered": 11,
-  "reproduced": 0,
+  "reproduced": 2,
   "never_fails_under_det": 0,
-  "always_fails_under_det": 1,
-  "fails_sometimes_under_det": 1,
-  "seeds_needed": [],
-  "seeds_explored": 1,
-  "exploration_runs": 6,
-  "exploration_budget_hit": true,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    0,
+    1
+  ],
+  "seeds_explored": 10,
+  "exploration_runs": 19,
+  "exploration_budget_hit": false,
   "reasons": {
     "entropy": 10,
     "fs": 1
   },
-  "pass_fail_reasons": {},
+  "pass_fail_reasons": {
+    "outcome-only": 2
+  },
   "broken_by_det": 0,
   "broken_always": 0,
   "broken_causes": {},
@@ -48,11 +53,9 @@
     "issue": 1
   },
   "examples": {
-    "always-fails-under-det": [
-      "packages/logger/src/http-logger.spec.ts::createHttpLoggerMiddleware::does not apply morganLikeFormatOptions in production mode (seed 1:6/6)"
-    ],
-    "not-reproduced": [
-      "packages/pluginkit/src/v4/client/utils/growi-facade/growi-react.spec.ts::growiReact()::returns the given react instance in development mode (seed 1:6/6) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    "reproduced": [
+      "packages/logger/src/http-logger.spec.ts::createHttpLoggerMiddleware::does not apply morganLikeFormatOptions in production mode (seed fixed): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "packages/pluginkit/src/v4/client/utils/growi-facade/growi-react.spec.ts::growiReact()::returns the given react instance in development mode (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
     ]
   },
   "runner": "vitest 3.2.6",
@@ -64,9 +67,8 @@
   "random_order_baseline": true,
   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
   "diagnostics": {
-    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33mThe workspace file is deprecated and will be removed in the next major. Please, use the `test.projects` field in the root config file instead.\u001b[39m\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"environmentMatchGlobs\" is deprecated. Use `test.projects` to define different configurations instead.\u001b[39m\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"environmentMatchGlobs\" is deprecated. Use `test.projects` to define different configurations instead.\u001b[39m\nJSON report written to /tmp/work/runs/growi-flaky/det_0.json\ndetjs: trace ../../runs/growi-flaky/det_0.jsonl: 7185 tests, order digest d42c98c28c406f5042f114c73e11f925\n"
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33mThe workspace file is deprecated and will be removed in the next major. Please, use the `test.projects` field in the root config file instead.\u001b[39m\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"environmentMatchGlobs\" is deprecated. Use `test.projects` to define different configurations instead.\u001b[39m\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"environmentMatchGlobs\" is deprecated. Use `test.projects` to define different configurations instead.\u001b[39m\nJSON report written to /tmp/work/runs/growi-flaky/det_0.json\ndetjs: trace ../../runs/growi-flaky/det_0.jsonl: 7185 tests, order digest d42c98c28c406f5042f114c73e11f925\n",
+    "tree_entries_cleaned": 28
   },
-  "not_reproduced_causes": {
-    "concurrency/event-order": 2
-  }
+  "not_reproduced_causes": {}
 }

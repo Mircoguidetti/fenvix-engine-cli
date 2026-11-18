@@ -1,0 +1,71 @@
+{
+  "name": "tanstack-table",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/TanStack/table",
+  "commit": "564a459b74834c77631e0d6fdba7661383bbc1b4",
+  "commit_date": "2026-11-14T11:31:12-06:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 95.74190647909997,
+  "det_mean_s": 173.95627636400002,
+  "slowdown_pct": 81.69293129960171,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 1856,
+  "unstable_baseline": 36,
+  "unstable_det": 36,
+  "became_stable": 2,
+  "outcome_changed_by_det": 0,
+  "covered": 1367,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 36,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 7,
+  "exploration_runs": 16,
+  "exploration_budget_hit": true,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 4,
+  "broken_always": 0,
+  "broken_causes": {
+    "fixed-order (fails without --det too) | unknown": 4
+  },
+  "broken_examples": {
+    "fixed-order (fails without --det too) | unknown": [
+      ".cache/e2e-artifacts-LvUzfv/first/tests/e2e/failure.spec.ts::<file>: Playwright Test did not expect test() to be called here. (first diverging source: -)",
+      ".cache/e2e-artifacts-LvUzfv/second/tests/e2e/failure.spec.ts::<file>: Playwright Test did not expect test() to be called here. (first diverging source: -)",
+      ".cache/e2e-artifacts-mNXALs/first/tests/e2e/failure.spec.ts::<file>: Playwright Test did not expect test() to be called here. (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "always-fails-under-det": [
+      ".cache/e2e-artifacts-96sIYJ/first/tests/e2e/failure.spec.ts::<file> (fixed:8/10)",
+      ".cache/e2e-artifacts-96sIYJ/second/tests/e2e/failure.spec.ts::<file> (fixed:8/10)"
+    ]
+  },
+  "runner": "vitest 5.1.0",
+  "node": "node v22.23.5",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nCannot parse /tmp/work/src/tanstack-table/packages/table-devtools/tests/styles.test.tsx:\nParse failed with 1 error:\nUnexpected JSX expression\n18:     }\n19:     const element = document.createElement(\"div\");\n20:     const dispose = render(() => <ThemeContextProvider theme={theme()}>\n                                     ^\n21:           <Consumer />\n22:         </ThemeContextProvider>, element);.\nTAP version 13\nTAP version 13\nJSON report written to /tmp/work/runs/tanstack-table/det_0.json\ndetjs: trace ../../runs/tanstack-table/det_0.jsonl: 1367 tests, order digest f4d117a7a4eea9b058196842c129dfc0\n"
+  },
+  "not_reproduced_causes": {
+    "external": 36
+  }
+}

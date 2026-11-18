@@ -48,7 +48,7 @@ def main() -> None:
     # Latest earlier measurement of each project (later sets override earlier ones): the rounds stopped on
     # earlier shells, then the full round on d3075a1 and its re-runs before the last fixes.
     for d in ("node-before-fixes", "node-before-fixes-2", "node-before-fixes-3", "node", "node-rerun", "node-rerun2",
-              "node-before-fixes-5"):
+              "node-before-fixes-5", "node-before-fixes-6"):
         before_runs += [s for s in load(HERE / "results" / d, "*.summary.json")]
     before_by = {s["name"]: s for s in before_runs}
     inactive = {}

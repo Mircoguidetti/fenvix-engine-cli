@@ -1,14 +1,1 @@
-[
- {
-  "repo": "vercel-flaky",
-  "pool": "flaky",
-  "nodeid": "packages/passport/test/unit/index.test.ts::getIdentity::synthesizes a development identity by default outside Vercel",
-  "class": "concurrency/event-order",
-  "evidence": "test source uses async , await ; also https://",
-  "documented": "",
-  "under_det": "never fails",
-  "baseline_outcomes": "failed=5;passed=2",
-  "det_exception": "",
-  "pass_fail_reason": "outcome-only"
- }
-]
+[]
