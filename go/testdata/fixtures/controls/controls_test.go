@@ -162,6 +162,7 @@ var (
 
 func TestParallelA(t *testing.T) {
 	t.Parallel()
+	time.Sleep(time.Duration(rand.Intn(200)) * time.Microsecond)
 	logMu.Lock()
 	log = append(log, "A")
 	logMu.Unlock()
