@@ -12,8 +12,11 @@ be reached); this module connects it to the cache service (``detpy.cache_service
   content-addressed document (its source-file facts as separate documents, shared between entries), then
   appended to the key log; the session's receipts follow as one document, linked to the run.
 
-The token comes from ``FENVIX_CACHE_TOKEN`` (or the file named by ``FENVIX_CACHE_TOKEN_FILE``) and is removed from
-the environment before any test runs. The local mirror is ``FENVIX_CACHE_LOCAL`` or
+The token comes from an inherited pipe (``FENVIX_CACHE_TOKEN_FD``, what ``fenvix-run`` uses), a hand-off file
+(``FENVIX_CACHE_TOKEN_FILE``, deleted once read) or ``FENVIX_CACHE_TOKEN``; before any test runs it is taken out of
+the environment, the descriptor and the file. Tests run in the client's process, so code that searches the process
+memory can still find it: untrusted code (pull-request jobs) gets read-only tokens. Plain ``http://`` is refused to
+hosts other than loopback. The local mirror is ``FENVIX_CACHE_LOCAL`` or
 ``~/.cache/fenvix/remote/<digest of the URL>``. Any service error is reported and the session continues on the
 local mirror: a cache problem never fails a test run.
 """
@@ -153,38 +156,78 @@ def local_dir_for(url: str) -> str:
     return os.path.join(base, "fenvix", "remote", hashlib.sha256(url.encode()).hexdigest()[:16])
 
 
-def _read_token() -> str | None:
-    t = os.environ.get("FENVIX_CACHE_TOKEN")
-    if t:
-        return t.strip()
+def _token_to_pipe() -> None:
+    """A token given in FENVIX_CACHE_TOKEN moves to an inherited pipe (FENVIX_CACHE_TOKEN_FD) before detpy re-executes
+    the interpreter, so the process that runs the tests does not carry it in its environment block
+    (/proc/self/environ)."""
+    t = os.environ.pop("FENVIX_CACHE_TOKEN", None)
+    if not t or os.environ.get("FENVIX_CACHE_TOKEN_FD"):
+        return
+    r, w = os.pipe()
+    os.write(w, t.strip().encode())
+    os.close(w)
+    os.set_inheritable(r, True)
+    os.environ["FENVIX_CACHE_TOKEN_FD"] = str(r)
+
+
+def _take_token() -> str | None:
+    """Read the token once, from the first source set, and leave nothing behind for the tests: an inherited pipe
+    (FENVIX_CACHE_TOKEN_FD, closed after reading), a hand-off file (FENVIX_CACHE_TOKEN_FILE, deleted after reading:
+    keep the master copy elsewhere), or FENVIX_CACHE_TOKEN."""
+    fd = os.environ.get("FENVIX_CACHE_TOKEN_FD")
+    if fd:
+        try:
+            n = int(fd)
+            chunks = []
+            while True:
+                b = os.read(n, 4096)
+                if not b:
+                    break
+                chunks.append(b)
+            os.close(n)
+            return b"".join(chunks).decode().strip() or None
+        except (ValueError, OSError):
+            return None
     f = os.environ.get("FENVIX_CACHE_TOKEN_FILE")
     if f:
         try:
             with open(f) as fh:
-                return fh.read().strip() or None
+                t = fh.read().strip() or None
+            os.unlink(f)
+            return t
         except OSError:
             return None
-    return None
+    t = os.environ.get("FENVIX_CACHE_TOKEN")
+    return t.strip() if t else None
 
 
 def localize(value):
     """``--det-cache`` value -> the directory the engine uses. A service URL becomes its local mirror and the client
-    is set up (once per process); a directory is returned unchanged."""
+    is set up (once per process); a directory is returned unchanged. The token is read later, by ``hide_token``,
+    in the process that runs the tests."""
     global CLIENT
     if not is_url(value):
         return value
+    _token_to_pipe()
     if CLIENT is None or CLIENT.url != value:
-        CLIENT = RemoteCache(value, _read_token(), local_dir_for(value))
+        CLIENT = RemoteCache(value, None, local_dir_for(value))
     return CLIENT.local_dir
 
 
-_CLIENT_ENV = ("FENVIX_CACHE_TOKEN", "FENVIX_CACHE_TOKEN_FILE", "FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT")
+_CLIENT_ENV = ("FENVIX_CACHE_TOKEN", "FENVIX_CACHE_TOKEN_FD", "FENVIX_CACHE_TOKEN_FILE", "FENVIX_CACHE_LOCAL",
+               "FENVIX_CACHE_REPORT", "FENVIX_CACHE_ALLOW_HTTP")
 
 
 def hide_token() -> None:
-    """Remove the token and the client's other variables from the environment of the test session (called in the
-    process that runs the tests, after the client read them): tests never see the token, and machine-specific
-    client settings are not inputs of tests that enumerate the environment."""
+    """In the process that runs the tests, before any test: take the token (closing its pipe or deleting its
+    hand-off file) and remove the client's variables from os.environ, so no token is left in the environment, in
+    an open descriptor or in a file. A test runs in the same process as the client, so code that searches the
+    process memory can still find it: give untrusted code read-only tokens (docs/SHARED-CACHE.md)."""
+    if CLIENT is None:  # no service in this session: leave the caller's token sources alone
+        return
+    token = _take_token()
+    if token:
+        CLIENT.http.token = token
     for k in _CLIENT_ENV:
         os.environ.pop(k, None)
 
@@ -251,6 +294,21 @@ class _Docs:
                 "units": sorted([pos[f], k] for f, k in pairs)}
 
 
+def _is_loopback(host: str) -> bool:
+    import ipaddress
+
+    if host in ("localhost", "localhost.localdomain", "ip6-localhost"):
+        return True
+    try:
+        return ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        return False
+
+
+def own_file(nodeid: str) -> str:
+    return nodeid.split("::", 1)[0]
+
+
 class RemoteCache:
     def __init__(self, url: str, token: str | None, local_dir: str):
         self.url = url
@@ -260,6 +318,12 @@ class RemoteCache:
         self.pc = None
         self.error: str | None = None
         self.stats: dict = {"service": self.base, "namespace": self.ns, "local_dir": local_dir}
+        host = (urllib.parse.urlsplit(url).hostname or "").lower()
+        self.disabled = None
+        if url.startswith("http://") and not _is_loopback(host) and os.environ.get("FENVIX_CACHE_ALLOW_HTTP") != "1":
+            # the bearer token and the documents would cross the network in clear
+            self.disabled = f"refusing plain http:// to {host} (use https://, or FENVIX_CACHE_ALLOW_HTTP=1)"
+            self._fail("setup", ServiceError(self.disabled))
         self._nsq = urllib.parse.quote(self.ns, safe="")
         self.pulled_docs: set[str] = set()
         self.report_path = os.environ.get("FENVIX_CACHE_REPORT")
@@ -320,6 +384,8 @@ class RemoteCache:
         return True
 
     def pull(self, items) -> None:
+        if self.disabled:
+            return
         pc = self.pc
         t0 = _perf()
         st = self.stats
@@ -362,7 +428,10 @@ class RemoteCache:
             cands = []
             for d in ids:  # newest first
                 if d in docs and d not in cands and docs[d].get("kind") == "entry" and docs[d].get("nodeid") == nid:
-                    cands.append(d)
+                    if self._names_own_file(docs[d], docs):
+                        cands.append(d)
+                    else:
+                        st["pull_rejected_no_own_file"] = st.get("pull_rejected_no_own_file", 0) + 1
             if cands:
                 pending[nid] = cands
         memo: dict = {}
@@ -386,10 +455,32 @@ class RemoteCache:
         st["pull_merge_seconds"] = round(_perf() - t1, 3)
         st["pull_seconds"] = round(_perf() - t0, 3)
 
+    @staticmethod
+    def _names_own_file(doc: dict, docs: dict) -> bool:
+        """Floor check: a candidate must list its test's own file among its code or data inputs. Every entry the
+        engine records does (10,963 of 10,963 in the pygments, click and marshmallow stores); an entry that claims
+        no inputs would otherwise be reusable for any code at any commit. It does not stop a forger who lists the
+        file: only signed entries would."""
+        own = own_file(doc.get("nodeid", ""))
+        if any(p == own for p, _ in (doc.get("entry") or {}).get("data") or []):
+            return True
+        for k in ("content", "skeleton", "hooks", "unit_files"):
+            for fid in (docs.get(doc.get(k)) or {}).get("files", []):
+                if (docs.get(fid) or {}).get("path") == own:
+                    return True
+        return False
+
     def _get(self, ids: list[str]) -> dict:
+        """Documents by address; each one's address is recomputed, and a document that does not match it is dropped
+        (a compromised service or anything on the path cannot substitute content)."""
         out = {}
         for i in range(0, len(ids), 2000):
-            out.update(self.http.call("POST", "/v1/blobs/get", {"ids": ids[i:i + 2000]})["docs"])
+            got = self.http.call("POST", "/v1/blobs/get", {"ids": ids[i:i + 2000]})["docs"]
+            for k, d in got.items():
+                if doc_id(d) == k:
+                    out[k] = d
+                else:
+                    self.stats["pull_bad_address"] = self.stats.get("pull_bad_address", 0) + 1
         return out
 
     # -- push -----------------------------------------------------------------------------------------------------
@@ -417,6 +508,8 @@ class RemoteCache:
             pass
 
     def push(self) -> None:
+        if self.disabled:
+            return
         pc = self.pc
         t0 = _perf()
         st = self.stats

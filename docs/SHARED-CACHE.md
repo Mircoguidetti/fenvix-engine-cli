@@ -17,10 +17,20 @@ Equal on equivalent machines, different whenever behaviour can differ. Parts (ea
 | `libc` | glibc version and the bytes of the libc actually resolved (also inside `native`) | |
 | `stdlib` | bytes of every standard-library file by relative path | its location |
 | `distributions` | per distribution: name, version, bytes of every file its `RECORD` lists inside the site directory | `RECORD` itself, `INSTALLER`, `REQUESTED`, `direct_url.json`, bytecode, scripts in `bin/` (installers write these per machine) |
-| `site_loose` | files directly in a site directory that no distribution owns (`.pth` run at start-up, `_virtualenv.py`) | |
-| `sys_path` | the import path, each entry named relative to stdlib, site directories, prefixes or the project root | absolute paths (an unknown directory keeps its path) |
+| `site_tree` | every file under every site directory, by relative path and bytes, listed in a `RECORD` or not (packages copied in without metadata, files added to a package after installation, egg-info installs, `.pth` files) | bytecode, installer bookkeeping (`RECORD`, `INSTALLER`, `REQUESTED`, `direct_url.json`), the project's own editable install |
+| `extra_paths` | content of import-path entries outside the project, the stdlib and the site directories (`PYTHONPATH`, `.pth` lines to `/opt/...`); an entry with more than 50,000 files is never reusable | |
+| `sys_path` | the import path, each entry named relative to stdlib, site directories, prefixes or the project root | absolute paths (another directory keeps its path) |
+| `native` (preload) | libraries `LD_PRELOAD` and `/etc/ld.so.preload` load ahead of libc (sanitizers, libfaketime, jemalloc), by bytes | their directories |
+| `locale` | every category a test gets from `setlocale(LC_ALL, "")` (read by C, never through `os.environ`), `LANGUAGE`, the locale data (`LOCPATH` or `/usr/lib/locale`) | |
+| `tz` | `TZ`, the zone file it names, `/etc/localtime`, `/etc/timezone` | |
+| `cpu` | CPUs visible to the process, and the instruction-set level (x86-64 v1..v4; elsewhere the CPU feature list) | the CPU model |
 
-The project under test, installed in editable mode, is left out: its files are per-test inputs. File digests are
+The project under test, installed in editable mode, is left out: its files are per-test inputs.
+
+The instruction-set level is keyed because native code that dispatches on CPU features (glibc's libm, numpy,
+OpenBLAS) can return other floating-point results. It splits a mixed fleet into one cache per level (GitHub-hosted
+runners mix AMD EPYC 7763, x86-64-v3, with AVX-512 machines, v4); on our own fleet the machines are chosen alike.
+`FENVIX_RUNTIME_ISA=off` leaves it out: a deliberate choice for suites whose results cannot depend on it. File digests are
 memoised by (device, inode, size, mtime, ctime) in `~/.cache/fenvix/runtime-memo-*.json` (`FENVIX_RUNTIME_MEMO`,
 `off` to disable); a memo copied to another machine never applies there. `python -m detpy.runtime_id [ROOT]` prints
 every part and the lists behind them.
@@ -30,7 +40,10 @@ produced different `RECORD` bytes for the engine's own wheel, so nothing recorde
 machine 2. `tests/test_runtime_id.py` proves the new rule: same packages at other paths through other installers,
 a relocated copy of the interpreter and the same libc from another directory give the same identity; another Python
 patch release, other libc bytes actually loaded, another package version, the same version with one changed file,
-a changed stdlib file, a `.pth` file and `PYTHONOPTIMIZE` give a different one.
+a changed stdlib file, a `.pth` file, `PYTHONOPTIMIZE`, the time zone and the ISA switch give a different one;
+`tests/test_review_r008.py` (review R-008) adds unowned package directories, files outside a `RECORD`, egg-info
+installs, modules on another import path, `LD_PRELOAD`, locale categories and the visible CPUs, two of them end to
+end through the service.
 
 ## Cache service (`python -m detpy.cache_service`)
 
@@ -70,9 +83,23 @@ FENVIX_CACHE_TOKEN=... pytest --det --det-cache=https://cache.example/acme/repo
   candidates, never decisions.
 * **Push** (end of session): every local entry not yet on the service, with the file and set documents it needs,
   then the key log, then the session's receipts linked to the run.
-* The token (`FENVIX_CACHE_TOKEN` or `FENVIX_CACHE_TOKEN_FILE`) and the other client variables are removed from the
-  environment before any test runs; `fenvix-run` does not pass them to the runs without the service (verify, rerun
-  alone). Level 0's closed network is suspended only around the client's own requests, never while a test runs.
+* The token: `fenvix-run` takes it (from `FENVIX_CACHE_TOKEN`, or the hand-off file `FENVIX_CACHE_TOKEN_FILE`,
+  which it deletes once read) and hands it to pytest on an inherited pipe (`FENVIX_CACHE_TOKEN_FD`). Used directly,
+  the engine accepts the same three sources and moves a `FENVIX_CACHE_TOKEN` into a pipe before it re-executes the
+  interpreter. Before any test runs, the client closes the pipe, deletes the hand-off file and removes its
+  variables: no token is left in the environment, `/proc/self/environ`, an open descriptor or a file.
+  **What a test can still reach**: the client runs in the test process, so code that searches the process memory
+  (or imports `detpy.remote_cache`) can find the token. Without `--det` re-execution (`--det-no-reexec`), a token
+  given as `FENVIX_CACHE_TOKEN` also stays in `/proc/self/environ`. Hence the policy: **write tokens only for jobs on
+  trusted refs** (default and protected branches); jobs that run untrusted code (pull requests, forks) get
+  **read-only tokens**. `fenvix-run` does not pass client variables to the runs without the service (verify, rerun
+  alone).
+* Plain `http://` is refused to hosts other than loopback (the bearer token and documents would cross the network
+  in clear) unless `FENVIX_CACHE_ALLOW_HTTP=1`. Level 0's closed network is suspended only around the client's own
+  requests (process-wide for that moment: a thread a test left running could connect then).
+* Every fetched document's address is recomputed and a mismatch is dropped, so a compromised service or anything on
+  the path cannot substitute content under a known address. A candidate must list its test's own file among its
+  inputs (floor check; every entry the engine records does).
 
 ## Measured (see the session report)
 
@@ -83,13 +110,16 @@ Locally: `runner/local-shared-demo.sh <repo-url> <N> <N+1>` runs the same compar
 
 ## Limits and next steps
 
-* Trust: any token with write access can file a false "passed" entry for its organization. Every candidate is
-  checked against code and data, but the recorded outcome itself is a claim. Next: signed entries (per-machine
-  keys), or a verification sample re-run on pull.
+* Trust: a write token can make **any test pass** on every machine of its organization, not only claim an outcome.
+  The set of inputs an entry lists is a claim too: an entry that lists few inputs is checked against few. The floor
+  check refuses entries that do not even list the test's own file; it does not stop a forger who lists it. Real
+  answer: signed entries (per-machine keys) or a sampled re-run of pulled hits. Until then: write tokens only on
+  trusted refs (above).
 * Data inputs outside the project are recorded by absolute path (files in the virtualenv, the project root itself):
   machines must use the same work paths (true on GitHub-hosted runners and on `runs-on: fenvix`).
 * Tests that enumerate the environment depend on the whole environment, which differs between machines
   (`RUNNER_NAME`, ...): they rerun on another machine.
 * Native libraries loaded only at run time with `dlopen`/`ctypes` by name are not in the closure.
+* Hardware other than the instruction-set level and the CPU count (CPU model, memory size, GPUs) is not keyed.
 * One HTTP service process with SQLite; sized for tests and a small fleet. Pull fetches every candidate document of
   the collected tests (pygments: ~10 MB, 3-4 s locally); a per-commit manifest would cut it.

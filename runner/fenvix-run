@@ -71,7 +71,8 @@ RUNTIME_PROBE = ("import json, sys\n"
                  "    from detpy import runtime_id\n"
                  "    d = runtime_id.describe(sys.argv[1]); det = d.pop('details')\n"
                  "    d.update(dist_list=det['dist_list'], native_list=det['native_list'],\n"
-                 "             python_version=det['python_version'], identity_seconds=det['seconds'])\n"
+                 "             python_version=det['python_version'], identity_seconds=det['seconds'],\n"
+                 "             cpu_detail=det.get('cpu'), extra_paths_list=det.get('extra_paths'))\n"
                  "    try:  # the previous identity (RECORD bytes, listing of the stdlib), for comparison\n"
                  "        import os, platform, sysconfig\n"
                  "        from detpy import _core\n"
@@ -93,7 +94,8 @@ RUNTIME_PROBE = ("import json, sys\n"
                  "    dig, info, _ = runtime_identity(sys.argv[1])\n"
                  "    d = {'digest': dig, **info, 'dist_list': _dist_infos(sys.argv[1])[0]}\n"
                  "print(json.dumps(d))\n")
-_LIST_PARTS = {"distributions": "dist_list", "native": "native_list", "previous_identity": "previous_dist_list"}
+_LIST_PARTS = {"distributions": "dist_list", "native": "native_list", "previous_identity": "previous_dist_list",
+               "cpu": "cpu_detail"}
 
 
 def runtime_components(py: str, project: Path) -> dict:
@@ -117,7 +119,11 @@ def runtime_diff(prev: dict | None, rt: dict) -> list[str]:
                  and prev.get(k) != rt.get(k))
     for part, lst in _LIST_PARTS.items():
         if part in out:
-            before, after = set(prev.get(lst, [])), set(rt.get(lst, []))
+            b, a = prev.get(lst) or [], rt.get(lst) or []
+            if isinstance(b, dict) or isinstance(a, dict):
+                b = [f"{k}={v}" for k, v in sorted((b or {}).items())] if isinstance(b, dict) else b
+                a = [f"{k}={v}" for k, v in sorted((a or {}).items())] if isinstance(a, dict) else a
+            before, after = set(b), set(a)
             out += [f"-{d}" for d in sorted(before - after)] + [f"+{d}" for d in sorted(after - before)]
     return out
 
@@ -143,7 +149,8 @@ def machine_identity() -> dict:
             "boot_id": digest_of("/proc/sys/kernel/random/boot_id"), "cpu": cpu, "cpus": os.cpu_count()}
 
 
-_CLIENT_ENV = ("FENVIX_CACHE_TOKEN", "FENVIX_CACHE_TOKEN_FILE", "FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT")
+_CLIENT_ENV = ("FENVIX_CACHE_TOKEN", "FENVIX_CACHE_TOKEN_FD", "FENVIX_CACHE_TOKEN_FILE", "FENVIX_CACHE_LOCAL",
+               "FENVIX_CACHE_REPORT")
 
 
 def without_client_env(env: dict) -> dict:
@@ -155,12 +162,40 @@ def is_url(v: str | None) -> bool:
     return bool(v) and v.startswith(("http://", "https://"))
 
 
-def run_pytest(py: str, project: Path, args: list[str], env: dict) -> tuple[int, float]:
+def run_pytest(py: str, project: Path, args: list[str], env: dict, token: str | None = None) -> tuple[int, float]:
+    """Run pytest. A shared-cache token goes on an inherited pipe (FENVIX_CACHE_TOKEN_FD), never in the environment
+    or a file: the engine reads it and closes the pipe before any test runs."""
     cmd = [py, "-m", "pytest", *args]
     log("$ " + " ".join(shlex.quote(c) for c in cmd))
+    fds: tuple = ()
+    if token:
+        r, w = os.pipe()
+        os.write(w, token.encode())
+        os.close(w)
+        env = dict(env, FENVIX_CACHE_TOKEN_FD=str(r))
+        fds = (r,)
     t0 = time.monotonic()
-    code = subprocess.run(cmd, cwd=project, env=env).returncode
+    try:
+        code = subprocess.run(cmd, cwd=project, env=env, pass_fds=fds).returncode
+    finally:
+        for fd in fds:
+            os.close(fd)
     return code, time.monotonic() - t0
+
+
+def take_token(env: dict) -> str | None:
+    """The shared-cache token, taken out of ``env``: FENVIX_CACHE_TOKEN, or the hand-off file FENVIX_CACHE_TOKEN_FILE
+    (deleted once read, so no test can find it on disk)."""
+    token = env.pop("FENVIX_CACHE_TOKEN", None)
+    path = env.pop("FENVIX_CACHE_TOKEN_FILE", None)
+    if not token and path:
+        try:
+            with open(path) as fh:
+                token = fh.read()
+            os.unlink(path)
+        except OSError as e:
+            log(f"warning: cannot read FENVIX_CACHE_TOKEN_FILE: {e}")
+    return token.strip() if token else None
 
 
 def junit_times(path: Path) -> dict[str, float]:
@@ -216,10 +251,12 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
         cache_arg = f"{a.cache.rstrip('/')}/{ns}"
         env["FENVIX_CACHE_LOCAL"] = str(cache)
         env["FENVIX_CACHE_REPORT"] = str(remote_p)
-        if not env.get("FENVIX_CACHE_TOKEN") and not env.get("FENVIX_CACHE_TOKEN_FILE"):
+        token = take_token(env)
+        if not token:
             log("warning: no FENVIX_CACHE_TOKEN or FENVIX_CACHE_TOKEN_FILE: the service will refuse the requests "
                 "(local mirror only)")
     else:
+        token = None
         cache = Path(a.cache) if a.cache else Path(DEFAULT_ROOT) / ns
         cache_arg = str(cache)
     cache.mkdir(parents=True, exist_ok=True)
@@ -234,7 +271,7 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
                    f"--junitxml={junit_p}", *extra]
     log(f"project {project} @ {git_head(project)[:12]}; cache {cache_arg} (local {cache}: "
         f"{'warm' if had_cache else 'cold'})")
-    code, wall = run_pytest(a.python, project, args, env)
+    code, wall = run_pytest(a.python, project, args, env, token)
     try:
         shared = json.loads(remote_p.read_text())
     except (OSError, ValueError):

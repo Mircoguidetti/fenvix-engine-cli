@@ -67,11 +67,16 @@ def compare(root: Path) -> dict:
                                     != (m2.get("boot_id"), m2.get("runner_name")) and m1.get("boot_id") != m2.get("boot_id")),
         "runtime_equal_across_machines": bool(x1.get("runtime", {}).get("digest"))
                                          and x1["runtime"].get("digest") == (x2.get("runtime") or {}).get("digest"),
-        "runtime_parts_changed": x2.get("runtime_changed_since_previous_job"),
+        "runtime_parts_changed": sorted(
+            k for k in set(x1.get("runtime") or {}) | set(x2.get("runtime") or {})
+            if not k.endswith(("_list", "_detail", "_seconds")) and k not in ("previous_identity", "digest")
+            and (x1.get("runtime") or {}).get(k) != (x2.get("runtime") or {}).get(k)),
         "machine_1": m1, "machine_2": m2,
         "every_reuse_checked": (v_x.get("checked") == v_x.get("reused")) if v_x else False,
         "reused_only_on_one_machine": {n: (r_x.get(n) or {}).get("why") for n in only_one[:50]},
         "reused_only_across_machines": {n: (r_one.get(n) or {}).get("why") for n in only_x[:50]},
+        "isa_machine_1": ((x1.get("runtime") or {}).get("cpu_detail") or {}).get("isa"),
+        "isa_machine_2": ((x2.get("runtime") or {}).get("cpu_detail") or {}).get("isa"),
         "runtime_machine_1": x1.get("runtime", {}).get("digest"),
         "runtime_machine_2": (x2.get("runtime") or {}).get("digest"),
         "previous_identity_machine_1": x1.get("runtime", {}).get("previous_identity"),
@@ -96,7 +101,9 @@ def fmt(c: dict) -> str:
          f"{c['two_machines_differ']} (runner {c['machine_1'].get('runner_name')}, boot {c['machine_1'].get('boot_id')}"
          f" / runner {c['machine_2'].get('runner_name')}, boot {c['machine_2'].get('boot_id')}). Runtime identity equal "
          f"on both: {c['runtime_equal_across_machines']} ({c['runtime_machine_1']} / {c['runtime_machine_2']}); "
-         f"previous identity: {c['previous_identity_machine_1']} / {c['previous_identity_machine_2']}."]
+         f"previous identity: {c['previous_identity_machine_1']} / {c['previous_identity_machine_2']}. "
+         f"Instruction-set level: {c['isa_machine_1']} / {c['isa_machine_2']}; runtime parts that differ: "
+         f"{c['runtime_parts_changed'] or 'none'}."]
     if c["reused_only_on_one_machine"]:
         L.append("Reused on one machine only: " + "; ".join(f"`{n}` ({w})" for n, w in
                                                             list(c["reused_only_on_one_machine"].items())[:10]))

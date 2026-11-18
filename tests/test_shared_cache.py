@@ -264,7 +264,17 @@ def test_token_is_not_visible_even_to_a_test_that_enumerates_the_environment(ser
         monkeypatch.delenv(k, raising=False)
     write(pytester.path, {"test_e.py": "import os\n\ndef test_e():\n"
                                        "    assert not any(v.startswith('fxc_') for v in os.environ.values())\n"
-                                       "    assert not any(k.startswith('FENVIX_CACHE') for k in os.environ)\n"})
+                                       "    assert not any(k.startswith('FENVIX_CACHE') for k in os.environ)\n"
+                                       "    assert b'fxc_' not in open('/proc/self/environ', 'rb').read()\n"
+                                       "    for fd in [int(f) for f in os.listdir('/proc/self/fd') if int(f) > 2]:\n"
+                                       "        try:\n"
+                                       "            if not os.readlink(f'/proc/self/fd/{fd}').startswith('pipe:'):\n"
+                                       "                continue\n"
+                                       "            os.set_blocking(fd, False)\n"
+                                       "            data = os.read(fd, 4096)\n"
+                                       "        except OSError:\n"
+                                       "            continue\n"
+                                       "        assert b'fxc_' not in data\n"})
     r, o, rep = machine_run(pytester, tmp_path, f"{svc.url}/org-a/e", t["a"], "1")
     r.assert_outcomes(passed=1)
     assert rep["error"] is None
@@ -290,8 +300,10 @@ def test_fenvix_run_on_two_machines_sharing_the_service(service, tmp_path):
 
     def job(machine: str, *extra: str):
         out = tmp_path / f"job-{machine}"
+        tokf = tmp_path / f"token-{machine}"
+        tokf.write_text(t["a"])
         env = {"PATH": "/usr/bin:/bin", "HOME": str(tmp_path / f"home-{machine}"), "TMPDIR": str(tmp_path),
-               "FENVIX_CACHE_ROOT": str(tmp_path / f"disk-{machine}"), "FENVIX_CACHE_TOKEN": t["a"],
+               "FENVIX_CACHE_ROOT": str(tmp_path / f"disk-{machine}"), "FENVIX_CACHE_TOKEN_FILE": str(tokf),
                "FENVIX_RUNTIME_MEMO": "off", "GITHUB_STEP_SUMMARY": str(tmp_path / f"summary-{machine}.md")}
         verify = extra[:1] == ("verify",)
         args = [sys.executable, str(wrapper), *extra, "--project", str(proj), "--python", sys.executable, "--out",
@@ -304,6 +316,7 @@ def test_fenvix_run_on_two_machines_sharing_the_service(service, tmp_path):
 
     r1, s1 = job("1")
     assert r1.returncode == 0, r1.stdout[-2000:] + r1.stderr[-2000:]
+    assert not (tmp_path / "token-1").exists()  # the hand-off file is consumed before pytest starts
     assert s1["reused_with_proof"] == 0 and s1["shared_cache"]["push_entry_docs_new"] == 5
     r2, s2 = job("2")
     assert r2.returncode == 0, r2.stdout[-2000:] + r2.stderr[-2000:]
@@ -344,6 +357,7 @@ def test_service_on_a_non_loopback_address_is_reachable_under_the_closed_network
                   "no_proxy", "NO_PROXY"):
             monkeypatch.delenv(k, raising=False)
         monkeypatch.setenv("no_proxy", ip)
+        monkeypatch.setenv("FENVIX_CACHE_ALLOW_HTTP", "1")  # plain http to a non-loopback host must be allowed explicitly
         write(pytester.path, {"test_n.py": f"import socket, pytest\n\ndef test_closed():\n"
                                            f"    with pytest.raises(OSError):\n"
                                            f"        socket.create_connection(('{ip}', {svc.httpd.server_address[1]}), 2)\n"})
@@ -383,3 +397,28 @@ def test_service_refuses_a_gzip_bomb_from_a_known_token_while_inflating(service)
     with pytest.raises(urllib.error.HTTPError) as ei:
         urllib.request.urlopen(req, timeout=60)
     assert ei.value.code == 400 and b"too large" in ei.value.read()
+
+
+def test_plain_http_to_a_remote_host_is_refused(pytester, tmp_path, monkeypatch):
+    for k in ("FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT", "FENVIX_RUNTIME_MEMO", "FENVIX_CACHE_TOKEN",
+              "FENVIX_CACHE_ALLOW_HTTP"):
+        monkeypatch.delenv(k, raising=False)
+    write(pytester.path, {"test_x.py": "def test_x():\n    pass\n"})
+    r, o, rep = machine_run(pytester, tmp_path, "http://cache.example.invalid/org/p", "fxc_secret", "1")
+    r.assert_outcomes(passed=1)
+    assert "refusing plain http://" in rep["error"] and rep["requests"] == 0
+
+
+def test_documents_that_do_not_match_their_address_are_dropped(service):
+    svc, t = service
+    good = {"kind": "file", "v": 1, "path": "a.py", "content": "1"}
+    i = cs.doc_id(good)
+    call(svc, t["a"], "POST", "/v1/blobs/put", {"docs": {i: good}})
+    import zlib
+
+    db = sqlite3.connect(os.path.join(svc.data, "cache.sqlite3"))
+    db.execute("DROP TRIGGER blobs_append_only_u")  # a compromised server
+    db.execute("UPDATE blobs SET data=? WHERE id=?", (zlib.compress(cs.canonical(dict(good, content="2"))), i))
+    db.commit()
+    client = rc.RemoteCache(f"{svc.url}/org-a/p", t["a"], "/nonexistent")
+    assert client._get([i]) == {} and client.stats["pull_bad_address"] == 1
