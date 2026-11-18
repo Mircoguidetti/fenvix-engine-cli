@@ -10,6 +10,9 @@ What it does, in order:
    suite is reported as **flaky (order-dependent)** with its replay command; a test that fails again is a failure.
 3. A summary is written to ``$GITHUB_STEP_SUMMARY`` (Markdown) and to ``<out>/summary.json``: tests run, tests
    skipped with proof, test time saved, failures, flaky tests with their replay command, and where the receipts are.
+   ``audit`` is the engine's cache audit (``--audit``, default 5%): a seeded share of the results that could be reused
+   was run fresh and compared; ``{checked, matched, wrong, flaky_evidence}`` plus the seed and the wrong tests.
+   Audited tests ran: they count in ``ran``, never in ``reused_with_proof``.
 
 Exit status: pytest's (0 when every test passed or was reused as passed), so a failing suite fails the job.
 Standard library only: the wrapper runs with any Python 3.9+; pytest runs with ``--python``.
@@ -267,8 +270,9 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
         p.unlink(missing_ok=True)
 
     base = ["--det", "--det-urandom", "-p", "no:cacheprovider", "-q", "-rN", "--tb=short"]
+    audit_args = [f"--det-cache-audit={a.audit}"] if a.audit is not None else []
     args = base + [f"--det-cache={cache_arg}", f"--det-cache-receipts={receipts}", f"--det-outcomes={outcomes_p}",
-                   f"--junitxml={junit_p}", *extra]
+                   f"--junitxml={junit_p}", *audit_args, *extra]
     log(f"project {project} @ {git_head(project)[:12]}; cache {cache_arg} (local {cache}: "
         f"{'warm' if had_cache else 'cold'})")
     code, wall = run_pytest(a.python, project, args, env, token)
@@ -327,7 +331,7 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
     rel_cache = f"--det-cache={cache_arg}"
     replay_full = " ".join(shlex.quote(x) for x in ["python", "-m", "pytest", *base, *extra])
     summary = {
-        "project": str(project), "commit": git_head(project), "cache_dir": str(cache), "cache_was_warm": had_cache,
+        "project": str(project), "project_key": key, "commit": git_head(project), "cache_dir": str(cache), "cache_was_warm": had_cache,
         "exit": code, "wall_seconds": round(wall, 3),
         "tests": len(outcomes),
         "reused_with_proof": len(reused),
@@ -349,6 +353,7 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
         "runtime": rt, "runtime_changed_since_previous_job": rt_changed,
         "machine": machine_identity(), "shared_cache": shared,
         "reused_from_shared_cache": (shared or {}).get("pull_proven", 0),
+        "audit": audit_block(cache_s.get("audit")),
     }
     (out / "summary.json").write_text(json.dumps(summary, indent=1))
     write_step_summary(summary, a.title)
@@ -359,12 +364,36 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
         log(f"shared cache {shared.get('service')} [{shared.get('namespace')}]: "
             f"{shared.get('pull_proven', 0)} results proven from entries recorded on other machines, "
             f"{shared.get('push_entry_docs_new', 0)} entries pushed; error: {shared.get('error')}")
+    au = summary["audit"]
+    if au:
+        log(f"cache audit (share {au['share']:.1%}, seed {au['seed']}): {au['checked']} reusable results run fresh, "
+            f"{au['matched']} matched, {au['wrong']} wrong, {au['flaky_evidence']} flaky with evidence")
+        for w in au["wrong_tests"]:
+            log(f"ERROR wrong skip: {w['nodeid']}: cached {w['cached']}, fresh {w['fresh']}"
+                f"{', again ' + str(w['fresh2']) if w.get('fresh2') else ''}; key {w['key']} marked untrusted")
     if rt_changed:
         log("runtime changed since the previous job on this cache: " + ", ".join(rt_changed))
     log(f"runtime {rt.get('digest')}: " + json.dumps({k: v for k, v in rt.items()
                                                        if k not in ("dist_list", "native_list", "digest")}))
     log(f"machine: {json.dumps(summary['machine'])}")
     return code
+
+
+def audit_block(a: dict | None) -> dict | None:
+    """The cache audit for summary.json: counts (``checked``, ``matched``, ``wrong``, ``flaky_evidence``), the seed
+    and share that reproduce the choice, and the wrong and flaky tests (cached vs fresh outcomes, proof key)."""
+    if not isinstance(a, dict):
+        return None
+
+    def row(w: dict) -> dict:
+        return {"nodeid": w.get("nodeid"), "key": w.get("key"), "cached": (w.get("cached") or {}).get("outcome"),
+                "fresh": (w.get("fresh") or {}).get("outcome"), "fresh2": (w.get("fresh2") or {}).get("outcome")}
+
+    return {"share": a.get("share", 0.0), "seed": a.get("seed"), "candidates": a.get("candidates", 0),
+            "checked": a.get("checked", 0), "matched": a.get("matched", 0), "wrong": a.get("wrong", 0),
+            "flaky_evidence": a.get("flaky_evidence", 0), "upper_bound_95": a.get("upper_bound_95"),
+            "wrong_tests": [row(w) for w in a.get("wrong_tests", [])][:200],
+            "flaky_tests": [row(w) for w in a.get("flaky_tests", [])][:200]}
 
 
 def run_link() -> str | None:
@@ -389,6 +418,8 @@ def write_step_summary(s: dict, title: str | None) -> None:
           f"| Test time spent | {fmt_s(s['test_seconds_run'])} |",
           f"| Failures | {len(s['failed'])} |",
           f"| Flaky (fail in the suite, pass alone) | {len(s['flaky'])} |",
+          *([f"| Skips audited (run fresh anyway, compared) | {s['audit']['checked']}: {s['audit']['matched']} matched, "
+             f"**{s['audit']['wrong']} wrong**, {s['audit']['flaky_evidence']} flaky |"] if s.get("audit") else []),
           f"| Job wall time (pytest) | {fmt_s(s['wall_seconds'])} |", ""]
     oc = ", ".join(f"{k} {v}" for k, v in s["outcome_counts"].items())
     L.append(f"Outcomes: {oc or 'none'}.")
@@ -396,6 +427,11 @@ def write_step_summary(s: dict, title: str | None) -> None:
     L.append("")
     L.append("Receipts: one line per test (what was checked before a result was reused, or why a test ran): "
              + (f"artifact `fenvix-receipts` on [this run]({link})." if link else f"`{s['receipts']}`."))
+    if s.get("audit") and s["audit"]["wrong_tests"]:
+        L += ["", "### Wrong skips found by the audit", "",
+              "Each would have been skipped with proof, but two fresh runs gave another result: its key is marked "
+              "untrusted and it runs until a fresh run records it again.", ""]
+        L += [f"- `{w['nodeid']}`: cached {w['cached']}, fresh {w['fresh']}" for w in s["audit"]["wrong_tests"][:50]]
     if s["failed"]:
         L += ["", "### Failures", ""] + [f"- `{n}`" for n in s["failed"][:50]]
     if s["flaky"]:
@@ -499,6 +535,8 @@ def main(argv: list[str] | None = None) -> int:
                                                  "of a shared cache service (token in FENVIX_CACHE_TOKEN; the "
                                                  "machine's directory is then the local mirror)")
     p.add_argument("--title", default=None, help="heading of the step summary")
+    p.add_argument("--audit", default=None, metavar="SHARE",
+                   help="share of the reusable results run fresh to check them (default: the engine's, 5%%)")
     p.add_argument("--no-rerun", action="store_true", help="do not re-run failures alone")
     p.add_argument("--max-reruns", type=int, default=20, help="failures re-run alone at most (default 20)")
     a = p.parse_args(argv)

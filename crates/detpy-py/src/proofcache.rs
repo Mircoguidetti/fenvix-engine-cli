@@ -1,6 +1,7 @@
 //! Python binding of the cache with proof (`detpy._core.ProofCache`).
 
-use detpy_core::proof::{self, Checker, CodeFile, Current, Observed, Store, Unit};
+use detpy_core::audit;
+use detpy_core::proof::{self, Checker, CodeFile, Current, Observed, Store, Unit, Untrusted};
 use pyo3::exceptions::{PyKeyError, PyValueError};
 use pyo3::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
@@ -121,9 +122,10 @@ impl ProofCache {
         lock(&self.inner).store.add_file(code_file(path, content, skeleton, hooks, units, imports))
     }
 
-    /// Record the inputs and result of a test that ran; returns its key.
+    /// Record the inputs and result of a test; returns its key. `fresh`: the test ran in this session (clears an
+    /// untrusted mark on the same key); False for an entry fetched from a shared cache.
     #[allow(clippy::too_many_arguments)]
-    #[pyo3(signature = (nodeid, outcome, report_json, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units, startup = String::new()))]
+    #[pyo3(signature = (nodeid, outcome, report_json, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units, startup = String::new(), fresh = true))]
     fn record(
         &self,
         nodeid: &str,
@@ -142,14 +144,29 @@ impl ProofCache {
         hooks: Vec<u32>,
         units: Vec<(u32, u32)>,
         startup: String,
+        fresh: bool,
     ) -> PyResult<String> {
         let report = serde_json::from_str(report_json).map_err(|e| PyValueError::new_err(format!("report: {e}")))?;
         let mut g = lock(&self.inner);
         g.touched.insert(nodeid.to_string());
-        Ok(g.store.record(
-            nodeid,
-            Observed { outcome, report, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units, startup },
-        ))
+        let o = Observed { outcome, report, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units, startup };
+        Ok(if fresh { g.store.record(nodeid, o) } else { g.store.record_entry(nodeid, o) })
+    }
+
+    /// Mark a proof key untrusted: no entry with this key is reused until a fresh run records the key again.
+    fn mark_untrusted(&self, key: &str, nodeid: String, run: String, reason: String) {
+        lock(&self.inner).store.mark_untrusted(key, Untrusted { nodeid, run, reason });
+    }
+
+    /// Untrusted proof keys: `{key: (nodeid, run, reason)}`.
+    fn untrusted(&self) -> BTreeMap<String, (String, String, String)> {
+        lock(&self.inner).store.untrusted.iter().map(|(k, u)| (k.clone(), (u.nodeid.clone(), u.run.clone(), u.reason.clone()))).collect()
+    }
+
+    /// The proof key of the recorded entry of `nodeid` (None when there is none).
+    fn key_of(&self, nodeid: &str) -> Option<String> {
+        let g = lock(&self.inner);
+        g.store.tests.get(nodeid).map(|e| g.store.key_of(nodeid, e))
     }
 
     fn remove(&self, nodeid: &str) -> bool {
@@ -210,4 +227,26 @@ pub fn env_value_digest(value: Option<&str>) -> String {
 #[pyfunction]
 pub fn env_all_digest(env: BTreeMap<String, String>) -> String {
     proof::env_all_digest(&env)
+}
+
+/// Whether `test_id` is audited (run fresh although its result could be reused) in a run with `seed` at `share`.
+#[pyfunction]
+pub fn audit_chosen(seed: &str, test_id: &str, share: f64) -> bool {
+    audit::chosen(seed, test_id, share)
+}
+
+/// Verdict of an audit: "matched", "needs-second-run", "wrong" or "flaky-evidence". Each run is
+/// `(outcome, [test ids])`.
+#[pyfunction]
+#[pyo3(signature = (cached, first, second = None))]
+pub fn audit_verdict(cached: (String, Vec<String>), first: (String, Vec<String>), second: Option<(String, Vec<String>)>) -> &'static str {
+    let o = |x: (String, Vec<String>)| audit::Observation::new(&x.0, x.1);
+    let second = second.map(o);
+    audit::verdict(&o(cached), &o(first), second.as_ref()).as_str()
+}
+
+/// One-sided 95% upper bound on the wrong-skip rate (rule of three when `wrong` is 0).
+#[pyfunction]
+pub fn audit_upper_bound(checked: u64, wrong: u64) -> f64 {
+    audit::upper_bound_95(checked, wrong)
 }

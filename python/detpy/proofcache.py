@@ -31,6 +31,14 @@ reused); a test that opened a network connection (loopback included) or
 spawned a process; a test that drew OS entropy without ``--det-urandom``;
 a test that read a file another test wrote in the same session.
 
+Cache audit (``--det-cache-audit=SHARE``, default 5%): a seeded random share of the results that would be
+reused is run fresh instead and compared with the cached result (outcome and the set of test ids). A mismatch is
+run once more: if the second fresh run gives what the first gave, the skip was **wrong** (the entry is dropped and
+its proof key marked *untrusted*: no entry with that key is reused, here or through the shared cache, until a fresh
+run records the key again); otherwise the test is **flaky with evidence**. The seed and the chosen tests are in the
+receipts (first line), so ``--det-cache-audit-seed=SEED`` reproduces the choice. Audited tests ran: they are never
+counted as skipped.
+
 The Rust core (``detpy._core``) records executed lines (``LineRecorder``),
 filters audit events, hashes files, stores entries, computes the keys and
 decides reuse (``ProofCache``). This module wires them into pytest.
@@ -53,6 +61,7 @@ from . import __version__, _codefacts, _core, _sites, _state
 # real clocks, bound before Level 0 virtualises the time module
 _perf = time.perf_counter
 _now = time.time
+_urandom = os.urandom  # the audit's seed needs real entropy (``--det-urandom`` makes os.urandom deterministic)
 _mon = getattr(sys, "monitoring", None)
 AVAILABLE = _mon is not None
 
@@ -76,7 +85,7 @@ _O_ACC = os.O_RDONLY | os.O_WRONLY | os.O_RDWR
 _VOLATILE_OPTIONS = {
     "file_or_dir", "verbose", "quiet", "color", "code_highlight", "reportchars", "tbstyle", "showlocals",
     "durations", "durations_min", "junitxml", "junitprefix", "resultlog", "basetemp", "det_cache",
-    "det_cache_verify", "det_cache_receipts", "det_trace", "det_outcomes", "det_compare", "det_max_events",
+    "det_cache_verify", "det_cache_audit", "det_cache_audit_seed", "det_cache_receipts", "det_trace", "det_outcomes", "det_compare", "det_max_events",
     "showcapture", "fulltrace", "collectonly", "markers", "fixtures", "show_fixtures_per_test", "help", "version",
     "debug", "traceconfig", "showlocals", "log_file", "log_cli_level", "pastebin", "usepdb", "usepdb_cls",
     "trace", "xmlpath", "htmlpath", "lf", "failedfirst", "last_failed_no_failures", "newfirst", "cacheclear",
@@ -955,8 +964,17 @@ def config_identity(config) -> tuple[str, dict]:
 class ProofCachePlugin:
     """pytest hooks of ``--det-cache``."""
 
-    def __init__(self, cap: Capture, cache_dir: str, verify: float, receipts: str | None):
+    def __init__(self, cap: Capture, cache_dir: str, verify: float, receipts: str | None, audit=None,
+                 audit_seed: str | None = None):
         self.cap = cap
+        self.audit_share = audit_share(audit)
+        self.audit_seed = audit_seed or _new_seed()
+        self.auditing: dict[str, dict] = {}  # nodeid -> receipt of a reusable result run fresh by the audit
+        self.audit_candidates = 0  # results that could be reused (audited or not)
+        self.audit_results: dict[str, dict] = {}  # nodeid -> {"verdict", "cached", "fresh", "fresh2"}
+        self.audit_keep: set[str] = set()  # audited tests whose fresh runs must not be recorded
+        self.fresh_ids: dict[str, set] = {}  # nodeid -> test ids its reports carried
+        self._running: str | None = None
         self.dir = os.path.abspath(cache_dir)
         self.verify = verify
         self.receipts_path = receipts or os.path.join(self.dir, "receipts.jsonl")
@@ -1058,7 +1076,10 @@ class ProofCachePlugin:
             ok, info = store.check(nid)
             if ok:
                 receipt = json.loads(info)
-                if self.verify and rng.random() < self.verify:
+                self.audit_candidates += 1
+                if _core.audit_chosen(self.audit_seed, nid, self.audit_share):
+                    self.auditing[nid] = receipt
+                elif self.verify and rng.random() < self.verify:
                     self.verifying[nid] = receipt
                 else:
                     self.hits[nid] = receipt
@@ -1101,10 +1122,12 @@ class ProofCachePlugin:
                     fx.append(f"f|{d.scope}|{d.baseid}|{d.argname}")
         self.fixture_ctx[nid] = sorted(set(fx))
         self.cap.switch("t|" + nid)
+        self._running = nid
         t = _perf()
         try:
             yield
         finally:
+            self._running = None
             self.dur[nid] = _perf() - t
             self.cap.switch("s")
             self.cap.scan_modules(self.test_index.get(nid, len(self.ran)), self._conftests())
@@ -1113,6 +1136,7 @@ class ProofCachePlugin:
     def pytest_runtest_logreport(self, report):
         if report.nodeid in self.hits:
             return
+        self.fresh_ids.setdefault(self._running or report.nodeid, set()).add(report.nodeid)
         p = self.parts.setdefault(report.nodeid, {})
         info = {"outcome": report.outcome}
         if hasattr(report, "wasxfail"):
@@ -1123,6 +1147,48 @@ class ProofCachePlugin:
         for k, v in report.user_properties:
             if k == "detpy_fingerprint":
                 self.fingerprints[report.nodeid] = v
+
+    # -- cache audit ---------------------------------------------------------------
+    def audit_after_run(self, item, rerun) -> None:
+        """Compare an audited test's fresh run with its cached result; on a mismatch run it once more (``rerun()``
+        gives (outcome, test ids)) to tell a wrong skip from a flaky test. Never breaks the session."""
+        nid = item.nodeid
+        r = self.auditing[nid]
+        cached = (r["outcome"], [nid])
+        first = (_final(self.parts.get(nid, {})), sorted(self.fresh_ids.get(nid, set()) or {nid}))
+        res = {"key": r["key"], "cached": {"outcome": cached[0], "ids": cached[1]},
+               "fresh": {"outcome": first[0], "ids": first[1]}}
+        try:
+            v = _core.audit_verdict(cached, first)
+            if v == "needs-second-run":
+                second = rerun()
+                res["fresh2"] = {"outcome": second[0], "ids": list(second[1])}
+                v = _core.audit_verdict(cached, first, (second[0], list(second[1])))
+        except Exception as e:  # the second run could not be made: the mismatch stays unexplained, never trusted
+            res["error"] = f"{type(e).__name__}: {e}"
+            v = "wrong"
+        res["verdict"] = v
+        self.audit_results[nid] = res
+        if v == "wrong":
+            why = (f"cached {cached[0]} {cached[1]}, fresh {first[0]} {first[1]}"
+                   + (f", again {res['fresh2']['outcome']}" if "fresh2" in res else ""))
+            self.store.mark_untrusted(r["key"], nid, self.run_id, why)
+            self.audit_keep.add(nid)
+        elif v == "flaky-evidence":
+            self.audit_keep.add(nid)  # two fresh runs disagree: neither is recorded, the entry stays as it was
+
+    def audit_summary(self) -> dict:
+        res = self.audit_results
+        wrong = [n for n, x in res.items() if x["verdict"] == "wrong"]
+        flaky = [n for n, x in res.items() if x["verdict"] == "flaky-evidence"]
+        checked = len(res)
+        return {"share": self.audit_share, "seed": self.audit_seed, "candidates": self.audit_candidates,
+                "chosen": len(self.auditing), "checked": checked, "matched": checked - len(wrong) - len(flaky),
+                "wrong": len(wrong), "flaky_evidence": len(flaky),
+                "not_run": sorted(set(self.auditing) - set(res)),
+                "wrong_tests": [{"nodeid": n, **res[n]} for n in sorted(wrong)],
+                "flaky_tests": [{"nodeid": n, **res[n]} for n in sorted(flaky)],
+                "upper_bound_95": _core.audit_upper_bound(checked, len(wrong))}
 
     def _conftests(self):
         pm = self.config.pluginmanager
@@ -1322,6 +1388,13 @@ class ProofCachePlugin:
             item = self.items.get(nid)
             if item is None:
                 continue
+            if nid in self.audit_keep:
+                v = self.audit_results.get(nid, {}).get("verdict")
+                if v == "wrong":
+                    self._not_cached(nid, "audit: wrong skip (key marked untrusted)")
+                else:
+                    self.not_cached[nid] = "audit: flaky with evidence (two fresh runs disagree)"
+                continue
             p = self.parts.get(nid, {})
             outcome = _final(p)
             if outcome not in ("passed", "skipped", "xfailed"):
@@ -1426,8 +1499,16 @@ class ProofCachePlugin:
         try:
             os.makedirs(os.path.dirname(os.path.abspath(self.receipts_path)), exist_ok=True)
             with open(self.receipts_path, "w") as fh:
+                # first line: the audit's seed, share and choice (reproduce with --det-cache-audit-seed)
+                fh.write(json.dumps({"nodeid": None, "reused": False, "kind": "audit", "seed": self.audit_seed,
+                                     "share": self.audit_share, "candidates": self.audit_candidates,
+                                     "chosen": sorted(self.auditing), "run": self.run_id}) + "\n")
                 for nid, r in self.hits.items():
                     fh.write(json.dumps({"nodeid": nid, "reused": True, **r}) + "\n")
+                for nid, r in self.auditing.items():
+                    # the reuse decision (receipt) and what the fresh run(s) gave
+                    fh.write(json.dumps({"nodeid": nid, "reused": False, "audited": True, **r,
+                                         "audit": self.audit_results.get(nid, {"verdict": "not-run"})}) + "\n")
                 for nid, why in self.misses.items():
                     fh.write(json.dumps({"nodeid": nid, "reused": False, "why": why}) + "\n")
         except OSError:
@@ -1463,6 +1544,7 @@ class ProofCachePlugin:
             "config": self.config_digest,
             "runtime": self.runtime_digest,
             "verify_mismatches": [v for v in self.verify_results if not v["same"]],
+            "audit": self.audit_summary(),
             "stale_reuses": self.stale_hits,
             "error": self.error,
             "receipts": self.receipts_path,
@@ -1504,7 +1586,41 @@ class ProofCachePlugin:
                               f"sets, {r['n_content']} whole files, {r['n_data']} data paths, {r['n_env']} env "
                               f"vars; runtime {r['runtime']}, config {r['config']}"
                               f"{'' if r['epoch'] is None else ', epoch ' + str(r['epoch'])}")
+        a = s["audit"]
+        if a["share"] > 0:
+            tr.write_line(f"cache audit (share {a['share']:.1%}, seed {a['seed']}): {a['checked']} reusable result(s) "
+                          f"run fresh, {a['matched']} matched, {a['wrong']} wrong, {a['flaky_evidence']} flaky with "
+                          f"evidence; 95% upper bound on the wrong-skip rate {a['upper_bound_95']:.2%}",
+                          red=bool(a["wrong"]))
+            for w in a["wrong_tests"]:
+                tr.write_line(f"  WRONG SKIP {w['nodeid']}: cached {w['cached']['outcome']}, fresh "
+                              f"{w['fresh']['outcome']}" + (f" and {w['fresh2']['outcome']}" if "fresh2" in w else "")
+                              + f"; key {w['key']} marked untrusted", red=True)
+            for w in a["flaky_tests"]:
+                tr.write_line(f"  FLAKY {w['nodeid']}: cached {w['cached']['outcome']}, fresh "
+                              f"{w['fresh']['outcome']}, then {w.get('fresh2', {}).get('outcome')}", yellow=True)
         tr.write_line(f"receipts: {s['receipts']}")
+
+
+def audit_share(value) -> float:
+    """``--det-cache-audit`` value as a fraction: ``0.05``, ``5%``; None -> ``FENVIX_CACHE_AUDIT``, else 5%."""
+    if value is None or value == "":
+        value = os.environ.get("FENVIX_CACHE_AUDIT", "") or "0.05"
+    v = str(value).strip()
+    try:
+        x = float(v[:-1]) / 100 if v.endswith("%") else float(v)
+    except ValueError:
+        raise pytest.UsageError(f"--det-cache-audit: not a share: {value!r} (e.g. 0.05 or 5%)") from None
+    if not 0.0 <= x <= 1.0:
+        raise pytest.UsageError(f"--det-cache-audit: {value!r} is not between 0 and 1 (0% and 100%)")
+    return x
+
+
+def _new_seed() -> str:
+    try:
+        return _urandom(8).hex()
+    except Exception:  # pragma: no cover - no OS entropy: time and pid still differ between runs
+        return f"{time.time_ns():x}{os.getpid():x}"
 
 
 def _final(parts: dict) -> str:
@@ -1871,7 +1987,8 @@ def install(config) -> None:
     if cap is None or PLUGIN is not None:
         return
     opt = config.option
-    plugin = ProofCachePlugin(cap, opt.det_cache, opt.det_cache_verify, opt.det_cache_receipts)
+    plugin = ProofCachePlugin(cap, opt.det_cache, opt.det_cache_verify, opt.det_cache_receipts,
+                              getattr(opt, "det_cache_audit", None), getattr(opt, "det_cache_audit_seed", None))
     plugin.configure(config)
     PLUGIN = plugin
     config.pluginmanager.register(plugin, "detpy-cache")

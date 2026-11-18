@@ -8,9 +8,13 @@ be reached); this module connects it to the cache service (``detpy.cache_service
   entries recorded under them on any machine. A candidate is put in the local store only when the local entry
   does not already prove reuse, and it is then checked exactly like a local entry (code, data, environment,
   runtime, configuration): the service supplies candidates, never decisions.
-* **push**, at the end of the session: every entry of the local store not yet on the service is uploaded as a
-  content-addressed document (its source-file facts as separate documents, shared between entries), then
-  appended to the key log; the session's receipts follow as one document, linked to the run.
+* **push**, at the end of the session: first the proof keys a cache audit marked *untrusted* (any token may send
+  them: they only stop reuse), then every entry of the local store not yet on the service, uploaded as a
+  content-addressed document (its source-file facts as separate documents, shared between entries) and appended
+  to the key log; the session's receipts follow as one document, linked to the run.
+* **untrusted keys**: the service leaves out of a lookup every entry filed before its proof key was marked
+  untrusted; the client also drops any candidate whose proof key its local store holds as untrusted. A fresh run
+  that records the key again is filed after the mark, so it is reusable again.
 
 The token comes from an inherited pipe (``FENVIX_CACHE_TOKEN_FD``, what ``fenvix-run`` uses), a hand-off file
 (``FENVIX_CACHE_TOKEN_FILE``, deleted once read) or ``FENVIX_CACHE_TOKEN``; before any test runs it is taken out of
@@ -384,7 +388,7 @@ class RemoteCache:
                              float(e.get("duration") or 0.0), e["run"], e["config"], e["runtime"], e.get("epoch"),
                              [tuple(x) for x in e.get("env") or []], [tuple(x) for x in e.get("data") or []],
                              content, skeleton, hooks, [(ufiles[f], k) for f, k in doc["units"]],
-                             startup=e.get("startup") or "")
+                             startup=e.get("startup") or "", fresh=False)
         return True
 
     def pull(self, items) -> None:
@@ -423,6 +427,7 @@ class RemoteCache:
         st["pull_candidates"] = sum(len(v) for v in per_test.values())
         st["pull_tests_with_candidates"] = len(per_test)
         self._refresh_facts()
+        untrusted = set(pc.store.untrusted())
         pending = {}
         for nid, ids in per_test.items():
             ok, _ = pc.store.check(nid)
@@ -432,7 +437,9 @@ class RemoteCache:
             cands = []
             for d in ids:  # newest first
                 if d in docs and d not in cands and docs[d].get("kind") == "entry" and docs[d].get("nodeid") == nid:
-                    if self._names_own_file(docs[d], docs):
+                    if docs[d].get("proof_key") in untrusted:
+                        st["pull_rejected_untrusted"] = st.get("pull_rejected_untrusted", 0) + 1
+                    elif self._names_own_file(docs[d], docs):
                         cands.append(d)
                     else:
                         st["pull_rejected_no_own_file"] = st.get("pull_rejected_no_own_file", 0) + 1
@@ -524,6 +531,18 @@ class RemoteCache:
             self._fail("push", ServiceError(f"local store unreadable: {e}"))
             return
         journal = self._journal() | self.pulled_docs
+        marks = [{"proof_key": k, "nodeid": u.get("nodeid", ""), "run": u.get("run", ""), "reason": u.get("reason", "")}
+                 for k, u in sorted((store.get("untrusted") or {}).items())
+                 if "untrusted:" + k + ":" + str(u.get("run", "")) not in journal]
+        if marks:
+            # before any entry: a wrong result must stop being reused everywhere even if the rest of the push fails
+            try:
+                self.http.call("POST", self._path("untrusted"), {"put": marks})
+                journal |= {"untrusted:" + m["proof_key"] + ":" + m["run"] for m in marks}
+                self._save_journal(journal)
+                st["push_untrusted"] = len(marks)
+            except ServiceError as e:
+                self._fail("push untrusted", e)
         ds = _Docs(store)
         entry_docs, rows = {}, []
         for nid, e in store.get("tests", {}).items():
@@ -599,7 +618,13 @@ class RemoteCache:
         except Exception:
             s = {}
         keep = ("tests", "reused", "ran", "runtime", "config", "epoch_ns", "miss_reasons")
-        return {k: s.get(k) for k in keep if k in s}
+        out = {k: s.get(k) for k in keep if k in s}
+        a = s.get("audit")
+        if isinstance(a, dict):  # counts only: the service aggregates them per project (GET /v1/audit)
+            out["audit"] = {k: a.get(k) for k in ("share", "seed", "candidates", "checked", "matched", "wrong",
+                                                    "flaky_evidence")}
+            out["audit"]["wrong_ids"] = [w["nodeid"] for w in a.get("wrong_tests", [])][:200]
+        return out
 
     def report(self) -> dict:
         d = dict(self.stats)

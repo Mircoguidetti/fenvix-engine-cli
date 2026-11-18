@@ -252,5 +252,8 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(proofcache::listing_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::env_value_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::env_all_digest, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::audit_chosen, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::audit_verdict, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::audit_upper_bound, m)?)?;
     Ok(())
 }

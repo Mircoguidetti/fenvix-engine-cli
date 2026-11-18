@@ -67,6 +67,13 @@ def pytest_addoption(parser, pluginmanager):
                      "runtime, configuration) is unchanged; failures are never reused; prints a receipt")
     g.addoption("--det-cache-verify", type=float, default=0.0, metavar="FRACTION",
                 help="run this random fraction of the reusable tests anyway and compare with the cached result")
+    g.addoption("--det-cache-audit", default=None, metavar="SHARE",
+                help="cache audit: run this seeded random share of the results that would be reused with proof "
+                     "fresh instead, and compare (outcome, test ids); 0.05 or 5%% (default: FENVIX_CACHE_AUDIT, "
+                     "else 5%%; 0 turns it off). A mismatch that a second fresh run reproduces is a wrong skip: "
+                     "its key is marked untrusted")
+    g.addoption("--det-cache-audit-seed", default=None, metavar="SEED",
+                help="seed of the audit's choice (default: new each run; written in the receipts to reproduce it)")
     g.addoption("--det-cache-receipts", default=None, metavar="PATH",
                 help="where to write the per-test receipts (JSON lines; default DIR/receipts.jsonl)")
 
@@ -460,6 +467,42 @@ class _Outcomes:
         return {}
 
 
+def _audit_rerun(item, nextitem, controls) -> tuple[str, list[str]]:
+    """Run ``item`` once more, fresh, under the same per-test controls as its first run (virtual clock restarted,
+    seeds and network rules of the test), without reporting it (no log report, no junit row, nothing recorded in
+    the trace or the cache). Returns (outcome, test ids it produced)."""
+    from _pytest.runner import runtestprotocol
+
+    st = _state.STATE
+    pc = proofcache.PLUGIN
+    prev = pc.cap.ctx
+    pc.cap.switch("t|" + item.nodeid)  # what it reads is the test's own input, never a between-tests input
+    _state.reset_threads()
+    if "time" in controls:
+        clock.start_test()
+    st.nodeid = item.nodeid
+    if "seeds" in controls:
+        seeds.start_test(_PATCHER, item.nodeid)
+    if "net" in controls:
+        network.start_test()
+    try:
+        reports = runtestprotocol(item, nextitem=nextitem, log=False)
+    finally:
+        if "seeds" in controls:
+            seeds.end_test()
+        if "net" in controls:
+            network.end_test()
+        st.nodeid = None
+        pc.cap.switch(prev)
+    parts: dict = {}
+    for r in reports:
+        info = {"outcome": r.outcome}
+        if hasattr(r, "wasxfail"):
+            info["wasxfail"] = r.wasxfail
+        parts[r.when] = info
+    return proofcache._final(parts), sorted({r.nodeid for r in reports})
+
+
 def _keep_django_groups(config, ordered):
     """Re-apply pytest-django's grouping to detpy's order, in place.
 
@@ -618,6 +661,9 @@ class _DetSession(_Outcomes):
             if fp is not None:
                 S.fingerprints[item.nodeid] = fp
                 item.user_properties.append(("detpy_fingerprint", fp))
+        if pc is not None and item.nodeid in pc.auditing:
+            # cache audit: a result that could have been reused was run fresh; on a mismatch it runs once more
+            pc.audit_after_run(item, lambda: _audit_rerun(item, nextitem, controls))
 
     def pytest_sessionfinish(self, session, exitstatus):
         if proofcache.PLUGIN is not None:

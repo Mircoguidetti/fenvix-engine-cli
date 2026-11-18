@@ -10,7 +10,9 @@
 //! * [`cache`]: result-cache vocabulary (key, policy, storage).
 //! * [`proof`]: cache with proof: per-test recorded inputs, reuse check, receipt.
 //! * [`backend`]: interception backends (Python hooks today, syscalls later).
+//! * [`audit`]: cache audit: seeded choice of reusable results run fresh, verdicts, bounds.
 
+pub mod audit;
 pub mod backend;
 pub mod cache;
 pub mod cassette;

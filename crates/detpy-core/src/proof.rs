@@ -105,10 +105,27 @@ pub struct Store {
     /// them: a test that reads one is cached only if every writer is its own code (test, its fixtures).
     #[serde(default)]
     pub written: BTreeMap<String, BTreeSet<String>>,
+    /// Proof keys a cache audit found wrong (a fresh run, twice, gave another result than the cached one): an
+    /// entry with one of these keys is never reused, wherever it comes from, until a fresh run records the same
+    /// key again ([`Store::record`] with `fresh`).
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub untrusted: BTreeMap<String, Untrusted>,
+    /// Untrusted keys a fresh record of this session cleared (applied to the store on disk when merging).
+    #[serde(skip)]
+    cleared: BTreeSet<String>,
     #[serde(skip)]
     file_ix: HashMap<(String, String), u32>,
     #[serde(skip)]
     set_ix: HashMap<Vec<u32>, u32>,
+}
+
+/// Why a proof key is untrusted.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Untrusted {
+    pub nodeid: String,
+    /// The run whose audit found it wrong.
+    pub run: String,
+    pub reason: String,
 }
 
 /// What a session observed about one test (input of [`Store::record`]).
@@ -285,8 +302,25 @@ impl Store {
         self.sets.get(id as usize).map(|v| v.as_slice()).unwrap_or(&[])
     }
 
-    /// Record (replace) the entry of `nodeid`; returns its key.
-    pub fn record(&mut self, nodeid: &str, mut o: Observed) -> String {
+    /// Record (replace) the entry of `nodeid` observed by a test that ran in this session; returns its key. A
+    /// fresh record clears an untrusted mark on the same key.
+    pub fn record(&mut self, nodeid: &str, o: Observed) -> String {
+        let k = self.record_entry(nodeid, o);
+        if self.untrusted.remove(&k).is_some() {
+            self.cleared.insert(k.clone());
+        }
+        k
+    }
+
+    /// Mark a proof key untrusted (a cache audit found its result wrong).
+    pub fn mark_untrusted(&mut self, key: &str, u: Untrusted) {
+        self.cleared.remove(key);
+        self.untrusted.insert(key.to_string(), u);
+    }
+
+    /// Record (replace) the entry of `nodeid` without clearing untrusted marks (an entry fetched from a shared
+    /// cache: not a fresh run); returns its key.
+    pub fn record_entry(&mut self, nodeid: &str, mut o: Observed) -> String {
         o.env.sort();
         o.env.dedup();
         o.data.sort();
@@ -489,6 +523,12 @@ impl Store {
         for (p, w) in &self.written {
             disk.written.entry(p.clone()).or_default().extend(w.iter().cloned());
         }
+        for k in &self.cleared {
+            disk.untrusted.remove(k);
+        }
+        for (k, u) in &self.untrusted {
+            disk.untrusted.insert(k.clone(), u.clone());
+        }
     }
 
     /// Merge this session's changes (`touched` entries, written paths) into the
@@ -670,6 +710,12 @@ impl Checker {
         };
         if !reusable_outcome(&e.outcome) {
             return Err(Miss { kind: "failed-before", detail: format!("recorded outcome {}", e.outcome) });
+        }
+        if let Some(u) = (!store.untrusted.is_empty()).then(|| store.key_of(nodeid, e)).and_then(|k| store.untrusted.get(&k)) {
+            return Err(Miss {
+                kind: "untrusted",
+                detail: format!("a cache audit found this result wrong (run {}): {}; rerun until a fresh run records it", u.run, u.reason),
+            });
         }
         if e.config != self.cur.config {
             return Err(Miss { kind: "config", detail: "pytest/detpy configuration or plugins changed".into() });
@@ -1008,5 +1054,47 @@ mod tests {
         assert_eq!(l.files.len(), 1);
         assert_eq!(l.key_of("t::a", &l.tests["t::a"]), key);
         assert_eq!(Checker::new(cur).check(&l, "t::a").unwrap().key, key);
+    }
+
+    #[test]
+    fn untrusted_key_stops_reuse_until_a_fresh_record_of_the_same_key() {
+        let (d, mut s, cur) = setup();
+        let key = s.tests["t::a"].key.clone();
+        let entry = s.tests["t::a"].clone();
+        s.mark_untrusted(&key, Untrusted { nodeid: "t::a".into(), run: "r1".into(), reason: "cached passed, fresh failed".into() });
+        let m = Checker::new(cur.clone()).check(&s, "t::a").unwrap_err();
+        assert_eq!(m.kind, "untrusted");
+        assert!(m.detail.contains("r1"), "{}", m.detail);
+        // an entry fetched from the shared cache under the same key does not clear the mark
+        let obs = |e: &Entry, s: &Store| Observed {
+            outcome: e.outcome.clone(),
+            config: e.config.clone(),
+            runtime: e.runtime.clone(),
+            env: e.env.clone(),
+            data: e.data.clone(),
+            skeleton: s.set(e.skeleton).to_vec(),
+            units: e.units.chunks(2).map(|c| (c[0], c[1])).collect(),
+            run: "other-machine".into(),
+            ..Default::default()
+        };
+        let o = obs(&entry, &s);
+        assert_eq!(s.record_entry("t::a", o), key);
+        assert_eq!(Checker::new(cur.clone()).check(&s, "t::a").unwrap_err().kind, "untrusted");
+        // the mark survives a save and a merge by another session
+        let dir = d.path().join("cache");
+        s.clone().save(&dir).unwrap();
+        let other = Store::load(&dir);
+        assert!(other.untrusted.contains_key(&key));
+        other.save_merged(&dir, &BTreeSet::new()).unwrap();
+        assert!(Store::load(&dir).untrusted.contains_key(&key));
+        // a fresh run that records the same key again clears it, on disk too
+        let o = obs(&entry, &s);
+        let mut fresh = Store::load(&dir);
+        assert_eq!(fresh.record("t::a", o), key);
+        assert!(Checker::new(cur.clone()).check(&fresh, "t::a").is_ok());
+        fresh.save_merged(&dir, &["t::a".to_string()].into_iter().collect()).unwrap();
+        let l = Store::load(&dir);
+        assert!(l.untrusted.is_empty());
+        assert!(Checker::new(cur).check(&l, "t::a").is_ok());
     }
 }

@@ -16,6 +16,11 @@ Model (every request is scoped to the organization of its token; a token never r
   (test id, configuration digest, runtime digest, clock epoch). A lookup returns the most recent distinct entries
   under each key; the engine checks every one against the current code and data before reusing anything.
 * **runs**: an append-only log of runs with their receipts blob and summary.
+* **untrusted**: an append-only log of proof keys a cache audit found wrong (a reusable result that two fresh runs
+  contradicted). A lookup leaves out every entry filed under a proof key before that key was marked; an entry
+  filed after the mark (a fresh run that recorded the key again) is returned. Any token of the organization may
+  mark a key: a mark only stops reuse. ``GET /v1/audit`` sums the runs' audit counts per namespace (project) and
+  over all of them, with the 95% upper bound on the wrong-skip rate.
 
 Nothing is ever updated or deleted through the API. Authentication: ``Authorization: Bearer <token>``; the server
 keeps only the SHA-256 of each token (``DIR/tokens.json``, re-read when it changes). Read-only tokens may look up
@@ -32,6 +37,9 @@ Endpoints (JSON in, JSON out)::
     POST /v1/ns/<ns>/lookup  {"keys": [...], "limit": 3}               -> {"found": {key: [doc id, ...]}}
     POST /v1/ns/<ns>/runs    {"run", "receipts", "summary"}            -> {"ok": true}
     GET  /v1/ns/<ns>/runs                                              -> {"runs": [...]}
+    POST /v1/ns/<ns>/untrusted {"put": [{"proof_key", "nodeid", "run", "reason"}]} -> {"added": n}
+    GET  /v1/ns/<ns>/untrusted                                         -> {"untrusted": [...]}
+    GET  /v1/audit                                                     -> {"projects": {ns: {...}}, "all": {...}}
     GET  /v1/stats                                                     -> counts for the token's organization
 """
 
@@ -72,6 +80,39 @@ def _valid_id(s) -> bool:
 
 def _valid_ns(s: str) -> bool:
     return 0 < len(s) <= 200 and all(c.isalnum() or c in "-_.@/+:" for c in s)
+
+
+def upper_bound_95(checked: int, wrong: int) -> float:
+    """One-sided 95% upper bound on the wrong-skip rate: 3/n when no wrong skip (rule of three), else the exact
+    Clopper-Pearson bound. Same rule as the engine core (``detpy._core.audit_upper_bound``); kept here so the service
+    stays standard library only."""
+    import math
+
+    if checked <= 0:
+        return 1.0
+    if wrong <= 0:
+        return min(1.0, 3.0 / checked)
+    if wrong >= checked:
+        return 1.0
+
+    def cdf(p: float) -> float:
+        lp, lq = math.log(p), math.log1p(-p)
+        terms, lc = [], 0.0
+        for i in range(wrong + 1):
+            if i:
+                lc += math.log(checked - i + 1) - math.log(i)
+            terms.append(lc + i * lp + (checked - i) * lq)
+        m = max(terms)
+        return min(1.0, math.exp(m + math.log(sum(math.exp(t - m) for t in terms))))
+
+    lo, hi = wrong / checked, 1.0
+    for _ in range(200):
+        mid = (lo + hi) / 2
+        if cdf(mid) > 0.05:
+            lo = mid
+        else:
+            hi = mid
+    return hi
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -138,6 +179,14 @@ class Store:
             CREATE INDEX IF NOT EXISTS keys_lookup ON keys (org, ns, key, seq);
             CREATE TABLE IF NOT EXISTS runs (seq INTEGER PRIMARY KEY AUTOINCREMENT, org TEXT NOT NULL,
                 ns TEXT NOT NULL, run TEXT NOT NULL, receipts TEXT, summary TEXT, at REAL NOT NULL);
+            CREATE TABLE IF NOT EXISTS untrusted (seq INTEGER PRIMARY KEY AUTOINCREMENT, org TEXT NOT NULL,
+                ns TEXT NOT NULL, proof_key TEXT NOT NULL, nodeid TEXT, run TEXT, reason TEXT, label TEXT,
+                keys_seq INTEGER NOT NULL, at REAL NOT NULL);
+            CREATE INDEX IF NOT EXISTS untrusted_key ON untrusted (org, ns, proof_key, keys_seq);
+            CREATE TRIGGER IF NOT EXISTS untrusted_append_only_u BEFORE UPDATE ON untrusted
+                BEGIN SELECT RAISE(ABORT, 'append-only'); END;
+            CREATE TRIGGER IF NOT EXISTS untrusted_append_only_d BEFORE DELETE ON untrusted
+                BEGIN SELECT RAISE(ABORT, 'append-only'); END;
             CREATE TRIGGER IF NOT EXISTS blobs_append_only_u BEFORE UPDATE ON blobs
                 BEGIN SELECT RAISE(ABORT, 'append-only'); END;
             CREATE TRIGGER IF NOT EXISTS blobs_append_only_d BEFORE DELETE ON blobs
@@ -151,6 +200,10 @@ class Store:
             CREATE TRIGGER IF NOT EXISTS runs_append_only_d BEFORE DELETE ON runs
                 BEGIN SELECT RAISE(ABORT, 'append-only'); END;
         """)
+        # the proof key of each key row (stores created before the audit have none: the client still checks them)
+        if "proof_key" not in {r[1] for r in db.execute("PRAGMA table_info(keys)")}:
+            db.execute("ALTER TABLE keys ADD COLUMN proof_key TEXT")
+        db.execute("CREATE INDEX IF NOT EXISTS keys_proof ON keys (org, ns, proof_key)")
         db.commit()
 
     def db(self) -> sqlite3.Connection:
@@ -204,18 +257,64 @@ class Store:
         absent = set(self.missing(org, sorted(set(docs))))
         if absent:
             raise ValueError(f"{len(absent)} entry documents are not stored (upload them first)")
+        # the proof key is read from the stored entry document itself, never taken from the request
+        pk = {i: (d.get("proof_key") if isinstance(d, dict) and isinstance(d.get("proof_key"), str) else None)
+              for i, d in self.get(org, sorted(set(docs))).items()}
         with db:
             for r in rows:
-                cur = db.execute("INSERT OR IGNORE INTO keys (org, ns, key, doc, run, at) VALUES (?,?,?,?,?,?)",
-                                 (org, ns, r["key"], r["doc"], str(r.get("run") or ""), now))
+                cur = db.execute("INSERT OR IGNORE INTO keys (org, ns, key, doc, run, at, proof_key) "
+                                 "VALUES (?,?,?,?,?,?,?)",
+                                 (org, ns, r["key"], r["doc"], str(r.get("run") or ""), now, pk.get(r["doc"])))
                 added += cur.rowcount
         return added
+
+    def add_untrusted(self, org: str, ns: str, rows: list[dict], label: str = "") -> int:
+        db, now, added = self.db(), time.time(), 0
+        with db:
+            # entries filed up to now under these keys are out of every later lookup
+            top = db.execute("SELECT COALESCE(MAX(seq), 0) FROM keys").fetchone()[0]
+            for r in rows:
+                db.execute("INSERT INTO untrusted (org, ns, proof_key, nodeid, run, reason, label, keys_seq, at) "
+                           "VALUES (?,?,?,?,?,?,?,?,?)",
+                           (org, ns, r["proof_key"], str(r.get("nodeid") or "")[:2000], str(r.get("run") or "")[:200],
+                            str(r.get("reason") or "")[:2000], label[:200], top, now))
+                added += 1
+        return added
+
+    def untrusted(self, org: str, ns: str, limit: int = 1000) -> list[dict]:
+        rows = self.db().execute("SELECT proof_key, nodeid, run, reason, at FROM untrusted WHERE org=? AND ns=? "
+                                 "ORDER BY seq DESC LIMIT ?", (org, ns, limit)).fetchall()
+        return [{"proof_key": r[0], "nodeid": r[1], "run": r[2], "reason": r[3], "at": r[4]} for r in rows]
+
+    def audit(self, org: str) -> dict:
+        """Audit counts of every run of the organization, per namespace (project) and over all of them."""
+        per: dict[str, dict] = {}
+        for ns, summary in self.db().execute("SELECT ns, summary FROM runs WHERE org=? ORDER BY seq", (org,)):
+            try:
+                a = (json.loads(summary or "null") or {}).get("audit")
+            except (ValueError, AttributeError):
+                a = None
+            if not isinstance(a, dict):
+                continue
+            p = per.setdefault(ns, {"runs": 0, "checked": 0, "matched": 0, "wrong": 0, "flaky_evidence": 0})
+            p["runs"] += 1
+            for k in ("checked", "matched", "wrong", "flaky_evidence"):
+                v = a.get(k)
+                p[k] += v if isinstance(v, int) and v >= 0 else 0
+        total = {"runs": 0, "checked": 0, "matched": 0, "wrong": 0, "flaky_evidence": 0}
+        for p in per.values():
+            for k in total:
+                total[k] += p[k]
+            p["upper_bound_95"] = upper_bound_95(p["checked"], p["wrong"])
+        total["upper_bound_95"] = upper_bound_95(total["checked"], total["wrong"])
+        return {"projects": per, "all": total}
 
     def lookup(self, org: str, ns: str, keys: list[str], limit: int) -> dict:
         db, out = self.db(), {}
         for k in keys:
-            rows = db.execute("SELECT doc FROM keys WHERE org=? AND ns=? AND key=? ORDER BY seq DESC LIMIT ?",
-                              (org, ns, k, limit)).fetchall()
+            rows = db.execute("SELECT doc FROM keys k WHERE org=? AND ns=? AND key=? AND NOT EXISTS (SELECT 1 FROM "
+                              "untrusted u WHERE u.org=k.org AND u.ns=k.ns AND u.proof_key=k.proof_key AND "
+                              "u.keys_seq >= k.seq) ORDER BY seq DESC LIMIT ?", (org, ns, k, limit)).fetchall()
             if rows:
                 out[k] = [r[0] for r in rows]
         return out
@@ -323,6 +422,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, self.app.store.stats(tok["org"]))
         if route == "ns:runs" and ns and _valid_ns(ns):
             return self._send(200, {"runs": self.app.store.runs(tok["org"], ns)})
+        if route == "ns:untrusted" and ns and _valid_ns(ns):
+            return self._send(200, {"untrusted": self.app.store.untrusted(tok["org"], ns)})
+        if route == "audit":
+            return self._send(200, self.app.store.audit(tok["org"]))
         self._error(404, "not found")
 
     def do_POST(self):
@@ -371,6 +474,13 @@ class Handler(BaseHTTPRequestHandler):
                 if len(keys) > MAX_IDS or not all(isinstance(k, str) and 0 < len(k) <= 128 for k in keys):
                     return self._error(400, "bad keys")
                 return self._send(200, {"found": st.lookup(org, ns, keys, limit)})
+            if route == "ns:untrusted":
+                rows = body.get("put", [])
+                if not isinstance(rows, list) or len(rows) > 10_000 or not all(
+                        isinstance(r, dict) and isinstance(r.get("proof_key"), str) and 0 < len(r["proof_key"]) <= 128
+                        for r in rows):
+                    return self._error(400, "bad untrusted keys")
+                return self._send(200, {"added": st.add_untrusted(org, ns, rows, str(tok.get("label") or ""))})
             if route == "ns:runs":
                 run = body.get("run")
                 rec = body.get("receipts")
