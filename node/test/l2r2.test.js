@@ -286,7 +286,9 @@ const srv = http.createServer((req, res) => {
       '</script>');
   }
   if (req.url === '/api/save') {
-    const n = Math.floor(Math.random() * 12);
+    // Real entropy (file reads are not seeded): the push follows the response by 0-60 real ms.
+    const fd = require('fs').openSync('/dev/urandom', 'r'); const b = Buffer.alloc(1); require('fs').readSync(fd, b, 0, 1, null); require('fs').closeSync(fd);
+    const n = b[0] % 60;
     res.end('ok');
     return setTimeout(() => { for (const s of socks) s.send('saved'); }, n);
   }
@@ -306,18 +308,48 @@ test('push and response order', async ({ page }) => {
 });
 `;
 
-test('server pushes: push frames and responses reach the page in one order, one fingerprint in 4 runs (S5)', { skip, timeout: 600000 }, () => {
+test('server pushes: push frames and responses reach the page in one order, one browser-side sequence in 6 runs (S5)', { skip, timeout: 600000 }, () => {
   const dir = project('push', { app: WS_APP, port: WS_PORT, specs: { 'push.spec.js': WS_SPEC } });
   const ids = path.join(dir, 'order.txt');
-  // Round 1 behaviour (no server scope, pushes relayed as they arrive): more than one fingerprint in 6 runs.
-  const off = [1, 2, 3, 4, 5, 6].map((i) => pw(dir, ['--det'], `push-off-${i}`, { IDS_FILE: path.join(dir, 'order-off.txt'), DETJS_PW_SCOPE: '0', DETJS_PW_GATE_PUSH: '0' }));
+  // The fixture's push delay is real entropy, so the server fingerprint differs by design; the claim is about
+  // what the page sees: the sequence of browser-side events (requests, responses, frames, DOM).
+  const browserSide = (r) => JSON.stringify(r.trace.tests[0].events.filter((e) => e.o !== 'server.fingerprint').map((e) => [e.o, e.v]));
+  // Round 1 behaviour (pushes relayed as they arrive): more than one browser-side sequence in 8 runs.
+  const off = [1, 2, 3, 4, 5, 6, 7, 8].map((i) => pw(dir, ['--det'], `push-off-${i}`, { IDS_FILE: path.join(dir, 'order-off.txt'), DETJS_PW_SCOPE: '0', DETJS_PW_GATE_PUSH: '0' }));
   for (const r of off) assert.ok(r.trace, r.out);
-  const voff = verify(off.map((r) => r.trace.path));
-  assert.equal(voff.summary.stable, 0, 'round 1 behaviour diverges');
-  const runs = [1, 2, 3, 4].map((i) => pw(dir, ['--det'], `push-${i}`, { IDS_FILE: ids }));
+  assert.ok(new Set(off.map(browserSide)).size > 1, 'round 1 behaviour: the push lands at different points');
+  const runs = [1, 2, 3, 4, 5, 6].map((i) => pw(dir, ['--det'], `push-${i}`, { IDS_FILE: ids }));
   for (const r of runs) assert.deepEqual(outcomes(r), ['passed'], r.out);
   const lines = fs.readFileSync(ids, 'utf8').trim().split('\n');
   assert.equal(new Set(lines).size, 1, lines.join(' | '));
+  assert.equal(new Set(runs.map(browserSide)).size, 1, runs.map(browserSide).join('\n'));
+});
+
+// ---------------------------------------------------------------------------------------------
+// 5. The test code's clock (documenso: seed helpers in the test write `new Date()` into rows).
+const CK_PORT = 4615;
+const CK_APP = `
+const http = require('http');
+http.createServer((req, res) => {
+  if (req.url === '/health') return res.end('ok');
+  let b = ''; req.on('data', (c) => (b += c)); req.on('end', () => res.end('stored ' + b));
+}).listen(${CK_PORT});
+`;
+const CK_SPEC = `
+const { test, expect } = require('@playwright/test');
+test('a row stamped by the test code', async ({ request }) => {
+  const r = await request.post('/api/rows', { data: { verifiedAt: new Date().toISOString(), t0: performance.now() } });
+  expect(r.status()).toBe(200);
+});
+`;
+
+test('worker clock: dates made by the test code are the same in every run (round 1: real clock, 3 fingerprints)', { skip, timeout: 600000 }, () => {
+  const dir = project('clock', { app: CK_APP, port: CK_PORT, specs: { 'clock.spec.js': CK_SPEC } });
+  const off = [1, 2, 3].map((i) => pw(dir, ['--det'], `ck-off-${i}`, { DETJS_PW_WORKER_CLOCK: '0' }));
+  for (const r of off) assert.deepEqual(outcomes(r), ['passed'], r.out);
+  assert.equal(verify(off.map((r) => r.trace.path)).summary.stable, 0);
+  const runs = [1, 2, 3].map((i) => pw(dir, ['--det'], `ck-${i}`));
+  for (const r of runs) assert.deepEqual(outcomes(r), ['passed'], r.out);
   const v = verify(runs.map((r) => r.trace.path));
   assert.equal(v.summary.stable, 1, JSON.stringify(v.tests[0].divergence));
 });

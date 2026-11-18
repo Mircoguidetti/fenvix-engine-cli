@@ -52,13 +52,16 @@ function pageInit(seedHi, seedLo) {
     var docKey = fnv(String(location.origin) + String(location.pathname));
     var M = new X(); M.seed(SEED_HI ^ docKey, SEED_LO);
     var C = new X(); C.seed(SEED_HI, (SEED_LO ^ docKey ^ 0x5bd1e995) >>> 0);
-    var stats = { random: 0, crypto: 0, uuid: 0, digest: 0x811c9dc5 };
-    function mix(v) { stats.digest = Math.imul((stats.digest ^ v) >>> 0, 0x01000193) >>> 0; }
+    // One running digest per stream (round 2): the values of each stream are fixed by the seed; the
+    // interleaving of Math.random and crypto calls is not (it followed render timing in actual).
+    var stats = { random: 0, crypto: 0, uuid: 0, dr: 0x811c9dc5, dc: 0x811c9dc5 };
+    function mixR(v) { stats.dr = Math.imul((stats.dr ^ v) >>> 0, 0x01000193) >>> 0; }
+    function mixC(v) { stats.dc = Math.imul((stats.dc ^ v) >>> 0, 0x01000193) >>> 0; }
 
     var random = function random() {
       var a = M.next() >>> 5;
       var b = M.next() >>> 6;
-      stats.random++; mix(a);
+      stats.random++; mixR(a);
       return (a * 67108864 + b) / 9007199254740992;
     };
     try { Object.defineProperty(Math, 'random', { value: random, writable: true, configurable: true }); } catch (e) { /* frozen */ }
@@ -76,7 +79,7 @@ function pageInit(seedHi, seedLo) {
           var v = C.next();
           for (var k = 0; k < 4 && i + k < b.length; k++) b[i + k] = (v >>> (8 * k)) & 0xff;
         }
-        stats.crypto++; mix(b.length);
+        stats.crypto++; mixC(b.length);
         return arr;
       };
       Object.defineProperty(C_PROTO, 'getRandomValues', { value: grv, writable: true, configurable: true });
@@ -87,7 +90,7 @@ function pageInit(seedHi, seedLo) {
           b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80;
           var h = [];
           for (var j = 0; j < 16; j++) h.push((b[j] + 0x100).toString(16).slice(1));
-          stats.uuid++; mix(b[0]);
+          stats.uuid++; mixC(b[0]);
           return h.slice(0, 4).join('') + '-' + h.slice(4, 6).join('') + '-' + h.slice(6, 8).join('') + '-' + h.slice(8, 10).join('') + '-' + h.slice(10).join('');
         };
         Object.defineProperty(C_PROTO, 'randomUUID', { value: uuid, writable: true, configurable: true });
@@ -110,7 +113,7 @@ function pageInit(seedHi, seedLo) {
       try { Object.defineProperty(G, name, { value: Wrapped, writable: true, configurable: true }); } catch (e) { /* frozen */ }
     });
     Object.defineProperty(G, '__detjs', {
-      value: { stats: function () { return { random: stats.random, crypto: stats.crypto, uuid: stats.uuid, digest: stats.digest.toString(16) }; } },
+      value: { stats: function () { return { random: stats.random, crypto: stats.crypto, uuid: stats.uuid, digest: stats.dr.toString(16) + '.' + stats.dc.toString(16) }; } },
       enumerable: false,
     });
   })();

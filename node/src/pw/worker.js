@@ -163,6 +163,9 @@ function enqueue(item) {
 const QUIET_MS = Number(ENV.DETJS_PW_QUIET_MS || 20);
 const QUIET_MAX = Number(ENV.DETJS_PW_QUIET_MAX || 3000);
 const PASSTHROUGH = new RegExp(ENV.DETJS_PW_PASSTHROUGH || '[?&]transport=polling|/sockjs/|/__vite_ping|/@vite/|hot-update');
+// Dev-server channels (Vite HMR `/?token=`, webpack/Next HMR): relayed as is, not app traffic (round 2: actual's
+// Vite HMR pings entered the queue).
+const WS_PASSTHROUGH = new RegExp(ENV.DETJS_PW_WS_PASSTHROUGH || '^wss?://[^/]+/\\?token=[^&/]+$|/_next/webpack-hmr|/__webpack_hmr|/sockjs-node|/ws\\?.*hmr');
 
 function serverQuiet(origin) {
   return new Promise((resolve) => {
@@ -424,6 +427,13 @@ async function setupWebSockets(ctx) {
     const key = currentKey();
     let server;
     try { server = ws.connectToServer(); } catch { return; }
+    if (WS_PASSTHROUGH.test(ws.url())) {
+      ws.onMessage((m) => { try { server.send(m); } catch { /* closed */ } });
+      server.onMessage((m) => { try { ws.send(m); } catch { /* closed */ } });
+      ws.onClose((code, reason) => { try { server.close({ code, reason }); } catch { /* closed */ } });
+      server.onClose((code, reason) => { try { ws.close({ code, reason }); } catch { /* closed */ } });
+      return;
+    }
     const conn = ++WS_CONNS;
     rec(key, 'net', 'ws.open', targetOf(ws.url()));
     ws.onMessage((m) => {
@@ -701,6 +711,23 @@ function installWorkerSeeds() {
   const rnd = Math.random;
   Math.random = function random() { maybeReseed(); return rnd(); };
   seedsInstalled = true;
+  // Round 2: the test code's clock (Date, performance.now) is virtual too: seed helpers write
+  // `new Date()` into rows (documenso's emailVerified). Per test: epoch + 1 ms per read. Playwright's
+  // own frames keep the real clock (runner infrastructure); timers stay real.
+  if (ENV.DETJS_PW_WORKER_CLOCK !== '0') {
+    const clock = require('../clock');
+    const cfgT = { ...STATE.config, controls: new Set(['time']) };
+    clock.installProcess(patcher, cfgT);
+    clock.installRealm(patcher, globalThis, cfgT, { sameRealm: true });
+    let ck = null;
+    let n = 0;
+    clock.setValueHook(() => {
+      const k = currentKey();
+      if (k !== ck) { ck = k; n = 0; }
+      n += 1;
+      return { e: n * 1e6, rel: '' };
+    });
+  }
   installWorkerSeeds.reseed = (id) => seeds.reseed(id);
 }
 function maybeReseed() {
@@ -767,6 +794,17 @@ Module._load = function load(request, parent, isMain) {
     if (!corePatched && exp && exp.chromium && typeof exp.chromium.launch === 'function' && /playwright/.test(request)) {
       corePatched = true;
       patchBrowserType(exp.chromium);
+      // The `request` fixture is an APIRequestContext of its own (no browser context): tests that only
+      // call the API were neither ordered nor fingerprinted in round 1.
+      if (exp.request && typeof exp.request.newContext === 'function' && !exp.request.__detjsPatched) {
+        const origNew = exp.request.newContext;
+        exp.request.newContext = async function newContext(...args) {
+          const rc = await origNew.apply(this, args);
+          if (NET) patchApiRequest(rc);
+          return rc;
+        };
+        Object.defineProperty(exp.request, '__detjsPatched', { value: true });
+      }
     }
   } catch { /* never break module loading */ }
   return exp;

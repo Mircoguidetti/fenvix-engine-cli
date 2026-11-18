@@ -63,7 +63,12 @@ def compare_pages(r1, r2, limit=4):
     diffs.sort(key=lambda z: z[0])
     out = []
     for _, k, i, x, y in diffs[:limit]:
-        if k[0] == "dom":
+        if k[0] == "server.msg":
+            a, b = x["text"].split("\n"), y["text"].split("\n")
+            only_a = sorted(set(a) - set(b))[:4]
+            only_b = sorted(set(b) - set(a))[:4]
+            td = f"{len(a)} vs {len(b)} events; only in r1: {only_a}; only in r2: {only_b}"
+        elif k[0] == "dom":
             td = first_text_diff(x["text"], y["text"], 120)
         else:
             td = first_text_diff(x["text"], y["text"]) if x["text"] != y["text"] else f"target {x['target']} vs {y['target']}"

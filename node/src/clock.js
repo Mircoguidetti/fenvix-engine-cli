@@ -175,9 +175,13 @@ hrtime.bigint = function bigint() {
 let nextId = 1;
 const BY_ID = new Map();
 
+let TIMER_CTX_HOOK = null; // Level 2 servers: the message context a timer was created in (pw/server.js)
+function setTimerContextHook(f) { TIMER_CTX_HOOK = f; }
+
 class Timeout {
   constructor(fn, args, delayMs, repeat, site, realm) {
     this._realm = realm;
+    this._ctx = TIMER_CTX_HOOK ? TIMER_CTX_HOOK() : null;
     this._test = STATE.testId;
     this._handle = null; // realm timer once the timer was released to real time
     this.id = nextId++;
@@ -550,6 +554,6 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
 }
 
 module.exports = {
-  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, setValueHook,
+  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, setValueHook, setTimerContextHook,
   get CLOCK() { return CLOCK; },
 };

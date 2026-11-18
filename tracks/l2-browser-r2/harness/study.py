@@ -405,10 +405,12 @@ def diagnose(spec, idx):
         ddir = OUT / "diag" / slug / f"r{i}"
         shutil.rmtree(ddir, ignore_errors=True)
         ddir.mkdir(parents=True, exist_ok=True)
+        os.environ["DETJS_PW_DIAG_DIR"] = str(ddir / "pages")  # app servers started outside the runner too
         r = run_pw(f"{slug}-r{i}", "det", filters=filt, pw_args=args, timeout_s=TT,
                    det_flags=(f"--det-max-events={P.get('diag_max_events', 300000)}",),
                    env_extra={"DETJS_PW_DIAG_DIR": str(ddir / "pages"), "DETJS_MAX_EVENTS": str(P.get("diag_max_events", 300000))},
                    keep_parts=str(ddir / "server-parts"))
+        os.environ.pop("DETJS_PW_DIAG_DIR", None)
         k, o = outcome_for(spec, r)
         D["replays"].append(o)
         D["walls"].append(r.get("wall_s"))
@@ -459,12 +461,13 @@ def diagnose(spec, idx):
 
 
 TT = P["target_timeout_min"] * 60
-if P.get("mode") == "diagnose":
+if P.get("mode") == "diagnose" or P.get("diagnose_first"):
     R["diagnosis"] = []
     for i, spec in enumerate(CFG.get("targets", []), 1):
         if remaining() < 300:
             break
         diagnose(spec, i)
+if P.get("mode") == "diagnose":
     R["status"] = "ok"
     R["elapsed_min"] = round((time.time() - T0) / 60, 1)
     save()
@@ -494,10 +497,7 @@ known = [{**k, "known": True} for k in (CFG.get("targets") or CFG.get("known_fla
 detected = [spec_of_key(k) for k in flaky_of(BASE)]
 detected = [d for d in detected if not any(matches(kn, d["key"]) for kn in known)]
 R["known_flaky"] = known
-for spec in (known + detected)[: P["max_targets"]]:
-    if remaining() < 900:
-        break
-    run_target(spec)
+TARGET_SPECS = (known + detected)[: P["max_targets"]]
 
 STRESS = []
 for i in range(P["stress"]):
@@ -555,6 +555,12 @@ if vd and "summary" in vd:
 elif vd:
     R["det_verify"] = vd
 save()
+
+# Round 2: the targets after the full-suite phases (the broken-by-controls count and the slowdown need them).
+for spec in TARGET_SPECS:
+    if remaining() < 900:
+        break
+    run_target(spec)
 
 # Stress-detected flaky tests not targeted yet.
 done_keys = [t.get("matched_key") or t.get("key") for t in R["targets"]]

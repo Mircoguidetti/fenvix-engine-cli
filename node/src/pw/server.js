@@ -99,6 +99,7 @@ function streamHook(kind) {
 const FS_ = '\u001f';
 function installScope() {
   clockMod.setValueHook(valueHook);
+  clockMod.setTimerContextHook(() => MSG.getStore() || null);
   seedsMod.setStreamHook(streamHook);
   // Every recorded event also goes to the message it belongs to (or counts as background).
   const origRecord = STATE.record.bind(STATE);
@@ -142,8 +143,17 @@ function installScope() {
 function scopedFingerprint(test) {
   const list = SCOPED.messages.get(test) || [];
   SCOPED.messages.delete(test);
+  const diagDir = process.env.DETJS_PW_DIAG_DIR;
   const parts = list.map((m) => {
     const ev = m.events.slice().sort();
+    if (diagDir) {
+      try {
+        const fs = require('node:fs');
+        fs.mkdirSync(diagDir, { recursive: true });
+        const name = `${test}`.replace(/[^A-Za-z0-9._-]+/g, '_').slice(-170);
+        fs.appendFileSync(path.join(diagDir, `${name}.server.jsonl`), `${JSON.stringify({ t: 0, op: 'server.msg', target: `${m.idx} ${m.kind}`, text: ev.join('\n') })}\n`);
+      } catch { /* diagnosis never breaks a run */ }
+    }
     return `${m.idx}:${m.kind}:${ev.length}:${native.digest(Buffer.from(ev.join('\u001e')))}`;
   });
   return { fingerprint: native.digest(Buffer.from(parts.join('\n'))), messages: parts.length, events: list.reduce((a, m) => a + m.events.length, 0) };
@@ -198,7 +208,10 @@ function waitQuiet(ms, max, done) {
     const cur = performance.eventLoopUtilization();
     const d = performance.eventLoopUtilization(cur, prev);
     prev = cur;
-    const idle = inflight === 0 && d.utilization < 0.1;
+    // A one-shot timer created while handling a message is part of that message's work (a push sent
+    // a few ms after the response): not quiet until it fired (round 2).
+    const pendingWork = SCOPE && clockMod.DRIVER.queue.some((t) => t._ctx && !t._repeat && t._realDeadline - REAL.perfNow() < max);
+    const idle = inflight === 0 && d.utilization < 0.1 && !pendingWork;
     if (!idle) idleSince = null; else if (idleSince === null) idleSince = now;
     if (idleSince !== null && now - idleSince >= ms) return done(true, now - start);
     if (now - start >= max) return done(false, now - start);
