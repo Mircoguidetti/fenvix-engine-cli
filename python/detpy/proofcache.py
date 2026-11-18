@@ -77,7 +77,7 @@ _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 _VOLATILE_OPTIONS = {
     "file_or_dir", "verbose", "quiet", "color", "code_highlight", "reportchars", "tbstyle", "showlocals",
     "durations", "durations_min", "junitxml", "junitprefix", "resultlog", "basetemp", "det_cache",
-    "det_cache_verify", "det_cache_receipts", "det_trace", "det_outcomes", "det_compare", "det_max_events",
+    "det_cache_verify", "det_cache_receipts", "det_cache_keys", "det_trace", "det_outcomes", "det_compare", "det_max_events",
     "showcapture", "fulltrace", "collectonly", "markers", "fixtures", "show_fixtures_per_test", "help", "version",
     "debug", "traceconfig", "showlocals", "log_file", "log_cli_level", "pastebin", "usepdb", "usepdb_cls",
     "trace", "xmlpath", "htmlpath", "lf", "failedfirst", "last_failed_no_failures", "newfirst", "cacheclear",
@@ -1028,6 +1028,7 @@ class ProofCachePlugin:
         self.not_cached_where: dict[str, str] = {}  # nodeid -> first occurrence of the cause (what, where, context)
         self.stale_hits: dict[str, str] = {}
         self.error: str | None = None
+        self.keys_path: str | None = None  # --det-cache-keys (culprit-finder prototype)
 
     # -- setup ----------------------------------------------------------------
     def configure(self, config) -> None:
@@ -1476,7 +1477,127 @@ class ProofCachePlugin:
                          self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
                          sorted(data.items()), sorted(content), sorted(skeleton), sorted(hooks), sorted(units))
             self.recorded += 1
+        if self.keys_path:
+            self._dump_keys(locals())
         store.save()
+
+    def _dump_keys(self, L: dict) -> None:
+        """``--det-cache-keys``: every test's inputs (any outcome), resolved to paths, names and digests.
+
+        Prototype for the culprit finder: the same inputs ``_record_all`` gives the store, recomputed for every test
+        that ran, failures and uncacheable tests included, without the cacheability checks. Writes JSON only.
+        """
+        cap, store = self.cap, self.store
+        per, ctx_of, names_of = L["per"], L["ctx_of"], L["names_of"]
+        units_of, unparsable, in_scope = L["units_of"], L["unparsable"], L["in_scope"]
+        g_units, g_unparsable, g_ctx_all = L["g_units"], L["g_unparsable"], L["g_ctx_all"]
+        g_data, g_env, g_flags = L["g_data"], L["g_env"], L["g_flags"]
+        own_import, pre_ix, fcache = L["own_import"], L["pre_ix"], L["fcache"]
+        conftests, loaded_idx, file_of_ix = L["conftests"], L["loaded_idx"], L["file_of_ix"]
+        facts: dict[int, tuple] = {}
+
+        def fx(ix):
+            if ix not in facts:
+                facts[ix] = store.file_facts(ix)
+            return facts[ix]
+
+        tests = {}
+        for nid in self.ran:
+            item = self.items.get(nid)
+            if item is None:
+                continue
+            own = _ctx_file(nid)
+            ctxs = [ctx_of[c] for c in ["t|" + nid, "c|" + own, *self.fixture_ctx.get(nid, [])] if c in ctx_of]
+            if own in own_import:
+                ctxs.append(own_import[own])
+            flags, data, env = set(g_flags), dict(g_data), set(g_env)
+            units, content = set(), set(pre_ix) | g_unparsable
+            for c in ctxs:
+                flags |= cap.flags.get(c, set())
+                data.update(cap.data.get(c, {}))
+                env |= cap.env.get(c, set())
+                units |= units_of(per[c][0])
+                content |= unparsable(per[c][1])
+            idx = self.test_index.get(nid, 0)
+            skeleton, hooks = set(), set()
+            for rel, seen_at in loaded_idx:
+                if seen_at > idx:
+                    continue
+                ix = fcache.get(rel)
+                if ix is None:
+                    continue
+                if rel in conftests:
+                    hooks.add(ix)
+                if in_scope(rel, own):
+                    skeleton.add(ix)
+            for ix, u in g_units:
+                rel = file_of_ix.get(ix)
+                if rel is not None and (rel in conftests or in_scope(rel, own)):
+                    units.add((ix, u))
+            if type(item).__name__ == "DoctestItem" or not hasattr(item, "obj"):
+                ix = fcache.get(own)
+                if ix is not None:
+                    content.add(ix)
+            env_deps = {}
+            for name in sorted(n for n in env if _encodable(n)):
+                env_deps[name] = (_core.env_all_digest(dict(cap.env0)) if name == "*"
+                                  else _core.env_value_digest(cap.env0.get(name)))
+            code = {}
+            for ix, u in sorted(units):
+                f = fx(ix)
+                q, _a, _b, d = f[4][u]
+                code[f"unit:{f[0]}::{q}"] = d
+            for ix in sorted(skeleton):
+                f = fx(ix)
+                code[f"skeleton:{f[0]}"] = f[2]
+            for ix in sorted(hooks):
+                f = fx(ix)
+                code[f"hooks:{f[0]}"] = f[3]
+            for ix in sorted(content):
+                f = fx(ix)
+                code[f"content:{f[0]}"] = f[1]
+            tests[nid] = {
+                "outcome": _final(self.parts.get(nid, {})),
+                "fingerprint": self.fingerprints.get(nid, ""),
+                "code": code,
+                "data": {p: d for p, d in sorted(data.items())},
+                "env": env_deps,
+                "clock": "time" in flags,
+                "flags": sorted(f for f in flags if not f.startswith("rw:")),
+                "not_cached": self.not_cached.get(nid),
+            }
+        try:
+            dists, _editable = _dist_infos(self.root, os.path.join(self.dir, "distributions.json"))
+        except Exception:
+            dists = []
+        # top-level import names loaded in this process, mapped to their distributions (prunes package changes)
+        loaded_dists: set[str] = set()
+        try:
+            from importlib import metadata
+
+            pkg = metadata.packages_distributions()
+            for m in list(sys.modules):
+                for dname in pkg.get(m.split(".", 1)[0], ()):
+                    loaded_dists.add(dname.lower().replace("_", "-"))
+        except Exception:
+            pass
+        out = {
+            "root": self.root,
+            "config": self.config_digest,
+            "config_info": self.config_info,
+            "runtime": self.runtime_digest,
+            "runtime_info": self.runtime_info,
+            "distributions": dists,
+            "loaded_distributions": sorted(loaded_dists),
+            "epoch": self.epoch,
+            "tests": tests,
+        }
+        try:
+            os.makedirs(os.path.dirname(os.path.abspath(self.keys_path)) or ".", exist_ok=True)
+            with open(self.keys_path, "w") as fh:
+                json.dump(out, fh, sort_keys=True, default=str)
+        except OSError:
+            pass
 
     def _where(self, why: str, ctxs) -> str:
         """``why`` with the first occurrence of its cause: what (command, address...) and in which context."""
@@ -1956,6 +2077,7 @@ def install(config) -> None:
     plugin = ProofCachePlugin(cap, opt.det_cache, opt.det_cache_verify, opt.det_cache_receipts)
     age = getattr(opt, "det_cache_max_age", 30.0)
     plugin.max_age_s = age * 86400 if age and age > 0 else None
+    plugin.keys_path = getattr(opt, "det_cache_keys", None)
     plugin.configure(config)
     PLUGIN = plugin
     config.pluginmanager.register(plugin, "detpy-cache")
