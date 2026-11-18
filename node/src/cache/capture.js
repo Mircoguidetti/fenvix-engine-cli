@@ -290,10 +290,13 @@ class Capture {
       const global = this.isGlobal;
       if (w === 'proc') {
         if (abs.startsWith('/dev/std') || abs.startsWith('/dev/fd/') || abs === '/dev/tty') return;
-        if (abs === '/proc/self/exe' && kind !== 'f') return; // the node binary: in the runtime identity
-        if (global && this.caller() !== 'user') return;
-        this.add(['flag', 'proc', abs], global);
-        return;
+        if (abs === '/proc/self/exe') return; // the node binary: in the runtime identity
+        if (abs !== '/proc/version' && abs !== '/proc/sys/kernel/osrelease') {
+          if (global && this.caller() !== 'user') return;
+          this.add(['flag', 'proc', abs], global);
+          return;
+        }
+        // the kernel version: the same for every process of a machine, an input like a file
       }
       if (global) {
         // the main process: runner and bundler infrastructure reads everything; only reads that can change what
@@ -315,7 +318,7 @@ class Capture {
         return;
       }
       const writers = this.written.get(abs);
-      if (writers && (kind === 'f' || kind === 'l')) {
+      if (writers) {
         // a file this process wrote: an output of the writer, not an input; another file's output is a hidden
         // channel between files
         if (writers.size === 1 && writers.has(this.label)) return;
@@ -520,6 +523,29 @@ function installFs(cap) {
   wrapFn(cap, fs, 'createReadStream', (a) => cap.read(a[0], 'f'));
   // mkdtemp: the directory created is an output of the caller
   wrapFn(cap, fs, 'mkdtempSync', () => {}, (_a, r) => cap.wrote(r));
+  const realMk = fs.mkdtemp;
+  if (typeof realMk === 'function' && !realMk.__detjsCache) {
+    const mk = function mkdtemp(prefix, options, cb) {
+      if (typeof options === 'function') { cb = options; options = undefined; }
+      if (typeof cb !== 'function') return realMk.call(fs, prefix, options, cb);
+      return realMk.call(fs, prefix, options, (err, dir) => { if (!err) cap.wrote(dir); cb(err, dir); });
+    };
+    Object.defineProperty(mk, '__detjsCache', { value: true });
+    fs.mkdtemp = mk;
+  }
+  wrapFn(cap, fs, 'mkdtempDisposableSync', () => {}, (_a, r) => r && cap.wrote(r.path));
+  const realPMkD = P.mkdtempDisposable;
+  if (typeof realPMkD === 'function' && !realPMkD.__detjsCache) {
+    const f = async function mkdtempDisposable(...a) { const r = await realPMkD.apply(P, a); if (r && r.path) cap.wrote(r.path); return r; };
+    Object.defineProperty(f, '__detjsCache', { value: true });
+    P.mkdtempDisposable = f;
+  }
+  const realPMk = P.mkdtemp;
+  if (typeof realPMk === 'function' && !realPMk.__detjsCache) {
+    const pmk = async function mkdtemp(...a) { const dir = await realPMk.apply(P, a); cap.wrote(dir); return dir; };
+    Object.defineProperty(pmk, '__detjsCache', { value: true });
+    P.mkdtemp = pmk;
+  }
 }
 
 function installEnv(cap, proc) {

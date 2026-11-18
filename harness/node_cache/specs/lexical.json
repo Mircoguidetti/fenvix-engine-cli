@@ -1,0 +1,9 @@
+{
+ "name": "lexical", "url": "https://github.com/facebook/lexical", "node": "24", "runner": "vitest",
+ "install": ["corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent || pnpm install --reporter=silent"],
+ "install_files": ["pnpm-lock.yaml", "package.json", "packages/*/package.json", "pnpm-workspace.yaml"],
+ "build": [],
+ "args": ["--project", "unit", "--project", "scripts-unit"],
+ "plain": "pnpm exec vitest run --project unit --project scripts-unit --reporter=json --outputFile={report}",
+ "shards": 3, "source": "51 first-parent commits of main before 2026-11-17 (Vitest monorepo, ~30 packages)"
+}

@@ -203,15 +203,14 @@ for (const runner of RUNNERS) {
       }
     });
 
-    test('environment: a variable read is an input, an unread one is not, enumeration makes the whole environment one', T, () => {
+    test('environment: an unread variable is not an input; enumerating the environment makes all of it one', T, () => {
       const dir = fixture(runner, 'env', {
-        ...tfile(runner, 'reads', "test('r', () => { expect(process.env.DETJS_T_READ ?? '-').toBe(process.env.DETJS_T_READ ?? '-'); });"),
+        ...tfile(runner, 'reads', "test('r', () => { expect(process.env.XTEST_READ ?? '-').toBe(process.env.XTEST_READ ?? '-'); });"),
         ...tfile(runner, 'enum', "test('e', () => { expect(Object.keys(process.env).length).toBeGreaterThan(0); });"),
         ...tfile(runner, 'none', "test('n', () => { expect(1).toBe(1); });"),
       });
       const files = ['reads', 'enum', 'none'].map((n) => F(runner, n));
-      cycle(runner, dir, files, () => {}, [F(runner, 'reads'), F(runner, 'enum')], { env: { XTEST_READ: '1' }, env3: { XTEST_READ: '2', XTEST_OTHER: '1' } }); // no read change: XTEST_READ is not DETJS_T_READ
-      // the test reads DETJS_T_*? no: own variables (DETJS_*) are never inputs; use a plain name
+      cycle(runner, dir, files, () => {}, [F(runner, 'enum')], { env: { XTEST_READ: '1' }, env3: { XTEST_READ: '1', XTEST_OTHER: '1' } });
     });
 
     test('environment: changed value of a variable read reruns its reader only', T, () => {

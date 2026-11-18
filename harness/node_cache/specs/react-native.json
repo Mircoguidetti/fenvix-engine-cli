@@ -1,0 +1,9 @@
+{
+ "name": "react-native", "url": "https://github.com/facebook/react-native", "node": "24", "runner": "jest",
+ "install": ["corepack enable >/dev/null 2>&1; yarn install --frozen-lockfile --non-interactive --silent --ignore-engines || yarn install --non-interactive --silent --ignore-engines"],
+ "install_files": ["yarn.lock", "package.json", "packages/*/package.json", "private/*/package.json"],
+ "build": [],
+ "args": [],
+ "plain": "yarn jest --json --outputFile={report}",
+ "shards": 3, "source": "51 first-parent commits of main before 2026-11-17 (Jest monorepo, yarn workspaces)"
+}

@@ -1,0 +1,9 @@
+{
+ "name": "docusaurus", "url": "https://github.com/facebook/docusaurus", "node": "26", "runner": "vitest",
+ "install": ["corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent || pnpm install --reporter=silent"],
+ "install_files": ["pnpm-lock.yaml", "package.json", "packages/*/package.json", "pnpm-workspace.yaml"],
+ "build": ["pnpm build:packages > /dev/null 2>&1"],
+ "args": [],
+ "plain": "pnpm exec vitest run --reporter=json --outputFile={report}",
+ "shards": 2, "source": "same 51 commits as harness/skip_study2 (results/v3/walk/docusaurus-0o1.json.gz)"
+}
