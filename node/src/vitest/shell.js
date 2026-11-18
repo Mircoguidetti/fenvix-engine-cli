@@ -12,6 +12,27 @@ const { pathToFileURL } = require('node:url');
 const controls = require('../controls');
 
 const { STATE } = controls;
+const CACHE = process.env.DETJS_CACHE === '1';
+const CAP = CACHE ? require('../cache/capture').CAPTURE : null;
+
+/** Write the cache capture of a finished test file (read by the main process, src/cache/proof.js). */
+function writeCapture(file, det, project) {
+  const fileId = fileIdOf(file, det.root);
+  const label = project ? `${project}|${fileId}` : fileId;
+  const r = file.result || {};
+  const ok = r.state !== 'fail' && !(r.errors && r.errors.length) && !(file.errors && file.errors.length);
+  const dur = ['collectDuration', 'setupDuration', 'prepareDuration', 'environmentLoad'].reduce((a, k) => a + (Number(file[k]) || 0), 0) + (Number(r.duration) || 0);
+  // tests that never reached the runner hooks (skipped by a failing hook, filtered) count as skipped
+  const ended = new Set(CAP.tests.map((t) => t.id));
+  for (const [task, id] of det.ids) {
+    if (task.type === 'test' && !ended.has(id) && det.fileOf.get(task) === file) CAP.tests.push({ id, outcome: outcomeOf(task) === 'unknown' ? 'skipped' : outcomeOf(task), duration: 0, fingerprint: '', upto: CAP.log.length });
+  }
+  const capture = CAP.fileCapture({ fileId, project: project || '', label, ok, duration: dur / 1000 });
+  const dir = path.join(process.env.DETJS_DIR, 'cache');
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, `${controls.partName(fileId, project).replace(/\.jsonl$/, '')}-${process.pid}.json`), JSON.stringify(capture));
+  CAP.beginFileTests();
+}
 
 /** Absolute file of a package export (`exports[sub]`), for ESM-only packages. */
 function exportFile(pkgDir, sub) {
@@ -56,10 +77,11 @@ function makeRunner(Base) {
     constructor(config) {
       super(config);
       const c = controls.cfg();
-      this.__det = { active: c.active, ids: new Map(), root: process.env.DETJS_ROOT || config.root, opened: null };
+      this.__det = { active: c.active, ids: new Map(), fileOf: new Map(), root: process.env.DETJS_ROOT || config.root, opened: null };
       if (c.active) {
         controls.installProcess();
         controls.installRealm(globalThis, { sameRealm: true });
+        if (CAP) CAP.install({ role: 'worker', root: this.__det.root });
       }
     }
 
@@ -68,6 +90,7 @@ function makeRunner(Base) {
       if (this.__det.opened === fileId) return;
       this.__det.opened = fileId;
       controls.openFile(fileId, project);
+      if (CAP) CAP.setCtx('f', project ? `${project}|${fileId}` : fileId);
     }
 
     async onBeforeCollect(paths) {
@@ -90,7 +113,7 @@ function makeRunner(Base) {
         const walk = (suite, prefix) => {
           for (const t of suite.tasks || []) {
             const id = `${prefix}::${t.name}`;
-            if (t.type === 'suite') { this.__det.ids.set(t, id); walk(t, id); } else flat.push([t, id]);
+            if (t.type === 'suite') { this.__det.ids.set(t, id); walk(t, id); } else { flat.push([t, id]); this.__det.fileOf.set(t, file); }
           }
         };
         this.__det.ids.set(file, fileId);
@@ -116,12 +139,21 @@ function makeRunner(Base) {
       const id = this.__det.ids.get(test) || `${test.file ? fileIdOf(test.file, this.__det.root) : '?'}::${test.name}`;
       if (STATE.testId === id) return; // retry/repeat of the running test
       STATE.beginTest(id);
-      if (test.mode !== 'run' && test.mode !== 'queued') STATE.endTest(test.mode === 'todo' ? 'todo' : 'skipped');
-      else if (test.result && test.result.state === 'fail') STATE.endTest('failed');
+      if (CAP) CAP.setCtx('t');
+      if (test.mode !== 'run' && test.mode !== 'queued') this.__end(test, id, test.mode === 'todo' ? 'todo' : 'skipped');
+      else if (test.result && test.result.state === 'fail') this.__end(test, id, 'failed');
+    }
+
+    __end(test, id, outcome) {
+      const fp = STATE.endTest(outcome);
+      if (CAP) {
+        CAP.testEnd(id, outcome, ((test.result && test.result.duration) || 0) / 1000, fp);
+        CAP.setCtx('f');
+      }
     }
 
     onAfterRunTask(test) {
-      if (this.__det.active && STATE.testId !== null) STATE.endTest(outcomeOf(test));
+      if (this.__det.active && STATE.testId !== null) this.__end(test, STATE.testId, outcomeOf(test));
       if (super.onAfterRunTask) return super.onAfterRunTask(test);
       return undefined;
     }
@@ -130,6 +162,11 @@ function makeRunner(Base) {
       if (this.__det.active) {
         controls.closeFile();
         this.__det.opened = null;
+        if (CAP && process.env.DETJS_DIR) {
+          for (const f of files || []) {
+            try { writeCapture(f, this.__det, this.config.name); } catch (e) { process.stderr.write(`detjs cache: capture of ${f.filepath} not written: ${e && e.stack}\n`); }
+          }
+        }
       }
       if (super.onAfterRunFiles) await super.onAfterRunFiles(files);
     }

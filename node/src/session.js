@@ -27,6 +27,11 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det-urandom            also make crypto.randomBytes/randomFillSync/randomInt deterministic (NOT for crypto tests)
   --det-max-events=N       events stored verbatim per test (default 10000)
   --det-sites=off          do not resolve call sites (faster; runner frames are then not told apart)
+  --det-cache=DIR|URL      cache with proof: skip test files whose every recorded input is unchanged
+                           (a directory, or a shared cache service https://host/<namespace>)
+  --det-cache-verify       decide reuse but run every file anyway and compare (receipts say what would be reused)
+  --det-cache-receipts=P   receipts file (default <root>/.detjs/receipts.jsonl)
+  --det-cache-summary=P    summary JSON (default <root>/.detjs/cache-summary.json)
 `;
 
 /** Split argv into detjs options and runner arguments. */
@@ -36,11 +41,14 @@ function parseArgs(argv, env = process.env) {
     seed: null, trace: null, compare: null, record: false, cassette: null, allowHosts: [],
     epoch: config.DEFAULT_EPOCH, tick: 1000, tickAdapt: 1000, timers: 'virtual', timerBudget: 100000,
     disable: '', urandom: false, maxEvents: 10000, sites: true,
+    cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null,
   };
+  if (env.DETJS_CACHE_DIR) opts.cache = env.DETJS_CACHE_DIR;
   if (env.DETJS_SEED !== undefined && env.DETJS_SEED !== '') opts.seed = config.int(env.DETJS_SEED, 0);
   const rest = [];
   const takes = new Set(['--det-seed', '--det-trace', '--det-compare', '--det-cassette', '--det-allow-host', '--det-epoch',
-    '--det-tick', '--det-tick-adapt', '--det-timers', '--det-timer-budget', '--det-disable', '--det-max-events', '--det-sites']);
+    '--det-tick', '--det-tick-adapt', '--det-timers', '--det-timer-budget', '--det-disable', '--det-max-events', '--det-sites',
+    '--det-cache', '--det-cache-receipts', '--det-cache-summary']);
   for (let i = 0; i < argv.length; i++) {
     let a = argv[i];
     if (!a.startsWith('--det')) { rest.push(a); continue; }
@@ -64,6 +72,10 @@ function parseArgs(argv, env = process.env) {
       case '--det-urandom': opts.urandom = true; break;
       case '--det-max-events': opts.maxEvents = config.int(value, 10000); break;
       case '--det-sites': opts.sites = value !== 'off' && value !== '0'; break;
+      case '--det-cache': opts.cache = value; break;
+      case '--det-cache-verify': opts.cacheVerify = value === undefined || value === '1' || value === 'true'; break;
+      case '--det-cache-receipts': opts.cacheReceipts = value; break;
+      case '--det-cache-summary': opts.cacheSummary = value; break;
       case '--det-help': process.stdout.write(HELP); process.exit(0); break;
       default: throw new Error(`detjs: unknown option ${a}\n${HELP}`);
     }
