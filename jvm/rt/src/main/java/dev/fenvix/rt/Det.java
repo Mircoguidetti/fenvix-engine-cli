@@ -377,10 +377,16 @@ public final class Det {
             return;
         }
         if (ms < 0) throw new IllegalArgumentException("timeout value is negative");
-        boolean real = !quiet(Thread.currentThread());
-        record("time", "Thread.sleep", site, ms + (real ? ":real" : ":fast"));
-        if (real) Thread.sleep(ms);
-        else if (Thread.interrupted()) throw new InterruptedException("sleep interrupted");
+        record("time", "Thread.sleep", site, Long.toString(ms));
+        // sleep for real only while another thread may be working, re-checking every 10 ms
+        long left = ms;
+        Thread self = Thread.currentThread();
+        while (left > 0 && !quiet(self)) {
+            long slice = Math.min(left, 10);
+            Thread.sleep(slice);
+            left -= slice;
+        }
+        if (Thread.interrupted()) throw new InterruptedException("sleep interrupted");
         advance(ms * 1_000_000L);
     }
 
