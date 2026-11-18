@@ -113,11 +113,12 @@ _tls = threading.local()
 
 
 class Spawn:
-    __slots__ = ("ctx", "prefix", "cwd", "exe", "argv", "detail")
+    __slots__ = ("ctx", "prefix", "cwd", "exe", "argv", "detail", "clock_exempt")
 
-
-    def __init__(self, ctx, prefix, cwd, exe, argv, detail):
+    def __init__(self, ctx, prefix, cwd, exe, argv, detail, clock_exempt=False):
         self.ctx, self.prefix, self.cwd, self.exe, self.argv, self.detail = ctx, prefix, cwd, exe, argv, detail
+        # ctypes.util.find_library's helpers: their result is a library path matched in their output
+        self.clock_exempt = clock_exempt
 
 
 class Result:
@@ -294,8 +295,8 @@ class Follower:
             # not announced by a subprocess.Popen audit event: multiprocessing's spawn / forkserver starter
             if cap._caller_kind() == "infra":
                 return args
-            pending = (cap._cur(), None, True)
-        ctx, detail, follow_it = pending
+            pending = (cap._cur(), None, True, False)
+        ctx, detail, follow_it, clock_exempt = pending
         if not follow_it:
             return args
         argv = list(args[0])
@@ -326,7 +327,7 @@ class Follower:
             return args
         self.n += 1
         prefix = os.path.join(self.logdir, f"s{os.getpid()}-{self.n}")
-        self.spawns.append(Spawn(ctx, prefix, cwd, exe, [os.fsdecode(a) for a in argv], detail))
+        self.spawns.append(Spawn(ctx, prefix, cwd, exe, [os.fsdecode(a) for a in argv], detail, clock_exempt))
         argv0 = os.fsdecode(argv[0]) if argv else exe
         new_argv = [self.exe, "-DDD", "-ff", "-q", "-y", "-ttt", "-s", "1", "--seccomp-bpf", "-e",
                     "trace=" + STRACE_TRACE, "-e", "signal=none", "-o", prefix, "--argv0", argv0, "--", exe,
@@ -347,10 +348,10 @@ class Follower:
                 env.append(b"LD_PRELOAD=" + os.fsencode(shim))
         return (new_argv, (os.fsencode(self.exe),), *args[2:5], env, *args[6:])
 
-    def announce(self, ctx: int, detail: str | None, follow_it: bool = True) -> None:
+    def announce(self, ctx: int, detail: str | None, follow_it: bool = True, clock_exempt: bool = False) -> None:
         """A ``subprocess.Popen`` audit event: the next fork_exec of this thread is that child (``follow_it``
         False: already accounted for, run it unchanged)."""
-        _tls.pending = (ctx, detail, follow_it)
+        _tls.pending = (ctx, detail, follow_it, clock_exempt)
 
 
 # ---------------------------------------------------------------------------
@@ -591,6 +592,11 @@ def _parse_one(lines: list[str], cwd: str, res: Result) -> None:
                     ops.append(("r", _join(None, sun, cwd)))  # a probe (nscd): its absence is the input
                     continue
                 res.net = res.net or f"{name} unix {sun}"
+                continue
+            if fam == "AF_NETLINK":
+                # the kernel's network state (interfaces, MAC addresses, routes): a bind is enough, the requests
+                # that follow go out with send() and no address
+                res.net = res.net or f"{name} netlink"
                 continue
             if name == "bind":
                 continue

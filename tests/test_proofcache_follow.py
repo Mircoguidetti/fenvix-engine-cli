@@ -657,3 +657,67 @@ def test_exclusive_create_at_import_does_not_drop_every_reuse(pytester, run_cach
         _, reused, data = run_cache("--det-urandom")
         assert reused == ids("test_a")
         assert not data["cache"]["stale_reuses"]
+
+
+def test_child_netlink_is_network(pytester, run_cache):
+    # `ip link` (uuid.getnode's fallback) asks the kernel over netlink: bind, then send() without an address
+    project(pytester, **{"test_m.py": """
+        import subprocess, sys
+
+        CODE = "import socket; s = socket.socket(socket.AF_NETLINK, socket.SOCK_RAW, 0); s.bind((0, 0)); s.close()"
+
+        def test_netlink():
+            subprocess.run([sys.executable, "-c", CODE], check=True)
+        """})
+    run_cache()
+    _, reused, data = run_cache()
+    assert reused == set()
+    assert "[network: bind netlink]" in data["cache"]["not_cached_where"]["test_m.py::test_netlink"]
+
+
+@pytest.mark.skipif(shutil.which("ip") is None or not os.path.isdir("/sys/class/net"), reason="needs ip, sysfs")
+def test_uuid_getnode_helpers_are_the_machine_identity(pytester, run_cache):
+    # pyezvizapi calls uuid.getnode() at import time; without libuuid it runs `ip link` (netlink, real clock).
+    # Its result is this machine's MAC address: the interfaces' names and addresses are the input instead
+    project(pytester, **{"pkg/lib.py": """
+        import uuid
+
+        uuid._GETTERS[:] = [uuid._ip_getnode]
+        uuid._node = None
+        NODE = uuid.getnode()
+        """, "test_m.py": """
+        import pkg.lib
+
+        def test_node():
+            assert pkg.lib.NODE
+        """})
+    run_cache()
+    _, reused, data = run_cache()
+    assert reused == ids("test_node")
+
+
+def test_find_library_helpers_may_read_the_clock(pytester, run_cache):
+    # on GitHub's runner gcc (find_library's fallback, asyncssh at import time) reads the real clock; find_library
+    # returns a library path matched in the helper's output, so that read does not refuse every test
+    import stat
+
+    fake = pytester.path / "fakebin"
+    fake.mkdir()
+    for name in ("gcc", "cc"):
+        f = fake / name
+        f.write_text("#!/bin/sh\ndate +%s > /dev/null\nexit 1\n")
+        f.chmod(f.stat().st_mode | stat.S_IEXEC)
+    project(pytester, **{"pkg/lib.py": f"""
+        import ctypes.util, os
+
+        os.environ["PATH"] = "{fake}" + os.pathsep + os.environ["PATH"]
+        FOUND = ctypes.util._findLib_gcc("detpy_no_such_library_42")
+        """, "test_m.py": """
+        import pkg.lib
+
+        def test_a():
+            assert pkg.lib.FOUND is None
+        """})
+    run_cache()
+    _, reused, data = run_cache()
+    assert reused == ids("test_a"), data["cache"].get("not_cached_where")
