@@ -34,7 +34,8 @@ DETJS = os.environ["DETJS_BIN"]
 T0 = time.time()
 RUN = json.loads((H3.parent / "RUN").read_text())
 REPOS = json.loads((H2 / "repos.json").read_text())
-REPOS.update(json.loads((H3 / "repos.json").read_text()))
+for _n, _c in json.loads((H3 / "repos.json").read_text()).items():
+    REPOS[_n] = {**REPOS.get(_n, {}), **_c}
 CFG = REPOS[NAME]
 SCRIPT = H3 / "repos" / f"{NAME}.sh"
 if not SCRIPT.exists():
