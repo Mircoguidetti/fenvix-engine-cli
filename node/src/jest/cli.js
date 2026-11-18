@@ -38,6 +38,7 @@ function showConfig(bin, args) {
 }
 
 async function main(argv) {
+  const env0 = { ...process.env }; // the environment at session start (cache inputs are digested against it)
   const root = process.cwd();
   const { opts, rest } = session.parseArgs(argv);
   const jest = findJest(root);
@@ -58,6 +59,17 @@ async function main(argv) {
   if (process.env.NODE_ENV == null) process.env.NODE_ENV = 'test';
   const run = session.prepare(opts, root, 'jest');
   process.env.DETJS_JEST_RUNNERS = JSON.stringify(runners);
+  let pc = null;
+  if (opts.cache) {
+    const { ProofSession } = require('../cache/proof');
+    pc = new ProofSession(opts, root, 'jest', run, env0);
+    globalThis[Symbol.for('detjs.cache.session')] = pc;
+    pc.installMain({ mainAnyReads: false });
+    pc.setConfig(jestConfigParts(shown, jest.pkg.version, rest, pc, customRunners));
+    wrapEnvironments(shown, root);
+    const { CAPTURE } = require('../cache/capture');
+    for (const c of (shown && shown.configs) || []) CAPTURE.addSkipDir(c.cacheDirectory);
+  }
   // --forceExit: in band, a handle left open by the suite keeps this process
   // alive forever (react-testing-library), where Jest's worker mode would kill
   // the workers; exit once the results are reported, as the workers do.
@@ -98,6 +110,7 @@ async function main(argv) {
       process.stderr.write(`detjs: WARNING custom Jest runner ${names}: Level 0 controls do not reach its tests (DETJS_JEST_RUNNER=replace uses jest-runner)\n`);
     }
   }
+  if (pc && !rest.includes('--passWithNoTests')) extra.push('--passWithNoTests'); // every file reused: a pass (no tests found: set below)
   const help = spawnSync(process.execPath, [jest.bin, '--help'], { encoding: 'utf8', env: { ...process.env, DETJS: '0' } });
   if (/--randomize/.test(help.stdout || '')) extra.push('--no-randomize');
   const isolation = `jest --runInBand --forceExit: one test file at a time in the main process, each in its own vm context; maxConcurrency=1${runnerNote}`;
@@ -105,6 +118,10 @@ async function main(argv) {
   const finalize = () => {
     if (finished) return;
     finished = true;
+    if (pc) {
+      for (const l of pc.finishSync()) fs.writeSync(1, `${l}\n`);
+      if (pc.noTestsFound && !rest.includes('--passWithNoTests')) process.exitCode = 1;
+    }
     let files = [];
     try { files = JSON.parse(fs.readFileSync(path.join(run.dir, 'order.json'), 'utf8')); } catch { /* no tests */ }
     const { lines } = session.finish(run, opts, files, {
@@ -122,11 +139,83 @@ async function main(argv) {
   // frame in the async stack traces the tests see (found on babel: stack-trace
   // inline snapshots); Jest's own bin does not await run() either.
   return new Promise((resolve, reject) => {
-    jestCli.run([...rest, ...extra], undefined).then(() => {
+    jestCli.run([...rest, ...extra], undefined).then(async () => {
+      if (pc) await pc.finish();
       finalize();
       resolve(process.exitCode ?? 0);
     }, reject);
   });
+}
+
+const VOLATILE_GLOBAL = new Set(['json', 'outputFile', 'reporters', 'testPathPatterns', 'testPathPattern', 'nonFlagArgs', 'onlyChanged',
+  'watch', 'watchAll', 'watchman', 'watchPlugins', 'maxWorkers', 'runInBand', 'forceExit', 'silent', 'verbose', 'listTests', 'passWithNoTests',
+  'detectOpenHandles', 'seed', 'shard', 'useStderr', 'logHeapUsage', 'notify', 'notifyMode', 'lastCommit', 'changedSince', 'changedFilesWithAncestor',
+  'findRelatedTests', 'testSequencer', 'coverageReporters', 'coverageDirectory', 'collectCoverageFrom', 'coverageThreshold', 'onlyFailures',
+  'openHandlesTimeout', 'testFailureExitCode', 'noStackTrace', 'expand', 'errorOnDeprecated', 'bail', 'maxConcurrency', 'randomize', 'showSeed',
+  'testNamePattern_', 'rootDir_', 'collectTests', 'waitForUnhandledRejections']);
+const VOLATILE_PROJECT = new Set(['testRunner', 'cacheDirectory', 'id', 'testPathIgnorePatterns', 'testMatch', 'testRegex', 'roots_']);
+
+/** What the configuration digest covers: Jest's resolved configuration (--showConfig) and its version. */
+function jestConfigParts(shown, version, rest, pc, customRunners) {
+  const { stable } = require('../cache/proof');
+  const out = { runner: `jest ${version}` };
+  if (shown) {
+    out.global = stable(shown.globalConfig || {}, VOLATILE_GLOBAL);
+    for (const c of shown.configs || []) {
+      const name = c.displayName ? c.displayName.name : '';
+      out[`project:${name}`] = stable(c, VOLATILE_PROJECT);
+      if (c.runner && customRunners.has(c.runner)) pc.noteProject(name, `custom Jest runner ${c.runner} (tests run outside the captured process)`);
+    }
+  } else {
+    out.unknown = `no --showConfig output ${Date.now()}`; // never equal: nothing is reused without a known configuration
+  }
+  out.args = rest.filter((a) => a.startsWith('-') && !/^--(json|outputFile|reporters?|silent|verbose|ci=false|maxWorkers|runInBand|watch|listTests|passWithNoTests|coverage|shard)/.test(a)).sort();
+  return out;
+}
+
+/**
+ * Wrap each project's test environment class: its constructor marks the start of a test file for the cache
+ * capture (before setupFiles run) and makes the file's own copy of process.env observable.
+ */
+function wrapEnvironments(shown, root) {
+  const { CAPTURE, installEnv } = require('../cache/capture');
+  const done = new Set();
+  for (const c of (shown && shown.configs) || []) {
+    const file = c.testEnvironment;
+    if (!file || done.has(file) || !path.isAbsolute(file)) continue;
+    done.add(file);
+    let mod;
+    try { mod = require(file); } catch { continue; }
+    const wrap = (Env) => {
+      if (typeof Env !== 'function' || Env.__detjsCache) return Env;
+      class Wrapped extends Env {
+        constructor(config, context) {
+          const testPath = context && context.testPath;
+          if (testPath) {
+            const fileId = path.relative(root, testPath).split(path.sep).join('/');
+            const pc2 = config && config.projectConfig;
+            const project = pc2 && pc2.displayName ? pc2.displayName.name : '';
+            CAPTURE.resetFile();
+            CAPTURE.setCtx('f', project ? `${project}|${fileId}` : fileId);
+          }
+          super(config, context);
+          if (this.global && this.global.process) installEnv(CAPTURE, this.global.process);
+        }
+      }
+      Object.defineProperty(Wrapped, '__detjsCache', { value: true });
+      Object.defineProperty(Wrapped, 'name', { value: Env.name });
+      return Wrapped;
+    };
+    let exp;
+    if (typeof mod === 'function') exp = wrap(mod);
+    else {
+      exp = { ...mod };
+      for (const k of Object.keys(mod)) exp[k] = typeof mod[k] === 'function' && /Environment$|^default$/.test(k) ? wrap(mod[k]) : mod[k];
+      if (mod.__esModule) Object.defineProperty(exp, '__esModule', { value: true });
+    }
+    const resolved = require.resolve(file);
+    if (require.cache[resolved]) require.cache[resolved].exports = exp;
+  }
 }
 
 module.exports = { main };

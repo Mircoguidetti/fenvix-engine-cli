@@ -115,6 +115,15 @@ class Capture {
     this.startup = []; // finished start-up processes [argv, cwd, status, stdout digest, stderr digest]
     this.notes = new Set();
     this.phase = 'run';
+    this.skipDirs = (process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter).filter(Boolean).map((d) => path.resolve(d) + path.sep);
+  }
+
+  /** Directories whose files are runner caches (never inputs); inherited by workers. */
+  addSkipDir(d) {
+    if (!d) return;
+    const x = path.resolve(d) + path.sep;
+    if (!this.skipDirs.includes(x)) this.skipDirs.push(x);
+    process.env.DETJS_CACHE_SKIP_DIRS = this.skipDirs.join(path.delimiter);
   }
 
   // -- set-up --------------------------------------------------------------------------------------------------
@@ -180,6 +189,7 @@ class Capture {
     if (abs.includes(`${path.sep}node_modules${path.sep}.detjs${path.sep}`)) return 'skip';
     if (abs.startsWith('/proc/') || abs.startsWith('/sys/') || abs.startsWith('/dev/') || abs === '/proc' || abs === '/sys') return 'proc';
     if (abs.startsWith(ENGINE_DIR)) return 'skip'; // detjs itself: in the configuration digest
+    for (const d of this.skipDirs) if (abs.startsWith(d)) return 'skip'; // runner caches (Jest transform cache)
     return 'outside';
   }
 

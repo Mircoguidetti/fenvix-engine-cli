@@ -148,6 +148,10 @@ async function main(argv) {
     c.maxConcurrency = 1;
     c.sequence = { ...(c.sequence || {}), shuffle: false, concurrent: false, sequencer: DetSequencer };
     pools.add(`${c.name || 'root'}:${c.browser && c.browser.enabled ? 'browser' : c.pool}`);
+    if (pc) {
+      const vite = (pr.vite && pr.vite.config) || (pr.server && pr.server.config);
+      if (vite && vite.cacheDir) require('../cache/capture').CAPTURE.addSkipDir(vite.cacheDir);
+    }
   }
   info.projects = [...pools];
   if (pc) pc.setConfig(configParts(projects, ctx, args, pc));

@@ -12,6 +12,19 @@ const path = require('node:path');
 const controls = require('../controls');
 
 const { STATE } = controls;
+const CAP = globalThis[Symbol.for('detjs.cache.session')] ? require('../cache/capture').CAPTURE : null;
+
+/** Modules Jest's runtime loaded for the current file (sources it read and its module registries). */
+function runtimeModules(runtime) {
+  const out = [];
+  for (const k of ['_cacheFS', '_moduleRegistry', '_esmoduleRegistry', '_cjsNamedExports', '_isolatedModuleRegistry']) {
+    const m = runtime && runtime[k];
+    if (m && typeof m.keys === 'function') {
+      try { for (const x of m.keys()) if (typeof x === 'string') out.push(x); } catch { /* ignore */ }
+    }
+  }
+  return out;
+}
 
 function baseRunner(config) {
   const map = JSON.parse(process.env.DETJS_JEST_RUNNERS || '{}');
@@ -72,9 +85,16 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
 
   let ids = new Map();
   let pending = null; // test whose last attempt finished (retries reuse the id)
+  const endTest = (id, outcome, test) => {
+    const fp = STATE.endTest(outcome);
+    if (CAP) {
+      CAP.testEnd(id, outcome, test && typeof test.duration === 'number' ? test.duration / 1000 : 0, fp, runtimeModules(runtime));
+      CAP.setCtx('f');
+    }
+  };
   const endPending = () => {
     if (pending !== null) {
-      if (STATE.testId === pending.id) STATE.endTest(pending.outcome);
+      if (STATE.testId === pending.id) endTest(pending.id, pending.outcome, pending.test);
       pending = null;
     }
   };
@@ -82,6 +102,7 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
     if (pending && pending.id === id) { pending = null; return; } // retry
     endPending();
     STATE.beginTest(id);
+    if (CAP) CAP.setCtx('t');
   };
   const handler = (event, state) => {
     switch (event.name) {
@@ -120,7 +141,7 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
       }
       case 'test_done': {
         const id = ids.get(event.test) || `${fileId}::${event.test.name}`;
-        if (STATE.testId === id) pending = { id, outcome: outcomeOf(event.test) };
+        if (STATE.testId === id) pending = { id, outcome: outcomeOf(event.test), test: event.test };
         break;
       }
       case 'test_skip':
@@ -128,7 +149,7 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
         const id = ids.get(event.test) || `${fileId}::${event.test.name}`;
         if (STATE.testId !== id) begin(id);
         pending = null;
-        STATE.endTest(event.name === 'test_todo' ? 'todo' : 'skipped');
+        endTest(id, event.name === 'test_todo' ? 'todo' : 'skipped', event.test);
         break;
       }
       case 'run_finish':
@@ -142,10 +163,31 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
     handler(event, state);
     return prev ? prev.call(this, event, state) : undefined;
   };
+  if (CAP) {
+    CAP.beginFileTests();
+    if (CAP.label !== label) { CAP.resetFile(); CAP.setCtx('f', label); }
+  }
+  const t0 = Date.now();
+  let result;
   try {
-    return await run(globalConfig, config, environment, runtime, testPath, sendMessageToJest);
+    result = await run(globalConfig, config, environment, runtime, testPath, sendMessageToJest);
+    return result;
   } finally {
     endPending();
     controls.closeFile();
+    if (CAP && c.dir) {
+      try {
+        const ok = Boolean(result) && !result.testExecError && !(result.numFailingTests > 0);
+        // tests the circus events never bracketed (a failing beforeAll skips them)
+        const ended = new Set(CAP.tests.map((t) => t.id));
+        for (const [t, id] of ids) if (t && t.type === 'test' && !ended.has(id)) CAP.tests.push({ id, outcome: 'skipped', duration: 0, fingerprint: '', upto: CAP.log.length });
+        const capture = CAP.fileCapture({ fileId, project, label, ok, duration: (Date.now() - t0) / 1000 }, runtimeModules(runtime));
+        controls.writeJson(path.join(c.dir, 'cache', `${controls.partName(fileId, project).replace(/\.jsonl$/, '')}-${process.pid}.json`), capture);
+      } catch (e) {
+        process.stderr.write(`detjs cache: capture of ${fileId} not written: ${e && e.stack}\n`);
+      }
+      CAP.resetFile();
+      CAP.setCtx('', '');
+    }
   }
 };

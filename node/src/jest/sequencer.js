@@ -14,7 +14,7 @@ function baseSequencer() {
 const Base = baseSequencer();
 
 class DetSequencer extends Base {
-  sort(tests) {
+  async sort(tests) {
     const c = controls.cfg();
     const root = process.env.DETJS_ROOT || process.cwd();
     const keyed = tests.map((t) => {
@@ -26,6 +26,12 @@ class DetSequencer extends Base {
     keyed.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
     let ordered = keyed;
     if (c.shuffle && c.controls.has('order')) ordered = native.shuffleIndices(keyed.length, c.seed, '').map((i) => keyed[i]);
+    const pc = globalThis[Symbol.for('detjs.cache.session')];
+    if (pc) {
+      if (!tests.length) pc.noTestsFound = true;
+      const skip = await pc.decide(ordered.map((k) => ({ fileId: k.fileId, project: k.project, key: k.key })));
+      ordered = ordered.filter((k) => !skip.has(k.key));
+    }
     if (c.dir) {
       controls.writeJson(path.join(c.dir, 'order.json'),
         ordered.map((k) => ({ fileId: k.fileId, part: controls.partName(k.fileId, k.project) })));
