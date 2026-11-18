@@ -1,13 +1,13 @@
 {
- "run_id": "m3",
+ "run_id": "m4",
  "walk": [
   {
-   "spec": "transformers",
-   "shards": 2,
+   "spec": "litellm-late",
+   "shards": 4,
    "budget_min": 330
   },
   {
-   "spec": "mlflow-dev",
+   "spec": "integrations-core-late",
    "shards": 2,
    "budget_min": 330
   }

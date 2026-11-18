@@ -213,7 +213,15 @@ _mlflow = next(s for s in SPECS if s["name"] == "mlflow")
 SPECS.append(dict(json.loads(json.dumps(_mlflow)), name="mlflow-dev", ci_env="false", untracked_exists_are_outputs=True))
 HEADS["mlflow-dev"] = HEADS["mlflow"]
 
-SMOKE_SAMPLE = {"mlflow-dev": 0.04, "airflow": 0.02, "integrations-core": 0.03, "moto": 0.05, "transformers": 0.03, "mlflow": 0.04,
+# late windows: the newest commits of repositories whose 51-commit walk stops at the time budget (every commit
+# reruns most units). Merged with the early window by commit in market.py.
+LATE = {"litellm": 28, "integrations-core": 16}
+for _n, _k in LATE.items():
+    _s = next(s for s in SPECS if s["name"] == _n)
+    SPECS.append(dict(json.loads(json.dumps(_s)), name=f"{_n}-late", late_n=_k))
+    HEADS[f"{_n}-late"] = HEADS[_n]
+
+SMOKE_SAMPLE = {"mlflow-dev": 0.04, "litellm-late": 0.015, "integrations-core-late": 0.03, "airflow": 0.02, "integrations-core": 0.03, "moto": 0.05, "transformers": 0.03, "mlflow": 0.04,
                 "pydantic-ai": 0.05, "prefect": 0.06, "esphome": 0.06, "litellm": 0.015,
                 "community-general": 0.15, "haystack": 0.2}
 
@@ -228,7 +236,7 @@ def main():
     for s in SPECS:
         s = json.loads(json.dumps(s))
         s["install"].append(COMPILE)
-        s["seq"] = {"kind": "first-parent", "n": 51, "head": HEADS[s["name"]]}
+        s["seq"] = {"kind": "first-parent", "n": s.pop("late_n", 51), "head": HEADS[s["name"]]}
         if smoke:
             s["seq"]["n"] = 3
             s["units"]["sample"] = SMOKE_SAMPLE[s["name"]]
