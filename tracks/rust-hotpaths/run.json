@@ -1,6 +1,6 @@
 {
  "run_id": "p3",
- "note": "base engine (24b6d15) vs this commit, interleaved in the same job; cold stores and warm receipts compared against same-engine two-round noise; equivalence probe (facts, distributions) on each environment",
+ "note": "base engine (24b6d15) vs this commit, interleaved; noise-aware equivalence with per-entry difference details; equivalence probe (facts, distributions)",
  "base": "24b6d15e043a2f42834809ea41b5cca0f60849d3",
  "profile": [
   {

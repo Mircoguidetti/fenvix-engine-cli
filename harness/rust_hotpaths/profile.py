@@ -255,8 +255,25 @@ class Prof:
                       "fingerprint_only": fp[:50], "n_fingerprint_only": len(fp), "receipt_diffs": rd[:50],
                       "n_receipt_diffs": len(rd), "n_receipts": [len(ra), len(rb)],
                       "written_equal": a["written"] == b["written"],
-                      "noise": {"store": len(noise_s), "receipts": len(noise_r), "examples": sorted(noise_s)[:10]}}
+                      "noise": {"store": len(noise_s), "receipts": len(noise_r), "examples": sorted(noise_s)[:10]},
+                      "details": [self.detail(n, a["tests"].get(n, {}), b["tests"].get(n, {})) for n in d[:5]]}
         self.res["equivalence"] = out
+
+    @staticmethod
+    def detail(nid: str, x: dict, y: dict) -> dict:
+        """What differs in one entry: per field, the items only in the first engine's and only in the second's."""
+        out = {"nodeid": nid}
+        for k in sorted(set(x) | set(y)):
+            if k == "fingerprint" or x.get(k) == y.get(k):
+                continue
+            vx, vy = x.get(k), y.get(k)
+            if isinstance(vx, list) and isinstance(vy, list):
+                sx = {json.dumps(v) for v in vx}
+                sy = {json.dumps(v) for v in vy}
+                out[k] = {"only_first": sorted(sx - sy)[:30], "only_second": sorted(sy - sx)[:30]}
+            else:
+                out[k] = {"first": vx, "second": vy}
+        return out
 
     def save(self):
         self.out.parent.mkdir(parents=True, exist_ok=True)
