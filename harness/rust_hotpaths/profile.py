@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import collections
 import gzip
+import hashlib
 import json
 import os
 import re
@@ -105,6 +106,12 @@ class Prof:
         spec = json.loads(Path(a.spec).read_text())
         s, n = (int(x) for x in a.shard.split("/"))
         self.engines = dict(x.split("=", 1) for x in a.wheel)
+        # per-engine environment (--engine-env NAME:VAR=VALUE): the same wheel under another setting is another engine
+        self.engine_env: dict = collections.defaultdict(dict)
+        for x in a.engine_env or ():
+            name, _, kv = x.partition(":")
+            k, _, v = kv.partition("=")
+            self.engine_env[name][k] = v
         first = next(iter(self.engines.values()))
         self.w = W.Walk(spec, a.work, a.out, s, n, 9999, first, 1, 1)
         self.a = a
@@ -117,24 +124,28 @@ class Prof:
     def use(self, eng: str) -> None:
         if self.cur == eng:
             return
+        prev, self.cur = self.cur, eng
+        if prev is not None and self.engines[prev] == self.engines[eng]:
+            return  # same wheel, other environment (--engine-env): same install, same bytecode cache
         code, out, _ = W.sh(["uv", "pip", "install", "-q", "--python", self.w.py, "--reinstall-package", "detpy",
                              "--no-deps", os.path.abspath(self.engines[eng])], timeout=600)
         if code:
             raise RuntimeError(f"install {eng}: {out[-400:]}")
-        # one bytecode cache per engine behind one path (the path is in the environment the tests see): an
+        # one bytecode cache per wheel behind one path (the path is in the environment the tests see): an
         # engine's precompile stamps must not decide what another compiles
+        tag = lambda e: hashlib.sha1(os.path.abspath(self.engines[e]).encode()).hexdigest()[:10]  # noqa: E731
         fixed = self.w.work / "pyc"
-        if self.cur is not None and fixed.exists():
-            fixed.rename(self.w.work / f"pyc-{self.cur}")
-        mine = self.w.work / f"pyc-{eng}"
+        if prev is not None and fixed.exists():
+            fixed.rename(self.w.work / f"pyc-{tag(prev)}")
+        mine = self.w.work / f"pyc-{tag(eng)}"
         if mine.exists():
             mine.rename(fixed)
-        self.cur = eng
 
     def env(self) -> dict:
         env = self.w.env()
         env["PYTHONPATH"] = os.pathsep.join([str(ROOT / "harness" / "cache_proof"), str(HERE / "execcap")])
         env["DETPY_PYC_CACHE"] = str(self.w.work / "pyc")
+        env.update(self.engine_env.get(self.cur, {}))
         return env
 
     def cmd(self, variant: str, cache: Path | None, units) -> list[str]:
@@ -356,6 +367,7 @@ def main(argv=None):
     ap.add_argument("--shard", default="0/1")
     ap.add_argument("--reps", type=int, default=3)
     ap.add_argument("--pyspy", action="store_true")
+    ap.add_argument("--engine-env", action="append", help="NAME:VAR=VALUE, environment of one engine's runs")
     Prof(ap.parse_args(argv)).main()
     return 0
 

@@ -2,15 +2,16 @@ name: rust-hotpaths-walk
 
 # Cache with proof, step 1: measure `pytest --det --det-cache=DIR` (children followed under strace) over consecutive
 # commits, engine of the rust-hotpaths session. Triggered by a push that changes tracks/rust-hotpaths/walk.json on
-# claude/rust-hotpaths. The engine is
-# this branch at the triggering commit.
+# claude/rust-hotpaths(-2). The engine is
+# this branch at the triggering commit (or walk.json's engine_ref); walk.json "env" ({VAR: VALUE}) is set for every
+# run.
 #   build -> detpy wheel, job matrix from run.json
 #   walk  -> one job per (spec, shard): harness/cache_proof/walk.py; results committed (rebase-retry) to
 #            tracks/rust-hotpaths/walk/<run_id>/
 
 on:
   push:
-    branches: [claude/rust-hotpaths]
+    branches: [claude/rust-hotpaths, claude/rust-hotpaths-2]
     paths: [tracks/rust-hotpaths/walk.json]
 
 permissions:
@@ -20,7 +21,7 @@ env:
   PYTHONUNBUFFERED: "1"
   UV_PYTHON_PREFERENCE: managed
   CP_COMMIT: "1"
-  CP_BRANCH: claude/rust-hotpaths
+  CP_BRANCH: ${{ github.ref_name }}
 
 jobs:
   build:
@@ -92,6 +93,7 @@ jobs:
           git config user.email "cache-proof-bot@users.noreply.github.com"
           extra=""
           if [ "${{ matrix.commits }}" != "0" ]; then extra="--commits ${{ matrix.commits }}"; fi
+          eval "$(python3 -c "import json, shlex; print(' '.join('export %s=%s' % (k, shlex.quote(v)) for k, v in json.load(open('tracks/rust-hotpaths/walk.json')).get('env', {}).items()))")"
           python3 harness/cache_proof/walk.py --spec "harness/cache_proof/specs/${{ matrix.spec }}.json" \
             --work "$RUNNER_TEMP/w" --wheel "$(ls $RUNNER_TEMP/dist/*.whl)" --shard "${{ matrix.shard }}" \
             --budget-min "${{ matrix.budget }}" $extra \
