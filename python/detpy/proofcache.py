@@ -382,7 +382,9 @@ class Capture:
         if not _encodable(p):
             self.flags.setdefault(ctx, set()).add("badpath")
             return
-        if p.startswith(("/proc/", "/sys/", "/dev/")) and not p.startswith("/dev/shm/") \
+        if kind == "m":
+            kind = "f"  # a machine identity file under /sys read on purpose (uuid.getnode): its content is the input
+        elif p.startswith(("/proc/", "/sys/", "/dev/")) and not p.startswith("/dev/shm/") \
                 and (kind != "d" and os.path.exists(p)):
             # the content of a pseudo-file (process state, kernel tunables, a device) is not a file's content;
             # a listing (device enumeration such as /dev/bus/usb) and a missing path are ordinary inputs
@@ -496,10 +498,25 @@ class Capture:
                 if fo is not None:
                     fo.announce(self._cur(), None, False)
                 return
+            if event == "subprocess.Popen" and _called_from(_UUID_PY):
+                # uuid.getnode() runs `ip link`, `ifconfig`, `arp`... to find this machine's MAC address: the
+                # machine's network identity is the input (each interface's name and address), not a process
+                ctx = self._cur()
+                self.read(ctx, "/sys/class/net", "d")
+                try:
+                    for name in sorted(os.listdir("/sys/class/net")):
+                        self.read(ctx, f"/sys/class/net/{name}/address", "m")
+                except OSError:
+                    pass
+                if fo is not None:
+                    fo.announce(ctx, None, False)
+                return
             if event == "subprocess.Popen" and fo is not None:
                 # the fork_exec that follows runs it under strace and records its inputs (or refuses the context
-                # when following is off or unavailable)
-                fo.announce(self._cur(), _spawn_detail(event, args))
+                # when following is off or unavailable). find_library's helpers (gcc, ld, objdump) are followed for
+                # their files, but a real-clock read there is not refused: find_library returns the path of a
+                # library file matched in their output (DECLARED by ctypes/util.py)
+                fo.announce(self._cur(), _spawn_detail(event, args), True, _called_from(_CTYPES_UTIL))
                 return
             self.flag(self._cur(), "spawn", _spawn_detail(event, args))
         else:
@@ -657,7 +674,7 @@ class Capture:
             self.flag(ctx, "spawn", f"{sp.detail} [not followed: {res.bad}]")
         if res.net:
             self.flag(ctx, "spawn", f"{sp.detail} [network: {res.net}]")
-        if res.clock:
+        if res.clock and not sp.clock_exempt:
             # review R-009 F4: the clock shim turned a real-time read into a system call
             self.flag(ctx, "spawn", f"{sp.detail} [{res.clock}]")
         if res.unshimmed:
@@ -1497,6 +1514,21 @@ def _encodable(s: str) -> bool:
 
 
 _LD_SO_CACHE = "/etc/ld.so.cache"
+
+
+_CTYPES_UTIL = os.sep + os.path.join("ctypes", "util.py")
+_UUID_PY = os.sep + "uuid.py"
+
+
+def _called_from(suffix: str) -> bool:
+    """Whether a frame of the running call stack is in a standard-library file ending with ``suffix``."""
+    f = _getframe(2)
+    while f is not None:
+        fn = f.f_code.co_filename
+        if fn.endswith(suffix) and _sites._classify(fn)[0] != _sites._USER:
+            return True
+        f = f.f_back
+    return False
 
 
 def _is_find_library_ldconfig(args) -> bool:
