@@ -763,9 +763,19 @@ def _env_caller_is_user() -> bool:
 
 def _note_env(key) -> None:
     cap = _ENV_CAPTURE
-    if cap is None or not cap.active or not _env_caller_is_user():
+    if cap is None or not cap.active:
         return
-    cap.env_read(os.fsdecode(key) if isinstance(key, (str, bytes)) else repr(key))
+    name = os.fsdecode(key) if isinstance(key, (str, bytes)) else repr(key)
+    # a variable the current context already read: recording it again changes nothing, whoever reads it, so the
+    # walk over the calling frames is skipped
+    rec = cap.rec
+    if rec is not None and not rec.import_depth:  # (during an import the context is found by a frame walk)
+        seen = cap.env.get(cap.ctx_ix[cap.ctx])
+        if seen is not None and name in seen:
+            return
+    if not _env_caller_is_user():
+        return
+    cap.env_read(name)
 
 
 def _patch_environ() -> None:
