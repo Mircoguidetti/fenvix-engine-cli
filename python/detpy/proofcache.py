@@ -590,7 +590,12 @@ class Capture:
     def _patch_sqlite(self) -> None:
         """review R-009 F4: sqlite evaluates 'now' (date('now'), CURRENT_TIMESTAMP, date() without a time value) on
         the real clock in C. Every connection made through sqlite3.connect traces its statements; one that may read
-        the real clock makes its context uncacheable. (A trace callback the test sets itself replaces this one.)"""
+        the real clock makes its context uncacheable. (A trace callback the test sets itself replaces this one.)
+
+        review R-009b R1: the schema evaluates such expressions too (a column default, a trigger, a view), while the
+        statement says nothing about time. A statement that may evaluate the schema (anything but transaction
+        control, PRAGMA, ATTACH/DETACH, DROP...) on a connection whose databases' schema may read the clock is
+        refused in the same way."""
         try:
             import sqlite3
             import sqlite3.dbapi2 as dbapi2
@@ -598,11 +603,17 @@ class Capture:
             return
         real = sqlite3.connect
         cap = self
+        self._sql_real_connect = real
+        self._sql_schema: dict[str, tuple] = {}  # database file -> (signature, what reads the clock or None)
 
         def connect(*args, **kwargs):
             conn = real(*args, **kwargs)
+            db = args[0] if args else kwargs.get("database")
+            uri = kwargs.get("uri", args[7] if len(args) > 7 else False)
+            # the state holds no reference to the connection (a cycle would delay closing it; no weak references)
+            st = _SqlConn(_sqlite_file(db, bool(uri)))
             try:
-                conn.set_trace_callback(cap._sql_trace)
+                conn.set_trace_callback(lambda statement: cap._sql_trace(statement, st))
             except Exception:
                 pass
             return conn
@@ -612,9 +623,65 @@ class Capture:
         sqlite3.connect = connect
         dbapi2.connect = connect
 
-    def _sql_trace(self, statement) -> None:
-        if self.active and isinstance(statement, str) and _SQL_REAL_CLOCK.search(statement):
+    def _sql_trace(self, statement, st=None) -> None:
+        if not self.active or not isinstance(statement, str):
+            return
+        if _SQL_REAL_CLOCK.search(statement):
             self.flag(self._cur(), "rclock", f"sqlite: {statement.strip()[:80]} at {_first_user_site()}")
+            if st is not None and _SQL_DDL.match(statement):
+                st.own = st.own or "this connection's schema"  # a temporary or uncommitted definition included
+        if st is None:
+            return
+        m = _SQL_ATTACH.match(statement)
+        if m:
+            f = _sqlite_file(m.group(1)[1:-1].replace("''", "'"), True)
+            if f is not None:
+                st.dbs.append(f)
+            return
+        if _SQL_NO_SCHEMA.match(statement):
+            return
+        why = st.own
+        if why is None:
+            for f in st.dbs:
+                why = self._sql_schema_clock(f)
+                if why is not None:
+                    break
+        if why is not None:
+            self.flag(self._cur(), "rclock",
+                      f"sqlite: {why} may read the real clock ({statement.strip()[:60]}) at {_first_user_site()}")
+
+    def _sql_schema_clock(self, path: str) -> str | None:
+        """What in the schema of database file ``path`` may read the real clock (None: nothing), memoised on the
+        file's and its write-ahead log's identity."""
+        sig = []
+        for f in (path, path + "-wal"):
+            try:
+                st = os.stat(f)
+                sig.append((st.st_ino, st.st_size, st.st_mtime_ns))
+            except OSError:
+                sig.append(None)
+        if sig[0] is None:
+            return None  # not created yet: no schema
+        sig = tuple(sig)
+        memo = self._sql_schema.get(path)
+        if memo is not None and memo[0] == sig:
+            return memo[1]
+        from urllib.parse import quote
+        why = None
+        try:
+            # a "file:" URI: the audit hook does not take this connection as the test's read of the file
+            con = self._sql_real_connect(f"file:{quote(path)}?mode=ro", uri=True, timeout=0)
+            try:
+                for name, sql in con.execute("select name, sql from sqlite_master where sql is not null"):
+                    if isinstance(sql, str) and _SQL_REAL_CLOCK.search(sql):
+                        why = f"the schema of {self._key(path)} ({name})"
+                        break
+            finally:
+                con.close()
+        except Exception as e:
+            why = f"the schema of {self._key(path)} (unreadable: {e})"
+        self._sql_schema[path] = (sig, why)
+        return why
 
     def flag(self, ctx: int, flag: str, detail: str | None = None) -> None:
         fl = self.flags.setdefault(ctx, set())
@@ -1699,6 +1766,49 @@ import re as _re  # noqa: E402
 _SQL_REAL_CLOCK = _re.compile(
     r"""'now'|"now"|\bcurrent_(timestamp|date|time)\b|\b(date|time|datetime|julianday|unixepoch)\s*\(\s*\)"""
     r"""|\bstrftime\s*\(\s*('[^']*'|"[^"]*")\s*\)""", _re.I)
+
+
+# statements that evaluate no column default, trigger or view
+_SQL_NO_SCHEMA = _re.compile(
+    r"\s*(begin|commit|end|rollback|savepoint|release|pragma|attach|detach|drop|vacuum|analyze|reindex)\b", _re.I)
+_SQL_DDL = _re.compile(r"\s*(create|alter)\b", _re.I)
+_SQL_ATTACH = _re.compile(r"\s*attach\s+(?:database\s+)?('(?:[^']|'')*')", _re.I)
+
+
+class _SqlConn:
+    """What detpy knows of one sqlite connection: its database files (main, attached) and whether a definition it
+    ran reads the real clock."""
+
+    __slots__ = ("dbs", "own")
+
+    def __init__(self, main: str | None):
+        self.dbs = [main] if main is not None else []
+        self.own: str | None = None
+
+
+def _sqlite_file(db, uri: bool) -> str | None:
+    """The absolute path of the database file sqlite opens for ``db`` (None: in memory or not a file name)."""
+    if not isinstance(db, (str, bytes, os.PathLike)):
+        return None
+    try:
+        s = os.fsdecode(db)
+    except (TypeError, ValueError):
+        return None
+    if uri and s.startswith("file:"):
+        from urllib.parse import unquote
+        s, _, query = s[5:].partition("?")
+        if "mode=memory" in query.split("#")[0].split("&"):
+            return None
+        if s.startswith("//"):
+            host, _, rest = s[2:].partition("/")
+            s = "/" + rest if host in ("", "localhost") else ""
+        s = unquote(s.split("#")[0])
+    if s in ("", ":memory:"):
+        return None
+    try:
+        return os.path.abspath(s)
+    except (OSError, ValueError):
+        return None
 
 
 def _numeric_host(host: str) -> bool:

@@ -581,6 +581,52 @@ def test_sqlite_statement_reading_now_is_refused_and_others_are_not(pytester, ru
         assert nc(data)[f"test_m.py::{t}"] == "real clock read outside the virtual clock"
 
 
+
+def test_sqlite_schema_reading_the_clock_is_refused_wherever_it_was_defined(pytester, run_cache):
+    # review R-009b R1: an attached database's trigger, and a definition made on the same connection by a fixture
+    # (another context); a database whose schema does not read the clock is still reused
+    import sqlite3
+
+    con = sqlite3.connect(pytester.path / "aux.db")
+    con.executescript("create table log (at text); create table t (x);"
+                      "create trigger t_log after insert on t begin insert into log values (datetime('now')); end;")
+    con.close()
+    con = sqlite3.connect(pytester.path / "plain.db")
+    con.executescript("create table t (x integer, at text default '2020-01-01');")
+    con.close()
+    project(pytester, **{"test_m.py": """
+        import shutil, sqlite3
+
+        import pytest
+
+        @pytest.fixture(scope="module")
+        def mem():
+            con = sqlite3.connect(":memory:")
+            con.execute("create table ev (id integer, at text default current_timestamp)")
+            return con
+
+        def test_attached(tmp_path):
+            shutil.copy("aux.db", tmp_path / "aux.db")
+            con = sqlite3.connect(":memory:")
+            con.execute(f"attach database '{tmp_path / 'aux.db'}' as aux")
+            con.execute("insert into aux.t values (1)")
+
+        def test_fixture_schema(mem):
+            mem.execute("insert into ev (id) values (1)")
+
+        def test_plain(tmp_path):
+            shutil.copy("plain.db", tmp_path / "plain.db")
+            con = sqlite3.connect(tmp_path / "plain.db")
+            con.execute("insert into t (x) values (1)")
+            assert con.execute("select at from t").fetchone() == ("2020-01-01",)
+        """})
+    run_cache()
+    _, reused, data = run_cache()
+    assert reused == ids("test_plain")
+    for t in ("test_attached", "test_fixture_schema"):
+        assert nc(data)[f"test_m.py::{t}"] == "real clock read outside the virtual clock"
+    assert "aux.db (t_log)" in data["cache"]["not_cached_where"]["test_m.py::test_attached"]
+
 def test_python_child_start_is_exempt_and_its_time_reads_are_refused(pytester, run_cache):
     # a Python interpreter reads the real clock while it initialises (time module's timezone offsets): exempt;
     # time.time() in the child afterwards is a real-clock read
