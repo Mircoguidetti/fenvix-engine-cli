@@ -125,18 +125,18 @@ def entry_line(code) -> int | None:
 
 
 def rep_line(code) -> int | None:
-    """Code-object level capture: the first line ``LINE`` reports when ``code`` starts (the line of its first
-    instruction after the prelude), which stands for every line of a plain function."""
+    """Code-object level capture: the line that stands for every line of a plain function, its last one. A
+    unit's range starts at its first body statement's ``lineno``, after the decorators of a decorated first
+    statement (whose lines the function runs first), and ends at its last line: the last line of a function
+    (the last statement's, or its implicit return) is inside its unit's range."""
     co = code.co_code
     r = 0
     while r < len(co) and co[r] in _PRELUDE:
         r += 2
     if r >= len(co) or co[r] != _RESUME:
         return None
-    for start, _end, line in code.co_lines():
-        if start > r and line is not None:
-            return line
-    return None
+    lines = [line for start, _end, line in code.co_lines() if start > r and line is not None]
+    return max(lines) if lines else None
 
 
 # Line capture granularity (experiment, DETPY_CACHE_LINES): "line" (default) arms every code object with LINE;
