@@ -43,23 +43,34 @@ public final class Junit4Hook {
     }
 
     static String key(Object child) {
-        try {
-            Method m = child.getClass().getMethod("getName");
-            return String.valueOf(m.invoke(child));
-        } catch (Exception e) {
-            try {
-                Method m = child.getClass().getMethod("getDescription");
-                return String.valueOf(((Description) m.invoke(child)).getDisplayName());
-            } catch (Exception e2) {
-                return String.valueOf(child);
-            }
+        if (child instanceof org.junit.runners.model.FrameworkMethod) {
+            return ((org.junit.runners.model.FrameworkMethod) child).getName();
         }
+        if (child instanceof org.junit.runner.Describable) {
+            return String.valueOf(((org.junit.runner.Describable) child).getDescription().getDisplayName());
+        }
+        return String.valueOf(child);
     }
 
-    /** Children of a ParentRunner, reordered with a non-zero seed (group key = the runner's description). */
+    /** ParentRunner caches its children collection; its reordering is cached by identity (called many times). */
+    static final Map<Integer, Object[]> ORDERED = new java.util.HashMap<>();
+
     public static Collection<?> order(Object runner, Collection<?> children) {
+        if (!Det.ON || Order.seed() == 0 || children == null || children.size() < 2) return children;
+        int key = System.identityHashCode(children);
+        synchronized (ORDERED) {
+            Object[] hit = ORDERED.get(key);
+            if (hit != null && ((java.lang.ref.WeakReference<?>) hit[0]).get() == children) return (Collection<?>) hit[1];
+        }
+        Collection<?> r = computeOrder(runner, children);
+        synchronized (ORDERED) {
+            ORDERED.put(key, new Object[] {new java.lang.ref.WeakReference<Object>(children), r});
+        }
+        return r;
+    }
+
+    static Collection<?> computeOrder(Object runner, Collection<?> children) {
         try {
-            if (!Det.ON || Order.seed() == 0 || children == null || children.size() < 2) return children;
             String group;
             try {
                 group = ((org.junit.runner.Runner) runner).getDescription().getDisplayName();
@@ -67,13 +78,13 @@ public final class Junit4Hook {
                 group = runner.getClass().getName();
             }
             List<Object> l = new ArrayList<>(children);
-            List<String> names = new ArrayList<>();
-            for (Object c : l) names.add(key(c));
-            List<String> sorted = new ArrayList<>(names);
+            Map<Object, String> keys = new java.util.IdentityHashMap<>();
+            for (Object c : l) keys.put(c, key(c));
+            List<String> sorted = new ArrayList<>(keys.values());
             sorted.sort(Comparator.naturalOrder());
             Map<String, Integer> rank = Order.rank(sorted, Order.seed(), group);
-            l.sort(Comparator.comparingInt((Object c) -> rank.getOrDefault(key(c), Integer.MAX_VALUE)));
-            return l;
+            l.sort(Comparator.comparingInt((Object c) -> rank.getOrDefault(keys.get(c), Integer.MAX_VALUE)));
+            return java.util.Collections.unmodifiableList(l);
         } catch (Throwable t) {
             return children;
         }

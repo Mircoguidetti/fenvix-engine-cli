@@ -228,10 +228,16 @@ public final class Det {
     static long testStart;
     static long wallOffsetNs = EPOCH_MS * 1_000_000L;
 
+    static final java.util.concurrent.atomic.AtomicInteger REAL_SLEEPERS = new java.util.concurrent.atomic.AtomicInteger();
+    /** Threads inside a real sleep slice of Det.sleep. */
+    static final java.util.concurrent.ConcurrentHashMap<Thread, Boolean> REAL_SLEEPING = new java.util.concurrent.ConcurrentHashMap<>();
+
     static long clockRead() {
         synchronized (CLK) {
             elapsed += CLOCK_TICK;
-            if (ADAPT_AFTER > 0 && ++streak > ADAPT_AFTER) {
+            // no acceleration while a thread sleeps for real: it lets another thread work in
+            // real time, and that thread's clock polling must not race ahead of it
+            if (ADAPT_AFTER > 0 && ++streak > ADAPT_AFTER && REAL_SLEEPERS.get() == 0) {
                 CLOCK_TICK = Math.min(Math.max(1, CLOCK_TICK) * 2, MAX_TICK_NS);
             }
             return elapsed;
@@ -257,6 +263,20 @@ public final class Det {
         if (ns <= 0) return;
         synchronized (CLK) {
             elapsed += ns;
+            streak = 0;
+            CLOCK_TICK = TICK_NS;
+        }
+    }
+
+    /**
+     * A wait that started at virtual time {@code start} (elapsed ns) and lasted {@code ns}:
+     * the clock moves to start + ns if it is behind. Concurrent waits overlap instead of
+     * adding up (two threads sleeping 100 ms at once move the clock by 100 ms, not 200).
+     */
+    static void advanceFrom(long start, long ns) {
+        if (ns <= 0) return;
+        synchronized (CLK) {
+            if (start + ns > elapsed) elapsed = start + ns;
             streak = 0;
             CLOCK_TICK = TICK_NS;
         }
@@ -378,16 +398,24 @@ public final class Det {
         }
         if (ms < 0) throw new IllegalArgumentException("timeout value is negative");
         record("time", "Thread.sleep", site, Long.toString(ms));
+        long vstart = clockPeek();
         // sleep for real only while another thread may be working, re-checking every 10 ms
         long left = ms;
         Thread self = Thread.currentThread();
         while (left > 0 && !quiet(self)) {
             long slice = Math.min(left, 10);
-            Thread.sleep(slice);
+            REAL_SLEEPERS.incrementAndGet();
+            REAL_SLEEPING.put(self, Boolean.TRUE);
+            try {
+                Thread.sleep(slice);
+            } finally {
+                REAL_SLEEPING.remove(self);
+                REAL_SLEEPERS.decrementAndGet();
+            }
             left -= slice;
         }
         if (Thread.interrupted()) throw new InterruptedException("sleep interrupted");
-        advance(ms * 1_000_000L);
+        advanceFrom(vstart, ms * 1_000_000L);
     }
 
     public static void sleep2(long ms, int nanos, String site) throws InterruptedException {
@@ -417,20 +445,21 @@ public final class Det {
             return;
         }
         long t0 = System.nanoTime();
+        long vstart = clockPeek();
         waiting(ms * 1_000_000L);
         try {
             o.wait(ms);
         } finally {
             done();
         }
-        timedOut(t0, ms * 1_000_000L, "Object.wait", site);
+        timedOut(t0, vstart, ms * 1_000_000L, "Object.wait", site);
     }
 
-    static void timedOut(long t0, long ns, String op, String site) {
+    static void timedOut(long t0, long vstart, long ns, String op, String site) {
         long el = System.nanoTime() - t0;
         if (el >= ns - ns / 10) {
             record("time", op, site, "timeout:" + ns);
-            advance(ns);
+            advanceFrom(vstart, ns);
         }
     }
 
@@ -440,13 +469,14 @@ public final class Det {
             return;
         }
         long t0 = System.nanoTime();
+        long vstart = clockPeek();
         waiting(ns);
         try {
             LockSupport.parkNanos(ns);
         } finally {
             done();
         }
-        timedOut(t0, ns, "LockSupport.parkNanos", site);
+        timedOut(t0, vstart, ns, "LockSupport.parkNanos", site);
     }
 
     public static void parkNanosBlocker(Object blocker, long ns, String site) {
@@ -455,18 +485,20 @@ public final class Det {
             return;
         }
         long t0 = System.nanoTime();
+        long vstart = clockPeek();
         waiting(ns);
         try {
             LockSupport.parkNanos(blocker, ns);
         } finally {
             done();
         }
-        timedOut(t0, ns, "LockSupport.parkNanos", site);
+        timedOut(t0, vstart, ns, "LockSupport.parkNanos", site);
     }
 
     public static boolean latchAwait(CountDownLatch l, long t, TimeUnit u, String site) throws InterruptedException {
         if (!TIME) return l.await(t, u);
         boolean ok;
+        long vstart = clockPeek();
         waiting(u.toNanos(t));
         try {
             ok = l.await(t, u);
@@ -475,7 +507,7 @@ public final class Det {
         }
         if (!ok) {
             record("time", "CountDownLatch.await", site, "timeout:" + u.toNanos(t));
-            advance(u.toNanos(t));
+            advanceFrom(vstart, u.toNanos(t));
         }
         return ok;
     }
@@ -483,6 +515,7 @@ public final class Det {
     public static boolean conditionAwait(Condition c, long t, TimeUnit u, String site) throws InterruptedException {
         if (!TIME) return c.await(t, u);
         boolean ok;
+        long vstart = clockPeek();
         waiting(u.toNanos(t));
         try {
             ok = c.await(t, u);
@@ -491,7 +524,7 @@ public final class Det {
         }
         if (!ok) {
             record("time", "Condition.await", site, "timeout:" + u.toNanos(t));
-            advance(u.toNanos(t));
+            advanceFrom(vstart, u.toNanos(t));
         }
         return ok;
     }
@@ -499,6 +532,7 @@ public final class Det {
     public static long conditionAwaitNanos(Condition c, long ns, String site) throws InterruptedException {
         if (!TIME) return c.awaitNanos(ns);
         long left;
+        long vstart = clockPeek();
         waiting(ns);
         try {
             left = c.awaitNanos(ns);
@@ -507,7 +541,7 @@ public final class Det {
         }
         if (left <= 0 && ns > 0) {
             record("time", "Condition.awaitNanos", site, "timeout:" + ns);
-            advance(ns);
+            advanceFrom(vstart, ns);
         }
         return left;
     }
@@ -515,12 +549,13 @@ public final class Det {
     public static Object futureGet(java.util.concurrent.Future<?> f, long t, TimeUnit u, String site)
             throws InterruptedException, java.util.concurrent.ExecutionException, java.util.concurrent.TimeoutException {
         if (!TIME) return f.get(t, u);
+        long vstart = clockPeek();
         waiting(u.toNanos(t));
         try {
             return f.get(t, u);
         } catch (java.util.concurrent.TimeoutException e) {
             record("time", "Future.get", site, "timeout:" + u.toNanos(t));
-            advance(u.toNanos(t));
+            advanceFrom(vstart, u.toNanos(t));
             throw e;
         } finally {
             done();
@@ -530,6 +565,7 @@ public final class Det {
     public static Object queuePoll(java.util.concurrent.BlockingQueue<?> q, long t, TimeUnit u, String site) throws InterruptedException {
         if (!TIME) return q.poll(t, u);
         Object o;
+        long vstart = clockPeek();
         waiting(u.toNanos(t));
         try {
             o = q.poll(t, u);
@@ -538,7 +574,7 @@ public final class Det {
         }
         if (o == null && t > 0) {
             record("time", "BlockingQueue.poll", site, "timeout:" + u.toNanos(t));
-            advance(u.toNanos(t));
+            advanceFrom(vstart, u.toNanos(t));
         }
         return o;
     }
@@ -546,6 +582,7 @@ public final class Det {
     public static boolean awaitTermination(java.util.concurrent.ExecutorService e, long t, TimeUnit u, String site) throws InterruptedException {
         if (!TIME) return e.awaitTermination(t, u);
         boolean ok;
+        long vstart = clockPeek();
         waiting(u.toNanos(t));
         try {
             ok = e.awaitTermination(t, u);
@@ -554,7 +591,7 @@ public final class Det {
         }
         if (!ok && t > 0) {
             record("time", "ExecutorService.awaitTermination", site, "timeout:" + u.toNanos(t));
-            advance(u.toNanos(t));
+            advanceFrom(vstart, u.toNanos(t));
         }
         return ok;
     }
@@ -564,6 +601,7 @@ public final class Det {
             th.join(ms);
             return;
         }
+        long vstart = clockPeek();
         waiting(ms * 1_000_000L);
         try {
             th.join(ms);
@@ -572,7 +610,7 @@ public final class Det {
         }
         if (th.isAlive()) {
             record("time", "Thread.join", site, "timeout:" + ms);
-            advance(ms * 1_000_000L);
+            advanceFrom(vstart, ms * 1_000_000L);
         }
     }
 
@@ -623,6 +661,7 @@ public final class Det {
             Thread.State s = t.getState();
             if (DEBUG) System.err.println("fenvix-quiet " + self.getName() + " sees " + t.getName() + " " + s + " " + java.util.Arrays.toString(t.getStackTrace()));
             if (s == Thread.State.WAITING || s == Thread.State.TERMINATED || s == Thread.State.NEW) continue;
+            if (REAL_SLEEPING.containsKey(t)) return false; // emulating real time: another thread may depend on it
             if (s == Thread.State.TIMED_WAITING && (WAITERS.containsKey(t) || waitingInInfra(t))) continue;
             return false;
         }
@@ -642,7 +681,7 @@ public final class Det {
         StackTraceElement[] st = t.getStackTrace();
         for (StackTraceElement e : st) {
             String c = e.getClassName();
-            if (c.startsWith("java.") || c.startsWith("jdk.") || c.startsWith("sun.")) continue;
+            if (c.startsWith("java.") || c.startsWith("jdk.") || c.startsWith("sun.") || c.startsWith("dev.fenvix.")) continue;
             return Infra.isInfraDotted(c);
         }
         // only JDK frames: an idle JDK pool thread (ForkJoinPool.awaitWork, a pool worker's keep-alive poll)

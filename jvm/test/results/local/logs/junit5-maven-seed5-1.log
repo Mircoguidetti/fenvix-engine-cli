@@ -4,8 +4,9 @@ Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cace
 Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
 Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
 Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
-[ERROR] Tests run: 9, Failures: 9, Errors: 0, Skipped: 0, Time elapsed: 0.052 s <<< FAILURE! -- in fx.RandomControlTest
-[ERROR] fx.RandomControlTest.secureRandom -- Time elapsed: 0.014 s <<< FAILURE!
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[ERROR] Tests run: 9, Failures: 9, Errors: 0, Skipped: 0, Time elapsed: 0.059 s <<< FAILURE! -- in fx.RandomControlTest
+[ERROR] fx.RandomControlTest.secureRandom -- Time elapsed: 0.019 s <<< FAILURE!
 org.opentest4j.AssertionFailedError: secureRandom differs from the previous run ==> expected: <1544551346540112259> but was: <9163223978547197792>
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
@@ -14,9 +15,9 @@ org.opentest4j.AssertionFailedError: secureRandom differs from the previous run 
 	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1156)
 	at fx.Same.check(Same.java:20)
 	at fx.RandomControlTest.secureRandom(RandomControlTest.java:38)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
 [ERROR] fx.RandomControlTest.collectionsShuffle -- Time elapsed: 0.004 s <<< FAILURE!
 org.opentest4j.AssertionFailedError: collectionsShuffle differs from the previous run ==> expected: <[9, 8, 16, 1, 11, 6, 10, 15, 7, 14, 13, 19, 2, 0, 12, 17, 5, 18, 3, 4]> but was: <[10, 9, 6, 8, 19, 5, 4, 3, 17, 2, 1, 7, 13, 0, 16, 15, 11, 14, 18, 12]>
@@ -27,11 +28,11 @@ org.opentest4j.AssertionFailedError: collectionsShuffle differs from the previou
 	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1156)
 	at fx.Same.check(Same.java:20)
 	at fx.RandomControlTest.collectionsShuffle(RandomControlTest.java:56)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-[ERROR] fx.RandomControlTest.secureRandomStrong -- Time elapsed: 0.008 s <<< FAILURE!
+[ERROR] fx.RandomControlTest.secureRandomStrong -- Time elapsed: 0.007 s <<< FAILURE!
 org.opentest4j.AssertionFailedError: secureRandomSha1prng differs from the previous run ==> expected: <-2072946033> but was: <-1845852567>
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
@@ -40,12 +41,12 @@ org.opentest4j.AssertionFailedError: secureRandomSha1prng differs from the previ
 	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1156)
 	at fx.Same.check(Same.java:20)
 	at fx.RandomControlTest.secureRandomStrong(RandomControlTest.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-[ERROR] fx.RandomControlTest.threadLocalRandom -- Time elapsed: 0.004 s <<< FAILURE!
-org.opentest4j.AssertionFailedError: threadLocalRandom differs from the previous run ==> expected: <-8783738720570785936> but was: <-5033868605453888137>
+[ERROR] fx.RandomControlTest.threadLocalRandom -- Time elapsed: 0.001 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: threadLocalRandom differs from the previous run ==> expected: <-6962837871021814292> but was: <-7908645191844100525>
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
 	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
@@ -53,11 +54,11 @@ org.opentest4j.AssertionFailedError: threadLocalRandom differs from the previous
 	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1156)
 	at fx.Same.check(Same.java:20)
 	at fx.RandomControlTest.threadLocalRandom(RandomControlTest.java:28)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-[ERROR] fx.RandomControlTest.mathRandom -- Time elapsed: 0.001 s <<< FAILURE!
+[ERROR] fx.RandomControlTest.mathRandom -- Time elapsed: 0.003 s <<< FAILURE!
 org.opentest4j.AssertionFailedError: mathRandom differs from the previous run ==> expected: <0.9768143488316298> but was: <0.757914315207736>
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
@@ -66,12 +67,12 @@ org.opentest4j.AssertionFailedError: mathRandom differs from the previous run ==
 	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1156)
 	at fx.Same.check(Same.java:20)
 	at fx.RandomControlTest.mathRandom(RandomControlTest.java:23)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-[ERROR] fx.RandomControlTest.threadLocalRandomInPool -- Time elapsed: 0.004 s <<< FAILURE!
-org.opentest4j.AssertionFailedError: threadLocalRandomInPool differs from the previous run ==> expected: <-314487320> but was: <-1473488970>
+[ERROR] fx.RandomControlTest.threadLocalRandomInPool -- Time elapsed: 0.006 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: threadLocalRandomInPool differs from the previous run ==> expected: <1583524316> but was: <1404603313>
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
 	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
@@ -79,11 +80,11 @@ org.opentest4j.AssertionFailedError: threadLocalRandomInPool differs from the pr
 	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1156)
 	at fx.Same.check(Same.java:20)
 	at fx.RandomControlTest.threadLocalRandomInPool(RandomControlTest.java:33)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-[ERROR] fx.RandomControlTest.newRandom -- Time elapsed: 0.001 s <<< FAILURE!
+[ERROR] fx.RandomControlTest.newRandom -- Time elapsed: 0.002 s <<< FAILURE!
 org.opentest4j.AssertionFailedError: newRandom differs from the previous run ==> expected: <-3784889291908762212> but was: <-2901588423524808297>
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
@@ -92,11 +93,11 @@ org.opentest4j.AssertionFailedError: newRandom differs from the previous run ==>
 	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1156)
 	at fx.Same.check(Same.java:20)
 	at fx.RandomControlTest.newRandom(RandomControlTest.java:18)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-[ERROR] fx.RandomControlTest.splittableRandom -- Time elapsed: 0.001 s <<< FAILURE!
+[ERROR] fx.RandomControlTest.splittableRandom -- Time elapsed: 0.002 s <<< FAILURE!
 org.opentest4j.AssertionFailedError: splittableRandom differs from the previous run ==> expected: <8054870294534967476> but was: <-5890628300362863835>
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
@@ -105,11 +106,11 @@ org.opentest4j.AssertionFailedError: splittableRandom differs from the previous 
 	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1156)
 	at fx.Same.check(Same.java:20)
 	at fx.RandomControlTest.splittableRandom(RandomControlTest.java:61)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-[ERROR] fx.RandomControlTest.uuid -- Time elapsed: 0.001 s <<< FAILURE!
+[ERROR] fx.RandomControlTest.uuid -- Time elapsed: 0.003 s <<< FAILURE!
 org.opentest4j.AssertionFailedError: uuid differs from the previous run ==> expected: <9e1a03c5-ef29-44aa-83a2-b886d2a4f7b1> but was: <f0f3b7e1-4f23-4b90-b02d-d6045ed9f260>
 	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
@@ -118,9 +119,9 @@ org.opentest4j.AssertionFailedError: uuid differs from the previous run ==> expe
 	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1156)
 	at fx.Same.check(Same.java:20)
 	at fx.RandomControlTest.uuid(RandomControlTest.java:48)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
-	at java.util.ArrayList.forEach(ArrayList.java:1259)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
 [ERROR] Failures: 
 [ERROR]   RandomControlTest.collectionsShuffle:56 collectionsShuffle differs from the previous run ==> expected: <[9, 8, 16, 1, 11, 6, 10, 15, 7, 14, 13, 19, 2, 0, 12, 17, 5, 18, 3, 4]> but was: <[10, 9, 6, 8, 19, 5, 4, 3, 17, 2, 1, 7, 13, 0, 16, 15, 11, 14, 18, 12]>
@@ -129,8 +130,8 @@ org.opentest4j.AssertionFailedError: uuid differs from the previous run ==> expe
 [ERROR]   RandomControlTest.secureRandom:38 secureRandom differs from the previous run ==> expected: <1544551346540112259> but was: <9163223978547197792>
 [ERROR]   RandomControlTest.secureRandomStrong:43 secureRandomSha1prng differs from the previous run ==> expected: <-2072946033> but was: <-1845852567>
 [ERROR]   RandomControlTest.splittableRandom:61 splittableRandom differs from the previous run ==> expected: <8054870294534967476> but was: <-5890628300362863835>
-[ERROR]   RandomControlTest.threadLocalRandom:28 threadLocalRandom differs from the previous run ==> expected: <-8783738720570785936> but was: <-5033868605453888137>
-[ERROR]   RandomControlTest.threadLocalRandomInPool:33 threadLocalRandomInPool differs from the previous run ==> expected: <-314487320> but was: <-1473488970>
+[ERROR]   RandomControlTest.threadLocalRandom:28 threadLocalRandom differs from the previous run ==> expected: <-6962837871021814292> but was: <-7908645191844100525>
+[ERROR]   RandomControlTest.threadLocalRandomInPool:33 threadLocalRandomInPool differs from the previous run ==> expected: <1583524316> but was: <1404603313>
 [ERROR]   RandomControlTest.uuid:48 uuid differs from the previous run ==> expected: <9e1a03c5-ef29-44aa-83a2-b886d2a4f7b1> but was: <f0f3b7e1-4f23-4b90-b02d-d6045ed9f260>
 [ERROR] Tests run: 38, Failures: 9, Errors: 0, Skipped: 0
 [ERROR] There are test failures.

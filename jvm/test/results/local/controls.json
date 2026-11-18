@@ -854,9 +854,9 @@
     ],
     "with_det": [
      "passed",
-     "failed"
+     "passed"
     ],
-    "ok": false
+    "ok": true
    },
    {
     "test": "fx.TimeControlTest::calendar()",
@@ -1002,8 +1002,8 @@
     "ok": true
    }
   ],
-  "verify": "detpy verify: 2 runs, 38 tests\n  run 0: test/results/local/logs/maven-det-1.jsonl\n  run 1: test/results/local/logs/maven-det-2.jsonl\norder: identical in every run\ncovered by Level 0: 37  not covered: 1  missing: 0  outcome-unstable: 1\nreasons: thread=1\nNOT-COVERED fx.SleepControlTest::timeUnitSleepIsVirtual()  [thread] outcomes=passed,failed\n    runs 0 vs 1: event #0: Thread.sleep @ src/test/java/fx/SleepControlTest.java:23 returned different values: \"3000:fast\" vs \"3000:real\"\n",
-  "fingerprints_identical": false,
+  "verify": "detpy verify: 2 runs, 38 tests\n  run 0: test/results/local/logs/maven-det-1.jsonl\n  run 1: test/results/local/logs/maven-det-2.jsonl\norder: identical in every run\ncovered by Level 0: 38  not covered: 0  missing: 0  outcome-unstable: 0\n",
+  "fingerprints_identical": true,
   "seed_exploration": {
    "same_order_same_seed": true,
    "seed5_differs_from_seed0": true,
