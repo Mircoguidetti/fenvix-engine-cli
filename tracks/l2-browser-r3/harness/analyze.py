@@ -144,9 +144,36 @@ def main():
             print(f"\nH3 `{X['grep'][:60]}`: seed {X.get('seed')} -> {X.get('seed_outcome')}; printed `{X.get('printed')}` -> "
                   f"{X.get('printed_outcome')}")
         print()
-    for f in sorted(RES.glob("e5-*.json")):
+    # Step 3 again on the fixed worker clock (s3-*.json, and ab-*.json for the A/B of the wait part): --det runs of this
+    # file against the plain runs of the same project's E1 job (actual: its 2 plain shard runs).
+    for f in sorted(list(RES.glob("s3-*.json")) + list(RES.glob("ab-*.json"))):
         r = json.loads(f.read_text())
-        print(f"### E5 {r['name']} (run {r.get('run_id')}): prepare rc {(r.get('e5_prepare') or {}).get('rc')}\n")
+        name = r["name"]
+        e1f = RES / f"e1-{name}.json"
+        if r.get("status") != "ok" or not e1f.exists():
+            print(f"### {f.stem}: {r.get('status')}\n")
+            continue
+        e1 = json.loads(e1f.read_text())
+        base = [x for x in e1["runs"] if x["phase"] == "base"] or [x for x in e1["runs"] if x["phase"] == "plain"]
+        dets = [x for x in r["runs"] if x["phase"] == "det"]
+        hb, _ = hist(base)
+        hd, ed = hist(dets)
+        broken = sorted(k for k, v in hd.items() if hb.get(k) and all(o == "passed" for o in hb[k]) and any(o in FAIL for o in v))
+        hidden = sorted(k for k, v in hd.items() if hb.get(k) and all(o in FAIL for o in hb[k]) and all(o == "passed" for o in v))
+        dv = r.get("det_verify") or {}
+        fps = r.get("det_fingerprints") or {}
+        stable_pass = sum(1 for k, v in fps.items() if v[0] == "stable" and hd.get(k) and all(o == "passed" for o in hd[k]))
+        w = sorted(x["wall_s"] for x in dets)
+        bw = sorted(x["wall_s"] for x in base if x.get("outcomes"))
+        print(f"### {f.stem} (run {r.get('run_id')}, env {r['params'].get('env')}): broken {len(broken)} of {len(hd)} "
+              f"({100 * len(broken) / max(1, len(hd)):.1f}%), hidden {len(hidden)}, identical {dv.get('stable')}/{dv.get('tests')} "
+              f"({stable_pass} passing), reasons {dv.get('reasons')}, slowdown x{(w[len(w)//2] / bw[len(bw)//2]) if w and bw else 0:.1f}")
+        print(f"- broken: {[k[:70] for k in broken]}")
+        print(f"- hidden: {[k[:70] for k in hidden]}\n")
+        summary.setdefault(f.stem, {}).update({"broken": len(broken), "tests": len(hd), "hidden": len(hidden), "identical": dv.get("stable")})
+    for f in sorted(RES.glob("e5-documenso*.json")):
+        r = json.loads(f.read_text())
+        print(f"### E5 {f.stem} {r['name']} (run {r.get('run_id')}): prepare rc {(r.get('e5_prepare') or {}).get('rc')}\n")
         print("| Variant | DB now() | Target | Replays | Distinct fp | First divergence |")
         print("|---|---|---|---|---|---|")
         for V in r.get("e5") or []:
