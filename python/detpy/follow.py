@@ -36,15 +36,85 @@ import re
 import shutil
 import subprocess
 import threading
+import time as _time_mod
+
+# real clocks, bound before Level 0 virtualises the time module (waiting for a tracer is real waiting)
+_mono = _time_mod.monotonic
+_sleep = _time_mod.sleep
 
 STRACE_TRACE = ("%file,getdents,getdents64,chdir,fchdir,connect,sendto,sendmsg,bind,getrandom,"
-                "clone,clone3,fork,vfork")
+                "clone,clone3,fork,vfork,clock_gettime,gettimeofday,time")
+
+# Real-clock reads go through the vDSO, which strace cannot see. Every followed child gets this library in
+# LD_PRELOAD: its real-time reads (CLOCK_REALTIME, _COARSE, _ALARM, TAI; gettimeofday; time; timespec_get) become
+# system calls, which the trace records; monotonic clocks keep the vDSO. Its constructor makes a marker call, so a
+# program that ran without it (static binaries, Go, setuid, an environment without LD_PRELOAD) is seen too.
+# A Python interpreter reads the real clock once while it initialises (the time module's timezone offsets):
+# reads before Py_IsInitialized() is true are not marked.
+SHIM_MARK = "/__detpy_clock_shim__"
+SHIM_SOURCE = r"""
+#define _GNU_SOURCE
+#include <dlfcn.h>
+#include <fcntl.h>
+#include <sys/syscall.h>
+#include <sys/time.h>
+#include <time.h>
+#include <unistd.h>
+
+__attribute__((constructor)) static void detpy_clock_shim_mark(void) {
+    syscall(SYS_faccessat, AT_FDCWD, "/__detpy_clock_shim__", F_OK, 0);
+}
+
+static int in_python_init(void) {
+    int (*f)(void) = (int (*)(void))dlsym(RTLD_DEFAULT, "Py_IsInitialized");
+    return f != 0 && !f();
+}
+
+static int realtime(clockid_t c) {
+    return c == CLOCK_REALTIME || c == CLOCK_REALTIME_COARSE || c == 8 || c == 11;
+}
+
+int clock_gettime(clockid_t c, struct timespec *ts) {
+    if (realtime(c) && !in_python_init())
+        return syscall(SYS_clock_gettime, c, ts);
+    int (*real)(clockid_t, struct timespec *) = (int (*)(clockid_t, struct timespec *))dlsym(RTLD_NEXT, "clock_gettime");
+    return real ? real(c, ts) : syscall(SYS_clock_gettime, c, ts);
+}
+
+int gettimeofday(struct timeval *tv, void *tz) {
+    if (in_python_init()) {
+        int (*real)(struct timeval *, void *) = (int (*)(struct timeval *, void *))dlsym(RTLD_NEXT, "gettimeofday");
+        if (real) return real(tv, tz);
+    }
+    return syscall(SYS_gettimeofday, tv, tz);
+}
+
+time_t time(time_t *t) {
+    struct timespec ts;
+    if (in_python_init()) {
+        time_t (*real)(time_t *) = (time_t (*)(time_t *))dlsym(RTLD_NEXT, "time");
+        if (real) return real(t);
+    }
+    syscall(SYS_clock_gettime, CLOCK_REALTIME, &ts);
+    if (t) *t = ts.tv_sec;
+    return ts.tv_sec;
+}
+
+int timespec_get(struct timespec *ts, int base) {
+    if (base != TIME_UTC) return 0;
+    if (syscall(SYS_clock_gettime, CLOCK_REALTIME, ts) != 0) return 0;
+    return base;
+}
+"""
+_REALTIME_CLOCKS = ("CLOCK_REALTIME", "CLOCK_REALTIME_COARSE", "CLOCK_REALTIME_ALARM", "CLOCK_TAI")
+_TS = re.compile(r"^(\d+\.\d+) ")
 
 _tls = threading.local()
 
 
 class Spawn:
     __slots__ = ("ctx", "prefix", "cwd", "exe", "argv", "detail")
+
 
     def __init__(self, ctx, prefix, cwd, exe, argv, detail):
         self.ctx, self.prefix, self.cwd, self.exe, self.argv, self.detail = ctx, prefix, cwd, exe, argv, detail
@@ -61,6 +131,10 @@ class Result:
         self.entropy = 0
         self.pids: set[str] = set()
         self.bound: set = set()  # Unix socket paths the tree itself bound
+        self.clock: str | None = None  # a real-clock read (the clock shim made it a system call)
+        self.unshimmed: str | None = None  # a program that ran without the clock shim
+        self.t0: float | None = None  # first and last system call of the tree (strace -ttt, real clock)
+        self.t1: float | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -97,7 +171,43 @@ def probe(logdir: str) -> str | None:
                 pass
     _PROBE["why"] = why
     _PROBE["exe"] = exe
+    if why is None:
+        _PROBE["shim"], _PROBE["shim_why"] = build_shim(os.path.dirname(os.path.abspath(logdir)))
     return why
+
+
+def build_shim(dirpath: str) -> tuple[str | None, str | None]:
+    """The clock shim compiled into ``dirpath`` (once per source version), or (None, why not)."""
+    import hashlib
+
+    digest = hashlib.sha256(SHIM_SOURCE.encode()).hexdigest()[:16]
+    so = os.path.join(dirpath, f"clockshim-{digest}.so")
+    if os.path.exists(so):
+        return so, None
+    cc = shutil.which("cc") or shutil.which("gcc") or shutil.which("clang")
+    if cc is None:
+        return None, "no C compiler to build the clock shim"
+    try:
+        os.makedirs(dirpath, exist_ok=True)
+        src = os.path.join(dirpath, f"clockshim-{digest}.{os.getpid()}.c")
+        tmp = so + f".{os.getpid()}.tmp"
+        with open(src, "w") as fh:
+            fh.write(SHIM_SOURCE)
+        p = subprocess.run([cc, "-O2", "-shared", "-fPIC", "-o", tmp, src, "-ldl"], capture_output=True, timeout=120)
+        os.unlink(src)
+        if p.returncode != 0:
+            return None, "clock shim does not compile: " + p.stderr.decode(errors="replace").strip()[:200]
+        os.replace(tmp, so)
+        return so, None
+    except (OSError, subprocess.SubprocessError) as e:
+        return None, f"clock shim not built: {e}"
+
+
+def _strip_ts(line: str) -> tuple[float | None, str]:
+    m = _TS.match(line)
+    if m:
+        return float(m.group(1)), line[m.end():]
+    return None, line
 
 
 def _logs(prefix: str) -> list[str]:
@@ -118,21 +228,20 @@ def _complete(path: str) -> bool:
             tail = fh.read().rstrip(b"\n").rsplit(b"\n", 1)[-1]
     except OSError:
         return False
-    return tail.startswith(b"+++ exited with") or tail.startswith(b"+++ killed by")
+    tail = _strip_ts(tail.decode("utf-8", "surrogateescape"))[1]
+    return tail.startswith("+++ exited with") or tail.startswith("+++ killed by")
 
 
 def _wait_logs(prefix: str, timeout: float) -> list[str]:
     """The logs of ``prefix`` once every one ends with its process's exit (the detached tracer writes it)."""
-    import time
-
-    t_end = time.monotonic() + timeout
+    t_end = _mono() + timeout
     while True:
         logs = _logs(prefix)
         if logs and all(_complete(f) for f in logs):
             return logs
-        if time.monotonic() > t_end:
+        if _mono() > t_end:
             return logs
-        time.sleep(0.01)
+        _sleep(0.01)
 
 
 # ---------------------------------------------------------------------------
@@ -219,9 +328,24 @@ class Follower:
         prefix = os.path.join(self.logdir, f"s{os.getpid()}-{self.n}")
         self.spawns.append(Spawn(ctx, prefix, cwd, exe, [os.fsdecode(a) for a in argv], detail))
         argv0 = os.fsdecode(argv[0]) if argv else exe
-        new_argv = [self.exe, "-DDD", "-ff", "-q", "-y", "-s", "1", "--seccomp-bpf", "-e", "trace=" + STRACE_TRACE,
-                    "-e", "signal=none", "-o", prefix, "--argv0", argv0, "--", exe, *[os.fsdecode(a) for a in argv[1:]]]
-        return (new_argv, (os.fsencode(self.exe),), *args[2:])
+        new_argv = [self.exe, "-DDD", "-ff", "-q", "-y", "-ttt", "-s", "1", "--seccomp-bpf", "-e",
+                    "trace=" + STRACE_TRACE, "-e", "signal=none", "-o", prefix, "--argv0", argv0, "--", exe,
+                    *[os.fsdecode(a) for a in argv[1:]]]
+        shim = _PROBE.get("shim")
+        if shim is None:
+            cap.flag(ctx, "spawn", f"{detail} [clock not observable: {_PROBE.get('shim_why') or 'no clock shim'}]")
+        env = args[5]
+        if shim is not None:
+            if env is None:
+                env = [k + b"=" + v for k, v in dict(os.environb._data).items()]  # noqa: SLF001 (no env event)
+            env = list(env)
+            for i, kv in enumerate(env):
+                if kv.startswith(b"LD_PRELOAD="):
+                    env[i] = b"LD_PRELOAD=" + os.fsencode(shim) + b" " + kv[len(b"LD_PRELOAD="):]
+                    break
+            else:
+                env.append(b"LD_PRELOAD=" + os.fsencode(shim))
+        return (new_argv, (os.fsencode(self.exe),), *args[2:5], env, *args[6:])
 
     def announce(self, ctx: int, detail: str | None, follow_it: bool = True) -> None:
         """A ``subprocess.Popen`` audit event: the next fork_exec of this thread is that child (``follow_it``
@@ -329,6 +453,12 @@ def parse(paths: list[str], cwd: str) -> Result:
         except OSError as e:
             res.bad = res.bad or f"log unreadable: {e}"
             continue
+        stamped = [_strip_ts(x) for x in lines]
+        times = [t for t, _ in stamped if t is not None]
+        if times:
+            res.t0 = min(times[0], res.t0) if res.t0 is not None else times[0]
+            res.t1 = max(times[-1], res.t1) if res.t1 is not None else times[-1]
+        lines = [x for _, x in stamped]
         if not lines or not (lines[-1].startswith("+++ exited with") or lines[-1].startswith("+++ killed by")):
             res.bad = res.bad or "a process was still running at the end of the session"
             continue
@@ -363,6 +493,7 @@ def _sockaddr(tok: str) -> tuple[str | None, str | None]:
 
 def _parse_one(lines: list[str], cwd: str, res: Result) -> None:
     ops = res.ops
+    unmarked = None  # a program this process exec'd that has not (yet) made the clock shim's marker call
     for line in lines:
         if not line or line.startswith("+++") or line.startswith("---"):
             continue
@@ -376,6 +507,19 @@ def _parse_one(lines: list[str], cwd: str, res: Result) -> None:
             m = re.search(r"AT_FDCWD<([^>]*)>", argtext)
             if m:
                 cwd = m.group(1)
+        if SHIM_MARK in argtext and name in ("faccessat", "faccessat2", "access"):
+            unmarked = None
+            continue
+        if name == "clock_gettime":
+            if argtext.split(",", 1)[0].strip() in _REALTIME_CLOCKS:
+                res.clock = res.clock or f"reads the real clock ({argtext.split(',', 1)[0].strip()})"
+            continue
+        if name in ("gettimeofday", "time"):
+            res.clock = res.clock or f"reads the real clock ({name})"
+            continue
+        if name in ("execve", "execveat") and ok:
+            args0 = _split_args(argtext)
+            unmarked = _unquote(args0[0 if name == "execve" else 1]) if args0 else "?"
         if name in _IGNORED_CALLS:
             if name == "fchdir" and ok:
                 b = _base(_split_args(argtext)[0], cwd)
@@ -477,6 +621,8 @@ def _parse_one(lines: list[str], cwd: str, res: Result) -> None:
             ops.append(("w", p))
         else:
             ops.append(("r", p))
+    if unmarked is not None:
+        res.unshimmed = res.unshimmed or unmarked
 
 
 # ---------------------------------------------------------------------------
@@ -492,7 +638,9 @@ def special(p: str, pids: set[str]) -> str | None:
         return None
     if p in ("/proc", "/sys", "/dev"):
         return "skip"
-    if p in _DEV_OK or p.startswith(("/dev/fd/", "/dev/pts/", "/dev/shm/")):
+    if p.startswith("/dev/shm/"):
+        return None  # a tmpfs of ordinary files (shared memory, test data): read and written like any file
+    if p in _DEV_OK or p.startswith(("/dev/fd/", "/dev/pts/")):
         return "skip"
     if p in ("/dev/urandom", "/dev/random"):
         return "entropy"

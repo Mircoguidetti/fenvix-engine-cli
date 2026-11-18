@@ -540,3 +540,97 @@ def test_test_without_sys_getframe_is_not_broken_by_the_capture(pytester, run_ca
         """})
     r, _, _ = run_cache()
     r.assert_outcomes(passed=1)
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# review R-009 fix round: real clock outside the virtual clock, /dev/shm in-process, expiry
+
+
+def test_sqlite_statement_reading_now_is_refused_and_others_are_not(pytester, run_cache):
+    project(pytester, **{"test_m.py": """
+        import sqlite3
+
+        def test_plain_sql():
+            assert sqlite3.connect(":memory:").execute("select 1 + 1").fetchone() == (2,)
+
+        def test_current_timestamp():
+            assert sqlite3.connect(":memory:").execute("select current_timestamp").fetchone()[0]
+
+        def test_date_without_value():
+            assert sqlite3.connect(":memory:").execute("select date()").fetchone()[0]
+        """})
+    run_cache()
+    _, reused, data = run_cache()
+    assert reused == ids("test_plain_sql")
+    for t in ("test_current_timestamp", "test_date_without_value"):
+        assert nc(data)[f"test_m.py::{t}"] == "real clock read outside the virtual clock"
+
+
+def test_python_child_start_is_exempt_and_its_time_reads_are_refused(pytester, run_cache):
+    # a Python interpreter reads the real clock while it initialises (time module's timezone offsets): exempt;
+    # time.time() in the child afterwards is a real-clock read
+    project(pytester, **{"test_m.py": """
+        import subprocess, sys
+
+        def test_child_no_clock():
+            subprocess.run([sys.executable, "-c", "print(1)"], check=True, capture_output=True)
+
+        def test_child_clock():
+            subprocess.run([sys.executable, "-c", "import time; print(time.time())"], check=True, capture_output=True)
+        """})
+    run_cache()
+    _, reused, data = run_cache()
+    assert reused == ids("test_child_no_clock")
+    assert "reads the real clock" in data["cache"]["not_cached_where"]["test_m.py::test_child_clock"]
+
+
+def test_dev_shm_read_in_process_is_an_input(pytester, run_cache):
+    import uuid
+
+    if not os.path.isdir("/dev/shm"):
+        pytest.skip("no /dev/shm")
+    shm = f"/dev/shm/detpy-fix-{uuid.uuid4().hex}"
+    with open(shm, "w") as fh:
+        fh.write("a\n")
+    try:
+        project(pytester, **{"test_m.py": f"""
+            def test_shm():
+                assert open("{shm}").read() == "a\\n"
+            """})
+        run_cache()
+        _, reused, _ = run_cache()
+        assert reused == ids("test_shm")
+        with open(shm, "w") as fh:
+            fh.write("b\n")
+        r, reused, data = run_cache()
+        assert reused == set()
+        r.assert_outcomes(failed=1)
+    finally:
+        os.unlink(shm)
+
+
+def test_entry_older_than_max_age_is_not_reused(pytester, run_cache):
+    import time
+
+    project(pytester, **{"test_m.py": "def test_a():\n    pass\n"})
+    run_cache()
+    _, reused, _ = run_cache()
+    assert reused == ids("test_a")
+    time.sleep(2.2)  # run ids have one-second resolution
+    _, reused, data = run_cache("--det-cache-max-age=0.00001")  # 0.86 s
+    assert reused == set()
+    assert miss(data)["test_m.py::test_a"].startswith("expired")
+
+
+def test_time_zone_file_content_is_configuration(tmp_path, monkeypatch):
+    from detpy import proofcache
+
+    z = tmp_path / "zones"
+    z.mkdir()
+    (z / "Test_Zone").write_bytes(b"TZif-one")
+    monkeypatch.setenv("TZDIR", str(z))
+    monkeypatch.setenv("TZ", "Test_Zone")
+    a = proofcache.tz_locale_identity()
+    (z / "Test_Zone").write_bytes(b"TZif-two")  # a tzdata update changes the zone's rules
+    b = proofcache.tz_locale_identity()
+    assert a["TZ"] == "Test_Zone" and a["tzfile"] and a["tzfile"] != b["tzfile"]

@@ -68,6 +68,9 @@ _WRITE_EVENTS = {"os.remove": (0,), "os.rename": (0, 1), "os.mkdir": (0,), "os.r
                  "os.link": (1,), "os.truncate": (0,)}
 _SKIP_PARTS = (os.sep + "__pycache__" + os.sep, os.sep + ".git" + os.sep, os.sep + ".pytest_cache",
                os.sep + ".mypy_cache", os.sep + ".hypothesis" + os.sep, os.sep + ".detpy" + os.sep)
+# data reads: the same, except .git/ (review R-009 F5: a test that reads HEAD and its ref in-process depends on
+# them; objects are content-addressed, so a changed commit always comes with a changed ref file)
+_SKIP_DATA = tuple(x for x in _SKIP_PARTS if x != os.sep + ".git" + os.sep)
 _O_ACC = os.O_RDONLY | os.O_WRONLY | os.O_RDWR
 _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 # options that never change a test's result (output, reporting, selection by path, detpy's own files)
@@ -80,7 +83,8 @@ _VOLATILE_OPTIONS = {
     "trace", "xmlpath", "htmlpath", "lf", "failedfirst", "last_failed_no_failures", "newfirst", "cacheclear",
     "cacheshow", "stepwise", "stepwise_skip", "maxfail", "exitfirst", "no_header", "no_summary", "override_ini",
     "inifilename", "rootdir", "confcutdir", "keyword", "markexpr", "deselect", "ignore", "ignore_glob",
-    "continue_on_collection_errors", "numprocesses", "dist", "tx", "det_epoch",
+    "continue_on_collection_errors", "numprocesses", "dist", "tx", "det_epoch", "det_cache_max_age",
+    "det_cache_epoch_window",
 }
 
 
@@ -161,6 +165,7 @@ class Capture:
         self.follower: follow.Follower | None = None
         self.child_entropy = 0  # entropy draws of followed children (not controlled, not refused)
         self.children = 0  # followed children (spawn calls)
+        self.timeline: list[tuple[float, int]] = [(_now(), 0)]  # (real time, context) at every switch
 
     # -- contexts -------------------------------------------------------------
     def ctx_index(self, name: str) -> int:
@@ -182,6 +187,7 @@ class Capture:
                 self.active = True
         self.ctx = name
         i = self.ctx_index(name)
+        self.timeline.append((_now(), i))
         if self.rec is None:
             return
         n = len(self.rec)
@@ -275,6 +281,7 @@ class Capture:
         _mon.register_callback(self.tool, _mon.events.PY_RETURN, self.rec.ret)
         self.active = True
         _core.set_audit_hook(self._audit, _AUDIT_EVENTS)
+        self._patch_sqlite()
         # code that exists before the start: modules already loaded become whole-content inputs
         pre = False
         for m in list(sys.modules.values()):
@@ -298,6 +305,9 @@ class Capture:
             return
         self.active = False
         _core.set_audit_hook(None, ())
+        for obj, name, v in getattr(self, "_sqlite_saved", ()):
+            setattr(obj, name, v)
+        self._sqlite_saved = []
         if self.tool is not None:
             for ev in (_mon.events.LINE, _mon.events.PY_START, _mon.events.PY_RETURN):
                 _mon.register_callback(self.tool, ev, None)
@@ -383,7 +393,7 @@ class Capture:
         return os.path.normpath(s)
 
     def _ignored(self, p: str) -> bool:
-        if any(s in p for s in _SKIP_PARTS):
+        if any(s in p for s in _SKIP_DATA):
             return True
         if self.basetemp and (p == self.basetemp or p.startswith(self.basetemp + os.sep)):
             return True
@@ -400,7 +410,8 @@ class Capture:
         if not _encodable(p):
             self.flags.setdefault(ctx, set()).add("badpath")
             return
-        if p.startswith(("/proc/", "/sys/", "/dev/")) and (kind != "d" and os.path.exists(p)):
+        if p.startswith(("/proc/", "/sys/", "/dev/")) and not p.startswith("/dev/shm/") \
+                and (kind != "d" and os.path.exists(p)):
             # the content of a pseudo-file (process state, kernel tunables, a device) is not a file's content;
             # a listing (device enumeration such as /dev/bus/usb) and a missing path are ordinary inputs
             self.flag(ctx, "proc", p)
@@ -503,9 +514,10 @@ class Capture:
             if self._caller_kind() == "infra":
                 return
             fo = self.follower
-            if event == "subprocess.Popen" and _is_find_library_ldconfig(args) and not (fo and fo.enabled):
+            if event == "subprocess.Popen" and _is_find_library_ldconfig(args):
                 # ctypes.util.find_library (uuid, ifaddr, ... at import time) asks `ldconfig -p`, which prints the
-                # dynamic linker's cache: that file is the input
+                # dynamic linker's cache: that file is the input. (Not followed: ldconfig is a static binary, so the
+                # clock shim cannot load into it.)
                 self.read(self._cur(), _LD_SO_CACHE, "f")
                 if fo is not None:
                     fo.announce(self._cur(), None, False)
@@ -539,6 +551,35 @@ class Capture:
             return _both_ends_mine(sock)
         finally:
             self.active = True
+
+    def _patch_sqlite(self) -> None:
+        """review R-009 F4: sqlite evaluates 'now' (date('now'), CURRENT_TIMESTAMP, date() without a time value) on
+        the real clock in C. Every connection made through sqlite3.connect traces its statements; one that may read
+        the real clock makes its context uncacheable. (A trace callback the test sets itself replaces this one.)"""
+        try:
+            import sqlite3
+            import sqlite3.dbapi2 as dbapi2
+        except ImportError:
+            return
+        real = sqlite3.connect
+        cap = self
+
+        def connect(*args, **kwargs):
+            conn = real(*args, **kwargs)
+            try:
+                conn.set_trace_callback(cap._sql_trace)
+            except Exception:
+                pass
+            return conn
+
+        connect.__wrapped__ = real
+        self._sqlite_saved = [(sqlite3, "connect", real), (dbapi2, "connect", dbapi2.connect)]
+        sqlite3.connect = connect
+        dbapi2.connect = connect
+
+    def _sql_trace(self, statement) -> None:
+        if self.active and isinstance(statement, str) and _SQL_REAL_CLOCK.search(statement):
+            self.flag(self._cur(), "rclock", f"sqlite: {statement.strip()[:80]} at {_first_user_site()}")
 
     def flag(self, ctx: int, flag: str, detail: str | None = None) -> None:
         fl = self.flags.setdefault(ctx, set())
@@ -574,16 +615,16 @@ class Capture:
         fo = self.follower
         if fo is None:
             return
-        import time
+        _mono = follow._mono
 
         # a log is complete once the detached tracer wrote its process's exit, normally within milliseconds of the
         # exit; a process still running (a daemon, multiprocessing's resource tracker) never completes: wait for it
         # once, briefly, then not at all
-        budget_end = time.monotonic() + 3.0
+        budget_end = _mono() + 3.0
         wait = 1.0
         for sp in fo.spawns:
             self.children += 1
-            logs = follow._wait_logs(sp.prefix, max(0.0, min(wait, budget_end - time.monotonic())))
+            logs = follow._wait_logs(sp.prefix, max(0.0, min(wait, budget_end - _mono())))
             if logs and not all(follow._complete(f) for f in logs):
                 wait = 0.05
             ctx = sp.ctx
@@ -596,42 +637,72 @@ class Capture:
                     os.unlink(f)
                 except OSError:
                     pass
-            if res.bad:
-                self.flag(ctx, "spawn", f"{sp.detail} [not followed: {res.bad}]")
-            if res.net:
-                self.flag(ctx, "spawn", f"{sp.detail} [network: {res.net}]")
-            self.child_entropy += res.entropy
-            self.child_read(ctx, sp.exe)
-            own = set()
-            for op, p in res.ops:
-                sk = follow.special(p, res.pids)
-                if sk == "skip":
-                    continue
-                if sk == "entropy":
-                    self.child_entropy += 1
-                    continue
-                if sk == "proc":
-                    if op == "d" or (op != "w" and not os.path.exists(p)):
-                        self.read(ctx, p, "d" if op == "d" else "f")  # a listing or a missing path: an input
-                    else:
-                        self.flag(ctx, "spawn", f"{sp.detail} [reads {p}]")
-                    continue
-                if op == "w":
-                    own.add(p)
-                    if not self.child_ignored(p):
-                        self.wrote(ctx, p)
-                    continue
-                if p in own:
-                    continue  # the tree wrote it first: internal
-                if op == "x":
-                    interp = follow.shebang(p)
-                    if interp:
-                        self.child_read(ctx, interp)
-                self.child_read(ctx, p, "d" if op == "d" else "f")
+            # review R-009 F1: a process kept alive across contexts (a persistent shell, a language server, a pool
+            # held in a module global) works for whichever test talks to it; that test raises no event. Every test,
+            # fixture or collection context that ran during the tree's lifetime (strace -ttt, real clock) gets the
+            # tree's inputs and refusals, as the context that started it does.
+            t1 = float("inf") if res.bad and "still running" in res.bad else res.t1
+            targets = [ctx] + sorted(self._contexts_during(res.t0, t1) - {ctx})
+            for c in targets:
+                self._credit_child(c, sp, res)
         try:
             os.rmdir(fo.logdir)
         except OSError:
             pass
+
+    def _contexts_during(self, t0: float | None, t1: float | None) -> set:
+        """Non-global contexts (tests, fixtures, collection of a file) active at some time in [t0, t1]."""
+        if t0 is None or t1 is None:
+            return set()
+        out = set()
+        tl = self.timeline
+        glob = {self.ctx_ix.get(n) for n in _GLOBAL_CTX}
+        for k, (tk, ck) in enumerate(tl):
+            nxt = tl[k + 1][0] if k + 1 < len(tl) else float("inf")
+            if tk <= t1 and nxt > t0 and ck not in glob:
+                out.add(ck)
+        return out
+
+    def _credit_child(self, ctx: int, sp, res) -> None:
+        """The inputs, writes and refusals of one followed process tree, as inputs of context ``ctx``."""
+        if res.bad:
+            self.flag(ctx, "spawn", f"{sp.detail} [not followed: {res.bad}]")
+        if res.net:
+            self.flag(ctx, "spawn", f"{sp.detail} [network: {res.net}]")
+        if res.clock:
+            # review R-009 F4: the clock shim turned a real-time read into a system call
+            self.flag(ctx, "spawn", f"{sp.detail} [{res.clock}]")
+        if res.unshimmed:
+            self.flag(ctx, "spawn", f"{sp.detail} [clock not observable: {res.unshimmed} ran without the clock shim]")
+        self.child_entropy += res.entropy
+        self.child_read(ctx, sp.exe)
+        own = set()
+        for op, p in res.ops:
+            sk = follow.special(p, res.pids)
+            if sk == "skip":
+                continue
+            if sk == "entropy":
+                self.child_entropy += 1
+                continue
+            if sk == "proc":
+                if op == "d" or (op != "w" and not os.path.exists(p)):
+                    self.read(ctx, p, "d" if op == "d" else "f")  # a listing or a missing path: an input
+                else:
+                    self.flag(ctx, "spawn", f"{sp.detail} [reads {p}]")
+                continue
+            if op == "w":
+                own.add(p)
+                if not self.child_ignored(p):
+                    self.wrote(ctx, p)
+                continue
+            if p in own:
+                continue  # the tree wrote it first: internal
+            if op == "x":
+                interp = follow.shebang(p)
+                if interp:
+                    self.child_read(ctx, interp)
+            self.child_read(ctx, p, "d" if op == "d" else "f")
+
 
     def env_read(self, name: str) -> None:
         if self.active:
@@ -841,6 +912,27 @@ def runtime_identity(root: str, memo_path: str | None = None) -> tuple[str, dict
     return _core.digest(json.dumps(d, sort_keys=True).encode()), d, editable
 
 
+_LOCALE_VARS = ("TZ", "TZDIR", "LANG", "LANGUAGE", "LC_ALL", "LC_CTYPE", "LC_NUMERIC", "LC_TIME", "LC_COLLATE",
+                "LC_MONETARY", "LC_MESSAGES", "LC_PAPER", "LC_NAME", "LC_ADDRESS", "LC_TELEPHONE",
+                "LC_MEASUREMENT", "LC_IDENTIFICATION")
+
+
+def tz_locale_identity() -> dict:
+    """Time zone and locale as C sees them: the variables, /etc/localtime's content and the zone file TZ names."""
+    env = dict(os.environ._data) if hasattr(os.environ, "_data") else dict(os.environ)  # noqa: SLF001 (no event)
+    dec = {os.fsdecode(k) if isinstance(k, bytes) else k: os.fsdecode(v) if isinstance(v, bytes) else v
+           for k, v in env.items()}
+    d = {k: dec.get(k) for k in _LOCALE_VARS}
+    d["/etc/localtime"] = _core.file_digest("/etc/localtime")
+    tz = dec.get("TZ")
+    if tz:
+        name = tz[1:] if tz.startswith(":") else tz
+        zdir = dec.get("TZDIR") or "/usr/share/zoneinfo"
+        path = name if os.path.isabs(name) else os.path.join(zdir, name)
+        d["tzfile"] = _core.file_digest(path) if os.path.isfile(path) else None
+    return d
+
+
 def config_identity(config) -> tuple[str, dict]:
     cfg = _state.STATE.config
     plugins = sorted({f"{dist.project_name}=={dist.version}"
@@ -873,6 +965,9 @@ def config_identity(config) -> tuple[str, dict]:
             "record_net": cfg.record_net, "allow_hosts": list(cfg.allow_hosts),
             "hashseed": os.environ.get("PYTHONHASHSEED"),
         },
+        # review R-009 F3: the time zone and locale are read by C (getenv, tzset, /etc/localtime), never through
+        # os.environ: they are configuration of every test
+        "tz_locale": tz_locale_identity(),
     }
     return _core.digest(json.dumps(d, sort_keys=True, default=str).encode()), d
 
@@ -885,6 +980,7 @@ class ProofCachePlugin:
         self.cap = cap
         self.dir = os.path.abspath(cache_dir)
         self.verify = verify
+        self.max_age_s: float | None = None
         self.receipts_path = receipts or os.path.join(self.dir, "receipts.jsonl")
         self.store = None
         self.config = None
@@ -981,6 +1077,13 @@ class ProofCachePlugin:
             self.items[nid] = item
             self.test_index[nid] = i
             ok, info = store.check(nid)
+            if ok and self.max_age_s is not None:
+                # review R-009 F4: real-clock reads outside the virtual clock that detpy cannot see (C code such as
+                # OpenSSL's certificate validity) are bounded: an entry older than --det-cache-max-age (real time)
+                # is not reused
+                age = _now() - _run_time(json.loads(info).get("run", ""))
+                if age > self.max_age_s:
+                    ok, info = False, f"expired: recorded {age / 86400:.1f} days ago (--det-cache-max-age)"
             if ok:
                 receipt = json.loads(info)
                 if self.verify and rng.random() < self.verify:
@@ -1460,6 +1563,16 @@ class ProofCachePlugin:
         tr.write_line(f"receipts: {s['receipts']}")
 
 
+def _run_time(run: str) -> float:
+    """Real time (seconds) of a run id ``YYYYmmddTHHMMSS-pid``; 0 when unreadable (then the entry has expired)."""
+    import calendar
+
+    try:
+        return float(calendar.timegm(time.strptime(run.split("-", 1)[0], "%Y%m%dT%H%M%S")))
+    except (ValueError, IndexError):
+        return 0.0
+
+
 def _final(parts: dict) -> str:
     setup, call, teardown = parts.get("setup"), parts.get("call"), parts.get("teardown")
     so = setup and setup["outcome"]
@@ -1512,6 +1625,15 @@ def _is_find_library_ldconfig(args) -> bool:
     return False
 
 
+import re as _re  # noqa: E402
+
+# sqlite reads the real clock for 'now', CURRENT_TIMESTAMP/DATE/TIME and the date functions called without a time
+# value (date(), datetime(), time(), julianday(), unixepoch(), strftime(format))
+_SQL_REAL_CLOCK = _re.compile(
+    r"""'now'|"now"|\bcurrent_(timestamp|date|time)\b|\b(date|time|datetime|julianday|unixepoch)\s*\(\s*\)"""
+    r"""|\bstrftime\s*\(\s*('[^']*'|"[^"]*")\s*\)""", _re.I)
+
+
 def _numeric_host(host: str) -> bool:
     import ipaddress
 
@@ -1522,7 +1644,7 @@ def _numeric_host(host: str) -> bool:
         return False
 
 
-_FLAG_OF = {"subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
+_FLAG_OF = {"real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
             "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc"}
 
 
@@ -1697,6 +1819,8 @@ def _addr(args) -> str:
 def _uncacheable(flags: set, cfg) -> str | None:
     if "badpath" in flags:
         return "reads a path that is not valid UTF-8"
+    if "rclock" in flags:
+        return "real clock read outside the virtual clock"
     if "spawn" in flags:
         return "subprocess"
     if "connect" in flags:
@@ -1796,6 +1920,8 @@ def install(config) -> None:
         return
     opt = config.option
     plugin = ProofCachePlugin(cap, opt.det_cache, opt.det_cache_verify, opt.det_cache_receipts)
+    age = getattr(opt, "det_cache_max_age", 30.0)
+    plugin.max_age_s = age * 86400 if age and age > 0 else None
     plugin.configure(config)
     PLUGIN = plugin
     config.pluginmanager.register(plugin, "detpy-cache")

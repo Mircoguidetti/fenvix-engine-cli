@@ -70,6 +70,9 @@ def pytest_addoption(parser, pluginmanager):
     g.addoption("--det-cache-no-follow", action="store_true", default=False,
                 help="with --det-cache: never cache a test that starts a process (default: the processes run under "
                      "strace and their files, program and environment become inputs of the test)")
+    g.addoption("--det-cache-max-age", type=float, default=30.0, metavar="DAYS",
+                help="with --det-cache: never reuse a result recorded more than DAYS ago on the real clock (default "
+                     "30; 0 = no limit). Bounds real-clock reads detpy cannot see (C code such as TLS validity)")
     g.addoption("--det-cache-epoch-window", type=float, default=30.0, metavar="DAYS",
                 help="with --det-cache and --det-epoch=auto: keep the cache's epoch while the HEAD commit time is at "
                      "most DAYS later (default 30), so tests that read the clock are reusable across commits")
