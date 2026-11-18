@@ -191,3 +191,28 @@ def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
     assert {"host name lookup", "reads /proc, /sys or /dev", "real clock read outside the virtual clock",
             "outcome", "reads a file another test or fixture wrote"} <= set(nc), nc
     assert new[2]["summary"]["reused"] and new[2]["summary"]["recorded"], new[2]["summary"]
+
+
+# ---------------------------------------------------------------------------
+# decisions and receipts (ProofCache.check_all / reuse_info / write_receipts): the helpers against Python
+def test_float_repr_and_json_strings_match_python():
+    import math
+    import random
+
+    from detpy import _core
+
+    rnd = random.Random(3)
+    xs = [0.0, -0.0, 1.0, 0.1, 1e-4, 1e-5, 0.0001234, 123456789012345.6, 1e15, 1e16, 1.5e16, 2.5e-7, 5e-324,
+          1.7976931348623157e308, 3.0, 100.0, 0.000889701999767567, float("inf"), float("-inf"), float("nan")]
+    xs += [rnd.random() * 10 ** rnd.randint(-12, 20) for _ in range(5000)]
+    xs += [struct_f for struct_f in (rnd.uniform(-1, 1) for _ in range(1000))]
+    for x in xs:
+        want = json.dumps(x)
+        assert _core.py_repr_float(x) == want, (x, want)
+        if not math.isinf(x) and not math.isnan(x):
+            assert _core.py_repr_float(x) == repr(x)
+    strs = ["", "a", 'q"b\\c', "tab\tnl\nret\r\x00\x01\x1f\x7f\x80", "é", "日本", "😀", "a b::c[1-2]", "\b\f"]
+    strs += ["".join(chr(rnd.choice([rnd.randint(0, 0x7f), rnd.randint(0x80, 0xd7ff), rnd.randint(0xe000, 0x10ffff)]))
+                     for _ in range(rnd.randint(0, 20))) for _ in range(3000)]
+    for s in strs:
+        assert _core.json_dumps_str(s) == json.dumps(s), repr(s)

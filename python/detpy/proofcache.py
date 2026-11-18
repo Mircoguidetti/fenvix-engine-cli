@@ -671,24 +671,19 @@ class ProofCachePlugin:
             if f is not None:
                 store.set_fresh(path, content, f[0], f[1], f[2], f[3])
         rng = random.Random(f"detpy-cache-verify:{self.run_id}")
-        for i, item in enumerate(items):
-            nid = item.nodeid
+        nids = [item.nodeid for item in items]
+        # the checks, the expiry (review R-009 F4: real-clock reads outside the virtual clock that detpy cannot see,
+        # such as OpenSSL's certificate validity, are bounded: an entry older than --det-cache-max-age is not
+        # reused) and the receipts are Rust (ProofCache.check_all)
+        decided = store.check_all(nids, self.max_age_s, _now(), _run_time)
+        for i, (item, nid, (ok, info)) in enumerate(zip(items, nids, decided)):
             self.items[nid] = item
             self.test_index[nid] = i
-            ok, info = store.check(nid)
-            if ok and self.max_age_s is not None:
-                # review R-009 F4: real-clock reads outside the virtual clock that detpy cannot see (C code such as
-                # OpenSSL's certificate validity) are bounded: an entry older than --det-cache-max-age (real time)
-                # is not reused
-                age = _now() - _run_time(json.loads(info).get("run", ""))
-                if age > self.max_age_s:
-                    ok, info = False, f"expired: recorded {age / 86400:.1f} days ago (--det-cache-max-age)"
             if ok:
-                receipt = json.loads(info)
                 if self.verify and rng.random() < self.verify:
-                    self.verifying[nid] = receipt
+                    self.verifying[nid] = info
                 else:
-                    self.hits[nid] = receipt
+                    self.hits[nid] = info
             else:
                 self.misses[nid] = info
 
@@ -763,14 +758,13 @@ class ProofCachePlugin:
         from _pytest.reports import TestReport
         from _pytest.runner import CallInfo
 
-        e = json.loads(self.store.entry(item.nodeid))
-        rep = e.get("report") or {}
+        rep, fingerprint = self.store.reuse_info(item.nodeid)
         ihook = item.ihook
         ihook.pytest_runtest_logstart(nodeid=item.nodeid, location=item.location)
         now = _now()
         kw = {k: 1 for k in item.keywords}
         props = [("detpy_cache", "reused"), ("detpy_cache_key", receipt["key"]),
-                 ("detpy_fingerprint", e.get("fingerprint", ""))]
+                 ("detpy_fingerprint", fingerprint)]
         reports = []
         for when in ("setup", "call"):
             p = rep.get(when)
@@ -958,15 +952,8 @@ class ProofCachePlugin:
         self.store.remove(nid)
 
     def _write_receipts(self) -> None:
-        try:
-            os.makedirs(os.path.dirname(os.path.abspath(self.receipts_path)), exist_ok=True)
-            with open(self.receipts_path, "w") as fh:
-                for nid, r in self.hits.items():
-                    fh.write(json.dumps({"nodeid": nid, "reused": True, **r}) + "\n")
-                for nid, why in self.misses.items():
-                    fh.write(json.dumps({"nodeid": nid, "reused": False, "why": why}) + "\n")
-        except OSError:
-            pass
+        """One JSON line per decision (Rust: ``ProofCache.write_receipts``, the format ``json.dumps`` wrote)."""
+        self.store.write_receipts(os.path.abspath(self.receipts_path), list(self.hits), list(self.misses.items()))
 
     # -- reporting --------------------------------------------------------------------
     def summary_data(self) -> dict:
@@ -1048,7 +1035,8 @@ class ProofCachePlugin:
 
 
 def _run_time(run: str) -> float:
-    """Real time (seconds) of a run id ``YYYYmmddTHHMMSS-pid``; 0 when unreadable (then the entry has expired)."""
+    """Real time (seconds) of a run id ``YYYYmmddTHHMMSS-pid``; 0 when unreadable (then the entry has expired).
+    (``time.strptime``'s rules: called by ``ProofCache.check_all`` once per distinct run id.)"""
     import calendar
 
     try:

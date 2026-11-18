@@ -261,6 +261,8 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(sysmon::tracer_prefixes, m)?)?;
     m.add_class::<proofcache::ProofCache>()?;
     m.add_function(wrap_pyfunction!(proofcache::file_digest, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::py_repr_float, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::json_dumps_str, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::listing_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::dist_identity, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::env_value_digest, m)?)?;
