@@ -197,13 +197,19 @@ def prepare(c, work, out, max_first_run, jdks):
         res["status"] = "not-maven"
         return res, None
     ok = False
+    # single-module projects only need compiled classes (surefire:test runs on them): "test-compile"
+    # avoids packaging plugins (old antrun <tasks>, shading, assembly) that break on current Maven
+    goals = ["install"] if pl(c) else ["test-compile", "install"]
     for jdk in jdks:
-        for compat in ([], ["-Dmaven.compiler.source=1.8", "-Dmaven.compiler.target=1.8", "-Dmaven.compiler.release="]):
-            rc, outp, secs = sh(["mvn", "-B", "-q", "-DskipTests", *SKIPS, *compat, "install", *pl(c), *(["-am"] if pl(c) else [])],
-                                cwd=repo, env=java_env(jdk), timeout=2400, log=log)
-            res[f"build_jdk{jdk}{'_compat' if compat else ''}"] = {"rc": rc, "seconds": round(secs, 1)}
-            if rc == 0:
-                ok = True
+        for goal in goals:
+            for compat in ([], ["-Dmaven.compiler.source=1.8", "-Dmaven.compiler.target=1.8", "-Dmaven.compiler.release="]):
+                rc, outp, secs = sh(["mvn", "-B", "-q", "-DskipTests", *SKIPS, *compat, goal, *pl(c), *(["-am"] if pl(c) else [])],
+                                    cwd=repo, env=java_env(jdk), timeout=2400, log=log)
+                res[f"build_jdk{jdk}_{goal}{'_compat' if compat else ''}"] = {"rc": rc, "seconds": round(secs, 1)}
+                if rc == 0:
+                    ok = True
+                    break
+            if ok:
                 break
         if ok:
             break
