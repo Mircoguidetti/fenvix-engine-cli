@@ -143,7 +143,9 @@ def main(argv):
             for e, v in eq.items():
                 print(f"- {name}: {e} vs {r['engines'][0]}: {v['entries']} cold entries, {v['n_store_diffs']} store "
                       f"differences (fingerprint only: {v['n_fingerprint_only']}), {v['n_receipt_diffs']} warm "
-                      f"decision differences of {v['n_receipts']}")
+                      f"decision differences of {v['n_receipts']}"
+                      + (f"; run-to-run noise excluded (same engine, two rounds): {v['noise']['store']} entries, "
+                         f"{v['noise']['receipts']} decisions" if "noise" in v else ""))
 
 
 if __name__ == "__main__":

@@ -216,21 +216,46 @@ class Prof:
         return out
 
     def compare(self) -> None:
-        """Cold-run stores and warm-run decisions of the engines, against the first one."""
+        """Cold-run stores and warm-run decisions of the engines, against the first one. Tests whose entry or
+        decision differs between two rounds of the same engine (randomised inputs, threads) are run-to-run noise:
+        counted apart."""
         import canon
 
         engs = list(self.engines)
-        a = canon.canon(str(self.w.work / f"store-{engs[0]}.json"))
+        work = self.w.work
+        rounds = 2 if (work / f"store-{engs[0]}-1.json").exists() else 1
+
+        def store(e, r):
+            return canon.canon(str(work / f"store-{e}-{r}.json"))
+
+        def differing(a, b):
+            ta, tb = a["tests"], b["tests"]
+            return {n for n in set(ta) | set(tb)
+                    if {k: v for k, v in ta.get(n, {}).items() if k != "fingerprint"}
+                    != {k: v for k, v in tb.get(n, {}).items() if k != "fingerprint"}}
+
+        def rdiff(ra, rb):
+            return {n for n in set(ra) | set(rb) if ra.get(n) != rb.get(n)}
+
+        rec = self.res.get("receipts", {})
+        noise_s, noise_r = set(), set()
+        if rounds == 2:
+            for e in engs:
+                noise_s |= differing(store(e, 0), store(e, 1))
+                noise_r |= rdiff(rec.get(f"{e}-0", {}), rec.get(f"{e}-1", {}))
+        a = store(engs[0], 0)
         out = {}
         for e in engs[1:]:
-            b = canon.canon(str(self.w.work / f"store-{e}.json"))
-            d = canon.diff(a, b, limit=10**9, ignore=("fingerprint",))
+            b = store(e, 0)
+            d = sorted(differing(a, b) - noise_s)
             fp = [n for n in a["tests"] if n in b["tests"] and a["tests"][n]["fingerprint"] != b["tests"][n]["fingerprint"]]
-            ra, rb = self.res["receipts"].get(engs[0], {}), self.res["receipts"].get(e, {})
-            rd = [n for n in sorted(set(ra) | set(rb)) if ra.get(n) != rb.get(n)]
+            ra, rb = rec.get(f"{engs[0]}-0", {}), rec.get(e + "-0", {})
+            rd = sorted(rdiff(ra, rb) - noise_r)
             out[e] = {"entries": [len(a["tests"]), len(b["tests"])], "store_diffs": d[:50], "n_store_diffs": len(d),
                       "fingerprint_only": fp[:50], "n_fingerprint_only": len(fp), "receipt_diffs": rd[:50],
-                      "n_receipt_diffs": len(rd), "n_receipts": [len(ra), len(rb)]}
+                      "n_receipt_diffs": len(rd), "n_receipts": [len(ra), len(rb)],
+                      "written_equal": a["written"] == b["written"],
+                      "noise": {"store": len(noise_s), "receipts": len(noise_r), "examples": sorted(noise_s)[:10]}}
         self.res["equivalence"] = out
 
     def save(self):
@@ -281,13 +306,13 @@ class Prof:
                 self.res["cache"].setdefault(f"B:{eng}", []).append(x)
                 shutil.rmtree(cache, ignore_errors=True)
                 c = self.run("C", units, cache)
-                if r == 0:
-                    shutil.copy(cache / "proof-cache.json", w.work / f"store-{eng}.json")
+                if r < 2:
+                    shutil.copy(cache / "proof-cache.json", w.work / f"store-{eng}-{r}.json")
                 self.res["walls"][f"C:{eng}"].append(c["wall"])
                 self.res["cache"].setdefault(f"C:{eng}", []).append(c)
                 wm = self.run("C", units, cache)
-                if r == 0:
-                    self.res.setdefault("receipts", {})[eng] = self.receipts(cache)
+                if r < 2:
+                    self.res.setdefault("receipts", {})[f"{eng}-{r}"] = self.receipts(cache)
                 self.res["walls"][f"W:{eng}"].append(wm["wall"])
                 self.res["cache"].setdefault(f"W:{eng}", []).append(wm)
             self.save()

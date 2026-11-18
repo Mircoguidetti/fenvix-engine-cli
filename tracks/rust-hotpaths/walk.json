@@ -1,0 +1,9 @@
+{
+ "run_id": "w1",
+ "note": "cache-proof walk with the rust-hotpaths engine: same specs and commits as the base walks (home-assistant s1f, click and pygments s1d); every reuse checked by a fresh --det run",
+ "walk": [
+  {"spec": "home-assistant", "shards": 16},
+  {"spec": "click"},
+  {"spec": "pygments"}
+ ]
+}
