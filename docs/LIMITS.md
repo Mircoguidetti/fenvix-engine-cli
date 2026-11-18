@@ -89,3 +89,14 @@ repositories (**H**) or by design analysis (**D**), and what mitigates it.
 |---|---|---|---|
 | G1 | **Nested in-process pytest sessions** (pytester inline runs, `pytest.main()` from a test) ran detpy's module-level hooks: the inner session's `pytest_unconfigure` uninstalled the outer controls and the outer session died with INTERNALERROR (anyio: 2,820 tests never ran; faker: 385). | H | **Fixed**: the `--det` hooks and the outcome collection are objects registered on the owning config's plugin manager; a nested session never touches them. Test `test_nested_inprocess_session_does_not_break_the_outer_one`. |
 | G2 | References to detpy's fake clock functions kept by libraries are still called after the session uninstalled the controls (anyio at interpreter shutdown: `AttributeError`). | H | **Fixed**: after uninstall every fake delegates to the real function. Test `test_references_kept_after_the_session_fall_back_to_real_time`. |
+
+## 8. Cache with proof (`--det-cache`): real clock
+
+What the cache cannot see of the real clock is bounded by `--det-cache-max-age` (default 30 days): an older entry is never reused.
+
+| # | limit | found | mitigation |
+|---|---|---|---|
+| K1 | Real-clock reads in C code inside the test process other than sqlite (OpenSSL's certificate validity, `uuid.uuid1()`'s libuuid, database drivers). | D | Bounded by max-age. |
+| K2 | **File timestamps** set by the real clock: read in the test process (`os.stat(p).st_mtime` after writing `p`, C7), or in a child through `fstat` on a descriptor. A child's stat **by path** of a file its process tree wrote, or of `/proc/<pid>`, is refused (review R-009b R4; `rm`, `rmdir`, `mkdir`, `ln`, `chmod`, `chown` exempt). | D | Bounded by max-age. |
+| K3 | **Dynamically linked Go children** (cgo) load the clock library but read the clock through the vDSO, never through libc. Today every Go binary is refused by accident: the Go runtime reads `/sys/kernel/mm/transparent_hugepage/hpage_pmd_size` at start-up (a `/sys` content read). If a Go release stops reading it, a cgo binary's real-clock reads become invisible (review R-009b, F4 note). Static Go binaries are refused (no clock-library marker). | D | Bounded by max-age. |
+| K4 | A trace callback set by the test on a sqlite connection replaces detpy's: its statements and schema are no longer checked for `'now'`. | D | Bounded by max-age. |
