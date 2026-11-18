@@ -1,0 +1,12 @@
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+.........s...........s.....................sss.......................... [ 50%]
+........................................................................ [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_aio.py:348: could not import 'pytest_asyncio': No module named 'pytest_asyncio'
+SKIPPED [1] tests/test_clock.py:276: could not import 'time_machine': No module named 'time_machine'
+SKIPPED [3] tests/test_django_order.py:129: could not import 'pytest_django': No module named 'pytest_django'
+139 passed, 5 skipped in 330.12s (0:05:30)
