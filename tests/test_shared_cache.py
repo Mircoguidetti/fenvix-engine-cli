@@ -273,3 +273,40 @@ def test_lookup_key_is_stable():
     assert rc.lookup_key("t::a", "c", "r", None) != rc.lookup_key("t::a", "c", "r", 0)
     assert rc.lookup_key("t::a", "c", "r", None) != rc.lookup_key("t::a", "c", "r2", None)
     assert rc.split_url("https://cache.example:8443/acme/repo") == ("https://cache.example:8443", "acme/repo")
+
+
+def test_fenvix_run_on_two_machines_sharing_the_service(service, tmp_path):
+    """runner/fenvix-run --cache <service URL>: job 2 on another machine (empty disk) reuses with proof what job 1
+    recorded, its summary says how many came from the service, and verify finds no wrong reuse."""
+    import subprocess
+    from pathlib import Path
+
+    svc, t = service
+    wrapper = Path(__file__).resolve().parents[1] / "runner" / "fenvix-run"
+    proj = tmp_path / "proj"
+    write(proj, {k: v for k, v in PROJECT.items()})
+
+    def job(machine: str, *extra: str):
+        out = tmp_path / f"job-{machine}"
+        env = {"PATH": "/usr/bin:/bin", "HOME": str(tmp_path / f"home-{machine}"), "TMPDIR": str(tmp_path),
+               "FENVIX_CACHE_ROOT": str(tmp_path / f"disk-{machine}"), "FENVIX_CACHE_TOKEN": t["a"],
+               "FENVIX_RUNTIME_MEMO": "off", "GITHUB_STEP_SUMMARY": str(tmp_path / f"summary-{machine}.md")}
+        verify = extra[:1] == ("verify",)
+        args = [sys.executable, str(wrapper), *extra, "--project", str(proj), "--python", sys.executable, "--out",
+                str(out)]
+        if not verify:
+            args += ["--key", "acme/proj", "--cache", f"{svc.url}/org-a"]
+        r = subprocess.run(args, env=env, capture_output=True, text=True, timeout=600)
+        name = "verify.json" if verify else "summary.json"
+        return r, json.loads((out / name).read_text())
+
+    r1, s1 = job("1")
+    assert r1.returncode == 0, r1.stdout[-2000:] + r1.stderr[-2000:]
+    assert s1["reused_with_proof"] == 0 and s1["shared_cache"]["push_entry_docs_new"] == 5
+    r2, s2 = job("2")
+    assert r2.returncode == 0, r2.stdout[-2000:] + r2.stderr[-2000:]
+    assert s2["cache_was_warm"] is False  # a fresh machine: nothing on its disk
+    assert s2["reused_with_proof"] == 5 and s2["reused_from_shared_cache"] == 5
+    assert "proven from entries recorded on other machines" in (tmp_path / "summary-2.md").read_text()
+    rv, v = job("2", "verify", "--summary", str(tmp_path / "job-2" / "summary.json"))
+    assert rv.returncode == 0 and v["checked"] == 5 and v["wrong"] == []

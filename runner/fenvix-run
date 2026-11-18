@@ -66,20 +66,76 @@ def git_head(project: Path) -> str:
     return r.stdout.strip() if r.returncode == 0 else ""
 
 
-RUNTIME_PROBE = ("import json, sys; from detpy.proofcache import runtime_identity, _dist_infos; "
-                 "dig, info, _ = runtime_identity(sys.argv[1]); "
-                 "print(json.dumps({'digest': dig, **info, 'dist_list': _dist_infos(sys.argv[1])[0]}))")
+RUNTIME_PROBE = ("import json, sys\n"
+                 "try:\n"
+                 "    from detpy import runtime_id\n"
+                 "    d = runtime_id.describe(sys.argv[1]); det = d.pop('details')\n"
+                 "    d.update(dist_list=det['dist_list'], native_list=det['native_list'],\n"
+                 "             python_version=det['python_version'], identity_seconds=det['seconds'])\n"
+                 "except ImportError:\n"
+                 "    from detpy.proofcache import runtime_identity, _dist_infos\n"
+                 "    dig, info, _ = runtime_identity(sys.argv[1])\n"
+                 "    d = {'digest': dig, **info, 'dist_list': _dist_infos(sys.argv[1])[0]}\n"
+                 "print(json.dumps(d))\n")
+_LIST_PARTS = {"distributions": "dist_list", "native": "native_list"}
 
 
 def runtime_components(py: str, project: Path) -> dict:
-    """The engine's runtime identity, part by part (interpreter, libpython, libc, stdlib listing, installed
-    distributions). A cache entry is reused only under the same digest, so when a job reuses nothing on `runtime`,
-    comparing these parts with the previous job's names the cause."""
-    r = subprocess.run([py, "-c", RUNTIME_PROBE, str(project)], capture_output=True, text=True, cwd=project)
+    """The engine's runtime identity, part by part (interpreter, native libraries with libc, standard library,
+    installed distributions, import path; see detpy.runtime_id). A cache entry is reused only under the same digest,
+    so when a job reuses nothing on `runtime`, comparing these parts with the previous job's names the cause."""
+    env = without_client_env(dict(os.environ))
+    r = subprocess.run([py, "-c", RUNTIME_PROBE, str(project)], capture_output=True, text=True, cwd=project, env=env)
     try:
         return json.loads(r.stdout.strip().splitlines()[-1])
     except (ValueError, IndexError):
         return {"error": (r.stderr or r.stdout)[-300:]}
+
+
+def runtime_diff(prev: dict | None, rt: dict) -> list[str]:
+    """Names of the runtime parts that changed, with the list entries that differ (e.g. ``-pkg==1.0:...``)."""
+    if not prev:
+        return []
+    lists = set(_LIST_PARTS.values())
+    out = sorted(k for k in set(rt) | set(prev) if k not in lists and k != "identity_seconds"
+                 and prev.get(k) != rt.get(k))
+    for part, lst in _LIST_PARTS.items():
+        if part in out:
+            before, after = set(prev.get(lst, [])), set(rt.get(lst, []))
+            out += [f"-{d}" for d in sorted(before - after)] + [f"+{d}" for d in sorted(after - before)]
+    return out
+
+
+def machine_identity() -> dict:
+    """Which machine ran the job (to show that two jobs ran on two machines): host name, a digest of
+    /etc/machine-id and of the boot id, CPU model."""
+    def digest_of(path: str) -> str | None:
+        try:
+            return hashlib.sha256(Path(path).read_bytes().strip()).hexdigest()[:12]
+        except OSError:
+            return None
+    cpu = None
+    try:
+        for line in Path("/proc/cpuinfo").read_text().splitlines():
+            if line.startswith("model name"):
+                cpu = line.split(":", 1)[1].strip()
+                break
+    except OSError:
+        pass
+    return {"hostname": os.uname().nodename, "machine_id": digest_of("/etc/machine-id"),
+            "boot_id": digest_of("/proc/sys/kernel/random/boot_id"), "cpu": cpu, "cpus": os.cpu_count()}
+
+
+_CLIENT_ENV = ("FENVIX_CACHE_TOKEN", "FENVIX_CACHE_TOKEN_FILE", "FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT")
+
+
+def without_client_env(env: dict) -> dict:
+    """The environment of a pytest run that does not use the shared cache: no token, no client settings."""
+    return {k: v for k, v in env.items() if k not in _CLIENT_ENV}
+
+
+def is_url(v: str | None) -> bool:
+    return bool(v) and v.startswith(("http://", "https://"))
 
 
 def run_pytest(py: str, project: Path, args: list[str], env: dict) -> tuple[int, float]:
@@ -132,7 +188,22 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
     out = Path(a.out or (Path(os.environ.get("RUNNER_TEMP", project)) / "fenvix")).resolve()
     out.mkdir(parents=True, exist_ok=True)
     key = project_key(project, a.key)
-    cache = Path(a.cache) if a.cache else Path(DEFAULT_ROOT) / f"{key}-{python_tag(a.python)}"
+    ns = f"{key}-{python_tag(a.python)}"
+    env = dict(os.environ)
+    env.pop("PYTHONHASHSEED", None)  # the engine fixes it itself (re-exec)
+    remote_p = out / "shared-cache.json"
+    remote_p.unlink(missing_ok=True)
+    if is_url(a.cache):
+        # shared cache service: this machine's directory is the local mirror (and the fallback)
+        cache = Path(DEFAULT_ROOT) / ns
+        cache_arg = f"{a.cache.rstrip('/')}/{ns}"
+        env["FENVIX_CACHE_LOCAL"] = str(cache)
+        env["FENVIX_CACHE_REPORT"] = str(remote_p)
+        if not env.get("FENVIX_CACHE_TOKEN") and not env.get("FENVIX_CACHE_TOKEN_FILE"):
+            log("warning: no FENVIX_CACHE_TOKEN: the service will refuse the requests (local mirror only)")
+    else:
+        cache = Path(a.cache) if a.cache else Path(DEFAULT_ROOT) / ns
+        cache_arg = str(cache)
     cache.mkdir(parents=True, exist_ok=True)
     had_cache = any(cache.iterdir())
     receipts = out / "receipts.jsonl"
@@ -140,13 +211,16 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
     for p in (receipts, outcomes_p, junit_p):
         p.unlink(missing_ok=True)
 
-    env = dict(os.environ)
-    env.pop("PYTHONHASHSEED", None)  # the engine fixes it itself (re-exec)
     base = ["--det", "--det-urandom", "-p", "no:cacheprovider", "-q", "-rN", "--tb=short"]
-    args = base + [f"--det-cache={cache}", f"--det-cache-receipts={receipts}", f"--det-outcomes={outcomes_p}",
+    args = base + [f"--det-cache={cache_arg}", f"--det-cache-receipts={receipts}", f"--det-outcomes={outcomes_p}",
                    f"--junitxml={junit_p}", *extra]
-    log(f"project {project} @ {git_head(project)[:12]}; cache {cache} ({'warm' if had_cache else 'cold'})")
+    log(f"project {project} @ {git_head(project)[:12]}; cache {cache_arg} (local {cache}: "
+        f"{'warm' if had_cache else 'cold'})")
     code, wall = run_pytest(a.python, project, args, env)
+    try:
+        shared = json.loads(remote_p.read_text())
+    except (OSError, ValueError):
+        shared = None
 
     try:
         res = json.loads(outcomes_p.read_text())
@@ -175,7 +249,7 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
                    f"--det-outcomes={again_p}", *[x for x in extra if not x.startswith("--det-cache")]]
         real, flaky = [], []
         for nid in failed[: a.max_reruns]:
-            run_pytest(a.python, project, rr_args + [nid], env)
+            run_pytest(a.python, project, rr_args + [nid], without_client_env(env))
             try:
                 o2 = json.loads(again_p.read_text()).get("outcomes", {}).get(nid)
             except (OSError, ValueError):
@@ -189,17 +263,13 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
         prev_rt = json.loads(rt_file.read_text())
     except (OSError, ValueError):
         prev_rt = None
-    rt_changed = sorted(k for k in set(rt) | set(prev_rt or {})
-                        if k != "dist_list" and (prev_rt or {}).get(k) != rt.get(k)) if prev_rt else []
-    if prev_rt and "distributions" in rt_changed:
-        before, after = set(prev_rt.get("dist_list", [])), set(rt.get("dist_list", []))
-        rt_changed += [f"-{d}" for d in sorted(before - after)] + [f"+{d}" for d in sorted(after - before)]
+    rt_changed = runtime_diff(prev_rt, rt)
     try:
         rt_file.write_text(json.dumps(rt, indent=1))
     except OSError:
         pass
 
-    rel_cache = f"--det-cache={cache}"
+    rel_cache = f"--det-cache={cache_arg}"
     replay_full = " ".join(shlex.quote(x) for x in ["python", "-m", "pytest", *base, *extra])
     summary = {
         "project": str(project), "commit": git_head(project), "cache_dir": str(cache), "cache_was_warm": had_cache,
@@ -222,15 +292,23 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
         "reused_outcomes": {r["nodeid"]: r.get("outcome") for r in reused},
         "pytest_args": args, "cache_arg": rel_cache,
         "runtime": rt, "runtime_changed_since_previous_job": rt_changed,
+        "machine": machine_identity(), "shared_cache": shared,
+        "reused_from_shared_cache": (shared or {}).get("pull_proven", 0),
     }
     (out / "summary.json").write_text(json.dumps(summary, indent=1))
     write_step_summary(summary, a.title)
     log(f"tests {summary['tests']}, reused with proof {summary['reused_with_proof']}, ran {summary['ran']}, "
         f"saved {fmt_s(saved)} of test time ({summary['share_of_test_time_saved']:.1%}), failed {len(real)}, "
         f"flaky {len(flaky)}")
+    if shared:
+        log(f"shared cache {shared.get('service')} [{shared.get('namespace')}]: "
+            f"{shared.get('pull_proven', 0)} results proven from entries recorded on other machines, "
+            f"{shared.get('push_entry_docs_new', 0)} entries pushed; error: {shared.get('error')}")
     if rt_changed:
         log("runtime changed since the previous job on this cache: " + ", ".join(rt_changed))
-    log(f"runtime {rt.get('digest')}: " + json.dumps({k: v for k, v in rt.items() if k not in ("dist_list", "digest")}))
+    log(f"runtime {rt.get('digest')}: " + json.dumps({k: v for k, v in rt.items()
+                                                       if k not in ("dist_list", "native_list", "digest")}))
+    log(f"machine: {json.dumps(summary['machine'])}")
     return code
 
 
@@ -243,6 +321,11 @@ def write_step_summary(s: dict, title: str | None) -> None:
     L = [f"## {title or 'fenvix'}: tests with proof", ""]
     L.append(f"Commit `{s['commit'][:12]}` · cache {'warm' if s['cache_was_warm'] else 'cold (first job on this machine)'}"
              f" · machine `{os.uname().nodename}`")
+    sh = s.get("shared_cache")
+    if sh:
+        L += ["", f"Shared cache `{sh.get('namespace')}`: **{sh.get('pull_proven', 0)}** results proven from entries "
+                  f"recorded on other machines; {sh.get('push_entry_docs_new', 0)} new entries pushed"
+                  + (f"; service error (local mirror used): {sh['error']}" if sh.get("error") else "") + "."]
     L += ["", "| | |", "|---|---|",
           f"| Tests | **{s['tests']}** |",
           f"| Run | {s['ran']} |",
@@ -301,7 +384,7 @@ def cmd_verify(a: argparse.Namespace, extra: list[str]) -> int:
         t = dt.datetime.fromtimestamp(s["epoch_ns"] // 1_000_000_000, tz=dt.timezone.utc)
         ep = [f"--det-epoch={t.strftime('%Y-%m-%dT%H:%M:%S')}"]
     keep = [x for x in s["pytest_args"] if not x.startswith(("--det-cache", "--det-outcomes", "--junitxml"))]
-    env = dict(os.environ)
+    env = without_client_env(dict(os.environ))
     env.pop("PYTHONHASHSEED", None)
 
     def fresh(tag: str, ids: list[str] | None = None) -> dict:
@@ -357,7 +440,9 @@ def main(argv: list[str] | None = None) -> int:
         a = p.parse_args(argv)
         return cmd_verify(a, extra)
     p.add_argument("--key", default=None, help="cache key of the project (default: its origin URL)")
-    p.add_argument("--cache", default=None, help=f"cache directory (default: {DEFAULT_ROOT}/<key>-<python>)")
+    p.add_argument("--cache", default=None, help=f"cache directory (default: {DEFAULT_ROOT}/<key>-<python>), or the URL "
+                                                 "of a shared cache service (token in FENVIX_CACHE_TOKEN; the "
+                                                 "machine's directory is then the local mirror)")
     p.add_argument("--title", default=None, help="heading of the step summary")
     p.add_argument("--no-rerun", action="store_true", help="do not re-run failures alone")
     p.add_argument("--max-reruns", type=int, default=20, help="failures re-run alone at most (default 20)")
