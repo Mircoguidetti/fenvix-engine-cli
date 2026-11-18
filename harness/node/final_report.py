@@ -75,10 +75,10 @@ def main() -> None:
     SA, SF, SP = (S.get(k, collections.Counter()) for k in ("all", "flaky", "popular"))
     per_repo = summary.get("per_repo_strict", {})
     cov_all = SA["covered"] + SA["not_covered"] + SA["nofp_ran"]
-    top = sorted(per_repo.items(), key=lambda kv: -kv[1].get("reproduced_strict", 0))[:2]
+    top = sorted(per_repo.items(), key=lambda kv: -kv[1].get("unstable_strict", 0))[:2]
     top_rep = sum(v.get("reproduced_strict", 0) for _, v in top)
     top_uns = sum(v.get("unstable_strict", 0) for _, v in top)
-    conc = (f"The figure is concentrated: {' and '.join(n for n, _ in top)} give {top_rep} of the "
+    conc = (f"The figure is concentrated in the two projects with the most baseline-unstable tests: {' and '.join(n for n, _ in top)} give {top_rep} of the "
             f"{SA['reproduced_strict']} reproduced tests; without them {SA['reproduced_strict'] - top_rep}/"
             f"{SA['unstable_strict'] - top_uns} = {pct(SA['reproduced_strict'] - top_rep, SA['unstable_strict'] - top_uns)}.")
     A(f"* **Main metric (MEASURED):** tests unstable in our baseline that `--det` / `--det-seed` makes reproducible "
