@@ -15,5 +15,10 @@ replay-command check). Workflow `.github/workflows/l2-browser-r2.yml` (push chan
 - Replay command printed per failing test.
 - Tests: node/test/l2r2.test.js (6), node/test/playwright.test.js (5) pass locally.
 
+- Diagnosis run 2 (44279789112): solid-start target one fingerprint; documenso 5 targets pass again (state), diverge on
+  DB-engine timestamps; uptime-kuma/actual: page timing (S6 root).
+- Worker clock for test code, API-only tests fingerprinted, per-stream page digests, HMR passthrough.
+- Run 3 cancelled (worker clock reached the driver's pacing: fixed + regression test).
+
 ## Next
-- Diagnosis run 2 (round 2 controls) -> remaining sources; then the full measurement (RUN mode unset).
+- Measurement run 4 (nonce 4) running; then REPORT.md via `python3 harness/aggregate.py`.
