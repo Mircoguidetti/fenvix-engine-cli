@@ -1,0 +1,168 @@
+{
+ "name": "uptime-kuma",
+ "job": "e6",
+ "repo": "louislam/uptime-kuma",
+ "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
+ "status": "ok",
+ "run_id": "44383743101",
+ "engine_commit": "d7d76a6aeca009a516f251bdbc0f9af8b20ac726",
+ "setup_s": 67,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 200,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "seeds": 8,
+  "fail_replays": 5
+ },
+ "pw_dir": ".",
+ "pw_args": [],
+ "runs": [],
+ "epoch": "2026-11-18T21:00:00Z",
+ "measured_at": "2026-11-18T21:00:31Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "e1_args": [],
+ "e6": [
+  {
+   "file": "monitor-history-settings.spec.js",
+   "grep": "saves the data retention period",
+   "project": "specs",
+   "lists": [
+    {
+     "list": "round2",
+     "latency": "0,0,0,1,5,25",
+     "seeds": {
+      "1": "passed",
+      "2": "failed",
+      "3": "failed",
+      "4": "skipped",
+      "5": "failed",
+      "6": "failed",
+      "7": "failed",
+      "8": "failed"
+     },
+     "errors": {
+      "2": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/",
+      "3": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/",
+      "5": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    - locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/>\n ",
+      "6": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/>\n ",
+      "7": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    5 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/>",
+      "8": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/>\n "
+     },
+     "fail_seed": 2,
+     "fail_replays": [
+      "failed",
+      "failed",
+      "failed",
+      "failed",
+      "failed"
+     ],
+     "fail_errors": [
+      "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    4 \u00d7 locator resolved",
+      "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    4 \u00d7 locator resolved",
+      "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    4 \u00d7 locator resolved",
+      "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    4 \u00d7 locator resolved",
+      "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    - locator resolved t"
+     ],
+     "fail_verify": {
+      "status": "diverged",
+      "distinct_fingerprints": 5,
+      "divergence": {
+       "run_a": 0,
+       "run_b": 1,
+       "index": 12,
+       "window": null,
+       "event_a": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "POST http://localhost:3001/api/auth/sign-in/username 200 9b09e4ac7ecbad283280827f5d2f0766"
+       },
+       "event_b": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "POST http://localhost:3001/api/auth/sign-in/username 200 12cd91d974d2745d30ed430fc66be97b"
+       },
+       "reason": "net",
+       "description": "event #12: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 9b09e4ac7ecbad283280827f5d2f0766\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 12cd91d974d2745d30ed430fc66be97b\""
+      }
+     }
+    },
+    {
+     "list": "deadline",
+     "latency": "0,0,1,5,25,D",
+     "seeds": {
+      "1": "failed",
+      "2": "failed",
+      "3": "failed",
+      "4": "failed",
+      "5": "failed",
+      "6": "failed",
+      "7": "failed",
+      "8": "failed"
+     },
+     "errors": {
+      "1": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('#keepDataPeriodDays')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n",
+      "2": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('#keepDataPeriodDays')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n",
+      "3": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('#keepDataPeriodDays')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n",
+      "4": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/",
+      "5": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('#keepDataPeriodDays')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n",
+      "6": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('#keepDataPeriodDays')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n",
+      "7": "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    - locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/>\n ",
+      "8": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('#keepDataPeriodDays')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n"
+     },
+     "fail_seed": 1,
+     "fail_replays": [
+      "failed",
+      "failed",
+      "failed",
+      "failed",
+      "failed"
+     ],
+     "fail_errors": [
+      "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('#keepDataPeriodDays')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n",
+      "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('#keepDataPeriodDays')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n",
+      "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('#keepDataPeriodDays')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n",
+      "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('#keepDataPeriodDays')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n",
+      "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('#keepDataPeriodDays')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n"
+     ],
+     "fail_verify": {
+      "status": "diverged",
+      "distinct_fingerprints": 3,
+      "divergence": {
+       "run_a": 0,
+       "run_b": 1,
+       "index": 3,
+       "window": null,
+       "event_a": {
+        "t": 0,
+        "s": "net",
+        "o": "ws.open",
+        "at": "",
+        "v": "ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=S3YR43epscMl1gHBAAAJ"
+       },
+       "event_b": {
+        "t": 0,
+        "s": "net",
+        "o": "ws.open",
+        "at": "",
+        "v": "ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=BlP4xp8t-X8zfQqUAAAI"
+       },
+       "reason": "net",
+       "description": "event #3: ws.open @  returned different values: \"ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=S3YR43epscMl1gHBAAAJ\" vs \"ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=BlP4xp8t-X8zfQqUAAAI\""
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "elapsed_min": 29.8
+}
