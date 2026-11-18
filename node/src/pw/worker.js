@@ -320,7 +320,7 @@ async function seedWorkerScript(route, request, key) {
   // (round 2, source S4: actual makes its ids in a web worker). Same key as the test's pages; the
   // stream differs per document through the script URL.
   try {
-    const resp = await route.fetch();
+    const resp = await route.fetch({ url: request.url().replace(/([?&])__detjs_w=1&?/, '$1').replace(/[?&]$/, '') });
     const body = await resp.text();
     const [hi, lo] = native.deriveSeedWords(SEED, `${testIdOf(key)}\0page`);
     rec(key, 'random', 'worker.seeded', targetOf(request.url()));
@@ -335,9 +335,9 @@ async function routeHandler(route, request) {
   const key = currentKey();
   const url = request.url();
   const type = request.resourceType();
-  if (SEEDS && key && /^https?:/.test(url)) {
-    const dest = (request.headers()['sec-fetch-dest'] || '').toLowerCase();
-    if (dest === 'worker' || dest === 'sharedworker') return seedWorkerScript(route, request, key);
+  if (/[?&]__detjs_w=1/.test(url)) {
+    if (SEEDS && key && ENV.DETJS_PW_WORKER_SEEDS !== '0') return seedWorkerScript(route, request, key);
+    return route.fallback({ url: url.replace(/([?&])__detjs_w=1&?/, '$1').replace(/[?&]$/, '') });
   }
   if (!key || !APP_TYPES.has(type) || !/^https?:/.test(url)) {
     return route.fallback();

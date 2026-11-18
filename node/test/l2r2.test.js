@@ -170,3 +170,154 @@ test('detjs state: a Postgres database is restored to its snapshot (rows written
     fs.rmSync(base, { recursive: true, force: true });
   }
 });
+
+// ---------------------------------------------------------------------------------------------
+// 2. Server background work (S1 + S2). A pool reaper / stats job reads the clock and draws random
+// numbers every few real milliseconds; requests return a timestamp and an id. With one clock counter
+// and one stream per process, the values a request sees depend on how many background reads came
+// before (uptime-kuma's createdAt), and the background events enter the test's server fingerprint
+// (etherpad, solid-start).
+const BG_PORT = 4612;
+const BG_APP = `
+const http = require('http');
+const crypto = require('crypto');
+let stats = 0;
+setInterval(() => { stats += Date.now() % 7 + Math.floor(Math.random() * 3); }, 3);
+http.createServer((req, res) => {
+  if (req.url === '/health') return res.end('ok');
+  if (req.url === '/') {
+    res.setHeader('content-type', 'text/html');
+    return res.end('<!doctype html><div id=out>...</div><script>fetch("/api/item").then(r => r.json()).then(j => { out.textContent = j.created + " " + j.id; })</script>');
+  }
+  if (req.url === '/api/item') {
+    return setTimeout(() => {
+      res.setHeader('content-type', 'application/json');
+      res.end(JSON.stringify({ created: new Date().toISOString(), id: crypto.randomUUID(), r: Math.random() }));
+    }, 15);
+  }
+  res.statusCode = 404; res.end();
+}).listen(${BG_PORT});
+`;
+const BG_SPEC = `
+const { test, expect } = require('@playwright/test');
+test('an item from a server with background work', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#out')).not.toHaveText('...');
+  await page.waitForTimeout(200);
+});
+`;
+
+test('server scope: a server with a background job gives one fingerprint in 4 runs (S1+S2; round 1 behaviour with DETJS_PW_SCOPE=0 diverges)', { skip, timeout: 600000 }, () => {
+  const dir = project('bg', { app: BG_APP, port: BG_PORT, specs: { 'bg.spec.js': BG_SPEC } });
+  const before = [1, 2, 3].map((i) => pw(dir, ['--det'], `noscope-${i}`, { DETJS_PW_SCOPE: '0' }));
+  for (const r of before) assert.ok(r.trace, r.out);
+  const vb = verify(before.map((r) => r.trace.path));
+  assert.equal(vb.summary.stable, 0, 'round 1 behaviour: background work changes the fingerprint');
+  const runs = [1, 2, 3, 4].map((i) => pw(dir, ['--det'], `scope-${i}`));
+  for (const r of runs) assert.deepEqual(outcomes(r), ['passed'], r.out);
+  const v = verify(runs.map((r) => r.trace.path));
+  assert.equal(v.summary.stable, 1, JSON.stringify(v.tests[0].divergence));
+  const ev = runs[0].trace.tests[0].events;
+  assert.ok(ev.some((e) => e.o === 'server.fingerprint'), 'the server takes part in the fingerprint');
+});
+
+// ---------------------------------------------------------------------------------------------
+// 3. Web worker randomness (S4): the app makes its ids in a dedicated worker (actual).
+const WK_PORT = 4613;
+const WK_APP = `
+const http = require('http');
+http.createServer((req, res) => {
+  if (req.url === '/health') return res.end('ok');
+  if (req.url === '/') {
+    res.setHeader('content-type', 'text/html');
+    return res.end('<!doctype html><div id=out>...</div><script>const w = new Worker("/worker.js"); w.onmessage = (e) => { out.textContent = e.data; }; w.postMessage("go");</script>');
+  }
+  if (req.url === '/worker.js') {
+    res.setHeader('content-type', 'text/javascript');
+    return res.end('onmessage = () => postMessage(crypto.randomUUID() + " " + Math.random().toFixed(8));');
+  }
+  res.statusCode = 404; res.end();
+}).listen(${WK_PORT});
+`;
+const WK_SPEC = `
+const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+test('ids made in a web worker', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#out')).not.toHaveText('...');
+  fs.appendFileSync(process.env.IDS_FILE, (await page.locator('#out').textContent()) + '\\n');
+});
+`;
+
+test('web workers: ids drawn in a dedicated worker are the same in 3 runs, one fingerprint (S4)', { skip, timeout: 600000 }, () => {
+  const dir = project('worker', { app: WK_APP, port: WK_PORT, specs: { 'worker.spec.js': WK_SPEC } });
+  const ids = path.join(dir, 'ids.txt');
+  const offIds = path.join(dir, 'ids-off.txt');
+  const off = [1, 2, 3].map((i) => pw(dir, ['--det'], `wk-off-${i}`, { IDS_FILE: offIds, DETJS_PW_WORKER_SEEDS: '0' }));
+  for (const r of off) assert.deepEqual(outcomes(r), ['passed'], r.out);
+  assert.equal(new Set(fs.readFileSync(offIds, 'utf8').trim().split('\n')).size, 3, 'round 1 behaviour: the worker draws OS randomness');
+  const runs = [1, 2, 3].map((i) => pw(dir, ['--det'], `wk-${i}`, { IDS_FILE: ids }));
+  for (const r of runs) assert.deepEqual(outcomes(r), ['passed'], r.out);
+  const lines = fs.readFileSync(ids, 'utf8').trim().split('\n');
+  assert.equal(lines.length, 3);
+  assert.equal(new Set(lines).size, 1, lines.join(' | '));
+  const v = verify(runs.map((r) => r.trace.path));
+  assert.equal(v.summary.stable, 1, JSON.stringify(v.tests[0].divergence));
+  assert.ok(runs[0].trace.tests[0].events.some((e) => e.o === 'worker.seeded'));
+});
+
+// ---------------------------------------------------------------------------------------------
+// 4. Server pushes vs responses (S5): the page sends a WebSocket message and fetches; the server
+// answers the fetch and pushes a frame about it. Which one the page sees first depends on timing.
+const WS_PORT = 4614;
+const WS_APP = `
+const http = require('http');
+const { WebSocketServer } = require('ws');
+const socks = new Set();
+const srv = http.createServer((req, res) => {
+  if (req.url === '/health') return res.end('ok');
+  if (req.url === '/') {
+    res.setHeader('content-type', 'text/html');
+    return res.end('<!doctype html><div id=log></div><script>' +
+      'const log = (x) => { const d = document.createElement("div"); d.textContent = x; document.getElementById("log").appendChild(d); };' +
+      'const ws = new WebSocket("ws://" + location.host + "/ws");' +
+      'ws.onmessage = (e) => log("push " + e.data);' +
+      'ws.onopen = () => { ws.send("hello"); fetch("/api/save", { method: "POST" }).then(r => r.text()).then(t => log("response " + t)); };' +
+      '</script>');
+  }
+  if (req.url === '/api/save') {
+    const n = Math.floor(Math.random() * 12);
+    res.end('ok');
+    return setTimeout(() => { for (const s of socks) s.send('saved'); }, n);
+  }
+  res.statusCode = 404; res.end();
+});
+const wss = new WebSocketServer({ server: srv, path: '/ws' });
+wss.on('connection', (s) => { socks.add(s); s.on('message', (m) => setTimeout(() => s.send('ack ' + m), Math.floor(Math.random() * 5))); });
+srv.listen(${WS_PORT});
+`;
+const WS_SPEC = `
+const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+test('push and response order', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#log div')).toHaveCount(3);
+  fs.appendFileSync(process.env.IDS_FILE, (await page.locator('#log').innerText()).replace(/\\n/g, ' / ') + '\\n');
+});
+`;
+
+test('server pushes: push frames and responses reach the page in one order, one fingerprint in 4 runs (S5)', { skip, timeout: 600000 }, () => {
+  const dir = project('push', { app: WS_APP, port: WS_PORT, specs: { 'push.spec.js': WS_SPEC } });
+  const ids = path.join(dir, 'order.txt');
+  // Round 1 behaviour (no server scope, pushes relayed as they arrive): more than one fingerprint in 6 runs.
+  const off = [1, 2, 3, 4, 5, 6].map((i) => pw(dir, ['--det'], `push-off-${i}`, { IDS_FILE: path.join(dir, 'order-off.txt'), DETJS_PW_SCOPE: '0', DETJS_PW_GATE_PUSH: '0' }));
+  for (const r of off) assert.ok(r.trace, r.out);
+  const voff = verify(off.map((r) => r.trace.path));
+  assert.equal(voff.summary.stable, 0, 'round 1 behaviour diverges');
+  const runs = [1, 2, 3, 4].map((i) => pw(dir, ['--det'], `push-${i}`, { IDS_FILE: ids }));
+  for (const r of runs) assert.deepEqual(outcomes(r), ['passed'], r.out);
+  const lines = fs.readFileSync(ids, 'utf8').trim().split('\n');
+  assert.equal(new Set(lines).size, 1, lines.join(' | '));
+  const v = verify(runs.map((r) => r.trace.path));
+  assert.equal(v.summary.stable, 1, JSON.stringify(v.tests[0].divergence));
+});

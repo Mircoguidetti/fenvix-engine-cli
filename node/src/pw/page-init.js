@@ -93,6 +93,22 @@ function pageInit(seedHi, seedLo) {
         Object.defineProperty(C_PROTO, 'randomUUID', { value: uuid, writable: true, configurable: true });
       }
     }
+    // Workers created by the page: their main script URL is marked so that the worker process
+    // (worker.js) prepends this seed script to it (request headers do not tell a worker script apart).
+    ['Worker', 'SharedWorker'].forEach(function (name) {
+      var Real = typeof window !== 'undefined' && G[name];
+      if (typeof Real !== 'function') return;
+      var Wrapped = function (u, o) {
+        var s = u;
+        try {
+          var x = new URL(String(u && u.href ? u.href : u), location.href);
+          if (x.protocol === 'http:' || x.protocol === 'https:') { x.searchParams.set('__detjs_w', '1'); s = x.href; }
+        } catch (e) { s = u; }
+        return new Real(s, o);
+      };
+      Wrapped.prototype = Real.prototype;
+      try { Object.defineProperty(G, name, { value: Wrapped, writable: true, configurable: true }); } catch (e) { /* frozen */ }
+    });
     Object.defineProperty(G, '__detjs', {
       value: { stats: function () { return { random: stats.random, crypto: stats.crypto, uuid: stats.uuid, digest: stats.digest.toString(16) }; } },
       enumerable: false,
