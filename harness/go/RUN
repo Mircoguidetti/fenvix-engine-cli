@@ -1,1 +1,1 @@
-{"mode": "flaky", "set": "flaky-r3"}
+{"mode": "skip", "set": "skip-r2", "only": ["prometheus", "terraform"]}

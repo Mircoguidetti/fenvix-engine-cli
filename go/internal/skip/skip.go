@@ -59,6 +59,10 @@ type Entry struct {
 type Package struct {
 	Pkg   string            `json:"pkg"`
 	Tests map[string]*Entry `json:"tests"`
+	// Own: measurement only (never used to skip): the same entries without
+	// the prefix rule (each test's own inputs plus package set-up), to
+	// measure what the prefix rule costs and whether dropping it is wrong.
+	Own map[string]*Entry `json:"own,omitempty"`
 }
 
 func fileFor(dir, pkg string) string {

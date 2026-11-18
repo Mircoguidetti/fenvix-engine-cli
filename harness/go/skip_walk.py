@@ -171,15 +171,16 @@ def main():
         tests = []
         for d in decisions:
             tests.append({"pkg": d["pkg"], "test": d["test"], "reuse": d["reuse"], "why": d.get("why", ""),
+                          "reuse_own": d.get("reuse_own", False), "why_own": d.get("why_own", ""),
                           "cached": d.get("cached", ""), "fresh": d.get("fresh", ""), "elapsed": d.get("elapsed", 0),
                           "go_cached": d["pkg"] in go_cached})
         # wrong-looking reuses: re-run alone 3 times (plain go test) to separate flaky tests
         checks = []
         for tr in tests:
-            for rule, reused in (("fenvix", tr["reuse"]), ("go", tr["go_cached"])):
+            for rule, reused in (("fenvix", tr["reuse"]), ("own", tr.get("reuse_own")), ("go", tr["go_cached"])):
                 if not reused or i == 0 or tr["fresh"] in ("", "skipped"):
                     continue
-                cached_outcome = tr["cached"] if rule == "fenvix" else "passed"
+                cached_outcome = tr["cached"] if rule in ("fenvix", "own") else "passed"
                 if tr["fresh"] == cached_outcome:
                     continue
                 pkgdir = None

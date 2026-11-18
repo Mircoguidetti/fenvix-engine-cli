@@ -27,6 +27,8 @@ type decision struct {
 	Pkg           string  `json:"pkg"`
 	Test          string  `json:"test"`
 	Reuse         bool    `json:"reuse"`          // inputs unchanged: reused with proof
+	ReuseOwn      bool    `json:"reuse_own"`      // measurement only: own inputs, no prefix rule
+	WhyOwn        string  `json:"why_own,omitempty"`
 	Why           string  `json:"why,omitempty"`  // why it had to run
 	Cached        string  `json:"cached"`         // cached outcome
 	CachedElapsed float64 `json:"cached_elapsed"` // seconds
@@ -251,6 +253,7 @@ func cmdExec(args []string) int {
 	var names, order, fullOrder []string
 	stdout := &reusePrinter{w: os.Stdout}
 	wouldReuse := map[string]bool{}
+	whyOwn := map[string]string{}
 	why := map[string]string{}
 	var ctlWG sync.WaitGroup
 	ctlWG.Add(1)
@@ -282,6 +285,7 @@ func cmdExec(args []string) int {
 				if cache != nil {
 					w := cache.Tests[name].Why(static, state)
 					why[name] = w
+					whyOwn[name] = cache.Own[name].Why(static, state)
 					if w == "" {
 						wouldReuse[name] = true
 						if !sess.Skip.Verify {
@@ -429,6 +433,7 @@ func cmdExec(args []string) int {
 		// it in the same process read (shared process state: a file loaded
 		// once by an earlier test, a cached configuration...).
 		closure := map[string]*skip.Raw{}
+		ownRaw := map[string]*skip.Raw{}
 		before := map[string][]*skip.Entry{} // reused tests that came before (their recorded inputs)
 		acc := skip.NewRaw()
 		acc.Merge(pkgRaw)
@@ -446,6 +451,10 @@ func cmdExec(args []string) int {
 			if st != nil {
 				toRaw(st.Segments[res.pos], own, false)
 			}
+			o := skip.NewRaw()
+			o.Merge(pkgRaw)
+			o.Merge(own)
+			ownRaw[name] = o
 			acc.Merge(own)
 			c := skip.NewRaw()
 			c.Merge(acc)
@@ -460,6 +469,8 @@ func cmdExec(args []string) int {
 			}
 			d.Reuse = wouldReuse[name]
 			d.Why = why[name]
+			d.WhyOwn = whyOwn[name]
+			d.ReuseOwn = cache != nil && whyOwn[name] == ""
 			res := results[name]
 			if res == nil {
 				appendJSONL(decPath, d)
@@ -479,6 +490,17 @@ func cmdExec(args []string) int {
 			}
 			e.Commit = sess.Skip.Commit
 			cache.Tests[name] = e
+			if o := ownRaw[name]; o != nil {
+				for p := range o.Exists {
+					if state.File(p) == "-" {
+						delete(o.Exists, p)
+					}
+				}
+				if cache.Own == nil {
+					cache.Own = map[string]*skip.Entry{}
+				}
+				cache.Own[name] = skip.MakeEntry(static, res.outcome, res.elapsed, o, state, capture, bin)
+			}
 		}
 		if err := cache.Save(sess.Skip.Dir); err != nil {
 			fmt.Fprintln(os.Stderr, "fenvix-go exec: skip cache:", err)
