@@ -72,6 +72,7 @@ enum Rec {
 struct Walk<'a> {
     inside: PathBuf,
     exclude: &'a HashSet<String>,
+    suffixes: &'a [String],
     max_files: usize,
     recs: Vec<Rec>,
     visited: HashSet<PathBuf>,
@@ -90,7 +91,7 @@ impl Walk<'_> {
             rd.filter_map(|e| e.ok()).map(|e| (e.file_name().to_string_lossy().into_owned(), e.path())).collect();
         names.sort();
         for (name, p) in names {
-            if self.exclude.contains(&name) {
+            if self.exclude.contains(&name) || self.suffixes.iter().any(|x| name.ends_with(x.as_str())) {
                 continue;
             }
             let r = if rel.is_empty() { name.clone() } else { format!("{rel}/{name}") };
@@ -139,7 +140,9 @@ pub fn tree_digest(
     max_files: usize,
     threads: usize,
 ) -> TreeDigest {
-    let exclude: HashSet<String> = exclude.iter().cloned().collect();
+    // "*.ext" entries exclude by suffix, others by exact name
+    let suffixes: Vec<String> = exclude.iter().filter_map(|e| e.strip_prefix('*').map(str::to_string)).collect();
+    let exclude: HashSet<String> = exclude.iter().filter(|e| !e.starts_with('*')).cloned().collect();
     let mut memo: Memo = memo_path
         .and_then(|p| fs::read(p).ok())
         .and_then(|b| serde_json::from_slice(&b).ok())
@@ -153,6 +156,7 @@ pub fn tree_digest(
         let mut w = Walk {
             inside: inside.clone(),
             exclude: &exclude,
+            suffixes: &suffixes,
             max_files,
             recs: Vec::new(),
             visited: HashSet::new(),
@@ -278,6 +282,11 @@ mod tests {
         fs::write(b.path().join("nm/.cache/junk"), "z").unwrap();
         let db3 = tree_digest(&[("nm".into(), b.path().join("nm"))], b.path(), &ex, None, 1000, 2);
         assert_eq!(db2.digest, db3.digest);
+        let ex2 = vec![".cache".to_string(), "*.tsbuildinfo".to_string()];
+        let d4 = tree_digest(&[("nm".into(), b.path().join("nm"))], b.path(), &ex2, None, 1000, 2);
+        fs::write(b.path().join("nm/pkg/x.tsbuildinfo"), "state").unwrap();
+        let d5 = tree_digest(&[("nm".into(), b.path().join("nm"))], b.path(), &ex2, None, 1000, 2);
+        assert_eq!(d4.digest, d5.digest, "suffix exclusion");
     }
 
     #[test]

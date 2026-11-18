@@ -23,7 +23,9 @@ const path = require('node:path');
 const native = require('../native');
 
 const TREE_EXCLUDE = ['.cache', '.vite', '.vite-temp', '.vitest', '.detjs', '.modules.yaml', '.pnpm-workspace-state.json',
-  '.pnpm-workspace-state-v1.json', '.vitest-cache', '.yarn-state.yml', '.yarn-integrity', '.package-lock.json', '.tmp', '.eslintcache', '.nx'];
+  '.pnpm-workspace-state-v1.json', '.vitest-cache', '.yarn-state.yml', '.yarn-integrity', '.package-lock.json', '.tmp', '.eslintcache', '.nx',
+  // written by tools at run time inside installed packages (Vitest typecheck: vitest/dist/tsconfig.tmp.*)
+  '*.tsbuildinfo', 'tsconfig.tmp.json'];
 const LOCKFILES = ['package-lock.json', 'npm-shrinkwrap.json', 'pnpm-lock.yaml', 'yarn.lock', 'bun.lock', 'bun.lockb'];
 const SKIP_DIRS = new Set(['node_modules', '.git', '.detjs', '.hg', '.svn']);
 
