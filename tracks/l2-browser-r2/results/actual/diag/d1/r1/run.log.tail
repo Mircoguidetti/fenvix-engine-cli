@@ -1,0 +1,41 @@
+detjs 0.1.0: Level 2 browser prototype; playwright 1.61.1; seed 0; epoch 2026-11-18T09:25:00Z; vtime=paced; net=on; server=on; workers=1
+[WebServer] (!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+[WebServer]   - `__dirname` (vite.config.mts:7:31). Use `import.meta.dirname` instead
+[WebServer] Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+[WebServer] (!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+[WebServer]   - `__dirname` (vite.config.mts:57:31). Use `import.meta.dirname` instead
+[WebServer] Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+Running 1 test using 1 worker
+T
+
+  1) [chromium] › e2e/accounts.mobile.test.ts:67:7 › Mobile Accounts › keeps the search after opening a transaction and going back 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: locator.waitFor: Target page, context or browser has been closed
+    Call log:
+      - waiting for getByTestId('transaction-form') to be visible
+
+
+       at page-models/mobile-transaction-entry-page.ts:25
+
+      23 |
+      24 |   async waitFor(...options: Parameters<Locator['waitFor']>) {
+    > 25 |     await this.transactionForm.waitFor(...options);
+         |                                ^
+      26 |   }
+      27 |
+      28 |   async fillAmount(value: string) {
+        at MobileTransactionEntryPage.waitFor (/home/runner/work/_temp/l2_target/packages/desktop-client/e2e/page-models/mobile-transaction-entry-page.ts:25:32)
+        at /home/runner/work/_temp/l2_target/packages/desktop-client/e2e/accounts.mobile.test.ts:82:27
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/accounts.mobile-Mobile-Acc-8f60e--transaction-and-going-back-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/accounts.mobile-Mobile-Acc-8f60e--transaction-and-going-back-chromium/error-context.md
+
+  1 failed
+    [chromium] › e2e/accounts.mobile.test.ts:67:7 › Mobile Accounts › keeps the search after opening a transaction and going back 
+detjs: trace ../../../l2_out/actual/traces/d1-r1.jsonl
