@@ -1,1 +1,1 @@
-{"nonce": 9, "jobs": [{"job": "e5", "name": "documenso"}], "params": {"e5:documenso": {"variants": ["control", "control-w0", "frozen-w0"], "control": 5, "replays": 5, "budget_min": 120}}}
+{"nonce": 10, "jobs": [{"job": "s3", "name": "actual"}, {"job": "s3", "name": "etherpad"}, {"job": "s3", "name": "uptime-kuma"}, {"job": "s3", "name": "solid-start"}, {"job": "s3", "name": "sveltekit"}], "params": {"s3": {"plain": 0, "stress": 0, "base": 0, "det": 2, "freeze": 0, "replay": false, "budget_min": 160}}}

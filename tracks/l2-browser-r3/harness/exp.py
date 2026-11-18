@@ -299,7 +299,7 @@ E1 = CFG.get("r3", {}).get("e1_args")
 SEL = E1.split() if E1 else PW_ARGS
 R["e1_args"] = SEL
 
-if JOB in ("e1", "ab"):
+if JOB in ("e1", "ab", "s3"):
     phase_runs("plain", P["plain"], SEL)
     phase_runs("stress", P["stress"], SEL, stress=True)
     for j, extra in enumerate(CFG.get("r3", {}).get("e1_extra", []), 1):
