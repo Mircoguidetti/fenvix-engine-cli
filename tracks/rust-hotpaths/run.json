@@ -1,15 +1,45 @@
 {
- "run_id": "p4",
- "note": "round 2: base engine (24b6d15), round 1 (128dcc6), round 2 (this commit: Rust clock and call sites), round 2 with code-object level line capture (DETPY_CACHE_LINES=code); interleaved; equivalence of each engine against base",
+ "run_id": "p5",
+ "note": "round 2 final engine: base (24b6d15), round 1 (128dcc6), round 2 (this commit), round 2 with code-object level line capture (DETPY_CACHE_LINES=code, last-line representative); interleaved; equivalence of each engine against base. Replaces p4 (cancelled after click and pygments)",
  "engines": [
-  {"name": "base", "ref": "24b6d15e043a2f42834809ea41b5cca0f60849d3"},
-  {"name": "r1", "ref": "128dcc6"},
-  {"name": "r2", "ref": ""},
-  {"name": "r2c", "ref": "", "env": {"DETPY_CACHE_LINES": "code"}}
+  {
+   "name": "base",
+   "ref": "24b6d15e043a2f42834809ea41b5cca0f60849d3"
+  },
+  {
+   "name": "r1",
+   "ref": "128dcc6"
+  },
+  {
+   "name": "r2",
+   "ref": ""
+  },
+  {
+   "name": "r2c",
+   "ref": "",
+   "env": {
+    "DETPY_CACHE_LINES": "code"
+   }
+  }
  ],
  "profile": [
-  {"spec": "home-assistant", "shards": 16, "only": [0, 5, 10], "reps": 3},
-  {"spec": "pygments", "reps": 5},
-  {"spec": "click", "reps": 5}
+  {
+   "spec": "home-assistant",
+   "shards": 16,
+   "only": [
+    0,
+    5,
+    10
+   ],
+   "reps": 3
+  },
+  {
+   "spec": "pygments",
+   "reps": 5
+  },
+  {
+   "spec": "click",
+   "reps": 5
+  }
  ]
 }
