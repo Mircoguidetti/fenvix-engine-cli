@@ -11,7 +11,7 @@ import warnings
 
 import pytest
 
-from . import __version__, _core, _sites, _state, clock, fsorder, network, proofcache, reexec, seeds
+from . import __version__, _core, _sites, _state, clock, fsorder, network, proofcache, reexec, remote_cache, seeds
 from ._patch import Patcher
 
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net")
@@ -248,6 +248,8 @@ def pytest_load_initial_conftests(early_config, parser, args):
     controls = _controls(ns)
     if getattr(ns, "det_cache", None) and not proofcache.AVAILABLE:
         raise pytest.UsageError("--det-cache needs Python 3.12+ (sys.monitoring)")
+    if getattr(ns, "det_cache", None):
+        ns.det_cache = remote_cache.localize(ns.det_cache)  # a service URL works on its local mirror directory
     want_bytecode = "bytecode" in controls
     if "hashseed" in controls:
         need = reexec.plan(_hashseed(ns), not ns.det_keep_aslr, want_bytecode)
@@ -280,6 +282,7 @@ def pytest_load_initial_conftests(early_config, parser, args):
             S.adjustments.append("pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)")
     _install(early_config, ns, controls)
     if getattr(ns, "det_cache", None):
+        remote_cache.hide_token()
         proofcache.start(early_config, ns)
 
 
@@ -354,7 +357,9 @@ def _configure_det(config) -> None:
     S.trace_path = opt.det_trace or os.path.join(root, ".detpy", "trace.jsonl")
     _state.STATE.recorder = _core.Recorder(max_events=opt.det_max_events)
     if opt.det_cache:
+        opt.det_cache = remote_cache.localize(opt.det_cache)
         proofcache.install(config)
+        remote_cache.attach(config, proofcache.PLUGIN)
     factory = getattr(config, "_tmp_path_factory", None)
     if factory is not None:
         def basetemp():
