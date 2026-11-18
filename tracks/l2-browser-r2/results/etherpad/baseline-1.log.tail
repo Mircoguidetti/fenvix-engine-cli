@@ -1,0 +1,39 @@
+
+Running 289 tests using 2 workers
+······································Chat true
+Chat false
+Chat false
+Chat 
+·Chat false
+Chat true
+Chat true
+Chat false
+Chat false
+Chat 
+·········································
+················································································
+···············°··································×······±······················
+··················································
+
+  1) [chromium] › tests/frontend-new/specs/undo_redo_scroll.spec.ts:31:3 › Undo scroll-to-caret (#7007) › Ctrl+Z scrolls viewport up when the caret lands above the view 
+
+    Error: expect(received).toBeLessThan(expected)
+
+    Expected: < 526
+    Received:   527
+
+      72 |     // Pre-fix: scrollAfter ≈ scrollBefore (no scroll).
+      73 |     // Fixed: scrollAfter < scrollBefore (viewport moved up toward the caret).
+    > 74 |     expect(scrollAfter).toBeLessThan(scrollBefore);
+         |                         ^
+      75 |   });
+      76 |
+      77 |   test('Ctrl+Z scrolls viewport down when the caret lands below the view', async function ({page}) {
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/undo_redo_scroll.spec.ts:74:25
+
+    Error Context: test-results/tests-frontend-new-specs-u-1c191--caret-lands-above-the-view-chromium/error-context.md
+
+  1 flaky
+    [chromium] › tests/frontend-new/specs/undo_redo_scroll.spec.ts:31:3 › Undo scroll-to-caret (#7007) › Ctrl+Z scrolls viewport up when the caret lands above the view 
+  1 skipped
+  287 passed (3.1m)

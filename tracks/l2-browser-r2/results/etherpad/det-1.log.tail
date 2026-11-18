@@ -1,0 +1,808 @@
+detjs 0.1.0: Level 2 browser prototype; playwright 1.65.1; seed 0; epoch 2026-11-18T10:25:00Z; vtime=paced; net=on; server=on; workers=1
+
+Running 289 tests using 1 worker
+······················F·F········F····Chat true
+Chat false
+Chat false
+Chat 
+·Chat false
+Chat true
+Chat true
+Chat false
+Chat false
+Chat 
+········F································
+··································F·······FF··············F·TF···××T××T·××T·····
+·········F··········°·················F···F···········××F·×±×±··················
+·····························F··F··························
+
+  1) [chromium] › tests/frontend-new/specs/anchor_scroll.spec.ts:9:3 › anchor scrolling › reapplies #L scroll after earlier content changes height 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 10
+    Received:   0
+
+    Call Log:
+    - Timeout 20000ms exceeded while waiting on the predicate
+
+      34 |     const getTargetViewportTop = async () => await targetLine.evaluate((el) => el.getBoundingClientRect().top);
+      35 |
+    > 36 |     await expect.poll(getScrollTop).toBeGreaterThan(10);
+         |                                     ^
+      37 |     const initialViewportTop = await getTargetViewportTop();
+      38 |
+      39 |     await firstLine.evaluate((el) => {
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/anchor_scroll.spec.ts:36:37
+
+    Error Context: test-results/tests-frontend-new-specs-a-9e916-lier-content-changes-height-chromium/error-context.md
+
+  2) [chromium] › tests/frontend-new/specs/anchor_scroll.spec.ts:80:3 › anchor scrolling › user scroll cancels the reapply loop so navigation is not locked 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 10
+    Received:   0
+
+    Call Log:
+    - Timeout 20000ms exceeded while waiting on the predicate
+
+      94 |         (el) => el.parentElement?.scrollTop || 0);
+      95 |
+    > 96 |     await expect.poll(getScrollTop).toBeGreaterThan(10);
+         |                                     ^
+      97 |
+      98 |     // User interacts with the pad. The anchor-scroll handler listens for
+      99 |     // wheel/mousedown/keydown/touchmove on the outer iframe document and must cancel
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/anchor_scroll.spec.ts:96:37
+
+    Error Context: test-results/tests-frontend-new-specs-a-8843c-so-navigation-is-not-locked-chromium/error-context.md
+
+  3) [chromium] › tests/frontend-new/specs/change_user_name.spec.ts:11:1 › Remembers the username after a refresh @feature:username 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  locator('input[data-l10n-id=\'pad.userlist.entername\']')
+    Expected: "😃"
+    Received: ""
+    Timeout:  20000ms
+
+    Call log:
+      - Expect "toHaveValue" locator('input[data-l10n-id=\'pad.userlist.entername\']') with timeout 20000ms
+      - waiting for locator('input[data-l10n-id=\'pad.userlist.entername\']')
+        44 × locator resolved to <input type="text" maxlength="128" id="myusernameedit" data-l10n-aria-label="true" aria-label="Enter your name" placeholder="Enter your name" data-l10n-id="pad.userlist.entername" class="myusernameedithoverable editable editactive"/>
+           - unexpected value ""
+
+
+      19 |   await toggleUserList(page);
+      20 |   const usernameField = page.locator("input[data-l10n-id='pad.userlist.entername']");
+    > 21 |   await expect(usernameField).toHaveValue('😃');
+         |                               ^
+      22 | })
+      23 |
+      24 |
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/change_user_name.spec.ts:21:31
+
+    Error Context: test-results/tests-frontend-new-specs-c-818f2-he-username-after-a-refresh-chromium/error-context.md
+
+  4) [chromium] › tests/frontend-new/specs/collab_client.spec.ts:47:3 › Messages in the COLLABROOM › bug #4978 regression test 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator:  locator('#innerdocbody').locator('div').nth(1)
+    Expected: "text created by user 2"
+    Received: "Hello World"
+    Timeout:  20000ms
+
+    Call log:
+      - Expect "toHaveText" locator('#innerdocbody').locator('div').nth(1) with timeout 20000ms
+      - waiting for locator('#innerdocbody').locator('div').nth(1)
+        44 × locator resolved to <div id="magicdomid3" class="ace-line" role="paragraph">…</div>
+           - unexpected value "Hello World"
+
+
+      78 |     await replaceLineText(1, user2Text, page2)
+      79 |
+    > 80 |     await expect(body1.locator('div').nth(1)).toHaveText(user2Text)
+         |                                               ^
+      81 |
+      82 |
+      83 |     // Users 1 and 2 make some more changes.
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/collab_client.spec.ts:80:47
+
+    Error Context: test-results/tests-frontend-new-specs-c-7dc30-OM-bug-4978-regression-test-chromium/error-context.md
+
+  5) [chromium] › tests/frontend-new/specs/pad_deletion_token.spec.ts:149:3 › pad deletion token with the modal suppressed › no modal; the settings toggle shows and copies a working token, across reloads 
+
+    Error: expect(received).toBeNull()
+
+    Received: "9d040afcf9ee2953c326373a3f47c22236b187f1851bcf3174fd2c871ba62f64"
+
+    Call Log:
+    - Timeout 20000ms exceeded while waiting on the predicate
+
+      203 |     // The creator's browser drops the saved token once the pad is deleted.
+      204 |     await expect.poll(() => page.evaluate(
+    > 205 |         (id) => localStorage.getItem(`padDeletionToken:${id}`), padId)).toBeNull();
+          |                                                                         ^
+      206 |   });
+      207 |
+      208 |   test('not offered when the modal is not suppressed', async ({page}) => {
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/pad_deletion_token.spec.ts:205:73
+
+    Error Context: test-results/tests-frontend-new-specs-p-88656-orking-token-across-reloads-chromium/error-context.md
+
+  6) [chromium] › tests/frontend-new/specs/pad_settings.spec.ts:34:3 › creator-owned pad settings › pad settings act as defaults until enforcement is enabled @feature:line-numbers 
+
+    Error: expect(locator).toHaveClass(expected) failed
+
+    Locator: locator('iframe[name="ace_outer"]').contentFrame().locator('#outerdocbody')
+    Expected pattern: /line-numbers-hidden/
+    Received string:  "outerdocbody"
+    Timeout: 20000ms
+
+    Call log:
+      - Expect "toHaveClass" locator('iframe[name="ace_outer"]').contentFrame().locator('#outerdocbody') with timeout 20000ms
+      - waiting for locator('iframe[name="ace_outer"]').contentFrame().locator('#outerdocbody')
+        44 × locator resolved to <body id="outerdocbody" class="outerdocbody">…</body>
+           - unexpected value "outerdocbody"
+
+
+      57 |     await expect(page.locator('#padsettings-options-linenoscheck')).not.toBeChecked();
+      58 |     await expect(creatorOuter).toHaveClass(/line-numbers-hidden/);
+    > 59 |     await expect(viewerOuter).toHaveClass(/line-numbers-hidden/);
+         |                               ^
+      60 |
+      61 |     await page.locator('label[for="padsettings-options-colorscheck"]').click();
+      62 |     await expect(page.locator('#padsettings-options-colorscheck')).not.toBeChecked();
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/pad_settings.spec.ts:59:31
+
+    Error Context: test-results/tests-frontend-new-specs-p-191f0-ntil-enforcement-is-enabled-chromium/error-context.md
+
+  7) [chromium] › tests/frontend-new/specs/pad_settings.spec.ts:93:3 › creator-owned pad settings › creator can keep authorship colors while pad-wide enforced settings keep them off for other users 
+
+    Error: expect(locator).not.toHaveClass(expected) failed
+
+    Locator: locator('iframe[name="ace_outer"]').contentFrame().locator('iframe[name="ace_inner"]').contentFrame().locator('body')
+    Expected pattern: not /authorColors/
+    Received string: "innerdocbody authorColors doesWrap ltr"
+    Timeout: 20000ms
+
+    Call log:
+      - Expect "not toHaveClass" locator('iframe[name="ace_outer"]').contentFrame().locator('iframe[name="ace_inner"]').contentFrame().locator('body') with timeout 20000ms
+      - waiting for locator('iframe[name="ace_outer"]').contentFrame().locator('iframe[name="ace_inner"]').contentFrame().locator('body')
+        43 × locator resolved to <body id="innerdocbody" spellcheck="false" aria-readonly="false" contenteditable="true" aria-label="Pad content" aria-describedby="editor-keyboard-hint" class="innerdocbody authorColors doesWrap ltr">…</body>
+           - unexpected value "innerdocbody authorColors doesWrap ltr"
+
+
+      112 |         await expect(page.locator('#options-colorscheck')).not.toBeChecked();
+      113 |         await expect(creatorInner).not.toHaveClass(/authorColors/);
+    > 114 |         await expect(viewerInner).not.toHaveClass(/authorColors/);
+          |                                       ^
+      115 |
+      116 |         await page.locator('label[for="padsettings-enforcecheck"]').click();
+      117 |         await expect(page.locator('#padsettings-enforcecheck')).toBeChecked();
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/pad_settings.spec.ts:114:39
+
+    Error Context: test-results/tests-frontend-new-specs-p-13bb6-ep-them-off-for-other-users-chromium/error-context.md
+
+  8) [chromium] › tests/frontend-new/specs/padmode.spec.ts:158:3 › in-pad history mode › outer slider drives the embedded timeslider revision 
+
+    Error: expect(received).toMatch(expected)
+
+    Expected pattern: /#rev\/0$/
+    Received string:  "http://localhost:9001/p/FRONTEND_TESTSf7cbff4c-b3ed-4014-ab46-5747dc5e6363#rev/3"
+
+      185 |     }, {timeout: 5_000});
+      186 |
+    > 187 |     expect(page.url()).toMatch(/#rev\/0$/);
+          |                        ^
+      188 |   });
+      189 |
+      190 |   test('dark mode propagates into the history iframe', async ({page}) => {
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/padmode.spec.ts:187:24
+
+    Error Context: test-results/tests-frontend-new-specs-p-e9de5-mbedded-timeslider-revision-chromium/error-context.md
+
+  9) [chromium] › tests/frontend-new/specs/padmode.spec.ts:217:3 › in-pad history mode › chat panel is filtered to messages newer than the historical revision 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 90000ms exceeded.
+
+      241 |     await expect(page.locator('body.history-mode')).toBeVisible();
+      242 |     // Wait for the inner BroadcastSlider hook to fire at least once.
+    > 243 |     await page.waitForFunction(() => {
+          |                ^
+      244 |       const p = document.querySelector('.chat-msg-test-later') as HTMLElement | null;
+      245 |       return !!p && p.style.display === 'none';
+      246 |     }, {timeout: 10_000});
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/padmode.spec.ts:243:16
+
+    Error Context: test-results/tests-frontend-new-specs-p-be0cd-han-the-historical-revision-chromium/error-context.md
+
+  10) [chromium] › tests/frontend-new/specs/padmode.spec.ts:261:3 › in-pad history mode › outer Export hrefs point at the historical revision in history mode 
+
+    Error: expect(received).toMatch(expected)
+
+    Expected pattern: /\/p\/FRONTEND_TESTSb298d52c-a266-4038-963d-44855d8606a9\/\d+\/export\/html/
+    Received string:  "/p/FRONTEND_TESTSb298d52c-a266-4038-963d-44855d8606a9/export/html"
+
+      274 |     expect(href).not.toBeNull();
+      275 |     // Format is /p/<padId>/<rev>/export/html — assert the revision segment.
+    > 276 |     expect(href).toMatch(new RegExp(`/p/${padId}/\\d+/export/html`));
+          |                  ^
+      277 |
+      278 |     await page.locator('#history-banner-return').click();
+      279 |     await expect(page.locator('body.history-mode')).toHaveCount(0);
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/padmode.spec.ts:276:18
+
+    Error Context: test-results/tests-frontend-new-specs-p-dfc23-al-revision-in-history-mode-chromium/error-context.md
+
+  11) [chromium] › tests/frontend-new/specs/page_up_down.spec.ts:12:3 › Page Up / Page Down › PageDown moves caret forward by a page of lines 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('#innerdocbody')
+        - locator resolved to <body id="innerdocbody" spellcheck="false" aria-readonly="false" contenteditable="true" aria-label="Pad content" aria-describedby="editor-keyboard-hint" class="innerdocbody authorColors doesWrap ltr">…</body>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+
+
+       at tests/frontend-new/helper/padHelper.ts:183
+
+      181 | export const writeToPad = async (page: Page, text: string) => {
+      182 |   const body = await getPadBody(page);
+    > 183 |   await body.click();
+          |              ^
+      184 |   // Use insertText (single input event) instead of keyboard.type
+      185 |   // (one keydown/keyup per char). Firefox under WITH_PLUGINS load
+      186 |   // racily drops characters from per-key events; insertText delivers
+        at writeToPad (/home/runner/work/_temp/l2_target/src/tests/frontend-new/helper/padHelper.ts:183:14)
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/page_up_down.spec.ts:18:7
+
+    Error Context: test-results/tests-frontend-new-specs-p-a4179--forward-by-a-page-of-lines-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('#innerdocbody')
+        - locator resolved to <body id="innerdocbody" spellcheck="false" aria-readonly="false" contenteditable="true" aria-label="Pad content" aria-describedby="editor-keyboard-hint" class="innerdocbody authorColors doesWrap ltr">…</body>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+
+
+       at tests/frontend-new/helper/padHelper.ts:183
+
+      181 | export const writeToPad = async (page: Page, text: string) => {
+      182 |   const body = await getPadBody(page);
+    > 183 |   await body.click();
+          |              ^
+      184 |   // Use insertText (single input event) instead of keyboard.type
+      185 |   // (one keydown/keyup per char). Firefox under WITH_PLUGINS load
+      186 |   // racily drops characters from per-key events; insertText delivers
+        at writeToPad (/home/runner/work/_temp/l2_target/src/tests/frontend-new/helper/padHelper.ts:183:14)
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/page_up_down.spec.ts:18:7
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/tests-frontend-new-specs-p-a4179--forward-by-a-page-of-lines-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/tests-frontend-new-specs-p-a4179--forward-by-a-page-of-lines-chromium-retry1/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/tests-frontend-new-specs-p-a4179--forward-by-a-page-of-lines-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/tests-frontend-new-specs-p-a4179--forward-by-a-page-of-lines-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #2 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('#innerdocbody')
+        - locator resolved to <body id="innerdocbody" spellcheck="false" aria-readonly="false" contenteditable="true" aria-label="Pad content" aria-describedby="editor-keyboard-hint" class="innerdocbody authorColors doesWrap ltr">…</body>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+
+
+       at tests/frontend-new/helper/padHelper.ts:183
+
+      181 | export const writeToPad = async (page: Page, text: string) => {
+      182 |   const body = await getPadBody(page);
+    > 183 |   await body.click();
+          |              ^
+      184 |   // Use insertText (single input event) instead of keyboard.type
+      185 |   // (one keydown/keyup per char). Firefox under WITH_PLUGINS load
+      186 |   // racily drops characters from per-key events; insertText delivers
+        at writeToPad (/home/runner/work/_temp/l2_target/src/tests/frontend-new/helper/padHelper.ts:183:14)
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/page_up_down.spec.ts:18:7
+
+    Error Context: test-results/tests-frontend-new-specs-p-a4179--forward-by-a-page-of-lines-chromium-retry2/error-context.md
+
+  12) [chromium] › tests/frontend-new/specs/page_up_down.spec.ts:51:3 › Page Up / Page Down › PageUp moves caret backward by a page of lines 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('#innerdocbody')
+        - locator resolved to <body id="innerdocbody" spellcheck="false" aria-readonly="false" contenteditable="true" aria-label="Pad content" aria-describedby="editor-keyboard-hint" class="innerdocbody authorColors doesWrap ltr">…</body>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+
+
+       at tests/frontend-new/helper/padHelper.ts:183
+
+      181 | export const writeToPad = async (page: Page, text: string) => {
+      182 |   const body = await getPadBody(page);
+    > 183 |   await body.click();
+          |              ^
+      184 |   // Use insertText (single input event) instead of keyboard.type
+      185 |   // (one keydown/keyup per char). Firefox under WITH_PLUGINS load
+      186 |   // racily drops characters from per-key events; insertText delivers
+        at writeToPad (/home/runner/work/_temp/l2_target/src/tests/frontend-new/helper/padHelper.ts:183:14)
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/page_up_down.spec.ts:57:7
+
+    Error Context: test-results/tests-frontend-new-specs-p-6ea1a-backward-by-a-page-of-lines-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('#innerdocbody')
+        - locator resolved to <body id="innerdocbody" spellcheck="false" aria-readonly="false" contenteditable="true" aria-label="Pad content" aria-describedby="editor-keyboard-hint" class="innerdocbody authorColors doesWrap ltr">…</body>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+
+
+       at tests/frontend-new/helper/padHelper.ts:183
+
+      181 | export const writeToPad = async (page: Page, text: string) => {
+      182 |   const body = await getPadBody(page);
+    > 183 |   await body.click();
+          |              ^
+      184 |   // Use insertText (single input event) instead of keyboard.type
+      185 |   // (one keydown/keyup per char). Firefox under WITH_PLUGINS load
+      186 |   // racily drops characters from per-key events; insertText delivers
+        at writeToPad (/home/runner/work/_temp/l2_target/src/tests/frontend-new/helper/padHelper.ts:183:14)
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/page_up_down.spec.ts:57:7
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/tests-frontend-new-specs-p-6ea1a-backward-by-a-page-of-lines-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/tests-frontend-new-specs-p-6ea1a-backward-by-a-page-of-lines-chromium-retry1/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/tests-frontend-new-specs-p-6ea1a-backward-by-a-page-of-lines-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/tests-frontend-new-specs-p-6ea1a-backward-by-a-page-of-lines-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #2 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('#innerdocbody')
+        - locator resolved to <body id="innerdocbody" spellcheck="false" aria-readonly="false" contenteditable="true" aria-label="Pad content" aria-describedby="editor-keyboard-hint" class="innerdocbody authorColors doesWrap ltr">…</body>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+
+
+       at tests/frontend-new/helper/padHelper.ts:183
+
+      181 | export const writeToPad = async (page: Page, text: string) => {
+      182 |   const body = await getPadBody(page);
+    > 183 |   await body.click();
+          |              ^
+      184 |   // Use insertText (single input event) instead of keyboard.type
+      185 |   // (one keydown/keyup per char). Firefox under WITH_PLUGINS load
+      186 |   // racily drops characters from per-key events; insertText delivers
+        at writeToPad (/home/runner/work/_temp/l2_target/src/tests/frontend-new/helper/padHelper.ts:183:14)
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/page_up_down.spec.ts:57:7
+
+    Error Context: test-results/tests-frontend-new-specs-p-6ea1a-backward-by-a-page-of-lines-chromium-retry2/error-context.md
+
+  13) [chromium] › tests/frontend-new/specs/page_up_down.spec.ts:146:3 › Page Up / Page Down › PageDown then PageUp returns to approximately same position 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('#innerdocbody')
+        - locator resolved to <body id="innerdocbody" spellcheck="false" aria-readonly="false" contenteditable="true" aria-label="Pad content" aria-describedby="editor-keyboard-hint" class="innerdocbody authorColors doesWrap ltr">…</body>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+
+
+       at tests/frontend-new/helper/padHelper.ts:183
+
+      181 | export const writeToPad = async (page: Page, text: string) => {
+      182 |   const body = await getPadBody(page);
+    > 183 |   await body.click();
+          |              ^
+      184 |   // Use insertText (single input event) instead of keyboard.type
+      185 |   // (one keydown/keyup per char). Firefox under WITH_PLUGINS load
+      186 |   // racily drops characters from per-key events; insertText delivers
+        at writeToPad (/home/runner/work/_temp/l2_target/src/tests/frontend-new/helper/padHelper.ts:183:14)
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/page_up_down.spec.ts:151:7
+
+    Error Context: test-results/tests-frontend-new-specs-p-a6417-approximately-same-position-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('#innerdocbody')
+        - locator resolved to <body id="innerdocbody" spellcheck="false" aria-readonly="false" contenteditable="true" aria-label="Pad content" aria-describedby="editor-keyboard-hint" class="innerdocbody authorColors doesWrap ltr">…</body>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+
+
+       at tests/frontend-new/helper/padHelper.ts:183
+
+      181 | export const writeToPad = async (page: Page, text: string) => {
+      182 |   const body = await getPadBody(page);
+    > 183 |   await body.click();
+          |              ^
+      184 |   // Use insertText (single input event) instead of keyboard.type
+      185 |   // (one keydown/keyup per char). Firefox under WITH_PLUGINS load
+      186 |   // racily drops characters from per-key events; insertText delivers
+        at writeToPad (/home/runner/work/_temp/l2_target/src/tests/frontend-new/helper/padHelper.ts:183:14)
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/page_up_down.spec.ts:151:7
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/tests-frontend-new-specs-p-a6417-approximately-same-position-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/tests-frontend-new-specs-p-a6417-approximately-same-position-chromium-retry1/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/tests-frontend-new-specs-p-a6417-approximately-same-position-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/tests-frontend-new-specs-p-a6417-approximately-same-position-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #2 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('#innerdocbody')
+        - locator resolved to <body id="innerdocbody" spellcheck="false" aria-readonly="false" contenteditable="true" aria-label="Pad content" aria-describedby="editor-keyboard-hint" class="innerdocbody authorColors doesWrap ltr">…</body>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+
+
+       at tests/frontend-new/helper/padHelper.ts:183
+
+      181 | export const writeToPad = async (page: Page, text: string) => {
+      182 |   const body = await getPadBody(page);
+    > 183 |   await body.click();
+          |              ^
+      184 |   // Use insertText (single input event) instead of keyboard.type
+      185 |   // (one keydown/keyup per char). Firefox under WITH_PLUGINS load
+      186 |   // racily drops characters from per-key events; insertText delivers
+        at writeToPad (/home/runner/work/_temp/l2_target/src/tests/frontend-new/helper/padHelper.ts:183:14)
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/page_up_down.spec.ts:151:7
+
+    Error Context: test-results/tests-frontend-new-specs-p-a6417-approximately-same-position-chromium-retry2/error-context.md
+
+  14) [chromium] › tests/frontend-new/specs/recent_pads_delete.spec.ts:57:3 › recent pads after pad deletion › deleting with a token on a second device removes it from that device 
+
+    Error: expect(received).not.toContain(expected) // indexOf
+
+    Expected value: not "FRONTEND_TESTS71f5d59f-696b-496c-804c-6a8dd106948f"
+    Received array:     ["FRONTEND_TESTS71f5d59f-696b-496c-804c-6a8dd106948f"]
+
+    Call Log:
+    - Timeout 20000ms exceeded while waiting on the predicate
+
+      80 |     // The creator's still-open tab was disconnected with reason "deleted" and
+      81 |     // must also forget the pad.
+    > 82 |     await expect.poll(() => recentPadNames(page)).not.toContain(padId);
+         |                                                       ^
+      83 |
+      84 |     await context2.close();
+      85 |   });
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/recent_pads_delete.spec.ts:82:55
+
+    Error Context: test-results/tests-frontend-new-specs-r-2f081-removes-it-from-that-device-chromium/error-context.md
+
+  15) [chromium] › tests/frontend-new/specs/timeslider_follow.spec.ts:15:3 › timeslider follow › content as it's added to timeslider 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "#0"
+    Received string:    "http://localhost:9001/p/FRONTEND_TESTSffdb5456-4261-451e-9dd0-dd12f49696ba/timeslider?embed=1#3"
+
+      29 |
+      30 |     await gotoTimeslider(page,0);
+    > 31 |     expect(page.url()).toContain('#0');
+         |                        ^
+      32 |
+      33 |     const originalTop = await page.evaluate(() => {
+      34 |       return window.document.querySelector('#innerdocbody')!.getBoundingClientRect().top;
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/timeslider_follow.spec.ts:31:24
+
+    Error Context: test-results/tests-frontend-new-specs-t-1d88b-as-it-s-added-to-timeslider-chromium/error-context.md
+
+  16) [chromium] › tests/frontend-new/specs/timeslider_line_numbers.spec.ts:9:3 › timeslider line numbers › shows line numbers aligned with the rendered document lines 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('#sidediv .line-number').nth(1)
+    Expected: "2"
+    Timeout: 20000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" locator('#sidediv .line-number').nth(1) with timeout 20000ms
+      - waiting for locator('#sidediv .line-number').nth(1)
+
+
+      20 |     await expect(page.locator('#sidediv')).toBeVisible();
+      21 |     await expect(page.locator('#sidediv .line-number').nth(0)).toHaveText('1');
+    > 22 |     await expect(page.locator('#sidediv .line-number').nth(1)).toHaveText('2');
+         |                                                                ^
+      23 |     await expect(page.locator('#sidediv .line-number').nth(2)).toHaveText('3');
+      24 |
+      25 |     const counts = await page.evaluate(() => ({
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/timeslider_line_numbers.spec.ts:22:64
+
+    Error Context: test-results/tests-frontend-new-specs-t-221d0-the-rendered-document-lines-chromium/error-context.md
+
+  17) [chromium] › tests/frontend-new/specs/undo_clear_authorship.spec.ts:33:3 › undo clear authorship colors with multiple authors (bug #2802) › User B should not be disconnected after undoing clear authorship @feature:clear-authorship 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#innerdocbody').locator('div').nth(1)
+    Expected substring: "Hello from User B"
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" locator('#innerdocbody').locator('div').nth(1) with timeout 15000ms
+      - waiting for locator('#innerdocbody').locator('div').nth(1)
+
+
+      65 |
+      66 |     // Both users should see both lines
+    > 67 |     await expect(body1.locator('div').nth(1)).toContainText('Hello from User B', {timeout: 15000});
+         |                                               ^
+      68 |
+      69 |     // Verify we have authorship colors from two different authors
+      70 |     await expect(body2.locator('div span').first()).toHaveAttribute('class', /author-/);
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/undo_clear_authorship.spec.ts:67:47
+
+    Error Context: test-results/tests-frontend-new-specs-u-cddee-er-undoing-clear-authorship-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#innerdocbody').locator('div').nth(1)
+    Expected substring: "Hello from User B"
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" locator('#innerdocbody').locator('div').nth(1) with timeout 15000ms
+      - waiting for locator('#innerdocbody').locator('div').nth(1)
+
+
+      65 |
+      66 |     // Both users should see both lines
+    > 67 |     await expect(body1.locator('div').nth(1)).toContainText('Hello from User B', {timeout: 15000});
+         |                                               ^
+      68 |
+      69 |     // Verify we have authorship colors from two different authors
+      70 |     await expect(body2.locator('div span').first()).toHaveAttribute('class', /author-/);
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/undo_clear_authorship.spec.ts:67:47
+
+    Error Context: test-results/tests-frontend-new-specs-u-cddee-er-undoing-clear-authorship-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/tests-frontend-new-specs-u-cddee-er-undoing-clear-authorship-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/tests-frontend-new-specs-u-cddee-er-undoing-clear-authorship-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #2 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#innerdocbody').locator('div').nth(1)
+    Expected substring: "Hello from User B"
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" locator('#innerdocbody').locator('div').nth(1) with timeout 15000ms
+      - waiting for locator('#innerdocbody').locator('div').nth(1)
+
+
+      65 |
+      66 |     // Both users should see both lines
+    > 67 |     await expect(body1.locator('div').nth(1)).toContainText('Hello from User B', {timeout: 15000});
+         |                                               ^
+      68 |
+      69 |     // Verify we have authorship colors from two different authors
+      70 |     await expect(body2.locator('div span').first()).toHaveAttribute('class', /author-/);
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/undo_clear_authorship.spec.ts:67:47
+
+    Error Context: test-results/tests-frontend-new-specs-u-cddee-er-undoing-clear-authorship-chromium-retry2/error-context.md
+
+  18) [chromium] › tests/frontend-new/specs/userlist_click_to_chat.spec.ts:33:3 › userlist click → chat prefill › clicking another user opens chat and prefills @<name> @feature:chat @feature:username 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Alice")')
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Alice")') with timeout 10000ms
+      - waiting for locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Alice")')
+
+
+      51 |         const aliceRow = page1.locator(
+      52 |             '#otheruserstable tr[data-authorId] .usertdname:has-text("Alice")');
+    > 53 |         await expect(aliceRow).toBeVisible({timeout: 10_000});
+         |                                ^
+      54 |
+      55 |         // Sanity: chat is hidden before the click.
+      56 |         expect(await isChatBoxShown(page1)).toBe(false);
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/userlist_click_to_chat.spec.ts:53:32
+
+    Error Context: test-results/tests-frontend-new-specs-u-b1292-ens-chat-and-prefills-name--chromium/error-context.md
+
+  19) [chromium] › tests/frontend-new/specs/userlist_click_to_chat.spec.ts:140:3 › userlist click → chat prefill › partial message in chat input is preserved when prefilling @feature:chat @feature:username 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Dave")')
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Dave")') with timeout 10000ms
+      - waiting for locator('#otheruserstable tr[data-authorId] .usertdname:has-text("Dave")')
+
+
+      164 |         const daveRow = page1.locator(
+      165 |             '#otheruserstable tr[data-authorId] .usertdname:has-text("Dave")');
+    > 166 |         await expect(daveRow).toBeVisible({timeout: 10_000});
+          |                               ^
+      167 |         await daveRow.click();
+      168 |
+      169 |         // Wait for both pieces to land in the input — the prefill fires
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/userlist_click_to_chat.spec.ts:166:31
+
+    Error Context: test-results/tests-frontend-new-specs-u-91ebd-s-preserved-when-prefilling-chromium/error-context.md
+
+  20) [chromium] › tests/frontend-new/specs/undo_redo_scroll.spec.ts:31:3 › Undo scroll-to-caret (#7007) › Ctrl+Z scrolls viewport up when the caret lands above the view 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0
+    Received:   0
+
+      59 |     const scrollBefore = await outerFrame.evaluate(
+      60 |         () => window.scrollY || document.scrollingElement?.scrollTop || 0);
+    > 61 |     expect(scrollBefore).toBeGreaterThan(0); // sanity: viewport actually scrolled
+         |                          ^
+      62 |
+      63 |     // Undo — caret returns to the top, viewport should follow.
+      64 |     await page.keyboard.press('Control+Z');
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/undo_redo_scroll.spec.ts:61:26
+
+    Error Context: test-results/tests-frontend-new-specs-u-1c191--caret-lands-above-the-view-chromium/error-context.md
+
+  21) [chromium] › tests/frontend-new/specs/undo_redo_scroll.spec.ts:77:3 › Undo scroll-to-caret (#7007) › Ctrl+Z scrolls viewport down when the caret lands below the view 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 526
+
+       95 |     const scrollBefore = await outerFrame.evaluate(
+       96 |         () => window.scrollY || document.scrollingElement?.scrollTop || 0);
+    >  97 |     expect(scrollBefore).toBe(0);
+          |                          ^
+       98 |
+       99 |     await page.keyboard.press('Control+Z');
+      100 |     await page.waitForTimeout(800);
+        at /home/runner/work/_temp/l2_target/src/tests/frontend-new/specs/undo_redo_scroll.spec.ts:97:26
+
+    Error Context: test-results/tests-frontend-new-specs-u-e2645--caret-lands-below-the-view-chromium/error-context.md
+
+  19 failed
+    [chromium] › tests/frontend-new/specs/anchor_scroll.spec.ts:9:3 › anchor scrolling › reapplies #L scroll after earlier content changes height 
+    [chromium] › tests/frontend-new/specs/anchor_scroll.spec.ts:80:3 › anchor scrolling › user scroll cancels the reapply loop so navigation is not locked 
+    [chromium] › tests/frontend-new/specs/change_user_name.spec.ts:11:1 › Remembers the username after a refresh @feature:username 
+    [chromium] › tests/frontend-new/specs/collab_client.spec.ts:47:3 › Messages in the COLLABROOM › bug #4978 regression test 
+    [chromium] › tests/frontend-new/specs/pad_deletion_token.spec.ts:149:3 › pad deletion token with the modal suppressed › no modal; the settings toggle shows and copies a working token, across reloads 
+    [chromium] › tests/frontend-new/specs/pad_settings.spec.ts:34:3 › creator-owned pad settings › pad settings act as defaults until enforcement is enabled @feature:line-numbers 
+    [chromium] › tests/frontend-new/specs/pad_settings.spec.ts:93:3 › creator-owned pad settings › creator can keep authorship colors while pad-wide enforced settings keep them off for other users 
+    [chromium] › tests/frontend-new/specs/padmode.spec.ts:158:3 › in-pad history mode › outer slider drives the embedded timeslider revision 
+    [chromium] › tests/frontend-new/specs/padmode.spec.ts:217:3 › in-pad history mode › chat panel is filtered to messages newer than the historical revision 
+    [chromium] › tests/frontend-new/specs/padmode.spec.ts:261:3 › in-pad history mode › outer Export hrefs point at the historical revision in history mode 
+    [chromium] › tests/frontend-new/specs/page_up_down.spec.ts:12:3 › Page Up / Page Down › PageDown moves caret forward by a page of lines 
+    [chromium] › tests/frontend-new/specs/page_up_down.spec.ts:51:3 › Page Up / Page Down › PageUp moves caret backward by a page of lines 
+    [chromium] › tests/frontend-new/specs/page_up_down.spec.ts:146:3 › Page Up / Page Down › PageDown then PageUp returns to approximately same position 
+    [chromium] › tests/frontend-new/specs/recent_pads_delete.spec.ts:57:3 › recent pads after pad deletion › deleting with a token on a second device removes it from that device 
+    [chromium] › tests/frontend-new/specs/timeslider_follow.spec.ts:15:3 › timeslider follow › content as it's added to timeslider 
+    [chromium] › tests/frontend-new/specs/timeslider_line_numbers.spec.ts:9:3 › timeslider line numbers › shows line numbers aligned with the rendered document lines 
+    [chromium] › tests/frontend-new/specs/undo_clear_authorship.spec.ts:33:3 › undo clear authorship colors with multiple authors (bug #2802) › User B should not be disconnected after undoing clear authorship @feature:clear-authorship 
+    [chromium] › tests/frontend-new/specs/userlist_click_to_chat.spec.ts:33:3 › userlist click → chat prefill › clicking another user opens chat and prefills @<name> @feature:chat @feature:username 
+    [chromium] › tests/frontend-new/specs/userlist_click_to_chat.spec.ts:140:3 › userlist click → chat prefill › partial message in chat input is preserved when prefilling @feature:chat @feature:username 
+  2 flaky
+    [chromium] › tests/frontend-new/specs/undo_redo_scroll.spec.ts:31:3 › Undo scroll-to-caret (#7007) › Ctrl+Z scrolls viewport up when the caret lands above the view 
+    [chromium] › tests/frontend-new/specs/undo_redo_scroll.spec.ts:77:3 › Undo scroll-to-caret (#7007) › Ctrl+Z scrolls viewport down when the caret lands below the view 
+  1 skipped
+  267 passed (34.8m)
+detjs: replay tests/frontend-new/specs/anchor_scroll.spec.ts::anchor scrolling::reapplies #L scroll after earlier content changes height [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/anchor_scroll.spec.ts:9 --project=chromium
+detjs: replay tests/frontend-new/specs/anchor_scroll.spec.ts::anchor scrolling::user scroll cancels the reapply loop so navigation is not locked [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/anchor_scroll.spec.ts:80 --project=chromium
+detjs: replay tests/frontend-new/specs/change_user_name.spec.ts::Remembers the username after a refresh [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/change_user_name.spec.ts:11 --project=chromium
+detjs: replay tests/frontend-new/specs/collab_client.spec.ts::Messages in the COLLABROOM::bug #4978 regression test [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/collab_client.spec.ts:47 --project=chromium
+detjs: replay tests/frontend-new/specs/pad_deletion_token.spec.ts::pad deletion token with the modal suppressed::no modal; the settings toggle shows and copies a working token, across reloads [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/pad_deletion_token.spec.ts:149 --project=chromium
+detjs: replay tests/frontend-new/specs/pad_settings.spec.ts::creator-owned pad settings::pad settings act as defaults until enforcement is enabled [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/pad_settings.spec.ts:34 --project=chromium
+detjs: replay tests/frontend-new/specs/pad_settings.spec.ts::creator-owned pad settings::creator can keep authorship colors while pad-wide enforced settings keep them off for other users [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/pad_settings.spec.ts:93 --project=chromium
+detjs: replay tests/frontend-new/specs/padmode.spec.ts::in-pad history mode::outer slider drives the embedded timeslider revision [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/padmode.spec.ts:158 --project=chromium
+detjs: replay tests/frontend-new/specs/padmode.spec.ts::in-pad history mode::chat panel is filtered to messages newer than the historical revision [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/padmode.spec.ts:217 --project=chromium
+detjs: replay tests/frontend-new/specs/padmode.spec.ts::in-pad history mode::outer Export hrefs point at the historical revision in history mode [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/padmode.spec.ts:261 --project=chromium
+detjs: replay tests/frontend-new/specs/page_up_down.spec.ts::Page Up / Page Down::PageDown moves caret forward by a page of lines [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/page_up_down.spec.ts:12 --project=chromium
+detjs: replay tests/frontend-new/specs/page_up_down.spec.ts::Page Up / Page Down::PageUp moves caret backward by a page of lines [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/page_up_down.spec.ts:51 --project=chromium
+detjs: replay tests/frontend-new/specs/page_up_down.spec.ts::Page Up / Page Down::PageDown then PageUp returns to approximately same position [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/page_up_down.spec.ts:146 --project=chromium
+detjs: replay tests/frontend-new/specs/recent_pads_delete.spec.ts::recent pads after pad deletion::deleting with a token on a second device removes it from that device [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/recent_pads_delete.spec.ts:57 --project=chromium
+detjs: replay tests/frontend-new/specs/timeslider_follow.spec.ts::timeslider follow::content as it's added to timeslider [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/timeslider_follow.spec.ts:15 --project=chromium
+detjs: replay tests/frontend-new/specs/timeslider_line_numbers.spec.ts::timeslider line numbers::shows line numbers aligned with the rendered document lines [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/timeslider_line_numbers.spec.ts:9 --project=chromium
+detjs: replay tests/frontend-new/specs/undo_clear_authorship.spec.ts::undo clear authorship colors with multiple authors (bug #2802)::User B should not be disconnected after undoing clear authorship [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/undo_clear_authorship.spec.ts:33 --project=chromium
+detjs: replay tests/frontend-new/specs/userlist_click_to_chat.spec.ts::userlist click → chat prefill::clicking another user opens chat and prefills @<name> [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/userlist_click_to_chat.spec.ts:33 --project=chromium
+detjs: replay tests/frontend-new/specs/userlist_click_to_chat.spec.ts::userlist click → chat prefill::partial message in chat input is preserved when prefilling [chromium]:
+  npx detjs playwright --det --det-epoch=2026-11-18T10:25:00Z test tests/frontend-new/specs/userlist_click_to_chat.spec.ts:140 --project=chromium
+detjs: trace ../../l2_out/etherpad/traces/det-1.jsonl
