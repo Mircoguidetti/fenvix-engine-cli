@@ -26,10 +26,18 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
+NXONLY = {}
+
+
 def load(label):
     by = {}
+    for p in sorted(glob.glob(os.path.join(HERE, "results", "nx", "nx-*.json.gz"))):
+        d = json.load(gzip.open(p))
+        NXONLY[d["spec"]["name"]] = {t["sha"]: t for t in d.get("transitions", [])}
     for p in sorted(glob.glob(os.path.join(HERE, "results", label, "*.json.gz"))):
         d = json.load(gzip.open(p))
+        if d.get("mode") == "nx-only":
+            continue
         name = d["spec"]["name"]
         by.setdefault(name, []).append(d)
     return by
@@ -97,6 +105,8 @@ def analyse(name, shards):
                    "skip_rc": (c.get("skip") or {}).get("rc"), "verify_rc": v.get("rc"),
                    "miss_reasons": s.get("miss_reasons") or {}, "changed": len(c.get("changed_files") or [])}
             nx = c.get("nx") or {}
+            if nx.get("affected") is None and c["sha"] in NXONLY.get(name, {}):
+                nx = NXONLY[name][c["sha"]]
             if nx.get("affected") is not None and nx.get("roots"):
                 aff = set(nx["affected"])
                 roots = nx["roots"]
