@@ -14,6 +14,12 @@ on:
     branches: [claude/shared-cache]
     paths: [".github/workflows/fenvix-shared-cache.yml"]
   workflow_dispatch:
+    inputs:
+      isa:
+        description: "level: the instruction-set level is part of the runtime identity (default); off: left out"
+        type: choice
+        options: [level, "off"]
+        default: level
 
 permissions:
   contents: read
@@ -28,6 +34,7 @@ env:
   UV_VERSION: "0.11.32"
   PY: "3.13"
   PORT: "8787"
+  FENVIX_RUNTIME_ISA: ${{ inputs.isa || 'level' }}
 
 jobs:
   engine:
