@@ -98,6 +98,9 @@ def main():
     combos = [(fx, tool) for fx in a.fixtures.split(",") for tool in a.tools.split(",")]
     for fxname, tool in combos:
         FIX = FIXTURES[fxname]
+        # compiled classes of another JDK must not be reused (class-file version)
+        for d in ["target/classes", "target/test-classes", "build/classes"]:
+            shutil.rmtree(os.path.join(FIX, d), ignore_errors=True)
         state = os.path.join(FIX, "build" if tool == "gradle" else "target", "fx-state")
         runs = {}
         for det in (False, True):
