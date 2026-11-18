@@ -1,0 +1,296 @@
+// Code added by fenvix-go (build-time overlay). Not part of Go.
+//
+// fs control: (*File).Readdir, Readdirnames and ReadDir return entries sorted
+// by name (os.ReadDir, filepath.WalkDir and fs.ReadDir already sort). With
+// n > 0 the whole directory is read once, sorted, and served in chunks.
+// deps control: files opened for reading, paths stat'ed, directories listed
+// and programs started are recorded for the skip key.
+
+package os
+
+import (
+	"io"
+	"runtime"
+	"sort"
+	"sync"
+	"syscall"
+)
+
+type fenvixDirState struct {
+	infos []FileInfo
+	names []string
+	ents  []DirEntry
+	pos   int
+}
+
+var (
+	fenvixDirMu sync.Mutex
+	fenvixDirs  map[*File]*fenvixDirState
+)
+
+func fenvixFsOn() bool { return runtime.Fenvix_On(runtime.FenvixFs) }
+
+func fenvixAbs(name string) string {
+	if len(name) > 0 && name[0] == '/' {
+		return name
+	}
+	wd, err := syscall.Getwd()
+	if err != nil {
+		return name
+	}
+	if name == "" || name == "." {
+		return wd
+	}
+	return wd + "/" + name
+}
+
+func fenvixDep(kind byte, name string) {
+	if runtime.Fenvix_On(runtime.FenvixDeps) {
+		syscall.Fenvix_Dep(kind, fenvixAbs(name))
+	}
+}
+
+func fenvixDepOpen(name string, flag int) {
+	if !runtime.Fenvix_On(runtime.FenvixDeps) {
+		return
+	}
+	if flag&(O_WRONLY|O_TRUNC) != 0 {
+		return // output, not an input
+	}
+	syscall.Fenvix_Dep('O', fenvixAbs(name))
+}
+
+func fenvixListEvent(f *File, names []string) {
+	if f != nil {
+		fenvixDep('L', f.Name())
+	}
+	h := uint64(14695981039346656037)
+	for _, n := range names {
+		for i := 0; i < len(n); i++ {
+			h ^= uint64(n[i])
+			h *= 1099511628211
+		}
+		h ^= 0xff
+		h *= 1099511628211
+	}
+	const hexd = "0123456789abcdef"
+	var b [40]byte
+	k := 0
+	c := len(names)
+	var num [20]byte
+	j := len(num)
+	for {
+		j--
+		num[j] = byte('0' + c%10)
+		c /= 10
+		if c == 0 {
+			break
+		}
+	}
+	k += copy(b[k:], num[j:])
+	b[k] = ':'
+	k++
+	for i := 15; i >= 0; i-- {
+		b[k] = hexd[(h>>(uint(i)*4))&0xf]
+		k++
+	}
+	syscall.Fenvix_Event("fs", "os.File.ReadDir", string(b[:k]))
+}
+
+func fenvixState(f *File) *fenvixDirState {
+	fenvixDirMu.Lock()
+	defer fenvixDirMu.Unlock()
+	if fenvixDirs == nil {
+		fenvixDirs = make(map[*File]*fenvixDirState)
+	}
+	st := fenvixDirs[f]
+	if st == nil {
+		st = &fenvixDirState{}
+		fenvixDirs[f] = st
+	}
+	return st
+}
+
+func fenvixDrop(f *File) {
+	fenvixDirMu.Lock()
+	delete(fenvixDirs, f)
+	fenvixDirMu.Unlock()
+}
+
+// fenvix:if os-dir
+// Readdir reads the contents of the directory associated with file.
+func (f *File) Readdir(n int) ([]FileInfo, error) {
+	if !fenvixFsOn() || f == nil {
+		if f != nil {
+			fenvixDep('L', f.Name())
+		}
+		return f.fenvixOrigReaddir(n)
+	}
+	if n <= 0 {
+		v, err := f.fenvixOrigReaddir(n)
+		sort.Slice(v, func(i, j int) bool { return v[i].Name() < v[j].Name() })
+		names := make([]string, len(v))
+		for i := range v {
+			names[i] = v[i].Name()
+		}
+		fenvixListEvent(f, names)
+		return v, err
+	}
+	st := fenvixState(f)
+	if st.infos == nil {
+		all, err := f.fenvixOrigReaddir(-1)
+		if err != nil && len(all) == 0 {
+			fenvixDrop(f)
+			return nil, err
+		}
+		sort.Slice(all, func(i, j int) bool { return all[i].Name() < all[j].Name() })
+		names := make([]string, len(all))
+		for i := range all {
+			names[i] = all[i].Name()
+		}
+		fenvixListEvent(f, names)
+		st.infos = append(all, nil)[:len(all)]
+	}
+	if st.pos >= len(st.infos) {
+		fenvixDrop(f)
+		return nil, io.EOF
+	}
+	end := st.pos + n
+	if end > len(st.infos) {
+		end = len(st.infos)
+	}
+	out := st.infos[st.pos:end]
+	st.pos = end
+	return out, nil
+}
+
+// Readdirnames reads the contents of the directory associated with file.
+func (f *File) Readdirnames(n int) (names []string, err error) {
+	if !fenvixFsOn() || f == nil {
+		if f != nil {
+			fenvixDep('L', f.Name())
+		}
+		return f.fenvixOrigReaddirnames(n)
+	}
+	if n <= 0 {
+		v, err := f.fenvixOrigReaddirnames(n)
+		sort.Strings(v)
+		fenvixListEvent(f, v)
+		return v, err
+	}
+	st := fenvixState(f)
+	if st.names == nil {
+		all, err := f.fenvixOrigReaddirnames(-1)
+		if err != nil && len(all) == 0 {
+			fenvixDrop(f)
+			return nil, err
+		}
+		sort.Strings(all)
+		fenvixListEvent(f, all)
+		st.names = append(all, "")[:len(all)]
+	}
+	if st.pos >= len(st.names) {
+		fenvixDrop(f)
+		return nil, io.EOF
+	}
+	end := st.pos + n
+	if end > len(st.names) {
+		end = len(st.names)
+	}
+	out := st.names[st.pos:end]
+	st.pos = end
+	return out, nil
+}
+
+// ReadDir reads the contents of the directory associated with the file f.
+func (f *File) ReadDir(n int) ([]DirEntry, error) {
+	if !fenvixFsOn() || f == nil {
+		if f != nil {
+			fenvixDep('L', f.Name())
+		}
+		return f.fenvixOrigReadDir(n)
+	}
+	if n <= 0 {
+		v, err := f.fenvixOrigReadDir(n)
+		sort.Slice(v, func(i, j int) bool { return v[i].Name() < v[j].Name() })
+		names := make([]string, len(v))
+		for i := range v {
+			names[i] = v[i].Name()
+		}
+		fenvixListEvent(f, names)
+		return v, err
+	}
+	st := fenvixState(f)
+	if st.ents == nil {
+		all, err := f.fenvixOrigReadDir(-1)
+		if err != nil && len(all) == 0 {
+			fenvixDrop(f)
+			return nil, err
+		}
+		sort.Slice(all, func(i, j int) bool { return all[i].Name() < all[j].Name() })
+		names := make([]string, len(all))
+		for i := range all {
+			names[i] = all[i].Name()
+		}
+		fenvixListEvent(f, names)
+		st.ents = append(all, nil)[:len(all)]
+	}
+	if st.pos >= len(st.ents) {
+		fenvixDrop(f)
+		return nil, io.EOF
+	}
+	end := st.pos + n
+	if end > len(st.ents) {
+		end = len(st.ents)
+	}
+	out := st.ents[st.pos:end]
+	st.pos = end
+	return out, nil
+}
+// fenvix:end
+
+// fenvix:if os-temp
+var fenvixTemp struct {
+	mu    sync.Mutex
+	gen   uint64
+	state uint64
+	ok    bool
+}
+
+// fenvixNextRandom makes CreateTemp, MkdirTemp and t.TempDir names
+// deterministic per test (random control).
+func fenvixNextRandom() (string, bool) {
+	if !runtime.Fenvix_On(runtime.FenvixRandom) {
+		return "", false
+	}
+	seed, gen := syscall.Fenvix_Seed("os.tempfile")
+	fenvixTemp.mu.Lock()
+	if !fenvixTemp.ok || gen != fenvixTemp.gen {
+		fenvixTemp.state, fenvixTemp.gen, fenvixTemp.ok = seed, gen, true
+	}
+	fenvixTemp.state += 0x9E3779B97F4A7C15
+	z := fenvixTemp.state
+	z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9
+	z = (z ^ (z >> 27)) * 0x94D049BB133111EB
+	z ^= z >> 31
+	fenvixTemp.mu.Unlock()
+	v := uint32(z)
+	var b [10]byte
+	i := len(b)
+	for {
+		i--
+		b[i] = byte('0' + v%10)
+		v /= 10
+		if v == 0 {
+			break
+		}
+	}
+	return string(b[i:]), true
+}
+// fenvix:end
+
+var (
+	_ = io.EOF
+	_ = sort.Strings
+	_ = sync.Mutex{}
+)

@@ -1,0 +1,59 @@
+// Code added by fenvix-go (build-time overlay, --det). Not part of Go.
+//
+// With the random control on, the global source of math/rand/v2 (N, IntN,
+// Float64, Shuffle, Perm, ...) is a ChaCha8 stream seeded per test.
+
+package rand
+
+import (
+	"runtime"
+	"syscall"
+	"sync"
+)
+
+var fenvixV2 struct {
+	mu  sync.Mutex
+	c   *ChaCha8
+	gen uint64
+	ok  bool
+}
+
+func fenvixUint64() (uint64, bool) {
+	if !runtime.Fenvix_On(runtime.FenvixRandom) {
+		return 0, false
+	}
+	seed, gen := syscall.Fenvix_Seed("math/rand/v2")
+	fenvixV2.mu.Lock()
+	if !fenvixV2.ok || gen != fenvixV2.gen {
+		var s [32]byte
+		x := seed
+		for i := 0; i < 4; i++ {
+			x += 0x9E3779B97F4A7C15
+			z := x
+			z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9
+			z = (z ^ (z >> 27)) * 0x94D049BB133111EB
+			z ^= z >> 31
+			for j := 0; j < 8; j++ {
+				s[i*8+j] = byte(z >> (8 * j))
+			}
+		}
+		fenvixV2.c = NewChaCha8(s)
+		fenvixV2.gen = gen
+		fenvixV2.ok = true
+	}
+	v := fenvixV2.c.Uint64()
+	fenvixV2.mu.Unlock()
+	var b [20]byte
+	i := len(b)
+	u := v
+	for {
+		i--
+		b[i] = byte('0' + u%10)
+		u /= 10
+		if u == 0 {
+			break
+		}
+	}
+	syscall.Fenvix_Event("random", "math/rand/v2", string(b[i:]))
+	return v, true
+}

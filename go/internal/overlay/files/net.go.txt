@@ -1,0 +1,139 @@
+// Code added by fenvix-go (build-time overlay). Not part of Go.
+//
+// net control: connect() to anything but loopback is refused (loopback port
+// 53 and a loopback HTTP(S) proxy count as outside: the answer comes from
+// outside the machine). AF_UNIX is allowed. deps control: every outside
+// connect is recorded (a test that reached the network is never reused).
+// Not covered: UDP sendto without connect, raw syscall.Connect, cgo.
+
+package net
+
+import (
+	"runtime"
+	"syscall"
+)
+
+func init() {
+	if runtime.Fenvix_On(runtime.FenvixNet) || runtime.Fenvix_On(runtime.FenvixDeps) {
+		connectFunc = fenvixConnect
+	}
+}
+
+type fenvixBlocked struct{ addr string }
+
+func (e *fenvixBlocked) Error() string {
+	return "fenvix --det: network access to " + e.addr +
+		" blocked (Level 0 closes the network; localhost is allowed); use --det-disable=net to allow it"
+}
+
+func (e *fenvixBlocked) Timeout() bool   { return false }
+func (e *fenvixBlocked) Temporary() bool { return false }
+
+func fenvixItoa(v int) string {
+	if v == 0 {
+		return "0"
+	}
+	var b [20]byte
+	i := len(b)
+	for v > 0 {
+		i--
+		b[i] = byte('0' + v%10)
+		v /= 10
+	}
+	return string(b[i:])
+}
+
+// fenvixProxyPorts are the ports of HTTP(S) proxies configured on loopback.
+func fenvixProxyPorts() []int {
+	var out []int
+	for _, k := range []string{"HTTPS_PROXY", "https_proxy", "HTTP_PROXY", "http_proxy", "ALL_PROXY", "all_proxy"} {
+		v, ok := syscall.Getenv(k)
+		if !ok || v == "" {
+			continue
+		}
+		scheme := "http"
+		if i := indexStr(v, "://"); i >= 0 {
+			scheme, v = v[:i], v[i+3:]
+		}
+		if i := indexStr(v, "@"); i >= 0 {
+			v = v[i+1:]
+		}
+		if i := indexStr(v, "/"); i >= 0 {
+			v = v[:i]
+		}
+		host, port := v, ""
+		if i := lastIndexByteStr(v, ':'); i >= 0 && indexStr(v[i:], "]") < 0 {
+			host, port = v[:i], v[i+1:]
+		}
+		if len(host) > 1 && host[0] == '[' {
+			host = host[1 : len(host)-1]
+		}
+		ip := ParseIP(host)
+		if !(host == "localhost" || (ip != nil && (ip.IsLoopback() || ip.IsUnspecified()))) {
+			continue // a proxy elsewhere is outside by its own address
+		}
+		p, _, ok := dtoi(port)
+		if !ok || port == "" {
+			switch scheme {
+			case "https":
+				p = 443
+			case "socks", "socks5", "socks5h", "socks4", "socks4a":
+				p = 1080
+			default:
+				p = 80
+			}
+		}
+		out = append(out, p)
+	}
+	return out
+}
+
+func indexStr(s, sub string) int {
+	for i := 0; i+len(sub) <= len(s); i++ {
+		if s[i:i+len(sub)] == sub {
+			return i
+		}
+	}
+	return -1
+}
+
+func lastIndexByteStr(s string, c byte) int {
+	for i := len(s) - 1; i >= 0; i-- {
+		if s[i] == c {
+			return i
+		}
+	}
+	return -1
+}
+
+func fenvixConnect(fd int, sa syscall.Sockaddr) error {
+	var ip IP
+	var port int
+	switch a := sa.(type) {
+	case *syscall.SockaddrInet4:
+		ip, port = IP(a.Addr[:]), a.Port
+	case *syscall.SockaddrInet6:
+		ip, port = IP(a.Addr[:]), a.Port
+	default:
+		return syscall.Connect(fd, sa)
+	}
+	local := (ip.IsLoopback() || ip.IsUnspecified()) && port != 53
+	if local {
+		for _, p := range fenvixProxyPorts() {
+			if p == port {
+				local = false
+			}
+		}
+	}
+	addr := JoinHostPort(ip.String(), fenvixItoa(port))
+	if local {
+		return syscall.Connect(fd, sa)
+	}
+	syscall.Fenvix_Dep('N', addr)
+	if runtime.Fenvix_On(runtime.FenvixNet) {
+		syscall.Fenvix_Event("net", "connect", addr+" blocked")
+		return &fenvixBlocked{addr: addr}
+	}
+	syscall.Fenvix_Event("net", "connect", addr)
+	return syscall.Connect(fd, sa)
+}

@@ -1,0 +1,500 @@
+// Code added by fenvix-go (build-time overlay). Not part of Go.
+//
+// The shared state of the fenvix hooks (package syscall is reachable from
+// every patched package: time, os, net, math/rand, math/rand/v2,
+// crypto/internal/sysrand, testing): the virtual clock, the per-test seed,
+// the per-test event buffer and the per-test dependencies (skip key).
+//
+// Configuration: FENVIX_GO_DET, read once:
+//   ctl=<bitmask>;epoch=<ns>;tick=<ns>;adapt=<n>;seed=<u64>;root=<dir>;
+//   goroot=<dir>;maxev=<n>
+//
+// Virtual clock (as the Python and Node shells): one nanosecond counter; each
+// read advances it by a tick; after `adapt` consecutive reads with no other
+// event every further read doubles the tick (at most 1 s); sleeps advance it
+// by their duration and timers move it to their due time. The wall clock
+// restarts at the epoch (default 2025-01-01T00:00:00Z) for every test; the
+// monotonic clock never goes backwards.
+
+package syscall
+
+import (
+	"runtime"
+	"sync"
+)
+
+const (
+	fenvixMaxTick  = 1_000_000_000
+	fenvixMonoBase = 1000 * 1_000_000_000
+)
+
+var fenvix struct {
+	once sync.Once
+	mu   sync.Mutex
+
+	epoch, baseTick, tick, adapt, streak int64
+	elapsed                              int64 // virtual monotonic ns
+	wallOff                              int64 // wall = wallOff + elapsed
+	testT0                               int64
+
+	seed      uint64
+	gen       uint64
+	root      string
+	goroot    string
+	maxEv     int
+	recording bool
+	inTest    bool
+	testGoid  uint64
+	goids     map[uint64]uint32
+	buf       []byte
+	nev       int
+	deps      []byte
+	baseG     int
+}
+
+func fenvixAtoi(s string) (int64, bool) {
+	if s == "" {
+		return 0, false
+	}
+	var n int64
+	for i := 0; i < len(s); i++ {
+		if s[i] < '0' || s[i] > '9' {
+			return 0, false
+		}
+		n = n*10 + int64(s[i]-'0')
+	}
+	return n, true
+}
+
+func fenvixInit() {
+	fenvix.once.Do(func() {
+		cfg := ""
+		for _, kv := range runtime_envs() {
+			if len(kv) > 14 && kv[:14] == "FENVIX_GO_DET=" {
+				cfg = kv[14:]
+			}
+		}
+		fenvix.epoch = 1735689600 * 1_000_000_000 // 2025-01-01T00:00:00Z
+		fenvix.baseTick = 1000
+		fenvix.maxEv = 50000
+		for len(cfg) > 0 {
+			item := cfg
+			cfg = ""
+			for i := 0; i < len(item); i++ {
+				if item[i] == ';' {
+					item, cfg = item[:i], item[i+1:]
+					break
+				}
+			}
+			k, v := item, ""
+			for i := 0; i < len(item); i++ {
+				if item[i] == '=' {
+					k, v = item[:i], item[i+1:]
+					break
+				}
+			}
+			n, ok := fenvixAtoi(v)
+			switch k {
+			case "epoch":
+				if ok {
+					fenvix.epoch = n
+				}
+			case "tick":
+				if ok {
+					fenvix.baseTick = n
+				}
+			case "adapt":
+				if ok {
+					fenvix.adapt = n
+				}
+			case "seed":
+				var u uint64
+				for i := 0; i < len(v) && v[i] >= '0' && v[i] <= '9'; i++ {
+					u = u*10 + uint64(v[i]-'0')
+				}
+				fenvix.seed = u
+			case "root":
+				fenvix.root = v
+			case "goroot":
+				fenvix.goroot = v
+			case "maxev":
+				if ok && n > 0 {
+					fenvix.maxEv = int(n)
+				}
+			}
+		}
+		fenvix.tick = fenvix.baseTick
+		fenvix.elapsed = fenvixMonoBase
+		fenvix.wallOff = fenvix.epoch - fenvix.elapsed
+		fenvix.testT0 = fenvix.elapsed
+		fenvix.goids = make(map[uint64]uint32)
+	})
+}
+
+// Fenvix_On reports whether all control bits in c are active.
+func Fenvix_On(c uint32) bool { return runtime.Fenvix_On(c) }
+
+// Fenvix_Recording reports whether this process reports events (set by
+// package testing in the test binary fenvix-go started, never in children).
+func Fenvix_Recording() bool {
+	fenvixInit()
+	fenvix.mu.Lock()
+	r := fenvix.recording
+	fenvix.mu.Unlock()
+	return r
+}
+
+// Fenvix_SetRecording is called once by package testing.
+func Fenvix_SetRecording(on bool) {
+	fenvixInit()
+	fenvix.mu.Lock()
+	fenvix.recording = on
+	fenvix.mu.Unlock()
+}
+
+func fenvixMix(z uint64) uint64 {
+	z += 0x9E3779B97F4A7C15
+	z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9
+	z = (z ^ (z >> 27)) * 0x94D049BB133111EB
+	return z ^ (z >> 31)
+}
+
+// Fenvix_Seed returns the seed of the current test for a named consumer and
+// the test generation (consumers reseed lazily when it changes).
+func Fenvix_Seed(domain string) (seed uint64, gen uint64) {
+	fenvixInit()
+	h := uint64(14695981039346656037)
+	for i := 0; i < len(domain); i++ {
+		h ^= uint64(domain[i])
+		h *= 1099511628211
+	}
+	fenvix.mu.Lock()
+	s, g := fenvix.seed, fenvix.gen
+	fenvix.mu.Unlock()
+	return fenvixMix(s ^ h), g
+}
+
+// Fenvix_Gen is the current test generation (0 before the first test).
+func Fenvix_Gen() uint64 {
+	fenvixInit()
+	fenvix.mu.Lock()
+	g := fenvix.gen
+	fenvix.mu.Unlock()
+	return g
+}
+
+// ---------------------------------------------------------------- clock
+
+func fenvixRead() int64 {
+	fenvix.elapsed += fenvix.tick
+	if fenvix.adapt > 0 {
+		fenvix.streak++
+		if fenvix.streak >= fenvix.adapt {
+			t := fenvix.tick
+			if t < 1 {
+				t = 1
+			}
+			t *= 2
+			if t > fenvixMaxTick {
+				t = fenvixMaxTick
+			}
+			fenvix.tick = t
+		}
+	}
+	return fenvix.elapsed
+}
+
+func fenvixOther() {
+	fenvix.streak = 0
+	fenvix.tick = fenvix.baseTick
+}
+
+func fenvixItoa(b []byte, v int64) []byte {
+	if v < 0 {
+		b = append(b, '-')
+		v = -v
+	}
+	var tmp [20]byte
+	i := len(tmp)
+	for {
+		i--
+		tmp[i] = byte('0' + v%10)
+		v /= 10
+		if v == 0 {
+			break
+		}
+	}
+	return append(b, tmp[i:]...)
+}
+
+// Fenvix_Clock reads the virtual clock for op ("time.Now", ...), advancing it
+// by one tick, and records the event (reading relative to the test start).
+// runner is true when the caller is package testing: it then uses real time.
+func Fenvix_Clock(op string) (wall, mono int64, runner bool) {
+	fenvixInit()
+	site, runner := fenvixSite(1)
+	if runner {
+		return 0, 0, true
+	}
+	gid := runtime.Fenvix_Goid()
+	fenvix.mu.Lock()
+	e := fenvixRead()
+	w := fenvix.wallOff + e
+	var v [24]byte
+	fenvixRecordLocked("time", op, site, fenvixItoa(v[:0], e-fenvix.testT0), gid)
+	fenvix.mu.Unlock()
+	return w, e, false
+}
+
+// Fenvix_ClockQuiet reads the clock without tick or event.
+func Fenvix_ClockQuiet() (wall, mono int64) {
+	fenvixInit()
+	fenvix.mu.Lock()
+	e := fenvix.elapsed
+	w := fenvix.wallOff + e
+	fenvix.mu.Unlock()
+	return w, e
+}
+
+// Fenvix_Sleep records op with duration d and advances the clock by d. It
+// reports whether the real wait can be skipped (FastWait on and the test
+// started no goroutine) and whether the caller is the test runner.
+func Fenvix_Sleep(op string, d int64) (skipWait bool, runner bool) {
+	fenvixInit()
+	site, runner := fenvixSite(1)
+	if runner {
+		return false, true
+	}
+	n := runtime.NumGoroutine()
+	gid := runtime.Fenvix_Goid()
+	fenvix.mu.Lock()
+	if d > 0 {
+		fenvix.elapsed += d
+	}
+	var v [24]byte
+	fenvixRecordLocked("time", op, site, fenvixItoa(v[:0], d), gid)
+	fenvixOther()
+	skipWait = runtime.Fenvix_On(runtime.FenvixFastWait) && fenvix.inTest && n <= fenvix.baseG
+	fenvix.mu.Unlock()
+	return skipWait, false
+}
+
+// Fenvix_AdvanceTo moves the clock to mono (never backwards) and records op
+// with the due time relative to the test start (a timer or ticker fired).
+func Fenvix_AdvanceTo(op string, mono int64) {
+	fenvixInit()
+	gid := runtime.Fenvix_Goid()
+	fenvix.mu.Lock()
+	if mono > fenvix.elapsed {
+		fenvix.elapsed = mono
+	}
+	var v [24]byte
+	fenvixRecordLocked("time", op, "timer", fenvixItoa(v[:0], mono-fenvix.testT0), gid)
+	fenvixOther()
+	fenvix.mu.Unlock()
+}
+
+// ---------------------------------------------------------------- tests
+
+// Fenvix_Begin starts a test: its seed, the wall clock back to the epoch,
+// tick reset, empty buffers; the calling goroutine is thread 0.
+func Fenvix_Begin(seed uint64) {
+	if runtime.Fenvix_Ctl() == 0 {
+		return
+	}
+	fenvixInit()
+	n := runtime.NumGoroutine()
+	fenvix.mu.Lock()
+	fenvix.seed = seed
+	fenvix.gen++
+	fenvix.wallOff = fenvix.epoch - fenvix.elapsed
+	fenvix.testT0 = fenvix.elapsed
+	fenvixOther()
+	fenvix.inTest = true
+	fenvix.testGoid = runtime.Fenvix_Goid()
+	fenvix.goids = make(map[uint64]uint32)
+	fenvix.buf = fenvix.buf[:0]
+	fenvix.deps = fenvix.deps[:0]
+	fenvix.nev = 0
+	fenvix.baseG = n
+	fenvix.mu.Unlock()
+	runtime.Fenvix_SetMapsSeed(seed)
+}
+
+// Fenvix_End closes the test and returns its packed events, its packed
+// dependencies and the number of events.
+func Fenvix_End() (events []byte, deps []byte, n int) {
+	fenvixInit()
+	fenvix.mu.Lock()
+	fenvix.inTest = false
+	events, deps, n = fenvix.buf, fenvix.deps, fenvix.nev
+	fenvix.buf, fenvix.deps = nil, nil
+	fenvix.nev = 0
+	fenvix.mu.Unlock()
+	return
+}
+
+// Fenvix_TakeDeps returns the dependencies recorded outside any test
+// (package initialisation, TestMain) and clears them.
+func Fenvix_TakeDeps() []byte {
+	fenvixInit()
+	fenvix.mu.Lock()
+	d := fenvix.deps
+	fenvix.deps = nil
+	fenvix.mu.Unlock()
+	return d
+}
+
+func fenvixClean(b []byte, s string) []byte {
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if c == 0x1e || c == 0x1f || c == '\n' || c == 0 {
+			c = '?'
+		}
+		b = append(b, c)
+	}
+	return b
+}
+
+func fenvixHasPrefix(s, p string) bool { return len(s) >= len(p) && s[:len(p)] == p }
+
+var fenvixHooked = []string{"time.", "runtime.", "math/rand", "syscall.", "os.", "crypto/", "net.", "internal/", "sync.", "io/", "io.", "sort.", "slices."}
+
+// fenvixSite returns the first caller outside the Go tree as `path:line`
+// relative to the repository root (or `std:<function>` when the whole stack
+// is in the standard library) and whether the call comes from the test
+// runner itself (package testing), which keeps real behaviour.
+func fenvixSite(skip int) (site string, runner bool) {
+	var pcs [32]uintptr
+	n := runtime.Callers(skip+2, pcs[:])
+	frames := runtime.CallersFrames(pcs[:n])
+	stdName := ""
+	for {
+		f, more := frames.Next()
+		fn := f.Function
+		inGo := (fenvix.goroot != "" && fenvixHasPrefix(f.File, fenvix.goroot+"/src/")) || fenvixHasPrefix(f.File, "$GOROOT/")
+		if inGo {
+			if stdName == "" && fenvixHasPrefix(fn, "testing.") {
+				return "", true
+			}
+			if stdName == "" {
+				hooked := false
+				for _, p := range fenvixHooked {
+					if fenvixHasPrefix(fn, p) {
+						hooked = true
+						break
+					}
+				}
+				if !hooked {
+					stdName = fn
+				}
+			}
+			if !more {
+				break
+			}
+			continue
+		}
+		file := f.File
+		if fenvix.root != "" && fenvixHasPrefix(file, fenvix.root+"/") {
+			file = file[len(fenvix.root)+1:]
+		}
+		return string(fenvixItoa(append([]byte(file), ':'), int64(f.Line))), false
+	}
+	if stdName != "" {
+		return "std:" + stdName, false
+	}
+	return "std", false
+}
+
+// fenvixRecordLocked appends one event to the current test (lock held).
+func fenvixRecordLocked(source, op, site string, value []byte, gid uint64) {
+	if !fenvix.inTest || !fenvix.recording {
+		return
+	}
+	var th uint32
+	if gid != fenvix.testGoid {
+		t, ok := fenvix.goids[gid]
+		if !ok {
+			t = uint32(len(fenvix.goids) + 1)
+			fenvix.goids[gid] = t
+		}
+		th = t
+	}
+	fenvix.nev++
+	if fenvix.nev > fenvix.maxEv {
+		return
+	}
+	b := fenvix.buf
+	b = fenvixClean(b, source)
+	b = append(b, 0x1f)
+	b = fenvixClean(b, op)
+	b = append(b, 0x1f)
+	b = fenvixClean(b, site)
+	b = append(b, 0x1f)
+	for _, c := range value {
+		if c == 0x1e || c == 0x1f || c == '\n' || c == 0 {
+			c = '?'
+		}
+		b = append(b, c)
+	}
+	if th != 0 {
+		b = append(b, 0x1f)
+		b = fenvixItoa(b, int64(th))
+	}
+	fenvix.buf = append(b, 0x1e)
+}
+
+// Fenvix_Event records one event of the current test (ignored outside a test
+// and in child processes). It reports whether the call comes from the test
+// runner (package testing): callers then use the real function.
+func Fenvix_Event(source, op, value string) (runner bool) {
+	if runtime.Fenvix_Ctl() == 0 || !runtime.Fenvix_UserG() {
+		return false
+	}
+	fenvixInit()
+	site, runner := fenvixSite(1)
+	if runner {
+		return true
+	}
+	gid := runtime.Fenvix_Goid()
+	fenvix.mu.Lock()
+	fenvixRecordLocked(source, op, site, []byte(value), gid)
+	if source != "time" {
+		fenvixOther()
+	}
+	fenvix.mu.Unlock()
+	return false
+}
+
+// Fenvix_IsRunnerCall reports whether the caller of the hooked function is
+// package testing.
+func Fenvix_IsRunnerCall() bool {
+	if !runtime.Fenvix_UserG() {
+		return false
+	}
+	fenvixInit()
+	_, r := fenvixSite(1)
+	return r
+}
+
+// Fenvix_Dep records a dependency for the skip key: 'E' environment variable
+// ("*" = the whole environment), 'O' file opened for reading, 'S' path
+// stat'ed, 'L' directory listed, 'X' program started, 'N' outside network
+// address. Outside a test it belongs to the package (init, TestMain).
+func Fenvix_Dep(kind byte, name string) {
+	if !runtime.Fenvix_On(runtime.FenvixDeps) || !runtime.Fenvix_UserG() {
+		return
+	}
+	fenvixInit()
+	fenvix.mu.Lock()
+	if fenvix.recording && len(fenvix.deps) < 4<<20 {
+		b := append(fenvix.deps, kind, 0x1f)
+		b = fenvixClean(b, name)
+		fenvix.deps = append(b, 0x1e)
+	}
+	fenvix.mu.Unlock()
+}
+
+func fenvixDepEnv(key string) {
+	Fenvix_Dep('E', key)
+}

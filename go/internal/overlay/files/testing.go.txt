@@ -1,0 +1,197 @@
+// Code added by fenvix-go (build-time overlay). Not part of Go.
+//
+// The test runner side of fenvix-go:
+//   * before the top-level tests run, the list of test names goes to
+//     fenvix-go (control pipe); fenvix-go answers with the order to run them
+//     in (seed 0 = source order, else the core's shuffle), the seed of each
+//     test (the core's derive_seed) and the tests to leave out (reused with
+//     proof by the skip cache);
+//   * each top-level test is framed by begin/end records in the events file
+//     (its events and dependencies in between) and by two marker syscalls
+//     that strace sees, so file reads can be attributed to the test;
+//   * with the serial control, t.Parallel is a no-op: tests run one at a
+//     time in the order above.
+// Fd numbers come from FENVIX_GO_FDS ("events,ctl-out,ctl-in"); only the
+// process fenvix-go started uses them (not child processes).
+
+package testing
+
+import (
+	"os"
+	"runtime"
+	"strings"
+	"syscall"
+	"time"
+)
+
+var fenvixIO struct {
+	ok      bool
+	events  *os.File
+	ctlOut  *os.File
+	ctlIn   *os.File
+	markers bool
+}
+
+func init() {
+	if runtime.Fenvix_Ctl() == 0 {
+		return
+	}
+	v, ok := syscall.Getenv("FENVIX_GO_FDS")
+	if !ok {
+		return
+	}
+	syscall.Unsetenv("FENVIX_GO_FDS")
+	fds := strings.Split(v, ",")
+	if len(fds) != 3 {
+		return
+	}
+	var n [3]int
+	for i, s := range fds {
+		v := 0
+		for _, c := range s {
+			if c < '0' || c > '9' {
+				return
+			}
+			v = v*10 + int(c-'0')
+		}
+		n[i] = v
+		syscall.CloseOnExec(v)
+	}
+	fenvixIO.events = os.NewFile(uintptr(n[0]), "fenvix-events")
+	fenvixIO.ctlOut = os.NewFile(uintptr(n[1]), "fenvix-ctl-out")
+	fenvixIO.ctlIn = os.NewFile(uintptr(n[2]), "fenvix-ctl-in")
+	fenvixIO.markers = runtime.Fenvix_On(runtime.FenvixDeps)
+	fenvixIO.ok = true
+	syscall.Fenvix_SetRecording(true)
+}
+
+func fenvixSerial() bool { return runtime.Fenvix_On(runtime.FenvixSerial) }
+
+// fenvixRecord writes one record: type byte, 4-byte little-endian length, payload.
+func fenvixRecord(kind byte, payload []byte) {
+	if !fenvixIO.ok {
+		return
+	}
+	h := []byte{kind, byte(len(payload)), byte(len(payload) >> 8), byte(len(payload) >> 16), byte(len(payload) >> 24)}
+	fenvixIO.events.Write(append(h, payload...))
+}
+
+func fenvixMarker(kind string, idx int) {
+	if fenvixIO.markers {
+		syscall.Access("/__fenvix_marker__/"+kind+"/"+fenvixItoa(idx), 0)
+	}
+}
+
+func fenvixItoa(v int) string {
+	if v == 0 {
+		return "0"
+	}
+	neg := v < 0
+	if neg {
+		v = -v
+	}
+	var b [20]byte
+	i := len(b)
+	for v > 0 {
+		i--
+		b[i] = byte('0' + v%10)
+		v /= 10
+	}
+	if neg {
+		i--
+		b[i] = '-'
+	}
+	return string(b[i:])
+}
+
+func fenvixReadLine(f *os.File) (string, bool) {
+	var sb strings.Builder
+	var b [1]byte
+	for {
+		n, err := f.Read(b[:])
+		if n == 1 {
+			if b[0] == '\n' {
+				return sb.String(), true
+			}
+			sb.WriteByte(b[0])
+			continue
+		}
+		if err != nil {
+			return sb.String(), false
+		}
+	}
+}
+
+func fenvixParseU(s string) uint64 {
+	var v uint64
+	for i := 0; i < len(s); i++ {
+		v = v*10 + uint64(s[i]-'0')
+	}
+	return v
+}
+
+var fenvixAsked bool
+
+// fenvixTests asks fenvix-go for the order, seeds and skips of the
+// top-level tests and wraps each one with begin/end records.
+func fenvixTests(tests []InternalTest) []InternalTest {
+	if !fenvixIO.ok || fenvixAsked {
+		return tests
+	}
+	fenvixAsked = true
+	fenvixRecord('I', syscall.Fenvix_TakeDeps()) // package init and TestMain so far
+	names := make([]string, len(tests))
+	for i, t := range tests {
+		names[i] = t.Name
+	}
+	fenvixIO.ctlOut.Write([]byte("L\x1f" + strings.Join(names, "\x1f") + "\n"))
+	line, ok := fenvixReadLine(fenvixIO.ctlIn)
+	if !ok || !strings.HasPrefix(line, "O\x1f") {
+		return tests
+	}
+	// O US i,j,k US seed_i,seed_j,seed_k
+	parts := strings.Split(line, "\x1f")
+	if len(parts) != 3 {
+		return tests
+	}
+	var order []int
+	var seeds []uint64
+	if parts[1] != "" {
+		for _, s := range strings.Split(parts[1], ",") {
+			order = append(order, int(fenvixParseU(s)))
+		}
+		for _, s := range strings.Split(parts[2], ",") {
+			seeds = append(seeds, fenvixParseU(s))
+		}
+	}
+	out := make([]InternalTest, 0, len(order))
+	for k, i := range order {
+		if i < 0 || i >= len(tests) || k >= len(seeds) {
+			continue
+		}
+		test, seed, pos := tests[i], seeds[k], k
+		f := test.F
+		out = append(out, InternalTest{Name: test.Name, F: func(t *T) {
+			fenvixRecord('B', []byte(test.Name))
+			fenvixMarker("B", pos)
+			start := time.Now() // package testing: real clock
+			syscall.Fenvix_Begin(seed)
+			t.Cleanup(func() {
+				events, deps, n := syscall.Fenvix_End()
+				fenvixMarker("X", pos)
+				outcome := "passed"
+				if t.Failed() {
+					outcome = "failed"
+				} else if t.Skipped() {
+					outcome = "skipped"
+				}
+				fenvixRecord('E', events)
+				fenvixRecord('D', deps)
+				el := int(time.Since(start))
+				fenvixRecord('X', []byte(outcome+"\x1f"+fenvixItoa(n)+"\x1f"+fenvixItoa(el)))
+			})
+			f(t)
+		}})
+	}
+	return out
+}

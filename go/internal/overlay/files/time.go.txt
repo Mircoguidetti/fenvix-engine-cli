@@ -1,0 +1,258 @@
+// Code added by fenvix-go (build-time overlay, --det). Not part of Go.
+//
+// Virtual clock for package time. With the time control on:
+//   * Now, Since and Until read the virtual clock (one tick per read; the
+//     wall clock restarts at the epoch for every test, the monotonic clock
+//     never goes backwards); calls from package testing keep real time;
+//   * Sleep advances the clock by d; it still waits for real unless the test
+//     started no goroutine (FastWait), so goroutines it waits for can run;
+//   * timers and tickers (NewTimer, After, AfterFunc, NewTicker, Tick, Reset,
+//     Stop) still fire after their real delay, and when they fire they move
+//     the clock to their virtual due time, so elapsed times seen by the code
+//     are exact and the same on every run.
+// Not controlled: the real delay itself (scheduling, Level 1), deadlines
+// inside the network poller (they use the real clock), testing/synctest
+// bubbles (they keep their own fake clock).
+
+package time
+
+import (
+	"runtime"
+	"syscall"
+	"sync"
+	"unsafe"
+)
+
+// fenvixRealSleep is the runtime's timeSleep (its linkname is retargeted by
+// the overlay from time.Sleep to this name).
+func fenvixRealSleep(d Duration)
+
+func fenvixTimeOn() bool {
+	return runtime.Fenvix_On(runtime.FenvixTime) && runtime.Fenvix_UserG() && !{{BUBBLED}}
+}
+
+// fenvixMake builds a Time from a wall clock (Unix ns) and a monotonic
+// reading, with the same encoding as Now.
+func fenvixMake(wall, mono int64) Time {
+	sec := wall / 1_000_000_000
+	nsec := wall % 1_000_000_000
+	if nsec < 0 {
+		nsec += 1_000_000_000
+		sec--
+	}
+	sec += unixToInternal - minWall
+	if uint64(sec)>>33 != 0 {
+		return Time{uint64(nsec), sec + minWall, Local}
+	}
+	return Time{hasMonotonic | uint64(sec)<<nsecShift | uint64(nsec), mono, Local}
+}
+
+func fenvixNow(op string) (Time, bool) {
+	wall, mono, runner := syscall.Fenvix_Clock(op)
+	if runner {
+		return Time{}, false
+	}
+	return fenvixMake(wall, mono), true
+}
+
+func fenvixQuietNow() Time {
+	wall, mono := syscall.Fenvix_ClockQuiet()
+	return fenvixMake(wall, mono)
+}
+
+// Sleep pauses the current goroutine for at least the duration d.
+// A negative or zero duration causes Sleep to return immediately.
+func Sleep(d Duration) {
+	if fenvixTimeOn() {
+		skip, runner := syscall.Fenvix_Sleep("time.Sleep", int64(d))
+		if skip && !runner {
+			runtime.Gosched()
+			return
+		}
+	}
+	fenvixRealSleep(d)
+}
+
+// fenvixTimer is the virtual side of a timer or ticker.
+type fenvixTimer struct {
+	mu       sync.Mutex
+	deadline int64 // virtual monotonic due time
+	period   int64
+	c        chan Time
+	f        func()
+	op       string
+}
+
+var (
+	fenvixTimersMu  sync.Mutex
+	fenvixTimers    map[unsafe.Pointer]*fenvixTimer
+	fenvixTimersGen uint64
+)
+
+func fenvixRegister(p unsafe.Pointer, st *fenvixTimer) {
+	gen := syscall.Fenvix_Gen()
+	fenvixTimersMu.Lock()
+	if fenvixTimers == nil || gen != fenvixTimersGen || len(fenvixTimers) > 200000 {
+		fenvixTimers = make(map[unsafe.Pointer]*fenvixTimer)
+		fenvixTimersGen = gen
+	}
+	fenvixTimers[p] = st
+	fenvixTimersMu.Unlock()
+}
+
+func fenvixLookup(p unsafe.Pointer) *fenvixTimer {
+	fenvixTimersMu.Lock()
+	st := fenvixTimers[p]
+	fenvixTimersMu.Unlock()
+	return st
+}
+
+// fenvixFire runs in the runtime's timer context (possibly a system stack):
+// it only starts a goroutine, like goFunc.
+func fenvixFire(arg any, seq uintptr, delta int64) {
+	go fenvixRun(arg.(*fenvixTimer))
+}
+
+func fenvixRun(st *fenvixTimer) {
+	st.mu.Lock()
+	due := st.deadline
+	if st.period > 0 {
+		st.deadline += st.period
+	}
+	f, c, op := st.f, st.c, st.op
+	st.mu.Unlock()
+	syscall.Fenvix_AdvanceTo(op, due)
+	if f != nil {
+		f()
+		return
+	}
+	select {
+	case c <- fenvixQuietNow():
+	default:
+	}
+}
+
+func fenvixDrain(c chan Time) bool {
+	if c == nil {
+		return false
+	}
+	select {
+	case <-c:
+		return true
+	default:
+		return false
+	}
+}
+
+func fenvixWhen(d Duration) int64 {
+	_, mono := syscall.Fenvix_ClockQuiet()
+	if d < 0 {
+		d = 0
+	}
+	return mono + int64(d)
+}
+
+// NewTimer creates a new Timer that will send
+// the current time on its channel after at least duration d.
+func NewTimer(d Duration) *Timer {
+	if !fenvixTimeOn() || syscall.Fenvix_IsRunnerCall() {
+		return fenvixOrigNewTimer(d)
+	}
+	syscall.Fenvix_Event("time", "time.NewTimer", fenvixDur(d))
+	c := make(chan Time, 1)
+	st := &fenvixTimer{deadline: fenvixWhen(d), c: c, op: "time.timer"}
+	t := newTimer(when(d), 0, fenvixFire, st, nil)
+	t.C = c
+	fenvixRegister(unsafe.Pointer(t), st)
+	return t
+}
+
+// AfterFunc waits for the duration to elapse and then calls f
+// in its own goroutine.
+func AfterFunc(d Duration, f func()) *Timer {
+	if !fenvixTimeOn() || syscall.Fenvix_IsRunnerCall() {
+		return fenvixOrigAfterFunc(d, f)
+	}
+	syscall.Fenvix_Event("time", "time.AfterFunc", fenvixDur(d))
+	st := &fenvixTimer{deadline: fenvixWhen(d), f: f, op: "time.afterfunc"}
+	t := newTimer(when(d), 0, fenvixFire, st, nil)
+	fenvixRegister(unsafe.Pointer(t), st)
+	return t
+}
+
+// Reset changes the timer to expire after duration d.
+func (t *Timer) Reset(d Duration) bool {
+	if fenvixTimeOn() {
+		if st := fenvixLookup(unsafe.Pointer(t)); st != nil {
+			st.mu.Lock()
+			st.deadline = fenvixWhen(d)
+			st.mu.Unlock()
+			drained := fenvixDrain(st.c)
+			return t.fenvixOrigReset(d) || drained
+		}
+	}
+	return t.fenvixOrigReset(d)
+}
+
+// Stop prevents the Timer from firing.
+func (t *Timer) Stop() bool {
+	if fenvixTimeOn() {
+		if st := fenvixLookup(unsafe.Pointer(t)); st != nil {
+			stopped := t.fenvixOrigStop()
+			drained := fenvixDrain(st.c)
+			return stopped || drained
+		}
+	}
+	return t.fenvixOrigStop()
+}
+
+// NewTicker returns a new Ticker containing a channel that will send the
+// current time on the channel after each tick.
+func NewTicker(d Duration) *Ticker {
+	if !fenvixTimeOn() || d <= 0 || syscall.Fenvix_IsRunnerCall() {
+		return fenvixOrigNewTicker(d)
+	}
+	syscall.Fenvix_Event("time", "time.NewTicker", fenvixDur(d))
+	c := make(chan Time, 1)
+	st := &fenvixTimer{deadline: fenvixWhen(d), period: int64(d), c: c, op: "time.tick"}
+	t := (*Ticker)(unsafe.Pointer(newTimer(when(d), int64(d), fenvixFire, st, nil)))
+	t.C = c
+	fenvixRegister(unsafe.Pointer(t), st)
+	return t
+}
+
+// Reset stops a ticker and resets its period to the specified duration.
+func (t *Ticker) Reset(d Duration) {
+	if fenvixTimeOn() && d > 0 {
+		if st := fenvixLookup(unsafe.Pointer(t)); st != nil {
+			st.mu.Lock()
+			st.deadline = fenvixWhen(d)
+			st.period = int64(d)
+			st.mu.Unlock()
+		}
+	}
+	t.fenvixOrigReset(d)
+}
+
+func fenvixDur(d Duration) string {
+	var b [24]byte
+	i := len(b)
+	neg := d < 0
+	u := uint64(d)
+	if neg {
+		u = uint64(-d)
+	}
+	for {
+		i--
+		b[i] = byte('0' + u%10)
+		u /= 10
+		if u == 0 {
+			break
+		}
+	}
+	if neg {
+		i--
+		b[i] = '-'
+	}
+	return string(b[i:])
+}

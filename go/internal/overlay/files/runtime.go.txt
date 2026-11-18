@@ -1,0 +1,195 @@
+// Code added by fenvix-go (build-time overlay). Not part of Go.
+//
+// The part of fenvix that must live in package runtime: which controls are on
+// (read once from FENVIX_GO_DET, field ctl=<bitmask>) and the deterministic
+// source for the map implementation (hash seeds and iteration start points).
+// Everything else (clock, events, dependencies) lives in package syscall,
+// where allocation is allowed.
+
+package runtime
+
+import (
+	"{{ATOMIC}}"
+)
+
+// Control bits (keep in sync with go/internal/overlay).
+const (
+	FenvixTime     = 1 << 0 // virtual clock
+	FenvixRandom   = 1 << 1 // math/rand and math/rand/v2 global sources seeded per test
+	FenvixCrypto   = 1 << 2 // crypto/rand deterministic stream per test
+	FenvixMaps     = 1 << 3 // map seeds and iteration order
+	FenvixFs       = 1 << 4 // directory listings sorted
+	FenvixNet      = 1 << 5 // network closed except loopback
+	FenvixSerial   = 1 << 6 // t.Parallel is a no-op
+	FenvixDeps     = 1 << 7 // record what each test reads (skip key)
+	FenvixFastWait = 1 << 8 // Sleep does not wait when the test started no goroutine
+)
+
+var (
+	fenvixInitState uint32 // 0 not parsed, 1 parsing, 2 done
+	fenvixCtl       uint32
+	fenvixMapsSeed  uint64
+	fenvixMapsCtr   uint64
+	fenvixEarlyMaps bool // maps control on, known from alginit (before the environment is parsed)
+)
+
+//go:nosplit
+func fenvixMix(z uint64) uint64 {
+	z += 0x9E3779B97F4A7C15
+	z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9
+	z = (z ^ (z >> 27)) * 0x94D049BB133111EB
+	return z ^ (z >> 31)
+}
+
+// fenvixParseCfg reads ctl= and seed= from the configuration string.
+func fenvixParseCfg(cfg string) (ctl uint32, seed uint64) {
+	for len(cfg) > 0 {
+		item := cfg
+		cfg = ""
+		for i := 0; i < len(item); i++ {
+			if item[i] == ';' {
+				item, cfg = item[:i], item[i+1:]
+				break
+			}
+		}
+		var n uint64
+		if len(item) > 4 && item[:4] == "ctl=" {
+			for i := 4; i < len(item) && item[i] >= '0' && item[i] <= '9'; i++ {
+				n = n*10 + uint64(item[i]-'0')
+			}
+			ctl = uint32(n)
+		} else if len(item) > 5 && item[:5] == "seed=" {
+			for i := 5; i < len(item) && item[i] >= '0' && item[i] <= '9'; i++ {
+				n = n*10 + uint64(item[i]-'0')
+			}
+			seed = n
+		}
+	}
+	return
+}
+
+// fenvixEarlyCfg reads FENVIX_GO_DET from the process's environment block
+// before the runtime parsed the environment (alginit runs before goenvs).
+func fenvixEarlyCfg() (ctl uint32, seed uint64, ok bool) {
+	if argv == nil {
+		return 0, 0, false
+	}
+	const key = "FENVIX_GO_DET="
+	for i := int32(0); ; i++ {
+		p := argv_index(argv, argc+1+i)
+		if p == nil {
+			break
+		}
+		s := gostringnocopy(p)
+		if len(s) >= len(key) && s[:len(key)] == key {
+			ctl, seed = fenvixParseCfg(s[len(key):])
+			return ctl, seed, true
+		}
+	}
+	return 0, 0, false
+}
+
+// fenvix:if maps-alg
+// alginit: Go's hash functions get a random key per process, which changes
+// the placement of keys in maps and so the iteration order. With the maps
+// control on, the key is derived from the fenvix seed instead.
+func alginit() {
+	fenvixOrigAlginit()
+	ctl, seed, ok := fenvixEarlyCfg()
+	if !ok || ctl&FenvixMaps == 0 {
+		return
+	}
+	fenvixEarlyMaps = true
+	atomic.Store64(&fenvixMapsSeed, fenvixMix(seed^0x6d617073))
+	x := seed ^ 0x68617368 // "hash"
+	for i := range hashkey {
+		x = fenvixMix(x)
+		hashkey[i] = uintptr(x) | 1
+	}
+	for i := 0; i+8 <= len(aeskeysched); i += 8 {
+		x = fenvixMix(x)
+		for j := 0; j < 8; j++ {
+			aeskeysched[i+j] = byte(x >> (8 * j))
+		}
+	}
+}
+// fenvix:end
+
+func fenvixParse() {
+	if len(envs) == 0 {
+		return // before the runtime read the environment: stay off for now
+	}
+	if !atomic.Cas(&fenvixInitState, 0, 1) {
+		for atomic.Load(&fenvixInitState) != 2 {
+			procyield(30)
+		}
+		return
+	}
+	ctl, seed := fenvixParseCfg(gogetenv("FENVIX_GO_DET"))
+	atomic.Store64(&fenvixMapsSeed, fenvixMix(seed^0x6d617073))
+	fenvixCtl = ctl
+	atomic.Store(&fenvixInitState, 2)
+}
+
+// Fenvix_Ctl returns the active control bits (0: fenvix is off).
+func Fenvix_Ctl() uint32 {
+	if atomic.Load(&fenvixInitState) != 2 {
+		fenvixParse()
+	}
+	return fenvixCtl
+}
+
+// Fenvix_On reports whether all control bits in c are active (and fenvix is on).
+func Fenvix_On(c uint32) bool {
+	ctl := Fenvix_Ctl()
+	return ctl != 0 && ctl&c == c
+}
+
+func fenvixMapsOn() bool {
+	if atomic.Load(&fenvixInitState) != 2 {
+		fenvixParse()
+	}
+	return fenvixCtl&FenvixMaps != 0
+}
+
+// fenvixRandHook: with the maps control on, runtime.rand serves user
+// goroutines from the deterministic source (map seeds, including the ones
+// the compiler sets for maps on the stack, and iteration start points);
+// system stacks (new threads, the scheduler) keep the real source.
+//
+//go:nosplit
+func fenvixRandHook() bool {
+	if !fenvixEarlyMaps {
+		return false
+	}
+	gp := getg()
+	return gp == gp.m.curg
+}
+
+// fenvixMapsRand is the deterministic source: lock and allocation free, so it
+// is safe wherever runtime.rand is called; deterministic for a deterministic
+// sequence of calls (one goroutine; several goroutines are Level 1).
+//
+//go:nosplit
+func fenvixMapsRand() uint64 {
+	c := atomic.Xadd64(&fenvixMapsCtr, 1)
+	return fenvixMix(atomic.Load64(&fenvixMapsSeed) ^ c*0xD1B54A32D192ED03)
+}
+
+// Fenvix_SetMapsSeed restarts the map source (called at every test start).
+func Fenvix_SetMapsSeed(seed uint64) {
+	atomic.Store64(&fenvixMapsSeed, fenvixMix(seed^0x6d617073))
+	atomic.Store64(&fenvixMapsCtr, 0)
+}
+
+// Fenvix_UserG reports whether the caller runs on a user goroutine (not on a
+// system stack, where timer callbacks may run).
+func Fenvix_UserG() bool {
+	gp := getg()
+	return gp == gp.m.curg
+}
+
+// Fenvix_Goid is the id of the calling goroutine.
+func Fenvix_Goid() uint64 {
+	return getg().goid
+}
