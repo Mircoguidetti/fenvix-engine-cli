@@ -711,8 +711,16 @@ function installWorkerSeeds() {
   seeds.installProcess(patcher, STATE.config);
   seeds.installRealm(patcher, globalThis, STATE.config, { sameRealm: true });
   seeds.seedFile(`playwright-worker`);
-  const rnd = Math.random;
-  Math.random = function random() { maybeReseed(); return rnd(); };
+  // Every seeded draw (Math.random, crypto.getRandomValues/randomUUID, nanoid's pool) first switches to the
+  // current test's stream. Round 2 fix: only Math.random reseeded, so after a failing test Playwright's new worker
+  // started from the same initial stream and the next test drew the previous worker's bytes (documenso: the same
+  // nanoid e-mail, a unique-constraint failure, a new worker, and the cascade again: 266 of 595 tests).
+  if (ENV.DETJS_PW_RESEED_ANY === '0') {
+    const rnd = Math.random;
+    Math.random = function random() { maybeReseed(); return rnd(); };
+  } else {
+    seeds.setStreamHook(() => { maybeReseed(); return null; });
+  }
   seedsInstalled = true;
   // Round 2: the test code's clock (Date, performance.now) is virtual too: seed helpers write
   // `new Date()` into rows (documenso's emailVerified). Per test: epoch + 1 ms per read. Playwright's
@@ -722,13 +730,24 @@ function installWorkerSeeds() {
     const cfgT = { ...STATE.config, controls: new Set(['time']) };
     clock.installProcess(patcher, cfgT);
     clock.installRealm(patcher, globalThis, cfgT, { sameRealm: true });
+    // Each test starts at its own instant: epoch + (hash of the test id mod 2^31) ms, then 1 ms per read. The same
+    // test gets the same values in a full run and in its replay alone; two tests do not share `Date.now()` values
+    // (names like `user-${Date.now()}` stay unique in one database). DETJS_PW_WORKER_CLOCK_SPREAD=0: every test
+    // starts at the epoch (the first round-2 behaviour).
+    const SPREAD = ENV.DETJS_PW_WORKER_CLOCK_SPREAD !== '0';
     let ck = null;
+    let base = 0;
     let n = 0;
     clock.setValueHook(() => {
       const k = currentKey();
-      if (k !== ck) { ck = k; n = 0; }
+      if (k !== ck) {
+        ck = k;
+        n = 0;
+        if (k) rememberTest();
+        base = SPREAD && k ? parseInt(digest(testIdOf(k)).slice(0, 8), 16) % 2147483648 : 0;
+      }
       n += 1;
-      return { e: n * 1e6, rel: '' };
+      return { e: (base + n) * 1e6, rel: '' };
     });
   }
   installWorkerSeeds.reseed = (id) => seeds.reseed(id);

@@ -384,3 +384,58 @@ test('paced virtual time: a 1.5 s page timer fires within 10 s while test code r
   const r = pw(dir, ['--det'], 'pace');
   assert.deepEqual(outcomes(r), ['passed'], r.out);
 });
+
+// ---------------------------------------------------------------------------------------------
+// 7. Regression (documenso, run 44284824592: 266 of 595 tests failed under --det on `Unique constraint failed on
+// (email)`): test data made by the test code must not repeat across tests. (a) After a failing test Playwright starts
+// a new worker; before the fix only Math.random switched to the test's stream, so a test that draws only crypto
+// (nanoid, randomUUID) got the previous worker's bytes. (b) The test code's clock started every test at the epoch,
+// so names built from Date.now() repeated across tests.
+const UQ_PORT = 4617;
+const UQ_APP = `
+const http = require('http');
+const seen = new Set();
+http.createServer((req, res) => {
+  if (req.url === '/health') return res.end('ok');
+  let b = ''; req.on('data', (c) => (b += c)); req.on('end', () => {
+    const { email } = JSON.parse(b);
+    if (seen.has(email)) { res.statusCode = 409; return res.end('Unique constraint failed on the fields: (email)'); }
+    seen.add(email); res.end('created ' + email);
+  });
+}).listen(${UQ_PORT});
+`;
+const UQ_SPEC = `
+const { test, expect } = require('@playwright/test');
+const seedUser = (request, email) => request.post('/api/users', { data: { email } });
+test('a failing test seeds a user first', async ({ request }) => {
+  expect((await seedUser(request, crypto.randomUUID() + '@test.example')).status()).toBe(200);
+  expect('this test fails on purpose').toBe('so that Playwright starts a new worker');
+});
+test('the next test seeds its own user', async ({ request }) => {
+  expect((await seedUser(request, crypto.randomUUID() + '@test.example')).status()).toBe(200);
+});
+`;
+const UQ_DATE_SPEC = `
+const { test, expect } = require('@playwright/test');
+for (const name of ['first', 'second', 'third']) {
+  test('user stamped with Date.now(): ' + name, async ({ request }) => {
+    expect((await request.post('/api/users', { data: { email: 'user-' + Date.now() + '@test.example' } })).status()).toBe(200);
+  });
+}
+`;
+
+test('unique test data: crypto draws after a worker restart and Date.now() names do not repeat across tests', { skip, timeout: 600000 }, () => {
+  const dir = project('unique', { app: UQ_APP, port: UQ_PORT, specs: { 'restart.spec.js': UQ_SPEC, 'dates.spec.js': UQ_DATE_SPEC }, config: 'workers: 1, fullyParallel: false,' });
+  const before = pw(dir, ['--det', '--workers=1', '--retries=0'], 'uq-before', { DETJS_PW_RESEED_ANY: '0', DETJS_PW_WORKER_CLOCK_SPREAD: '0' });
+  const byTitle = (r) => Object.fromEntries(r.trace.tests.map((t) => [t.nodeid.replace(/^tests\//, ''), t.outcome]));
+  const b = byTitle(before);
+  assert.equal(b['restart.spec.js::the next test seeds its own user'], 'failed', before.out);
+  assert.equal(b['dates.spec.js::user stamped with Date.now(): second'], 'failed', before.out);
+  for (const i of [1, 2]) {
+    const after = pw(dir, ['--det', '--workers=1', '--retries=0'], `uq-after-${i}`);
+    const a = byTitle(after);
+    assert.equal(a['restart.spec.js::a failing test seeds a user first'], 'failed', after.out);
+    assert.equal(a['restart.spec.js::the next test seeds its own user'], 'passed', after.out);
+    for (const n of ['first', 'second', 'third']) assert.equal(a[`dates.spec.js::user stamped with Date.now(): ${n}`], 'passed', after.out);
+  }
+});
