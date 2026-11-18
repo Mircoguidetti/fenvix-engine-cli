@@ -203,8 +203,22 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         listing_digest(path).map(|d| format!("d:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("s:") {
         format!("s:{}", stat_kind(path))
+    } else if recorded.starts_with("l:") {
+        link_dep(path)
     } else {
         "unknown".into()
+    }
+}
+
+/// Dependency string of a symbolic link's target text (`readlink`): "l:<digest>", "s:<kind>" when the path is not
+/// a link (follows nothing), "missing" when it does not exist.
+pub fn link_dep(path: &Path) -> String {
+    match fs::read_link(path) {
+        Ok(t) => format!("l:{}", digest_bytes(&os_bytes(t.as_os_str())).short()),
+        Err(_) => match fs::symlink_metadata(path) {
+            Ok(_) => format!("s:{}", stat_kind(path)),
+            Err(_) => "missing".into(),
+        },
     }
 }
 

@@ -20,6 +20,7 @@ pub mod order;
 pub mod proof;
 pub mod recorder;
 pub mod trace;
+pub mod treehash;
 pub mod verify;
 
 pub use event::{Event, Source};

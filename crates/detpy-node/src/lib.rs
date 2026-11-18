@@ -357,3 +357,250 @@ pub fn backends() -> String {
         .collect();
     serde_json::Value::Array(all).to_string()
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Cache with proof (the same store, keys, receipts and reuse check as the Python shell: detpy_core::proof).
+
+use detpy_core::proof::{self as pf, Checker, CodeFile, Current, Observed, Store};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
+
+struct ProofInner {
+    store: Store,
+    checker: Checker,
+    touched: BTreeSet<String>,
+}
+
+/// The on-disk store of one cache directory plus the reuse checker of the current session.
+#[napi]
+pub struct ProofCache {
+    dir: PathBuf,
+    inner: Mutex<ProofInner>,
+}
+
+#[derive(serde::Deserialize)]
+struct ObservedJs {
+    outcome: String,
+    #[serde(default)]
+    report: serde_json::Value,
+    #[serde(default)]
+    fingerprint: String,
+    #[serde(default)]
+    duration: f64,
+    #[serde(default)]
+    run: String,
+    config: String,
+    runtime: String,
+    #[serde(default)]
+    epoch: Option<i64>,
+    #[serde(default)]
+    env: Vec<(String, String)>,
+    #[serde(default)]
+    data: Vec<(String, String)>,
+    #[serde(default)]
+    content: Vec<u32>,
+    #[serde(default)]
+    startup: String,
+}
+
+#[napi(object)]
+pub struct CheckResult {
+    pub ok: bool,
+    /// Receipt JSON when `ok`, else "kind: detail".
+    pub text: String,
+}
+
+#[napi]
+impl ProofCache {
+    #[napi(constructor)]
+    pub fn new(dir: String, root: String) -> Self {
+        let dir = PathBuf::from(dir);
+        let store = Store::load(&dir);
+        let checker = Checker::new(Current { root: PathBuf::from(root), ..Default::default() });
+        ProofCache { dir, inner: Mutex::new(ProofInner { store, checker, touched: BTreeSet::new() }) }
+    }
+
+    /// Current session state: configuration and runtime digests, clock epoch, environment at session start.
+    #[napi]
+    pub fn begin(&self, config: String, runtime: String, epoch: i64, env: HashMap<String, String>) {
+        let mut g = lock(&self.inner);
+        let root = g.checker.cur.root.clone();
+        let startup = g.checker.cur.startup.clone();
+        let env: BTreeMap<String, String> = env.into_iter().collect();
+        g.checker = Checker::new(Current { root, config, runtime, epoch, env, startup });
+    }
+
+    #[napi]
+    pub fn set_startup(&self, startup: String) {
+        lock(&self.inner).checker.cur.startup = startup;
+    }
+
+    #[napi]
+    pub fn check(&self, nodeid: String) -> Result<CheckResult> {
+        let mut g = lock(&self.inner);
+        let ProofInner { store, checker, .. } = &mut *g;
+        Ok(match checker.check(store, &nodeid) {
+            Ok(r) => CheckResult { ok: true, text: serde_json::to_string(&r).map_err(|e| bad(e.to_string()))? },
+            Err(m) => CheckResult { ok: false, text: format!("{}: {}", m.kind, m.detail) },
+        })
+    }
+
+    /// Recorded entry of `nodeid` as JSON, or null.
+    #[napi]
+    pub fn entry(&self, nodeid: String) -> Result<Option<String>> {
+        let g = lock(&self.inner);
+        match g.store.tests.get(&nodeid) {
+            None => Ok(None),
+            Some(e) => Ok(Some(serde_json::to_string(e).map_err(|e| bad(e.to_string()))?)),
+        }
+    }
+
+    #[napi]
+    pub fn ids(&self) -> Vec<String> {
+        lock(&self.inner).store.tests.keys().cloned().collect()
+    }
+
+    /// Add (or find) a code file version keyed by its whole content; returns its index.
+    #[napi]
+    pub fn add_file(&self, path: String, content: String) -> u32 {
+        let f = CodeFile { path, skeleton: content.clone(), hooks: content.clone(), content, units: vec![], imports: vec![] };
+        lock(&self.inner).store.add_file(f)
+    }
+
+    /// Add facts as the Python shell stores them (shared-cache documents); returns the index.
+    #[napi]
+    pub fn add_file_facts(&self, json: String) -> Result<u32> {
+        let f: CodeFile = serde_json::from_str(&json).map_err(|e| bad(format!("file facts: {e}")))?;
+        Ok(lock(&self.inner).store.add_file(f))
+    }
+
+    /// Record the inputs and result of a test that ran (`observed` as JSON); returns its key.
+    #[napi]
+    pub fn record(&self, nodeid: String, observed: String) -> Result<String> {
+        let o: ObservedJs = serde_json::from_str(&observed).map_err(|e| bad(format!("observed: {e}")))?;
+        let mut g = lock(&self.inner);
+        g.touched.insert(nodeid.clone());
+        Ok(g.store.record(
+            &nodeid,
+            Observed {
+                outcome: o.outcome,
+                report: o.report,
+                fingerprint: o.fingerprint,
+                duration: o.duration,
+                run: o.run,
+                config: o.config,
+                runtime: o.runtime,
+                epoch: o.epoch,
+                env: o.env,
+                data: o.data,
+                content: o.content,
+                skeleton: vec![],
+                hooks: vec![],
+                units: vec![],
+                startup: o.startup,
+            },
+        ))
+    }
+
+    #[napi]
+    pub fn remove(&self, nodeid: String) -> bool {
+        let mut g = lock(&self.inner);
+        g.touched.insert(nodeid.clone());
+        g.store.remove(&nodeid)
+    }
+
+    /// Paths written by earlier sessions: JSON `{path: [writer contexts]}`.
+    #[napi]
+    pub fn written(&self) -> String {
+        serde_json::to_string(&lock(&self.inner).store.written).unwrap_or_else(|_| "{}".into())
+    }
+
+    #[napi]
+    pub fn add_written(&self, json: String) -> Result<()> {
+        let w: BTreeMap<String, Vec<String>> = serde_json::from_str(&json).map_err(|e| bad(format!("written: {e}")))?;
+        let mut g = lock(&self.inner);
+        for (p, ws) in w {
+            g.store.written.entry(p).or_default().extend(ws);
+        }
+        Ok(())
+    }
+
+    #[napi(getter)]
+    pub fn size(&self) -> u32 {
+        lock(&self.inner).store.tests.len() as u32
+    }
+
+    #[napi(getter)]
+    pub fn n_files(&self) -> u32 {
+        lock(&self.inner).store.files.len() as u32
+    }
+
+    /// Merge this session's changes into the store on disk (under a lock) and write it atomically.
+    #[napi]
+    pub fn save(&self) -> Result<()> {
+        let g = lock(&self.inner);
+        g.store.save_merged(&self.dir, &g.touched).map_err(io_err)
+    }
+}
+
+#[napi]
+pub fn file_digest(path: String) -> Option<String> {
+    pf::file_digest(std::path::Path::new(&path))
+}
+
+#[napi]
+pub fn listing_digest(path: String) -> Option<String> {
+    pf::listing_digest(std::path::Path::new(&path))
+}
+
+/// Dependency string of a recorded data dependency kind, now ("f:..", "missing", "d:..", "s:<kind>", "l:..").
+#[napi]
+pub fn data_now(path: String, recorded: String) -> String {
+    pf::data_now(std::path::Path::new(&path), &recorded)
+}
+
+#[napi]
+pub fn link_dep(path: String) -> String {
+    pf::link_dep(std::path::Path::new(&path))
+}
+
+#[napi]
+pub fn stat_kind(path: String) -> String {
+    pf::stat_kind(std::path::Path::new(&path)).to_string()
+}
+
+#[napi]
+pub fn env_value_digest(value: Option<String>) -> String {
+    pf::env_value_digest(value.as_deref())
+}
+
+#[napi]
+pub fn env_all_digest(env: HashMap<String, String>) -> String {
+    pf::env_all_digest(&env.into_iter().collect())
+}
+
+/// Content digest of directory trees: `roots` = [[label, dir], ...]; returns the TreeDigest as JSON.
+#[napi]
+pub fn tree_digest(
+    roots: Vec<Vec<String>>,
+    inside: String,
+    exclude: Vec<String>,
+    memo: Option<String>,
+    max_files: u32,
+    threads: u32,
+) -> Result<String> {
+    let roots: Vec<(String, PathBuf)> = roots
+        .into_iter()
+        .filter(|r| r.len() == 2)
+        .map(|r| (r[0].clone(), PathBuf::from(&r[1])))
+        .collect();
+    let memo = memo.map(PathBuf::from);
+    let d = detpy_core::treehash::tree_digest(
+        &roots,
+        std::path::Path::new(&inside),
+        &exclude,
+        memo.as_deref(),
+        max_files as usize,
+        threads as usize,
+    );
+    serde_json::to_string(&d).map_err(|e| bad(e.to_string()))
+}
