@@ -66,7 +66,7 @@ the failure messages; mechanism ESTIMATED where marked):
 
 | Mechanism | Tests | Projects | Without load? | What reproduces it |
 |---|---|---|---|---|
-| M1 `read ECONNRESET` on a runner API request (keep-alive socket closed by the server while the runner reuses it; ESTIMATED) | 36 | documenso | yes (27 of 36) | parallel API workers + a network layer that can make the server's close cross the runner's reuse |
+| M1 `read ECONNRESET` on a runner API request (mechanism UNKNOWN: the keep-alive close/reuse race was the first guess, a local fixture did not produce it, section 6) | 36 | documenso | yes (27 of 36) | parallel API workers + a network layer that can make the server's close cross the runner's reuse |
 | M2 parallel-worker data interference (`update-envelope-items`, passes with `--workers=1` in round 2) | 2 | documenso | yes | one scheduler across N workers |
 | M3 shared UI list + random names + parallel workers (EMAIL_TRANSPORT; mechanism UNKNOWN) | 2 | documenso | yes | multi-worker scheduling, maybe seeds alone (UNKNOWN) |
 | M4 runner vs app ordering in one worker (uptime-kuma: the test's fill lands before the page loads the saved value: received "18030"; actual "Failed to navigate to the next month") | 2 | uptime-kuma, actual | yes | seeded latency on the right response, under a runner-gated clock (lockstep) for one fingerprint |
@@ -166,6 +166,12 @@ job below).
   fixed slot of the test's event list when it arrives. Likely contributor to the remaining goto/send timeouts among
   the broken-by-controls (UNKNOWN until re-measured).
 
+- **M1 is not the simple keep-alive race** (MEASURED, local, `tracks/l2-browser-r3/fixtures/keepalive-*.js`): a
+  Node server with `keepAliveTimeout` 50 ms and 20 ms, a Playwright API request context reusing the socket with idle
+  gaps around the timeout, server in the same and in a separate process, runner idle or busy-waiting when the close
+  arrives: **0 errors in 1 200 requests**. documenso's 36 ECONNRESET tests (section 3) have another cause or a narrower
+  window; UNKNOWN.
+
 ## 7. Decision
 
 ### The fair target set and the reachable share
@@ -183,7 +189,7 @@ Share by mechanism (the 55 split as in section 3; per-test counts MEASURED, mech
 | **Lockstep** (runner-gated virtual time, virtual deadlines) | determinism of replays on actual, uptime-kuma, sveltekit, etherpad (class A); M4, M5 | 12 (M4 2 + M5 10) | actual, uptime-kuma, documenso (1) | 7-11 (round 2) + **1-2 for the E3 spike first** | whether page work is governed by runner-gated grants (E2 rules out the observation-only explanation; E3 decides) |
 | **Seed space aimed at the flaking step** (holds only after the target page settled, deadline-reaching, matched on the real failure message) | M4, M5, M6 preload counters | 14 (12 + 2) | actual, uptime-kuma, sveltekit | 2-3 | whether a single aimed hold reproduces "18030" / "Failed to navigate" (E6 shows a blind hold does not) |
 | **Multi-worker scheduling** (one scheduler across N Playwright workers and the server; `--det` stops forcing `--workers=1`) | M2, M3, and the concurrency in M1 | 40 (M1 36 + M2 2 + M3 2) | documenso | 5-8 | cost of ordering N worker processes' messages without serialising them |
-| **Network layer for socket races** (a seeded TCP proxy between runner/page and server that can make the server's keep-alive close cross the runner's reuse) | M1 | 36 | documenso | 3-5 | whether M1 is that race (ESTIMATED from the message; a fixture with `keepAliveTimeout` decides in 2 hours) |
+| **Network layer for socket races** (a seeded TCP proxy between runner/page and server that can reset or delay a connection at a chosen point) | M1 | 36 | documenso | 3-5 once the mechanism is known | M1's mechanism: the keep-alive race did not reproduce on a fixture (1 200 reuses, 0 errors); next: capture one failing request in documenso's server log (`DETJS_PW_DIAG_DIR` + server access log), 1 Actions job |
 | **documenso divergence source** (what differs in `session-json` with clocks pinned) | determinism of every documenso test | 41 | documenso | 1 to diagnose (job `e5diag`), fix UNKNOWN | PENDING |
 | **Database clock shim** (libfaketime on Postgres + app process) | none measured: E5 changes nothing | 0 | - | 0.5-1 to productise | - |
 | **CPU time as virtual time** (INP budget) | M6 INP | 1 | sveltekit | VM-class | - |
@@ -204,8 +210,8 @@ What reaches **>= 60%**:
 ### Proposal
 
 1. **Do not start lockstep as a 7-11 day block.** First the three cheap deciders (all $0, 1 Actions job each): the E3
-   spike on actual + uptime-kuma (1-2 days); the `e5diag` result for documenso (running); a keep-alive fixture for M1
-   (2 hours, local).
+   spike on actual + uptime-kuma (1-2 days); the `e5diag` result for documenso (running); one documenso job that logs
+   the server side of a failing `ECONNRESET` request (M1's mechanism; the keep-alive guess failed on a fixture).
 2. Change the exit metric (founder/coordinator decision): count a target only when the seed's failure **matches the
    real failure** (message + step), on the E1 target set (55 tests, or the 4 projects that flake), reported per test
    **and** per mechanism, with control-induced failures and hidden tests apart (as `aggregate.py` now does).
