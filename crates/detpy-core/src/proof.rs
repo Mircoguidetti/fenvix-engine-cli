@@ -33,6 +33,10 @@ use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 
 pub const STORE_VERSION: u32 = 1;
+
+/// A shared string: the data dependencies of every test of a session repeat the same global reads (paths and
+/// digests), stored once in memory (serialized as plain strings).
+pub type Str = std::sync::Arc<str>;
 const STORE_FILE: &str = "proof-cache.json";
 
 /// One outermost function of a source file: qualified name, body line range
@@ -81,7 +85,7 @@ pub struct Entry {
     /// (variable, value digest or "-" when unset); "*" = the whole environment.
     pub env: Vec<(String, String)>,
     /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>".
-    pub data: Vec<(String, String)>,
+    pub data: Vec<(Str, Str)>,
     /// Set ids (see [`Store::sets`]) of code files whose whole content, skeleton
     /// or hook surface is a dependency.
     pub content: u32,
@@ -119,7 +123,7 @@ pub struct Observed {
     pub runtime: String,
     pub epoch: Option<i64>,
     pub env: Vec<(String, String)>,
-    pub data: Vec<(String, String)>,
+    pub data: Vec<(Str, Str)>,
     pub content: Vec<u32>,
     pub skeleton: Vec<u32>,
     pub hooks: Vec<u32>,
@@ -680,7 +684,7 @@ impl Checker {
             }
         }
         for (p, dep) in &e.data {
-            if &self.data(p, dep) != dep {
+            if *self.data(p, dep) != **dep {
                 return Err(Miss { kind: "data", detail: format!("{p} ({})", dep.split(':').next().unwrap_or("")) });
             }
         }
@@ -786,7 +790,7 @@ mod tests {
                 config: "C".into(),
                 runtime: "R".into(),
                 env: vec![("HOME".into(), env_value_digest(Some("/root")))],
-                data: vec![("data.txt".into(), format!("f:{}", file_digest(&root.join("data.txt")).unwrap()))],
+                data: vec![("data.txt".into(), format!("f:{}", file_digest(&root.join("data.txt")).unwrap()).into())],
                 skeleton: vec![fi],
                 units: vec![(fi, 0)],
                 ..Default::default()
@@ -901,7 +905,7 @@ mod tests {
                 runtime: "R".into(),
                 data: vec![
                     ("nope.txt".into(), "missing".into()),
-                    ("dir".into(), format!("d:{}", listing_digest(&root.join("dir")).unwrap())),
+                    ("dir".into(), format!("d:{}", listing_digest(&root.join("dir")).unwrap()).into()),
                 ],
                 ..Default::default()
             },

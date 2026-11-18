@@ -10,7 +10,7 @@
 //! the order of every iteration that decides a reported reason (the first
 //! offending path or flag) is the Python one.
 
-use crate::proof::{env_all_digest, env_value_digest, reusable_outcome, Observed, Store};
+use crate::proof::{env_all_digest, env_value_digest, reusable_outcome, Observed, Store, Str};
 use serde::Deserialize;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 
@@ -147,24 +147,80 @@ pub fn uncacheable(flags: &BTreeSet<&str>, control_urandom: bool) -> Option<&'st
 /// An insertion-ordered map with Python `dict.update` semantics (an existing key keeps its position).
 #[derive(Clone, Default)]
 struct OrderedData {
-    items: Vec<(String, String)>,
-    pos: HashMap<String, usize>,
+    items: Vec<(Str, Str)>,
+    pos: HashMap<Str, usize>,
 }
 
 impl OrderedData {
     fn update(&mut self, kv: &[(String, String)]) {
         for (k, v) in kv {
-            match self.pos.get(k) {
-                Some(&i) => self.items[i].1 = v.clone(),
+            match self.pos.get(k.as_str()) {
+                Some(&i) => self.items[i].1 = Str::from(v.as_str()),
                 None => {
+                    let k: Str = Str::from(k.as_str());
                     self.pos.insert(k.clone(), self.items.len());
-                    self.items.push((k.clone(), v.clone()));
+                    self.items.push((k, Str::from(v.as_str())));
                 }
             }
         }
     }
-    fn set(&mut self, k: String, v: String) {
-        self.update(&[(k, v)]);
+}
+
+/// One test's data reads: the global ones (shared by every test, sorted once) overlaid with the reads of the
+/// test's own contexts, with the same `dict.update` semantics as [`OrderedData`] without copying the global map.
+struct TestData<'a> {
+    g: &'a OrderedData,
+    /// Indices of `g.items` in sorted order.
+    g_sorted: &'a [usize],
+    over: HashMap<&'a str, &'a str>,
+    /// Keys not among the global ones, in first-insertion order.
+    new_keys: Vec<&'a str>,
+}
+
+impl<'a> TestData<'a> {
+    fn new(g: &'a OrderedData, g_sorted: &'a [usize]) -> Self {
+        TestData { g, g_sorted, over: HashMap::new(), new_keys: Vec::new() }
+    }
+    fn update(&mut self, kv: &'a [(String, String)]) {
+        for (k, v) in kv {
+            self.set(k, v);
+        }
+    }
+    fn set(&mut self, k: &'a str, v: &'a str) {
+        if !self.g.pos.contains_key(k) && !self.over.contains_key(k) {
+            self.new_keys.push(k);
+        }
+        self.over.insert(k, v);
+    }
+    /// Keys in insertion order (the order Python iterated the merged dict in).
+    fn keys(&self) -> impl Iterator<Item = &str> + '_ {
+        self.g.items.iter().map(|(k, _)| &**k).chain(self.new_keys.iter().copied())
+    }
+    /// `(key, value)` sorted by key.
+    fn sorted(&self) -> Vec<(Str, Str)> {
+        // global values are shared; only the test's own reads are allocated
+        let value = |k: &str, gv: &Str| -> Str {
+            match self.over.get(k) {
+                Some(&v) if v != &**gv => Str::from(v),
+                _ => gv.clone(),
+            }
+        };
+        let mut new: Vec<(&str, &str)> = self.new_keys.iter().map(|&k| (k, self.over[k])).collect();
+        new.sort_unstable();
+        let mut out = Vec::with_capacity(self.g_sorted.len() + new.len());
+        let mut j = 0;
+        for &i in self.g_sorted {
+            let (k, gv) = (&self.g.items[i].0, &self.g.items[i].1);
+            while j < new.len() && new[j].0 < &**k {
+                out.push((Str::from(new[j].0), Str::from(new[j].1)));
+                j += 1;
+            }
+            out.push((k.clone(), value(k, gv)));
+        }
+        for &(k, v) in &new[j..] {
+            out.push((Str::from(k), Str::from(v)));
+        }
+        out
     }
 }
 
@@ -281,6 +337,8 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         }
     }
     out.global_ctx = g_ctx_all.clone();
+    let mut g_sorted: Vec<usize> = (0..g_data.items.len()).collect();
+    g_sorted.sort_unstable_by(|&a, &b| g_data.items[a].0.cmp(&g_data.items[b].0));
 
     let pre_ix: BTreeSet<u32> = plan.preloaded.iter().filter_map(|r| plan.file_ix.get(r).copied()).collect();
     // written: by earlier sessions (store) and by this one
@@ -302,9 +360,9 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             let own = format!("t|{nid}");
             let mut stale = None;
             for (path, _) in &e.data {
-                if let Some(w) = plan.session_written.get(path) {
+                if let Some(w) = plan.session_written.get(&**path) {
                     if !w.iter().all(|x| *x == own) {
-                        stale = Some(path.clone());
+                        stale = Some(path.to_string());
                         break;
                     }
                 }
@@ -353,7 +411,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             ctxs.push(i);
         }
         let mut flags = g_flags.clone();
-        let mut data = g_data.clone();
+        let mut data = TestData::new(&g_data, &g_sorted);
         let mut env = g_env.clone();
         let mut units: BTreeSet<(u32, u32)> = BTreeSet::new();
         let mut content: BTreeSet<u32> = pre_ix.clone();
@@ -390,7 +448,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 }
             }
             if why.is_none() {
-                for (path, _) in &data.items {
+                for path in data.keys() {
                     if let Some(w) = written.get(path) {
                         if !w.is_empty() && !w.iter().all(|x| cnames.contains(x.as_str())) {
                             why = Some(format!("reads a file another test or fixture wrote: {path}"));
@@ -402,7 +460,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         }
         if why.is_none() && flags.contains("net-replay") {
             if let Some((k, d)) = &plan.cassette {
-                data.set(k.clone(), d.clone());
+                data.set(k, d);
             }
         }
         if let Some(w) = why {
@@ -466,7 +524,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 runtime: plan.runtime.clone(),
                 epoch,
                 env: env_deps,
-                data: data.items,
+                data: data.sorted(),
                 content: content.into_iter().collect(),
                 skeleton: skeleton.into_iter().collect(),
                 hooks: hooks.into_iter().collect(),
@@ -476,4 +534,51 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         out.recorded += 1;
     }
     out
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn lcg(s: &mut u64) -> u64 {
+        *s = s.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+        *s >> 33
+    }
+
+    #[test]
+    fn test_data_overlay_matches_ordered_dict() {
+        let mut seed = 7u64;
+        for round in 0..200 {
+            let mut g = OrderedData::default();
+            let mk = |s: &mut u64, n: usize| -> Vec<(String, String)> {
+                (0..n).map(|_| (format!("k{}", lcg(s) % 40), format!("v{}", lcg(s) % 5))).collect()
+            };
+            for _ in 0..(round % 4) {
+                let n = (lcg(&mut seed) % 30) as usize;
+                let kv = mk(&mut seed, n);
+                g.update(&kv);
+            }
+            let mut gs: Vec<usize> = (0..g.items.len()).collect();
+            gs.sort_unstable_by(|&a, &b| g.items[a].0.cmp(&g.items[b].0));
+            let mut ctx: Vec<Vec<(String, String)>> = Vec::new();
+            for _ in 0..3 {
+                let n = (lcg(&mut seed) % 8) as usize;
+                ctx.push(mk(&mut seed, n));
+            }
+            let mut want = g.clone();
+            let mut got = TestData::new(&g, &gs);
+            for c in &ctx {
+                want.update(c);
+                got.update(c);
+            }
+            let extra = ("k99".to_string(), "c".to_string());
+            want.update(std::slice::from_ref(&extra));
+            got.set(&extra.0, &extra.1);
+            let wk: Vec<&str> = want.items.iter().map(|(k, _)| &**k).collect();
+            assert_eq!(got.keys().collect::<Vec<_>>(), wk);
+            let mut ws = want.items.clone();
+            ws.sort();
+            assert_eq!(got.sorted(), ws);
+        }
+    }
 }

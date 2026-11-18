@@ -144,7 +144,22 @@ impl ProofCache {
         g.touched.insert(nodeid.to_string());
         Ok(g.store.record(
             nodeid,
-            Observed { outcome, report, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units },
+            Observed {
+                outcome,
+                report,
+                fingerprint,
+                duration,
+                run,
+                config,
+                runtime,
+                epoch,
+                env,
+                data: data.into_iter().map(|(k, v)| (k.into(), v.into())).collect(),
+                content,
+                skeleton,
+                hooks,
+                units,
+            },
         ))
     }
 
