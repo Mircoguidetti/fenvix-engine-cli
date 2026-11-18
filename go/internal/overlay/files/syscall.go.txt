@@ -370,14 +370,47 @@ func fenvixHasPrefix(s, p string) bool { return len(s) >= len(p) && s[:len(p)] =
 
 var fenvixHooked = []string{"time.", "runtime.", "math/rand", "syscall.", "os.", "crypto/", "net.", "internal/", "sync.", "io/", "io.", "sort.", "slices."}
 
+type fenvixSiteVal struct {
+	site   string
+	runner bool
+}
+
+var (
+	fenvixSiteMu    sync.Mutex
+	fenvixSiteCache map[[16]uintptr]fenvixSiteVal
+)
+
 // fenvixSite returns the first caller outside the Go tree as `path:line`
 // relative to the repository root (or `std:<function>` when the whole stack
 // is in the standard library) and whether the call comes from the test
-// runner itself (package testing), which keeps real behaviour.
+// runner itself (package testing), which keeps real behaviour. Results are
+// cached by the raw return addresses, so each call site is symbolised once.
 func fenvixSite(skip int) (site string, runner bool) {
-	var pcs [32]uintptr
-	n := runtime.Callers(skip+2, pcs[:])
-	frames := runtime.CallersFrames(pcs[:n])
+	var key [16]uintptr
+	n := runtime.Callers(skip+2, key[:])
+	fenvixSiteMu.Lock()
+	if v, ok := fenvixSiteCache[key]; ok {
+		fenvixSiteMu.Unlock()
+		return v.site, v.runner
+	}
+	fenvixSiteMu.Unlock()
+	pcs := key[:n]
+	if n == len(key) {
+		var deep [64]uintptr
+		pcs = deep[:runtime.Callers(skip+2, deep[:])]
+	}
+	site, runner = fenvixSiteSlow(pcs)
+	fenvixSiteMu.Lock()
+	if fenvixSiteCache == nil || len(fenvixSiteCache) > 100000 {
+		fenvixSiteCache = make(map[[16]uintptr]fenvixSiteVal)
+	}
+	fenvixSiteCache[key] = fenvixSiteVal{site, runner}
+	fenvixSiteMu.Unlock()
+	return site, runner
+}
+
+func fenvixSiteSlow(pcs []uintptr) (site string, runner bool) {
+	frames := runtime.CallersFrames(pcs)
 	stdName := ""
 	for {
 		f, more := frames.Next()

@@ -256,6 +256,19 @@ def main():
                 if v[0] == "failed":
                     det0_fail_output[k] = "".join(lines.get(k, []))[-2500:]
     result["det0_fail_output"] = det0_fail_output
+    # events per source in the first seed-0 run (what the hooks saw; explains the slowdown)
+    by_src, top = {}, []
+    try:
+        for line in open(work / "trace-s0-r0.jsonl"):
+            d = json.loads(line)
+            if d.get("type") == "test":
+                for k, v in (d.get("counts") or {}).items():
+                    by_src[k] = by_src.get(k, 0) + v
+                top.append((d["n_events"], d["nodeid"]))
+    except (OSError, ValueError):
+        pass
+    result["det0_events_by_source"] = by_src
+    result["det0_top_tests_by_events"] = sorted(top, reverse=True)[:8]
     # verifier over the 3 seed-0 runs: every test whose fingerprint differs, with the first diverging event
     code, out, err = sh([a.fenvix, "verify", "--json", *[str(work / f"trace-s0-r{r}.jsonl") for r in range(3)]], timeout=600)
     try:
