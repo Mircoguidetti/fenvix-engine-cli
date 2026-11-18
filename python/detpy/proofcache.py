@@ -159,9 +159,10 @@ class Capture:
         # (with the spawn detail) are checked when it ends: see _end_startup
         self.startup = True
         self._startup_popens: list = []
-        # start-up enumerations of the environment ((enumerating frame, context)): one made by the frame that then
-        # starts a process with an explicit env is that process's input (platform._syscmd_file: dict(os.environ, ...))
-        self._startup_env_all: list = []
+        # start-up environment reads ((reading frame, context, name), "*" = enumeration): a frame that enumerates the
+        # environment and then starts a process with an explicit env is copying it for that process
+        # (platform._syscmd_file: dict(os.environ, LC_ALL='C')); its reads are that process's inputs
+        self._startup_env: list = []
 
     # -- contexts -------------------------------------------------------------
     def ctx_index(self, name: str) -> int:
@@ -208,9 +209,9 @@ class Capture:
             pipes = (p.stdin, p.stdout, p.stderr)
             if p.returncode is None or any(f is not None and not f.closed for f in pipes):
                 self.flag(0, "spawn", detail + ", still running when the tests start")
-        for _frame, ctx in self._startup_env_all:  # not handed to a start-up process: inputs of every test
-            self.env.setdefault(ctx, set()).add("*")
-        self._startup_popens = self._startup_env_all = []
+        for _frame, ctx, name in self._startup_env:  # not handed to a start-up process: inputs of every test
+            self.env.setdefault(ctx, set()).add(name)
+        self._startup_popens = self._startup_env = []
 
     def _cur(self) -> int:
         if self.rec is not None and self.rec.import_depth:
@@ -519,7 +520,8 @@ class Capture:
                     self._startup_popens.append((p, _spawn_detail(event, args)))
                     if len(args) > 3 and args[3] is not None:
                         spawner = _outer_frame(_SUBPROCESS_FILE)
-                        self._startup_env_all = [x for x in self._startup_env_all if x[0] is not spawner]
+                        if any(f is spawner and name == "*" for f, _c, name in self._startup_env):
+                            self._startup_env = [x for x in self._startup_env if x[0] is not spawner]
                     return
             self.flag(ctx, "spawn", _spawn_detail(event, args))
         else:
@@ -613,14 +615,15 @@ def _note_env(key) -> None:
     cap = _ENV_CAPTURE
     if cap is None or not cap.active or not _env_caller_is_user():
         return
-    if key == "*" and cap.startup:
+    name = os.fsdecode(key) if isinstance(key, (str, bytes)) else repr(key)
+    if cap.startup:
         ctx = cap._cur()
-        if cap.ctx_names[ctx] in _GLOBAL_CTX:  # start-up, not import time: decided at the next start-up Popen
+        if cap.ctx_names[ctx] in _GLOBAL_CTX:  # start-up, not import time: decided when start-up ends
             f = _outer_frame(_ENV_ITER_FILES)
             if f is not None:
-                cap._startup_env_all.append((f, ctx))
+                cap._startup_env.append((f, ctx, name))
                 return
-    cap.env_read(os.fsdecode(key) if isinstance(key, (str, bytes)) else repr(key))
+    cap.env_read(name)
 
 
 def _patch_environ() -> None:

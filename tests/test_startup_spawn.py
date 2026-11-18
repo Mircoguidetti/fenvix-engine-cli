@@ -132,8 +132,10 @@ def test_environment_handed_to_a_startup_process_is_not_an_input_of_the_tests(py
             subprocess.check_output([sys.executable, "-c", "pass"], env=env)
         """, "test_m.py": TESTS})
     monkeypatch.delenv("DETPY_T_UNREAD", raising=False)
+    monkeypatch.setenv("DETPY_T_CHANGED", "machine-1")
     _run(pytester, 1)
-    monkeypatch.setenv("DETPY_T_UNREAD", "x")
+    monkeypatch.setenv("DETPY_T_UNREAD", "x")  # a new variable
+    monkeypatch.setenv("DETPY_T_CHANGED", "machine-2")  # and a changed one (dict() reads every value it copies)
     r, c = _run(pytester, 2)
     r.assert_outcomes(passed=2)
     assert set(c["reused_ids"]) == {"test_m.py::test_one", "test_m.py::test_two"}
