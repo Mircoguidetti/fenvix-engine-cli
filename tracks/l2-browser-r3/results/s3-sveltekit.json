@@ -1,0 +1,1743 @@
+{
+ "name": "sveltekit",
+ "job": "s3",
+ "repo": "sveltejs/kit",
+ "ref": "7a1296872cde5e807832f7714c635df956d37643",
+ "status": "ok",
+ "run_id": "44407978258",
+ "engine_commit": "0c47efdbc1609d7fb2efb2ac52495f170d88add5",
+ "setup_s": 200,
+ "params": {
+  "plain": 0,
+  "stress": 0,
+  "base": 0,
+  "det": 2,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 160,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "replay": false
+ },
+ "pw_dir": "packages/kit/test/apps/basics",
+ "pw_args": [
+  "test/playwright"
+ ],
+ "runs": [
+  {
+   "label": "det-1",
+   "mode": "det",
+   "seed": null,
+   "args": [
+    "test/playwright"
+   ],
+   "det_flags": [],
+   "rc": 1,
+   "wall_s": 1716.9,
+   "outcomes": {
+    "client.test.js::a11y::applies autofocus after an enhanced form submit [chromium-dev]": "failed",
+    "client.test.js::Caching::caches __data.json requests with invalidated search param [chromium-dev]": "passed",
+    "client.test.js::searchParams::rejects reserved query parameters [chromium-dev]": "passed",
+    "client.test.js::Endpoints::calls a delete handler [chromium-dev]": "passed",
+    "client.test.js::Load::does not refetch cross-origin urls in non-canonical form during hydration [chromium-dev]": "passed",
+    "client.test.js::Load::busts cache if non-GET request to a non-canonical cross-origin url is made [chromium-dev]": "failed",
+    "client.test.js::Load::load function is only called when necessary [chromium-dev]": "passed",
+    "client.test.js::Load::accessing url.hash from load errors and suggests using page state [chromium-dev]": "passed",
+    "client.test.js::Load::url instance methods work in load [chromium-dev]": "passed",
+    "client.test.js::Load::server data from previous is not reused if next page has no load function [chromium-dev]": "timedOut",
+    "client.test.js::Load::keeps server data when valid while not reusing client load data [chromium-dev]": "timedOut",
+    "client.test.js::Load::load does not call fetch if max-age allows it [chromium-dev]": "failed",
+    "client.test.js::Load::load does ignore ttl if fetch cache options says so [chromium-dev]": "failed",
+    "client.test.js::Load::load busts cache if non-GET request to resource is made [chromium-dev]": "failed",
+    "client.test.js::Load::__data.json has cache-control: private, no-store [chromium-dev]": "passed",
+    "client.test.js::Load::cache with body hash [chromium-dev]": "passed",
+    "client.test.js::Load::cached base64-serialized response is decoded when replayed [chromium-dev]": "passed",
+    "client.test.js::Load::do not use cache if headers are different [chromium-dev]": "passed",
+    "client.test.js::Load::non-GET requests evict cached responses with hashed keys [chromium-dev]": "failed",
+    "client.test.js::Load::use correct cache result when fetching same url multiple times [chromium-dev]": "passed",
+    "client.test.js::Load::permits 3rd party patching of fetch in universal load functions [chromium-dev]": "passed",
+    "client.test.js::Load::permits 3rd party patching of server load fetch requests [chromium-dev]": "passed",
+    "client.test.js::Load::does not repeat fetch on hydration when using Request object [chromium-dev]": "passed",
+    "client.test.js::Load::using window.fetch causes a warning [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::applies generated component styles (hides announcer) [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::Can use browser-only global on client-only page through ssr config in handle [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::can use browser-only global on client-only page through ssr config in +layout.js [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::can use browser-only global on client-only page through ssr config in +page.js [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::cannot use browser-only global on page because of ssr config in +page.js [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::afterNavigate is only called once during start [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::afterNavigate has no origin on start [chromium-dev]": "passed",
+    "client.test.js::$app/state::can use $app/state from anywhere on client [chromium-dev]": "passed",
+    "client.test.js::$app/state::page.data does not update if data is unchanged [chromium-dev]": "passed",
+    "client.test.js::$app/state::page.data does update if keys did not change but data did [chromium-dev]": "passed",
+    "client.test.js::$app/state::page.data does update if keys did not change but data did (2) [chromium-dev]": "passed",
+    "client.test.js::$app/state::page.url does update when used with goto [chromium-dev]": "passed",
+    "client.test.js::Invalidation::+layout.server.js does not re-run when downstream load functions are invalidated [chromium-dev]": "passed",
+    "client.test.js::Invalidation::+layout.server.js re-runs when await parent() is called from downstream load function [chromium-dev]": "passed",
+    "client.test.js::Invalidation::load function re-runs when searchParams change [chromium-dev]": "passed",
+    "client.test.js::Invalidation::load function only re-runs when tracked searchParams change (universal) [chromium-dev]": "passed",
+    "client.test.js::Invalidation::load function only re-runs when tracked searchParams change (server) [chromium-dev]": "passed",
+    "client.test.js::Invalidation::load function re-runs when the number of values of a tracked searchParam changes [chromium-dev]": "passed",
+    "client.test.js::Invalidation::server-only load functions are re-run following forced invalidation [chromium-dev]": "passed",
+    "client.test.js::Invalidation::server-only load functions are re-run following goto with forced invalidation [chromium-dev]": "passed",
+    "client.test.js::Invalidation::multiple invalidations run concurrently [chromium-dev]": "passed",
+    "client.test.js::Invalidation::multiple synchronous invalidations are batched [chromium-dev]": "passed",
+    "client.test.js::Invalidation::refreshAll persists through redirects [chromium-dev]": "passed",
+    "client.test.js::Invalidation::+layout(.server).js is re-run when server dep is invalidated [chromium-dev]": "passed",
+    "client.test.js::Invalidation::fetch in server load cannot be invalidated [chromium-dev]": "passed",
+    "client.test.js::Invalidation::+layout.js is re-run when shared dep is invalidated [chromium-dev]": "passed",
+    "client.test.js::Invalidation::+page(.server).js is re-run when server dep is invalidated following goto [chromium-dev]": "passed",
+    "client.test.js::Invalidation::+page.js is re-run when shared dep is invalidated following goto [chromium-dev]": "passed",
+    "client.test.js::Invalidation::Specified dependencies are re-run following goto [chromium-dev]": "passed",
+    "client.test.js::Invalidation::Parameter use is tracked even for routes that do not use the parameters [chromium-dev]": "passed",
+    "client.test.js::Invalidation::route.id use is tracked for server-only load functions [chromium-dev]": "passed",
+    "client.test.js::Invalidation::route.id use is tracked for shared load functions [chromium-dev]": "passed",
+    "client.test.js::Invalidation::route.id does not rerun layout if unchanged [chromium-dev]": "passed",
+    "client.test.js::Invalidation::page.url can safely be mutated [chromium-dev]": "passed",
+    "client.test.js::Invalidation::goto after invalidate does not reset state [chromium-dev]": "passed",
+    "client.test.js::Invalidation::refreshAll finishing after navigation does not apply stale data [chromium-dev]": "passed",
+    "client.test.js::Invalidation::refreshAll finishing before navigation ends does not prevent navigation [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]": "failed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]": "failed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload does not abort ongoing navigation [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload does not abort ongoing navigation #2 [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload repeatedly works on the same anchor element [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-reload [chromium-dev]": "timedOut",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-reset [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-replacestate [chromium-dev]": "timedOut",
+    "client.test.js::Content negotiation::+server.js next to +page.svelte works [chromium-dev]": "failed",
+    "client.test.js::Content negotiation::use:enhance uses action, not POST handler [chromium-dev]": "passed",
+    "client.test.js::env::can access public env in app.html [chromium-dev]": "passed",
+    "client.test.js::env::can access public env in hooks.client.js [chromium-dev]": "passed",
+    "client.test.js::env::uses correct dynamic env when navigating from prerendered page [chromium-dev]": "passed",
+    "client.test.js::Snapshots::restores function snapshots when hydration falls back to mounting an error page [chromium-dev]": "passed",
+    "client.test.js::Snapshots::restores function snapshots on reload once after afterNavigate when ssr is disabled [chromium-dev]": "timedOut",
+    "client.test.js::Snapshots::recovers snapshotted data [chromium-dev]": "timedOut",
+    "client.test.js::Snapshots::restores snapshot after afterNavigate on popstate [chromium-dev]": "passed",
+    "client.test.js::Snapshots::restores snapshot after afterNavigate on reload [chromium-dev]": "timedOut",
+    "client.test.js::Snapshots::captures and restores function snapshots [chromium-dev]": "passed",
+    "client.test.js::Snapshots::persists function snapshots with transport support [chromium-dev]": "passed",
+    "client.test.js::Snapshots::starts fresh when a pushed entry reuses an abandoned history index [chromium-dev]": "passed",
+    "client.test.js::Snapshots::captures and restores function snapshots on shallow navigations [chromium-dev]": "passed",
+    "client.test.js::Streaming::Works for universal load functions (client nav) [chromium-dev]": "passed",
+    "client.test.js::Streaming::Works for server load functions (client nav) [chromium-dev]": "passed",
+    "client.test.js::Streaming::Catches fetch errors from server load functions (client nav) [chromium-dev]": "passed",
+    "client.test.js::Streaming::Catches rejected streamed server data after another load delays data serialization [chromium-dev]": "passed",
+    "client.test.js::Streaming::Works for universal load functions (direct hit) [chromium-dev]": "passed",
+    "client.test.js::Streaming::Works for server load functions (direct hit) [chromium-dev]": "failed",
+    "client.test.js::Streaming::Works with a fast and a slow server load functions which (direct hit) [chromium-dev]": "passed",
+    "client.test.js::Streaming::Catches fetch errors from server load functions (direct hit) [chromium-dev]": "passed",
+    "client.test.js::Actions::page state has correct data [chromium-dev]": "failed",
+    "client.test.js::Actions::cross-page action navigation is client-side [chromium-dev]": "passed",
+    "client.test.js::Actions::non-redirect action results cannot navigate to another origin [chromium-dev]": "passed",
+    "client.test.js::Actions::same-page action drops query params omitted from the action [chromium-dev]": "failed",
+    "client.test.js::Actions::semantically identical action query refreshes without navigating [chromium-dev]": "failed",
+    "client.test.js::Actions::failures do not refresh by default but can opt in [chromium-dev]": "failed",
+    "client.test.js::Actions::cross-page refresh defaults depend on the result type [chromium-dev]": "failed",
+    "client.test.js::Actions::cross-page action navigation strips only the named-action param [chromium-dev]": "failed",
+    "client.test.js::Actions::cross-page action navigation pushes a history entry [chromium-dev]": "passed",
+    "client.test.js::Actions::update navigate option applies the result to the current page [chromium-dev]": "passed",
+    "client.test.js::Actions::update navigate option does not suppress redirects [chromium-dev]": "passed",
+    "client.test.js::Actions::update({ refreshAll: false }) still navigates to the cross-page action [chromium-dev]": "passed",
+    "client.test.js::Assets::only one link per stylesheet [chromium-dev]": "passed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::without replace::app.goto rejects and does not navigate [chromium-dev]": "passed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::without replace::location.assign [chromium-dev]": "failed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::with replace::app.goto rejects and does not navigate [chromium-dev]": "timedOut",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::with replace::location.replace [chromium-dev]": "failed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::redirect after invalidation::app.invalidate [chromium-dev]": "passed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::redirect after invalidation::location.reload [chromium-dev]": "failed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::without replace::app.goto [chromium-dev]": "timedOut",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::without replace::location.assign [chromium-dev]": "failed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::with replace::app.goto [chromium-dev]": "passed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::with replace::location.replace [chromium-dev]": "failed",
+    "client.test.js::goto::goto fails with external URL [chromium-dev]": "passed",
+    "client.test.js::goto::goto fails with a URL that does not resolve to a route [chromium-dev]": "passed",
+    "client.test.js::goto::supports the deprecated replaceState option [chromium-dev]": "passed",
+    "client.test.js::goto::persists state through redirects when persistState is true [chromium-dev]": "passed",
+    "client.test.js::untrack::untracks server load function [chromium-dev]": "passed",
+    "client.test.js::untrack::untracks universal load function [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Adds state without changing the current URL [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::serializes custom objects in state [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Shallow navigates to a new URL [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Exposes the shallow target and runs navigation lifecycle hooks [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Can cancel a shallow navigation [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Adds state and does not restore it by default [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Restores state-only updates when persistState is true [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Restores shallow state when persistState is true [chromium-dev]": "timedOut",
+    "client.test.js::Shallow routing::Does not restore regular goto state by default [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Restores regular goto state when persistState is true [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Keeps the current shallow routing context when adding state [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Ends the current shallow routing context with a regular goto [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Invalidates the rendered route after a shallow navigation [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Does not navigate when going back to shallow route [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Preserves shallow navigation options across history entries [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Preserves scroll and focus across popstate unless an intervening navigation resets them [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Replaces state on the current URL [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Shallow navigates and replaces the current history entry [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Restores replaced state on reload [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Ends a replaced shallow routing context with a regular goto [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::pushState remains functional and does not loop infinitely in $effect [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::replaceState remains functional and does not loop infinitely in $effect [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::refreshAll reruns load functions without resetting page.state [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::invalidate resets page.state [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::invalidateAll resets page.state [chromium-dev]": "passed",
+    "client.test.js::reroute::Apply reroute during client side navigation [chromium-dev]": "passed",
+    "client.test.js::reroute::Apply async reroute during client side navigation [chromium-dev]": "passed",
+    "client.test.js::reroute::Apply async prerendered reroute during client side navigation [chromium-dev]": "passed",
+    "client.test.js::reroute::Apply reroute to prerendered page during client side navigation [chromium-dev]": "passed",
+    "client.test.js::reroute::Apply reroute after client-only redirects [chromium-dev]": "failed",
+    "client.test.js::reroute::Apply reroute to preload data [chromium-dev]": "passed",
+    "client.test.js::reroute::reroute does not get applied to external URLs [chromium-dev]": "passed",
+    "client.test.js::reroute::Falls back to native navigation if reroute throws on the client [chromium-dev]": "passed",
+    "client.test.js::reroute::reroute works with invalidate [chromium-dev]": "failed",
+    "client.test.js::init::init client hook is called once when the application start on the client [chromium-dev]": "passed",
+    "client.test.js::INP::does not block next paint [chromium-dev]": "timedOut",
+    "client.test.js::binding_property_non_reactive warn::warning is not thrown from the root of svelte [chromium-dev]": "passed",
+    "client.test.js::routing::ignores form controls that shadow DOM properties of their form [chromium-dev]": "passed",
+    "client.test.js::routing::navigating while navigation is in progress sets the correct URL [chromium-dev]": "passed",
+    "client.test.js::routing::does not load code from another origin for a pathname starting with // [chromium-dev]": "passed",
+    "client.test.js::a11y::resets focus [chromium-dev]": "passed",
+    "client.test.js::a11y::applies autofocus after a navigation [chromium-dev]": "passed",
+    "client.test.js::a11y::sets focus for valid hash but invalid selector [chromium-dev]": "passed",
+    "client.test.js::a11y::announces client-side navigation [chromium-dev]": "passed",
+    "client.test.js::a11y::reset selection [chromium-dev]": "passed",
+    "client.test.js::a11y::reset: false preserves focus [chromium-dev]": "passed",
+    "client.test.js::a11y::autofocus from previous page is ignored [chromium-dev]": "passed",
+    "client.test.js::a11y::an app starting in an iframe leaves focus in the parent page [chromium-dev]": "passed",
+    "client.test.js::a11y::navigating inside an iframe leaves focus in the parent page [chromium-dev]": "passed",
+    "client.test.js::a11y::blur handler can access data during navigation [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate prevents navigation triggered by link click [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate prevents navigation to external [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate prevents navigation triggered by goto [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate prevents navigation triggered by back button [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate prevents unload [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate is not triggered on redirect [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate is not triggered on target=_blank [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate is not triggered on click or popstate for hash links [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate cancel() on an unloading navigation does not prevent subsequent beforeNavigate callbacks [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate is triggered after clicking a download link [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate's complete fulfills after redirect [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::afterNavigate calls callback [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::afterNavigate enter navigation includes the hydrated route and params [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::onNavigate calls callback [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::onNavigate returned function is only called once [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::navigation.event is populated [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::scroll state is provided on initial page load [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::scroll state is provided on link navigation [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::scroll state is provided on popstate navigation [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor works on direct page load [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor works on navigation to page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied non-ascii anchor works on navigation to page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied non-ascii anchor works on navigation to page after manual scroll [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor with special characters works on navigation to page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor works when navigated from scrolled page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::no-anchor url will scroll to top when navigated from scrolled page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor works when navigated from bottom of page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::scrolling to url-supplied anchor respects scroll-margin [chromium-dev]": "passed",
+    "client.test.js::Scrolling::no-anchor url will scroll to top when navigated from bottom of page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::scroll is restored after hitting the back button [chromium-dev]": "passed",
+    "client.test.js::Scrolling::scroll is restored after hitting the back button for an in-app cross-document navigation [chromium-dev]": "timedOut",
+    "client.test.js::Scrolling::url-supplied anchor is ignored with onMount() scrolling on direct page load [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor is ignored with afterNavigate() scrolling on direct page load [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor is ignored with onMount() scrolling on navigation to page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::app-supplied scroll and focus work on direct page load [chromium-dev]": "passed",
+    "client.test.js::Scrolling::app-supplied scroll and focus work on navigation to page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::scroll positions are recovered on reloading the page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::scroll position is top of page on ssr:false reload [chromium-dev]": "passed",
+    "client.test.js::Scrolling::clicking # or #top takes you to the top of the current page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::Scroll position is correct after going back from a shallow route [chromium-dev]": "passed",
+    "client.test.js::CSS::applies generated component styles (hides announcer) [chromium-dev]": "passed",
+    "client.test.js::CSS::dynamically imported components lazily load CSS [chromium-dev]": "passed",
+    "client.test.js::Errors::client-side load errors [chromium-dev]": "passed",
+    "client.test.js::Errors::client-side module context errors [chromium-dev]": "passed",
+    "client.test.js::Errors::client-side error from load() [chromium-dev]": "passed",
+    "client.test.js::Errors::client-side 4xx status without error from load() [chromium-dev]": "passed",
+    "client.test.js::Errors::Root error falls back to error.html (unexpected error) [chromium-dev]": "timedOut",
+    "client.test.js::Errors::Root error falls back to error.html (expected error) [chromium-dev]": "skipped",
+    "client.test.js::Errors::Root 404 redirects somewhere due to root layout [chromium-dev]": "skipped",
+    "client.test.js::Errors::expected errors reach the client handleError hook [chromium-dev]": "skipped",
+    "client.test.js::Errors::unexpected errors reach the client handleError hook [chromium-dev]": "skipped",
+    "client.test.js::Prefetching::prefetches code programmatically [chromium-dev]": "passed",
+    "client.test.js::Prefetching::prefetches code programmatically with a dynamic route id [chromium-dev]": "passed",
+    "client.test.js::Prefetching::preloadCode after match does not re-request route resolution [chromium-dev]": "passed",
+    "client.test.js::Prefetching::preloadCode caches endpoint-only route ids [chromium-dev]": "passed",
+    "client.test.js::Prefetching::warns when preloadCode is called with an unknown route id [chromium-dev]": "passed",
+    "client.test.js::Prefetching::warns when preloadCode is called with an endpoint-only route id [chromium-dev]": "passed",
+    "client.test.js::Prefetching::hints at `match` when preloadCode is called with a pathname [chromium-dev]": "passed",
+    "client.test.js::Prefetching::prefetches data programmatically [chromium-dev]": "passed",
+    "client.test.js::Prefetching::does not replay a preloaded redirect when a later hop returns to the route [chromium-dev]": "passed",
+    "client.test.js::Prefetching::chooses correct route when hash route is preloaded but regular route is clicked [chromium-dev]": "passed",
+    "client.test.js::Prefetching::same route hash links work more than once [chromium-dev]": "passed",
+    "client.test.js::Prefetching::does not rerun load on calls to duplicate preload hash route [chromium-dev]": "passed",
+    "client.test.js::Prefetching::does not rerun load on calls to different preload hash route [chromium-dev]": "passed",
+    "client.test.js::Prefetching::does rerun load when preload errored [chromium-dev]": "passed",
+    "client.test.js::Prefetching::preloads errors [chromium-dev]": "failed",
+    "client.test.js::Routing::navigates to a new page without reloading [chromium-dev]": "passed",
+    "client.test.js::Routing::navigates programmatically [chromium-dev]": "passed",
+    "client.test.js::Routing::page.url.hash is correctly set on page load [chromium-dev]": "passed",
+    "client.test.js::Routing::page.url.hash is correctly set on navigation [chromium-dev]": "passed",
+    "client.test.js::Routing::clicking on a hash link focuses the associated element [chromium-dev]": "passed",
+    "client.test.js::Routing::backwards navigation works after clicking a hash link with data-sveltekit-reload [chromium-dev]": "passed",
+    "client.test.js::Routing::sequential focus navigation starting point is set correctly on navigation [chromium-dev]": "passed",
+    "client.test.js::Routing::back button returns to previous route when previous route was navigated to via hash anchor [chromium-dev]": "passed",
+    "client.test.js::Routing::replaces state if the data-sveltekit-replacestate router option is specified for the hash link [chromium-dev]": "passed",
+    "client.test.js::Routing::navigating to a hash link works when base element is present [chromium-dev]": "passed",
+    "client.test.js::Routing::does not normalize external path [chromium-dev]": "failed",
+    "client.test.js::Routing::ignores popstate events from outside the router [chromium-dev]": "passed",
+    "client.test.js::Routing::recognizes clicks outside the app target [chromium-dev]": "passed",
+    "client.test.js::Routing::responds to <form method=\"GET\"> submission without reload [chromium-dev]": "passed"
+   },
+   "errors": {
+    "client.test.js::a11y::applies autofocus after an enhanced form submit [chromium-dev]": "TimeoutError: page.waitForFunction: Timeout 1000ms exceeded.",
+    "client.test.js::Load::busts cache if non-GET request to a non-canonical cross-origin url is made [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('h1')\nExpected: \"count: 2\"\nReceived: \"count: 1\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('h1') with timeout 5000ms\n  - waiting for locator('h1')\n    14 \u00d7 locator resolved to <h1>count: 1</h1>\n       - unexpected value \"count: 1\"\n",
+    "client.test.js::Load::server data from previous is not reused if next page has no load function [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Load::keeps server data when valid while not reusing client load data [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Load::load does not call fetch if max-age allows it [chromium-dev]": "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator:  locator('button')\nExpected: \"4\"\nReceived: \"3\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveAttribute\" locator('button') with timeout 5000ms\n  - waiting for locator('button')\n    14 \u00d7 locator resolved to <button data-ticker=\"3\">update</button>\n       - unexpected value \"3\"\n",
+    "client.test.js::Load::load does ignore ttl if fetch cache options says so [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('p.counter')\nExpected: \"Count is 1\"\nReceived: \"Count is 0\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('p.counter') with timeout 5000ms\n  - waiting for locator('p.counter')\n    14 \u00d7 locator resolved to <p class=\"counter\">Count is 0</p>\n       - unexpected value \"Count is 0\"\n",
+    "client.test.js::Load::load busts cache if non-GET request to resource is made [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('p.counter')\nExpected: \"Count is 1\"\nReceived: \"Count is 0\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('p.counter') with timeout 5000ms\n  - waiting for locator('p.counter')\n    14 \u00d7 locator resolved to <p class=\"counter\">Count is 0</p>\n       - unexpected value \"Count is 0\"\n",
+    "client.test.js::Load::non-GET requests evict cached responses with hashed keys [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('p')\nExpected: \"1 / 1\"\nReceived: \"0 / 0\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('p') with timeout 5000ms\n  - waiting for locator('p')\n    14 \u00d7 locator resolved to <p>0 / 0</p>\n       - unexpected value \"0 / 0\"\n",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 2\nReceived: 0",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]": "Error: expect(page).toHaveURL(expected) failed\n\nExpected pattern: /chrome-error:\\/\\/chromewebdata\\/|\\/data-sveltekit\\/preload-data\\/offline/\nReceived string:  \"\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    - waiting for navigation to finish...\n",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-reload [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-replacestate [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Content negotiation::+server.js next to +page.svelte works [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('pre')\nExpected: \"PUT\"\nReceived: \"loading\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('pre') with timeout 5000ms\n  - waiting for locator('pre')\n    14 \u00d7 locator resolved to <pre>loading</pre>\n       - unexpected value \"loading\"\n",
+    "client.test.js::Snapshots::restores function snapshots on reload once after afterNavigate when ssr is disabled [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Snapshots::recovers snapshotted data [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Snapshots::restores snapshot after afterNavigate on reload [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Streaming::Works for server load functions (direct hit) [chromium-dev]": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('p.loadingsuccess')\nExpected: visible\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('p.loadingsuccess') with timeout 5000ms\n  - waiting for locator('p.loadingsuccess')\n  - Target page, context or browser has been closed\n",
+    "client.test.js::Actions::page state has correct data [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('pre.data1')\nExpected: \"prop: 1, state: 1\"\nReceived: \"prop: 0, state: 0\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('pre.data1') with timeout 5000ms\n  - waiting for locator('pre.data1')\n    14 \u00d7 locator resolved to <pre class=\"data1\">prop: 0, state: 0</pre>\n       - unexpected value \"prop: 0, state: 0\"\n",
+    "client.test.js::Actions::same-page action drops query params omitted from the action [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('pre.form-json')\nExpected: \"{\\\"where\\\":\\\"/actions/cross-page/same-page\\\"}\"\nReceived: \"null\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('pre.form-json') with timeout 5000ms\n  - waiting for locator('pre.form-json')\n    14 \u00d7 locator resolved to <pre class=\"form-json\">null</pre>\n       - unexpected value \"null\"\n",
+    "client.test.js::Actions::semantically identical action query refreshes without navigating [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('pre.form-json')\nExpected: \"{\\\"where\\\":\\\"/actions/cross-page/same-page\\\"}\"\nReceived: \"null\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('pre.form-json') with timeout 5000ms\n  - waiting for locator('pre.form-json')\n    14 \u00d7 locator resolved to <pre class=\"form-json\">null</pre>\n       - unexpected value \"null\"\n",
+    "client.test.js::Actions::failures do not refresh by default but can opt in [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('pre.form-json')\nExpected: \"{\\\"failed\\\":true}\"\nReceived: \"null\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('pre.form-json') with timeout 5000ms\n  - waiting for locator('pre.form-json')\n    14 \u00d7 locator resolved to <pre class=\"form-json\">null</pre>\n       - unexpected value \"null\"\n",
+    "client.test.js::Actions::cross-page refresh defaults depend on the result type [chromium-dev]": "Error: expect(locator).not.toHaveText(expected) failed\n\nLocator:  locator('pre.layout-loaded-at')\nExpected: not \"0.9317423731963722\"\nReceived: \"0.9317423731963722\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"not toHaveText\" locator('pre.layout-loaded-at') with timeout 5000ms\n  - waiting for locator('pre.layout-loaded-at')\n    14 \u00d7 locator resolved to <pre class=\"layout-loaded-at\">0.9317423731963722</pre>\n       - unexpected value \"0.9317423731963722\"\n",
+    "client.test.js::Actions::cross-page action navigation strips only the named-action param [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator: locator('pre.destination-form')\nExpected: \"{\\\"source\\\":\\\"destination\\\",\\\"username\\\":\\\"paolo\\\"}\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveText\" locator('pre.destination-form') with timeout 5000ms\n  - waiting for locator('pre.destination-form')\n",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::without replace::location.assign [chromium-dev]": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"http://localhost:5301/goto/nonexistent\"\nReceived: \"\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    - waiting for navigation to finish...\n",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::with replace::app.goto rejects and does not navigate [chromium-dev]": "Test timeout of 45000ms exceeded while running \"beforeEach\" hook.",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::with replace::location.replace [chromium-dev]": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"http://localhost:5301/goto/nonexistent\"\nReceived: \"\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    - waiting for navigation to finish...\n",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::redirect after invalidation::location.reload [chromium-dev]": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"http://localhost:5301/goto/testfinish\"\nReceived: \"\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    - waiting for navigation to finish...\n",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::without replace::app.goto [chromium-dev]": "Test timeout of 45000ms exceeded while running \"beforeEach\" hook.",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::without replace::location.assign [chromium-dev]": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"http://localhost:5301/goto/testfinish\"\nReceived: \"\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    - waiting for navigation to finish...\n",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::with replace::location.replace [chromium-dev]": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"http://localhost:5301/goto/testfinish\"\nReceived: \"\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    - waiting for navigation to finish...\n",
+    "client.test.js::Shallow routing::Restores shallow state when persistState is true [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::reroute::Apply reroute after client-only redirects [chromium-dev]": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('body.started') to be visible\n    - waiting for navigation to finish...\n",
+    "client.test.js::reroute::reroute works with invalidate [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator: locator('p')\nExpected: \"data request: true\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveText\" locator('p') with timeout 5000ms\n  - waiting for locator('p')\n",
+    "client.test.js::INP::does not block next paint [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Scrolling::scroll is restored after hitting the back button for an in-app cross-document navigation [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Errors::Root error falls back to error.html (unexpected error) [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Prefetching::preloads errors [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('p')\nExpected: \"error 404 Not found\"\nReceived: \"undefined undefined undefined\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('p') with timeout 5000ms\n  - waiting for locator('p')\n    14 \u00d7 locator resolved to <p>undefined undefined undefined</p>\n       - unexpected value \"undefined undefined undefined\"\n",
+    "client.test.js::Routing::does not normalize external path [chromium-dev]": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: \"<html><head></head><body>ok</body></html>\"\nReceived: \"\""
+   },
+   "counts": {
+    "failed": 25,
+    "passed": 212,
+    "timedOut": 13,
+    "skipped": 4
+   },
+   "replay_cmds": [
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:12 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:99 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:175 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:203 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:225 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:247 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:255 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:345 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1016 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1151 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1305 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1341 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1363 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1428 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1440 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1475 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1629 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1668 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1710 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1723 --project=chromium-dev"
+   ],
+   "phase": "det"
+  },
+  {
+   "label": "det-2",
+   "mode": "det",
+   "seed": null,
+   "args": [
+    "test/playwright"
+   ],
+   "det_flags": [],
+   "rc": 1,
+   "wall_s": 1461.6,
+   "outcomes": {
+    "client.test.js::a11y::applies autofocus after an enhanced form submit [chromium-dev]": "failed",
+    "client.test.js::Caching::caches __data.json requests with invalidated search param [chromium-dev]": "passed",
+    "client.test.js::searchParams::rejects reserved query parameters [chromium-dev]": "passed",
+    "client.test.js::Endpoints::calls a delete handler [chromium-dev]": "passed",
+    "client.test.js::Load::does not refetch cross-origin urls in non-canonical form during hydration [chromium-dev]": "passed",
+    "client.test.js::Load::busts cache if non-GET request to a non-canonical cross-origin url is made [chromium-dev]": "failed",
+    "client.test.js::Load::load function is only called when necessary [chromium-dev]": "passed",
+    "client.test.js::Load::accessing url.hash from load errors and suggests using page state [chromium-dev]": "passed",
+    "client.test.js::Load::url instance methods work in load [chromium-dev]": "passed",
+    "client.test.js::Load::server data from previous is not reused if next page has no load function [chromium-dev]": "passed",
+    "client.test.js::Load::keeps server data when valid while not reusing client load data [chromium-dev]": "passed",
+    "client.test.js::Load::load does not call fetch if max-age allows it [chromium-dev]": "failed",
+    "client.test.js::Load::load does ignore ttl if fetch cache options says so [chromium-dev]": "failed",
+    "client.test.js::Load::load busts cache if non-GET request to resource is made [chromium-dev]": "failed",
+    "client.test.js::Load::__data.json has cache-control: private, no-store [chromium-dev]": "passed",
+    "client.test.js::Load::cache with body hash [chromium-dev]": "passed",
+    "client.test.js::Load::cached base64-serialized response is decoded when replayed [chromium-dev]": "passed",
+    "client.test.js::Load::do not use cache if headers are different [chromium-dev]": "passed",
+    "client.test.js::Load::non-GET requests evict cached responses with hashed keys [chromium-dev]": "failed",
+    "client.test.js::Load::use correct cache result when fetching same url multiple times [chromium-dev]": "passed",
+    "client.test.js::Load::permits 3rd party patching of fetch in universal load functions [chromium-dev]": "passed",
+    "client.test.js::Load::permits 3rd party patching of server load fetch requests [chromium-dev]": "passed",
+    "client.test.js::Load::does not repeat fetch on hydration when using Request object [chromium-dev]": "passed",
+    "client.test.js::Load::using window.fetch causes a warning [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::applies generated component styles (hides announcer) [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::Can use browser-only global on client-only page through ssr config in handle [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::can use browser-only global on client-only page through ssr config in +layout.js [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::can use browser-only global on client-only page through ssr config in +page.js [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::cannot use browser-only global on page because of ssr config in +page.js [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::afterNavigate is only called once during start [chromium-dev]": "passed",
+    "client.test.js::SPA mode / no SSR::afterNavigate has no origin on start [chromium-dev]": "passed",
+    "client.test.js::$app/state::can use $app/state from anywhere on client [chromium-dev]": "passed",
+    "client.test.js::$app/state::page.data does not update if data is unchanged [chromium-dev]": "passed",
+    "client.test.js::$app/state::page.data does update if keys did not change but data did [chromium-dev]": "passed",
+    "client.test.js::$app/state::page.data does update if keys did not change but data did (2) [chromium-dev]": "passed",
+    "client.test.js::$app/state::page.url does update when used with goto [chromium-dev]": "passed",
+    "client.test.js::Invalidation::+layout.server.js does not re-run when downstream load functions are invalidated [chromium-dev]": "passed",
+    "client.test.js::Invalidation::+layout.server.js re-runs when await parent() is called from downstream load function [chromium-dev]": "passed",
+    "client.test.js::Invalidation::load function re-runs when searchParams change [chromium-dev]": "passed",
+    "client.test.js::Invalidation::load function only re-runs when tracked searchParams change (universal) [chromium-dev]": "passed",
+    "client.test.js::Invalidation::load function only re-runs when tracked searchParams change (server) [chromium-dev]": "passed",
+    "client.test.js::Invalidation::load function re-runs when the number of values of a tracked searchParam changes [chromium-dev]": "passed",
+    "client.test.js::Invalidation::server-only load functions are re-run following forced invalidation [chromium-dev]": "passed",
+    "client.test.js::Invalidation::server-only load functions are re-run following goto with forced invalidation [chromium-dev]": "passed",
+    "client.test.js::Invalidation::multiple invalidations run concurrently [chromium-dev]": "passed",
+    "client.test.js::Invalidation::multiple synchronous invalidations are batched [chromium-dev]": "passed",
+    "client.test.js::Invalidation::refreshAll persists through redirects [chromium-dev]": "passed",
+    "client.test.js::Invalidation::+layout(.server).js is re-run when server dep is invalidated [chromium-dev]": "passed",
+    "client.test.js::Invalidation::fetch in server load cannot be invalidated [chromium-dev]": "passed",
+    "client.test.js::Invalidation::+layout.js is re-run when shared dep is invalidated [chromium-dev]": "passed",
+    "client.test.js::Invalidation::+page(.server).js is re-run when server dep is invalidated following goto [chromium-dev]": "passed",
+    "client.test.js::Invalidation::+page.js is re-run when shared dep is invalidated following goto [chromium-dev]": "passed",
+    "client.test.js::Invalidation::Specified dependencies are re-run following goto [chromium-dev]": "passed",
+    "client.test.js::Invalidation::Parameter use is tracked even for routes that do not use the parameters [chromium-dev]": "passed",
+    "client.test.js::Invalidation::route.id use is tracked for server-only load functions [chromium-dev]": "passed",
+    "client.test.js::Invalidation::route.id use is tracked for shared load functions [chromium-dev]": "passed",
+    "client.test.js::Invalidation::route.id does not rerun layout if unchanged [chromium-dev]": "passed",
+    "client.test.js::Invalidation::page.url can safely be mutated [chromium-dev]": "passed",
+    "client.test.js::Invalidation::goto after invalidate does not reset state [chromium-dev]": "passed",
+    "client.test.js::Invalidation::refreshAll finishing after navigation does not apply stale data [chromium-dev]": "passed",
+    "client.test.js::Invalidation::refreshAll finishing before navigation ends does not prevent navigation [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]": "failed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload does not abort ongoing navigation [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload does not abort ongoing navigation #2 [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload repeatedly works on the same anchor element [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-reload [chromium-dev]": "timedOut",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-reset [chromium-dev]": "passed",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-replacestate [chromium-dev]": "timedOut",
+    "client.test.js::Content negotiation::+server.js next to +page.svelte works [chromium-dev]": "failed",
+    "client.test.js::Content negotiation::use:enhance uses action, not POST handler [chromium-dev]": "passed",
+    "client.test.js::env::can access public env in app.html [chromium-dev]": "passed",
+    "client.test.js::env::can access public env in hooks.client.js [chromium-dev]": "passed",
+    "client.test.js::env::uses correct dynamic env when navigating from prerendered page [chromium-dev]": "passed",
+    "client.test.js::Snapshots::restores function snapshots when hydration falls back to mounting an error page [chromium-dev]": "passed",
+    "client.test.js::Snapshots::restores function snapshots on reload once after afterNavigate when ssr is disabled [chromium-dev]": "passed",
+    "client.test.js::Snapshots::recovers snapshotted data [chromium-dev]": "timedOut",
+    "client.test.js::Snapshots::restores snapshot after afterNavigate on popstate [chromium-dev]": "passed",
+    "client.test.js::Snapshots::restores snapshot after afterNavigate on reload [chromium-dev]": "passed",
+    "client.test.js::Snapshots::captures and restores function snapshots [chromium-dev]": "passed",
+    "client.test.js::Snapshots::persists function snapshots with transport support [chromium-dev]": "passed",
+    "client.test.js::Snapshots::starts fresh when a pushed entry reuses an abandoned history index [chromium-dev]": "passed",
+    "client.test.js::Snapshots::captures and restores function snapshots on shallow navigations [chromium-dev]": "passed",
+    "client.test.js::Streaming::Works for universal load functions (client nav) [chromium-dev]": "passed",
+    "client.test.js::Streaming::Works for server load functions (client nav) [chromium-dev]": "passed",
+    "client.test.js::Streaming::Catches fetch errors from server load functions (client nav) [chromium-dev]": "passed",
+    "client.test.js::Streaming::Catches rejected streamed server data after another load delays data serialization [chromium-dev]": "passed",
+    "client.test.js::Streaming::Works for universal load functions (direct hit) [chromium-dev]": "passed",
+    "client.test.js::Streaming::Works for server load functions (direct hit) [chromium-dev]": "failed",
+    "client.test.js::Streaming::Works with a fast and a slow server load functions which (direct hit) [chromium-dev]": "passed",
+    "client.test.js::Streaming::Catches fetch errors from server load functions (direct hit) [chromium-dev]": "passed",
+    "client.test.js::Actions::page state has correct data [chromium-dev]": "failed",
+    "client.test.js::Actions::cross-page action navigation is client-side [chromium-dev]": "failed",
+    "client.test.js::Actions::non-redirect action results cannot navigate to another origin [chromium-dev]": "passed",
+    "client.test.js::Actions::same-page action drops query params omitted from the action [chromium-dev]": "failed",
+    "client.test.js::Actions::semantically identical action query refreshes without navigating [chromium-dev]": "failed",
+    "client.test.js::Actions::failures do not refresh by default but can opt in [chromium-dev]": "failed",
+    "client.test.js::Actions::cross-page refresh defaults depend on the result type [chromium-dev]": "failed",
+    "client.test.js::Actions::cross-page action navigation strips only the named-action param [chromium-dev]": "passed",
+    "client.test.js::Actions::cross-page action navigation pushes a history entry [chromium-dev]": "passed",
+    "client.test.js::Actions::update navigate option applies the result to the current page [chromium-dev]": "failed",
+    "client.test.js::Actions::update navigate option does not suppress redirects [chromium-dev]": "passed",
+    "client.test.js::Actions::update({ refreshAll: false }) still navigates to the cross-page action [chromium-dev]": "failed",
+    "client.test.js::Assets::only one link per stylesheet [chromium-dev]": "passed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::without replace::app.goto rejects and does not navigate [chromium-dev]": "passed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::without replace::location.assign [chromium-dev]": "failed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::with replace::app.goto rejects and does not navigate [chromium-dev]": "passed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::with replace::location.replace [chromium-dev]": "timedOut",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::redirect after invalidation::app.invalidate [chromium-dev]": "passed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::redirect after invalidation::location.reload [chromium-dev]": "timedOut",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::without replace::app.goto [chromium-dev]": "passed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::without replace::location.assign [chromium-dev]": "timedOut",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::with replace::app.goto [chromium-dev]": "passed",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::with replace::location.replace [chromium-dev]": "failed",
+    "client.test.js::goto::goto fails with external URL [chromium-dev]": "passed",
+    "client.test.js::goto::goto fails with a URL that does not resolve to a route [chromium-dev]": "passed",
+    "client.test.js::goto::supports the deprecated replaceState option [chromium-dev]": "passed",
+    "client.test.js::goto::persists state through redirects when persistState is true [chromium-dev]": "passed",
+    "client.test.js::untrack::untracks server load function [chromium-dev]": "passed",
+    "client.test.js::untrack::untracks universal load function [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Adds state without changing the current URL [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::serializes custom objects in state [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Shallow navigates to a new URL [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Exposes the shallow target and runs navigation lifecycle hooks [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Can cancel a shallow navigation [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Adds state and does not restore it by default [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Restores state-only updates when persistState is true [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Restores shallow state when persistState is true [chromium-dev]": "timedOut",
+    "client.test.js::Shallow routing::Does not restore regular goto state by default [chromium-dev]": "timedOut",
+    "client.test.js::Shallow routing::Restores regular goto state when persistState is true [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Keeps the current shallow routing context when adding state [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Ends the current shallow routing context with a regular goto [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Invalidates the rendered route after a shallow navigation [chromium-dev]": "failed",
+    "client.test.js::Shallow routing::Does not navigate when going back to shallow route [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Preserves shallow navigation options across history entries [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Preserves scroll and focus across popstate unless an intervening navigation resets them [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Replaces state on the current URL [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Shallow navigates and replaces the current history entry [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Restores replaced state on reload [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::Ends a replaced shallow routing context with a regular goto [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::pushState remains functional and does not loop infinitely in $effect [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::replaceState remains functional and does not loop infinitely in $effect [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::refreshAll reruns load functions without resetting page.state [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::invalidate resets page.state [chromium-dev]": "passed",
+    "client.test.js::Shallow routing::invalidateAll resets page.state [chromium-dev]": "passed",
+    "client.test.js::reroute::Apply reroute during client side navigation [chromium-dev]": "passed",
+    "client.test.js::reroute::Apply async reroute during client side navigation [chromium-dev]": "passed",
+    "client.test.js::reroute::Apply async prerendered reroute during client side navigation [chromium-dev]": "passed",
+    "client.test.js::reroute::Apply reroute to prerendered page during client side navigation [chromium-dev]": "passed",
+    "client.test.js::reroute::Apply reroute after client-only redirects [chromium-dev]": "passed",
+    "client.test.js::reroute::Apply reroute to preload data [chromium-dev]": "passed",
+    "client.test.js::reroute::reroute does not get applied to external URLs [chromium-dev]": "passed",
+    "client.test.js::reroute::Falls back to native navigation if reroute throws on the client [chromium-dev]": "passed",
+    "client.test.js::reroute::reroute works with invalidate [chromium-dev]": "failed",
+    "client.test.js::init::init client hook is called once when the application start on the client [chromium-dev]": "passed",
+    "client.test.js::INP::does not block next paint [chromium-dev]": "timedOut",
+    "client.test.js::binding_property_non_reactive warn::warning is not thrown from the root of svelte [chromium-dev]": "passed",
+    "client.test.js::routing::ignores form controls that shadow DOM properties of their form [chromium-dev]": "passed",
+    "client.test.js::routing::navigating while navigation is in progress sets the correct URL [chromium-dev]": "passed",
+    "client.test.js::routing::does not load code from another origin for a pathname starting with // [chromium-dev]": "passed",
+    "client.test.js::a11y::resets focus [chromium-dev]": "passed",
+    "client.test.js::a11y::applies autofocus after a navigation [chromium-dev]": "passed",
+    "client.test.js::a11y::sets focus for valid hash but invalid selector [chromium-dev]": "passed",
+    "client.test.js::a11y::announces client-side navigation [chromium-dev]": "passed",
+    "client.test.js::a11y::reset selection [chromium-dev]": "passed",
+    "client.test.js::a11y::reset: false preserves focus [chromium-dev]": "passed",
+    "client.test.js::a11y::autofocus from previous page is ignored [chromium-dev]": "passed",
+    "client.test.js::a11y::an app starting in an iframe leaves focus in the parent page [chromium-dev]": "passed",
+    "client.test.js::a11y::navigating inside an iframe leaves focus in the parent page [chromium-dev]": "passed",
+    "client.test.js::a11y::blur handler can access data during navigation [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate prevents navigation triggered by link click [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate prevents navigation to external [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate prevents navigation triggered by goto [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate prevents navigation triggered by back button [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate prevents unload [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate is not triggered on redirect [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate is not triggered on target=_blank [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate is not triggered on click or popstate for hash links [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate cancel() on an unloading navigation does not prevent subsequent beforeNavigate callbacks [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate is triggered after clicking a download link [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::beforeNavigate's complete fulfills after redirect [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::afterNavigate calls callback [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::afterNavigate enter navigation includes the hydrated route and params [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::onNavigate calls callback [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::onNavigate returned function is only called once [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::navigation.event is populated [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::scroll state is provided on initial page load [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::scroll state is provided on link navigation [chromium-dev]": "passed",
+    "client.test.js::Navigation lifecycle functions::scroll state is provided on popstate navigation [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor works on direct page load [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor works on navigation to page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied non-ascii anchor works on navigation to page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied non-ascii anchor works on navigation to page after manual scroll [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor with special characters works on navigation to page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor works when navigated from scrolled page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::no-anchor url will scroll to top when navigated from scrolled page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor works when navigated from bottom of page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::scrolling to url-supplied anchor respects scroll-margin [chromium-dev]": "passed",
+    "client.test.js::Scrolling::no-anchor url will scroll to top when navigated from bottom of page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::scroll is restored after hitting the back button [chromium-dev]": "passed",
+    "client.test.js::Scrolling::scroll is restored after hitting the back button for an in-app cross-document navigation [chromium-dev]": "timedOut",
+    "client.test.js::Scrolling::url-supplied anchor is ignored with onMount() scrolling on direct page load [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor is ignored with afterNavigate() scrolling on direct page load [chromium-dev]": "passed",
+    "client.test.js::Scrolling::url-supplied anchor is ignored with onMount() scrolling on navigation to page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::app-supplied scroll and focus work on direct page load [chromium-dev]": "passed",
+    "client.test.js::Scrolling::app-supplied scroll and focus work on navigation to page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::scroll positions are recovered on reloading the page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::scroll position is top of page on ssr:false reload [chromium-dev]": "passed",
+    "client.test.js::Scrolling::clicking # or #top takes you to the top of the current page [chromium-dev]": "passed",
+    "client.test.js::Scrolling::Scroll position is correct after going back from a shallow route [chromium-dev]": "passed",
+    "client.test.js::CSS::applies generated component styles (hides announcer) [chromium-dev]": "passed",
+    "client.test.js::CSS::dynamically imported components lazily load CSS [chromium-dev]": "passed",
+    "client.test.js::Errors::client-side load errors [chromium-dev]": "passed",
+    "client.test.js::Errors::client-side module context errors [chromium-dev]": "passed",
+    "client.test.js::Errors::client-side error from load() [chromium-dev]": "passed",
+    "client.test.js::Errors::client-side 4xx status without error from load() [chromium-dev]": "passed",
+    "client.test.js::Errors::Root error falls back to error.html (unexpected error) [chromium-dev]": "passed",
+    "client.test.js::Errors::Root error falls back to error.html (expected error) [chromium-dev]": "passed",
+    "client.test.js::Errors::Root 404 redirects somewhere due to root layout [chromium-dev]": "passed",
+    "client.test.js::Errors::expected errors reach the client handleError hook [chromium-dev]": "passed",
+    "client.test.js::Errors::unexpected errors reach the client handleError hook [chromium-dev]": "passed",
+    "client.test.js::Prefetching::prefetches code programmatically [chromium-dev]": "passed",
+    "client.test.js::Prefetching::prefetches code programmatically with a dynamic route id [chromium-dev]": "passed",
+    "client.test.js::Prefetching::preloadCode after match does not re-request route resolution [chromium-dev]": "passed",
+    "client.test.js::Prefetching::preloadCode caches endpoint-only route ids [chromium-dev]": "passed",
+    "client.test.js::Prefetching::warns when preloadCode is called with an unknown route id [chromium-dev]": "passed",
+    "client.test.js::Prefetching::warns when preloadCode is called with an endpoint-only route id [chromium-dev]": "passed",
+    "client.test.js::Prefetching::hints at `match` when preloadCode is called with a pathname [chromium-dev]": "passed",
+    "client.test.js::Prefetching::prefetches data programmatically [chromium-dev]": "passed",
+    "client.test.js::Prefetching::does not replay a preloaded redirect when a later hop returns to the route [chromium-dev]": "passed",
+    "client.test.js::Prefetching::chooses correct route when hash route is preloaded but regular route is clicked [chromium-dev]": "passed",
+    "client.test.js::Prefetching::same route hash links work more than once [chromium-dev]": "passed",
+    "client.test.js::Prefetching::does not rerun load on calls to duplicate preload hash route [chromium-dev]": "passed",
+    "client.test.js::Prefetching::does not rerun load on calls to different preload hash route [chromium-dev]": "passed",
+    "client.test.js::Prefetching::does rerun load when preload errored [chromium-dev]": "passed",
+    "client.test.js::Prefetching::preloads errors [chromium-dev]": "failed",
+    "client.test.js::Routing::navigates to a new page without reloading [chromium-dev]": "passed",
+    "client.test.js::Routing::navigates programmatically [chromium-dev]": "passed",
+    "client.test.js::Routing::page.url.hash is correctly set on page load [chromium-dev]": "passed",
+    "client.test.js::Routing::page.url.hash is correctly set on navigation [chromium-dev]": "passed",
+    "client.test.js::Routing::clicking on a hash link focuses the associated element [chromium-dev]": "passed",
+    "client.test.js::Routing::backwards navigation works after clicking a hash link with data-sveltekit-reload [chromium-dev]": "passed",
+    "client.test.js::Routing::sequential focus navigation starting point is set correctly on navigation [chromium-dev]": "passed",
+    "client.test.js::Routing::back button returns to previous route when previous route was navigated to via hash anchor [chromium-dev]": "passed",
+    "client.test.js::Routing::replaces state if the data-sveltekit-replacestate router option is specified for the hash link [chromium-dev]": "passed",
+    "client.test.js::Routing::navigating to a hash link works when base element is present [chromium-dev]": "passed",
+    "client.test.js::Routing::does not normalize external path [chromium-dev]": "passed",
+    "client.test.js::Routing::ignores popstate events from outside the router [chromium-dev]": "passed",
+    "client.test.js::Routing::recognizes clicks outside the app target [chromium-dev]": "passed",
+    "client.test.js::Routing::responds to <form method=\"GET\"> submission without reload [chromium-dev]": "passed"
+   },
+   "errors": {
+    "client.test.js::a11y::applies autofocus after an enhanced form submit [chromium-dev]": "TimeoutError: page.waitForFunction: Timeout 1000ms exceeded.",
+    "client.test.js::Load::busts cache if non-GET request to a non-canonical cross-origin url is made [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('h1')\nExpected: \"count: 2\"\nReceived: \"count: 1\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('h1') with timeout 5000ms\n  - waiting for locator('h1')\n    14 \u00d7 locator resolved to <h1>count: 1</h1>\n       - unexpected value \"count: 1\"\n",
+    "client.test.js::Load::load does not call fetch if max-age allows it [chromium-dev]": "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator:  locator('button')\nExpected: \"2\"\nReceived: \"1\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveAttribute\" locator('button') with timeout 5000ms\n  - waiting for locator('button')\n    14 \u00d7 locator resolved to <button data-ticker=\"1\">update</button>\n       - unexpected value \"1\"\n",
+    "client.test.js::Load::load does ignore ttl if fetch cache options says so [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('p.counter')\nExpected: \"Count is 1\"\nReceived: \"Count is 0\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('p.counter') with timeout 5000ms\n  - waiting for locator('p.counter')\n    14 \u00d7 locator resolved to <p class=\"counter\">Count is 0</p>\n       - unexpected value \"Count is 0\"\n",
+    "client.test.js::Load::load busts cache if non-GET request to resource is made [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('p.counter')\nExpected: \"Count is 1\"\nReceived: \"Count is 0\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('p.counter') with timeout 5000ms\n  - waiting for locator('p.counter')\n    14 \u00d7 locator resolved to <p class=\"counter\">Count is 0</p>\n       - unexpected value \"Count is 0\"\n",
+    "client.test.js::Load::non-GET requests evict cached responses with hashed keys [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('p')\nExpected: \"1 / 1\"\nReceived: \"0 / 0\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('p') with timeout 5000ms\n  - waiting for locator('p')\n    14 \u00d7 locator resolved to <p>0 / 0</p>\n       - unexpected value \"0 / 0\"\n",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 2\nReceived: 0",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-reload [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::data-sveltekit attributes::data-sveltekit-replacestate [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Content negotiation::+server.js next to +page.svelte works [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('pre')\nExpected: \"PUT\"\nReceived: \"loading\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('pre') with timeout 5000ms\n  - waiting for locator('pre')\n    14 \u00d7 locator resolved to <pre>loading</pre>\n       - unexpected value \"loading\"\n",
+    "client.test.js::Snapshots::recovers snapshotted data [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Streaming::Works for server load functions (direct hit) [chromium-dev]": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('p.loadingsuccess')\nExpected: visible\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('p.loadingsuccess') with timeout 5000ms\n  - waiting for locator('p.loadingsuccess')\n  - Target page, context or browser has been closed\n",
+    "client.test.js::Actions::page state has correct data [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('pre.data1')\nExpected: \"prop: 1, state: 1\"\nReceived: \"prop: 0, state: 0\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('pre.data1') with timeout 5000ms\n  - waiting for locator('pre.data1')\n    14 \u00d7 locator resolved to <pre class=\"data1\">prop: 0, state: 0</pre>\n       - unexpected value \"prop: 0, state: 0\"\n",
+    "client.test.js::Actions::cross-page action navigation is client-side [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator: locator('pre.destination-form')\nExpected: \"{\\\"source\\\":\\\"destination\\\",\\\"username\\\":\\\"paolo\\\"}\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveText\" locator('pre.destination-form') with timeout 5000ms\n  - waiting for locator('pre.destination-form')\n",
+    "client.test.js::Actions::same-page action drops query params omitted from the action [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('pre.form-json')\nExpected: \"{\\\"where\\\":\\\"/actions/cross-page/same-page\\\"}\"\nReceived: \"null\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('pre.form-json') with timeout 5000ms\n  - waiting for locator('pre.form-json')\n    14 \u00d7 locator resolved to <pre class=\"form-json\">null</pre>\n       - unexpected value \"null\"\n",
+    "client.test.js::Actions::semantically identical action query refreshes without navigating [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('pre.form-json')\nExpected: \"{\\\"where\\\":\\\"/actions/cross-page/same-page\\\"}\"\nReceived: \"null\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('pre.form-json') with timeout 5000ms\n  - waiting for locator('pre.form-json')\n    14 \u00d7 locator resolved to <pre class=\"form-json\">null</pre>\n       - unexpected value \"null\"\n",
+    "client.test.js::Actions::failures do not refresh by default but can opt in [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('pre.form-json')\nExpected: \"{\\\"failed\\\":true}\"\nReceived: \"null\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('pre.form-json') with timeout 5000ms\n  - waiting for locator('pre.form-json')\n    14 \u00d7 locator resolved to <pre class=\"form-json\">null</pre>\n       - unexpected value \"null\"\n",
+    "client.test.js::Actions::cross-page refresh defaults depend on the result type [chromium-dev]": "Error: expect(locator).not.toHaveText(expected) failed\n\nLocator:  locator('pre.layout-loaded-at')\nExpected: not \"0.9317423731963722\"\nReceived: \"0.9317423731963722\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"not toHaveText\" locator('pre.layout-loaded-at') with timeout 5000ms\n  - waiting for locator('pre.layout-loaded-at')\n    14 \u00d7 locator resolved to <pre class=\"layout-loaded-at\">0.9317423731963722</pre>\n       - unexpected value \"0.9317423731963722\"\n",
+    "client.test.js::Actions::update navigate option applies the result to the current page [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('pre.source-form')\nExpected: \"{\\\"problem\\\":\\\"invalid\\\",\\\"username\\\":\\\"paolo\\\"}\"\nReceived: \"null\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('pre.source-form') with timeout 5000ms\n  - waiting for locator('pre.source-form')\n    14 \u00d7 locator resolved to <pre class=\"source-form\">null</pre>\n       - unexpected value \"null\"\n",
+    "client.test.js::Actions::update({ refreshAll: false }) still navigates to the cross-page action [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator: locator('pre.destination-form')\nExpected: \"{\\\"source\\\":\\\"destination\\\",\\\"username\\\":\\\"paolo\\\"}\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveText\" locator('pre.destination-form') with timeout 5000ms\n  - waiting for locator('pre.destination-form')\n",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::without replace::location.assign [chromium-dev]": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"http://localhost:5301/goto/nonexistent\"\nReceived: \"\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    - waiting for navigation to finish...\n",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::with replace::location.replace [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::redirect after invalidation::location.reload [chromium-dev]": "Test timeout of 45000ms exceeded while running \"beforeEach\" hook.",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::without replace::location.assign [chromium-dev]": "Test timeout of 45000ms exceeded while running \"beforeEach\" hook.",
+    "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::with replace::location.replace [chromium-dev]": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"http://localhost:5301/goto/testfinish\"\nReceived: \"\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    - waiting for navigation to finish...\n",
+    "client.test.js::Shallow routing::Restores shallow state when persistState is true [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Shallow routing::Does not restore regular goto state by default [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Shallow routing::Invalidates the rendered route after a shallow navigation [chromium-dev]": "Error: expect(locator).not.toHaveText(expected) failed\n\nLocator:  locator('[data-id=\"now\"]')\nExpected: not \"1795043160320\"\nReceived: \"1795043160320\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"not toHaveText\" locator('[data-id=\"now\"]') with timeout 5000ms\n  - waiting for locator('[data-id=\"now\"]')\n    14 \u00d7 locator resolved to <span data-id=\"now\">1795043160320</span>\n       - unexpected value \"1795043160320\"\n",
+    "client.test.js::reroute::reroute works with invalidate [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator: locator('p')\nExpected: \"data request: true\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveText\" locator('p') with timeout 5000ms\n  - waiting for locator('p')\n",
+    "client.test.js::INP::does not block next paint [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Scrolling::scroll is restored after hitting the back button for an in-app cross-document navigation [chromium-dev]": "Test timeout of 45000ms exceeded.",
+    "client.test.js::Prefetching::preloads errors [chromium-dev]": "Error: expect(locator).toHaveText(expected) failed\n\nLocator:  locator('p')\nExpected: \"error 500 Oopsie (500 Internal Error)\"\nReceived: \"error 404 Not found\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('p') with timeout 5000ms\n  - waiting for locator('p')\n    14 \u00d7 locator resolved to <p>error 404 Not found</p>\n       - unexpected value \"error 404 Not found\"\n"
+   },
+   "counts": {
+    "failed": 22,
+    "passed": 222,
+    "timedOut": 10
+   },
+   "replay_cmds": [
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:12 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:99 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:225 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:247 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:255 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:345 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1016 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1305 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1341 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1363 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1440 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1629 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1668 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1679 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1710 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1723 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1738 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1752 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1802 --project=chromium-dev",
+    "npx detjs playwright --det --det-epoch=2026-11-18T23:06:00Z test test/playwright/client.test.js:1820 --project=chromium-dev"
+   ],
+   "phase": "det"
+  }
+ ],
+ "epoch": "2026-11-18T23:06:00Z",
+ "measured_at": "2026-11-18T23:06:26Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "e1_args": [
+  "test/playwright"
+ ],
+ "det_verify": {
+  "runs": 2,
+  "tests": 254,
+  "stable": 141,
+  "diverged": 113,
+  "missing": 0,
+  "outcome_unstable": 20,
+  "order_identical": true,
+  "reasons": {
+   "net": 13,
+   "other": 73,
+   "outcome-only": 1,
+   "random": 1,
+   "sched": 25
+  }
+ },
+ "det_fingerprints": {
+  "client.test.js::a11y::applies autofocus after an enhanced form submit [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Caching::caches __data.json requests with invalidated search param [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::searchParams::rejects reserved query parameters [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Endpoints::calls a delete handler [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::does not refetch cross-origin urls in non-canonical form during hydration [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::busts cache if non-GET request to a non-canonical cross-origin url is made [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::load function is only called when necessary [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::accessing url.hash from load errors and suggests using page state [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Load::url instance methods work in load [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::server data from previous is not reused if next page has no load function [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::keeps server data when valid while not reusing client load data [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::load does not call fetch if max-age allows it [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::load does ignore ttl if fetch cache options says so [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::load busts cache if non-GET request to resource is made [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::__data.json has cache-control: private, no-store [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Load::cache with body hash [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Load::cached base64-serialized response is decoded when replayed [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Load::do not use cache if headers are different [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::non-GET requests evict cached responses with hashed keys [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::use correct cache result when fetching same url multiple times [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Load::permits 3rd party patching of fetch in universal load functions [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::permits 3rd party patching of server load fetch requests [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Load::does not repeat fetch on hydration when using Request object [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Load::using window.fetch causes a warning [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::SPA mode / no SSR::applies generated component styles (hides announcer) [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::SPA mode / no SSR::Can use browser-only global on client-only page through ssr config in handle [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::SPA mode / no SSR::can use browser-only global on client-only page through ssr config in +layout.js [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::SPA mode / no SSR::can use browser-only global on client-only page through ssr config in +page.js [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::SPA mode / no SSR::cannot use browser-only global on page because of ssr config in +page.js [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::SPA mode / no SSR::afterNavigate is only called once during start [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::SPA mode / no SSR::afterNavigate has no origin on start [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::$app/state::can use $app/state from anywhere on client [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::$app/state::page.data does not update if data is unchanged [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::$app/state::page.data does update if keys did not change but data did [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::$app/state::page.data does update if keys did not change but data did (2) [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::$app/state::page.url does update when used with goto [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::+layout.server.js does not re-run when downstream load functions are invalidated [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::+layout.server.js re-runs when await parent() is called from downstream load function [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::load function re-runs when searchParams change [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::load function only re-runs when tracked searchParams change (universal) [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::load function only re-runs when tracked searchParams change (server) [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::load function re-runs when the number of values of a tracked searchParam changes [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::server-only load functions are re-run following forced invalidation [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::server-only load functions are re-run following goto with forced invalidation [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Invalidation::multiple invalidations run concurrently [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::multiple synchronous invalidations are batched [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::refreshAll persists through redirects [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Invalidation::+layout(.server).js is re-run when server dep is invalidated [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Invalidation::fetch in server load cannot be invalidated [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Invalidation::+layout.js is re-run when shared dep is invalidated [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Invalidation::+page(.server).js is re-run when server dep is invalidated following goto [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Invalidation::+page.js is re-run when shared dep is invalidated following goto [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Invalidation::Specified dependencies are re-run following goto [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Invalidation::Parameter use is tracked even for routes that do not use the parameters [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::route.id use is tracked for server-only load functions [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::route.id use is tracked for shared load functions [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::route.id does not rerun layout if unchanged [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::page.url can safely be mutated [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Invalidation::goto after invalidate does not reset state [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Invalidation::refreshAll finishing after navigation does not apply stale data [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Invalidation::refreshAll finishing before navigation ends does not prevent navigation [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data error does not block user navigation [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::data-sveltekit attributes::data-sveltekit-preload does not abort ongoing navigation [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::data-sveltekit attributes::data-sveltekit-preload does not abort ongoing navigation #2 [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::data-sveltekit attributes::data-sveltekit-preload repeatedly works on the same anchor element [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data tap works after data-sveltekit-preload-code hover [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::data-sveltekit attributes::data-sveltekit-reload [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::data-sveltekit attributes::data-sveltekit-reset [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::data-sveltekit attributes::data-sveltekit-replacestate [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Content negotiation::+server.js next to +page.svelte works [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Content negotiation::use:enhance uses action, not POST handler [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::env::can access public env in app.html [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::env::can access public env in hooks.client.js [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::env::uses correct dynamic env when navigating from prerendered page [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Snapshots::restores function snapshots when hydration falls back to mounting an error page [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Snapshots::restores function snapshots on reload once after afterNavigate when ssr is disabled [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Snapshots::recovers snapshotted data [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Snapshots::restores snapshot after afterNavigate on popstate [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Snapshots::restores snapshot after afterNavigate on reload [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Snapshots::captures and restores function snapshots [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Snapshots::persists function snapshots with transport support [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Snapshots::starts fresh when a pushed entry reuses an abandoned history index [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Snapshots::captures and restores function snapshots on shallow navigations [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Streaming::Works for universal load functions (client nav) [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Streaming::Works for server load functions (client nav) [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Streaming::Catches fetch errors from server load functions (client nav) [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Streaming::Catches rejected streamed server data after another load delays data serialization [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Streaming::Works for universal load functions (direct hit) [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Streaming::Works for server load functions (direct hit) [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Streaming::Works with a fast and a slow server load functions which (direct hit) [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Streaming::Catches fetch errors from server load functions (direct hit) [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Actions::page state has correct data [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Actions::cross-page action navigation is client-side [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Actions::non-redirect action results cannot navigate to another origin [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Actions::same-page action drops query params omitted from the action [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Actions::semantically identical action query refreshes without navigating [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Actions::failures do not refresh by default but can opt in [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Actions::cross-page refresh defaults depend on the result type [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Actions::cross-page action navigation strips only the named-action param [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Actions::cross-page action navigation pushes a history entry [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Actions::update navigate option applies the result to the current page [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Actions::update navigate option does not suppress redirects [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Actions::update({ refreshAll: false }) still navigates to the cross-page action [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Assets::only one link per stylesheet [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::goto::goto fails with external URL [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::goto::goto fails with a URL that does not resolve to a route [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::goto::supports the deprecated replaceState option [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::goto::persists state through redirects when persistState is true [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::without replace::app.goto rejects and does not navigate [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::without replace::location.assign [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::with replace::app.goto rejects and does not navigate [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating outside the app on sameorigin::with replace::location.replace [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::redirect after invalidation::app.invalidate [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::redirect after invalidation::location.reload [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::without replace::app.goto [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::without replace::location.assign [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::with replace::app.goto [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::goto::navigation and redirects should be consistent between web native and sveltekit based::navigating through redirect chain::with replace::location.replace [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::untrack::untracks server load function [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::untrack::untracks universal load function [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Shallow routing::Adds state without changing the current URL [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::serializes custom objects in state [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Shallow routing::Shallow navigates to a new URL [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Exposes the shallow target and runs navigation lifecycle hooks [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Can cancel a shallow navigation [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Adds state and does not restore it by default [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Restores state-only updates when persistState is true [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Restores shallow state when persistState is true [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Shallow routing::Does not restore regular goto state by default [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Restores regular goto state when persistState is true [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Keeps the current shallow routing context when adding state [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Ends the current shallow routing context with a regular goto [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Invalidates the rendered route after a shallow navigation [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Does not navigate when going back to shallow route [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Preserves shallow navigation options across history entries [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Preserves scroll and focus across popstate unless an intervening navigation resets them [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Replaces state on the current URL [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::Shallow navigates and replaces the current history entry [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Shallow routing::Restores replaced state on reload [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Shallow routing::Ends a replaced shallow routing context with a regular goto [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Shallow routing::pushState remains functional and does not loop infinitely in $effect [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Shallow routing::replaceState remains functional and does not loop infinitely in $effect [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Shallow routing::refreshAll reruns load functions without resetting page.state [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::invalidate resets page.state [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Shallow routing::invalidateAll resets page.state [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::reroute::Apply reroute during client side navigation [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::reroute::Apply async reroute during client side navigation [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::reroute::Apply async prerendered reroute during client side navigation [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::reroute::Apply reroute to prerendered page during client side navigation [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::reroute::Apply reroute after client-only redirects [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::reroute::Apply reroute to preload data [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::reroute::reroute does not get applied to external URLs [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::reroute::Falls back to native navigation if reroute throws on the client [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::reroute::reroute works with invalidate [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::init::init client hook is called once when the application start on the client [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::INP::does not block next paint [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::binding_property_non_reactive warn::warning is not thrown from the root of svelte [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::routing::ignores form controls that shadow DOM properties of their form [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::routing::navigating while navigation is in progress sets the correct URL [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::routing::does not load code from another origin for a pathname starting with // [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::a11y::resets focus [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::a11y::applies autofocus after a navigation [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::a11y::sets focus for valid hash but invalid selector [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::a11y::announces client-side navigation [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::a11y::reset selection [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::a11y::reset: false preserves focus [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::a11y::autofocus from previous page is ignored [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::a11y::an app starting in an iframe leaves focus in the parent page [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::a11y::navigating inside an iframe leaves focus in the parent page [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::a11y::blur handler can access data during navigation [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::beforeNavigate prevents navigation triggered by link click [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::beforeNavigate prevents navigation to external [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Navigation lifecycle functions::beforeNavigate prevents navigation triggered by goto [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::beforeNavigate prevents navigation triggered by back button [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::beforeNavigate prevents unload [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::beforeNavigate is not triggered on redirect [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::beforeNavigate is not triggered on target=_blank [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Navigation lifecycle functions::beforeNavigate is not triggered on click or popstate for hash links [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::beforeNavigate cancel() on an unloading navigation does not prevent subsequent beforeNavigate callbacks [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::beforeNavigate is triggered after clicking a download link [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Navigation lifecycle functions::beforeNavigate's complete fulfills after redirect [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::afterNavigate calls callback [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::afterNavigate enter navigation includes the hydrated route and params [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::onNavigate calls callback [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::onNavigate returned function is only called once [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::navigation.event is populated [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::scroll state is provided on initial page load [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::scroll state is provided on link navigation [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Navigation lifecycle functions::scroll state is provided on popstate navigation [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Scrolling::url-supplied anchor works on direct page load [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::url-supplied anchor works on navigation to page [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::url-supplied non-ascii anchor works on navigation to page [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Scrolling::url-supplied non-ascii anchor works on navigation to page after manual scroll [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::url-supplied anchor with special characters works on navigation to page [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::url-supplied anchor works when navigated from scrolled page [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::no-anchor url will scroll to top when navigated from scrolled page [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::url-supplied anchor works when navigated from bottom of page [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::scrolling to url-supplied anchor respects scroll-margin [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::no-anchor url will scroll to top when navigated from bottom of page [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::scroll is restored after hitting the back button [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::scroll is restored after hitting the back button for an in-app cross-document navigation [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::url-supplied anchor is ignored with onMount() scrolling on direct page load [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::url-supplied anchor is ignored with afterNavigate() scrolling on direct page load [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::url-supplied anchor is ignored with onMount() scrolling on navigation to page [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::app-supplied scroll and focus work on direct page load [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::app-supplied scroll and focus work on navigation to page [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::scroll positions are recovered on reloading the page [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Scrolling::scroll position is top of page on ssr:false reload [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Scrolling::clicking # or #top takes you to the top of the current page [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Scrolling::Scroll position is correct after going back from a shallow route [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::CSS::applies generated component styles (hides announcer) [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::CSS::dynamically imported components lazily load CSS [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Errors::client-side load errors [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Errors::client-side module context errors [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Errors::client-side error from load() [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Errors::client-side 4xx status without error from load() [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Errors::Root error falls back to error.html (unexpected error) [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Errors::Root error falls back to error.html (expected error) [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Errors::Root 404 redirects somewhere due to root layout [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Errors::expected errors reach the client handleError hook [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Errors::unexpected errors reach the client handleError hook [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Prefetching::prefetches code programmatically [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Prefetching::prefetches code programmatically with a dynamic route id [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Prefetching::preloadCode after match does not re-request route resolution [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Prefetching::preloadCode caches endpoint-only route ids [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Prefetching::warns when preloadCode is called with an unknown route id [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Prefetching::warns when preloadCode is called with an endpoint-only route id [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Prefetching::hints at `match` when preloadCode is called with a pathname [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Prefetching::prefetches data programmatically [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Prefetching::does not replay a preloaded redirect when a later hop returns to the route [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Prefetching::chooses correct route when hash route is preloaded but regular route is clicked [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Prefetching::same route hash links work more than once [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Prefetching::does not rerun load on calls to duplicate preload hash route [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Prefetching::does not rerun load on calls to different preload hash route [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Prefetching::does rerun load when preload errored [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Prefetching::preloads errors [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Routing::navigates to a new page without reloading [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Routing::navigates programmatically [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Routing::page.url.hash is correctly set on page load [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Routing::page.url.hash is correctly set on navigation [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Routing::clicking on a hash link focuses the associated element [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Routing::backwards navigation works after clicking a hash link with data-sveltekit-reload [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Routing::sequential focus navigation starting point is set correctly on navigation [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Routing::back button returns to previous route when previous route was navigated to via hash anchor [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Routing::replaces state if the data-sveltekit-replacestate router option is specified for the hash link [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Routing::navigating to a hash link works when base element is present [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Routing::does not normalize external path [chromium-dev]": [
+   "diverged",
+   2
+  ],
+  "client.test.js::Routing::ignores popstate events from outside the router [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Routing::recognizes clicks outside the app target [chromium-dev]": [
+   "stable",
+   1
+  ],
+  "client.test.js::Routing::responds to <form method=\"GET\"> submission without reload [chromium-dev]": [
+   "stable",
+   1
+  ]
+ },
+ "det_reasons": {
+  "net": 13,
+  "other": 73,
+  "outcome-only": 1,
+  "random": 1,
+  "sched": 25
+ },
+ "freeze": [],
+ "replay": [],
+ "elapsed_min": 53.0
+}
