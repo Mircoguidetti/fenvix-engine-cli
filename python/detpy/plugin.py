@@ -253,6 +253,10 @@ def pytest_load_initial_conftests(early_config, parser, args):
         warnings.warn("detpy: nested in-process pytest session: it runs under the outer --det session")
         return
     controls = _controls(ns)
+    global _AUDIT_CHILD
+    if os.environ.get(AUDIT_CHILD_ENV) == "1":
+        _AUDIT_CHILD = True  # second fresh run of a cache audit: same controls, no proof cache
+        ns.det_cache = None
     if getattr(ns, "det_cache", None) and not proofcache.AVAILABLE:
         raise pytest.UsageError("--det-cache needs Python 3.12+ (sys.monitoring)")
     if getattr(ns, "det_cache", None):
@@ -287,6 +291,7 @@ def pytest_load_initial_conftests(early_config, parser, args):
         if pm.hasplugin("benchmark") and not any(a.startswith("--benchmark-max-time") for a in args):
             args.append("--benchmark-max-time=0.000001")
             S.adjustments.append("pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)")
+    os.environ.pop(AUDIT_CHILD_ENV, None)  # after the re-exec (which keeps it): never an input of the tests
     _install(early_config, ns, controls)
     if getattr(ns, "det_cache", None):
         remote_cache.hide_token()
@@ -342,6 +347,8 @@ def _owner(config) -> bool:
 @pytest.hookimpl(trylast=True)
 def pytest_configure(config):
     out = config.getoption("det_outcomes", None)
+    if _AUDIT_CHILD:
+        config.option.det_cache = None
     if config.getoption("det_cache", None) and not config.getoption("det", False):
         raise pytest.UsageError("--det-cache needs --det (the cache relies on Level 0 controls)")
     if _owner(config):
@@ -467,40 +474,88 @@ class _Outcomes:
         return {}
 
 
-def _audit_rerun(item, nextitem, controls) -> tuple[str, list[str]]:
-    """Run ``item`` once more, fresh, under the same per-test controls as its first run (virtual clock restarted,
-    seeds and network rules of the test), without reporting it (no log report, no junit row, nothing recorded in
-    the trace or the cache). Returns (outcome, test ids it produced)."""
-    from _pytest.runner import runtestprotocol
+# environment variable of the second fresh run of a cache audit (a new pytest process): no proof cache there
+AUDIT_CHILD_ENV = "DETPY_AUDIT_CHILD"
+_AUDIT_CHILD = False
+# options of the first process that must not reach the second run: its own cache, selection of other tests, and
+# files the first process writes (the second run gets its own, in a scratch directory)
+_AUDIT_STRIP = ("--det-cache", "--det-cache-verify", "--det-cache-audit", "--det-cache-audit-seed",
+                "--det-cache-receipts", "--det-order", "--det-compare", "--det-outcomes", "--det-trace", "--basetemp",
+                "--junitxml", "--junit-xml", "--junit-prefix", "--lf", "--last-failed", "--ff", "--failed-first",
+                "--nf", "--new-first", "--sw", "--stepwise", "--sw-skip", "--stepwise-skip", "-n",
+                "--numprocesses", "--dist", "--maxprocesses", "--tx")
+_AUDIT_STRIP_FLAGS = {"--lf", "--last-failed", "--ff", "--failed-first", "--nf", "--new-first", "--sw", "--stepwise",
+                      "--sw-skip", "--stepwise-skip"}
 
-    st = _state.STATE
-    pc = proofcache.PLUGIN
-    prev = pc.cap.ctx
-    pc.cap.switch("t|" + item.nodeid)  # what it reads is the test's own input, never a between-tests input
-    _state.reset_threads()
-    if "time" in controls:
-        clock.start_test()
-    st.nodeid = item.nodeid
-    if "seeds" in controls:
-        seeds.start_test(_PATCHER, item.nodeid)
-    if "net" in controls:
-        network.start_test()
+
+def _audit_child_args(config) -> list[str]:
+    """The first process's command line without the test selection by path and without the options in
+    ``_AUDIT_STRIP`` (ini ``addopts`` and ``PYTEST_ADDOPTS`` reach the second run by themselves)."""
+    args = [str(a) for a in config.invocation_params.args]
+    paths = {str(a) for a in (getattr(config.option, "file_or_dir", None) or [])}
+    out, i = [], 0
+    while i < len(args):
+        a = args[i]
+        name = a.split("=", 1)[0]
+        if name.startswith("-n") and name[2:] and (name[2:].isdigit() or name[2:] in ("auto", "logical")):
+            i += 1  # -n4: pytest-xdist workers (the second run is one test, in one process)
+            continue
+        if name in _AUDIT_STRIP:
+            i += 1 if ("=" in a or name in _AUDIT_STRIP_FLAGS) else 2
+            continue
+        if a in paths:
+            i += 1
+            continue
+        out.append(a)
+        i += 1
+    return out
+
+
+def _audit_rerun(item, first_duration: float = 0.0) -> tuple[str, list[str]]:
+    """Run ``item`` once more, truly fresh: a new pytest process with the first process's command line restricted to
+    this test, so the same configuration, plugins and Level 0 controls (order, seeds, hash seed, clock epoch,
+    network), and nothing the first run left behind in this process (module state, caches, registries). The second
+    process has no proof cache and writes its own outcomes, trace, basetemp and pytest cache in a scratch directory.
+    Returns (outcome, test ids it produced). Raises when the process gives no outcome for the test."""
+    import shutil
+    import subprocess
+    import tempfile
+
+    config = item.config
+    cfg = _state.STATE.config
+    scratch = tempfile.mkdtemp(prefix="detpy-audit-")
     try:
-        reports = runtestprotocol(item, nextitem=nextitem, log=False)
+        outcomes = os.path.join(scratch, "outcomes.json")
+        test = str(item.path) + (item.nodeid[item.nodeid.index("::"):] if "::" in item.nodeid else "")
+        epoch = _dt.datetime(1970, 1, 1, tzinfo=_dt.timezone.utc) + _dt.timedelta(microseconds=cfg.epoch_ns // 1000)
+        cmd = [sys.executable, "-m", "pytest", *_audit_child_args(config),
+               f"--det-epoch={epoch.isoformat()}", f"--det-outcomes={outcomes}",
+               f"--det-trace={os.path.join(scratch, 'trace.jsonl')}", f"--basetemp={os.path.join(scratch, 'tmp')}",
+               "-o", f"cache_dir={os.path.join(scratch, 'pytest-cache')}", "-q", test]
+        if config.pluginmanager.hasplugin("xdist"):
+            cmd[3:3] = ["-p", "no:xdist"]
+        env = {k: v for k, v in os.environ.items()
+               if not (k.startswith("PYTEST_XDIST") or k == "PYTEST_CURRENT_TEST")}
+        env[AUDIT_CHILD_ENV] = "1"
+        timeout = 300 + 20 * max(0.0, first_duration)
+        p = subprocess.run(cmd, cwd=str(config.invocation_params.dir), env=env, stdin=subprocess.DEVNULL,
+                           stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=timeout)
+        try:
+            with open(outcomes) as fh:
+                got = json.load(fh).get("outcomes") or {}
+        except (OSError, ValueError):
+            got = {}
+        if not got:
+            tail = p.stdout.decode("utf-8", "replace").strip().splitlines()[-5:]
+            raise RuntimeError(f"second fresh run gave no outcome (exit {p.returncode}): {' | '.join(tail)}")
+        mine = got.get(item.nodeid)
+        if mine is None:  # reported under another id: the comparison of test ids decides
+            mine = next(iter(got.values()))
+        if mine.endswith("+teardown-error"):
+            mine = "error"
+        return mine, sorted(got)
     finally:
-        if "seeds" in controls:
-            seeds.end_test()
-        if "net" in controls:
-            network.end_test()
-        st.nodeid = None
-        pc.cap.switch(prev)
-    parts: dict = {}
-    for r in reports:
-        info = {"outcome": r.outcome}
-        if hasattr(r, "wasxfail"):
-            info["wasxfail"] = r.wasxfail
-        parts[r.when] = info
-    return proofcache._final(parts), sorted({r.nodeid for r in reports})
+        shutil.rmtree(scratch, ignore_errors=True)
 
 
 def _keep_django_groups(config, ordered):
@@ -663,7 +718,7 @@ class _DetSession(_Outcomes):
                 item.user_properties.append(("detpy_fingerprint", fp))
         if pc is not None and item.nodeid in pc.auditing:
             # cache audit: a result that could have been reused was run fresh; on a mismatch it runs once more
-            pc.audit_after_run(item, lambda: _audit_rerun(item, nextitem, controls))
+            pc.audit_after_run(item, lambda: _audit_rerun(item, pc.dur.get(item.nodeid, 0.0)))
 
     def pytest_sessionfinish(self, session, exitstatus):
         if proofcache.PLUGIN is not None:

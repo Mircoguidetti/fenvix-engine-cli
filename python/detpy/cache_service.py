@@ -18,9 +18,12 @@ Model (every request is scoped to the organization of its token; a token never r
 * **runs**: an append-only log of runs with their receipts blob and summary.
 * **untrusted**: an append-only log of proof keys a cache audit found wrong (a reusable result that two fresh runs
   contradicted). A lookup leaves out every entry filed under a proof key before that key was marked; an entry
-  filed after the mark (a fresh run that recorded the key again) is returned. Any token of the organization may
-  mark a key: a mark only stops reuse. ``GET /v1/audit`` sums the runs' audit counts per namespace (project) and
-  over all of them, with the 95% upper bound on the wrong-skip rate.
+  filed after the mark (a fresh run that recorded the key again) is returned. Every client follows the log
+  (``?after=SEQ``) and applies each mark once to its own local mirror, so a machine that already holds the wrong
+  entry stops reusing it too. Any token of the organization may mark a key: a mark only stops reuse.
+  ``GET /v1/audit`` sums the audit counts per namespace (project) and over all of them, with the 95% upper bound
+  on the wrong-skip rate: ``checked``/``matched`` from the run summaries (write tokens), ``wrong`` from every
+  token's jobs (summaries and the untrusted log).
 
 Nothing is ever updated or deleted through the API. Authentication: ``Authorization: Bearer <token>``; the server
 keeps only the SHA-256 of each token (``DIR/tokens.json``, re-read when it changes). Read-only tokens may look up
@@ -38,7 +41,7 @@ Endpoints (JSON in, JSON out)::
     POST /v1/ns/<ns>/runs    {"run", "receipts", "summary"}            -> {"ok": true}
     GET  /v1/ns/<ns>/runs                                              -> {"runs": [...]}
     POST /v1/ns/<ns>/untrusted {"put": [{"proof_key", "nodeid", "run", "reason"}]} -> {"added": n}
-    GET  /v1/ns/<ns>/untrusted                                         -> {"untrusted": [...]}
+    GET  /v1/ns/<ns>/untrusted[?after=SEQ&limit=N]                     -> {"untrusted": [{"seq", "proof_key", ...}]}
     GET  /v1/audit                                                     -> {"projects": {ns: {...}}, "all": {...}}
     GET  /v1/stats                                                     -> counts for the token's organization
 """
@@ -281,33 +284,68 @@ class Store:
                 added += 1
         return added
 
-    def untrusted(self, org: str, ns: str, limit: int = 1000) -> list[dict]:
-        rows = self.db().execute("SELECT proof_key, nodeid, run, reason, at FROM untrusted WHERE org=? AND ns=? "
-                                 "ORDER BY seq DESC LIMIT ?", (org, ns, limit)).fetchall()
-        return [{"proof_key": r[0], "nodeid": r[1], "run": r[2], "reason": r[3], "at": r[4]} for r in rows]
+    def untrusted(self, org: str, ns: str, limit: int = 1000, after: int | None = None) -> list[dict]:
+        """Marks of a namespace: newest first, or, with ``after``, the marks after that sequence number oldest first
+        (how clients follow the log: every machine applies each mark to its own mirror once)."""
+        if after is None:
+            q, args = "ORDER BY seq DESC LIMIT ?", (org, ns, limit)
+        else:
+            q, args = "AND seq > ? ORDER BY seq LIMIT ?", (org, ns, after, limit)
+        rows = self.db().execute("SELECT seq, proof_key, nodeid, run, reason, at FROM untrusted WHERE org=? AND ns=? "
+                                 + q, args).fetchall()
+        return [{"seq": r[0], "proof_key": r[1], "nodeid": r[2], "run": r[3], "reason": r[4], "at": r[5]}
+                for r in rows]
 
     def audit(self, org: str) -> dict:
-        """Audit counts of every run of the organization, per namespace (project) and over all of them."""
+        """Audit counts per namespace (project) and over all of them.
+
+        ``checked`` and ``matched`` come from the run summaries, which only write tokens can file. ``wrong`` counts
+        every wrong skip found by any token's job: the distinct (run, test) pairs of the summaries' ``wrong_ids`` and
+        of the untrusted log (a pull-request job marks its wrong skips there, it cannot file a summary). A wrong skip
+        known only from the log was checked by its job: it is added to ``checked`` (``checked_without_summary``), so
+        the bound never counts fewer checks than wrong skips; the matched checks of those jobs are unknown, which
+        makes the bound higher (conservative), never lower."""
+        db = self.db()
+        zero = {"runs": 0, "checked": 0, "matched": 0, "wrong": 0, "flaky_evidence": 0, "checked_without_summary": 0}
         per: dict[str, dict] = {}
-        for ns, summary in self.db().execute("SELECT ns, summary FROM runs WHERE org=? ORDER BY seq", (org,)):
+        wrong_seen: dict[str, set] = {}
+        for ns, run, summary in db.execute("SELECT ns, run, summary FROM runs WHERE org=? ORDER BY seq", (org,)):
             try:
                 a = (json.loads(summary or "null") or {}).get("audit")
             except (ValueError, AttributeError):
                 a = None
             if not isinstance(a, dict):
                 continue
-            p = per.setdefault(ns, {"runs": 0, "checked": 0, "matched": 0, "wrong": 0, "flaky_evidence": 0})
+            p = per.setdefault(ns, dict(zero))
+            seen = wrong_seen.setdefault(ns, set())
             p["runs"] += 1
-            for k in ("checked", "matched", "wrong", "flaky_evidence"):
+            for k in ("checked", "matched", "flaky_evidence"):
                 v = a.get(k)
                 p[k] += v if isinstance(v, int) and v >= 0 else 0
-        total = {"runs": 0, "checked": 0, "matched": 0, "wrong": 0, "flaky_evidence": 0}
-        for p in per.values():
+            ids = [i for i in (a.get("wrong_ids") or []) if isinstance(i, str)]
+            n = a.get("wrong")
+            n = n if isinstance(n, int) and n >= 0 else 0
+            seen.update((run, i) for i in ids)
+            # wrong skips the summary counts but does not name (``wrong_ids`` is capped)
+            seen.update((run, f"#{j}") for j in range(max(0, n - len(set(ids)))))
+        for ns, run, nodeid in db.execute("SELECT ns, run, nodeid FROM untrusted WHERE org=? ORDER BY seq", (org,)):
+            p = per.setdefault(ns, dict(zero))
+            seen = wrong_seen.setdefault(ns, set())
+            if (run, nodeid) not in seen:
+                seen.add((run, nodeid))
+                p["checked_without_summary"] += 1
+        total = dict(zero)
+        for ns, p in per.items():
+            p["wrong"] = len(wrong_seen.get(ns, ()))
+            p["checked"] += p["checked_without_summary"]
             for k in total:
                 total[k] += p[k]
             p["upper_bound_95"] = upper_bound_95(p["checked"], p["wrong"])
         total["upper_bound_95"] = upper_bound_95(total["checked"], total["wrong"])
-        return {"projects": per, "all": total}
+        return {"projects": per, "all": total,
+                "counted": "checked, matched and flaky_evidence: run summaries (write tokens); wrong: every token's "
+                           "jobs (summaries and the untrusted log); checked_without_summary: wrong skips known only "
+                           "from the untrusted log, each counted as one check"}
 
     def lookup(self, org: str, ns: str, keys: list[str], limit: int) -> dict:
         db, out = self.db(), {}
@@ -423,7 +461,13 @@ class Handler(BaseHTTPRequestHandler):
         if route == "ns:runs" and ns and _valid_ns(ns):
             return self._send(200, {"runs": self.app.store.runs(tok["org"], ns)})
         if route == "ns:untrusted" and ns and _valid_ns(ns):
-            return self._send(200, {"untrusted": self.app.store.untrusted(tok["org"], ns)})
+            q = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query)
+            try:
+                after = int(q["after"][0]) if "after" in q else None
+                limit = max(1, min(int(q.get("limit", ["1000"])[0]), 10_000))
+            except ValueError:
+                return self._error(400, "bad after or limit")
+            return self._send(200, {"untrusted": self.app.store.untrusted(tok["org"], ns, limit, after)})
         if route == "audit":
             return self._send(200, self.app.store.audit(tok["org"]))
         self._error(404, "not found")

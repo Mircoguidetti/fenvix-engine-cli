@@ -85,6 +85,8 @@ def main(argv=None) -> int:
                 rows.append((project_of(doc, path), au))
         rep = aggregate(rows)
     print(render(rep))
+    if rep.get("counted"):
+        print(f"counted: {rep['counted']}")
     if a.json:
         with open(a.json, "w") as fh:
             json.dump(rep, fh, indent=1)

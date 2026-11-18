@@ -106,10 +106,14 @@ FENVIX_CACHE_TOKEN=... pytest --det --det-cache=https://cache.example/acme/repo
 A cache audit (`docs/CACHE-AUDIT.md`) that finds a wrong skip marks its proof key **untrusted**. The client pushes the
 mark before any entry (`POST /v1/ns/<ns>/untrusted`, any token of the organization: a mark only stops reuse); a lookup
 then leaves out every entry filed under that key before the mark, and returns entries filed after it (a fresh run
-that recorded the key again). `GET /v1/ns/<ns>/untrusted` lists the marks; `GET /v1/audit` sums the audit counts of
-the runs per namespace and over all of them, with the 95% upper bound on the wrong-skip rate. Stores created before
-the audit get the `untrusted` table and the `keys.proof_key` column on start; their old key rows have no proof key, so
-only the client's own check (local marks) covers them.
+that recorded the key again). `GET /v1/ns/<ns>/untrusted` lists the marks (`?after=SEQ` follows the log): every
+client reads the marks it has not seen before its lookup and marks the entries its own mirror holds under those keys,
+so a machine with a warm mirror stops reusing the wrong entry too. The client refuses a candidate whose `proof_key`
+is not the key of its content, or whose `report` and `outcome` disagree. `GET /v1/audit` sums the audit counts per
+namespace and over all of them, with the 95% upper bound on the wrong-skip rate (`checked`/`matched` from the
+write-token run summaries, `wrong` from every token's jobs, including the untrusted log). Stores created before
+the audit get the `untrusted` table and the `keys.proof_key` column on start; their old key rows have no proof key
+and their documents none either, so the client no longer takes them (the next fresh run files them again).
 
 ## Measured (see the session reports)
 

@@ -1,7 +1,7 @@
 """Cache audit (``--det-cache-audit``): a seeded share of the results that would be reused with proof runs fresh
 and is compared with the cached result. A planted wrong reuse is caught at 100%; a wrong skip marks its proof key
 untrusted, which stops reuse locally and through the shared cache until a fresh run records the key again; a
-mismatch the second fresh run does not reproduce is flaky with evidence; the seed in the receipts reproduces the
+mismatch the second fresh run (a new process) does not reproduce is flaky with evidence; the seed in the receipts reproduces the
 choice; audited tests count as run, never as skipped."""
 from __future__ import annotations
 
@@ -133,24 +133,35 @@ def test_untrusted_key_stops_reuse_until_a_fresh_run_records_it_again(pytester, 
 
 
 def test_mismatch_the_second_fresh_run_does_not_reproduce_is_flaky_with_evidence(pytester, run_cache):
+    """A test whose result changes from one process to the next (a counter kept on disk, where the cache does not
+    look): the second fresh run, in a new process, disagrees with the first. Flaky with evidence: nothing marked,
+    and the entry, which a fresh run contradicted, is dropped (review R-013, defect 2)."""
     write(pytester.path, {"pytest.ini": "[pytest]\n", "test_m.py": """
-        RUNS = []
+        import os
+
+        COUNTER = os.path.join(os.path.dirname(__file__), ".detpy", "flaky-counter")
 
         def test_alternates():
-            RUNS.append(1)
-            assert len(RUNS) % 2 == 1
+            os.makedirs(os.path.dirname(COUNTER), exist_ok=True)
+            n = int(open(COUNTER).read()) + 1 if os.path.exists(COUNTER) else 1
+            with open(COUNTER, "w") as fh:
+                fh.write(str(n))
+            assert n % 2 == 1
     """})
-    run_cache()
+    run_cache()  # 1: passes, recorded
     planted = plant_skip(pytester, "test_m.py::test_alternates")
-    r, d = run_cache("--det-cache-audit=1")
+    r, d = run_cache("--det-cache-audit=1")  # 2: fails; 3 (second run, new process): passes
     a = d["cache"]["audit"]
     assert (a["checked"], a["wrong"], a["flaky_evidence"]) == (1, 0, 1)
     f = a["flaky_tests"][0]
-    assert (f["cached"]["outcome"], f["fresh"]["outcome"], f["fresh2"]["outcome"]) == ("skipped", "passed", "failed")
+    assert (f["cached"]["outcome"], f["fresh"]["outcome"], f["fresh2"]["outcome"]) == ("skipped", "failed", "passed")
+    assert f["fresh2"]["process"] == "new"
     st = json.loads(store_path(pytester).read_text())
     assert st.get("untrusted", {}) == {}  # not shown wrong: no key marked
-    assert st["tests"]["test_m.py::test_alternates"]["key"] == planted["key"]
-    r.assert_outcomes(passed=1)  # the run reports the first fresh run; the second is evidence only
+    assert "test_m.py::test_alternates" not in st["tests"]  # contradicted by a fresh run: dropped
+    assert d["cache"]["not_cached_ids"]["test_m.py::test_alternates"].startswith("audit: flaky with evidence")
+    r.assert_outcomes(failed=1)  # the run reports the first fresh run; the second is evidence only
+    assert planted["key"]
 
 
 def test_seed_in_the_receipts_reproduces_the_choice(pytester, run_cache):
@@ -263,13 +274,15 @@ def test_untrusted_key_stops_reuse_through_the_shared_cache(service, pytester, t
     r4, o4, rep4 = machine_run(pytester, tmp_path, url, t["a"], "4", "--det-cache-audit=0")
     assert sorted(o4["cache"]["reused_ids"]) == ["test_m.py::test_other", nid] and rep4["pull_proven"] == 2
     assert o4["outcomes"][nid] == "passed"
-    # the service sums the audits of the runs filed with a write token (a read-only token cannot file a run, so a
-    # pull-request job cannot inflate the counts) per project and over all projects
+    # the service sums the checks of the runs filed with a write token (a read-only token cannot file a run, so a
+    # pull-request job cannot inflate the matched counts) and the wrong skips of every token's jobs (machine 2's,
+    # known from the untrusted log, counted as one check) per project and over all projects (review R-013, defect 4)
     machine_run(pytester, tmp_path, url, t["a"], "5", "--det-cache-audit=1")
     rep = call(svc, t["a"], "GET", "/v1/audit")
-    assert rep["projects"]["proj"] == {"runs": 4, "checked": 2, "matched": 2, "wrong": 0, "flaky_evidence": 0,
-                                       "upper_bound_95": 1.0}
-    assert rep["all"]["checked"] == 2 and rep["all"]["upper_bound_95"] == cs.upper_bound_95(2, 0)
+    assert rep["projects"]["proj"] == {"runs": 4, "checked": 3, "matched": 2, "wrong": 1, "flaky_evidence": 0,
+                                       "checked_without_summary": 1, "upper_bound_95": cs.upper_bound_95(3, 1)}
+    assert rep["all"]["checked"] == 3 and rep["all"]["wrong"] == 1
+    assert rep["all"]["upper_bound_95"] == cs.upper_bound_95(3, 1)
 
 
 def test_client_drops_candidates_with_a_locally_untrusted_key_even_when_the_service_has_no_mark(tmp_path):
@@ -291,7 +304,8 @@ def test_client_drops_candidates_with_a_locally_untrusted_key_even_when_the_serv
     rcache.pc = PC()
     doc = {"kind": "entry", "nodeid": "t::a", "proof_key": "K", "entry": {"data": [["t", "f:x"]]}}
     did = cs.doc_id(doc)
-    rcache.http.call = lambda m, p, b=None: ({"found": {k: [did] for k in b["keys"]}} if p.endswith("lookup")
+    rcache.http.call = lambda m, p, b=None: ({"untrusted": []} if m == "GET"
+                                             else {"found": {k: [did] for k in b["keys"]}} if p.endswith("lookup")
                                              else {"docs": {did: doc} if did in b["ids"] else {}})
     rcache._refresh_facts = lambda: None
 

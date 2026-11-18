@@ -12,9 +12,12 @@ be reached); this module connects it to the cache service (``detpy.cache_service
   them: they only stop reuse), then every entry of the local store not yet on the service, uploaded as a
   content-addressed document (its source-file facts as separate documents, shared between entries) and appended
   to the key log; the session's receipts follow as one document, linked to the run.
-* **untrusted keys**: the service leaves out of a lookup every entry filed before its proof key was marked
-  untrusted; the client also drops any candidate whose proof key its local store holds as untrusted. A fresh run
-  that records the key again is filed after the mark, so it is reusable again.
+* **untrusted keys**: before the lookup, the client applies to its local mirror every mark of the service's log it
+  has not applied yet (``GET .../untrusted?after=SEQ``), so a machine whose mirror already holds the wrong entry
+  stops reusing it; the service leaves out of a lookup every entry filed before its proof key was marked
+  untrusted; the client also drops any candidate whose proof key its local store holds as untrusted, and any
+  candidate whose ``report`` and ``outcome`` disagree. A fresh run that records the key again is filed after the
+  mark, so it is reusable again.
 
 The token comes from an inherited pipe (``FENVIX_CACHE_TOKEN_FD``, what ``fenvix-run`` uses), a hand-off file
 (``FENVIX_CACHE_TOKEN_FILE``, deleted once read) or ``FENVIX_CACHE_TOKEN``; before any test runs it is taken out of
@@ -333,6 +336,8 @@ class RemoteCache:
             self._fail("setup", ServiceError(self.disabled))
         self._nsq = urllib.parse.quote(self.ns, safe="")
         self.pulled_docs: set[str] = set()
+        self.pulled_marks: set[str] = set()  # "untrusted:<proof key>:<run>" of the service's marks applied here
+        self.marks_seq: int | None = None  # last mark of the service's log applied to the local mirror
         self.report_path = os.environ.get("FENVIX_CACHE_REPORT")
 
     def _path(self, what: str) -> str:
@@ -391,6 +396,37 @@ class RemoteCache:
                              startup=e.get("startup") or "", fresh=False)
         return True
 
+    def pull_marks(self) -> None:
+        """Apply to the local mirror every untrusted mark the service holds that this mirror has not seen yet
+        (followed by sequence number, kept in the journal), before any reuse decision: a machine whose mirror
+        already holds the wrong entry (its own core computes the entry's proof key) stops reusing it. A fresh run
+        of the key on this machine clears the local mark as usual; a mark is seen once, so it does not come back."""
+        pc, st = self.pc, self.stats
+        jr = self._journal_doc()
+        after = jr.get("marks_seq", 0) if isinstance(jr.get("marks_seq"), int) else 0
+        done = set(jr.get("docs", []))
+        applied = 0
+        while True:
+            rows = self.http.call("GET", self._path("untrusted") + f"?after={after}&limit=10000")["untrusted"]
+            for m in rows:
+                k, run = m.get("proof_key"), str(m.get("run") or "")
+                if isinstance(k, str) and k:
+                    tag = "untrusted:" + k + ":" + run
+                    nid = str(m.get("nodeid") or "")
+                    # only an entry this mirror already holds under the marked key: a candidate fetched later is
+                    # filed after the mark (the service leaves the older ones out) and stays reusable
+                    if tag not in self.pulled_marks and tag not in done and pc.store.key_of(nid) == k:
+                        pc.store.mark_untrusted(k, nid, run, "shared cache: " + str(m.get("reason") or ""))
+                        applied += 1
+                    self.pulled_marks.add(tag)  # never pushed back
+                if isinstance(m.get("seq"), int):
+                    after = max(after, m["seq"])
+            if len(rows) < 10000 or not all(isinstance(m.get("seq"), int) for m in rows):
+                break
+        self.marks_seq = after
+        st["pull_marks_applied"] = applied
+        self._save_journal(self._journal() | self.pulled_marks)
+
     def pull(self, items) -> None:
         if self.disabled:
             return
@@ -399,6 +435,10 @@ class RemoteCache:
         st = self.stats
         st.update(pull_candidates=0, pull_tests_with_candidates=0, pull_local_already=0, pull_injected=0,
                   pull_proven=0)
+        try:
+            self.pull_marks()
+        except ServiceError as e:
+            self._fail("pull untrusted", e)
         keys: dict[str, str] = {}
         for it in items:
             nid = it.nodeid
@@ -439,6 +479,8 @@ class RemoteCache:
                 if d in docs and d not in cands and docs[d].get("kind") == "entry" and docs[d].get("nodeid") == nid:
                     if docs[d].get("proof_key") in untrusted:
                         st["pull_rejected_untrusted"] = st.get("pull_rejected_untrusted", 0) + 1
+                    elif not self._consistent(docs[d]):
+                        st["pull_rejected_inconsistent"] = st.get("pull_rejected_inconsistent", 0) + 1
                     elif self._names_own_file(docs[d], docs):
                         cands.append(d)
                     else:
@@ -450,6 +492,12 @@ class RemoteCache:
         while pending:
             for nid, cands in pending.items():
                 if self._inject(docs[cands[0]], docs, memo):
+                    if pc.store.key_of(nid) != docs[cands[0]].get("proof_key"):
+                        # the document's own proof key (what the service's marks are matched on) is not the key
+                        # of its content: never reused, or a mark could be dodged by leaving it out
+                        pc.store.remove(nid)
+                        st["pull_rejected_proof_key"] = st.get("pull_rejected_proof_key", 0) + 1
+                        continue
                     st["pull_injected"] += 1
                     self.pulled_docs.add(cands[0])
             self._refresh_facts()
@@ -465,6 +513,17 @@ class RemoteCache:
         st["pull_rounds"] = rnd
         st["pull_merge_seconds"] = round(_perf() - t1, 3)
         st["pull_seconds"] = round(_perf() - t0, 3)
+
+    @staticmethod
+    def _consistent(doc: dict) -> bool:
+        """An entry whose ``report`` (what reuse replays) and ``outcome`` (what the reuse decision reads) disagree is
+        never taken from the service: the engine records both from the same run, so only corruption or a forged
+        document makes them differ."""
+        from .proofcache import _final
+
+        e = doc.get("entry") or {}
+        rep = e.get("report")
+        return isinstance(rep, dict) and _final(rep) == e.get("outcome")
 
     @staticmethod
     def _names_own_file(doc: dict, docs: dict) -> bool:
@@ -498,22 +557,27 @@ class RemoteCache:
     def _journal_path(self) -> str:
         return os.path.join(self.local_dir, _JOURNAL)
 
-    def _journal(self) -> set:
+    def _journal_doc(self) -> dict:
         try:
             with open(self._journal_path()) as fh:
                 d = json.load(fh)
             if d.get("service") == self.base and d.get("namespace") == self.ns:
-                return set(d.get("docs", []))
+                return d
         except (OSError, ValueError, AttributeError):
             pass
-        return set()
+        return {}
+
+    def _journal(self) -> set:
+        return set(self._journal_doc().get("docs", []))
 
     def _save_journal(self, docs: set) -> None:
         p = self._journal_path()
         tmp = f"{p}.tmp{os.getpid()}"
+        seq = self.marks_seq if self.marks_seq is not None else self._journal_doc().get("marks_seq", 0)
         try:
+            os.makedirs(self.local_dir, exist_ok=True)
             with open(tmp, "w") as fh:
-                json.dump({"service": self.base, "namespace": self.ns, "docs": sorted(docs)}, fh)
+                json.dump({"service": self.base, "namespace": self.ns, "docs": sorted(docs), "marks_seq": seq}, fh)
             os.replace(tmp, p)
         except OSError:
             pass
@@ -530,7 +594,7 @@ class RemoteCache:
         except (OSError, ValueError) as e:
             self._fail("push", ServiceError(f"local store unreadable: {e}"))
             return
-        journal = self._journal() | self.pulled_docs
+        journal = self._journal() | self.pulled_docs | self.pulled_marks
         marks = [{"proof_key": k, "nodeid": u.get("nodeid", ""), "run": u.get("run", ""), "reason": u.get("reason", "")}
                  for k, u in sorted((store.get("untrusted") or {}).items())
                  if "untrusted:" + k + ":" + str(u.get("run", "")) not in journal]

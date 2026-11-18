@@ -1150,32 +1150,44 @@ class ProofCachePlugin:
 
     # -- cache audit ---------------------------------------------------------------
     def audit_after_run(self, item, rerun) -> None:
-        """Compare an audited test's fresh run with its cached result; on a mismatch run it once more (``rerun()``
-        gives (outcome, test ids)) to tell a wrong skip from a flaky test. Never breaks the session."""
+        """Compare an audited test's fresh run with the result reuse would have shown (the phases of the entry's
+        ``report``, which ``_reuse`` replays, and the test ids the recorded run produced); on a mismatch run it once
+        more, in a new process (``rerun()`` gives (outcome, test ids)), to tell a wrong skip from a flaky test. Any
+        mismatch drops the entry: a fresh run contradicted it. Never breaks the session."""
         nid = item.nodeid
         r = self.auditing[nid]
-        cached = (r["outcome"], [nid])
+        try:
+            e = json.loads(self.store.entry(nid))
+        except Exception:
+            e = {}
+        rep = e.get("report") or {}
+        ids = rep.get("ids") if isinstance(rep.get("ids"), list) else [nid]
+        cached = (_final(rep), sorted(str(i) for i in ids))
         first = (_final(self.parts.get(nid, {})), sorted(self.fresh_ids.get(nid, set()) or {nid}))
         res = {"key": r["key"], "cached": {"outcome": cached[0], "ids": cached[1]},
                "fresh": {"outcome": first[0], "ids": first[1]}}
+        if e.get("outcome") != cached[0]:  # the entry contradicts itself: reuse shows its report
+            res["cached"]["outcome_field"] = e.get("outcome")
         try:
             v = _core.audit_verdict(cached, first)
             if v == "needs-second-run":
                 second = rerun()
-                res["fresh2"] = {"outcome": second[0], "ids": list(second[1])}
+                res["fresh2"] = {"outcome": second[0], "ids": list(second[1]), "process": "new"}
                 v = _core.audit_verdict(cached, first, (second[0], list(second[1])))
-        except Exception as e:  # the second run could not be made: the mismatch stays unexplained, never trusted
-            res["error"] = f"{type(e).__name__}: {e}"
+        except Exception as ex:  # the second run could not be made: the mismatch stays unexplained, never trusted
+            res["error"] = f"{type(ex).__name__}: {ex}"
             v = "wrong"
         res["verdict"] = v
         self.audit_results[nid] = res
         if v == "wrong":
             why = (f"cached {cached[0]} {cached[1]}, fresh {first[0]} {first[1]}"
-                   + (f", again {res['fresh2']['outcome']}" if "fresh2" in res else ""))
+                   + (f", again {res['fresh2']['outcome']} (new process)" if "fresh2" in res else ""))
             self.store.mark_untrusted(r["key"], nid, self.run_id, why)
             self.audit_keep.add(nid)
         elif v == "flaky-evidence":
-            self.audit_keep.add(nid)  # two fresh runs disagree: neither is recorded, the entry stays as it was
+            # two fresh runs disagree with each other and the first with the entry: neither is recorded and the
+            # entry is dropped (the next run runs the test)
+            self.audit_keep.add(nid)
 
     def audit_summary(self) -> dict:
         res = self.audit_results
@@ -1393,7 +1405,7 @@ class ProofCachePlugin:
                 if v == "wrong":
                     self._not_cached(nid, "audit: wrong skip (key marked untrusted)")
                 else:
-                    self.not_cached[nid] = "audit: flaky with evidence (two fresh runs disagree)"
+                    self._not_cached(nid, "audit: flaky with evidence (two fresh runs disagree; entry dropped)")
                 continue
             p = self.parts.get(nid, {})
             outcome = _final(p)
@@ -1473,6 +1485,9 @@ class ProofCachePlugin:
                 else:
                     env_deps.append((name, _core.env_value_digest(cap.env0.get(name))))  # env0 is sanitised
             report = {w: p[w] for w in ("setup", "call") if w in p}
+            ids = sorted(self.fresh_ids.get(nid) or {nid})
+            if ids != [nid]:  # the test ids the run produced, compared by the cache audit (absent: just ``nid``)
+                report["ids"] = ids
             store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
                          self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
                          sorted(data.items()), sorted(content), sorted(skeleton), sorted(hooks), sorted(units),

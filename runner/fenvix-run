@@ -270,7 +270,10 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
         p.unlink(missing_ok=True)
 
     base = ["--det", "--det-urandom", "-p", "no:cacheprovider", "-q", "-rN", "--tb=short"]
-    audit_args = [f"--det-cache-audit={a.audit}"] if a.audit is not None else []
+    # always explicit, with a fresh seed: command-line options come after the repository's addopts, so a project
+    # (or a pull request) cannot turn the audit off or freeze its choice there (review R-013, NOTE 5)
+    share = a.audit if a.audit is not None else (os.environ.get("FENVIX_AUDIT_SHARE") or "5%")
+    audit_args = [f"--det-cache-audit={share}", f"--det-cache-audit-seed={os.urandom(8).hex()}"]
     args = base + [f"--det-cache={cache_arg}", f"--det-cache-receipts={receipts}", f"--det-outcomes={outcomes_p}",
                    f"--junitxml={junit_p}", *audit_args, *extra]
     log(f"project {project} @ {git_head(project)[:12]}; cache {cache_arg} (local {cache}: "
@@ -536,7 +539,8 @@ def main(argv: list[str] | None = None) -> int:
                                                  "machine's directory is then the local mirror)")
     p.add_argument("--title", default=None, help="heading of the step summary")
     p.add_argument("--audit", default=None, metavar="SHARE",
-                   help="share of the reusable results run fresh to check them (default: the engine's, 5%%)")
+                   help="share of the reusable results run fresh to check them (default: FENVIX_AUDIT_SHARE, else "
+                        "5%%); always passed to the engine with a fresh seed, so the project's addopts cannot change it")
     p.add_argument("--no-rerun", action="store_true", help="do not re-run failures alone")
     p.add_argument("--max-reruns", type=int, default=20, help="failures re-run alone at most (default 20)")
     a = p.parse_args(argv)
