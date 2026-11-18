@@ -18,6 +18,8 @@ import sys
 import sysconfig
 import tempfile
 
+from . import _core
+
 # bound once: a test may remove sys._getframe (attrs' test_missing_sys_getframe) while detpy's hooks run
 _getframe = sys._getframe
 
@@ -74,6 +76,7 @@ def refresh(rootdir: str | None = None) -> None:
     if rootdir is not None:
         _rootdir = os.path.realpath(rootdir)
     _cache.clear()
+    _core.l0_sites_cleared()
 
 
 def norm_path(path: object) -> str:
@@ -153,19 +156,8 @@ def _classify(filename: str) -> tuple[str, str]:
 
 
 def resolve(depth: int) -> str | None:
-    """Site of the first user frame above ``depth``; None if infrastructure."""
-    try:
-        f = _getframe(depth + 1)
-    except ValueError:
-        return "<unknown>"
-    first = None
-    while f is not None:
-        kind, norm = _classify(f.f_code.co_filename)
-        if kind == _USER:
-            return f"{norm}:{f.f_lineno}"
-        if kind == _INFRA:
-            return None
-        if first is None:
-            first = f"{norm}:{f.f_lineno}"
-        f = f.f_back
-    return first or "<unknown>"
+    """Site of the first user frame ``depth`` frames above the caller; None if infrastructure.
+
+    In Rust (``_core.l0_resolve``): the caller frames are walked with the classification cache above
+    (``_classify``, ``_cache``); the Python original is ``tests/rust_hotpaths_ref/_ref_l0_sites.py``."""
+    return _core.l0_resolve(depth)

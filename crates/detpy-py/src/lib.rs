@@ -13,6 +13,7 @@ use pyo3::types::PyBytes;
 use std::path::PathBuf;
 use std::sync::{Mutex, MutexGuard};
 
+mod level0;
 mod proofcache;
 mod sysmon;
 
@@ -22,9 +23,16 @@ fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
 }
 
 /// Per-test fingerprinting recorder that streams a trace file.
-#[pyclass(module = "detpy._core")]
-struct Recorder {
+#[pyclass(module = "detpy._core", frozen)]
+pub(crate) struct Recorder {
     inner: Mutex<CoreRecorder>,
+}
+
+impl Recorder {
+    /// Record one event for the current test (the Rust event path of `level0`).
+    pub(crate) fn push(&self, event: Event) {
+        lock(&self.inner).record(event);
+    }
 }
 
 #[pymethods]
@@ -255,5 +263,6 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(proofcache::dist_identity, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::env_value_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::env_all_digest, m)?)?;
+    level0::register(m)?;
     Ok(())
 }

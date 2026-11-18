@@ -24,7 +24,7 @@ import time as _time
 import types
 import warnings
 
-from . import _state
+from . import _core, _state
 from ._patch import Patcher, disguise, nonbinding, rebind_module_references
 
 NS = 1_000_000_000
@@ -70,55 +70,33 @@ class VirtualClock:
     (time-calibrated loops such as pytest-benchmark's) therefore sees time
     move faster and terminates, while the sequence of values stays a pure
     function of the sequence of events.
+
+    The state lives in Rust (``_core.clock_*``), where the ``time.*`` stand-ins below read it without a Python
+    frame; this object is the Python view of it (one clock per process). The Python original is
+    ``tests/rust_hotpaths_ref/_ref_l0_clock.py``.
     """
 
     def __init__(self, epoch_ns: int, tick_ns: int, adapt_after: int = 0) -> None:
-        self._lock = threading.RLock()  # re-entrant: a gc callback (hypothesis) reads the clock inside read()
-        self.epoch_ns = epoch_ns
-        self.base_tick_ns = tick_ns
-        self.tick_ns = tick_ns
-        self.adapt_after = adapt_after
-        self.streak = 0
-        self.elapsed = 0  # ns since installation
-        self.wall_offset = epoch_ns
-        self.test_start = 0
+        _core.clock_install(epoch_ns, tick_ns, adapt_after)
 
-    def read(self) -> int:
-        """Advance by one tick and return the elapsed counter."""
-        with self._lock:
-            self.elapsed += self.tick_ns
-            if self.adapt_after:
-                self.streak += 1
-                if self.streak >= self.adapt_after:
-                    self.tick_ns = min(max(1, self.tick_ns) * 2, MAX_TICK_NS)
-            return self.elapsed
-
-    def other_event(self) -> None:
-        if self.streak or self.tick_ns != self.base_tick_ns:
-            self.streak = 0
-            self.tick_ns = self.base_tick_ns
-
-    def advance(self, ns: int) -> None:
-        if ns > 0:
-            with self._lock:
-                self.elapsed += ns
+    read = staticmethod(_core.clock_read)  # advance by one tick and return the elapsed counter
+    other_event = staticmethod(_core.clock_other_event)
+    advance = staticmethod(_core.clock_advance)
+    wall_ns = staticmethod(_core.clock_wall_ns)
 
     def start_test(self) -> None:
         _EXTERNAL["started"] = False
-        with self._lock:
-            self.streak = 0
-            self.tick_ns = self.base_tick_ns
-            self.test_start = self.elapsed
-            self.wall_offset = self.epoch_ns - self.elapsed
-
-    # Derived values ---------------------------------------------------
-    def wall_ns(self, e: int) -> int:
-        travel = _time_machine_ns(e)
-        return self.wall_offset + e if travel is None else travel
+        _core.clock_start_test()
 
     @staticmethod
     def mono_ns(e: int) -> int:
         return _MONO_BASE_NS + e
+
+    def __getattr__(self, name):  # epoch_ns, base_tick_ns, tick_ns, adapt_after, streak, elapsed, ...
+        st = _core.clock_state()
+        if name in st:
+            return st[name]
+        raise AttributeError(name)
 
 
 CLOCK: VirtualClock | None = None
@@ -147,58 +125,21 @@ def _time_machine_ns(e: int) -> int | None:
     return getattr(tm, "SYSTEM_EPOCH_TIMESTAMP_NS", 0) + dest + (e - start)
 
 
-def _rel(e: int) -> str:
-    assert CLOCK is not None
-    return str(e - CLOCK.test_start)
+_rel = _core.clock_rel  # str(e - test start)
 
 
 # Fake time functions ---------------------------------------------------------
-def time() -> float:
-    if CLOCK is None:  # called through a reference kept after uninstall
-        return real_time()
-    e = CLOCK.read()
-    _state.record("time", "time.time", _rel(e))
-    return CLOCK.wall_ns(e) / NS
-
-
-def time_ns() -> int:
-    if CLOCK is None:  # called through a reference kept after uninstall
-        return real_time_ns()
-    e = CLOCK.read()
-    _state.record("time", "time.time_ns", _rel(e))
-    return CLOCK.wall_ns(e)
-
-
-def monotonic() -> float:
-    if CLOCK is None:  # called through a reference kept after uninstall
-        return real_monotonic()
-    e = CLOCK.read()
-    _state.record("time", "time.monotonic", _rel(e))
-    return CLOCK.mono_ns(e) / NS
-
-
-def monotonic_ns() -> int:
-    if CLOCK is None:  # called through a reference kept after uninstall
-        return real_monotonic_ns()
-    e = CLOCK.read()
-    _state.record("time", "time.monotonic_ns", _rel(e))
-    return CLOCK.mono_ns(e)
-
-
-def perf_counter() -> float:
-    if CLOCK is None:  # called through a reference kept after uninstall
-        return real_perf_counter()
-    e = CLOCK.read()
-    _state.record("time", "time.perf_counter", _rel(e))
-    return CLOCK.mono_ns(e) / NS
-
-
-def perf_counter_ns() -> int:
-    if CLOCK is None:  # called through a reference kept after uninstall
-        return real_perf_counter_ns()
-    e = CLOCK.read()
-    _state.record("time", "time.perf_counter_ns", _rel(e))
-    return CLOCK.mono_ns(e)
+# In Rust (no Python frame per read): advance the counter, record the event ("time", "time.<name>", _rel(e)) at the
+# caller's site, return the wall or monotonic value; with the clock not installed (a reference kept after
+# uninstall), the real function.
+time = _core.time
+time_ns = _core.time_ns
+monotonic = _core.monotonic
+monotonic_ns = _core.monotonic_ns
+perf_counter = _core.perf_counter
+perf_counter_ns = _core.perf_counter_ns
+_core.clock_set_hooks([real_time, real_time_ns, real_monotonic, real_monotonic_ns, real_perf_counter,
+                       real_perf_counter_ns], _time_machine_ns)
 
 
 def sleep(secs: float) -> None:
@@ -477,6 +418,8 @@ def _timed_factory(real):
 
 
 # Installation ---------------------------------------------------------------------
+_RUST_FAKES = frozenset({"time", "time_ns", "monotonic", "monotonic_ns", "perf_counter", "perf_counter_ns"})
+
 # Stdlib modules that bind clock functions at import time and use them for real
 # blocking waits: import them now so they keep the *real* functions.
 _PRELOAD = ("threading", "queue", "subprocess", "sched", "socketserver", "selectors", "asyncio",
@@ -493,6 +436,7 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
         except Exception:  # pragma: no cover - optional modules
             pass
     CLOCK = VirtualClock(epoch_ns, tick_ns, adapt_after)
+    _core.clock_activate(True)
     if adapt_after:
         _state._on_other_event = CLOCK.other_event
     fakes = {
@@ -506,7 +450,8 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
         fakes["clock_gettime_ns"] = clock_gettime_ns
     replacements = {}
     for name, fake in fakes.items():
-        stand_in = disguise(fake, "time", name)
+        # the Rust stand-ins are builtins (whose __module__ disguise would rewrite in place): wrap them directly
+        stand_in = nonbinding(fake, "time", name) if name in _RUST_FAKES else disguise(fake, "time", name)
         real = patcher.set(_time, name, stand_in)
         replacements[id(real)] = (real, stand_in)
     patcher.set_type_attr(real_datetime, "now", classmethod(_dt_now))
@@ -536,6 +481,7 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
 def uninstall() -> None:
     global CLOCK
     CLOCK = None
+    _core.clock_activate(False)
     _state._on_other_event = None
 
 
