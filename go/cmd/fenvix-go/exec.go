@@ -238,7 +238,7 @@ func cmdExec(args []string) int {
 	}
 	if sess.Skip != nil {
 		cache = skip.Load(sess.Skip.Dir, pkg)
-		binDigest := core.DigestFile(bin)
+		binDigest := binaryContentID(sess.Goroot, bin)
 		static = skip.Hash(append([]string{"bin", binDigest, "go", sess.GoVersion, sess.GOOS, sess.GOARCH,
 			"cgo", sess.CgoEnabled, "overlay", sess.OverlayHash, "ctl", strconv.Itoa(int(sess.Ctl)),
 			"seed", strconv.FormatUint(sess.Seed, 10), "epoch", strconv.FormatInt(sess.Epoch, 10),
@@ -485,6 +485,19 @@ func cmdExec(args []string) int {
 		}
 	}
 	return code
+}
+
+// binaryContentID is the content part of the test binary's Go build ID: a
+// hash of the binary with its build ID removed (what go's own test cache
+// keys on). Two builds with identical machine code get the same value even
+// when their inputs' hashes (the action ID) differ. Falls back to a digest
+// of the whole file.
+func binaryContentID(goroot, bin string) string {
+	out, err := exec.Command(filepath.Join(goroot, "bin", "go"), "tool", "buildid", bin).Output()
+	if id := strings.TrimSpace(string(out)); err == nil && strings.Contains(id, "/") {
+		return "content:" + id[strings.LastIndex(id, "/")+1:]
+	}
+	return "file:" + core.DigestFile(bin)
 }
 
 func prefixed(pkg string, names []string) []string {

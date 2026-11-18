@@ -144,11 +144,14 @@ func TestSkipKeyInputs(t *testing.T) {
 	expectReuse(t, "TZ changed", r.run(), nil, []string{"TestTimeZone", "TestIndependent"})
 
 	// code of the package, code of a dependency
-	write("skipkey.go", "package skipkey\n\n// Answer is used by TestOwnCode.\nfunc Answer() int { return 40 + 2 }\n")
+	write("skipkey.go", "package skipkey\n\n// Answer is used by TestOwnCode.\n//go:noinline\nfunc Answer() int { return 43 }\n")
 	expectReuse(t, "package code changed", r.run(), nil, []string{"TestOwnCode", "TestIndependent"})
-	write("lib/lib.go", "package lib\n\n// Value is used by TestDependency.\nfunc Value() int { return 2 - 1 }\n")
+	write("lib/lib.go", "package lib\n\n// Value is used by TestDependency.\n//go:noinline\nfunc Value() int { return 2 }\n")
 	expectReuse(t, "dependency code changed", r.run(), nil, []string{"TestDependency", "TestIndependent"})
 	expectReuse(t, "after code changes", r.run(), allPassing, nil)
+	// a change that compiles to the same machine code is reused, as go's own cache does
+	write("lib/lib.go", "package lib\n\n// Value is used by TestDependency.\n//go:noinline\nfunc Value() int { return 1 + 1 }\n")
+	expectReuse(t, "same machine code", r.run(), allPassing, nil)
 }
 
 func TestSkipFlagsFailuresAndDet(t *testing.T) {

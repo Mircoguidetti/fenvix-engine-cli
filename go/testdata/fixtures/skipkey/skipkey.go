@@ -4,4 +4,5 @@
 package skipkey
 
 // Answer is used by TestOwnCode.
+//go:noinline
 func Answer() int { return 42 }
