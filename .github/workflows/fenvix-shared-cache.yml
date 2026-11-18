@@ -51,8 +51,8 @@ jobs:
         include:
           - {name: pygments, repo: pygments/pygments, n: 9c436b34ccafdf9376527f66c6e587ffe0d1b84c,
              n1: b6aaaca75fd3bd30c2a2c0e5eb4e1bf0c325e101, extra: wcag-contrast-ratio}
-          - {name: click, repo: pallets/click, n: dd149eb3129d887a22202c3fafa5ceb0e0d7018d,
-             n1: fdb65f4809719580436acb067410cec64433e5de, extra: ""}
+          - {name: click, repo: pallets/click, n: 9c4dfdaebe0e6b2aabc566eb81f6f10eb5cd6ea1,
+             n1: 8b44edfff7d9a6c895fa804148c16b3a0bc9efb5, extra: ""}
           - {name: marshmallow, repo: marshmallow-code/marshmallow, n: d08471b17880c62b789971ada638707a11d3f8d4,
              n1: 5761beab3985d654d712f9326e08bfb2e2ec9c4c, extra: ""}
     steps:
@@ -97,8 +97,8 @@ jobs:
         include:
           - {name: pygments, repo: pygments/pygments, n: 9c436b34ccafdf9376527f66c6e587ffe0d1b84c,
              n1: b6aaaca75fd3bd30c2a2c0e5eb4e1bf0c325e101, extra: wcag-contrast-ratio}
-          - {name: click, repo: pallets/click, n: dd149eb3129d887a22202c3fafa5ceb0e0d7018d,
-             n1: fdb65f4809719580436acb067410cec64433e5de, extra: ""}
+          - {name: click, repo: pallets/click, n: 9c4dfdaebe0e6b2aabc566eb81f6f10eb5cd6ea1,
+             n1: 8b44edfff7d9a6c895fa804148c16b3a0bc9efb5, extra: ""}
           - {name: marshmallow, repo: marshmallow-code/marshmallow, n: d08471b17880c62b789971ada638707a11d3f8d4,
              n1: 5761beab3985d654d712f9326e08bfb2e2ec9c4c, extra: ""}
     steps:
@@ -157,8 +157,8 @@ jobs:
         include:
           - {name: pygments, repo: pygments/pygments, n: 9c436b34ccafdf9376527f66c6e587ffe0d1b84c,
              n1: b6aaaca75fd3bd30c2a2c0e5eb4e1bf0c325e101, extra: wcag-contrast-ratio}
-          - {name: click, repo: pallets/click, n: dd149eb3129d887a22202c3fafa5ceb0e0d7018d,
-             n1: fdb65f4809719580436acb067410cec64433e5de, extra: ""}
+          - {name: click, repo: pallets/click, n: 9c4dfdaebe0e6b2aabc566eb81f6f10eb5cd6ea1,
+             n1: 8b44edfff7d9a6c895fa804148c16b3a0bc9efb5, extra: ""}
           - {name: marshmallow, repo: marshmallow-code/marshmallow, n: d08471b17880c62b789971ada638707a11d3f8d4,
              n1: 5761beab3985d654d712f9326e08bfb2e2ec9c4c, extra: ""}
     steps:
@@ -231,5 +231,6 @@ jobs:
           done
           python3 runner/shared-cache-compare merged/pygments merged/click merged/marshmallow --json compare.json \
               | tee -a "$GITHUB_STEP_SUMMARY"
+          python3 -c "import json; print(json.dumps(json.load(open('compare.json')), indent=1))"
       - uses: actions/upload-artifact@v4
         with: {name: shared-cache-compare, path: compare.json, retention-days: 30}

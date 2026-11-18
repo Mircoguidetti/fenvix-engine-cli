@@ -72,12 +72,28 @@ RUNTIME_PROBE = ("import json, sys\n"
                  "    d = runtime_id.describe(sys.argv[1]); det = d.pop('details')\n"
                  "    d.update(dist_list=det['dist_list'], native_list=det['native_list'],\n"
                  "             python_version=det['python_version'], identity_seconds=det['seconds'])\n"
+                 "    try:  # the previous identity (RECORD bytes, listing of the stdlib), for comparison\n"
+                 "        import os, platform, sysconfig\n"
+                 "        from detpy import _core\n"
+                 "        from detpy.proofcache import _dist_infos\n"
+                 "        exe = os.path.realpath(sys.executable)\n"
+                 "        lib = os.path.join(sysconfig.get_config_var('LIBDIR') or '', sysconfig.get_config_var('LDLIBRARY') or '')\n"
+                 "        dl = _dist_infos(sys.argv[1])[0]\n"
+                 "        old = {'python': sys.version, 'cache_tag': sys.implementation.cache_tag,\n"
+                 "               'executable': _core.file_digest(exe), 'libpython': _core.file_digest(lib) if os.path.isfile(lib) else None,\n"
+                 "               'system': platform.system(), 'machine': platform.machine(), 'libc': '-'.join(platform.libc_ver()),\n"
+                 "               'stdlib': _core.listing_digest(os.path.dirname(os.__file__)),\n"
+                 "               'distributions': _core.digest('\\n'.join(dl).encode()), 'n_distributions': len(dl)}\n"
+                 "        d['previous_identity'] = _core.digest(json.dumps(old, sort_keys=True).encode())\n"
+                 "        d['previous_dist_list'] = dl\n"
+                 "    except Exception as e:\n"
+                 "        d['previous_identity'] = f'error: {e}'\n"
                  "except ImportError:\n"
                  "    from detpy.proofcache import runtime_identity, _dist_infos\n"
                  "    dig, info, _ = runtime_identity(sys.argv[1])\n"
                  "    d = {'digest': dig, **info, 'dist_list': _dist_infos(sys.argv[1])[0]}\n"
                  "print(json.dumps(d))\n")
-_LIST_PARTS = {"distributions": "dist_list", "native": "native_list"}
+_LIST_PARTS = {"distributions": "dist_list", "native": "native_list", "previous_identity": "previous_dist_list"}
 
 
 def runtime_components(py: str, project: Path) -> dict:
@@ -122,7 +138,8 @@ def machine_identity() -> dict:
                 break
     except OSError:
         pass
-    return {"hostname": os.uname().nodename, "machine_id": digest_of("/etc/machine-id"),
+    return {"hostname": os.uname().nodename, "runner_name": os.environ.get("RUNNER_NAME"),
+            "machine_id": digest_of("/etc/machine-id"),
             "boot_id": digest_of("/proc/sys/kernel/random/boot_id"), "cpu": cpu, "cpus": os.cpu_count()}
 
 
