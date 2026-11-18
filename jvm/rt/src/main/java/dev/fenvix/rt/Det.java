@@ -303,6 +303,38 @@ public final class Det {
         }
     }
 
+    /** virtual wall ms - real wall ms, taken at each test start (file timestamps). */
+    static volatile long FILE_TIME_OFFSET_MS;
+
+    /** A real file timestamp (ms) as seen on the virtual clock, for code under test. */
+    public static long mtimeFromReal(long realMs) {
+        if (!TIME || realMs == 0) return realMs;
+        if (!enter()) return realMs;
+        try {
+            return Caller.user() != null ? realMs + FILE_TIME_OFFSET_MS : realMs;
+        } finally {
+            exit();
+        }
+    }
+
+    /** A virtual timestamp written by code under test (File.setLastModified) back to real time. */
+    public static long mtimeToReal(long virtualMs) {
+        if (!TIME || virtualMs <= 0) return virtualMs;
+        if (!enter()) return virtualMs;
+        try {
+            return Caller.user() != null ? Math.max(1, virtualMs - FILE_TIME_OFFSET_MS) : virtualMs;
+        } finally {
+            exit();
+        }
+    }
+
+    public static java.nio.file.attribute.FileTime fileTimeFromReal(java.nio.file.attribute.FileTime t) {
+        if (!TIME || t == null) return t;
+        long ms = t.toMillis();
+        long v = mtimeFromReal(ms);
+        return v == ms ? t : java.nio.file.attribute.FileTime.fromMillis(v);
+    }
+
     static void clockStartTest() {
         synchronized (CLK) {
             streak = 0;
@@ -310,6 +342,7 @@ public final class Det {
             testStart = elapsed;
             wallOffsetNs = EPOCH_MS * 1_000_000L - elapsed;
         }
+        FILE_TIME_OFFSET_MS = EPOCH_MS - System.currentTimeMillis();
     }
 
     static String rel(long e) {

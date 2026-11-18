@@ -21,7 +21,7 @@ FIX = FIXTURES["junit5"]
 UNCHANGED = {"fx.SchedControlTest::timersFireInDueOrder()", "fx.SchedControlTest::shorterTimeoutStillExpiresFirst()",
              "fx.NetControlTest::loopbackIsAllowed()", "fx.SleepControlTest::busyWaitOnTheClockEnds()",
              "fx.UnchangedTest::arithmetic()", "fx.UnchangedTest::sortedCollections()", "fx.UnchangedTest::stringFormat()",
-             "fx.OrderControlTest::polluter()",
+             "fx.OrderControlTest::polluter()", "fx.FileTimeTest::newFileIsRecent()", "fx.FileTimeTest::setLastModifiedRoundTrips()",
              "fx4.Junit4UnchangedTest::a()", "fx4.Junit4UnchangedTest::b()", "fx4.Junit4UnchangedTest::c()", "fx4.Junit4UnchangedTest::d()"}
 
 

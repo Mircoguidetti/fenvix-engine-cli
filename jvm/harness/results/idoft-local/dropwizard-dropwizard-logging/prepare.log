@@ -1,0 +1,164 @@
+$ git clone -q --filter=blob:none https://github.com/dropwizard/dropwizard /tmp/jvm-work/dropwizard-dropwizard-logging
+
+[rc=0 3.4s]
+$ git fetch -q origin 07dfaed697427e208d65049f80a5d1949833b7cd
+
+[rc=0 0.4s]
+$ git checkout -q -f 07dfaed697427e208d65049f80a5d1949833b7cd
+
+[rc=0 1.3s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install -pl dropwizard-logging -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2009.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2025.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2026.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2018.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2008.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] No documents exist
+
+Unable to continue dependency-check analysis.
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2007.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] Failed to execute goal org.owasp:dependency-check-maven:3.3.1:check (security-check) on project dropwizard-parent: Fatal exception(s) analyzing Dropwizard Project: Unable to continue dependency-check analysis.
+[ERROR] 	Unable to download the NVD CVE data.
+[ERROR] 	No documents exist
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+
+[rc=1 13.5s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= install -pl dropwizard-logging -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2008.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2025.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2018.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2007.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] No documents exist
+
+Unable to continue dependency-check analysis.
+[ERROR] Failed to execute goal org.owasp:dependency-check-maven:3.3.1:check (security-check) on project dropwizard-parent: Fatal exception(s) analyzing Dropwizard Project: Unable to continue dependency-check analysis.
+[ERROR] 	Unable to download the NVD CVE data.
+[ERROR] 	No documents exist
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-Modified.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2002.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+
+[rc=1 7.2s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install -pl dropwizard-logging -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2018.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2026.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2009.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2008.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2025.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2007.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2011.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2010.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2018.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] No documents exist
+
+Unable to continue dependency-check analysis.
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2002.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] Failed to execute goal org.owasp:dependency-check-maven:3.3.1:check (security-check) on project dropwizard-parent: Fatal exception(s) analyzing Dropwizard Project: Unable to continue dependency-check analysis.
+[ERROR] 	Unable to download the NVD CVE data.
+[ERROR] 	No documents exist
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+
+[rc=1 12.3s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= install -pl dropwizard-logging -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2026.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2009.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2008.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2025.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2018.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2007.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-Modified.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2026.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] No documents exist
+
+Unable to continue dependency-check analysis.
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2010.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] Failed to execute goal org.owasp:dependency-check-maven:3.3.1:check (security-check) on project dropwizard-parent: Fatal exception(s) analyzing Dropwizard Project: Unable to continue dependency-check analysis.
+[ERROR] 	Unable to download the NVD CVE data.
+[ERROR] 	No documents exist
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+
+[rc=1 9.2s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install -pl dropwizard-logging -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2025.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2026.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-Modified.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2007.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2008.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2018.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2025.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] No documents exist
+
+Unable to continue dependency-check analysis.
+[ERROR] Failed to execute goal org.owasp:dependency-check-maven:3.3.1:check (security-check) on project dropwizard-parent: Fatal exception(s) analyzing Dropwizard Project: Unable to continue dependency-check analysis.
+[ERROR] 	Unable to download the NVD CVE data.
+[ERROR] 	No documents exist
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+
+[rc=1 9.7s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= install -pl dropwizard-logging -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2009.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2026.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2009.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2025.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2010.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2018.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] No documents exist
+
+Unable to continue dependency-check analysis.
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2007.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2008.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+[ERROR] Failed to execute goal org.owasp:dependency-check-maven:3.3.1:check (security-check) on project dropwizard-parent: Fatal exception(s) analyzing Dropwizard Project: Unable to continue dependency-check analysis.
+[ERROR] 	Unable to download the NVD CVE data.
+[ERROR] 	No documents exist
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] IO Exception connecting to https://nvd.nist.gov/feeds/xml/cve/2.0/nvdcve-2.0-2011.xml.gz: Unable to tunnel through proxy. Proxy returns "HTTP/1.1 403 Forbidden"
+
+[rc=1 8.9s]

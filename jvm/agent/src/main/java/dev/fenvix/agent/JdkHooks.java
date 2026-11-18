@@ -35,7 +35,11 @@ final class JdkHooks implements ClassFileTransformer {
         /** SecureRandom.generateSeed: r = Det.secureSeed(n); if r != null return r. */
         SECURE_SEED,
         /** before every ARETURN: dup value, Deps.resource(name, value). */
-        EXIT_PEEK
+        EXIT_PEEK,
+        /** before every LRETURN / ARETURN: value -> Det.m(value). */
+        EXIT_VALUE,
+        /** at entry: long argument in slot -> Det.m(long) -> back into the slot. */
+        ENTRY_LONG_ARG
     }
 
     static final class Hook {
@@ -101,6 +105,15 @@ final class JdkHooks implements ClassFileTransformer {
         // classpath resources (capture)
         add(new Hook("java/lang/ClassLoader", "getResource", "(Ljava/lang/String;)Ljava/net/URL;", Kind.EXIT_PEEK, DEPS, "resource",
                 "(Ljava/lang/String;Ljava/net/URL;)V", 1));
+        // file timestamps on the virtual clock (code under test only)
+        add(new Hook("java/io/File", "lastModified", "()J", Kind.EXIT_VALUE, DET, "mtimeFromReal", "(J)J"));
+        add(new Hook("java/io/File", "setLastModified", "(J)Z", Kind.ENTRY_LONG_ARG, DET, "mtimeToReal", "(J)J", 1));
+        add(new Hook("sun/nio/fs/UnixFileAttributes", "lastModifiedTime", "()Ljava/nio/file/attribute/FileTime;", Kind.EXIT_VALUE, DET,
+                "fileTimeFromReal", "(Ljava/nio/file/attribute/FileTime;)Ljava/nio/file/attribute/FileTime;"));
+        add(new Hook("sun/nio/fs/UnixFileAttributes", "lastAccessTime", "()Ljava/nio/file/attribute/FileTime;", Kind.EXIT_VALUE, DET,
+                "fileTimeFromReal", "(Ljava/nio/file/attribute/FileTime;)Ljava/nio/file/attribute/FileTime;"));
+        add(new Hook("sun/nio/fs/UnixFileAttributes", "creationTime", "()Ljava/nio/file/attribute/FileTime;", Kind.EXIT_VALUE, DET,
+                "fileTimeFromReal", "(Ljava/nio/file/attribute/FileTime;)Ljava/nio/file/attribute/FileTime;"));
         // network
         add(new Hook("java/net/Socket", "connect", "(Ljava/net/SocketAddress;I)V", Kind.ENTRY, DET, "netConnect",
                 "(Ljava/net/SocketAddress;)V", 1));
@@ -180,6 +193,11 @@ final class JdkHooks implements ClassFileTransformer {
                     for (int s : h.slots) super.visitVarInsn(Opcodes.ALOAD, s);
                     super.visitMethodInsn(Opcodes.INVOKESTATIC, h.targetOwner, h.target, h.targetDesc, false);
                     break;
+                case ENTRY_LONG_ARG:
+                    super.visitVarInsn(Opcodes.LLOAD, h.slots[0]);
+                    super.visitMethodInsn(Opcodes.INVOKESTATIC, h.targetOwner, h.target, h.targetDesc, false);
+                    super.visitVarInsn(Opcodes.LSTORE, h.slots[0]);
+                    break;
                 case SECURE_BYTES: {
                     Label go = new Label();
                     super.visitVarInsn(Opcodes.ALOAD, 1);
@@ -209,6 +227,11 @@ final class JdkHooks implements ClassFileTransformer {
 
         @Override
         public void visitInsn(int op) {
+            if (h.kind == Kind.EXIT_VALUE && (op == Opcodes.LRETURN || op == Opcodes.ARETURN)) {
+                super.visitMethodInsn(Opcodes.INVOKESTATIC, h.targetOwner, h.target, h.targetDesc, false);
+                super.visitInsn(op);
+                return;
+            }
             if (op == Opcodes.ARETURN) {
                 if (h.kind == Kind.EXIT_FILTER) {
                     if (h.targetDesc.startsWith("(Ljava/io/File;")) {

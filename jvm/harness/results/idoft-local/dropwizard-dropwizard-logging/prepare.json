@@ -1,0 +1,31 @@
+{
+ "name": "dropwizard-dropwizard-logging",
+ "url": "https://github.com/dropwizard/dropwizard",
+ "sha": "07dfaed697427e208d65049f80a5d1949833b7cd",
+ "module": "dropwizard-logging",
+ "status": "build-failed",
+ "build_jdk8_install": {
+  "rc": 1,
+  "seconds": 13.5
+ },
+ "build_jdk8_install_compat": {
+  "rc": 1,
+  "seconds": 7.2
+ },
+ "build_jdk11_install": {
+  "rc": 1,
+  "seconds": 12.3
+ },
+ "build_jdk11_install_compat": {
+  "rc": 1,
+  "seconds": 9.2
+ },
+ "build_jdk17_install": {
+  "rc": 1,
+  "seconds": 9.7
+ },
+ "build_jdk17_install_compat": {
+  "rc": 1,
+  "seconds": 8.9
+ }
+}
