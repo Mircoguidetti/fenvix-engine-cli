@@ -297,3 +297,72 @@ pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>) -
     }
     Ok(())
 }
+
+// ---------------------------------------------------------------------------
+// Internet sockets opened in C (libpq, grpc, libcurl, ...) raise no audit event. At every context switch the
+// capture compares this process's socket descriptors with the previous scan; a new one that is an internet
+// socket (listed in /proc/self/net/{tcp,tcp6,udp,udp6}) makes the context that is ending uncacheable.
+
+fn socket_fds() -> Option<HashMap<String, String>> {
+    let rd = std::fs::read_dir("/proc/self/fd").ok()?;
+    let mut cur = HashMap::new();
+    for e in rd.flatten() {
+        let name = e.file_name();
+        let Some(fd) = name.to_str() else { continue };
+        let Ok(link) = std::fs::read_link(e.path()) else { continue };
+        let Some(l) = link.to_str() else { continue };
+        if let Some(rest) = l.strip_prefix("socket:[") {
+            if let Some(ino) = rest.strip_suffix(']') {
+                cur.insert(fd.to_string(), ino.to_string());
+            }
+        }
+    }
+    Some(cur)
+}
+
+/// Inodes of this process's internet sockets (column 10 of /proc/self/net/{tcp,tcp6,udp,udp6}).
+fn inet_inodes() -> std::collections::HashSet<String> {
+    let mut out = std::collections::HashSet::new();
+    for t in ["tcp", "tcp6", "udp", "udp6"] {
+        let Ok(b) = std::fs::read(format!("/proc/self/net/{t}")) else { continue };
+        for line in b.split(|&c| c == b'\n').skip(1) {
+            let parts: Vec<&[u8]> = line.split(|c| c.is_ascii_whitespace()).filter(|p| !p.is_empty()).collect();
+            if parts.len() > 9 {
+                out.insert(String::from_utf8_lossy(parts[9]).into_owned());
+            }
+        }
+    }
+    out
+}
+
+/// Socket descriptors of this process between context switches.
+#[pyclass(module = "detpy._core", frozen)]
+pub struct SocketScan {
+    prev: Mutex<Option<HashMap<String, String>>>,
+}
+
+#[pymethods]
+impl SocketScan {
+    #[new]
+    fn new() -> Self {
+        SocketScan { prev: Mutex::new(None) }
+    }
+
+    /// Scan the descriptors; True when an internet socket appeared since the last scan (False at the first scan,
+    /// which is the baseline, and when /proc is unavailable).
+    fn scan(&self, py: Python<'_>) -> bool {
+        py.detach(|| {
+            let Some(cur) = socket_fds() else { return false };
+            let mut g = self.prev.lock().unwrap_or_else(|e| e.into_inner());
+            let prev = g.replace(cur);
+            let Some(prev) = prev else { return false };
+            let cur = g.as_ref().expect("just set");
+            let new: Vec<&String> = cur.iter().filter(|(fd, ino)| prev.get(*fd) != Some(*ino)).map(|(_, i)| i).collect();
+            if new.is_empty() {
+                return false;
+            }
+            let inet = inet_inodes();
+            new.iter().any(|i| inet.contains(*i))
+        })
+    }
+}

@@ -9,6 +9,7 @@
 //! * [`cassette`]: recorded network conversations for record/replay.
 //! * [`cache`]: result-cache vocabulary (key, policy, storage).
 //! * [`proof`]: cache with proof: per-test recorded inputs, reuse check, receipt.
+//! * [`record`]: end-of-session assembly of every test's inputs from the capture's contexts.
 //! * [`backend`]: interception backends (Python hooks today, syscalls later).
 
 pub mod backend;
@@ -18,6 +19,7 @@ pub mod event;
 pub mod fingerprint;
 pub mod order;
 pub mod proof;
+pub mod record;
 pub mod recorder;
 pub mod trace;
 pub mod verify;

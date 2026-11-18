@@ -161,7 +161,7 @@ class Capture:
         self.dist_info_ok: tuple = ()
         self.import_ctx = -1  # pseudo context for import-time data/env/flags
         self.active = False
-        self._socks: dict | None = None  # fd -> socket inode at the last scan
+        self._socks = _core.SocketScan()  # socket descriptors at the last scan
         self.follower: follow.Follower | None = None
         self.child_entropy = 0  # entropy draws of followed children (not controlled, not refused)
         self.children = 0  # followed children (spawn calls)
@@ -320,38 +320,10 @@ class Capture:
         """Internet sockets that appeared among this process's descriptors since the last scan.
 
         Sockets a C extension opens (libpq, grpc, libcurl, ...) raise no audit event; one still open when its
-        test or fixture ends is seen here and makes the context uncacheable.
+        test or fixture ends is seen here and makes the context uncacheable. (The scan of /proc is in Rust:
+        ``_core.SocketScan``.)
         """
-        try:
-            fds = os.listdir("/proc/self/fd")
-        except OSError:
-            return
-        cur = {}
-        for fd in fds:
-            try:
-                link = os.readlink("/proc/self/fd/" + fd)
-            except OSError:
-                continue
-            if link.startswith("socket:["):
-                cur[fd] = link[8:-1]
-        prev, self._socks = self._socks, cur
-        if prev is None:
-            return
-        new = {ino for fd, ino in cur.items() if prev.get(fd) != ino}
-        if not new:
-            return
-        inet = set()
-        for t in ("tcp", "tcp6", "udp", "udp6"):
-            try:
-                with open("/proc/self/net/" + t, "rb") as fh:
-                    next(fh, None)
-                    for line in fh:
-                        parts = line.split()
-                        if len(parts) > 9:
-                            inet.add(parts[9].decode())
-            except OSError:
-                continue
-        if ctx is not None and new & inet:
+        if self._socks.scan() and ctx is not None:
             self.flag(ctx, "csock", "an internet socket left open")
 
     # -- data, environment, events ------------------------------------------------------
@@ -1011,6 +983,7 @@ class ProofCachePlugin:
         self.not_cached_where: dict[str, str] = {}  # nodeid -> first occurrence of the cause (what, where, context)
         self.stale_hits: dict[str, str] = {}
         self.error: str | None = None
+        self.phases: dict[str, float] = {}  # seconds per phase of the end-of-session recording
 
     # -- setup ----------------------------------------------------------------
     def configure(self, config) -> None:
@@ -1261,205 +1234,88 @@ class ProofCachePlugin:
             cache[rel] = None if f is None else self.store.add_file(rel, content, f[0], f[1], f[2], f[3])
 
     def _record_all(self) -> None:
-        cap, store = self.cap, self.store
-        if cap.rec is None:
+        if self.cap.rec is None:
             return
-        cap.collect_children()
+        t = _perf()
+        self.cap.collect_children()
+        self.phases["children"] = _perf() - t
+        self._record_captured()
+
+    def _record_captured(self) -> None:
+        """Record every test that ran from the capture: the per-test assembly of inputs and the reasons a test is
+        not cached are computed in Rust (``detpy_core::record``) from one plan of plain data."""
+        store, ph = self.store, self.phases
+        t = _perf()
+        plan = json.dumps(self._plan())
+        ph["plan"] = _perf() - t - ph.get("facts", 0.0)
+        t = _perf()
+        recorded, not_cached, stale, g_ctx_all = store.record_session(plan)
+        ph["assemble"] = _perf() - t
+        for nid, path in stale:
+            self.stale_hits[nid] = path
+        for nid, why, ctxs in not_cached:
+            if ctxs:
+                self.not_cached_where[nid] = self._where(why, ctxs)
+            self.not_cached[nid] = why
+        self.recorded += recorded
+        t = _perf()
+        store.save()
+        ph["save"] = _perf() - t
+
+    def _plan(self) -> dict:
+        """The session's capture as plain data (``detpy_core::record::Plan``)."""
+        cap, store = self.cap, self.store
         fcache: dict[str, int | None] = {}
         rels = cap.fnames
         # file facts for every executed or loaded repository file (new versions parsed in parallel)
         needed = set(rels) | {r for r, _ in cap.loaded_order} | cap.preloaded
+        t = _perf()
         self._prefetch_facts(sorted(needed), fcache)
         for rel in needed:
             self._facts_index(rel, fcache)
-        ranges = []
-        for rel in rels:
-            ix = fcache.get(rel)
-            if ix is None:
-                ranges.append([])
-            else:
-                ranges.append([(a, b) for _, a, b, _ in store.file_facts(ix)[4]])
-        per, imp = cap.rec.fold(len(cap.ctx_names), cap.segs, ranges)
-        names = cap.ctx_names
-        ctx_of = {n: i for i, n in enumerate(names)}
-
-        def units_of(fids_units):
-            out = set()
-            for v in fids_units:
-                fid, u = v >> 32, v & 0xFFFFFFFF
-                ix = fcache.get(rels[fid])
-                if ix is not None:
-                    out.add((ix, u))
-            return out
-
-        def unparsable(fids):
-            out = set()
-            for fid in fids:
-                ix = fcache.get(rels[fid])
-                if ix is None or not store.file_facts(ix)[4]:
-                    if ix is not None:
-                        f = store.file_facts(ix)
-                        if f[2] == f[1]:  # not Python: whole content
-                            out.add(ix)
-            return out
-
-        conftests = {r for r in needed if r.rsplit("/", 1)[-1] == "conftest.py"}
-        test_files = {_ctx_file(n) for n in self.items}
-        # import graph: test modules imported by any loaded module are shared, others only serve their own tests
-        imported_names = set()
-        for rel in needed:
-            ix = fcache.get(rel)
-            if ix is not None:
-                imported_names.update(store.file_facts(ix)[5])
-        shared_test_files = set()
-        for tf in test_files:
-            mod, _ = _module_of(os.path.join(self.root, tf))
-            if mod and (mod in imported_names or mod.rsplit(".", 1)[-1] in imported_names):
-                shared_test_files.add(tf)
-
-        # global contexts: startup, between tests, import time
-        g_ctx = [ctx_of[c] for c in _GLOBAL_CTX if c in ctx_of]
-        g_units = units_of(imp[0])
-        g_unparsable = unparsable(imp[1])
-        for c in g_ctx:
-            g_units |= units_of(per[c][0])
-            g_unparsable |= unparsable(per[c][1])
-        # import-time reads of a test module that no other module imports serve only its own tests
-        own_import = {tf: ctx_of["i|" + tf] for tf in test_files - shared_test_files if "i|" + tf in ctx_of}
-        own_import_ix = set(own_import.values())
-        g_ctx_all = g_ctx + [cap.import_ctx] + [i for n, i in ctx_of.items()
-                                                if n.startswith("i|") and i not in own_import_ix]
-        g_data, g_env, g_flags = {}, set(), set()
-        for c in g_ctx_all:
-            g_data.update(cap.data.get(c, {}))
-            g_env |= cap.env.get(c, set())
-            g_flags |= {f for f in cap.flags.get(c, set()) if f != "proc"}
-
-        pre_ix = {fcache[r] for r in cap.preloaded if fcache.get(r) is not None}
-        names_of = cap.ctx_names
-        session_written = {cap._key(p): sorted(names_of[c] for c in w) for p, w in cap.writers.items()
-                           if _encodable(p)}
-        written = {p: set(w) for p, w in store.written().items()}
-        for p, w in session_written.items():
-            written.setdefault(p, set()).update(w)
-        # persisted for the next sessions: paths in the repository only (temporary files have fresh names)
-        store.add_written({p: w for p, w in session_written.items() if not os.path.isabs(p)})
-        # results reused in this session whose input files code of this session then wrote: drop them
-        for nid in self.hits:
-            if not session_written:
-                break
-            try:
-                deps = json.loads(store.entry(nid)).get("data", [])
-            except KeyError:
-                continue
-            own = {"t|" + nid}
-            for path, _dep in deps:
-                if path in session_written and not set(session_written[path]) <= own:
-                    self.stale_hits[nid] = path
-                    store.remove(nid)
-                    break
-        loaded_idx = cap.loaded_order  # (rel, index)
-        cfg = _state.STATE.config
-        file_of_ix = {}
-        for rel, ix in fcache.items():
-            if ix is not None:
-                file_of_ix[ix] = rel
-
-        def in_scope(rel: str, own: str) -> bool:
-            if rel in test_files:
-                return rel == own or rel in shared_test_files
-            if rel in conftests:
-                d = rel.rsplit("/", 1)[0] if "/" in rel else ""
-                return d == "" or own == d or own.startswith(d + "/")
-            return True
-
+        self.phases["facts"] = _perf() - t
+        per, imp = cap.rec.fold(len(cap.ctx_names), cap.segs, store.unit_ranges([fcache.get(r) for r in rels]))
+        tests, test_modules = [], {}
+        for nid in self.items:
+            tf = _ctx_file(nid)
+            if tf not in test_modules:
+                test_modules[tf] = _module_of(os.path.join(self.root, tf))[0]
         for nid in self.ran:
             item = self.items.get(nid)
             if item is None:
                 continue
             p = self.parts.get(nid, {})
-            outcome = _final(p)
-            if outcome not in ("passed", "skipped", "xfailed"):
-                self._not_cached(nid, f"outcome {outcome}")
-                continue
-            own = _ctx_file(nid)
-            ctxs = [ctx_of[c] for c in ["t|" + nid, "c|" + own, *self.fixture_ctx.get(nid, [])] if c in ctx_of]
-            if own in own_import:
-                ctxs.append(own_import[own])
-            flags = set(g_flags)
-            data = dict(g_data)
-            env = set(g_env)
-            units = set()
-            content = set(pre_ix) | g_unparsable
-            for c in ctxs:
-                flags |= cap.flags.get(c, set())
-                data.update(cap.data.get(c, {}))
-                env |= cap.env.get(c, set())
-                units |= units_of(per[c][0])
-                content |= unparsable(per[c][1])
-            why = _uncacheable(flags, cfg)
-            if why is not None:
-                self.not_cached_where[nid] = self._where(why, g_ctx_all + ctxs)
-            if why is None:
-                # writers credited to the test: its own contexts and the global ones (startup, between tests,
-                # import time), whose code is an input of every test
-                credited = set(ctxs) | set(g_ctx_all)
-                names = {names_of[c] for c in credited}
-                for f in sorted(flags):
-                    if f.startswith("rw:") and not cap.writers.get(f[3:], set()) <= credited:
-                        why = f"reads a file another test or fixture wrote: {cap._key(f[3:])}"
-                        break
-                if why is None:
-                    for path in data:
-                        w = written.get(path)
-                        if w and not w <= names:
-                            why = f"reads a file another test or fixture wrote: {path}"
-                            break
-            if why is None and "net-replay" in flags and cfg.cassette_path:
-                d = _core.file_digest(cfg.cassette_path)
-                data[cap._key(os.path.realpath(cfg.cassette_path))] = f"f:{d}" if d else "missing"
-            if why:
-                self._not_cached(nid, why)
-                continue
-            idx = self.test_index.get(nid, 0)
-            skeleton, hooks = set(), set()
-            for rel, seen_at in loaded_idx:
-                if seen_at > idx:
-                    continue
-                ix = fcache.get(rel)
-                if ix is None:
-                    continue
-                if rel in conftests:
-                    hooks.add(ix)
-                if in_scope(rel, own):
-                    skeleton.add(ix)
-            for ix, u in g_units:
-                rel = file_of_ix.get(ix)
-                # hooks run outside tests can act on any test; test modules serve their own tests
-                if rel is not None and (rel in conftests or in_scope(rel, own)):
-                    units.add((ix, u))
-            if type(item).__name__ == "DoctestItem" or not hasattr(item, "obj"):
-                ix = fcache.get(own)
-                if ix is None:
-                    ix = self._facts_index(own, fcache)
-                if ix is not None:
-                    content.add(ix)
-            epoch = self.epoch if ("time" in flags and "time" in cfg.controls) else None
-            if "time" in flags and "time" not in cfg.controls:
-                self._not_cached(nid, "real clock")
-                continue
-            env_deps = []
-            for name in sorted(n for n in env if _encodable(n)):
-                if name == "*":
-                    env_deps.append(("*", _core.env_all_digest(dict(cap.env0))))
-                else:
-                    env_deps.append((name, _core.env_value_digest(cap.env0.get(name))))  # env0 is sanitised
-            report = {w: p[w] for w in ("setup", "call") if w in p}
-            store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
-                         self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
-                         sorted(data.items()), sorted(content), sorted(skeleton), sorted(hooks), sorted(units))
-            self.recorded += 1
-        store.save()
+            whole = type(item).__name__ == "DoctestItem" or not hasattr(item, "obj")
+            if whole:
+                own = _ctx_file(nid)
+                if fcache.get(own) is None:
+                    self._facts_index(own, fcache)
+            tests.append({"nodeid": nid, "outcome": _final(p), "report": {w: p[w] for w in ("setup", "call") if w in p},
+                          "fingerprint": self.fingerprints.get(nid, ""), "duration": self.dur.get(nid, 0.0),
+                          "index": self.test_index.get(nid, 0), "fixtures": self.fixture_ctx.get(nid, []),
+                          "whole": whole})
+        cfg = _state.STATE.config
+        cassette = None
+        if cfg.cassette_path:
+            d = _core.file_digest(cfg.cassette_path)
+            cassette = (cap._key(os.path.realpath(cfg.cassette_path)), f"f:{d}" if d else "missing")
+        names = cap.ctx_names
+        return {
+            "ctx_names": names, "import_ctx": cap.import_ctx, "fnames": rels,
+            "file_ix": {r: ix for r, ix in fcache.items() if ix is not None},
+            "per": per, "imp": imp,
+            "data": {c: list(d.items()) for c, d in cap.data.items()},
+            "env": {c: [n for n in e if _encodable(n)] for c, e in cap.env.items()},
+            "flags": {c: sorted(f) for c, f in cap.flags.items()},
+            "writers": {p: sorted(w) for p, w in cap.writers.items() if _encodable(p)},
+            "session_written": {cap._key(p): sorted(names[c] for c in w) for p, w in cap.writers.items()
+                                if _encodable(p)},
+            "loaded_order": cap.loaded_order, "preloaded": sorted(cap.preloaded), "needed": sorted(needed),
+            "test_modules": test_modules, "tests": tests, "hits": list(self.hits),
+            "root_sep": cap.root_sep, "control_urandom": bool(cfg.control_urandom),
+            "time_controlled": "time" in cfg.controls, "epoch": self.epoch, "cassette": cassette,
+            "env0": dict(cap.env0), "config": self.config_digest, "runtime": self.runtime_digest, "run": self.run_id,
+        }
 
     def _where(self, why: str, ctxs) -> str:
         """``why`` with the first occurrence of its cause: what (command, address...) and in which context."""
@@ -1517,6 +1373,7 @@ class ProofCachePlugin:
             "reused_recorded_seconds": round(sum(self._entry_duration(n) for n in self.hits), 3),
             "check_seconds": round(self.t_check, 3),
             "record_seconds": round(self.t_record, 3),
+            "phase_seconds": {k: round(v, 3) for k, v in self.phases.items()},
             "config": self.config_digest,
             "runtime": self.runtime_digest,
             "epoch_ns": self.epoch,

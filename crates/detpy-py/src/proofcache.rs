@@ -1,6 +1,7 @@
 //! Python binding of the cache with proof (`detpy._core.ProofCache`).
 
 use detpy_core::proof::{self, Checker, CodeFile, Current, Observed, Store, Unit};
+use detpy_core::record;
 use pyo3::exceptions::{PyKeyError, PyValueError};
 use pyo3::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
@@ -142,6 +143,40 @@ impl ProofCache {
             nodeid,
             Observed { outcome, report, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units },
         ))
+    }
+
+    /// Body line ranges `[(first, last)]` of the units of each file index (`None`: no facts, empty).
+    fn unit_ranges(&self, indices: Vec<Option<u32>>) -> Vec<Vec<(u32, u32)>> {
+        let g = lock(&self.inner);
+        indices
+            .into_iter()
+            .map(|ix| {
+                ix.and_then(|i| g.store.files.get(i as usize))
+                    .map(|f| f.units.iter().map(|u| (u.a, u.b)).collect())
+                    .unwrap_or_default()
+            })
+            .collect()
+    }
+
+    /// Record every test of the session from its capture (`plan_json`, see `detpy_core::record::Plan`).
+    /// Returns `(recorded, [(nodeid, why, contexts)], [(stale nodeid, path)], global contexts)`; the store is
+    /// not saved.
+    #[allow(clippy::type_complexity)]
+    fn record_session(
+        &self,
+        plan_json: &str,
+    ) -> PyResult<(usize, Vec<(String, String, Vec<u32>)>, Vec<(String, String)>, Vec<u32>)> {
+        let plan: record::Plan =
+            serde_json::from_str(plan_json).map_err(|e| PyValueError::new_err(format!("plan: {e}")))?;
+        let mut g = lock(&self.inner);
+        for t in &plan.tests {
+            g.touched.insert(t.nodeid.clone());
+        }
+        let out = record::record_session(&mut g.store, &plan);
+        for (n, _) in &out.stale {
+            g.touched.insert(n.clone());
+        }
+        Ok((out.recorded, out.not_cached, out.stale, out.global_ctx))
     }
 
     fn remove(&self, nodeid: &str) -> bool {
