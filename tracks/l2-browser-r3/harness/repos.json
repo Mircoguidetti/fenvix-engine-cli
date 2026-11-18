@@ -1,0 +1,97 @@
+{
+ "actual": {
+  "r3": {
+   "e1_args": "e2e/accounts.mobile.test.ts e2e/budget.mobile.test.ts e2e/automatic-budget-range.test.ts --browser=chromium",
+   "e1": {
+    "plain": 20,
+    "stress": 10,
+    "base": 2,
+    "det": 2,
+    "freeze": 10,
+    "freeze_control": 5
+   },
+   "freeze_targets": [
+    {
+     "file": "budget.mobile.test.ts",
+     "grep": "applies budget template",
+     "project": null
+    },
+    {
+     "file": "automatic-budget-range.test.ts",
+     "grep": "extends after budgeting the last month and shrinks on reload",
+     "project": null
+    },
+    {
+     "file": "accounts.mobile.test.ts",
+     "grep": "reconciles an account",
+     "project": null
+    }
+   ],
+   "replay_targets": [
+    {
+     "file": "accounts.mobile.test.ts",
+     "grep": "keeps the search after opening a transaction and going back",
+     "project": null,
+     "seed": 1
+    }
+   ]
+  }
+ },
+ "documenso": {
+  "r3": {
+   "e1": {
+    "plain": 20,
+    "stress": 10,
+    "extra_plain": 20,
+    "extra_stress": 10
+   },
+   "e1_extra": [
+    "email-transport-claims.spec.ts --project=ui"
+   ],
+   "e5": {
+    "replays": 10,
+    "control": 5,
+    "budget_min": 300
+   },
+   "e5_targets": [
+    {
+     "file": "admin-find-documents.spec.ts",
+     "grep": "[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401",
+     "project": "api"
+    },
+    {
+     "file": "delete-recipient.spec.ts",
+     "grep": "[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400",
+     "project": "api"
+    }
+   ]
+  }
+ },
+ "etherpad": {
+  "r3": {
+   "e1": {
+    "plain": 20,
+    "stress": 10,
+    "det": 2
+   }
+  }
+ },
+ "uptime-kuma": {
+  "r3": {
+   "e1": {
+    "plain": 20,
+    "stress": 10,
+    "det": 2
+   }
+  }
+ },
+ "solid-start": {
+  "r3": {
+   "e1": {
+    "plain": 20,
+    "stress": 10,
+    "det": 2
+   }
+  }
+ }
+}

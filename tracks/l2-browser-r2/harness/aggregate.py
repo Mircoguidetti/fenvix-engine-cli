@@ -12,6 +12,20 @@ EXCLUDE = {"rallly"}
 RES = Path(sys.argv[1]) if len(sys.argv) > 1 else RES
 
 
+FAILED = ("failed", "timedOut")
+
+
+def control_induced(t, broken_keys):
+    """Round 3 (review R-011 H1/H2): a target whose --det failures are ours, not the flake's: listed as broken by
+    the controls (passes in every baseline run, fails under --det), or it passes in every plain run of the same
+    filter while every default-seed --det replay fails. Such a target is left out of the exit number and reported
+    apart: a deterministic failure we cause is not a reproduced flake."""
+    key = t.get("matched_key") or t.get("key")
+    plain = t.get("plain_runs") or ""
+    reps = t.get("replays") or []
+    return key in broken_keys or bool(plain and set(plain) == {"P"} and reps and all(o in FAILED for o in reps))
+
+
 def pct(a, b):
     return f"{100 * a / b:.0f}%" if b else "-"
 
@@ -19,7 +33,9 @@ def pct(a, b):
 def main():
     rows, flaky_rows, abl_rows = [], [], []
     tot = {"flaky": 0, "replay10": 0, "identical": 0, "pass_seed": 0, "fail_seed": 0, "fail_seed_repro": 0,
-           "tests": 0, "det_tests": 0, "stable": 0, "broken": 0, "broken_always": 0}
+           "tests": 0, "det_tests": 0, "stable": 0, "broken": 0, "broken_always": 0,
+           "control_induced": 0, "hidden_by_controls": 0}
+    hidden_rows = []
     for f in sorted(RES.glob("*.json")):
         r = json.loads(f.read_text())
         if r.get("name") in EXCLUDE:
@@ -34,6 +50,7 @@ def main():
         stable_pass = sum(1 for st, _, o in fps.values() if st == "stable" and set(o) == {"P"})
         tot["stable_pass"] = tot.get("stable_pass", 0) + stable_pass
         broken = r.get("broken_by_controls") or []
+        broken_keys = {b["key"] for b in broken}
         nb = len(broken)
         nba = sum(1 for b in broken if b.get("always"))
         tot["tests"] += r.get("tests_baseline") or 0
@@ -61,29 +78,41 @@ def main():
             tot["flaky"] += 1
             reps = t.get("replays") or []
             rv = t.get("replay_verify") or {}
-            identical = rv.get("status") == "stable" and rv.get("distinct_fingerprints") == 1 and len(reps) >= 10
+            ours = control_induced(t, broken_keys)
+            tot["control_induced"] += ours
+            identical = rv.get("status") == "stable" and rv.get("distinct_fingerprints") == 1 and len(reps) >= 10 and not ours
             tot["replay10"] += len(reps) >= 10
             tot["identical"] += identical
             seeds = t.get("seeds") or {}
             outs = list(reps) + list(seeds.values())
             tot["pass_seed"] += any(o == "passed" for o in outs)
-            tot["fail_seed"] += any(o in ("failed", "timedOut") for o in outs)
+            tot["fail_seed"] += any(o in FAILED for o in outs) and not ours
             fr = t.get("failing_seed_replays") or []
             fv = t.get("failing_seed_verify") or {}
-            repro = bool(fr) and all(o in ("failed", "timedOut") for o in fr) and fv.get("distinct_fingerprints") == 1
+            repro = bool(fr) and all(o in FAILED for o in fr) and fv.get("distinct_fingerprints") == 1 and not ours
             tot["fail_seed_repro"] += repro
             rc = t.get("replay_cmd_verify") or {}
-            rc_ok = t.get("replay_cmd_outcome") in ("failed", "timedOut") and rc.get("distinct_fingerprints") == 1
+            rc_ok = t.get("replay_cmd_outcome") in FAILED and rc.get("distinct_fingerprints") == 1 and not ours
             tot["replay_cmd_ok"] = tot.get("replay_cmd_ok", 0) + bool(rc_ok)
             tot["replay_cmd_tried"] = tot.get("replay_cmd_tried", 0) + bool(t.get("replay_cmd_outcome"))
             rl = "".join(L(o) for o in reps)
             sdl = " ".join(f"{sd}:{L(o)}" for sd, o in seeds.items())
             flaky_rows.append(
-                f"| {r['name']} | `{str(k)[:80]}` | {'known' if t.get('known') else 'this job'} | {bl} | {sl} | {t.get('plain_runs', '-')} | {rl} | "
+                f"| {r['name']} | `{str(k)[:80]}`{' (control-induced)' if ours else ''} | {'known' if t.get('known') else 'this job'} | {bl} | {sl} | {t.get('plain_runs', '-')} | {rl} | "
                 f"{rv.get('distinct_fingerprints', '-')} | {sdl} | "
                 f"{t.get('failing_seed', '-')}: {''.join(L(o) for o in fr)} ({fv.get('distinct_fingerprints', '-')} fp) | "
                 f"{L(t['replay_cmd_outcome']) if t.get('replay_cmd_outcome') else '-'} ({rc.get('distinct_fingerprints', '-')} fp with the seed's runs) |"
                 + (f" {t['error'][:80]}" if t.get("error") else ""))
+        # Round 3 (review R-011 H4): tests that fail in every configured (baseline) run and pass in every --det run:
+        # --det hides a failure the developer's CI shows (e.g. a parallel-worker failure under --workers=1).
+        det_runs = [x for x in runs if x["label"].startswith("det")]
+        if base_runs and det_runs:
+            for hk in sorted(det_runs[0].get("outcomes") or {}):
+                if all((b.get("outcomes") or {}).get(hk) in FAILED for b in base_runs) and \
+                        all((d.get("outcomes") or {}).get(hk) == "passed" for d in det_runs):
+                    tot["hidden_by_controls"] += 1
+                    hidden_rows.append(f"| {r['name']} | `{hk[:100]}` | {''.join(L((b.get('outcomes') or {}).get(hk)) for b in base_runs)} | "
+                                       f"{''.join(L((d.get('outcomes') or {}).get(hk)) for d in det_runs)} |")
         for a in r.get("ablation") or []:
             abl_rows.append(f"| {r['name']} | `{a['key'][:80]}` | {a.get('all-on')} | {a.get('server-off')} | {a.get('net-off')} | {a.get('vtime-off')} | {a.get('seeds-off')} |")
     print("| Project | Tests | Baseline runs (normal+stress) | Flaky | Baseline wall s | Serial wall s | Det wall s | "
@@ -116,11 +145,17 @@ def main():
             traced = {"on-first-retry": f"{p ** 2:.3f}", "retain-on-failure": f"{p:.3f}"}.get(tr, "-")
             print(f"| {r['name']} | `{fl['key'][:80]}` | {b.count('F')}/{len(b)} = {p:.2f} | {rr if rr is not None else '-'} | {rep} | {hid} | {tr} | {traced} |")
     print()
+    print("| Project | Hidden by the controls (fails in every configured run, passes in every --det run) | Configured | --det |")
+    print("|---|---|---|---|")
+    print("\n".join(hidden_rows))
+    print()
     print("totals:", json.dumps(tot))
     print(f"- flaky tests: {tot['flaky']}; replayed 10 times: {tot['replay10']}; identical fingerprint 10/10: "
           f"{tot['identical']} ({pct(tot['identical'], tot['flaky'])}); pass in some seed: {tot['pass_seed']}; "
           f"fail in some seed: {tot['fail_seed']}; failing seed replays fail with one fingerprint: {tot['fail_seed_repro']} "
           f"({pct(tot['fail_seed_repro'], tot['flaky'])}); printed replay command reproduces: {tot.get('replay_cmd_ok', 0)} of {tot.get('replay_cmd_tried', 0)}")
+    print(f"- control-induced targets (left out of the exit number): {tot['control_induced']}; tests hidden by the "
+          f"controls (fail configured, pass under --det): {tot['hidden_by_controls']}")
     print(f"- full suites under --det: {tot['stable']}/{tot['det_tests']} tests identical fingerprints "
           f"({pct(tot['stable'], tot['det_tests'])}; {tot.get('stable_pass', 0)} of them passing in every run); broken by controls {tot['broken']} ({tot['broken_always']} always) "
           f"of {tot['tests']} tests")
