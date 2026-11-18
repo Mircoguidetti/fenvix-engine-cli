@@ -114,6 +114,7 @@ test('E6: a seed space reaching the deadline reproduces a slow-response failure 
   assert.deepEqual(old, seeds.map(() => 'passed'), `round 2 latency list: ${old}`);
   const wide = seeds.map((sd) => outcomes(pw(dir, ['--det', `--det-seed=${sd}`, '--det-latency=0,0,1,5,25,D', 'test'], `wide-${sd}`, env))[0]);
   const failing = seeds.filter((sd, i) => wide[i] === 'failed' || wide[i] === 'timedOut');
+  console.log(`E6 fixture: round-2 list ${old.map((o) => o[0]).join('')}; with D ${wide.map((o) => o[0]).join('')} (seeds 1-8)`);
   assert.ok(failing.length >= 1, `no seed of 1-8 reaches the deadline: ${wide}`);
   assert.ok(failing.length < seeds.length, `every seed fails (the choice is not exploration): ${wide}`);
   const sd = failing[0];
