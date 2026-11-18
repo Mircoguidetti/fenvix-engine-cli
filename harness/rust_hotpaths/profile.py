@@ -255,6 +255,15 @@ class Prof:
         if w.spec.get("precollect") and units:
             units = w.collectable(units, st)
         self.res.update(sha=sha, units=len(units), dropped=st.get("dropped_units", []))
+        # old vs new pure functions on this environment (the last engine given is the one tested)
+        self.use(list(self.engines)[-1])
+        code, out, _ = W.sh([w.py, str(HERE / "equiv_probe.py"), "--root", str(w.src)], cwd=str(w.work),
+                            env=self.env(), timeout=3600)
+        try:
+            self.res["probe"] = json.loads(out.strip().splitlines()[-1])
+        except (ValueError, IndexError):
+            self.res["probe"] = {"error": out[-1500:]}
+        self.save()
         cache = w.work / "prof-cache"
         # warm-up: precompile under the fixed seed (each engine its own cache), imports in the page cache
         for eng in self.engines:
