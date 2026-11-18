@@ -37,9 +37,13 @@ DETJS = os.path.join(ENGINE, "node", "bin", "detjs.js")
 
 def sh(cmd, cwd=None, timeout=None, env=None, check=False, capture=True):
     t0 = time.time()
-    r = subprocess.run(cmd, cwd=cwd, shell=isinstance(cmd, str), timeout=timeout, env=env,
-                       stdout=subprocess.PIPE if capture else None, stderr=subprocess.STDOUT if capture else None,
-                       text=True, errors="replace")
+    try:
+        r = subprocess.run(cmd, cwd=cwd, shell=isinstance(cmd, str), timeout=timeout, env=env,
+                           stdout=subprocess.PIPE if capture else None, stderr=subprocess.STDOUT if capture else None,
+                           text=True, errors="replace")
+    except subprocess.TimeoutExpired as e:
+        out = e.output.decode(errors="replace") if isinstance(e.output, bytes) else (e.output or "")
+        return 124, out + f"\n[timeout after {timeout} s]", time.time() - t0
     dt = time.time() - t0
     if check and r.returncode != 0:
         raise RuntimeError(f"{cmd} -> {r.returncode}\n{(r.stdout or '')[-4000:]}")
