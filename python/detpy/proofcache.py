@@ -53,25 +53,14 @@ _now = time.time
 _mon = getattr(sys, "monitoring", None)
 AVAILABLE = _mon is not None
 
-# context names: "" startup, "s" between tests, "c|<file>" collection of a file,
-# "f|<scope>|<baseid>|<name>" setup of a wider-scoped fixture, "t|<nodeid>" a test
-_GLOBAL_CTX = ("", "s")
-
+# context names: "" startup, "s" between tests, "c|<file>" collection of a file, "f|<scope>|<baseid>|<name>" setup
+# of a wider-scoped fixture, "t|<nodeid>" a test, "i" / "i|<file>" import time. The capture's rules (skipped
+# paths, write events, spawn events, ...) are in crates/detpy-py/src/capture.rs.
 _AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
                  "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
                  "os.link")
-_SPAWN = {"subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn"}
-_WRITE_EVENTS = {"os.remove": (0,), "os.rename": (0, 1), "os.mkdir": (0,), "os.rmdir": (0,),
-                 "shutil.rmtree": (0,), "shutil.copyfile": (1,), "shutil.move": (0, 1), "os.symlink": (1,),
-                 "os.link": (1,), "os.truncate": (0,)}
-_SKIP_PARTS = (os.sep + "__pycache__" + os.sep, os.sep + ".git" + os.sep, os.sep + ".pytest_cache",
-               os.sep + ".mypy_cache", os.sep + ".hypothesis" + os.sep, os.sep + ".detpy" + os.sep)
-# data reads: the same, except .git/ (review R-009 F5: a test that reads HEAD and its ref in-process depends on
-# them; objects are content-addressed, so a changed commit always comes with a changed ref file)
-_SKIP_DATA = tuple(x for x in _SKIP_PARTS if x != os.sep + ".git" + os.sep)
-_O_ACC = os.O_RDONLY | os.O_WRONLY | os.O_RDWR
 _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 # options that never change a test's result (output, reporting, selection by path, detpy's own files)
 _VOLATILE_OPTIONS = {
@@ -97,54 +86,16 @@ def _ctx_file(nodeid: str) -> str:
     return nodeid.split("::", 1)[0]
 
 
-# ---------------------------------------------------------------------------
-# entry line (as in the cache-skip study's tracer)
+# Line capture granularity (experiment, DETPY_CACHE_LINES): "line" (default) arms every code object with LINE;
+# "code" arms plain functions (not module or class bodies, not generators or coroutines) with PY_START only and
+# records one location per start (the function's last line), see REPORT-2. The entry line and that line are read
+# from the bytecode in Rust (CaptureCore.arm): the opcodes it needs are passed in.
+_CODE_LEVEL = os.environ.get("DETPY_CACHE_LINES", "line") == "code"
 import opcode as _opcode  # noqa: E402
 
 _RESUME = _opcode.opmap.get("RESUME", -1)
 _PRELUDE = {_opcode.opmap[n] for n in ("MAKE_CELL", "COPY_FREE_VARS", "RETURN_GENERATOR", "POP_TOP")
             if n in _opcode.opmap}
-
-
-def entry_line(code) -> int | None:
-    """The line ``LINE`` alone never reports on entry (one-line functions, lambdas, docstring-only bodies)."""
-    co = code.co_code
-    r = 0
-    while r < len(co) and co[r] in _PRELUDE:
-        r += 2
-    if r + 2 >= len(co) or co[r] != _RESUME:
-        return None
-    lr = ln = None
-    for start, end, line in code.co_lines():
-        if start <= r < end:
-            lr = line
-        if start <= r + 2 < end:
-            ln = line
-            break
-    return ln if ln is not None and ln == lr else None
-
-
-def rep_line(code) -> int | None:
-    """Code-object level capture: the line that stands for every line of a plain function, its last one. A
-    unit's range starts at its first body statement's ``lineno``, after the decorators of a decorated first
-    statement (whose lines the function runs first), and ends at its last line: the last line of a function
-    (the last statement's, or its implicit return) is inside its unit's range."""
-    co = code.co_code
-    r = 0
-    while r < len(co) and co[r] in _PRELUDE:
-        r += 2
-    if r >= len(co) or co[r] != _RESUME:
-        return None
-    lines = [line for start, _end, line in code.co_lines() if start > r and line is not None]
-    return max(lines) if lines else None
-
-
-# Line capture granularity (experiment, DETPY_CACHE_LINES): "line" (default) arms every code object with LINE;
-# "code" arms plain functions (not module or class bodies, not generators or coroutines) with PY_START only and
-# records one location per start (rep_line), see REPORT-2.
-_CODE_LEVEL = os.environ.get("DETPY_CACHE_LINES", "line") == "code"
-_CO_PLAIN_EXCLUDE = 0x20 | 0x80 | 0x100 | 0x200  # CO_GENERATOR | CO_COROUTINE | CO_ITERABLE_COROUTINE | CO_ASYNC_GENERATOR
-_CO_OPTIMIZED = 0x1
 
 
 # ---------------------------------------------------------------------------
@@ -961,39 +912,8 @@ def _encodable(s: str) -> bool:
         return False
 
 
-_LD_SO_CACHE = "/etc/ld.so.cache"
 
 
-_CTYPES_UTIL = os.sep + os.path.join("ctypes", "util.py")
-_UUID_PY = os.sep + "uuid.py"
-
-
-def _called_from(suffix: str) -> bool:
-    """Whether a frame of the running call stack is in a standard-library file ending with ``suffix``."""
-    f = _getframe(2)
-    while f is not None:
-        fn = f.f_code.co_filename
-        if fn.endswith(suffix) and _sites._classify(fn)[0] != _sites._USER:
-            return True
-        f = f.f_back
-    return False
-
-
-def _is_find_library_ldconfig(args) -> bool:
-    """``subprocess.Popen(['/sbin/ldconfig', '-p'])`` called by ``ctypes.util.find_library``."""
-    try:
-        argv = list(args[1]) if len(args) > 1 and not isinstance(args[1], (str, bytes)) else None
-    except TypeError:
-        return False
-    if not argv or len(argv) != 2 or os.path.basename(os.fsdecode(argv[0])) != "ldconfig" or argv[1] != "-p":
-        return False
-    f = _getframe(2)
-    while f is not None:
-        fn = f.f_code.co_filename
-        if fn.endswith(os.sep + os.path.join("ctypes", "util.py")):
-            return True
-        f = f.f_back
-    return False
 
 
 import re as _re  # noqa: E402
@@ -1185,28 +1105,6 @@ def _addr(args) -> str:
         return f"{a[0]}:{a[1]}" if isinstance(a, tuple) else str(a)
     except (IndexError, TypeError):
         return "?"
-
-
-def _uncacheable(flags: set, cfg) -> str | None:
-    if "badpath" in flags:
-        return "reads a path that is not valid UTF-8"
-    if "rclock" in flags:
-        return "real clock read outside the virtual clock"
-    if "spawn" in flags:
-        return "subprocess"
-    if "connect" in flags:
-        return "network connection"
-    if "csock" in flags:
-        return "network socket opened outside Python (C extension)"
-    if "dns" in flags:
-        return "host name lookup"
-    if "net-record" in flags:
-        return "network recording (--det-record)"
-    if "entropy" in flags and not cfg.control_urandom:
-        return "os entropy (not controlled; use --det-urandom)"
-    if "proc" in flags:
-        return "reads /proc, /sys or /dev"
-    return None
 
 
 _MODMAP: dict = {}
