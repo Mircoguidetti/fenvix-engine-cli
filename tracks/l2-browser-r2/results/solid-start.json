@@ -2,32 +2,99 @@
  "name": "solid-start",
  "repo": "solidjs/solid-start",
  "ref": "68784294b16692adf687c25bcd58c16c8a625cb3",
- "status": "ok",
- "run_id": "44279789112",
- "setup_s": 34,
+ "status": "running",
+ "run_id": "44283131715",
+ "setup_s": 26,
  "params": {
   "baseline": 3,
-  "stress": 1,
+  "stress": 0,
   "serial": 1,
-  "det": 3,
+  "det": 2,
   "replays": 10,
-  "seeds": 4,
+  "seeds": 8,
   "max_targets": 2,
-  "budget_min": 150,
+  "budget_min": 320,
   "run_timeout_min": 45,
   "target_timeout_min": 8,
   "target_plain": 3,
-  "ablation_tests": 3,
-  "mode": "diagnose"
+  "ablation_tests": 2,
+  "diagnose_first": true,
+  "fail_replays": 10
  },
  "pw_dir": "./apps/tests",
  "pw_args": [
   "--project=chromium"
  ],
  "server_outside_runner": false,
- "runs": [],
- "epoch": "2026-11-18T09:54:00Z",
- "measured_at": "2026-11-18T09:54:03Z",
+ "runs": [
+  {
+   "label": "baseline-1",
+   "mode": "plain",
+   "seed": null,
+   "filters": [],
+   "extra": [],
+   "server_mode": null,
+   "det_flags": [],
+   "rc": 0,
+   "wall_s": 42.3,
+   "outcomes": {
+    "api-call.test.ts::api calls::should return plain text [chromium]": "passed",
+    "api-call.test.ts::api calls::should include headers from both event and returned request [chromium]": "passed",
+    "api-call.test.ts::api calls::should serve the page for HEAD when the GET handler returns nothing [chromium]": "passed",
+    "api-call.test.ts::api calls::should pass an error thrown by an API route to Nitro's error hook [chromium]": "passed",
+    "api-call.test.ts::api calls::should preserve multiple Set-Cookie headers on redirect (RFC 6265) [chromium]": "passed",
+    "client-only.test.ts::clientOnly::renders a default export only on the client [chromium]": "passed",
+    "client-only.test.ts::clientOnly::renders a named export when the loader resolves to the component [chromium]": "passed",
+    "http-header.test.ts::http header::should set http header [chromium]": "passed",
+    "http-header.test.ts::http header::should set http header with deferred data [chromium]": "passed",
+    "hydration-navigation.test.ts::navigates while the initial route module is still loading [chromium]": "passed",
+    "hydration-navigation.test.ts::handles a pathname change before hydration [chromium]": "passed",
+    "hydration-navigation.test.ts::handles a streaming pathname change before hydration [chromium]": "passed",
+    "hydration-navigation.test.ts::handles a streaming query string change before hydration [chromium]": "passed",
+    "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]": "passed",
+    "hydration.test.ts::SSR Hydration::should render SSR content and hydrate successfully [chromium]": "passed",
+    "no-js-action.test.ts::actions without JavaScript::returning json() stays on the submitting page and keeps the result [chromium]": "passed",
+    "no-js-action.test.ts::actions without JavaScript::returning reload() stays on the submitting page [chromium]": "passed",
+    "no-js-action.test.ts::actions without JavaScript::returning redirect() follows the given location [chromium]": "passed",
+    "no-js-action.test.ts::actions without JavaScript::returning a plain value stays on the submitting page and keeps the result [chromium]": "passed",
+    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(ignored)route0.tsx` to `nested/route0` [chromium]": "passed",
+    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(ignored)route1.tsx` to `nested/route1` [chromium]": "passed",
+    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/(ignored)route2.tsx` to `nested/route2` [chromium]": "passed",
+    "route-groups.test.ts::route-groups::should resolve `/routes/nested/(level1)/(level2)/route3.tsx` to `nested/route3` [chromium]": "passed",
+    "server-function.test.ts::server-function::should have isServer true in the server function - nested [chromium]": "passed",
+    "server-function.test.ts::server-function::should have isServer true in the server function - const [chromium]": "passed",
+    "server-function.test.ts::server-function::should have an id of type string in the server function meta - nested [chromium]": "passed",
+    "server-function.test.ts::server-function::should externalize node builtin in server function - nested [chromium]": "passed",
+    "server-function.test.ts::server-function::should externalize npm module in server function - nested [chromium]": "passed",
+    "server-function.test.ts::server-function::should have isServer true in the server function - toplevel [chromium]": "passed",
+    "server-function.test.ts::server-function::should have an id of type string in the server function meta - toplevel [chromium]": "passed",
+    "server-function.test.ts::server-function::should externalize node builtin in server function - toplevel [chromium]": "passed",
+    "server-function.test.ts::server-function::should externalize npm module in server function - toplevel [chromium]": "passed",
+    "server-function.test.ts::server-function::should build when anon default export and server functions [chromium]": "passed",
+    "server-function.test.ts::server-function::should build with generator as server function [chromium]": "passed",
+    "server-function.test.ts::server-function::should build with a server function ping [chromium]": "passed",
+    "server-function.test.ts::server-function::should round-trip a custom class through a custom seroval plugin [chromium]": "passed",
+    "server-function.test.ts::server-function::should build with a server function w/ form data [chromium]": "passed",
+    "server-function.test.ts::server-function::should build with a server function w/ blob data [chromium]": "passed",
+    "server-function.test.ts::server-function::should send files next to other arguments [chromium]": "passed",
+    "server-function.test.ts::server-function::should remove exports for non-function values when top-level use server is used [chromium]": "passed",
+    "server-function.test.ts::server-function::should build with a env:server [chromium]": "passed",
+    "server-function.test.ts::server-function::should build with a server function including an unused try/catch variable [chromium]": "passed",
+    "server-function.test.ts::server-function::should build with a server function including an unused destructured variable [chromium]": "passed",
+    "server-function.test.ts::server-function::should build with a server function only referenced inside onClick [chromium]": "passed",
+    "server-function.test.ts::server-function::should propagate a server function error with non-latin1 message [chromium]": "passed",
+    "server-function.test.ts::server-function::should send the error the onError module returns in place of the thrown one [chromium]": "passed",
+    "single-flight-cookie.test.ts::single flight mutation::should apply a cookie set by a thrown redirect to the same flight [chromium]": "passed"
+   },
+   "errors": {},
+   "trace": null,
+   "counts": {
+    "passed": 47
+   }
+  }
+ ],
+ "epoch": "2026-11-18T10:14:00Z",
+ "measured_at": "2026-11-18T10:14:46Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "diagnosis": [
   {
@@ -37,14 +104,18 @@
    "project": "chromium",
    "known": false,
    "replays": [
-    "passed",
-    "passed"
+    "timedOut",
+    "timedOut"
    ],
    "walls": [
-    6.6,
-    6.1
+    40.4,
+    39.4
    ],
    "matched_key": "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]",
+   "errors": [
+    "Test timeout of 30000ms exceeded.",
+    "Test timeout of 30000ms exceeded."
+   ],
    "browser": {
     "status": "stable",
     "distinct_fingerprints": 1,
@@ -71,46 +142,23 @@
      "summary": {
       "runs": 2,
       "tests": 1,
-      "stable": 0,
-      "diverged": 1,
+      "stable": 1,
+      "diverged": 0,
       "missing": 0,
       "outcome_unstable": 0,
       "order_identical": true,
-      "reasons": {
-       "time": 1
-      }
+      "reasons": {}
      },
      "tests": [
       {
        "nodeid": "src/e2e/hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]",
-       "status": "diverged",
-       "divergence": {
-        "run_a": 0,
-        "run_b": 1,
-        "index": 275,
-        "window": null,
-        "event_a": {
-         "t": 0,
-         "s": "time",
-         "o": "setTimeout",
-         "at": "<deps>/.vite-temp/vite.config.ts.timestamp-1794995640000-e4907c104bc94.mjs:745",
-         "v": "fire+1000000000"
-        },
-        "event_b": {
-         "t": 0,
-         "s": "time",
-         "o": "Date.now",
-         "at": "<deps>/vite/dist/node/chunks/node.js:3092",
-         "v": "268000"
-        },
-        "reason": "time",
-        "description": "event #275: [time] setTimeout @ <deps>/.vite-temp/vite.config.ts.timestamp-1794995640000-e4907c104bc94.mjs:745 = fire+1000000000  <>  [time] Date.now @ <deps>/vite/dist/node/chunks/node.js:3092 = 268000"
-       }
+       "status": "stable",
+       "divergence": null
       }
      ]
     }
    ]
   }
  ],
- "elapsed_min": 0.2
+ "targets": []
 }
