@@ -23,7 +23,8 @@ def job(tmp_path: Path, project: Path, name: str, *extra: str) -> tuple[int, dic
     out = tmp_path / name
     summary_md = tmp_path / f"{name}.md"
     env = {"PATH": "/usr/bin:/bin", "HOME": str(tmp_path), "GITHUB_STEP_SUMMARY": str(summary_md),
-           "FENVIX_CACHE_ROOT": str(tmp_path / "machine-cache"), "TMPDIR": str(tmp_path)}
+           "FENVIX_CACHE_ROOT": str(tmp_path / "machine-cache"), "TMPDIR": str(tmp_path),
+           "FENVIX_AUDIT_SHARE": "0"}  # no cache audit: it would run a random 5% of the reusable tests fresh
     r = subprocess.run([sys.executable, str(WRAPPER), *extra, "--project", str(project), "--python", sys.executable,
                         "--out", str(out), *([] if extra[:1] == ("verify",) else ["--key", "demo/project"])],
                        env=env, capture_output=True, text=True, timeout=600)

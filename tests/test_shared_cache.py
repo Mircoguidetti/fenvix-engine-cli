@@ -308,8 +308,8 @@ def test_fenvix_run_on_two_machines_sharing_the_service(service, tmp_path):
         verify = extra[:1] == ("verify",)
         args = [sys.executable, str(wrapper), *extra, "--project", str(proj), "--python", sys.executable, "--out",
                 str(out)]
-        if not verify:
-            args += ["--key", "acme/proj", "--cache", f"{svc.url}/org-a"]
+        if not verify:  # no cache audit: it would run a random 5% of the reusable tests fresh (counted as run)
+            args += ["--key", "acme/proj", "--cache", f"{svc.url}/org-a", "--audit", "0"]
         r = subprocess.run(args, env=env, capture_output=True, text=True, timeout=600)
         name = "verify.json" if verify else "summary.json"
         return r, json.loads((out / name).read_text())
