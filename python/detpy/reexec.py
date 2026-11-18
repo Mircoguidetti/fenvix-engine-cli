@@ -163,6 +163,7 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
     # left every installed module to be compiled from source at every run
     project = [d for d in todo if root_real is not None and os.path.realpath(d) == root_real]
     libs = [d for d in todo if d not in project]
+    t_compile = time.time()
     for dirs_, extra in ((libs, []), (project, ["-x", _EXCLUDE])):
         if not dirs_:
             continue
@@ -171,6 +172,8 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
                            stderr=subprocess.DEVNULL)
         if p.returncode not in (0, 1):  # 1: some file does not compile (it never will); else: interrupted
             return time.perf_counter() - t0
+    if project:
+        _drop_fresh_pycs(project, prefix, t_compile)
     try:
         import json
 
@@ -181,6 +184,39 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
     except OSError:
         pass
     return time.perf_counter() - t0
+
+
+def _drop_fresh_pycs(dirs: list, prefix: str, t_compile: float) -> None:
+    """Remove the cached bytecode of project sources modified less than 2 s before the compile started (or after).
+
+    A timestamp ``.pyc`` records its source's mtime in whole seconds (and its size): an edit of the same size within
+    that second is not seen by compileall's up-to-date check nor by the import system, which would then run stale
+    code under the new content's digest. Such a module is compiled from source (under the same fixed seed) until a
+    later precompile, when its mtime is old enough to be told apart.
+    """
+    import importlib.util
+    import re
+
+    exclude = re.compile(_EXCLUDE)
+    limit = t_compile - 2.0
+    saved = sys.pycache_prefix
+    sys.pycache_prefix = prefix
+    try:
+        for d in dirs:
+            for root, subdirs, files in os.walk(d):
+                subdirs[:] = [x for x in subdirs if not exclude.search(os.path.join(root, x) + os.sep)]
+                for f in files:
+                    if not f.endswith(".py"):
+                        continue
+                    src = os.path.join(root, f)
+                    try:
+                        if os.stat(src).st_mtime < limit:
+                            continue
+                        os.unlink(importlib.util.cache_from_source(src))
+                    except (OSError, ValueError, NotImplementedError):
+                        continue
+    finally:
+        sys.pycache_prefix = saved
 
 
 def dir_stamp(d: str) -> str:

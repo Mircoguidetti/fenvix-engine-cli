@@ -56,6 +56,7 @@ def test_library_dirs_inside_a_virtual_environment_are_precompiled(tmp_path, mon
     (proj / "venv" / "inner").mkdir(parents=True)
     (proj / "venv" / "inner" / "v.py").write_text("V = 1\n")
     (proj / "m.py").write_text("Y = 1\n")
+    os.utime(proj / "m.py", (1, 1))  # older than 2 s: its bytecode is kept (see the next test)
     monkeypatch.setenv("DETPY_PYC_CACHE", str(tmp_path / "pyc"))
     monkeypatch.setattr(reexec, "precompile_dirs", lambda rootdir: [str(site), str(proj)])
     reexec.precompile("0", str(proj))
@@ -64,3 +65,29 @@ def test_library_dirs_inside_a_virtual_environment_are_precompiled(tmp_path, mon
     assert any(os.sep + "lib1" + os.sep in c for c in compiled)
     assert any(os.path.basename(c).startswith("m.") for c in compiled)
     assert not any(os.path.basename(c).startswith("v.") for c in compiled)
+
+
+def test_project_bytecode_of_fresh_sources_is_dropped(tmp_path, monkeypatch):
+    """A source modified within 2 s of the precompile keeps no cached bytecode: a same-size edit in the same second
+    would not change the timestamp pyc's (mtime in seconds, size) and stale code would run."""
+    import importlib.util
+    import sys
+    import time
+
+    proj = tmp_path / "proj"
+    proj.mkdir()
+    old, fresh = proj / "old.py", proj / "fresh.py"
+    old.write_text("X = 10\n")
+    fresh.write_text("Y = 10\n")
+    t = time.time() - 3600
+    os.utime(old, (t, t))
+    monkeypatch.setenv("DETPY_PYC_CACHE", str(tmp_path / "pyc"))
+    monkeypatch.setattr(reexec, "precompile_dirs", lambda rootdir: [str(proj)])
+    reexec.precompile("0", str(proj))
+    prefix = reexec.pyc_cache_dir("0")
+    monkeypatch.setattr(sys, "pycache_prefix", prefix)
+    assert os.path.exists(importlib.util.cache_from_source(str(old)))
+    assert not os.path.exists(importlib.util.cache_from_source(str(fresh)))
+    os.utime(fresh, (t, t))
+    reexec.precompile("0", str(proj))
+    assert os.path.exists(importlib.util.cache_from_source(str(fresh)))

@@ -2,7 +2,9 @@ PARTIAL
 
 # rust-hotpaths: capture overhead of `--det --det-cache`, hot paths to Rust
 
-Branch `claude/rust-hotpaths` (base: `claude/cache-proof-step1` at 24b6d15; its later commits, results only, merged).
+Branch `claude/rust-hotpaths` (base: `claude/cache-proof-step1` at 24b6d15; its later commits merged, including
+df409cb: netlink, `uuid.getnode`, find_library helpers; no conflict with the moved code, which receives its data
+through the same per-context maps).
 Labels: MEASURED (numbers from runs named here), ESTIMATED (derived), not marked = description. Profile of the base
 engine and method: [INTERMEDIATE-1.md](INTERMEDIATE-1.md).
 
@@ -93,6 +95,7 @@ In order of measured gain. "Identical" = checked as described in "Equivalence".
 | 8 | Env capture: a variable the current context already read is not recorded again, so the caller frame walk is skipped (outside imports) | `proofcache.py` `_note_env` | click env samples 87 (p2) -> 44 (p3) | yes |
 | 9 | Store save skipped when nothing was touched and no written path is new (it rewrote the same bytes) | `proofcache.rs` `save` | home-assistant warm run: 1.2 s | yes (file untouched) |
 | 10 | Trace writer serializes each test record by reference (was a deep copy of every test's events) | `trace.rs` | `--det`, every test | yes (byte-identical) |
+| 11 | Stale project bytecode: a project `.pyc` records its source's mtime in whole seconds plus size, so an edit of the same size within that second is seen neither by compileall nor by the import system and the next run executes the old code under the new content digest (a wrong recorded result). The base's `test_module_level_change_reruns_every_test_that_had_the_module_loaded` fails that way 1 in 6 runs (MEASURED on 24b6d15); a faster engine hit it more often. After the project precompile, the bytecode of sources modified less than 2 s before it is dropped: those modules compile from source (same fixed seed) until a later precompile. (Hash-checked `.pyc` would also fix it, but compileall then recompiles the whole project at every run.) | `reexec.py` `_drop_fresh_pycs` | correctness; one `os.walk` + `stat` of the project per run | **behaviour change of `--det`**, see below |
 
 Measured and dropped: a Rust `repr` of the random state for `seeds.end_test` (no gain: CPython's repr is already C);
 raw `METH_FASTCALL` monitoring callbacks (not available under the abi3/py39 limited API the wheel is built for).
@@ -100,7 +103,7 @@ raw `METH_FASTCALL` monitoring callbacks (not available under the abi3/py39 limi
 Sizes: `python/detpy` 6,124 lines (from ~6,200), `crates/` 4,705 (from ~3,800). The new Rust: `record.rs` (per-test
 assembly), `SocketScan`, `tracer_prefixes`, `dist_identity`, `unit_ranges`, `record_session`.
 
-### The one behaviour change: precompile of installed modules (#2)
+### The two bytecode changes (#2, #11)
 
 Before, under `--det` every installed module was compiled from source at every run (deterministic: same fixed hash
 seed); now it is loaded from the deterministic bytecode cache, compiled under the same seed, which is what
@@ -108,7 +111,11 @@ seed); now it is loaded from the deterministic bytecode cache, compiled under th
 could in principle behave differently between the two (the module docstring explains why a `.pyc` and a fresh compile
 can lay a frozenset out differently); both are deterministic, and the verification walk compares the cache with
 fresh `--det` runs of the same engine. It is a separate commit (58dddd1, reexec.py hunk) and can be reverted alone:
-the capture work does not depend on it. The other nine changes keep keys, receipts and decisions identical.
+the capture work does not depend on it.
+
+#11 changes which project modules come from bytecode: only sources touched in the last 2 s before a run, which are
+compiled from source instead of being loaded from a possibly stale `.pyc`. Runs whose project files are older than
+that load exactly what they loaded before. The other nine changes keep keys, receipts and decisions identical.
 
 ## Equivalence (old path vs new path)
 
@@ -141,7 +148,9 @@ the capture work does not depend on it. The other nine changes keep keys, receip
 * **On real environments** (`equiv_probe.py`, run inside each project's venv): file facts old vs new on up to 3,000
   of the project's files, distribution identity on every installed distribution. p3 (MEASURED): home-assistant 3,000 of its files and **1,727 of 1,727 distributions identical** (all on the Rust
   path), facts 9.1 s -> 5.8 s; click 91 files, 10 distributions; pygments 405 files, 19 distributions: identical.
-* Engine suite: `pytest tests` 154 passed, 6 skipped; `cargo test -p detpy-core` 49 passed (MEASURED, local).
+* Engine suite on the final HEAD (with `claude/cache-proof-step1`'s df409cb merged): `pytest tests` 157 passed,
+  7 skipped; `cargo test -p detpy-core` 49 passed (MEASURED, local). `test_proofcache.py` 6 of 6 runs green after
+  #11 (it failed 1 in 3 before #11 on this branch, 1 in 6 on the base).
 * Review R-009 tests: `tests/test_review_r009.py` as on `claude/cache-proof-step1` (11 tests) passes. The original
   version on `claude/review-r009-tests` fails one test, `test_git_head_read_is_an_input`, on this branch **and on the
   base 24b6d15** alike (MEASURED): `claude/cache-proof-step1` amended that assertion for its F4 fix (a git child reads
