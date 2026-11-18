@@ -58,7 +58,7 @@ index 0000000..67e4a56
 +  - EngineCommit:
 +      type: string
 +      # claude/runner-node: bootstrap.sh with install_node/build_detjs and fenvix-run with the Node path
-+      default: 5fffd755551052598d619ffec01001abeeb8f307
++      default: 6d1028759ff330b49eff2da9055db61c70a7e50f
 +      description: commit of Mircoguidetti/fenvix-engine-cli whose runner/bootstrap.sh and fenvix-run are installed
 +  - FenvixHome:
 +      type: string

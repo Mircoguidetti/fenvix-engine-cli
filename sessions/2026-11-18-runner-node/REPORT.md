@@ -2,6 +2,10 @@ PARTIAL
 
 # runner-node: Node (Vitest, Jest) on `runs-on: fenvix`
 
+Why PARTIAL: items 1-4 are done and tested; item 6 ran on GitHub (ufo 491 passed, flaky replays reproduced on a
+hosted machine) but its first run is red because of a check of mine (fixed, run 2 queued); item 5's patch has the
+component but not the recipe hunk, because fenvix-app could not be read from this session.
+
 Session of 2026-11-18. Branch `claude/runner-node` (from `claude/runner-prototype-ee21he` @ `4391eb0`). Nothing pushed
 anywhere else; fenvix-app untouched (item 5 is a patch file here).
 
@@ -14,7 +18,7 @@ anywhere else; fenvix-app untouched (item 5 is a patch file here).
 | 3 | mixed repository: one job per language | done | fixture `mixed` (pytest + Vitest/pnpm), test + 2 hosted jobs |
 | 4 | Vitest and Jest fixtures with an order-dependent flaky test; summary correct; the replay reproduces | done | the tests run each replay command and require the test to fail again |
 | 5 | AWS image: exact recipe change as a patch file | done, with a limit | `image.patch` (a new Image Builder component, every phase run here); fenvix-app could not be read (see Limits) |
-| 6 | one hosted Actions run with a public Vitest project | half run | [run 44346012832](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44346012832): `engines` passed on a hosted machine (bootstrap in 48 s); the ufo, mixed and fixtures jobs were still queued for a machine when this report was written (see below) |
+| 6 | one hosted Actions run with a public Vitest project | done on GitHub, one check corrected | [run 44346012832](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44346012832): unjs/ufo **491 tests passed** under detjs on Node 26.13.1; engines, mixed-python, mixed-node, fixtures jobs passed; the ufo job's own summary check failed (2 type checks without a fingerprint, see below), fixed in `6d10287`, [run 44368582012](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44368582012) queued |
 
 ## What changed
 
@@ -38,7 +42,7 @@ anywhere else; fenvix-app untouched (item 5 is a patch file here).
     explanation` (explanation names the polluting test when found).
   * **Same format**: schema `fenvix-summary/2`, one builder (`new_summary`) for both languages; the Node and Python
     summaries have exactly the same keys (tested). New keys for both: `schema, language, runner, cache_status,
-    trace_file, fingerprints, timings, runner_args, install`; Python now also writes `--det-trace` (fingerprints)
+    trace_file, fingerprints, not_traced, timings, runner_args, install`; Python now also writes `--det-trace` (fingerprints)
     and maps JUnit times to node ids (timings); `pytest_args` kept for Python readers (null for Node). Python
     flaky entries carry an `explanation` too (`replay_reproduces: null`: the Python path does not re-run its
     whole-suite replay; the suite run itself is the evidence, as before). Step summary: same table; for Node a
@@ -66,7 +70,7 @@ anywhere else; fenvix-app untouched (item 5 is a patch file here).
 
 ## Measurements (MEASURED in this container unless said otherwise)
 
-* `tests/test_runner_node.py`: **9 passed** with detjs from the bootstrapped `$FENVIX_HOME` on Node 26.13.1 (jobs'
+* `tests/test_runner_node.py`: **10 passed** (12 with the wrapper tests, after the `not_traced` fix; 9 before it) with detjs from the bootstrapped `$FENVIX_HOME` on Node 26.13.1 (jobs'
   view: `PATH=$FENVIX_HOME/bin:$FENVIX_HOME/node/bin`), also 7/7 on Node 22.23.5 before the last two were added;
   `tests/test_runner_wrapper.py` (Python path) 2 passed; whole engine suite `pytest tests`: **120 passed,
   6 skipped** (4m54s).
@@ -97,15 +101,24 @@ Vitest project, setup-node `lts/*`, pnpm via corepack, `fenvix-run --lang node`,
 of the summaries is run and must fail the flaky test again; then `tests/test_runner_node.py` and
 `tests/test_runner_wrapper.py`).
 
-Pushed at 16:20Z: [run 44346012832](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44346012832).
-It has been **queued** since then: every run of the repository created after ~16:20Z is queued (go-tests,
-go-harness, jvm-tests, node-cache-proof), while the l2-browser-r3 runs started at 14:47Z hold the account's hosted
-machines (their `experiment` jobs run for hours). The run got a machine at 17:04Z: the **`engines` job passed** (job 134948472904: `runner/bootstrap.sh engines` with
-`FENVIX_LANGS="python node"` on ubuntu-latest in 48 s: Node 26.13.1 checksum, corepack, detjs fetched at `8e9209b`
-and built, detpy wheel; artifact `fenvix-engines` kept 3 days). The four test jobs (`ufo`, `mixed-python`,
-`mixed-node`, `fixtures`) were created at 17:04:58Z and were still **queued** at 17:45Z for the same reason. They run
-when machines free (the artifact outlives the wait); nothing needs to be re-pushed. Their results are on the run page. Until it has run, item 6 is not shown on GitHub; what it runs was run in this
-container (Measurements: bootstrap, ufo 491 passed, mixed, fixtures, wrapper tests).
+Run 1, [44346012832](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44346012832) (commit `5fffd75`),
+pushed 16:20Z, queued until 17:04Z (every run of the repository was queued behind other sessions' long harness
+jobs), test jobs ran 17:42-18:10Z. MEASURED on GitHub-hosted ubuntu-latest:
+
+| job | result |
+|---|---|
+| `engines` | passed: `runner/bootstrap.sh engines` (`FENVIX_LANGS="python node"`) in 48 s: Node 26.13.1 checksum OK, corepack, detjs fetched at `8e9209b` and built, detpy wheel |
+| `ufo` | **unjs/ufo @ `f06c800d`: 491 tests passed** (14 files + type checks, Vitest 4.1.5, `pnpm install --frozen-lockfile` via corepack pnpm@10.33.2 in 2.6 s, `--typecheck` taken from the test script, Node 26.13.1 from setup-node `lts/*`), step summary written, `fenvix-run` exit 0. The job is **red** because of my own check step: it required a fingerprint for every reported test, and the 2 type-check tasks of `test/types.test-d.ts` (checked by tsc, never executed) are not in the detjs trace (489 traced). |
+| `mixed-python` | passed: `fenvix-run --lang python` on the mixed fixture, 2 tests |
+| `mixed-node` | passed: `fenvix-run --lang node` on the same fixture, 2 tests, pnpm@10.28.0 via corepack |
+| `fixtures` | passed: Vitest fixture flaky `registry::starts empty`, Jest fixture flaky `cache::starts empty` + 1 real failure; **all 4 replay commands of the summaries (file replay and minimal pair, each runner) run again: the flaky test failed every time**; `tests/test_runner_node.py` + `tests/test_runner_wrapper.py`: 11 passed |
+
+Fix (`6d10287`): such tests are no longer just missing a fingerprint: summary key `not_traced` (both languages; ufo:
+the 2 type checks), a line in the step summary, and Vitest's repeated file suite removed from type-check ids
+(`test/types.test-d.ts::query::...`). The check now requires `fingerprints ∪ not_traced = outcomes` and only type
+checks in `not_traced`. Checked locally on ufo (489 + 2) and by a new test (12 wrapper tests pass). Run 2,
+[44368582012](https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44368582012) (`6d10287`), was queued
+when this report was written; it repeats run 1 with the fix.
 
 ## Limits and open points
 
@@ -118,7 +131,7 @@ container (Measurements: bootstrap, ufo 491 passed, mixed, fixtures, wrapper tes
 * **No Node cache with proof yet**: every Node test runs in every job (`reused_with_proof: 0`); the wiring is in
   place and tested as a no-op, the first real use comes with `claude/node-cache-proof`.
 * detjs pinned at `claude/node-l0` `8e9209b` (bootstrap `FENVIX_DETJS_REF`, image `EngineCommit` pins this
-  branch's `5fffd75`, which carries that ref). detjs was built and measured on Node 22 by the Node L0 work; here it
+  branch's `6d10287`, which carries that ref). detjs was built and measured on Node 22 by the Node L0 work; here it
   ran on Node 26.13.1 for the fixtures and ufo without a difference, a wider Node 26 check (the harness projects) is
   not done.
 * Replay commands use `detjs` on PATH (our machines: `$FENVIX_HOME/bin/detjs`); a developer elsewhere needs detjs
