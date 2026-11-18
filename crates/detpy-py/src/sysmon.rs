@@ -331,17 +331,20 @@ pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>) -
 // socket (listed in /proc/self/net/{tcp,tcp6,udp,udp6}) makes the context that is ending uncacheable.
 
 fn socket_fds() -> Option<HashMap<String, String>> {
+    use std::os::unix::fs::{FileTypeExt, MetadataExt};
+    use std::os::unix::io::FromRawFd;
     let rd = std::fs::read_dir("/proc/self/fd").ok()?;
     let mut cur = HashMap::new();
     for e in rd.flatten() {
         let name = e.file_name();
         let Some(fd) = name.to_str() else { continue };
-        let Ok(link) = std::fs::read_link(e.path()) else { continue };
-        let Some(l) = link.to_str() else { continue };
-        if let Some(rest) = l.strip_prefix("socket:[") {
-            if let Some(ino) = rest.strip_suffix(']') {
-                cur.insert(fd.to_string(), ino.to_string());
-            }
+        let Ok(n) = fd.parse::<i32>() else { continue };
+        // fstat of the descriptor itself: a socket's inode is the one /proc shows as "socket:[inode]" (one cheap
+        // system call instead of a readlink through procfs); the File is never dropped, so nothing is closed
+        let f = std::mem::ManuallyDrop::new(unsafe { std::fs::File::from_raw_fd(n) });
+        let Ok(m) = f.metadata() else { continue };
+        if m.file_type().is_socket() {
+            cur.insert(fd.to_string(), m.ino().to_string());
         }
     }
     Some(cur)

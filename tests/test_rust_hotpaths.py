@@ -65,6 +65,12 @@ def test_socket_scan_matches_reference():
         except OSError:
             pass
     assert [x[1] for x in seq] == [x[2] for x in seq], seq
+    # the Rust scan identifies a socket by fstat; the old one by the /proc link: same inode
+    t = socket.socket()
+    try:
+        assert os.readlink(f"/proc/self/fd/{t.fileno()}") == f"socket:[{os.fstat(t.fileno()).st_ino}]"
+    finally:
+        t.close()
     assert dict((w, a) for w, a, _ in seq)["tcp listener"] is True
     assert dict((w, a) for w, a, _ in seq)["unix pair"] is False
 
