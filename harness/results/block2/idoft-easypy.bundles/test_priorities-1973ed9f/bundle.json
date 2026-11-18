@@ -1,0 +1,78 @@
+{
+  "test": "tests/test_signals.py::test_priorities",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "order",
+  "prefix_length": 165,
+  "minimal_length": 3,
+  "polluters": [
+    "test_package.py::test_package[random]",
+    "test_package.py::test_package[logging]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[random]",
+    "test_package.py::test_package[logging]",
+    "tests/test_signals.py::test_priorities"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "ea4fb5a5582b54b291e243a94627bb92"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = cdd21b542277e039ece246d30c22bab6",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "easypy/logging.py:507",
+      "v": "1000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "cdd21b542277e039ece246d30c22bab6"
+    },
+    "fingerprints": [
+      "d843994a2347f199222b9e8ea568d104",
+      "ea4fb5a5582b54b291e243a94627bb92"
+    ]
+  },
+  "runs": 25,
+  "seconds": 28.38,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_priorities-1973ed9f/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_priorities-1973ed9f",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_priorities-1973ed9f"
+}

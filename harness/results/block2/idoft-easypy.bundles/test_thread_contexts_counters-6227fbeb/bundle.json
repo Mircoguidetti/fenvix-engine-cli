@@ -1,0 +1,78 @@
+{
+  "test": "tests/test_concurrency.py::test_thread_contexts_counters",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 204,
+  "minimal_length": 3,
+  "polluters": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]",
+    "tests/test_concurrency.py::test_thread_contexts_counters"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "ee3f7d9761addf38e031a6f1029753ea"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = 7d828594ff79b2efe40cd43423327095",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "easypy/logging.py:507",
+      "v": "1000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "7d828594ff79b2efe40cd43423327095"
+    },
+    "fingerprints": [
+      "f98f9850328dd27e5067d83ee48e893c",
+      "ee3f7d9761addf38e031a6f1029753ea"
+    ]
+  },
+  "runs": 38,
+  "seconds": 64.37,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_thread_contexts_counters-6227fbeb/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_thread_contexts_counters-6227fbeb",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_thread_contexts_counters-6227fbeb"
+}

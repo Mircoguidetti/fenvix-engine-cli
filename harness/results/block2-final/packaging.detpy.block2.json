@@ -1,0 +1,554 @@
+{
+ "name": "packaging",
+ "kind": "popular",
+ "status": "ok",
+ "python": "3.13",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009037",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 48.03,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 47.88,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 48.241,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 48.612,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 48.412,
+   "tests": 64198,
+   "failing": [
+    "tests/test_manylinux.py::test_module_declaration[1-glibc0-False]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 48.391,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 48.288,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 48.163,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 48.837,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 48.591,
+   "tests": 64198,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 48.426,
+   "tests": 64198,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux_glibc3"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 48.03,
+   "tests": 64198,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux_glibc3"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 48.666,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 48.705,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 48.245,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 48.863,
+   "tests": 64198,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2010"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 48.635,
+   "tests": 64198,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 48.496,
+   "tests": 64198,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 48.859,
+   "tests": 64198,
+   "failing": [
+    "tests/test_manylinux.py::test_module_declaration[2010-glibc1-False]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 48.563,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 48.244,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 48.399,
+   "tests": 64198,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 48.315,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 47.99,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 48.413,
+   "tests": 64198,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 48.815,
+   "tests": 64198,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 48.641,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 48.002,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 48.887,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 48.56,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 48.17,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 48.317,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 48.389,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 48.582,
+   "tests": 64198,
+   "failing": [
+    "tests/test_manylinux.py::test_glibc_version_string_fail"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 48.837,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 48.857,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 48.87,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 48.396,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 48.256,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 48.352,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 48.502,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 48.2,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 48.857,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 48.612,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 48.058,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 48.547,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 48.973,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 48.489,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 48.467,
+   "tests": 64198,
+   "failing": [
+    "tests/test_tags.py::TestSysTags::test_linux_use_manylinux_compatible_none"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 48.773,
+   "tests": 64198,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [],
+ "flaky_failing": [
+  "tests/test_manylinux.py::test_glibc_version_string_fail",
+  "tests/test_manylinux.py::test_module_declaration[1-glibc0-False]",
+  "tests/test_manylinux.py::test_module_declaration[2010-glibc1-False]",
+  "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2010",
+  "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014",
+  "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi",
+  "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux_glibc3",
+  "tests/test_tags.py::TestSysTags::test_linux_use_manylinux_compatible_none"
+ ],
+ "bundles": [
+  {
+   "test": "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "order",
+   "prefix_length": 61436,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag",
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert ['linux_i686'...39_i686', ...] == ['linux_i686'...14_i686', ...]",
+    "/tmp/work/src/packaging/tests/test_tags.py:852"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "19c7fcfb84a2e70a49ad0c5548606ad4"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "e3f6f6e6b09d71acca7e5477d0bba141",
+     "19c7fcfb84a2e70a49ad0c5548606ad4"
+    ]
+   },
+   "runs": 40,
+   "seconds": 366.65,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/packaging/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/packaging/detpy/bundles/test_linux_platforms_manylinux2014_i386_abi-2460d58f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/packaging/detpy/bundles/test_linux_platforms_manylinux2014_i386_abi-2460d58f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/packaging/detpy/bundles/test_linux_platforms_manylinux2014_i386_abi-2460d58f",
+   "first_failing_seed": 10
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi"
+  ]
+ },
+ "families_by_polluter": {
+  "tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag": [
+   "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi"
+  ]
+ },
+ "collected": 64198,
+ "seconds": 2808.71
+}

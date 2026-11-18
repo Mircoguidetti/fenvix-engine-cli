@@ -1,0 +1,1706 @@
+{
+ "targets": 388,
+ "repos": 28,
+ "repos_with_both": 28,
+ "targets_with_both": 388,
+ "by_K": {
+  "1": {
+   "detpy_failed": 115,
+   "detpy_found_replayed": 105,
+   "detpy_found_any_fp": 115,
+   "randomly_failed_not_always": 109,
+   "randomly_10_of_10_not_always": 107,
+   "randomly_failed": 113,
+   "randomly_rerun_minutes_total": 27.224633333333326,
+   "detpy_explore_minutes_total": 4.5972,
+   "detpy_repro_minutes_total": 65.77366666666667,
+   "randomly_failed_and_replays_10_of_10": 111,
+   "detpy_minutes_per_repo_median": 1.2732083333333333,
+   "detpy_minutes_per_repo_max": 12.680483333333335,
+   "detpy_minutes_total": 70.37086666666667,
+   "randomly_minutes_per_repo_median": 0.011866666666666666,
+   "randomly_minutes_per_repo_max": 1.30395,
+   "randomly_minutes_total": 3.4934
+  },
+  "5": {
+   "detpy_failed": 311,
+   "detpy_found_replayed": 300,
+   "detpy_found_any_fp": 310,
+   "randomly_failed_not_always": 311,
+   "randomly_10_of_10_not_always": 309,
+   "randomly_failed": 315,
+   "randomly_rerun_minutes_total": 58.88323333333335,
+   "detpy_explore_minutes_total": 23.182433333333332,
+   "detpy_repro_minutes_total": 289.56283333333334,
+   "randomly_failed_and_replays_10_of_10": 313,
+   "detpy_minutes_per_repo_median": 3.878675,
+   "detpy_minutes_per_repo_max": 134.1249,
+   "detpy_minutes_total": 312.7452666666667,
+   "randomly_minutes_per_repo_median": 0.06023333333333333,
+   "randomly_minutes_per_repo_max": 6.449816666666667,
+   "randomly_minutes_total": 18.152033333333335
+  },
+  "10": {
+   "detpy_failed": 357,
+   "detpy_found_replayed": 345,
+   "detpy_found_any_fp": 356,
+   "randomly_failed_not_always": 350,
+   "randomly_10_of_10_not_always": 346,
+   "randomly_failed": 354,
+   "randomly_rerun_minutes_total": 76.59208333333332,
+   "detpy_explore_minutes_total": 46.118583333333326,
+   "detpy_repro_minutes_total": 321.4121666666667,
+   "randomly_failed_and_replays_10_of_10": 350,
+   "detpy_minutes_per_repo_median": 4.647399999999999,
+   "detpy_minutes_per_repo_max": 135.0234166666667,
+   "detpy_minutes_total": 367.53075,
+   "randomly_minutes_per_repo_median": 0.12129999999999999,
+   "randomly_minutes_per_repo_max": 12.830733333333335,
+   "randomly_minutes_total": 36.668400000000005
+  },
+  "20": {
+   "detpy_failed": 363,
+   "detpy_found_replayed": 351,
+   "detpy_found_any_fp": 362,
+   "randomly_failed_not_always": 371,
+   "randomly_10_of_10_not_always": 366,
+   "randomly_failed": 375,
+   "randomly_rerun_minutes_total": 79.97595000000001,
+   "detpy_explore_minutes_total": 92.32681666666667,
+   "detpy_repro_minutes_total": 331.5808333333333,
+   "randomly_failed_and_replays_10_of_10": 370,
+   "detpy_minutes_per_repo_median": 5.2338000000000005,
+   "detpy_minutes_per_repo_max": 136.94018333333332,
+   "detpy_minutes_total": 423.90765,
+   "randomly_minutes_per_repo_median": 0.24191666666666667,
+   "randomly_minutes_per_repo_max": 25.60086666666667,
+   "randomly_minutes_total": 73.24266666666668
+  },
+  "50": {
+   "detpy_failed": 374,
+   "detpy_found_replayed": 361,
+   "detpy_found_any_fp": 372,
+   "randomly_failed_not_always": 378,
+   "randomly_10_of_10_not_always": 372,
+   "randomly_failed": 382,
+   "randomly_rerun_minutes_total": 107.20460000000001,
+   "detpy_explore_minutes_total": 230.98441666666668,
+   "detpy_repro_minutes_total": 349.37483333333336,
+   "randomly_failed_and_replays_10_of_10": 376,
+   "detpy_minutes_per_repo_median": 6.487849999999999,
+   "detpy_minutes_per_repo_max": 149.25745,
+   "detpy_minutes_total": 580.35925,
+   "randomly_minutes_per_repo_median": 0.6007,
+   "randomly_minutes_per_repo_max": 64.39376666666666,
+   "randomly_minutes_total": 186.34386666666666
+  }
+ },
+ "reproduced": 361,
+ "replay_10_of_10_identical": 361,
+ "minimal_length_median": 2,
+ "minimal_length_max": 4,
+ "prefix_length_median": 55,
+ "prefix_length_max": 61436,
+ "polluter_named": 278,
+ "setter_named": 82,
+ "kinds": {
+  "order": 278,
+  "brittle": 82,
+  "fails-alone": 1
+ },
+ "divergence_reasons": {
+  "entropy": 21,
+  "outcome-only": 263,
+  "time": 65,
+  "fs": 4,
+  "null": 1,
+  "random": 7
+ },
+ "detpy_status": {
+  "not-failed": 10,
+  "reproduced": 361,
+  "replay-unstable": 12,
+  "broken-by-L0 (fails under every seed)": 4,
+  "not-found": 1
+ },
+ "repro_runs_median": 21,
+ "repro_seconds_median": 25.15,
+ "repro_seconds_max": 424.18,
+ "families_divergence": 46,
+ "families_polluter": 77,
+ "bundles": 365,
+ "flaky_failing_non_target": 152,
+ "randomly_replayed": 382,
+ "randomly_replay_10_of_10": 376,
+ "randomly_replay_some": 4,
+ "randomly_replay_none": 2,
+ "randomly_replay_minutes_total": 107.2046,
+ "standalone": {
+  "repos": 28,
+  "targets": 388,
+  "statuses": {
+   "not-found": 7,
+   "reproduced": 364,
+   "budget": 1,
+   "replay-unstable": 16
+  },
+  "reproduced": 364,
+  "kinds": {
+   "order": 278,
+   "brittle": 82,
+   "fails-alone": 4
+  },
+  "polluter_named": 278,
+  "setter_named": 82,
+  "cause_named": 360,
+  "identical_fingerprint": 364,
+  "minimal_length_median": 2.0,
+  "minimal_length_max": 4,
+  "configs_searched_median": 3.0,
+  "seconds_median": 30.43,
+  "minutes_total": 669.6268333333334
+ },
+ "cpu_differs": 18,
+ "per_repo": {
+  "anyio": {
+   "targets": 16,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 95.211,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 1,
+     "randomly_s": 78.237,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 480.164,
+     "detpy_repro_s": 2490.85,
+     "detpy_seeds_run": 5,
+     "randomly_s": 386.98900000000003,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 955.082,
+     "detpy_repro_s": 2719.22,
+     "detpy_seeds_run": 10,
+     "randomly_s": 769.844,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 1916.142,
+     "detpy_repro_s": 3259.4,
+     "detpy_seeds_run": 20,
+     "randomly_s": 1536.0520000000001,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 4812.657,
+     "detpy_repro_s": 4142.79,
+     "detpy_seeds_run": 50,
+     "randomly_s": 3863.626,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 4,
+   "bundles_reproduced": 12,
+   "flaky_failing_all": 74,
+   "flaky_failing_non_target": 62,
+   "randomly_replay_s": 3910.8959999999997,
+   "detpy_explore_s": 4812.657,
+   "detpy_repro_s": 4142.79,
+   "randomly_seeds_s": 3863.626,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "Intel(R) Xeon(R) 6975P-C",
+   "cpu_randomly": "AMD EPYC 9V45 96-Core Processor"
+  },
+  "arrow": {
+   "targets": 2,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 15.231,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 1,
+     "randomly_s": 6.663,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 73.364,
+     "detpy_repro_s": 465.46,
+     "detpy_seeds_run": 5,
+     "randomly_s": 31.568,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 146.0,
+     "detpy_repro_s": 465.46,
+     "detpy_seeds_run": 10,
+     "randomly_s": 62.816,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 293.801,
+     "detpy_repro_s": 465.46,
+     "detpy_seeds_run": 20,
+     "randomly_s": 125.375,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 732.078,
+     "detpy_repro_s": 465.46,
+     "detpy_seeds_run": 50,
+     "randomly_s": 313.426,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 1,
+   "bundles_reproduced": 2,
+   "flaky_failing_all": 2,
+   "flaky_failing_non_target": 0,
+   "randomly_replay_s": 63.391,
+   "detpy_explore_s": 732.078,
+   "detpy_repro_s": 465.46,
+   "randomly_seeds_s": 313.426,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 9V74 80-Core Processor",
+   "cpu_randomly": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "idoft-accessify": {
+   "targets": 7,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 1.164,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.236,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 5.66,
+     "detpy_repro_s": 74.25,
+     "detpy_seeds_run": 5,
+     "randomly_s": 1.185,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 11.448,
+     "detpy_repro_s": 74.25,
+     "detpy_seeds_run": 10,
+     "randomly_s": 2.401,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 22.945,
+     "detpy_repro_s": 74.25,
+     "detpy_seeds_run": 20,
+     "randomly_s": 4.865,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 57.266,
+     "detpy_repro_s": 74.25,
+     "detpy_seeds_run": 50,
+     "randomly_s": 12.155,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 1,
+   "bundles_reproduced": 7,
+   "flaky_failing_all": 12,
+   "flaky_failing_non_target": 5,
+   "randomly_replay_s": 2.736,
+   "detpy_explore_s": 57.266,
+   "detpy_repro_s": 74.25,
+   "randomly_seeds_s": 12.155,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 9V45 96-Core Processor",
+   "cpu_randomly": "INTEL(R) XEON(R) PLATINUM 8573C"
+  },
+  "idoft-breathe": {
+   "targets": 8,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 2.639,
+     "detpy_repro_s": 98.18,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.509,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 12.903,
+     "detpy_repro_s": 165.01,
+     "detpy_seeds_run": 5,
+     "randomly_s": 2.54,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 25.871000000000002,
+     "detpy_repro_s": 189.99,
+     "detpy_seeds_run": 10,
+     "randomly_s": 5.157,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 52.088,
+     "detpy_repro_s": 189.99,
+     "detpy_seeds_run": 20,
+     "randomly_s": 10.357000000000001,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 129.768,
+     "detpy_repro_s": 189.99,
+     "detpy_seeds_run": 50,
+     "randomly_s": 25.897000000000002,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 3,
+   "families_polluter": 6,
+   "bundles_reproduced": 8,
+   "flaky_failing_all": 11,
+   "flaky_failing_non_target": 3,
+   "randomly_replay_s": 20.899,
+   "detpy_explore_s": 129.768,
+   "detpy_repro_s": 189.99,
+   "randomly_seeds_s": 25.897000000000002,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 7763 64-Core Processor",
+   "cpu_randomly": "AMD EPYC 7763 64-Core Processor"
+  },
+  "idoft-centreon-sdk-python": {
+   "targets": 41,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 2.447,
+     "detpy_repro_s": 116.59,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.524,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 11.518,
+     "detpy_repro_s": 258.89,
+     "detpy_seeds_run": 5,
+     "randomly_s": 2.547,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 24.164,
+     "detpy_repro_s": 850.37,
+     "detpy_seeds_run": 10,
+     "randomly_s": 5.244,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 47.925,
+     "detpy_repro_s": 850.37,
+     "detpy_seeds_run": 20,
+     "randomly_s": 10.722,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 120.46,
+     "detpy_repro_s": 973.0600000000001,
+     "detpy_seeds_run": 50,
+     "randomly_s": 24.054000000000002,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 2,
+   "families_polluter": 2,
+   "bundles_reproduced": 41,
+   "flaky_failing_all": 41,
+   "flaky_failing_non_target": 0,
+   "randomly_replay_s": 21.762999999999998,
+   "detpy_explore_s": 120.46,
+   "detpy_repro_s": 973.0600000000001,
+   "randomly_seeds_s": 24.054000000000002,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 7763 64-Core Processor",
+   "cpu_randomly": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "idoft-cloudnetpy": {
+   "targets": 27,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 7.963,
+     "detpy_repro_s": 581.34,
+     "detpy_seeds_run": 1,
+     "randomly_s": 6.761,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 39.637,
+     "detpy_repro_s": 1398.36,
+     "detpy_seeds_run": 5,
+     "randomly_s": 35.799,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 74.651,
+     "detpy_repro_s": 1398.36,
+     "detpy_seeds_run": 10,
+     "randomly_s": 74.432,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 147.433,
+     "detpy_repro_s": 1398.36,
+     "detpy_seeds_run": 20,
+     "randomly_s": 147.523,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 375.315,
+     "detpy_repro_s": 1398.36,
+     "detpy_seeds_run": 50,
+     "randomly_s": 378.689,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 11,
+   "bundles_reproduced": 27,
+   "flaky_failing_all": 29,
+   "flaky_failing_non_target": 2,
+   "randomly_replay_s": 380.94100000000003,
+   "detpy_explore_s": 375.315,
+   "detpy_repro_s": 1398.36,
+   "randomly_seeds_s": 378.689,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 9V45 96-Core Processor",
+   "cpu_randomly": "AMD EPYC 9V45 96-Core Processor"
+  },
+  "idoft-coinbase-commerce-python": {
+   "targets": 8,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 2.563,
+     "detpy_repro_s": 116.9,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.479,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 12.915,
+     "detpy_repro_s": 229.23,
+     "detpy_seeds_run": 5,
+     "randomly_s": 2.6029999999999998,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 26.057,
+     "detpy_repro_s": 229.23,
+     "detpy_seeds_run": 10,
+     "randomly_s": 5.26,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 52.403999999999996,
+     "detpy_repro_s": 229.23,
+     "detpy_seeds_run": 20,
+     "randomly_s": 10.541,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 130.582,
+     "detpy_repro_s": 229.23,
+     "detpy_seeds_run": 50,
+     "randomly_s": 25.887,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 3,
+   "bundles_reproduced": 8,
+   "flaky_failing_all": 8,
+   "flaky_failing_non_target": 0,
+   "randomly_replay_s": 16.395,
+   "detpy_explore_s": 130.582,
+   "detpy_repro_s": 229.23,
+   "randomly_seeds_s": 25.887,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 7763 64-Core Processor",
+   "cpu_randomly": "AMD EPYC 7763 64-Core Processor"
+  },
+  "idoft-crom": {
+   "targets": 13,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 1.412,
+     "detpy_repro_s": 34.98,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.275,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 6.905,
+     "detpy_repro_s": 44.73,
+     "detpy_seeds_run": 5,
+     "randomly_s": 1.54,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 14.108,
+     "detpy_repro_s": 135.98,
+     "detpy_seeds_run": 10,
+     "randomly_s": 2.818,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 27.93,
+     "detpy_repro_s": 135.98,
+     "detpy_seeds_run": 20,
+     "randomly_s": 6.325,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 69.947,
+     "detpy_repro_s": 149.96,
+     "detpy_seeds_run": 50,
+     "randomly_s": 15.122,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 3,
+   "families_polluter": 5,
+   "bundles_reproduced": 11,
+   "flaky_failing_all": 28,
+   "flaky_failing_non_target": 16,
+   "randomly_replay_s": 20.739,
+   "detpy_explore_s": 69.947,
+   "detpy_repro_s": 149.96,
+   "randomly_seeds_s": 15.122,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "Intel(R) Xeon(R) 6975P-C",
+   "cpu_randomly": "Intel(R) Xeon(R) 6975P-C"
+  },
+  "idoft-devtracker": {
+   "targets": 6,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 1.871,
+     "detpy_repro_s": 78.78,
+     "detpy_seeds_run": 1,
+     "randomly_s": 5.178,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 9.33,
+     "detpy_repro_s": 95.49,
+     "detpy_seeds_run": 5,
+     "randomly_s": 25.877,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 18.939,
+     "detpy_repro_s": 95.49,
+     "detpy_seeds_run": 10,
+     "randomly_s": 51.706,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 38.063,
+     "detpy_repro_s": 95.49,
+     "detpy_seeds_run": 20,
+     "randomly_s": 103.581,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 94.915,
+     "detpy_repro_s": 95.49,
+     "detpy_seeds_run": 50,
+     "randomly_s": 259.227,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 3,
+   "families_polluter": 4,
+   "bundles_reproduced": 6,
+   "flaky_failing_all": 8,
+   "flaky_failing_non_target": 2,
+   "randomly_replay_s": 103.383,
+   "detpy_explore_s": 94.915,
+   "detpy_repro_s": 95.49,
+   "randomly_seeds_s": 259.227,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 7763 64-Core Processor",
+   "cpu_randomly": "AMD EPYC 9V45 96-Core Processor"
+  },
+  "idoft-domain2idna": {
+   "targets": 15,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 1.604,
+     "detpy_repro_s": 70.53,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.321,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 8.183,
+     "detpy_repro_s": 188.47,
+     "detpy_seeds_run": 5,
+     "randomly_s": 1.401,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 16.678,
+     "detpy_repro_s": 188.47,
+     "detpy_seeds_run": 10,
+     "randomly_s": 2.739,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 33.29,
+     "detpy_repro_s": 188.47,
+     "detpy_seeds_run": 20,
+     "randomly_s": 5.371,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 83.083,
+     "detpy_repro_s": 188.47,
+     "detpy_seeds_run": 50,
+     "randomly_s": 13.423,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 2,
+   "families_polluter": 3,
+   "bundles_reproduced": 15,
+   "flaky_failing_all": 12,
+   "flaky_failing_non_target": 0,
+   "randomly_replay_s": 3.217,
+   "detpy_explore_s": 83.083,
+   "detpy_repro_s": 188.47,
+   "randomly_seeds_s": 13.423,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 9V74 80-Core Processor",
+   "cpu_randomly": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "idoft-easypy": {
+   "targets": 44,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 10.629,
+     "detpy_repro_s": 750.2,
+     "detpy_seeds_run": 1,
+     "randomly_s": 11.154,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 55.859,
+     "detpy_repro_s": 1476.12,
+     "detpy_seeds_run": 5,
+     "randomly_s": 65.591,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 109.613,
+     "detpy_repro_s": 1476.12,
+     "detpy_seeds_run": 10,
+     "randomly_s": 133.248,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 220.084,
+     "detpy_repro_s": 1476.12,
+     "detpy_seeds_run": 20,
+     "randomly_s": 261.791,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 544.569,
+     "detpy_repro_s": 1476.12,
+     "detpy_seeds_run": 50,
+     "randomly_s": 653.477,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 4,
+   "families_polluter": 5,
+   "bundles_reproduced": 34,
+   "flaky_failing_all": 44,
+   "flaky_failing_non_target": 0,
+   "randomly_replay_s": 653.431,
+   "detpy_explore_s": 544.569,
+   "detpy_repro_s": 1476.12,
+   "randomly_seeds_s": 653.477,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 9V45 96-Core Processor",
+   "cpu_randomly": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "idoft-eppy": {
+   "targets": 67,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 9.783,
+     "detpy_repro_s": 743.8,
+     "detpy_seeds_run": 1,
+     "randomly_s": 5.242,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 54.274,
+     "detpy_repro_s": 7993.22,
+     "detpy_seeds_run": 5,
+     "randomly_s": 26.633,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 108.185,
+     "detpy_repro_s": 7993.22,
+     "detpy_seeds_run": 10,
+     "randomly_s": 55.32,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 223.191,
+     "detpy_repro_s": 7993.22,
+     "detpy_seeds_run": 20,
+     "randomly_s": 111.797,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 554.718,
+     "detpy_repro_s": 7993.22,
+     "detpy_seeds_run": 50,
+     "randomly_s": 300.602,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 2,
+   "families_polluter": 6,
+   "bundles_reproduced": 67,
+   "flaky_failing_all": 84,
+   "flaky_failing_non_target": 18,
+   "randomly_replay_s": 298.769,
+   "detpy_explore_s": 554.718,
+   "detpy_repro_s": 7993.22,
+   "randomly_seeds_s": 300.602,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 7763 64-Core Processor",
+   "cpu_randomly": "INTEL(R) XEON(R) PLATINUM 8573C"
+  },
+  "idoft-flask-multi-redis": {
+   "targets": 14,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 1.759,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.469,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 9.062,
+     "detpy_repro_s": 208.62,
+     "detpy_seeds_run": 5,
+     "randomly_s": 2.513,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 18.303,
+     "detpy_repro_s": 208.62,
+     "detpy_seeds_run": 10,
+     "randomly_s": 5.062,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 37.559,
+     "detpy_repro_s": 208.62,
+     "detpy_seeds_run": 20,
+     "randomly_s": 10.388,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 92.55799999999999,
+     "detpy_repro_s": 208.62,
+     "detpy_seeds_run": 50,
+     "randomly_s": 26.297,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 2,
+   "families_polluter": 1,
+   "bundles_reproduced": 14,
+   "flaky_failing_all": 26,
+   "flaky_failing_non_target": 12,
+   "randomly_replay_s": 7.004,
+   "detpy_explore_s": 92.55799999999999,
+   "detpy_repro_s": 208.62,
+   "randomly_seeds_s": 26.297,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 9V74 80-Core Processor",
+   "cpu_randomly": "AMD EPYC 7763 64-Core Processor"
+  },
+  "idoft-freezegun": {
+   "targets": 8,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 2.913,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.656,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 14.676,
+     "detpy_repro_s": 63.260000000000005,
+     "detpy_seeds_run": 5,
+     "randomly_s": 3.164,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 29.26,
+     "detpy_repro_s": 542.23,
+     "detpy_seeds_run": 10,
+     "randomly_s": 6.336,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 58.24,
+     "detpy_repro_s": 542.23,
+     "detpy_seeds_run": 20,
+     "randomly_s": 12.659,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 145.677,
+     "detpy_repro_s": 542.23,
+     "detpy_seeds_run": 50,
+     "randomly_s": 31.305,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 3,
+   "families_polluter": 4,
+   "bundles_reproduced": 7,
+   "flaky_failing_all": 16,
+   "flaky_failing_non_target": 9,
+   "randomly_replay_s": 11.533,
+   "detpy_explore_s": 145.677,
+   "detpy_repro_s": 542.23,
+   "randomly_seeds_s": 31.305,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 9V74 80-Core Processor",
+   "cpu_randomly": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "idoft-krllint": {
+   "targets": 3,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 2.077,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.151,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 10.569,
+     "detpy_repro_s": 14.71,
+     "detpy_seeds_run": 5,
+     "randomly_s": 0.784,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 21.317,
+     "detpy_repro_s": 31.2,
+     "detpy_seeds_run": 10,
+     "randomly_s": 1.5110000000000001,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 42.565,
+     "detpy_repro_s": 31.2,
+     "detpy_seeds_run": 20,
+     "randomly_s": 3.069,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 106.19,
+     "detpy_repro_s": 51.89,
+     "detpy_seeds_run": 50,
+     "randomly_s": 7.646,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 2,
+   "bundles_reproduced": 3,
+   "flaky_failing_all": 9,
+   "flaky_failing_non_target": 6,
+   "randomly_replay_s": 4.891,
+   "detpy_explore_s": 106.19,
+   "detpy_repro_s": 51.89,
+   "randomly_seeds_s": 7.646,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 7763 64-Core Processor",
+   "cpu_randomly": "AMD EPYC 9V45 96-Core Processor"
+  },
+  "idoft-ljson": {
+   "targets": 4,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 1.963,
+     "detpy_repro_s": 51.94,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.257,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 9.806000000000001,
+     "detpy_repro_s": 70.56,
+     "detpy_seeds_run": 5,
+     "randomly_s": 1.369,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 19.523,
+     "detpy_repro_s": 70.56,
+     "detpy_seeds_run": 10,
+     "randomly_s": 2.778,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 39.673,
+     "detpy_repro_s": 70.56,
+     "detpy_seeds_run": 20,
+     "randomly_s": 7.105,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 99.233,
+     "detpy_repro_s": 70.56,
+     "detpy_seeds_run": 50,
+     "randomly_s": 15.082,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 2,
+   "bundles_reproduced": 4,
+   "flaky_failing_all": 7,
+   "flaky_failing_non_target": 3,
+   "randomly_replay_s": 8.495000000000001,
+   "detpy_explore_s": 99.233,
+   "detpy_repro_s": 70.56,
+   "randomly_seeds_s": 15.082,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 7763 64-Core Processor",
+   "cpu_randomly": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "idoft-mdutils": {
+   "targets": 8,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 1.391,
+     "detpy_repro_s": 107.44,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.276,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 7.009,
+     "detpy_repro_s": 107.44,
+     "detpy_seeds_run": 5,
+     "randomly_s": 1.2570000000000001,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 13.865,
+     "detpy_repro_s": 107.44,
+     "detpy_seeds_run": 10,
+     "randomly_s": 2.513,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 27.581,
+     "detpy_repro_s": 107.44,
+     "detpy_seeds_run": 20,
+     "randomly_s": 5.032,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 69.213,
+     "detpy_repro_s": 107.44,
+     "detpy_seeds_run": 50,
+     "randomly_s": 12.288,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 1,
+   "bundles_reproduced": 8,
+   "flaky_failing_all": 8,
+   "flaky_failing_non_target": 0,
+   "randomly_replay_s": 2.7510000000000003,
+   "detpy_explore_s": 69.213,
+   "detpy_repro_s": 107.44,
+   "randomly_seeds_s": 12.288,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "Intel(R) Xeon(R) 6975P-C",
+   "cpu_randomly": "Intel(R) Xeon(R) 6975P-C"
+  },
+  "idoft-odinweb": {
+   "targets": 12,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 1.877,
+     "detpy_repro_s": 226.39,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.452,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 8.963000000000001,
+     "detpy_repro_s": 226.39,
+     "detpy_seeds_run": 5,
+     "randomly_s": 2.216,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 17.468,
+     "detpy_repro_s": 226.39,
+     "detpy_seeds_run": 10,
+     "randomly_s": 4.393,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 33.898,
+     "detpy_repro_s": 226.39,
+     "detpy_seeds_run": 20,
+     "randomly_s": 8.752,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 83.863,
+     "detpy_repro_s": 226.39,
+     "detpy_seeds_run": 50,
+     "randomly_s": 21.629,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 2,
+   "families_polluter": 1,
+   "bundles_reproduced": 12,
+   "flaky_failing_all": 14,
+   "flaky_failing_non_target": 2,
+   "randomly_replay_s": 4.502,
+   "detpy_explore_s": 83.863,
+   "detpy_repro_s": 226.39,
+   "randomly_seeds_s": 21.629,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 9V45 96-Core Processor",
+   "cpu_randomly": "AMD EPYC 9V45 96-Core Processor"
+  },
+  "idoft-panamah-sdk-python": {
+   "targets": 4,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 6.645,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 1,
+     "randomly_s": 7.879,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 33.298,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 5,
+     "randomly_s": 39.181,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 66.894,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 10,
+     "randomly_s": 78.114,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 124.054,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 20,
+     "randomly_s": 154.416,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 306.693,
+     "detpy_repro_s": 26.89,
+     "detpy_seeds_run": 50,
+     "randomly_s": 387.321,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 0,
+   "families_polluter": 0,
+   "bundles_reproduced": 0,
+   "flaky_failing_all": 3,
+   "flaky_failing_non_target": 2,
+   "randomly_replay_s": 214.088,
+   "detpy_explore_s": 306.693,
+   "detpy_repro_s": 26.89,
+   "randomly_seeds_s": 387.321,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "Intel(R) Xeon(R) 6975P-C",
+   "cpu_randomly": "AMD EPYC 7763 64-Core Processor"
+  },
+  "idoft-py-autodoc": {
+   "targets": 15,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 2.207,
+     "detpy_repro_s": 143.2,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.364,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 10.797999999999998,
+     "detpy_repro_s": 219.29,
+     "detpy_seeds_run": 5,
+     "randomly_s": 1.751,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 21.570999999999998,
+     "detpy_repro_s": 280.83,
+     "detpy_seeds_run": 10,
+     "randomly_s": 3.53,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 43.342,
+     "detpy_repro_s": 302.46999999999997,
+     "detpy_seeds_run": 20,
+     "randomly_s": 7.027,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 109.604,
+     "detpy_repro_s": 302.46999999999997,
+     "detpy_seeds_run": 50,
+     "randomly_s": 17.531,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 3,
+   "families_polluter": 4,
+   "bundles_reproduced": 15,
+   "flaky_failing_all": 15,
+   "flaky_failing_non_target": 0,
+   "randomly_replay_s": 24.304,
+   "detpy_explore_s": 109.604,
+   "detpy_repro_s": 302.46999999999997,
+   "randomly_seeds_s": 17.531,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz",
+   "cpu_randomly": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "idoft-pykicad": {
+   "targets": 28,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 1.731,
+     "detpy_repro_s": 14.76,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.92,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 13.199,
+     "detpy_repro_s": 370.94,
+     "detpy_seeds_run": 5,
+     "randomly_s": 4.383,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 25.285999999999998,
+     "detpy_repro_s": 370.94,
+     "detpy_seeds_run": 10,
+     "randomly_s": 11.082,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 52.456,
+     "detpy_repro_s": 370.94,
+     "detpy_seeds_run": 20,
+     "randomly_s": 20.73,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 119.847,
+     "detpy_repro_s": 370.94,
+     "detpy_seeds_run": 50,
+     "randomly_s": 54.004,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 2,
+   "bundles_reproduced": 28,
+   "flaky_failing_all": 28,
+   "flaky_failing_non_target": 0,
+   "randomly_replay_s": 30.371,
+   "detpy_explore_s": 119.847,
+   "detpy_repro_s": 370.94,
+   "randomly_seeds_s": 54.004,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "Intel(R) Xeon(R) 6975P-C",
+   "cpu_randomly": "Intel(R) Xeon(R) 6975P-C"
+  },
+  "idoft-pymq": {
+   "targets": 1,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 13.499,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 1,
+     "randomly_s": 27.89,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 64.97800000000001,
+     "detpy_repro_s": 224.08,
+     "detpy_seeds_run": 5,
+     "randomly_s": 168.973,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 127.619,
+     "detpy_repro_s": 224.08,
+     "detpy_seeds_run": 10,
+     "randomly_s": 359.264,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 253.187,
+     "detpy_repro_s": 224.08,
+     "detpy_seeds_run": 20,
+     "randomly_s": 718.751,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 639.523,
+     "detpy_repro_s": 224.08,
+     "detpy_seeds_run": 50,
+     "randomly_s": 1928.815,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 0,
+   "families_polluter": 0,
+   "bundles_reproduced": 0,
+   "flaky_failing_all": 1,
+   "flaky_failing_non_target": 0,
+   "randomly_replay_s": 287.099,
+   "detpy_explore_s": 639.523,
+   "detpy_repro_s": 224.08,
+   "randomly_seeds_s": 1928.815,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 9V74 80-Core Processor",
+   "cpu_randomly": "INTEL(R) XEON(R) PLATINUM 8573C"
+  },
+  "idoft-supertunnel": {
+   "targets": 9,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 2.828,
+     "detpy_repro_s": 226.41,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.227,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 13.9,
+     "detpy_repro_s": 226.41,
+     "detpy_seeds_run": 5,
+     "randomly_s": 1.2750000000000001,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 27.867,
+     "detpy_repro_s": 226.41,
+     "detpy_seeds_run": 10,
+     "randomly_s": 2.632,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 55.834,
+     "detpy_repro_s": 226.41,
+     "detpy_seeds_run": 20,
+     "randomly_s": 5.236000000000001,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 140.058,
+     "detpy_repro_s": 226.41,
+     "detpy_seeds_run": 50,
+     "randomly_s": 13.108,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 2,
+   "families_polluter": 1,
+   "bundles_reproduced": 9,
+   "flaky_failing_all": 9,
+   "flaky_failing_non_target": 0,
+   "randomly_replay_s": 5.3,
+   "detpy_explore_s": 140.058,
+   "detpy_repro_s": 226.41,
+   "randomly_seeds_s": 13.108,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 7763 64-Core Processor",
+   "cpu_randomly": "Intel(R) Xeon(R) 6975P-C"
+  },
+  "idoft-todo-sync": {
+   "targets": 10,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 1.756,
+     "detpy_repro_s": 21.53,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.768,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 8.843,
+     "detpy_repro_s": 87.29,
+     "detpy_seeds_run": 5,
+     "randomly_s": 4.064,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 17.587,
+     "detpy_repro_s": 103.83,
+     "detpy_seeds_run": 10,
+     "randomly_s": 8.219999999999999,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 35.393,
+     "detpy_repro_s": 152.13,
+     "detpy_seeds_run": 20,
+     "randomly_s": 16.371,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 88.975,
+     "detpy_repro_s": 152.13,
+     "detpy_seeds_run": 50,
+     "randomly_s": 40.779,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 2,
+   "bundles_reproduced": 9,
+   "flaky_failing_all": 10,
+   "flaky_failing_non_target": 1,
+   "randomly_replay_s": 81.136,
+   "detpy_explore_s": 88.975,
+   "detpy_repro_s": 152.13,
+   "randomly_seeds_s": 40.779,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "Intel(R) Xeon(R) 6975P-C",
+   "cpu_randomly": "AMD EPYC 7763 64-Core Processor"
+  },
+  "idoft-tunacell": {
+   "targets": 10,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 5.015,
+     "detpy_repro_s": 319.88,
+     "detpy_seeds_run": 1,
+     "randomly_s": 0.998,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 24.448999999999998,
+     "detpy_repro_s": 319.88,
+     "detpy_seeds_run": 5,
+     "randomly_s": 10.908,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 47.471,
+     "detpy_repro_s": 354.57,
+     "detpy_seeds_run": 10,
+     "randomly_s": 17.11,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 94.92099999999999,
+     "detpy_repro_s": 354.57,
+     "detpy_seeds_run": 20,
+     "randomly_s": 35.177,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 242.02,
+     "detpy_repro_s": 354.57,
+     "detpy_seeds_run": 50,
+     "randomly_s": 88.717,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 2,
+   "families_polluter": 2,
+   "bundles_reproduced": 10,
+   "flaky_failing_all": 12,
+   "flaky_failing_non_target": 2,
+   "randomly_replay_s": 75.924,
+   "detpy_explore_s": 242.02,
+   "detpy_repro_s": 354.57,
+   "randomly_seeds_s": 88.717,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 9V45 96-Core Processor",
+   "cpu_randomly": "AMD EPYC 7763 64-Core Processor"
+  },
+  "jsonschema": {
+   "targets": 2,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 18.972,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 1,
+     "randomly_s": 11.651,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 96.033,
+     "detpy_repro_s": 111.25,
+     "detpy_seeds_run": 5,
+     "randomly_s": 59.384,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 191.78,
+     "detpy_repro_s": 111.25,
+     "detpy_seeds_run": 10,
+     "randomly_s": 120.638,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 383.245,
+     "detpy_repro_s": 111.25,
+     "detpy_seeds_run": 20,
+     "randomly_s": 244.519,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 957.535,
+     "detpy_repro_s": 111.25,
+     "detpy_seeds_run": 50,
+     "randomly_s": 614.395,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 2,
+   "bundles_reproduced": 2,
+   "flaky_failing_all": 2,
+   "flaky_failing_non_target": 0,
+   "randomly_replay_s": 121.298,
+   "detpy_explore_s": 957.535,
+   "detpy_repro_s": 111.25,
+   "randomly_seeds_s": 614.395,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 7763 64-Core Processor",
+   "cpu_randomly": "INTEL(R) XEON(R) PLATINUM 8573C"
+  },
+  "packaging": {
+   "targets": 1,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 48.03,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 1,
+     "randomly_s": 34.795,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 241.175,
+     "detpy_repro_s": 0,
+     "detpy_seeds_run": 5,
+     "randomly_s": 174.625,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 483.445,
+     "detpy_repro_s": 366.65,
+     "detpy_seeds_run": 10,
+     "randomly_s": 348.501,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 968.933,
+     "detpy_repro_s": 366.65,
+     "detpy_seeds_run": 20,
+     "randomly_s": 696.4399999999999,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 2423.703,
+     "detpy_repro_s": 366.65,
+     "detpy_seeds_run": 50,
+     "randomly_s": 1750.402,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 1,
+   "bundles_reproduced": 1,
+   "flaky_failing_all": 8,
+   "flaky_failing_non_target": 7,
+   "randomly_replay_s": 0,
+   "detpy_explore_s": 2423.703,
+   "detpy_repro_s": 366.65,
+   "randomly_seeds_s": 1750.402,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 9V74 80-Core Processor",
+   "cpu_randomly": "Intel(R) Xeon(R) 6975P-C"
+  },
+  "rich": {
+   "targets": 5,
+   "cost": {
+    "1": {
+     "detpy_explore_s": 10.652,
+     "detpy_repro_s": 243.57,
+     "detpy_seeds_run": 1,
+     "randomly_s": 6.272,
+     "randomly_seeds_run": 1
+    },
+    "5": {
+     "detpy_explore_s": 53.476,
+     "detpy_repro_s": 243.57,
+     "detpy_seeds_run": 5,
+     "randomly_s": 29.002,
+     "randomly_seeds_run": 5
+    },
+    "10": {
+     "detpy_explore_s": 107.063,
+     "detpy_repro_s": 243.57,
+     "detpy_seeds_run": 10,
+     "randomly_s": 57.435,
+     "randomly_seeds_run": 10
+    },
+    "20": {
+     "detpy_explore_s": 213.432,
+     "detpy_repro_s": 243.57,
+     "detpy_seeds_run": 20,
+     "randomly_s": 114.588,
+     "randomly_seeds_run": 20
+    },
+    "50": {
+     "detpy_explore_s": 529.015,
+     "detpy_repro_s": 243.57,
+     "detpy_seeds_run": 50,
+     "randomly_s": 285.728,
+     "randomly_seeds_run": 50
+    }
+   },
+   "detpy_seeds": 50,
+   "randomly_seeds": 50,
+   "families_divergence": 1,
+   "families_polluter": 1,
+   "bundles_reproduced": 5,
+   "flaky_failing_all": 5,
+   "flaky_failing_non_target": 0,
+   "randomly_replay_s": 57.019999999999996,
+   "detpy_explore_s": 529.015,
+   "detpy_repro_s": 243.57,
+   "randomly_seeds_s": 285.728,
+   "origin_detpy": "harness/results/block2-final",
+   "origin_randomly": "harness/results/block2-final",
+   "cpu_detpy": "AMD EPYC 9V74 80-Core Processor",
+   "cpu_randomly": "AMD EPYC 7763 64-Core Processor"
+  }
+ }
+}

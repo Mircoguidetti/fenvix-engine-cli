@@ -1,0 +1,75 @@
+{
+  "test": "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 34,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "supertunnel/command_test.py::test_forward"
+  ],
+  "order": [
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+  ],
+  "outcome": "error",
+  "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "b63f535afc557e6a04ad8532b34cc81e"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] time.time @ supertunnel/ssh/continuous.py:122 = 2000  <>  [random] random.state @ <end> = 7a3f6408d62441bacba968930ff8a4e7",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "supertunnel/ssh/continuous.py:122",
+      "v": "2000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "7a3f6408d62441bacba968930ff8a4e7"
+    },
+    "fingerprints": [
+      "68addf3a151c5a22818b701902955713",
+      "b63f535afc557e6a04ad8532b34cc81e"
+    ]
+  },
+  "runs": 18,
+  "seconds": 25.21,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_debug1_Reading_configuration-Action.CONTIN-c6086170/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_debug1_Reading_configuration-Action.CONTIN-c6086170",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_debug1_Reading_configuration-Action.CONTIN-c6086170"
+}

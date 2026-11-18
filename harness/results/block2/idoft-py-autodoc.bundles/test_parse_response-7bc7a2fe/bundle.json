@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "order",
+  "prefix_length": 25,
+  "minimal_length": 2,
+  "polluters": [
+    "examples/test_unittest.py::TestUnittest::test_post"
+  ],
+  "setters": [],
+  "order": [
+    "examples/test_unittest.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: '{\\n    \"response\": \"create\"\\n  }' != '{\\n  \"response\": \"create\"\\n}'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "733407b7dd253dbe21e47fce85e515f5"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "fs",
+    "description": "event #0: os.scandir @ tests/test_autodoc.py:28 returned different values: \"<fd>|2|501c14dc3f33889a9a251b4c703ae25c\" vs \"<fd>|1|c13ecef43ec79cd6710129c2c64e5765\"",
+    "event_a": {
+      "t": 0,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_autodoc.py:28",
+      "v": "<fd>|2|501c14dc3f33889a9a251b4c703ae25c"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_autodoc.py:28",
+      "v": "<fd>|1|c13ecef43ec79cd6710129c2c64e5765"
+    },
+    "fingerprints": [
+      "a3509da2e2266ac3437fcdc3339ca7bc",
+      "733407b7dd253dbe21e47fce85e515f5"
+    ]
+  },
+  "runs": 16,
+  "seconds": 17.69,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-py-autodoc/detpy/bundles/test_parse_response-7bc7a2fe/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/detpy/bundles/test_parse_response-7bc7a2fe",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-py-autodoc/detpy/bundles/test_parse_response-7bc7a2fe"
+}

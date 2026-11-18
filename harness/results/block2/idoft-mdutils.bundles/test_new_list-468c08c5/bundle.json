@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_mdutils.py::TestMdUtils::test_new_list",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 89,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file",
+    "tests/test_mdutils.py::TestMdUtils::test_new_list"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: 'Test_file.md'",
+    "/tmp/work/src/idoft-mdutils/mdutils/fileutils/fileutils.py:23"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "23409c5d5d1b31c7b9a781c3c40e38b7"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "d47f0905d5275fb8ad98213f7995d615",
+      "23409c5d5d1b31c7b9a781c3c40e38b7"
+    ]
+  },
+  "runs": 23,
+  "seconds": 14.35,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-mdutils/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-mdutils/detpy/bundles/test_new_list-468c08c5/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-mdutils/detpy/bundles/test_new_list-468c08c5",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-mdutils/detpy/bundles/test_new_list-468c08c5"
+}

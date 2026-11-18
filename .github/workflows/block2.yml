@@ -1,0 +1,105 @@
+name: block2
+
+# Block 2 measurement: detpy explore + repro vs pytest-randomly seeds, one job per (repository, tool).
+on:
+  workflow_dispatch:
+    inputs:
+      repos: {description: "comma separated repositories (default: every repository in harness/block2_targets.json)", default: ""}
+      seeds: {description: "seeds per repository", default: "50"}
+      confirm: {description: "replays per reproduced test", default: "10"}
+      result_set: {description: "results directory under harness/results", default: "block2"}
+      tools: {description: "JSON list of tools: detpy, randomly, standalone", default: '["detpy", "randomly"]'}
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+  UV_PYTHON_PREFERENCE: managed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: pip install maturin
+      - run: maturin build --release --compatibility linux -o dist
+      - uses: actions/upload-artifact@v4
+        with: {name: wheel, path: dist/*.whl}
+      - id: m
+        run: |
+          python - "${{ inputs.repos }}" >> "$GITHUB_OUTPUT" <<'PY'
+          import json, sys
+          names = [x.strip() for x in sys.argv[1].split(",") if x.strip()] or sorted(json.load(open("harness/block2_targets.json")))
+          print("matrix=" + json.dumps(names))
+          PY
+
+  measure:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        repo: ${{ fromJSON(needs.build.outputs.matrix) }}
+        tool: ${{ fromJSON(inputs.tools) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/download-artifact@v4
+        with: {name: wheel, path: dist}
+      - run: pip install pytest && pip install --no-deps dist/*.whl
+      - name: measure
+        run: >
+          python harness/detpy_harness.py --set "${{ matrix.repo }}" --mode block2 --tool ${{ matrix.tool }} --jobs 1
+          --seeds ${{ inputs.seeds }} --confirm ${{ inputs.confirm }}
+          --wheel "$(ls dist/*.whl)" --work /tmp/work --out out
+          --max-first-run 100000 --repo-budget 18000 --run-timeout 1800 --executor "GitHub Actions"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: "block2-${{ matrix.repo }}-${{ matrix.tool }}", path: out/, if-no-files-found: ignore}
+
+  aggregate:
+    if: ${{ !cancelled() }}
+    needs: [measure]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with: {pattern: "block2-*", path: art}
+      - name: collect
+        run: |
+          set -e
+          dest="harness/results/${{ inputs.result_set }}"
+          mkdir -p "$dest"
+          find art -name '*.block2.json' -exec cp {} "$dest/" \;
+          find art -type d -name '*.bundles' -prune -exec cp -r {} "$dest/" \;
+          find art -name 'skipped.json' -size +3c -exec sh -c 'cp "$1" "'"$dest"'/skipped-$(basename $(dirname "$1")).json"' _ {} \;
+          python -c "import json; json.dump({'run': '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}', 'seeds': ${{ inputs.seeds }}, 'confirm': ${{ inputs.confirm }}}, open('$dest/meta.json', 'w'), indent=2)"
+          cp -r "$dest" /tmp/results-out
+      - name: commit results to the branch tip
+        run: |
+          set -e
+          dest="harness/results/${{ inputs.result_set }}"
+          git fetch -q origin "${{ github.ref_name }}"
+          git checkout -q -B publish "origin/${{ github.ref_name }}"
+          rm -rf "$dest" && mkdir -p "$dest" && cp -r /tmp/results-out/. "$dest/"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A "$dest"
+          git commit -m "Block 2 results (${{ inputs.result_set }}) from Actions run ${{ github.run_id }}" || exit 0
+          for i in 1 2 3 4; do
+            if git push -q origin "HEAD:${{ github.ref_name }}"; then exit 0; fi
+            sleep $((i * 5)); git fetch -q origin "${{ github.ref_name }}"; git rebase -q "origin/${{ github.ref_name }}"
+          done
+          exit 1

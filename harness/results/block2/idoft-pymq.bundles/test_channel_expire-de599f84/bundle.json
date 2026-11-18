@@ -1,0 +1,85 @@
+{
+  "test": "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire",
+  "configs_searched": 1,
+  "status": "replay-unstable",
+  "config": "2",
+  "seed": 2,
+  "kind": "order",
+  "prefix_length": 30,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_echo_command_function"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_echo_command_function",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: 1 != 0",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:830"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 6,
+    "fingerprints": [
+      "1e9c2735b82e6cac0d25193316a86e6b",
+      "3b54a364c92bcef7ce3f8425e2beef30",
+      "48428190e70c024897c58a2cd76e9c56",
+      "4aebfee8dd87c3911ce3a79fbb04a0b8",
+      "72d38c266fcca52894f8787a48456080",
+      "8067a87bff835fd6a379318174526f26",
+      "9c9e348f33991ce0e87b81c4bad82363",
+      "a77e97e20d0ac53d56c7c11482b36fbc",
+      "bafc23be48e795973cfc0a754804ea12",
+      "cb8334aa74356aa623f41cae7578f6ac"
+    ],
+    "identical_fingerprint": false
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [random] Random.seed(None) @ tests/testutils.py:22 = 15089582537443466598  <>  [entropy] os.urandom @ pymq/provider/base.py:154 = 16:bbbee30ad9d22769daff37ae5dd488d3",
+    "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "Random.seed(None)",
+      "at": "tests/testutils.py:22",
+      "v": "15089582537443466598"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "pymq/provider/base.py:154",
+      "v": "16:bbbee30ad9d22769daff37ae5dd488d3"
+    },
+    "fingerprints": [
+      "bc75534d76aa0f05e3ca4c973ae21486",
+      "72d38c266fcca52894f8787a48456080"
+    ]
+  },
+  "runs": 32,
+  "seconds": 224.08,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-pymq/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pymq/detpy/bundles/test_channel_expire-de599f84/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-pymq/detpy/bundles/test_channel_expire-de599f84",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-pymq/detpy/bundles/test_channel_expire-de599f84"
+}

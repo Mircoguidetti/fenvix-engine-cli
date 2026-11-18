@@ -43,7 +43,18 @@ EXC_B = {"ConnectionError", "ConnectionRefusedError", "ConnectionResetError", "U
          "CalledProcessError", "OSError"}
 
 
+_SETUP = ("setUp", "tearDown", "setUpClass", "tearDownClass", "setup_method", "teardown_method",
+          "setup_class", "teardown_class", "setup", "teardown")
+
+
 def test_source(repo_dir: Path, nodeid: str) -> str:
+    """Source of the test function, plus what runs with it in the same module.
+
+    Added after the review R-001 (P-009 item 4): the set-up/tear-down methods of its
+    class, and the module-level functions and same-class methods it calls (one level).
+    Tests that are one-line calls of a shared helper otherwise get classified from
+    their single line, so the same mechanism ended up in different classes.
+    """
     path, _, rest = nodeid.partition("::")
     f = repo_dir / path
     if not f.exists():
@@ -55,16 +66,35 @@ def test_source(repo_dir: Path, nodeid: str) -> str:
         return ""
     parts = [p.split("[", 1)[0] for p in rest.split("::") if p]
     nodes = tree.body
-    found = None
+    found, owner = None, None
     for name in parts:
+        owner = found
         found = next((n for n in nodes if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
                       and n.name == name), None)
         if found is None:
             return ""
         nodes = getattr(found, "body", [])
-    seg = ast.get_source_segment(src, found) if found is not None else ""
-    # Fixtures and helpers used by the test live elsewhere: add module-level names it references.
-    return seg or ""
+    if found is None:
+        return ""
+    funcs = (ast.FunctionDef, ast.AsyncFunctionDef)
+    module_funcs = {n.name: n for n in tree.body if isinstance(n, funcs)}
+    methods = {n.name: n for n in owner.body if isinstance(n, funcs)} if isinstance(owner, ast.ClassDef) else {}
+    extra = [methods[n] for n in _SETUP if n in methods]
+    for node in ast.walk(found):
+        if not isinstance(node, ast.Call):
+            continue
+        fn = node.func
+        if isinstance(fn, ast.Name) and fn.id in module_funcs:
+            extra.append(module_funcs[fn.id])
+        elif (isinstance(fn, ast.Attribute) and isinstance(fn.value, ast.Name) and fn.value.id in ("self", "cls")
+              and fn.attr in methods):
+            extra.append(methods[fn.attr])
+    seen, segs = {id(found)}, [ast.get_source_segment(src, found) or ""]
+    for n in extra:
+        if id(n) not in seen:
+            seen.add(id(n))
+            segs.append(ast.get_source_segment(src, n) or "")
+    return "\n".join(segs)
 
 
 def checkout(work: Path, url: str, commit: str) -> Path | None:
@@ -85,13 +115,48 @@ def checkout(work: Path, url: str, commit: str) -> Path | None:
     return d
 
 
+# Filesystem state in a fixed directory (not a per-test temporary one): under the xdist
+# baseline two workers share it (cross-process race that a serial --det run never has).
+FS_WRITE = re.compile(r"\b(shutil\.rmtree|rmtree\(|os\.remove|os\.unlink|os\.makedirs|os\.mkdir|\.mkdir\(|"
+                      r"\.unlink\(|\.write_text\(|open\([^)]*['\"][wa]b?['\"])")
+FS_TEMP = re.compile(r"\b(tmp_path|tmpdir|tempfile|mkdtemp|TemporaryDirectory|tmp_path_factory)")
+
+
+_BEST_SEED = re.compile(r"seed\s*(\d+)\s*:\s*(\d+)\s*/\s*(\d+)")
+
+
+def _seed_failures(row: dict) -> int:
+    """Failures in the serial --det seed runs (best_attempt "seed S:k/n"): a failure
+    there happened in one process, so it is not a cross-process race (N4)."""
+    m = _BEST_SEED.search(row.get("best_attempt", "") or "")
+    return int(m.group(2)) if m else 0
+
+
+TIME_IN_ID = re.compile(r"\[[^\]]*\d{1,4}[-/:]\d{1,2}[-/:]\d{1,4}[^\]]*\]")
+
+
 def classify(row: dict, src: str) -> tuple[str, str]:
     cat = row.get("idoft_category", "")
+    hist = dict(kv.split("=") for kv in row.get("baseline_outcomes", "").split(";") if "=" in kv)
+    if "missing" in hist and TIME_IN_ID.search(row["nodeid"]):
+        return "a", "test id contains the wall-clock time at collection: it changes every run (stable under --det)"
+    if hist and all(k.startswith(("failed", "error")) for k in hist):
+        return "d", ("fails in every baseline run; only the failing phase changes "
+                     f"({', '.join(sorted(hist))}): not flaky in outcome")
+    shared_fs = (row.get("_xdist") and row.get("_never_under_det") and not _seed_failures(row)
+                 and FS_WRITE.search(src) and not FS_TEMP.search(src))
+    if shared_fs and not (cat.startswith("OD") or cat == "NIO"):
+        hits = sorted(set(m.group(0) for m in FS_WRITE.finditer(src)))
+        return "b", ("filesystem state in a fixed (non-temporary) directory, written by the test or its "
+                     f"set-up/helpers ({', '.join(hits[:3])}): the xdist baseline workers share it, a serial "
+                     "--det run never does (cross-process, outside Level 0)")
     reason = row.get("pass_fail_reason", "") or row.get("det_reason", "")
     exc = row.get("det_exception") or row.get("baseline_exception") or ""
     msg = row.get("det_exception_message", "")
     if cat.startswith("OD") or cat == "NIO":
-        return "c", f"IDoFT category {cat} (order/state dependent) not reproduced by the explored seeds"
+        extra = (" (brittle: fails when its state-setter did not run first; in the baseline xdist can place them "
+                 "on different workers, which a permutation of the full suite never does)") if cat == "OD-Brit" else ""
+        return "c", f"IDoFT category {cat} (order/state dependent) not reproduced by the explored seeds{extra}"
     if reason in ("net",) or exc in EXC_B or B.search(msg):
         return "b", f"exception {exc or '-'} / diverging event {reason or '-'}"
     if reason in ("thread", "time") or exc in EXC_A:
@@ -129,9 +194,10 @@ def main() -> None:
             repo_dir = checkout(work, s["url"], s["commit"])
         for r in unstable:
             src = test_source(repo_dir, r["nodeid"]) if repo_dir else ""
-            cls, why = classify(r, src)
             never = all(not o.startswith(("failed", "error")) for o in
                         [x.split("=")[0] for x in r["det_outcomes"].split(";")])
+            never = never and not _seed_failures(r)
+            cls, why = classify({**r, "_xdist": bool(s.get("xdist")), "_never_under_det": never}, src)
             out_rows.append({"repo": name, "pool": s["kind"], "nodeid": r["nodeid"], "class": cls, "evidence": why,
                              "idoft_category": r.get("idoft_category", ""), "under_det": "never fails" if never
                              else "fails sometimes/always", "baseline_outcomes": r["baseline_outcomes"],

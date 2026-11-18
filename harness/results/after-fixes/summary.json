@@ -1,0 +1,812 @@
+{
+  "meta": {
+    "set": "after-fixes",
+    "runs": 10,
+    "seeds": 20,
+    "confirm": 10,
+    "jobs": 1,
+    "timing_runs": 3,
+    "detpy": "0.1.0",
+    "executor": "GitHub Actions matrix, one repository per ubuntu-latest runner (run https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43919160305)",
+    "date": "2026-11-16 18:27 UTC",
+    "command": "gh workflow run harness.yml -f runs=10 -f seeds=20 -f confirm=10",
+    "order": [
+      "structlog",
+      "anyio",
+      "idoft-pymq",
+      "requests",
+      "idoft-coinbase-commerce-python",
+      "idoft-easypy",
+      "idoft-freezegun",
+      "networkx",
+      "rich",
+      "faker",
+      "boltons"
+    ],
+    "notes": [
+      "The FlaPy dataset (Gruber et al.) is published on Zenodo, which the development environment cannot reach (HTTP 403 from the network proxy): the 'flaky' pool uses the Python section of IDoFT, each project pinned at the commit where its flaky tests were detected.",
+      "Selection: the first 25 candidates per pool (in harness/repos.json and harness/flaky_candidates.json order) that clone, install, collect and finish their first baseline run within 120 s; every rejected candidate is listed above."
+    ]
+  },
+  "totals": {
+    "all": {
+      "tests": 21201,
+      "unstable_baseline": 82,
+      "unstable_det": 0,
+      "became_stable": 82,
+      "outcome_changed_by_det": 18,
+      "covered": 20634,
+      "not_covered": 567,
+      "reproduced": 50,
+      "never_fails_under_det": 11,
+      "always_fails_under_det": 20,
+      "fails_sometimes_under_det": 1,
+      "known_flaky": 87,
+      "known_present": 87,
+      "known_unstable_baseline": 59,
+      "known_reproduced": 38,
+      "broken_by_det": 11,
+      "broken_always": 11
+    },
+    "flaky": {
+      "tests": 530,
+      "unstable_baseline": 61,
+      "unstable_det": 0,
+      "became_stable": 61,
+      "outcome_changed_by_det": 2,
+      "covered": 454,
+      "not_covered": 76,
+      "reproduced": 39,
+      "never_fails_under_det": 1,
+      "always_fails_under_det": 20,
+      "fails_sometimes_under_det": 1,
+      "known_flaky": 87,
+      "known_present": 87,
+      "known_unstable_baseline": 59,
+      "known_reproduced": 38,
+      "broken_by_det": 5,
+      "broken_always": 5
+    },
+    "popular": {
+      "tests": 20671,
+      "unstable_baseline": 21,
+      "unstable_det": 0,
+      "became_stable": 21,
+      "outcome_changed_by_det": 16,
+      "covered": 20180,
+      "not_covered": 491,
+      "reproduced": 11,
+      "never_fails_under_det": 10,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "broken_by_det": 6,
+      "broken_always": 6
+    }
+  },
+  "reasons": {
+    "fs": 9,
+    "entropy": 148,
+    "time": 268,
+    "thread": 142
+  },
+  "pass_fail_reasons": {
+    "random": 20,
+    "time": 30
+  },
+  "broken_causes": {
+    "time | AssertionError": 2,
+    "fixed-order (fails without --det too) | AssertionError": 1,
+    "fixed-order (fails without --det too) | RecursionError": 2,
+    "net | gaierror": 2,
+    "net | ConnectionError": 4
+  },
+  "timings": [],
+  "repos": [
+    {
+      "name": "idoft-pymq",
+      "kind": "flaky",
+      "status": "ok",
+      "url": "https://github.com/thrau/pymq",
+      "commit": "101857bca2b7",
+      "commit_date": "2020-06-26",
+      "python": "3.9",
+      "install": "-e . -r requirements-dev.txt -r requirements.txt",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 33.0197463517,
+      "det_mean_s": 12.576715903000004,
+      "slowdown_pct": -61.91153084871441,
+      "precompile_first_s": 1.811,
+      "precompile_rest_median_s": 0.636,
+      "tests": 127,
+      "unstable_baseline": 1,
+      "unstable_det": 0,
+      "became_stable": 1,
+      "outcome_changed_by_det": 2,
+      "covered": 80,
+      "not_covered": 47,
+      "reproduced": 0,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 1,
+      "seeds_needed": [],
+      "seeds_explored": 20,
+      "exploration_runs": 47,
+      "exploration_budget_hit": false,
+      "reasons": {
+        "fs": 9,
+        "entropy": 37,
+        "time": 1
+      },
+      "pass_fail_reasons": {},
+      "broken_by_det": 2,
+      "broken_always": 2,
+      "broken_causes": {
+        "time | AssertionError": 2
+      },
+      "broken_examples": {
+        "time | AssertionError": [
+          "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout: AssertionError: 1 != 9.5367431640625e-07 within 0.3 delta (0.9999990463256836 difference) (first diverging source: -)",
+          "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout: AssertionError: 1 != 9.5367431640625e-07 within 0.3 delta (0.9999990463256836 difference) (first diverging source: -)"
+        ]
+      },
+      "ablation_runs": 6,
+      "known_flaky": 20,
+      "known_present": 20,
+      "known_unstable_baseline": 1,
+      "known_reproduced": 0,
+      "known_categories": {
+        "OD-Vic": 16,
+        "NOD": 4
+      },
+      "examples": {
+        "changed:passed->failed": [
+          "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+          "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+        ],
+        "not-reproduced": [
+          "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire (seed 16:1/10) event #0: [random] Random.seed(None) @ tests/testutils.py:22 = 3779554696546356007  <>  [entropy] os.urandom @ pymq/prov"
+        ]
+      }
+    },
+    {
+      "name": "idoft-coinbase-commerce-python",
+      "kind": "flaky",
+      "status": "ok",
+      "url": "https://github.com/coinbase/coinbase-commerce-python",
+      "commit": "d306fc562309",
+      "commit_date": "2020-04-29",
+      "python": "3.9",
+      "install": "-e . -r requirements.txt",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 0.5647549390000023,
+      "det_mean_s": 1.0684263715999975,
+      "slowdown_pct": 89.18406866734692,
+      "precompile_first_s": 1.374,
+      "precompile_rest_median_s": 0.443,
+      "tests": 79,
+      "unstable_baseline": 8,
+      "unstable_det": 0,
+      "became_stable": 8,
+      "outcome_changed_by_det": 0,
+      "covered": 79,
+      "not_covered": 0,
+      "reproduced": 8,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        1,
+        2
+      ],
+      "seeds_explored": 2,
+      "exploration_runs": 20,
+      "exploration_budget_hit": false,
+      "reasons": {},
+      "pass_fail_reasons": {
+        "random": 8
+      },
+      "broken_by_det": 1,
+      "broken_always": 1,
+      "broken_causes": {
+        "fixed-order (fails without --det too) | AssertionError": 1
+      },
+      "broken_examples": {
+        "fixed-order (fails without --det too) | AssertionError": [
+          "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list: AssertionError: False is not true (first diverging source: random)"
+        ]
+      },
+      "ablation_runs": 6,
+      "known_flaky": 8,
+      "known_present": 8,
+      "known_unstable_baseline": 8,
+      "known_reproduced": 8,
+      "known_categories": {
+        "OD-Vic": 8
+      },
+      "examples": {
+        "reproduced": [
+          "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create (seed fixed): event #0: random.state @ <end> returned different values: \"52422558b36ba163141df9eacbbb70b8\" vs \"5191e7f274431c3884425a361fe004a0\"",
+          "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list (seed fixed): event #0: random.state @ <end> returned different values: \"87a288056d8da1508e511d58475c2d21\" vs \"f703bb9f13c9d102a21238b11c508812\"",
+          "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping (seed fixed): event #0: random.state @ <end> returned different values: \"c7ed20cf8223cda99fd5354fa4499f0b\" vs \"ebd3c47c316f2c025cd2aefdbbf1ce45\""
+        ]
+      }
+    },
+    {
+      "name": "idoft-easypy",
+      "kind": "flaky",
+      "status": "ok",
+      "url": "https://github.com/weka-io/easypy",
+      "commit": "9501c3ee03dc",
+      "commit_date": "2020-04-21",
+      "python": "3.9",
+      "install": "-e .",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 8.349334189200006,
+      "det_mean_s": 12.9879539445,
+      "slowdown_pct": 55.5567623739402,
+      "precompile_first_s": 1.434,
+      "precompile_rest_median_s": 0.481,
+      "tests": 212,
+      "unstable_baseline": 44,
+      "unstable_det": 0,
+      "became_stable": 44,
+      "outcome_changed_by_det": 0,
+      "covered": 183,
+      "not_covered": 29,
+      "reproduced": 24,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 20,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "seeds_explored": 2,
+      "exploration_runs": 2,
+      "exploration_budget_hit": false,
+      "reasons": {
+        "thread": 28,
+        "entropy": 1
+      },
+      "pass_fail_reasons": {
+        "time": 23,
+        "random": 1
+      },
+      "broken_by_det": 2,
+      "broken_always": 2,
+      "broken_causes": {
+        "fixed-order (fails without --det too) | RecursionError": 2
+      },
+      "broken_examples": {
+        "fixed-order (fails without --det too) | RecursionError": [
+          "tests/test_sync.py::test_logged_condition_exception: RecursionError: maximum recursion depth exceeded (first diverging source: -)",
+          "tests/test_sync.py::test_logged_condition_waited_for: RecursionError: maximum recursion depth exceeded (first diverging source: -)"
+        ]
+      },
+      "ablation_runs": 6,
+      "known_flaky": 44,
+      "known_present": 44,
+      "known_unstable_baseline": 44,
+      "known_reproduced": 24,
+      "known_categories": {
+        "OD-Vic": 44
+      },
+      "examples": {
+        "reproduced": [
+          "tests/test_caching.py::test_resilient_between_timecaches (seed fixed): event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = e4f59db1be156634878454fccdb30534",
+          "tests/test_exceptions.py::test_pickle_texception (seed fixed): event #1: random.state @ <end> returned different values: \"f9fc54f825cda5e79a9a98d2a0de73b2\" vs \"5e78fd98474eb51b2d6a6707d7566e70\"",
+          "tests/test_logging.py::test_indent_around_ctx (seed fixed): event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = eafabbc755bc762afb8b0ca13cfaaa57"
+        ],
+        "always-fails-under-det": [
+          "tests/test_concurrency.py::test_concurrent_done_status[False] (fixed:10/10)",
+          "tests/test_concurrency.py::test_concurrent_done_status[True] (fixed:10/10)"
+        ]
+      }
+    },
+    {
+      "name": "idoft-freezegun",
+      "kind": "flaky",
+      "status": "ok",
+      "url": "https://github.com/spulec/freezegun",
+      "commit": "b46da782a7a0",
+      "commit_date": "2020-07-22",
+      "python": "3.9",
+      "install": "-e . -r requirements.txt",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 0.9784609330000003,
+      "det_mean_s": 2.169689299699999,
+      "slowdown_pct": 121.74511281177524,
+      "precompile_first_s": 1.912,
+      "precompile_rest_median_s": 0.843,
+      "tests": 112,
+      "unstable_baseline": 8,
+      "unstable_det": 0,
+      "became_stable": 8,
+      "outcome_changed_by_det": 0,
+      "covered": 112,
+      "not_covered": 0,
+      "reproduced": 7,
+      "never_fails_under_det": 1,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [
+        2,
+        2,
+        7,
+        9,
+        9,
+        10,
+        10
+      ],
+      "seeds_explored": 20,
+      "exploration_runs": 56,
+      "exploration_budget_hit": false,
+      "reasons": {},
+      "pass_fail_reasons": {
+        "random": 6,
+        "time": 1
+      },
+      "broken_by_det": 0,
+      "broken_always": 0,
+      "broken_causes": {},
+      "broken_examples": {},
+      "ablation_runs": 0,
+      "known_flaky": 15,
+      "known_present": 15,
+      "known_unstable_baseline": 6,
+      "known_reproduced": 6,
+      "known_categories": {
+        "OD-Vic": 15
+      },
+      "examples": {
+        "reproduced": [
+          "tests/test_class_import.py::test_import_after_start (seed 2): event #1: random.state @ <end> returned different values: \"a710d13fb7e46e56ea84c2f658407add\" vs \"1e559fe66da9d0fc53cb4ee068c307b6\"",
+          "tests/test_datetimes.py::test_min_and_max (seed 2): event #1: random.state @ <end> returned different values: \"e2f7865427d7fd3472d3db10fd1f46b2\" vs \"2f7dfe48cb3e854305b8134c980abd96\"",
+          "tests/test_datetimes.py::test_time_ns (seed 7): event #0: [time] datetime.now @ <site>/dateutil/parser/_parser.py:637 = 1000  <>  [random] random.state @ <end> = 6a6fcaedfbf83de6d533f65dda283f35"
+        ]
+      }
+    },
+    {
+      "name": "structlog",
+      "kind": "popular",
+      "status": "ok",
+      "url": "https://github.com/hynek/structlog",
+      "commit": "81779f0abe59",
+      "commit_date": "2026-11-02",
+      "python": "3.13",
+      "install": "-e . --group tests",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 2.1173455630000007,
+      "det_mean_s": 3.8620743742999997,
+      "slowdown_pct": 82.40170342473279,
+      "precompile_first_s": 7.251,
+      "precompile_rest_median_s": 0.433,
+      "tests": 921,
+      "unstable_baseline": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "outcome_changed_by_det": 0,
+      "covered": 902,
+      "not_covered": 19,
+      "reproduced": 0,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [],
+      "seeds_explored": 0,
+      "exploration_runs": 0,
+      "exploration_budget_hit": false,
+      "reasons": {
+        "entropy": 19
+      },
+      "pass_fail_reasons": {},
+      "broken_by_det": 0,
+      "broken_always": 0,
+      "broken_causes": {},
+      "broken_examples": {},
+      "ablation_runs": 0,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "known_categories": {},
+      "examples": {}
+    },
+    {
+      "name": "anyio",
+      "kind": "popular",
+      "status": "ok",
+      "url": "https://github.com/agronholm/anyio",
+      "commit": "9df02f0b8362",
+      "commit_date": "2026-11-16",
+      "python": "3.13",
+      "install": "-e . --group test",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 45.0526725164,
+      "det_mean_s": 102.66611255479997,
+      "slowdown_pct": 127.88018295125028,
+      "precompile_first_s": 8.214,
+      "precompile_rest_median_s": 0.33,
+      "tests": 4852,
+      "unstable_baseline": 16,
+      "unstable_det": 0,
+      "became_stable": 16,
+      "outcome_changed_by_det": 8,
+      "covered": 4567,
+      "not_covered": 285,
+      "reproduced": 6,
+      "never_fails_under_det": 10,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "seeds_explored": 3,
+      "exploration_runs": 12,
+      "exploration_budget_hit": true,
+      "reasons": {
+        "time": 267,
+        "entropy": 7,
+        "thread": 11
+      },
+      "pass_fail_reasons": {
+        "time": 6
+      },
+      "broken_by_det": 2,
+      "broken_always": 2,
+      "broken_causes": {
+        "net | gaierror": 2
+      },
+      "broken_examples": {
+        "net | gaierror": [
+          "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]: socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network) (first diverging source: -)",
+          "tests/test_sockets.py::test_getaddrinfo[asyncio]: socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network) (first diverging source: -)"
+        ]
+      },
+      "ablation_runs": 6,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "known_categories": {},
+      "examples": {
+        "reproduced": [
+          "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12] (seed 2): event #1: [random] random.state @ <end> = a60d519535921996b6cdefc96d6a3e03  <>  [time] time.perf_counter @ <site>/hypothesis/internal/conjecture/junkdrawer.py:4",
+          "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13] (seed 2): event #1: [random] random.state @ <end> = 24cca6a3aa5e823e2a199c9dcd80720b  <>  [time] time.perf_counter @ <site>/hypothesis/internal/conjecture/junkdrawer.py:4",
+          "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12] (seed 2): event #39: [time] time.monotonic @ src/anyio/_backends/_asyncio.py:2438 = 470000  <>  [time] time.monotonic @ src/anyio/_backends/_asyncio.py:2320 = 470000"
+        ],
+        "changed:passed->failed": [
+          "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+          "tests/test_sockets.py::test_getaddrinfo[asyncio]"
+        ],
+        "changed:failed->passed": [
+          "tests/test_to_process.py::test_entrypoint_main_module[asyncio+eager]",
+          "tests/test_to_process.py::test_entrypoint_main_module[asyncio+uvloop]"
+        ]
+      }
+    },
+    {
+      "name": "requests",
+      "kind": "popular",
+      "status": "ok",
+      "url": "https://github.com/psf/requests",
+      "commit": "3c7baaa05ab4",
+      "commit_date": "2026-10-26",
+      "python": "3.13",
+      "install": "-e . --group test -r requirements-dev.txt",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 45.25587892199998,
+      "det_mean_s": 79.50932112459999,
+      "slowdown_pct": 75.68838130762407,
+      "precompile_first_s": 7.0,
+      "precompile_rest_median_s": 0.324,
+      "tests": 635,
+      "unstable_baseline": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "outcome_changed_by_det": 4,
+      "covered": 515,
+      "not_covered": 120,
+      "reproduced": 0,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [],
+      "seeds_explored": 0,
+      "exploration_runs": 0,
+      "exploration_budget_hit": false,
+      "reasons": {
+        "entropy": 19,
+        "thread": 101
+      },
+      "pass_fail_reasons": {},
+      "broken_by_det": 4,
+      "broken_always": 4,
+      "broken_causes": {
+        "net | ConnectionError": 4
+      },
+      "broken_examples": {
+        "net | ConnectionError": [
+          "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]: requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnec (first diverging source: -)",
+          "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]: requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnec (first diverging source: -)",
+          "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]: requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnec (first diverging source: -)"
+        ]
+      },
+      "ablation_runs": 6,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "known_categories": {},
+      "examples": {
+        "changed:passed->failed": [
+          "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]",
+          "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]"
+        ]
+      }
+    },
+    {
+      "name": "networkx",
+      "kind": "popular",
+      "status": "ok",
+      "url": "https://github.com/networkx/networkx",
+      "commit": "2e0ae8ad9578",
+      "commit_date": "2026-11-16",
+      "python": "3.13",
+      "install": "-e .[test,test-extras] -r requirements/test.txt numpy scipy",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 7,
+      "baseline_mean_s": 81.51584494657142,
+      "det_mean_s": 151.98086125985714,
+      "slowdown_pct": 86.44333670278601,
+      "precompile_first_s": 10.898,
+      "precompile_rest_median_s": 0.7195,
+      "tests": 10191,
+      "unstable_baseline": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "outcome_changed_by_det": 0,
+      "covered": 10129,
+      "not_covered": 62,
+      "reproduced": 0,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [],
+      "seeds_explored": 0,
+      "exploration_runs": 0,
+      "exploration_budget_hit": false,
+      "reasons": {
+        "entropy": 62
+      },
+      "pass_fail_reasons": {},
+      "broken_by_det": 0,
+      "broken_always": 0,
+      "broken_causes": {},
+      "broken_examples": {},
+      "ablation_runs": 0,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "known_categories": {},
+      "examples": {}
+    },
+    {
+      "name": "rich",
+      "kind": "popular",
+      "status": "ok",
+      "url": "https://github.com/Textualize/rich",
+      "commit": "3a109ccdffe5",
+      "commit_date": "2026-11-07",
+      "python": "3.13",
+      "install": "-e . --group dev attrs",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 3.7731529060999973,
+      "det_mean_s": 7.223350404200001,
+      "slowdown_pct": 91.44070182054173,
+      "precompile_first_s": 9.07,
+      "precompile_rest_median_s": 0.406,
+      "tests": 981,
+      "unstable_baseline": 5,
+      "unstable_det": 0,
+      "became_stable": 5,
+      "outcome_changed_by_det": 0,
+      "covered": 981,
+      "not_covered": 0,
+      "reproduced": 5,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "seeds_explored": 1,
+      "exploration_runs": 10,
+      "exploration_budget_hit": false,
+      "reasons": {},
+      "pass_fail_reasons": {
+        "random": 5
+      },
+      "broken_by_det": 0,
+      "broken_always": 0,
+      "broken_causes": {},
+      "broken_examples": {},
+      "ablation_runs": 0,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "known_categories": {},
+      "examples": {
+        "reproduced": [
+          "tests/test_box.py::test_get_row (seed 1): event #0: random.state @ <end> returned different values: \"9384f52fb3ae5dbacb666e842473575e\" vs \"313af12c70c973b544159e2293d09e75\"",
+          "tests/test_rule_in_table.py::test_rule_in_expanded_table (seed 1): event #0: random.state @ <end> returned different values: \"d63faa3842a6d4533e4b8b8ef86639f9\" vs \"818857d8e31104e3e69ecb540a01c547\"",
+          "tests/test_rule_in_table.py::test_rule_in_ratio_table (seed 1): event #0: random.state @ <end> returned different values: \"d3a5cb7055b40d5f9c55f775bbfa9823\" vs \"2850cefa2a7f56776ead58e8903b9513\""
+        ]
+      }
+    },
+    {
+      "name": "faker",
+      "kind": "popular",
+      "status": "ok",
+      "url": "https://github.com/joke2k/faker",
+      "commit": "affa2c5aada2",
+      "commit_date": "2026-11-10",
+      "python": "3.13",
+      "install": "-e . -r dev-requirements.txt freezegun validators ukpostcodeparser sphinx",
+      "pytest_args": [
+        "-o",
+        "addopts="
+      ],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 16.550665097899998,
+      "det_mean_s": 22.773499821700007,
+      "slowdown_pct": 37.59869882564164,
+      "precompile_first_s": 6.673,
+      "precompile_rest_median_s": 0.476,
+      "tests": 2470,
+      "unstable_baseline": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "outcome_changed_by_det": 4,
+      "covered": 2470,
+      "not_covered": 0,
+      "reproduced": 0,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [],
+      "seeds_explored": 0,
+      "exploration_runs": 0,
+      "exploration_budget_hit": false,
+      "reasons": {},
+      "pass_fail_reasons": {},
+      "broken_by_det": 0,
+      "broken_always": 0,
+      "broken_causes": {},
+      "broken_examples": {},
+      "ablation_runs": 0,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "known_categories": {},
+      "examples": {
+        "changed:failed->passed": [
+          "tests/pytest/test_autouse_faker_locale.py::test_no_injection",
+          "tests/pytest/test_manual_injection.py::test_inject_faker_locale"
+        ]
+      }
+    },
+    {
+      "name": "boltons",
+      "kind": "popular",
+      "status": "ok",
+      "url": "https://github.com/mahmoud/boltons",
+      "commit": "d31d821d56c8",
+      "commit_date": "2026-10-25",
+      "python": "3.13",
+      "install": "-e . --group dev",
+      "pytest_args": [],
+      "xdist": true,
+      "runs": 10,
+      "baseline_mean_s": 2.2590984458000034,
+      "det_mean_s": 5.476050880700001,
+      "slowdown_pct": 142.39983391962335,
+      "precompile_first_s": 7.815,
+      "precompile_rest_median_s": 0.422,
+      "tests": 621,
+      "unstable_baseline": 0,
+      "unstable_det": 0,
+      "became_stable": 0,
+      "outcome_changed_by_det": 0,
+      "covered": 616,
+      "not_covered": 5,
+      "reproduced": 0,
+      "never_fails_under_det": 0,
+      "always_fails_under_det": 0,
+      "fails_sometimes_under_det": 0,
+      "seeds_needed": [],
+      "seeds_explored": 0,
+      "exploration_runs": 0,
+      "exploration_budget_hit": false,
+      "reasons": {
+        "entropy": 3,
+        "thread": 2
+      },
+      "pass_fail_reasons": {},
+      "broken_by_det": 0,
+      "broken_always": 0,
+      "broken_causes": {},
+      "broken_examples": {},
+      "ablation_runs": 0,
+      "known_flaky": 0,
+      "known_present": 0,
+      "known_unstable_baseline": 0,
+      "known_reproduced": 0,
+      "known_categories": {},
+      "examples": {}
+    }
+  ],
+  "skipped": []
+}

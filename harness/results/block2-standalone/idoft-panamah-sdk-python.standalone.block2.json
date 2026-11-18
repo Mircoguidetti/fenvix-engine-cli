@@ -1,0 +1,285 @@
+{
+ "name": "idoft-panamah-sdk-python",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_processor.py::TestStream::test_expiration_by_max_age",
+  "tests/test_processor.py::TestStream::test_expiration_by_max_length",
+  "tests/test_processor.py::TestStream::test_expiration_by_max_size",
+  "tests/test_stream.py::TestStream::test_events"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009177",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C"
+ },
+ "bundles": [
+  {
+   "test": "tests/test_processor.py::TestStream::test_expiration_by_max_age",
+   "configs_searched": 17,
+   "status": "replay-unstable",
+   "config": "16",
+   "seed": 16,
+   "kind": "order",
+   "prefix_length": 4,
+   "minimal_length": 4,
+   "polluters": [
+    "tests/test_batch.py::TestBatch::test_batch",
+    "tests/test_stream.py::TestStream::test_initialization_and_operations",
+    "tests/test_stream.py::TestStream::test_events"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_batch.py::TestBatch::test_batch",
+    "tests/test_stream.py::TestStream::test_initialization_and_operations",
+    "tests/test_stream.py::TestStream::test_events",
+    "tests/test_processor.py::TestStream::test_expiration_by_max_age"
+   ],
+   "outcome": "passed",
+   "exception": null,
+   "replay": {
+    "runs": 10,
+    "fails": 0,
+    "fingerprints": [
+     "34346d6a44486c7539df7f501973bee6",
+     "3c26361f04bbe6262b370bb6f352c7c8",
+     "7e22bd1a6aff0fe2f876cf2819f53d39",
+     "c0b20e87bedb4111b5155f6766fb0abe"
+    ],
+    "identical_fingerprint": false
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "fs",
+    "description": "event #1: os.scandir @ tests/test_processor.py:76 returned different values: \"<fd>|0|af1349b9f5f9a1a6a0404dea36dcc949\" vs \"<fd>|3|c4a57c0dbde0e3da62ce35c65a601e44\"",
+    "event_a": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "tests/test_processor.py:76",
+     "v": "<fd>|0|af1349b9f5f9a1a6a0404dea36dcc949"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "tests/test_processor.py:76",
+     "v": "<fd>|3|c4a57c0dbde0e3da62ce35c65a601e44"
+    },
+    "fingerprints": [
+     "609da45c21266eb90f1839542d80648e",
+     "c0b20e87bedb4111b5155f6766fb0abe"
+    ]
+   },
+   "runs": 34,
+   "seconds": 133.19,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-panamah-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=16 --det-order=/tmp/work/block2/idoft-panamah-sdk-python/standalone/bundles/test_expiration_by_max_age-825e413d/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-panamah-sdk-python/standalone/bundles/test_expiration_by_max_age-825e413d",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-panamah-sdk-python/standalone/bundles/test_expiration_by_max_age-825e413d"
+  },
+  {
+   "test": "tests/test_processor.py::TestStream::test_expiration_by_max_length",
+   "configs_searched": 31,
+   "status": "replay-unstable",
+   "config": "30",
+   "seed": 30,
+   "kind": "order",
+   "prefix_length": 16,
+   "minimal_length": 16,
+   "polluters": [
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client_key_calculation",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_stream.py::TestStream::test_initialization_and_operations",
+    "tests/test_stream.py::TestStream::test_events",
+    "tests/test_models.py::TestClient::test_serialization",
+    "tests/test_models.py::TestClient::test_field_validations",
+    "tests/test_batch.py::TestBatch::test_batch",
+    "tests/test_nfe.py::TestNfe::test_parsing_file",
+    "tests/test_nfe.py::TestNfe::test_parsing_directory",
+    "tests/test_processor.py::test_expiration",
+    "tests/test_processor.py::TestStream::test_expiration_by_max_size"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client_key_calculation",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_stream.py::TestStream::test_initialization_and_operations",
+    "tests/test_stream.py::TestStream::test_events",
+    "tests/test_models.py::TestClient::test_serialization",
+    "tests/test_models.py::TestClient::test_field_validations",
+    "tests/test_batch.py::TestBatch::test_batch",
+    "tests/test_nfe.py::TestNfe::test_parsing_file",
+    "tests/test_nfe.py::TestNfe::test_parsing_directory",
+    "tests/test_processor.py::test_expiration",
+    "tests/test_processor.py::TestStream::test_expiration_by_max_size",
+    "tests/test_processor.py::TestStream::test_expiration_by_max_length"
+   ],
+   "outcome": "passed",
+   "exception": null,
+   "replay": {
+    "runs": 10,
+    "fails": 0,
+    "fingerprints": [
+     "a102188258a6eb5d1d27a07e4971e35f"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "fs",
+    "description": "event #1: os.scandir @ tests/test_processor.py:76 returned different values: \"<fd>|1|9ed064ca23fd7d9cc3ead69a552e8076\" vs \"<fd>|3|d520aa137e2b9c67d0bda5d658d0388e\"",
+    "event_a": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "tests/test_processor.py:76",
+     "v": "<fd>|1|9ed064ca23fd7d9cc3ead69a552e8076"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "tests/test_processor.py:76",
+     "v": "<fd>|3|d520aa137e2b9c67d0bda5d658d0388e"
+    },
+    "fingerprints": [
+     "1d133372209a74649e7d90e4285dcd89",
+     "a102188258a6eb5d1d27a07e4971e35f"
+    ]
+   },
+   "runs": 96,
+   "seconds": 216.04,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-panamah-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=30 --det-order=/tmp/work/block2/idoft-panamah-sdk-python/standalone/bundles/test_expiration_by_max_length-3d36cabc/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-panamah-sdk-python/standalone/bundles/test_expiration_by_max_length-3d36cabc",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-panamah-sdk-python/standalone/bundles/test_expiration_by_max_length-3d36cabc"
+  },
+  {
+   "test": "tests/test_processor.py::TestStream::test_expiration_by_max_size",
+   "configs_searched": 51,
+   "status": "not-found",
+   "runs": 51,
+   "seconds": 247.94
+  },
+  {
+   "test": "tests/test_stream.py::TestStream::test_events",
+   "configs_searched": 47,
+   "status": "replay-unstable",
+   "config": "46",
+   "seed": 46,
+   "kind": "brittle",
+   "prefix_length": 21,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante"
+   ],
+   "order": [
+    "tests/test_stream.py::TestStream::test_events"
+   ],
+   "outcome": "passed",
+   "exception": null,
+   "replay": {
+    "runs": 10,
+    "fails": 0,
+    "fingerprints": [
+     "2265c2e639698f5c4ccc488a96e4a582",
+     "a85ff4f524843c71df3d4945076c8e12",
+     "b03d01d8a692ed20b266c2c43709821b"
+    ],
+    "identical_fingerprint": false
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "thread",
+    "description": "event #1: [fs] os.listdir @ panamah_sdk/processor.py:53 = .panamah/accumulated|1|d4e6994e743ec937df4c6850d9aa21a3 (thread 1)  <>  [random] random.state @ <end> = 97441efec35963a18d9bd333489cce6d",
+    "event_a": {
+     "t": 1,
+     "s": "fs",
+     "o": "os.listdir",
+     "at": "panamah_sdk/processor.py:53",
+     "v": ".panamah/accumulated|1|d4e6994e743ec937df4c6850d9aa21a3"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "97441efec35963a18d9bd333489cce6d"
+    },
+    "fingerprints": [
+     "1400ccb4ede1dc4643481cd5b75e8716",
+     "a85ff4f524843c71df3d4945076c8e12"
+    ]
+   },
+   "runs": 63,
+   "seconds": 201.07,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-panamah-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=46 --det-order=/tmp/work/block2/idoft-panamah-sdk-python/standalone/bundles/test_events-3a6c4ac8/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-panamah-sdk-python/standalone/bundles/test_events-3a6c4ac8",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-panamah-sdk-python/standalone/bundles/test_events-3a6c4ac8"
+  }
+ ],
+ "seconds": 798.27
+}

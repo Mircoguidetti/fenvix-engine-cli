@@ -1,0 +1,76 @@
+{
+  "test": "tunacell/tests/test_experiment.py::test_experiment_attributes",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 18,
+  "minimal_length": 2,
+  "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+  ],
+  "setters": [],
+  "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes"
+  ],
+  "outcome": "error",
+  "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "c70d772cf465e2613443dc222f0342c6"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:616373b1c75bdb822d6e0e9a3d3d45ee  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "tunacell/base/colony.py:85",
+      "v": "16:616373b1c75bdb822d6e0e9a3d3d45ee"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "<site>/tqdm/std.py:1463",
+      "v": "3000"
+    },
+    "fingerprints": [
+      "b59c07096714fe7d8fffd1560a20921b",
+      "c70d772cf465e2613443dc222f0342c6"
+    ]
+  },
+  "runs": 17,
+  "seconds": 32.12,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_attributes-5ac886f6/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_attributes-5ac886f6",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_attributes-5ac886f6"
+}

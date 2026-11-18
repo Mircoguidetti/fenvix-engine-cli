@@ -39,8 +39,14 @@ def test_types_and_isinstance():
     class Sub(datetime.datetime):
         pass
     assert type(Sub.now()) is Sub
-    with pytest.warns(DeprecationWarning):
-        assert datetime.datetime.utcnow().year == 2025
+    import sys, warnings
+    if sys.version_info >= (3, 12):  # utcnow is deprecated (and warns) only from 3.12
+        with pytest.warns(DeprecationWarning):
+            assert datetime.datetime.utcnow().year == 2025
+    else:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            assert datetime.datetime.utcnow().year == 2025
     assert type(datetime.datetime.today()) is datetime.datetime
     assert type(datetime.date.today()) is datetime.date
 
@@ -229,13 +235,24 @@ def test_real_pytest_benchmark(pytester, run_det):
 def test_sleep_lets_other_threads_run(pytester, run_det):
     """Regression (easypy, test_tag_along_thread / concurrent_find_proper_shutdown):
     code that sleeps to let *other threads* make progress must keep working.
-    A purely virtual sleep returned at once and the other thread never ran."""
+    A purely virtual sleep returned at once and the other thread never ran.
+
+    The worker waits 0.2 s of real time with a raw _thread lock (no detpy wrapper,
+    no virtual clock): before the fix the main thread's sleep(0.5) returned at
+    once and the assertion failed every time (review R-001: the previous version
+    let the worker sleep virtually too, so it failed only 5/10 before the fix)."""
     pytester.makepyfile(
         test_t="""
-        import threading, time
+        import _thread, threading, time
+
+        def _real_wait(seconds):
+            lock = _thread.allocate_lock()
+            lock.acquire()
+            lock.acquire(timeout=seconds)  # times out after `seconds` of real time
+
         def test_wait_for_worker():
             done = []
-            t = threading.Thread(target=lambda: (time.sleep(0.2), done.append(1)))
+            t = threading.Thread(target=lambda: (_real_wait(0.2), done.append(1)))
             t.start()
             time.sleep(0.5)          # "wait for stragglers"
             assert done
@@ -250,3 +267,195 @@ def test_sleep_lets_other_threads_run(pytester, run_det):
     )
     result, _ = run_det("-p", "no:randomly")
     result.assert_outcomes(passed=2)
+
+
+def test_time_machine_travel_is_honoured(pytester, run_det):
+    """Regression (structlog, 43 tests): time-machine patches the C builtins, which
+    detpy replaces; under --det its travel had no effect at all."""
+    pytest = __import__("pytest")
+    pytest.importorskip("time_machine")
+    pytester.makepyfile(
+        test_tm="""
+        import datetime as dt, time
+        import time_machine
+
+        @time_machine.travel("1980-03-25 16:00:00+00:00", tick=False)
+        def test_frozen():
+            assert time.time() == 322848000.0
+            assert dt.datetime.now(dt.timezone.utc).year == 1980
+            assert time.strftime("%Y", time.gmtime()) == "1980"
+
+        def test_ticking_is_deterministic():
+            with time_machine.travel(dt.datetime(1980, 3, 25, tzinfo=dt.timezone.utc)):
+                a = time.time(); b = time.time()
+                assert 322790400 <= a < b < 322790401
+                print("VAL", repr(a), repr(b))
+
+        def test_back_to_virtual_epoch():
+            assert 1735689600 <= time.time() < 1735689601
+        """
+    )
+    r1, (_, t1, _) = run_det("-p", "no:randomly", "-s")
+    r1.assert_outcomes(passed=3)
+    r2, (_, t2, _) = run_det("-p", "no:randomly", "-s")
+    v1 = [line for line in r1.outlines if "VAL" in line]
+    assert v1 and v1 == [line for line in r2.outlines if "VAL" in line]
+
+
+def test_blocking_sleep_inside_event_loop_moves_loop_time(pytester, run_det):
+    """Regression (anyio test_fail_after_scope_cancelled_before_timeout, 3 tests):
+    asyncio keeps real time, so a blocking time.sleep() inside a coroutine must
+    really elapse or loop deadlines never expire."""
+    pytester.makepyfile(
+        test_a="""
+        import asyncio, time
+        def test_loop_time_advances():
+            async def main():
+                loop = asyncio.get_running_loop()
+                t0 = loop.time()
+                time.sleep(0.05)
+                return loop.time() - t0
+            assert asyncio.run(main()) >= 0.05
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)
+
+
+def test_references_kept_after_the_session_fall_back_to_real_time():
+    """Regression (anyio): plugins kept `from time import perf_counter` (our fake)
+    and called it during interpreter shutdown, after detpy uninstalled."""
+    from detpy import clock
+
+    assert clock.CLOCK is None  # not installed in this (outer) session
+    assert clock.perf_counter() > 0 and clock.time() > 1.7e9 and clock.monotonic_ns() > 0
+    clock.sleep(0)
+
+
+def test_waiting_for_a_child_process_waits_for_real(pytester, run_det):
+    """Regression (idoft-pymq / redislite, 24 tests): a polling loop that sleeps
+    while a child process starts up timed out at once with a virtual sleep."""
+    pytester.makepyfile(
+        test_p="""
+        import os, subprocess, sys, tempfile, time
+        def test_wait_for_child_marker():
+            marker = os.path.join(tempfile.mkdtemp(), "ready")
+            child = subprocess.Popen([sys.executable, "-c",
+                f"import time; time.sleep(0.3); open({marker!r}, 'w').close(); time.sleep(5)"])
+            try:
+                deadline = time.monotonic() + 2
+                while not os.path.exists(marker):
+                    assert time.monotonic() < deadline, "child did not start in time"
+                    time.sleep(0.05)
+            finally:
+                child.kill(); child.wait()
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)
+
+
+def test_asyncio_sleep_moves_the_virtual_clock(pytester, run_det):
+    """Regression (boltons test_wraps_async): asyncio waits in real time; code
+    measuring the wait with time.time() saw ~0 elapsed."""
+    pytester.makepyfile(
+        test_s="""
+        import asyncio, time
+        def test_elapsed():
+            async def main():
+                t0 = time.time()
+                await asyncio.sleep(0.25)
+                return time.time() - t0
+            assert asyncio.run(main()) >= 0.25
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)
+
+
+def test_adaptive_tick_does_not_trip_algorithm_timeouts(pytester, run_det):
+    """Regression (networkx graph_edit_distance timeout, faker): a hot loop that
+    checks a timeout with perf_counter must not see virtual time race ahead."""
+    pytester.makepyfile(
+        test_t="""
+        import time
+        def test_timeout_guarded_loop():
+            start = time.perf_counter()
+            for _ in range(5000):
+                assert time.perf_counter() - start < 1.0, "spurious timeout"
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)
+
+
+def test_date_today_follows_a_patched_time_time(pytester, run_det):
+    """Regression (idoft-freezegun, 2 tests): CPython's date.today() calls time.time()
+    through the module, so libraries patching time.time drive it; detpy's
+    replacement read the virtual clock directly."""
+    pytester.makepyfile(
+        test_d="""
+        import datetime, time
+        def test_today(monkeypatch):
+            monkeypatch.setattr(time, "time", lambda: 1365508800.0)  # 2013-04-09 12:00 UTC
+            assert datetime.date.today() == datetime.date(2013, 4, 9)
+            assert datetime.datetime(2020, 1, 1).today().date() == datetime.date(2013, 4, 9)
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)
+
+
+def test_waiting_for_a_daemonized_process_waits_for_real(pytester, run_det):
+    """Regression (idoft-pymq / redislite): redis-server daemonizes (its parent
+    exits at once) and the caller polls a fixed number of times with sleep()."""
+    pytester.makepyfile(
+        test_p="""
+        import os, subprocess, sys, tempfile, time
+        DAEMON = '''
+        import os, sys, time
+        if os.fork():
+            sys.exit(0)          # the parent exits immediately, like a daemonizing server
+        time.sleep(0.3)
+        open(sys.argv[1], "w").close()
+        '''
+        def test_wait_for_daemon():
+            marker = os.path.join(tempfile.mkdtemp(), "ready")
+            subprocess.call([sys.executable, "-c", DAEMON.replace("\\\\n        ", "\\\\n"), marker])
+            for _ in range(40):              # 40 x 50 ms
+                if os.path.exists(marker):
+                    break
+                time.sleep(0.05)
+            assert os.path.exists(marker), "daemon did not start in time"
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)
+
+
+def test_lock_acquire_timeouts_advance_the_clock(pytester, run_det):
+    """Regression (easypy LoggedRLock under --det-seed=2: hang): a loop that retries
+    lock.acquire(timeout=...) until a time.time() deadline never ended, because the
+    C-level wait took real time while the virtual clock stood still."""
+    pytester.makepyfile(
+        test_l="""
+        import threading, time
+        def test_retry_until_deadline():
+            for factory in (threading.Lock, threading.RLock):
+                lock, held, release = factory(), threading.Event(), threading.Event()
+                def owner():
+                    with lock:
+                        held.set(); release.wait()
+                t = threading.Thread(target=owner, daemon=True); t.start(); held.wait()
+                deadline, attempts = time.time() + 1.0, 0
+                while time.time() < deadline:
+                    attempts += 1
+                    assert attempts < 20, "virtual clock did not advance on lock timeouts"
+                    assert not lock.acquire(timeout=0.2)
+                release.set(); t.join()
+                with lock:          # still a working lock / context manager
+                    pass
+        """
+    )
+    result, _ = run_det("-p", "no:randomly")
+    result.assert_outcomes(passed=1)

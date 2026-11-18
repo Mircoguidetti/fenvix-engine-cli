@@ -1,0 +1,85 @@
+{
+  "test": "tests/test_concurrency.py::test_thread_stacks",
+  "configs_searched": 1,
+  "status": "replay-unstable",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 196,
+  "minimal_length": 2,
+  "polluters": [
+    "test_package.py::test_package[lockstep]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[lockstep]",
+    "tests/test_concurrency.py::test_thread_stacks"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "0e4ca5eb1878bd8a9076d0565e252402",
+      "11fbfcdc63119063a7ae1b59f0705bfd",
+      "43b54cad7b94312769c2bfd3b23c26c9",
+      "5a2b49a34490cf534c25d5f61397937f",
+      "758517582da35189d080c9f9226bb8ff",
+      "9d08f316e0bffb62c694493ab41946b2",
+      "9d90766ace56e1e32add3013379f88ec",
+      "b9b4fabc40a459846fd4cdc1181f6c22",
+      "cb7e512b7444d8acf14e8f79f57281e7",
+      "e292419a9c56dafd20ded225e2485a81"
+    ],
+    "identical_fingerprint": false
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "thread",
+    "description": "event #1: os.urandom @ easypy/threadtree.py:39 returned different values: \"16:41b68b992999f879c09554855806483d\" vs \"16:6bdf96aa4257d099ed3bdfb30249d4f8\"",
+    "event_a": {
+      "t": 1,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "easypy/threadtree.py:39",
+      "v": "16:41b68b992999f879c09554855806483d"
+    },
+    "event_b": {
+      "t": 1,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "easypy/threadtree.py:39",
+      "v": "16:6bdf96aa4257d099ed3bdfb30249d4f8"
+    },
+    "fingerprints": [
+      "e10e2ef59a53d6039e709c06834cbdc5",
+      "43b54cad7b94312769c2bfd3b23c26c9"
+    ]
+  },
+  "runs": 21,
+  "seconds": 30.93,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_thread_stacks-6f25c284/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_thread_stacks-6f25c284",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_thread_stacks-6f25c284"
+}

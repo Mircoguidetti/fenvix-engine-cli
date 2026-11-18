@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "order",
+  "prefix_length": 43,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'kicad'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "40b2a9c058e00bd71712ff4eb7841013"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "b327d6c6893d080683b4bdf9db332102",
+      "40b2a9c058e00bd71712ff4eb7841013"
+    ]
+  },
+  "runs": 17,
+  "seconds": 14.2,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_minimal_pcb-94c759e2/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_minimal_pcb-94c759e2",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_minimal_pcb-94c759e2"
+}

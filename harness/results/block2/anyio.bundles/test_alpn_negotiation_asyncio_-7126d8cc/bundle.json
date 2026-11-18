@@ -1,0 +1,78 @@
+{
+  "test": "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "7",
+  "seed": 7,
+  "kind": "order",
+  "prefix_length": 1936,
+  "minimal_length": 3,
+  "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+  ],
+  "setters": [],
+  "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]"
+  ],
+  "outcome": "error",
+  "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-3 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "ef5f80a9fc41ff7a58fbab1323688c03"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:317db1ce895a17439b7776f68629d863  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "<site>/trustme/__init__.py:61",
+      "v": "12:317db1ce895a17439b7776f68629d863"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "<site>/blockbuster/blockbuster.py:372",
+      "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+      "e8e999de0e594fbe1f3f5255ed488b8a",
+      "ef5f80a9fc41ff7a58fbab1323688c03"
+    ]
+  },
+  "runs": 59,
+  "seconds": 228.37,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/anyio/bin/python",
+  "command": "pytest --det --det-seed=7 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_alpn_negotiation_asyncio_-7126d8cc/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_alpn_negotiation_asyncio_-7126d8cc",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_alpn_negotiation_asyncio_-7126d8cc"
+}

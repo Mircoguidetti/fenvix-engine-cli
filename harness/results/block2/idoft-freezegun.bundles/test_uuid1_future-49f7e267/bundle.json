@@ -1,0 +1,78 @@
+{
+  "test": "tests/test_uuid.py::test_uuid1_future",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "9",
+  "seed": 9,
+  "kind": "order",
+  "prefix_length": 108,
+  "minimal_length": 3,
+  "polluters": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_uuid.py::test_uuid1_future"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert FakeDatetime(2056, 2, 6, 14, 3, 21) == FakeDatetime(1978, 7, 6, 23, 6, 31)",
+    "/tmp/work/src/idoft-freezegun/tests/test_uuid.py:29"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "ed9e261e90dab88dcfdfb009f3acde43"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 3,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "d35702f482497f1c6f54ea6b087d75ce",
+      "ed9e261e90dab88dcfdfb009f3acde43"
+    ]
+  },
+  "runs": 56,
+  "seconds": 84.39,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+  "command": "pytest --det --det-seed=9 --det-order=/tmp/work/block2/idoft-freezegun/detpy/bundles/test_uuid1_future-49f7e267/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/detpy/bundles/test_uuid1_future-49f7e267",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-freezegun/detpy/bundles/test_uuid1_future-49f7e267"
+}

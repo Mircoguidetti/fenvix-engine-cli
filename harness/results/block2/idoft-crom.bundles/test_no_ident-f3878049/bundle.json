@@ -1,0 +1,85 @@
+{
+  "test": "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+  "configs_searched": 1,
+  "status": "replay-unstable",
+  "config": "6",
+  "seed": 6,
+  "kind": "order",
+  "prefix_length": 81,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_model.py::TestFactorySerialization::test_collapse_json"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_model.py::TestFactorySerialization::test_collapse_json",
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: False is not true",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:688"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "0eaebcefe04c60936e7939906c6e43c2",
+      "243fdfa3c9408ab1aa7c04f75c8db87e",
+      "2aee039ffb0abf723b86e06abedcce00",
+      "2b61445302fc16eb9d9d29c4b9f291dd",
+      "31ff6ef5bb8a3290b06cdbe3b0f2f555",
+      "5456e6124a532358412a08954f39f3a8",
+      "55308ce7f42414c501d9912369ee735e",
+      "930b76059c9815a341261fc03ef64540",
+      "d3fba7eae4048ee2d6bf4a17f57b7035",
+      "f1270b899a26b9f4f23afb92b0471790"
+    ],
+    "identical_fingerprint": false
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [random] random.state @ <end> = 332fdd49aa859c4e2d5572375b4496d5  <>  [entropy] os.urandom @ cromulent/model.py:279 = 16:07500643230ae9c5f24513b72e883537",
+    "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "332fdd49aa859c4e2d5572375b4496d5"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "cromulent/model.py:279",
+      "v": "16:07500643230ae9c5f24513b72e883537"
+    },
+    "fingerprints": [
+      "2708c1bfb4b2a7dbfa48f75ae80f8704",
+      "55308ce7f42414c501d9912369ee735e"
+    ]
+  },
+  "runs": 19,
+  "seconds": 11.76,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-crom/bin/python",
+  "command": "pytest --det --det-seed=6 --det-order=/tmp/work/block2/idoft-crom/detpy/bundles/test_no_ident-f3878049/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-crom/detpy/bundles/test_no_ident-f3878049",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-crom/detpy/bundles/test_no_ident-f3878049"
+}

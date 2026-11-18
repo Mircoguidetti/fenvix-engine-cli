@@ -1,0 +1,78 @@
+{
+  "test": "eppy/tests/test_modeleditor.py::test_initreadtxt",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "order",
+  "prefix_length": 76,
+  "minimal_length": 3,
+  "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+  ],
+  "setters": [],
+  "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_initreadtxt"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "74a07dc93d70136e59e1804e276c27bd"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "b40c50c69a53ecd8b2fff3abc14044c3",
+      "74a07dc93d70136e59e1804e276c27bd"
+    ]
+  },
+  "runs": 27,
+  "seconds": 112.17,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/detpy/bundles/test_initreadtxt-7e6a5df5/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/detpy/bundles/test_initreadtxt-7e6a5df5",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-eppy/detpy/bundles/test_initreadtxt-7e6a5df5"
+}

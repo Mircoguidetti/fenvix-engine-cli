@@ -1,0 +1,102 @@
+{
+  "name": "idoft-tunacell",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tunacell/tests/test_experiment.py::test_counts": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tunacell/tests/test_experiment.py::test_experiment_abspath": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tunacell/tests/test_experiment.py::test_experiment_attributes": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tunacell/tests/test_experiment.py::test_experiment_datatype": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tunacell/tests/test_experiment.py::test_experiment_iter": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tunacell/tests/test_experiment.py::test_experiment_label": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tunacell/tests/test_experiment.py::test_experiment_metadata": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tunacell/tests/test_experiment.py::test_load_experiment": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "error": 10
+      },
+      "order_alone": true
+    },
+    "tunacell/tests/test_observable.py::test_observable_str": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tunacell/tests/test_filters.py::test_cell_any": {
+      "config": "6",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 10,
+  "order_alone": 10
+}

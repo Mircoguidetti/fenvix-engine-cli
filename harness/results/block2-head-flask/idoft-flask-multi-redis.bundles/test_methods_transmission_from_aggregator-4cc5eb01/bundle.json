@@ -1,0 +1,76 @@
+{
+  "test": "test/integration/test_flask_multi_redis.py::test_methods_transmission_from_aggregator",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "order",
+  "prefix_length": 9,
+  "minimal_length": 2,
+  "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+  ],
+  "setters": [],
+  "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_methods_transmission_from_aggregator"
+  ],
+  "outcome": "error",
+  "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "73568b559f05da5b0bd206de843c7eff"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "error"
+    },
+    "fingerprints": [
+      "5612b52d51f51ae103483da3393a552a",
+      "73568b559f05da5b0bd206de843c7eff"
+    ]
+  },
+  "runs": 16,
+  "seconds": 13.91,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_methods_transmission_from_aggregator-4cc5eb01/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_methods_transmission_from_aggregator-4cc5eb01",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_methods_transmission_from_aggregator-4cc5eb01"
+}

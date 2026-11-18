@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_hosts.py::TestHosts::test_hosts_delete",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 3,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_resourcecfg.py::TestConnect::test_connection"
+  ],
+  "order": [
+    "tests/test_hosts.py::TestHosts::test_hosts_delete"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: expected call not found.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/mock/mock.py:992"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "043ac801e9310286b61b359675ddc66d"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "d876e37f1eb7c8c329f8e3b2034e5451",
+      "043ac801e9310286b61b359675ddc66d"
+    ]
+  },
+  "runs": 19,
+  "seconds": 23.37,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_delete-617ef644/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_delete-617ef644",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_delete-617ef644"
+}

@@ -1,0 +1,67 @@
+{
+  "name": "idoft-supertunnel",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/alexrudy/supertunnel",
+  "commit": "4c64e2fedda3",
+  "commit_date": "2019-11-21",
+  "python": "3.9",
+  "install": "-e . -r requirements-dev.txt",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 0.5152968117000014,
+  "det_mean_s": 1.1724211415000028,
+  "slowdown_pct": 127.52346121298532,
+  "precompile_first_s": 1.681,
+  "precompile_rest_median_s": 0.583,
+  "tests": 80,
+  "unstable_baseline": 9,
+  "unstable_det": 0,
+  "became_stable": 9,
+  "outcome_changed_by_det": 0,
+  "covered": 80,
+  "not_covered": 0,
+  "reproduced": 9,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "seeds_explored": 1,
+  "exploration_runs": 10,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "time": 8,
+    "random": 1
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 9,
+  "known_present": 9,
+  "known_unstable_baseline": 9,
+  "known_reproduced": 9,
+  "known_categories": {
+    "OD-Brit": 9
+  },
+  "examples": {
+    "reproduced": [
+      "supertunnel/ssh/continuous_test.py::test_backoff (seed 1): event #1: [time] time.time @ supertunnel/ssh/continuous.py:92 = 2000  <>  [random] random.state @ <end> = ead7791673c55f21b8d61c1f18392f6d",
+      "supertunnel/ssh/continuous_test.py::test_continuous_repr (seed 1): event #1: random.state @ <end> returned different values: \"91b3f3ac4fc72477b708113bf24b63bd\" vs \"977a665e400e67b2e5b8d735c58d11a6\"",
+      "supertunnel/ssh/continuous_test.py::test_run (seed 1): event #1: [time] time.monotonic @ supertunnel/ssh/continuous.py:82 = 2000  <>  [random] random.state @ <end> = 5c08201653e86956523437cc5381ce84"
+    ]
+  }
+}

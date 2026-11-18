@@ -1,0 +1,435 @@
+{
+ "anyio": {
+  "baseline(randomly seed, xdist)": {
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio+eager]": {
+    "failed": 3,
+    "exc": "['AttributeError', 'call', \"AttributeError: 'module' object at __main__ has no attribute '__file__'\", '<scratch>/i9/work/venvs/anyio/lib/python3.13/site-packages/_pytest/monkeypatch.py:97']"
+   },
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio+uvloop]": {
+    "failed": 3,
+    "exc": "['AttributeError', 'call', \"AttributeError: 'module' object at __main__ has no attribute '__file__'\", '<scratch>/i9/work/venvs/anyio/lib/python3.13/site-packages/_pytest/monkeypatch.py:97']"
+   },
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio]": {
+    "failed": 3,
+    "exc": "['AttributeError', 'call', \"AttributeError: 'module' object at __main__ has no attribute '__file__'\", '<scratch>/i9/work/venvs/anyio/lib/python3.13/site-packages/_pytest/monkeypatch.py:97']"
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio+eager]": {
+    "failed": 3,
+    "exc": "['AttributeError', 'call', \"AttributeError: 'module' object at __main__ has no attribute '__file__'\", '<scratch>/i9/work/venvs/anyio/lib/python3.13/site-packages/_pytest/monkeypatch.py:97']"
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio+uvloop]": {
+    "failed": 3,
+    "exc": "['AttributeError', 'call', \"AttributeError: 'module' object at __main__ has no attribute '__file__'\", '<scratch>/i9/work/venvs/anyio/lib/python3.13/site-packages/_pytest/monkeypatch.py:97']"
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio]": {
+    "failed": 3,
+    "exc": "['AttributeError', 'call', \"AttributeError: 'module' object at __main__ has no attribute '__file__'\", '<scratch>/i9/work/venvs/anyio/lib/python3.13/site-packages/_pytest/monkeypatch.py:97']"
+   }
+  },
+  "randomly seed, serial": {
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio+eager]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio+uvloop]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio+eager]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio+uvloop]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio]": {
+    "passed": 3
+   }
+  },
+  "file order + randomly reseed, serial": {
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio+eager]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio+uvloop]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio+eager]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio+uvloop]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio]": {
+    "passed": 3
+   }
+  },
+  "file order, no reseed, xdist": {
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio+eager]": {
+    "failed": 3,
+    "exc": "['AttributeError', 'call', \"AttributeError: 'module' object at __main__ has no attribute '__file__'\", '<scratch>/i9/work/venvs/anyio/lib/python3.13/site-packages/_pytest/monkeypatch.py:97']"
+   },
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio+uvloop]": {
+    "failed": 3,
+    "exc": "['AttributeError', 'call', \"AttributeError: 'module' object at __main__ has no attribute '__file__'\", '<scratch>/i9/work/venvs/anyio/lib/python3.13/site-packages/_pytest/monkeypatch.py:97']"
+   },
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio]": {
+    "failed": 3,
+    "exc": "['AttributeError', 'call', \"AttributeError: 'module' object at __main__ has no attribute '__file__'\", '<scratch>/i9/work/venvs/anyio/lib/python3.13/site-packages/_pytest/monkeypatch.py:97']"
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio+eager]": {
+    "failed": 3,
+    "exc": "['AttributeError', 'call', \"AttributeError: 'module' object at __main__ has no attribute '__file__'\", '<scratch>/i9/work/venvs/anyio/lib/python3.13/site-packages/_pytest/monkeypatch.py:97']"
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio+uvloop]": {
+    "failed": 3,
+    "exc": "['AttributeError', 'call', \"AttributeError: 'module' object at __main__ has no attribute '__file__'\", '<scratch>/i9/work/venvs/anyio/lib/python3.13/site-packages/_pytest/monkeypatch.py:97']"
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio]": {
+    "failed": 3,
+    "exc": "['AttributeError', 'call', \"AttributeError: 'module' object at __main__ has no attribute '__file__'\", '<scratch>/i9/work/venvs/anyio/lib/python3.13/site-packages/_pytest/monkeypatch.py:97']"
+   }
+  },
+  "file order, no reseed, serial": {
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio+eager]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio+uvloop]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio+eager]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio+uvloop]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio]": {
+    "passed": 3
+   }
+  },
+  "--det": {
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio+eager]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio+uvloop]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_entrypoint_main_module[asyncio]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio+eager]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio+uvloop]": {
+    "passed": 3
+   },
+   "tests/test_to_process.py::test_nonexistent_main_module[asyncio]": {
+    "passed": 3
+   }
+  }
+ },
+ "faker": {
+  "baseline(randomly seed, xdist)": {
+   "tests/pytest/test_autouse_faker_locale.py::test_no_injection": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_autouse_faker_locale.py:35']"
+   },
+   "tests/pytest/test_manual_injection.py::test_inject_faker_locale": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_manual_injection.py:39']"
+   },
+   "tests/pytest/test_manual_injection.py::test_no_injection": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_manual_injection.py:31']"
+   },
+   "tests/sphinx/test_docstring.py::TestProviderMethodDocstring::test_stringify_results": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'assert [\"\\'\\'\", \\'\"\\\\\\'\"\\'...\\\\\\\\r\\\\\\\\n\\'\", ...] == [\"\\'\\'\", \\'\"\\\\\\'\"\\'...\\\\\\\\r\\\\\\\\n\\'\", ...]', '<scratch>/i9/work/src/faker/tests/sphinx/test_docstring.py:135']"
+   }
+  },
+  "randomly seed, serial": {
+   "tests/pytest/test_autouse_faker_locale.py::test_no_injection": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_autouse_faker_locale.py:35']"
+   },
+   "tests/pytest/test_manual_injection.py::test_inject_faker_locale": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_manual_injection.py:39']"
+   },
+   "tests/pytest/test_manual_injection.py::test_no_injection": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_manual_injection.py:31']"
+   },
+   "tests/sphinx/test_docstring.py::TestProviderMethodDocstring::test_stringify_results": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'assert [\"\\'\\'\", \\'\"\\\\\\'\"\\'...\\\\\\\\r\\\\\\\\n\\'\", ...] == [\"\\'\\'\", \\'\"\\\\\\'\"\\'...\\\\\\\\r\\\\\\\\n\\'\", ...]', '<scratch>/i9/work/src/faker/tests/sphinx/test_docstring.py:135']"
+   }
+  },
+  "file order + randomly reseed, serial": {
+   "tests/pytest/test_autouse_faker_locale.py::test_no_injection": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_autouse_faker_locale.py:35']"
+   },
+   "tests/pytest/test_manual_injection.py::test_inject_faker_locale": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_manual_injection.py:39']"
+   },
+   "tests/pytest/test_manual_injection.py::test_no_injection": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_manual_injection.py:31']"
+   },
+   "tests/sphinx/test_docstring.py::TestProviderMethodDocstring::test_stringify_results": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'assert [\"\\'\\'\", \\'\"\\\\\\'\"\\'...\\\\\\\\r\\\\\\\\n\\'\", ...] == [\"\\'\\'\", \\'\"\\\\\\'\"\\'...\\\\\\\\r\\\\\\\\n\\'\", ...]', '<scratch>/i9/work/src/faker/tests/sphinx/test_docstring.py:135']"
+   }
+  },
+  "file order, no reseed, xdist": {
+   "tests/pytest/test_autouse_faker_locale.py::test_no_injection": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_autouse_faker_locale.py:35']"
+   },
+   "tests/pytest/test_manual_injection.py::test_inject_faker_locale": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_manual_injection.py:39']"
+   },
+   "tests/pytest/test_manual_injection.py::test_no_injection": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_manual_injection.py:31']"
+   },
+   "tests/sphinx/test_docstring.py::TestProviderMethodDocstring::test_stringify_results": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'assert [\"\\'\\'\", \\'\"\\\\\\'\"\\'...\\\\\\\\r\\\\\\\\n\\'\", ...] == [\"\\'\\'\", \\'\"\\\\\\'\"\\'...\\\\\\\\r\\\\\\\\n\\'\", ...]', '<scratch>/i9/work/src/faker/tests/sphinx/test_docstring.py:135']"
+   }
+  },
+  "file order, no reseed, serial": {
+   "tests/pytest/test_autouse_faker_locale.py::test_no_injection": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_autouse_faker_locale.py:35']"
+   },
+   "tests/pytest/test_manual_injection.py::test_inject_faker_locale": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_manual_injection.py:39']"
+   },
+   "tests/pytest/test_manual_injection.py::test_no_injection": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert (3, (21474836...0, ...), None) == (3, (21474836...9, ...), None)', '<scratch>/i9/work/src/faker/tests/pytest/test_manual_injection.py:31']"
+   },
+   "tests/sphinx/test_docstring.py::TestProviderMethodDocstring::test_stringify_results": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', 'assert [\"\\'\\'\", \\'\"\\\\\\'\"\\'...\\\\\\\\r\\\\\\\\n\\'\", ...] == [\"\\'\\'\", \\'\"\\\\\\'\"\\'...\\\\\\\\r\\\\\\\\n\\'\", ...]', '<scratch>/i9/work/src/faker/tests/sphinx/test_docstring.py:135']"
+   }
+  },
+  "--det": {
+   "tests/pytest/test_autouse_faker_locale.py::test_no_injection": {
+    "passed": 3
+   },
+   "tests/pytest/test_manual_injection.py::test_inject_faker_locale": {
+    "passed": 3
+   },
+   "tests/pytest/test_manual_injection.py::test_no_injection": {
+    "passed": 3
+   },
+   "tests/sphinx/test_docstring.py::TestProviderMethodDocstring::test_stringify_results": {
+    "passed": 3
+   }
+  }
+ },
+ "idoft-breathe": {
+  "baseline(randomly seed, xdist)": {
+   "tests/test_merger.py::test_grammar_numbers": {
+    "failed": 3,
+    "exc": "['MimicFailure', 'call', \"dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['test', 'three'].\", '<scratch>/i9/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228']"
+   },
+   "tests/test_top_level.py::test_recognition": {
+    "failed": 2,
+    "exc": "['MimicFailure', 'call', \"dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['lemon'].\", '<scratch>/i9/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228']",
+    "passed": 1
+   },
+   "tests/test_top_level.py::test_top_level_command_failure": {
+    "failed": 2,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert 1 == 2', '<scratch>/i9/work/src/idoft-breathe/tests/test_top_level.py:85']",
+    "passed": 1
+   }
+  },
+  "randomly seed, serial": {
+   "tests/test_merger.py::test_grammar_numbers": {
+    "failed": 3,
+    "exc": "['MimicFailure', 'call', \"dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['test', 'three'].\", '<scratch>/i9/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228']"
+   },
+   "tests/test_top_level.py::test_recognition": {
+    "failed": 2,
+    "exc": "['MimicFailure', 'call', \"dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['lemon'].\", '<scratch>/i9/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228']",
+    "passed": 1
+   },
+   "tests/test_top_level.py::test_top_level_command_failure": {
+    "failed": 2,
+    "exc": "['AssertionError', 'call', 'AssertionError: assert 1 == 2', '<scratch>/i9/work/src/idoft-breathe/tests/test_top_level.py:85']",
+    "passed": 1
+   }
+  },
+  "file order + randomly reseed, serial": {
+   "tests/test_merger.py::test_grammar_numbers": {
+    "passed": 3
+   },
+   "tests/test_top_level.py::test_recognition": {
+    "passed": 3
+   },
+   "tests/test_top_level.py::test_top_level_command_failure": {
+    "passed": 3
+   }
+  },
+  "file order, no reseed, xdist": {
+   "tests/test_merger.py::test_grammar_numbers": {
+    "passed": 3
+   },
+   "tests/test_top_level.py::test_recognition": {
+    "passed": 3
+   },
+   "tests/test_top_level.py::test_top_level_command_failure": {
+    "passed": 3
+   }
+  },
+  "file order, no reseed, serial": {
+   "tests/test_merger.py::test_grammar_numbers": {
+    "passed": 3
+   },
+   "tests/test_top_level.py::test_recognition": {
+    "passed": 3
+   },
+   "tests/test_top_level.py::test_top_level_command_failure": {
+    "passed": 3
+   }
+  },
+  "--det": {
+   "tests/test_merger.py::test_grammar_numbers": {
+    "passed": 3
+   },
+   "tests/test_top_level.py::test_recognition": {
+    "passed": 3
+   },
+   "tests/test_top_level.py::test_top_level_command_failure": {
+    "passed": 3
+   }
+  }
+ },
+ "idoft-cloudnetpy": {
+  "baseline(randomly seed, xdist)": {
+   "tests/unit/test_drizzle.py::test_calc_lwf": {
+    "passed": 1,
+    "failed": 2,
+    "exc": "['AssertionError', 'call', 'AssertionError: ', '/root/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/contextlib.py:79']"
+   },
+   "tests/unit/test_drizzle.py::test_init_variables[mu]": {
+    "passed": 1,
+    "failed": 2,
+    "exc": "['IndexError', 'call', 'IndexError: index 2 is out of bounds for axis 0 with size 2', '<scratch>/i9/work/venvs/idoft-cloudnetpy/lib/python3.9/site-packages/numpy/ma/core.py:3254']"
+   }
+  },
+  "randomly seed, serial": {
+   "tests/unit/test_drizzle.py::test_calc_lwf": {
+    "passed": 1,
+    "failed": 2,
+    "exc": "['AssertionError', 'call', 'AssertionError: ', '/root/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/contextlib.py:79']"
+   },
+   "tests/unit/test_drizzle.py::test_init_variables[mu]": {
+    "failed": 3,
+    "exc": "['IndexError', 'call', 'IndexError: index 2 is out of bounds for axis 0 with size 2', '<scratch>/i9/work/venvs/idoft-cloudnetpy/lib/python3.9/site-packages/numpy/ma/core.py:3254']"
+   }
+  },
+  "file order + randomly reseed, serial": {
+   "tests/unit/test_drizzle.py::test_calc_lwf": {
+    "passed": 3
+   },
+   "tests/unit/test_drizzle.py::test_init_variables[mu]": {
+    "passed": 3
+   }
+  },
+  "file order, no reseed, xdist": {
+   "tests/unit/test_drizzle.py::test_calc_lwf": {
+    "passed": 3
+   },
+   "tests/unit/test_drizzle.py::test_init_variables[mu]": {
+    "passed": 3
+   }
+  },
+  "file order, no reseed, serial": {
+   "tests/unit/test_drizzle.py::test_calc_lwf": {
+    "passed": 3
+   },
+   "tests/unit/test_drizzle.py::test_init_variables[mu]": {
+    "passed": 3
+   }
+  },
+  "--det": {
+   "tests/unit/test_drizzle.py::test_calc_lwf": {
+    "passed": 3
+   },
+   "tests/unit/test_drizzle.py::test_init_variables[mu]": {
+    "passed": 3
+   }
+  }
+ },
+ "idoft-devtracker": {
+  "baseline(randomly seed, xdist)": {
+   "devtracker/test_devtracker.py::test_end_time_total": {
+    "failed": 3,
+    "exc": "['FileNotFoundError', 'call', \"FileNotFoundError: [Errno 2] No such file or directory: '/root/devtrack_projects/test.csv'\", '<scratch>/i9/work/src/idoft-devtracker/devtracker/test_devtracker.py:89']"
+   },
+   "devtracker/test_devtracker.py::test_full_report": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', \"AssertionError: assert '[+] Generati... Way to go!\\\\n' == '[+] Generati... Way to go!\\\\n'\", '<scratch>/i9/work/src/idoft-devtracker/devtracker/test_devtracker.py:142']"
+   }
+  },
+  "randomly seed, serial": {
+   "devtracker/test_devtracker.py::test_end_time_total": {
+    "failed": 2,
+    "exc": "['FileNotFoundError', 'call', \"FileNotFoundError: [Errno 2] No such file or directory: '/root/devtrack_projects/test.csv'\", '<scratch>/i9/work/src/idoft-devtracker/devtracker/test_devtracker.py:89']",
+    "passed": 1
+   },
+   "devtracker/test_devtracker.py::test_full_report": {
+    "failed": 2,
+    "exc": "['AssertionError', 'call', \"AssertionError: assert '[+] Generati... Way to go!\\\\n' == '[+] Generati... Way to go!\\\\n'\", '<scratch>/i9/work/src/idoft-devtracker/devtracker/test_devtracker.py:142']",
+    "passed": 1
+   }
+  },
+  "file order + randomly reseed, serial": {
+   "devtracker/test_devtracker.py::test_end_time_total": {
+    "passed": 3
+   },
+   "devtracker/test_devtracker.py::test_full_report": {
+    "passed": 3
+   }
+  },
+  "file order, no reseed, xdist": {
+   "devtracker/test_devtracker.py::test_end_time_total": {
+    "failed": 3,
+    "exc": "['FileNotFoundError', 'call', \"FileNotFoundError: [Errno 2] No such file or directory: '/root/devtrack_projects/test.csv'\", '<scratch>/i9/work/src/idoft-devtracker/devtracker/test_devtracker.py:89']"
+   },
+   "devtracker/test_devtracker.py::test_full_report": {
+    "failed": 3,
+    "exc": "['AssertionError', 'call', \"AssertionError: assert '[+] Generati... Way to go!\\\\n' == '[+] Generati... Way to go!\\\\n'\", '<scratch>/i9/work/src/idoft-devtracker/devtracker/test_devtracker.py:142']"
+   }
+  },
+  "file order, no reseed, serial": {
+   "devtracker/test_devtracker.py::test_end_time_total": {
+    "passed": 3
+   },
+   "devtracker/test_devtracker.py::test_full_report": {
+    "passed": 3
+   }
+  },
+  "--det": {
+   "devtracker/test_devtracker.py::test_end_time_total": {
+    "passed": 3
+   },
+   "devtracker/test_devtracker.py::test_full_report": {
+    "passed": 3
+   }
+  }
+ }
+}

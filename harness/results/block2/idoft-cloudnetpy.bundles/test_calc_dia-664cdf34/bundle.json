@@ -1,0 +1,76 @@
+{
+  "test": "tests/unit/test_drizzle.py::test_calc_dia",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 221,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/unit/test_drizzle.py::test_get_retrieval_status[4]"
+  ],
+  "setters": [],
+  "order": [
+    "tests/unit/test_drizzle.py::test_get_retrieval_status[4]",
+    "tests/unit/test_drizzle.py::test_calc_dia"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "IndexError",
+    "call",
+    "IndexError: index 2 is out of bounds for axis 0 with size 2",
+    "/tmp/work/venvs/idoft-cloudnetpy/lib/python3.9/site-packages/numpy/ma/core.py:3254"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "8a7319d81d92f9c08afa347d250ce844"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "e3f7f13d405e05ddb88be2f8e97155fd",
+      "8a7319d81d92f9c08afa347d250ce844"
+    ]
+  },
+  "runs": 27,
+  "seconds": 56.39,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-cloudnetpy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-cloudnetpy/detpy/bundles/test_calc_dia-664cdf34/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-cloudnetpy/detpy/bundles/test_calc_dia-664cdf34",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-cloudnetpy/detpy/bundles/test_calc_dia-664cdf34"
+}

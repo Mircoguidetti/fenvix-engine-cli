@@ -1,0 +1,75 @@
+{
+  "name": "idoft-accessify",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_getter": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_deleter": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/interfaces/test_implements.py::test_implements_not_self_convention_in_setter": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/interfaces/test_implements.py::test_not_implements_private_access": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/interfaces/test_implements.py::test_not_implements_protected_access": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 7,
+  "order_alone": 7
+}

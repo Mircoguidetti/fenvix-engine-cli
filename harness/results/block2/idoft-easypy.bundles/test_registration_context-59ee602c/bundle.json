@@ -1,0 +1,78 @@
+{
+  "test": "tests/test_signals.py::test_registration_context",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "order",
+  "prefix_length": 171,
+  "minimal_length": 3,
+  "polluters": [
+    "test_package.py::test_package[random]",
+    "test_package.py::test_package[logging]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[random]",
+    "test_package.py::test_package[logging]",
+    "tests/test_signals.py::test_registration_context"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "9226a71b847469fe147a729ae04a4117"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = 75ac751df3eba8a6ce047005555f5e02",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "easypy/logging.py:507",
+      "v": "1000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "75ac751df3eba8a6ce047005555f5e02"
+    },
+    "fingerprints": [
+      "d7501b9ef3e9fc996654e795d394a469",
+      "9226a71b847469fe147a729ae04a4117"
+    ]
+  },
+  "runs": 27,
+  "seconds": 30.66,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_registration_context-59ee602c/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_registration_context-59ee602c",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_registration_context-59ee602c"
+}

@@ -1,0 +1,28 @@
+{
+  "set": "timing-startup",
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "jobs": 1,
+  "timing_runs": 3,
+  "detpy": "0.1.0",
+  "executor": "GitHub Actions matrix, one repository per ubuntu-latest runner (run https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43946234291)",
+  "date": "2026-11-16 21:40 UTC",
+  "command": "gh workflow run harness.yml -f runs=10 -f seeds=20 -f confirm=10",
+  "order": [
+    "attrs",
+    "idoft-centreon-sdk-python",
+    "idoft-cloudnetpy",
+    "idoft-crom",
+    "idoft-easypy",
+    "idoft-eppy",
+    "networkx",
+    "pygments",
+    "rich",
+    "werkzeug"
+  ],
+  "notes": [
+    "The FlaPy dataset (Gruber et al.) is published on Zenodo, which the development environment cannot reach (HTTP 403 from the network proxy): the 'flaky' pool uses the Python section of IDoFT, each project pinned at the commit where its flaky tests were detected.",
+    "Selection: the first 25 candidates per pool (in harness/repos.json and harness/flaky_candidates.json order) that clone, install, collect and finish their first baseline run within 120 s; every rejected candidate is listed above."
+  ]
+}

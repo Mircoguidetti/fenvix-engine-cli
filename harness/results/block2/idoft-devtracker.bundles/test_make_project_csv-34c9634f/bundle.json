@@ -1,0 +1,76 @@
+{
+  "test": "devtracker/test_devtracker.py::test_make_project_csv",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "order",
+  "prefix_length": 12,
+  "minimal_length": 2,
+  "polluters": [
+    "devtracker/test_devtracker.py::test_remove"
+  ],
+  "setters": [],
+  "order": [
+    "devtracker/test_devtracker.py::test_remove",
+    "devtracker/test_devtracker.py::test_make_project_csv"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert False == True",
+    "/tmp/work/src/idoft-devtracker/devtracker/test_devtracker.py:64"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "f57cce4e1e1bad7d733bc6d7941068cc"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "07087eb1dd3846822509ff9681e487a9",
+      "f57cce4e1e1bad7d733bc6d7941068cc"
+    ]
+  },
+  "runs": 18,
+  "seconds": 16.71,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-devtracker/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-devtracker/detpy/bundles/test_make_project_csv-34c9634f/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-devtracker/detpy/bundles/test_make_project_csv-34c9634f",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-devtracker/detpy/bundles/test_make_project_csv-34c9634f"
+}

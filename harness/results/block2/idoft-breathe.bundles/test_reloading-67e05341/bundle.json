@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_loading.py::test_reloading",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "brittle",
+  "prefix_length": 17,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_loading.py::test_loading_failure"
+  ],
+  "order": [
+    "tests/test_loading.py::test_reloading"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "MimicFailure",
+    "call",
+    "dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['parsnip'].",
+    "/tmp/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "cffc6823c4402e8cfaf436865032090d"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = b9635eaf31c214c3c72ad6d717eb2553  <>  [time] time.time @ breathe/grammar/master.py:211 = 1000",
+    "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "b9635eaf31c214c3c72ad6d717eb2553"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "breathe/grammar/master.py:211",
+      "v": "1000"
+    },
+    "fingerprints": [
+      "df95ff425ee6e03eaebc10d22b93a0b9",
+      "cffc6823c4402e8cfaf436865032090d"
+    ]
+  },
+  "runs": 15,
+  "seconds": 19.45,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-breathe/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-breathe/detpy/bundles/test_reloading-67e05341/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-breathe/detpy/bundles/test_reloading-67e05341",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-breathe/detpy/bundles/test_reloading-67e05341"
+}

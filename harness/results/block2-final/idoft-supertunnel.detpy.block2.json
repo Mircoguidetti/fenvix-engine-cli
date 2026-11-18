@@ -1,0 +1,1348 @@
+{
+ "name": "idoft-supertunnel",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "supertunnel/ssh/continuous_test.py::test_backoff",
+  "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+  "supertunnel/ssh/continuous_test.py::test_run",
+  "supertunnel/ssh/continuous_test.py::test_run_continuous",
+  "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+  "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+  "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+  "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+  "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009014",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 2.828,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 2.81,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 2.754,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 2.737,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 2.771,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 2.751,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 2.904,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 2.787,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 2.778,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 2.747,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 2.861,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 2.778,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 2.845,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 2.813,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 2.787,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 2.747,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 2.76,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 2.842,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 2.74,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 2.794,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 2.784,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 2.81,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 2.773,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 2.805,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 2.807,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 2.825,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 2.761,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 2.777,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 2.75,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 2.862,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 2.838,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 2.778,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 2.813,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 2.845,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 2.781,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 3.162,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 2.755,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 2.857,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 2.728,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 2.768,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 2.746,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 2.786,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 2.828,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 2.784,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 2.797,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 2.853,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_backoff",
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "supertunnel/ssh/continuous_test.py::test_run",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 2.759,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 2.856,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 2.749,
+   "tests": 80,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 2.787,
+   "tests": 80,
+   "failing": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [],
+ "flaky_failing": [
+  "supertunnel/ssh/continuous_test.py::test_backoff",
+  "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+  "supertunnel/ssh/continuous_test.py::test_run",
+  "supertunnel/ssh/continuous_test.py::test_run_continuous",
+  "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+  "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+  "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+  "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+  "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+ ],
+ "bundles": [
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_backoff",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 41,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "supertunnel/command_test.py::test_forward"
+   ],
+   "order": [
+    "supertunnel/ssh/continuous_test.py::test_backoff"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "756845f546dffb6a5f980e4cc2e2d73b"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] time.time @ supertunnel/ssh/continuous.py:92 = 2000  <>  [random] random.state @ <end> = ead7791673c55f21b8d61c1f18392f6d",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "supertunnel/ssh/continuous.py:92",
+     "v": "2000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "ead7791673c55f21b8d61c1f18392f6d"
+    },
+    "fingerprints": [
+     "f85d1778c01577451e788fe57861f5c5",
+     "756845f546dffb6a5f980e4cc2e2d73b"
+    ]
+   },
+   "runs": 18,
+   "seconds": 25.1,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_backoff-7b4bd4ab/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_backoff-7b4bd4ab",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_backoff-7b4bd4ab",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 42,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "supertunnel/command_test.py::test_forward"
+   ],
+   "order": [
+    "supertunnel/ssh/continuous_test.py::test_continuous_repr"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "83796bdbf14a93e9492276798aef6bbe"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "2d948302c74fb4c198ec61365edc361f",
+     "83796bdbf14a93e9492276798aef6bbe"
+    ]
+   },
+   "runs": 18,
+   "seconds": 25.07,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_continuous_repr-31e7a470/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_continuous_repr-31e7a470",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_continuous_repr-31e7a470",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_run",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 40,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "supertunnel/command_test.py::test_forward"
+   ],
+   "order": [
+    "supertunnel/ssh/continuous_test.py::test_run"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2dab4a784e58b5bdcbec3fec0739cf81"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] time.monotonic @ supertunnel/ssh/continuous.py:82 = 2000  <>  [random] random.state @ <end> = 5c08201653e86956523437cc5381ce84",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.monotonic",
+     "at": "supertunnel/ssh/continuous.py:82",
+     "v": "2000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "5c08201653e86956523437cc5381ce84"
+    },
+    "fingerprints": [
+     "78d7a6110a2e3aa7486da3b6f05e12f9",
+     "2dab4a784e58b5bdcbec3fec0739cf81"
+    ]
+   },
+   "runs": 18,
+   "seconds": 25.4,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run-0de6c2da/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run-0de6c2da",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run-0de6c2da",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_run_continuous",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 37,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "supertunnel/command_test.py::test_forward"
+   ],
+   "order": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "4a50aa227b3c1941fa0a696954d93279"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] time.time @ supertunnel/ssh/continuous.py:150 = 2000  <>  [random] random.state @ <end> = e033590395277476df74eab825728a88",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "supertunnel/ssh/continuous.py:150",
+     "v": "2000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "e033590395277476df74eab825728a88"
+    },
+    "fingerprints": [
+     "99de460e819dc89098ef8079d91cbbc7",
+     "4a50aa227b3c1941fa0a696954d93279"
+    ]
+   },
+   "runs": 18,
+   "seconds": 25.15,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run_continuous-253dcf60/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run_continuous-253dcf60",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run_continuous-253dcf60",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 39,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "supertunnel/command_test.py::test_forward"
+   ],
+   "order": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_hang"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "7b7d3a1ed65ad979a1564cb2a41da29e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] time.time @ supertunnel/ssh/continuous.py:150 = 2000  <>  [random] random.state @ <end> = b4cef87d03de88a52a828332c4bd44b4",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "supertunnel/ssh/continuous.py:150",
+     "v": "2000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "b4cef87d03de88a52a828332c4bd44b4"
+    },
+    "fingerprints": [
+     "8b468c329593585e8060ecf6b1a61862",
+     "7b7d3a1ed65ad979a1564cb2a41da29e"
+    ]
+   },
+   "runs": 18,
+   "seconds": 25.14,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run_continuous_hang-f96ccacc/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run_continuous_hang-f96ccacc",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run_continuous_hang-f96ccacc",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 35,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "supertunnel/command_test.py::test_forward"
+   ],
+   "order": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2f438a28da2bbd49f2d4b2856e6f501a"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] time.time @ supertunnel/ssh/continuous.py:150 = 2000  <>  [random] random.state @ <end> = cd0fab1c59384ad8cf82987a5be91ed6",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "supertunnel/ssh/continuous.py:150",
+     "v": "2000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "cd0fab1c59384ad8cf82987a5be91ed6"
+    },
+    "fingerprints": [
+     "73568c4cdb4d92abbec45f29dd5fb7aa",
+     "2f438a28da2bbd49f2d4b2856e6f501a"
+    ]
+   },
+   "runs": 18,
+   "seconds": 25.06,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run_continuous_raise-3fd443a1/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run_continuous_raise-3fd443a1",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run_continuous_raise-3fd443a1",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 36,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "supertunnel/command_test.py::test_forward"
+   ],
+   "order": [
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "452c14f4ec4bf7f12e4884d3396245eb"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] time.time @ supertunnel/ssh/continuous.py:124 = 2000  <>  [random] random.state @ <end> = 315a31602e33db02d4a4ccdeaef5bcaf",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "supertunnel/ssh/continuous.py:124",
+     "v": "2000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "315a31602e33db02d4a4ccdeaef5bcaf"
+    },
+    "fingerprints": [
+     "6ed31c928f0aa3e36ff28569def8e3fc",
+     "452c14f4ec4bf7f12e4884d3396245eb"
+    ]
+   },
+   "runs": 18,
+   "seconds": 25.08,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_Entering_interactive_session-Action.CONNEC-8bd0078a/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_Entering_interactive_session-Action.CONNEC-8bd0078a",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_Entering_interactive_session-Action.CONNEC-8bd0078a",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 38,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "supertunnel/command_test.py::test_forward"
+   ],
+   "order": [
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0cf842078399aa1ae2dad01012084c17"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] time.time @ supertunnel/ssh/continuous.py:124 = 2000  <>  [random] random.state @ <end> = d41bf3ce9ef704de1f725c90e4bef131",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "supertunnel/ssh/continuous.py:124",
+     "v": "2000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "d41bf3ce9ef704de1f725c90e4bef131"
+    },
+    "fingerprints": [
+     "ebe7d8bc8fe371181df772f2e1cd3d1d",
+     "0cf842078399aa1ae2dad01012084c17"
+    ]
+   },
+   "runs": 18,
+   "seconds": 25.2,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_Host_example.com_not_responding-Action.DIS-8776321d/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_Host_example.com_not_responding-Action.DIS-8776321d",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_Host_example.com_not_responding-Action.DIS-8776321d",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 34,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "supertunnel/command_test.py::test_forward"
+   ],
+   "order": [
+    "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b63f535afc557e6a04ad8532b34cc81e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] time.time @ supertunnel/ssh/continuous.py:122 = 2000  <>  [random] random.state @ <end> = 7a3f6408d62441bacba968930ff8a4e7",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "supertunnel/ssh/continuous.py:122",
+     "v": "2000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "7a3f6408d62441bacba968930ff8a4e7"
+    },
+    "fingerprints": [
+     "68addf3a151c5a22818b701902955713",
+     "b63f535afc557e6a04ad8532b34cc81e"
+    ]
+   },
+   "runs": 18,
+   "seconds": 25.21,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_debug1_Reading_configuration-Action.CONTIN-c6086170/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_debug1_Reading_configuration-Action.CONTIN-c6086170",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_ssh_log_line_debug1_Reading_configuration-Action.CONTIN-c6086170",
+   "first_failing_seed": 1
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "time|random|<end>": [
+   "supertunnel/ssh/continuous_test.py::test_backoff",
+   "supertunnel/ssh/continuous_test.py::test_run",
+   "supertunnel/ssh/continuous_test.py::test_run_continuous",
+   "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+   "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+   "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+   "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+   "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+  ],
+  "outcome-only|outcome|": [
+   "supertunnel/ssh/continuous_test.py::test_continuous_repr"
+  ]
+ },
+ "families_by_polluter": {
+  "supertunnel/command_test.py::test_forward": [
+   "supertunnel/ssh/continuous_test.py::test_backoff",
+   "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+   "supertunnel/ssh/continuous_test.py::test_run",
+   "supertunnel/ssh/continuous_test.py::test_run_continuous",
+   "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+   "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+   "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+   "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+   "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+  ]
+ },
+ "collected": 80,
+ "seconds": 369.21
+}

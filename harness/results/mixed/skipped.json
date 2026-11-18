@@ -1,0 +1,176 @@
+[
+  {
+    "name": "idoft-reframe",
+    "kind": "flaky",
+    "status": "install-failed",
+    "detail": "install with python 3.10: ine.py\", line 26, in <module>\n             import reframe.core.runtime as rt\n           File \"/tmp/work/src/idoft-reframe/reframe/core/runtime.py\", line 14, in <module>\n             import reframe.core.config as config\n           File \"/tmp/work/src/idoft-reframe/reframe/core/config.py\", line 10, in <module>\n             import jsonschema\n         ModuleNotFoundError: No module named 'jsonschema'\n"
+  },
+  {
+    "name": "idoft-webssh",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10: d 'six'\n=================================================================== short test summary info ====================================================================\nERROR tests/test_app.py\nERROR tests/test_handler.py\nERROR tests/test_main.py\nERROR tests/test_policy.py\nERROR tests/test_settings.py\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 5 errors during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n9 tests collected, 5 errors in 0.30s\n"
+  },
+  {
+    "name": "idoft-pygraph",
+    "kind": "flaky",
+    "status": "install-failed",
+    "detail": "install with python 3.10:  build backend returned an error\n  cause: Call to `poetry.masonry.api.build_editable` failed (exit status: 1)\n\n         [stderr]\n         Traceback (most recent call last):\n           File \"<string>\", line 11, in <module>\n         AttributeError: module 'poetry.masonry.api' has no attribute 'build_editable'\n\nhint: Build failures usually indicate a problem with the package or the build environment\n"
+  },
+  {
+    "name": "idoft-flask-smorest",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10: .\ntests/conftest.py:9: in <module>\n    from flask_smorest.compat import MARSHMALLOW_VERSION_MAJOR\nflask_smorest/__init__.py:5: in <module>\n    from .spec import APISpecMixin\nflask_smorest/spec/__init__.py:12: in <module>\n    from flask_smorest.utils import prepare_response\nflask_smorest/utils.py:6: in <module>\n    from flask import _app_ctx_stack\nE   ImportError: cannot import name '_app_ctx_stack' from 'flask' (/tmp/work/venvs/idoft-flask-smorest/lib/python3.10/site-packages/flask/__init__.py)\n"
+  },
+  {
+    "name": "idoft-pyradigm",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10: umPy 2.0 release. Use `np.nan` instead.\nERROR pyradigm/tests/test_old_pyradigm.py - AttributeError: `np.NaN` was removed in the NumPy 2.0 release. Use `np.nan` instead.\nERROR pyradigm/tests/test_regress_dataset.py - AttributeError: `np.NaN` was removed in the NumPy 2.0 release. Use `np.nan` instead.\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 5 errors during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nno tests collected, 5 errors in 0.18s\n"
+  },
+  {
+    "name": "idoft-mythx-cli",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10: ===============================================================\nERROR tests/test_analyze.py\nERROR tests/test_analyze_solidity.py\nERROR tests/test_analyze_truffle.py\nERROR tests/test_list.py\nERROR tests/test_renderer.py\nERROR tests/test_report.py\nERROR tests/test_status.py\nERROR tests/test_version.py\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 8 errors during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n67 tests collected, 8 errors in 0.34s\n"
+  },
+  {
+    "name": "idoft-flask-jwt-router",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10: =========================================================== short test summary info ====================================================================\nERROR tests/test_entity.py\nERROR tests/test_extensions.py\nERROR tests/test_jwt_router.py\nERROR tests/test_jwt_routes.py\nERROR tests/test_routing.py\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 5 errors during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nno tests collected, 5 errors in 0.06s\n"
+  },
+  {
+    "name": "idoft-config-better",
+    "kind": "flaky",
+    "status": "install-failed",
+    "detail": "install with python 3.10: xit status: 1)\n\n         [stderr]\n         /home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpJ9lvMm/lib/python3.10/site-packages/setuptools/_distutils/dist.py:318: UserWarning: Unknown distribution option: 'test_suite'\n           warnings.warn(msg)\n         error in config-better setup command: 'python_requires' must be a string containing valid version specifiers; Invalid specifier: '>=3.0.*'\n"
+  },
+  {
+    "name": "idoft-saga",
+    "kind": "flaky",
+    "status": "install-failed",
+    "detail": "install with python 3.10: it status: 1)\n\n         [stdout]\n         COMMIT MESSAGE release 0.0.22\n\n\n         Uploading version 0.0.22\n\n         [stderr]\n         error in saga-vcs setup command: 'install_requires' must be a string or iterable of strings containing valid project/version requirement specifiers; Expected semicolon (after name with no version specifier) or end\n             requests>-2.2\n                     ^\n"
+  },
+  {
+    "name": "idoft-fooof",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10:  pkg_resources as pkg\nE   ModuleNotFoundError: No module named 'pkg_resources'\n=================================================================== short test summary info ====================================================================\nERROR  - ModuleNotFoundError: No module named 'pkg_resources'\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nno tests collected, 1 error in 0.28s\n"
+  },
+  {
+    "name": "idoft-cloud-validation-framework",
+    "kind": "flaky",
+    "status": "install-failed",
+    "detail": "install with python 3.10: error: No solution found when resolving dependencies\n  cause: Because only prancer-basic==1.0.25 is available and prancer-basic==1.0.25 depends on pytest==4.0.1, we can conclude that all versions of prancer-basic depend on pytest==4.0.1.\n         And because you require pytest>=7,<8 and prancer-basic, we can conclude that your requirements are unsatisfiable.\n"
+  },
+  {
+    "name": "idoft-h5nav",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10:  in <module>\n    from pkg_resources import get_distribution\nE   ModuleNotFoundError: No module named 'pkg_resources'\n=================================================================== short test summary info ====================================================================\nERROR tests/test_cli.py\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nno tests collected, 1 error in 0.14s\n"
+  },
+  {
+    "name": "idoft-dynamic-conf",
+    "kind": "flaky",
+    "status": "install-failed",
+    "detail": "install with python 3.10:  build backend returned an error\n  cause: Call to `poetry.masonry.api.build_editable` failed (exit status: 1)\n\n         [stderr]\n         Traceback (most recent call last):\n           File \"<string>\", line 11, in <module>\n         AttributeError: module 'poetry.masonry.api' has no attribute 'build_editable'\n\nhint: Build failures usually indicate a problem with the package or the build environment\n"
+  },
+  {
+    "name": "idoft-qer",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10: ne_parse\nConftestImportFailure: ModuleNotFoundError: No module named 'pkg_resources' (from /tmp/work/src/idoft-qer/tests/conftest.py)\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nImportError while loading conftest '/tmp/work/src/idoft-qer/tests/conftest.py'.\ntests/conftest.py:6: in <module>\n    import pkg_resources\nE   ModuleNotFoundError: No module named 'pkg_resources'\n"
+  },
+  {
+    "name": "idoft-req-compile",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10: tImportFailure: ModuleNotFoundError: No module named 'pkg_resources' (from /tmp/work/src/idoft-req-compile/tests/conftest.py)\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nImportError while loading conftest '/tmp/work/src/idoft-req-compile/tests/conftest.py'.\ntests/conftest.py:6: in <module>\n    import pkg_resources\nE   ModuleNotFoundError: No module named 'pkg_resources'\n"
+  },
+  {
+    "name": "idoft-knack",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10: or: No module named 'mock'\n=================================================================== short test summary info ====================================================================\nERROR tests/test_cli_scenarios.py\nERROR tests/test_help.py\nERROR tests/test_output.py\nERROR tests/test_query.py\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n179 tests collected, 4 errors in 0.11s\n"
+  },
+  {
+    "name": "idoft-plcx",
+    "kind": "flaky",
+    "status": "install-failed",
+    "detail": "install with python 3.10: error: No solution found when resolving dependencies\n  cause: Because only plcx==0.8 is available and plcx==0.8 depends on pytest==5.2.2, we can conclude that all versions of plcx depend on pytest==5.2.2.\n         And because you require pytest>=7,<8 and plcx, we can conclude that your requirements are unsatisfiable.\n"
+  },
+  {
+    "name": "idoft-pyswarms",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10: orter.py:9: in <module>\n    import yaml\nE   ModuleNotFoundError: No module named 'yaml'\n=================================================================== short test summary info ====================================================================\nERROR  - ModuleNotFoundError: No module named 'yaml'\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nno tests collected, 1 error in 0.21s\n"
+  },
+  {
+    "name": "idoft-securenative-python",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10: ============================================================ short test summary info ====================================================================\nERROR tests/api_manager_test.py\nERROR tests/context_builder_test.py\nERROR tests/event_manager_test.py\nERROR tests/securenative_http_client_test.py\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n26 tests collected, 4 errors in 0.14s\n"
+  },
+  {
+    "name": "idoft-aud",
+    "kind": "flaky",
+    "status": "install-failed",
+    "detail": "install with python 3.10:  run_setup\n             super().run_setup(setup_script=setup_script)\n           File \"/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmp30mseO/lib/python3.10/site-packages/setuptools/build_meta.py\", line 317, in run_setup\n             exec(code, locals())  # noqa: S102 # exec is intentional here\n           File \"<string>\", line 4, in <module>\n         ModuleNotFoundError: No module named 'm2r'\n"
+  },
+  {
+    "name": "idoft-flask-sqlalchemy-booster",
+    "kind": "flaky",
+    "status": "collect-failed",
+    "detail": "collect with python 3.10: =================== short test summary info ====================================================================\nERROR  - ImportError: cannot import name '_QueryProperty' from 'flask_sqlalchemy' (/tmp/work/venvs/idoft-flask-sqlalchemy-booster/lib/python3.10/site-packages/flask_sqlalchemy/__init__.py)\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\nno tests collected, 1 error in 0.19s\n"
+  },
+  {
+    "name": "pyparsing",
+    "kind": "popular",
+    "status": "collect-failed",
+    "detail": "collect with python 3.13: ing/diagram/__init__.py:5: in <module>\n    import railroad\nE   ModuleNotFoundError: No module named 'railroad'\n=================================================================== short test summary info ====================================================================\nERROR tests/test_diagram.py\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n2174 tests collected, 1 error in 0.42s\n"
+  },
+  {
+    "name": "tqdm",
+    "kind": "popular",
+    "status": "too-slow",
+    "detail": "first baseline run took 600s"
+  },
+  {
+    "name": "loguru",
+    "kind": "popular",
+    "status": "collect-failed",
+    "detail": "collect with python 3.13: e, Style\nE   ModuleNotFoundError: No module named 'colorama'\n=================================================================== short test summary info ====================================================================\nERROR tests/test_ansimarkup_basic.py\nERROR tests/test_ansimarkup_extended.py\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n1495 tests collected, 2 errors in 0.36s\n"
+  },
+  {
+    "name": "markdown",
+    "kind": "popular",
+    "status": "collect-failed",
+    "detail": "collect with python 3.13: ====================================================================\nERROR tests/test_syntax/extensions/test_md_in_html.py::TestSuite - pytest.PytestCollectionWarning: cannot collect test class 'TestSuite' because it has a __init__ constructor (from: tests/test_syntax/extensions/test_md_in_html.py)\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n1355 tests collected, 1 error in 0.29s\n"
+  },
+  {
+    "name": "tomlkit",
+    "kind": "popular",
+    "status": "collect-failed",
+    "detail": "collect with python 3.13: ======================================================= short test summary info ====================================================================\nERROR tests/test_toml_tests.py - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/tomlkit/tests/toml-test/tests/files-toml-1.1.0'\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n758 tests collected, 1 error in 0.16s\n"
+  },
+  {
+    "name": "httpx",
+    "kind": "popular",
+    "status": "too-slow",
+    "detail": "first baseline run took 600s"
+  },
+  {
+    "name": "babel",
+    "kind": "popular",
+    "status": "collect-failed",
+    "detail": "collect with python 3.13: bel.core.UnknownLocaleError: unknown locale 'en'\n=================================================================== short test summary info ====================================================================\nERROR tests/messages/test_plurals.py - babel.core.UnknownLocaleError: unknown locale 'en'\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n1332 tests collected, 1 error in 0.42s\n"
+  },
+  {
+    "name": "idoft-butter.mas.pythonapi",
+    "kind": "",
+    "status": "round: no-result",
+    "detail": "the matrix job produced no summary (job timeout or crash)"
+  }
+]

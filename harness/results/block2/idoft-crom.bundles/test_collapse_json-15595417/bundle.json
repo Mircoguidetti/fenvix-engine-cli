@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_model.py::TestFactorySerialization::test_collapse_json",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 63,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestFactorySerialization::test_collapse_json"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: 11 != 12",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:830"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "25efd912888b52d3a8e0c19590ee2b3e"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ cromulent/model.py:279 = 16:6e51df35eba9d364fdae3c9612e1d7b2  <>  [random] random.state @ <end> = 93254633aeff11331740b7c798fe12be",
+    "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "cromulent/model.py:279",
+      "v": "16:6e51df35eba9d364fdae3c9612e1d7b2"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "93254633aeff11331740b7c798fe12be"
+    },
+    "fingerprints": [
+      "ade0c58d21cf80ca2067ed215ddafb09",
+      "25efd912888b52d3a8e0c19590ee2b3e"
+    ]
+  },
+  "runs": 21,
+  "seconds": 12.85,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-crom/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-crom/detpy/bundles/test_collapse_json-15595417/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-crom/detpy/bundles/test_collapse_json-15595417",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-crom/detpy/bundles/test_collapse_json-15595417"
+}

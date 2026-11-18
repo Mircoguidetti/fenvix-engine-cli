@@ -1,0 +1,78 @@
+{
+  "test": "tests/test_logging.py::test_indent_around_ctx",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "order",
+  "prefix_length": 61,
+  "minimal_length": 3,
+  "polluters": [
+    "test_package.py::test_package[random]",
+    "test_package.py::test_package[logging]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[random]",
+    "test_package.py::test_package[logging]",
+    "tests/test_logging.py::test_indent_around_ctx"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "bdc9b8839365eca65eecf7c0520158b1"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = 3959ac7286fee52ff0cc97438fbdeadc",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "easypy/logging.py:507",
+      "v": "1000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "3959ac7286fee52ff0cc97438fbdeadc"
+    },
+    "fingerprints": [
+      "767a71f8d42aa0f14a0dddab056815bf",
+      "bdc9b8839365eca65eecf7c0520158b1"
+    ]
+  },
+  "runs": 21,
+  "seconds": 14.54,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_indent_around_ctx-78c518f9/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_indent_around_ctx-78c518f9",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_indent_around_ctx-78c518f9"
+}

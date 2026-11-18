@@ -1,0 +1,1105 @@
+{
+ "name": "idoft-domain2idna",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_cli.py::TestCLI::test_domain",
+  "tests/test_cli.py::TestCLI::test_domain_output",
+  "tests/test_cli.py::TestCLI::test_empty_domain",
+  "tests/test_cli.py::TestCLI::test_file",
+  "tests/test_cli.py::TestCLI::test_file_output",
+  "tests/test_converter.py::TestConverter::test_commented_line",
+  "tests/test_converter.py::TestConverter::test_hosts_file_format",
+  "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+  "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+  "tests/test_converter.py::TestConverter::test_to_idna_single",
+  "tests/test_helpers.py::TestFile::test_delete_not_exist",
+  "tests/test_helpers.py::TestFile::test_read_delete",
+  "tests/test_helpers.py::TestFile::test_write_delete",
+  "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+  "tests/test_init.py::TestInit::test_get"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009157",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "tests/test_cli.py::TestCLI::test_domain",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 13,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_empty_domain"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_empty_domain",
+    "tests/test_cli.py::TestCLI::test_domain"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d65f12cfda0e84da63ddef1254c92903"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "07aecfb9c2044fbef11656958f2193e8",
+     "d65f12cfda0e84da63ddef1254c92903"
+    ]
+   },
+   "runs": 18,
+   "seconds": 23.01,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_domain-639bad52/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_domain-639bad52",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_domain-639bad52"
+  },
+  {
+   "test": "tests/test_cli.py::TestCLI::test_domain_output",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "fails-alone",
+   "prefix_length": 2,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "ValueError",
+    "call",
+    "ValueError: I/O operation on closed file.",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:567"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "7695b0dfe2b42963f134575ae4c06031"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": null,
+   "runs": 59,
+   "seconds": 163.96,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_domain_output-06356320/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_domain_output-06356320",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_domain_output-06356320"
+  },
+  {
+   "test": "tests/test_cli.py::TestCLI::test_empty_domain",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "fails-alone",
+   "prefix_length": 3,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_empty_domain"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: ValueError not raised by <lambda>",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:163"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "260080167a26a8a5dbf04e50fbd5d598"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": null,
+   "runs": 60,
+   "seconds": 64.32,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_empty_domain-31a844ba/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_empty_domain-31a844ba",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_empty_domain-31a844ba"
+  },
+  {
+   "test": "tests/test_cli.py::TestCLI::test_file",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 4,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_cli.py::TestCLI::test_file"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "7bc00b7cab21eabf63235aacd68bde01"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "f1acea975e4779d65d9facd58e0b621b",
+     "7bc00b7cab21eabf63235aacd68bde01"
+    ]
+   },
+   "runs": 15,
+   "seconds": 15.84,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_file-be9ea159/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_file-be9ea159",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_file-be9ea159"
+  },
+  {
+   "test": "tests/test_cli.py::TestCLI::test_file_output",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "fails-alone",
+   "prefix_length": 5,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_file_output"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "ValueError",
+    "call",
+    "ValueError: I/O operation on closed file.",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:567"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "cbe7c4d3a6b61ca0b2ec0f56f8e4c132"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": null,
+   "runs": 58,
+   "seconds": 62.59,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_file_output-aa045ad6/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_file_output-aa045ad6",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_file_output-aa045ad6"
+  },
+  {
+   "test": "tests/test_converter.py::TestConverter::test_commented_line",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 6,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_converter.py::TestConverter::test_commented_line"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "25ec9342cd26eebaa98f962f07a584fc"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "93e0b24e8009c58b48cfb54260ff6c67",
+     "25ec9342cd26eebaa98f962f07a584fc"
+    ]
+   },
+   "runs": 15,
+   "seconds": 15.91,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_commented_line-0a460251/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_commented_line-0a460251",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_commented_line-0a460251"
+  },
+  {
+   "test": "tests/test_converter.py::TestConverter::test_hosts_file_format",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 7,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_converter.py::TestConverter::test_hosts_file_format"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a769d4ddbb6416d48168cea7744e57a0"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "ea36cf8c69eaab0009c49dc4f855d826",
+     "a769d4ddbb6416d48168cea7744e57a0"
+    ]
+   },
+   "runs": 16,
+   "seconds": 17.27,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_hosts_file_format-17138e84/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_hosts_file_format-17138e84",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_hosts_file_format-17138e84"
+  },
+  {
+   "test": "tests/test_converter.py::TestConverter::test_to_idna_multiple",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 8,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0243888faa626a1b8cf9264f0bfc74b1"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "0cb5503d01b2f0e0c20c6cfb6b2356e1",
+     "0243888faa626a1b8cf9264f0bfc74b1"
+    ]
+   },
+   "runs": 16,
+   "seconds": 17.11,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_to_idna_multiple-6a29dc0f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_to_idna_multiple-6a29dc0f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_to_idna_multiple-6a29dc0f"
+  },
+  {
+   "test": "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 9,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_converter.py::TestConverter::test_to_idna_multiple_urls"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1b783b964e493dd7fd9605d777056c4a"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "32ec057cb938674c68c460346ef96e39",
+     "1b783b964e493dd7fd9605d777056c4a"
+    ]
+   },
+   "runs": 16,
+   "seconds": 16.99,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_to_idna_multiple_urls-8f0ad8eb/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_to_idna_multiple_urls-8f0ad8eb",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_to_idna_multiple_urls-8f0ad8eb"
+  },
+  {
+   "test": "tests/test_converter.py::TestConverter::test_to_idna_single",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 10,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_converter.py::TestConverter::test_to_idna_single"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "691aa4ff537ecce6c74b8adea069b800"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "70f368d51482c0d3e382b1762d8a72cc",
+     "691aa4ff537ecce6c74b8adea069b800"
+    ]
+   },
+   "runs": 16,
+   "seconds": 17.14,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_to_idna_single-891739d5/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_to_idna_single-891739d5",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_to_idna_single-891739d5"
+  },
+  {
+   "test": "tests/test_helpers.py::TestFile::test_delete_not_exist",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 11,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_helpers.py::TestFile::test_delete_not_exist"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "f613d6fb214186fbc67aa8aab37acf7a"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "11f2f24d59c1025afd5b068ab57b5f83",
+     "f613d6fb214186fbc67aa8aab37acf7a"
+    ]
+   },
+   "runs": 16,
+   "seconds": 17.07,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_delete_not_exist-128809cf/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_delete_not_exist-128809cf",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_delete_not_exist-128809cf"
+  },
+  {
+   "test": "tests/test_helpers.py::TestFile::test_read_delete",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 12,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_helpers.py::TestFile::test_read_delete"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "93dd62a3ee2f9764f5a4abf69ee6c241"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "061810e63ed814de9188e6bf52befa25",
+     "93dd62a3ee2f9764f5a4abf69ee6c241"
+    ]
+   },
+   "runs": 16,
+   "seconds": 17.0,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_read_delete-0402cce8/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_read_delete-0402cce8",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_read_delete-0402cce8"
+  },
+  {
+   "test": "tests/test_helpers.py::TestFile::test_write_delete",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 13,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_helpers.py::TestFile::test_write_delete"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b3d55f3974ef0be0b456e0c447b09780"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "5459f36b5727bc7035581ca99cd6b554",
+     "b3d55f3974ef0be0b456e0c447b09780"
+    ]
+   },
+   "runs": 17,
+   "seconds": 18.17,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_write_delete-91449a85/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_write_delete-91449a85",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_write_delete-91449a85"
+  },
+  {
+   "test": "tests/test_helpers.py::TestFile::test_write_overwrite_delete",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 14,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_helpers.py::TestFile::test_write_overwrite_delete"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "17bc2798cc8c3738773e67bbbdc5c0fb"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "b72d064dbbbe7002df124bfed586e347",
+     "17bc2798cc8c3738773e67bbbdc5c0fb"
+    ]
+   },
+   "runs": 17,
+   "seconds": 18.3,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_write_overwrite_delete-a2e7ec65/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_write_overwrite_delete-a2e7ec65",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_write_overwrite_delete-a2e7ec65"
+  },
+  {
+   "test": "tests/test_init.py::TestInit::test_get",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 15,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_cli.py::TestCLI::test_domain_output"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_cli.py::TestCLI::test_domain_output",
+    "tests/test_init.py::TestInit::test_get"
+   ],
+   "outcome": "error+teardown-error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: I/O operation on closed file",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:531"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "52379bf59db1b48d6782b6f64e5fc381"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error+teardown-error"
+    },
+    "fingerprints": [
+     "4928f9de4016593d132671e385e0def0",
+     "52379bf59db1b48d6782b6f64e5fc381"
+    ]
+   },
+   "runs": 17,
+   "seconds": 18.13,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_get-2a6f0983/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/standalone/bundles/test_get-2a6f0983",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-domain2idna/standalone/bundles/test_get-2a6f0983"
+  }
+ ],
+ "seconds": 502.83
+}

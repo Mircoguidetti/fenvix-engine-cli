@@ -1,0 +1,78 @@
+{
+  "test": "tests/test_signals.py::test_signal_weakref_context_manager_delete_after_with_identifier",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "order",
+  "prefix_length": 180,
+  "minimal_length": 3,
+  "polluters": [
+    "test_package.py::test_package[random]",
+    "test_package.py::test_package[logging]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[random]",
+    "test_package.py::test_package[logging]",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_after_with_identifier"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "8a54ea674ab1a1d32b6226ce6692b38b"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = c3530ddb40bacfe751c91e7a5497d37f",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "easypy/logging.py:507",
+      "v": "1000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "c3530ddb40bacfe751c91e7a5497d37f"
+    },
+    "fingerprints": [
+      "c843d224adb82e27568f5ff0c8189f4e",
+      "8a54ea674ab1a1d32b6226ce6692b38b"
+    ]
+  },
+  "runs": 22,
+  "seconds": 29.62,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_signal_weakref_context_manager_delete_after_with_identi-7efd95ac/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_signal_weakref_context_manager_delete_after_with_identi-7efd95ac",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_signal_weakref_context_manager_delete_after_with_identi-7efd95ac"
+}

@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_model.py::TestFactorySerialization::test_toJSON",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 60,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_multiple_instantiation.py::TestMIClasses::test_destruction"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_multiple_instantiation.py::TestMIClasses::test_destruction",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: OrderedDict([('@context', ''), ('id', 'http://lod.exampl[98 chars]t')]) != OrderedDict([('id', 'http://lod.example.org/museum/Infor[80 chars]t')])",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:830"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "63a48efd60249522f54495e70ffcf013"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "962e8599ac9c62ff18ecb07f36b54254",
+      "63a48efd60249522f54495e70ffcf013"
+    ]
+  },
+  "runs": 17,
+  "seconds": 10.45,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-crom/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-crom/detpy/bundles/test_toJSON-82b70d3f/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-crom/detpy/bundles/test_toJSON-82b70d3f",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-crom/detpy/bundles/test_toJSON-82b70d3f"
+}

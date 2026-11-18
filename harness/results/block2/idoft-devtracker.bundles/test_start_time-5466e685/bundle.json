@@ -1,0 +1,51 @@
+{
+  "test": "devtracker/test_devtracker.py::test_start_time",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "fails-alone",
+  "prefix_length": 1,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [],
+  "order": [
+    "devtracker/test_devtracker.py::test_start_time"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert ['1999-01-02'...', '00:00:01'] == ['2025-01-01', '00:00:00']",
+    "/tmp/work/src/idoft-devtracker/devtracker/test_devtracker.py:80"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "cae28273ba01f39fd2de2e9f634d7bb3"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": null,
+  "runs": 18,
+  "seconds": 16.97,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-devtracker/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-devtracker/detpy/bundles/test_start_time-5466e685/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-devtracker/detpy/bundles/test_start_time-5466e685",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-devtracker/detpy/bundles/test_start_time-5466e685"
+}

@@ -1,0 +1,717 @@
+{
+ "name": "idoft-todo-sync",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node0-expected_node0]",
+  "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node1-expected_node1]",
+  "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node10-expected_node10]",
+  "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node2-expected_node2]",
+  "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node3-expected_node3]",
+  "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node4-expected_node4]",
+  "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node6-expected_node6]",
+  "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node7-expected_node7]",
+  "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node8-expected_node8]",
+  "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node9-expected_node9]"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009183",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node0-expected_node0]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "brittle",
+   "prefix_length": 163,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_org_to_asana.py::test_o2a_behind_get_tree"
+   ],
+   "order": [
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node0-expected_node0]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AttributeError",
+    "call",
+    "AttributeError: Mock object has no attribute 'make_fn'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/mock.py:630"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c92b2c0b616a8177280de8663916276c"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "8119cb9b0bf406ef2ee09837bc56036a",
+     "c92b2c0b616a8177280de8663916276c"
+    ]
+   },
+   "runs": 33,
+   "seconds": 32.07,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-todo-sync/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node0-expected_node0_-49c1065d/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node0-expected_node0_-49c1065d",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node0-expected_node0_-49c1065d"
+  },
+  {
+   "test": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node1-expected_node1]",
+   "configs_searched": 51,
+   "status": "not-found",
+   "runs": 51,
+   "seconds": 102.65
+  },
+  {
+   "test": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node10-expected_node10]",
+   "configs_searched": 9,
+   "status": "reproduced",
+   "config": "8",
+   "seed": 8,
+   "kind": "brittle",
+   "prefix_length": 75,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_org_to_asana.py::test_o2a_behind_get_tree"
+   ],
+   "order": [
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node10-expected_node10]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AttributeError",
+    "call",
+    "AttributeError: Mock object has no attribute 'make_fn'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/mock.py:630"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ee073e1dda48e48e971db64c339853a0"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "2ff34503a77da399e101c5c3ec60f7b7",
+     "ee073e1dda48e48e971db64c339853a0"
+    ]
+   },
+   "runs": 34,
+   "seconds": 26.6,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-todo-sync/bin/python",
+   "command": "pytest --det --det-seed=8 --det-order=/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node10-expected_node10_-5d89db9d/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node10-expected_node10_-5d89db9d",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node10-expected_node10_-5d89db9d"
+  },
+  {
+   "test": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node2-expected_node2]",
+   "configs_searched": 5,
+   "status": "reproduced",
+   "config": "4",
+   "seed": 4,
+   "kind": "brittle",
+   "prefix_length": 169,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_org_to_asana.py::test_o2a_behind_get_tree"
+   ],
+   "order": [
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node2-expected_node2]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AttributeError",
+    "call",
+    "AttributeError: Mock object has no attribute 'make_fn'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/mock.py:630"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1c8785aeead42752a5f14b4028da3c1d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "57b458ff7f11a2eee7f1226e862cb684",
+     "1c8785aeead42752a5f14b4028da3c1d"
+    ]
+   },
+   "runs": 31,
+   "seconds": 23.29,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-todo-sync/bin/python",
+   "command": "pytest --det --det-seed=4 --det-order=/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node2-expected_node2_-911f7697/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node2-expected_node2_-911f7697",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node2-expected_node2_-911f7697"
+  },
+  {
+   "test": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node3-expected_node3]",
+   "configs_searched": 18,
+   "status": "reproduced",
+   "config": "17",
+   "seed": 17,
+   "kind": "brittle",
+   "prefix_length": 186,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_org_to_asana.py::test_o2a_behind_get_tree"
+   ],
+   "order": [
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node3-expected_node3]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AttributeError",
+    "call",
+    "AttributeError: Mock object has no attribute 'make_fn'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/mock.py:630"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "925327a76ff5b0caba860fc532f0ab8e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "6310b3af7b1c519308bed9ef7b90d7e0",
+     "925327a76ff5b0caba860fc532f0ab8e"
+    ]
+   },
+   "runs": 45,
+   "seconds": 33.51,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-todo-sync/bin/python",
+   "command": "pytest --det --det-seed=17 --det-order=/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node3-expected_node3_-36fe8b1a/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node3-expected_node3_-36fe8b1a",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node3-expected_node3_-36fe8b1a"
+  },
+  {
+   "test": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node4-expected_node4]",
+   "configs_searched": 15,
+   "status": "reproduced",
+   "config": "14",
+   "seed": 14,
+   "kind": "brittle",
+   "prefix_length": 97,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_org_to_asana.py::test_o2a_behind_get_tree"
+   ],
+   "order": [
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node4-expected_node4]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AttributeError",
+    "call",
+    "AttributeError: Mock object has no attribute 'make_fn'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/mock.py:630"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a22bf97b8fe711485db0ac76e70218fa"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "542386b410cabeab859b216fa453ca20",
+     "a22bf97b8fe711485db0ac76e70218fa"
+    ]
+   },
+   "runs": 41,
+   "seconds": 29.39,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-todo-sync/bin/python",
+   "command": "pytest --det --det-seed=14 --det-order=/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node4-expected_node4_-e7b7237f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node4-expected_node4_-e7b7237f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node4-expected_node4_-e7b7237f"
+  },
+  {
+   "test": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node6-expected_node6]",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 10,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_org_to_asana.py::test_o2a_behind_get_tree"
+   ],
+   "order": [
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node6-expected_node6]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AttributeError",
+    "call",
+    "AttributeError: Mock object has no attribute 'make_fn'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/mock.py:630"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "64ca74699f9f438eb75a5b8acdb1d608"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "e2258774343e06a1f47e3592121009f5",
+     "64ca74699f9f438eb75a5b8acdb1d608"
+    ]
+   },
+   "runs": 29,
+   "seconds": 19.84,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-todo-sync/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node6-expected_node6_-0209041f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node6-expected_node6_-0209041f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node6-expected_node6_-0209041f"
+  },
+  {
+   "test": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node7-expected_node7]",
+   "configs_searched": 13,
+   "status": "reproduced",
+   "config": "12",
+   "seed": 12,
+   "kind": "brittle",
+   "prefix_length": 177,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_org_to_asana.py::test_o2a_behind_get_tree"
+   ],
+   "order": [
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node7-expected_node7]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AttributeError",
+    "call",
+    "AttributeError: Mock object has no attribute 'make_fn'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/mock.py:630"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "71f65a66f8847af1109aae254c0bf8be"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "ed8bfdde4e517babde236443c41d05a0",
+     "71f65a66f8847af1109aae254c0bf8be"
+    ]
+   },
+   "runs": 39,
+   "seconds": 28.73,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-todo-sync/bin/python",
+   "command": "pytest --det --det-seed=12 --det-order=/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node7-expected_node7_-4abd2286/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node7-expected_node7_-4abd2286",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node7-expected_node7_-4abd2286"
+  },
+  {
+   "test": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node8-expected_node8]",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "brittle",
+   "prefix_length": 69,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_org_to_asana.py::test_o2a_behind_get_tree"
+   ],
+   "order": [
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node8-expected_node8]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AttributeError",
+    "call",
+    "AttributeError: Mock object has no attribute 'make_fn'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/mock.py:630"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "4114f17ac97ff92755307846db8fc8ea"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "3b5af7836d68ba43476b6c290c88c941",
+     "4114f17ac97ff92755307846db8fc8ea"
+    ]
+   },
+   "runs": 27,
+   "seconds": 19.16,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-todo-sync/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node8-expected_node8_-2c4c2a6a/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node8-expected_node8_-2c4c2a6a",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node8-expected_node8_-2c4c2a6a"
+  },
+  {
+   "test": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node9-expected_node9]",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "brittle",
+   "prefix_length": 139,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_org_to_asana.py::test_o2a_behind_get_tree"
+   ],
+   "order": [
+    "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node9-expected_node9]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AttributeError",
+    "call",
+    "AttributeError: Mock object has no attribute 'make_fn'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/mock.py:630"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "9377d21797ce07f4a5b9449a379e9965"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "26c9b99495e7295608cb563f30697c5f",
+     "9377d21797ce07f4a5b9449a379e9965"
+    ]
+   },
+   "runs": 30,
+   "seconds": 21.9,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-todo-sync/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node9-expected_node9_-afdaef02/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node9-expected_node9_-afdaef02",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-todo-sync/standalone/bundles/test_o2a_behind_make_fn_a_node9-expected_node9_-afdaef02"
+  }
+ ],
+ "seconds": 337.17
+}

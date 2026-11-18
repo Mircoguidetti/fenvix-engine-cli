@@ -1,0 +1,30 @@
+{
+  "name": "idoft-krllint",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/test_open_task.py::OpenTaskTestCase::test_rule_without_fix": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 2,
+  "order_alone": 2
+}

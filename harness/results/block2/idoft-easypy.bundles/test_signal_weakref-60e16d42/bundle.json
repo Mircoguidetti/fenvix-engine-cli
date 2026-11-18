@@ -1,0 +1,78 @@
+{
+  "test": "tests/test_signals.py::test_signal_weakref",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "order",
+  "prefix_length": 174,
+  "minimal_length": 3,
+  "polluters": [
+    "test_package.py::test_package[random]",
+    "test_package.py::test_package[logging]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[random]",
+    "test_package.py::test_package[logging]",
+    "tests/test_signals.py::test_signal_weakref"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "f3bad78c79eac05dd6897f6ed54829f5"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = 52e9439048e8f8142241471e12cead54",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "easypy/logging.py:507",
+      "v": "1000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "52e9439048e8f8142241471e12cead54"
+    },
+    "fingerprints": [
+      "cab88563dbdf0c866b0e640a612169a0",
+      "f3bad78c79eac05dd6897f6ed54829f5"
+    ]
+  },
+  "runs": 28,
+  "seconds": 32.34,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_signal_weakref-60e16d42/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_signal_weakref-60e16d42",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_signal_weakref-60e16d42"
+}

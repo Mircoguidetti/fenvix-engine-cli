@@ -1,0 +1,51 @@
+{
+  "test": "tests/test_cli.py::TestCLI::test_file_output",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "fails-alone",
+  "prefix_length": 14,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [],
+  "order": [
+    "tests/test_cli.py::TestCLI::test_file_output"
+  ],
+  "outcome": "failed+teardown-error",
+  "exception": [
+    "ValueError",
+    "call",
+    "ValueError: I/O operation on closed file.",
+    "/tmp/work/venvs/idoft-domain2idna/lib/python3.9/site-packages/_pytest/capture.py:567"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "1bc623b4c4805be069a2265142e3dfba"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": null,
+  "runs": 13,
+  "seconds": 9.68,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-domain2idna/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_file_output-aa045ad6/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-domain2idna/detpy/bundles/test_file_output-aa045ad6",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-domain2idna/detpy/bundles/test_file_output-aa045ad6"
+}

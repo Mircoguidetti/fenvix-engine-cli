@@ -1,0 +1,75 @@
+{
+  "test": "examples/test_pytest.py::test_index",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "7",
+  "seed": 7,
+  "kind": "brittle",
+  "prefix_length": 14,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+  ],
+  "order": [
+    "examples/test_pytest.py::test_index"
+  ],
+  "outcome": "passed+teardown-error",
+  "exception": [
+    "OSError",
+    "teardown",
+    "OSError: Template file not found.",
+    "<scratch>/hw/src/idoft-py-autodoc/autodoc/__init__.py:149"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "d7c881502da7c69fbbbaf217afe46af9"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 4,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs passed+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed+teardown-error"
+    },
+    "fingerprints": [
+      "f41d847422a391f70f735e1d608678c8",
+      "d7c881502da7c69fbbbaf217afe46af9"
+    ]
+  },
+  "runs": 19,
+  "seconds": 27.35,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "<scratch>/hw/venvs/idoft-py-autodoc/bin/python",
+  "command": "pytest --det --det-seed=7 --det-order=<scratch>/hw/block2/idoft-py-autodoc/detpy/bundles/test_index-9fcbac0f/order.txt -n 0",
+  "replay_command": "detpy replay <scratch>/hw/block2/idoft-py-autodoc/detpy/bundles/test_index-9fcbac0f",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "<scratch>/hw/block2/idoft-py-autodoc/detpy/bundles/test_index-9fcbac0f"
+}

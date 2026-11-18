@@ -1,0 +1,336 @@
+{
+  "name": "idoft-centreon-sdk-python",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/test_hosts.py::TestHosts::test_hosts_add": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHosts::test_hosts_delete": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHosts::test_hosts_list": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_addcontact": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_addcontactgroupt": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_addparent": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_addtemplate": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_applytemplate": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_deletecontact": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_deletecontactgroup": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_deletehostgroup": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_delmacro": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_deteletemplate": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_disable": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_enable": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_getcontact": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_getcontactgroup": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_gethostgroup": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_getmacro": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_getparents": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_gettemplate": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_setcontact": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_setcontactgroup": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_setinstance": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_setmacro": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_setparam": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_setparent": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_hosts.py::TestHost::test_host_settemplate": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 36,
+  "order_alone": 36
+}

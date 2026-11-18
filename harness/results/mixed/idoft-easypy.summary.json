@@ -1,0 +1,121 @@
+{
+  "name": "idoft-easypy",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/weka-io/easypy",
+  "commit": "9501c3ee03dc",
+  "commit_date": "2020-04-21",
+  "python": "3.9",
+  "install": "-e .",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 7.8618021905000015,
+  "det_mean_s": 3.3834770129000047,
+  "slowdown_pct": -56.96308644106423,
+  "precompile_first_s": 0.985,
+  "precompile_rest_median_s": 0.326,
+  "tests": 212,
+  "unstable_baseline": 44,
+  "unstable_det": 2,
+  "became_stable": 44,
+  "outcome_changed_by_det": 1,
+  "covered": 183,
+  "not_covered": 29,
+  "reproduced": 40,
+  "never_fails_under_det": 1,
+  "always_fails_under_det": 3,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "seeds_explored": 20,
+  "exploration_runs": 20,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "thread": 28,
+    "entropy": 1
+  },
+  "pass_fail_reasons": {
+    "time": 33,
+    "thread": 5,
+    "random": 2
+  },
+  "broken_by_det": 4,
+  "broken_always": 2,
+  "broken_causes": {
+    "time | AssertionError": 3,
+    "fixed-order (fails without --det too) | RecursionError": 1
+  },
+  "broken_examples": {
+    "time | AssertionError": [
+      "tests/test_concurrency.py::test_multiobject_concurrent_find_found: assert 2 == 1 (first diverging source: thread)",
+      "tests/test_concurrency.py::test_multiobject_concurrent_find_proper_shutdown: assert 9 <= 2 (first diverging source: thread)",
+      "tests/test_sync.py::test_tag_along_thread: assert 7 < 5 (first diverging source: thread)"
+    ],
+    "fixed-order (fails without --det too) | RecursionError": [
+      "tests/test_sync.py::test_synchronization_coordinator_with_multiobject_exception: RecursionError: maximum recursion depth exceeded (first diverging source: thread)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 44,
+  "known_present": 44,
+  "known_unstable_baseline": 44,
+  "known_reproduced": 40,
+  "known_categories": {
+    "OD-Vic": 44
+  },
+  "examples": {
+    "reproduced": [
+      "tests/test_caching.py::test_resilient_between_timecaches (seed fixed): event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = e4f59db1be156634878454fccdb30534",
+      "tests/test_concurrency.py::test_concurrent_done_status[False] (seed fixed): event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = 6d46a593f18bd5b92e4e5e42e0a6c48f",
+      "tests/test_concurrency.py::test_concurrent_done_status[True] (seed fixed): event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = 91246647fcd49b153a9557c2d7025bf3"
+    ],
+    "always-fails-under-det": [
+      "tests/test_sync.py::test_logged_condition (fixed:10/10)",
+      "tests/test_sync.py::test_logged_lock (fixed:10/10)"
+    ],
+    "changed:passed->failed": [
+      "tests/test_sync.py::test_tag_along_thread"
+    ]
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "name": "rich",
+  "kind": "popular",
+  "status": "ok",
+  "python": "3.13",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/test_box.py::test_get_row": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 5,
+  "order_alone": 5
+}

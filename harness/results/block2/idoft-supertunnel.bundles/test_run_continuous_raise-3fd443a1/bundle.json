@@ -1,0 +1,75 @@
+{
+  "test": "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 35,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "supertunnel/command_test.py::test_forward"
+  ],
+  "order": [
+    "supertunnel/ssh/continuous_test.py::test_run_continuous_raise"
+  ],
+  "outcome": "error",
+  "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-supertunnel/supertunnel/ssh/continuous.py:57"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "2f438a28da2bbd49f2d4b2856e6f501a"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] time.time @ supertunnel/ssh/continuous.py:150 = 2000  <>  [random] random.state @ <end> = cd0fab1c59384ad8cf82987a5be91ed6",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "supertunnel/ssh/continuous.py:150",
+      "v": "2000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "cd0fab1c59384ad8cf82987a5be91ed6"
+    },
+    "fingerprints": [
+      "73568c4cdb4d92abbec45f29dd5fb7aa",
+      "2f438a28da2bbd49f2d4b2856e6f501a"
+    ]
+  },
+  "runs": 18,
+  "seconds": 25.06,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-supertunnel/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run_continuous_raise-3fd443a1/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run_continuous_raise-3fd443a1",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-supertunnel/detpy/bundles/test_run_continuous_raise-3fd443a1"
+}

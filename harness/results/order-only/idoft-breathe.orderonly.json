@@ -1,0 +1,84 @@
+{
+  "name": "idoft-breathe",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/test_command_context.py::test_manual_context_noccr": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_merger.py::test_context_commands": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_merger.py::test_core_commands": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_merger.py::test_invalid": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_loading.py::test_loading_failure": {
+      "config": "10",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_loading.py::test_loading": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_merger.py::test_noccr_commands": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_loading.py::test_reloading": {
+      "config": "3",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 8,
+  "order_alone": 8
+}

@@ -82,37 +82,52 @@ def glob_glob(*args, **kwargs):
 
 
 def glob_iglob(*args, **kwargs):
-    res = sorted(_quietly(lambda: list(_real_iglob(*args, **kwargs))))
-    _event("glob.iglob", args[0] if args else kwargs.get("pathname"), [_sites.norm_path(p) for p in res])
-    return iter(res)
+    # Lazy like the original: the directory is read on the first next(), in
+    # the thread that iterates (asyncio code runs it in a worker thread).
+    def gen():
+        res = sorted(_quietly(lambda: list(_real_iglob(*args, **kwargs))))
+        _event("glob.iglob", args[0] if args else kwargs.get("pathname"), [_sites.norm_path(p) for p in res])
+        yield from res
+
+    return gen()
 
 
 def path_iterdir(self):
-    res = sorted(_quietly(lambda: list(_real_iterdir(self))), key=lambda p: p.name)
-    _event("Path.iterdir", self, [p.name for p in res])
-    return iter(res)
+    def gen():
+        res = sorted(_quietly(lambda: list(_real_iterdir(self))), key=lambda p: p.name)
+        _event("Path.iterdir", self, [p.name for p in res])
+        yield from res
+
+    return gen()
 
 
 def path_glob(self, *args, **kwargs):
-    res = sorted(_quietly(lambda: list(_real_path_glob(self, *args, **kwargs))), key=str)
-    _event("Path.glob", self, [_sites.norm_path(p) for p in res])
-    return iter(res)
+    def gen():
+        res = sorted(_quietly(lambda: list(_real_path_glob(self, *args, **kwargs))), key=str)
+        _event("Path.glob", self, [_sites.norm_path(p) for p in res])
+        yield from res
+
+    return gen()
 
 
 def path_rglob(self, *args, **kwargs):
-    res = sorted(_quietly(lambda: list(_real_path_rglob(self, *args, **kwargs))), key=str)
-    _event("Path.rglob", self, [_sites.norm_path(p) for p in res])
-    return iter(res)
+    def gen():
+        res = sorted(_quietly(lambda: list(_real_path_rglob(self, *args, **kwargs))), key=str)
+        _event("Path.rglob", self, [_sites.norm_path(p) for p in res])
+        yield from res
+
+    return gen()
 
 
 def install(patcher: Patcher) -> None:
     patcher.set(os, "listdir", disguise(listdir, "os", "listdir"))
     patcher.set(os, "scandir", disguise(scandir, "os", "scandir"))
-    patcher.set(glob, "glob", disguise(glob_glob, "glob", "glob"))
-    patcher.set(glob, "iglob", disguise(glob_iglob, "glob", "iglob"))
-    # Python 3.13+: pathlib globbing binds os.scandir at class creation.
+    patcher.set(glob, "glob", disguise(glob_glob, "glob", "glob", binds=True))
+    patcher.set(glob, "iglob", disguise(glob_iglob, "glob", "iglob", binds=True))
+    # Python 3.13: pathlib globbing binds os.scandir at class creation (3.14 wraps it in a function that
+    # yields (entry, name, path) and looks os.scandir up at call time: leave that one alone).
     globber = getattr(glob, "_StringGlobber", None)
-    if globber is not None and "scandir" in vars(globber):
+    if globber is not None and getattr(vars(globber).get("scandir"), "__func__", None) is _real_scandir:
         patcher.set(globber, "scandir", staticmethod(scandir))
     patcher.set(pathlib.Path, "iterdir", path_iterdir)
     patcher.set(pathlib.Path, "glob", path_glob)

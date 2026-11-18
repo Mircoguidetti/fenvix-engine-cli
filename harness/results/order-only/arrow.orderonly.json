@@ -1,0 +1,30 @@
+{
+  "name": "arrow",
+  "kind": "popular",
+  "status": "ok",
+  "python": "3.13",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 2,
+  "order_alone": 2
+}

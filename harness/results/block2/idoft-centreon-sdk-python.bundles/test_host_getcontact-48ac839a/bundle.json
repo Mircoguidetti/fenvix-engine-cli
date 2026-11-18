@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_hosts.py::TestHost::test_host_getcontact",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "10",
+  "seed": 10,
+  "kind": "brittle",
+  "prefix_length": 22,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+  ],
+  "order": [
+    "tests/test_hosts.py::TestHost::test_host_getcontact"
+  ],
+  "outcome": "error",
+  "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "4e255d91ccd954c46a47bc54f7423af4"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ <site>/requests/cookies.py:147 = 1000  <>  [random] random.state @ <end> = 86b1e8433eb1974aeca89652f48b4657",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "<site>/requests/cookies.py:147",
+      "v": "1000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "86b1e8433eb1974aeca89652f48b4657"
+    },
+    "fingerprints": [
+      "ff8ca73c73d563e9388959c3d4200635",
+      "4e255d91ccd954c46a47bc54f7423af4"
+    ]
+  },
+  "runs": 20,
+  "seconds": 25.14,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+  "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getcontact-48ac839a/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getcontact-48ac839a",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getcontact-48ac839a"
+}

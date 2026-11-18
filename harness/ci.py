@@ -85,9 +85,19 @@ def timing_pick(args) -> None:
 def aggregate(args) -> None:
     art, out = Path(args.dir), Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    for pattern in ("*.summary.json", "*.csv", "*.timing.json"):
+    for pattern in ("*.summary.json", "*.csv", "*.timing.json", "*.orderonly.json", "*.baseline.json",
+                    "*.baseline_*.log"):
         for p in art.glob(f"**/{pattern}"):
             shutil.copy2(p, out / p.name)
+    if args.mode != "round":
+        # orderonly / baseline: raw per-repository files only, analysed by harness/p009.py.
+        meta = {"set": args.set, "mode": args.mode, "runs": args.runs, "confirm": args.confirm,
+                "executor": f"GitHub Actions matrix, one repository per ubuntu-latest runner (run {args.run_url})",
+                "date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")}
+        (out / "meta.json").write_text(json.dumps(meta, indent=2))
+        skipped = [x for lst in _load(art, "skipped.json") for x in lst]
+        (out / "skipped.json").write_text(json.dumps(skipped, indent=2))
+        return
     skipped = []
     if args.selection and Path(args.selection).exists():
         sel = json.loads(Path(args.selection).read_text())
@@ -146,6 +156,7 @@ def main() -> None:
         a.add_argument(f"--{k}", type=int, default=v)
     a.add_argument("--max-first-run", type=float, default=150)
     a.add_argument("--run-url", default="local")
+    a.add_argument("--mode", default="round")
     args = ap.parse_args()
     {"candidates": candidates, "select": select, "timing-pick": timing_pick, "aggregate": aggregate}[args.cmd](args)
 

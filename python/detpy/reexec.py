@@ -137,8 +137,16 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
     return time.perf_counter() - t0
 
 
-def reexec(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True, rootdir: str | None = None) -> None:
-    """Exec the current command line again. Does not return on success."""
+BLOCKED_ENV = "DETPY_BLOCKED_PLUGINS"
+
+
+def reexec(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True, rootdir: str | None = None,
+           block_plugins: list[str] | None = None) -> None:
+    """Exec the current command line again. Does not return on success.
+
+    ``block_plugins`` are passed as ``-p no:<name>``: the new process never
+    loads them (unregistering an already loaded plugin leaves its fixtures).
+    """
     need = plan(want_hashseed, want_no_aslr, want_bytecode)
     env = dict(os.environ)
     env["PYTHONHASHSEED"] = want_hashseed
@@ -154,4 +162,10 @@ def reexec(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True, r
             stream.flush()
         except Exception:
             pass
-    os.execve(sys.executable, _argv(), env)
+    argv = _argv()
+    if block_plugins:
+        env[BLOCKED_ENV] = ",".join(block_plugins)
+        pos = argv.index("-m") + 2 if "-m" in argv else 2
+        extra = [a for name in block_plugins for a in ("-p", f"no:{name}")]
+        argv = argv[:pos] + extra + argv[pos:]
+    os.execve(sys.executable, argv, env)

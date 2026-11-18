@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_hosts.py::TestHosts::test_hosts_not_exist",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 5,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_resourcecfg.py::TestConnect::test_connection"
+  ],
+  "order": [
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "ConnectionError",
+    "call",
+    "requests.exceptions.ConnectionError: Connection refused by Responses - the call doesn't match any registered mock.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/responses/__init__.py:1140"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "b6115def89dcda3c1915c667ad5ca963"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 3,
+    "reason": "time",
+    "description": "event #3: [time] time.time @ <site>/requests/cookies.py:137 = 4000  <>  [random] random.state @ <end> = 6e2944796504a3760112c7608c659403",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "<site>/requests/cookies.py:137",
+      "v": "4000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "6e2944796504a3760112c7608c659403"
+    },
+    "fingerprints": [
+      "cc16ffebec96366ffa2ed6304f707e20",
+      "b6115def89dcda3c1915c667ad5ca963"
+    ]
+  },
+  "runs": 17,
+  "seconds": 20.98,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_not_exist-c53c77fc/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_not_exist-c53c77fc",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_not_exist-c53c77fc"
+}

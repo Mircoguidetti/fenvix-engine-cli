@@ -1,0 +1,76 @@
+{
+  "test": "tests/unit/test_classify.py::TestFindRain::test_1",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "4",
+  "seed": 4,
+  "kind": "order",
+  "prefix_length": 398,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/unit/test_classify.py::TestFindRain::test_4"
+  ],
+  "setters": [],
+  "order": [
+    "tests/unit/test_classify.py::TestFindRain::test_4",
+    "tests/unit/test_classify.py::TestFindRain::test_1"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: ",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/contextlib.py:79"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "3d8b1309c9ceb24fcc08d7a5c6b378a7"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "72c555dec8739f9fc7c55e7270988374",
+      "3d8b1309c9ceb24fcc08d7a5c6b378a7"
+    ]
+  },
+  "runs": 29,
+  "seconds": 55.67,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-cloudnetpy/bin/python",
+  "command": "pytest --det --det-seed=4 --det-order=/tmp/work/block2/idoft-cloudnetpy/detpy/bundles/test_1-e7737aaf/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-cloudnetpy/detpy/bundles/test_1-e7737aaf",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-cloudnetpy/detpy/bundles/test_1-e7737aaf"
+}

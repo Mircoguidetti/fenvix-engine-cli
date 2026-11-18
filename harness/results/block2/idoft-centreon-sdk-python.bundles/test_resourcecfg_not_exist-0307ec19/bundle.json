@@ -1,0 +1,75 @@
+{
+  "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "brittle",
+  "prefix_length": 2,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+  ],
+  "order": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "ConnectionError",
+    "call",
+    "requests.exceptions.ConnectionError: Connection refused by Responses - the call doesn't match any registered mock.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/responses/__init__.py:1140"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "3544338f860015f8d687b38c9265286e"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 3,
+    "reason": "time",
+    "description": "event #3: [time] time.time @ <site>/requests/cookies.py:137 = 4000  <>  [random] random.state @ <end> = 136a3eab6bf460a2665025ac503119cf",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "<site>/requests/cookies.py:137",
+      "v": "4000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "136a3eab6bf460a2665025ac503119cf"
+    },
+    "fingerprints": [
+      "fe5a326e03ffc4cf1ce8d68bb3265330",
+      "3544338f860015f8d687b38c9265286e"
+    ]
+  },
+  "runs": 20,
+  "seconds": 24.41,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+  "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_not_exist-0307ec19/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_not_exist-0307ec19",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_not_exist-0307ec19"
+}

@@ -1,0 +1,71 @@
+{
+  "name": "idoft-breathe",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/mrob95/Breathe",
+  "commit": "4600818e24f4",
+  "commit_date": "2020-08-01",
+  "python": "3.9",
+  "install": "-e . -r requirements.txt",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 0.5917564183999986,
+  "det_mean_s": 1.0447623516999953,
+  "slowdown_pct": 76.55277056814055,
+  "precompile_first_s": 1.395,
+  "precompile_rest_median_s": 0.449,
+  "tests": 24,
+  "unstable_baseline": 8,
+  "unstable_det": 0,
+  "became_stable": 8,
+  "outcome_changed_by_det": 3,
+  "covered": 24,
+  "not_covered": 0,
+  "reproduced": 8,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    1,
+    2,
+    10,
+    3,
+    1,
+    1,
+    1,
+    2
+  ],
+  "seeds_explored": 10,
+  "exploration_runs": 46,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "random": 5,
+    "time": 3
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 11,
+  "known_present": 11,
+  "known_unstable_baseline": 8,
+  "known_reproduced": 8,
+  "known_categories": {
+    "OD-Brit": 9,
+    "OD-Vic": 2
+  },
+  "examples": {
+    "reproduced": [
+      "tests/test_command_context.py::test_manual_context_noccr (seed 1): event #0: random.state @ <end> returned different values: \"54fce92c730d9680582a600281e9df2d\" vs \"035d751c01429bc4e3bcb7ff257bd56d\"",
+      "tests/test_loading.py::test_loading (seed 2): event #0: [random] random.state @ <end> = 677ccf7cca1430f3b3e2b9bc43d416d6  <>  [time] time.time @ breathe/grammar/master.py:211 = 1000",
+      "tests/test_loading.py::test_loading_failure (seed 10): event #2: random.state @ <end> returned different values: \"367956e9b309acc71031aab55c3dc445\" vs \"ee14b6fadf0046e12d8cd07591ff41ac\""
+    ],
+    "changed:failed->passed": [
+      "tests/test_merger.py::test_grammar_numbers",
+      "tests/test_top_level.py::test_recognition"
+    ]
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "run": "https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43919160305 + 43931114732 (easypy, after the lock fix)",
+  "rows": [
+    {
+      "repo": "anyio",
+      "broken_before": 39,
+      "missing_under_det_before": 2820,
+      "unstable_strict_before": 17,
+      "reproduced_strict_before": 0,
+      "broken_after": 2,
+      "missing_under_det_after": 0,
+      "unstable_strict_after": 16,
+      "reproduced_strict_after": 6
+    },
+    {
+      "repo": "boltons",
+      "broken_before": 2,
+      "missing_under_det_before": 0,
+      "unstable_strict_before": 0,
+      "reproduced_strict_before": 0,
+      "broken_after": 0,
+      "missing_under_det_after": 0,
+      "unstable_strict_after": 0,
+      "reproduced_strict_after": 0
+    },
+    {
+      "repo": "faker",
+      "broken_before": 1,
+      "missing_under_det_before": 385,
+      "unstable_strict_before": 0,
+      "reproduced_strict_before": 0,
+      "broken_after": 0,
+      "missing_under_det_after": 0,
+      "unstable_strict_after": 0,
+      "reproduced_strict_after": 0
+    },
+    {
+      "repo": "idoft-coinbase-commerce-python",
+      "broken_before": 3,
+      "missing_under_det_before": 0,
+      "unstable_strict_before": 7,
+      "reproduced_strict_before": 7,
+      "broken_after": 1,
+      "missing_under_det_after": 0,
+      "unstable_strict_after": 8,
+      "reproduced_strict_after": 8
+    },
+    {
+      "repo": "idoft-easypy",
+      "broken_before": 4,
+      "missing_under_det_before": 0,
+      "unstable_strict_before": 44,
+      "reproduced_strict_before": 40,
+      "broken_after": 1,
+      "missing_under_det_after": 0,
+      "unstable_strict_after": 44,
+      "reproduced_strict_after": 43
+    },
+    {
+      "repo": "idoft-freezegun",
+      "broken_before": 2,
+      "missing_under_det_before": 0,
+      "unstable_strict_before": 8,
+      "reproduced_strict_before": 6,
+      "broken_after": 0,
+      "missing_under_det_after": 0,
+      "unstable_strict_after": 8,
+      "reproduced_strict_after": 7
+    },
+    {
+      "repo": "idoft-pymq",
+      "broken_before": 5,
+      "missing_under_det_before": 0,
+      "unstable_strict_before": 1,
+      "reproduced_strict_before": 0,
+      "broken_after": 2,
+      "missing_under_det_after": 0,
+      "unstable_strict_after": 1,
+      "reproduced_strict_after": 0
+    },
+    {
+      "repo": "networkx",
+      "broken_before": 1,
+      "missing_under_det_before": 0,
+      "unstable_strict_before": 0,
+      "reproduced_strict_before": 0,
+      "broken_after": 0,
+      "missing_under_det_after": 0,
+      "unstable_strict_after": 0,
+      "reproduced_strict_after": 0
+    },
+    {
+      "repo": "requests",
+      "broken_before": 7,
+      "missing_under_det_before": 0,
+      "unstable_strict_before": 0,
+      "reproduced_strict_before": 0,
+      "broken_after": 4,
+      "missing_under_det_after": 0,
+      "unstable_strict_after": 0,
+      "reproduced_strict_after": 0
+    },
+    {
+      "repo": "rich",
+      "broken_before": 1,
+      "missing_under_det_before": 0,
+      "unstable_strict_before": 5,
+      "reproduced_strict_before": 5,
+      "broken_after": 0,
+      "missing_under_det_after": 0,
+      "unstable_strict_after": 5,
+      "reproduced_strict_after": 5
+    },
+    {
+      "repo": "structlog",
+      "broken_before": 43,
+      "missing_under_det_before": 0,
+      "unstable_strict_before": 0,
+      "reproduced_strict_before": 0,
+      "broken_after": 0,
+      "missing_under_det_after": 0,
+      "unstable_strict_after": 0,
+      "reproduced_strict_after": 0
+    }
+  ],
+  "totals": {
+    "broken_before": 108,
+    "missing_under_det_before": 3205,
+    "unstable_strict_before": 82,
+    "reproduced_strict_before": 58,
+    "broken_after": 10,
+    "missing_under_det_after": 0,
+    "unstable_strict_after": 82,
+    "reproduced_strict_after": 69
+  }
+}

@@ -1,0 +1,4042 @@
+{
+ "name": "idoft-centreon-sdk-python",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_command.py::TestCommands::test_command_add",
+  "tests/test_command.py::TestCommands::test_command_delete",
+  "tests/test_command.py::TestCommands::test_command_list",
+  "tests/test_command.py::TestCommands::test_command_not_exist",
+  "tests/test_command.py::TestCommands::test_command_setparam",
+  "tests/test_hosts.py::TestHost::test_host_addcontact",
+  "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+  "tests/test_hosts.py::TestHost::test_host_addparent",
+  "tests/test_hosts.py::TestHost::test_host_addtemplate",
+  "tests/test_hosts.py::TestHost::test_host_applytemplate",
+  "tests/test_hosts.py::TestHost::test_host_deletecontact",
+  "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+  "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+  "tests/test_hosts.py::TestHost::test_host_delmacro",
+  "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+  "tests/test_hosts.py::TestHost::test_host_disable",
+  "tests/test_hosts.py::TestHost::test_host_enable",
+  "tests/test_hosts.py::TestHost::test_host_getcontact",
+  "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+  "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+  "tests/test_hosts.py::TestHost::test_host_getmacro",
+  "tests/test_hosts.py::TestHost::test_host_getparents",
+  "tests/test_hosts.py::TestHost::test_host_gettemplate",
+  "tests/test_hosts.py::TestHost::test_host_setcontact",
+  "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+  "tests/test_hosts.py::TestHost::test_host_setinstance",
+  "tests/test_hosts.py::TestHost::test_host_setmacro",
+  "tests/test_hosts.py::TestHost::test_host_setparam",
+  "tests/test_hosts.py::TestHost::test_host_setparent",
+  "tests/test_hosts.py::TestHost::test_host_settemplate",
+  "tests/test_hosts.py::TestHosts::test_hosts_add",
+  "tests/test_hosts.py::TestHosts::test_hosts_delete",
+  "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+  "tests/test_hosts.py::TestHosts::test_hosts_list",
+  "tests/test_hosts.py::TestHosts::test_hosts_not_exist",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008921",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 2.447,
+   "tests": 44,
+   "failing": [
+    "tests/test_hosts.py::TestHosts::test_hosts_add",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+    "tests/test_hosts.py::TestHosts::test_hosts_list",
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 2.47,
+   "tests": 44,
+   "failing": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 2.186,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 2.166,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 2.249,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 2.678,
+   "tests": 44,
+   "failing": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 2.159,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 2.172,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 2.168,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 3.469,
+   "tests": 44,
+   "failing": [
+    "tests/test_hosts.py::TestHost::test_host_addcontact",
+    "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+    "tests/test_hosts.py::TestHost::test_host_addparent",
+    "tests/test_hosts.py::TestHost::test_host_addtemplate",
+    "tests/test_hosts.py::TestHost::test_host_applytemplate",
+    "tests/test_hosts.py::TestHost::test_host_deletecontact",
+    "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+    "tests/test_hosts.py::TestHost::test_host_delmacro",
+    "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+    "tests/test_hosts.py::TestHost::test_host_disable",
+    "tests/test_hosts.py::TestHost::test_host_enable",
+    "tests/test_hosts.py::TestHost::test_host_getcontact",
+    "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+    "tests/test_hosts.py::TestHost::test_host_getmacro",
+    "tests/test_hosts.py::TestHost::test_host_getparents",
+    "tests/test_hosts.py::TestHost::test_host_gettemplate",
+    "tests/test_hosts.py::TestHost::test_host_setcontact",
+    "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_setinstance",
+    "tests/test_hosts.py::TestHost::test_host_setmacro",
+    "tests/test_hosts.py::TestHost::test_host_setparam",
+    "tests/test_hosts.py::TestHost::test_host_setparent",
+    "tests/test_hosts.py::TestHost::test_host_settemplate",
+    "tests/test_hosts.py::TestHosts::test_hosts_add",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+    "tests/test_hosts.py::TestHosts::test_hosts_list",
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 2.44,
+   "tests": 44,
+   "failing": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 2.429,
+   "tests": 44,
+   "failing": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 2.185,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 2.466,
+   "tests": 44,
+   "failing": [
+    "tests/test_hosts.py::TestHosts::test_hosts_add",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+    "tests/test_hosts.py::TestHosts::test_hosts_list",
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 2.461,
+   "tests": 44,
+   "failing": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 2.425,
+   "tests": 44,
+   "failing": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 2.167,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 2.445,
+   "tests": 44,
+   "failing": [
+    "tests/test_hosts.py::TestHosts::test_hosts_add",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+    "tests/test_hosts.py::TestHosts::test_hosts_list",
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 2.18,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 2.563,
+   "tests": 44,
+   "failing": [
+    "tests/test_hosts.py::TestHost::test_host_addcontact",
+    "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+    "tests/test_hosts.py::TestHost::test_host_addparent",
+    "tests/test_hosts.py::TestHost::test_host_addtemplate",
+    "tests/test_hosts.py::TestHost::test_host_applytemplate",
+    "tests/test_hosts.py::TestHost::test_host_deletecontact",
+    "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+    "tests/test_hosts.py::TestHost::test_host_delmacro",
+    "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+    "tests/test_hosts.py::TestHost::test_host_disable",
+    "tests/test_hosts.py::TestHost::test_host_enable",
+    "tests/test_hosts.py::TestHost::test_host_getcontact",
+    "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+    "tests/test_hosts.py::TestHost::test_host_getmacro",
+    "tests/test_hosts.py::TestHost::test_host_getparents",
+    "tests/test_hosts.py::TestHost::test_host_gettemplate",
+    "tests/test_hosts.py::TestHost::test_host_setcontact",
+    "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_setinstance",
+    "tests/test_hosts.py::TestHost::test_host_setmacro",
+    "tests/test_hosts.py::TestHost::test_host_setparam",
+    "tests/test_hosts.py::TestHost::test_host_setparent",
+    "tests/test_hosts.py::TestHost::test_host_settemplate"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 3.455,
+   "tests": 44,
+   "failing": [
+    "tests/test_hosts.py::TestHost::test_host_addcontact",
+    "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+    "tests/test_hosts.py::TestHost::test_host_addparent",
+    "tests/test_hosts.py::TestHost::test_host_addtemplate",
+    "tests/test_hosts.py::TestHost::test_host_applytemplate",
+    "tests/test_hosts.py::TestHost::test_host_deletecontact",
+    "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+    "tests/test_hosts.py::TestHost::test_host_delmacro",
+    "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+    "tests/test_hosts.py::TestHost::test_host_disable",
+    "tests/test_hosts.py::TestHost::test_host_enable",
+    "tests/test_hosts.py::TestHost::test_host_getcontact",
+    "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+    "tests/test_hosts.py::TestHost::test_host_getmacro",
+    "tests/test_hosts.py::TestHost::test_host_getparents",
+    "tests/test_hosts.py::TestHost::test_host_gettemplate",
+    "tests/test_hosts.py::TestHost::test_host_setcontact",
+    "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_setinstance",
+    "tests/test_hosts.py::TestHost::test_host_setmacro",
+    "tests/test_hosts.py::TestHost::test_host_setparam",
+    "tests/test_hosts.py::TestHost::test_host_setparent",
+    "tests/test_hosts.py::TestHost::test_host_settemplate",
+    "tests/test_hosts.py::TestHosts::test_hosts_add",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+    "tests/test_hosts.py::TestHosts::test_hosts_list",
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 2.69,
+   "tests": 44,
+   "failing": [
+    "tests/test_command.py::TestCommands::test_command_add",
+    "tests/test_command.py::TestCommands::test_command_delete",
+    "tests/test_command.py::TestCommands::test_command_list",
+    "tests/test_command.py::TestCommands::test_command_not_exist",
+    "tests/test_command.py::TestCommands::test_command_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 2.425,
+   "tests": 44,
+   "failing": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 2.397,
+   "tests": 44,
+   "failing": [
+    "tests/test_command.py::TestCommands::test_command_add",
+    "tests/test_command.py::TestCommands::test_command_delete",
+    "tests/test_command.py::TestCommands::test_command_list",
+    "tests/test_command.py::TestCommands::test_command_not_exist",
+    "tests/test_command.py::TestCommands::test_command_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 2.172,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 2.181,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 2.192,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 2.2,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 3.507,
+   "tests": 44,
+   "failing": [
+    "tests/test_hosts.py::TestHost::test_host_addcontact",
+    "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+    "tests/test_hosts.py::TestHost::test_host_addparent",
+    "tests/test_hosts.py::TestHost::test_host_addtemplate",
+    "tests/test_hosts.py::TestHost::test_host_applytemplate",
+    "tests/test_hosts.py::TestHost::test_host_deletecontact",
+    "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+    "tests/test_hosts.py::TestHost::test_host_delmacro",
+    "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+    "tests/test_hosts.py::TestHost::test_host_disable",
+    "tests/test_hosts.py::TestHost::test_host_enable",
+    "tests/test_hosts.py::TestHost::test_host_getcontact",
+    "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+    "tests/test_hosts.py::TestHost::test_host_getmacro",
+    "tests/test_hosts.py::TestHost::test_host_getparents",
+    "tests/test_hosts.py::TestHost::test_host_gettemplate",
+    "tests/test_hosts.py::TestHost::test_host_setcontact",
+    "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_setinstance",
+    "tests/test_hosts.py::TestHost::test_host_setmacro",
+    "tests/test_hosts.py::TestHost::test_host_setparam",
+    "tests/test_hosts.py::TestHost::test_host_setparent",
+    "tests/test_hosts.py::TestHost::test_host_settemplate",
+    "tests/test_hosts.py::TestHosts::test_hosts_add",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+    "tests/test_hosts.py::TestHosts::test_hosts_list",
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 2.386,
+   "tests": 44,
+   "failing": [
+    "tests/test_command.py::TestCommands::test_command_add",
+    "tests/test_command.py::TestCommands::test_command_delete",
+    "tests/test_command.py::TestCommands::test_command_list",
+    "tests/test_command.py::TestCommands::test_command_not_exist",
+    "tests/test_command.py::TestCommands::test_command_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 2.16,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 2.198,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 2.213,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 2.201,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 2.414,
+   "tests": 44,
+   "failing": [
+    "tests/test_command.py::TestCommands::test_command_add",
+    "tests/test_command.py::TestCommands::test_command_delete",
+    "tests/test_command.py::TestCommands::test_command_list",
+    "tests/test_command.py::TestCommands::test_command_not_exist",
+    "tests/test_command.py::TestCommands::test_command_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 2.391,
+   "tests": 44,
+   "failing": [
+    "tests/test_command.py::TestCommands::test_command_add",
+    "tests/test_command.py::TestCommands::test_command_delete",
+    "tests/test_command.py::TestCommands::test_command_list",
+    "tests/test_command.py::TestCommands::test_command_not_exist",
+    "tests/test_command.py::TestCommands::test_command_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 2.443,
+   "tests": 44,
+   "failing": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 2.166,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 2.429,
+   "tests": 44,
+   "failing": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 2.781,
+   "tests": 44,
+   "failing": [
+    "tests/test_hosts.py::TestHost::test_host_addcontact",
+    "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+    "tests/test_hosts.py::TestHost::test_host_addparent",
+    "tests/test_hosts.py::TestHost::test_host_addtemplate",
+    "tests/test_hosts.py::TestHost::test_host_applytemplate",
+    "tests/test_hosts.py::TestHost::test_host_deletecontact",
+    "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+    "tests/test_hosts.py::TestHost::test_host_delmacro",
+    "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+    "tests/test_hosts.py::TestHost::test_host_disable",
+    "tests/test_hosts.py::TestHost::test_host_enable",
+    "tests/test_hosts.py::TestHost::test_host_getcontact",
+    "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+    "tests/test_hosts.py::TestHost::test_host_getmacro",
+    "tests/test_hosts.py::TestHost::test_host_getparents",
+    "tests/test_hosts.py::TestHost::test_host_gettemplate",
+    "tests/test_hosts.py::TestHost::test_host_setcontact",
+    "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_setinstance",
+    "tests/test_hosts.py::TestHost::test_host_setmacro",
+    "tests/test_hosts.py::TestHost::test_host_setparam",
+    "tests/test_hosts.py::TestHost::test_host_setparent",
+    "tests/test_hosts.py::TestHost::test_host_settemplate",
+    "tests/test_hosts.py::TestHosts::test_hosts_add",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+    "tests/test_hosts.py::TestHosts::test_hosts_list",
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 2.155,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 2.38,
+   "tests": 44,
+   "failing": [
+    "tests/test_command.py::TestCommands::test_command_add",
+    "tests/test_command.py::TestCommands::test_command_delete",
+    "tests/test_command.py::TestCommands::test_command_list",
+    "tests/test_command.py::TestCommands::test_command_not_exist",
+    "tests/test_command.py::TestCommands::test_command_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 2.452,
+   "tests": 44,
+   "failing": [
+    "tests/test_hosts.py::TestHosts::test_hosts_add",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+    "tests/test_hosts.py::TestHosts::test_hosts_list",
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 2.453,
+   "tests": 44,
+   "failing": [
+    "tests/test_hosts.py::TestHosts::test_hosts_add",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete",
+    "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+    "tests/test_hosts.py::TestHosts::test_hosts_list",
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 2.167,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 2.212,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 2.713,
+   "tests": 44,
+   "failing": [
+    "tests/test_hosts.py::TestHost::test_host_addcontact",
+    "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+    "tests/test_hosts.py::TestHost::test_host_addparent",
+    "tests/test_hosts.py::TestHost::test_host_addtemplate",
+    "tests/test_hosts.py::TestHost::test_host_applytemplate",
+    "tests/test_hosts.py::TestHost::test_host_deletecontact",
+    "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+    "tests/test_hosts.py::TestHost::test_host_delmacro",
+    "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+    "tests/test_hosts.py::TestHost::test_host_disable",
+    "tests/test_hosts.py::TestHost::test_host_enable",
+    "tests/test_hosts.py::TestHost::test_host_getcontact",
+    "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+    "tests/test_hosts.py::TestHost::test_host_getmacro",
+    "tests/test_hosts.py::TestHost::test_host_getparents",
+    "tests/test_hosts.py::TestHost::test_host_gettemplate",
+    "tests/test_hosts.py::TestHost::test_host_setcontact",
+    "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+    "tests/test_hosts.py::TestHost::test_host_setinstance",
+    "tests/test_hosts.py::TestHost::test_host_setmacro",
+    "tests/test_hosts.py::TestHost::test_host_setparam",
+    "tests/test_hosts.py::TestHost::test_host_setparent",
+    "tests/test_hosts.py::TestHost::test_host_settemplate"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 2.209,
+   "tests": 44,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 2.404,
+   "tests": 44,
+   "failing": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 2.389,
+   "tests": 44,
+   "failing": [
+    "tests/test_command.py::TestCommands::test_command_add",
+    "tests/test_command.py::TestCommands::test_command_delete",
+    "tests/test_command.py::TestCommands::test_command_list",
+    "tests/test_command.py::TestCommands::test_command_not_exist",
+    "tests/test_command.py::TestCommands::test_command_setparam"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [],
+ "flaky_failing": [
+  "tests/test_command.py::TestCommands::test_command_add",
+  "tests/test_command.py::TestCommands::test_command_delete",
+  "tests/test_command.py::TestCommands::test_command_list",
+  "tests/test_command.py::TestCommands::test_command_not_exist",
+  "tests/test_command.py::TestCommands::test_command_setparam",
+  "tests/test_hosts.py::TestHost::test_host_addcontact",
+  "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+  "tests/test_hosts.py::TestHost::test_host_addparent",
+  "tests/test_hosts.py::TestHost::test_host_addtemplate",
+  "tests/test_hosts.py::TestHost::test_host_applytemplate",
+  "tests/test_hosts.py::TestHost::test_host_deletecontact",
+  "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+  "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+  "tests/test_hosts.py::TestHost::test_host_delmacro",
+  "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+  "tests/test_hosts.py::TestHost::test_host_disable",
+  "tests/test_hosts.py::TestHost::test_host_enable",
+  "tests/test_hosts.py::TestHost::test_host_getcontact",
+  "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+  "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+  "tests/test_hosts.py::TestHost::test_host_getmacro",
+  "tests/test_hosts.py::TestHost::test_host_getparents",
+  "tests/test_hosts.py::TestHost::test_host_gettemplate",
+  "tests/test_hosts.py::TestHost::test_host_setcontact",
+  "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+  "tests/test_hosts.py::TestHost::test_host_setinstance",
+  "tests/test_hosts.py::TestHost::test_host_setmacro",
+  "tests/test_hosts.py::TestHost::test_host_setparam",
+  "tests/test_hosts.py::TestHost::test_host_setparent",
+  "tests/test_hosts.py::TestHost::test_host_settemplate",
+  "tests/test_hosts.py::TestHosts::test_hosts_add",
+  "tests/test_hosts.py::TestHosts::test_hosts_delete",
+  "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+  "tests/test_hosts.py::TestHosts::test_hosts_list",
+  "tests/test_hosts.py::TestHosts::test_hosts_not_exist",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+  "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+ ],
+ "bundles": [
+  {
+   "test": "tests/test_command.py::TestCommands::test_command_add",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "22",
+   "seed": 22,
+   "kind": "brittle",
+   "prefix_length": 3,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_command.py::TestCommands::test_command_add"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: expected call not found.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/mock/mock.py:992"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1aae2abc33c75c5c65a55426b2a94470"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "0904e14c45bc30b3155b98b91661a9e3",
+     "1aae2abc33c75c5c65a55426b2a94470"
+    ]
+   },
+   "runs": 20,
+   "seconds": 24.77,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=22 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_add-b80d4319/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_add-b80d4319",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_add-b80d4319",
+   "first_failing_seed": 22
+  },
+  {
+   "test": "tests/test_command.py::TestCommands::test_command_delete",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "22",
+   "seed": 22,
+   "kind": "brittle",
+   "prefix_length": 2,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_command.py::TestCommands::test_command_delete"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: expected call not found.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/mock/mock.py:992"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "17ae1b5c6fc6cb6512bc44e595c2fb0a"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "60451ea5379ee1df3b46f69774b3eb71",
+     "17ae1b5c6fc6cb6512bc44e595c2fb0a"
+    ]
+   },
+   "runs": 20,
+   "seconds": 24.53,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=22 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_delete-63857196/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_delete-63857196",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_delete-63857196",
+   "first_failing_seed": 22
+  },
+  {
+   "test": "tests/test_command.py::TestCommands::test_command_list",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "22",
+   "seed": 22,
+   "kind": "brittle",
+   "prefix_length": 1,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_command.py::TestCommands::test_command_list"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ConnectionError",
+    "call",
+    "requests.exceptions.ConnectionError: Connection refused by Responses - the call doesn't match any registered mock.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/responses/__init__.py:1140"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "da225de0ee835138c3d1169b1ab9d3dd"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "time",
+    "description": "event #3: [time] time.time @ <site>/requests/cookies.py:137 = 4000  <>  [random] random.state @ <end> = 70c4535333a33bd348d39858b886c026",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:137",
+     "v": "4000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "70c4535333a33bd348d39858b886c026"
+    },
+    "fingerprints": [
+     "99eaabd8d7f6c9ee954418eed0d956b6",
+     "da225de0ee835138c3d1169b1ab9d3dd"
+    ]
+   },
+   "runs": 20,
+   "seconds": 24.67,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=22 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_list-f8eca031/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_list-f8eca031",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_list-f8eca031",
+   "first_failing_seed": 22
+  },
+  {
+   "test": "tests/test_command.py::TestCommands::test_command_not_exist",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "22",
+   "seed": 22,
+   "kind": "brittle",
+   "prefix_length": 5,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_command.py::TestCommands::test_command_not_exist"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ConnectionError",
+    "call",
+    "requests.exceptions.ConnectionError: Connection refused by Responses - the call doesn't match any registered mock.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/responses/__init__.py:1140"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c5dd6c9e2d3445485acf707ff5be5bc1"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "time",
+    "description": "event #3: [time] time.time @ <site>/requests/cookies.py:137 = 4000  <>  [random] random.state @ <end> = 02e1f780cf0db6953f83e095427c0def",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:137",
+     "v": "4000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "02e1f780cf0db6953f83e095427c0def"
+    },
+    "fingerprints": [
+     "cc11d3ea405aec5eed9383f1ac6056e8",
+     "c5dd6c9e2d3445485acf707ff5be5bc1"
+    ]
+   },
+   "runs": 20,
+   "seconds": 24.53,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=22 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_not_exist-395e0bf9/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_not_exist-395e0bf9",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_not_exist-395e0bf9",
+   "first_failing_seed": 22
+  },
+  {
+   "test": "tests/test_command.py::TestCommands::test_command_setparam",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "22",
+   "seed": 22,
+   "kind": "brittle",
+   "prefix_length": 4,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_command.py::TestCommands::test_command_setparam"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "KeyError",
+    "call",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c0569da35c5a1475f0c7fda98e067417"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b08198caa0d67a790686d44092abf614",
+     "c0569da35c5a1475f0c7fda98e067417"
+    ]
+   },
+   "runs": 20,
+   "seconds": 24.19,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=22 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_setparam-5b326cc2/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_setparam-5b326cc2",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_command_setparam-5b326cc2",
+   "first_failing_seed": 22
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_addcontact",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 6,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_addcontact"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "de497388ca9742f02dca9a1c01248785"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "f3c5dc30c5a0a4bdc7c4badb7acb512f",
+     "de497388ca9742f02dca9a1c01248785"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.03,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_addcontact-24c4a1d5/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_addcontact-24c4a1d5",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_addcontact-24c4a1d5",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 18,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_addcontactgroupt"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "11fd71cf3f140dda8bf4fd48aacf31cf"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "e4334d5a0febc181d857f52bd2c51f09",
+     "11fd71cf3f140dda8bf4fd48aacf31cf"
+    ]
+   },
+   "runs": 21,
+   "seconds": 26.34,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_addcontactgroupt-307d1750/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_addcontactgroupt-307d1750",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_addcontactgroupt-307d1750",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_addparent",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 17,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_addparent"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "7122defbc352468766e116cb0d2b48c6"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "25c7a61d5c6749fe6a927de61472b7d1",
+     "7122defbc352468766e116cb0d2b48c6"
+    ]
+   },
+   "runs": 21,
+   "seconds": 26.11,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_addparent-a99c2a91/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_addparent-a99c2a91",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_addparent-a99c2a91",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_addtemplate",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 9,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_addtemplate"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "51cc577ba2faec0d1b8bb19fd85c0dc2"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "b786a2e38a79e28f85bf0530c933ecfe",
+     "51cc577ba2faec0d1b8bb19fd85c0dc2"
+    ]
+   },
+   "runs": 18,
+   "seconds": 21.62,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_addtemplate-a369a7ee/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_addtemplate-a369a7ee",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_addtemplate-a369a7ee",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_applytemplate",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 23,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_applytemplate"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1ef17e0370372d5e0139a7ea67e27dd0"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "8608492ef0ffb3cfcd55e1c2afe21071",
+     "1ef17e0370372d5e0139a7ea67e27dd0"
+    ]
+   },
+   "runs": 17,
+   "seconds": 21.03,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_applytemplate-c2fc5acd/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_applytemplate-c2fc5acd",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_applytemplate-c2fc5acd",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_deletecontact",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 11,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_deletecontact"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "4a16bc16e48a4de89f2da52f4071acb2"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "203f33d354027ca2041eb6725df5ccce",
+     "4a16bc16e48a4de89f2da52f4071acb2"
+    ]
+   },
+   "runs": 17,
+   "seconds": 20.52,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_deletecontact-5b144c54/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_deletecontact-5b144c54",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_deletecontact-5b144c54",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 14,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_deletecontactgroup"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2bb53b701992f4701e151aa92f0d4a72"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "9ef5fe77f7227af8407e01ce847230e9",
+     "2bb53b701992f4701e151aa92f0d4a72"
+    ]
+   },
+   "runs": 20,
+   "seconds": 24.56,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_deletecontactgroup-3688c5f0/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_deletecontactgroup-3688c5f0",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_deletecontactgroup-3688c5f0",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 29,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_deletehostgroup"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c103e0d9b6d56496eff758d9d0da2231"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "6c74e53fbb4528b9033e903277dc76d9",
+     "c103e0d9b6d56496eff758d9d0da2231"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.99,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_deletehostgroup-dff34a02/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_deletehostgroup-dff34a02",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_deletehostgroup-dff34a02",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_delmacro",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 7,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_delmacro"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "428ef26302993a6159091d658ae48f84"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "a851bb28dcaf5ef8932c6e7d9876cf38",
+     "428ef26302993a6159091d658ae48f84"
+    ]
+   },
+   "runs": 20,
+   "seconds": 24.26,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_delmacro-561163fe/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_delmacro-561163fe",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_delmacro-561163fe",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 27,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_deteletemplate"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1aba347f0c3c58565b5d4506194d6571"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "ca5188de9dd832ab14d649904e3b7bee",
+     "1aba347f0c3c58565b5d4506194d6571"
+    ]
+   },
+   "runs": 18,
+   "seconds": 22.65,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_deteletemplate-98a91f5a/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_deteletemplate-98a91f5a",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_deteletemplate-98a91f5a",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_disable",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 30,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_disable"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "19cdad8664f5f1d3d822a9cbfd54af4b"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "8b8f839674cdb099b7f9f429d8f3660b",
+     "19cdad8664f5f1d3d822a9cbfd54af4b"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.93,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_disable-77e15185/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_disable-77e15185",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_disable-77e15185",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_enable",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 26,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_enable"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d9366525ab6c284ff00a06ea16a77644"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "8050b55eae8ca00fa66bd78f75f89f83",
+     "d9366525ab6c284ff00a06ea16a77644"
+    ]
+   },
+   "runs": 18,
+   "seconds": 22.51,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_enable-c5e45bfe/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_enable-c5e45bfe",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_enable-c5e45bfe",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_getcontact",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 22,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_getcontact"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "4e255d91ccd954c46a47bc54f7423af4"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ <site>/requests/cookies.py:147 = 1000  <>  [random] random.state @ <end> = 86b1e8433eb1974aeca89652f48b4657",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:147",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "86b1e8433eb1974aeca89652f48b4657"
+    },
+    "fingerprints": [
+     "ff8ca73c73d563e9388959c3d4200635",
+     "4e255d91ccd954c46a47bc54f7423af4"
+    ]
+   },
+   "runs": 20,
+   "seconds": 25.14,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getcontact-48ac839a/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getcontact-48ac839a",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getcontact-48ac839a",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 19,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_getcontactgroup"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c4b77eaad8e54ad9f20b72ee8e98578d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ <site>/requests/cookies.py:147 = 1000  <>  [random] random.state @ <end> = a5756dafd345d834f22942d380503c03",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:147",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "a5756dafd345d834f22942d380503c03"
+    },
+    "fingerprints": [
+     "cb6cf0be2c48b2890b439173fbd92785",
+     "c4b77eaad8e54ad9f20b72ee8e98578d"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.67,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getcontactgroup-977655d1/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getcontactgroup-977655d1",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getcontactgroup-977655d1",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 25,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_gethostgroup"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "9664cd94450122bf480086cb3139abd9"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ <site>/requests/cookies.py:147 = 1000  <>  [random] random.state @ <end> = f68342eae7e79fe718a23b134645f63b",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:147",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "f68342eae7e79fe718a23b134645f63b"
+    },
+    "fingerprints": [
+     "9d1011de532a85c6aae9282e5d4627f6",
+     "9664cd94450122bf480086cb3139abd9"
+    ]
+   },
+   "runs": 21,
+   "seconds": 26.74,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_gethostgroup-c566a64a/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_gethostgroup-c566a64a",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_gethostgroup-c566a64a",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_getmacro",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 28,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_getmacro"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "e17098f4b3bfb8fa225510c7ddff0574"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ <site>/requests/cookies.py:147 = 1000  <>  [random] random.state @ <end> = 238003de790006a8522a2ed6d2202b64",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:147",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "238003de790006a8522a2ed6d2202b64"
+    },
+    "fingerprints": [
+     "6278202736df65f06c3b701377c408ab",
+     "e17098f4b3bfb8fa225510c7ddff0574"
+    ]
+   },
+   "runs": 21,
+   "seconds": 26.66,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getmacro-92ba3489/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getmacro-92ba3489",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getmacro-92ba3489",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_getparents",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 15,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_getparents"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2f23cb870ad19d1caa6715f591d0bc27"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ <site>/requests/cookies.py:147 = 1000  <>  [random] random.state @ <end> = 4e31a718c5a29ebe038fa1bd6e97cb96",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:147",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "4e31a718c5a29ebe038fa1bd6e97cb96"
+    },
+    "fingerprints": [
+     "50fed6b8e9f1d9484c31a6605c7dce3f",
+     "2f23cb870ad19d1caa6715f591d0bc27"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.17,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getparents-3e168248/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getparents-3e168248",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_getparents-3e168248",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_gettemplate",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 12,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_gettemplate"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "00fa3e748d621419ba26e3204208c0ee"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ <site>/requests/cookies.py:147 = 1000  <>  [random] random.state @ <end> = be42297c7ae7e445d2130c500109113d",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:147",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "be42297c7ae7e445d2130c500109113d"
+    },
+    "fingerprints": [
+     "2ca2325c3910f4e59a4673f54c42550d",
+     "00fa3e748d621419ba26e3204208c0ee"
+    ]
+   },
+   "runs": 18,
+   "seconds": 22.02,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_gettemplate-b3bb4cd3/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_gettemplate-b3bb4cd3",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_gettemplate-b3bb4cd3",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_setcontact",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 8,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_setcontact"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "dd4839d3a862f3bb08e9daa01ba9489e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "1aa499f070aac407e610a3ac3e6f50fd",
+     "dd4839d3a862f3bb08e9daa01ba9489e"
+    ]
+   },
+   "runs": 18,
+   "seconds": 21.71,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setcontact-d0353106/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setcontact-d0353106",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setcontact-d0353106",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 24,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_setcontactgroup"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d2712e11f96311ea1ab046df37d39379"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "35952112e4cc6b3857e51bbb61d90107",
+     "d2712e11f96311ea1ab046df37d39379"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.83,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setcontactgroup-e9682c4c/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setcontactgroup-e9682c4c",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setcontactgroup-e9682c4c",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_setinstance",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 10,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_setinstance"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6b4fc98922e6b031d06c9b52ad1fd08a"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "e09a633bdab1ea31966203bb8d1684b6",
+     "6b4fc98922e6b031d06c9b52ad1fd08a"
+    ]
+   },
+   "runs": 20,
+   "seconds": 24.6,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setinstance-c3ab3894/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setinstance-c3ab3894",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setinstance-c3ab3894",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_setmacro",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 16,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_setmacro"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "941aeb93fece79423d2788b81be9e7f0"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "80bf64ade0496c802340bacda46fb28f",
+     "941aeb93fece79423d2788b81be9e7f0"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.4,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setmacro-fcabcd8c/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setmacro-fcabcd8c",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setmacro-fcabcd8c",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_setparam",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 13,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_setparam"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a4193d91c9f05d890f956a610bf74277"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "35f1f5f98e88f9cd1be2ff6689662151",
+     "a4193d91c9f05d890f956a610bf74277"
+    ]
+   },
+   "runs": 18,
+   "seconds": 22.13,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setparam-2c73a8fa/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setparam-2c73a8fa",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setparam-2c73a8fa",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_setparent",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 21,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_setparent"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "fa6fed10b4ac3aa63387da96ef03fbb9"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "f4751bd951a04736b1ff51242f87c276",
+     "fa6fed10b4ac3aa63387da96ef03fbb9"
+    ]
+   },
+   "runs": 18,
+   "seconds": 22.3,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setparent-627ab5ee/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setparent-627ab5ee",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_setparent-627ab5ee",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHost::test_host_settemplate",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "brittle",
+   "prefix_length": 20,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHost::test_host_settemplate"
+   ],
+   "outcome": "error",
+   "exception": [
+    "KeyError",
+    "setup",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "07b4bf36a7fe506309e9dca8b0493a7b"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "3582f84a3bbde5af344f5bd6a990ad1b",
+     "07b4bf36a7fe506309e9dca8b0493a7b"
+    ]
+   },
+   "runs": 20,
+   "seconds": 25.56,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_settemplate-ac05177b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_settemplate-ac05177b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_host_settemplate-ac05177b",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_hosts.py::TestHosts::test_hosts_add",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 2,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_resourcecfg.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHosts::test_hosts_add"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: expected call not found.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/mock/mock.py:992"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "66d51a06fa61e19e26b141aae675efe8"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "9b63095df7a4bd2381febc2d13bc1b6d",
+     "66d51a06fa61e19e26b141aae675efe8"
+    ]
+   },
+   "runs": 20,
+   "seconds": 24.57,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_add-e388d1bb/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_add-e388d1bb",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_add-e388d1bb",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHosts::test_hosts_delete",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 3,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_resourcecfg.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHosts::test_hosts_delete"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: expected call not found.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/mock/mock.py:992"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "043ac801e9310286b61b359675ddc66d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "d876e37f1eb7c8c329f8e3b2034e5451",
+     "043ac801e9310286b61b359675ddc66d"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.37,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_delete-617ef644/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_delete-617ef644",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_delete-617ef644",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 4,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_resourcecfg.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: expected call not found.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/mock/mock.py:992"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "754c73d456f990fd3d4d8f5a1616dc38"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "32538ade41f2e0b4ea64d82ada618d1b",
+     "754c73d456f990fd3d4d8f5a1616dc38"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.16,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_delete_with_obj-4ef35e6f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_delete_with_obj-4ef35e6f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_delete_with_obj-4ef35e6f",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHosts::test_hosts_list",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 1,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_resourcecfg.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHosts::test_hosts_list"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ConnectionError",
+    "call",
+    "requests.exceptions.ConnectionError: Connection refused by Responses - the call doesn't match any registered mock.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/responses/__init__.py:1140"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "9dc9a5c521e52162cc0548610bb95a3d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "time",
+    "description": "event #3: [time] time.time @ <site>/requests/cookies.py:137 = 4000  <>  [random] random.state @ <end> = e71c85f081d414143b0ab63e6df2534a",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:137",
+     "v": "4000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "e71c85f081d414143b0ab63e6df2534a"
+    },
+    "fingerprints": [
+     "ea7a58082ad25b9bb042fe2895675a50",
+     "9dc9a5c521e52162cc0548610bb95a3d"
+    ]
+   },
+   "runs": 20,
+   "seconds": 24.51,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_list-fc3b1240/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_list-fc3b1240",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_list-fc3b1240",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_hosts.py::TestHosts::test_hosts_not_exist",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 5,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_resourcecfg.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ConnectionError",
+    "call",
+    "requests.exceptions.ConnectionError: Connection refused by Responses - the call doesn't match any registered mock.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/responses/__init__.py:1140"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b6115def89dcda3c1915c667ad5ca963"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "time",
+    "description": "event #3: [time] time.time @ <site>/requests/cookies.py:137 = 4000  <>  [random] random.state @ <end> = 6e2944796504a3760112c7608c659403",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:137",
+     "v": "4000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "6e2944796504a3760112c7608c659403"
+    },
+    "fingerprints": [
+     "cc16ffebec96366ffa2ed6304f707e20",
+     "b6115def89dcda3c1915c667ad5ca963"
+    ]
+   },
+   "runs": 17,
+   "seconds": 20.98,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_not_exist-c53c77fc/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_not_exist-c53c77fc",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_hosts_not_exist-c53c77fc",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "brittle",
+   "prefix_length": 4,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: expected call not found.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/mock/mock.py:992"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6ef3d6bd5ca315fec725db273eca71b9"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "49407a4afb39af0585d9ad39c0e57f83",
+     "6ef3d6bd5ca315fec725db273eca71b9"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.82,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_add-9725e4e6/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_add-9725e4e6",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_add-9725e4e6",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "brittle",
+   "prefix_length": 3,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ConnectionError",
+    "call",
+    "requests.exceptions.ConnectionError: Connection refused by Responses - the call doesn't match any registered mock.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/responses/__init__.py:1140"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "83fe47ff3b7eb51ddde221d8e0e64d77"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "time",
+    "description": "event #3: [time] time.time @ <site>/requests/cookies.py:137 = 4000  <>  [random] random.state @ <end> = c208201f505fac1d56694bc50c4ac46b",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:137",
+     "v": "4000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "c208201f505fac1d56694bc50c4ac46b"
+    },
+    "fingerprints": [
+     "8c000d74d0ad091000e3619a2b3a66ad",
+     "83fe47ff3b7eb51ddde221d8e0e64d77"
+    ]
+   },
+   "runs": 20,
+   "seconds": 24.71,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_building_line-13b1f4a3/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_building_line-13b1f4a3",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_building_line-13b1f4a3",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "brittle",
+   "prefix_length": 1,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: expected call not found.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/mock/mock.py:992"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "28be919d41f23a9bb9b1090eba371eed"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "58641e4bb9d7e02834e006145cd48252",
+     "28be919d41f23a9bb9b1090eba371eed"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.11,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_delete-965b51a2/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_delete-965b51a2",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_delete-965b51a2",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "brittle",
+   "prefix_length": 6,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ConnectionError",
+    "call",
+    "requests.exceptions.ConnectionError: Connection refused by Responses - the call doesn't match any registered mock.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/responses/__init__.py:1140"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6433cb80ce7d19c9657d411c230c8121"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "time",
+    "description": "event #3: [time] time.time @ <site>/requests/cookies.py:137 = 4000  <>  [random] random.state @ <end> = b03e4303ff55d0cd7fdfe47fd534291e",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:137",
+     "v": "4000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "b03e4303ff55d0cd7fdfe47fd534291e"
+    },
+    "fingerprints": [
+     "e248bda6ec25c592784bfc9cdb6b5e4e",
+     "6433cb80ce7d19c9657d411c230c8121"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.25,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_get_one-91f9aab7/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_get_one-91f9aab7",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_get_one-91f9aab7",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "brittle",
+   "prefix_length": 2,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ConnectionError",
+    "call",
+    "requests.exceptions.ConnectionError: Connection refused by Responses - the call doesn't match any registered mock.",
+    "/tmp/work/venvs/idoft-centreon-sdk-python/lib/python3.9/site-packages/responses/__init__.py:1140"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "3544338f860015f8d687b38c9265286e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "time",
+    "description": "event #3: [time] time.time @ <site>/requests/cookies.py:137 = 4000  <>  [random] random.state @ <end> = 136a3eab6bf460a2665025ac503119cf",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/requests/cookies.py:137",
+     "v": "4000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "136a3eab6bf460a2665025ac503119cf"
+    },
+    "fingerprints": [
+     "fe5a326e03ffc4cf1ce8d68bb3265330",
+     "3544338f860015f8d687b38c9265286e"
+    ]
+   },
+   "runs": 20,
+   "seconds": 24.41,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_not_exist-0307ec19/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_not_exist-0307ec19",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_not_exist-0307ec19",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "brittle",
+   "prefix_length": 5,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_hosts.py::TestConnect::test_connection"
+   ],
+   "order": [
+    "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "KeyError",
+    "call",
+    "KeyError: 'Missing parameters to load the Webservice'",
+    "/tmp/work/src/idoft-centreon-sdk-python/centreonapi/webservice/__init__.py:165"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "f5e64fbde4e9424568845a322c120418"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "d30f64fd3090141df5565edceaeca2f3",
+     "f5e64fbde4e9424568845a322c120418"
+    ]
+   },
+   "runs": 19,
+   "seconds": 23.0,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-centreon-sdk-python/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_setparam-6408b04c/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_setparam-6408b04c",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-centreon-sdk-python/detpy/bundles/test_resourcecfg_setparam-6408b04c",
+   "first_failing_seed": 2
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "tests/test_command.py::TestCommands::test_command_add",
+   "tests/test_command.py::TestCommands::test_command_delete",
+   "tests/test_command.py::TestCommands::test_command_setparam",
+   "tests/test_hosts.py::TestHost::test_host_addcontact",
+   "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+   "tests/test_hosts.py::TestHost::test_host_addparent",
+   "tests/test_hosts.py::TestHost::test_host_addtemplate",
+   "tests/test_hosts.py::TestHost::test_host_applytemplate",
+   "tests/test_hosts.py::TestHost::test_host_deletecontact",
+   "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+   "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+   "tests/test_hosts.py::TestHost::test_host_delmacro",
+   "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+   "tests/test_hosts.py::TestHost::test_host_disable",
+   "tests/test_hosts.py::TestHost::test_host_enable",
+   "tests/test_hosts.py::TestHost::test_host_setcontact",
+   "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+   "tests/test_hosts.py::TestHost::test_host_setinstance",
+   "tests/test_hosts.py::TestHost::test_host_setmacro",
+   "tests/test_hosts.py::TestHost::test_host_setparam",
+   "tests/test_hosts.py::TestHost::test_host_setparent",
+   "tests/test_hosts.py::TestHost::test_host_settemplate",
+   "tests/test_hosts.py::TestHosts::test_hosts_add",
+   "tests/test_hosts.py::TestHosts::test_hosts_delete",
+   "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+  ],
+  "time|random|<end>": [
+   "tests/test_command.py::TestCommands::test_command_list",
+   "tests/test_command.py::TestCommands::test_command_not_exist",
+   "tests/test_hosts.py::TestHost::test_host_getcontact",
+   "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+   "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+   "tests/test_hosts.py::TestHost::test_host_getmacro",
+   "tests/test_hosts.py::TestHost::test_host_getparents",
+   "tests/test_hosts.py::TestHost::test_host_gettemplate",
+   "tests/test_hosts.py::TestHosts::test_hosts_list",
+   "tests/test_hosts.py::TestHosts::test_hosts_not_exist",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist"
+  ]
+ },
+ "families_by_polluter": {
+  "tests/test_hosts.py::TestConnect::test_connection": [
+   "tests/test_command.py::TestCommands::test_command_add",
+   "tests/test_command.py::TestCommands::test_command_delete",
+   "tests/test_command.py::TestCommands::test_command_list",
+   "tests/test_command.py::TestCommands::test_command_not_exist",
+   "tests/test_command.py::TestCommands::test_command_setparam",
+   "tests/test_hosts.py::TestHost::test_host_addcontact",
+   "tests/test_hosts.py::TestHost::test_host_addcontactgroupt",
+   "tests/test_hosts.py::TestHost::test_host_addparent",
+   "tests/test_hosts.py::TestHost::test_host_addtemplate",
+   "tests/test_hosts.py::TestHost::test_host_applytemplate",
+   "tests/test_hosts.py::TestHost::test_host_deletecontact",
+   "tests/test_hosts.py::TestHost::test_host_deletecontactgroup",
+   "tests/test_hosts.py::TestHost::test_host_deletehostgroup",
+   "tests/test_hosts.py::TestHost::test_host_delmacro",
+   "tests/test_hosts.py::TestHost::test_host_deteletemplate",
+   "tests/test_hosts.py::TestHost::test_host_disable",
+   "tests/test_hosts.py::TestHost::test_host_enable",
+   "tests/test_hosts.py::TestHost::test_host_getcontact",
+   "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+   "tests/test_hosts.py::TestHost::test_host_gethostgroup",
+   "tests/test_hosts.py::TestHost::test_host_getmacro",
+   "tests/test_hosts.py::TestHost::test_host_getparents",
+   "tests/test_hosts.py::TestHost::test_host_gettemplate",
+   "tests/test_hosts.py::TestHost::test_host_setcontact",
+   "tests/test_hosts.py::TestHost::test_host_setcontactgroup",
+   "tests/test_hosts.py::TestHost::test_host_setinstance",
+   "tests/test_hosts.py::TestHost::test_host_setmacro",
+   "tests/test_hosts.py::TestHost::test_host_setparam",
+   "tests/test_hosts.py::TestHost::test_host_setparent",
+   "tests/test_hosts.py::TestHost::test_host_settemplate",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_add",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_building_line",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_delete",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_get_one",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_not_exist",
+   "tests/test_resourcecfg.py::TestResourceCFG::test_resourcecfg_setparam"
+  ],
+  "tests/test_resourcecfg.py::TestConnect::test_connection": [
+   "tests/test_hosts.py::TestHosts::test_hosts_add",
+   "tests/test_hosts.py::TestHosts::test_hosts_delete",
+   "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+   "tests/test_hosts.py::TestHosts::test_hosts_list",
+   "tests/test_hosts.py::TestHosts::test_hosts_not_exist"
+  ]
+ },
+ "collected": 44,
+ "seconds": 1095.73
+}

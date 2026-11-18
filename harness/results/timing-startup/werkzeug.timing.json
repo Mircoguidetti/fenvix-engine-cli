@@ -1,0 +1,45 @@
+{
+  "name": "werkzeug",
+  "kind": "popular",
+  "status": "ok",
+  "python": "3.13",
+  "serial_s": [
+    10.075606053999998,
+    9.302039464000003,
+    9.354994966999996
+  ],
+  "det_s": [
+    18.438279594,
+    11.42160513399999,
+    11.487913182
+  ],
+  "precompile_s": [
+    7.077,
+    0.451,
+    0.464
+  ],
+  "tests": 1016,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000008695",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 7763 64-Core Processor"
+  },
+  "startup_normal_s": [
+    0.25944990099999643,
+    0.26112508600000695,
+    0.2472522619999893
+  ],
+  "startup_det_s": [
+    0.9704163399999999,
+    0.9863130579999932,
+    0.9855828800000097
+  ],
+  "startup_cost_s": 0.7261329790000133,
+  "slowdown_pct": 22.799779396182807
+}

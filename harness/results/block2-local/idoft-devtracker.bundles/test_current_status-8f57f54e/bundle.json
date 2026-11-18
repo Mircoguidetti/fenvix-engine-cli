@@ -1,0 +1,75 @@
+{
+  "test": "devtracker/test_devtracker.py::test_current_status",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 19,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "devtracker/test_devtracker.py::test_full_report"
+  ],
+  "order": [
+    "devtracker/test_devtracker.py::test_current_status"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert '[+] You have...is project.\\n' == '[+] Status r...roject yet.\\n'",
+    "<scratch>/hw/src/idoft-devtracker/devtracker/test_devtracker.py:99"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "22ea5e018a1c8057ca5c212987c3be80"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = c3124761c51b5328f2036470de83c5c3  <>  [time] datetime.now @ devtracker/time_and_date_helpers.py:7 = 1000",
+    "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "c3124761c51b5328f2036470de83c5c3"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "time",
+      "o": "datetime.now",
+      "at": "devtracker/time_and_date_helpers.py:7",
+      "v": "1000"
+    },
+    "fingerprints": [
+      "2652ac79bd5b611f5e224cb8b8b48df6",
+      "22ea5e018a1c8057ca5c212987c3be80"
+    ]
+  },
+  "runs": 17,
+  "seconds": 18.09,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "<scratch>/hw/venvs/idoft-devtracker/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=<scratch>/hw/block2/idoft-devtracker/detpy/bundles/test_current_status-8f57f54e/order.txt -n 0",
+  "replay_command": "detpy replay <scratch>/hw/block2/idoft-devtracker/detpy/bundles/test_current_status-8f57f54e",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "<scratch>/hw/block2/idoft-devtracker/detpy/bundles/test_current_status-8f57f54e"
+}

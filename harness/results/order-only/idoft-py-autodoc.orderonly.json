@@ -1,0 +1,147 @@
+{
+  "name": "idoft-py-autodoc",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "examples/test_requests.py::TestUnittest::test_foo_bar": {
+      "config": "15",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "passed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "examples/test_unittest.py::TestUnittest::test_foo_bar": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "passed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response": {
+      "config": "2",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "examples/test_requests.py::TestUnittest::test_get": {
+      "config": "5",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "passed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators": {
+      "config": "6",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "examples/test_pytest.py::test_index": {
+      "config": "7",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "passed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "examples/test_unittest.py::TestUnittest::test_get": {
+      "config": "9",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "passed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar": {
+      "config": "fixed",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "examples/test_gen_each_case.py::TestUnittest::test_get": {
+      "config": "fixed",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "examples/test_gen_each_case.py::TestUnittest::test_post": {
+      "config": "fixed",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "examples/test_pytest.py::test_post": {
+      "config": "fixed",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "passed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "examples/test_requests.py::TestUnittest::test_post": {
+      "config": "fixed",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "passed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "examples/test_unittest.py::TestUnittest::test_post": {
+      "config": "fixed",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "passed+teardown-error": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_autodoc.py::TestAutodoc::test_create_document": {
+      "config": "fixed",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 15,
+  "order_alone": 15
+}

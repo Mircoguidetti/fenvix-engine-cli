@@ -1,0 +1,34 @@
+{
+  "name": "attrs",
+  "kind": "popular",
+  "status": "ok",
+  "python": "3.13",
+  "serial_s": [
+    8.743142892999991,
+    7.5610958920000115,
+    7.490117939000001
+  ],
+  "det_s": [
+    15.756535737999997,
+    9.611905235999998,
+    9.528517446999999
+  ],
+  "precompile_s": [
+    6.325,
+    0.31,
+    0.306
+  ],
+  "tests": 1412,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000008431",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "slowdown_pct": 27.123175969370237
+}

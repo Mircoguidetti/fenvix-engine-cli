@@ -193,11 +193,25 @@ def python_candidates(p: Prepared, repo: dict, default: str) -> list[str]:
     return ["3.12", "3.13"]
 
 
+_COLLECTED = re.compile(r"(?:^|\s)(\d+)(?:/\d+)? tests? collected|collected (\d+) items?")
+
+
 def _collect(py: str, src: Path, env: dict, args: list) -> tuple[bool, int, str]:
-    code, out, _, _ = sh([py, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider", "-p", "no:randomly",
-                          *args], cwd=src, env=env, timeout=600)
-    n = sum(1 for line in out.splitlines() if "::" in line and not line.startswith(("ERROR", "FAILED")))
-    return code == 0 and n > 0, n, out
+    """Collection check with the project's own configuration (addopts included).
+
+    The count comes from pytest's summary line, so it does not depend on the
+    verbosity the project sets in addopts (-v, --verbose). A non-zero exit with a
+    clean collection is accepted: plugins configured in addopts may fail the
+    session after collection (e.g. --cov-fail-under). Collection errors are not.
+    """
+    code, out, _, _ = sh([py, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider", *args],
+                         cwd=src, env=env, timeout=600)
+    n = 0
+    for m in _COLLECTED.finditer(out):
+        n = max(n, int(m.group(1) or m.group(2)))
+    n = max(n, sum(1 for line in out.splitlines() if "::" in line and not line.startswith(("ERROR", "FAILED"))))
+    errors = "errors during collection" in out or re.search(r"\d+ errors? in [\d.]+s", out) is not None
+    return (code == 0 or (n > 0 and not errors and code not in (2, 3, 4))) and n > 0, n, out
 
 
 def prepare(repo: dict, work: Path, wheel: str, default_python: str, max_first_run: float) -> Prepared:
@@ -250,11 +264,10 @@ def prepare(repo: dict, work: Path, wheel: str, default_python: str, max_first_r
             marker.write_text(json.dumps({"python_version": pyver, "install": p.install_cmd}))
         env = clean_env(str(py), p.env)
         base_args = list(repo.get("pytest_args", []))
-        for extra in ([], ["-o", "addopts="]):
-            ok, n, out = _collect(str(py), src, env, base_args + extra)
-            if ok:
-                p.pytest_args, p.collected = base_args + extra, n
-                break
+        # The project's addopts stay in force (no "-o addopts=" fallback: review R-001).
+        ok, n, out = _collect(str(py), src, env, base_args)
+        if ok:
+            p.pytest_args, p.collected = base_args, n
         else:
             last = f"collect with python {pyver}: " + out[-500:]
             (logs / f"{p.name}.collect.log").write_text(out)
@@ -307,7 +320,10 @@ def run_pytest(p: Prepared, rundir: Path, mode: str, index: int, timeout: float,
         if p.xdist:
             cmd += ["-n", "2"]
     elif mode == "serial":
-        cmd += ["-p", "no:randomly"]
+        # Fixed file order without disabling the plugin: the project's addopts may
+        # name randomly options (review R-001).
+        # pytest-randomly is installed in every harness venv.
+        cmd += ["--randomly-dont-reorganize", "--randomly-dont-reset-seed"]
         if p.has_xdist:
             cmd += ["-n", "0"]
     else:
@@ -447,9 +463,213 @@ def timing_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
            "serial_s": [r.duration for r in normal], "det_s": [r.duration for r in det],
            "precompile_s": [r.precompile_s for r in det],
            "tests": len(normal[0].outcomes) if normal else 0, "runner": runner_info()}
+    res.update(startup_cost(p, rundir, args.timing_runs))
     m_n, m_d = statistics.median(res["serial_s"]), statistics.median(res["det_s"])
     res["slowdown_pct"] = (m_d / m_n - 1) * 100 if m_n > 0 else None
     (outdir / f"{p.name}.timing.json").write_text(json.dumps(res, indent=2))
+    return res
+
+
+def startup_cost(p: Prepared, rundir: Path, runs: int) -> dict:
+    """Fixed cost of a pytest start with and without --det, in the repository's venv.
+
+    A one-test suite in an empty directory (its own rootdir): what is left of the
+    --det run time is start-up (re-exec, incremental bytecode check of the venv,
+    plugin installation). Measured after the repository runs (warm caches), runs
+    interleaved; the medians are reported.
+    """
+    d = rundir / "startup"
+    shutil.rmtree(d, ignore_errors=True)
+    d.mkdir(parents=True)
+    (d / "pytest.ini").write_text("[pytest]\n")
+    (d / "test_one.py").write_text("def test_one():\n    assert True\n")
+    env = clean_env(p.python, p.env)
+    base = [p.python, "-m", "pytest", "-q", "-p", "no:cacheprovider"]
+    normal, det = [], []
+    for _ in range(runs):
+        normal.append(sh(base, cwd=d, env=env, timeout=600)[2])
+        det.append(sh(base + ["--det"], cwd=d, env=env, timeout=600)[2])
+    return {"startup_normal_s": normal, "startup_det_s": det,
+            "startup_cost_s": statistics.median(det) - statistics.median(normal)}
+
+
+def order_only_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
+    """P-009 item 5: are the reproduced tests reproduced by the order alone?
+
+    For every reproduced test, the --det configuration that reproduced it (fixed
+    order or --det-seed=S) is run again with every other Level 0 control disabled
+    (--det-disable=seeds,time,fs,net,hashseed,bytecode), up to --confirm times; the
+    runs of one configuration stop early once every test of that configuration has
+    passed at least once (it can no longer fail confirm/confirm).
+    """
+    targets = json.loads(Path(args.targets).read_text()).get(p.name, {})
+    rundir = work / "orderonly" / p.name
+    shutil.rmtree(rundir, ignore_errors=True)
+    rundir.mkdir(parents=True)
+    disable = "seeds,time,fs,net,hashseed,bytecode"
+    tests = {}
+    for config, nodeids in sorted(targets.items()):
+        seed = None if config == "fixed" else int(config)
+        counts = {nid: collections.Counter() for nid in nodeids}
+        n = 0
+        for i in range(args.confirm):
+            r = run_pytest(p, rundir, "seed" if seed is not None else "det", i, args.run_timeout, seed=seed,
+                           disable=disable)
+            n += 1
+            for nid in nodeids:
+                counts[nid][r.outcomes.get(nid, "missing")] += 1
+            log(f"{p.name}: order-only {config} #{i} {r.duration:.1f}s exit={r.exit_code}")
+            if r.timed_out or all(sum(v for k, v in c.items() if not is_fail(k)) for c in counts.values()):
+                break
+        for nid in nodeids:
+            fails = sum(v for k, v in counts[nid].items() if is_fail(k))
+            tests[nid] = {"config": config, "runs": n, "fails": fails, "outcomes": dict(counts[nid]),
+                          "order_alone": fails == n == args.confirm}
+    res = {"name": p.name, "kind": p.kind, "status": "ok", "python": p.python_version, "disable": disable,
+           "confirm": args.confirm, "tests": tests,
+           "reproduced": len(tests), "order_alone": sum(t["order_alone"] for t in tests.values())}
+    (outdir / f"{p.name}.orderonly.json").write_text(json.dumps(res, indent=2))
+    return res
+
+
+def baseline_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
+    """P-009 item 7: --runs baseline runs (random order, xdist when available) plus
+    the exact package versions of the venv, to compare runners."""
+    rundir = work / "baseline" / p.name
+    shutil.rmtree(rundir, ignore_errors=True)
+    rundir.mkdir(parents=True)
+    runs = []
+    for i in range(args.runs):
+        r = run_pytest(p, rundir, "normal", i, args.run_timeout)
+        runs.append(r)
+        log(f"{p.name}: baseline #{i} {r.duration:.1f}s exit={r.exit_code}")
+    ids = sorted(set().union(*(r.outcomes.keys() for r in runs))) if runs else []
+    per_test = {nid: dict(collections.Counter(r.outcomes.get(nid, "missing") for r in runs)) for nid in ids}
+    known = {k: {nid: per_test[nid] for nid in ids if nid == k or nid.startswith(k + "[")} for k in p.known_flaky}
+    unstable = {nid: c for nid, c in per_test.items() if len(c) > 1}
+    freeze = sh(["uv", "pip", "freeze", "--python", p.python], timeout=120)[1]
+    # The order pytest-randomly gives each seed, and the same seeds run serially
+    # (no xdist): separates "different order" from "different execution".
+    env = clean_env(p.python, p.env)
+    orders, serial = {}, {}
+    for i in range(args.runs):
+        seed = 1000 + i
+        out = sh([p.python, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider", *p.pytest_args,
+                  f"--randomly-seed={seed}"] + (["-n", "0"] if p.has_xdist else []), cwd=p.src, env=env, timeout=600)[1]
+        orders[seed] = [line for line in out.splitlines() if "::" in line]
+        j = rundir / f"serial_{seed}.json"
+        sh([p.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", f"--det-outcomes={j}", *p.pytest_args,
+            f"--randomly-seed={seed}"] + (["-n", "0"] if p.has_xdist else []), cwd=p.src, env=env, timeout=args.run_timeout)
+        try:
+            oc = json.loads(j.read_text())["outcomes"]
+            serial[seed] = sorted(n for n, o in oc.items() if is_fail(o))
+        except Exception:
+            serial[seed] = None
+    res = {"name": p.name, "kind": p.kind, "status": "ok", "python": p.python_version, "xdist": p.xdist,
+           "install": p.install_cmd, "commit": p.commit, "runs": len(runs),
+           "durations_s": [r.duration for r in runs], "exit_codes": [r.exit_code for r in runs],
+           "tests": len(ids), "unstable": unstable, "known_flaky": known, "freeze": freeze.splitlines(),
+           "orders": orders, "serial_failures": serial,
+           "runner": runner_info()}
+    (outdir / f"{p.name}.baseline.json").write_text(json.dumps(res, indent=2))
+    for r in runs[:2]:
+        log_file = rundir / f"normal_{r.index}.log"
+        if log_file.exists():
+            shutil.copy2(log_file, outdir / f"{p.name}.baseline_{r.index}.log")
+    return res
+
+
+def block2_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
+    """Block 2 measurement on one repository (P-010 items 3 and 4).
+
+    detpy:    ``detpy explore`` with seeds 1..--seeds (whole suite per seed), then
+              ``repro`` (minimise, bundle, --confirm replays) for every Block 1
+              target that failed under some seed.
+    randomly: the free alternative, no detpy: ``pytest --randomly-seed=S`` serially
+              for the same seeds; every target that failed is re-run --confirm times
+              with its first failing seed (same command, nothing else controlled).
+    Both record the seconds of every run, so the cost of each K can be computed.
+    """
+    from detpy import repro as R
+
+    targets = json.loads(Path(args.block2_targets).read_text()).get(p.name, [])
+    rundir = work / "block2" / p.name / args.tool
+    shutil.rmtree(rundir, ignore_errors=True)
+    rundir.mkdir(parents=True)
+    env = clean_env(p.python, p.env)
+    serial = ["-n", "0"] if p.has_xdist else []
+    t0 = time.monotonic()
+    res = {"name": p.name, "kind": p.kind, "status": "ok", "python": p.python_version, "tool": args.tool,
+           "seeds": args.seeds, "confirm": args.confirm, "targets": targets, "runner": runner_info()}
+    if args.tool == "detpy":
+        runner = R.Runner(cwd=Path(p.src), workdir=rundir / ".work", python=p.python,
+                          pytest_args=[*p.pytest_args, *serial], timeout=args.run_timeout, env=env, keep_traces=False)
+        summary = R.explore(runner, budget_s=args.repo_budget, max_seeds=args.seeds, out_dir=rundir,
+                            confirm=args.confirm, targets=set(targets), max_runs=args.max_repro_runs)
+        res.update({k: summary[k] for k in ("seeds_log", "always_failing", "flaky_failing", "bundles",
+                                            "not_reproduced_budget", "families_by_divergence",
+                                            "families_by_polluter", "collected")})
+        res["seconds"] = summary["seconds"]
+        bdir = rundir / "bundles"
+        if bdir.exists():
+            dest = outdir / f"{p.name}.bundles"
+            shutil.rmtree(dest, ignore_errors=True)
+            shutil.copytree(bdir, dest, ignore=shutil.ignore_patterns("*.jsonl"))
+    elif args.tool == "standalone":
+        # The developer's command: `detpy repro <target>` per target, with no
+        # hint from an exploration (search from the fixed order, seeds 1..N).
+        runner = R.Runner(cwd=Path(p.src), workdir=rundir / ".work", python=p.python,
+                          pytest_args=[*p.pytest_args, *serial], timeout=args.run_timeout, env=env, keep_traces=False)
+        bundles = []
+        for t in targets:
+            if time.monotonic() - t0 > args.repo_budget:
+                bundles.append({"test": t, "status": "budget"})
+                continue
+            b = R.reproduce(runner, t, seeds=args.seeds, confirm=args.confirm, max_runs=args.max_repro_runs,
+                            out_dir=rundir / "bundles")
+            bundles.append(b)
+            runner.drop_traces()
+        res.update(bundles=bundles, seconds=round(time.monotonic() - t0, 2))
+    else:
+        seeds_log, first_fail = [], {}
+        for s in range(1, args.seeds + 1):
+            if time.monotonic() - t0 > args.repo_budget:
+                break
+            out = rundir / f"seed-{s}.json"
+            cmd = [p.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", f"--det-outcomes={out}",
+                   *p.pytest_args, f"--randomly-seed={s}", *serial]
+            code, _, dur, to = sh(cmd, cwd=p.src, env=env, timeout=args.run_timeout)
+            oc = json.loads(out.read_text())["outcomes"] if out.exists() else {}
+            failing = sorted(n for n, o in oc.items() if is_fail(o))
+            seeds_log.append({"seed": s, "seconds": round(dur, 3), "tests": len(oc), "failing": failing,
+                              "exit": code, "timed_out": to})
+            for n in failing:
+                first_fail.setdefault(n, s)
+            log(f"{p.name}: randomly seed {s} {dur:.1f}s {len(failing)} failing")
+        replays = {}
+        by_seed = collections.defaultdict(list)
+        for n in targets:
+            if n in first_fail:
+                by_seed[first_fail[n]].append(n)
+        for s, nids in sorted(by_seed.items()):
+            counts = {n: 0 for n in nids}
+            secs = []
+            for i in range(args.confirm):
+                if time.monotonic() - t0 > args.repo_budget:
+                    break
+                out = rundir / f"replay-{s}-{i}.json"
+                cmd = [p.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", f"--det-outcomes={out}",
+                       *p.pytest_args, f"--randomly-seed={s}", *serial]
+                code, _, dur, to = sh(cmd, cwd=p.src, env=env, timeout=args.run_timeout)
+                secs.append(round(dur, 3))
+                oc = json.loads(out.read_text())["outcomes"] if out.exists() else {}
+                for n in nids:
+                    counts[n] += is_fail(oc.get(n))
+            for n in nids:
+                replays[n] = {"seed": s, "runs": len(secs), "fails": counts[n], "seconds": secs}
+        res.update(seeds_log=seeds_log, first_fail={n: first_fail[n] for n in first_fail}, replays=replays,
+                   seconds=round(time.monotonic() - t0, 2))
+    (outdir / f"{p.name}.{args.tool}.block2.json").write_text(json.dumps(res, indent=1))
     return res
 
 
@@ -765,6 +985,95 @@ SUM_KEYS = ("tests", "unstable_baseline", "unstable_det", "became_stable", "outc
             "known_reproduced", "broken_by_det", "broken_always")
 
 
+def _hist_of(text: str) -> dict:
+    return {k: int(v) for k, v in (kv.split("=") for kv in text.split(";") if "=" in kv)}
+
+
+def csv_metrics(outdir: Path, name: str) -> dict:
+    """Metrics recomputed from <repo>.csv (P-008 definitions).
+
+    * id-unstable: a test absent from some completed baseline runs; its id is built
+      from run-dependent values (time, random). It is not a flaky test.
+    * missing under --det: ran in every baseline run, absent from every --det run.
+    * only under --det: absent from every baseline run, present in --det runs (the
+      other side of an id that differs between modes).
+    """
+    m = collections.Counter()
+    by_cat = collections.defaultdict(collections.Counter)
+    by_src = collections.Counter()
+    path = outdir / f"{name}.csv"
+    if not path.exists():
+        return {"counts": m, "by_category": by_cat, "by_source": by_src}
+    for r in csv.DictReader(open(path)):
+        b, d = _hist_of(r["baseline_outcomes"]), _hist_of(r["det_outcomes"])
+        if r["baseline_unstable"] == "True" and "missing" in b:
+            m["id_unstable"] += 1
+            continue
+        if "missing" not in b and set(d) == {"missing"}:
+            m["missing_under_det"] += 1
+        if set(b) == {"missing"} and "missing" not in d:
+            m["only_under_det"] += 1
+        if r["baseline_unstable"] == "True":
+            m["unstable_strict"] += 1
+            cat = r.get("idoft_category") or "not in IDoFT"
+            by_cat[cat]["unstable"] += 1
+            if r["reproduced"] == "True":
+                m["reproduced_strict"] += 1
+                by_cat[cat]["reproduced"] += 1
+                by_src[r.get("pass_fail_reason") or "none"] += 1
+        if r.get("broken_by_det") == "True":
+            m["broken"] += 1
+    return {"counts": m, "by_category": by_cat, "by_source": by_src}
+
+
+def _runner_desc(r: dict) -> str:
+    """One runner: CPU model, vCPUs and image (each runner of a pass can differ)."""
+    image = " ".join(x for x in (r.get("ImageOS") or r.get("platform", ""), r.get("ImageVersion", "")) if x)
+    return f"{r.get('cpu_model') or 'unknown CPU'}, {r.get('cpus', '?')} vCPU, {image or 'unknown image'}"
+
+
+def timing_section(timings: list[dict], meta: dict) -> list[str]:
+    """Lines of the Timing section (quiet timing pass). Every runner is described
+    on its own row: CPU, vCPUs and image may differ between runners (review N5)."""
+    med = statistics.median
+    L: list[str] = []
+    sl = [t["slowdown_pct"] for t in timings if t.get("slowdown_pct") is not None]
+    runners = collections.Counter(_runner_desc(t.get("runner") or {}) for t in timings)
+    hosted = any((t.get("runner") or {}).get("RUNNER_ENVIRONMENT") for t in timings)
+    shared = "GitHub-hosted runner" if hosted else "local host"
+    desc = "; ".join(f"{c} ({n} {'repository' if n == 1 else 'repositories'})" for c, n in runners.most_common())
+    L.append(f"Quiet timing pass: {len(timings)} repositories, one per {shared}, {meta.get('timing_runs', 3)} serial "
+             f"fixed-order normal runs vs {meta.get('timing_runs', 3)} `--det` runs interleaved on the same machine; "
+             f"median per repository. Every ratio compares two runs on the same runner, but the runners differ: "
+             f"{len(runners)} distinct {'runner' if len(runners) == 1 else 'runners'} (CPU, vCPUs, image) — {desc}. "
+             f"Labelled **DECLARED-NOISY**: hosted runners are virtual machines on shared hardware.\n")
+    L.append(f"**Slowdown of `--det` (MEASURED, DECLARED-NOISY): median {_fmt(med(sl) if sl else None)}%**, "
+             f"min {_fmt(min(sl) if sl else None)}%, max {_fmt(max(sl) if sl else None)}%.\n")
+    big = [t["slowdown_pct"] for t in timings if t.get("slowdown_pct") is not None and med(t["serial_s"]) >= 1.0]
+    small = [t["name"] for t in timings if t.get("slowdown_pct") is not None and med(t["serial_s"]) < 1.0]
+    startup = [t["startup_cost_s"] for t in timings if t.get("startup_cost_s") is not None]
+    extra = [med(t["det_s"]) - med(t["serial_s"]) for t in timings]
+    L.append(f"* Without the suites that run in under 1 s ({', '.join(small) or 'none'}): median "
+             f"{_fmt(med(big) if big else None)}% over {len(big)} repositories (MEASURED, DECLARED-NOISY).")
+    L.append(f"* Absolute extra time of `--det` per suite run: median {_fmt(med(extra) if extra else None, 2)} s "
+             f"(MEASURED, DECLARED-NOISY)." + (
+                 f" Fixed start-up cost (one-test suite, same venv, warm caches): median "
+                 f"{_fmt(med(startup), 2)} s, min {_fmt(min(startup), 2)} s, max {_fmt(max(startup), 2)} s "
+                 f"(MEASURED, DECLARED-NOISY)." if startup else " Fixed start-up cost: not measured in this pass "
+                 "(UNKNOWN)."))
+    L.append("")
+    L.append("| repo | tests | runner (CPU, vCPUs, image) | normal serial s (median) | --det s (median) | slowdown % | "
+             "start-up cost s | precompile s (per run) |")
+    L.append("|---|---:|---|---:|---:|---:|---:|---|")
+    for t in timings:
+        pre = ", ".join(_fmt(v, 2) for v in t.get("precompile_s", []))
+        L.append(f"| {t['name']} | {t['tests']} | {_runner_desc(t.get('runner') or {})} | {_fmt(med(t['serial_s']), 2)} | "
+                 f"{_fmt(med(t['det_s']), 2)} | {_fmt(t.get('slowdown_pct'))} | "
+                 f"{_fmt(t.get('startup_cost_s'), 2)} | {pre} |")
+    L.append("")
+    return L
+
+
 def write_report(outdir: Path, meta: dict) -> Path:
     summaries = [json.loads(f.read_text()) for f in sorted(outdir.glob("*.summary.json"))]
     timings = [json.loads(f.read_text()) for f in sorted(outdir.glob("*.timing.json"))]
@@ -788,6 +1097,19 @@ def write_report(outdir: Path, meta: dict) -> Path:
         seeds += x["seeds_needed"]
     T = tot["all"]
     med = statistics.median
+    strict = {kind: collections.Counter() for kind in ("all", "flaky", "popular")}
+    by_cat = collections.defaultdict(collections.Counter)
+    by_src = collections.Counter()
+    per_repo_csv = {}
+    for x in ok:
+        cm = csv_metrics(outdir, x["name"])
+        per_repo_csv[x["name"]] = cm["counts"]
+        for kind in {"all", x["kind"]}:
+            strict[kind].update(cm["counts"])
+        for k, v in cm["by_category"].items():
+            by_cat[k if x["kind"] == "flaky" else "popular pool (no IDoFT label)"].update(v)
+        by_src.update(cm["by_source"])
+    S_ = strict["all"]
     L = [f"# detpy Level 0: measurement report (`{meta.get('set')}`)\n",
          f"Generated {meta.get('date')} with detpy {meta.get('detpy')}. Per repository: {meta.get('runs')} baseline runs "
          f"(random order from pytest-randomly with a different seed per run, pytest-xdist `-n 2` where the suite "
@@ -796,8 +1118,10 @@ def write_report(outdir: Path, meta: dict) -> Path:
          f"{meta.get('confirm')} confirmation of the seed that makes it fail. Executor: {meta.get('executor', 'local')}."
          f" Labels: MEASURED (by this harness), ESTIMATED, DECLARED (with source), UNKNOWN; NOISY = shared host.\n",
          "## Main metric\n",
-         f"**Baseline-unstable tests made reproducible: {T['reproduced']}/{T['unstable_baseline']} = "
-         f"{_pct(T['reproduced'], T['unstable_baseline'])}** (MEASURED). A test counts as reproduced when some "
+         f"**Baseline-unstable tests made reproducible: {S_['reproduced_strict']}/{S_['unstable_strict']} = "
+         f"{_pct(S_['reproduced_strict'], S_['unstable_strict'])}** (MEASURED). Tests whose id changes between runs "
+         f"(ids built from time or random values: {S_['id_unstable']}) are not flaky tests and are excluded; "
+         f"including them the figure was {T['reproduced']}/{T['unstable_baseline']}. A test counts as reproduced when some "
          f"`--det-seed` (or the fixed `--det` order) makes it fail {meta.get('confirm')} times out of "
          f"{meta.get('confirm')} AND some `--det` configuration makes it pass; a test that fails under every `--det` "
          f"configuration is broken by Level 0, not reproduced.\n",
@@ -805,13 +1129,31 @@ def write_report(outdir: Path, meta: dict) -> Path:
          "always fail under --det | fail sometimes under --det |",
          "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for kind, label in (("flaky", "IDoFT dataset"), ("popular", "popular"), ("all", "total")):
-        t = tot[kind]
+        t, st = tot[kind], strict[kind]
         n = len([x for x in ok if kind == "all" or x["kind"] == kind])
         if n:
-            L.append(f"| {label} | {n} | {t['tests']} | {t['unstable_baseline']} | {t['reproduced']} | "
-                     f"{_pct(t['reproduced'], t['unstable_baseline'])} | {t['never_fails_under_det']} | "
+            L.append(f"| {label} | {n} | {t['tests']} | {st['unstable_strict']} | {st['reproduced_strict']} | "
+                     f"{_pct(st['reproduced_strict'], st['unstable_strict'])} | "
+                     f"{t['never_fails_under_det'] - st['id_unstable']} | "
                      f"{t['always_fails_under_det']} | {t['fails_sometimes_under_det']} |")
     L.append("")
+    L.append(f"Tests with unstable ids (excluded above, MEASURED): {S_['id_unstable']}"
+             + (" — " + ", ".join(f"{k}: {v['id_unstable']}" for k, v in per_repo_csv.items() if v['id_unstable'])
+                if S_['id_unstable'] else "") + ".\n")
+    if by_cat:
+        L.append("**Reproduced share by IDoFT category** (MEASURED). Most IDoFT flaky tests are order-dependent and "
+                 "were found by order shuffling, so reproducing them with a seeded order is the easy part; the "
+                 "NOD/NIO rows and the popular pool are the hard part.\n")
+        L.append("| category | unstable in baseline | reproduced | % |")
+        L.append("|---|---:|---:|---:|")
+        for k in sorted(by_cat, key=lambda c: (c.startswith("popular"), c == "not in IDoFT", c)):
+            v = by_cat[k]
+            L.append(f"| {k} | {v['unstable']} | {v['reproduced']} | {_pct(v['reproduced'], v['unstable'])} |")
+        L.append("")
+    if by_src:
+        L.append("**Reproduced tests by first diverging source** (passing vs failing `--det` fingerprint, MEASURED): "
+                 + ", ".join(f"`{k}` {v} ({_pct(v, sum(by_src.values()))})" for k, v in by_src.most_common())
+                 + ".\n")
     if seeds:
         b = collections.Counter(_bucket(v) for v in seeds)
         L.append("**(a, b) Seeds explored before the reproducing seed was found** (reproduced tests, MEASURED): "
@@ -827,6 +1169,30 @@ def write_report(outdir: Path, meta: dict) -> Path:
         L.append("|---:|---:|---:|---:|")
         L.append(f"| {tf['known_flaky']} | {tf['known_present']} | {tf['known_unstable_baseline']} | "
                  f"{tf['known_reproduced']} |\n")
+    L.append("## Tests that do not run under --det\n")
+    L.append(f"A test that runs in every baseline run but in no `--det` run is worse than a false failure. "
+             f"**{S_['missing_under_det']} tests** (MEASURED)"
+             + (" — " + ", ".join(f"{k}: {v['missing_under_det']}" for k, v in per_repo_csv.items()
+                                  if v['missing_under_det']) if S_['missing_under_det'] else "")
+             + f". Tests present only under `--det` (an id that differs between modes): {S_['only_under_det']}."
+             + (f" Before the L0 fixes: **{before.get('missing_under_det')}** (MEASURED)." if before and
+                'missing_under_det' in before else "") + "\n")
+    ba = json.loads((outdir / "before-after.json").read_text()) if (outdir / "before-after.json").exists() else None
+    if ba and ba.get("rows"):
+        t = ba["totals"]
+        L.append("## Before / after the Level 0 fixes (MEASURED)\n")
+        L.append(f"The repositories affected by L0 bugs were re-measured with the same protocol after the fixes"
+                 f"{' (' + ba['run'] + ')' if ba.get('run') else ''}. Totals: broken by `--det` "
+                 f"**{t['broken_before']} → {t['broken_after']}**; tests missing under `--det` "
+                 f"**{t['missing_under_det_before']} → {t['missing_under_det_after']}**.\n")
+        L.append("| repo | broken before | broken after | missing before | missing after | unstable before | "
+                 "unstable after | reproduced before | reproduced after |")
+        L.append("|---|---:|---:|---:|---:|---:|---:|---:|---:|")
+        for r in ba["rows"]:
+            L.append(f"| {r['repo']} | {r['broken_before']} | {r['broken_after']} | {r['missing_under_det_before']} | "
+                     f"{r['missing_under_det_after']} | {r['unstable_strict_before']} | {r['unstable_strict_after']} | "
+                     f"{r['reproduced_strict_before']} | {r['reproduced_strict_after']} |")
+        L.append("")
     L.append("## Tests broken by Level 0\n")
     L.append(f"A test is *broken by `--det`* when it fails in at least one fixed-order `--det` run but in at most one "
              f"baseline run (and less often than under `--det`). These are false failures. **{T['broken_by_det']} tests** "
@@ -845,23 +1211,7 @@ def write_report(outdir: Path, meta: dict) -> Path:
         L.append("")
     L.append("## Timing\n")
     if timings:
-        sl = [t["slowdown_pct"] for t in timings if t.get("slowdown_pct") is not None]
-        runner = timings[0].get("runner", {})
-        rdesc = ", ".join(f"{k}={v}" for k, v in runner.items())
-        shared = "GitHub-hosted runner, one repository per runner" if runner.get("RUNNER_ENVIRONMENT") else "local host"
-        L.append(f"Quiet timing pass: {len(timings)} repositories, one per {shared}, {meta.get('timing_runs', 3)} serial "
-                 f"fixed-order normal runs vs {meta.get('timing_runs', 3)} `--det` runs interleaved on the same machine; "
-                 f"median per repository. Runner: {rdesc}. Labelled **DECLARED-NOISY**: hosted runners are virtual "
-                 f"machines on shared hardware.\n")
-        L.append(f"**Slowdown of `--det` (MEASURED, DECLARED-NOISY): median {_fmt(med(sl) if sl else None)}%**, "
-                 f"min {_fmt(min(sl) if sl else None)}%, max {_fmt(max(sl) if sl else None)}%.\n")
-        L.append("| repo | tests | normal serial s (median) | --det s (median) | slowdown % | precompile s (per run) |")
-        L.append("|---|---:|---:|---:|---:|---|")
-        for t in timings:
-            pre = ", ".join(_fmt(v, 2) for v in t.get("precompile_s", []))
-            L.append(f"| {t['name']} | {t['tests']} | {_fmt(med(t['serial_s']), 2)} | {_fmt(med(t['det_s']), 2)} | "
-                     f"{_fmt(t.get('slowdown_pct'))} | {pre} |")
-        L.append("")
+        L.extend(timing_section(timings, meta))
     else:
         L.append("Quiet timing pass: not run yet (UNKNOWN).\n")
     slow = [x["slowdown_pct"] for x in ok if x["slowdown_pct"] == x["slowdown_pct"]]
@@ -958,11 +1308,20 @@ def main(argv=None) -> int:
     ap.add_argument("--repo-budget", type=float, default=2700,
                     help="seconds per repository after which the exploration stops")
     ap.add_argument("--report-only", action="store_true")
-    ap.add_argument("--mode", choices=("round", "prepare", "timing"), default="round",
+    ap.add_argument("--mode", choices=("round", "prepare", "timing", "orderonly", "baseline", "block2"), default="round",
                     help="round: full protocol; prepare: install/collect/first-run filters only (CI selection); "
-                         "timing: quiet timing pass")
+                         "timing: quiet timing pass; orderonly: re-run reproduced tests with every Level 0 "
+                         "control disabled except the order (--targets); baseline: --runs baseline runs only, "
+                         "with the installed package versions")
+    ap.add_argument("--tool", choices=("detpy", "randomly", "standalone"), default="detpy",
+                    help="block2: which seed search to measure")
+    ap.add_argument("--block2-targets", default=str(HERE / "block2_targets.json"))
+    ap.add_argument("--targets", default=str(HERE / "order_only_targets.json"),
+                    help="orderonly: JSON {repo: {seed or 'fixed': [nodeid, ...]}}")
     ap.add_argument("--timing-runs", type=int, default=3)
+    ap.add_argument("--max-repro-runs", type=int, default=300, help="block2: pytest runs per repro (search + ddmin)")
     ap.add_argument("--no-ablation", action="store_true", help="skip the per-control ablation of broken tests")
+    ap.add_argument("--no-xdist", action="store_true", help="serial baseline (no pytest-xdist) even when supported")
     ap.add_argument("--executor", default="local", help="free text recorded in the report (e.g. GitHub Actions)")
     ap.add_argument("--fresh", action="store_true", help="discard results already in --out instead of resuming")
     ap.add_argument("--checkpoint", action="store_true",
@@ -979,7 +1338,7 @@ def main(argv=None) -> int:
         pools = {"flaky": flaky, "popular": popular}
         quota = {"flaky": args.per_pool, "popular": args.per_pool}
     else:
-        names = [n.strip() for n in args.set.split(",") if n.strip()]
+        names = [n.strip() for n in args.set.split(",") if n.strip() and n.strip() in by_name]
         pools = {"custom": [by_name[n] for n in names]}
         quota = {"custom": len(names)}
     outdir = Path(args.out or HERE / "results" / (args.set if args.set in ("validate", "mixed") else "custom"))
@@ -987,6 +1346,7 @@ def main(argv=None) -> int:
     detpy = _import_detpy()
 
     meta = {"set": args.set, "runs": args.runs, "seeds": args.seeds, "confirm": args.confirm, "jobs": args.jobs,
+            "baseline_xdist": not args.no_xdist,
             "executor": args.executor, "timing_runs": args.timing_runs,
             "detpy": detpy.__version__,
             "date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
@@ -1051,6 +1411,8 @@ def main(argv=None) -> int:
                 return
             try:
                 p = prepare(repo, work, wheel, args.python, args.max_first_run)
+                if args.no_xdist:
+                    p.xdist = False
                 log(f"prepared {p.name} [{kind}]: {p.status} py{p.python_version} {p.collected} tests "
                     f"xdist={p.xdist} {p.detail[-100:]!r}")
                 if p.status != "ok":
@@ -1059,6 +1421,12 @@ def main(argv=None) -> int:
                     r = prepare_check(p, args, outdir, work)
                 elif args.mode == "timing":
                     r = timing_pass(p, args, outdir, work)
+                elif args.mode == "orderonly":
+                    r = order_only_pass(p, args, outdir, work)
+                elif args.mode == "baseline":
+                    r = baseline_pass(p, args, outdir, work)
+                elif args.mode == "block2":
+                    r = block2_pass(p, args, outdir, work)
                 else:
                     r = measure(p, args, outdir, work)
             except Exception as e:  # pragma: no cover

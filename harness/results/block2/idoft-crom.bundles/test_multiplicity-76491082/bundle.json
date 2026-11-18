@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_model.py::TestBaseResource::test_multiplicity",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "9",
+  "seed": 9,
+  "kind": "order",
+  "prefix_length": 55,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_model.py::TestAutoIdentifiers::test_bad_autoid"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_model.py::TestAutoIdentifiers::test_bad_autoid",
+    "tests/test_model.py::TestBaseResource::test_multiplicity"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "ConfigurationError",
+    "call",
+    "cromulent.model.ConfigurationError: Unknown auto-id type",
+    "/tmp/work/src/idoft-crom/cromulent/model.py:281"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "094542dab282d767797f177f2a34b44c"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "d2643f93afa75720c7628f19267eba3f",
+      "094542dab282d767797f177f2a34b44c"
+    ]
+  },
+  "runs": 22,
+  "seconds": 14.17,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-crom/bin/python",
+  "command": "pytest --det --det-seed=9 --det-order=/tmp/work/block2/idoft-crom/detpy/bundles/test_multiplicity-76491082/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-crom/detpy/bundles/test_multiplicity-76491082",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-crom/detpy/bundles/test_multiplicity-76491082"
+}

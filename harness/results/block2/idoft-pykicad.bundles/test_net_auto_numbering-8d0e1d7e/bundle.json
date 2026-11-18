@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_module.py::NetTests::test_net_auto_numbering",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 28,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_pcb.py::PcbTests::test_num_nets"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_module.py::NetTests::test_net_auto_numbering"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 2 == 1",
+    "/tmp/work/src/idoft-pykicad/tests/test_module.py:148"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "13e287b32e8a783de84feb43bd2020ef"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "1bfaa8873883ae2dd13d9cdcb0d13f09",
+      "13e287b32e8a783de84feb43bd2020ef"
+    ]
+  },
+  "runs": 19,
+  "seconds": 14.76,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_net_auto_numbering-8d0e1d7e/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_net_auto_numbering-8d0e1d7e",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_net_auto_numbering-8d0e1d7e"
+}

@@ -1,0 +1,1959 @@
+{
+ "name": "idoft-tunacell",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tunacell/tests/test_experiment.py::test_counts",
+  "tunacell/tests/test_experiment.py::test_experiment_abspath",
+  "tunacell/tests/test_experiment.py::test_experiment_attributes",
+  "tunacell/tests/test_experiment.py::test_experiment_datatype",
+  "tunacell/tests/test_experiment.py::test_experiment_iter",
+  "tunacell/tests/test_experiment.py::test_experiment_label",
+  "tunacell/tests/test_experiment.py::test_experiment_metadata",
+  "tunacell/tests/test_experiment.py::test_load_experiment",
+  "tunacell/tests/test_filters.py::test_cell_any",
+  "tunacell/tests/test_observable.py::test_observable_str"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009022",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 5.015,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 5.975,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 4.93,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 4.401,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 4.128,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 4.999,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 4.494,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 4.3,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 4.962,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 4.267,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 5.247,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 4.759,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 4.484,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 3.993,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 4.737,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 5.238,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 5.209,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 4.678,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 4.277,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 4.828,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 5.251,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 4.197,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 4.69,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 4.321,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 4.554,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 5.311,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 4.817,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 4.775,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 4.849,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 5.188,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 4.337,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 4.462,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 4.883,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 5.593,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 5.637,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 4.767,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 5.087,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 5.274,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 4.608,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 4.499,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 5.119,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 4.738,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 5.212,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 4.623,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 5.057,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 4.935,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 5.03,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 4.604,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 5.255,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_filters.py::test_cell_any",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 5.426,
+   "tests": 39,
+   "failing": [
+    "tunacell/tests/test_experiment.py::test_counts",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype",
+    "tunacell/tests/test_experiment.py::test_experiment_get_container",
+    "tunacell/tests/test_experiment.py::test_experiment_iter",
+    "tunacell/tests/test_experiment.py::test_experiment_label",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata",
+    "tunacell/tests/test_experiment.py::test_experiment_number_container",
+    "tunacell/tests/test_experiment.py::test_load_experiment",
+    "tunacell/tests/test_metadata.py::test_layers_load",
+    "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+    "tunacell/tests/test_metadata.py::test_layers_period",
+    "tunacell/tests/test_metadata.py::test_layers_simple_container",
+    "tunacell/tests/test_metadata.py::test_simple_content",
+    "tunacell/tests/test_metadata.py::test_simple_load",
+    "tunacell/tests/test_metadata.py::test_simple_period",
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [
+  "tunacell/tests/test_metadata.py::test_layers_load",
+  "tunacell/tests/test_metadata.py::test_layers_nested_containers",
+  "tunacell/tests/test_metadata.py::test_layers_period",
+  "tunacell/tests/test_metadata.py::test_layers_simple_container",
+  "tunacell/tests/test_metadata.py::test_simple_content",
+  "tunacell/tests/test_metadata.py::test_simple_load",
+  "tunacell/tests/test_metadata.py::test_simple_period"
+ ],
+ "flaky_failing": [
+  "tunacell/tests/test_experiment.py::test_counts",
+  "tunacell/tests/test_experiment.py::test_experiment_abspath",
+  "tunacell/tests/test_experiment.py::test_experiment_attributes",
+  "tunacell/tests/test_experiment.py::test_experiment_datatype",
+  "tunacell/tests/test_experiment.py::test_experiment_get_container",
+  "tunacell/tests/test_experiment.py::test_experiment_iter",
+  "tunacell/tests/test_experiment.py::test_experiment_label",
+  "tunacell/tests/test_experiment.py::test_experiment_metadata",
+  "tunacell/tests/test_experiment.py::test_experiment_number_container",
+  "tunacell/tests/test_experiment.py::test_load_experiment",
+  "tunacell/tests/test_filters.py::test_cell_any",
+  "tunacell/tests/test_observable.py::test_observable_str"
+ ],
+ "bundles": [
+  {
+   "test": "tunacell/tests/test_experiment.py::test_counts",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 21,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_counts"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "276ef66ca4a0c60274865a1095418006"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:967fb75f8bdc53205b266b6f568c8444  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:967fb75f8bdc53205b266b6f568c8444"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "f7e67814ff6b5a848a9648945b235852",
+     "276ef66ca4a0c60274865a1095418006"
+    ]
+   },
+   "runs": 20,
+   "seconds": 37.08,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_counts-ec3abdbd/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_counts-ec3abdbd",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_counts-ec3abdbd",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_experiment_abspath",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 19,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "014339adc20420ba2f1d7b2826594659"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:b62959c09eec0b0b153d19de0d5c5433  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:b62959c09eec0b0b153d19de0d5c5433"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "4d2f2e5ab06c4ab35c2f76b2611c37fa",
+     "014339adc20420ba2f1d7b2826594659"
+    ]
+   },
+   "runs": 21,
+   "seconds": 37.59,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_abspath-e4653c44/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_abspath-e4653c44",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_abspath-e4653c44",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_experiment_attributes",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 18,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c70d772cf465e2613443dc222f0342c6"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:616373b1c75bdb822d6e0e9a3d3d45ee  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:616373b1c75bdb822d6e0e9a3d3d45ee"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "b59c07096714fe7d8fffd1560a20921b",
+     "c70d772cf465e2613443dc222f0342c6"
+    ]
+   },
+   "runs": 17,
+   "seconds": 32.12,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_attributes-5ac886f6/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_attributes-5ac886f6",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_attributes-5ac886f6",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_experiment_datatype",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 14,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "74c20d3475f371ca60a0a0ea1ad4ac19"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:e011a1f1feb3b2d48db031ebbae491fa  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:e011a1f1feb3b2d48db031ebbae491fa"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "d1828d54135dcd9dd97822149065e112",
+     "74c20d3475f371ca60a0a0ea1ad4ac19"
+    ]
+   },
+   "runs": 19,
+   "seconds": 33.14,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_datatype-7880b2e7/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_datatype-7880b2e7",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_datatype-7880b2e7",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_experiment_iter",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 22,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_iter"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "5ec52738a2e33a21b5977839e2cf9d1f"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:a521f206de8145d2788ee884d2ce8ccd  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:a521f206de8145d2788ee884d2ce8ccd"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "a3bd33154c5e0a065514d137d87ccd37",
+     "5ec52738a2e33a21b5977839e2cf9d1f"
+    ]
+   },
+   "runs": 20,
+   "seconds": 36.45,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_iter-dfdeb15f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_iter-dfdeb15f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_iter-dfdeb15f",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_experiment_label",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 16,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_label"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "514e988dde61034b65de2af7729a1215"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:f28b11ebcb385c5063cd5cd1e360dfbd  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:f28b11ebcb385c5063cd5cd1e360dfbd"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "75ac883b3d35d00dde6b3bcd9fc4bb11",
+     "514e988dde61034b65de2af7729a1215"
+    ]
+   },
+   "runs": 18,
+   "seconds": 34.05,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_label-3226a49e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_label-3226a49e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_label-3226a49e",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_experiment_metadata",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 15,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d97c0919d447040ce1af5aecfbe98c65"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:ea05c4c9e40dffb3a935fe03f6575026  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:ea05c4c9e40dffb3a935fe03f6575026"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "17b220076bd8665404a1223421930810",
+     "d97c0919d447040ce1af5aecfbe98c65"
+    ]
+   },
+   "runs": 18,
+   "seconds": 34.03,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_metadata-582bd747/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_metadata-582bd747",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_experiment_metadata-582bd747",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_load_experiment",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 20,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_load_experiment"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b95ca24c01a74f31065a2a15a7a6b395"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:a1583253a28a56a3a763a54c06ed6e43  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:a1583253a28a56a3a763a54c06ed6e43"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "96b8351b0fde2a9bc4f6669a0b4d89d3",
+     "b95ca24c01a74f31065a2a15a7a6b395"
+    ]
+   },
+   "runs": 21,
+   "seconds": 38.63,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_load_experiment-d12d2402/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_load_experiment-d12d2402",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_load_experiment-d12d2402",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tunacell/tests/test_filters.py::test_cell_any",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "6",
+   "seed": 6,
+   "kind": "order",
+   "prefix_length": 10,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_filters.py::test_cell_any"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert [Observable(n... tref=None, )] == []",
+    "/tmp/work/src/idoft-tunacell/tunacell/tests/test_filters.py:24"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0b421a7a65131d51703550af0b300158"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "cf2bffa6ffda944838ec08108d41a5ca",
+     "0b421a7a65131d51703550af0b300158"
+    ]
+   },
+   "runs": 20,
+   "seconds": 34.69,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=6 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_cell_any-dcfad64e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_cell_any-dcfad64e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_cell_any-dcfad64e",
+   "first_failing_seed": 6
+  },
+  {
+   "test": "tunacell/tests/test_observable.py::test_observable_str",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 35,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tunacell/tests/test_observable.py::test_observable_init"
+   ],
+   "order": [
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ObservableStringError",
+    "call",
+    "tunacell.base.observable.ObservableStringError: Not a valid codestring",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/observable.py:236"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "002dc2e37dfa0677441ff1e72f85ac1d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b00ad37777a2ab9e13211adf315cc2c4",
+     "002dc2e37dfa0677441ff1e72f85ac1d"
+    ]
+   },
+   "runs": 22,
+   "seconds": 36.79,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_observable_str-95598458/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_observable_str-95598458",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_observable_str-95598458",
+   "first_failing_seed": 1
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "entropy|time|<site>/tqdm/std.py:1463": [
+   "tunacell/tests/test_experiment.py::test_counts",
+   "tunacell/tests/test_experiment.py::test_experiment_abspath",
+   "tunacell/tests/test_experiment.py::test_experiment_attributes",
+   "tunacell/tests/test_experiment.py::test_experiment_datatype",
+   "tunacell/tests/test_experiment.py::test_experiment_iter",
+   "tunacell/tests/test_experiment.py::test_experiment_label",
+   "tunacell/tests/test_experiment.py::test_experiment_metadata",
+   "tunacell/tests/test_experiment.py::test_load_experiment"
+  ],
+  "outcome-only|outcome|": [
+   "tunacell/tests/test_filters.py::test_cell_any",
+   "tunacell/tests/test_observable.py::test_observable_str"
+  ]
+ },
+ "families_by_polluter": {
+  "tunacell/tests/test_filters.py::test_unroll": [
+   "tunacell/tests/test_experiment.py::test_counts",
+   "tunacell/tests/test_experiment.py::test_experiment_abspath",
+   "tunacell/tests/test_experiment.py::test_experiment_attributes",
+   "tunacell/tests/test_experiment.py::test_experiment_datatype",
+   "tunacell/tests/test_experiment.py::test_experiment_iter",
+   "tunacell/tests/test_experiment.py::test_experiment_label",
+   "tunacell/tests/test_experiment.py::test_experiment_metadata",
+   "tunacell/tests/test_experiment.py::test_load_experiment",
+   "tunacell/tests/test_filters.py::test_cell_any"
+  ],
+  "tunacell/tests/test_observable.py::test_observable_init": [
+   "tunacell/tests/test_observable.py::test_observable_str"
+  ]
+ },
+ "collected": 39,
+ "seconds": 600.69
+}

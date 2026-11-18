@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_mdutils.py::TestMdUtils::test_new_reference_image_markdown_data",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 74,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file",
+    "tests/test_mdutils.py::TestMdUtils::test_new_reference_image_markdown_data"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: 'Test_file.md'",
+    "<scratch>/hw/src/idoft-mdutils/mdutils/fileutils/fileutils.py:23"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "b64485d47d07df0b8b595b0fcff02ce2"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "963570fc674aa270ba887abaf252edb6",
+      "b64485d47d07df0b8b595b0fcff02ce2"
+    ]
+  },
+  "runs": 21,
+  "seconds": 24.17,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "<scratch>/hw/venvs/idoft-mdutils/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=<scratch>/hw/block2/idoft-mdutils/detpy/bundles/test_new_reference_image_markdown_data-ff694099/order.txt -n 0",
+  "replay_command": "detpy replay <scratch>/hw/block2/idoft-mdutils/detpy/bundles/test_new_reference_image_markdown_data-ff694099",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "<scratch>/hw/block2/idoft-mdutils/detpy/bundles/test_new_reference_image_markdown_data-ff694099"
+}

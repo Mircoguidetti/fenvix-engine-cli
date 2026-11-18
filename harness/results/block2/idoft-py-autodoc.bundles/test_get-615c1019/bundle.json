@@ -1,0 +1,75 @@
+{
+  "test": "examples/test_requests.py::TestUnittest::test_get",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "5",
+  "seed": 5,
+  "kind": "brittle",
+  "prefix_length": 14,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+  ],
+  "order": [
+    "examples/test_requests.py::TestUnittest::test_get"
+  ],
+  "outcome": "passed+teardown-error",
+  "exception": [
+    "FileNotFoundError",
+    "teardown",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/idoft-py-autodoc/var/test_requests.rst'",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:171"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "38a0dcfb70e961a97992434c5aeeb6fa"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 3,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs passed+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed+teardown-error"
+    },
+    "fingerprints": [
+      "6065bdbf8ed8aafec84c447a5f839102",
+      "38a0dcfb70e961a97992434c5aeeb6fa"
+    ]
+  },
+  "runs": 20,
+  "seconds": 22.61,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+  "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-py-autodoc/detpy/bundles/test_get-615c1019/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/detpy/bundles/test_get-615c1019",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-py-autodoc/detpy/bundles/test_get-615c1019"
+}

@@ -1,0 +1,76 @@
+{
+  "test": "test/integration/test_flask_multi_redis.py::test_init_app",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "order",
+  "prefix_length": 33,
+  "minimal_length": 2,
+  "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+  ],
+  "setters": [],
+  "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_init_app"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "TypeError",
+    "call",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "bded42050c721c08f5b147edfef238df"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [random] random.randint @ flask_multi_redis/main.py:110 = 0  <>  [random] random.state @ <end> = 36887c5a8e1d94165a0b225e6e826947",
+    "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "random.randint",
+      "at": "flask_multi_redis/main.py:110",
+      "v": "0"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "36887c5a8e1d94165a0b225e6e826947"
+    },
+    "fingerprints": [
+      "7835919bb2604adf5ee420d67bb0c600",
+      "bded42050c721c08f5b147edfef238df"
+    ]
+  },
+  "runs": 18,
+  "seconds": 16.04,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+  "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_init_app-c720f57c/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_init_app-c720f57c",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_init_app-c720f57c"
+}

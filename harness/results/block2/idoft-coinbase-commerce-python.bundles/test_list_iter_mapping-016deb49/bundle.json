@@ -1,0 +1,76 @@
+{
+  "test": "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 47,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: <APIObject id=No ID> Serialized: {",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "90513fdcde9f72836566def13049fa7d"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "c381b2b32a71072a39402efbb7837548",
+      "90513fdcde9f72836566def13049fa7d"
+    ]
+  },
+  "runs": 22,
+  "seconds": 28.98,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list_iter_mapping-016deb49/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list_iter_mapping-016deb49",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/detpy/bundles/test_list_iter_mapping-016deb49"
+}

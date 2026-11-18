@@ -1,0 +1,34 @@
+{
+  "name": "idoft-cloudnetpy",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "serial_s": [
+    6.462913318999995,
+    6.235137137999999,
+    6.180598875000015
+  ],
+  "det_s": [
+    8.003840768000003,
+    6.125441617000007,
+    6.1367533570000035
+  ],
+  "precompile_s": [
+    2.501,
+    0.67,
+    0.662
+  ],
+  "tests": 439,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000007980",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.82.6",
+    "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+  },
+  "slowdown_pct": -1.577892816509141
+}

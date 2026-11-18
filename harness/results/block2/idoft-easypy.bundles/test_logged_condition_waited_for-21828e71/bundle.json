@@ -1,0 +1,78 @@
+{
+  "test": "tests/test_sync.py::test_logged_condition_waited_for",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 149,
+  "minimal_length": 3,
+  "polluters": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]",
+    "tests/test_sync.py::test_logged_condition_waited_for"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "0bcfbd9b7fa33a1d0d4202dc7c7b36a7"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ easypy/logging.py:507 = 1000  <>  [random] random.state @ <end> = 53e43ab23491b9359c8c753a07bc8766",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "easypy/logging.py:507",
+      "v": "1000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "53e43ab23491b9359c8c753a07bc8766"
+    },
+    "fingerprints": [
+      "4441e8a12b97da1993e652d683e7e928",
+      "0bcfbd9b7fa33a1d0d4202dc7c7b36a7"
+    ]
+  },
+  "runs": 30,
+  "seconds": 29.7,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_logged_condition_waited_for-21828e71/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_logged_condition_waited_for-21828e71",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_logged_condition_waited_for-21828e71"
+}

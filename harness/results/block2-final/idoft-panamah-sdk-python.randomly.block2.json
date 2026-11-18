@@ -1,0 +1,950 @@
+{
+ "name": "idoft-panamah-sdk-python",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "randomly",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_processor.py::TestStream::test_expiration_by_max_age",
+  "tests/test_processor.py::TestStream::test_expiration_by_max_length",
+  "tests/test_processor.py::TestStream::test_expiration_by_max_size",
+  "tests/test_stream.py::TestStream::test_events"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008992",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 7.879,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 7.94,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 7.791,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 7.825,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 7.746,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 7.734,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 7.802,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_requesting_pending_resources",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration",
+    "tests/test_stream.py::TestStream::test_events"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 7.761,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 7.816,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 7.82,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 7.765,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 7.708,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 5.967,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_expiration_by_max_age",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 7.833,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 7.746,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 7.776,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 7.757,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 7.986,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 7.772,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 7.992,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 7.748,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 7.776,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 7.741,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 7.947,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 7.768,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 7.742,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 7.744,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 7.745,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 7.723,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 7.746,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 7.671,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 7.8,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 7.731,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 7.743,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 7.726,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 7.766,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 7.532,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_expiration_by_max_size",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 7.747,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 7.773,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 7.787,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 7.78,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 7.849,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 7.759,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 7.759,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 7.765,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 7.792,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 7.767,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 7.829,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 7.862,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 7.787,
+   "tests": 23,
+   "failing": [
+    "tests/test_admin.py::TestAdmin::test_create_assinante",
+    "tests/test_admin.py::TestAdmin::test_delete_assinante",
+    "tests/test_admin.py::TestAdmin::test_get_assinante",
+    "tests/test_client.py::TestClient::test_admin_client",
+    "tests/test_client.py::TestClient::test_stream_client",
+    "tests/test_processor.py::TestStream::test_flushing",
+    "tests/test_processor.py::TestStream::test_sending_batch",
+    "tests/test_processor.py::test_expiration"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "first_fail": {
+  "tests/test_admin.py::TestAdmin::test_create_assinante": 1,
+  "tests/test_admin.py::TestAdmin::test_delete_assinante": 1,
+  "tests/test_admin.py::TestAdmin::test_get_assinante": 1,
+  "tests/test_client.py::TestClient::test_admin_client": 1,
+  "tests/test_client.py::TestClient::test_stream_client": 1,
+  "tests/test_processor.py::TestStream::test_flushing": 1,
+  "tests/test_processor.py::TestStream::test_sending_batch": 1,
+  "tests/test_processor.py::test_expiration": 1,
+  "tests/test_processor.py::TestStream::test_requesting_pending_resources": 7,
+  "tests/test_stream.py::TestStream::test_events": 7,
+  "tests/test_processor.py::TestStream::test_expiration_by_max_age": 13,
+  "tests/test_processor.py::TestStream::test_expiration_by_max_size": 37
+ },
+ "replays": {
+  "tests/test_stream.py::TestStream::test_events": {
+   "seed": 7,
+   "runs": 10,
+   "fails": 0,
+   "seconds": [
+    7.811,
+    7.779,
+    7.748,
+    7.781,
+    7.741,
+    7.756,
+    7.784,
+    7.737,
+    7.751,
+    7.744
+   ]
+  },
+  "tests/test_processor.py::TestStream::test_expiration_by_max_age": {
+   "seed": 13,
+   "runs": 10,
+   "fails": 9,
+   "seconds": [
+    7.73,
+    5.643,
+    6.017,
+    6.025,
+    5.704,
+    6.004,
+    5.96,
+    5.993,
+    5.966,
+    6.007
+   ]
+  },
+  "tests/test_processor.py::TestStream::test_expiration_by_max_size": {
+   "seed": 37,
+   "runs": 10,
+   "fails": 2,
+   "seconds": [
+    7.484,
+    7.498,
+    7.835,
+    7.491,
+    7.531,
+    7.511,
+    7.573,
+    7.477,
+    7.502,
+    7.505
+   ]
+  }
+ },
+ "seconds": 601.43
+}

@@ -1,0 +1,24 @@
+{
+  "set": "idoft-crom,idoft-cloudnetpy,idoft-flask-multi-redis,idoft-freezegun,idoft-krllint,idoft-django-beam",
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "jobs": 3,
+  "baseline_xdist": false,
+  "executor": "local container (4 CPUs), serial baseline check",
+  "timing_runs": 3,
+  "detpy": "0.1.0",
+  "date": "2026-11-16 17:37 UTC",
+  "command": "python harness/detpy_harness.py --set idoft-crom,idoft-cloudnetpy,idoft-flask-multi-redis,idoft-freezegun,idoft-krllint,idoft-django-beam --no-xdist --runs 10 --seeds 20 --confirm 10 --jobs 3 --wheel .harness-work/dist-new/detpy-0.1.0-cp39-abi3-linux_x86_64.whl --work /tmp/claude-0/-home-user-fenvix-engine-cli/72c438ee-1ad0-5631-91e5-b623fff4772c/scratchpad/idoft/work --out harness/results/idoft-serial-baseline --executor local container (4 CPUs), serial baseline check --max-first-run 100000",
+  "notes": [
+    "The FlaPy dataset (Gruber et al.) is published on Zenodo, which the development environment cannot reach (HTTP 403 from the network proxy): the 'flaky' pool uses the Python section of IDoFT, each project pinned at the commit where its flaky tests were detected."
+  ],
+  "order": [
+    "idoft-crom",
+    "idoft-cloudnetpy",
+    "idoft-flask-multi-redis",
+    "idoft-freezegun",
+    "idoft-krllint",
+    "idoft-django-beam"
+  ]
+}

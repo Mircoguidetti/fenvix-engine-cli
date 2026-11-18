@@ -1,0 +1,87 @@
+{
+  "test": "tests/test_sync.py::test_synchronization_coordinator_failing_context_manager",
+  "configs_searched": 1,
+  "status": "replay-unstable",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 164,
+  "minimal_length": 3,
+  "polluters": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]"
+  ],
+  "setters": [],
+  "order": [
+    "test_package.py::test_package[properties]",
+    "test_package.py::test_package[logging]",
+    "tests/test_sync.py::test_synchronization_coordinator_failing_context_manager"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "RecursionError",
+    "call",
+    "RecursionError: maximum recursion depth exceeded",
+    "/tmp/work/src/idoft-easypy/easypy/logging.py:507"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "24c3a12037ea0ead882bbafcfb7ec7b0",
+      "4535aa05b3e18b1eececb5e272a75278",
+      "4e181e72fd62e98d0b611ffbb11b3b43",
+      "82731e19d0ef0ea826e33c377d8f4453",
+      "90329e17d69d2071b0231609186380c7",
+      "ba088d2696e0194d915a17c8a2da36a0",
+      "c3dfc3baf11090d35a5d35cdd4d53ac8",
+      "ca0988d8645727b7a7ade36189fce836",
+      "cfb3927619db1139c8bcd8d5bfe545eb",
+      "fa7226c46a67ab98b841ab1319fa3b24"
+    ],
+    "identical_fingerprint": false
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "thread",
+    "description": "event #0: os.urandom @ easypy/threadtree.py:39 returned different values: \"16:f1fc0b297f07f78ca947dc9d8bd30adf\" vs \"16:9487d1435f344a7fbac387b5a9c1c135\"",
+    "event_a": {
+      "t": 1,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "easypy/threadtree.py:39",
+      "v": "16:f1fc0b297f07f78ca947dc9d8bd30adf"
+    },
+    "event_b": {
+      "t": 1,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "easypy/threadtree.py:39",
+      "v": "16:9487d1435f344a7fbac387b5a9c1c135"
+    },
+    "fingerprints": [
+      "a68f7c0023e7f89506724851a0f648cb",
+      "90329e17d69d2071b0231609186380c7"
+    ]
+  },
+  "runs": 25,
+  "seconds": 38.2,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-easypy/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-easypy/detpy/bundles/test_synchronization_coordinator_failing_context_manager-7effdb3c/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-easypy/detpy/bundles/test_synchronization_coordinator_failing_context_manager-7effdb3c",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-easypy/detpy/bundles/test_synchronization_coordinator_failing_context_manager-7effdb3c"
+}

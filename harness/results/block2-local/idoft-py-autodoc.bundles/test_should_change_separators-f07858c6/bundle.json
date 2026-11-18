@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_autodoc.py::TestAutodoc::test_should_change_separators",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "6",
+  "seed": 6,
+  "kind": "order",
+  "prefix_length": 15,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate",
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: '=====' != '*****'",
+    "/root/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "83ef94ba7a73e38b382078b78f166f3e"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "fs",
+    "description": "event #0: os.scandir @ tests/test_autodoc.py:28 returned different values: \"<fd>|2|501c14dc3f33889a9a251b4c703ae25c\" vs \"<fd>|1|c13ecef43ec79cd6710129c2c64e5765\"",
+    "event_a": {
+      "t": 0,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_autodoc.py:28",
+      "v": "<fd>|2|501c14dc3f33889a9a251b4c703ae25c"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "tests/test_autodoc.py:28",
+      "v": "<fd>|1|c13ecef43ec79cd6710129c2c64e5765"
+    },
+    "fingerprints": [
+      "c8de07bc6c8c2b2a97318c960b3521bd",
+      "83ef94ba7a73e38b382078b78f166f3e"
+    ]
+  },
+  "runs": 15,
+  "seconds": 20.45,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "<scratch>/hw/venvs/idoft-py-autodoc/bin/python",
+  "command": "pytest --det --det-seed=6 --det-order=<scratch>/hw/block2/idoft-py-autodoc/detpy/bundles/test_should_change_separators-f07858c6/order.txt -n 0",
+  "replay_command": "detpy replay <scratch>/hw/block2/idoft-py-autodoc/detpy/bundles/test_should_change_separators-f07858c6",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "<scratch>/hw/block2/idoft-py-autodoc/detpy/bundles/test_should_change_separators-f07858c6"
+}

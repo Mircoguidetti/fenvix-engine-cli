@@ -1,0 +1,1257 @@
+{
+ "name": "idoft-freezegun",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_class_import.py::test_import_after_start",
+  "tests/test_datetimes.py::test_min_and_max",
+  "tests/test_datetimes.py::test_time_ns",
+  "tests/test_ticking.py::test_ticking_time",
+  "tests/test_uuid.py::test_uuid1_future",
+  "tests/test_uuid.py::test_uuid1_past",
+  "tests/test_warnings.py::test_ignore_warnings_in_start",
+  "tests/test_warnings.py::test_ignore_warnings_in_stop"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008946",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 2.913,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 2.906,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_simple_api"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 2.95,
+   "tests": 112,
+   "failing": [
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 2.961,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_import_after_start"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 2.946,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 2.95,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_import_after_start"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 2.937,
+   "tests": 112,
+   "failing": [
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager",
+    "tests/test_datetimes.py::test_simple_api",
+    "tests/test_datetimes.py::test_time_ns",
+    "tests/test_errors.py::test_ignore_errors_in_start[ImportError]",
+    "tests/test_errors.py::test_ignore_errors_in_start[TypeError]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 2.86,
+   "tests": 112,
+   "failing": [
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 2.942,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_context_manager",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets",
+    "tests/test_datetimes.py::test_simple_api",
+    "tests/test_datetimes.py::test_time_localtime",
+    "tests/test_uuid.py::test_uuid1_future",
+    "tests/test_uuid.py::test_uuid1_past"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 2.895,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_can_ignore_email_module",
+    "tests/test_class_import.py::test_fake_uses_real_when_ignored",
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_time_localtime",
+    "tests/test_warnings.py::test_ignore_warnings_in_start",
+    "tests/test_warnings.py::test_ignore_warnings_in_stop"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 2.907,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_context_manager",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager",
+    "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets",
+    "tests/test_datetimes.py::test_simple_api",
+    "tests/test_datetimes.py::test_time_localtime",
+    "tests/test_datetimes.py::test_time_ns"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 2.765,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_can_ignore_email_module",
+    "tests/test_class_import.py::test_fake_uses_real_when_ignored",
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_context_manager",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager",
+    "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets",
+    "tests/test_datetimes.py::test_simple_api",
+    "tests/test_datetimes.py::test_time_localtime",
+    "tests/test_datetimes.py::test_time_ns",
+    "tests/test_uuid.py::test_uuid1_future",
+    "tests/test_uuid.py::test_uuid1_past",
+    "tests/test_warnings.py::test_ignore_warnings_in_start",
+    "tests/test_warnings.py::test_ignore_warnings_in_stop"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 2.986,
+   "tests": 112,
+   "failing": [
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager",
+    "tests/test_datetimes.py::test_simple_api",
+    "tests/test_datetimes.py::test_time_localtime",
+    "tests/test_datetimes.py::test_time_ns"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 2.844,
+   "tests": 112,
+   "failing": [
+    "tests/test_datetimes.py::test_context_manager",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager",
+    "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets",
+    "tests/test_datetimes.py::test_simple_api",
+    "tests/test_datetimes.py::test_time_localtime",
+    "tests/test_datetimes.py::test_time_ns"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 2.947,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 2.857,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_can_ignore_email_module",
+    "tests/test_class_import.py::test_fake_uses_real_when_ignored",
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 2.97,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 2.783,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_can_ignore_email_module",
+    "tests/test_class_import.py::test_fake_uses_real_when_ignored",
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_context_manager",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager",
+    "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets",
+    "tests/test_datetimes.py::test_simple_api",
+    "tests/test_datetimes.py::test_time_localtime",
+    "tests/test_datetimes.py::test_time_ns",
+    "tests/test_errors.py::test_ignore_errors_in_start[ImportError]",
+    "tests/test_errors.py::test_ignore_errors_in_start[TypeError]",
+    "tests/test_uuid.py::test_uuid1_future",
+    "tests/test_uuid.py::test_uuid1_past"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 2.977,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_import_after_start"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 2.944,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 2.995,
+   "tests": 112,
+   "failing": [
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 2.94,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 2.921,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 2.949,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 2.895,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_context_manager",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager",
+    "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets",
+    "tests/test_datetimes.py::test_time_ns",
+    "tests/test_errors.py::test_ignore_errors_in_start[ImportError]",
+    "tests/test_errors.py::test_ignore_errors_in_start[TypeError]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 2.918,
+   "tests": 112,
+   "failing": [
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets",
+    "tests/test_uuid.py::test_uuid1_future",
+    "tests/test_uuid.py::test_uuid1_past"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 2.921,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 2.949,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 2.931,
+   "tests": 112,
+   "failing": [
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_errors.py::test_ignore_errors_in_start[ImportError]",
+    "tests/test_errors.py::test_ignore_errors_in_start[TypeError]",
+    "tests/test_warnings.py::test_ignore_warnings_in_start",
+    "tests/test_warnings.py::test_ignore_warnings_in_stop"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 2.894,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager",
+    "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets",
+    "tests/test_datetimes.py::test_simple_api",
+    "tests/test_datetimes.py::test_time_localtime",
+    "tests/test_datetimes.py::test_time_ns",
+    "tests/test_errors.py::test_ignore_errors_in_start[ImportError]",
+    "tests/test_errors.py::test_ignore_errors_in_start[TypeError]",
+    "tests/test_uuid.py::test_uuid1_future",
+    "tests/test_uuid.py::test_uuid1_past"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 2.951,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 2.853,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_can_ignore_email_module",
+    "tests/test_class_import.py::test_fake_uses_real_when_ignored",
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_context_manager",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_simple_api",
+    "tests/test_datetimes.py::test_time_ns",
+    "tests/test_warnings.py::test_ignore_warnings_in_start",
+    "tests/test_warnings.py::test_ignore_warnings_in_stop"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 2.826,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_can_ignore_email_module",
+    "tests/test_class_import.py::test_fake_uses_real_when_ignored",
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_context_manager",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_errors.py::test_ignore_errors_in_start[ImportError]",
+    "tests/test_errors.py::test_ignore_errors_in_start[TypeError]",
+    "tests/test_uuid.py::test_uuid1_future",
+    "tests/test_uuid.py::test_uuid1_past"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 2.931,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 2.931,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 2.871,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_can_ignore_email_module",
+    "tests/test_class_import.py::test_fake_uses_real_when_ignored",
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_context_manager",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager",
+    "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets",
+    "tests/test_datetimes.py::test_time_localtime",
+    "tests/test_datetimes.py::test_time_ns",
+    "tests/test_errors.py::test_ignore_errors_in_start[ImportError]",
+    "tests/test_errors.py::test_ignore_errors_in_start[TypeError]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 2.801,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_can_ignore_email_module",
+    "tests/test_class_import.py::test_fake_uses_real_when_ignored",
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_simple_api",
+    "tests/test_datetimes.py::test_time_localtime",
+    "tests/test_warnings.py::test_ignore_warnings_in_start",
+    "tests/test_warnings.py::test_ignore_warnings_in_stop"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 2.971,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_import_after_start"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 2.916,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 3.008,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_import_after_start"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 2.92,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 2.825,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_can_ignore_email_module",
+    "tests/test_class_import.py::test_fake_uses_real_when_ignored",
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager",
+    "tests/test_datetimes.py::test_simple_api",
+    "tests/test_warnings.py::test_ignore_warnings_in_start",
+    "tests/test_warnings.py::test_ignore_warnings_in_stop"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 2.868,
+   "tests": 112,
+   "failing": [
+    "tests/test_datetimes.py::test_context_manager",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager",
+    "tests/test_datetimes.py::test_time_ns",
+    "tests/test_uuid.py::test_uuid1_future"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 2.878,
+   "tests": 112,
+   "failing": [
+    "tests/test_datetimes.py::test_context_manager",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_time_localtime",
+    "tests/test_datetimes.py::test_time_ns",
+    "tests/test_warnings.py::test_ignore_warnings_in_start",
+    "tests/test_warnings.py::test_ignore_warnings_in_stop"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 2.863,
+   "tests": 112,
+   "failing": [
+    "tests/test_class_import.py::test_can_ignore_email_module",
+    "tests/test_class_import.py::test_fake_uses_real_when_ignored",
+    "tests/test_class_import.py::test_import_after_start",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_uuid.py::test_uuid1_future",
+    "tests/test_uuid.py::test_uuid1_past"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 2.935,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 2.955,
+   "tests": 112,
+   "failing": [
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 2.972,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 2.942,
+   "tests": 112,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 2.907,
+   "tests": 112,
+   "failing": [
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_nested_context_manager"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [],
+ "flaky_failing": [
+  "tests/test_class_import.py::test_can_ignore_email_module",
+  "tests/test_class_import.py::test_fake_uses_real_when_ignored",
+  "tests/test_class_import.py::test_import_after_start",
+  "tests/test_datetimes.py::test_context_manager",
+  "tests/test_datetimes.py::test_min_and_max",
+  "tests/test_datetimes.py::test_nested_context_manager",
+  "tests/test_datetimes.py::test_nested_context_manager_with_tz_offsets",
+  "tests/test_datetimes.py::test_simple_api",
+  "tests/test_datetimes.py::test_time_localtime",
+  "tests/test_datetimes.py::test_time_ns",
+  "tests/test_errors.py::test_ignore_errors_in_start[ImportError]",
+  "tests/test_errors.py::test_ignore_errors_in_start[TypeError]",
+  "tests/test_uuid.py::test_uuid1_future",
+  "tests/test_uuid.py::test_uuid1_past",
+  "tests/test_warnings.py::test_ignore_warnings_in_start",
+  "tests/test_warnings.py::test_ignore_warnings_in_stop"
+ ],
+ "bundles": [
+  {
+   "test": "tests/test_class_import.py::test_import_after_start",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 41,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::test_should_skip_non_cpython"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_class_import.py::test_import_after_start"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert <class 'freezegun.api.FakeDatetime'> is FakeDatetime",
+    "/tmp/work/src/idoft-freezegun/tests/test_class_import.py:140"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2bb6efcebacc4fc76c62aa89ad832c30"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "5cacf126688066c7e1a5c598e52277ab",
+     "2bb6efcebacc4fc76c62aa89ad832c30"
+    ]
+   },
+   "runs": 21,
+   "seconds": 30.69,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-freezegun/detpy/bundles/test_import_after_start-994f2408/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/detpy/bundles/test_import_after_start-994f2408",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/detpy/bundles/test_import_after_start-994f2408",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_datetimes.py::test_min_and_max",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 84,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::test_should_skip_non_cpython"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert <class 'freezegun.api.FakeDatetime'> == FakeDatetime",
+    "/tmp/work/src/idoft-freezegun/tests/test_datetimes.py:601"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c8efee82171f63c478832d6e5a5f4592"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "dc9d7f221b218e7ff0ba198f932f9041",
+     "c8efee82171f63c478832d6e5a5f4592"
+    ]
+   },
+   "runs": 22,
+   "seconds": 32.57,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-freezegun/detpy/bundles/test_min_and_max-030d9ecf/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/detpy/bundles/test_min_and_max-030d9ecf",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/detpy/bundles/test_min_and_max-030d9ecf",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_datetimes.py::test_time_ns",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "7",
+   "seed": 7,
+   "kind": "order",
+   "prefix_length": 80,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_time_ns"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 1326499200.0 != 1326499200.0",
+    "/tmp/work/src/idoft-freezegun/tests/test_datetimes.py:703"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "725094af5d3305c908fd7d5009c690d9"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] datetime.now @ <site>/dateutil/parser/_parser.py:637 = 1000  <>  [random] random.state @ <end> = 6a6fcaedfbf83de6d533f65dda283f35",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "datetime.now",
+     "at": "<site>/dateutil/parser/_parser.py:637",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "6a6fcaedfbf83de6d533f65dda283f35"
+    },
+    "fingerprints": [
+     "2d9d7f635785fbbca0f701fddf35dfe1",
+     "725094af5d3305c908fd7d5009c690d9"
+    ]
+   },
+   "runs": 54,
+   "seconds": 79.93,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=7 --det-order=/tmp/work/block2/idoft-freezegun/detpy/bundles/test_time_ns-a6e461b1/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/detpy/bundles/test_time_ns-a6e461b1",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/detpy/bundles/test_time_ns-a6e461b1",
+   "first_failing_seed": 7
+  },
+  {
+   "test": "tests/test_uuid.py::test_uuid1_future",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "9",
+   "seed": 9,
+   "kind": "order",
+   "prefix_length": 108,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_uuid.py::test_uuid1_future"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert FakeDatetime(2056, 2, 6, 14, 3, 21) == FakeDatetime(1978, 7, 6, 23, 6, 31)",
+    "/tmp/work/src/idoft-freezegun/tests/test_uuid.py:29"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ed9e261e90dab88dcfdfb009f3acde43"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "d35702f482497f1c6f54ea6b087d75ce",
+     "ed9e261e90dab88dcfdfb009f3acde43"
+    ]
+   },
+   "runs": 56,
+   "seconds": 84.39,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=9 --det-order=/tmp/work/block2/idoft-freezegun/detpy/bundles/test_uuid1_future-49f7e267/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/detpy/bundles/test_uuid1_future-49f7e267",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/detpy/bundles/test_uuid1_future-49f7e267",
+   "first_failing_seed": 9
+  },
+  {
+   "test": "tests/test_uuid.py::test_uuid1_past",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "9",
+   "seed": 9,
+   "kind": "order",
+   "prefix_length": 109,
+   "minimal_length": 4,
+   "polluters": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_uuid.py::test_uuid1_future"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_uuid.py::test_uuid1_future",
+    "tests/test_uuid.py::test_uuid1_past"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert FakeDatetime(2056, 2, 6, 14, 3, 21) == FakeDatetime(1978, 7, 6, 23, 6, 31)",
+    "/tmp/work/src/idoft-freezegun/tests/test_uuid.py:39"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "11590e4e4fa9d3aa9ad4ea7b80c65856"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "random",
+    "description": "event #1: [random] random.getrandbits @ tests/test_uuid.py:43 = 11539  <>  [random] random.state @ <end> = 9a4f4649393e11f978bb188eeeffde4a",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.getrandbits",
+     "at": "tests/test_uuid.py:43",
+     "v": "11539"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "9a4f4649393e11f978bb188eeeffde4a"
+    },
+    "fingerprints": [
+     "0263616249c75418a8e25839a507c36a",
+     "11590e4e4fa9d3aa9ad4ea7b80c65856"
+    ]
+   },
+   "runs": 99,
+   "seconds": 148.18,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=9 --det-order=/tmp/work/block2/idoft-freezegun/detpy/bundles/test_uuid1_past-3a271656/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/detpy/bundles/test_uuid1_past-3a271656",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/detpy/bundles/test_uuid1_past-3a271656",
+   "first_failing_seed": 9
+  },
+  {
+   "test": "tests/test_warnings.py::test_ignore_warnings_in_start",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "order",
+   "prefix_length": 93,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_warnings.py::test_ignore_warnings_in_start"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert False",
+    "/tmp/work/src/idoft-freezegun/tests/test_warnings.py:51"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d1f8cd7585197b7d9a477a30dcda6afe"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "55ab276f5673f8da827fca38cfb54db3",
+     "d1f8cd7585197b7d9a477a30dcda6afe"
+    ]
+   },
+   "runs": 58,
+   "seconds": 86.13,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-freezegun/detpy/bundles/test_ignore_warnings_in_start-15c5744c/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/detpy/bundles/test_ignore_warnings_in_start-15c5744c",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/detpy/bundles/test_ignore_warnings_in_start-15c5744c",
+   "first_failing_seed": 10
+  },
+  {
+   "test": "tests/test_warnings.py::test_ignore_warnings_in_stop",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "order",
+   "prefix_length": 92,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_warnings.py::test_ignore_warnings_in_stop"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert False",
+    "/tmp/work/src/idoft-freezegun/tests/test_warnings.py:51"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "291a8422060d03c7b459b6362c430986"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b79a9b0cd5a846420a82353af4af05e3",
+     "291a8422060d03c7b459b6362c430986"
+    ]
+   },
+   "runs": 54,
+   "seconds": 80.34,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-freezegun/detpy/bundles/test_ignore_warnings_in_stop-29fcaddd/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/detpy/bundles/test_ignore_warnings_in_stop-29fcaddd",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/detpy/bundles/test_ignore_warnings_in_stop-29fcaddd",
+   "first_failing_seed": 10
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "tests/test_class_import.py::test_import_after_start",
+   "tests/test_datetimes.py::test_min_and_max",
+   "tests/test_uuid.py::test_uuid1_future",
+   "tests/test_warnings.py::test_ignore_warnings_in_start",
+   "tests/test_warnings.py::test_ignore_warnings_in_stop"
+  ],
+  "time|random|<end>": [
+   "tests/test_datetimes.py::test_time_ns"
+  ],
+  "random|random|<end>": [
+   "tests/test_uuid.py::test_uuid1_past"
+  ]
+ },
+ "families_by_polluter": {
+  "tests/test_utils.py::test_should_skip_non_cpython": [
+   "tests/test_class_import.py::test_import_after_start",
+   "tests/test_datetimes.py::test_min_and_max"
+  ],
+  "tests/test_utils.py::test_should_not_skip_cpython + tests/test_datetimes.py::test_min_and_max": [
+   "tests/test_datetimes.py::test_time_ns",
+   "tests/test_uuid.py::test_uuid1_future"
+  ],
+  "tests/test_utils.py::test_should_not_skip_cpython + tests/test_datetimes.py::test_min_and_max + tests/test_uuid.py::test_uuid1_future": [
+   "tests/test_uuid.py::test_uuid1_past"
+  ],
+  "tests/test_utils.py::test_should_skip_non_cpython + tests/test_datetimes.py::test_min_and_max": [
+   "tests/test_warnings.py::test_ignore_warnings_in_start",
+   "tests/test_warnings.py::test_ignore_warnings_in_stop"
+  ]
+ },
+ "collected": 112,
+ "seconds": 690.39
+}

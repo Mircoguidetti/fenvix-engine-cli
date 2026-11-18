@@ -1,0 +1,45 @@
+{
+  "name": "idoft-centreon-sdk-python",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "serial_s": [
+    0.33878944900000363,
+    0.33149364399999826,
+    0.33269441800000266
+  ],
+  "det_s": [
+    1.6978626329999997,
+    0.8709114850000006,
+    0.8609176560000051
+  ],
+  "precompile_s": [
+    1.171,
+    0.361,
+    0.354
+  ],
+  "tests": 44,
+  "runner": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000008675",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "startup_normal_s": [
+    0.1411144240000013,
+    0.1416534089999999,
+    0.1424755300000058
+  ],
+  "startup_det_s": [
+    0.6409088670000003,
+    0.662256352,
+    0.6548978140000017
+  ],
+  "startup_cost_s": 0.5132444050000018,
+  "slowdown_pct": 161.7752020714678
+}

@@ -1,0 +1,78 @@
+{
+  "test": "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "22",
+  "seed": 22,
+  "kind": "order",
+  "prefix_length": 2413,
+  "minimal_length": 3,
+  "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+  ],
+  "setters": [],
+  "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]"
+  ],
+  "outcome": "error",
+  "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-3 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "37ae39175f0ebf56c6c00fbb6f700391"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:e843256624dac51b6960f5d841ac6f03  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+      "t": 0,
+      "s": "entropy",
+      "o": "os.urandom",
+      "at": "<site>/trustme/__init__.py:61",
+      "v": "12:e843256624dac51b6960f5d841ac6f03"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "fs",
+      "o": "os.scandir",
+      "at": "<site>/blockbuster/blockbuster.py:372",
+      "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+      "eda0b9cc4fae88318a31f0dea8e0ff40",
+      "37ae39175f0ebf56c6c00fbb6f700391"
+    ]
+  },
+  "runs": 61,
+  "seconds": 383.75,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/anyio/bin/python",
+  "command": "pytest --det --det-seed=22 --det-order=/tmp/work/block2/anyio/detpy/bundles/test_receive_invalid_max_bytes_asyncio_uvloop-0_-323ca1f5/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/anyio/detpy/bundles/test_receive_invalid_max_bytes_asyncio_uvloop-0_-323ca1f5",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/anyio/detpy/bundles/test_receive_invalid_max_bytes_asyncio_uvloop-0_-323ca1f5"
+}

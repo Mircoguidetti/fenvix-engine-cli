@@ -1,0 +1,11 @@
+{
+ "name": "more-itertools",
+ "url": "https://github.com/more-itertools/more-itertools",
+ "head": "ceafee8ce96f",
+ "commits": 51,
+ "mode": "suite",
+ "python": "3.13",
+ "deselect": [
+  "tests/test_more.py::TestConcurrentTee::test_concurrent_consumers"
+ ]
+}

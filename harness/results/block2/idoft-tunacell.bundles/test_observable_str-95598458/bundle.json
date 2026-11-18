@@ -1,0 +1,75 @@
+{
+  "test": "tunacell/tests/test_observable.py::test_observable_str",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "brittle",
+  "prefix_length": 35,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "tunacell/tests/test_observable.py::test_observable_init"
+  ],
+  "order": [
+    "tunacell/tests/test_observable.py::test_observable_str"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "ObservableStringError",
+    "call",
+    "tunacell.base.observable.ObservableStringError: Not a valid codestring",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/observable.py:236"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "002dc2e37dfa0677441ff1e72f85ac1d"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "b00ad37777a2ab9e13211adf315cc2c4",
+      "002dc2e37dfa0677441ff1e72f85ac1d"
+    ]
+  },
+  "runs": 22,
+  "seconds": 36.79,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/detpy/bundles/test_observable_str-95598458/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/detpy/bundles/test_observable_str-95598458",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-tunacell/detpy/bundles/test_observable_str-95598458"
+}

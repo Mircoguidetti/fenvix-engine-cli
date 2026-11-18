@@ -1,0 +1,70 @@
+{
+  "name": "idoft-django-beam",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/django-beam/django-beam",
+  "commit": "43b2111f5c65",
+  "commit_date": "2020-05-18",
+  "python": "3.9",
+  "install": "-e . -r requirements-dev.txt -r requirements.txt",
+  "pytest_args": [],
+  "xdist": false,
+  "runs": 10,
+  "baseline_mean_s": 2.9020155342999714,
+  "det_mean_s": 4.790303486799894,
+  "slowdown_pct": 65.06815453541046,
+  "precompile_first_s": 3.694,
+  "precompile_rest_median_s": 1.833,
+  "tests": 80,
+  "unstable_baseline": 11,
+  "unstable_det": 0,
+  "became_stable": 11,
+  "outcome_changed_by_det": 0,
+  "covered": 55,
+  "not_covered": 25,
+  "reproduced": 11,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "seeds_explored": 1,
+  "exploration_runs": 10,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "entropy": 25
+  },
+  "pass_fail_reasons": {
+    "entropy": 11
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 11,
+  "known_present": 11,
+  "known_unstable_baseline": 11,
+  "known_reproduced": 11,
+  "known_categories": {
+    "NOD": 11
+  },
+  "examples": {
+    "reproduced": [
+      "tests/test_contrib_reversion.py::test_revision_is_visible_in_list (seed 1): event #1: os.urandom @ <site>/django/utils/crypto.py:69 returned different values: \"1:3d1d92230feb6db469532f26d9e2d7ab\" vs \"1:f426e9aed3a82b3a13da6ffd47fb8634\"",
+      "tests/test_contrib_reversion.py::test_show_detail_from_previous_version (seed 1): event #2: os.urandom @ <site>/django/utils/crypto.py:69 returned different values: \"1:641b1708fe6196a17fa2db13819b3774\" vs \"1:0bd4d2eca57d36d430645fe7642b5e44\"",
+      "tests/test_views.py::test_delete (seed 1): event #1: os.urandom @ <site>/django/utils/crypto.py:69 returned different values: \"1:0a5444ecad005820228199e02e05c2aa\" vs \"1:3dbb60c11f74b353a3181d90883b64c8\""
+    ]
+  }
+}

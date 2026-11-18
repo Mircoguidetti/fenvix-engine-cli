@@ -1,0 +1,51 @@
+{
+  "test": "test/integration/test_flask_multi_redis.py::test_loadbalanced_setitem_method",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "fails-alone",
+  "prefix_length": 16,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [],
+  "order": [
+    "test/integration/test_flask_multi_redis.py::test_loadbalanced_setitem_method"
+  ],
+  "outcome": "error",
+  "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: _thread.allocate_lock() takes no arguments (1 given)",
+    "/tmp/work/venvs/idoft-flask-multi-redis/lib/python3.9/site-packages/detpy/clock.py:468"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "75e0c7ef9de4817e47eee8f5d1186749"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": null,
+  "runs": 13,
+  "seconds": 9.42,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_loadbalanced_setitem_method-6afeedbc/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_loadbalanced_setitem_method-6afeedbc",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-flask-multi-redis/detpy/bundles/test_loadbalanced_setitem_method-6afeedbc"
+}

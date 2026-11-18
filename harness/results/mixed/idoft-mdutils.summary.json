@@ -1,0 +1,65 @@
+{
+  "name": "idoft-mdutils",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/didix21/mdutils",
+  "commit": "2ef859ecc1e4",
+  "commit_date": "2020-06-21",
+  "python": "3.9",
+  "install": "-e .",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 0.47305368009999993,
+  "det_mean_s": 0.8628045797999981,
+  "slowdown_pct": 82.3904170067143,
+  "precompile_first_s": 1.069,
+  "precompile_rest_median_s": 0.332,
+  "tests": 102,
+  "unstable_baseline": 8,
+  "unstable_det": 0,
+  "became_stable": 8,
+  "outcome_changed_by_det": 0,
+  "covered": 102,
+  "not_covered": 0,
+  "reproduced": 8,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "seeds_explored": 1,
+  "exploration_runs": 10,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "random": 8
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 8,
+  "known_present": 8,
+  "known_unstable_baseline": 8,
+  "known_reproduced": 8,
+  "known_categories": {
+    "OD-Vic": 8
+  },
+  "examples": {
+    "reproduced": [
+      "tests/test_mdutils.py::TestMdUtils::test_create_md_file (seed 1): event #0: random.state @ <end> returned different values: \"95777b06267e0325ba9d1f2213b9547a\" vs \"61a36ba53957951816dd5c45540f18b0\"",
+      "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_checked_list (seed 1): event #0: random.state @ <end> returned different values: \"1760a273a59377cc9d19f4d252aea47d\" vs \"e92b1b64305246f1aebd6decdf5fbfa4\"",
+      "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_list (seed 1): event #0: random.state @ <end> returned different values: \"cd9d859ccbac2f2d0345b0a8eb8d81cc\" vs \"eeeec74452e7378a20981082598472a0\""
+    ]
+  }
+}

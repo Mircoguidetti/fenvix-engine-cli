@@ -1,0 +1,76 @@
+{
+  "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+  "configs_searched": 1,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 387,
+  "minimal_length": 2,
+  "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+  ],
+  "setters": [],
+  "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "assert 422 == 500",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:367"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "d81d56bf6f2c3a0e8a110f6839ca461e"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ odinweb/containers.py:291 = 1000  <>  [random] random.state @ <end> = 9c368d9282aa613483aee4be68cf25e7",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "time.time",
+      "at": "odinweb/containers.py:291",
+      "v": "1000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "random.state",
+      "at": "<end>",
+      "v": "9c368d9282aa613483aee4be68cf25e7"
+    },
+    "fingerprints": [
+      "92a6cb67143394ba7e60091c13ce7e9b",
+      "d81d56bf6f2c3a0e8a110f6839ca461e"
+    ]
+  },
+  "runs": 25,
+  "seconds": 19.11,
+  "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+  ],
+  "detpy": "0.1.0",
+  "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+  "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__error_handled_by_middleware_raises_exception-e4af7ba1/order.txt -n 0",
+  "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__error_handled_by_middleware_raises_exception-e4af7ba1",
+  "pytest_args": [
+    "-n",
+    "0"
+  ],
+  "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__error_handled_by_middleware_raises_exception-e4af7ba1"
+}

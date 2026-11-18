@@ -1,0 +1,120 @@
+{
+  "name": "idoft-odinweb",
+  "kind": "flaky",
+  "status": "ok",
+  "python": "3.9",
+  "disable": "seeds,time,fs,net,hashseed,bytecode",
+  "confirm": 10,
+  "tests": {
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    },
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware": {
+      "config": "1",
+      "runs": 10,
+      "fails": 10,
+      "outcomes": {
+        "failed": 10
+      },
+      "order_alone": true
+    }
+  },
+  "reproduced": 12,
+  "order_alone": 12
+}
