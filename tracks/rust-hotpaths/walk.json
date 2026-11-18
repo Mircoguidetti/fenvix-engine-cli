@@ -1,8 +1,8 @@
 {
- "run_id": "w0",
- "engine_ref": "24b6d15e043a2f42834809ea41b5cca0f60849d3",
- "note": "reference walk with the base engine of this branch (cache-proof-step1 24b6d15, R-009 fixes included): click and pygments, to compare reuse with w1 commit by commit (the s1d walks ran an older engine)",
+ "run_id": "w2",
+ "note": "round 2 engine (Rust clock, call sites, event path, listener memo; line-level capture): same specs and commits as w1 / s1f / w0; every reuse checked by a fresh --det run",
  "walk": [
+  {"spec": "home-assistant", "shards": 16},
   {"spec": "click"},
   {"spec": "pygments"}
  ]
