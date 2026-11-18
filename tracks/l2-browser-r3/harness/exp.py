@@ -400,6 +400,35 @@ elif JOB == "e6":
                         Lr["fail_verify"] = {"status": t["status"], "distinct_fingerprints": t["distinct_fingerprints"],
                                              "divergence": t.get("divergence")}
             save()
+elif JOB == "e5diag":
+    # After E5: which bytes differ in the first diverging body (documenso session-json) with the database and the app
+    # server's process clock pinned (frozen)? Two replays with the worker's diagnosis texts kept.
+    rc, out = fn("e5_prepare", timeout=1200)
+    ft = EPOCH.replace("T", " ").replace("Z", "")
+    rc2, out2 = fn("e5_db", ft, timeout=600)
+    os.environ["E5_FAKETIME"] = ft
+    R["e5diag"] = {"prepare_rc": rc, "db_rc": rc2, "db_now": out2.strip()[-120:], "replays": []}
+    spec = CFG["r3"]["e5_targets"][0]
+    dst = RESULT.parent / f"{JOB}-{NAME}"
+    shutil.rmtree(dst, ignore_errors=True)
+    for i in (1, 2):
+        dd = OUT / "diag" / f"r{i}"
+        shutil.rmtree(dd, ignore_errors=True)
+        dd.mkdir(parents=True, exist_ok=True)
+        os.environ["DETJS_PW_DIAG_DIR"] = str(dd / "server")  # the app server started by server_start gets it too
+        r = run_pw(f"e5diag-r{i}", "det", args=target_args(spec), env_extra={"DETJS_PW_DIAG_DIR": str(dd / "pages")},
+                   timeout_s=P["target_timeout_min"] * 60)
+        R["e5diag"]["replays"].append(outcome_for(spec, r)[1])
+        total = 0
+        for f in sorted(dd.rglob("*")):
+            if f.is_file() and f.stat().st_size < 3_000_000 and total < 8_000_000:
+                out_f = dst / f"r{i}" / f.relative_to(dd)
+                out_f.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy(f, out_f)
+                total += f.stat().st_size
+        save()
+    os.environ["E5_FAKETIME"] = ""
+    fn("e5_db", "", timeout=600)
 elif JOB == "e5":
     # E5: the database clock (Postgres) and the app server's process clock (Prisma's Rust engine) under libfaketime,
     # pinned to the run's epoch: frozen, or advancing 1 ms per clock call. 10 --det replays of 2 targets per variant,
