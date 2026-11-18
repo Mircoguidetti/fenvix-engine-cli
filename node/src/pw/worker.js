@@ -226,7 +226,7 @@ async function pump() {
   // explored, and the failing one replays. Never for main-frame navigations (they gate the chunks).
   if (SHUFFLE && LATENCY.length > 1 && !chosen.nav && !chosen.delayed && HOLD.pages > 0) {
     chosen.delayed = true;
-    const c = LATENCY[native.shuffleIndices(LATENCY.length, SEED, `${testKey}\0lat\0${d}`)[0]];
+    const c = latencyChunks(LATENCY[native.shuffleIndices(LATENCY.length, SEED, `${testKey}\0lat\0${d}`)[0]]);
     if (c > 0) {
       QUEUE.pending.splice(QUEUE.pending.indexOf(chosen), 1);
       chosen.until = HOLD.grants + c;
@@ -352,6 +352,7 @@ async function routeHandler(route, request) {
     // Long-lived requests (long polling, event streams, dev-server pings) would hold the
     // queue: not ordered, not recorded; they still carry the test bracket.
     if (!isServerHost(url)) return route.fallback();
+    released();
     return route.fallback({ headers: { ...request.headers(), 'x-detjs-test': testIdOf(key) } });
   }
   let nav = false;
@@ -393,6 +394,7 @@ async function routeHandler(route, request) {
   try {
     if (isServerHost(url)) {
       ORIGINS.add(new URL(url).origin);
+      released();
       await route.fallback({ headers: { ...request.headers(), 'x-detjs-test': testIdOf(key) } });
     } else {
       await route.fallback();
@@ -446,7 +448,7 @@ async function setupWebSockets(ctx) {
       enqueue({ kind: 'ws', conn, test: k, method: 'SEND', target: targetOf(ws.url()), bodyDigest: digest(m) }).then(async (release) => {
         rec(k, 'net', 'ws.send', digest(m));
         // The app server handles the frame in its own message context (server.js, round 2).
-        if (SCOPE && isServerHost(ws.url())) await announceFrame(ws.url(), testIdOf(k));
+        if (SCOPE && isServerHost(ws.url())) { released(); await announceFrame(ws.url(), testIdOf(k)); }
         diag(k, 'ws.send', targetOf(ws.url()), m, 1500);
         try { server.send(m); } finally { release(); }
       });
@@ -479,8 +481,24 @@ async function setupWebSockets(ctx) {
 // paced: virtual time never runs ahead of real time (the app server and
 // WebSocket peers live in real time); fast: idle time is skipped.
 const CHUNK_MS = Number(ENV.DETJS_PW_VTIME_CHUNK || 20);
-// Seeded latency choices, in chunks (DETJS_PW_LATENCY=0: off).
-const LATENCY = String(ENV.DETJS_PW_LATENCY || '0,0,0,1,5,25').split(',').map(Number).filter((x) => x >= 0);
+// Seeded latency choices, in chunks (DETJS_PW_LATENCY=0: off). Round 3 (experiment E6, review R-011): a choice
+// `D` (or `D<factor>`, e.g. D1.5) holds the message for factor x the test's deadline (DETJS_PW_DEADLINE_MS, else
+// the project's expect timeout, else Playwright's 5000 ms default): the seed space then reaches the tests'
+// timeouts, as load does on a busy CI machine. The default list (max 25 chunks = 500 ms) never does.
+const LATENCY = String(ENV.DETJS_PW_LATENCY || '0,0,0,1,5,25').split(',').map((x) => x.trim())
+  .filter((x) => /^D[\d.]*$/.test(x) || Number(x) >= 0).map((x) => (x[0] === 'D' ? x : Number(x)));
+function deadlineMs() {
+  if (ENV.DETJS_PW_DEADLINE_MS) return Number(ENV.DETJS_PW_DEADLINE_MS);
+  const ti = testInfo();
+  const p = ti && ti.project;
+  const t = p && ((p.expect && p.expect.timeout) || (ti.config && ti.config.expect && ti.config.expect.timeout));
+  return Number(t) || 5000;
+}
+function latencyChunks(c) {
+  if (typeof c === 'number') return c;
+  const f = Number(c.slice(1)) || 1.5;
+  return Math.ceil((f * deadlineMs()) / CHUNK_MS);
+}
 const HOLD = { items: [], grants: 0, pages: 0 };
 function releaseHeld() {
   if (!HOLD.items.length) return;
@@ -516,7 +534,8 @@ async function setupPage(ctx, page, key) {
   let granted = 0;
   let stopped = false;
   let inChunk = false;
-  const end = () => { if (inChunk) { inChunk = false; chunkEnded(); } };
+  let frozen = null; // round 3 (E2): resolve() once the current chunk ended and no new chunk will start
+  const end = () => { if (inChunk) { inChunk = false; chunkEnded(); } if (frozen && !inChunk) frozen(); };
   const grant = async (first) => {
     if (stopped) return;
     if (!first) {
@@ -530,7 +549,7 @@ async function setupPage(ctx, page, key) {
       await whenQueueIdle();
     }
     if (!first && GATE_PUSH) { await boundary(); await whenQueueIdle(); }
-    if (stopped) return;
+    if (stopped || frozen) { if (frozen) frozen(); return; }
     if (!first) { HOLD.grants++; releaseHeld(); if (QUEUE.pending.length || QUEUE.busy) await whenQueueIdle(); }
     granted += CHUNK_MS;
     const params = { policy: 'advance', budget: CHUNK_MS };
@@ -552,6 +571,11 @@ async function setupPage(ctx, page, key) {
     page.on('crash', () => dbg('crash'));
     page.on('request', (r) => dbg('request', r.resourceType(), r.url()));
   }
+  FREEZERS.set(page, () => new Promise((resolve) => {
+    if (stopped) { resolve(); return; }
+    frozen = resolve;
+    if (!inChunk) resolve();
+  }));
   HOLD.pages++;
   page.on('close', () => {
     if (!stopped) HOLD.pages--;
@@ -562,10 +586,67 @@ async function setupPage(ctx, page, key) {
   await grant(true);
 }
 
+// Round 3, experiment E2 (review R-011): freeze-before-observe. With DETJS_PW_FREEZE=1, when the test function
+// returns (Playwright's didFinishTestFunction callbacks), every page of the test stops receiving virtual time
+// (the running chunk ends, no new one starts) and the final DOM and page-random stats are taken from the frozen
+// pages at once: no real-time settle loop, so the observation instant no longer depends on real time.
+const FREEZE = ENV.DETJS_PW_FREEZE === '1';
+const FREEZERS = new WeakMap(); // page -> () => Promise (resolved when frozen)
+const OBSERVED = new WeakSet(); // pages whose final state was taken at freeze
+const TEST_CONTEXTS = new Set();
+async function observe(page, key) {
+  try {
+    const res = await Promise.race([
+      page.evaluate(() => ({
+        stats: window.__detjs ? window.__detjs.stats() : null,
+        dom: document.documentElement ? document.documentElement.outerHTML : '',
+      })),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 2000)),
+    ]);
+    if (res.stats) rec(key, 'random', 'page.random', `${res.stats.random}/${res.stats.crypto}/${res.stats.uuid}:${res.stats.digest}`);
+    rec(key, 'other', 'dom.digest', digest(res.dom));
+    diag(key, 'dom', page.url(), res.dom, 400000);
+    if (res.stats) diag(key, 'page.random', page.url(), JSON.stringify(res.stats));
+  } catch (e) {
+    rec(key, 'other', 'dom.digest', 'unavailable');
+  }
+}
+async function freezeAndObserve() {
+  const key = currentKey();
+  if (!key) return;
+  for (const ctx of [...TEST_CONTEXTS]) {
+    let pages = [];
+    try { pages = ctx.pages(); } catch { continue; }
+    for (const page of pages) {
+      const f = FREEZERS.get(page);
+      if (f) await Promise.race([f(), sleep(3000)]);
+    }
+    for (const page of pages) {
+      if (OBSERVED.has(page)) continue;
+      OBSERVED.add(page);
+      await observe(page, key);
+    }
+  }
+  rec(key, 'other', 'observe', 'frozen');
+}
+const HOOKED = new WeakSet();
+function hookTestEnd() {
+  if (!FREEZE) return;
+  const ti = testInfo();
+  if (!ti || HOOKED.has(ti)) return;
+  HOOKED.add(ti);
+  if (ti._onDidFinishTestFunctionCallbacks instanceof Set) ti._onDidFinishTestFunctionCallbacks.add(freezeAndObserve);
+  else if ('_onDidFinishTestFunction' in ti) {
+    const prev = ti._onDidFinishTestFunction;
+    ti._onDidFinishTestFunction = async () => { await freezeAndObserve(); if (prev) await prev(); };
+  } else rec(currentKey(), 'other', 'observe', 'no-hook');
+}
+
 async function setupContext(ctx) {
   if (CONTEXTS.has(ctx)) return;
   CONTEXTS.add(ctx);
   const key = rememberTest();
+  if (FREEZE) { TEST_CONTEXTS.add(ctx); hookTestEnd(); }
   if (seedsInstalled) maybeReseed();
   const seedKey = key ? testIdOf(key) : '<outside>';
   if (SEEDS) {
@@ -624,23 +705,11 @@ async function finishContext(ctx) {
   const key = currentKey();
   if (!key) return;
   for (const page of ctx.pages()) {
-    try {
-      await settle(page);
-      const res = await Promise.race([
-        page.evaluate(() => ({
-          stats: window.__detjs ? window.__detjs.stats() : null,
-          dom: document.documentElement ? document.documentElement.outerHTML : '',
-        })),
-        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 2000)),
-      ]);
-      if (res.stats) rec(key, 'random', 'page.random', `${res.stats.random}/${res.stats.crypto}/${res.stats.uuid}:${res.stats.digest}`);
-      rec(key, 'other', 'dom.digest', digest(res.dom));
-      diag(key, 'dom', page.url(), res.dom, 400000);
-      if (res.stats) diag(key, 'page.random', page.url(), JSON.stringify(res.stats));
-    } catch (e) {
-      rec(key, 'other', 'dom.digest', 'unavailable');
-    }
+    if (OBSERVED.has(page)) continue;
+    await settle(page);
+    await observe(page, key);
   }
+  TEST_CONTEXTS.delete(ctx);
   await serverFingerprints(key);
   flush(key);
 }
@@ -678,6 +747,7 @@ function patchApiRequest(reqCtx) {
     let opts = options;
     if (isServerHost(abs)) {
       ORIGINS.add(new URL(abs).origin);
+      released();
       opts = { ...options, headers: { ...(options.headers || {}), 'x-detjs-test': testIdOf(key) } };
     }
     try {
@@ -698,6 +768,22 @@ function patchApiRequest(reqCtx) {
 // ------------------------------------------- seeds of the test code itself
 // Test code draws random names (pads, users, e-mails) with Math.random or
 // crypto.randomUUID: the worker's own generators are seeded per test.
+// Run-wide clock of the test code (round 3): ms after the epoch, shared with the app server's message count.
+const STEP_MS = Number(ENV.DETJS_PW_SERVER_STEP_MS || 100);
+const WAIT_Q = Number(ENV.DETJS_PW_WORKER_CLOCK_WAIT_MS || 1000);
+const RUN_CLOCK_FILE = path.join(DIR, 'worker-clock.json');
+const RUN_CLOCK = (() => {
+  try { const j = JSON.parse(fs.readFileSync(RUN_CLOCK_FILE, 'utf8')); return { released: j.released | 0, last: Number(j.last) || 0 }; } catch { return { released: 0, last: 0 }; }
+})();
+function saveRunClock() {
+  try { fs.writeFileSync(RUN_CLOCK_FILE, JSON.stringify(RUN_CLOCK)); } catch { /* best effort */ }
+}
+/** A message carrying a test bracket was released to an app server: the server's clock moves one STEP. */
+function released() {
+  RUN_CLOCK.released += 1;
+  saveRunClock();
+}
+process.on('exit', saveRunClock);
 let seedsInstalled = false;
 let lastSeeded = null;
 function installWorkerSeeds() {
@@ -723,31 +809,47 @@ function installWorkerSeeds() {
   }
   seedsInstalled = true;
   // Round 2: the test code's clock (Date, performance.now) is virtual too: seed helpers write
-  // `new Date()` into rows (documenso's emailVerified). Per test: epoch + 1 ms per read. Playwright's
-  // own frames keep the real clock (runner infrastructure); timers stay real.
+  // `new Date()` into rows (documenso's emailVerified). Playwright's own frames keep the real clock (runner
+  // infrastructure); timers stay real.
+  // Round 3 (review R-011): one clock for test code and app server, and time the test waits stays visible.
+  //   * Aligned with the server (R2): the server's clock is epoch + (messages it received) x STEP; the test
+  //     code's clock follows the same count (RUN_CLOCK.released, every message this worker released with a
+  //     test bracket), so "now" in test code and in the server agree to within the time one test waited.
+  //     Round 2 started each test at epoch + (hash of the test id mod 2^31) ms: up to 24.8 days of skew.
+  //   * Waits visible (R1): real time since the test's first clock read, floored to WAIT_Q ms, is added, so an
+  //     elapsed-time budget that a real wait misses by >= WAIT_Q still fails. Floor: the clock never reports
+  //     more than the real wait (no false failures); a miss by less than WAIT_Q can still pass (DECLARED band).
+  //     Values read within WAIT_Q of the test's first read stay deterministic. Round 2: 1 ms per read only, a
+  //     1.5 s request measured 1 ms. DETJS_PW_WORKER_CLOCK_WAIT_MS=0 restores that.
+  //   * Unique: strictly increasing over the whole run (>= 1 ms per read), also across worker restarts
+  //     (state in <DETJS_DIR>/worker-clock.json), so names built from Date.now() never repeat.
+  // DETJS_PW_WORKER_CLOCK_SPREAD=0 / =hash: the earlier round-2 behaviours (epoch per test / hash offset).
   if (ENV.DETJS_PW_WORKER_CLOCK !== '0') {
     const clock = require('../clock');
     const cfgT = { ...STATE.config, controls: new Set(['time']) };
     clock.installProcess(patcher, cfgT);
     clock.installRealm(patcher, globalThis, cfgT, { sameRealm: true });
-    // Each test starts at its own instant: epoch + (hash of the test id mod 2^31) ms, then 1 ms per read. The same
-    // test gets the same values in a full run and in its replay alone; two tests do not share `Date.now()` values
-    // (names like `user-${Date.now()}` stay unique in one database). DETJS_PW_WORKER_CLOCK_SPREAD=0: every test
-    // starts at the epoch (the first round-2 behaviour).
-    const SPREAD = ENV.DETJS_PW_WORKER_CLOCK_SPREAD !== '0';
+    const MODE = ENV.DETJS_PW_WORKER_CLOCK_SPREAD === '0' ? 'epoch' : ENV.DETJS_PW_WORKER_CLOCK_SPREAD === 'hash' ? 'hash' : 'run';
     let ck = null;
     let base = 0;
     let n = 0;
+    let firstReal = 0;
     clock.setValueHook(() => {
       const k = currentKey();
       if (k !== ck) {
         ck = k;
         n = 0;
+        firstReal = realNow();
         if (k) rememberTest();
-        base = SPREAD && k ? parseInt(digest(testIdOf(k)).slice(0, 8), 16) % 2147483648 : 0;
+        base = MODE === 'hash' && k ? parseInt(digest(testIdOf(k)).slice(0, 8), 16) % 2147483648 : 0;
+        if (MODE === 'run') saveRunClock();
       }
       n += 1;
-      return { e: (base + n) * 1e6, rel: '' };
+      if (MODE !== 'run') return { e: (base + n) * 1e6, rel: '' };
+      const waited = WAIT_Q > 0 ? Math.floor((realNow() - firstReal) / WAIT_Q) * WAIT_Q : 0;
+      const v = Math.max(RUN_CLOCK.last + 1, RUN_CLOCK.released * STEP_MS + waited);
+      RUN_CLOCK.last = v;
+      return { e: v * 1e6, rel: '' };
     });
   }
   installWorkerSeeds.reseed = (id) => seeds.reseed(id);

@@ -98,6 +98,8 @@ class DetjsReporter {
     try { base = JSON.parse(process.env.DETJS_PW_REPLAY || 'null'); } catch { base = null; }
     if (!base) return;
     const cwd = process.env.DETJS_PW_CWD || process.cwd();
+    let extra;
+    try { extra = JSON.parse(process.env.DETJS_PW_REPLAY_PW || '[]'); } catch { extra = []; }
     const lines = [];
     for (const t of this.order) {
       const r = this.results.get(t.id);
@@ -106,6 +108,7 @@ class DetjsReporter {
       const project = t.parent && t.parent.project ? t.parent.project().name : '';
       const cmd = ['npx', 'detjs', 'playwright', ...base, 'test', `${file}:${t.location.line}`];
       if (project) cmd.push(`--project=${project}`);
+      cmd.push(...extra);
       lines.push(`detjs: replay ${this.idOf(t)}:\n  ${cmd.map((a) => (/^[\w@%+=:,./-]+$/.test(a) ? a : `'${a.replace(/'/g, "'\\''")}'`)).join(' ')}`);
     }
     if (!lines.length) return;

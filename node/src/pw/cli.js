@@ -36,6 +36,8 @@ const PW_FLAGS = {
   '--det-net-window': 'DETJS_PW_NET_WINDOW',
   '--det-browser-seeds': 'DETJS_PW_SEEDS',
   '--det-server': 'DETJS_PW_SERVER',
+  '--det-latency': 'DETJS_PW_LATENCY', // round 3: seeded latency choices (chunks, or D = past the deadline)
+  '--det-freeze': 'DETJS_PW_FREEZE', // round 3: freeze-before-observe (E2)
 };
 
 function splitPwFlags(argv) {
@@ -146,11 +148,23 @@ async function main(argv) {
     if (pwEnv[envName] !== undefined) replay.push(`${flag}=${pwEnv[envName] === '1' ? 'on' : pwEnv[envName] === '0' || pwEnv[envName] === 'off' ? 'off' : pwEnv[envName]}`);
   }
   if (cfg.index >= 0) replay.push(`--config=${path.relative(cwd, cfg.file)}`);
+  // Playwright options that create or shape the projects must be in the replay too (round 3, review R-011 H3):
+  // actual runs `--browser=chromium` with a config that has no projects; the printed `--project=chromium` alone
+  // matched no project, so the command ran no test.
+  const replayPw = [];
+  for (let i = 0; i < rest.length; i++) {
+    const a = rest[i];
+    const m = /^--(browser|timeout|ignore-snapshots)(=.*)?$/.exec(a);
+    if (!m) continue;
+    if (m[2] !== undefined || m[1] === 'ignore-snapshots') replayPw.push(a);
+    else if (i + 1 < rest.length) replayPw.push(`${a}=${rest[i + 1]}`);
+  }
   const env = {
     ...process.env,
     ...pwEnv,
     DETJS_PW_REPORTER: hasReporter ? '' : reporter,
     DETJS_PW_REPLAY: JSON.stringify(replay),
+    DETJS_PW_REPLAY_PW: JSON.stringify(replayPw),
     DETJS_PW_CWD: cwd,
     DETJS_PW_TRACE: runEnv.tracePath,
     DETJS_PW_META: JSON.stringify({
