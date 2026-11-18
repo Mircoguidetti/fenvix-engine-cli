@@ -1,0 +1,222 @@
+{
+ "spec": "pydantic-ai",
+ "pr": null,
+ "rec": "3d3b4d6a20ec9e30a27c9d9e64b37eda250580cb",
+ "cur": "593b32d58de1da37ba338c430561d3b5772d46b2",
+ "units": [
+  "tests/harness/pixeltable/test_video.py"
+ ],
+ "runs": {
+  "rec": {
+   "sha": "3d3b4d6a20ec9e30a27c9d9e64b37eda250580cb",
+   "units": {
+    "tests/harness/pixeltable/test_video.py": {
+     "plain": [
+      {
+       "code": 0,
+       "wall": 13.56,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 13.09,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 1,
+       "wall": 9.4,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "fail"
+       },
+       "tail": "                            Summary of Failures                               \n\u250f\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2513\n\u2503               \u2503               \u2503  Function     \u2503              \u2503               \u2503\n\u2503  File         \u2503  Function     \u2503  Line         \u2503  Error Line  \u2503  Error        \u2503\n\u2521\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2529\n\u2502  tests/harn\u2026  \u2502  test_video\u2026  \u2502  49           \u2502  132         \u2502  Programmin\u2026  \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\nResults (3.73s):\n         1 failed\n"
+      },
+      {
+       "code": 0,
+       "wall": 13.78,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 13.6,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      }
+     ],
+     "traced": {
+      "code": -9,
+      "wall": 900.1,
+      "tests": {
+       "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+      },
+      "tail": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 inline-snapshot \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nINFO: CI run was detected because environment variable \"CI\" was defined. \ninline-snapshot runs with --inline-snapshot=disable by default in CI. This means\nthat tests with snapshots will continue to run, but snapshot(x) will only return\nx and inline-snapshot will not be able to fix snapshots or generate reports. You\ncan change this by using --inline-snapshot=report for example.\n\n\ncollection of 1 tests took 2.8s\nslowest test modules to collect: tests/harness/pixeltable/test_video.py (2.54s)\nResults (14.83s):\n         1 passed\n\nTIMEOUT"
+     },
+     "loaded": [
+      {
+       "code": -9,
+       "wall": 900.14,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 inline-snapshot \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nINFO: CI run was detected because environment variable \"CI\" was defined. \ninline-snapshot runs with --inline-snapshot=disable by default in CI. This means\nthat tests with snapshots will continue to run, but snapshot(x) will only return\nx and inline-snapshot will not be able to fix snapshots or generate reports. You\ncan change this by using --inline-snapshot=report for example.\n\n\ncollection of 1 tests took 1.9s\nslowest test modules to collect: tests/harness/pixeltable/test_video.py (1.70s)\nResults (10.64s):\n         1 passed\n\nTIMEOUT"
+      },
+      {
+       "code": -9,
+       "wall": 900.06,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 inline-snapshot \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nINFO: CI run was detected because environment variable \"CI\" was defined. \ninline-snapshot runs with --inline-snapshot=disable by default in CI. This means\nthat tests with snapshots will continue to run, but snapshot(x) will only return\nx and inline-snapshot will not be able to fix snapshots or generate reports. You\ncan change this by using --inline-snapshot=report for example.\n\n\ncollection of 1 tests took 1.9s\nslowest test modules to collect: tests/harness/pixeltable/test_video.py (1.81s)\nResults (11.99s):\n         1 passed\n\nTIMEOUT"
+      },
+      {
+       "code": -9,
+       "wall": 900.07,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 inline-snapshot \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nINFO: CI run was detected because environment variable \"CI\" was defined. \ninline-snapshot runs with --inline-snapshot=disable by default in CI. This means\nthat tests with snapshots will continue to run, but snapshot(x) will only return\nx and inline-snapshot will not be able to fix snapshots or generate reports. You\ncan change this by using --inline-snapshot=report for example.\n\n\ncollection of 1 tests took 1.8s\nslowest test modules to collect: tests/harness/pixeltable/test_video.py (1.69s)\nResults (10.74s):\n         1 passed\n\nTIMEOUT"
+      },
+      {
+       "code": 1,
+       "wall": 16.14,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "fail"
+       },
+       "tail": "                            Summary of Failures                               \n\u250f\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2513\n\u2503               \u2503               \u2503  Function     \u2503              \u2503               \u2503\n\u2503  File         \u2503  Function     \u2503  Line         \u2503  Error Line  \u2503  Error        \u2503\n\u2521\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2529\n\u2502  tests/harn\u2026  \u2502  test_video\u2026  \u2502  49           \u2502  132         \u2502  CalledProc\u2026  \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\nResults (6.35s):\n         1 failed\n"
+      }
+     ]
+    }
+   }
+  },
+  "cur": {
+   "sha": "593b32d58de1da37ba338c430561d3b5772d46b2",
+   "units": {
+    "tests/harness/pixeltable/test_video.py": {
+     "plain": [
+      {
+       "code": 0,
+       "wall": 14.74,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 13.88,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 14.3,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 13.08,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 14.15,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      }
+     ],
+     "traced": {
+      "code": 0,
+      "wall": 733.03,
+      "tests": {
+       "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+      },
+      "tail": ""
+     },
+     "loaded": [
+      {
+       "code": 0,
+       "wall": 77.11,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 1,
+       "wall": 21.49,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "fail"
+       },
+       "tail": "                            Summary of Failures                               \n\u250f\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2513\n\u2503               \u2503               \u2503  Function     \u2503              \u2503               \u2503\n\u2503  File         \u2503  Function     \u2503  Line         \u2503  Error Line  \u2503  Error        \u2503\n\u2521\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2529\n\u2502  tests/harn\u2026  \u2502  test_video\u2026  \u2502  49           \u2502  132         \u2502  CalledProc\u2026  \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\nResults (7.74s):\n         1 failed\n"
+      },
+      {
+       "code": 0,
+       "wall": 78.46,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 75.6,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      }
+     ]
+    }
+   }
+  },
+  "rec2": {
+   "sha": "3d3b4d6a20ec9e30a27c9d9e64b37eda250580cb",
+   "units": {
+    "tests/harness/pixeltable/test_video.py": {
+     "plain": [
+      {
+       "code": 1,
+       "wall": 10.78,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "fail"
+       },
+       "tail": "                            Summary of Failures                               \n\u250f\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2513\n\u2503               \u2503               \u2503  Function     \u2503              \u2503               \u2503\n\u2503  File         \u2503  Function     \u2503  Line         \u2503  Error Line  \u2503  Error        \u2503\n\u2521\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2529\n\u2502  tests/harn\u2026  \u2502  test_video\u2026  \u2502  49           \u2502  134         \u2502  Operationa\u2026  \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\nResults (4.85s):\n         1 failed\n"
+      }
+     ],
+     "traced": {
+      "code": 0,
+      "wall": 69.49,
+      "tests": {
+       "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+      },
+      "tail": ""
+     },
+     "loaded": []
+    }
+   }
+  }
+ },
+ "verdict": {
+  "tests/harness/pixeltable/test_video.py": "flaky (plain runs disagree)"
+ }
+}

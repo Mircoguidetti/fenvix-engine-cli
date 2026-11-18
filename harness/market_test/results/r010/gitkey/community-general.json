@@ -1,0 +1,1250 @@
+{
+ "spec": "community-general",
+ "probes": [
+  {
+   "sha": "63fe14d2aa6ac026825ffb805a5c8a08a97855ba",
+   "units": 247,
+   "units_total": 247,
+   "git_units": [],
+   "per_unit": {
+    "tests/unit/plugins/become/test_doas.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/become/test_dzdo.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/become/test_ksu.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/become/test_machinectl.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/become/test_pbrun.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/become/test_pfexec.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/become/test_run0.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/become/test_sudosu.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/cache/test_memcached.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/cache/test_redis.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/callback/test_elastic.py": {
+     "code": 5,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/callback/test_loganalytics_ingestion.py": {
+     "code": 5,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/callback/test_logstash.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/callback/test_opentelemetry.py": {
+     "code": 5,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/callback/test_splunk.py": {
+     "code": 5,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/connection/test_incus.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/connection/test_lxc.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/connection/test_wsl.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/filter/test_crc32.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/filter/test_json_patch.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/inventory/test_cobbler.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/inventory/test_icinga2.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/inventory/test_incus.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/inventory/test_iocage.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/inventory/test_linode.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/inventory/test_lxd.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/inventory/test_opennebula.py": {
+     "code": 2,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/inventory/test_xen_orchestra.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_bitwarden.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_bitwarden_secrets_manager.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_consul_kv.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_dependent.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_dsv.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_etcd3.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_github_app_access_token.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_lastpass.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_merge_variables.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_onepassword.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_onepassword_ssh_key.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_proton_pass.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_revbitspss.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/lookup/test_tss.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/_hwc_utils/test_dict_comparison.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/_hwc_utils/test_hwc_utils.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/_xenserver/test_gather_vm_params_and_facts.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/_xenserver/test_get_object_ref.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/_xenserver/test_misc.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/_xenserver/test_netaddr_functions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/_xenserver/test_set_vm_power_state.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/_xenserver/test_wait_for_functions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/_xenserver/test_xapi.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/_xenserver/test_xenserverobject.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__cmd_runner.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__consul.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__csv.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__deps.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__ipa.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__kopia.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__module_helper.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__ocapi_utils.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__onepassword.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__opennebula.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__pacemaker.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__pritunl_api.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__python_runner.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__scaleway.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__utm_utils.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/module_utils/test__vardict.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/dnf_config_manager/test_dnf_config_manager.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/interfaces_file/test_interfaces_file.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_alerta_customer.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_apache2_module.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_apk.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_appimage.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_archive.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_bitbucket_access_key.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_bitbucket_pipeline_key_pair.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_bitbucket_pipeline_known_host.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_bitbucket_pipeline_variable.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_bootc_manage.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_campfire.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_capabilities.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_circonus_annotation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_composer.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_cpanm.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_datadog_downtime.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_dconf.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_discord.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_django_check.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_django_command.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_django_createcachetable.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_django_dumpdata.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_django_flush.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_django_loaddata.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_django_makemigrations.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_dnsimple.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_dnsimple_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_etcd3.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_facter_facts.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gconftool2.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gconftool2_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gem.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gio_mime.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_github_deploy_key.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_github_repo.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_github_secrets.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_github_secrets_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gitlab_deploy_key.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gitlab_group.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gitlab_group_access_token.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gitlab_hook.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gitlab_project.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gitlab_project_access_token.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gitlab_protected_branch.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gitlab_runner.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_gitlab_user.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_google_chat.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_haproxy.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_homebrew.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_homebrew_cask.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_homebrew_tap.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_icinga2_downtime.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_icinga2_feature.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_icinga2_host.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_idrac_redfish_config.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ini_file.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ip2location_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ip_netns.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ipa_dnsrecord.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ipa_getkeytab.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ipa_host.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ipa_otpconfig.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ipa_otptoken.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ipa_pwpolicy.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ipa_user.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ipbase.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_java_keystore.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_jenkins_build.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_jenkins_build_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_jenkins_credential.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_jenkins_job_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_jenkins_node.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_jenkins_plugin.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_kopia_repository.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_kopia_repository_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_krb_ticket.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_linode_v4.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_logrotate.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_lvg_rename.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_lvm_pv.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_lxca_cmms.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_lxca_nodes.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_lxd_storage_pool_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_lxd_storage_volume_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_macports.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_mail.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_maven_artifact.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_modprobe.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_monit.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_nmcli.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_nomad_token.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_npm.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_nsupdate.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ocapi_command.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ocapi_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_one_vm.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_onepassword_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_datacenter_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_enclosure_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_ethernet_network.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_ethernet_network_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_fc_network.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_fc_network_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_fcoe_network.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_fcoe_network_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_logical_interconnect_group.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_logical_interconnect_group_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_network_set.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_network_set_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_san_manager.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_oneview_san_manager_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_open_iscsi.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_opkg.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pacemaker_cluster.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pacemaker_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pacemaker_resource.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pacemaker_stonith.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_packer.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pacman.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pacman_key.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pagerduty.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pagerduty_alert.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pagerduty_change.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pamd.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_parted.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pkgin.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pkgng.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pmem.py": {
+     "code": 5,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pritunl_org.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pritunl_org_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pritunl_user.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_pritunl_user_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_puppet.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_redhat_subscription.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_redis_data.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_redis_data_incr.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_redis_data_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_redis_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_rhsm_release.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_rhsm_repository.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_rpm_ostree_pkg.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_rundeck_acl_policy.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_scaleway_compute.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_scaleway_compute_private_network.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_scaleway_ip.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_scaleway_private_network.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_serestorecon.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_simpleinit_msb.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_slack.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_snap.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_solaris_zone.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ss_3par_cpg.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_sssd_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_statsd.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_sysrc.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_sysupgrade.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_terraform.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_timezone.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_ufw.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_usb_facts.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_wdc_redfish_command.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_wdc_redfish_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_xattr.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_xattr_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_xbps.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_xcc_redfish_command.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_xdg_mime.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_xenserver_guest_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_xenserver_guest_powerstate.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_xfconf.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_xfconf_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_zfs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_zpool.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_zypper.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_zypper_repository.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/modules/test_zypper_updates_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit/plugins/plugin_utils/test__unsafe.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    }
+   }
+  }
+ ],
+ "cases": [],
+ "git_units": []
+}

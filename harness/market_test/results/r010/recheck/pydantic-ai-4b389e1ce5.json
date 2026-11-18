@@ -1,0 +1,222 @@
+{
+ "spec": "pydantic-ai",
+ "pr": null,
+ "rec": "b5dcf1bdb4c51714c424a1b85c8f4d12544edd9d",
+ "cur": "4b389e1ce54b9d530d859e310ee9e90e86cc3a7b",
+ "units": [
+  "tests/harness/pixeltable/test_video.py"
+ ],
+ "runs": {
+  "rec": {
+   "sha": "b5dcf1bdb4c51714c424a1b85c8f4d12544edd9d",
+   "units": {
+    "tests/harness/pixeltable/test_video.py": {
+     "plain": [
+      {
+       "code": 0,
+       "wall": 18.59,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 14.97,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 13.09,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 13.66,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 12.7,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      }
+     ],
+     "traced": {
+      "code": 0,
+      "wall": 415.2,
+      "tests": {
+       "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+      },
+      "tail": ""
+     },
+     "loaded": [
+      {
+       "code": 0,
+       "wall": 271.89,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 1,
+       "wall": 28.25,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "fail"
+       },
+       "tail": "                            Summary of Failures                               \n\u250f\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2513\n\u2503               \u2503               \u2503  Function     \u2503              \u2503               \u2503\n\u2503  File         \u2503  Function     \u2503  Line         \u2503  Error Line  \u2503  Error        \u2503\n\u2521\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2529\n\u2502  tests/harn\u2026  \u2502  test_video\u2026  \u2502  49           \u2502  132         \u2502  CalledProc\u2026  \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\nResults (8.46s):\n         1 failed\n"
+      },
+      {
+       "code": 1,
+       "wall": 29.83,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "fail"
+       },
+       "tail": "                            Summary of Failures                               \n\u250f\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2513\n\u2503               \u2503               \u2503  Function     \u2503              \u2503               \u2503\n\u2503  File         \u2503  Function     \u2503  Line         \u2503  Error Line  \u2503  Error        \u2503\n\u2521\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2529\n\u2502  tests/harn\u2026  \u2502  test_video\u2026  \u2502  49           \u2502  132         \u2502  CalledProc\u2026  \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\nResults (9.17s):\n         1 failed\n"
+      },
+      {
+       "code": 0,
+       "wall": 425.83,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      }
+     ]
+    }
+   }
+  },
+  "cur": {
+   "sha": "4b389e1ce54b9d530d859e310ee9e90e86cc3a7b",
+   "units": {
+    "tests/harness/pixeltable/test_video.py": {
+     "plain": [
+      {
+       "code": 0,
+       "wall": 20.94,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 19.61,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 16.14,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 18.84,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 0,
+       "wall": 17.06,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      }
+     ],
+     "traced": {
+      "code": 0,
+      "wall": 250.31,
+      "tests": {
+       "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+      },
+      "tail": ""
+     },
+     "loaded": [
+      {
+       "code": 1,
+       "wall": 29.55,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "fail"
+       },
+       "tail": "                            Summary of Failures                               \n\u250f\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2513\n\u2503               \u2503               \u2503  Function     \u2503              \u2503               \u2503\n\u2503  File         \u2503  Function     \u2503  Line         \u2503  Error Line  \u2503  Error        \u2503\n\u2521\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2529\n\u2502  tests/harn\u2026  \u2502  test_video\u2026  \u2502  49           \u2502  132         \u2502  CalledProc\u2026  \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\nResults (9.18s):\n         1 failed\n"
+      },
+      {
+       "code": 0,
+       "wall": 419.44,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      },
+      {
+       "code": 1,
+       "wall": 29.72,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "fail"
+       },
+       "tail": "                           Summary of Failures                               \n\u250f\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2533\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2513\n\u2503               \u2503               \u2503  Function     \u2503              \u2503               \u2503\n\u2503  File         \u2503  Function     \u2503  Line         \u2503  Error Line  \u2503  Error        \u2503\n\u2521\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2547\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2529\n\u2502  tests/harn\u2026  \u2502  test_video\u2026  \u2502  49           \u2502  132         \u2502  FileNotFou\u2026  \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\nResults (12.01s):\n         1 failed\n"
+      },
+      {
+       "code": 0,
+       "wall": 444.72,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      }
+     ]
+    }
+   }
+  },
+  "rec2": {
+   "sha": "b5dcf1bdb4c51714c424a1b85c8f4d12544edd9d",
+   "units": {
+    "tests/harness/pixeltable/test_video.py": {
+     "plain": [
+      {
+       "code": 0,
+       "wall": 13.96,
+       "tests": {
+        "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+       },
+       "tail": ""
+      }
+     ],
+     "traced": {
+      "code": 0,
+      "wall": 410.4,
+      "tests": {
+       "tests/harness/pixeltable/test_video.py::test_video_example_reuses_ingestion_and_recalls_memory": "pass"
+      },
+      "tail": ""
+     },
+     "loaded": []
+    }
+   }
+  }
+ },
+ "verdict": {
+  "tests/harness/pixeltable/test_video.py": "not-reproducible (load-sensitive)"
+ }
+}

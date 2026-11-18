@@ -1,0 +1,1765 @@
+{
+ "spec": "esphome",
+ "probes": [
+  {
+   "sha": "141789d2400fb9f465d95263167c367a79aa8277",
+   "units": 350,
+   "units_total": 656,
+   "git_units": [],
+   "per_unit": {
+    "tests/component_tests/api/test_homeassistant_fields.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/api/test_homeassistant_send.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/api/test_homeassistant_variables.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/api/test_user_services.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/as734x/test_as734x.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/async_tcp/test_libretiny_core_id.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/automation/test_core_automations.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/binary_sensor/test_multi_click.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/bk72xx_ble/test_bdk_version.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/bk72xx_ble/test_family_gate.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/bk72xx_ble/test_power_save.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ble_client/test_on_notify_codegen.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ble_client/test_validation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ble_device_base/test_hub_binding.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/bluetooth_proxy/test_advertisement_filter.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/bluetooth_proxy/test_platform_gates.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/bp5758d/test_bp5758d.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/bq25186/test_pack_registers.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/button/test_button.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/canbus/test_canbus_payload_tables.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/cc1101/test_cc1101_packet_length.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/cc1101/test_cc1101_payload_tables.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/cdc_acm_uart/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/climate_ir/test_supports_heat_cool.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/config_validation/test_advanced_visibility.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/config_validation/test_config.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/counter/test_counter.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/debug/test_thread_usage.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/dfrobot_sen0395/test_output_latency.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/display/test_display_metadata.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/display/test_display_page_show.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/dlms_meter/test_provider.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/dlms_meter/test_removed_keys.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ds3231/test_validation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/emontx/test_lock_on_reboot.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/emontx/test_sensor_defaults.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/emontx/test_synchronous_automations.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/epaper_spi/test_display_metadata.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/epaper_spi/test_enable_pins.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/epaper_spi/test_model_requirements.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/esp32/test_gpio_pin_spec.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/esp32_ble/test_bluedroid_bond_keys.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/esp32_ble/test_bluedroid_hex_wraps.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/esp32_ble_server/test_esp32_ble_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/esp32_ble_tracker/test_direct_conn_guard.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/esp32_ble_tracker/test_mac_filter.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/esp32_ble_tracker/test_scan_window_default.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/esp32_hosted/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/esp32_rmt/test_symbol_budget.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/espnow/test_payload_tables.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ethernet/test_ethernet.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ethernet/test_ksz8851snl.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ethernet/test_manual_ip.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ethernet/test_spi_id.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/fan/test_preset_modes.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/fingerprint_grow/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/globals/test_globals.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/globals/test_storage.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/gpio/test_output_final_validate.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/gree/test_model_define.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/gree/test_switch.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/gsl3670/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/haier/test_status_message_automation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/haier_water_heater/test_water_heater.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/homeassistant/test_imports.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/homeassistant/test_number.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/homeassistant/test_switch.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/http_request/test_request_headers.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/i2c/test_isr_guard.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/i2c/test_zephyr_bus.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/i2s_audio/test_config.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/image/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/improv_ble/test_improv_ble.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ina226/test_alert.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/it8951/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ld2410/test_background_correction.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ld2450/test_link_timeout.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ld2450/test_polygon_pattern.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ld2450/test_polygon_zones.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ld6004/test_area_kinds.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ld6004/test_platforms.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ld6004/test_sensor.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ld600x/test_entities.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ld600x/test_frame_buffer.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ld600x/test_model_sizes.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/libretiny/test_crash_handler.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/libretiny/test_rtl8710b_time_wraps.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/libretiny/test_scons_script.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/libretiny/test_short_enums.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/light/test_addressable_color_wipe_color.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/light/test_default_setters.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/light/test_dim_relative_codegen.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/light/test_effect_validation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/light/test_light_state_layout.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/logger/test_logger.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_canvas_draw_options.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_container_schema_cache.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_container_scrollable.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_debug_outline.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_dropdown_update_fires_event.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_grid_layout.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_keyboard_before_textarea.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_line.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_list.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_lv_conf.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_lv_conf_build_flags.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_lv_conf_path_flag.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_menu.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_multi_instance_theme.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_platforms.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_set_z_index.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_update_action_lazy.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_validation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_widget_label_dependency.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/lvgl/test_widget_state.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/matrix_keypad/test_keys.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mdns/test_service_enable_disable.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/micro_wake_word/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mics_5524/test_mics_5524.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mipi_dsi/test_enable_pins.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mipi_dsi/test_mipi_dsi_config.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mipi_rgb/test_gc9503v.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mipi_rgb/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mipi_rgb/test_reset_sequence.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mipi_spi/test_display_metadata.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mipi_spi/test_final_validate.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mipi_spi/test_get_sequence.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mipi_spi/test_padding_and_offsets.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mipi_spi/test_page_selection.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mitsubishi_cn105/test_climate.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mitsubishi_cn105/test_select.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/modbus/test_modbus.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/modbus_client/test_modbus_client.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/modbus_client/test_write_values_tables.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/modbus_controller/test_broadcast_address.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/modbus_controller/test_custom_pdu.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/modbus_controller/test_write_offset.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/motion/test_hub_function.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mqtt/test_json_message_automation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mqtt/test_mqtt_topics.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mqtt/test_persist_subscriptions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mqtt/test_transport_validation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ms8607/test_ms8607.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/mt6701/test_mt6701.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/network/test_active_interface.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/network/test_network.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/network/test_priority.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/network/test_tcp_send_buffer.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/nextion/test_custom_trigger_args.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/number/test_number.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/online_image/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ota/test_esphome_ota.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/ota/test_web_server_ota.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/output/test_output.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/packages/test_packages.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/provisioning/test_provisioning.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/psram/test_psram.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/remote_receiver/test_slot_counts.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/remote_receiver/test_timer_sampling.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/remote_transmitter/test_byte_payloads.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/remote_transmitter/test_ir_codes.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/remote_transmitter/test_keeloq_action.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/remote_transmitter/test_non_blocking_gate.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/remote_transmitter/test_toto_legacy.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/remote_transmitter/test_transmit_repeat.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/rp2040_ble/test_connection_slots.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/rp2040_ble/test_pool_wrap.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/rx8111/test_alarm_validation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/safe_mode/test_safe_mode.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/script/test_script_codegen.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/select/test_select_is.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/select/test_select_set.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sendspin/test_device_info.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sendspin/test_framework.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sendspin/test_pairing.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sendspin/test_source.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sendspin/test_unpaired_access.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sendspin/test_wizard_roles.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sensor/test_delta_baseline.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sensor/test_sensor.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sensor/test_timeout_throttle.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sensor/test_value_range.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sound_level/test_sensor.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/speaker/test_speaker_play.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/speaker_source/test_media_player.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/spi/test_nrf52_data_rate.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/spi/test_psram_dma.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/st7305/test_st7305.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sx126x/test_sync_value.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/sx127x/test_packet_tables.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/tas58xx/test_tas58xx.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/tas58xx/test_tas58xx_mixer_select.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/tca8418/test_hub_function.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/teleinfo/test_sensor.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/template/test_per_item_lists.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/template/test_template_alarm_codes.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/template/test_template_climate.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/template/test_template_visibility.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/text/test_text.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/text_sensor/test_text_sensor.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/thermostat/test_presets.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/time/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/tmp102/test_config.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/toshiba/test_toshiba_config.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/tuya/test_children.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/tuya/test_select.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/uart/test_exclusive_use.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/uart/test_inherit_settings.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/uart/test_payload_tables.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/uart/test_unclocked.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/uart_mux/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/udp/test_udp_listen_address.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/udp/test_udp_omr_source.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/udp/test_udp_write.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/usb_host/test_sdkconfig.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/usb_uart/test_channel_limit.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/vnc/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/voice_assistant/test_playback_timeout.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/web_server/test_allowed_origins.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/web_server/test_ota_migration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/web_server_idf/test_httpd_sockets.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/wifi/test_default_setters.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/wifi/test_dpp_key.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/wifi/test_min_auth_mode.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/wifi/test_network_count.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/wifi/test_wifi.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/xgzp68xx/test_config.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/component_tests/zephyr_ble_server/test_l2cap_mtu.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/components/test_display/components/test_display/__init__.py": {
+     "code": 5,
+     "git": null,
+     "error": null
+    },
+    "tests/components/test_display/components/test_display/display.py": {
+     "code": 5,
+     "git": null,
+     "error": null
+    },
+    "tests/script/test_analyze_component_buses.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/script/test_build_helpers.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/script/test_check_idf_py_equivalence.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/script/test_check_import_time.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/script/test_ci_check_duplicate_test_ids.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/script/test_ci_custom.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/script/test_ci_custom_new_constants.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/script/test_ci_custom_plain_string_constants.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/script/test_clang_tidy_hash.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/script/test_docker_build.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/script/test_setup.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/script/test_test_build_components.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/analyze_memory/test_build_artifacts.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/analyze_memory/test_ci_memory_impact_comment.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/analyze_memory/test_ci_memory_impact_extract.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/analyze_memory/test_unnamed_constants.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/build_gen/test_arduino8266.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/build_gen/test_espidf.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/build_gen/test_host.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/build_gen/test_platformio.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/build_helpers/test_ccache.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/build_helpers/test_native.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/build_helpers/test_pch.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/build_helpers/test_size_summary.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/cli/test_rename.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/api/test_api_protobuf_generator.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/atm90e32/test_sensor.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/bme68x_bsec2/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/esp32_hosted/test_update.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/esp8266/test_boards.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/esp8266/test_framework_version.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/esp8266/test_preferences.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/esp8266/test_toolchain_validation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/espectre/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/filter_lifetime/test_sensor.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/font/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/light/test_automation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/light/test_gamma_table.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/light/test_restore_state.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/lvgl/test_get_part_state_selector.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/micro_wake_word/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/micro_wake_word/test_task_core.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/nrf52/test_compile_flags.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/nrf52/test_jlink.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/nrf52/test_pch.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/nrf52/test_preferences_storage.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/nrf52/test_run_compile_hex.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/nrf52/test_variant_sdk_version.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/remote_base/test_protocol_defines.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/rs485_frame/test_validation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/shelly_dimmer/test_light.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/socket/test_socket_ipv4_allow.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/socket/test_socket_role_sockets.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_audio_http.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_ch423.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_display.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_esp8266.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_esp_stacktrace.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_espnow.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_i2c.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_libretiny_ota_uf2.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_mqtt_topic_length.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_pcf8574.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_rp2.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_rp2_generate_boards.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_store_yaml.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/test_web_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/udp/test_init.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/vnc/test_keysyms.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/voice_assistant/test_tts_playback_timeout.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/components/zephyr/test_framework.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/core/test_entity_helpers.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_adafruit_ble_dfu.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_address_cache.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_arduino8266_framework.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_arduino8266_toolchain.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_arduino_library.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_async_thread.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_automation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_bundle.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_compiled_config.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_config_normalization.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_config_validation_paths.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_cpp_generator.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_cpp_helpers.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_espidf_component.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_espidf_component_mirror.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_espidf_framework.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_espidf_sbom.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_espidf_toolchain.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_espota2.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_espota2_noise.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_final_validate.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_git.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_happy_eyeballs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_host_toolchain.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_integration_state_subscribe.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_integration_state_utils.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_lazy_imports.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_loader.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_lora_packet_interface.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_nrf52_framework.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_nrf52_ota.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_nrf52_toolchain.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_nrf52_upload.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_platform_hooks.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_platformio_library.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_platformio_runner.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_resolver.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_schema_extractors.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_storage_json.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_substitutions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_tcp_packet_interface.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_voluptuous_schema.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_web_server_helpers.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_web_server_logs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_writer.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_yaml_util.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_zephyr_cdc_acm.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/unit_tests/test_zeroconf.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    }
+   }
+  }
+ ],
+ "cases": [],
+ "git_units": []
+}

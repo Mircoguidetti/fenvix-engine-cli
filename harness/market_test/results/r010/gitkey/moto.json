@@ -1,0 +1,1145 @@
+{
+ "spec": "moto",
+ "probes": [
+  {
+   "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
+   "units": 226,
+   "units_total": 877,
+   "git_units": [],
+   "per_unit": {
+    "tests/test_apigateway/test_apigateway_cloudformation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_apigateway/test_apigateway_gatewayresponses.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_apigateway/test_apigateway_importrestapi.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_apigateway/test_apigateway_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_apigateway/test_apigateway_putrestapi.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_apigateway/test_apigateway_stage.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_apigateway/test_apigateway_vpclink.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_apigatewayv2/test_apigatewayv2_authorizers.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_appsync/test_appsync_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_appsync/test_appsync_schema.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_appsync/test_appsync_tags.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_athena/test_athena.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_autoscaling/test_autoscaling_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_autoscaling/test_autoscaling_metrics.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_autoscaling/test_autoscaling_tags.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_autoscaling/test_elbv2.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_autoscaling/test_policies.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_awslambda/test_lambda_concurrency.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_awslambda/test_lambda_function_urls.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_awslambda/test_lambda_layers.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_backup/test_backup_report_plans.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_batch/test_batch_cloudformation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_batch/test_batch_compute_envs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_batch/test_batch_tags_scheduling_policy.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_batch/test_batch_task_definition.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_batch_simple/test_batch_jobs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_bedrockruntime/test_bedrockruntime.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_budgets/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ce/test_ce_tags.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cleanrooms/test_cleanrooms.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cleanrooms/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_clouddirectory/test_clouddirectory.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cloudformation/test_conditions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cloudformation/test_stack_parsing.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cloudfront/test_cloudfront.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cloudfront/test_cloudfront_invalidation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cloudfront/test_cloudfront_keys.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cloudhsmv2/test_cloudhsmv2.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cloudwatch/test_cloudwatch.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cloudwatch/test_cloudwatch_alarms.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cloudwatch/test_cloudwatch_insight_rules.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_codebuild/test_codebuild.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_codedeploy/test_codedeploy.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cognitoidp/test_cognitoidp_utils.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_cognitoidp/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_comprehend/test_comprehend.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_connectcampaigns/test_connectcampaigns.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_core/test_botocore_stubber.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/test_core/test_decorator_calls.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_core/test_docker.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/test_core/test_eventstream_serialization.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_core/test_instance_metadata.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_core/test_protocols.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_core/test_response_serialization.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_core/test_responses_module.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_core/test_router.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_databrew/test_databrew_rulesets.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_datapipeline/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_directconnect/test_directconnect.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_directconnect/test_directconnect_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_dms/test_dms.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_dms/test_dms_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ds/test_ds.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ds/test_ds_simple_ad_directory.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_dsql/test_dsql.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_dynamodb/models/test_utilities.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_dynamodb/test_dynamodb_query.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_dynamodb/test_dynamodb_scan.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_dynamodb/test_dynamodb_select.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_dynamodb/test_dynamodb_transact.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_dynamodbstreams/test_dynamodbstreams.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ebs/test_ebs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_customer_gateways.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_dhcp_options.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_ec2_cloudformation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_ec2_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_elastic_network_interfaces.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_flow_logs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_hosts.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_iam_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_instance_types.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_instances.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_key_pairs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_prefix_lists.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_settings.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_spot_fleet.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_transit_gateway.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ec2/test_transit_gateway_cloudformation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ecr/test_ecr_cloudformation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ecr/test_ecr_scan_results.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ecr/test_list_images_filters.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ecs/test_ecs_capacity_provider.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ecs/test_ecs_task_tags.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_efs/test_file_system.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_efs/test_filesystem_tagging.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_efs/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_eks/test_eks.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_eks/test_eks_ec2.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_eks/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_elasticache/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_elasticbeanstalk/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_elb/test_elb.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_elb/test_elb_availabilityzones.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_elb/test_elb_subnets.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_elb/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_elbv2/test_elbv2_listener_attributes.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_elbv2/test_elbv2_listener_rule_tags.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_emr/test_emr.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_emr/test_emr_boto3.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_emr/test_emr_instance_types.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_emr/test_emr_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_emrcontainers/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_emrserverless/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_events/test_events_lambdatriggers_integration.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/test_firehose/test_firehose.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_firehose/test_firehose_put.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/test_fis/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_fsx/test_fsx.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_glacier/test_glacier_archives.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_glacier/test_glacier_jobs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_glue/test_schema_registry.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_glue/test_workflows.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_greengrass/test_greengrass_device.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_greengrass/test_greengrass_groups.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_greengrass/test_greengrass_subscriptions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_guardduty/test_guardduty_ipsets.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_iam/test_iam_cloudformation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_inspector2/test_inspector2.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_inspector2/test_inspector2_findings.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_iot/test_iot_billing_groups.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_iot/test_iot_indexing_configuration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_iot/test_iot_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_iot/test_iot_jobs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_iot/test_iot_topic_rules.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_kafka/test_kafka.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_kinesis/test_kinesis_boto3.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_kms/test_kms.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_kms/test_kms_encrypt.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_kms/test_kms_mac.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_kms/test_kms_policy_enforcement.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_kms/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_logs/test_logs_cloudformation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_managedblockchain/test_managedblockchain_nodes.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_managedblockchain/test_managedblockchain_proposalvotes.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_mediaconnect/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_moto_api/state_manager/servermode/test_state_manager.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_moto_api/state_manager/test_batch_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_moto_api/state_manager/test_state_manager.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_mq/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_networkmanager/test_networkmanager.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_opensearch/test_domain_tags.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_opensearch/test_opensearch.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_osis/test_osis.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_pinpoint/test_pinpoint.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_pinpoint/test_pinpoint_application_tags.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_pipes/test_pipes.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_quicksight/test_quicksight.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_quicksight/test_quicksight_dashboard.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_quicksight/test_quicksight_datasets.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_quicksight/test_quicksight_tagging.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_rds/test_filters.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_rds/test_integrations.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_rds/test_rds_clusters.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_rds/test_rds_export_tasks.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_rds/test_rds_proxy.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_rds/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_rekognition/test_rekognition.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_resiliencehub/test_resiliencyhub_tagging.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_resourcegroups/test_resourcegroups.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_resourcegroupstaggingapi/test_resourcegroupstagging_glue.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_resourcegroupstaggingapi/test_resourcegroupstaggingapi_kms.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_resourcegroupstaggingapi/test_resourcegroupstaggingapi_workspaces.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_route53/test_route53_cloudformation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_route53/test_route53_healthchecks.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_route53/test_route53_vpcs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_route53domains/test_route53domains_domain.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_route53resolver/test_route53resolver_rule.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_route53resolver/test_route53resolver_tags.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_s3/test_s3_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_s3/test_s3_lambda_integration.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/test_s3/test_s3_multipart.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_s3/test_s3_object_attributes.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_s3/test_s3_ownership.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_s3/test_s3_presigned_url.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_s3/test_server.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/test_s3control/test_s3control_config_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_s3control/test_s3control_s3.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_s3tables/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_s3vectors/test_s3vector_vectors.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_sagemaker/test_sagemaker_model_bias_job_definitions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_sagemaker/test_sagemaker_pipeline.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_sagemaker/test_sagemaker_processing.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_sagemaker/test_sagemaker_transform.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_scheduler/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_secretsmanager/test_secrets_duplication.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_servicediscovery/test_servicediscovery_instance.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_signer/test_signing_platforms.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_sns/test_subscriptions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_sns/test_topics.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_special_cases/test_custom_amis.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_sqs/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_sqs/test_sqs_cloudformation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_sqs/test_sqs_integration.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ssm/test_ssm_parameterstore.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ssm/test_ssm_patch_group.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_ssoadmin/test_ssoadmin.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_stepfunctions/parser/test_comments.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_stepfunctions/parser/test_map_item.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_stepfunctions/parser/test_parallel_states.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_stepfunctions/parser/test_stepfunctions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_stepfunctions/parser/test_stepfunctions_lambda_integration.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/test_stepfunctions/parser/test_stepfunctions_sns_integration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_sts/test_sts.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_support/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_swf/models/test_history_event.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_swf/models/test_timer.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_swf/models/test_workflow_execution.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_swf/responses/test_tagging.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_swf/test_exceptions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_synthetics/test_synthetics.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_textract/test_server.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_textract/test_textract.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_timestreaminfluxdb/test_timestreaminfluxdb.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_utilities/test_tagging_service.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_wafv2/test_regex_pattern_sets.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/test_workspacesweb/test_workspacesweb.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    }
+   }
+  }
+ ],
+ "cases": [],
+ "git_units": []
+}

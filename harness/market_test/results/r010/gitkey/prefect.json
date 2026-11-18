@@ -1,0 +1,697 @@
+{
+ "spec": "prefect",
+ "probes": [
+  {
+   "sha": "57e0a7c1699656c7a0f41e22f39cecb6fae7e1c0",
+   "units": 57,
+   "units_total": 446,
+   "git_units": [
+    "tests/cli/test_shell.py",
+    "tests/utilities/test_dockerutils.py"
+   ],
+   "per_unit": {
+    "tests/_internal/analytics/test_client.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/_internal/concurrency/test_calls.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/_internal/concurrency/test_primitives.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/_internal/pydantic/test_validated_func.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/_sdk/test_schema_converter_complex.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/_sdk/test_schema_converter_unions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/blocks/test_block_reference.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/cli/cloud/test_ip_allowlist.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/cli/test_dashboard.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/cli/test_events.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/cli/test_shell.py": {
+     "code": 0,
+     "git": {
+      "head": "57e0a7c1699656c7a0f41e22f39cecb6fae7e1c0",
+      "n": 4,
+      "paths": [
+       "HEAD",
+       "config",
+       "packed-refs",
+       "refs"
+      ]
+     },
+     "error": null
+    },
+    "tests/cli/test_task.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/client/test_subscriptions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/concurrency/test_context.py": {
+     "code": 1,
+     "git": null,
+     "error": null
+    },
+    "tests/deployment/test_flow_runs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/engine/reliability/test_deadlocks.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/client/instrumentation/test_events_workers_instrumentation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/client/test_automations_server_compatibility.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/client/test_events_client.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/client/test_flow_run_subscriber.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/client/test_resource_schema.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/server/actions/test_deleting_flow_run.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/server/actions/test_sending_notification.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/server/models/test_automation_held_events.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/server/test_events_schema.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/server/test_resource_schema.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/server/triggers/test_service_changes.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/infrastructure/provisioners/test_coiled.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/plugins/test_plugins.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/runner/test__control_channel.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/runner/test__event_emitter.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/runner/test_storage.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/runtime/test_flow_run.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/api/test_csrf_token.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/api/test_pagination.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/api/test_root.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/database/test_dependencies.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/database/test_queries.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/models/test_block_registration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/models/test_concurrency_limits.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/models/test_concurrency_limits_v2.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/models/test_saved_searches.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/orchestration/api/test_block_schemas.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/orchestration/api/test_block_types.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/orchestration/api/test_deployments.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/orchestration/api/test_workers.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/orchestration/test_core_policy.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/orchestration/test_policies.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/schemas/test_schedules.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/services/test_perpetual_services.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/services/test_service_subsets.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/utilities/test_postgres_listener.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/utilities/schema_tools/test_hydration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/utilities/schema_tools/test_ssrf.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/utilities/test_dockerutils.py": {
+     "code": 0,
+     "git": {
+      "head": "57e0a7c1699656c7a0f41e22f39cecb6fae7e1c0",
+      "n": 3,
+      "paths": [
+       "HEAD",
+       "config",
+       "packed-refs"
+      ]
+     },
+     "error": null
+    },
+    "tests/utilities/test_importtools.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/workers/test_cleanup.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    }
+   }
+  },
+  {
+   "sha": "5e8ca118fc514ffe9ab3355ea5cf1c28c347de11",
+   "units": 57,
+   "units_total": 446,
+   "git_units": [
+    "tests/cli/test_shell.py",
+    "tests/utilities/test_dockerutils.py"
+   ],
+   "per_unit": {
+    "tests/_internal/analytics/test_client.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/_internal/concurrency/test_calls.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/_internal/concurrency/test_primitives.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/_internal/pydantic/test_validated_func.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/_sdk/test_schema_converter_complex.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/_sdk/test_schema_converter_unions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/blocks/test_block_reference.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/cli/cloud/test_ip_allowlist.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/cli/test_dashboard.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/cli/test_events.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/cli/test_shell.py": {
+     "code": 0,
+     "git": {
+      "head": "5e8ca118fc514ffe9ab3355ea5cf1c28c347de11",
+      "n": 4,
+      "paths": [
+       "HEAD",
+       "config",
+       "packed-refs",
+       "refs"
+      ]
+     },
+     "error": null
+    },
+    "tests/cli/test_task.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/client/test_subscriptions.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/concurrency/test_context.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/deployment/test_flow_runs.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/engine/reliability/test_deadlocks.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/client/instrumentation/test_events_workers_instrumentation.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/client/test_automations_server_compatibility.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/client/test_events_client.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/client/test_flow_run_subscriber.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/client/test_resource_schema.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/server/actions/test_deleting_flow_run.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/server/actions/test_sending_notification.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/server/models/test_automation_held_events.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/server/test_events_schema.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/server/test_resource_schema.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/events/server/triggers/test_service_changes.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/infrastructure/provisioners/test_coiled.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/plugins/test_plugins.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/runner/test__control_channel.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/runner/test__event_emitter.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/runner/test_storage.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/runtime/test_flow_run.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/api/test_csrf_token.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/api/test_pagination.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/api/test_root.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/database/test_dependencies.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/database/test_queries.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/models/test_block_registration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/models/test_concurrency_limits.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/models/test_concurrency_limits_v2.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/models/test_saved_searches.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/orchestration/api/test_block_schemas.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/orchestration/api/test_block_types.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/orchestration/api/test_deployments.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/orchestration/api/test_workers.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/orchestration/test_core_policy.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/orchestration/test_policies.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/schemas/test_schedules.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/services/test_perpetual_services.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/services/test_service_subsets.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/server/utilities/test_postgres_listener.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/utilities/schema_tools/test_hydration.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/utilities/schema_tools/test_ssrf.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/utilities/test_dockerutils.py": {
+     "code": 0,
+     "git": {
+      "head": "5e8ca118fc514ffe9ab3355ea5cf1c28c347de11",
+      "n": 3,
+      "paths": [
+       "HEAD",
+       "config",
+       "packed-refs"
+      ]
+     },
+     "error": null
+    },
+    "tests/utilities/test_importtools.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    },
+    "tests/workers/test_cleanup.py": {
+     "code": 0,
+     "git": null,
+     "error": null
+    }
+   }
+  }
+ ],
+ "cases": [
+  {
+   "unit": "tests/utilities/test_dockerutils.py",
+   "rec": "03af2c29e70caab3d58527a47e08864413be4cb1",
+   "cur": "c1bd94996f1835272aa0f937257a2e5d2a9ff030",
+   "rec_code": 0,
+   "fresh_code": 0,
+   "git": {
+    "head": "03af2c29e70caab3d58527a47e08864413be4cb1",
+    "n": 3,
+    "paths": [
+     "HEAD",
+     "config",
+     "packed-refs"
+    ]
+   },
+   "closure": "git:HEAD",
+   "why": "HEAD",
+   "fresh_same_as_cached": false,
+   "n_ids_changed": 18
+  },
+  {
+   "unit": "tests/utilities/test_dockerutils.py",
+   "rec": "29241a3aff4ad41bf79ed5782ea4059cb74d0b4d",
+   "cur": "daeaa15af4a8c99da7e40bb347124133fba7e075",
+   "rec_code": 0,
+   "fresh_code": 0,
+   "git": {
+    "head": "29241a3aff4ad41bf79ed5782ea4059cb74d0b4d",
+    "n": 3,
+    "paths": [
+     "HEAD",
+     "config",
+     "packed-refs"
+    ]
+   },
+   "closure": "git:HEAD",
+   "why": "HEAD",
+   "fresh_same_as_cached": false,
+   "n_ids_changed": 18
+  },
+  {
+   "unit": "tests/utilities/test_dockerutils.py",
+   "rec": "daeaa15af4a8c99da7e40bb347124133fba7e075",
+   "cur": "7633e3ec7acf12d820c995404f65b2d3f3f8189c",
+   "rec_code": 0,
+   "fresh_code": 0,
+   "git": {
+    "head": "daeaa15af4a8c99da7e40bb347124133fba7e075",
+    "n": 3,
+    "paths": [
+     "HEAD",
+     "config",
+     "packed-refs"
+    ]
+   },
+   "closure": "git:HEAD",
+   "why": "HEAD",
+   "fresh_same_as_cached": false,
+   "n_ids_changed": 18
+  }
+ ],
+ "git_units": [
+  "tests/cli/test_shell.py",
+  "tests/utilities/test_dockerutils.py"
+ ]
+}
