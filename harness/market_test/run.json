@@ -1,9 +1,12 @@
 {
- "run_id": "m6",
+ "run_id": "m7",
  "walk": [
   {
-   "spec": "mlflow-dev-late",
-   "shards": 4,
+   "spec": "mlflow-dev",
+   "shards": 2,
+   "only": [
+    1
+   ],
    "budget_min": 330
   }
  ]

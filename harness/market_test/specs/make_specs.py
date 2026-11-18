@@ -211,6 +211,9 @@ SPECS = [
 # it off. Both are measured: "mlflow" (CI mode) and "mlflow-dev".
 _mlflow = next(s for s in SPECS if s["name"] == "mlflow")
 SPECS.append(dict(json.loads(json.dumps(_mlflow)), name="mlflow-dev", ci_env="false", untracked_exists_are_outputs=True))
+# tests/server/auth/test_auth.py hangs to the 900 s unit timeout at every commit in developer mode (it fails at the
+# baseline, so it is outside the env-ok shares anyway): left out of the mlflow-dev sample (run m7 re-walks shard 1)
+SPECS[-1]["units"]["exclude"] = SPECS[-1]["units"]["exclude"] + ["tests/server/auth/test_auth.py"]
 HEADS["mlflow-dev"] = HEADS["mlflow"]
 
 # late windows: the newest commits of repositories whose 51-commit walk stops at the time budget (every commit

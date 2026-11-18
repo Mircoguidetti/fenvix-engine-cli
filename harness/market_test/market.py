@@ -46,7 +46,12 @@ def shards_of(run_ids):
         for p in sorted(d.glob("*.json*")) if d.exists() else []:
             x = aggregate.load(p)
             walk[x["spec"]["name"]].append(x)
-        out.update(walk)  # a later run replaces an earlier one
+        for name, shs in walk.items():  # a later run replaces the same shard of an earlier one
+            cur = {sh["shard"]: sh for sh in out.get(name, [])}
+            if shs and cur and shs[0].get("nshards") != next(iter(cur.values())).get("nshards"):
+                cur = {}
+            cur.update({sh["shard"]: sh for sh in shs})
+            out[name] = [cur[k] for k in sorted(cur)]
     return out
 
 

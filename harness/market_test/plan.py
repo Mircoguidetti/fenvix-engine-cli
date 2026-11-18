@@ -33,7 +33,7 @@ def main():
     walk, flaky = [], []
     for w in run.get("walk", []):
         n = w.get("shards", 1)
-        for s in range(n):
+        for s in w.get("only", range(n)):  # market test: re-run selected shards only
             walk.append(entry(w["spec"], {"shard": f"{s}/{n}", "budget": str(w.get("budget_min", 320))}))
     for f in run.get("flaky", []):
         spec = json.loads((HERE / "specs" / f"{f['spec']}.json").read_text())

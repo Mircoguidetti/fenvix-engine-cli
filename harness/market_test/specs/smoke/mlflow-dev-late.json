@@ -19,7 +19,8 @@
   ],
   "exclude": [
    "tests/examples/*",
-   "tests/db/*"
+   "tests/db/*",
+   "tests/server/auth/test_auth.py"
   ],
   "sample": 0.04,
   "seed": "s2"
