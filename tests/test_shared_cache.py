@@ -179,6 +179,7 @@ def test_second_machine_reuses_with_proof_what_the_first_recorded(service, pytes
     r2.assert_outcomes(passed=5)
     assert rep2["pull_proven"] == 5 and rep2["error"] is None
     assert o2["cache"]["reused"] == 5
+    assert rep2["push_entry_docs_new"] == 0  # what it pulled has the same address: nothing goes back
     # machine 3: one source file and one data file changed -> only their tests run, the rest is reused
     (project / "pkg" / "b.py").write_text("def inc(x):\n    return x + 2\n")
     r3, o3, rep3 = machine_run(pytester, tmp_path, url, t["a"], "3")
@@ -310,3 +311,43 @@ def test_fenvix_run_on_two_machines_sharing_the_service(service, tmp_path):
     assert "proven from entries recorded on other machines" in (tmp_path / "summary-2.md").read_text()
     rv, v = job("2", "verify", "--summary", str(tmp_path / "job-2" / "summary.json"))
     assert rv.returncode == 0 and v["checked"] == 5 and v["wrong"] == []
+
+
+def _non_loopback_ip() -> str | None:
+    import socket
+
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("192.0.2.1", 9))  # no packet is sent: picks the outgoing interface
+        ip = s.getsockname()[0]
+        s.close()
+    except OSError:
+        return None
+    return None if ip.startswith("127.") else ip
+
+
+def test_service_on_a_non_loopback_address_is_reachable_under_the_closed_network(tmp_path, pytester, monkeypatch):
+    """Level 0 refuses external hosts even between tests; the client's own requests must still reach the service,
+    while the tests stay behind the closed network."""
+    ip = _non_loopback_ip()
+    if ip is None:
+        pytest.skip("no non-loopback interface")
+    try:
+        svc = cs.Service(str(tmp_path / "svc"), host=ip, port=0, quiet=True)
+    except OSError:
+        pytest.skip(f"cannot listen on {ip}")
+    svc.start_thread()
+    try:
+        tok = cs.Tokens.add(os.path.join(svc.data, "tokens.json"), "org-a")
+        for k in ("FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT", "FENVIX_RUNTIME_MEMO", "FENVIX_CACHE_TOKEN",
+                  "no_proxy", "NO_PROXY"):
+            monkeypatch.delenv(k, raising=False)
+        monkeypatch.setenv("no_proxy", ip)
+        write(pytester.path, {"test_n.py": f"import socket, pytest\n\ndef test_closed():\n"
+                                           f"    with pytest.raises(OSError):\n"
+                                           f"        socket.create_connection(('{ip}', {svc.httpd.server_address[1]}), 2)\n"})
+        r, o, rep = machine_run(pytester, tmp_path, f"http://{ip}:{svc.httpd.server_address[1]}/org-a/n", tok, "1")
+        r.assert_outcomes(passed=1)
+        assert rep["error"] is None and rep["push_entry_docs_new"] == 1
+    finally:
+        svc.shutdown()

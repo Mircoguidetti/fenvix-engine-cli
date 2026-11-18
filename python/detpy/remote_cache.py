@@ -35,6 +35,10 @@ import pytest
 
 from . import _core
 
+# real clocks, bound before Level 0 virtualises the time module (the client's timings and retry waits are real)
+_perf = time.perf_counter
+_sleep = time.sleep
+
 SCHEMES = ("http://", "https://")
 DOC_VERSION = 1
 _ENTRY_FIELDS = ("outcome", "report", "fingerprint", "duration", "run", "config", "runtime", "epoch", "env", "data")
@@ -70,6 +74,22 @@ class ServiceError(Exception):
     pass
 
 
+class _NetworkOpen:
+    """Level 0 closes the network (external hosts are refused even between tests): the client's own requests to the
+    service run with the policy suspended, in the main thread, while no test runs."""
+
+    def __enter__(self):
+        from . import network
+
+        self.network = network
+        self.saved = network.POLICY
+        network.POLICY = None
+
+    def __exit__(self, *exc):
+        self.network.POLICY = self.saved
+        return False
+
+
 class Http:
     def __init__(self, base: str, token: str | None, timeout: float = 60.0, retries: int = 2):
         self.base = base.rstrip("/")
@@ -95,7 +115,7 @@ class Http:
         for attempt in range(self.retries + 1):
             req = urllib.request.Request(self.base + path, data=data, method=method, headers=headers)
             try:
-                with urllib.request.urlopen(req, timeout=self.timeout) as r:
+                with _NetworkOpen(), urllib.request.urlopen(req, timeout=self.timeout) as r:
                     raw = r.read()
                     self.requests += 1
                     self.sent += len(data or b"")
@@ -114,7 +134,7 @@ class Http:
             except (urllib.error.URLError, OSError, ValueError) as e:
                 last = ServiceError(f"{type(e).__name__} on {path}: {getattr(e, 'reason', e)}")
             if attempt < self.retries:
-                time.sleep(0.5 * (2 ** attempt))
+                _sleep(0.5 * (2 ** attempt))
         raise last  # type: ignore[misc]
 
 
@@ -178,41 +198,57 @@ def attach(config, pc) -> None:
 
 
 # ---------------------------------------------------------------------------------------------------------------------
-def _entry_doc(nodeid: str, e: dict, files: list, sets: list, file_ids: dict) -> tuple[dict, dict]:
-    """(entry document, {file doc id: file doc} it references) from an entry of the store JSON."""
-    used: list[int] = []
-    pos: dict[int, int] = {}
+class _Docs:
+    """Content-addressed documents of a store (the JSON the Rust core writes): one ``file`` document per version of a
+    source file (its facts), one ``set`` document per set of files (sorted file document ids; sets are shared by
+    many tests), one ``entry`` document per test. Every document is independent of the local file and set indices,
+    so the same entry gives the same address on every machine."""
 
-    def ref(fi: int) -> int:
-        if fi not in pos:
-            pos[fi] = len(used)
-            used.append(fi)
-        return pos[fi]
+    def __init__(self, store: dict):
+        self.files = store.get("files", [])
+        self.sets = store.get("sets", [])
+        self.file_id: dict[int, str] = {}
+        self.set_id: dict[tuple, str] = {}
+        self.docs: dict[str, dict] = {}
 
-    def set_refs(sid) -> list[int]:
-        s = sets[sid] if isinstance(sid, int) and 0 <= sid < len(sets) else []
-        return [ref(fi) for fi in s if 0 <= fi < len(files)]
-
-    content, skeleton, hooks = set_refs(e.get("content")), set_refs(e.get("skeleton")), set_refs(e.get("hooks"))
-    u = e.get("units") or []
-    units = [[ref(u[i]), u[i + 1]] for i in range(0, len(u) - 1, 2) if 0 <= u[i] < len(files)]
-    fdocs = {}
-    ids = []
-    for fi in used:
-        fid = file_ids.get(fi)
+    def file(self, fi: int) -> str:
+        fid = self.file_id.get(fi)
         if fid is None:
-            f = files[fi]
-            fd = {"kind": "file", "v": DOC_VERSION, "path": f["path"], "content": f["content"],
-                  "skeleton": f["skeleton"], "hooks": f["hooks"], "units": f.get("units", []),
-                  "imports": f.get("imports", [])}
-            fid = doc_id(fd)
-            file_ids[fi] = fid
-            fdocs[fid] = fd
-        ids.append(fid)
-    doc = {"kind": "entry", "v": DOC_VERSION, "nodeid": nodeid, "proof_key": e.get("key"),
-           "entry": {k: e.get(k) for k in _ENTRY_FIELDS}, "files": ids, "content": content, "skeleton": skeleton,
-           "hooks": hooks, "units": units}
-    return doc, fdocs
+            f = self.files[fi]
+            d = {"kind": "file", "v": DOC_VERSION, "path": f["path"], "content": f["content"],
+                 "skeleton": f["skeleton"], "hooks": f["hooks"], "units": f.get("units", []),
+                 "imports": f.get("imports", [])}
+            fid = doc_id(d)
+            self.file_id[fi] = fid
+            self.docs[fid] = d
+        return fid
+
+    def set_of(self, fids) -> str:
+        key = tuple(sorted(set(fids)))
+        sid = self.set_id.get(key)
+        if sid is None:
+            d = {"kind": "set", "v": DOC_VERSION, "files": list(key)}
+            sid = doc_id(d)
+            self.set_id[key] = sid
+            self.docs[sid] = d
+        return sid
+
+    def entry(self, nodeid: str, e: dict) -> dict:
+        n = len(self.files)
+
+        def members(sid) -> list[str]:
+            s = self.sets[sid] if isinstance(sid, int) and 0 <= sid < len(self.sets) else []
+            return [self.file(fi) for fi in s if 0 <= fi < n]
+
+        u = e.get("units") or []
+        pairs = [(self.file(u[i]), u[i + 1]) for i in range(0, len(u) - 1, 2) if 0 <= u[i] < n]
+        ufiles = sorted({f for f, _ in pairs})
+        pos = {f: k for k, f in enumerate(ufiles)}
+        return {"kind": "entry", "v": DOC_VERSION, "nodeid": nodeid, "proof_key": e.get("key"),
+                "entry": {k: e.get(k) for k in _ENTRY_FIELDS},
+                "content": self.set_of(members(e.get("content"))), "skeleton": self.set_of(members(e.get("skeleton"))),
+                "hooks": self.set_of(members(e.get("hooks"))), "unit_files": self.set_of(ufiles),
+                "units": sorted([pos[f], k] for f, k in pairs)}
 
 
 class RemoteCache:
@@ -247,32 +283,51 @@ class RemoteCache:
             if f is not None:
                 pc.store.set_fresh(path, content, f[0], f[1], f[2], f[3])
 
-    def _inject(self, doc: dict, files: dict) -> bool:
-        store = self.pc.store
-        idx = []
-        for fid in doc["files"]:
-            f = files.get(fid)
-            if f is None:
-                return False
-            units = [(u["q"], u["a"], u["b"], u["d"]) if isinstance(u, dict) else tuple(u) for u in f.get("units", [])]
-            idx.append(store.add_file(f["path"], f["content"], f["skeleton"], f["hooks"], units, f.get("imports", [])))
+    def _set_indices(self, sid: str, docs: dict, memo: dict) -> list[int] | None:
+        """Store indices of the files of set document ``sid`` (added to the local store as needed)."""
+        if sid in memo:
+            return memo[sid]
+        sd = docs.get(sid)
+        out = None
+        if sd is not None:
+            store, out = self.pc.store, []
+            for fid in sd["files"]:
+                ix = memo.get(fid)
+                if ix is None:
+                    f = docs.get(fid)
+                    if f is None:
+                        out = None
+                        break
+                    units = [(u["q"], u["a"], u["b"], u["d"]) if isinstance(u, dict) else tuple(u)
+                             for u in f.get("units", [])]
+                    ix = store.add_file(f["path"], f["content"], f["skeleton"], f["hooks"], units,
+                                        f.get("imports", []))
+                    memo[fid] = ix
+                out.append(ix)
+        memo[sid] = out
+        return out
+
+    def _inject(self, doc: dict, docs: dict, memo: dict) -> bool:
+        sets = [self._set_indices(doc[k], docs, memo) for k in ("content", "skeleton", "hooks", "unit_files")]
+        if any(x is None for x in sets):
+            return False
+        content, skeleton, hooks, ufiles = sets
         e = doc["entry"]
-        store.record(doc["nodeid"], e["outcome"], json.dumps(e.get("report")), e["fingerprint"],
-                     float(e.get("duration") or 0.0), e["run"], e["config"], e["runtime"], e.get("epoch"),
-                     [tuple(x) for x in e.get("env") or []], [tuple(x) for x in e.get("data") or []],
-                     [idx[i] for i in doc["content"]], [idx[i] for i in doc["skeleton"]],
-                     [idx[i] for i in doc["hooks"]], [(idx[f], u) for f, u in doc["units"]])
+        self.pc.store.record(doc["nodeid"], e["outcome"], json.dumps(e.get("report")), e["fingerprint"],
+                             float(e.get("duration") or 0.0), e["run"], e["config"], e["runtime"], e.get("epoch"),
+                             [tuple(x) for x in e.get("env") or []], [tuple(x) for x in e.get("data") or []],
+                             content, skeleton, hooks, [(ufiles[f], k) for f, k in doc["units"]])
         return True
 
     def pull(self, items) -> None:
         pc = self.pc
-        t0 = time.perf_counter()
+        t0 = _perf()
         st = self.stats
         st.update(pull_candidates=0, pull_tests_with_candidates=0, pull_local_already=0, pull_injected=0,
                   pull_proven=0)
-        nids = [it.nodeid for it in items]
         keys: dict[str, str] = {}
-        for nid in nids:
+        for it in items:
+            nid = it.nodeid
             keys[lookup_key(nid, pc.config_digest, pc.runtime_digest, None)] = nid
             keys[lookup_key(nid, pc.config_digest, pc.runtime_digest, pc.epoch)] = nid
         try:
@@ -282,19 +337,21 @@ class RemoteCache:
                 found.update(self.http.call("POST", self._path("lookup"),
                                             {"keys": klist[i:i + 5000], "limit": 3})["found"])
             per_test: dict[str, list] = {}
-            for k, docs in found.items():
-                per_test.setdefault(keys[k], []).extend(docs)
-            need = sorted({d for ds in per_test.values() for d in ds})
-            docs = self._get(need)
-            fneed = sorted({f for d in docs.values() for f in d.get("files", [])})
-            files = self._get(fneed)
+            for k, ids in found.items():
+                per_test.setdefault(keys[k], []).extend(ids)
+            docs = self._get(sorted({d for ds in per_test.values() for d in ds}))
+            sets = self._get(sorted({d[k] for d in docs.values() for k in ("content", "skeleton", "hooks",
+                                                                           "unit_files") if d.get(k)}))
+            docs.update(sets)
+            docs.update(self._get(sorted({f for sd in sets.values() for f in sd.get("files", [])})))
         except ServiceError as e:
             self._fail("pull", e)
-            st["pull_seconds"] = round(time.perf_counter() - t0, 3)
+            st["pull_seconds"] = round(_perf() - t0, 3)
             return
+        t1 = _perf()
+        st["pull_fetch_seconds"] = round(t1 - t0, 3)
         st["pull_candidates"] = sum(len(v) for v in per_test.values())
         st["pull_tests_with_candidates"] = len(per_test)
-        # candidates newest first; skip any the local store already has
         self._refresh_facts()
         pending = {}
         for nid, ids in per_test.items():
@@ -302,17 +359,17 @@ class RemoteCache:
             if ok:
                 st["pull_local_already"] += 1
                 continue
-            seen, cands = set(), []
-            for d in ids:
-                if d in docs and d not in seen and docs[d].get("nodeid") == nid:
-                    seen.add(d)
+            cands = []
+            for d in ids:  # newest first
+                if d in docs and d not in cands and docs[d].get("kind") == "entry" and docs[d].get("nodeid") == nid:
                     cands.append(d)
             if cands:
                 pending[nid] = cands
+        memo: dict = {}
         rnd = 0
         while pending:
             for nid, cands in pending.items():
-                if self._inject(docs[cands[0]], files):
+                if self._inject(docs[cands[0]], docs, memo):
                     st["pull_injected"] += 1
                     self.pulled_docs.add(cands[0])
             self._refresh_facts()
@@ -326,7 +383,8 @@ class RemoteCache:
             pending = nxt
             rnd += 1
         st["pull_rounds"] = rnd
-        st["pull_seconds"] = round(time.perf_counter() - t0, 3)
+        st["pull_merge_seconds"] = round(_perf() - t1, 3)
+        st["pull_seconds"] = round(_perf() - t0, 3)
 
     def _get(self, ids: list[str]) -> dict:
         out = {}
@@ -360,7 +418,7 @@ class RemoteCache:
 
     def push(self) -> None:
         pc = self.pc
-        t0 = time.perf_counter()
+        t0 = _perf()
         st = self.stats
         try:
             with open(os.path.join(self.local_dir, "proof-cache.json")) as fh:
@@ -368,26 +426,39 @@ class RemoteCache:
         except (OSError, ValueError) as e:
             self._fail("push", ServiceError(f"local store unreadable: {e}"))
             return
-        files, sets = store.get("files", []), store.get("sets", [])
         journal = self._journal() | self.pulled_docs
-        entry_docs, file_docs, rows, file_ids = {}, {}, [], {}
+        ds = _Docs(store)
+        entry_docs, rows = {}, []
         for nid, e in store.get("tests", {}).items():
-            doc, fdocs = _entry_doc(nid, e, files, sets, file_ids)
+            doc = ds.entry(nid, e)
             did = doc_id(doc)
             if did in journal:
                 continue
             entry_docs[did] = doc
-            file_docs.update(fdocs)
-            rows.append({"key": lookup_key(nid, e.get("config", ""), e.get("runtime", ""), e.get("epoch")), "doc": did,
-                         "run": e.get("run")})
-        st.update(push_entries=len(entry_docs), push_entry_docs_new=0, push_file_docs_new=0)
+            rows.append({"key": lookup_key(nid, e.get("config", ""), e.get("runtime", ""), e.get("epoch")),
+                         "doc": did, "run": e.get("run")})
+        # only the file and set documents the new entries need
+        need: dict[str, dict] = {}
+        for d in entry_docs.values():
+            for k in ("content", "skeleton", "hooks", "unit_files"):
+                sd = ds.docs[d[k]]
+                need[d[k]] = sd
+                for f in sd["files"]:
+                    need[f] = ds.docs[f]
+        st.update(push_entries=len(entry_docs), push_entry_docs_new=0, push_file_docs_new=0, push_set_docs_new=0)
+        st["push_build_seconds"] = round(_perf() - t0, 3)
         try:
-            for docs, label in ((file_docs, "push_file_docs_new"), (entry_docs, "push_entry_docs_new")):
+            # files and sets first, entries next, then the key log: a key never points at a missing document
+            for docs, label in ((need, None), (entry_docs, "push_entry_docs_new")):
                 ids = sorted(docs)
                 missing = []
                 for i in range(0, len(ids), 20000):
                     missing += self.http.call("POST", "/v1/blobs/missing", {"ids": ids[i:i + 20000]})["missing"]
-                st[label] = len(missing)
+                if label:
+                    st[label] = len(missing)
+                else:
+                    st["push_file_docs_new"] = sum(1 for m in missing if docs[m].get("kind") == "file")
+                    st["push_set_docs_new"] = sum(1 for m in missing if docs[m].get("kind") == "set")
                 batch, size = {}, 0
                 for i in missing:
                     batch[i] = docs[i]
@@ -410,7 +481,7 @@ class RemoteCache:
                 st["receipts_doc"] = rid
         except ServiceError as e:
             self._fail("push", e)
-        st["push_seconds"] = round(time.perf_counter() - t0, 3)
+        st["push_seconds"] = round(_perf() - t0, 3)
 
     def _receipts_doc(self):
         rows = []
@@ -473,7 +544,8 @@ class _Hooks:
         line = (f"shared cache {r['service']} [{r['namespace']}]: candidates for {r.get('pull_tests_with_candidates', 0)}"
                 f" tests, {r.get('pull_proven', 0)} proven from the service, {r.get('pull_local_already', 0)} already "
                 f"proven locally; pushed {r.get('push_entry_docs_new', 0)} entries "
-                f"({r.get('push_file_docs_new', 0)} file facts); {r['requests']} requests")
+                f"({r.get('push_file_docs_new', 0)} file facts); {r['requests']} requests, "
+                f"pull {r.get('pull_seconds', 0)} s, push {r.get('push_seconds', 0)} s")
         tr.write_line(line)
         if r.get("error"):
             tr.write_line(f"shared cache: {r['error']} (the local mirror {r['local_dir']} was used)", yellow=True)

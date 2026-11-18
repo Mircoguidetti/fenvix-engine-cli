@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+"""Compare job 2 on one machine with job 2 on another machine sharing the cache service.
+
+    shared-cache-compare ROOT [--json OUT.json]
+
+ROOT holds ``one-machine-job-1``, ``one-machine-job-2``, ``two-machines-job-1``, ``two-machines-job-2``, each with
+``fenvix/summary.json`` (and ``fenvix/verify.json`` for the job 2s), as written by ``fenvix-run`` (the layout of
+runner/local-shared-demo.sh and of the shared-cache workflow's artifacts). Prints a Markdown table; the exit item is
+"cross-machine reuse > 90% of what the same pair reuses on one machine, 0 wrong, every reuse checked".
+Standard library only.
+"""
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+
+def load(root: Path, job: str, name: str) -> dict:
+    for p in (root / job / "fenvix" / name, root / job / name):
+        if p.exists():
+            return json.loads(p.read_text())
+    return {}
+
+
+def row(s: dict, v: dict) -> dict:
+    return {"tests": s.get("tests"), "reused": s.get("reused_with_proof"), "ran": s.get("ran"),
+            "reused_from_service": s.get("reused_from_shared_cache", 0),
+            "saved_s": s.get("test_seconds_saved"), "spent_s": s.get("test_seconds_run"),
+            "share": s.get("share_of_test_time_saved"), "wall_s": s.get("wall_seconds"),
+            "checked": v.get("checked"), "wrong": len(v.get("wrong", [])) if v else None,
+            "flaky": len(v.get("flaky", [])) if v else None,
+            "runtime": (s.get("runtime") or {}).get("digest"), "machine": s.get("machine"),
+            "not_reused": s.get("not_reused_reasons"), "shared_error": (s.get("shared_cache") or {}).get("error")}
+
+
+def compare(root: Path) -> dict:
+    one1, one2 = load(root, "one-machine-job-1", "summary.json"), load(root, "one-machine-job-2", "summary.json")
+    x1, x2 = load(root, "two-machines-job-1", "summary.json"), load(root, "two-machines-job-2", "summary.json")
+    v_one, v_x = load(root, "one-machine-job-2", "verify.json"), load(root, "two-machines-job-2", "verify.json")
+    one, cross = row(one2, v_one), row(x2, v_x)
+    ratio_n = (cross["reused"] / one["reused"]) if one.get("reused") else None
+    ratio_s = (cross["saved_s"] / one["saved_s"]) if one.get("saved_s") else None
+    m1, m2 = (x1.get("machine") or {}), (x2.get("machine") or {})
+    return {
+        "target": Path(one2.get("project", "?")).name, "commit_n": (one1.get("commit") or "")[:12],
+        "commit_n1": (one2.get("commit") or "")[:12], "one_machine": one, "two_machines": cross,
+        "reuse_ratio_tests": ratio_n, "reuse_ratio_seconds": ratio_s,
+        "two_machines_differ": bool(m1 and m2 and (m1.get("machine_id"), m1.get("boot_id"), m1.get("hostname"))
+                                    != (m2.get("machine_id"), m2.get("boot_id"), m2.get("hostname"))),
+        "runtime_equal_across_machines": bool(x1.get("runtime", {}).get("digest"))
+                                         and x1["runtime"].get("digest") == (x2.get("runtime") or {}).get("digest"),
+        "runtime_parts_changed": x2.get("runtime_changed_since_previous_job"),
+        "machine_1": m1, "machine_2": m2,
+        "every_reuse_checked": (v_x.get("checked") == v_x.get("reused")) if v_x else False,
+    }
+
+
+def fmt(c: dict) -> str:
+    o, x = c["one_machine"], c["two_machines"]
+    pct = lambda v: "n/a" if v is None else f"{v:.1%}"  # noqa: E731
+    L = [f"### {c['target']} `{c['commit_n']}` -> `{c['commit_n1']}`", "",
+         "| job 2 | tests | reused with proof | from the service | test time saved | share | checked | wrong |",
+         "|---|---:|---:|---:|---:|---:|---:|---:|",
+         f"| same machine as job 1 | {o['tests']} | {o['reused']} | - | {o['saved_s']} s | {pct(o['share'])} | "
+         f"{o['checked']} | {o['wrong']} |",
+         f"| other machine, shared cache service | {x['tests']} | {x['reused']} | {x['reused_from_service']} | "
+         f"{x['saved_s']} s | {pct(x['share'])} | {x['checked']} | {x['wrong']} |", "",
+         f"Cross-machine reuse / one-machine reuse: **{pct(c['reuse_ratio_tests'])}** of the tests, "
+         f"{pct(c['reuse_ratio_seconds'])} of the test time. Two different machines: {c['two_machines_differ']} "
+         f"({c['machine_1'].get('hostname')} / {c['machine_2'].get('hostname')}). Runtime identity equal on both: "
+         f"{c['runtime_equal_across_machines']}."]
+    if x.get("shared_error"):
+        L.append(f"Service error: {x['shared_error']}")
+    return "\n".join(L) + "\n"
+
+
+def main(argv: list[str]) -> int:
+    roots = [Path(a) for a in argv if not a.startswith("--")]
+    out = None
+    if "--json" in argv:
+        out = Path(argv[argv.index("--json") + 1])
+        roots = [r for r in roots if r != out]
+    results = [compare(r) for r in roots]
+    for c in results:
+        print(fmt(c))
+    if out:
+        out.write_text(json.dumps(results, indent=1))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
