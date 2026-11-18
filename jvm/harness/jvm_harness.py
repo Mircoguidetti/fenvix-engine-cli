@@ -250,6 +250,10 @@ def round_(c, r: Runner, out, a):
     over = lambda: time.time() - t_start > budget  # noqa: E731
     base = [r.run("base", randomize=True) for _ in range(a.runs)]
     det = [r.run("det", seed=0) for _ in range(a.runs)]
+    if not any(x["outcomes"] for x in det):
+        summary = {"name": name_of(c), "status": "det-runs-empty", "detail": "no test ran under --det (see runs.log)"}
+        json.dump(summary, open(os.path.join(out, "summary-invalid.json"), "w"), indent=1)
+        return summary
     ids = sorted(set().union(*[set(x["outcomes"]) for x in base + det]))
     doc = doc_ids(c)
 

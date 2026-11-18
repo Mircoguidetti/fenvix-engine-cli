@@ -1,0 +1,314 @@
+$ mvn -B -q surefire:test -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1880720471 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=790599067
+neTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairts.TairTsTest
+[ERROR] com.aliyun.tair.tests.tairts.TairTsTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 7, Failures: 0, Errors: 7, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest
+[ERROR] com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.remove_member_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.before(LeaderBoardMultiScoreTest.java:32)
+
+[ERROR] com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.score_for_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.before(LeaderBoardMultiScoreTest.java:32)
+
+[ERROR] com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.change_score_for_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.before(LeaderBoardMultiScoreTest.java:32)
+
+[ERROR] com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.total_members_in_score_range_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.before(LeaderBoardMultiScoreTest.java:32)
+
+[ERROR] com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.rank_for_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.before(LeaderBoardMultiScoreTest.java:32)
+
+[ERROR] com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.multi_score_add_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.before(LeaderBoardMultiScoreTest.java:32)
+
+[ERROR] com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.remove_members_in_score_range_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.LeaderBoardMultiScoreTest.before(LeaderBoardMultiScoreTest.java:32)
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairvector.TairVectorTest
+[ERROR] com.aliyun.tair.tests.tairvector.TairVectorTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+Exception in thread "Thread-1" java.lang.NullPointerException
+	at com.aliyun.tair.tests.retry.JedisRetryCommandTest$4.run(JedisRetryCommandTest.java:62)
+	at java.lang.Thread.run(Thread.java:750)
+Exception in thread "Thread-2" java.lang.NullPointerException
+	at com.aliyun.tair.tests.retry.JedisRetryCommandTest$2.run(JedisRetryCommandTest.java:37)
+	at java.lang.Thread.run(Thread.java:750)
+[ERROR] Tests run: 3, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 19.43 s <<< FAILURE! -- in com.aliyun.tair.tests.retry.JedisRetryCommandTest
+[ERROR] com.aliyun.tair.tests.retry.JedisRetryCommandTest.retryFail -- Time elapsed: 6.442 s <<< FAILURE!
+java.lang.AssertionError
+	at com.aliyun.tair.tests.retry.JedisRetryCommandTest.retryFail(JedisRetryCommandTest.java:78)
+
+[ERROR] com.aliyun.tair.tests.retry.JedisRetryCommandTest.retrySuccess -- Time elapsed: 6.493 s <<< FAILURE!
+java.lang.AssertionError
+	at com.aliyun.tair.tests.retry.JedisRetryCommandTest.retrySuccess(JedisRetryCommandTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.retry.JedisRetryCommandTest.retrySuccessInMiddle -- Time elapsed: 6.498 s <<< FAILURE!
+java.lang.AssertionError
+	at com.aliyun.tair.tests.retry.JedisRetryCommandTest.retrySuccessInMiddle(JedisRetryCommandTest.java:53)
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.008 s <<< FAILURE! -- in com.aliyun.tair.tests.tairhash.TairHashTest
+[ERROR] com.aliyun.tair.tests.tairhash.TairHashTest -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.028 s <<< FAILURE! -- in com.aliyun.tair.tests.tairdoc.TairDocClusterTest
+[ERROR] com.aliyun.tair.tests.tairdoc.TairDocClusterTest -- Time elapsed: 0.013 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.001 s <<< FAILURE! -- in com.aliyun.tair.tests.tairdoc.TairDocPipelineTest
+[ERROR] com.aliyun.tair.tests.tairdoc.TairDocPipelineTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 4, Failures: 0, Errors: 4, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.mcommand.AliyunRedisCommandTest
+[ERROR] com.aliyun.tair.tests.mcommand.AliyunRedisCommandTest.imonitorTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.mcommand.AliyunRedisCommandTest.imonitorTest(AliyunRedisCommandTest.java:108)
+
+[ERROR] com.aliyun.tair.tests.mcommand.AliyunRedisCommandTest.iscanTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.mcommand.AliyunRedisCommandTest.iscanTest(AliyunRedisCommandTest.java:62)
+
+[ERROR] com.aliyun.tair.tests.mcommand.AliyunRedisCommandTest.iinfoTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.mcommand.AliyunRedisCommandTest.iinfoTest(AliyunRedisCommandTest.java:41)
+
+[ERROR] com.aliyun.tair.tests.mcommand.AliyunRedisCommandTest.infoKeyTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.mcommand.AliyunRedisCommandTest.infoKeyTest(AliyunRedisCommandTest.java:26)
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairsearch.TairSearchTest
+[ERROR] com.aliyun.tair.tests.tairsearch.TairSearchTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairbloom.TairBloomClusterTest
+[ERROR] com.aliyun.tair.tests.tairbloom.TairBloomClusterTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairzset.TairZsetPipelineTest
+[ERROR] com.aliyun.tair.tests.tairzset.TairZsetPipelineTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairts.TairTsStringTest
+[ERROR] com.aliyun.tair.tests.tairts.TairTsStringTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairbloom.TairBloomTest
+[ERROR] com.aliyun.tair.tests.tairbloom.TairBloomTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairhash.TairHashClusterTest
+[ERROR] com.aliyun.tair.tests.tairhash.TairHashClusterTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairts.TairTsPipelineTest
+[ERROR] com.aliyun.tair.tests.tairts.TairTsPipelineTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairvector.TairVectorClusterTest
+[ERROR] com.aliyun.tair.tests.tairvector.TairVectorClusterTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.005 s <<< FAILURE! -- in com.aliyun.tair.tests.tairgis.TairGisTest
+[ERROR] com.aliyun.tair.tests.tairgis.TairGisTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairdoc.TairDocTest
+[ERROR] com.aliyun.tair.tests.tairdoc.TairDocTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairsearch.TairSearchClusterTest
+[ERROR] com.aliyun.tair.tests.tairsearch.TairSearchClusterTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairroaring.TairRoaringClusterTest
+[ERROR] com.aliyun.tair.tests.tairroaring.TairRoaringClusterTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairgis.TairGisClusterTest
+[ERROR] com.aliyun.tair.tests.tairgis.TairGisClusterTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 15, Failures: 0, Errors: 15, Skipped: 0, Time elapsed: 0.001 s <<< FAILURE! -- in com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.retrieve_member_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.remove_member_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.total_members -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.top_i_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.score_and_rank_for_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.score_for_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.leaders_i_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.rank_reverse_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.total_pages -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.change_score_for_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.expire_leaderboard_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.total_members_in_score_range_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.add_multi_member_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.rank_for_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.remove_members_in_score_range_test -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+	at com.aliyun.tair.tests.tairzset.DistributedLeaderBoardTest.before(DistributedLeaderBoardTest.java:28)
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairts.TairTsClusterTest
+[ERROR] com.aliyun.tair.tests.tairts.TairTsClusterTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.001 s <<< FAILURE! -- in com.aliyun.tair.tests.tairgis.TairGisPipelineTest
+[ERROR] com.aliyun.tair.tests.tairgis.TairGisPipelineTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairroaring.TairRoaringTest
+[ERROR] com.aliyun.tair.tests.tairroaring.TairRoaringTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairsearch.TairSearchPipelineTest
+[ERROR] com.aliyun.tair.tests.tairsearch.TairSearchPipelineTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.001 s <<< FAILURE! -- in com.aliyun.tair.tests.tairroaring.TairRoaringPipelineTest
+[ERROR] com.aliyun.tair.tests.tairroaring.TairRoaringPipelineTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.002 s <<< FAILURE! -- in com.aliyun.tair.tests.tairhash.TairHashPipelineTest
+[ERROR] com.aliyun.tair.tests.tairhash.TairHashPipelineTest -- Time elapsed: 0.002 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! -- in com.aliyun.tair.tests.tairzset.TairZsetTest
+[ERROR] com.aliyun.tair.tests.tairzset.TairZsetTest -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException
+
+[ERROR] Failures: 
+[ERROR]   JedisRetryCommandTest.retryFail:78
+[ERROR]   JedisRetryCommandTest.retrySuccess:28
+[ERROR]   JedisRetryCommandTest.retrySuccessInMiddle:53
+[ERROR] Errors: 
+[ERROR]   AliyunRedisCommandTest.iinfoTest:41 NullPointer
+[ERROR]   AliyunRedisCommandTest.imonitorTest:108 NullPointer
+[ERROR]   AliyunRedisCommandTest.infoKeyTest:26 NullPointer
+[ERROR]   AliyunRedisCommandTest.iscanTest:62 NullPointer
+[ERROR]   TairBloomClusterTest>TairBloomTestBase.setUp:18 » NullPointer
+[ERROR]   TairBloomPipelineTest>TairBloomTestBase.setUp:18 » NullPointer
+[ERROR]   TairBloomTest>TairBloomTestBase.setUp:18 » NullPointer
+[ERROR]   TairCpcPipelineTest>TairCpcTestBase.setUp:17 » NullPointer
+[ERROR]   TairDocClusterTest>TairDocTestBase.setUp:20 » NullPointer
+[ERROR]   TairDocPipelineTest>TairDocTestBase.setUp:20 » NullPointer
+[ERROR]   TairDocTest>TairDocTestBase.setUp:20 » NullPointer
+[ERROR]   TairGisClusterTest>TairGisTestBase.setUp:19 » NullPointer
+[ERROR]   TairGisPipelineTest>TairGisTestBase.setUp:19 » NullPointer
+[ERROR]   TairGisTest>TairGisTestBase.setUp:19 » NullPointer
+[ERROR]   TairHashClusterTest>TairHashTestBase.setUp:19 » NullPointer
+[ERROR]   TairHashPipelineTest>TairHashTestBase.setUp:19 » NullPointer
+[ERROR]   TairHashTest>TairHashTestBase.setUp:19 » NullPointer
+[ERROR]   TairRoaringClusterTest>TairRoaringTestBase.setUp:31 » NullPointer
+[ERROR]   TairRoaringPipelineTest>TairRoaringTestBase.setUp:31 » NullPointer
+[ERROR]   TairRoaringTest>TairRoaringTestBase.setUp:31 » NullPointer
+[ERROR]   TairSearchClusterTest>TairSearchTestBase.setUp:18 » NullPointer
+[ERROR]   TairSearchPipelineTest>TairSearchTestBase.setUp:18 » NullPointer
+[ERROR]   TairSearchTest>TairSearchTestBase.setUp:18 » NullPointer
+[ERROR]   TairStringClusterTest>TairStringTestBase.setUp:19 » NullPointer
+[ERROR]   TairStringPipelineTest>TairStringTestBase.setUp:19 » NullPointer
+[ERROR]   TairStringTest>TairStringTestBase.setUp:19 » NullPointer
+[ERROR]   TairTsClusterTest>TairTsTestBase.setUp:19 » NullPointer
+[ERROR]   TairTsPipelineTest>TairTsTestBase.setUp:19 » NullPointer
+[ERROR]   TairTsStringClusterTest>TairTsTestBase.setUp:19 » NullPointer
+[ERROR]   TairTsStringTest>TairTsTestBase.setUp:19 » NullPointer
+[ERROR]   TairTsTest>TairTsTestBase.setUp:19 » NullPointer
+[ERROR]   TairVectorClusterTest>TairVectorTestBase.setUp:24 » NullPointer
+[ERROR]   TairVectorPipelineTest>TairVectorTestBase.setUp:24 » NullPointer
+[ERROR]   TairVectorTest>TairVectorTestBase.setUp:24 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   DistributedLeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardMultiScoreTest.before:32 » NullPointer
+[ERROR]   LeaderBoardMultiScoreTest.before:32 » NullPointer
+[ERROR]   LeaderBoardMultiScoreTest.before:32 » NullPointer
+[ERROR]   LeaderBoardMultiScoreTest.before:32 » NullPointer
+[ERROR]   LeaderBoardMultiScoreTest.before:32 » NullPointer
+[ERROR]   LeaderBoardMultiScoreTest.before:32 » NullPointer
+[ERROR]   LeaderBoardMultiScoreTest.before:32 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   LeaderBoardTest.before:28 » NullPointer
+[ERROR]   TairZsetPipelineTest>TairZsetTestBase.setUp:18 » NullPointer
+[ERROR]   TairZsetTest>TairZsetTestBase.setUp:18 » NullPointer
+[ERROR] Tests run: 77, Failures: 3, Errors: 72, Skipped: 0
+[ERROR] There are test failures.
+
+Please refer to /tmp/jvm-work2/alibabacloud-tairjedis-sdk/target/surefire-reports for the individual test results.
+Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+
+[rc=0 26.0s]

@@ -71,6 +71,8 @@ public class FenvixMavenExtension extends AbstractMavenLifecycleParticipant {
                 if (pl.getArtifactId().equals("jacoco-maven-plugin")) jacoco = true;
                 plugins.append(pl.getGroupId()).append(':').append(pl.getArtifactId()).append(':').append(pl.getVersion()).append(';');
             }
+            // "@{argLine}" (kept for JaCoCo) must resolve even when JaCoCo is skipped or sets nothing
+            if (jacoco && p.getProperties().getProperty("argLine") == null) p.getProperties().setProperty("argLine", "");
             String module = p.getArtifactId();
             if (p.getBasedir() != null && p.getBasedir().getAbsolutePath().equals(root)) module = "";
             for (Plugin pl : p.getBuildPlugins()) {
