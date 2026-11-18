@@ -115,7 +115,11 @@ class Capture {
     this.startup = []; // finished start-up processes [argv, cwd, status, stdout digest, stderr digest]
     this.notes = new Set();
     this.phase = 'run';
-    this.skipDirs = (process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter).filter(Boolean).map((d) => path.resolve(d) + path.sep);
+    // content-addressed caches of tools (a cached result equals recomputing it): jiti's transpile cache; the
+    // runners' own caches are added by the shells (Jest cacheDirectory, Vite cacheDir); more with DETJS_CACHE_SKIP_DIRS
+    const tmp = os.tmpdir();
+    this.skipDirs = [path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'),
+      ...(process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter).filter(Boolean)].map((d) => path.resolve(d) + path.sep);
   }
 
   /** Directories whose files are runner caches (never inputs); inherited by workers. */
@@ -189,7 +193,7 @@ class Capture {
     if (abs.includes(`${path.sep}node_modules${path.sep}.detjs${path.sep}`)) return 'skip';
     if (abs.startsWith('/proc/') || abs.startsWith('/sys/') || abs.startsWith('/dev/') || abs === '/proc' || abs === '/sys') return 'proc';
     if (abs.startsWith(ENGINE_DIR)) return 'skip'; // detjs itself: in the configuration digest
-    for (const d of this.skipDirs) if (abs.startsWith(d)) return 'skip'; // runner caches (Jest transform cache)
+    for (const d of this.skipDirs) if (abs.startsWith(d) || abs + path.sep === d) return 'skip'; // tool caches
     return 'outside';
   }
 
@@ -286,6 +290,7 @@ class Capture {
       const global = this.isGlobal;
       if (w === 'proc') {
         if (abs.startsWith('/dev/std') || abs.startsWith('/dev/fd/') || abs === '/dev/tty') return;
+        if (abs === '/proc/self/exe' && kind !== 'f') return; // the node binary: in the runtime identity
         if (global && this.caller() !== 'user') return;
         this.add(['flag', 'proc', abs], global);
         return;

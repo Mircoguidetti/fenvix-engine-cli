@@ -405,9 +405,11 @@ class ProofSession {
       if (flags.has('entropy') && this.run.cfg.urandom) flags.delete('entropy');
       return { flags, env: [...env.entries()], data: [...data.values()], content: [...content], clock };
     };
+    this.ranFiles = {};
     for (const c of captures) {
       const proj = c.project || '';
       const mid = this.idOf(c.fileId, proj);
+      this.ranFiles[mid] = { duration: Math.round((c.duration || 0) * 1000) / 1000, tests: c.tests.length, ok: Boolean(c.ok) };
       if (this.uncacheableProjects.has(proj)) continue;
       const notes = c.notes || [];
       const extraFlags = notes.some((n) => n.startsWith('process.env not replaceable')) ? [['flag', 'env-unobserved', 'process.env']] : [];
@@ -489,6 +491,7 @@ class ProofSession {
       verify_mode: this.verify,
       reused_files: this.reusedFiles.size,
       reused_tests: reusedTests,
+      ran_files: this.ranFiles || {},
       reused_files_list: [...this.reusedFiles.values()].map((f) => (f.project ? `${f.fileId}@@${f.project}` : f.fileId)),
       reused_recorded_seconds: Math.round(reusedSeconds * 1000) / 1000,
       missed_files: this.misses.size,
@@ -497,6 +500,11 @@ class ProofSession {
       recorded: this.recorded,
       not_cached: nc,
       not_cached_detail: Object.fromEntries([...this.notCached.entries()].slice(0, 200)),
+      not_cached_top: (() => {
+        const c = new Map();
+        for (const w of this.notCached.values()) { const k = w.slice(0, 220); c.set(k, (c.get(k) || 0) + 1); }
+        return Object.fromEntries([...c.entries()].sort((a, b) => b[1] - a[1]).slice(0, 80));
+      })(),
       identity_seconds: Math.round(this.t.identity * 1000) / 1000,
       check_seconds: Math.round(this.t.check * 1000) / 1000,
       record_seconds: Math.round(this.t.record * 1000) / 1000,

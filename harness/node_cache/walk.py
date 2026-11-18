@@ -1,0 +1,303 @@
+#!/usr/bin/env python3
+"""Walk a window of commits with `detjs --det --det-cache` and measure skip with proof.
+
+Per commit i (after install and build):
+
+* **skip run** (i > first of the shard): a copy of the cache as it was after commit i-1; detjs decides with proof
+  and runs only the files it cannot reuse. Wall time and the reused files are recorded.
+* **verify run**: the same cache state (before the skip run), `--det-cache-verify`: detjs takes the same decisions
+  (same inputs, same cache) but runs every file and compares every result it would have reused with the fresh
+  result at the same commit (0 wrong = no mismatch). Its records become the cache for commit i+1. Its per-file
+  durations price the time skipped.
+* **overhead** (first commit of a shard and every `--overhead-every` commits): plain runner (the project's own
+  parallel command), `detjs --det` without cache (serial Level 0) and the cold capture run (empty cache), then a warm
+  run (skip mode right after the verify run at the same commit).
+* **Nx** (when `--nx`): projects affected between commit i-1 and i (`nx show projects --affected`, package-based
+  inference from the workspace), mapped to test files by project root: the test time Nx's affected selection would
+  skip at the same transition.
+
+Output: one JSON per shard (appended after every commit).
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ENGINE = os.path.abspath(os.path.join(HERE, "..", ".."))
+DETJS = os.path.join(ENGINE, "node", "bin", "detjs.js")
+
+
+def sh(cmd, cwd=None, timeout=None, env=None, check=False, capture=True):
+    t0 = time.time()
+    r = subprocess.run(cmd, cwd=cwd, shell=isinstance(cmd, str), timeout=timeout, env=env,
+                       stdout=subprocess.PIPE if capture else None, stderr=subprocess.STDOUT if capture else None,
+                       text=True, errors="replace")
+    dt = time.time() - t0
+    if check and r.returncode != 0:
+        raise RuntimeError(f"{cmd} -> {r.returncode}\n{(r.stdout or '')[-4000:]}")
+    return r.returncode, (r.stdout or ""), dt
+
+
+def files_digest(root, patterns):
+    import glob
+
+    h = hashlib.sha256()
+    for pat in patterns:
+        for p in sorted(glob.glob(os.path.join(root, pat))):
+            if os.path.isfile(p):
+                h.update(p.encode())
+                with open(p, "rb") as fh:
+                    h.update(hashlib.sha256(fh.read()).digest())
+    return h.hexdigest()
+
+
+def load_json(p):
+    try:
+        with open(p) as fh:
+            return json.load(fh)
+    except (OSError, ValueError):
+        return None
+
+
+def summary_of(repo):
+    s = load_json(os.path.join(repo, ".detjs", "cache-summary.json")) or {}
+    keep = ("reused_files", "reused_tests", "reused_files_list", "reused_recorded_seconds", "missed_files", "miss_reasons",
+            "recorded", "not_cached", "not_cached_top", "identity_seconds", "check_seconds", "record_seconds", "config",
+            "runtime", "runtime_parts", "verified", "verify_mismatches", "ran_files", "error", "notes", "startup",
+            "uncacheable_projects", "misses")
+    out = {k: s.get(k) for k in keep}
+    pk = s.get("packages") or {}
+    out["packages"] = {k: pk.get(k) for k in ("files", "bytes", "hashed", "links", "followed")}
+    return out
+
+
+def outcomes_of(report_path, runner):
+    """{test file: {"ok": bool, "tests": n, "failed": n}} from the runner's JSON report."""
+    j = load_json(report_path) or {}
+    out = {}
+    for f in j.get("testResults") or []:
+        name = f.get("name") or ""
+        res = f.get("assertionResults") or []
+        failed = sum(1 for a in res if a.get("status") == "failed")
+        out[name] = {"ok": f.get("status") == "passed" or (failed == 0 and f.get("status") != "failed"), "tests": len(res),
+                     "failed": failed}
+    return out
+
+
+class Walk:
+    def __init__(self, a):
+        self.a = a
+        self.spec = load_json(a.spec)
+        self.repo = os.path.abspath(a.repo)
+        self.work = os.path.abspath(a.work)
+        os.makedirs(self.work, exist_ok=True)
+        self.cache = os.path.join(self.work, "cache")
+        self.out = a.out
+        self.res = load_json(self.out) or {"spec": self.spec, "shard": a.shard, "commits": [], "runner": os.environ.get("RUNNER_NAME"),
+                                           "cpus": os.cpu_count(), "node": None}
+        self.install_digest = None
+        self.env = dict(os.environ)
+        self.env.pop("CI", None) if self.spec.get("unset_ci") else None
+        self.env["FENVIX_RUNTIME_MEMO"] = os.path.join(self.work, "runtime-memo.json")
+
+    def save(self):
+        tmp = self.out + ".tmp"
+        with open(tmp, "w") as fh:
+            json.dump(self.res, fh, indent=1)
+        os.replace(tmp, self.out)
+
+    def prepare(self, sha):
+        info = {}
+        sh(["git", "checkout", "-q", "-f", sha], cwd=self.repo, check=True)
+        sh(["git", "clean", "-q", "-ffdx", "-e", "node_modules", "-e", ".detjs"], cwd=self.repo)
+        d = files_digest(self.repo, self.spec.get("install_files", ["package.json"]))
+        if d != self.install_digest:
+            t0 = time.time()
+            for c in self.spec.get("install", []):
+                rc, out, _ = sh(c, cwd=self.repo, timeout=1800, env=self.env)
+                if rc != 0:
+                    info["install_error"] = out[-2000:]
+            info["install_seconds"] = round(time.time() - t0, 1)
+            self.install_digest = d
+            info["installed"] = True
+        t0 = time.time()
+        for c in self.spec.get("build", []):
+            rc, out, _ = sh(c, cwd=self.repo, timeout=1800, env=self.env)
+            if rc != 0:
+                info["build_error"] = out[-2000:]
+        info["build_seconds"] = round(time.time() - t0, 1)
+        return info
+
+    def detjs(self, cache_dir, extra, report):
+        args = ["node", DETJS, self.spec["runner"]]
+        if self.spec["runner"] == "vitest":
+            args += ["run"]
+        args += ["--det", f"--det-cache={cache_dir}"] + extra + list(self.spec.get("args", []))
+        args += (["--reporter=json", f"--outputFile={report}"] if self.spec["runner"] == "vitest"
+                 else ["--json", f"--outputFile={report}"])
+        rc, out, dt = sh(args, cwd=self.repo, timeout=self.a.run_timeout, env=self.env)
+        return rc, out, dt
+
+    def plain(self, report):
+        cmd = self.spec["plain"].replace("{report}", report)
+        rc, out, dt = sh(cmd, cwd=self.repo, timeout=self.a.run_timeout, env=self.env)
+        return rc, dt
+
+    def det_nocache(self, report):
+        args = ["node", DETJS, self.spec["runner"]] + (["run"] if self.spec["runner"] == "vitest" else []) + ["--det"]
+        args += list(self.spec.get("args", []))
+        args += (["--reporter=json", f"--outputFile={report}"] if self.spec["runner"] == "vitest"
+                 else ["--json", f"--outputFile={report}"])
+        rc, out, dt = sh(args, cwd=self.repo, timeout=self.a.run_timeout, env=self.env)
+        return rc, dt
+
+    def nx_affected(self, base, head):
+        nxv = self.spec.get("nx_version", "22")
+        created = False
+        if not os.path.exists(os.path.join(self.repo, "nx.json")) and not os.path.exists(os.path.join(self.repo, "lerna.json")):
+            with open(os.path.join(self.repo, "nx.json"), "w") as fh:
+                fh.write("{}\n")
+            created = True
+        env = dict(self.env, NX_DAEMON="false", NX_NO_CLOUD="true", NX_SKIP_NX_CACHE="true", NX_TUI="false")
+        try:
+            rc, out, dt = sh(["npx", "-y", f"nx@{nxv}", "show", "projects", "--json"], cwd=self.repo, timeout=600, env=env)
+            allp = json.loads(out[out.index("["):]) if rc == 0 and "[" in out else None
+            rc2, out2, dt2 = sh(["npx", "-y", f"nx@{nxv}", "show", "projects", "--affected", f"--base={base}", f"--head={head}", "--json"],
+                                cwd=self.repo, timeout=600, env=env)
+            aff = json.loads(out2[out2.index("["):]) if rc2 == 0 and "[" in out2 else None
+            roots = {}
+            if allp:
+                rc3, out3, _ = sh(["npx", "-y", f"nx@{nxv}", "graph", "--file=/tmp/nx-graph.json"], cwd=self.repo, timeout=600, env=env)
+                g = load_json("/tmp/nx-graph.json") or {}
+                for name, node in (g.get("graph", {}).get("nodes", {}) or {}).items():
+                    roots[name] = (node.get("data") or {}).get("root")
+            return {"all": allp, "affected": aff, "roots": roots, "seconds": round(dt + dt2, 1),
+                    "error": None if aff is not None else (out2[-1500:] if rc2 else out[-1500:])}
+        finally:
+            if created:
+                os.remove(os.path.join(self.repo, "nx.json"))
+
+    def run(self, shas):
+        done = {c["sha"] for c in self.res["commits"]}
+        first = True
+        prev = None
+        rc, nv, _ = sh(["node", "--version"])
+        self.res["node"] = nv.strip()
+        for i, sha in enumerate(shas):
+            if sha in done:
+                prev = sha
+                first = False
+                continue
+            rec = {"i": self.a.offset + i, "sha": sha, "t": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+            rec.update(self.prepare(sha))
+            rec["changed_files"] = None
+            if prev:
+                _, diff, _ = sh(["git", "diff", "--name-only", prev, sha], cwd=self.repo)
+                rec["changed_files"] = [x for x in diff.splitlines() if x][:400]
+            overhead = first or (self.a.overhead_every and i % self.a.overhead_every == 0)
+            if overhead:
+                rp = os.path.join(self.work, "plain.json")
+                rc, dt = self.plain(rp)
+                rec["plain"] = {"rc": rc, "seconds": round(dt, 2), "outcomes": outcomes_of(rp, self.spec["runner"])}
+                rp = os.path.join(self.work, "det.json")
+                rc, dt = self.det_nocache(rp)
+                rec["det_nocache"] = {"rc": rc, "seconds": round(dt, 2)}
+            if first:
+                shutil.rmtree(self.cache, ignore_errors=True)
+            else:
+                skip_cache = os.path.join(self.work, "cache-skip")
+                shutil.rmtree(skip_cache, ignore_errors=True)
+                shutil.copytree(self.cache, skip_cache)
+                rp = os.path.join(self.work, "skip.json")
+                rc, out, dt = self.detjs(skip_cache, [], rp)
+                rec["skip"] = {"rc": rc, "seconds": round(dt, 2), "summary": summary_of(self.repo),
+                               "outcomes": outcomes_of(rp, self.spec["runner"]), "tail": out[-1500:] if rc else ""}
+            rp = os.path.join(self.work, "verify.json")
+            rc, out, dt = self.detjs(self.cache, ["--det-cache-verify"], rp)
+            rec["verify"] = {"rc": rc, "seconds": round(dt, 2), "summary": summary_of(self.repo), "cold": first,
+                             "outcomes": outcomes_of(rp, self.spec["runner"]), "tail": out[-3000:] if rc else ""}
+            mism = rec["verify"]["summary"].get("verify_mismatches") or []
+            if mism:
+                rec["recheck"] = self.recheck(mism)
+            if overhead:
+                skip_cache = os.path.join(self.work, "cache-warm")
+                shutil.rmtree(skip_cache, ignore_errors=True)
+                shutil.copytree(self.cache, skip_cache)
+                rp = os.path.join(self.work, "warm.json")
+                rc, out, dt = self.detjs(skip_cache, [], rp)
+                rec["warm"] = {"rc": rc, "seconds": round(dt, 2), "summary": summary_of(self.repo)}
+            if prev and self.a.nx:
+                try:
+                    rec["nx"] = self.nx_affected(prev, sha)
+                except Exception as e:  # noqa: BLE001
+                    rec["nx"] = {"error": str(e)[-1500:]}
+            self.res["commits"].append(rec)
+            self.save()
+            print(f"[{rec['i']}] {sha[:10]} verify {rec['verify']['seconds']}s reused "
+                  f"{rec['verify']['summary'].get('reused_files')} files; skip {rec.get('skip', {}).get('seconds')}s; "
+                  f"mismatches {len(mism)}", flush=True)
+            prev = sha
+            first = False
+
+    def recheck(self, mism):
+        """Run each test file with a mismatch 3 more times at the same commit (flaky or wrong?)."""
+        files = sorted({m["nodeid"].split("::", 1)[0].split("@@", 1)[0] for m in mism})[:10]
+        out = {}
+        for f in files:
+            runs = []
+            for k in range(3):
+                rp = os.path.join(self.work, f"recheck{k}.json")
+                args = ["node", DETJS, self.spec["runner"]] + (["run"] if self.spec["runner"] == "vitest" else []) + ["--det"]
+                args += list(self.spec.get("args", [])) + [f]
+                args += (["--reporter=json", f"--outputFile={rp}"] if self.spec["runner"] == "vitest" else ["--json", f"--outputFile={rp}"])
+                rc, _, _ = sh(args, cwd=self.repo, timeout=900, env=self.env)
+                runs.append({"rc": rc, "outcomes": outcomes_of(rp, self.spec["runner"])})
+            out[f] = runs
+        return out
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--spec", required=True)
+    ap.add_argument("--repo", required=True)
+    ap.add_argument("--work", required=True)
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--commits", required=True, help="JSON list of shas (oldest first)")
+    ap.add_argument("--shard", type=int, default=0)
+    ap.add_argument("--nshards", type=int, default=1)
+    ap.add_argument("--offset", type=int, default=0)
+    ap.add_argument("--overhead-every", type=int, default=10)
+    ap.add_argument("--run-timeout", type=int, default=3600)
+    ap.add_argument("--nx", action="store_true")
+    ap.add_argument("--budget", type=int, default=19800, help="stop starting commits after this many seconds")
+    a = ap.parse_args()
+    shas = load_json(a.commits)
+    n = len(shas)
+    # shards overlap by one commit so that every transition i-1 -> i is measured once
+    per = -(-(n - 1) // a.nshards)
+    lo = a.shard * per
+    hi = min(n, lo + per + 1)
+    a.offset = lo
+    w = Walk(a)
+    t0 = time.time()
+    sub = shas[lo:hi]
+    w.res["window"] = [lo, hi]
+    for k in range(len(sub)):
+        if time.time() - t0 > a.budget:
+            w.res["stopped"] = f"budget after {k} commits"
+            w.save()
+            break
+        w.run(sub[: k + 1])
+    w.save()
+
+
+if __name__ == "__main__":
+    main()
