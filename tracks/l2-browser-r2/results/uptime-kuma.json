@@ -3,8 +3,8 @@
  "repo": "louislam/uptime-kuma",
  "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
  "status": "ok",
- "run_id": "44275149752",
- "setup_s": 63,
+ "run_id": "44279789112",
+ "setup_s": 78,
  "params": {
   "baseline": 2,
   "stress": 2,
@@ -24,8 +24,8 @@
  "pw_args": [],
  "server_outside_runner": false,
  "runs": [],
- "epoch": "2026-11-18T09:24:00Z",
- "measured_at": "2026-11-18T09:24:39Z",
+ "epoch": "2026-11-18T09:54:00Z",
+ "measured_at": "2026-11-18T09:54:50Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "diagnosis": [
   {
@@ -39,13 +39,13 @@
     "failed"
    ],
    "walls": [
-    80.7,
-    83.1
+    114.1,
+    107.0
    ],
    "matched_key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
    "errors": [
-    "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/",
-    "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    3 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/>"
+    "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    4 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/>",
+    "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    4 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/>"
    ],
    "browser": {
     "status": "diverged",
@@ -54,24 +54,24 @@
     "divergence": {
      "run_a": 0,
      "run_b": 1,
-     "index": 11,
+     "index": 13,
      "window": null,
      "event_a": {
       "t": 0,
-      "s": "net",
-      "o": "browser.done",
+      "s": "sched",
+      "o": "server.busy",
       "at": "",
-      "v": "POST http://localhost:3001/api/auth/sign-in/username 200 b6e633e53c1acf265b2ec6062aee9575"
+      "v": "http://localhost:3001"
      },
      "event_b": {
       "t": 0,
-      "s": "net",
-      "o": "browser.done",
+      "s": "sched",
+      "o": "sched.io",
       "at": "",
-      "v": "POST http://localhost:3001/api/auth/sign-in/username 200 1c74f9200538072aa82e02d7e6823b3b"
+      "v": "0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=5lrGmpdys_ljhEOgAAAI 5dce9f4279cef561672af25dd2ec2a3f"
      },
-     "reason": "net",
-     "description": "event #11: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 b6e633e53c1acf265b2ec6062aee9575\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 1c74f9200538072aa82e02d7e6823b3b\""
+     "reason": "sched",
+     "description": "event #13: first diverging scheduling choice: server.busy http://localhost:3001 @   <>  sched.io 0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=5lrGmpdys_ljhEOgAAAI 5dce9f4279cef561672af25dd2ec2a3f @ "
     }
    },
    "server": [
@@ -102,7 +102,7 @@
       "diverged": 6,
       "missing": 0,
       "outcome_unstable": 0,
-      "order_identical": true,
+      "order_identical": false,
       "reasons": {
        "time": 6
       }
@@ -114,24 +114,24 @@
        "divergence": {
         "run_a": 0,
         "run_b": 1,
-        "index": 26,
+        "index": 15,
         "window": null,
         "event_a": {
          "t": 0,
          "s": "time",
-         "o": "setTimeout",
-         "at": "<deps>/engine.io/build/socket.js:241",
-         "v": "schedule:10000000000"
+         "o": "Date.now",
+         "at": "<deps>/tarn/dist/utils.js:26",
+         "v": "1000"
         },
         "event_b": {
          "t": 0,
          "s": "time",
-         "o": "Date",
-         "at": "<deps>/socket.io/dist/socket.js:134",
-         "v": "100015000"
+         "o": "setImmediate",
+         "at": "<deps>/express/lib/router/index.js:203",
+         "v": ""
         },
         "reason": "time",
-        "description": "event #26: [time] setTimeout @ <deps>/engine.io/build/socket.js:241 = schedule:10000000000  <>  [time] Date @ <deps>/socket.io/dist/socket.js:134 = 100015000"
+        "description": "event #15: [time] Date.now @ <deps>/tarn/dist/utils.js:26 = 1000  <>  [time] setImmediate @ <deps>/express/lib/router/index.js:203 = "
        }
       }
      ]
@@ -149,8 +149,8 @@
     "passed"
    ],
    "walls": [
-    82.4,
-    83.8
+    122.5,
+    125.6
    ],
    "matched_key": "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]",
    "browser": {
@@ -160,126 +160,24 @@
     "divergence": {
      "run_a": 0,
      "run_b": 1,
-     "index": 36,
+     "index": 17,
      "window": null,
      "event_a": {
       "t": 0,
-      "s": "net",
-      "o": "ws.recv",
+      "s": "sched",
+      "o": "server.busy",
       "at": "",
-      "v": "3142a29b1abcf0b17aa8e6e4dc33cd96"
+      "v": "http://localhost:3001"
      },
      "event_b": {
       "t": 0,
-      "s": "net",
-      "o": "ws.recv",
+      "s": "sched",
+      "o": "sched.io",
       "at": "",
-      "v": "387a06773d6085808276247d06055443"
+      "v": "0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=51BsMwTytzD62GrXAAAJ b3372b584dc0df6ce757fa43f459ca1f"
      },
-     "reason": "net",
-     "description": "event #36: ws.recv @  returned different values: \"3142a29b1abcf0b17aa8e6e4dc33cd96\" vs \"387a06773d6085808276247d06055443\""
-    }
-   },
-   "server": [
-    {
-     "part": "3ecc8822b9bae87e.jsonl",
-     "summary": {
-      "runs": 2,
-      "tests": 0,
-      "stable": 0,
-      "diverged": 0,
-      "missing": 0,
-      "outcome_unstable": 0,
-      "order_identical": true,
-      "reasons": {}
-     },
-     "tests": []
-    },
-    {
-     "part": "a9cb94b8ba3415be.jsonl",
-     "summary": {
-      "runs": 2,
-      "tests": 7,
-      "stable": 3,
-      "diverged": 4,
-      "missing": 0,
-      "outcome_unstable": 0,
-      "order_identical": true,
-      "reasons": {
-       "time": 4
-      }
-     },
-     "tests": [
-      {
-       "nodeid": "test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]",
-       "status": "diverged",
-       "divergence": {
-        "run_a": 0,
-        "run_b": 1,
-        "index": 35,
-        "window": null,
-        "event_a": {
-         "t": 0,
-         "s": "time",
-         "o": "setTimeout",
-         "at": "<deps>/engine.io/build/socket.js:241",
-         "v": "schedule:10000000000"
-        },
-        "event_b": {
-         "t": 0,
-         "s": "time",
-         "o": "Date",
-         "at": "<deps>/better-auth/dist/api/routes/session.mjs:156",
-         "v": "100024000"
-        },
-        "reason": "time",
-        "description": "event #35: [time] setTimeout @ <deps>/engine.io/build/socket.js:241 = schedule:10000000000  <>  [time] Date @ <deps>/better-auth/dist/api/routes/session.mjs:156 = 100024000"
-       }
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
-   "file": "status-page.spec.js",
-   "grep": "RSS feed escapes malicious monitor names",
-   "project": "specs",
-   "known": true,
-   "replays": [
-    "passed",
-    "passed"
-   ],
-   "walls": [
-    100.4,
-    100.3
-   ],
-   "matched_key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
-   "browser": {
-    "status": "diverged",
-    "distinct_fingerprints": 2,
-    "runs": 2,
-    "divergence": {
-     "run_a": 0,
-     "run_b": 1,
-     "index": 51,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "net",
-      "o": "ws.recv",
-      "at": "",
-      "v": "c372349159a9e9b129f843bb7fd9cbbd"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "net",
-      "o": "ws.recv",
-      "at": "",
-      "v": "435e9e33d86c8f128deeb1bd824c2bca"
-     },
-     "reason": "net",
-     "description": "event #51: ws.recv @  returned different values: \"c372349159a9e9b129f843bb7fd9cbbd\" vs \"435e9e33d86c8f128deeb1bd824c2bca\""
+     "reason": "sched",
+     "description": "event #17: first diverging scheduling choice: server.busy http://localhost:3001 @   <>  sched.io 0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=51BsMwTytzD62GrXAAAJ b3372b584dc0df6ce757fa43f459ca1f @ "
     }
    },
    "server": [
@@ -308,6 +206,109 @@
       "outcome_unstable": 0,
       "order_identical": true,
       "reasons": {
+       "random": 1,
+       "time": 5
+      }
+     },
+     "tests": [
+      {
+       "nodeid": "test/e2e/specs/monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]",
+       "status": "diverged",
+       "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": 37,
+        "window": null,
+        "event_a": {
+         "t": 0,
+         "s": "time",
+         "o": "setTimeout",
+         "at": "<deps>/engine.io/build/socket.js:241",
+         "v": "schedule:10000000000"
+        },
+        "event_b": {
+         "t": 0,
+         "s": "time",
+         "o": "Date",
+         "at": "<deps>/socket.io/dist/socket.js:134",
+         "v": "1000"
+        },
+        "reason": "time",
+        "description": "event #37: [time] setTimeout @ <deps>/engine.io/build/socket.js:241 = schedule:10000000000  <>  [time] Date @ <deps>/socket.io/dist/socket.js:134 = 1000"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+   "file": "status-page.spec.js",
+   "grep": "RSS feed escapes malicious monitor names",
+   "project": "specs",
+   "known": true,
+   "replays": [
+    "passed",
+    "passed"
+   ],
+   "walls": [
+    152.8,
+    158.0
+   ],
+   "matched_key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+   "browser": {
+    "status": "diverged",
+    "distinct_fingerprints": 2,
+    "runs": 2,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 17,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "sched",
+      "o": "server.busy",
+      "at": "",
+      "v": "http://localhost:3001"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=51BsMwTytzD62GrXAAAJ b3372b584dc0df6ce757fa43f459ca1f"
+     },
+     "reason": "sched",
+     "description": "event #17: first diverging scheduling choice: server.busy http://localhost:3001 @   <>  sched.io 0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=51BsMwTytzD62GrXAAAJ b3372b584dc0df6ce757fa43f459ca1f @ "
+    }
+   },
+   "server": [
+    {
+     "part": "3ecc8822b9bae87e.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 0,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": true,
+      "reasons": {}
+     },
+     "tests": []
+    },
+    {
+     "part": "a9cb94b8ba3415be.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 7,
+      "stable": 1,
+      "diverged": 6,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": false,
+      "reasons": {
        "time": 6
       }
      },
@@ -318,24 +319,24 @@
        "divergence": {
         "run_a": 0,
         "run_b": 1,
-        "index": 27,
+        "index": 37,
         "window": null,
         "event_a": {
          "t": 0,
          "s": "time",
          "o": "setTimeout",
-         "at": "<deps>/ws/lib/websocket.js:1310",
-         "v": "schedule:30000000000"
+         "at": "<deps>/engine.io/build/socket.js:241",
+         "v": "schedule:10000000000"
         },
         "event_b": {
          "t": 0,
          "s": "time",
          "o": "Date",
-         "at": "src/util.ts:258",
-         "v": "100019000"
+         "at": "<deps>/socket.io/dist/socket.js:134",
+         "v": "1000"
         },
         "reason": "time",
-        "description": "event #27: [time] setTimeout @ <deps>/ws/lib/websocket.js:1310 = schedule:30000000000  <>  [time] Date @ src/util.ts:258 = 100019000"
+        "description": "event #37: [time] setTimeout @ <deps>/engine.io/build/socket.js:241 = schedule:10000000000  <>  [time] Date @ <deps>/socket.io/dist/socket.js:134 = 1000"
        }
       }
      ]
@@ -343,5 +344,5 @@
    ]
   }
  ],
- "elapsed_min": 8.9
+ "elapsed_min": 13.0
 }

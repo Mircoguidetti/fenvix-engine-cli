@@ -1,11 +1,11 @@
-detjs 0.1.0: Level 2 browser prototype; playwright 1.64.1; seed 0; epoch 2026-11-18T09:24:00Z; vtime=paced; net=on; server=on; workers=1
-[WebServer] 2026-11-18T09:29:50Z [SERVER] WARN: Node.js Inspector is enabled. You can connect to it via Chrome DevTools or VSCode.
-[WebServer] 2026-11-18T09:29:50Z [SERVER] WARN: Node.js Inspector is listening on: undefined
-[WebServer] Debugger listening on ws://127.0.0.1:9229/58a45169-dcad-4c94-8bae-0cf6d2756a61
+detjs 0.1.0: Level 2 browser prototype; playwright 1.64.1; seed 0; epoch 2026-11-18T09:54:00Z; vtime=paced; net=on; server=on; workers=1
+[WebServer] 2026-11-18T09:54:00Z [SERVER] WARN: Node.js Inspector is enabled. You can connect to it via Chrome DevTools or VSCode.
+[WebServer] 2026-11-18T09:54:00Z [SERVER] WARN: Node.js Inspector is listening on: undefined
+[WebServer] Debugger listening on ws://127.0.0.1:9229/5cd4e0b1-11b2-4a2f-98ab-34232a246f60
 [WebServer] For help, see: https://nodejs.org/learn/getting-started/debugging
 
 Running 7 tests using 1 worker
-···[WebServer] 2026-11-18T09:30:21.595Z WARN [Better Auth]: Invalid password
+···[WebServer] 2026-11-18T09:54:07.200Z WARN [Better Auth]: Invalid password
 ···F
 
   1) [specs] › test/e2e/specs/monitor-history-settings.spec.js:33:9 › Monitor history settings › saves the data retention period 
@@ -20,9 +20,9 @@ Running 7 tests using 1 worker
     Call log:
       - Expect "toHaveValue" locator('#keepDataPeriodDays') with timeout 5000ms
       - waiting for locator('#keepDataPeriodDays')
-        3 × locator resolved to <input min="0" step="1" required="" type="number" class="form-control" id="keepDataPeriodDays"/>
+        4 × locator resolved to <input min="0" step="1" required="" type="number" class="form-control" id="keepDataPeriodDays"/>
           - unexpected value ""
-        11 × locator resolved to <input min="0" step="1" required="" type="number" class="form-control" id="keepDataPeriodDays"/>
+        10 × locator resolved to <input min="0" step="1" required="" type="number" class="form-control" id="keepDataPeriodDays"/>
            - unexpected value "180"
 
 
@@ -39,5 +39,7 @@ Running 7 tests using 1 worker
 
   1 failed
     [specs] › test/e2e/specs/monitor-history-settings.spec.js:33:9 › Monitor history settings › saves the data retention period 
-  6 passed (1.4m)
+  6 passed (1.8m)
+detjs: replay test/e2e/specs/monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]:
+  npx detjs playwright --det --det-epoch=2026-11-18T09:54:00Z test test/e2e/specs/monitor-history-settings.spec.js:33 --project=specs
 detjs: trace ../l2_out/uptime-kuma/traces/d1-r2.jsonl

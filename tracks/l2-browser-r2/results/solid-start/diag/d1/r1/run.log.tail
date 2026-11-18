@@ -1,12 +1,12 @@
-detjs 0.1.0: Level 2 browser prototype; playwright 1.62.0; seed 0; epoch 2026-11-18T09:24:00Z; vtime=paced; net=on; server=on; workers=1
+detjs 0.1.0: Level 2 browser prototype; playwright 1.62.0; seed 0; epoch 2026-11-18T09:54:00Z; vtime=paced; net=on; server=on; workers=1
 [WebServer] $ vite dev --host 127.0.0.1 --port 3000 --strictPort
 [WebServer] 
-[WebServer]   VITE v8.1.5  ready in 1 ms
+[WebServer]   VITE v8.1.5  ready in 0 ms
 [WebServer] 
 [WebServer]   ➜  Local:   http://127.0.0.1:3000/
 
 Running 1 test using 1 worker
-[WebServer] 9:34:29 AM [vite] (client) hmr update /src/app.tsx
+[WebServer] 9:54:00 AM [vite] (client) hmr update /src/app.tsx
 ·
-  1 passed (6.5s)
+  1 passed (6.1s)
 detjs: trace ../../../l2_out/solid-start/traces/d1-r1.jsonl

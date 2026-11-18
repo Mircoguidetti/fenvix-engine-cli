@@ -3,8 +3,8 @@
  "repo": "ether/etherpad-lite",
  "ref": "263e4a5b5977c0abffbc70d2aea243a721e9c053",
  "status": "ok",
- "run_id": "44275149752",
- "setup_s": 28,
+ "run_id": "44279789112",
+ "setup_s": 29,
  "params": {
   "baseline": 4,
   "stress": 2,
@@ -26,8 +26,8 @@
  ],
  "server_outside_runner": true,
  "runs": [],
- "epoch": "2026-11-18T09:23:00Z",
- "measured_at": "2026-11-18T09:23:59Z",
+ "epoch": "2026-11-18T09:53:00Z",
+ "measured_at": "2026-11-18T09:53:58Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "diagnosis": [
   {
@@ -41,8 +41,8 @@
     "passed"
    ],
    "walls": [
-    5.9,
-    3.2
+    4.2,
+    3.7
    ],
    "matched_key": "embed_value.spec.ts::embed links::when read only option is set::the embed as iframe code is an iframe with the correct url parameters and correct size [chromium]",
    "browser": {
@@ -52,24 +52,24 @@
     "divergence": {
      "run_a": 0,
      "run_b": 1,
-     "index": 47,
+     "index": 53,
      "window": null,
      "event_a": {
       "t": 0,
       "s": "other",
       "o": "server.fingerprint",
       "at": "",
-      "v": "http://localhost:9001 97bd8be8e39855eee20f2876fdb12560 241"
+      "v": "http://localhost:9001 5542bf605f3cbd6c41bcd276ecae33e2 89"
      },
      "event_b": {
       "t": 0,
       "s": "other",
       "o": "server.fingerprint",
       "at": "",
-      "v": "http://localhost:9001 c060b446d60a815c4ca2ba31b71e5980 225"
+      "v": "http://localhost:9001 6be93a5c19bb01e49e69721a83631b36 87"
      },
      "reason": "other",
-     "description": "event #47: server.fingerprint @  returned different values: \"http://localhost:9001 97bd8be8e39855eee20f2876fdb12560 241\" vs \"http://localhost:9001 c060b446d60a815c4ca2ba31b71e5980 225\""
+     "description": "event #53: server.fingerprint @  returned different values: \"http://localhost:9001 5542bf605f3cbd6c41bcd276ecae33e2 89\" vs \"http://localhost:9001 6be93a5c19bb01e49e69721a83631b36 87\""
     }
    },
    "server": [
@@ -108,24 +108,24 @@
        "divergence": {
         "run_a": 0,
         "run_b": 1,
-        "index": 11,
+        "index": 10,
         "window": null,
         "event_a": {
          "t": 0,
          "s": "time",
          "o": "Date.now",
          "at": "<deps>/tsx/dist/register-B1c7OH6V.cjs:19",
-         "v": "9000"
+         "v": "3000"
         },
         "event_b": {
          "t": 0,
          "s": "time",
          "o": "process.hrtime",
          "at": "<deps>/measured-core/lib/util/Stopwatch.js:46",
-         "v": "9000"
+         "v": "2000"
         },
         "reason": "time",
-        "description": "event #11: [time] Date.now @ <deps>/tsx/dist/register-B1c7OH6V.cjs:19 = 9000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 9000"
+        "description": "event #10: [time] Date.now @ <deps>/tsx/dist/register-B1c7OH6V.cjs:19 = 3000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 2000"
        }
       }
      ]
@@ -143,8 +143,8 @@
     "passed"
    ],
    "walls": [
-    3.2,
-    3.1
+    3.8,
+    3.5
    ],
    "matched_key": "embed_value.spec.ts::embed links::URL encoding of pad names::share link encodes special characters in pad name [chromium]",
    "browser": {
@@ -154,24 +154,24 @@
     "divergence": {
      "run_a": 0,
      "run_b": 1,
-     "index": 44,
+     "index": 42,
      "window": null,
      "event_a": {
       "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
+      "s": "random",
+      "o": "page.random",
       "at": "",
-      "v": "http://localhost:9001 4b3f82a82f75fc4ecfaafaf63983ec0c 206"
+      "v": "22/1/0:ef32be65"
      },
      "event_b": {
       "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
+      "s": "random",
+      "o": "page.random",
       "at": "",
-      "v": "http://localhost:9001 da0ac04f49e210ade517d08627a96149 204"
+      "v": "21/1/0:3f38f77c"
      },
-     "reason": "other",
-     "description": "event #44: server.fingerprint @  returned different values: \"http://localhost:9001 4b3f82a82f75fc4ecfaafaf63983ec0c 206\" vs \"http://localhost:9001 da0ac04f49e210ade517d08627a96149 204\""
+     "reason": "random",
+     "description": "event #42: page.random @  returned different values: \"22/1/0:ef32be65\" vs \"21/1/0:3f38f77c\""
     }
    },
    "server": [
@@ -210,24 +210,24 @@
        "divergence": {
         "run_a": 0,
         "run_b": 1,
-        "index": 22,
+        "index": 17,
         "window": null,
         "event_a": {
          "t": 0,
          "s": "time",
-         "o": "Date",
-         "at": "src/node/utils/Minify.ts:208",
-         "v": "24000"
+         "o": "process.hrtime",
+         "at": "<deps>/measured-core/lib/util/Stopwatch.js:46",
+         "v": "2000"
         },
         "event_b": {
          "t": 0,
          "s": "time",
          "o": "Date",
-         "at": "<deps>/log4js/lib/LoggingEvent.js:59",
-         "v": "24000"
+         "at": "src/node/utils/Minify.ts:208",
+         "v": "1000"
         },
         "reason": "time",
-        "description": "event #22: [time] Date @ src/node/utils/Minify.ts:208 = 24000  <>  [time] Date @ <deps>/log4js/lib/LoggingEvent.js:59 = 24000"
+        "description": "event #17: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 2000  <>  [time] Date @ src/node/utils/Minify.ts:208 = 1000"
        }
       }
      ]
