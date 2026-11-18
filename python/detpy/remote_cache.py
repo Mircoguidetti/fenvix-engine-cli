@@ -158,9 +158,14 @@ def localize(value):
     return CLIENT.local_dir
 
 
+_CLIENT_ENV = ("FENVIX_CACHE_TOKEN", "FENVIX_CACHE_TOKEN_FILE", "FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT")
+
+
 def hide_token() -> None:
-    """Remove the token from the environment of the test session (called in the process that runs the tests)."""
-    for k in ("FENVIX_CACHE_TOKEN",):
+    """Remove the token and the client's other variables from the environment of the test session (called in the
+    process that runs the tests, after the client read them): tests never see the token, and machine-specific
+    client settings are not inputs of tests that enumerate the environment."""
+    for k in _CLIENT_ENV:
         os.environ.pop(k, None)
 
 
@@ -221,13 +226,14 @@ class RemoteCache:
         self.stats: dict = {"service": self.base, "namespace": self.ns, "local_dir": local_dir}
         self._nsq = urllib.parse.quote(self.ns, safe="")
         self.pulled_docs: set[str] = set()
+        self.report_path = os.environ.get("FENVIX_CACHE_REPORT")
 
     def _path(self, what: str) -> str:
         return f"/v1/ns/{self._nsq}/{what}"
 
     def _fail(self, phase: str, e: Exception) -> None:
-        self.error = f"{phase}: {e}"
-        self.stats.setdefault("errors", []).append(self.error)
+        self.stats.setdefault("errors", []).append(f"{phase}: {e}")
+        self.error = "; ".join(self.stats["errors"])
 
     # -- pull -----------------------------------------------------------------------------------------------------
     def _refresh_facts(self) -> None:
@@ -453,7 +459,7 @@ class _Hooks:
             self.client.push()
         except Exception as e:
             self.client._fail("push", e)
-        out = os.environ.get("FENVIX_CACHE_REPORT")
+        out = self.client.report_path
         if out:
             try:
                 with open(out, "w") as fh:

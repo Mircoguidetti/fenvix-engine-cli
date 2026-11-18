@@ -1,0 +1,275 @@
+"""Shared cache: the service (content-addressed, append-only, per organization, token auth) and the engine client
+(``--det-cache=http://...``): a second machine reuses with proof what the first recorded, checks every candidate
+like a local entry, never reuses across runtimes, keeps working on its local mirror when the service is down, and
+never shows the token to the tests."""
+from __future__ import annotations
+
+import gzip
+import json
+import os
+import sqlite3
+import sys
+import urllib.error
+import urllib.request
+
+import pytest
+
+from detpy import cache_service as cs
+from detpy import remote_cache as rc
+
+pytestmark = pytest.mark.skipif(sys.version_info < (3, 12), reason="--det-cache needs sys.monitoring")
+
+
+@pytest.fixture
+def service(tmp_path):
+    svc = cs.Service(str(tmp_path / "svc"), port=0, quiet=True)
+    svc.start_thread()
+    tokens = {
+        "a": cs.Tokens.add(os.path.join(svc.data, "tokens.json"), "org-a"),
+        "a_ro": cs.Tokens.add(os.path.join(svc.data, "tokens.json"), "org-a", write=False),
+        "b": cs.Tokens.add(os.path.join(svc.data, "tokens.json"), "org-b"),
+    }
+    yield svc, tokens
+    svc.shutdown()
+
+
+def call(svc, token, method, path, body=None):
+    return rc.Http(svc.url, token, retries=0).call(method, path, body)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+def test_service_requires_a_known_token_and_keeps_organizations_apart(service):
+    svc, t = service
+    with pytest.raises(rc.ServiceError, match="401"):
+        call(svc, None, "POST", "/v1/blobs/missing", {"ids": []})
+    with pytest.raises(rc.ServiceError, match="401"):
+        call(svc, "fxc_not-a-token", "POST", "/v1/blobs/missing", {"ids": []})
+    doc = {"kind": "file", "v": 1, "path": "a.py"}
+    i = cs.doc_id(doc)
+    assert call(svc, t["a"], "POST", "/v1/blobs/put", {"docs": {i: doc}}) == {"stored": 1, "existing": 0}
+    assert call(svc, t["a"], "POST", "/v1/blobs/get", {"ids": [i]})["docs"] == {i: doc}
+    # org B cannot read org A's document, even knowing its address
+    assert call(svc, t["b"], "POST", "/v1/blobs/get", {"ids": [i]}) == {"docs": {}, "missing": [i]}
+    assert call(svc, t["b"], "POST", "/v1/blobs/missing", {"ids": [i]}) == {"missing": [i]}
+    entry = {"kind": "entry", "v": 1, "nodeid": "t::x"}
+    e = cs.doc_id(entry)
+    call(svc, t["a"], "POST", "/v1/blobs/put", {"docs": {e: entry}})
+    call(svc, t["a"], "POST", "/v1/ns/proj/keys", {"put": [{"key": "k1", "doc": e, "run": "r1"}]})
+    assert call(svc, t["a"], "POST", "/v1/ns/proj/lookup", {"keys": ["k1"]})["found"] == {"k1": [e]}
+    assert call(svc, t["b"], "POST", "/v1/ns/proj/lookup", {"keys": ["k1"]})["found"] == {}
+    # org B cannot file a key to a document it does not have
+    with pytest.raises(rc.ServiceError, match="400"):
+        call(svc, t["b"], "POST", "/v1/ns/proj/keys", {"put": [{"key": "k1", "doc": e}]})
+
+
+def test_service_is_content_addressed_and_append_only(service):
+    svc, t = service
+    doc = {"kind": "entry", "v": 1, "nodeid": "t::y", "entry": {"outcome": "passed"}}
+    i = cs.doc_id(doc)
+    forged = dict(doc, entry={"outcome": "failed"})
+    with pytest.raises(rc.ServiceError, match="does not match its address"):
+        call(svc, t["a"], "POST", "/v1/blobs/put", {"docs": {i: forged}})
+    assert call(svc, t["a"], "POST", "/v1/blobs/put", {"docs": {i: doc}})["stored"] == 1
+    assert call(svc, t["a"], "POST", "/v1/blobs/put", {"docs": {i: doc}}) == {"stored": 0, "existing": 1}
+    for method in ("PUT", "DELETE"):
+        req = urllib.request.Request(f"{svc.url}/v1/blobs/{i}", method=method,
+                                     headers={"Authorization": f"Bearer {t['a']}"})
+        with pytest.raises(urllib.error.HTTPError) as ei:
+            urllib.request.urlopen(req)
+        assert ei.value.code == 405
+    # the key log only grows; a lookup returns the newest documents first
+    docs = [{"kind": "entry", "v": 1, "nodeid": "t::y", "n": n} for n in range(5)]
+    ids = [cs.doc_id(d) for d in docs]
+    call(svc, t["a"], "POST", "/v1/blobs/put", {"docs": dict(zip(ids, docs))})
+    for d in ids:
+        call(svc, t["a"], "POST", "/v1/ns/p/keys", {"put": [{"key": "k", "doc": d}]})
+    assert call(svc, t["a"], "POST", "/v1/ns/p/lookup", {"keys": ["k"], "limit": 3})["found"]["k"] == ids[::-1][:3]
+    call(svc, t["a"], "POST", "/v1/ns/p/runs", {"run": "r1", "receipts": None, "summary": {}})
+    # and the database itself refuses updates and deletes
+    db = sqlite3.connect(os.path.join(svc.data, "cache.sqlite3"))
+    for sql in ("UPDATE blobs SET kind='x'", "DELETE FROM blobs", "UPDATE keys SET doc='x'", "DELETE FROM keys",
+                "DELETE FROM runs"):
+        with pytest.raises(sqlite3.DatabaseError, match="append-only"):
+            db.execute(sql)
+
+
+def test_read_only_token_can_look_up_but_not_write(service):
+    svc, t = service
+    doc = {"kind": "file", "v": 1, "path": "b.py"}
+    with pytest.raises(rc.ServiceError, match="403"):
+        call(svc, t["a_ro"], "POST", "/v1/blobs/put", {"docs": {cs.doc_id(doc): doc}})
+    assert call(svc, t["a_ro"], "POST", "/v1/ns/p/lookup", {"keys": ["k"]}) == {"found": {}}
+
+
+def test_gzip_request_bodies_are_accepted(service):
+    svc, t = service
+    docs = {cs.doc_id(d): d for d in ({"kind": "file", "v": 1, "path": f"m{n}.py", "pad": "x" * 500}
+                                      for n in range(50))}
+    body = gzip.compress(json.dumps({"docs": docs}).encode())
+    req = urllib.request.Request(f"{svc.url}/v1/blobs/put", data=body, method="POST",
+                                 headers={"Authorization": f"Bearer {t['a']}", "Content-Encoding": "gzip",
+                                          "Content-Type": "application/json"})
+    with urllib.request.urlopen(req) as r:
+        assert json.loads(r.read())["stored"] == 50
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+PROJECT = {
+    "pkg/__init__.py": "",
+    "pkg/a.py": "def double(x):\n    return 2 * x\n",
+    "pkg/b.py": "def inc(x):\n    return x + 1\n",
+    "test_a.py": "from pkg.a import double\n\ndef test_double():\n    assert double(2) == 4\n",
+    "test_b.py": "from pkg.b import inc\n\ndef test_inc():\n    assert inc(1) == 2\n\n"
+                 "def test_inc_data():\n    assert open('data.txt').read().strip() == '7'\n",
+    "test_clock.py": "import time\n\ndef test_reads_clock():\n    assert time.time() > 0\n",
+    "test_env.py": "import os\n\ndef test_token_is_hidden():\n"
+                   "    assert os.environ.get('FENVIX_CACHE_TOKEN') is None\n"
+                   "    assert os.environ.get('FENVIX_CACHE_LOCAL') is None\n",
+    "data.txt": "7\n",
+}
+
+
+def write(root, files):
+    for name, text in files.items():
+        p = root / name
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(text)
+
+
+def machine_run(pytester, tmp_path, url, token, machine, *extra, env=None):
+    """One job on one machine: its own local mirror (an empty disk on a fresh machine)."""
+    report = tmp_path / f"report-{machine}.json"
+    outcomes = tmp_path / f"outcomes-{machine}.json"
+    for p in (report, outcomes):
+        if p.exists():
+            p.unlink()
+    os.environ["FENVIX_CACHE_LOCAL"] = str(tmp_path / f"machine-{machine}" / "mirror")
+    os.environ["FENVIX_CACHE_REPORT"] = str(report)
+    os.environ["FENVIX_RUNTIME_MEMO"] = str(tmp_path / f"machine-{machine}" / "runtime-memo.json")
+    if token is None:
+        os.environ.pop("FENVIX_CACHE_TOKEN", None)
+    else:
+        os.environ["FENVIX_CACHE_TOKEN"] = token
+    for k, v in (env or {}).items():
+        os.environ[k] = v
+    r = pytester.runpytest_subprocess("--det", f"--det-cache={url}", f"--det-outcomes={outcomes}",
+                                      "-p", "no:cacheprovider", *extra)
+    out = json.loads(outcomes.read_text())
+    rep = json.loads(report.read_text()) if report.exists() else {}
+    return r, out, rep
+
+
+@pytest.fixture
+def project(pytester):
+    write(pytester.path, PROJECT)
+    return pytester.path
+
+
+def test_second_machine_reuses_with_proof_what_the_first_recorded(service, pytester, project, tmp_path, monkeypatch):
+    svc, t = service
+    for k in ("FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT", "FENVIX_RUNTIME_MEMO", "FENVIX_CACHE_TOKEN"):
+        monkeypatch.delenv(k, raising=False)
+    url = f"{svc.url}/org-a/project"
+    r1, o1, rep1 = machine_run(pytester, tmp_path, url, t["a"], "1")
+    r1.assert_outcomes(passed=5)
+    assert o1["cache"]["reused"] == 0
+    assert rep1["push_entry_docs_new"] == 5 and rep1["error"] is None
+    # machine 2: empty local mirror, same commit -> every result comes from the service, checked locally
+    r2, o2, rep2 = machine_run(pytester, tmp_path, url, t["a"], "2")
+    r2.assert_outcomes(passed=5)
+    assert rep2["pull_proven"] == 5 and rep2["error"] is None
+    assert o2["cache"]["reused"] == 5
+    # machine 3: one source file and one data file changed -> only their tests run, the rest is reused
+    (project / "pkg" / "b.py").write_text("def inc(x):\n    return x + 2\n")
+    r3, o3, rep3 = machine_run(pytester, tmp_path, url, t["a"], "3")
+    r3.assert_outcomes(passed=4, failed=1)
+    assert o3["outcomes"]["test_b.py::test_inc"] == "failed"
+    assert o3["cache"]["reused"] == 4  # test_inc_data does not call inc(): its code is unchanged
+    (project / "data.txt").write_text("8\n")
+    r4, o4, _ = machine_run(pytester, tmp_path, url, t["a"], "4")
+    assert o4["outcomes"]["test_b.py::test_inc_data"] == "failed"
+    # every reuse matches a fresh run without the cache (no wrong reuse)
+    fresh = tmp_path / "fresh.json"
+    for k in ("FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT", "FENVIX_CACHE_TOKEN"):
+        os.environ.pop(k, None)
+    pytester.runpytest_subprocess("--det", f"--det-outcomes={fresh}", "-p", "no:cacheprovider")
+    real = json.loads(fresh.read_text())["outcomes"]
+    assert o4["outcomes"] == real
+
+
+def test_another_runtime_never_reuses(service, pytester, project, tmp_path, monkeypatch):
+    svc, t = service
+    for k in ("FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT", "FENVIX_RUNTIME_MEMO", "FENVIX_CACHE_TOKEN"):
+        monkeypatch.delenv(k, raising=False)
+    url = f"{svc.url}/org-a/project"
+    machine_run(pytester, tmp_path, url, t["a"], "1")
+    # -O strips asserts: another runtime identity, so nothing recorded on machine 1 is a candidate
+    monkeypatch.setenv("PYTHONOPTIMIZE", "1")
+    r2, o2, rep2 = machine_run(pytester, tmp_path, url, t["a"], "2")
+    assert o2["cache"]["reused"] == 0
+    assert rep2["pull_candidates"] == 0
+
+
+def test_other_organization_gets_nothing(service, pytester, project, tmp_path, monkeypatch):
+    svc, t = service
+    for k in ("FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT", "FENVIX_RUNTIME_MEMO", "FENVIX_CACHE_TOKEN"):
+        monkeypatch.delenv(k, raising=False)
+    url = f"{svc.url}/shared-name"
+    machine_run(pytester, tmp_path, url, t["a"], "1")
+    _, o2, rep2 = machine_run(pytester, tmp_path, url, t["b"], "2")
+    assert o2["cache"]["reused"] == 0 and rep2["pull_candidates"] == 0
+
+
+def test_service_down_falls_back_to_the_local_mirror(pytester, project, tmp_path, monkeypatch):
+    for k in ("FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT", "FENVIX_RUNTIME_MEMO", "FENVIX_CACHE_TOKEN"):
+        monkeypatch.delenv(k, raising=False)
+    import socket
+
+    s = socket.socket()
+    s.bind(("127.0.0.1", 0))
+    port = s.getsockname()[1]
+    s.close()  # nothing listens there
+    url = f"http://127.0.0.1:{port}/org-a/project"
+    r1, o1, rep1 = machine_run(pytester, tmp_path, url, "fxc_x", "1")
+    r1.assert_outcomes(passed=5)
+    assert rep1["error"] and "pull" in rep1["error"]
+    r2, o2, rep2 = machine_run(pytester, tmp_path, url, "fxc_x", "1")  # same machine: the mirror serves
+    r2.assert_outcomes(passed=5)
+    assert o2["cache"]["reused"] == 5
+    assert "shared cache:" in r2.stdout.str() and "local mirror" in r2.stdout.str()
+
+
+def test_entries_pushed_while_the_service_was_down_are_pushed_later(service, pytester, project, tmp_path,
+                                                                     monkeypatch):
+    svc, t = service
+    for k in ("FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT", "FENVIX_RUNTIME_MEMO", "FENVIX_CACHE_TOKEN"):
+        monkeypatch.delenv(k, raising=False)
+    url = f"{svc.url}/org-a/project"
+    # machine 1 records with a token the service refuses (as if it were unreachable): nothing reaches the service
+    _, _, rep = machine_run(pytester, tmp_path, url, "fxc_wrong", "1")
+    assert rep["error"]
+    # next job on machine 1 with a valid token: all reused locally, and the backlog is pushed
+    _, o, rep = machine_run(pytester, tmp_path, url, t["a"], "1")
+    assert o["cache"]["reused"] == 5 and rep["push_entry_docs_new"] == 5
+    _, o2, _ = machine_run(pytester, tmp_path, url, t["a"], "2")
+    assert o2["cache"]["reused"] == 5
+
+
+def test_token_is_not_visible_even_to_a_test_that_enumerates_the_environment(service, pytester, tmp_path,
+                                                                             monkeypatch):
+    svc, t = service
+    for k in ("FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT", "FENVIX_RUNTIME_MEMO", "FENVIX_CACHE_TOKEN"):
+        monkeypatch.delenv(k, raising=False)
+    write(pytester.path, {"test_e.py": "import os\n\ndef test_e():\n"
+                                       "    assert not any(v.startswith('fxc_') for v in os.environ.values())\n"
+                                       "    assert not any(k.startswith('FENVIX_CACHE') for k in os.environ)\n"})
+    r, o, rep = machine_run(pytester, tmp_path, f"{svc.url}/org-a/e", t["a"], "1")
+    r.assert_outcomes(passed=1)
+    assert rep["error"] is None
+
+
+def test_lookup_key_is_stable():
+    assert rc.lookup_key("t::a", "c", "r", None) == rc.lookup_key("t::a", "c", "r", None)
+    assert rc.lookup_key("t::a", "c", "r", None) != rc.lookup_key("t::a", "c", "r", 0)
+    assert rc.lookup_key("t::a", "c", "r", None) != rc.lookup_key("t::a", "c", "r2", None)
+    assert rc.split_url("https://cache.example:8443/acme/repo") == ("https://cache.example:8443", "acme/repo")
