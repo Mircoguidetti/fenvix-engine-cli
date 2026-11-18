@@ -1,0 +1,49 @@
+{
+ "name": "documenso",
+ "job": "e5diag",
+ "repo": "documenso/documenso",
+ "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+ "status": "ok",
+ "run_id": "44389754462",
+ "engine_commit": "bb1b57d03c4f2c64a6a9ffbe4788db5d6d40a576",
+ "setup_s": 288,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 60,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8
+ },
+ "pw_dir": "packages/app-tests",
+ "pw_args": [
+  "--project=api",
+  "--project=license"
+ ],
+ "runs": [],
+ "epoch": "2026-11-18T22:01:00Z",
+ "measured_at": "2026-11-18T22:01:09Z",
+ "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
+ "state": {
+  "spec": "/home/runner/work/_temp/l2_target/detjs-state.json",
+  "save_rc": 0,
+  "save_log": "detjs state: save snapshot .detjs/state; files digest 55c5bcb888f463ca\n"
+ },
+ "e1_args": [
+  "--project=api",
+  "--project=license"
+ ],
+ "e5diag": {
+  "prepare_rc": 0,
+  "db_rc": 0,
+  "db_now": "2026-11-18 22:01:00+00|2026-11-18 22:01:00+00",
+  "replays": [
+   "passed",
+   "passed"
+  ]
+ },
+ "elapsed_min": 0.7
+}
