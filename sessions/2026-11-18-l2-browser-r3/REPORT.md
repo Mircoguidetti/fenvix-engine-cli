@@ -79,7 +79,22 @@ PENDING
 
 ## 5. Step 3: the 4 non-documenso suites on this engine
 
-PENDING
+Two full `--det` runs per suite on this branch's engine (697c9729 + the R1/R2 clock), compared with the plain runs of
+the same job (20 for etherpad, solid-start and uptime-kuma; 2 runs of shard 1/3 for actual) and with round 2 run 4
+(engine without 697c9729). Run 44327291710, MEASURED. The new project is in the last row.
+
+| Project | Broken by the controls (round 2 run 4) | Same tests? | Hidden by the controls | Identical fingerprints in 2 runs (round 2) | First-divergence reasons | Slowdown vs plain |
+|---|---|---|---|---|---|---|
+| actual (shard 1/3, 74) | **2 = 2.7%** (2) | same 2 (`moves a category`, Envelope + Tracking) | 1 ("applies budget template" Envelope: failed both plain shard runs, passed both `--det`) | **26** (49) | random 42, other 6 (round 2: other 17, random 8) | x3.0 (vs 2 plain runs of 433-448 s that had 60 s timeouts; NOISY) |
+| etherpad (289) | **20 = 6.9%** (21) | 20 in both; `timeslider follow` no longer broken | 0 | 31 (29) | net 194, sched 31, other 24, random 9 | x12.8 |
+| solid-start (47) | **3 = 6.4%** (3) | same 3 | 0 | 42 (43) | sched 4, other 1 | x2.4 |
+| uptime-kuma (71) | **10 = 14.1%** (10) | 9 in both; "filters monitors by tag" new; "data retention" no longer counted (it failed once plain this time) | 0 | 9 (6) | sched 49, net 11 | x3.8 |
+| sveltekit (254, new) | **43 = 16.9%** | - | 0 | 144 | other 60, sched 33, net 15 | **x13.5** |
+
+So fix 697c9729 and the R1/R2 clock did not change the broken lists of the 4 projects (MEASURED: 34 of 35 round-2
+broken tests broken again, 1 new). Identical fingerprints moved within 3 on etherpad, solid-start and uptime-kuma, but
+**fell on actual from 49 to 26** with first divergences now at `random` events (page draw counts). Cause: PENDING (A/B
+job below).
 
 ## 6. Found this round
 
