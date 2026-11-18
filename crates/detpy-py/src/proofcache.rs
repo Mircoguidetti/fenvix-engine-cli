@@ -12,6 +12,8 @@ struct Inner {
     store: Store,
     checker: Checker,
     touched: BTreeSet<String>,
+    /// `store.written` as loaded: unchanged and nothing touched, saving would rewrite the same store.
+    written0: BTreeMap<String, BTreeSet<String>>,
 }
 
 /// The on-disk store of one cache directory plus the reuse checker of the
@@ -59,7 +61,8 @@ impl ProofCache {
     fn new(dir: PathBuf, root: PathBuf) -> Self {
         let store = Store::load(&dir);
         let checker = Checker::new(Current { root, ..Default::default() });
-        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new() }) }
+        let written0 = store.written.clone();
+        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0 }) }
     }
 
     /// Set the current session state: configuration and runtime digests, clock
@@ -208,8 +211,13 @@ impl ProofCache {
     }
 
     /// Merge this session's changes into the store on disk (under a lock) and write it atomically.
+    /// Nothing to merge (no entry touched, no new written path) leaves the store on disk as it is: merging
+    /// nothing into it and compacting it again would write the same content.
     fn save(&self) -> PyResult<()> {
         let g = lock(&self.inner);
+        if g.touched.is_empty() && g.store.written == g.written0 {
+            return Ok(());
+        }
         g.store.save_merged(&self.dir, &g.touched)?;
         Ok(())
     }

@@ -442,3 +442,23 @@ def test_dist_identity_matches_importlib_metadata(tmp_path):
     (p / "RECORD").write_bytes(b"\xff\xfe")
     d = metadata.PathDistribution(p)
     assert _core.dist_identity(p) == _old_identity(d)
+
+
+# ---------------------------------------------------------------------------
+# save: a session that changed nothing leaves the store file as it is
+def test_unchanged_session_does_not_rewrite_the_store(pytester):
+    _write(pytester.path, {"test_s.py": "def test_a():\n    assert 1\n\ndef test_b():\n    assert 2\n"})
+    cache = pytester.path / ".cachedir"
+
+    def run():
+        return pytester.runpytest_subprocess("--det", f"--det-cache={cache}", "-p", "no:cacheprovider")
+
+    run().assert_outcomes(passed=2)
+    store = cache / "proof-cache.json"
+    before, st = store.read_bytes(), store.stat()
+    run().stdout.fnmatch_lines(["*reused 2 result(s) with proof*"])
+    st2 = store.stat()
+    assert store.read_bytes() == before and (st2.st_mtime_ns, st2.st_ino) == (st.st_mtime_ns, st.st_ino)
+    (pytester.path / "test_s.py").write_text("def test_a():\n    assert 1\n\ndef test_b():\n    assert 3\n")
+    run().assert_outcomes(passed=2)
+    assert store.read_bytes() != before
