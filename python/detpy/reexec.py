@@ -36,7 +36,8 @@ import time
 ADDR_NO_RANDOMIZE = 0x0040000
 MARKER = "DETPY_REEXEC"
 PRECOMPILE_ENV = "DETPY_PRECOMPILE_S"
-_EXCLUDE = r"[/\\](\.git|\.hg|\.tox|\.nox|node_modules|\.venv|venv|\.eggs|\.mypy_cache|\.detpy)[/\\]"
+_EXCLUDE_NAMES = (".git", ".hg", ".tox", ".nox", "node_modules", ".venv", "venv", ".eggs", ".mypy_cache", ".detpy")
+_EXCLUDE = r"[/\\](" + "|".join(n.replace(".", r"\.") for n in _EXCLUDE_NAMES) + r")[/\\]"
 
 # Number of pytest sessions currently configured in this process. A nested,
 # in-process session (``pytest.main()`` from a test, pytester inline runs)
@@ -174,9 +175,15 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
     for dirs_, extra in ((libs, []), (project, ["-x", _EXCLUDE])):
         if not dirs_:
             continue
-        cmd = [sys.executable, "-c", driver, *extra, *dirs_]
-        p = subprocess.run(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-                           stderr=subprocess.DEVNULL)
+        stale = _stale_sources(dirs_, prefix, bool(extra))
+        if stale is None:  # no Rust check here: the driver walks and checks the directories itself
+            cmd, data = [sys.executable, "-c", driver, *extra, *dirs_], None
+        elif not stale:
+            continue
+        else:
+            cmd, data = [sys.executable, "-c", driver, "--stdin"], b"\0".join(os.fsencode(f) for f in stale)
+        p = subprocess.run(cmd, env=env, input=data, stdin=None if data is not None else subprocess.DEVNULL,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if p.returncode != 0:  # interrupted: no stamps (a file that does not compile is skipped, not an error)
             return time.perf_counter() - t0
     try:
@@ -191,31 +198,51 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
     return time.perf_counter() - t0
 
 
+def _core():
+    from . import _core as c
+
+    return c
+
+
+_SIP: list = []  # [(c_rounds, d_rounds)] of importlib.util.source_hash, [None] when the Rust hash does not match it
+
+
+def _hash_variant():
+    if not _SIP:
+        import importlib.util
+
+        key = int.from_bytes(importlib.util.MAGIC_NUMBER, "little")
+        probe = b"detpy source_hash probe\n" * 3
+        want = importlib.util.source_hash(probe)
+        _SIP.append(next((v for v in ((1, 3), (2, 4)) if _core().source_hash(probe, key, *v) == want), None))
+    return _SIP[0]
+
+
+def _stale_sources(dirs: list, prefix: str, project: bool) -> list | None:
+    """The sources the driver would compile for ``dirs`` (with the project's exclusions when ``project``), checked in
+    Rust (``_core.pyc_stale_hashed``: the driver's walk and up-to-date test); None when the Rust check does not apply
+    here (not POSIX, an optimization level that names ``.opt-N.pyc`` files, an unknown source hash)."""
+    import importlib.util
+
+    if os.name != "posix" or os.environ.get("PYTHONOPTIMIZE") or sys.flags.optimize:
+        return None
+    variant = _hash_variant()
+    if variant is None or sys.implementation.cache_tag is None:
+        return None
+    return _core().pyc_stale_hashed(dirs, prefix, sys.implementation.cache_tag, importlib.util.MAGIC_NUMBER,
+                                    os.getcwd(), list(_EXCLUDE_NAMES) if project else [],
+                                    int.from_bytes(importlib.util.MAGIC_NUMBER, "little"), *variant)
+
+
 def _driver_source() -> str:
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "_pycompile.py"), encoding="utf-8") as fh:
         return fh.read()
 
 
 def dir_stamp(d: str) -> str:
-    """Digest of a library directory's top-level entries with their mtimes and each ``*.dist-info/RECORD``'s."""
-    import hashlib
-
-    h = hashlib.sha256()
-    try:
-        with os.scandir(d) as it:
-            entries = sorted(it, key=lambda e: e.name)
-    except OSError:
-        return "missing"
-    for e in entries:
-        try:
-            st = e.stat(follow_symlinks=False)
-            h.update(f"{e.name}\0{st.st_mtime_ns}\0{st.st_ino}\n".encode("utf-8", "surrogateescape"))
-            if e.name.endswith(".dist-info"):
-                r = os.stat(os.path.join(e.path, "RECORD"))
-                h.update(f"R{r.st_mtime_ns}\0{r.st_size}\0{r.st_ino}\n".encode())
-        except OSError:
-            h.update(f"{e.name}\0?\n".encode("utf-8", "surrogateescape"))
-    return h.hexdigest()
+    """Digest of a library directory's top-level entries with their mtimes and each ``*.dist-info/RECORD``'s (in
+    Rust; the Python original is ``tests/rust_hotpaths_ref/_ref_reexec_r015.py``)."""
+    return _core().dir_stamp(d)
 
 
 BLOCKED_ENV = "DETPY_BLOCKED_PLUGINS"

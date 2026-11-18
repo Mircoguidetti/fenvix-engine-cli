@@ -18,9 +18,10 @@ def test_library_dirs_are_precompiled_again_only_when_they_change(tmp_path, monk
     real = subprocess.run
 
     def run(cmd, **kw):
-        # the project's files compileall is given (round 2: only the stale ones) count as the project
-        calls.append(sorted({str(proj) if c.startswith(str(proj) + os.sep) else c for c in cmd
-                             if c in (str(site), str(proj)) or c.startswith(str(proj) + os.sep)}))
+        # the directories the driver is run for: given as directories, or as their stale files on stdin
+        files = [os.fsdecode(f) for f in (kw.get("input") or b"").split(b"\0") if f] + list(cmd[3:])
+        calls.append(sorted({d for d in (str(site), str(proj)) for f in files
+                             if f == d or f.startswith(d + os.sep)}))
         return real(cmd, **kw)
 
     monkeypatch.setattr(subprocess, "run", run)
@@ -32,13 +33,11 @@ def test_library_dirs_are_precompiled_again_only_when_they_change(tmp_path, monk
 
     assert precompile() == [str(site), str(proj)]
     prefix = reexec.pyc_cache_dir("0")
-    os.utime(proj / "m.py", (1, 1))  # older than 2 s: kept, and from now on up to date (round 2: not recompiled)
-    precompile()
     assert any(f.endswith(".pyc") for _, _, fs in os.walk(prefix + str(site)) for f in fs)
-    # unchanged library and project: nothing to compile (the project is checked, in Rust, without compileall)
+    # unchanged library and project: nothing to compile (the project is checked, in Rust, without a driver process)
     assert precompile() == []
     # a project edit: only the project is compiled
-    os.utime(proj / "m.py", (2, 2))
+    (proj / "m.py").write_text("Y = 2\n")
     assert precompile() == [str(proj)]
     # an installer adds a package (or rewrites a dist-info RECORD): the library is checked again
     (site / "lib2").mkdir()
@@ -50,6 +49,10 @@ def test_library_dirs_are_precompiled_again_only_when_they_change(tmp_path, monk
     precompile()
     assert precompile() == []
     os.utime(di / "RECORD", ns=(1, 1))
+    assert precompile() == []  # checked again, but every module's pyc holds its source's hash: nothing to compile
+    (site / "lib2" / "__init__.py").write_text("Z = 3\n")
+    assert precompile() == []  # an in-place edit without an installer: the stamp is unchanged (import checks it)
+    os.utime(di / "RECORD", ns=(2, 2))
     assert precompile() == [str(site)]
 
 

@@ -10,6 +10,10 @@ Up-to-date check: a source whose cached ``.pyc`` is a checked-hash pyc of the sa
 any other is compiled again (``compileall`` would recompile every hash-based pyc at every run).
 
     python -c <this file's text> [-x REGEX] DIR...      (``-x``: skip files whose path matches, like compileall)
+    python -c <this file's text> --stdin                 (the files to check: NUL-separated paths on stdin)
+
+``reexec.precompile`` walks and checks the directories in Rust (``_core.pyc_stale_hashed``, the same walk and test)
+and hands only the stale files to ``--stdin``; the directory form is its fallback.
 """
 
 import sys
@@ -67,9 +71,12 @@ def _chunk(paths):
 
 def main(argv) -> int:
     exclude = None
-    if len(argv) >= 2 and argv[0] == "-x":
-        exclude, argv = re.compile(argv[1]), argv[2:]
-    files = list(sources(argv, exclude))
+    if argv[:1] == ["--stdin"]:
+        files = [os.fsdecode(p) for p in sys.stdin.buffer.read().split(b"\0") if p]
+    else:
+        if len(argv) >= 2 and argv[0] == "-x":
+            exclude, argv = re.compile(argv[1]), argv[2:]
+        files = list(sources(argv, exclude))
     n = os.cpu_count() or 1
     if n > 1 and len(files) > 256 and hasattr(os, "fork"):
         import multiprocessing
