@@ -1,0 +1,41 @@
+detjs 0.1.0: Level 2 browser prototype; playwright 1.64.1; seed 0; epoch 2026-11-18T09:24:00Z; vtime=paced; net=on; server=on; workers=1
+[WebServer] 2026-11-18T09:36:19Z [SERVER] WARN: Node.js Inspector is enabled. You can connect to it via Chrome DevTools or VSCode.
+[WebServer] 2026-11-18T09:36:19Z [SERVER] WARN: Node.js Inspector is listening on: undefined
+[WebServer] Debugger listening on ws://127.0.0.1:9229/e2d2cbd6-2341-4da1-9fe7-81931cbdff3e
+[WebServer] For help, see: https://nodejs.org/learn/getting-started/debugging
+
+Running 7 tests using 1 worker
+···[WebServer] 2026-11-18T09:36:56.596Z WARN [Better Auth]: Invalid password
+···F
+
+  1) [specs] › test/e2e/specs/monitor-history-settings.spec.js:33:9 › Monitor history settings › saves the data retention period 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  locator('#keepDataPeriodDays')
+    Expected: "30"
+    Received: "180"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" locator('#keepDataPeriodDays') with timeout 5000ms
+      - waiting for locator('#keepDataPeriodDays')
+        14 × locator resolved to <input min="0" step="1" required="" type="number" class="form-control" id="keepDataPeriodDays"/>
+           - unexpected value "180"
+
+
+      38 |
+      39 |         await page.reload();
+    > 40 |         await expect(page.locator("#keepDataPeriodDays")).toHaveValue("30");
+         |                                                           ^
+      41 |     });
+      42 |
+      43 |     test("clears all statistics and heartbeats", async ({ page }) => {
+        at /home/runner/work/_temp/l2_target/test/e2e/specs/monitor-history-settings.spec.js:40:59
+
+    Error Context: private/playwright-test-results/monitor-history-settings-M-9f600-s-the-data-retention-period-specs/error-context.md
+
+  1 failed
+    [specs] › test/e2e/specs/monitor-history-settings.spec.js:33:9 › Monitor history settings › saves the data retention period 
+  6 passed (1.3m)
+detjs: trace ../l2_out/uptime-kuma/traces/d1-r1.jsonl
