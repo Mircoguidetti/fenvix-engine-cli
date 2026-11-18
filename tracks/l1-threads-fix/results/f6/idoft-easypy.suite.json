@@ -1,0 +1,279 @@
+{
+ "name": "idoft-easypy",
+ "set": "thread-heavy",
+ "url": "https://github.com/weka-io/easypy",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009931",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "python_requested": [
+  "3.9"
+ ],
+ "commit": "9501c3ee03dcb1630e58cbb73b1647056907bcea",
+ "status": "ok",
+ "detail": "",
+ "python": "3.9",
+ "install": "-e .",
+ "collected": 212,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 11.196,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 163,
+    "failed": 48,
+    "error": 1
+   },
+   "stats": null,
+   "tail": "t of place\nassert 3 == (1 + 1)\nERROR tests/test_concurrency.py::test_multiexception_api[nonconcurrent] - RecursionError: maximum recursion depth exceeded\n48 failed, 163 passed, 5 warnings, 1 error in 11.05s\nException ignored in: <function concurrent.join at 0x7b0e3cf64940>\nTraceback (most recent call last):\n  File \"/tmp/l1t/src/idoft-easypy/easypy/concurrency.py\", line 1081, in join\n    self.__exit__(None, None, None)\n  File \"/tmp/l1t/src/idoft-easypy/easypy/concurrency.py\", line 1068, in __exit__\n    return self._ctx.__exit__(*args)\nAttributeError: 'concurrent' object has no attribute '_ctx'\n",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 10.751,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 163,
+    "failed": 48,
+    "error": 1
+   },
+   "stats": null,
+   "tail": "t of place\nassert 3 == (1 + 1)\nERROR tests/test_concurrency.py::test_multiexception_api[nonconcurrent] - RecursionError: maximum recursion depth exceeded\n48 failed, 163 passed, 5 warnings, 1 error in 10.22s\nException ignored in: <function concurrent.join at 0x7ffff6366670>\nTraceback (most recent call last):\n  File \"/tmp/l1t/src/idoft-easypy/easypy/concurrency.py\", line 1081, in join\n    self.__exit__(None, None, None)\n  File \"/tmp/l1t/src/idoft-easypy/easypy/concurrency.py\", line 1068, in __exit__\n    return self._ctx.__exit__(*args)\nAttributeError: 'concurrent' object has no attribute '_ctx'\n",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 3.191,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 163,
+    "failed": 48,
+    "error": 1
+   },
+   "stats": {
+    "decisions": 1111,
+    "switches": 1883,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 69,
+    "managed": 93
+   },
+   "tail": "ut of place\nassert 3 == (1 + 1)\nERROR tests/test_concurrency.py::test_multiexception_api[nonconcurrent] - RecursionError: maximum recursion depth exceeded\n48 failed, 163 passed, 5 warnings, 1 error in 2.65s\nException ignored in: <function concurrent.join at 0x7ffff6365280>\nTraceback (most recent call last):\n  File \"/tmp/l1t/src/idoft-easypy/easypy/concurrency.py\", line 1081, in join\n    self.__exit__(None, None, None)\n  File \"/tmp/l1t/src/idoft-easypy/easypy/concurrency.py\", line 1068, in __exit__\n    return self._ctx.__exit__(*args)\nAttributeError: 'concurrent' object has no attribute '_ctx'\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_aliasing.py::test_aliasing_infinite_recursion_exception": "FAILED AssertionError: assert 'maximum recu... of an object' == 'Infinite rec... Foo.bar.baz)'",
+    "tests/test_caching.py::test_resilient_between_timecaches": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_collections.py::test_simple_object_collection": "FAILED ModuleNotFoundError: No module named 'warning'",
+    "tests/test_concurrency.py::test_thread_stacks": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_concurrency.py::test_thread_contexts_counters": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_concurrency.py::test_thread_context_stacks": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_concurrency.py::test_multiobject_1": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_concurrency.py::test_multiobject_exceptions": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_concurrency.py::test_multiexception_pickling": "FAILED _queue.Empty",
+    "tests/test_concurrency.py::test_multiobject_logging": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_concurrency.py::test_multiexception_api[concurrent]": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_concurrency.py::test_multiexception_types": "FAILED easypy.concurrency.MultiException[RecursionError]:",
+    "tests/test_concurrency.py::test_concurrent_done_status[False]": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_concurrency.py::test_concurrent_done_status[True]": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_exceptions.py::test_pickle_texception": "FAILED _pickle.PicklingError: Can't pickle <class 'easypy.bunch.Bunch'>: it's not the same object as easypy.bunch.Bunch",
+    "tests/test_logging.py::test_indent_around_generator": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_logging.py::test_indent_around_function": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_logging.py::test_indent_around_ctx": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_rwlock.py::test_rwlock": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_simple_signal_registration": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_simple_signal_object_registration": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_simple_signal_object_identifier": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_simple_signal_object_wo_identifier": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_simple_signal_object_identifier_attribute": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_registration_context": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_priorities": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_priorities_async": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_async": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_ctx": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_ctx_with_identifier": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_signal_weakref": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_signal_weakref_complex_descriptors": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_after": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_during": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_signal_weakref_with_identifier": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_after_with_identifier": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_during_with_identifier": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_sync.py::test_synchronization_coordinator_with_multiobject_exception": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_sync.py::test_synchronization_coordinator_failing_context_manager": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_sync.py::test_synchronization_coordinator_timeout": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_sync.py::test_logged_lock": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_sync.py::test_logged_condition": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_sync.py::test_logged_condition_exception": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_sync.py::test_logged_condition_waited_for": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_sync.py::test_wait_log_predicate": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_timing.py::test_time_interval1": "FAILED AssertionError: assert '<TI 02:40:00...s)..02:40:01>' == '<TI 05:40:00...s)..05:40:01>'",
+    "tests/test_timing.py::test_time_interval2": "FAILED AssertionError: assert '<TI 02:40:00...>' == '<TI 05:40:00...>'",
+    "tests/test_ziplog.py::test_ziplog": "FAILED AssertionError: line 3 is out of place",
+    "tests/test_concurrency.py::test_multiexception_api[nonconcurrent]": "ERROR RecursionError: maximum recursion depth exceeded"
+   }
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 4.021,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 163,
+    "failed": 48,
+    "error": 1
+   },
+   "stats": {
+    "decisions": 1517,
+    "switches": 1548,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 69,
+    "managed": 113
+   },
+   "tail": "ut of place\nassert 3 == (1 + 1)\nERROR tests/test_concurrency.py::test_multiexception_api[nonconcurrent] - RecursionError: maximum recursion depth exceeded\n48 failed, 163 passed, 5 warnings, 1 error in 3.48s\nException ignored in: <function concurrent.join at 0x7ffff635f280>\nTraceback (most recent call last):\n  File \"/tmp/l1t/src/idoft-easypy/easypy/concurrency.py\", line 1081, in join\n    self.__exit__(None, None, None)\n  File \"/tmp/l1t/src/idoft-easypy/easypy/concurrency.py\", line 1068, in __exit__\n    return self._ctx.__exit__(*args)\nAttributeError: 'concurrent' object has no attribute '_ctx'\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_aliasing.py::test_aliasing_infinite_recursion_exception": "FAILED AssertionError: assert 'maximum recu... of an object' == 'Infinite rec... Foo.bar.baz)'",
+    "tests/test_caching.py::test_resilient_between_timecaches": "FAILED RecursionError: maximum recursion depth exceeded in comparison",
+    "tests/test_collections.py::test_simple_object_collection": "FAILED ModuleNotFoundError: No module named 'warning'",
+    "tests/test_concurrency.py::test_thread_stacks": "FAILED RecursionError: maximum recursion depth exceeded in comparison",
+    "tests/test_concurrency.py::test_thread_contexts_counters": "FAILED RecursionError: maximum recursion depth exceeded in comparison",
+    "tests/test_concurrency.py::test_thread_context_stacks": "FAILED RecursionError: maximum recursion depth exceeded in comparison",
+    "tests/test_concurrency.py::test_multiobject_1": "FAILED RecursionError: maximum recursion depth exceeded in comparison",
+    "tests/test_concurrency.py::test_multiobject_exceptions": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_concurrency.py::test_multiexception_pickling": "FAILED _queue.Empty",
+    "tests/test_concurrency.py::test_multiobject_logging": "FAILED RecursionError: maximum recursion depth exceeded",
+    "tests/test_concurrency.py::test_multiexception_api[concurrent]": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_concurrency.py::test_multiexception_types": "FAILED easypy.concurrency.MultiException[RecursionError]:",
+    "tests/test_concurrency.py::test_concurrent_done_status[False]": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_concurrency.py::test_concurrent_done_status[True]": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_exceptions.py::test_pickle_texception": "FAILED _pickle.PicklingError: Can't pickle <class 'easypy.bunch.Bunch'>: it's not the same object as easypy.bunch.Bunch",
+    "tests/test_logging.py::test_indent_around_generator": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_logging.py::test_indent_around_function": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_logging.py::test_indent_around_ctx": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_rwlock.py::test_rwlock": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_simple_signal_registration": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_simple_signal_object_registration": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_simple_signal_object_identifier": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_simple_signal_object_wo_identifier": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_simple_signal_object_identifier_attribute": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_registration_context": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_priorities": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_priorities_async": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_async": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_ctx": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_ctx_with_identifier": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_signal_weakref": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_signal_weakref_complex_descriptors": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_after": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_during": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_signal_weakref_with_identifier": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_after_with_identifier": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_signals.py::test_signal_weakref_context_manager_delete_during_with_identifier": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_sync.py::test_synchronization_coordinator_with_multiobject_exception": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_sync.py::test_synchronization_coordinator_failing_context_manager": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_sync.py::test_synchronization_coordinator_timeout": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_sync.py::test_logged_lock": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_sync.py::test_logged_condition": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_sync.py::test_logged_condition_exception": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_sync.py::test_logged_condition_waited_for": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_sync.py::test_wait_log_predicate": "FAILED RecursionError: maximum recursion depth exceeded while calling a Python object",
+    "tests/test_timing.py::test_time_interval1": "FAILED AssertionError: assert '<TI 02:40:00...s)..02:40:01>' == '<TI 05:40:00...s)..05:40:01>'",
+    "tests/test_timing.py::test_time_interval2": "FAILED AssertionError: assert '<TI 02:40:00...>' == '<TI 05:40:00...>'",
+    "tests/test_ziplog.py::test_ziplog": "FAILED AssertionError: line 3 is out of place",
+    "tests/test_concurrency.py::test_multiexception_api[nonconcurrent]": "ERROR RecursionError: maximum recursion depth exceeded"
+   }
+  }
+ ],
+ "suite_seeds": [
+  1
+ ],
+ "mtimes_restored": [
+  0,
+  0,
+  0,
+  0
+ ],
+ "warmup": [
+  {
+   "duration_s": 3.508,
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "broken_by_l1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 1,
+  "loaded_runs": 5
+ }
+}
