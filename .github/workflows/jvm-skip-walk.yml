@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: jvm-skip-walk
+  group: jvm-skip-walk-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:
