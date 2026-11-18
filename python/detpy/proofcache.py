@@ -16,6 +16,11 @@ digests). What counts as an input (each one recorded while the test runs):
   makes the whole environment an input);
 * **runtime identity**: interpreter, native libraries, standard library and installed
   distributions, by content (``detpy.runtime_id``);
+* **what start-up processes gave back**: a ``subprocess.Popen`` started by a plugin's
+  ``pytest_configure`` or ``pytest_sessionstart`` (pytest-benchmark's ``file -b <python>``) is no
+  spawn of any test only when its argv, cwd, exit code and output bytes are keyed (output read by
+  ``subprocess.run``), it had no other channel and left nothing running (Linux); the *start-up
+  digest* of all of them is an input of every test (``Capture._end_startup``);
 * **configuration**: pytest version, options and ini, plugins, the Level 0
   controls. Under ``--det`` the clock, randomness, hash seed and network are
   controlled, so they are configuration, not hidden inputs; the clock's epoch
@@ -156,13 +161,28 @@ class Capture:
         self.active = False
         self._socks: dict | None = None  # fd -> socket inode at the last scan
         # start-up: from the start until the first collection, fixture or test context. Popen objects started then
-        # (with the spawn detail) are checked when it ends: see _end_startup
+        # are checked when it ends (see _end_startup); what an exempt one gave back is the start-up digest
         self.startup = True
-        self._startup_popens: list = []
-        # start-up environment reads ((reading frame, context, name), "*" = enumeration): a frame that enumerates the
-        # environment and then starts a process with an explicit env is copying it for that process
-        # (platform._syscmd_file: dict(os.environ, LC_ALL='C')); its reads are that process's inputs
+        self._startup_popens: list[_Held] = []
+        self._startup_infra: list = []  # Popen objects started by infrastructure code (pytest...): their pids
+        self.startup_digest = ""
+        self.startup_processes: list = []  # what each exempt start-up process gave back (for the reports)
+        self.on_startup_end = None  # called with the start-up digest (the plugin hands it to the store)
+        # start-up environment reads (id of the reading frame, its code, its instruction, context, name, group):
+        # "*" = enumeration. The per-key reads made by the same instruction as an enumeration are one copy (a group,
+        # dict(os.environ, LC_ALL='C') in platform._syscmd_file); a process started with an explicit env by that
+        # frame takes one group as its input, unless the copy outlives start-up (then every test's input)
         self._startup_env: list = []
+        self._taken: set = set()  # groups taken by a start-up process
+        self._env_group: tuple | None = None  # (frame id, code, instruction, group) of the last enumeration
+        self._n_groups = 0
+        # Linux: detpy is the child subreaper during start-up, so a process a start-up process leaves running
+        # (a daemon) becomes detpy's child and is seen when start-up ends
+        self._subreaper_prev: int | None = None  # None: process tree not observable
+        self._children0: set = set()
+        self._adopted: set = set()
+        # files under .pytest_cache this session's Python code wrote (reads of others there are inputs)
+        self._cache_written: set = set()
 
     # -- contexts -------------------------------------------------------------
     def ctx_index(self, name: str) -> int:
@@ -201,17 +221,167 @@ class Capture:
                 set_local(tool, code, ev[id(code)])
 
     def _end_startup(self) -> None:
-        """A process started at start-up, outside every test, is not an input of the tests once it has finished and
-        its pipes are closed: nothing can talk to it any more. One still running (or with a pipe still open) when the
-        tests start may be talked to by any test: the start-up context keeps the spawn, as before."""
+        """A process started at start-up, outside every test, is exempt from the spawn flag only when what it gave
+        back is keyed and nothing else of it can reach a test:
+
+        * it has finished, every pipe is closed, and each output pipe was read by ``subprocess.run`` (``run``,
+          ``check_output``, ``getoutput``...), whose ``communicate`` detpy sees: its argv, cwd, exit code and output
+          bytes go into the start-up digest, an input of every test;
+        * it had no channel other than those pipes (no ``pass_fds``, no ``close_fds=False``, standard streams None,
+          PIPE, DEVNULL or STDOUT);
+        * nothing it started is still alive (Linux, child subreaper; elsewhere it is not observable).
+
+        Otherwise the start-up context keeps the spawn: every test is uncached, as before."""
         self.startup = False
-        for p, detail in self._startup_popens:
-            pipes = (p.stdin, p.stdout, p.stderr)
-            if p.returncode is None or any(f is not None and not f.closed for f in pipes):
-                self.flag(0, "spawn", detail + ", still running when the tests start")
-        for _frame, ctx, name in self._startup_env:  # not handed to a start-up process: inputs of every test
-            self.env.setdefault(ctx, set()).add(name)
-        self._startup_popens = self._startup_env = []
+        held, self._startup_popens = self._startup_popens, []
+        infra, self._startup_infra = self._startup_infra, []
+        known = {p.pid for p in infra if p.returncode is None}
+        procs = []
+        for h in held:
+            p = h.p
+            why = None
+            if h.error is not None:  # could not be started: nothing of it can reach a test but this error
+                if not h.chan and self._subreaper_prev is not None:
+                    procs.append({"argv": h.argv, "cwd": h.cwd, "error": h.error})
+                    continue
+                why = h.chan or "the processes it may leave running are not observable on this platform"
+            elif p.returncode is None:
+                why = "still running when the tests start"
+                known.add(p.pid)
+            elif any(f is not None and not f.closed for f in (p.stdin, p.stdout, p.stderr)):
+                why = "a pipe still open when the tests start"
+            elif h.chan:
+                why = h.chan
+            elif h.piped and h.comm is None:
+                why = "its output read outside subprocess.run (not keyed)"
+            elif self._subreaper_prev is None:
+                why = "the processes it may leave running are not observable on this platform"
+            if why is not None:
+                self.flag(0, "spawn", f"{h.detail}, {why}")
+            else:
+                procs.append({"argv": h.argv, "cwd": h.cwd, "returncode": p.returncode,
+                              "output": [[_out_digest(o), _out_digest(e)] for o, e in h.comm or ()]})
+        if self._subreaper_prev is not None:
+            left = _children() - self._children0 - known
+            if left:
+                self._adopted |= left
+                self.flag(0, "spawn", f"a process left running by a start-up process (pid {min(left)})")
+            self._reaper(self._subreaper_prev)
+            self._reap()
+        # environment copies: a group taken by a process whose env= dict nothing but detpy still holds is that
+        # process's input; any other start-up read is an input of every test
+        dropped = set()
+        for h in held:
+            if h.gid is not None and h.env is not None and sys.getrefcount(h.env) <= _ENV_REFS:
+                dropped.add(h.gid)
+            h.env = None
+        for _fid, _code, _lasti, ctx, name, gid in self._startup_env:
+            if gid is None or gid not in dropped:
+                self.env.setdefault(ctx, set()).add(name)
+        self._startup_env = []
+        self._env_group = None
+        self.startup_processes = procs
+        if procs:
+            self.startup_digest = _core.digest(json.dumps(procs, sort_keys=True).encode())
+        if self.on_startup_end is not None:
+            self.on_startup_end(self.startup_digest)
+
+    def _hold(self, p, init_locals, args, detail: str) -> None:
+        """A ``subprocess.Popen`` started at start-up: decided when start-up ends."""
+        h = _Held(p, detail)
+        loc = init_locals or {}
+        try:
+            argv = args[1] if len(args) > 1 else None
+            argv = [argv] if isinstance(argv, (str, bytes, os.PathLike)) else list(argv or ())
+            h.argv = [self._arg(a) for a in argv]
+            if len(args) > 0 and args[0] is not None:
+                h.argv.insert(0, "executable=" + self._arg(args[0]))
+            cwd = args[2] if len(args) > 2 and args[2] is not None else os.getcwd()
+            h.cwd = self._arg(os.path.abspath(os.fsdecode(cwd)))
+        except (TypeError, ValueError, OSError):
+            h.chan = "arguments not readable"
+        if init_locals is None:
+            h.chan = "its standard streams are not readable"
+        else:
+            if loc.get("pass_fds"):
+                h.chan = "a descriptor passed with pass_fds"
+            elif not loc.get("close_fds", True):
+                h.chan = "descriptors inherited (close_fds=False)"
+            else:
+                for name in ("stdin", "stdout", "stderr"):
+                    v = loc.get(name)
+                    if not (v is None or v in (-1, -3) or (name == "stderr" and v == -2)):
+                        h.chan = f"{name} connected to a descriptor or file (not keyed)"
+                        break
+            h.piped = loc.get("stdout") == -1 or loc.get("stderr") == -1
+        env = args[3] if len(args) > 3 else None
+        if env is not None:
+            h.env = env
+            spawner = _outer_frame(_SUBPROCESS_FILE)
+            if spawner is not None:
+                # the most recent copy of the environment made by the frame that starts the process
+                fid, code = id(spawner), spawner.f_code
+                for x in reversed(self._startup_env):
+                    if x[5] is not None and x[0] == fid and x[1] is code and x[5] not in self._taken:
+                        h.gid = x[5]
+                        self._taken.add(x[5])
+                        break
+        self._startup_popens.append(h)
+
+    def _arg(self, a) -> str:
+        """One argument of a start-up process, with the paths of this checkout and the interpreter made portable
+        (the same project in another directory, or on another machine, gives the same digest)."""
+        s = os.fsdecode(a) if isinstance(a, (str, bytes, os.PathLike)) else repr(a)
+        if s in (sys.executable, getattr(sys, "_base_executable", None)):
+            return "<python>"
+        if s == self.root or s.startswith(self.root_sep):
+            return "<root>" + s[len(self.root):]
+        return s
+
+    def _note_startup_env(self, f, ctx: int, name: str) -> None:
+        key = (id(f), f.f_code, f.f_lasti)
+        if name == "*":
+            gid = self._n_groups
+            self._n_groups += 1
+            self._env_group = key + (gid,)
+        else:
+            g = self._env_group
+            gid = g[3] if g is not None and g[0] == key[0] and g[1] is key[1] and g[2] == key[2] else None
+        self._startup_env.append((key[0], key[1], key[2], ctx, name, gid))
+
+    def _reaper(self, value: int) -> bool:
+        try:
+            return _libc().prctl(_PR_SET_CHILD_SUBREAPER, value, 0, 0, 0) == 0
+        except (OSError, AttributeError):
+            return False
+
+    def _start_reaper(self) -> None:
+        if not sys.platform.startswith("linux"):
+            return
+        try:
+            import ctypes
+
+            v = ctypes.c_int(0)
+            if _libc().prctl(_PR_GET_CHILD_SUBREAPER, ctypes.byref(v), 0, 0, 0) != 0:
+                return
+            prev = v.value
+        except (OSError, AttributeError, ImportError):
+            return
+        self._children0 = _children()
+        if self._reaper(1):
+            self._subreaper_prev = prev
+
+    def _reap(self) -> None:
+        """Collect the exit status of the processes detpy adopted (never of a Popen's own child)."""
+        for pid in list(self._adopted):
+            try:
+                done, _ = os.waitpid(pid, os.WNOHANG)
+            except ChildProcessError:
+                done = pid
+            except OSError:
+                continue
+            if done:
+                self._adopted.discard(pid)
 
     def _cur(self) -> int:
         if self.rec is not None and self.rec.import_depth:
@@ -291,6 +461,8 @@ class Capture:
         _mon.register_callback(self.tool, _mon.events.PY_START, self.rec.start)
         _mon.register_callback(self.tool, _mon.events.PY_RETURN, self.rec.ret)
         self.active = True
+        _patch_communicate()
+        self._start_reaper()
         _core.set_audit_hook(self._audit, _AUDIT_EVENTS)
         # code that exists before the start: modules already loaded become whole-content inputs
         pre = False
@@ -315,6 +487,9 @@ class Capture:
             return
         self.active = False
         _core.set_audit_hook(None, ())
+        if self.startup and self._subreaper_prev is not None:  # a session that never reached collection
+            self._reaper(self._subreaper_prev)
+        self._reap()
         if self.tool is not None:
             for ev in (_mon.events.LINE, _mon.events.PY_START, _mon.events.PY_RETURN):
                 _mon.register_callback(self.tool, ev, None)
@@ -409,6 +584,33 @@ class Capture:
                 return not any(p.startswith(x) for x in self.dist_info_ok)
         return any(p.startswith(d) for d in self.stdlib_dirs) or p == os.devnull
 
+    def _ignored_besides_cache(self, p: str) -> bool:
+        """``p`` (under .pytest_cache) is ignored for another reason too (temporary directory, site, ...)."""
+        if any(s in p for s in _SKIP_PARTS if s != _PYTEST_CACHE_PART):
+            return True
+        if self.basetemp and (p == self.basetemp or p.startswith(self.basetemp + os.sep)):
+            return True
+        return any(p.startswith(d) for d in self.site_dirs + self.stdlib_dirs)
+
+    def _cache_open(self, p: str, args) -> None:
+        """An open under .pytest_cache. pytest's own cache (``config.cache``) is infrastructure and stays out; a
+        file user code reads there that this session's Python did not write (a start-up process generated it, an
+        earlier session left it) is an input like any other file."""
+        mode, flags = (args[1] if len(args) > 1 else None), (args[2] if len(args) > 2 else 0)
+        if isinstance(mode, str):
+            reads, writes, trunc = "r" in mode or "+" in mode, any(ch in mode for ch in "wax+"), "w" in mode
+        else:
+            acc = (flags or 0) & _O_ACC
+            reads = acc in (os.O_RDONLY, os.O_RDWR)
+            writes = acc in (os.O_WRONLY, os.O_RDWR) or bool((flags or 0) & os.O_CREAT)
+            trunc = bool((flags or 0) & os.O_TRUNC)
+        if self._caller_kind() in ("import", "infra"):
+            return
+        if writes:
+            self._cache_written.add(p)
+        elif reads and not trunc and p not in self._cache_written:
+            self.read(self._cur(), p, "f")
+
     def _key(self, p: str) -> str:
         return p[len(self.root_sep):] if p.startswith(self.root_sep) else p
 
@@ -454,7 +656,11 @@ class Capture:
             return
         if event == "open":
             p = self._abs(args[0] if args else None)
-            if p is None or self._ignored(p):
+            if p is None:
+                return
+            if self._ignored(p):
+                if _in_pytest_cache(p) and not self._ignored_besides_cache(p):
+                    self._cache_open(p, args)
                 return
             mode, flags = (args[1] if len(args) > 1 else None), (args[2] if len(args) > 2 else 0)
             if isinstance(mode, str):
@@ -488,7 +694,12 @@ class Capture:
             if self._caller_kind() != "user":
                 return
             p = self._abs(args[0] if args and args[0] is not None else ".")
-            if p is None or self._ignored(p):
+            if p is None:
+                return
+            if self._ignored(p):
+                if _in_pytest_cache(p) and not self._ignored_besides_cache(p) and not any(
+                        w.startswith(p + os.sep) for w in self._cache_written):
+                    self.read(self._cur(), p, "d")
                 return
             self.read(self._cur(), p, "d")
         elif event in ("socket.connect", "socket.sendto", "socket.sendmsg"):
@@ -507,6 +718,10 @@ class Capture:
             self.flag(self._cur(), "dns", f"{event} {host} at {_first_user_site()}")
         elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
             if self._caller_kind() == "infra":
+                if self.startup and event == "subprocess.Popen":
+                    p, _loc = _popen_being_started()
+                    if p is not None:  # its pid is not a process left behind by a start-up process
+                        self._startup_infra.append(p)
                 return
             if event == "subprocess.Popen" and _is_find_library_ldconfig(args):
                 # ctypes.util.find_library (uuid, ifaddr, ... at import time) asks `ldconfig -p`, which prints the
@@ -515,13 +730,9 @@ class Capture:
                 return
             ctx = self._cur()
             if self.startup and event == "subprocess.Popen" and self.ctx_names[ctx] in _GLOBAL_CTX:
-                p = _popen_being_started()
+                p, loc = _popen_being_started()
                 if p is not None:  # start-up (pytest-benchmark's `file -b`): decided when start-up ends
-                    self._startup_popens.append((p, _spawn_detail(event, args)))
-                    if len(args) > 3 and args[3] is not None:
-                        spawner = _outer_frame(_SUBPROCESS_FILE)
-                        if any(f is spawner and name == "*" for f, _c, name in self._startup_env):
-                            self._startup_env = [x for x in self._startup_env if x[0] is not spawner]
+                    self._hold(p, loc, args, _spawn_detail(event, args))
                     return
             self.flag(ctx, "spawn", _spawn_detail(event, args))
         else:
@@ -531,8 +742,12 @@ class Capture:
             ctx = self._cur()
             for i in idx:
                 p = self._abs(args[i] if len(args) > i else None)
-                if p is not None and not self._ignored(p):
+                if p is None:
+                    continue
+                if not self._ignored(p):
                     self.wrote(ctx, p)
+                elif _in_pytest_cache(p):
+                    self._cache_written.add(p)
 
     def flag(self, ctx: int, flag: str, detail: str | None = None) -> None:
         fl = self.flags.setdefault(ctx, set())
@@ -621,7 +836,7 @@ def _note_env(key) -> None:
         if cap.ctx_names[ctx] in _GLOBAL_CTX:  # start-up, not import time: decided when start-up ends
             f = _outer_frame(_ENV_ITER_FILES)
             if f is not None:
-                cap._startup_env.append((f, ctx, name))
+                cap._note_startup_env(f, ctx, name)
                 return
     cap.env_read(name)
 
@@ -792,6 +1007,16 @@ class ProofCachePlugin:
         self.epoch = _state.STATE.config.epoch_ns
         self.store = _core.ProofCache(self.dir, self.root)
         self.store.begin(self.config_digest, self.runtime_digest, self.epoch, dict(cap.env0))
+        # what the start-up processes gave back is known only when start-up ends (other plugins' pytest_configure
+        # and pytest_sessionstart run after this one): handed to the store then, before any check
+        cap.on_startup_end = self.store.set_startup
+        if not cap.startup:
+            self.store.set_startup(cap.startup_digest)
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_collection_modifyitems(self, session, config, items):
+        if self.cap.startup:  # no file was collected (start-up ends at the first collection otherwise)
+            self.cap._end_startup()
 
     # -- collection -------------------------------------------------------------
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -818,6 +1043,8 @@ class ProofCachePlugin:
 
     def _decide(self, items) -> None:
         store = self.store
+        if self.cap.startup:
+            self.cap._end_startup()
         for path, content in store.changed_code_files():
             mod, is_pkg = _module_of(os.path.join(self.root, path))
             f = _codefacts.read_facts(os.path.join(self.root, path), content, mod, is_pkg)
@@ -1175,7 +1402,8 @@ class ProofCachePlugin:
             report = {w: p[w] for w in ("setup", "call") if w in p}
             store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
                          self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
-                         sorted(data.items()), sorted(content), sorted(skeleton), sorted(hooks), sorted(units))
+                         sorted(data.items()), sorted(content), sorted(skeleton), sorted(hooks), sorted(units),
+                         startup=cap.startup_digest)
             self.recorded += 1
         store.save()
 
@@ -1348,19 +1576,153 @@ def _outer_frame(skip: tuple):
 
 
 def _popen_being_started():
-    """The ``subprocess.Popen`` whose ``__init__`` raised the ``subprocess.Popen`` audit event (else None)."""
+    """The ``subprocess.Popen`` whose ``__init__`` raised the ``subprocess.Popen`` audit event and the arguments of
+    that ``__init__`` (standard streams, ``pass_fds``, ``close_fds``); ``(None, None)`` if there is none."""
     import subprocess
 
     f = sys._getframe(2)
+    found = None
     for _ in range(8):
         if f is None:
             break
         if f.f_code.co_name in ("_execute_child", "__init__"):
             p = f.f_locals.get("self")
             if isinstance(p, subprocess.Popen):
-                return p
+                found = p
+                # subprocess's own __init__ (Level 0 wraps it: detpy.clock)
+                if f.f_code.co_name == "__init__" and f.f_code.co_filename == subprocess.__file__:
+                    loc = f.f_locals
+                    return p, {k: loc.get(k) for k in ("stdin", "stdout", "stderr", "pass_fds", "close_fds")}
         f = f.f_back
-    return None
+    return found, None
+
+
+class _Held:
+    """A ``subprocess.Popen`` started at start-up, until start-up ends."""
+
+    __slots__ = ("p", "detail", "argv", "cwd", "chan", "piped", "env", "gid", "comm", "error")
+
+    def __init__(self, p, detail: str):
+        self.p = p
+        self.detail = detail
+        self.argv: list = []
+        self.cwd = ""
+        self.chan: str | None = None  # a channel to the tests other than its pipes (then never exempt)
+        self.piped = False  # stdout or stderr is a pipe
+        self.env = None  # the env= mapping handed to it (dropped when start-up ends)
+        self.gid: int | None = None  # the environment copy (group of start-up reads) it took
+        self.comm: list | None = None  # [(stdout, stderr)] returned by communicate() called from subprocess.run
+        self.error: str | None = None  # the exception Popen() raised (the program could not be started)
+
+
+# references to an env= mapping when only detpy holds it (the _Held attribute and getrefcount's argument)
+_ENV_REFS = 2
+_PYTEST_CACHE_PART = os.sep + ".pytest_cache"
+_PR_SET_CHILD_SUBREAPER, _PR_GET_CHILD_SUBREAPER = 36, 37
+_LIBC: list = []
+_COMM_PATCHED = False
+
+
+def _in_pytest_cache(p: str) -> bool:
+    return _PYTEST_CACHE_PART + os.sep in p + os.sep
+
+
+def _libc():
+    if not _LIBC:
+        import ctypes
+
+        _LIBC.append(ctypes.CDLL(None, use_errno=True))
+    return _LIBC[0]
+
+
+def _children() -> set:
+    """Pids of this process's children (every thread's), from /proc."""
+    out = set()
+    try:
+        tasks = os.listdir("/proc/self/task")
+    except OSError:
+        tasks = []
+    ok = False
+    for t in tasks:
+        try:
+            with open(f"/proc/self/task/{t}/children", "rb") as fh:
+                out.update(int(x) for x in fh.read().split())
+            ok = True
+        except (OSError, ValueError):
+            continue
+    if ok:
+        return out
+    me = os.getpid()  # kernels without CONFIG_PROC_CHILDREN: the parent field of every process
+    for d in os.listdir("/proc"):
+        if d.isdigit():
+            try:
+                with open(f"/proc/{d}/stat", "rb") as fh:
+                    st = fh.read()
+                if int(st[st.rindex(b")") + 2:].split()[1]) == me:
+                    out.add(int(d))
+            except (OSError, ValueError, IndexError):
+                continue
+    return out
+
+
+def _out_digest(v) -> str | None:
+    """Digest of one output stream as ``communicate`` returned it (bytes, or text decoded from them)."""
+    if v is None:
+        return None
+    if isinstance(v, str):
+        return "t:" + _core.digest(v.encode("utf-8", "surrogatepass"))
+    return "b:" + _core.digest(bytes(v))
+
+
+def _patch_communicate() -> None:
+    """``Popen.communicate`` as called by ``subprocess.run`` (``check_output``, ``run``, ``getoutput``,
+    ``platform._syscmd_file``...): nothing can read the pipes between the start and this call, so what it returns is
+    all the process wrote to them. Seen for the processes held at start-up only."""
+    global _COMM_PATCHED
+    if _COMM_PATCHED:
+        return
+    _COMM_PATCHED = True
+    import subprocess
+
+    orig = subprocess.Popen.communicate
+    run_code = subprocess.run.__code__
+    orig_init = subprocess.Popen.__init__
+
+    def __init__(self, *a, **k):
+        try:
+            orig_init(self, *a, **k)
+        except BaseException as e:
+            cap = CAPTURE
+            if cap is not None and cap.startup:
+                h = next((x for x in cap._startup_popens if x.p is self), None)
+                if h is not None:  # what it gave back is this error (a missing `file`: platform._syscmd_file)
+                    h.error = f"{type(e).__name__}:{getattr(e, 'errno', '')}:" \
+                              f"{cap._arg(getattr(e, 'filename', None) or '')}"
+            raise
+
+    __init__.__wrapped__ = orig_init
+    __init__.__doc__ = orig_init.__doc__
+    subprocess.Popen.__init__ = __init__
+
+    def communicate(self, *a, **k):
+        cap = CAPTURE
+        if cap is None or not cap.startup or not cap._startup_popens:
+            return orig(self, *a, **k)
+        h = next((x for x in cap._startup_popens if x.p is self), None)
+        if h is None:
+            return orig(self, *a, **k)
+        caller = sys._getframe(1).f_code
+        first = not self._communication_started
+        r = orig(self, *a, **k)
+        if caller is run_code and first and h.comm is None:
+            h.comm = [r]
+        elif h.piped:
+            h.chan = h.chan or "its output read outside subprocess.run (not keyed)"
+        return r
+
+    communicate.__wrapped__ = orig
+    communicate.__doc__ = orig.__doc__
+    subprocess.Popen.communicate = communicate
 
 
 def _numeric_host(host: str) -> bool:

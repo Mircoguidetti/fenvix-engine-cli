@@ -5,9 +5,11 @@ pytest-benchmark calls ``platform.architecture()`` from ``pytest_configure``, wh
 ``subprocess.Popen`` (``pytest_benchmark/utils.py:68``). detpy flagged that start-up spawn on the start-up context,
 an input of every test, so with the plugin installed no test was ever cacheable.
 
-Rule: a process started at start-up that has finished, and whose pipes are closed, before the first collection or
-test is ignored (nobody can talk to it any more). One still running, or with a pipe still open, when the tests start
-keeps the tests uncached (a test may talk to it).
+Rule (R-008c, made sound by R-008d FIX 7): a process started at start-up that has finished, and whose pipes are
+closed, before the first collection or test is not a spawn of the tests; what it gave back (argv, cwd, exit code,
+output bytes read by ``subprocess.run``) is keyed into the start-up digest, an input of every test. One still
+running, with a pipe still open, read some other way, with another channel, or that left a process running keeps
+the tests uncached (see ``test_startup_digest.py`` and ``test_review_r008d.py``).
 """
 from __future__ import annotations
 

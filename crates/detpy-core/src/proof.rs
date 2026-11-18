@@ -89,6 +89,10 @@ pub struct Entry {
     pub hooks: u32,
     /// Flat (file index, unit index) pairs.
     pub units: Vec<u32>,
+    /// Digest of what the processes started at start-up gave back (argv, cwd, exit code, output); empty when
+    /// none was started. An input of every test of the session.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub startup: String,
 }
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
@@ -124,6 +128,7 @@ pub struct Observed {
     pub skeleton: Vec<u32>,
     pub hooks: Vec<u32>,
     pub units: Vec<(u32, u32)>,
+    pub startup: String,
 }
 
 fn push_part(buf: &mut Vec<u8>, part: &str) {
@@ -307,6 +312,7 @@ impl Store {
             skeleton,
             hooks,
             units: o.units.into_iter().flat_map(|(f, u)| [f, u]).collect(),
+            startup: o.startup,
         };
         e.key = self.key_of(nodeid, &e);
         let k = e.key.clone();
@@ -376,6 +382,11 @@ impl Store {
             push_part(&mut b, p);
             push_part(&mut b, q);
             push_part(&mut b, d);
+        }
+        if !e.startup.is_empty() {
+            // only when start-up processes ran: the keys of the other entries stay as they were
+            push_part(&mut b, "|startup");
+            push_part(&mut b, &e.startup);
         }
         digest_bytes(&b).short()
     }
@@ -547,6 +558,8 @@ pub struct Current {
     pub runtime: String,
     pub epoch: i64,
     pub env: BTreeMap<String, String>,
+    /// Digest of what this session's start-up processes gave back (empty: none).
+    pub startup: String,
 }
 
 /// Why a test cannot reuse its result.
@@ -664,6 +677,12 @@ impl Checker {
         if e.runtime != self.cur.runtime {
             return Err(Miss { kind: "runtime", detail: "interpreter, platform or installed packages changed".into() });
         }
+        if e.startup != self.cur.startup {
+            return Err(Miss {
+                kind: "startup",
+                detail: "a process started at start-up gave back a different output or exit code".into(),
+            });
+        }
         if let Some(ep) = e.epoch {
             if ep != self.cur.epoch {
                 return Err(Miss { kind: "clock", detail: "the test read the clock and the epoch changed".into() });
@@ -778,7 +797,7 @@ mod tests {
         });
         let mut env = BTreeMap::new();
         env.insert("HOME".to_string(), "/root".to_string());
-        let cur = Current { root: root.clone(), config: "C".into(), runtime: "R".into(), epoch: 5, env };
+        let cur = Current { root: root.clone(), config: "C".into(), runtime: "R".into(), epoch: 5, env, startup: String::new() };
         s.record(
             "t::a",
             Observed {
@@ -848,6 +867,27 @@ mod tests {
             imports: vec![],
         });
         assert_eq!(c.check(&s, "t::a").unwrap_err().detail, "m.py (module level)");
+    }
+
+    #[test]
+    fn startup_processes_output_is_an_input_and_absent_keeps_the_key() {
+        let (_d, s, cur) = setup();
+        let key0 = s.tests["t::a"].key.clone();
+        // an entry recorded without start-up processes: serialised and keyed as before
+        assert!(!serde_json::to_string(&s.tests["t::a"]).unwrap().contains("startup"));
+        let mut c = cur.clone();
+        c.startup = "S1".into();
+        assert_eq!(Checker::new(c.clone()).check(&s, "t::a").unwrap_err().kind, "startup");
+        let mut s2 = s.clone();
+        s2.record(
+            "t::a",
+            Observed { outcome: "passed".into(), config: "C".into(), runtime: "R".into(), startup: "S1".into(), ..Default::default() },
+        );
+        assert_ne!(s2.tests["t::a"].key, key0);
+        assert!(Checker::new(c.clone()).check(&s2, "t::a").is_ok());
+        assert_eq!(Checker::new(cur).check(&s2, "t::a").unwrap_err().kind, "startup");
+        c.startup = "S2".into();
+        assert_eq!(Checker::new(c).check(&s2, "t::a").unwrap_err().kind, "startup");
     }
 
     #[test]

@@ -288,7 +288,10 @@ class _Docs:
         ufiles = sorted({f for f, _ in pairs})
         pos = {f: k for k, f in enumerate(ufiles)}
         return {"kind": "entry", "v": DOC_VERSION, "nodeid": nodeid, "proof_key": e.get("key"),
-                "entry": {k: e.get(k) for k in _ENTRY_FIELDS},
+                "entry": {**{k: e.get(k) for k in _ENTRY_FIELDS},
+                          # what the start-up processes gave back: only on the entries that have it, so the address
+                          # of every other entry stays as it was
+                          **({"startup": e["startup"]} if e.get("startup") else {})},
                 "content": self.set_of(members(e.get("content"))), "skeleton": self.set_of(members(e.get("skeleton"))),
                 "hooks": self.set_of(members(e.get("hooks"))), "unit_files": self.set_of(ufiles),
                 "units": sorted([pos[f], k] for f, k in pairs)}
@@ -380,7 +383,8 @@ class RemoteCache:
         self.pc.store.record(doc["nodeid"], e["outcome"], json.dumps(e.get("report")), e["fingerprint"],
                              float(e.get("duration") or 0.0), e["run"], e["config"], e["runtime"], e.get("epoch"),
                              [tuple(x) for x in e.get("env") or []], [tuple(x) for x in e.get("data") or []],
-                             content, skeleton, hooks, [(ufiles[f], k) for f, k in doc["units"]])
+                             content, skeleton, hooks, [(ufiles[f], k) for f, k in doc["units"]],
+                             startup=e.get("startup") or "")
         return True
 
     def pull(self, items) -> None:

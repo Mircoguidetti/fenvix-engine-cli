@@ -66,7 +66,14 @@ impl ProofCache {
     fn begin(&self, config: String, runtime: String, epoch: i64, env: BTreeMap<String, String>) {
         let mut g = lock(&self.inner);
         let root = g.checker.cur.root.clone();
-        g.checker = Checker::new(Current { root, config, runtime, epoch, env });
+        let startup = g.checker.cur.startup.clone();
+        g.checker = Checker::new(Current { root, config, runtime, epoch, env, startup });
+    }
+
+    /// Set the digest of what this session's start-up processes gave back (once start-up has ended, before
+    /// any check): a recorded entry is reusable only with the same digest.
+    fn set_startup(&self, startup: String) {
+        lock(&self.inner).checker.cur.startup = startup;
     }
 
     /// Known code files whose content changed: `[(path, current content digest)]`.
@@ -116,7 +123,7 @@ impl ProofCache {
 
     /// Record the inputs and result of a test that ran; returns its key.
     #[allow(clippy::too_many_arguments)]
-    #[pyo3(signature = (nodeid, outcome, report_json, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units))]
+    #[pyo3(signature = (nodeid, outcome, report_json, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units, startup = String::new()))]
     fn record(
         &self,
         nodeid: &str,
@@ -134,13 +141,14 @@ impl ProofCache {
         skeleton: Vec<u32>,
         hooks: Vec<u32>,
         units: Vec<(u32, u32)>,
+        startup: String,
     ) -> PyResult<String> {
         let report = serde_json::from_str(report_json).map_err(|e| PyValueError::new_err(format!("report: {e}")))?;
         let mut g = lock(&self.inner);
         g.touched.insert(nodeid.to_string());
         Ok(g.store.record(
             nodeid,
-            Observed { outcome, report, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units },
+            Observed { outcome, report, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units, startup },
         ))
     }
 
