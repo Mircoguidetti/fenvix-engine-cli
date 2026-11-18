@@ -437,8 +437,13 @@ elif JOB == "e5":
     R["e5_prepare"] = {"rc": rc, "log": out[-1500:]}
     ft = EPOCH.replace("T", " ").replace("Z", "")
     R["e5"] = []
-    for vname, fake in [v for v in (("control", ""), ("start", f"@{ft}"), ("frozen", ft), ("tick", f"@{ft} i0.001"))
-                        if v[0] in P.get("variants", ["control", "frozen", "tick"])]:
+    # A "-w0" suffix runs the variant with the test-code clock's real-wait part off (DETJS_PW_WORKER_CLOCK_WAIT_MS=0).
+    base_v = {"control": "", "start": f"@{ft}", "frozen": ft, "tick": f"@{ft} i0.001"}
+    for vname, fake in [(v, base_v[v.split("-")[0]]) for v in P.get("variants", ["control", "frozen", "tick"])]:
+        if vname.endswith("-w0"):
+            os.environ["DETJS_PW_WORKER_CLOCK_WAIT_MS"] = "0"
+        else:
+            os.environ.pop("DETJS_PW_WORKER_CLOCK_WAIT_MS", None)
         if rc != 0 and fake:
             break
         rc2, out2 = fn("e5_db", fake, timeout=600)
@@ -452,7 +457,7 @@ elif JOB == "e5":
             T = {**spec, "replays": [], "errors": []}
             V["targets"].append(T)
             traces = []
-            for i in range(P["control"] if vname == "control" else P["replays"]):
+            for i in range(P["control"] if vname.startswith("control") else P["replays"]):
                 if not budget_for(240):
                     break
                 r = run_pw(f"e5-{vname}-{len(V['targets'])}-{i + 1}", "det", args=target_args(spec), timeout_s=P["target_timeout_min"] * 60)

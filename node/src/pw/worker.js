@@ -830,10 +830,10 @@ function installWorkerSeeds() {
     clock.installProcess(patcher, cfgT);
     clock.installRealm(patcher, globalThis, cfgT, { sameRealm: true });
     const MODE = ENV.DETJS_PW_WORKER_CLOCK_SPREAD === '0' ? 'epoch' : ENV.DETJS_PW_WORKER_CLOCK_SPREAD === 'hash' ? 'hash' : 'run';
-    let ck = null;
+    let ck;  // undefined: no read yet (a read outside any test has key null and must initialise too)
     let base = 0;
     let n = 0;
-    let firstReal = 0;
+    let firstReal = realNow();
     clock.setValueHook(() => {
       const k = currentKey();
       if (k !== ck) {
@@ -846,7 +846,8 @@ function installWorkerSeeds() {
       }
       n += 1;
       if (MODE !== 'run') return { e: (base + n) * 1e6, rel: '' };
-      const waited = WAIT_Q > 0 ? Math.floor((realNow() - firstReal) / WAIT_Q) * WAIT_Q : 0;
+      // Outside a test (module level, worker fixtures) no wait is added: those values must not depend on real time.
+      const waited = WAIT_Q > 0 && k ? Math.floor((realNow() - firstReal) / WAIT_Q) * WAIT_Q : 0;
       const v = Math.max(RUN_CLOCK.last + 1, RUN_CLOCK.released * STEP_MS + waited);
       RUN_CLOCK.last = v;
       return { e: v * 1e6, rel: '' };

@@ -179,3 +179,28 @@ test('unread fetch body: a response whose body the page never reads does not hol
   const det = pw(dir, ['--det', 'test'], 'ur-det');
   assert.deepEqual(outcomes(det), ['passed'], det.out.slice(-1200));
 });
+
+// ---------------------------------------------------------------------------------------------
+// Regression (round 3, found by the e5diag job on documenso: `emailVerified` 2083-10-06 under a 2026 epoch): a clock
+// read in test code outside any test (module level, worker fixtures) must not push the test-code clock to
+// epoch + real time.
+const OUT_PORT = 4708;
+const OUT_APP = `
+const http = require('http');
+http.createServer((req, res) => res.end(req.url === '/health' ? 'ok' : String(Date.now()))).listen(${OUT_PORT});
+`;
+const OUT_SPEC = `
+const { test, expect } = require('@playwright/test');
+const LOADED = new Date();   // read outside any test
+test('a date made after a module-level read stays near the server clock', async ({ request }) => {
+  const server = Number(await (await request.get('/now')).text());
+  const mine = new Date().getTime();
+  console.log('LOADED=' + LOADED.toISOString() + ' MINE=' + new Date(mine).toISOString() + ' SERVER=' + new Date(server).toISOString());
+  expect(Math.abs(mine - server)).toBeLessThan(60 * 60 * 1000);
+});
+`;
+test('worker clock: a clock read outside any test does not move the test-code clock to epoch + real time', { skip, timeout: 600000 }, () => {
+  const dir = project('outside', { app: OUT_APP, port: OUT_PORT, specs: { 'out.spec.js': OUT_SPEC } });
+  const det = pw(dir, ['--det', 'test'], 'out-det');
+  assert.deepEqual(outcomes(det), ['passed'], det.out.slice(-1500));
+});

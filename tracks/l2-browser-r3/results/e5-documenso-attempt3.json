@@ -1,0 +1,350 @@
+{
+ "name": "documenso",
+ "job": "e5",
+ "repo": "documenso/documenso",
+ "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+ "status": "ok",
+ "run_id": "44382873510",
+ "engine_commit": "1cfc30b071acb0225d87f686fdaf37bac31a9349",
+ "setup_s": 319,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 200,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "replays": 10,
+  "control": 5,
+  "variants": [
+   "start",
+   "frozen",
+   "tick"
+  ]
+ },
+ "pw_dir": "packages/app-tests",
+ "pw_args": [
+  "--project=api",
+  "--project=license"
+ ],
+ "runs": [],
+ "epoch": "2026-11-18T20:02:00Z",
+ "measured_at": "2026-11-18T20:02:02Z",
+ "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
+ "state": {
+  "spec": "/home/runner/work/_temp/l2_target/detjs-state.json",
+  "save_rc": 0,
+  "save_log": "detjs state: save snapshot .detjs/state; files digest 55c5bcb888f463ca\n"
+ },
+ "e1_args": [
+  "--project=api",
+  "--project=license"
+ ],
+ "e5_prepare": {
+  "rc": 0,
+  "log": ""
+ },
+ "e5": [
+  {
+   "variant": "start",
+   "faketime": "@2026-11-18 20:02:00",
+   "db_rc": 0,
+   "db_now": "2026-11-18 20:02:03.269615+00|2026-11-18 20:02:03.269995+00",
+   "db_log": "",
+   "targets": [
+    {
+     "file": "admin-find-documents.spec.ts",
+     "grep": "[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401",
+     "project": "api",
+     "replays": [
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed"
+     ],
+     "errors": [],
+     "verify": {
+      "status": "diverged",
+      "distinct_fingerprints": 10,
+      "runs": 10,
+      "divergence": {
+       "run_a": 0,
+       "run_b": 1,
+       "index": 14,
+       "window": null,
+       "event_a": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "GET http://localhost:3000/api/auth/session-json 200 52eabee5c6ec8c0044acfcfdfe421758"
+       },
+       "event_b": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "GET http://localhost:3000/api/auth/session-json 200 0d7f3f7030a82cf9a8755ac9f58b05a7"
+       },
+       "reason": "net",
+       "description": "event #14: browser.done @  returned different values: \"GET http://localhost:3000/api/auth/session-json 200 52eabee5c6ec8c0044acfcfdfe421758\" vs \"GET http://localhost:3000/api/auth/session-json 200 0d7f3f7030a82cf9a8755ac9f58b05a7\""
+      }
+     }
+    },
+    {
+     "file": "delete-recipient.spec.ts",
+     "grep": "[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400",
+     "project": "api",
+     "replays": [
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed"
+     ],
+     "errors": [],
+     "verify": {
+      "status": "diverged",
+      "distinct_fingerprints": 10,
+      "runs": 10,
+      "divergence": {
+       "run_a": 0,
+       "run_b": 1,
+       "index": 14,
+       "window": null,
+       "event_a": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "GET http://localhost:3000/api/auth/session-json 200 b6bbed14ea4c829acd5ce1de158b75ad"
+       },
+       "event_b": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "GET http://localhost:3000/api/auth/session-json 200 71434343f713c24425f5a63cae13478e"
+       },
+       "reason": "net",
+       "description": "event #14: browser.done @  returned different values: \"GET http://localhost:3000/api/auth/session-json 200 b6bbed14ea4c829acd5ce1de158b75ad\" vs \"GET http://localhost:3000/api/auth/session-json 200 71434343f713c24425f5a63cae13478e\""
+      }
+     }
+    }
+   ]
+  },
+  {
+   "variant": "frozen",
+   "faketime": "2026-11-18 20:02:00",
+   "db_rc": 0,
+   "db_now": "2026-11-18 20:02:00+00|2026-11-18 20:02:00+00",
+   "db_log": "",
+   "targets": [
+    {
+     "file": "admin-find-documents.spec.ts",
+     "grep": "[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401",
+     "project": "api",
+     "replays": [
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed"
+     ],
+     "errors": [],
+     "verify": {
+      "status": "diverged",
+      "distinct_fingerprints": 10,
+      "runs": 10,
+      "divergence": {
+       "run_a": 0,
+       "run_b": 1,
+       "index": 14,
+       "window": null,
+       "event_a": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "GET http://localhost:3000/api/auth/session-json 200 4857cea1e25925534da671e988b3fa8e"
+       },
+       "event_b": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "GET http://localhost:3000/api/auth/session-json 200 3a063af8c684a6b570dbd000f22e13ab"
+       },
+       "reason": "net",
+       "description": "event #14: browser.done @  returned different values: \"GET http://localhost:3000/api/auth/session-json 200 4857cea1e25925534da671e988b3fa8e\" vs \"GET http://localhost:3000/api/auth/session-json 200 3a063af8c684a6b570dbd000f22e13ab\""
+      }
+     }
+    },
+    {
+     "file": "delete-recipient.spec.ts",
+     "grep": "[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400",
+     "project": "api",
+     "replays": [
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed"
+     ],
+     "errors": [],
+     "verify": {
+      "status": "diverged",
+      "distinct_fingerprints": 10,
+      "runs": 10,
+      "divergence": {
+       "run_a": 0,
+       "run_b": 1,
+       "index": 14,
+       "window": null,
+       "event_a": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "GET http://localhost:3000/api/auth/session-json 200 6cfc4823d513ce1548fc052204e3590d"
+       },
+       "event_b": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "GET http://localhost:3000/api/auth/session-json 200 99568960c42247cb463e1c7b66fb70cd"
+       },
+       "reason": "net",
+       "description": "event #14: browser.done @  returned different values: \"GET http://localhost:3000/api/auth/session-json 200 6cfc4823d513ce1548fc052204e3590d\" vs \"GET http://localhost:3000/api/auth/session-json 200 99568960c42247cb463e1c7b66fb70cd\""
+      }
+     }
+    }
+   ]
+  },
+  {
+   "variant": "tick",
+   "faketime": "@2026-11-18 20:02:00 i0.001",
+   "db_rc": 0,
+   "db_now": "2026-11-18 20:02:00.137+00|2026-11-18 20:02:00.139+00",
+   "db_log": "",
+   "targets": [
+    {
+     "file": "admin-find-documents.spec.ts",
+     "grep": "[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401",
+     "project": "api",
+     "replays": [
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed"
+     ],
+     "errors": [],
+     "verify": {
+      "status": "diverged",
+      "distinct_fingerprints": 10,
+      "runs": 10,
+      "divergence": {
+       "run_a": 0,
+       "run_b": 1,
+       "index": 14,
+       "window": null,
+       "event_a": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "GET http://localhost:3000/api/auth/session-json 200 d526b29e38a6c59939a710c008977980"
+       },
+       "event_b": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "GET http://localhost:3000/api/auth/session-json 200 c715fdd53a5f5b4cf53789cc94ed71aa"
+       },
+       "reason": "net",
+       "description": "event #14: browser.done @  returned different values: \"GET http://localhost:3000/api/auth/session-json 200 d526b29e38a6c59939a710c008977980\" vs \"GET http://localhost:3000/api/auth/session-json 200 c715fdd53a5f5b4cf53789cc94ed71aa\""
+      }
+     }
+    },
+    {
+     "file": "delete-recipient.spec.ts",
+     "grep": "[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400",
+     "project": "api",
+     "replays": [
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed",
+      "passed"
+     ],
+     "errors": [],
+     "verify": {
+      "status": "diverged",
+      "distinct_fingerprints": 10,
+      "runs": 10,
+      "divergence": {
+       "run_a": 0,
+       "run_b": 1,
+       "index": 14,
+       "window": null,
+       "event_a": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "GET http://localhost:3000/api/auth/session-json 200 36f715e577b2def051d330acdae160ac"
+       },
+       "event_b": {
+        "t": 0,
+        "s": "net",
+        "o": "browser.done",
+        "at": "",
+        "v": "GET http://localhost:3000/api/auth/session-json 200 86cd1193bec9ab912ef7724308393c9b"
+       },
+       "reason": "net",
+       "description": "event #14: browser.done @  returned different values: \"GET http://localhost:3000/api/auth/session-json 200 36f715e577b2def051d330acdae160ac\" vs \"GET http://localhost:3000/api/auth/session-json 200 86cd1193bec9ab912ef7724308393c9b\""
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "elapsed_min": 15.3
+}
