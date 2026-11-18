@@ -189,11 +189,11 @@ def hide_token() -> None:
         os.environ.pop(k, None)
 
 
-def attach(config, pc) -> None:
-    """Register the pull/push hooks next to the proof-cache plugin ``pc``."""
-    if CLIENT is None or pc is None:
+def attach(config) -> None:
+    """Register the pull/push hooks. Called before the engine's proof-cache plugin is registered: pluggy runs
+    later-registered ``trylast`` hooks later, so the pull runs just before the engine's reuse decision."""
+    if CLIENT is None:
         return
-    CLIENT.pc = pc
     config.pluginmanager.register(_Hooks(CLIENT), "detpy-cache-remote")
 
 
@@ -515,8 +515,20 @@ class _Hooks:
     def __init__(self, client: RemoteCache):
         self.client = client
 
-    @pytest.hookimpl(tryfirst=True)
+    def _bind(self) -> bool:
+        if self.client.pc is None:
+            from . import proofcache
+
+            self.client.pc = proofcache.PLUGIN
+        return self.client.pc is not None
+
+    @pytest.hookimpl(trylast=True)
     def pytest_collection_finish(self, session):
+        # registered after the engine's plugin, so among the trylast hooks this runs just before the engine's reuse
+        # decision: after detpy opened its trace (which creates .detpy/ in the project), so the files and listings
+        # checked here look the way the tests saw them
+        if not self._bind():
+            return
         try:
             self.client.pull(session.items)
         except Exception as e:  # never break the session: the local mirror still works
@@ -526,6 +538,8 @@ class _Hooks:
     def pytest_sessionfinish(self, session, exitstatus):
         # after the engine recorded and saved the session's entries in the local mirror (detpy's session hook runs
         # earlier), before the terminal summary
+        if not self._bind():
+            return
         try:
             self.client.push()
         except Exception as e:
@@ -539,6 +553,8 @@ class _Hooks:
                 pass
 
     def pytest_terminal_summary(self, terminalreporter):
+        if self.client.pc is None:
+            return
         r = self.client.report()
         tr = terminalreporter
         line = (f"shared cache {r['service']} [{r['namespace']}]: candidates for {r.get('pull_tests_with_candidates', 0)}"

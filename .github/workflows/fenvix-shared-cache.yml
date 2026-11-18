@@ -1,0 +1,235 @@
+name: fenvix-shared-cache
+
+# Cross-machine reuse through the shared cache service, measured on GitHub-hosted machines (free: public repository).
+# For each target, the same commit pair N -> N+1 runs twice:
+#   one-machine : job 1 and job 2 in one job (one machine), the cache in that machine's directory (the reference);
+#   two machines: job 1 on machine 1 pushes to a cache service; job 2 on machine 2 (another fresh VM, empty disk)
+#                 pulls from the service. Two hosted jobs cannot reach each other, so the service runs on each
+#                 machine in turn and its data directory (the deployment's database) travels as an artifact.
+# Every job 2 is followed by a full run without the cache: every reuse is checked, wrong must be 0.
+# Never runs on pull requests (see docs/RUNNER-PROTOTYPE.md, "Security").
+
+on:
+  push:
+    branches: [claude/shared-cache]
+    paths: [".github/workflows/fenvix-shared-cache.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fenvix-shared-cache
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  UV_PYTHON_PREFERENCE: managed
+  UV_VERSION: "0.11.32"
+  PY: "3.13"
+  PORT: "8787"
+
+jobs:
+  engine:
+    if: github.repository == 'Mircoguidetti/fenvix-engine-cli'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: pip install "maturin>=1.5,<2" && maturin build --release --compatibility linux -o dist
+      - uses: actions/upload-artifact@v4
+        with: {name: fenvix-wheel, path: dist/*.whl, retention-days: 3}
+
+  one-machine:
+    needs: engine
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {name: pygments, repo: pygments/pygments, n: 9c436b34ccafdf9376527f66c6e587ffe0d1b84c,
+             n1: b6aaaca75fd3bd30c2a2c0e5eb4e1bf0c325e101, extra: wcag-contrast-ratio}
+          - {name: click, repo: pallets/click, n: dd149eb3129d887a22202c3fafa5ceb0e0d7018d,
+             n1: fdb65f4809719580436acb067410cec64433e5de, extra: ""}
+          - {name: marshmallow, repo: marshmallow-code/marshmallow, n: d08471b17880c62b789971ada638707a11d3f8d4,
+             n1: 5761beab3985d654d712f9326e08bfb2e2ec9c4c, extra: ""}
+    steps:
+      - uses: actions/checkout@v4
+        with: {path: engine}
+      - uses: actions/download-artifact@v4
+        with: {name: fenvix-wheel, path: "${{ runner.temp }}/wheels"}
+      - name: uv (pinned, so every machine creates the same virtualenvs)
+        run: |
+          curl -LsSf "https://astral.sh/uv/$UV_VERSION/install.sh" | env UV_NO_MODIFY_PATH=1 sh
+          echo "$HOME/.local/bin" >>"$GITHUB_PATH"
+          "$HOME/.local/bin/uv" --version
+      - name: Project at commit N (fresh virtualenv at the runner's fixed path)
+        run: engine/runner/ci-project-env.sh "${{ matrix.repo }}" "${{ matrix.n }}" "${{ matrix.extra }}"
+      - name: Job 1 (commit N, cold cache on this machine)
+        run: >
+          "$FENVIX_PY" engine/runner/fenvix-run --project target --python "$FENVIX_PY"
+          --key "${{ matrix.name }}@one-${{ github.run_id }}-${{ github.run_attempt }}"
+          --out "$RUNNER_TEMP/out/one-machine-job-1/fenvix" --title "fenvix · ${{ matrix.name }} · one machine · job 1"
+      - name: Project at commit N+1 (fresh virtualenv at the same path, as the next job on a machine)
+        run: engine/runner/ci-project-env.sh "${{ matrix.repo }}" "${{ matrix.n1 }}" "${{ matrix.extra }}"
+      - name: Job 2 (commit N+1, the machine's cache)
+        run: >
+          "$FENVIX_PY" engine/runner/fenvix-run --project target --python "$FENVIX_PY"
+          --key "${{ matrix.name }}@one-${{ github.run_id }}-${{ github.run_attempt }}"
+          --out "$RUNNER_TEMP/out/one-machine-job-2/fenvix" --title "fenvix · ${{ matrix.name }} · one machine · job 2"
+      - name: Check every reuse (full run without the cache)
+        run: >
+          "$FENVIX_PY" engine/runner/fenvix-run verify --project target --python "$FENVIX_PY"
+          --summary "$RUNNER_TEMP/out/one-machine-job-2/fenvix/summary.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: "shared-${{ matrix.name }}-one-machine", path: "${{ runner.temp }}/out", retention-days: 14}
+
+  machine-1:
+    needs: engine
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {name: pygments, repo: pygments/pygments, n: 9c436b34ccafdf9376527f66c6e587ffe0d1b84c,
+             n1: b6aaaca75fd3bd30c2a2c0e5eb4e1bf0c325e101, extra: wcag-contrast-ratio}
+          - {name: click, repo: pallets/click, n: dd149eb3129d887a22202c3fafa5ceb0e0d7018d,
+             n1: fdb65f4809719580436acb067410cec64433e5de, extra: ""}
+          - {name: marshmallow, repo: marshmallow-code/marshmallow, n: d08471b17880c62b789971ada638707a11d3f8d4,
+             n1: 5761beab3985d654d712f9326e08bfb2e2ec9c4c, extra: ""}
+    steps:
+      - uses: actions/checkout@v4
+        with: {path: engine}
+      - uses: actions/download-artifact@v4
+        with: {name: fenvix-wheel, path: "${{ runner.temp }}/wheels"}
+      - name: uv (pinned)
+        run: |
+          curl -LsSf "https://astral.sh/uv/$UV_VERSION/install.sh" | env UV_NO_MODIFY_PATH=1 sh
+          echo "$HOME/.local/bin" >>"$GITHUB_PATH"
+          "$HOME/.local/bin/uv" --version
+      - name: Cache service (self-hosted, SQLite; its data directory is the deployment's state)
+        run: |
+          set -eu
+          uv venv -q --python "$PY" "$RUNNER_TEMP/service-venv"
+          uv pip install -q --python "$RUNNER_TEMP/service-venv/bin/python" "$(ls "$RUNNER_TEMP"/wheels/detpy-*.whl | head -1)"
+          svc="$RUNNER_TEMP/service-venv/bin/python"
+          mkdir -p "$RUNNER_TEMP/service-data"
+          nohup "$svc" -m detpy.cache_service serve --data "$RUNNER_TEMP/service-data" --port "$PORT" \
+              >"$RUNNER_TEMP/service.log" 2>&1 &
+          echo $! >"$RUNNER_TEMP/service.pid"
+          for _ in $(seq 50); do curl -sf "http://127.0.0.1:$PORT/v1/health" && break; sleep 0.2; done
+          token="$("$svc" -m detpy.cache_service token --data "$RUNNER_TEMP/service-data" --org fenvix-demo)"
+          echo "::add-mask::$token"
+          echo "FENVIX_CACHE_TOKEN=$token" >>"$GITHUB_ENV"
+      - name: Project at commit N (fresh virtualenv at the runner's fixed path)
+        run: engine/runner/ci-project-env.sh "${{ matrix.repo }}" "${{ matrix.n }}" "${{ matrix.extra }}"
+      - name: Job 1 on machine 1 (commit N, pushes to the service)
+        run: >
+          "$FENVIX_PY" engine/runner/fenvix-run --project target --python "$FENVIX_PY"
+          --key "${{ matrix.name }}@two-${{ github.run_id }}-${{ github.run_attempt }}"
+          --cache "http://127.0.0.1:$PORT/demo"
+          --out "$RUNNER_TEMP/out/two-machines-job-1/fenvix" --title "fenvix · ${{ matrix.name }} · machine 1 · job 1"
+      - name: Stop the service
+        if: always()
+        run: |
+          kill "$(cat "$RUNNER_TEMP/service.pid")" 2>/dev/null || true
+          sleep 1
+          cp "$RUNNER_TEMP/service.log" "$RUNNER_TEMP/out/" 2>/dev/null || true
+          ls -la "$RUNNER_TEMP/service-data"
+      - uses: actions/upload-artifact@v4
+        with: {name: "service-data-${{ matrix.name }}", path: "${{ runner.temp }}/service-data", retention-days: 1,
+               include-hidden-files: true}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: "shared-${{ matrix.name }}-machine-1", path: "${{ runner.temp }}/out", retention-days: 14}
+
+  machine-2:
+    needs: machine-1
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {name: pygments, repo: pygments/pygments, n: 9c436b34ccafdf9376527f66c6e587ffe0d1b84c,
+             n1: b6aaaca75fd3bd30c2a2c0e5eb4e1bf0c325e101, extra: wcag-contrast-ratio}
+          - {name: click, repo: pallets/click, n: dd149eb3129d887a22202c3fafa5ceb0e0d7018d,
+             n1: fdb65f4809719580436acb067410cec64433e5de, extra: ""}
+          - {name: marshmallow, repo: marshmallow-code/marshmallow, n: d08471b17880c62b789971ada638707a11d3f8d4,
+             n1: 5761beab3985d654d712f9326e08bfb2e2ec9c4c, extra: ""}
+    steps:
+      - uses: actions/checkout@v4
+        with: {path: engine}
+      - uses: actions/download-artifact@v4
+        with: {name: fenvix-wheel, path: "${{ runner.temp }}/wheels"}
+      - name: uv (pinned)
+        run: |
+          curl -LsSf "https://astral.sh/uv/$UV_VERSION/install.sh" | env UV_NO_MODIFY_PATH=1 sh
+          echo "$HOME/.local/bin" >>"$GITHUB_PATH"
+          "$HOME/.local/bin/uv" --version
+      - name: The service's data, as machine 1 left it
+        uses: actions/download-artifact@v4
+        with: {name: "service-data-${{ matrix.name }}", path: "${{ runner.temp }}/service-data"}
+      - name: Cache service (self-hosted, SQLite; its data directory is the deployment's state)
+        run: |
+          set -eu
+          uv venv -q --python "$PY" "$RUNNER_TEMP/service-venv"
+          uv pip install -q --python "$RUNNER_TEMP/service-venv/bin/python" "$(ls "$RUNNER_TEMP"/wheels/detpy-*.whl | head -1)"
+          svc="$RUNNER_TEMP/service-venv/bin/python"
+          mkdir -p "$RUNNER_TEMP/service-data"
+          nohup "$svc" -m detpy.cache_service serve --data "$RUNNER_TEMP/service-data" --port "$PORT" \
+              >"$RUNNER_TEMP/service.log" 2>&1 &
+          echo $! >"$RUNNER_TEMP/service.pid"
+          for _ in $(seq 50); do curl -sf "http://127.0.0.1:$PORT/v1/health" && break; sleep 0.2; done
+          token="$("$svc" -m detpy.cache_service token --data "$RUNNER_TEMP/service-data" --org fenvix-demo)"
+          echo "::add-mask::$token"
+          echo "FENVIX_CACHE_TOKEN=$token" >>"$GITHUB_ENV"
+      - name: Project at commit N+1 (fresh virtualenv at the same path, as the next job on a machine)
+        run: engine/runner/ci-project-env.sh "${{ matrix.repo }}" "${{ matrix.n1 }}" "${{ matrix.extra }}"
+      - name: Job 2 on machine 2 (commit N+1, empty disk, pulls from the service)
+        run: >
+          "$FENVIX_PY" engine/runner/fenvix-run --project target --python "$FENVIX_PY"
+          --key "${{ matrix.name }}@two-${{ github.run_id }}-${{ github.run_attempt }}"
+          --cache "http://127.0.0.1:$PORT/demo"
+          --out "$RUNNER_TEMP/out/two-machines-job-2/fenvix" --title "fenvix · ${{ matrix.name }} · machine 2 · job 2"
+      - name: Check every reuse (full run without the cache)
+        run: >
+          "$FENVIX_PY" engine/runner/fenvix-run verify --project target --python "$FENVIX_PY"
+          --summary "$RUNNER_TEMP/out/two-machines-job-2/fenvix/summary.json"
+      - name: Stop the service
+        if: always()
+        run: |
+          kill "$(cat "$RUNNER_TEMP/service.pid")" 2>/dev/null || true
+          sleep 1
+          cp "$RUNNER_TEMP/service.log" "$RUNNER_TEMP/out/" 2>/dev/null || true
+          ls -la "$RUNNER_TEMP/service-data"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: "shared-${{ matrix.name }}-machine-2", path: "${{ runner.temp }}/out", retention-days: 14}
+
+  compare:
+    needs: [one-machine, machine-2]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {pattern: "shared-*", path: results}
+      - name: Cross-machine reuse against one machine
+        run: |
+          set -eu
+          mkdir -p merged
+          for t in pygments click marshmallow; do
+            mkdir -p "merged/$t"
+            for a in one-machine machine-1 machine-2; do
+              [ -d "results/shared-$t-$a" ] && cp -r "results/shared-$t-$a"/. "merged/$t/" || true
+            done
+          done
+          python3 runner/shared-cache-compare merged/pygments merged/click merged/marshmallow --json compare.json \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with: {name: shared-cache-compare, path: compare.json, retention-days: 30}

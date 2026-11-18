@@ -358,8 +358,8 @@ def _configure_det(config) -> None:
     _state.STATE.recorder = _core.Recorder(max_events=opt.det_max_events)
     if opt.det_cache:
         opt.det_cache = remote_cache.localize(opt.det_cache)
+        remote_cache.attach(config)  # before the engine's plugin: its pull runs just before the reuse decision
         proofcache.install(config)
-        remote_cache.attach(config, proofcache.PLUGIN)
     factory = getattr(config, "_tmp_path_factory", None)
     if factory is not None:
         def basetemp():

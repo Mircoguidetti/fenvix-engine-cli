@@ -152,8 +152,9 @@ def machine_run(pytester, tmp_path, url, token, machine, *extra, env=None):
         os.environ["FENVIX_CACHE_TOKEN"] = token
     for k, v in (env or {}).items():
         os.environ[k] = v
+    # basetemp outside the project (pytester's default adds a new runpytest-N directory to the project root)
     r = pytester.runpytest_subprocess("--det", f"--det-cache={url}", f"--det-outcomes={outcomes}",
-                                      "-p", "no:cacheprovider", *extra)
+                                      f"--basetemp={tmp_path / f'basetemp-{machine}'}", "-p", "no:cacheprovider", *extra)
     out = json.loads(outcomes.read_text())
     rep = json.loads(report.read_text()) if report.exists() else {}
     return r, out, rep
@@ -351,3 +352,23 @@ def test_service_on_a_non_loopback_address_is_reachable_under_the_closed_network
         assert rep["error"] is None and rep["push_entry_docs_new"] == 1
     finally:
         svc.shutdown()
+
+
+def test_candidates_are_checked_when_the_project_looks_as_the_tests_saw_it(service, pytester, tmp_path, monkeypatch):
+    """A test that lists the project root saw detpy's .detpy/ directory there; on a fresh checkout it appears only
+    when the session opens its trace, so candidates must be checked after that, as local entries are."""
+    import shutil
+
+    svc, t = service
+    for k in ("FENVIX_CACHE_LOCAL", "FENVIX_CACHE_REPORT", "FENVIX_RUNTIME_MEMO", "FENVIX_CACHE_TOKEN"):
+        monkeypatch.delenv(k, raising=False)
+    proj = pytester.path / "proj"  # pytester adds a runpytest-N directory to its own directory at every run
+    write(proj, {"test_ls.py": "import os\n\ndef test_ls():\n"
+                               "    assert 'test_ls.py' in os.listdir(os.path.dirname(__file__))\n"})
+    args = ("--rootdir", str(proj), str(proj))
+    url = f"{svc.url}/org-a/ls"
+    machine_run(pytester, tmp_path, url, t["a"], "1", *args)
+    assert (proj / ".detpy").is_dir()
+    shutil.rmtree(proj / ".detpy")  # machine 2 checks out a clean tree
+    _, o2, rep2 = machine_run(pytester, tmp_path, url, t["a"], "2", *args)
+    assert o2["cache"]["reused"] == 1 and rep2["pull_proven"] == 1
