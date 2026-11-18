@@ -353,3 +353,34 @@ test('worker clock: dates made by the test code are the same in every run (round
   const v = verify(runs.map((r) => r.trace.path));
   assert.equal(v.summary.stable, 1, JSON.stringify(v.tests[0].divergence));
 });
+
+// ---------------------------------------------------------------------------------------------
+// 6. Regression: the worker's virtual clock for test code must not reach the driver's own pacing (a virtual
+// Date.now() in the grant loop stalled page time: uptime-kuma's first page.goto never reached "load").
+const PACE_PORT = 4616;
+const PACE_APP = `
+const http = require('http');
+http.createServer((req, res) => {
+  if (req.url === '/health') return res.end('ok');
+  res.setHeader('content-type', 'text/html');
+  res.end('<!doctype html><div id=out>wait</div><script>setTimeout(() => { out.textContent = "done"; }, 1500);</script>');
+}).listen(${PACE_PORT});
+`;
+const PACE_SPEC = `
+const { test, expect } = require('@playwright/test');
+test('page timers advance with paced virtual time', async ({ browser, baseURL }) => {
+  test.setTimeout(15000);
+  // The test opens its own context and page (as uptime-kuma's helpers do): the driver runs under the test's async stack.
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+  await page.goto(baseURL + '/');
+  await expect(page.locator('#out')).toHaveText('done', { timeout: 10000 });
+  await ctx.close();
+});
+`;
+
+test('paced virtual time: a 1.5 s page timer fires within 10 s while test code reads the virtual clock', { skip, timeout: 300000 }, () => {
+  const dir = project('pace', { app: PACE_APP, port: PACE_PORT, specs: { 'pace.spec.js': PACE_SPEC } });
+  const r = pw(dir, ['--det'], 'pace');
+  assert.deepEqual(outcomes(r), ['passed'], r.out);
+});

@@ -40,8 +40,11 @@ const SERVER_HOSTS = new Set((ENV.DETJS_PW_SERVER_HOSTS || 'localhost,127.0.0.1,
 const COMPLETE_TIMEOUT_MS = Number(ENV.DETJS_PW_COMPLETE_TIMEOUT || 5000);
 const APP_TYPES = new Set(['document', 'fetch', 'xhr']);
 const DEBUG = ENV.DETJS_PW_DEBUG === '1';
-const T_START = Date.now();
-function dbg(...a) { if (DEBUG) process.stderr.write(`[detjs ${Date.now() - T_START}ms] ${a.join(' ')}\n`); }
+// The driver's own clock is the real one, captured before the test code's clock is made virtual (round 2: a
+// virtual Date.now() here stalled the paced virtual-time grants: found on uptime-kuma).
+const realNow = Date.now.bind(Date);
+const T_START = realNow();
+function dbg(...a) { if (DEBUG) process.stderr.write(`[detjs ${realNow() - T_START}ms] ${a.join(' ')}\n`); }
 
 // ---------------------------------------------------------------- buckets
 const BUCKET_DIR = path.join(DIR, 'buckets');
@@ -85,7 +88,7 @@ function diag(key, op, target, data, max = DIAG_MAX) {
     if (text.length > max) text = `${text.slice(0, max)}...[${text.length}]`;
     const name = testIdOf(key).replace(/[^A-Za-z0-9._-]+/g, '_').slice(-180);
     fs.mkdirSync(DIAG_DIR, { recursive: true });
-    fs.appendFileSync(path.join(DIAG_DIR, `${name}.jsonl`), `${JSON.stringify({ t: Date.now() - T_START, op, target, text })}\n`);
+    fs.appendFileSync(path.join(DIAG_DIR, `${name}.jsonl`), `${JSON.stringify({ t: realNow() - T_START, op, target, text })}\n`);
   } catch { /* diagnosis never breaks a run */ }
 }
 
@@ -126,8 +129,8 @@ function navClaim(n) {
   if (QUEUE.pending.length) { if (QUEUE.timer) { clearTimeout(QUEUE.timer); QUEUE.timer = null; } schedule(); }
 }
 async function navSettled() {
-  const t = Date.now();
-  while (NAV.pending.length && Date.now() - t < NAV.maxWait) await new Promise((r) => setTimeout(r, 2));
+  const t = realNow();
+  while (NAV.pending.length && realNow() - t < NAV.maxWait) await new Promise((r) => setTimeout(r, 2));
 }
 // Page.goto delegates to its main frame's goto: Frame gets goto, Page the page-level ones.
 const NAV_METHODS = { frame: ['goto'], page: ['reload', 'goBack', 'goForward'] };
@@ -509,7 +512,7 @@ async function setupPage(ctx, page, key) {
   if (VTIME === 'off') return;
   let cdp;
   try { cdp = await ctx.newCDPSession(page); } catch { rec(key, 'other', 'vtime', 'unsupported'); return; }
-  const started = Date.now();
+  const started = realNow();
   let granted = 0;
   let stopped = false;
   let inChunk = false;
@@ -522,7 +525,7 @@ async function setupPage(ctx, page, key) {
     }
     if (granted >= VCAP_MS) { rec(currentKey() || key, 'time', 'vtime.cap', String(granted)); return; }
     if (VTIME === 'paced') {
-      const ahead = granted - (Date.now() - started);
+      const ahead = granted - (realNow() - started);
       if (ahead > 0) await sleep(ahead);
       await whenQueueIdle();
     }
