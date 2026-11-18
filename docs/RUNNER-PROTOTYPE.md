@@ -119,6 +119,11 @@ our GitHub App, so no job ever sees another job's machine or our credentials.
 * Reuse is coarse on some projects: a change to a module that every test imports re-runs every test (click
   `e38188e` → `08b803c`: 0 of 2,653 reused, MEASURED locally). The demo pair was chosen from the cache-proof walk
   (`tracks/cache-proof/results/r5/pygments`) as a realistic source change with a high reuse.
+* **The cache does not cross machines yet.** In the hosted rehearsal (run 44187521000) job 2 ran on another GitHub
+  machine with job 1's cache: 0 of 5,314 reused, all on `runtime` (digest `816b626a` in job 1, `35556ebb` in job 2),
+  while on one machine 5,287 were reused (MEASURED). `fenvix-run` now records the runtime parts per job and names
+  the ones that changed (`runtime_changed_since_previous_job`, also in the step summary). A shared cache service needs
+  a runtime identity that is equal on identical machine images; on our own fleet we control the image.
 * The engine re-checks inputs per test: ~0.4 s of check on 5,314 tests (MEASURED locally).
 * The runner (2.329.0) aborts at startup on some `no_proxy` entries (`::`, CIDR, `*.domain`); the bootstrap writes a
   cleaned `no_proxy` into the job environment.

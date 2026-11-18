@@ -66,6 +66,22 @@ def git_head(project: Path) -> str:
     return r.stdout.strip() if r.returncode == 0 else ""
 
 
+RUNTIME_PROBE = ("import json, sys; from detpy.proofcache import runtime_identity, _dist_infos; "
+                 "dig, info, _ = runtime_identity(sys.argv[1]); "
+                 "print(json.dumps({'digest': dig, **info, 'dist_list': _dist_infos(sys.argv[1])[0]}))")
+
+
+def runtime_components(py: str, project: Path) -> dict:
+    """The engine's runtime identity, part by part (interpreter, libpython, libc, stdlib listing, installed
+    distributions). A cache entry is reused only under the same digest, so when a job reuses nothing on `runtime`,
+    comparing these parts with the previous job's names the cause."""
+    r = subprocess.run([py, "-c", RUNTIME_PROBE, str(project)], capture_output=True, text=True, cwd=project)
+    try:
+        return json.loads(r.stdout.strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        return {"error": (r.stderr or r.stdout)[-300:]}
+
+
 def run_pytest(py: str, project: Path, args: list[str], env: dict) -> tuple[int, float]:
     cmd = [py, "-m", "pytest", *args]
     log("$ " + " ".join(shlex.quote(c) for c in cmd))
@@ -167,6 +183,22 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
             (flaky if o2 == "passed" else real).append(nid)
         real += failed[a.max_reruns:]
 
+    rt = runtime_components(a.python, project)
+    rt_file = cache.parent / f"{cache.name}.fenvix-runtime.json"
+    try:
+        prev_rt = json.loads(rt_file.read_text())
+    except (OSError, ValueError):
+        prev_rt = None
+    rt_changed = sorted(k for k in set(rt) | set(prev_rt or {})
+                        if k != "dist_list" and (prev_rt or {}).get(k) != rt.get(k)) if prev_rt else []
+    if prev_rt and "distributions" in rt_changed:
+        before, after = set(prev_rt.get("dist_list", [])), set(rt.get("dist_list", []))
+        rt_changed += [f"-{d}" for d in sorted(before - after)] + [f"+{d}" for d in sorted(after - before)]
+    try:
+        rt_file.write_text(json.dumps(rt, indent=1))
+    except OSError:
+        pass
+
     rel_cache = f"--det-cache={cache}"
     replay_full = " ".join(shlex.quote(x) for x in ["python", "-m", "pytest", *base, *extra])
     summary = {
@@ -189,6 +221,7 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
         "outcomes": outcomes,
         "reused_outcomes": {r["nodeid"]: r.get("outcome") for r in reused},
         "pytest_args": args, "cache_arg": rel_cache,
+        "runtime": rt, "runtime_changed_since_previous_job": rt_changed,
     }
     (out / "summary.json").write_text(json.dumps(summary, indent=1))
     write_step_summary(summary, a.title)
@@ -228,6 +261,9 @@ def write_step_summary(s: dict, title: str | None) -> None:
         L += ["", "### Flaky tests (reproducible: the run is deterministic)", ""]
         for f in s["flaky"][:20]:
             L += [f"- `{f['nodeid']}`", f"  - replay: `{f['replay']}`", f"  - minimise: `{f['minimise']}`"]
+    if s.get("runtime_changed_since_previous_job"):
+        L += ["", "Runtime changed since the previous job on this cache (every entry recorded under the old runtime is "
+              "out of reach): " + ", ".join(f"`{k}`" for k in s["runtime_changed_since_previous_job"]) + "."]
     why = {**s["not_reused_reasons"]}
     if why or s["not_cached"]:
         L += ["", "<details><summary>Why the other tests ran</summary>", ""]
