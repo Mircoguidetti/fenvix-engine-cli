@@ -459,3 +459,24 @@ def test_lock_acquire_timeouts_advance_the_clock(pytester, run_det):
     )
     result, _ = run_det("-p", "no:randomly")
     result.assert_outcomes(passed=1)
+
+
+def test_clock_read_is_reentrant_from_the_same_thread():
+    # hypothesis registers a gc callback that calls perf_counter(); a collection triggered by an allocation
+    # inside VirtualClock.read() re-entered read() on the same thread and deadlocked on a plain Lock
+    # (attrs and isort hung until the 3,000 s run timeout in the cache-proof walk, run s1d)
+    import threading
+
+    from detpy.clock import VirtualClock
+
+    c = VirtualClock(0, 1000)
+    done = []
+
+    def nested():
+        with c._lock:  # as if inside read() when the gc callback fires
+            done.append(c.read())
+
+    t = threading.Thread(target=nested, daemon=True)
+    t.start()
+    t.join(5)
+    assert not t.is_alive() and done == [1000]

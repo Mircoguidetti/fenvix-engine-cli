@@ -18,6 +18,9 @@ import sys
 import sysconfig
 import tempfile
 
+# bound once: a test may remove sys._getframe (attrs' test_missing_sys_getframe) while detpy's hooks run
+_getframe = sys._getframe
+
 _STDLIB = "stdlib"
 _INFRA = "infra"
 _USER = "user"
@@ -152,7 +155,7 @@ def _classify(filename: str) -> tuple[str, str]:
 def resolve(depth: int) -> str | None:
     """Site of the first user frame above ``depth``; None if infrastructure."""
     try:
-        f = sys._getframe(depth + 1)
+        f = _getframe(depth + 1)
     except ValueError:
         return "<unknown>"
     first = None

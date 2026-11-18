@@ -45,6 +45,8 @@ import pytest
 
 from . import __version__, _codefacts, _core, _sites, _state, follow
 
+# bound once: a test may remove sys._getframe (attrs' test_missing_sys_getframe) while detpy's hooks run
+_getframe = sys._getframe
 # real clocks, bound before Level 0 virtualises the time module
 _perf = time.perf_counter
 _now = time.time
@@ -205,7 +207,7 @@ class Capture:
         A test module's import-time reads serve only its own tests (unless another module imports it); any
         other module's are inputs of every test (``_record_all`` decides).
         """
-        f = sys._getframe(2)
+        f = _getframe(2)
         while f is not None:
             c = f.f_code
             if c.co_name == "<module>" and self._want(c.co_filename):
@@ -286,7 +288,7 @@ class Capture:
             for o in gc.get_objects():
                 if type(o) is FunctionType:
                     self.arm(o.__code__)
-        f = sys._getframe()
+        f = _getframe()
         while f is not None:
             self.arm(f.f_code)
             f = f.f_back
@@ -346,7 +348,7 @@ class Capture:
     def _caller_kind(self) -> str:
         """'import' (the import system), 'infra' (pytest, detpy, ...) or 'user', from the calling frames."""
         try:
-            f = sys._getframe(2)  # 0 this function, 1 the audit callback, 2 the code that raised the event
+            f = _getframe(2)  # 0 this function, 1 the audit callback, 2 the code that raised the event
         except ValueError:
             return "user"
         while f is not None:
@@ -683,7 +685,7 @@ _ENV_PATCHED = False
 
 def _env_caller_is_user() -> bool:
     try:
-        f = sys._getframe(3)
+        f = _getframe(3)
     except ValueError:
         return True
     while f is not None:
@@ -1501,7 +1503,7 @@ def _is_find_library_ldconfig(args) -> bool:
         return False
     if not argv or len(argv) != 2 or os.path.basename(os.fsdecode(argv[0])) != "ldconfig" or argv[1] != "-p":
         return False
-    f = sys._getframe(2)
+    f = _getframe(2)
     while f is not None:
         fn = f.f_code.co_filename
         if fn.endswith(os.sep + os.path.join("ctypes", "util.py")):
@@ -1544,7 +1546,7 @@ def _ctx_label(name: str) -> str:
 def _first_user_site() -> str:
     """``file:line`` of the innermost frame outside detpy and the standard library (else the innermost one)."""
     try:
-        f = sys._getframe(1)
+        f = _getframe(1)
     except ValueError:
         return "?"
     first = None

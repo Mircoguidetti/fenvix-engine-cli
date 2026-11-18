@@ -525,3 +525,18 @@ def test_unnamed_temporary_file_is_not_a_write_of_its_directory(pytester, run_ca
     run_cache()
     _, reused, data = run_cache()
     assert "test_m.py::test_b_reads_tmp" not in nc(data)
+
+
+def test_test_without_sys_getframe_is_not_broken_by_the_capture(pytester, run_cache):
+    # attrs' test_missing_sys_getframe removes sys._getframe; the capture's hooks looked it up on every event
+    project(pytester, **{"data.txt": "x\n", "test_m.py": """
+        import os, sys
+
+        def test_no_getframe(monkeypatch):
+            monkeypatch.delattr(sys, "_getframe")
+            assert open("data.txt").read() == "x\\n"
+            os.listdir(".")
+            os.environ.get("HOME")
+        """})
+    r, _, _ = run_cache()
+    r.assert_outcomes(passed=1)
