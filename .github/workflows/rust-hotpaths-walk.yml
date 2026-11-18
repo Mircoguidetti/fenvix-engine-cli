@@ -30,10 +30,20 @@ jobs:
       walk: ${{ steps.p.outputs.walk }}
     steps:
       - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
       - uses: actions/setup-python@v5
         with: {python-version: "3.13"}
       - run: pip install maturin
-      - run: maturin build --release --compatibility linux -o dist
+      - name: engine (this commit, or walk.json's engine_ref)
+        run: |
+          ref=$(python3 -c "import json; print(json.load(open('tracks/rust-hotpaths/walk.json')).get('engine_ref', ''))")
+          if [ -n "$ref" ]; then
+            git fetch -q origin "$ref" || true
+            git worktree add ../engine "$ref"
+            (cd ../engine && maturin build --release --compatibility linux -o "$GITHUB_WORKSPACE/dist")
+          else
+            maturin build --release --compatibility linux -o dist
+          fi
       - uses: actions/upload-artifact@v4
         with: {name: wheel, path: dist/*.whl}
       - id: p

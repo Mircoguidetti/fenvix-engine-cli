@@ -1,8 +1,8 @@
 {
- "run_id": "w1",
- "note": "cache-proof walk with the rust-hotpaths engine: same specs and commits as the base walks (home-assistant s1f, click and pygments s1d); every reuse checked by a fresh --det run",
+ "run_id": "w0",
+ "engine_ref": "24b6d15e043a2f42834809ea41b5cca0f60849d3",
+ "note": "reference walk with the base engine of this branch (cache-proof-step1 24b6d15, R-009 fixes included): click and pygments, to compare reuse with w1 commit by commit (the s1d walks ran an older engine)",
  "walk": [
-  {"spec": "home-assistant", "shards": 16},
   {"spec": "click"},
   {"spec": "pygments"}
  ]
