@@ -180,10 +180,12 @@ def main():
             mods_a, keys_a = prev
             d = fenvix_skip.decide(mods_a, fenvix_skip.State(mods_b, repo))
             reused = [k for k, r in d.items() if r is None and k in tests_b]
-            reasons = {}
+            reasons, details = {}, {}
             for k, r in d.items():
                 if r is not None:
                     reasons[r[0]] = reasons.get(r[0], 0) + 1
+                    dk = f"{r[0]}: {r[1]}"
+                    details[dk] = details.get(dk, 0) + 1
             wrong, flaky = [], []
             for k in reused:
                 if tests_b[k].get("outcome") != "passed":
@@ -196,7 +198,8 @@ def main():
             row.update({"prev": mine[i - 1], "reused": len(reused), "verified": len(reused), "wrong": wrong, "flaky": flaky,
                         "share_time_skipped": round(skipped_ms / total_ms, 4) if total_ms else None,
                         "share_tests_skipped": round(len(reused) / len(tests_b), 4) if tests_b else None,
-                        "rerun_reasons": reasons, "module_cache_hits": len(mod_hit), "modules": len(keys_b),
+                        "rerun_reasons": reasons,
+                        "rerun_details": dict(sorted(details.items(), key=lambda x: -x[1])[:6]), "module_cache_hits": len(mod_hit), "modules": len(keys_b),
                         "module_cache_share_time": round(mod_ms / total_ms, 4) if total_ms else None})
         rows.append(row)
         print(json.dumps({k: v for k, v in row.items() if k not in ("wrong", "flaky")}), flush=True)

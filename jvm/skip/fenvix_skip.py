@@ -58,10 +58,31 @@ def digest_file(path):
         return None
 
 
+# runtime entries set lazily by the JVM (user.timezone is filled in when the time zone is first
+# used): compared through their stable counterparts ("tz") instead
+LAZY_RUNTIME = {"prop:user.timezone"}
+
+
+def runtime_of(jvm):
+    return {k: v for k, v in jvm["runtime"].items() if k not in LAZY_RUNTIME}
+
+
+def pid_of(path):
+    try:
+        return int(os.path.basename(path).rsplit("-", 1)[1].split(".")[0])
+    except (IndexError, ValueError):
+        return 0
+
+
 def load(deps_dir):
-    """module -> {"jvm": record, "tests": {id: rec}, "scopes": {id: rec}}"""
+    """module -> {"jvm": record, "tests": {id: rec}, "scopes": {id: rec}}
+
+    A test run by several JVMs of one module (several Surefire executions) gets the
+    suffix "#n" for its n-th JVM after the first (JVMs in start order, by pid).
+    """
     mods = {}
-    for f in sorted(glob.glob(os.path.join(deps_dir, "*.jsonl"))):
+    seen = {}
+    for f in sorted(glob.glob(os.path.join(deps_dir, "*.jsonl")), key=lambda p: (os.path.basename(p).rsplit("-", 1)[0], pid_of(p))):
         recs = [json.loads(l) for l in open(f) if l.strip()]
         jvm = next((r for r in recs if r["type"] == "jvm"), None)
         for r in recs:
@@ -70,6 +91,12 @@ def load(deps_dir):
                 m["jvm"] = r
             elif r["type"] == "test":
                 r["_jvm"] = jvm
+                key = (r.get("module", ""), r["id"])
+                n = seen.get(key, 0)
+                seen[key] = n + 1
+                if n:
+                    r["id"] = f'{r["id"]}#{n + 1}'
+                    r["after"] = [f"{a}#{n + 1}" for a in r.get("after", [])]
                 m["tests"][r["id"]] = r
             else:
                 m["scopes"][r["id"]] = r
@@ -187,8 +214,9 @@ def why_not(mod_name, mod_a, rec, b: State):
     jvm_b = b.jvm(mod_name, rec["id"])
     if jvm_a is None or jvm_b is None:
         return ("no-jvm-record", mod_name)
-    if jvm_a["runtime"] != jvm_b["runtime"]:
-        diff = sorted(k for k in set(jvm_a["runtime"]) | set(jvm_b["runtime"]) if jvm_a["runtime"].get(k) != jvm_b["runtime"].get(k))
+    ra, rb = runtime_of(jvm_a), runtime_of(jvm_b)
+    if ra != rb:
+        diff = sorted(k for k in set(ra) | set(rb) if ra.get(k) != rb.get(k))
         return ("runtime", ",".join(diff[:3]))
     if jvm_a["config"] != jvm_b["config"]:
         diff = sorted(k for k in set(jvm_a["config"]) | set(jvm_b["config"]) if jvm_a["config"].get(k) != jvm_b["config"].get(k))
