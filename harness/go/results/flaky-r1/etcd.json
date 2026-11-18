@@ -1,0 +1,22 @@
+{
+ "spec": {
+  "name": "etcd",
+  "repo": "etcd-io/etcd",
+  "sha": "5b75ac62cf042a185e902530c25fd3d59c095232",
+  "fix_commit": "e5a789dad1ca9a684dbafd2cfbc07ca508bd155f",
+  "fix_date": "2026-08-18T16:04:02.000-07:00",
+  "title": " mvcc: Reduces Flakiness From TestValidateLinearizableOperationsTimeoutIsRespected",
+  "tests": [
+   "TestValidateLinearizableOperationsTimeoutIsRespected"
+  ],
+  "source": "github commit search 'repo:etcd-io/etcd flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "list-failed",
+ "notes": [],
+ "module_dir": "tests",
+ "packages": [
+  "./robustness/validate"
+ ],
+ "error": "go: -mod may only be set to readonly or vendor when in workspace mode, but it is set to \"mod\"\n\tRemove the -mod flag to use the default readonly value, \n\tor set GOWORK=off to disable workspace mode.\n",
+ "seconds": 0.8
+}
