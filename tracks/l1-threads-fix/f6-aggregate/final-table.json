@@ -1,0 +1,470 @@
+[
+ {
+  "name": "anyio",
+  "round": "f6",
+  "runs": 1,
+  "plain": 67.776,
+  "det": 76.332,
+  "l1": 74.481,
+  "l1_vs_det": -2.4,
+  "broken_det": 3,
+  "broken_l1": 0,
+  "some_l1": 0,
+  "seeds": [
+   1
+  ],
+  "broken_seeds": {
+   "1": 0
+  },
+  "some_seeds": {
+   "1": 0
+  },
+  "seed_vs_det": {
+   "1": -1.6
+  },
+  "hung": {},
+  "nruns": {
+   "plain": 1,
+   "det": 1,
+   "l1": 1,
+   "l1-s1": 1
+  },
+  "managed": 656,
+  "escapes": 31,
+  "deadlocks": 0,
+  "broken_runs": {
+   "det": 0,
+   "l1": 0,
+   "l1_s1": 0
+  }
+ },
+ {
+  "name": "arrow",
+  "round": "f6",
+  "runs": 1,
+  "plain": 5.668,
+  "det": 10.088,
+  "l1": 10.443,
+  "l1_vs_det": 3.5,
+  "broken_det": 0,
+  "broken_l1": 0,
+  "some_l1": 0,
+  "seeds": [
+   1
+  ],
+  "broken_seeds": {
+   "1": 0
+  },
+  "some_seeds": {
+   "1": 0
+  },
+  "seed_vs_det": {
+   "1": 5.8
+  },
+  "hung": {},
+  "nruns": {
+   "plain": 1,
+   "det": 1,
+   "l1": 1,
+   "l1-s1": 1
+  },
+  "managed": 1,
+  "escapes": 0,
+  "deadlocks": 0,
+  "broken_runs": {
+   "det": 0,
+   "l1": 0,
+   "l1_s1": 0
+  }
+ },
+ {
+  "name": "boltons",
+  "round": "f6",
+  "runs": 1,
+  "plain": 2.296,
+  "det": 4.141,
+  "l1": 3.627,
+  "l1_vs_det": -12.4,
+  "broken_det": 0,
+  "broken_l1": 0,
+  "some_l1": 0,
+  "seeds": [
+   1
+  ],
+  "broken_seeds": {
+   "1": 0
+  },
+  "some_seeds": {
+   "1": 0
+  },
+  "seed_vs_det": {
+   "1": -3.1
+  },
+  "hung": {},
+  "nruns": {
+   "plain": 1,
+   "det": 1,
+   "l1": 1,
+   "l1-s1": 1
+  },
+  "managed": 13,
+  "escapes": 0,
+  "deadlocks": 0,
+  "broken_runs": {
+   "det": 0,
+   "l1": 0,
+   "l1_s1": 0
+  }
+ },
+ {
+  "name": "click",
+  "round": "f6",
+  "runs": 1,
+  "plain": 5.113,
+  "det": 7.304,
+  "l1": 7.39,
+  "l1_vs_det": 1.2,
+  "broken_det": 0,
+  "broken_l1": 0,
+  "some_l1": 0,
+  "seeds": [
+   1
+  ],
+  "broken_seeds": {
+   "1": 0
+  },
+  "some_seeds": {
+   "1": 0
+  },
+  "seed_vs_det": {
+   "1": 4.0
+  },
+  "hung": {},
+  "nruns": {
+   "plain": 1,
+   "det": 1,
+   "l1": 1,
+   "l1-s1": 1
+  },
+  "managed": 25,
+  "escapes": 0,
+  "deadlocks": 0,
+  "broken_runs": {
+   "det": 0,
+   "l1": 0,
+   "l1_s1": 0
+  }
+ },
+ {
+  "name": "flask",
+  "round": "f6",
+  "runs": 1,
+  "plain": 1.41,
+  "det": 2.497,
+  "l1": 2.544,
+  "l1_vs_det": 1.9,
+  "broken_det": 0,
+  "broken_l1": 0,
+  "some_l1": 0,
+  "seeds": [
+   1
+  ],
+  "broken_seeds": {
+   "1": 0
+  },
+  "some_seeds": {
+   "1": 0
+  },
+  "seed_vs_det": {
+   "1": 6.0
+  },
+  "hung": {},
+  "nruns": {
+   "plain": 1,
+   "det": 1,
+   "l1": 1,
+   "l1-s1": 1
+  },
+  "managed": 26,
+  "escapes": 0,
+  "deadlocks": 0,
+  "broken_runs": {
+   "det": 0,
+   "l1": 0,
+   "l1_s1": 0
+  }
+ },
+ {
+  "name": "idoft-easypy",
+  "round": "f6",
+  "runs": 1,
+  "plain": 11.196,
+  "det": 10.751,
+  "l1": 3.191,
+  "l1_vs_det": -70.3,
+  "broken_det": 0,
+  "broken_l1": 0,
+  "some_l1": 0,
+  "seeds": [
+   1
+  ],
+  "broken_seeds": {
+   "1": 0
+  },
+  "some_seeds": {
+   "1": 0
+  },
+  "seed_vs_det": {
+   "1": -62.6
+  },
+  "hung": {},
+  "nruns": {
+   "plain": 1,
+   "det": 1,
+   "l1": 1,
+   "l1-s1": 1
+  },
+  "managed": 93,
+  "escapes": 0,
+  "deadlocks": 0,
+  "broken_runs": {
+   "det": 0,
+   "l1": 0,
+   "l1_s1": 0
+  }
+ },
+ {
+  "name": "more-itertools",
+  "round": "f6",
+  "runs": 1,
+  "plain": 16.984,
+  "det": 23.727,
+  "l1": 21.895,
+  "l1_vs_det": -7.7,
+  "broken_det": 0,
+  "broken_l1": 0,
+  "some_l1": 0,
+  "seeds": [
+   1
+  ],
+  "broken_seeds": {
+   "1": 0
+  },
+  "some_seeds": {
+   "1": 0
+  },
+  "seed_vs_det": {
+   "1": 171.4
+  },
+  "hung": {},
+  "nruns": {
+   "plain": 1,
+   "det": 1,
+   "l1": 1,
+   "l1-s1": 1
+  },
+  "managed": 167,
+  "escapes": 0,
+  "deadlocks": 0,
+  "broken_runs": {
+   "det": 0,
+   "l1": 0,
+   "l1_s1": 0
+  }
+ },
+ {
+  "name": "networkx",
+  "round": "f6",
+  "runs": 1,
+  "plain": 134.403,
+  "det": 146.98,
+  "l1": 149.892,
+  "l1_vs_det": 2.0,
+  "broken_det": 0,
+  "broken_l1": 0,
+  "some_l1": 0,
+  "seeds": [
+   1
+  ],
+  "broken_seeds": {
+   "1": 0
+  },
+  "some_seeds": {
+   "1": 0
+  },
+  "seed_vs_det": {
+   "1": 89.7
+  },
+  "hung": {},
+  "nruns": {
+   "plain": 1,
+   "det": 1,
+   "l1": 1,
+   "l1-s1": 1
+  },
+  "managed": 65,
+  "escapes": 0,
+  "deadlocks": 0,
+  "broken_runs": {
+   "det": 0,
+   "l1": 0,
+   "l1_s1": 0
+  }
+ },
+ {
+  "name": "requests",
+  "round": "f6",
+  "runs": 1,
+  "plain": 78.64,
+  "det": 80.118,
+  "l1": 71.075,
+  "l1_vs_det": -11.3,
+  "broken_det": 4,
+  "broken_l1": 0,
+  "some_l1": 0,
+  "seeds": [
+   1
+  ],
+  "broken_seeds": {
+   "1": 0
+  },
+  "some_seeds": {
+   "1": 0
+  },
+  "seed_vs_det": {
+   "1": -11.3
+  },
+  "hung": {},
+  "nruns": {
+   "plain": 1,
+   "det": 1,
+   "l1": 1,
+   "l1-s1": 1
+  },
+  "managed": 35,
+  "escapes": 0,
+  "deadlocks": 0,
+  "broken_runs": {
+   "det": 0,
+   "l1": 0,
+   "l1_s1": 0
+  }
+ },
+ {
+  "name": "rich",
+  "round": "f6",
+  "runs": 1,
+  "plain": 5.993,
+  "det": 7.206,
+  "l1": 4.811,
+  "l1_vs_det": -33.2,
+  "broken_det": 0,
+  "broken_l1": 0,
+  "some_l1": 0,
+  "seeds": [
+   1
+  ],
+  "broken_seeds": {
+   "1": 0
+  },
+  "some_seeds": {
+   "1": 0
+  },
+  "seed_vs_det": {
+   "1": -26.2
+  },
+  "hung": {},
+  "nruns": {
+   "plain": 1,
+   "det": 1,
+   "l1": 1,
+   "l1-s1": 1
+  },
+  "managed": 12,
+  "escapes": 0,
+  "deadlocks": 0,
+  "broken_runs": {
+   "det": 0,
+   "l1": 0,
+   "l1_s1": 0
+  }
+ },
+ {
+  "name": "structlog",
+  "round": "f6",
+  "runs": 1,
+  "plain": 1.864,
+  "det": 3.356,
+  "l1": 3.492,
+  "l1_vs_det": 4.1,
+  "broken_det": 0,
+  "broken_l1": 0,
+  "some_l1": 0,
+  "seeds": [
+   1
+  ],
+  "broken_seeds": {
+   "1": 0
+  },
+  "some_seeds": {
+   "1": 0
+  },
+  "seed_vs_det": {
+   "1": 3.9
+  },
+  "hung": {},
+  "nruns": {
+   "plain": 1,
+   "det": 1,
+   "l1": 1,
+   "l1-s1": 1
+  },
+  "managed": 41,
+  "escapes": 0,
+  "deadlocks": 0,
+  "broken_runs": {
+   "det": 0,
+   "l1": 0,
+   "l1_s1": 0
+  }
+ },
+ {
+  "name": "werkzeug",
+  "round": "f6",
+  "runs": 1,
+  "plain": 9.672,
+  "det": 11.275,
+  "l1": 11.682,
+  "l1_vs_det": 3.6,
+  "broken_det": 0,
+  "broken_l1": 0,
+  "some_l1": 0,
+  "seeds": [
+   1
+  ],
+  "broken_seeds": {
+   "1": 0
+  },
+  "some_seeds": {
+   "1": 0
+  },
+  "seed_vs_det": {
+   "1": 10.4
+  },
+  "hung": {},
+  "nruns": {
+   "plain": 1,
+   "det": 1,
+   "l1": 1,
+   "l1-s1": 1
+  },
+  "managed": 7,
+  "escapes": 3,
+  "deadlocks": 0,
+  "broken_runs": {
+   "det": 0,
+   "l1": 0,
+   "l1_s1": 0
+  }
+ }
+]
