@@ -81,6 +81,10 @@ var patches = []patch{
 		{kind: "replace", anchor: "func (t *Timer) Reset(d Duration) bool {", text: "func (t *Timer) fenvixOrigReset(d Duration) bool {"},
 		{kind: "replace", anchor: "func (t *Timer) Stop() bool {", text: "func (t *Timer) fenvixOrigStop() bool {"},
 	}},
+	{group: "time", file: "time/sleep.go", ops: []op{
+		// the timer API of Go 1.23 and later (Go 1.22 has another one)
+		{kind: "replace", anchor: "func newTimer(when, period int64, f func(any, uintptr, int64), arg any, cp unsafe.Pointer) *Timer", text: "func newTimer(when, period int64, f func(any, uintptr, int64), arg any, cp unsafe.Pointer) *Timer"},
+	}},
 	{group: "time", file: "time/tick.go", ops: []op{
 		{kind: "replace", anchor: "func NewTicker(d Duration) *Ticker {", text: "func fenvixOrigNewTicker(d Duration) *Ticker {"},
 		{kind: "replace", anchor: "func (t *Ticker) Reset(d Duration) {", text: "func (t *Ticker) fenvixOrigReset(d Duration) {"},
@@ -102,6 +106,9 @@ var patches = []patch{
 	}},
 	{group: "crypto", file: "crypto/internal/sysrand/rand.go", ops: []op{
 		{kind: "insert", anchor: "func Read(b []byte) {", text: "\tif fenvixRead(b) {\n\t\treturn\n\t}"},
+	}},
+	{group: "crypto-123", file: "crypto/rand/rand_unix.go", ops: []op{
+		{kind: "insert", anchor: "func (r *reader) Read(b []byte) (n int, err error) {", text: "\tif fenvixRead(b) {\n\t\treturn len(b), nil\n\t}"},
 	}},
 	{group: "os-dir", file: "os/dir.go", ops: []op{
 		{kind: "replace", anchor: "func (f *File) Readdir(n int) ([]FileInfo, error) {", text: "func (f *File) fenvixOrigReaddir(n int) ([]FileInfo, error) {"},
@@ -141,6 +148,7 @@ var additions = []addition{
 	{file: "math/rand/zz_fenvix.go", tmpl: "mathrand.go.txt", needs: "rand-v1"},
 	{file: "math/rand/v2/zz_fenvix.go", tmpl: "mathrandv2.go.txt", needs: "rand-v2"},
 	{file: "crypto/internal/sysrand/zz_fenvix.go", tmpl: "sysrand.go.txt", needs: "crypto"},
+	{file: "crypto/rand/zz_fenvix.go", tmpl: "cryptorand123.go.txt", needs: "crypto-123"},
 	{file: "os/zz_fenvix.go", tmpl: "os.go.txt"},
 	{file: "net/zz_fenvix.go", tmpl: "net.go.txt", needs: "net"},
 }
@@ -287,6 +295,16 @@ func Generate(goroot, goversion, cacheDir string) (*Result, error) {
 			s = strings.ReplaceAll(s, k, v)
 		}
 		out[a.file] = s
+	}
+	// crypto: Go 1.24+ hooks crypto/internal/sysrand, Go 1.23 crypto/rand
+	if _, bad := failed["crypto"]; bad {
+		if _, bad123 := failed["crypto-123"]; !bad123 {
+			delete(failed, "crypto")
+		}
+	} else {
+		failed["crypto-123"] = "not needed"
+		delete(out, "crypto/rand/rand_unix.go")
+		delete(out, "crypto/rand/zz_fenvix.go")
 	}
 	unavailable := map[string]string{}
 	for c, groups := range controlGroups {

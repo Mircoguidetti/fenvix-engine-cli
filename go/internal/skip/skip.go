@@ -308,3 +308,39 @@ func MakeEntry(static, outcome string, elapsed float64, raw *Raw, s *State, capt
 	sort.Strings(e.Execs)
 	return e
 }
+
+// Absorb adds the recorded inputs of a test that ran before this one in the
+// same process (and was reused): this test may depend on state it left.
+func (e *Entry) Absorb(prev *Entry) {
+	for k, v := range prev.Files {
+		if _, ok := e.Files[k]; !ok {
+			e.Files[k] = v
+		}
+	}
+	for k, v := range prev.Lists {
+		if _, ok := e.Lists[k]; !ok {
+			e.Lists[k] = v
+		}
+	}
+	for k, v := range prev.Env {
+		if _, ok := e.Env[k]; !ok {
+			e.Env[k] = v
+		}
+	}
+	e.Exists = mergeSorted(e.Exists, prev.Exists)
+	e.Missing = mergeSorted(e.Missing, prev.Missing)
+	e.Net = append(e.Net, prev.Net...)
+}
+
+func mergeSorted(a, b []string) []string {
+	seen := map[string]bool{}
+	var out []string
+	for _, x := range append(append([]string{}, a...), b...) {
+		if !seen[x] {
+			seen[x] = true
+			out = append(out, x)
+		}
+	}
+	sort.Strings(out)
+	return out
+}

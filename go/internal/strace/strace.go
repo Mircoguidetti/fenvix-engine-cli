@@ -97,27 +97,30 @@ func under(p, dir string) bool {
 	return p == dir || strings.HasPrefix(p, dir+"/")
 }
 
-// Keep reports whether path can be a dependency.
+// Keep reports whether path can be a dependency: it must be under a root,
+// and the most specific match decides between roots and ignored directories
+// (a repository checked out under /tmp is kept, a temp dir under it is not).
 func (f *Filter) Keep(p string) bool {
 	if strings.HasPrefix(p, "/__fenvix_marker__/") {
 		return false
 	}
-	for _, d := range f.Ignore {
-		if under(p, d) {
-			return false
-		}
-	}
 	if strings.Contains(p, "/.git/") {
-		// .git internals are read by tools (go's VCS stamping): the commit is
-		// in the binary already when it matters
+		// .git internals are read by tools (VCS stamping): the commit is in
+		// the binary already when it matters
 		return false
 	}
+	bestRoot, bestIgnore := -1, -1
 	for _, r := range f.Roots {
-		if under(p, r) {
-			return true
+		if r != "" && under(p, r) && len(r) > bestRoot {
+			bestRoot = len(r)
 		}
 	}
-	return false
+	for _, d := range f.Ignore {
+		if d != "" && under(p, d) && len(d) > bestIgnore {
+			bestIgnore = len(d)
+		}
+	}
+	return bestRoot >= 0 && bestRoot > bestIgnore
 }
 
 // Parse reads a strace log written with Args.

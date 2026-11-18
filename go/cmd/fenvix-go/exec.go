@@ -244,7 +244,7 @@ func cmdExec(args []string) int {
 	}
 
 	// control pipe: names -> order, seeds, tests to leave out
-	var names, order []string
+	var names, order, fullOrder []string
 	stdout := &reusePrinter{w: os.Stdout}
 	wouldReuse := map[string]bool{}
 	why := map[string]string{}
@@ -274,6 +274,7 @@ func cmdExec(args []string) int {
 			reused := map[string]*skip.Entry{}
 			for _, i := range idx {
 				name := names[i]
+				fullOrder = append(fullOrder, name)
 				if cache != nil {
 					w := cache.Tests[name].Why(static, state)
 					why[name] = w
@@ -420,7 +421,33 @@ func cmdExec(args []string) int {
 		if st != nil {
 			toRaw(st.Segments[-1], pkgRaw, true)
 		}
-		// a path the hooks saw stat'ed but that is gone now was the run's own output
+		// Prefix closure: a test also depends on everything the tests before
+		// it in the same process read (shared process state: a file loaded
+		// once by an earlier test, a cached configuration...).
+		closure := map[string]*skip.Raw{}
+		before := map[string][]*skip.Entry{} // reused tests that came before (their recorded inputs)
+		acc := skip.NewRaw()
+		acc.Merge(pkgRaw)
+		var accEntries []*skip.Entry
+		for _, name := range fullOrder {
+			res := results[name]
+			if res == nil {
+				if e := cache.Tests[name]; e != nil && wouldReuse[name] {
+					accEntries = append(accEntries, e)
+				}
+				continue
+			}
+			own := skip.NewRaw()
+			own.Merge(res.deps)
+			if st != nil {
+				toRaw(st.Segments[res.pos], own, false)
+			}
+			acc.Merge(own)
+			c := skip.NewRaw()
+			c.Merge(acc)
+			closure[name] = c
+			before[name] = append([]*skip.Entry(nil), accEntries...)
+		}
 		decPath := filepath.Join(sess.Dir, "decisions.jsonl")
 		for _, name := range names {
 			d := decision{Pkg: pkg, Test: name, Commit: sess.Skip.Commit}
@@ -436,18 +463,16 @@ func cmdExec(args []string) int {
 			}
 			d.Fresh, d.Elapsed = res.outcome, res.elapsed
 			appendJSONL(decPath, d)
-			raw := skip.NewRaw()
-			raw.Merge(pkgRaw)
-			raw.Merge(res.deps)
-			if st != nil {
-				toRaw(st.Segments[res.pos], raw, false)
-			}
+			raw := closure[name]
 			for p := range raw.Exists {
 				if state.File(p) == "-" {
-					delete(raw.Exists, p)
+					delete(raw.Exists, p) // the run's own output, gone now
 				}
 			}
 			e := skip.MakeEntry(static, res.outcome, res.elapsed, raw, state, capture, bin)
+			for _, prev := range before[name] {
+				e.Absorb(prev)
+			}
 			e.Commit = sess.Skip.Commit
 			cache.Tests[name] = e
 		}

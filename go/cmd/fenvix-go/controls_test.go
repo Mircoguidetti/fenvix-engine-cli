@@ -274,3 +274,13 @@ func TestPlainWithoutFlagsIsGoTest(t *testing.T) {
 		t.Fatalf("plain mode should be go test:\n%s", out)
 	}
 }
+
+// --det must not change the outcome of deterministic suites: fenvix-go's own
+// packages (overlay generator, strace parser, skip key) pass under --det.
+func TestDetUnchangedOnDeterministicPackages(t *testing.T) {
+	out, code := runFenvix(t, filepath.Join("..", ".."), nil, "test", "--det", "--det-trace="+filepath.Join(t.TempDir(), "own.jsonl"),
+		"./internal/overlay/", "./internal/strace/", "./internal/skip/")
+	if code != 0 {
+		t.Fatalf("own packages fail under --det (exit %d):\n%s", code, out)
+	}
+}

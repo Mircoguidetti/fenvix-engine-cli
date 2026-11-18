@@ -164,8 +164,52 @@ func flagName(a string) string {
 	return n
 }
 
+// goBin is the go command used for everything after the toolchain is
+// resolved; goExtraEnv is added to its environment.
+var (
+	goBin      = "go"
+	goExtraEnv []string
+)
+
+func goCommand(args ...string) *exec.Cmd {
+	cmd := exec.Command(goBin, args...)
+	cmd.Env = append(os.Environ(), goExtraEnv...)
+	return cmd
+}
+
+// materializeToolchain: Go refuses -overlay replacements of files under
+// GOMODCACHE, which is where `go` puts the toolchains it downloads for a
+// go.mod that needs a newer Go. Such a toolchain is linked (hard links, no
+// extra space; copied when links are not possible) into the fenvix cache and
+// run from there with GOTOOLCHAIN=local.
+func materializeToolchain(goroot, gomodcache, version string) (string, error) {
+	if gomodcache == "" || !strings.HasPrefix(goroot, gomodcache+string(filepath.Separator)) {
+		return goroot, nil
+	}
+	dst := filepath.Join(cacheDir(), "toolchains", version)
+	if _, err := os.Stat(filepath.Join(dst, "bin", "go")); err == nil {
+		return dst, nil
+	}
+	tmp := dst + ".tmp"
+	os.RemoveAll(tmp)
+	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+		return "", err
+	}
+	if out, err := exec.Command("cp", "-al", goroot, tmp).CombinedOutput(); err != nil {
+		os.RemoveAll(tmp)
+		if out2, err2 := exec.Command("cp", "-a", goroot, tmp).CombinedOutput(); err2 != nil {
+			return "", fmt.Errorf("copy toolchain: %v %s / %v %s", err, out, err2, out2)
+		}
+	}
+	exec.Command("chmod", "-R", "u+w", tmp).Run()
+	if err := os.Rename(tmp, dst); err != nil {
+		return "", err
+	}
+	return dst, nil
+}
+
 func goEnv(dir string, keys ...string) (map[string]string, error) {
-	cmd := exec.Command("go", append([]string{"env", "-json"}, keys...)...)
+	cmd := goCommand(append([]string{"env", "-json"}, keys...)...)
 	cmd.Dir = dir
 	cmd.Stderr = os.Stderr
 	out, err := cmd.Output()
@@ -217,6 +261,14 @@ func cmdTest(args []string) int {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "fenvix-go:", err)
 		return 2
+	}
+	if root, err := materializeToolchain(env["GOROOT"], env["GOMODCACHE"], env["GOVERSION"]); err != nil {
+		fmt.Fprintln(os.Stderr, "fenvix-go:", err)
+		return 2
+	} else if root != env["GOROOT"] {
+		goBin = filepath.Join(root, "bin", "go")
+		goExtraEnv = []string{"GOTOOLCHAIN=local"}
+		env["GOROOT"] = root
 	}
 	if env["GOOS"] != "linux" {
 		fmt.Fprintf(os.Stderr, "fenvix-go: only linux is supported (GOOS=%s)\n", env["GOOS"])
@@ -320,7 +372,7 @@ func cmdTest(args []string) int {
 
 	// packages: import path <-> directory, and the order
 	listArgs := append(append([]string{"list", "-e", "-f", "{{.ImportPath}}\t{{.Dir}}\t{{len .TestGoFiles}}\t{{len .XTestGoFiles}}"}, listFlags...), pkgs...)
-	lc := exec.Command("go", listArgs...)
+	lc := goCommand(listArgs...)
 	lc.Stderr = os.Stderr
 	out, err := lc.Output()
 	if err != nil {
@@ -411,6 +463,11 @@ func cmdTest(args []string) int {
 	if !hasCount {
 		goArgs = append(goArgs, "-count=1")
 	}
+	if goMinor(env["GOVERSION"]) < 24 && !hasFlag(goFlags, "vet") {
+		// go vet before Go 1.24 does not see files an overlay adds to a package
+		fmt.Fprintf(os.Stderr, "fenvix-go: %s: go vet turned off (it cannot read the overlay)\n", env["GOVERSION"])
+		goArgs = append(goArgs, "-vet=off")
+	}
 	if o.det {
 		goArgs = append(goArgs, "-p", "1")
 	}
@@ -419,9 +476,9 @@ func cmdTest(args []string) int {
 	if len(binArgs) > 0 {
 		goArgs = append(append(goArgs, "-args"), binArgs...)
 	}
-	cmd := exec.Command("go", goArgs...)
+	cmd := goCommand(goArgs...)
 	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
-	cmd.Env = append(os.Environ(), "FENVIX_GO_SESSION="+dir)
+	cmd.Env = append(cmd.Env, "FENVIX_GO_SESSION="+dir)
 	runErr := cmd.Run()
 	code := exitCode(runErr)
 
@@ -446,6 +503,28 @@ func cmdTest(args []string) int {
 		summarizeSkip(dir, o.skipReport)
 	}
 	return code
+}
+
+func hasFlag(flags []string, name string) bool {
+	for _, f := range flags {
+		if flagName(f) == name {
+			return true
+		}
+	}
+	return false
+}
+
+// goMinor returns 24 for "go1.24.7" (0 when unknown).
+func goMinor(v string) int {
+	v = strings.TrimPrefix(v, "go1.")
+	n := 0
+	for _, c := range v {
+		if c < '0' || c > '9' {
+			break
+		}
+		n = n*10 + int(c-'0')
+	}
+	return n
 }
 
 func traceMeta(s *session.Session, pkg string) map[string]any {
