@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
-"""fenvix-run: run a project's pytest suite inside the fenvix engine on a `runs-on: fenvix` machine.
+"""fenvix-run: run a project's test suite inside the fenvix engine on a `runs-on: fenvix` machine.
 
-What it does, in order:
+Two languages, one summary format. Python (pytest, engine detpy) and Node (Vitest or Jest, engine detjs). A
+repository with both runs one job per language, as its workflow defines (``--lang python`` in the Python job,
+``--lang node`` in the Node job). Without ``--lang`` the language is detected; a mixed repository needs ``--lang``.
+
+Python, in order:
 
 1. ``pytest --det --det-cache=<persistent dir>`` in the project directory. The cache directory lives on the machine
    (``$FENVIX_CACHE_ROOT/<project key>``), so it survives between jobs: a test whose inputs did not change since a
@@ -11,10 +15,24 @@ What it does, in order:
 3. A summary is written to ``$GITHUB_STEP_SUMMARY`` (Markdown) and to ``<out>/summary.json``: tests run, tests
    skipped with proof, test time saved, failures, flaky tests with their replay command, and where the receipts are.
 
-Exit status: pytest's (0 when every test passed or was reused as passed), so a failing suite fails the job.
-Standard library only: the wrapper runs with any Python 3.9+; pytest runs with ``--python``.
+Node, in order (see ``node_run``):
+
+1. Dependencies installed the way the project's CI does it, from its lockfile (``npm ci``, ``pnpm install
+   --frozen-lockfile``, ``yarn install --frozen-lockfile`` / ``--immutable``, ``bun install --frozen-lockfile``), when
+   ``node_modules`` is missing (``--install``, ``--install-cmd``).
+2. ``detjs vitest run --det`` or ``detjs jest --det`` (the runner the project uses), with a JSON report for timings
+   and the detjs trace for outcomes and fingerprints. ``--det-cache`` (opt-in) passes ``--det-cache=<dir>`` to detjs
+   once detjs supports it (detected from ``detjs --det-help``); until then it is a no-op, said in the summary.
+3. Failures run once more, alone (file + exact name). Passes alone -> flaky (order-dependent); the shortest replay
+   that fails again is searched (the test's file, then each earlier test of the file with it) and *run*, so the
+   replay in the summary is one that was seen to reproduce the failure.
+4. The same ``summary.json`` keys and the same step summary as the Python path.
+
+Exit status: the test runner's (0 when every test passed or was reused as passed), so a failing suite fails the job.
+Standard library only: the wrapper runs with any Python 3.9+; pytest runs with ``--python``, detjs with ``--node``.
 
     fenvix-run --project . --python .venv/bin/python [--key owner/repo] [--out DIR] [-- extra pytest args]
+    fenvix-run --project . --lang node [--runner auto|vitest|jest] [--det-cache] [-- extra runner args]
     fenvix-run verify --project . --python PY --summary DIR/summary.json [--out DIR]
 """
 from __future__ import annotations
@@ -24,7 +42,9 @@ import datetime as dt
 import hashlib
 import json
 import os
+import platform
 import re
+import shutil
 import shlex
 import subprocess
 import sys
@@ -126,6 +146,54 @@ def fmt_s(s: float) -> str:
     return f"{s:.1f} s"
 
 
+SUMMARY_SCHEMA = "fenvix-summary/2"
+
+
+def read_trace(path: Path) -> tuple[dict, dict[str, dict]]:
+    """Header ``meta`` and per-test records (``outcome``, ``fingerprint``, ``index``) of a detpy or detjs trace (same
+    format in both engines)."""
+    meta: dict = {}
+    tests: dict[str, dict] = {}
+    try:
+        fh = open(path)
+    except OSError:
+        return meta, tests
+    with fh:
+        for line in fh:
+            if line.startswith('{"type":"header"'):
+                try:
+                    meta = json.loads(line).get("meta") or {}
+                except ValueError:
+                    pass
+            elif line.startswith('{"type":"test"'):
+                try:
+                    t = json.loads(line)
+                except ValueError:
+                    continue  # truncated last line
+                tests[t["nodeid"]] = {"outcome": t.get("outcome"), "fingerprint": t.get("fingerprint"),
+                                      "index": t.get("index")}
+    return meta, tests
+
+
+def junit_name(nodeid: str) -> str:
+    """The ``classname::name`` key pytest's JUnit XML gives a node id (``a/test_x.py::C::t[1]`` ->
+    ``a.test_x.C::t[1]``)."""
+    parts = nodeid.split("::")
+    mod = parts[0][:-3] if parts[0].endswith(".py") else parts[0]
+    return ".".join([mod.replace("/", "."), *parts[1:-1]]) + "::" + parts[-1]
+
+
+def flaky_explanation(nodeid: str, before: list[str], minimal: str | None) -> str:
+    why = (f"`{nodeid}` failed in the suite and passed when run alone, so its result depends on what ran before it "
+           f"(state left behind by an earlier test). The engine fixes the order, the clock, the seeds and the "
+           f"filesystem order, so the same tests in the same order fail the same way: the replay reproduces it.")
+    if minimal:
+        why += f" Shortest replay found: `{minimal}` before it."
+    elif before:
+        why += f" {len(before)} test(s) ran before it in its file."
+    return why
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
     project = Path(a.project).resolve()
@@ -136,15 +204,15 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
     cache.mkdir(parents=True, exist_ok=True)
     had_cache = any(cache.iterdir())
     receipts = out / "receipts.jsonl"
-    outcomes_p, junit_p = out / "outcomes.json", out / "junit.xml"
-    for p in (receipts, outcomes_p, junit_p):
+    outcomes_p, junit_p, trace_p = out / "outcomes.json", out / "junit.xml", out / "trace.jsonl"
+    for p in (receipts, outcomes_p, junit_p, trace_p):
         p.unlink(missing_ok=True)
 
     env = dict(os.environ)
     env.pop("PYTHONHASHSEED", None)  # the engine fixes it itself (re-exec)
     base = ["--det", "--det-urandom", "-p", "no:cacheprovider", "-q", "-rN", "--tb=short"]
     args = base + [f"--det-cache={cache}", f"--det-cache-receipts={receipts}", f"--det-outcomes={outcomes_p}",
-                   f"--junitxml={junit_p}", *extra]
+                   f"--det-trace={trace_p}", f"--junitxml={junit_p}", *extra]
     log(f"project {project} @ {git_head(project)[:12]}; cache {cache} ({'warm' if had_cache else 'cold'})")
     code, wall = run_pytest(a.python, project, args, env)
 
@@ -172,7 +240,8 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
             t = dt.datetime.fromtimestamp(epoch // 1_000_000_000, tz=dt.timezone.utc)
             ep = [f"--det-epoch={t.strftime('%Y-%m-%dT%H:%M:%S')}"]
         rr_args = ["--det", "--det-urandom", "-p", "no:cacheprovider", "-q", "--tb=no", *ep,
-                   f"--det-outcomes={again_p}", *[x for x in extra if not x.startswith("--det-cache")]]
+                   f"--det-outcomes={again_p}", f"--det-trace={out / 'trace-rerun.jsonl'}",
+                   *[x for x in extra if not x.startswith("--det-cache")]]
         real, flaky = [], []
         for nid in failed[: a.max_reruns]:
             run_pytest(a.python, project, rr_args + [nid], env)
@@ -184,6 +253,36 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
         real += failed[a.max_reruns:]
 
     rt = runtime_components(a.python, project)
+    rt_changed = runtime_change(rt, cache)
+
+    meta, traced = read_trace(trace_p)
+    by_junit = {junit_name(n): n for n in outcomes}
+    timings = {by_junit.get(k, k): round(v, 4) for k, v in times.items()}
+    reused_ids = {r["nodeid"] for r in reused}
+    replay_full = " ".join(shlex.quote(x) for x in ["python", "-m", "pytest", *base, *extra])
+    order = res.get("order") or list(outcomes)
+    flaky_rows = []
+    for n in flaky:
+        f = n.split("::")[0]
+        before = [x for x in order[: order.index(n)] if x.split("::")[0] == f] if n in order else []
+        flaky_rows.append({"nodeid": n, "replay": f"{replay_full}  # whole suite, same order: fails again",
+                           "replay_reproduces": None, "replay_checked": "the suite run of this job (deterministic)",
+                           "minimise": f"detpy repro {shlex.quote(n)} --seed fixed",
+                           "explanation": flaky_explanation(n, before, None)})
+    summary = new_summary(
+        language="python", runner="pytest", project=project, cache=cache, had_cache=had_cache,
+        cache_status="on", code=code, wall=wall, outcomes=outcomes, reused=reused, saved=saved, ran_time=ran_time,
+        real=real, flaky=flaky_rows, cache_s=cache_s, receipts=receipts, outcomes_p=outcomes_p, trace_p=trace_p,
+        fingerprints={n: t["fingerprint"] for n, t in traced.items() if n not in reused_ids},
+        timings=timings, args=args, cache_arg=f"--det-cache={cache}", install=None, rt=rt, rt_changed=rt_changed,
+        epoch_ns=cache_s.get("epoch_ns") or meta.get("epoch_ns"))
+    summary["pytest_args"] = args  # legacy name (schema 1), kept for readers of the Python summaries
+    return finish(summary, out, a.title)
+
+
+def runtime_change(rt: dict, cache: Path) -> list[str]:
+    """Names of the runtime parts that changed since the previous job on this cache (the file next to the cache keeps
+    the last job's parts)."""
     rt_file = cache.parent / f"{cache.name}.fenvix-runtime.json"
     try:
         prev_rt = json.loads(rt_file.read_text())
@@ -198,11 +297,21 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
         rt_file.write_text(json.dumps(rt, indent=1))
     except OSError:
         pass
+    return rt_changed
 
-    rel_cache = f"--det-cache={cache}"
-    replay_full = " ".join(shlex.quote(x) for x in ["python", "-m", "pytest", *base, *extra])
-    summary = {
+
+def new_summary(*, language, runner, project, cache, had_cache, cache_status, code, wall, outcomes, reused, saved,
+                ran_time, real, flaky, cache_s, receipts, outcomes_p, trace_p, fingerprints, timings, args, cache_arg,
+                install, rt, rt_changed, epoch_ns) -> dict:
+    """summary.json: the same keys for every language (tests/summary-schema in the wrapper tests checks it)."""
+    try:
+        epoch_ns = int(epoch_ns) if epoch_ns is not None else None
+    except (TypeError, ValueError):
+        epoch_ns = None
+    return {
+        "schema": SUMMARY_SCHEMA, "language": language, "runner": runner,
         "project": str(project), "commit": git_head(project), "cache_dir": str(cache), "cache_was_warm": had_cache,
+        "cache_status": cache_status,
         "exit": code, "wall_seconds": round(wall, 3),
         "tests": len(outcomes),
         "reused_with_proof": len(reused),
@@ -210,28 +319,419 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
         "test_seconds_saved": saved,
         "test_seconds_run": ran_time,
         "share_of_test_time_saved": round(saved / (saved + ran_time), 4) if (saved + ran_time) else 0.0,
-        "failed": real, "flaky": [{"nodeid": n, "replay": f"{replay_full}  # whole suite, same order: fails again",
-                                   "minimise": f"detpy repro {shlex.quote(n)} --seed fixed"} for n in flaky],
+        "failed": real, "flaky": flaky,
         "outcome_counts": {k: sum(1 for o in outcomes.values() if o == k) for k in sorted(set(outcomes.values()))},
         "not_cached": cache_s.get("not_cached", {}),
         "not_reused_reasons": cache_s.get("miss_reasons", {}),
         "cache_check_seconds": cache_s.get("check_seconds"), "cache_record_seconds": cache_s.get("record_seconds"),
-        "epoch_ns": cache_s.get("epoch_ns"),
-        "receipts": str(receipts), "outcomes_file": str(outcomes_p),
+        "epoch_ns": epoch_ns,
+        "receipts": str(receipts), "outcomes_file": str(outcomes_p), "trace_file": str(trace_p),
         "outcomes": outcomes,
         "reused_outcomes": {r["nodeid"]: r.get("outcome") for r in reused},
-        "pytest_args": args, "cache_arg": rel_cache,
+        "fingerprints": fingerprints,
+        "timings": timings,
+        "runner_args": args, "pytest_args": None, "cache_arg": cache_arg,
+        "install": install,
         "runtime": rt, "runtime_changed_since_previous_job": rt_changed,
     }
+
+
+def finish(summary: dict, out: Path, title: str | None) -> int:
     (out / "summary.json").write_text(json.dumps(summary, indent=1))
-    write_step_summary(summary, a.title)
+    write_step_summary(summary, title)
     log(f"tests {summary['tests']}, reused with proof {summary['reused_with_proof']}, ran {summary['ran']}, "
-        f"saved {fmt_s(saved)} of test time ({summary['share_of_test_time_saved']:.1%}), failed {len(real)}, "
-        f"flaky {len(flaky)}")
-    if rt_changed:
-        log("runtime changed since the previous job on this cache: " + ", ".join(rt_changed))
+        f"saved {fmt_s(summary['test_seconds_saved'])} of test time ({summary['share_of_test_time_saved']:.1%}), "
+        f"failed {len(summary['failed'])}, flaky {len(summary['flaky'])}")
+    for f in summary["flaky"]:
+        log(f"flaky {f['nodeid']}: replay `{f['replay']}`")
+    if summary["runtime_changed_since_previous_job"]:
+        log("runtime changed since the previous job on this cache: "
+            + ", ".join(summary["runtime_changed_since_previous_job"]))
+    rt = summary["runtime"]
     log(f"runtime {rt.get('digest')}: " + json.dumps({k: v for k, v in rt.items() if k not in ("dist_list", "digest")}))
-    return code
+    return summary["exit"]
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Node (Vitest / Jest under detjs)
+
+PY_MARKERS = ("pyproject.toml", "setup.py", "setup.cfg", "pytest.ini", "tox.ini", "conftest.py")
+LOCKFILES = (("pnpm-lock.yaml", "pnpm"), ("yarn.lock", "yarn"), ("bun.lock", "bun"), ("bun.lockb", "bun"),
+             ("package-lock.json", "npm"), ("npm-shrinkwrap.json", "npm"))
+NODE_STATUS = {"passed": "passed", "failed": "failed", "pending": "skipped", "skipped": "skipped",
+               "disabled": "skipped", "todo": "todo", "focused": "passed"}
+
+
+def read_package_json(project: Path) -> dict | None:
+    try:
+        return json.loads((project / "package.json").read_text())
+    except (OSError, ValueError):
+        return None
+
+
+def node_runner_of(pkg: dict | None) -> str | None:
+    """vitest or jest: the one the ``test`` script calls, else the one in the dependencies."""
+    if not pkg:
+        return None
+    deps = {**(pkg.get("dependencies") or {}), **(pkg.get("devDependencies") or {})}
+    script = (pkg.get("scripts") or {}).get("test") or ""
+    for r in ("vitest", "jest"):
+        if re.search(rf"\b{r}\b", script):
+            return r
+    if "vitest" in deps:
+        return "vitest"
+    if "jest" in deps or any(d in deps for d in ("ts-jest", "babel-jest", "jest-cli")):
+        return "jest"
+    return None
+
+
+def detect_languages(project: Path) -> list[str]:
+    langs = []
+    if any((project / m).exists() for m in PY_MARKERS):
+        langs.append("python")
+    if node_runner_of(read_package_json(project)):
+        langs.append("node")
+    return langs
+
+
+def find_lockfile(project: Path) -> tuple[Path | None, str | None]:
+    """The lockfile that installs this package: in the project directory, else in a parent up to the repository root
+    (workspaces keep one lockfile at the root)."""
+    d = project
+    while True:
+        for name, pm in LOCKFILES:
+            if (d / name).is_file():
+                return d / name, pm
+        if (d / ".git").exists() or d.parent == d:
+            return None, None
+        d = d.parent
+
+
+def package_manager(project: Path) -> dict:
+    lock, pm = find_lockfile(project)
+    root = lock.parent if lock else project
+    pkg = read_package_json(root) or read_package_json(project) or {}
+    declared = str(pkg.get("packageManager") or "")
+    ver = None
+    if "@" in declared:
+        name, ver = declared.split("@", 1)
+        ver = ver.split("+", 1)[0]
+        if not pm and name in ("npm", "pnpm", "yarn", "bun"):
+            pm = name
+    pm = pm or "npm"
+    berry = False
+    if pm == "yarn":
+        berry = (ver or "1").split(".")[0] not in ("0", "1")
+        try:
+            berry = berry or "__metadata:" in lock.read_text()[:4000]
+        except (OSError, AttributeError):
+            pass
+    return {"pm": pm, "version": ver, "declared": declared or None, "lockfile": lock, "root": root, "berry": berry}
+
+
+def install_command(info: dict) -> list[str]:
+    """The command a CI job would run for this lockfile (frozen: the lockfile is never rewritten)."""
+    pm, lock = info["pm"], info["lockfile"]
+    if pm == "npm":
+        return ["npm", "ci"] if lock else ["npm", "install"]
+    if pm == "pnpm":
+        return ["pnpm", "install", "--frozen-lockfile"] if lock else ["pnpm", "install"]
+    if pm == "yarn":
+        if not lock:
+            return ["yarn", "install"]
+        return ["yarn", "install", "--immutable"] if info["berry"] else ["yarn", "install", "--frozen-lockfile"]
+    if pm == "bun":
+        return ["bun", "install", "--frozen-lockfile"] if lock else ["bun", "install"]
+    raise SystemExit(f"fenvix-run: unknown package manager {pm}")
+
+
+def pm_exe(info: dict, env: dict) -> list[str]:
+    """How to start the package manager: corepack when the project pins one (``packageManager``), else the one on PATH,
+    else corepack, else ``npx <pm>@<version>``."""
+    pm, path = info["pm"], env.get("PATH")
+    if pm == "npm":
+        return ["npm"]
+    corepack = shutil.which("corepack", path=path)
+    if info["declared"] and corepack:
+        return [corepack, pm]
+    if shutil.which(pm, path=path):
+        return [pm]
+    if corepack:
+        return [corepack, pm]
+    return ["npx", "--yes", f"{pm}@{info['version'] or 'latest'}"]
+
+
+def js_regex(text: str) -> str:
+    return re.sub(r"[.*+?^${}()|\[\]\\]", lambda m: "\\" + m.group(0), text)
+
+
+def names_of(nodeid: str) -> tuple[str, list[str]]:
+    """``file::describe::test #2`` -> (file, ["describe", "test"])."""
+    parts = nodeid.split("::")
+    names = parts[1:]
+    if names:
+        names[-1] = re.sub(r" #\d+$", "", names[-1])
+    return parts[0], names
+
+
+class NodeCtx:
+    """The detjs command line for one project (node binary, detjs entry point, runner)."""
+
+    def __init__(self, a: argparse.Namespace, project: Path):
+        self.project = project
+        self.node = a.node or os.environ.get("FENVIX_NODE_BIN") or shutil.which("node") or "node"
+        det = a.detjs or os.environ.get("FENVIX_DETJS") or shutil.which("detjs")
+        if not det:
+            raise SystemExit("fenvix-run: detjs not found (set FENVIX_DETJS or --detjs; runner/bootstrap.sh installs "
+                             "it in $FENVIX_HOME/detjs)")
+        self.detjs = det
+        self.cmd = [self.node, det] if det.endswith(".js") else [det]
+        self._help: str | None = None
+
+    def env(self, base: dict) -> dict:
+        env = dict(base)
+        nd = os.path.dirname(self.node)
+        if nd:  # the package manager and the runner's children use the same node
+            env["PATH"] = nd + os.pathsep + env.get("PATH", "")
+        return env
+
+    def help(self) -> str:
+        if self._help is None:
+            r = subprocess.run([*self.cmd, "--det-help"], capture_output=True, text=True, cwd=self.project)
+            self._help = r.stdout + r.stderr
+        return self._help
+
+    def supports(self, flag: str) -> bool:
+        return re.search(rf"(^|\s){re.escape(flag)}(=|\s|$)", self.help(), re.M) is not None
+
+    def run(self, args: list[str], env: dict) -> tuple[int, float]:
+        cmd = [*self.cmd, *args]
+        log("$ " + " ".join(shlex.quote(c) for c in cmd))
+        t0 = time.monotonic()
+        code = subprocess.run(cmd, cwd=self.project, env=self.env(env)).returncode
+        return code, time.monotonic() - t0
+
+    def version(self) -> dict:
+        info: dict = {}
+        try:
+            pkg = Path(self.detjs).resolve().parent.parent / "package.json"
+            info["detjs"] = json.loads(pkg.read_text()).get("version")
+            addons = sorted(pkg.parent.glob("detjs.*.node"))
+            if addons:
+                info["detjs_core"] = hashlib.sha256(addons[0].read_bytes()).hexdigest()[:16]
+            src = pkg.parent / "COMMIT"
+            if src.is_file():
+                info["detjs_commit"] = src.read_text().strip()[:12]
+        except (OSError, ValueError):
+            pass
+        return info
+
+
+def node_strip(args: list[str]) -> list[str]:
+    """Runner arguments without the per-run outputs (trace, report, cache) of the run they were recorded for."""
+    out, skip = [], False
+    for x in args:
+        if skip:
+            skip = False
+            continue
+        if x.startswith(("--det-trace", "--det-cache", "--outputFile", "--reporter=json")) or x == "--json":
+            continue
+        out.append(x)
+    return out
+
+
+def node_report(path: Path, project: Path) -> dict[str, tuple[str, float]]:
+    """{nodeid: (outcome, seconds)} from a Jest-format JSON report (Vitest's json reporter writes the same format),
+    with detjs's ids: ``<file relative to the root>::<describe>::...::<name>``, duplicates ``#2``, ``#3``."""
+    try:
+        rep = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return {}
+    out: dict[str, tuple[str, float]] = {}
+    for f in rep.get("testResults") or []:
+        try:
+            rel = Path(f["name"]).resolve().relative_to(project).as_posix()
+        except (KeyError, ValueError):
+            rel = str(f.get("name"))
+        seen: dict[str, int] = {}
+        for t in f.get("assertionResults") or []:
+            base = "::".join([rel, *(t.get("ancestorTitles") or []), t.get("title") or ""])
+            seen[base] = seen.get(base, 0) + 1
+            nid = base if seen[base] == 1 else f"{base} #{seen[base]}"
+            out[nid] = (NODE_STATUS.get(t.get("status"), t.get("status") or "unknown"),
+                        round(float(t.get("duration") or 0.0) / 1000.0, 4))
+    return out
+
+
+def node_runtime(ctx: NodeCtx, info: dict) -> dict:
+    v = subprocess.run([ctx.node, "--version"], capture_output=True, text=True).stdout.strip()
+    rt = {"node": v, "platform": f"{sys.platform}-{platform.machine()}", **ctx.version(),
+          "package_manager": info.get("declared") or info["pm"]}
+    lock = info.get("lockfile")
+    if lock:
+        try:
+            rt["lockfile"] = hashlib.sha256(lock.read_bytes()).hexdigest()[:16]
+        except OSError:
+            pass
+    rt["digest"] = hashlib.sha256(json.dumps(rt, sort_keys=True).encode()).hexdigest()[:16]
+    return rt
+
+
+def node_install(ctx: NodeCtx, a: argparse.Namespace, info: dict, env: dict) -> dict:
+    root = info["root"]
+    if a.install_cmd:
+        cmd = ["bash", "-c", a.install_cmd]
+        shown = a.install_cmd
+    else:
+        cmd = install_command(info)
+        cmd = [*pm_exe(info, ctx.env(env)), *cmd[1:]]
+        shown = " ".join(install_command(info))
+    has_modules = (root / "node_modules").is_dir() or (ctx.project / "node_modules").is_dir()
+    run = a.install == "always" or (a.install == "auto" and not has_modules)
+    res = {"package_manager": info["pm"], "package_manager_declared": info["declared"],
+           "lockfile": os.path.relpath(info["lockfile"], ctx.project) if info["lockfile"] else None,
+           "command": shown, "directory": str(root), "ran": run, "seconds": 0.0, "exit": None}
+    if not run:
+        log(f"dependencies: node_modules present, not installed again (--install always to force); CI command: {shown}")
+        return res
+    log(f"dependencies ({info['pm']}{'@' + info['version'] if info['version'] else ''}): $ "
+        + " ".join(shlex.quote(c) for c in cmd) + f"  (in {root})")
+    t0 = time.monotonic()
+    res["exit"] = subprocess.run(cmd, cwd=root, env=ctx.env(env)).returncode
+    res["seconds"] = round(time.monotonic() - t0, 3)
+    return res
+
+
+def cmd_run_node(a: argparse.Namespace, extra: list[str]) -> int:
+    project = Path(a.project).resolve()
+    out = Path(a.out or (Path(os.environ.get("RUNNER_TEMP", project)) / "fenvix")).resolve()
+    out.mkdir(parents=True, exist_ok=True)
+    pkg = read_package_json(project)
+    runner = a.runner if a.runner != "auto" else node_runner_of(pkg)
+    if runner not in ("vitest", "jest"):
+        raise SystemExit(f"fenvix-run: no Vitest or Jest in {project / 'package.json'} (pass --runner)")
+    ctx = NodeCtx(a, project)
+    env = dict(os.environ)
+    env.pop("DETJS", None)
+    env.setdefault("CI", "true")
+    info = package_manager(project)
+    install = node_install(ctx, a, info, env)
+    if install["exit"] not in (None, 0):
+        log(f"dependencies: `{install['command']}` failed with exit {install['exit']}")
+        return install["exit"]
+
+    rt = node_runtime(ctx, info)
+    major = re.sub(r"^v(\d+).*", r"\1", rt.get("node") or "") or "x"
+    key = project_key(project, a.key)
+    cache = Path(a.cache) if a.cache else Path(DEFAULT_ROOT) / f"{key}-node{major}"
+    cache.mkdir(parents=True, exist_ok=True)
+    had_cache = any(p for p in cache.iterdir() if not p.name.startswith("."))
+    receipts, trace_p, report_p = out / "receipts.jsonl", out / "trace.jsonl", out / f"{runner}-report.json"
+    outcomes_p = out / "outcomes.json"
+    for p in (receipts, trace_p, report_p, outcomes_p):
+        p.unlink(missing_ok=True)
+
+    # Cache with proof: wired, used only when detjs has it (claude/node-cache-proof). Until then: a no-op.
+    cache_args: list[str] = []
+    if a.det_cache and ctx.supports("--det-cache"):
+        cache_args = [f"--det-cache={cache}"]
+        if ctx.supports("--det-cache-receipts"):
+            cache_args.append(f"--det-cache-receipts={receipts}")
+        cache_status = "on"
+    elif a.det_cache:
+        cache_status = "requested, but this detjs has no --det-cache yet: no-op, every test ran"
+    else:
+        cache_status = "off for Node (opt in with --det-cache once detjs has it): every test ran"
+
+    head = ["vitest", "run", "--det"] if runner == "vitest" else ["jest", "--det"]
+    report = (["--reporter=default", "--reporter=json", f"--outputFile.json={report_p}"] if runner == "vitest"
+              else ["--json", f"--outputFile={report_p}"])
+    args = [*head, f"--det-trace={trace_p}", *cache_args, *report, *extra]
+    log(f"project {project} @ {git_head(project)[:12]}; {runner} under detjs; cache {cache} "
+        f"({'warm' if had_cache else 'cold'}; {cache_status})")
+    code, wall = ctx.run(args, env)
+
+    meta, traced = read_trace(trace_p)
+    rep = node_report(report_p, project)
+    outcomes = {n: t["outcome"] or "unknown" for n, t in traced.items()}
+    for n, (o, _) in rep.items():
+        outcomes.setdefault(n, o)
+    order = [n for n, _ in sorted(traced.items(), key=lambda kv: kv[1].get("index") or 0)]
+    timings = {n: secs for n, (_, secs) in rep.items()}
+    rec = read_receipts(receipts) if cache_args else []
+    reused = [r for r in rec if r.get("reused")]
+    reused_ids = {r["nodeid"] for r in reused}
+    saved = round(sum(float(r.get("duration") or 0.0) for r in reused), 3)
+    ran_time = round(sum(v for n, v in timings.items() if n not in reused_ids), 3)
+    failed = sorted(n for n, o in outcomes.items() if o in ("failed", "error"))
+    outcomes_p.write_text(json.dumps({"outcomes": outcomes, "order": order, "exitstatus": code}, indent=1))
+
+    base = [*head, *extra]
+    shown = lambda xs: " ".join(shlex.quote(x) for x in ["detjs", *xs])  # noqa: E731
+    flaky_rows, real = [], list(failed)
+    if failed and not a.no_rerun:
+        real = []
+        budget = [a.max_reruns]
+
+        def outcome_of(nid: str, sel: list[str], tag: str) -> str | None:
+            t = out / f"trace-{tag}.jsonl"
+            t.unlink(missing_ok=True)
+            ctx.run([*base[: len(head)], f"--det-trace={t}", *sel, *extra], env)
+            return (read_trace(t)[1].get(nid) or {}).get("outcome")
+
+        def file_sel(f: str) -> list[str]:
+            return [f] if runner == "vitest" else ["--runTestsByPath", f]
+
+        def name_sel(names: list[list[str]], sep: str) -> list[str]:
+            alts = [js_regex(sep.join(n)) for n in names]
+            return ["-t", "^" + (alts[0] if len(alts) == 1 else "(" + "|".join(alts) + ")") + "$"]
+
+        for i, nid in enumerate(failed):
+            if budget[0] <= 0:
+                real += failed[i:]
+                break
+            budget[0] -= 1
+            f, names = names_of(nid)
+            alone, sep_used = None, " "
+            for sep in (" ", " > "):
+                alone = outcome_of(nid, file_sel(f) + name_sel([names], sep), f"alone-{i}")
+                if alone not in (None, "skipped"):
+                    sep_used = sep
+                    break
+            if alone != "passed":
+                real.append(nid)
+                if alone in (None, "skipped"):
+                    log(f"{nid}: could not be selected alone (outcome {alone}); counted as a failure")
+                continue
+            # Flaky. Find the shortest replay that fails again, and run it.
+            before = [x for x in order[: order.index(nid)] if x.split("::")[0] == f] if nid in order else []
+            replay, ok, minimal = None, None, None
+            if before and outcome_of(nid, file_sel(f), f"file-{i}") == "failed":
+                replay, ok = shown([*head, *file_sel(f), *extra]), True
+                for j, cand in enumerate(reversed(before[-a.max_minimise:])):
+                    _, cn = names_of(cand)
+                    sel = file_sel(f) + name_sel([cn, names], sep_used)
+                    if outcome_of(nid, sel, f"pair-{i}-{j}") == "failed":
+                        minimal = cand
+                        break
+            if replay is None:  # the state comes from another file: the whole suite, same order
+                ok = outcome_of(nid, [], f"suite-{i}") == "failed"
+                replay = shown(base) + "  # whole suite, same order"
+            mini = (shown([*head, *file_sel(f), *name_sel([names_of(minimal)[1], names], sep_used), *extra])
+                    if minimal else replay)
+            flaky_rows.append({"nodeid": nid, "replay": replay, "replay_reproduces": ok,
+                               "replay_checked": "run by this job after the suite", "minimise": mini,
+                               "explanation": flaky_explanation(nid, before, minimal)})
+
+    summary = new_summary(
+        language="node", runner=f"{runner} {meta.get('runner_version') or ''}".strip(), project=project, cache=cache,
+        had_cache=had_cache, cache_status=cache_status, code=code, wall=wall, outcomes=outcomes, reused=reused,
+        saved=saved, ran_time=ran_time, real=real, flaky=flaky_rows, cache_s=meta.get("cache") or {},
+        receipts=receipts, outcomes_p=outcomes_p, trace_p=trace_p,
+        fingerprints={n: t["fingerprint"] for n, t in traced.items() if n not in reused_ids},
+        timings=timings, args=args, cache_arg=cache_args[0] if cache_args else None, install=install, rt=rt,
+        rt_changed=runtime_change(rt, cache), epoch_ns=meta.get("epoch_ns"))
+    return finish(summary, out, a.title)
 
 
 def run_link() -> str | None:
@@ -241,6 +741,8 @@ def run_link() -> str | None:
 
 def write_step_summary(s: dict, title: str | None) -> None:
     L = [f"## {title or 'fenvix'}: tests with proof", ""]
+    if s.get("language") and s["language"] != "python":
+        L += [f"Language `{s['language']}` · runner `{s['runner']}`", ""]
     L.append(f"Commit `{s['commit'][:12]}` · cache {'warm' if s['cache_was_warm'] else 'cold (first job on this machine)'}"
              f" · machine `{os.uname().nodename}`")
     L += ["", "| | |", "|---|---|",
@@ -251,19 +753,29 @@ def write_step_summary(s: dict, title: str | None) -> None:
           f"| Test time spent | {fmt_s(s['test_seconds_run'])} |",
           f"| Failures | {len(s['failed'])} |",
           f"| Flaky (fail in the suite, pass alone) | {len(s['flaky'])} |",
-          f"| Job wall time (pytest) | {fmt_s(s['wall_seconds'])} |", ""]
+          f"| Job wall time ({s.get('runner') or 'pytest'}) | {fmt_s(s['wall_seconds'])} |", ""]
     oc = ", ".join(f"{k} {v}" for k, v in s["outcome_counts"].items())
     L.append(f"Outcomes: {oc or 'none'}.")
+    if s.get("cache_status", "on") != "on":
+        L += ["", f"Cache with proof: {s['cache_status']}."]
     link = run_link()
     L.append("")
-    L.append("Receipts: one line per test (what was checked before a result was reused, or why a test ran): "
-             + (f"artifact `fenvix-receipts` on [this run]({link})." if link else f"`{s['receipts']}`."))
+    if s.get("cache_status", "on") == "on":
+        L.append("Receipts: one line per test (what was checked before a result was reused, or why a test ran): "
+                 + (f"artifact `fenvix-receipts` on [this run]({link})." if link else f"`{s['receipts']}`."))
+    else:
+        L.append("Trace (outcome and fingerprint of every test): "
+                 + (f"artifact `fenvix-receipts` on [this run]({link})." if link else f"`{s['trace_file']}`."))
     if s["failed"]:
         L += ["", "### Failures", ""] + [f"- `{n}`" for n in s["failed"][:50]]
     if s["flaky"]:
         L += ["", "### Flaky tests (reproducible: the run is deterministic)", ""]
         for f in s["flaky"][:20]:
-            L += [f"- `{f['nodeid']}`", f"  - replay: `{f['replay']}`", f"  - minimise: `{f['minimise']}`"]
+            seen = (" (run by this job: fails again)" if f.get("replay_reproduces")
+                    else " (did NOT fail again when run by this job)" if f.get("replay_reproduces") is False else "")
+            L += [f"- `{f['nodeid']}`", f"  - replay: `{f['replay']}`{seen}", f"  - minimise: `{f['minimise']}`"]
+            if f.get("explanation"):
+                L.append(f"  - why: {f['explanation']}")
     if s.get("runtime_changed_since_previous_job"):
         L += ["", "Runtime changed since the previous job on this cache (every entry recorded under the old runtime is "
               "out of reach): " + ", ".join(f"`{k}`" for k in s["runtime_changed_since_previous_job"]) + "."]
@@ -300,18 +812,31 @@ def cmd_verify(a: argparse.Namespace, extra: list[str]) -> int:
     if s.get("epoch_ns"):
         t = dt.datetime.fromtimestamp(s["epoch_ns"] // 1_000_000_000, tz=dt.timezone.utc)
         ep = [f"--det-epoch={t.strftime('%Y-%m-%dT%H:%M:%S')}"]
-    keep = [x for x in s["pytest_args"] if not x.startswith(("--det-cache", "--det-outcomes", "--junitxml"))]
+    args = s.get("runner_args") or s.get("pytest_args") or []
+    keep = [x for x in args if not x.startswith(("--det-cache", "--det-outcomes", "--junitxml", "--det-trace"))]
     env = dict(os.environ)
     env.pop("PYTHONHASHSEED", None)
 
-    def fresh(tag: str, ids: list[str] | None = None) -> dict:
-        p = out / f"outcomes-verify-{tag}.json"
-        p.unlink(missing_ok=True)
-        run_pytest(a.python, project, keep + ep + [f"--det-outcomes={p}"] + (ids or []), env)
-        try:
-            return json.loads(p.read_text()).get("outcomes", {})
-        except (OSError, ValueError):
-            return {}
+    if s.get("language") == "node":
+        ctx = NodeCtx(a, project)
+        keep = node_strip(keep)
+
+        def fresh(tag: str, ids: list[str] | None = None) -> dict:
+            t = out / f"trace-verify-{tag}.jsonl"
+            t.unlink(missing_ok=True)
+            ctx.run([*keep, f"--det-trace={t}"], env)
+            return {n: r["outcome"] for n, r in read_trace(t)[1].items()}
+    else:
+        py = a.python or sys.executable
+
+        def fresh(tag: str, ids: list[str] | None = None) -> dict:
+            p = out / f"outcomes-verify-{tag}.json"
+            p.unlink(missing_ok=True)
+            run_pytest(py, project, keep + ep + [f"--det-outcomes={p}"] + (ids or []), env)
+            try:
+                return json.loads(p.read_text()).get("outcomes", {})
+            except (OSError, ValueError):
+                return {}
 
     f1 = fresh("1")
     checked = [n for n in reused if n in f1]
@@ -349,7 +874,13 @@ def main(argv: list[str] | None = None) -> int:
         argv = argv[1:]
     p = argparse.ArgumentParser(prog="fenvix-run" + (" verify" if verify else ""))
     p.add_argument("--project", default=".", help="project directory (default: .)")
-    p.add_argument("--python", default=sys.executable, help="interpreter with the project, pytest and detpy installed")
+    p.add_argument("--lang", choices=("auto", "python", "node"), default="auto",
+                   help="language of this job's tests (default auto: --python given -> python, else detected; a "
+                        "repository with both needs one job per language)")
+    p.add_argument("--python", default=None, help="interpreter with the project, pytest and detpy installed "
+                                                   "(default: this interpreter)")
+    p.add_argument("--node", default=None, help="node binary (default $FENVIX_NODE_BIN, else node on PATH)")
+    p.add_argument("--detjs", default=None, help="detjs entry point (default $FENVIX_DETJS, else detjs on PATH)")
     p.add_argument("--out", default=None, help="where summary.json, receipts.jsonl and outcomes go "
                                                "(default: $RUNNER_TEMP/fenvix)")
     if verify:
@@ -361,8 +892,37 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--title", default=None, help="heading of the step summary")
     p.add_argument("--no-rerun", action="store_true", help="do not re-run failures alone")
     p.add_argument("--max-reruns", type=int, default=20, help="failures re-run alone at most (default 20)")
+    g = p.add_argument_group("node")
+    g.add_argument("--runner", choices=("auto", "vitest", "jest"), default="auto",
+                   help="test runner (default: the one package.json uses)")
+    g.add_argument("--install", choices=("auto", "always", "never"), default="auto",
+                   help="install dependencies from the lockfile, as CI does (auto: when node_modules is missing)")
+    g.add_argument("--install-cmd", default=None, help="install command to run instead of the lockfile's")
+    g.add_argument("--det-cache", action="store_true",
+                   help="Node: pass --det-cache=<cache dir> to detjs when it supports it (no-op until then). Python "
+                        "always uses the cache")
+    g.add_argument("--max-minimise", type=int, default=8,
+                   help="Node: earlier tests of the same file tried as the cause of a flaky test (default 8)")
     a = p.parse_args(argv)
+    lang = resolve_lang(a)
+    if lang == "node":
+        return cmd_run_node(a, extra)
+    a.python = a.python or sys.executable
     return cmd_run(a, extra)
+
+
+def resolve_lang(a: argparse.Namespace) -> str:
+    if a.lang != "auto":
+        return a.lang
+    if a.python:
+        return "python"
+    langs = detect_languages(Path(a.project).resolve())
+    if len(langs) == 1:
+        return langs[0]
+    if not langs:
+        return "python"
+    raise SystemExit(f"fenvix-run: {a.project} has Python and Node tests; run one job per language with "
+                     f"--lang python and --lang node")
 
 
 if __name__ == "__main__":

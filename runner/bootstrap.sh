@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # fenvix runner bootstrap: turn one Linux x64 machine into a `runs-on: [self-hosted, fenvix]` GitHub Actions runner.
 #
-#   runner/bootstrap.sh install     # tools + engine wheel + Actions runner download (no GitHub credentials needed)
+#   runner/bootstrap.sh install     # tools + engines (detpy wheel, Node LTS + detjs) + Actions runner download (no GitHub credentials)
+#   runner/bootstrap.sh engines     # tools + engines only (what a machine image bakes in)
 #   runner/bootstrap.sh register    # register with GitHub (needs a registration token, see below)
 #   runner/bootstrap.sh run         # serve jobs in the foreground (Ctrl-C to stop)
 #   runner/bootstrap.sh all         # install, register, run
@@ -12,11 +13,19 @@
 #   FENVIX_HOME           everything the machine keeps    (default ~/fenvix)
 #                           $FENVIX_HOME/actions-runner   the official GitHub Actions runner
 #                           $FENVIX_HOME/wheels           detpy wheel built from this checkout
+#                           $FENVIX_HOME/node             Node LTS (jobs that do not set up their own Node use it)
+#                           $FENVIX_HOME/detjs            detjs (Node engine: napi core + Vitest/Jest shells)
+#                           $FENVIX_HOME/bin/detjs        detjs command (runs with whatever `node` the job has)
 #                           $FENVIX_HOME/cache            the persistent cache with proof (survives between jobs)
 #                           $FENVIX_HOME/bin/fenvix-run   the job wrapper
 #   FENVIX_RUNNER_NAME    runner name                     (default fenvix-<hostname>)
 #   FENVIX_EPHEMERAL      1 = the runner takes one job, then deregisters (needs one token per job; default 0)
 #   FENVIX_PYTHON         Python version for jobs         (default 3.13)
+#   FENVIX_NODE_VERSION   Node for jobs and the detjs build (default below, the Active LTS; checksum verified)
+#   FENVIX_DETJS_REF      commit of the detjs sources     (default below: claude/node-l0)
+#   FENVIX_DETJS_REPO     where to fetch them             (default: this checkout's origin)
+#   FENVIX_DETJS_SRC      a local detjs checkout instead of fetching (its node/ and crates/ are used)
+#   FENVIX_LANGS          engines to install              (default "python node")
 #   RUNNER_VERSION        GitHub Actions runner version   (default below; checksum verified)
 #
 # The registration token (valid one hour, from `POST /repos/{owner}/{repo}/actions/runners/registration-token`, which
@@ -37,10 +46,19 @@ FENVIX_JITCONFIG_FILE="${FENVIX_JITCONFIG_FILE:-$HOME/.fenvix/jitconfig}"
 # Pinned runner release and its SHA-256 (from the release notes of actions/runner). Update both together.
 RUNNER_VERSION="${RUNNER_VERSION:-2.329.0}"
 RUNNER_SHA256="${RUNNER_SHA256:-194f1e1e4bd02f80b7e9633fc546084d8d4e19f3928a324d512ea53430102e1d}"
+# Node: the Active LTS on 2026-11-18 is 26 ("Lithium"). SHA-256 from https://nodejs.org/dist/v26.13.1/SHASUMS256.txt.
+FENVIX_NODE_VERSION="${FENVIX_NODE_VERSION:-26.13.1}"
+NODE_SHA256_X64="${NODE_SHA256_X64:-5c063e46bab0fbc1c17cc445d7ff129cbdcd0471be6ed83b6ab864f8143bc864}"
+NODE_SHA256_ARM64="${NODE_SHA256_ARM64:-89e1853138db51e8b82d3e98ba9c0d3f2956a28e5e55ea1b7e12d25aae92d5dd}"
+COREPACK_VERSION="${COREPACK_VERSION:-0.36.0}"   # Node 25+ no longer ships corepack (pnpm/yarn as each project pins them)
+# detjs sources: claude/node-l0 (Node L0 report, R-005b). Move with the commit the Node work declares ready.
+FENVIX_DETJS_REF="${FENVIX_DETJS_REF:-8e9209bb1351d4996f5fba39e9ad4b9b8b2e46e8}"
+FENVIX_LANGS="${FENVIX_LANGS:-python node}"
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENGINE_SRC="$(cd "$HERE/.." && pwd)"
 RUNNER_DIR="$FENVIX_HOME/actions-runner"
+FENVIX_DETJS_REPO="${FENVIX_DETJS_REPO:-$(git -C "$ENGINE_SRC" remote get-url origin 2>/dev/null || echo "$FENVIX_REPO_URL")}"
 
 log() { printf '[fenvix-bootstrap] %s\n' "$*" >&2; }
 die() { log "ERROR: $*"; exit 1; }
@@ -48,9 +66,11 @@ die() { log "ERROR: $*"; exit 1; }
 need_cmd() { command -v "$1" >/dev/null 2>&1; }
 
 install_tools() {
-  log "tools: git, curl, strace (child processes of tests are followed with strace), uv, Rust"
+  log "tools: git, curl, xz, a C linker, strace (child processes of tests are followed with strace), uv, Rust"
   local missing=()
-  for c in git curl tar strace; do need_cmd "$c" || missing+=("$c"); done
+  for c in git curl tar xz strace; do need_cmd "$c" || missing+=("$c"); done
+  need_cmd cc || missing+=(build-essential)
+  [[ " ${missing[*]} " == *" xz "* ]] && missing=("${missing[@]/#xz/xz-utils}")
   if ((${#missing[@]})); then
     if need_cmd apt-get; then
       local sudo=""; [ "$(id -u)" = 0 ] || sudo="sudo"
@@ -68,10 +88,71 @@ install_tools() {
     # shellcheck disable=SC1091
     . "$HOME/.cargo/env"
   fi
-  uv python install "$FENVIX_PYTHON" >/dev/null
+  if wants python; then uv python install "$FENVIX_PYTHON" >/dev/null; fi
 }
 
+wants() { [[ " $FENVIX_LANGS " == *" $1 "* ]]; }
+
 build_engine() {
+  mkdir -p "$FENVIX_HOME/bin" "$FENVIX_HOME/cache"
+  install -m 755 "$HERE/fenvix-run" "$FENVIX_HOME/bin/fenvix-run"
+  if wants python; then build_detpy; fi
+  if wants node; then install_node; build_detjs; fi
+}
+
+install_node() {
+  local arch sha
+  case "$(uname -m)" in
+    x86_64) arch=x64; sha="$NODE_SHA256_X64" ;;
+    aarch64|arm64) arch=arm64; sha="$NODE_SHA256_ARM64" ;;
+    *) die "node: unsupported machine $(uname -m)" ;;
+  esac
+  local dir="$FENVIX_HOME/node"
+  if [ -x "$dir/bin/node" ] && [ "$("$dir/bin/node" --version)" = "v$FENVIX_NODE_VERSION" ]; then
+    log "node: v$FENVIX_NODE_VERSION already in $dir"
+  else
+    log "node: downloading v$FENVIX_NODE_VERSION ($arch)"
+    local tgz="$FENVIX_HOME/node-v$FENVIX_NODE_VERSION-linux-$arch.tar.xz"
+    curl -fsSL -o "$tgz" "https://nodejs.org/dist/v$FENVIX_NODE_VERSION/node-v$FENVIX_NODE_VERSION-linux-$arch.tar.xz"
+    echo "$sha  $tgz" | sha256sum -c - >&2 || die "node checksum mismatch (FENVIX_NODE_VERSION and NODE_SHA256_* go together)"
+    rm -rf "$dir" && mkdir -p "$dir"
+    tar -xJf "$tgz" -C "$dir" --strip-components=1
+    rm -f "$tgz"
+  fi
+  export PATH="$dir/bin:$PATH"
+  # pnpm and yarn at the version each project pins (`packageManager`), through corepack shims next to node.
+  [ -x "$dir/bin/corepack" ] || npm install -g --silent --no-fund --no-audit "corepack@$COREPACK_VERSION" >&2
+  "$dir/bin/corepack" enable --install-directory "$dir/bin" pnpm yarn
+  log "node: $(node --version), npm $(npm --version), corepack $("$dir/bin/corepack" --version)"
+}
+
+build_detjs() {
+  local src="${FENVIX_DETJS_SRC:-}"
+  if [ -z "$src" ]; then
+    src="$FENVIX_HOME/src/detjs"
+    log "detjs: fetching $FENVIX_DETJS_REF from $FENVIX_DETJS_REPO"
+    mkdir -p "$src"
+    [ -d "$src/.git" ] || git -C "$src" init -q
+    git -C "$src" fetch -q --depth 1 "$FENVIX_DETJS_REPO" "$FENVIX_DETJS_REF"
+    git -C "$src" checkout -q --detach FETCH_HEAD
+  fi
+  [ -f "$src/node/scripts/build.js" ] || die "detjs: no node/scripts/build.js in $src"
+  log "detjs: building the native core (crates/detpy-node) in $src"
+  (cd "$src/node" && node scripts/build.js >&2)
+  local dest="$FENVIX_HOME/detjs"
+  rm -rf "$dest.new" && mkdir -p "$dest.new"
+  cp -r "$src/node/bin" "$src/node/src" "$src/node/package.json" "$dest.new/"
+  cp "$src"/node/detjs.*.node "$dest.new/"
+  git -C "$src" rev-parse HEAD >"$dest.new/COMMIT" 2>/dev/null || echo "local" >"$dest.new/COMMIT"
+  rm -rf "$dest" && mv "$dest.new" "$dest"
+  # `detjs` for jobs and for the replay commands in the summaries: the job's own node (setup-node), else ours.
+  printf '#!/bin/sh\nexec node "%s/bin/detjs.js" "$@"\n' "$dest" >"$FENVIX_HOME/bin/detjs"
+  chmod 755 "$FENVIX_HOME/bin/detjs"
+  "$FENVIX_HOME/bin/detjs" --det-help | grep -q -- '--det-seed' || die "detjs: --det-help failed"
+  log "detjs: $dest ($(cut -c1-12 "$dest/COMMIT"), core $(basename "$(ls "$dest"/detjs.*.node)"))"
+}
+
+build_detpy() {
   log "engine: building the detpy wheel from $ENGINE_SRC"
   mkdir -p "$FENVIX_HOME/wheels" "$FENVIX_HOME/bin" "$FENVIX_HOME/cache"
   local venv="$FENVIX_HOME/build-venv"
@@ -80,7 +161,6 @@ build_engine() {
   rm -f "$FENVIX_HOME"/wheels/detpy-*.whl
   (cd "$ENGINE_SRC" && "$venv/bin/maturin" build --release --compatibility linux -o "$FENVIX_HOME/wheels" >&2)
   ls "$FENVIX_HOME"/wheels/detpy-*.whl >/dev/null || die "wheel not built"
-  install -m 755 "$HERE/fenvix-run" "$FENVIX_HOME/bin/fenvix-run"
   log "engine: $(ls "$FENVIX_HOME"/wheels/detpy-*.whl)"
 }
 
@@ -121,8 +201,9 @@ FENVIX_HOME=$FENVIX_HOME
 FENVIX_CACHE_ROOT=$FENVIX_HOME/cache
 FENVIX_WHEEL_DIR=$FENVIX_HOME/wheels
 FENVIX_PYTHON=$FENVIX_PYTHON
+FENVIX_DETJS=$FENVIX_HOME/detjs/bin/detjs.js
 $( [ -n "${HTTPS_PROXY:-${https_proxy:-}}" ] && printf 'no_proxy=%s\nNO_PROXY=%s\n' "$(sane_no_proxy)" "$(sane_no_proxy)" )
-PATH=$FENVIX_HOME/bin:$HOME/.local/bin:$HOME/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PATH=$FENVIX_HOME/bin:$FENVIX_HOME/node/bin:$HOME/.local/bin:$HOME/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 EOF
   log "runner: job environment in $RUNNER_DIR/.env"
 }
@@ -178,6 +259,7 @@ check_network() {
 
 case "${1:-}" in
   install) install_tools; build_engine; download_runner; write_job_env; check_network || log "network: see above" ;;
+  engines) install_tools; build_engine ;;   # tools and engines only (machine images: no runner, no network check)
   register) register ;;
   run) run_runner ;;
   all) install_tools; build_engine; download_runner; write_job_env; register; run_runner ;;
