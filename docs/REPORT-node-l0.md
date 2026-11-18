@@ -4,7 +4,7 @@ Session node-l0, 2026-11-16/17. Repository fenvix-engine-cli, branch `claude/nod
 
 ## Summary
 
-* **Main metric (MEASURED):** tests unstable in our baseline that `--det` / `--det-seed` makes reproducible (fail 10/10 under some seed or the fixed order, pass under some `--det` configuration): **239/341 = 70.1%** over 41 projects (16 with documented flaky tests, 25 popular at HEAD; jest 8, vitest 33). Tests whose id is not present in every baseline run (70) are not flaky tests and are excluded, as in the Python harness (P-008). Documented-flaky pool: 98/192 = 51.0%; popular pool: 141/149 = 94.6%. This is about tests that were flaky in our own baseline runs; none of the flaky tests named by the projects' issues was flaky in our baseline (see below).
+* **Main metric (MEASURED):** tests unstable in our baseline that `--det` / `--det-seed` makes reproducible (fail 10/10 under some seed or the fixed order, pass under some `--det` configuration): **239/341 = 70.1%** over 41 projects (16 with documented flaky tests, 25 popular at HEAD; jest 8, vitest 33). Tests whose id is not present in every baseline run (70) are not flaky tests and are excluded, as in the Python harness (P-008). Documented-flaky pool: 98/192 = 51.0%; popular pool: 141/149 = 94.6%. This is about tests that were flaky in our own baseline runs; none of the flaky tests named by the projects' issues was flaky in our baseline (see below). The figure is concentrated: recharts and valibot give 111 of the 239 reproduced tests; without them 128/228 = 56.1%.
 * **Fingerprint coverage (MEASURED):** 79615 of 82619 tests that ran under `--det` had one identical fingerprint in every fixed-order `--det` run (96.4%); 1078 had several, and 1926 ran without any fingerprint (1923 of them Vitest type-check tasks, checked by tsc without executing test code, so the runner hooks never see them; zod runs every test file a second time in type-check mode). Reasons for several fingerprints: `time` 893, `fs` 94, `entropy` 87, `random` 2, `beyond-trace` 2.
 * **Tests broken by `--det` (MEASURED):** 44 after the L0 fixes of this session (fail under fixed-order `--det` but at most once in the baseline).
 * **Slowdown of `--det` (MEASURED, NOISY):** median 3.1% over 9 projects (serial runner without `--det` vs `--det`, quiet timing pass).
@@ -28,7 +28,9 @@ Details in `docs/NODE.md` and `docs/REPORT-node-l0-INTERMEDIATE-1.md`.
 
 **Shortfall:** the documented-flaky pool has 16 measurable projects, not 25 (MEASURED). The other candidates (all listed) need a build, a browser, services or an old toolchain (Jest < 27 without jest-circus, Vitest < 1.4), or their suites fail on a clean runner.
 
-## Main results (MEASURED, 10 baseline + 10 `--det` runs per project, seeds 1..20, 10/10 confirmation)
+## Main results (MEASURED, 10 baseline + 10 `--det` runs per project, seeds 1..20 at most, 10/10 confirmation)
+
+Seed exploration stopped on the per-project time budget in 9 of 41 projects (MEASURED; seeds explored before the stop: apollo-client-flaky 3, excalidraw-flaky 4, happy-dom-flaky 2, mermaid-flaky 2, quasar-flaky 3, react-admin-flaky 2, recharts 13, svelte-flaky 15, xstate 8); the other projects explored up to seed 20 for every baseline-unstable test that the fixed order did not reproduce. Tests of the stopped projects may be reproducible with more seeds.
 
 | pool | projects | tests | unstable in baseline | reproduced | % | never fail under --det | fail sometimes | always fail |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -116,16 +118,11 @@ Remaining causes (`fixed-order` = also fails under `--det` with every Level 0 co
 
 | cause &#124; exception | tests |
 |---|---:|
-| `time &#124; Error` | 15 |
-| `time &#124; AssertionError` | 6 |
-| `time+timers &#124; Error` | 5 |
-| `net &#124; Error` | 5 |
-| `time+timers &#124; AssertionError` | 4 |
-| `seeds+time+timers+fs+net &#124; AssertionError` | 3 |
-| `unexplained &#124; Error` | 2 |
-| `time+timers &#124; TypeError` | 2 |
-| `time &#124; ApolloError` | 1 |
-| `unexplained &#124; AssertionError` | 1 |
+| `time` | 22 |
+| `time+timers` | 11 |
+| `net` | 5 |
+| `unexplained` | 3 |
+| `no cause (fails in 1 of 10 --det runs: the ablation cannot attribute it)` | 3 |
 
 **Level 0 not applied (J16).** babel-flaky (25554 tests, 0 traced), prettier-flaky (25624 tests, 0 traced) run their tests with the custom Jest runner `jest-light-runner`, which bypasses jest-circus's `testRunner` hook: detjs cannot install its controls there, so these projects are excluded from the numbers above (MEASURED on the round before the last fixes; replacing the runner by `jest-runner` made every suite fail, under `--det` and the serial reference alike).
 
@@ -145,13 +142,15 @@ Quiet timing pass (MEASURED, NOISY): 9 projects, 3 serial runs without `--det` v
 
 3 projects (MEASURED), Chromium, `--retries=0`; baseline = the project's own parallelism; `--det` = one worker plus the Level 0 controls inside the Playwright worker processes (no per-test brackets, no traces; browser and web servers not controlled).
 
-| project | tests | unstable in baseline | unstable under --det | became stable | broken by --det |
-|---|---:|---:|---:|---:|---:|
-| pw-msw | 52 | 1 | 0 | 1 | 0 |
-| pw-solid-start | 47 | 0 | 0 | 0 | 0 |
-| pw-starlight | 26 | 0 | 0 | 0 | 0 |
+| project | tests | unstable in baseline | unstable under --det | broken by --det |
+|---|---:|---:|---:|---:|
+| pw-msw | 52 | 1 | 0 | 0 |
+| pw-solid-start | 47 | 0 | 0 | 0 |
+| pw-starlight | 26 | 0 | 0 | 0 |
 
-Browser tests unstable in the baseline: 1 of 125; of all baseline-unstable tests of the round, 0.2% are browser tests (MEASURED, small sample, not weighted). Under `--det`: never fail 1, fail sometimes 0, always fail 0. What Level 0 covers today in browser tests is only the test process (Node side): the browser's clock, randomness, network and scheduling, where most end-to-end flakiness lives, are outside it.
+A test unstable in the baseline and stable under `--det` is not credited to Level 0 here: the Playwright `--det` runs also change the execution (one worker instead of the project's parallelism), and no run with one worker and without `--det` was made to separate the two (pw-msw: 1 test).
+
+Browser tests unstable in the baseline: 1 of 125; of all baseline-unstable tests of the round, 0.2% are browser tests (MEASURED, small sample, not weighted). What Level 0 covers today in browser tests is only the test process (Node side): the browser's clock, randomness, network and scheduling, where most end-to-end flakiness lives, are outside it.
 
 **Shortfall:** 3 Playwright projects measured, not 5: the other candidates need builds or services that fail on a clean runner, a web-server port already in use before the first run (pw-zag, pw-tldraw; UNKNOWN which process holds it), or Playwright versions that cannot install Chromium on the runner's Ubuntu 26.04 (listed in the harness report).
 

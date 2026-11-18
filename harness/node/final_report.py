@@ -7,6 +7,7 @@ the "before the L0 fixes" measurements. Every number is taken from the result fi
 from __future__ import annotations
 
 import collections
+import csv
 import json
 import statistics
 from pathlib import Path
@@ -74,6 +75,12 @@ def main() -> None:
     SA, SF, SP = (S.get(k, collections.Counter()) for k in ("all", "flaky", "popular"))
     per_repo = summary.get("per_repo_strict", {})
     cov_all = SA["covered"] + SA["not_covered"] + SA["nofp_ran"]
+    top = sorted(per_repo.items(), key=lambda kv: -kv[1].get("reproduced_strict", 0))[:2]
+    top_rep = sum(v.get("reproduced_strict", 0) for _, v in top)
+    top_uns = sum(v.get("unstable_strict", 0) for _, v in top)
+    conc = (f"The figure is concentrated: {' and '.join(n for n, _ in top)} give {top_rep} of the "
+            f"{SA['reproduced_strict']} reproduced tests; without them {SA['reproduced_strict'] - top_rep}/"
+            f"{SA['unstable_strict'] - top_uns} = {pct(SA['reproduced_strict'] - top_rep, SA['unstable_strict'] - top_uns)}.")
     A(f"* **Main metric (MEASURED):** tests unstable in our baseline that `--det` / `--det-seed` makes reproducible "
       f"(fail {meta.get('confirm', 10)}/{meta.get('confirm', 10)} under some seed or the fixed order, pass under some "
       f"`--det` configuration): **{SA['reproduced_strict']}/{SA['unstable_strict']} = "
@@ -84,7 +91,8 @@ def main() -> None:
       f"{SF['reproduced_strict']}/{SF['unstable_strict']} = {pct(SF['reproduced_strict'], SF['unstable_strict'])}; "
       f"popular pool: {SP['reproduced_strict']}/{SP['unstable_strict']} = "
       f"{pct(SP['reproduced_strict'], SP['unstable_strict'])}. This is about tests that were flaky in our own "
-      "baseline runs; none of the flaky tests named by the projects' issues was flaky in our baseline (see below).")
+      "baseline runs; none of the flaky tests named by the projects' issues was flaky in our baseline (see below). "
+      + conc)
     A(f"* **Fingerprint coverage (MEASURED):** {SA['covered']} of {cov_all} tests that ran under `--det` had one "
       f"identical fingerprint in every fixed-order `--det` run ({pct(SA['covered'], cov_all)}); {SA['not_covered']} had "
       f"several, and {SA['nofp_ran']} ran without any fingerprint ({SA['nofp_typecheck']} of them Vitest type-check "
@@ -144,7 +152,14 @@ def main() -> None:
           "jest-circus, Vitest < 1.4), or their suites fail on a clean runner.")
     A("")
     A(f"## Main results (MEASURED, {meta.get('runs', 10)} baseline + {meta.get('runs', 10)} `--det` runs per project, "
-      f"seeds 1..{meta.get('seeds', 20)}, {meta.get('confirm', 10)}/{meta.get('confirm', 10)} confirmation)\n")
+      f"seeds 1..{meta.get('seeds', 20)} at most, {meta.get('confirm', 10)}/{meta.get('confirm', 10)} confirmation)\n")
+    hit = [r for r in repos if r.get("exploration_budget_hit")]
+    if hit:
+        A(f"Seed exploration stopped on the per-project time budget in {len(hit)} of {len(repos)} projects (MEASURED; "
+          "seeds explored before the stop: " + ", ".join(f"{r['name']} {r.get('seeds_explored')}"
+                                                          for r in sorted(hit, key=lambda r: r['name']))
+          + f"); the other projects explored up to seed {meta.get('seeds', 20)} for every baseline-unstable test that "
+          "the fixed order did not reproduce. Tests of the stopped projects may be reproducible with more seeds.\n")
     A("| pool | projects | tests | unstable in baseline | reproduced | % | never fail under --det | fail sometimes | always fail |")
     A("|---|---:|---:|---:|---:|---:|---:|---:|---:|")
     for label, t, st, n in (("documented flaky", F, SF, nflaky), ("popular", P, SP, npop), ("total", T, SA, len(repos))):
@@ -219,7 +234,22 @@ def main() -> None:
           "the test pass):\n")
         A("| cause &#124; exception | tests |")
         A("|---|---:|")
-        for k, v in sorted(broken.items(), key=lambda kv: -kv[1])[:15]:
+        bc = collections.Counter()
+        for r in repos:
+            f = RES / f"{r['name']}.csv"
+            if not f.exists():
+                continue
+            for row in csv.DictReader(open(f)):
+                if row.get("broken_by_det") != "True":
+                    continue
+                d = {k: int(v) for k, v in (kv.split("=") for kv in row["det_outcomes"].split(";") if "=" in kv)}
+                fails = sum(v for k, v in d.items() if k.startswith(("failed", "error")))
+                runs = sum(v for k, v in d.items() if k != "missing")
+                if fails <= 1:
+                    bc[f"no cause (fails in {fails} of {runs} --det runs: the ablation cannot attribute it)"] += 1
+                else:
+                    bc[row.get("broken_cause") or "unknown"] += 1
+        for k, v in sorted(bc.items(), key=lambda kv: -kv[1])[:15]:
             A(f"| `{k.replace('|', '&#124;')}` | {v} |")
         A("")
 
@@ -256,16 +286,18 @@ def main() -> None:
         A(f"{len(pw)} projects (MEASURED), Chromium, `--retries=0`; baseline = the project's own parallelism; `--det` = "
           "one worker plus the Level 0 controls inside the Playwright worker processes (no per-test brackets, no traces; "
           "browser and web servers not controlled).\n")
-        A("| project | tests | unstable in baseline | unstable under --det | became stable | broken by --det |")
-        A("|---|---:|---:|---:|---:|---:|")
+        A("| project | tests | unstable in baseline | unstable under --det | broken by --det |")
+        A("|---|---:|---:|---:|---:|")
         for s in pw:
-            A(f"| {s['name']} | {s['tests']} | {s['unstable_baseline']} | {s['unstable_det']} | {s['became_stable']} | "
+            A(f"| {s['name']} | {s['tests']} | {s['unstable_baseline']} | {s['unstable_det']} | "
               f"{s.get('broken_by_det', 0)} |")
+        A("\nA test unstable in the baseline and stable under `--det` is not credited to Level 0 here: the Playwright "
+          "`--det` runs also change the execution (one worker instead of the project's parallelism), and no run with "
+          "one worker and without `--det` was made to separate the two (pw-msw: 1 test).")
         allu = T["unstable_baseline"] + Q["unstable_baseline"]
         A(f"\nBrowser tests unstable in the baseline: {Q['unstable_baseline']} of {Q['tests']}; of all baseline-unstable "
           f"tests of the round, {pct(Q['unstable_baseline'], allu)} are browser tests (MEASURED, small sample, not weighted). "
-          f"Under `--det`: never fail {Q['never_fails_under_det']}, fail sometimes {Q['fails_sometimes_under_det']}, "
-          f"always fail {Q['always_fails_under_det']}. What Level 0 covers today in browser tests is only the test "
+          "What Level 0 covers today in browser tests is only the test "
           "process (Node side): the browser's clock, randomness, network and scheduling, where most end-to-end "
           "flakiness lives, are outside it.\n")
         if len(pw) < 5:
