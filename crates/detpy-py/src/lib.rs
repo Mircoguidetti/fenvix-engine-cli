@@ -14,6 +14,7 @@ use std::path::PathBuf;
 use std::sync::{Mutex, MutexGuard};
 
 mod capture;
+mod follow;
 mod level0;
 mod precompile;
 mod proofcache;
@@ -270,5 +271,6 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     level0::register(m)?;
     capture::register(m)?;
     precompile::register(m)?;
+    follow::register(m)?;
     Ok(())
 }
