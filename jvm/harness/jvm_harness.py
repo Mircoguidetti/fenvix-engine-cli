@@ -83,7 +83,7 @@ def pl(c):
 # ------------------------------------------------------------------ results
 def norm(cls, name):
     """class::method, parameters and invocation indexes dropped (one row per test method)."""
-    m = re.split(r"[(\[]", name, 1)[0].strip()
+    m = re.split(r"[(\[]", name, maxsplit=1)[0].strip()
     return f"{cls}::{m}"
 
 

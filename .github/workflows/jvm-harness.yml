@@ -1,0 +1,146 @@
+name: jvm-harness
+
+# JVM Level 0 round on IDoFT projects (Maven), one job per project.
+#   build -> candidates -> prepare (matrix) -> select -> round (matrix, each job commits its results) -> aggregate
+# Started by a push that changes jvm/harness/RUN, or manually.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/jvm-l0]
+    paths: [jvm/harness/RUN]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: jvm-harness
+  cancel-in-progress: false
+
+jobs:
+  config:
+    runs-on: ubuntu-latest
+    outputs:
+      c: ${{ steps.c.outputs.c }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: c
+        run: echo "c=$(python3 -c 'import json;print(json.dumps(json.load(open("jvm/harness/RUN"))))')" >> $GITHUB_OUTPUT
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: "21"}
+      - run: ./jvm/build.sh
+      - uses: actions/upload-artifact@v4
+        with: {name: fenvix-agent, path: jvm/dist/fenvix-agent.jar}
+
+  candidates:
+    needs: [config]
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: m
+        run: python3 jvm/harness/ci.py candidates ${{ fromJSON(needs.config.outputs.c).candidates }} "${{ fromJSON(needs.config.outputs.c).names }}"
+
+  prepare:
+    needs: [config, build, candidates]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        name: ${{ fromJSON(needs.candidates.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: |
+            8
+            11
+            17
+            21
+      - uses: actions/download-artifact@v4
+        with: {name: fenvix-agent, path: jvm/dist}
+      - run: python3 jvm/harness/jvm_harness.py --name ${{ matrix.name }} --mode prepare --jdks 8,11,17 --out out --max-first-run ${{ fromJSON(needs.config.outputs.c).max_first_run }}
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: {name: "prepare-${{ matrix.name }}", path: out/}
+
+  select:
+    if: always()
+    needs: [config, prepare]
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.s.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {path: prep, pattern: "prepare-*"}
+      - id: s
+        run: python3 jvm/harness/ci.py select ${{ fromJSON(needs.config.outputs.c).select }} prep
+      - name: commit prepare summary
+        run: |
+          git config user.name "fenvix-ci"; git config user.email "ci@fenvix.invalid"
+          git add jvm/harness/results/idoft/prepare.json
+          git commit -m "JVM harness: prepare results (run ${{ github.run_id }})" || exit 0
+          for i in 1 2 3 4 5 6; do git pull --rebase -q origin claude/jvm-l0 && git push -q origin HEAD:claude/jvm-l0 && break; sleep $((i*7)); done
+
+  round:
+    if: always() && needs.select.outputs.matrix != '[]'
+    needs: [config, build, select]
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        name: ${{ fromJSON(needs.select.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: |
+            8
+            11
+            17
+            21
+      - uses: actions/download-artifact@v4
+        with: {name: fenvix-agent, path: jvm/dist}
+      - name: round
+        run: >
+          python3 jvm/harness/jvm_harness.py --name ${{ matrix.name }} --mode round --jdks 8,11,17
+          --out jvm/harness/results/idoft --runs ${{ fromJSON(needs.config.outputs.c).runs }}
+          --seeds ${{ fromJSON(needs.config.outputs.c).seeds }} --confirm ${{ fromJSON(needs.config.outputs.c).confirm }}
+          --timing ${{ fromJSON(needs.config.outputs.c).timing }} --budget ${{ fromJSON(needs.config.outputs.c).budget }}
+          --max-first-run ${{ fromJSON(needs.config.outputs.c).max_first_run }}
+      - if: always()
+        name: commit results
+        run: |
+          rm -rf jvm/harness/results/idoft/${{ matrix.name }}/fx
+          gzip -f jvm/harness/results/idoft/${{ matrix.name }}/*.log || true
+          git config user.name "fenvix-ci"; git config user.email "ci@fenvix.invalid"
+          git add jvm/harness/results/idoft/${{ matrix.name }}
+          git commit -m "JVM harness: ${{ matrix.name }} (run ${{ github.run_id }})" || exit 0
+          for i in 1 2 3 4 5 6 7 8; do git pull --rebase -q origin claude/jvm-l0 && git push -q origin HEAD:claude/jvm-l0 && break; sleep $((i*9)); done
+
+  aggregate:
+    if: always()
+    needs: [round]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: claude/jvm-l0}
+      - run: python3 jvm/harness/aggregate.py jvm/harness/results/idoft
+      - run: |
+          git config user.name "fenvix-ci"; git config user.email "ci@fenvix.invalid"
+          git add jvm/harness/results/idoft/REPORT.md jvm/harness/results/idoft/summary.json
+          git commit -m "JVM harness: report (run ${{ github.run_id }})" || exit 0
+          for i in 1 2 3 4 5 6; do git pull --rebase -q origin claude/jvm-l0 && git push -q origin HEAD:claude/jvm-l0 && break; sleep $((i*7)); done
