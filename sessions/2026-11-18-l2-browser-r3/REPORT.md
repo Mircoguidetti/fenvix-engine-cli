@@ -113,8 +113,9 @@ hypothesis is the reviewer's E3 (grants only while a runner call is in flight), 
 
 Postgres (container, same data volume) and the app server's Node process (Prisma's Rust engine lives in it) under
 libfaketime pinned to the run's epoch, `FAKETIME_DONT_FAKE_MONOTONIC=1`. Three variants, 10 `--det` replays of 2
-targets each (run 44382873510; attempts 1 and 2 failed to start Postgres under libfaketime, kept as
-`e5-documenso-attempt1/2.json`; the control comes from attempt 1, run 44327291710):
+targets each (run 44382873510, file `e5-documenso-attempt3.json`; attempts 1 and 2 failed to start Postgres under
+libfaketime, kept as `e5-documenso-attempt1/2.json`; the control comes from attempt 1, run 44327291710). These runs
+carry the clock defect found below:
 
 | Variant | Database `now()` confirmed | FIND_DOCUMENTS non-admin | DELETE_RECIPIENT missing reason | First divergence |
 |---|---|---|---|---|
@@ -123,13 +124,24 @@ targets each (run 44382873510; attempts 1 and 2 failed to start Postgres under l
 | frozen at epoch | `20:02:00` exactly | 10 P, **10 fp** | 10 P, **10 fp** | same |
 | epoch + 1 ms per clock call | `20:02:00.137` | 10 P, **10 fp** | 10 P, **10 fp** | same |
 
-**Decision (MEASURED):** with the database clock and the app process's clock pinned, documenso still gives a new
-fingerprint in every replay, and the first diverging event does not move. The database clock is not what makes
-documenso diverge, or not alone; round 2's class C (and its "clock shim second" proposal) rests on run-2 texts that
-showed `createdAt` differences, but those are not the first divergence under pinned clocks. What differs in
-`session-json`: PENDING (job `e5diag`, run 44389754462, two replays with the bodies kept). libfaketime itself works for
-Postgres (also checked locally on Postgres 16 in all three modes): a clock shim costs about an hour of setup, as the
-reviewer expected, but buys nothing measurable here yet.
+**What differs, then (job `e5diag`, run 44389754462, DB frozen, the two `session-json` bodies kept):** only
+`"emailVerified":"2083-10-06T20:02:32.328Z"` vs `"...20:02:46.008Z"`. That date is made by documenso's seed helper in
+**test code** (`new Date()`), and it exposed a defect of this round's test-code clock (section 1: reads outside any
+test pushed the clock to epoch + real time). Fixed, then E5 again on the fixed engine (run 44407937328, 5 replays per
+arm, MEASURED):
+
+| Arm | FIND_DOCUMENTS non-admin | DELETE_RECIPIENT missing reason | First divergence |
+|---|---|---|---|
+| real clocks, wait part on (default) | 5 P, 5 fp | 5 P, 5 fp | event #29 `folder.getFolders` body / event #24 scheduling choice |
+| real clocks, wait part off (`DETJS_PW_WORKER_CLOCK_WAIT_MS=0`) | 5 P, 5 fp | 5 P, 5 fp | event #24 scheduling choice / #29 body |
+| DB + app process frozen by libfaketime, wait part off | 5 P, 5 fp | 5 P, 5 fp | **event #24: the queue chose the page's `GET folder.getFolders` in one replay and the test's `admin.recipient.delete` (or `admin.document.find`) API request in the other** |
+
+**Decision (MEASURED):** documenso's first divergence is not a clock below JavaScript. With the session-json date
+fixed, every arm (frozen database included) first differs at the network queue: whether the page's background fetch
+or the runner's next API request is pending first depends on when the runner acts in real time. That is class A, the
+same as actual and uptime-kuma. Round 2's class C ("clocks outside JavaScript", proposal "clock shim second")
+does not hold as the blocker on these targets. libfaketime works for Postgres (also checked locally on Postgres 16 in
+all three modes, about an hour of setup as the reviewer expected), but buys nothing measurable until class A is gone.
 
 ### E6 a seed space that reaches the deadlines
 
