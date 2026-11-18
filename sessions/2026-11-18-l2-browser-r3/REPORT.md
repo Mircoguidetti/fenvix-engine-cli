@@ -22,8 +22,23 @@ PENDING
 | H3 | **passes** | Cause found: actual runs `playwright test --browser=chromium` with a config without projects; the printed command kept `--project=chromium` and dropped `--browser=chromium`, so it matched no project and ran no test. Fix: the replay command carries `--browser`/`--timeout`/`--ignore-snapshots`; fixture test `node/test/l2r3.test.js` "H3" fails before (checked by restoring the old `reporter.js`) and passes after. Re-measured on actual (run 44327291710, MEASURED): seed 1 times out, the printed command `npx detjs playwright --det --det-seed=1 --det-epoch=... test e2e/accounts.mobile.test.ts:67 --project=chromium --browser=chromium` runs its test and times out too. Written into `tracks/l2-browser-r2/results/actual.json` by `tracks/l2-browser-r3/harness/remeasure_h3.py`, the round-2 value kept as `replay_cmd_outcome_r2: "missing"` |
 | H4 | **passes** | `aggregate.py` counts and lists tests that fail in every configured run and pass in every `--det` run (`hidden_by_controls`): 1 on the round-2 data (documenso `should reject order change on a PENDING envelope`, FFF / PP) |
 
-Regression suites after the fixes (local, MEASURED): `node/test/l2r2.test.js` + `playwright.test.js` 13 of 13 pass;
-`l2r3.test.js` 3 of 3 pass + 1 `todo` (a defect found this round, section 6).
+Regression suites after the fixes (local, MEASURED, final engine): `playwright.test.js`, `l2r2.test.js`, `l2r3.test.js`,
+`review-r011.test.js`: **19 pass, 0 fail, 1 `todo`** (a defect found this round, section 6).
+
+**Cost of the R1 fix (MEASURED, section 4 E5):** the real-wait part makes any date the test code reads more than 1 s
+after its first read depend on real time. documenso's seed helpers write such a date (`emailVerified`), so its replays
+cannot be identical while the part is on. It is a switch (`DETJS_PW_WORKER_CLOCK_WAIT_MS`, default 1000, 0 = off):
+outcome truth (R1) and value determinism conflict for elapsed-time reads, and only a clock that also advances with the
+waits on the other side (lockstep, or a VM) removes the conflict. Decision for the founder/coordinator; the default
+keeps R1 (a silent pass is worse than a non-identical fingerprint).
+
+**Defect of this round's fix, found and fixed (MEASURED):** a clock read in test code *outside any test* (module level,
+worker fixtures) left the wait origin at 0, so the wait part became the whole real time since 1970: documenso's
+`emailVerified` came out as `2083-10-06T20:02:32Z` under a 2026 epoch, and different in every replay. Fixed in the
+worker (`firstReal` set at install, no wait part outside a test), regression test `l2r3.test.js` "a clock read outside
+any test" (fails before: test-code date 2081 under a 2025 epoch; passes after). Every `--det` number of runs
+44327291710 and 44326636551 (step 3, E2, H3) was measured with this defect; step 3 was re-run on the fixed engine
+(section 5).
 
 ## 2. Corrections to the round-2 report (the claims the reviewer marked wrong)
 
