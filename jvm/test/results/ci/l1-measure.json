@@ -1,0 +1,67 @@
+{
+ "runs": 10,
+ "table": [
+  {
+   "test": "l1.CoroutineTest::defaultDispatcherRace()",
+   "failed_without_det": "10/10",
+   "failed_with_det": "10/10",
+   "distinct_fingerprints_det": 10
+  },
+  {
+   "test": "l1.CoroutineTest::delaysInRunBlocking()",
+   "failed_without_det": "0/10",
+   "failed_with_det": "0/10",
+   "distinct_fingerprints_det": 1
+  },
+  {
+   "test": "l1.CoroutineTest::virtualTimeOfRunTest()",
+   "failed_without_det": "0/10",
+   "failed_with_det": "0/10",
+   "distinct_fingerprints_det": 1
+  },
+  {
+   "test": "l1.CoroutineTest::withTimeoutHolds()",
+   "failed_without_det": "0/10",
+   "failed_with_det": "0/10",
+   "distinct_fingerprints_det": 2
+  },
+  {
+   "test": "l1.ThreadRaceTest::completionOrder()",
+   "failed_without_det": "10/10",
+   "failed_with_det": "10/10",
+   "distinct_fingerprints_det": 1
+  },
+  {
+   "test": "l1.ThreadRaceTest::unsynchronizedCounter()",
+   "failed_without_det": "9/10",
+   "failed_with_det": "6/10",
+   "distinct_fingerprints_det": 2
+  }
+ ],
+ "seconds": {
+  "nodet": [
+   33.46,
+   7.28,
+   7.2,
+   7.29,
+   7.38,
+   8.2,
+   8.41,
+   8.43,
+   8.35,
+   7.86
+  ],
+  "det": [
+   9.52,
+   8.24,
+   8.57,
+   8.36,
+   8.73,
+   8.17,
+   8.71,
+   8.73,
+   8.94,
+   8.93
+  ]
+ }
+}
