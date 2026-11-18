@@ -243,6 +243,21 @@ def test_child_own_temporary_files_are_not_inputs(pytester, run_cache):
     assert reused == ids("test_tmp")
 
 
+
+def test_child_process_start_time_is_a_real_clock_read(pytester, run_cache):
+    # review R-009b R4: the times of /proc/<pid> are the process's start (real clock); /proc/<own pid> is otherwise
+    # skipped as the tree's own state
+    project(pytester, **{"test_m.py": """
+        import subprocess
+
+        def test_start():
+            subprocess.run(["sh", "-c", 'stat -c %Y /proc/$$'], capture_output=True, check=True)
+        """})
+    run_cache()
+    _, reused, data = run_cache()
+    assert reused == set()
+    assert "a process start time" in data["cache"]["not_cached_where"]["test_m.py::test_start"]
+
 @pytest.mark.skipif(shutil.which("gcc") is None, reason="needs gcc")
 def test_find_library_compiler_fallback_at_import_time_is_followed(pytester, run_cache):
     # r5's cause on pylint (pyenchant) and home-assistant (turbojpeg): a library missing from the linker cache makes
