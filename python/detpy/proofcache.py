@@ -209,6 +209,7 @@ class Capture:
             finally:
                 self.active = True
         self.ctx = name
+        _core.l0_listener_reset()
         i = self.ctx_index(name)
         self.timeline.append((_now(), i))
         if self.rec is None:
@@ -309,6 +310,8 @@ class Capture:
         self.rec = _core.LineRecorder(_mon.DISABLE, self.hot)
         self.import_ctx = self.ctx_index("i")
         self.ctx = ""
+        lst = _state._event_listener  # the object the Rust event path calls (a bound method is made per access)
+        _core.l0_listener_memo(lst if lst is not None and lst == self.event else None, self.rec)
         _mon.register_callback(self.tool, _mon.events.LINE, self.rec.line)
         _mon.register_callback(self.tool, _mon.events.PY_START, self.rec.start)
         _mon.register_callback(self.tool, _mon.events.PY_RETURN, self.rec.ret)
@@ -337,6 +340,7 @@ class Capture:
         if not self.active:
             return
         self.active = False
+        _core.l0_listener_memo(None)
         _core.set_audit_hook(None, ())
         for obj, name, v in getattr(self, "_sqlite_saved", ()):
             setattr(obj, name, v)
@@ -746,18 +750,21 @@ class Capture:
         if self.active:
             self.env.setdefault(self._cur(), set()).add(name)
 
-    def event(self, source: str, value: str) -> None:
-        """A Level 0 event (``detpy._state.record``) by user code."""
+    def event(self, source: str, value: str) -> bool:
+        """A Level 0 event (``detpy._state.record``) by user code. True when calling again for ``source`` changes
+        nothing until the next switch (the Rust event path then skips the call): the source is flagged in a context
+        that is not import time."""
         if not self.active:
-            return
+            return False
         fl = self.flags.setdefault(self._cur(), set())
         if source == "net":
             if "record#" in value:
                 fl.add("net-record")
             elif "replay" in value:
                 fl.add("net-replay")
-        else:
-            fl.add(source)
+            return False
+        fl.add(source)
+        return not (self.rec is not None and self.rec.import_depth)
 
     def scan_modules(self, index: int, plugins=()) -> None:
         """Note the repository modules loaded so far (``sys.modules`` and conftest plugins, which pytest keeps

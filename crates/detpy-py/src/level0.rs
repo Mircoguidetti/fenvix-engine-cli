@@ -16,6 +16,7 @@
 //! need to sleep 5e21 years of virtual time to overflow them, which saturates); the clock lock is not re-entrant but
 //! nothing that can run Python code (a gc callback) happens while it is held.
 
+use crate::sysmon::LineRecorder;
 use crate::Recorder;
 use detpy_core::event::{Event, Source};
 use pyo3::exceptions::PyRuntimeError;
@@ -420,6 +421,67 @@ thread_local! {
     static BUSY: Cell<bool> = const { Cell::new(false) };
 }
 
+/// The cache with proof's listener (`Capture.event`) flags the context with the event's source; once it said so
+/// (returned True: a source flagged in a context that is not import time), calling it again for the same source
+/// changes nothing until the context changes (`Capture.switch` -> `l0_listener_reset`). Import time (the line
+/// recorder's module depth > 0) always calls it: its context depends on the frames.
+struct Memo {
+    listener: Py<PyAny>,
+    lines: Py<LineRecorder>,
+    sources: Vec<String>,
+}
+
+static MEMO: Mutex<Option<Memo>> = Mutex::new(None);
+static MEMO_SKIPPED: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+
+/// Listener calls the memo saved so far in this process (for the tests).
+#[pyfunction]
+pub fn l0_listener_skipped() -> u64 {
+    MEMO_SKIPPED.load(std::sync::atomic::Ordering::Relaxed)
+}
+
+/// `l0_listener_memo(listener, line_recorder)`: remember what `listener` flagged (None: stop).
+#[pyfunction]
+#[pyo3(signature = (listener, lines = None))]
+pub fn l0_listener_memo(listener: Option<Py<PyAny>>, lines: Option<Py<LineRecorder>>) {
+    let new = match (listener, lines) {
+        (Some(l), Some(r)) => Some(Memo { listener: l, lines: r, sources: Vec::new() }),
+        _ => None,
+    };
+    let old = std::mem::replace(&mut *lock(&MEMO), new);
+    drop(old);
+}
+
+/// The capture's context changed: every source must be flagged again.
+#[pyfunction]
+pub fn l0_listener_reset() {
+    if let Some(m) = lock(&MEMO).as_mut() {
+        m.sources.clear();
+    }
+}
+
+/// Whether calling `listener` for `source` now would change nothing (see `Memo`).
+fn memo_covers(py: Python<'_>, listener: &Bound<'_, PyAny>, source: &str) -> bool {
+    let g = lock(&MEMO);
+    match g.as_ref() {
+        Some(m) => {
+            m.listener.bind(py).is(listener)
+                && m.sources.iter().any(|s| s == source)
+                && m.lines.bind(py).get().depth() == 0
+        }
+        None => false,
+    }
+}
+
+fn memo_note(py: Python<'_>, listener: &Bound<'_, PyAny>, source: &str) {
+    let mut g = lock(&MEMO);
+    if let Some(m) = g.as_mut() {
+        if m.listener.bind(py).is(listener) && !m.sources.iter().any(|s| s == source) {
+            m.sources.push(source.to_string());
+        }
+    }
+}
+
 /// `l0_configure(state, state_globals, sites_globals)`: wire the record path to `detpy._state` and `detpy._sites`.
 #[pyfunction]
 pub fn l0_configure(
@@ -625,7 +687,15 @@ fn record_impl(py: Python<'_>, source: Text<'_, '_>, op: Text<'_, '_>, value: Te
     }
     let Some(site) = hub.resolve(py, skip)? else { return Ok(()) };
     if listening {
-        listener.call1((source.obj(py), value.obj(py)))?;
+        let src = source.string()?;
+        if memo_covers(py, &listener, &src) {
+            MEMO_SKIPPED.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        } else {
+            let r = listener.call1((source.obj(py), value.obj(py)))?;
+            if r.is_truthy()? {
+                memo_note(py, &listener, &src);
+            }
+        }
         if rec.is_none() || hub.get(py, intern!(py, "nodeid"))?.is_none() {
             return Ok(());
         }
@@ -729,6 +799,9 @@ pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
         wrap_pyfunction!(l0_is_busy, m)?,
         wrap_pyfunction!(l0_record, m)?,
         wrap_pyfunction!(l0_resolve, m)?,
+        wrap_pyfunction!(l0_listener_memo, m)?,
+        wrap_pyfunction!(l0_listener_reset, m)?,
+        wrap_pyfunction!(l0_listener_skipped, m)?,
     ] {
         m.add_function(f)?;
     }

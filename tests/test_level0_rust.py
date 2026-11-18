@@ -254,6 +254,23 @@ def test_level0_cache_matches_reference(pytester, ref_env):
     assert new[5]["reused"], new[5]              # the warm run reused results (the receipts mean something)
 
 
+def test_cache_listener_memo_engages(pytester):
+    """The cache's listener is called once per source and context outside import time (the stores stay identical
+    to the reference: test_level0_cache_matches_reference)."""
+    pytester.makepyfile(test_m='''
+import time
+def test_a():
+    for _ in range(50):
+        time.monotonic()
+def test_z():
+    from detpy import _core
+    print("SKIPPED", _core.l0_listener_skipped())
+''')
+    r = pytester.runpytest_subprocess("--det", "-s", "-p", "no:cacheprovider", f"--det-cache={pytester.path / 'c'}")
+    n = [int(x.split("SKIPPED")[1]) for x in r.stdout.lines if "SKIPPED" in x]
+    assert n and n[0] >= 49, r.stdout.str()
+
+
 def _ref_clock_module():
     """The reference clock module, loaded under another name (its relative imports resolve to detpy)."""
     spec = importlib.util.spec_from_file_location("detpy._ref_l0_clock", REF / "_ref_l0_clock.py")

@@ -87,6 +87,11 @@ fn lock(m: &Mutex<Inner>) -> MutexGuard<'_, Inner> {
 }
 
 impl LineRecorder {
+    /// Module bodies running (the capture's import time).
+    pub(crate) fn depth(&self) -> u32 {
+        lock(&self.inner).import_depth
+    }
+
     fn hit(&self, py: Python<'_>, g: &mut Inner, k: u64, code: &Bound<'_, PyAny>) -> Py<PyAny> {
         match g.seen.get_mut(&k) {
             None => {
