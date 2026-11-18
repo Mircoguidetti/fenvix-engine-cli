@@ -140,7 +140,7 @@ def test_another_version_of_an_installed_package_changes_the_identity(tmp_path, 
     install(py2, wheels["1.1"], "uv")
     a, b = identity(py1, root), identity(py2, root)
     assert a["digest"] != b["digest"]
-    assert changed(a, b) == ["distributions"]
+    assert changed(a, b) == ["distributions", "site_tree"]
 
 
 def test_same_version_with_a_changed_file_changes_the_identity(tmp_path, wheels, root):
@@ -149,19 +149,19 @@ def test_same_version_with_a_changed_file_changes_the_identity(tmp_path, wheels,
     install(py1, wheels["1.0"], "uv")
     install(py2, wheels["1.0-patched"], "uv")
     a, b = identity(py1, root), identity(py2, root)
-    assert changed(a, b) == ["distributions"]
+    assert changed(a, b) == ["distributions", "site_tree"]
     # and an installed file edited in place (RECORD untouched) is seen too
     py3 = venv(tmp_path / "v3")
     install(py3, wheels["1.0"], "uv")
     (site_packages(py3) / "fenvixdemo" / "__init__.py").write_text("VALUE = 3\n")
-    assert changed(a, identity(py3, root)) == ["distributions"]
+    assert changed(a, identity(py3, root)) == ["distributions", "site_tree"]
 
 
 def test_a_loose_pth_file_in_site_packages_changes_the_identity(tmp_path, root):
     py1 = venv(tmp_path / "v1")
     py2 = venv(tmp_path / "v2")
     (site_packages(py2) / "zz_startup.pth").write_text("import os\n")
-    assert changed(identity(py1, root), identity(py2, root)) == ["site_loose"]
+    assert changed(identity(py1, root), identity(py2, root)) == ["site_tree"]
 
 
 def _python_patch_pair() -> tuple[str, str] | None:
@@ -309,3 +309,13 @@ def test_project_installed_in_editable_mode_is_not_part_of_the_identity(tmp_path
     (sp2 / info.name / "direct_url.json").write_text(json.dumps({"url": root2.as_uri(), "dir_info": {"editable": True}}))
     (sp2 / "_myproj.pth").write_text(str(root2) + "\n")
     assert identity(py2, root2)["digest"] == d["digest"]
+
+
+def test_time_zone_and_instruction_set_level_are_keyed(tmp_path, root):
+    base = identity(sys.executable, root, {"TZ": "UTC"})
+    if Path("/usr/share/zoneinfo/Europe/Rome").exists():
+        assert "tz" in changed(base, identity(sys.executable, root, {"TZ": "Europe/Rome"}))
+    # the ISA level is part of the identity unless explicitly switched off
+    off = identity(sys.executable, root, {"TZ": "UTC", "FENVIX_RUNTIME_ISA": "off"})
+    assert changed(base, off) == ["cpu"]
+    assert base["details"]["cpu"]["isa"] != "not keyed (FENVIX_RUNTIME_ISA=off)"

@@ -18,10 +18,17 @@ behaviour changes it:
   inside the site directory, except files an installer writes differently on each machine (``RECORD`` itself,
   ``INSTALLER``, ``REQUESTED``, ``direct_url.json``, bytecode caches, scripts outside the site directory). The
   project under test, installed in editable mode, is left out: its files are inputs of each test;
-* ``site_loose``: files directly in a site directory that no distribution owns (``.pth`` files run at start-up,
-  ``_virtualenv.py``);
+* ``site_tree``: every file under every site directory by relative path and bytes, whether or not a ``RECORD``
+  lists it (packages copied in without metadata, files added to a package after installation, egg-info installs,
+  ``.pth`` files), except bytecode caches, installer bookkeeping and the project's own editable install;
+* ``extra_paths``: the content of import-path entries outside the project, the standard library and the site
+  directories (``PYTHONPATH``, ``.pth`` lines to other directories);
 * ``sys_path``: the import path, each entry named relative to the standard library, the site directories, the
-  interpreter prefixes or the project root.
+  interpreter prefixes or the project root;
+* ``native`` also holds the libraries ``LD_PRELOAD`` and ``/etc/ld.so.preload`` put ahead of libc;
+* ``locale``: every locale category a test gets from ``setlocale(LC_ALL, "")``, ``LANGUAGE`` and the locale data;
+  ``tz``: ``TZ``, the zone file it names, ``/etc/localtime``; ``cpu``: CPUs visible to the process and the
+  instruction-set level (x86-64 v1..v4; ``FENVIX_RUNTIME_ISA=off`` leaves the level out, at the user's risk).
 
 File digests are memoised under (device, inode, size, mtime, ctime) in a per-interpreter memo file
 (``$FENVIX_RUNTIME_MEMO``, default ``~/.cache/fenvix``; ``off`` disables it), so an unchanged machine hashes
@@ -41,7 +48,7 @@ import time
 
 from . import _core
 
-IDENTITY_VERSION = "fenvix-runtime-2"
+IDENTITY_VERSION = "fenvix-runtime-3"
 
 # files a distribution's RECORD lists that do not change behaviour and that installers write per machine
 _INSTALLER_FILES = {"RECORD", "INSTALLER", "REQUESTED", "direct_url.json", "uv_cache.json", "uv_build.json"}
@@ -350,7 +357,9 @@ def _record_paths(d) -> list[str] | None:
 
 
 def _distributions(root: str, memo: _Memo, natives: list):
-    """(sorted 'name==version:content' lines, editable dist-info dirs of the project, paths owned by any RECORD)."""
+    """(sorted 'name==version:content' lines, editable dist-info dirs of the project, paths the project's editable
+    install owns). The lines group installed files per distribution for diagnosis; what is keyed is the whole site
+    tree (``_site_tree``)."""
     from importlib import metadata
 
     lines, editable, owned = [], [], set()
@@ -372,10 +381,10 @@ def _distributions(root: str, memo: _Memo, natives: list):
         except Exception:
             pass
         files = _record_paths(d)
-        if base and files:
-            for f in files:
-                owned.add(os.path.normpath(os.path.join(base, f)))
         if project:
+            if base and files:
+                for f in files:
+                    owned.add(os.path.normpath(os.path.join(base, f)))
             if info_dir is not None:
                 editable.append(info_dir + os.sep)
             continue
@@ -404,38 +413,214 @@ def _distributions(root: str, memo: _Memo, natives: list):
     return sorted(lines), editable, owned
 
 
-def _site_loose(sites: list[str], owned: set, memo: _Memo) -> str:
+def _is_installer_file(rel_parts: list[str]) -> bool:
+    """Files an installer writes differently on each machine: a dist-info's RECORD, INSTALLER, REQUESTED,
+    direct_url.json (they name paths, tools and times, not behaviour)."""
+    return (len(rel_parts) >= 2 and rel_parts[-2].endswith((".dist-info", ".egg-info"))
+            and rel_parts[-1] in _INSTALLER_FILES)
+
+
+def _site_tree(sites: list[str], project_owned: set, project_dirs: list, memo: _Memo, natives: list) -> tuple[str, int]:
+    """Every file under every site directory by relative path and bytes: installed distributions, files no RECORD
+    lists (packages copied in without metadata, files added to a package after installation, egg-info installs),
+    ``.pth`` files. Left out: bytecode caches, installer bookkeeping files, and the project's own editable install
+    (its files are per-test inputs; its .pth names the checkout path)."""
     rows = []
+    proj = tuple(project_dirs)
     for i, s in enumerate(sites):
-        try:
-            names = sorted(os.listdir(s))
-        except OSError:
+        for dp, dn, fn in os.walk(s):
+            dn[:] = sorted(d for d in dn if d != "__pycache__" and not (os.path.join(dp, d) + os.sep).startswith(proj))
+            for f in sorted(fn):
+                p = os.path.join(dp, f)
+                if f.endswith((".pyc", ".pyo")) or os.path.normpath(p) in project_owned:
+                    continue
+                rel = os.path.relpath(p, s)
+                if _is_installer_file(rel.split(os.sep)):
+                    continue
+                try:
+                    st = os.stat(p)
+                except OSError:
+                    continue
+                if not os.path.isfile(p):
+                    continue
+                rows.append(f"{i}\0{rel}\0{memo.digest(p, st)}")
+                if f.endswith(".so") or ".so." in f:
+                    natives.append(p)
+    return _h("\n".join(rows)), len(rows)
+
+
+_EXTRA_PATH_MAX_FILES = 50_000
+
+
+def _extra_paths(root: str, stdlib: list[str], sites: list[str], memo: _Memo, natives: list) -> tuple[str, list]:
+    """Import-path entries outside the project, the standard library and the site directories (PYTHONPATH, a .pth
+    line to /opt/..., a second checkout): their modules are imported by the import system, which is never a
+    per-test input, so their content is keyed here (relative path and bytes; a zip or file by its bytes). An entry
+    with more than 50,000 files is keyed on a fresh random value: never reusable, rather than unchecked."""
+    known = [os.path.realpath(root)] + stdlib + sites
+    name = _namer(root, stdlib, sites)
+    rows, labels = [], []
+    seen = set()
+    for p in sys.path:
+        r = os.path.realpath(p or os.getcwd())
+        if r in seen or any(r == d or r.startswith(d + os.sep) for d in known):
             continue
-        for n in names:
-            p = os.path.join(s, n)
-            if p in owned or n == "__pycache__" or not os.path.isfile(p):
+        seen.add(r)
+        if os.path.isdir(r):
+            files = []
+            for dp, dn, fn in os.walk(r):
+                dn[:] = sorted(d for d in dn if d != "__pycache__")
+                files += [os.path.join(dp, f) for f in sorted(fn) if not f.endswith((".pyc", ".pyo"))]
+                if len(files) > _EXTRA_PATH_MAX_FILES:
+                    break
+            if len(files) > _EXTRA_PATH_MAX_FILES:
+                rows.append(f"{name(r)}\0too-many-files\0{os.urandom(16).hex()}")
+                labels.append(f"{r} (too many files: never reusable)")
                 continue
-            rows.append(f"{i}\0{n}\0{memo.digest(p)}")
-    return _h("\n".join(rows))
+            sub = []
+            for f in files:
+                if os.path.isfile(f):
+                    sub.append(f"{os.path.relpath(f, r)}\0{memo.digest(f)}")
+                    if f.endswith(".so") or ".so." in f:
+                        natives.append(f)
+            rows.append(f"{name(r)}\0{_h(chr(10).join(sub))}")
+            labels.append(f"{r} ({len(sub)} files)")
+        elif os.path.isfile(r):
+            rows.append(f"{name(r)}\0{memo.digest(r)}")
+            labels.append(r)
+        else:
+            rows.append(f"{name(r)}\0missing")
+    return _h("\n".join(rows)), labels
 
 
-def _sys_path(root: str, stdlib: list[str], sites: list[str]) -> list[str]:
+def _namer(root: str, stdlib: list[str], sites: list[str]):
+    """A function naming a path relative to the project root, stdlib, site directories or interpreter prefixes
+    (machine-independent); other paths keep their absolute path."""
     named = [(os.path.realpath(root), "<root>")]
     named += [(d, f"<stdlib{i}>") for i, d in enumerate(stdlib)]
     named += [(d, f"<site{i}>") for i, d in enumerate(sites)]
     named += [(os.path.realpath(sys.prefix), "<prefix>"), (os.path.realpath(sys.base_prefix), "<base_prefix>")]
     named.sort(key=lambda x: len(x[0]), reverse=True)
-    out = []
-    for p in sys.path:
-        r = os.path.realpath(p or os.getcwd())
+
+    def name(r: str) -> str:
         for d, label in named:
             if r == d or r.startswith(d + os.sep):
                 rel = os.path.relpath(r, d)
-                out.append(label if rel == "." else f"{label}/{rel}")
+                return label if rel == "." else f"{label}/{rel}"
+        return r  # another directory: its path here, its content in ``extra_paths``
+    return name
+
+
+def _sys_path(root: str, stdlib: list[str], sites: list[str]) -> list[str]:
+    name = _namer(root, stdlib, sites)
+    return [name(os.path.realpath(p or os.getcwd())) for p in sys.path]
+
+
+_LOCALE_CATEGORIES = ("LC_CTYPE", "LC_COLLATE", "LC_TIME", "LC_NUMERIC", "LC_MONETARY", "LC_MESSAGES")
+_X86_LEVELS = (
+    ("v2", {"cx16", "lahf_lm", "popcnt", "sse4_1", "sse4_2", "ssse3"}),
+    ("v3", {"avx", "avx2", "bmi1", "bmi2", "f16c", "fma", "abm", "movbe", "xsave"}),
+    ("v4", {"avx512f", "avx512bw", "avx512cd", "avx512dq", "avx512vl"}),
+)
+
+
+def _locale_part(memo: _Memo) -> dict:
+    """What glibc gives a test that calls ``setlocale(LC_ALL, "")``: every category's value from the environment
+    (read by C, never through os.environ), LANGUAGE, and the locale data (LOCPATH or /usr/lib/locale). The
+    process's own locale is restored afterwards."""
+    cats = [(n, getattr(locale, n)) for n in _LOCALE_CATEGORIES if hasattr(locale, n)]
+    saved = {}
+    for n, c in cats:
+        try:
+            saved[n] = locale.setlocale(c, None)
+        except locale.Error:
+            saved[n] = None
+    env_locale: dict = {}
+    try:
+        locale.setlocale(locale.LC_ALL, "")
+        for n, c in cats:
+            env_locale[n] = locale.setlocale(c, None)
+    except locale.Error as e:
+        env_locale["error"] = str(e)
+    finally:
+        for n, c in cats:
+            if saved.get(n) is not None:
+                try:
+                    locale.setlocale(c, saved[n])
+                except locale.Error:
+                    pass
+    data_dir = os.environ.get("LOCPATH") or "/usr/lib/locale"
+    data = _h("\n".join(f"{os.path.relpath(os.path.join(dp, f), data_dir)}\0{memo.digest(os.path.join(dp, f))}"
+                        for dp, dn, fn in sorted(os.walk(data_dir)) for f in sorted(fn))) if os.path.isdir(data_dir) \
+        else "missing"
+    return {"categories": env_locale, "language": os.environ.get("LANGUAGE"), "locpath": "LOCPATH" in os.environ,
+            "data": data}
+
+
+def _tz_part(memo: _Memo) -> dict:
+    """TZ and the zone rules behind it: the TZ value, /etc/localtime and /etc/timezone bytes, and the bytes of the
+    zoneinfo file TZ names (tzname and the offsets alone do not fix the rules)."""
+    tz = os.environ.get("TZ")
+    zone = None
+    if tz:
+        name = tz[1:] if tz.startswith(":") else tz
+        for base in (os.environ.get("TZDIR"), "/usr/share/zoneinfo"):
+            if base and not os.path.isabs(name) and os.path.isfile(os.path.join(base, name)):
+                zone = memo.digest(os.path.join(base, name))
                 break
-        else:
-            out.append(r)  # an unknown directory: its path stays in the identity (its modules are not keyed)
-    return out
+        if zone is None and os.path.isabs(name) and os.path.isfile(name):
+            zone = memo.digest(name)
+    return {"TZ": tz, "zone": zone, "localtime": memo.digest("/etc/localtime"),
+            "timezone": memo.digest("/etc/timezone"), "offsets": [time.timezone, time.altzone, list(time.tzname)]}
+
+
+def _cpu_part() -> dict:
+    """CPUs visible to the process (pool sizes, chunking) and, unless FENVIX_RUNTIME_ISA=off, the instruction-set
+    level (x86-64 v1..v4 from /proc/cpuinfo; elsewhere the feature list): native code that dispatches on CPU features
+    (libm, numpy, OpenBLAS) can give other floating-point results."""
+    try:
+        affinity = len(os.sched_getaffinity(0))
+    except (AttributeError, OSError):
+        affinity = None
+    d = {"cpu_count": os.cpu_count(), "affinity": affinity,
+         "process_cpu_count": getattr(os, "process_cpu_count", lambda: None)()}
+    if os.environ.get("FENVIX_RUNTIME_ISA", "level") == "off":
+        d["isa"] = "not keyed (FENVIX_RUNTIME_ISA=off)"
+        return d
+    flags = None
+    try:
+        with open("/proc/cpuinfo") as fh:
+            for line in fh:
+                k, _, v = line.partition(":")
+                if k.strip() in ("flags", "Features"):
+                    flags = set(v.split())
+                    break
+    except OSError:
+        pass
+    if flags is None:
+        d["isa"] = platform.processor() or platform.machine()
+    elif platform.machine() in ("x86_64", "AMD64"):
+        level = "v1"
+        for name, need in _X86_LEVELS:
+            if need <= flags:
+                level = name
+            else:
+                break
+        d["isa"] = f"x86-64-{level}"
+    else:
+        d["isa"] = f"{platform.machine()}:{_h(' '.join(sorted(flags)))}"
+    return d
+
+
+def _preload_names() -> list[str]:
+    """Libraries the loader puts in every process ahead of the program's own: LD_PRELOAD and /etc/ld.so.preload."""
+    names = os.environ.get("LD_PRELOAD", "").replace(":", " ").split()
+    try:
+        with open("/etc/ld.so.preload") as fh:
+            names += fh.read().split()
+    except OSError:
+        pass
+    return names
 
 
 def _python_part() -> dict:
@@ -478,13 +663,24 @@ def runtime_parts(root: str, memo_path: str | None = "default") -> tuple[dict, d
         dg, n = _tree_digest(d, memo, natives)
         std_rows.append(dg)
         std_files += n
-    dists, editable, owned = _distributions(root, memo, natives)
+    dists, editable, project_owned = _distributions(root, memo, natives)
+    site_digest, site_files = _site_tree(sites, project_owned, [e.rstrip(os.sep) + os.sep for e in editable], memo,
+                                         natives)
+    extra_digest, extra_labels = _extra_paths(root, stdlib, sites, memo, natives)
     exe_info = _elf_info(exe)
     native_lines, libc, libpython, unresolved = [], None, None, []
     if exe_info is not None:
         linker = _Linker(exe, exe_info)
         own = set(os.path.realpath(p) for p in natives)
-        libs, missing = linker.closure(sorted(own))
+        roots = sorted(own)
+        for name in _preload_names():  # ahead of every other library in the process
+            pre = linker.resolve(name, exe, [], [])
+            if pre is None:
+                native_lines.append(f"preload:{os.path.basename(name)}:unresolved")
+            else:
+                native_lines.append(f"preload:{os.path.basename(pre)}:{memo.digest(pre)}")
+                roots.append(pre)
+        libs, missing = linker.closure(roots)
         for p, name in sorted(libs.items(), key=lambda kv: (kv[1], kv[0])):
             if p in own:
                 continue  # an extension module or a vendored library: keyed by the stdlib or its distribution
@@ -511,8 +707,12 @@ def runtime_parts(root: str, memo_path: str | None = "default") -> tuple[dict, d
         "native": _h("\n".join(native_lines)),
         "stdlib": _h("\n".join(std_rows)),
         "distributions": _h("\n".join(dists)),
-        "site_loose": _site_loose(sites, owned, memo),
+        "site_tree": site_digest,
+        "extra_paths": extra_digest,
         "sys_path": _h("\n".join(_sys_path(root, stdlib, sites))),
+        "locale": _h(json.dumps(_locale_part(memo), sort_keys=True)),
+        "tz": _h(json.dumps(_tz_part(memo), sort_keys=True)),
+        "cpu": _h(json.dumps(_cpu_part(), sort_keys=True)),
     }
     memo.save()
     details = {
@@ -522,6 +722,9 @@ def runtime_parts(root: str, memo_path: str | None = "default") -> tuple[dict, d
         "native_list": native_lines,
         "unresolved_native": unresolved,
         "sys_path": _sys_path(root, stdlib, sites),
+        "extra_paths": extra_labels,
+        "cpu": _cpu_part(),
+        "n_site_files": site_files,
         "n_distributions": len(dists),
         "n_stdlib_files": std_files,
         "n_native": len(native_lines),
