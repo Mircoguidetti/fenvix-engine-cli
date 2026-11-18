@@ -1,0 +1,179 @@
+{
+ "name": "click",
+ "set": "popular",
+ "url": "https://github.com/pallets/click",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009844",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "e38188e9e205005d5af5f9e59df51904c984586a",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group tests --group tests-random",
+ "collected": 2651,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 4.407,
+   "exit": 0,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 6.342,
+   "exit": 0,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 6.821,
+   "exit": 0,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": {
+    "decisions": 100,
+    "switches": 191,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 25
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 7.033,
+   "exit": 0,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 2626,
+    "xfailed": 1,
+    "skipped": 24
+   },
+   "stats": {
+    "decisions": 108,
+    "switches": 140,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 25
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  }
+ ],
+ "suite_seeds": [
+  1
+ ],
+ "mtimes_restored": [
+  0,
+  0,
+  0,
+  0
+ ],
+ "warmup": [
+  {
+   "duration_s": 10.705,
+   "exit": 0,
+   "timed_out": false
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "broken_by_l1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 1,
+  "loaded_runs": 5
+ }
+}
