@@ -168,4 +168,49 @@ job below).
 
 ## 7. Decision
 
-PENDING
+### The fair target set and the reachable share
+
+The fair set is the **55 tests that both passed and failed in E1** (6 projects, 30 runs each, configured workers,
+plain + stressed), each with its failure message (section 3). A test counts as reachable by a design when that design
+can give 10/10 replays with one fingerprint **and** a seed whose failure is the real one (same message and step). Today
+(MEASURED): **0 of 55**. No seed reproduced a real failure (E6: 0 of 2 tried), documenso replays differ every time even
+with pinned clocks (E5), actual's differ for reasons the freeze does not remove (E2).
+
+Share by mechanism (the 55 split as in section 3; per-test counts MEASURED, mechanism ESTIMATED where marked there):
+
+| Design item | Mechanisms it is needed for | Tests (of 55) | Projects | Cost (ESTIMATED, engineer-days) | What is still UNKNOWN |
+|---|---|---|---|---|---|
+| **Lockstep** (runner-gated virtual time, virtual deadlines) | determinism of replays on actual, uptime-kuma, sveltekit, etherpad (class A); M4, M5 | 12 (M4 2 + M5 10) | actual, uptime-kuma, documenso (1) | 7-11 (round 2) + **1-2 for the E3 spike first** | whether page work is governed by runner-gated grants (E2 rules out the observation-only explanation; E3 decides) |
+| **Seed space aimed at the flaking step** (holds only after the target page settled, deadline-reaching, matched on the real failure message) | M4, M5, M6 preload counters | 14 (12 + 2) | actual, uptime-kuma, sveltekit | 2-3 | whether a single aimed hold reproduces "18030" / "Failed to navigate" (E6 shows a blind hold does not) |
+| **Multi-worker scheduling** (one scheduler across N Playwright workers and the server; `--det` stops forcing `--workers=1`) | M2, M3, and the concurrency in M1 | 40 (M1 36 + M2 2 + M3 2) | documenso | 5-8 | cost of ordering N worker processes' messages without serialising them |
+| **Network layer for socket races** (a seeded TCP proxy between runner/page and server that can make the server's keep-alive close cross the runner's reuse) | M1 | 36 | documenso | 3-5 | whether M1 is that race (ESTIMATED from the message; a fixture with `keepAliveTimeout` decides in 2 hours) |
+| **documenso divergence source** (what differs in `session-json` with clocks pinned) | determinism of every documenso test | 41 | documenso | 1 to diagnose (job `e5diag`), fix UNKNOWN | PENDING |
+| **Database clock shim** (libfaketime on Postgres + app process) | none measured: E5 changes nothing | 0 | - | 0.5-1 to productise | - |
+| **CPU time as virtual time** (INP budget) | M6 INP | 1 | sveltekit | VM-class | - |
+| **VM** (ARCHITECTURE.md L2: browser + server + database in one deterministic machine) | all 6 | 55 | all | months (UNKNOWN in days) | moves the product off the customer's runner |
+
+What reaches **>= 60%**:
+
+- **By test count (33 of 55 needed): only a design that reproduces documenso's ECONNRESET class (36 tests).** That needs
+  multi-worker scheduling + the network layer + finding documenso's divergence source. Lockstep alone reaches at most
+  12-14 of 55 (22-25%, ESTIMATED), even if E3 passes. Combined (lockstep 8-13 incl. spike + aimed seeds 2-3 +
+  multi-worker 5-8 + network layer 3-5 + documenso source 1+UNKNOWN): **19-30 engineer-days, ESTIMATED**, with two
+  UNKNOWNs that each could stop it (E3, documenso source). Skewed by one project: 41 of the 55 are documenso.
+- **By mechanism (4 of 6 needed) or by project with flakes (3 of 4 needed: actual, documenso, uptime-kuma, sveltekit):**
+  lockstep + aimed seeds + multi-worker covers M2, M3, M4, M5 (4 of 6) and actual, uptime-kuma, documenso-partly:
+  **15-24 engineer-days, ESTIMATED**, same two UNKNOWNs.
+- A VM covers all 6 mechanisms (M6 included) with fewer unknowns per mechanism, at a cost of months.
+
+### Proposal
+
+1. **Do not start lockstep as a 7-11 day block.** First the three cheap deciders (all $0, 1 Actions job each): the E3
+   spike on actual + uptime-kuma (1-2 days); the `e5diag` result for documenso (running); a keep-alive fixture for M1
+   (2 hours, local).
+2. Change the exit metric (founder/coordinator decision): count a target only when the seed's failure **matches the
+   real failure** (message + step), on the E1 target set (55 tests, or the 4 projects that flake), reported per test
+   **and** per mechanism, with control-induced failures and hidden tests apart (as `aggregate.py` now does).
+3. If E3 passes and documenso's source is found: next round = lockstep + aimed seeds + multi-worker (15-24 days,
+   ESTIMATED), targeting >= 60% by mechanism; the network layer after, for the test-count share.
+4. If E3 fails: the per-process design has reached its limit on these apps; the VM route of ARCHITECTURE.md L2 is the
+   one that reaches the exit number, and its cost needs its own estimate (UNKNOWN today).
+
