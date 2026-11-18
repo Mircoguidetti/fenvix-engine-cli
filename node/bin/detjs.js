@@ -6,6 +6,7 @@
 //   detjs verify TRACE TRACE [...] [--json] [--show-stable]
 const USAGE = `usage: detjs vitest|jest|playwright [--det options] [runner args]
        detjs serve [--det options] -- COMMAND [ARGS]   (app server for detjs playwright)
+       detjs state save|restore|status --det-state=FILE (start state of detjs playwright runs)
        detjs verify TRACE TRACE [...] [--json] [--show-stable]
        detjs --det-help`;
 
@@ -15,6 +16,7 @@ async function main(argv) {
   if (cmd === 'jest') return require('../src/jest/cli').main(rest);
   if (cmd === 'playwright') return require('../src/pw/cli').main(rest);
   if (cmd === 'serve') return require('../src/pw/cli').serve(rest);
+  if (cmd === 'state') return require('../src/pw/snapshot').cli(rest);
   if (cmd === 'verify') {
     const native = require('../src/native');
     const paths = rest.filter((a) => !a.startsWith('--'));

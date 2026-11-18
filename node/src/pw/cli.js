@@ -26,6 +26,8 @@ const PW_HELP = `detjs playwright options (besides the detjs options of --det-he
   --det-browser-seeds=on|off   seeded Math.random / crypto in pages and test code (default on)
   --det-server=on|off          Level 0 controls and test brackets in app servers (default on)
   --det-epoch=now              use the current minute as epoch (printed, needed to replay)
+  --det-state=FILE             restore the files and databases listed in FILE to one snapshot before
+                               the run (saved by the first run); see src/pw/snapshot.js
 `;
 
 const PW_FLAGS = {
@@ -45,6 +47,10 @@ function splitPwFlags(argv) {
     if (PW_FLAGS[k]) {
       const val = v !== undefined ? v : argv[++i];
       env[PW_FLAGS[k]] = val === 'on' ? '1' : val === 'off' ? (k === '--det-server' ? '0' : 'off') : val;
+      continue;
+    }
+    if (k === '--det-state') {
+      env.DETJS_PW_STATE = path.resolve(v !== undefined ? v : argv[++i]);
       continue;
     }
     if (k === '--det-epoch' && v === 'now') {
@@ -109,6 +115,12 @@ async function main(argv) {
   if (!opts.det) return run(process.execPath, [cli, ...rest], { ...process.env, PATH: binPath(cwd, process.env.PATH) });
 
   const root = process.env.DETJS_ROOT || cwd;
+  let state = null;
+  if (pwEnv.DETJS_PW_STATE) {
+    const r = require('./snapshot').prepareRun(pwEnv.DETJS_PW_STATE);
+    state = { file: path.relative(cwd, r.spec.file), digest: r.digest, saved: r.saved };
+    process.stderr.write(`detjs: state ${state.saved ? 'saved and ' : ''}restored from ${path.relative(cwd, r.spec.dir)} (files digest ${r.digest})\n`);
+  }
   const runEnv = session.prepare(opts, root, 'playwright');
   const cfg = findConfig(rest, cwd);
   if (!cfg) throw new Error('detjs playwright: no playwright.config.* found (pass --config)');
@@ -134,7 +146,7 @@ async function main(argv) {
       seed: Number(runEnv.cfg.seed), shuffle: runEnv.cfg.shuffle, epoch: opts.epoch,
       vtime: pwEnv.DETJS_PW_VTIME || 'paced', net: pwEnv.DETJS_PW_NET !== 'off', net_window_ms: Number(pwEnv.DETJS_PW_NET_WINDOW || 15),
       browser_seeds: pwEnv.DETJS_PW_SEEDS !== 'off', server_controls: pwEnv.DETJS_PW_SERVER !== '0',
-      playwright: version, node: process.version, platform: process.platform,
+      playwright: version, node: process.version, platform: process.platform, state,
     }),
     NODE_OPTIONS: `${process.env.NODE_OPTIONS || ''} --require ${JSON.stringify(boot).slice(1, -1)}`.trim(),
   };
