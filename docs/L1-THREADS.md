@@ -128,6 +128,17 @@ Found on anyio's worker-thread pool and on requests with pytest-httpbin (Block 1
   time at the end plus real time since). Before, anyio's idle pool workers computed their
   time left across two clocks and the interpreter never exited.
 
+## Review R-007 fixes (2026-11-18)
+
+* `--det-threads` implies `--det-urandom` (`--det-threads-real-urandom` opts out): worker
+  threads that draw entropy made every fingerprint differ.
+* Line preemption (exploration seeds) uses `sys.monitoring` on Python 3.12+
+  (`detpy._core.LineMonitor`, its own tool id), so the project's trace function (coverage)
+  keeps working; older Pythons chain the existing trace function.
+* Under `--det`, `sys._current_frames()` shows each thread's innermost frame outside detpy,
+  as a plain run would (easypy logs where its workers wait).
+* A socket timeout against outside work counts real time from the start of the wait.
+
 ## What it does not do (yet)
 
 * Preemption between controlled points only in exploration and only via
