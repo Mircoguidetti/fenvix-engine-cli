@@ -5,99 +5,123 @@ detpy verify: 2 runs, 0 tests
 order: identical in every run
 covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
 ===== bd1ec3bf2406f266.jsonl
-detpy verify: 2 runs, 344 tests
+detpy verify: 2 runs, 573 tests
   run 0: /home/runner/work/_temp/l2_out/documenso/server-parts/det-1/bd1ec3bf2406f266.jsonl (partial)
   run 1: /home/runner/work/_temp/l2_out/documenso/server-parts/det-2/bd1ec3bf2406f266.jsonl (partial)
 order: DIFFERS between runs
-covered by Level 0: 299  not covered: 45  missing: 0  outcome-unstable: 0
-reasons: random=28 time=17
-NOT-COVERED e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: unknown recipient returns 404 [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #302: [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:335a05f53e4728be762704b44c8b2d4a
+covered by Level 0: 514  not covered: 58  missing: 1  outcome-unstable: 0
+reasons: missing=1 random=41 time=17
+NOT-COVERED e2e/api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient email [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #293: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:336cfdfcafb46291efecbec97dba162d  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000
+NOT-COVERED e2e/api/trpc/admin/admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with empty value returns no results [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #293: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:48827ff43a7d7c4cb3513f6b2a7fa17b  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000
+NOT-COVERED e2e/api/trpc/admin/delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin can delete via the tRPC endpoint directly [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:532e4ddd9671830a50ad3dcdd3abde80" vs "16:1d14da060efb1c23baaa74797bf1785a"
+NOT-COVERED e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient from a completed document [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #301: [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:b469ce43ff325d82ddde5f6dce597160
+NOT-COVERED e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document is sealed when every remaining signer has already signed [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #305: [time] setTimeout @ apps/remix/build/server/hono/packages/lib/jobs/client/local.js:299 = fire+150000000  <>  [random] crypto.getRandomValues @ <deps>/@noble/ciphers/esm/webcrypto.js:17 = 24:8509f8524e44ee07a1db8b1c09ef6872
+NOT-COVERED e2e/api/trpc/admin/delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: sequential signing advances to the next recipient [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:7a99de23f25b50ea033677ee18c37ee4" vs "16:7b3689b9f5b0f7a91b95ac9b3be55519"
 NOT-COVERED e2e/api/trpc/find-inbox.spec.ts::Inbox Find - Recipient Scoping::should not return documents the user is not a recipient of, even when searched by title [api]  [random] outcomes=passed,passed
     runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:b09808a1768ee4aad44e1d7754c8ca3b" vs "16:229683ded592d3f885a6ca2714ffa0c4"
-NOT-COVERED e2e/api/trpc/find-inbox.spec.ts::Inbox Find - Recipient Scoping::should mask signing tokens of other recipients [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:16b65f42126f69884aa9de6a05eadcda" vs "16:7f651b95b1dc09efff4bfdee4e6a68e3"
-NOT-COVERED e2e/api/trpc/find-inbox.spec.ts::Inbox Find - Search Hardening::should not surface deleted, draft or template envelopes through search [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:ab81bd6e545afe9f807ea1f64668e4c2" vs "16:7bde98a5ea552229240608cdee90080e"
+NOT-COVERED e2e/api/trpc/find-inbox.spec.ts::Inbox Find - Recipient Scoping::should not return documents where the user is only a CC recipient [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:fea6f0284641f3947cc2ebe8516872f6" vs "16:20efda676581078639a49c710e7cf704"
+NOT-COVERED e2e/api/trpc/find-inbox.spec.ts::Inbox Find - Recipient Scoping::should not expose team documents to team members who are not recipients [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:2d5c9077286eb94b114afdd11039ef5e" vs "16:c3aa8ef6c8d81ff9fb8dc9ec59d16923"
 NOT-COVERED e2e/api/trpc/find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should scope each status filter to exactly that status [api]  [random] outcomes=passed,passed
     runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:1a0517d53c128a1ef117cfe91bc6e6cf" vs "16:7637f3f4e91a943ff82b9159f9cdda83"
 NOT-COVERED e2e/api/trpc/find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should reject pagination values outside of the allowed range [api]  [random] outcomes=passed,passed
     runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:adb9ce0e7f5c6f5d0496a9b22663eae2" vs "16:268d3dacaf48f9aa1491f547bc9d7e4e"
-NOT-COVERED e2e/api/trpc/search-documents.spec.ts::Document Search - Visibility::should respect team document visibility per role [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:ff5f008132b688888a4414c90f083ddd" vs "16:888c9d7f84489be9dc34ef0c80e4422d"
-NOT-COVERED e2e/api/trpc/search-documents.spec.ts::Document Search - Visibility::should respect visibility when searching by recipient email [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:15eec77609d5718f8128b1adf5e5db70" vs "16:5dbd3b566cf4977582edbcdd2ffb812d"
-NOT-COVERED e2e/api/trpc/search-documents.spec.ts::Document Search - Cross-Team Isolation::should not cross team boundaries when searching SQL wildcard "%" [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:7c09df6c3dff8cd7334b3469e9a7eebd" vs "16:1453f5cf9cca5e463e88d3dfbeb642aa"
+NOT-COVERED e2e/api/trpc/search-documents.spec.ts::Document Search - Cross-Team Isolation::should not cross team boundaries when searching SQL wildcard "_" [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:d84ab0121c283817a09941b147c7303f" vs "16:fcc74aaaaa04c92f3a5fc3d4d649275e"
 NOT-COVERED e2e/api/trpc/search-documents.spec.ts::Document Search - Recipient::should find documents where user is a recipient [api]  [random] outcomes=passed,passed
     runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:5c5036828569e2ed16ec03d781d7037b" vs "16:8050bc54992a4d3dd3b341fe1d3f6158"
 NOT-COVERED e2e/api/trpc/search-documents.spec.ts::Document Search - Token Masking::should not expose other recipients signing tokens to the owner [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:4fcd8b22bca035016dc1286210aa7758" vs "16:1700ad411c82346469c4dbd163a5e723"
-NOT-COVERED e2e/api/trpc/search-documents.spec.ts::Document Search - Filtering::should find documents by externalId [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:a2a0aaba2a0aa8d7758594532342ae2c" vs "16:ef1db5b0140ef6db04207dd732f90f7a"
+    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:1700ad411c82346469c4dbd163a5e723" vs "16:4fcd8b22bca035016dc1286210aa7758"
 NOT-COVERED e2e/api/trpc/search-templates.spec.ts::Template Search - Visibility::should respect team template visibility per role [api]  [random] outcomes=passed,passed
     runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:e78347bd5f570b546c9e4f07dbcb3c3c" vs "16:c1f644e1a26cf7fd6a5ba240ec1ff10b"
-NOT-COVERED e2e/api/trpc/search-templates.spec.ts::Template Search - Cross-Team Isolation::should not cross team boundaries when searching SQL wildcard "%" [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:8d29b5381228c55f9c6321693edd0b68" vs "16:95b20289948fc984f31403852550610b"
-NOT-COVERED e2e/api/trpc/set-envelope-contents-audit-logs.spec.ts::logs a created content [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:5ea142f8c60382ffdd671ce1fed006d8" vs "16:4df8c0040eb841d1d42202dc36e1e389"
-NOT-COVERED e2e/api/trpc/set-envelope-contents-audit-logs.spec.ts::logs a moved content as updated, recording the position [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:89d978ce1a17deac7af083784744fb4b" vs "16:5c01a4e0420c38438d8e012565e4cf3f"
+NOT-COVERED e2e/api/trpc/search-templates.spec.ts::Template Search - Cross-Team Isolation::should not reveal templates from other teams [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:16c2b343a1282a455ac945f3b6b29b46" vs "16:9cfc93f150900316f9cd8d351306300f"
+NOT-COVERED e2e/api/trpc/search-templates.spec.ts::Template Search - Recipient Email::should find templates by recipient email within team but not cross-team [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:6b0e2365143c8ed901816f3a3c88e3e1" vs "16:e760376c83105aed3d7f0624dbd6ef96"
 NOT-COVERED e2e/api/trpc/set-envelope-contents-audit-logs.spec.ts::rejects moving a content to another envelope item [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:b23ca4c188ed81dbdf8997936ac47e34" vs "16:ed6365cfbbaf94bb2873bad65c553d3e"
-NOT-COVERED e2e/api/trpc/set-envelope-contents-audit-logs.spec.ts::does not log a save which changed nothing [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:47f3916929e57425707fbd985ae85bd0" vs "16:15193b60dfd12eafde33b0cbe8ffbd12"
+    runs 0 vs 1: event #298: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:33466044747fcaeefbb65282b258ec92  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000
 NOT-COVERED e2e/api/trpc/set-envelope-contents-audit-logs.spec.ts::logs a removed content as deleted [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #291: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:8884f38e1c0d4e9206f187e42ef66f7b  <>  [time] Date @ apps/remix/build/server/hono/packages/lib/universal/monthly-period.js:3 = 1000
-NOT-COVERED e2e/api/trpc/set-envelope-contents-audit-logs.spec.ts::does not log contents authored on a template [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #280: [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000  <>  [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:19974cba5b643ee7815e4e9deb49c80b
+    runs 0 vs 1: event #298: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:8bb63c20e430120879ccab32ed8784ab  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000
 NOT-COVERED e2e/api/trpc/set-envelope-contents-ids.spec.ts::creates several new contents in one save [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #298: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:c730a41546cf4728c47e406c29f9c727  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000
+    runs 0 vs 1: event #267: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:e291142e9a2030583d16aa6ce32d9c73  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000
 NOT-COVERED e2e/api/trpc/set-envelope-contents-limits.spec.ts::rejects a save which exceeds the content limit [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:7f5cba629a22708bd4591459d6f35537" vs "16:c071768bb9831a5eb910e0df9086be35"
+    runs 0 vs 1: event #291: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:d73d28d260a5a9b45197a0c3f266bd8b  <>  [time] Date @ apps/remix/build/server/hono/packages/lib/universal/monthly-period.js:3 = 1000
 NOT-COVERED e2e/api/trpc/set-envelope-contents-limits.spec.ts::allows an over limit envelope to be trimmed back down [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:d1500c94149e8df39bcd98ffccf70a0f" vs "16:83f41b46c337181918e6d43415f346cb"
-NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Access::should reject a recipient of a team document who is not a member on every procedure [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #323: [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000  <>  [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:7709895248f43957953a69431ace68c0
+    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:83f41b46c337181918e6d43415f346cb" vs "16:d1500c94149e8df39bcd98ffccf70a0f"
 NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Access::should reject an organisation member who is not in the team on every procedure [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #303: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:612b1b1d6af13177d0716b0d84c495c2  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000
-NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Tampering::should ignore identity fields injected into the input [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #302: [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:240df2c414e571a6cade82a9887e8fa1
-NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Tampering::should not grant access through the x-team-id header [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #271: [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000  <>  [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:8c7597922fe5bda567850e29d9d2c21c
+    runs 0 vs 1: event #342: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:9df61a7b2386a986ebb1d304f859815d  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000
+NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Access::should reject an admin of a sibling team on every procedure [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #310: [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000  <>  [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:3614b9506cb2d44581889d6fde88db6a
+NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Tampering::should not grant access through the x-team-id header [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #365: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:0bfe7a29c03ebc38eaafa98583bac58e  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000
 NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Tampering::should reject target team calls batched with an allowed call [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #321: [time] Date @ apps/remix/build/server/hono/packages/lib/utils/team-analytics-range.js:25 = 1000  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 15000
+    runs 0 vs 1: event #314: [time] Date @ apps/remix/build/server/hono/packages/lib/utils/team-analytics-range.js:25 = 1000  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 14000
 NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Tampering::should not reveal whether a team exists [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #302: [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:98fe9b77ed77c61fb966910601239cc2
-NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Access::should reject a recipient of an organisation document on every procedure [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #307: [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000  <>  [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:a57f718bd227010081254982c53ed056
-NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Tampering::should not grant access through the x-team-id header [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #303: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:4fddc91c44ac6b3905ee786217bdac2d  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000
-NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Tampering::should reject target organisation calls batched with an allowed call [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #302: [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:e463360818a89113e22452d2cd4787a2
-NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Tampering::should not reveal whether an organisation exists [api]  [time] outcomes=passed,passed
     runs 0 vs 1: event #295: [time] Date.now @ <deps>/pino/lib/time.js:5 = 3000  <>  [time] Date @ apps/remix/build/server/hono/packages/lib/universal/monthly-period.js:3 = 1000
-NOT-COVERED e2e/api/v1/document-sending.spec.ts::Document API::sendDocument: should not block initial sequential send when CC recipient is first in signing order [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #304: [time] setTimeout @ apps/remix/build/server/assets/server-build-BOYaIJ8l.js:955 = fire+6000000000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:da6e38c0e9e2372ad30e8205b6f9085e
-NOT-COVERED e2e/api/v1/template-field-prefill.spec.ts::Template Field Prefill API v1::should create a document from template without prefilled fields [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #473: [outcome] outcome @  = passed  <>  [time] setTimeout @ apps/remix/build/server/assets/server-build-BOYaIJ8l.js:955 = fire+6000000000
-NOT-COVERED e2e/api/v2/find-documents.spec.ts::Find Documents API - Adversarial: Cross-Team folderId::cross-team folderId via session/tRPC should also return empty [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #302: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:9590f21d38eca88986b76b08d601912d  <>  [time] Date @ apps/remix/build/server/hono/packages/lib/server-only/envelope/query-helpers.js:13 = 1000
-NOT-COVERED e2e/api/v2/find-documents.spec.ts::Find Documents API - Adversarial: Cross-Team Expired Recipient Filter::x-team-id spoofing with status=EXPIRED is rejected for a non-member [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #302: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:120530cb34c8da16c818f9e41508c6d8  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000
+NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Access::should reject an organisation member on every procedure [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #326: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:8680d3dff6dcf1c5298ff4b241f02a18  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000
+NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Tampering::should reject target organisation calls batched with an allowed call [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #313: [time] Date @ apps/remix/build/server/hono/packages/lib/utils/team-analytics-range.js:25 = 1000  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 13000
+NOT-COVERED e2e/api/trpc/test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Tampering::should reject API tokens, even one belonging to an organisation admin [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #11: [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000  <>  [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:02cc744646a7c36a1661daa85f2ac020
+NOT-COVERED e2e/api/v1/document-sending.spec.ts::Document API::sendDocument: should not block initial sequential send when CC recipient is first in signing order [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:2ec6d45ea869381e21cb35a0d1a8f054" vs "16:8f8ac34eb6a96feac8a93f4405653f52"
+NOT-COVERED e2e/api/v1/template-field-prefill.spec.ts::Template Field Prefill API v1::should create a document from template without prefilled fields [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #284: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:825930334b9ee297937f9a29a90f1211  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000
+NOT-COVERED e2e/api/v2/envelope-content-limit.spec.ts::Envelope content limits on distribute::allows distribution when the content count is at the limit [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #27: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:f5310b6cc5c75add1ac5136ea3f373ac  <>  [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/public-api/get-api-token-by-token.js:87 = 1000
+NOT-COVERED e2e/api/v2/envelope-content-limit.spec.ts::Envelope content limits on distribute::denies distribution when the content count is over the limit [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #6: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:6d0bd0f7e48f8fc8679b2098844ff919  <>  [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:bd12bd6e3cae675b0414604951b54695
+NOT-COVERED e2e/api/v2/envelope-copy-contents.spec.ts::Copy contents to new envelopes::envelope/duplicate logs the copied document, fields and contents [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #11: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:d0de014303c38a2e3cd3ca986f4f1b4c  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:c39dbc5f08c8832b9d2e413104aa2ec6
+NOT-COVERED e2e/api/v2/envelopes-api.spec.ts::API V2 Envelopes::Empty recipient tests::Mixed recipients with and without emails [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #12: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:eac98150e05fce400b2851fd38ada721  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:35586be551593903131ead5133ebf155
+NOT-COVERED e2e/api/v2/envelopes-api.spec.ts::API V2 Envelopes::Empty recipient tests::Distribute envelope with empty email recipients [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #3: [time] Date @ apps/remix/build/server/hono/packages/lib/server-only/public-api/get-api-token-by-token.js:95 = 1000  <>  [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:f9ab80084af75d4dcbc9024abbcdb13f
+NOT-COVERED e2e/api/v2/find-documents.spec.ts::Find Documents API - Adversarial: Cross-Team folderId::cross-team folderId via session/tRPC should also return empty [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #294: [time] Date @ apps/remix/build/server/hono/packages/lib/server-only/envelope/query-helpers.js:13 = 1000  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000
+NOT-COVERED e2e/api/v2/find-documents.spec.ts::Find Documents API - Adversarial: Cross-Team senderIds::senderIds with mix of valid and cross-team userIds should only return matching team docs [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #271: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:b27c53c484e11f8f9292b88fb7edeba9  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000
 NOT-COVERED e2e/api/v2/find-documents.spec.ts::Find Documents API - Adversarial: Cross-Team Expired Recipient Filter::EXPIRED pseudo-status via session only returns the caller team expired docs (positive control) [api]  [random] outcomes=passed,passed
     runs 0 vs 1: event #302: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:29344395701267d70cd9ad86ef1ee39f  <>  [time] Date @ apps/remix/build/server/hono/packages/lib/server-only/envelope/query-helpers.js:13 = 1000
-NOT-COVERED e2e/api/v2/find-envelopes.spec.ts::Find Envelopes API - Adversarial: x-team-id Header Spoofing::should return only own team data when user provides legitimate x-team-id (positive control) [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:77af69cf9ee375f6fe88cc23c454c8c3" vs "16:33104ba20cd971781bb1001fe005b404"
-NOT-COVERED f9fa495c34640cd310fd-c96495f078fd0f1d4e98  [time] outcomes=passed,passed
-    runs 0 vs 1: event #35: [time] setImmediate @ <deps>/nodemailer/dist/esm/smtp-connection/index.js:1152 =   <>  [time] setImmediate @ <deps>/nodemailer/dist/esm/mime-node/index.js:827 = 
-NOT-COVERED 69fbc891263ef3025fe0-7d680e0b1d2f1c71c42f  [time] outcomes=passed,passed
-    runs 0 vs 1: event #16: [time] setTimeout @ apps/remix/build/server/hono/packages/lib/jobs/client/local.js:299 = fire+150000000  <>  [outcome] outcome @  = passed
-NOT-COVERED e2e/api/v2/template-field-prefill.spec.ts::Template Field Prefill API v2::should create a document from template without prefilled fields [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #494: [outcome] outcome @  = passed  <>  [time] setTimeout @ apps/remix/build/server/assets/server-build-BOYaIJ8l.js:955 = fire+6000000000
+NOT-COVERED e2e/api/v2/find-documents.spec.ts::Find Documents API - Adversarial: Cross-Team Expired Recipient Filter::EXPIRED stats count is scoped to the caller team and excludes other-team expired docs [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #294: [time] Date @ apps/remix/build/server/hono/packages/lib/server-only/envelope/query-helpers.js:13 = 1000  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000
+NOT-COVERED e2e/api/v2/find-envelopes.spec.ts::Find Envelopes API - Adversarial: x-team-id Header Spoofing::member of TeamA should not access TeamB via x-team-id [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #324: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:bf5e27908297d79a92a6a6005b91097e  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000
+NOT-COVERED e2e/api/v2/find-envelopes.spec.ts::Find Envelopes API - Adversarial: Cross-Team folderId::should NOT return envelopes from another team when folderId belongs to that team [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #9: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/public-api/get-api-token-by-token.js:87 = 1000  <>  [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:7afeb74305477f570b5c15400df90006
+NOT-COVERED e2e/api/v2/recipient-count-limit.spec.ts::Recipient count limit on distribute::should allow distribution when recipient count is below the limit [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #12: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:f4c94e8d6201fb3a7015a7f42a0b834c  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:7c268baab907d4a09d832b8950a5dda2
+NOT-COVERED e2e/api/v2/reject-recipient-on-behalf-of.spec.ts::Reject recipient on behalf of::should reject a recipient and record an external rejection audit log [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #13: [random] crypto.getRandomValues @ <deps>/@noble/ciphers/esm/webcrypto.js:17 = 24:463cedb04ec70aa1a7b91f0ef1103a3f  <>  [time] setTimeout @ apps/remix/build/server/hono/packages/lib/jobs/client/local.js:299 = fire+150000000
+NOT-COVERED e2e/api/v2/reject-recipient-on-behalf-of.spec.ts::Reject recipient on behalf of::should attribute the rejection to the elected team member when actAsEmail is supplied [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #13: [random] crypto.getRandomValues @ <deps>/@noble/ciphers/esm/webcrypto.js:17 = 24:973fa3815b7daebec282149d6ce1b159  <>  [time] setTimeout @ apps/remix/build/server/hono/packages/lib/jobs/client/local.js:299 = fire+150000000
+NOT-COVERED e2e/api/v2/reject-recipient-on-behalf-of.spec.ts::Reject recipient on behalf of::should deny rejecting a recipient that has already actioned the document [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #13: [time] setTimeout @ apps/remix/build/server/hono/packages/lib/jobs/client/local.js:299 = fire+150000000  <>  [random] crypto.getRandomValues @ <deps>/@noble/ciphers/esm/webcrypto.js:17 = 24:da8a5513a508acb1473df7e4e9aab2f8
+NOT-COVERED e2e/api/v2/template-field-prefill.spec.ts::Template Field Prefill API v2::should create a document from template with prefilled fields [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #296: [time] setTimeout @ apps/remix/build/server/assets/server-build-BOYaIJ8l.js:955 = fire+6000000000  <>  [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:22858a6974a1e45d42422e11123f3d49
+NOT-COVERED e2e/api/v2/template-field-prefill.spec.ts::Template Field Prefill API v2::should format a prefilled date with the document date format [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #6: [outcome] outcome @  = passed  <>  [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:cc92346f97785a4a0575442d6e6e50d1
+NOT-COVERED e2e/api/v2/test-unauthorized-api-access.spec.ts::Document API V2::Document redistribute endpoint::should allow authorized access to document redistribute endpoint [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #36: [time] setImmediate @ <deps>/nodemailer/dist/esm/smtp-connection/index.js:1152 =   <>  [time] setImmediate @ <deps>/nodemailer/dist/esm/mime-node/index.js:913 = 
+NOT-COVERED e2e/api/v2/test-unauthorized-api-access.spec.ts::Document API V2::Envelope API V2::Envelope get-many endpoint::should allow authorized access with documentId type [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #3: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:a07b2a149e8097d096870d51bf0e35b1  <>  [time] Date @ apps/remix/build/server/hono/packages/lib/server-only/public-api/get-api-token-by-token.js:95 = 1000
+NOT-COVERED e2e/api/v2/test-unauthorized-api-access.spec.ts::Document API V2::Envelope API V2::Envelope get-many endpoint::should reject requests exceeding max ID limit [api]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #3: [time] Date @ apps/remix/build/server/hono/packages/lib/server-only/public-api/get-api-token-by-token.js:95 = 1000  <>  [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:17ea2e517edd3e7b099a616f908dd7c2
+NOT-COVERED e2e/api/v2/test-unauthorized-api-access.spec.ts::Document API V2::Envelope API V2::Envelope get-many tRPC endpoint (teamId manipulation)::should allow access when user uses their own team id [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:f66fd6a0d983c03cf5f3611684e0551c" vs "16:3def5e9ec269a5ac62b932d69392d28b"
+NOT-COVERED e2e/api/v2/test-unauthorized-api-access.spec.ts::Document API V2::Envelope API V2::Envelope get-many tRPC endpoint (teamId manipulation)::should block access when switching team id mid-request to access other team data [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #302: [random] crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 = 16:01e77126ec4296d5e95569585bb19a25  <>  [time] Date.now @ <deps>/pino/lib/time.js:5 = 2000
+NOT-COVERED e2e/api/v2/tsp-recipient-grouping.spec.ts::[TSP_GROUPING]: still allows signing groups on an SES envelope [api]  [random] outcomes=passed,passed
+    runs 0 vs 1: event #15: [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:60524553e0f1af6717e1b49c4fa86a63  <>  [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/public-api/get-api-token-by-token.js:87 = 1000
 NOT-COVERED e2e/api/v2/unauthorized-api-access/api-access-content-image.spec.ts::Content image endpoint authorization::rejects a request from a user outside the team [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #298: [time] Date.now @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:79 = 1000  <>  [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000
-NOT-COVERED e2e/api/v2/unauthorized-api-access/api-access-content-image.spec.ts::Content image endpoint authorization::allows the owner with a normal session [api]  [random] outcomes=passed,passed
-    runs 0 vs 1: event #0: crypto.getRandomValues @ apps/remix/build/server/hono/server/security-headers.js:51 returned different values: "16:f7d5aceded7f93d9105ede48c7504521" vs "16:35287f50a9fb89bec69854e98f71b38e"
+    runs 0 vs 1: event #271: [time] Date.now @ <deps>/pino/lib/time.js:5 = 1000  <>  [random] crypto.getRandomValues @ <deps>/nanoid/index.js:18 = 4480:b31d2034fb3d3e6b894595c073dab1d5
 NOT-COVERED e2e/api/v2/unauthorized-api-access/api-access-file-download.spec.ts::Envelope item file download endpoint authorization::allows the owner to download their own document [api]  [time] outcomes=passed,passed
-    runs 0 vs 1: event #290: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [time] Date.now @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:79 = 1000
+    runs 0 vs 1: event #298: [time] Date.now @ apps/remix/build/server/hono/packages/lib/server-only/rate-limit/rate-limit.js:23 = 1000  <>  [time] Date.now @ apps/remix/build/server/hono/packages/auth/server/lib/session/session.js:79 = 1000

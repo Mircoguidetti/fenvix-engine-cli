@@ -1,6 +1,6 @@
-◇ injected env (102) from ../../.env // tip: ⌘ suppress logs { quiet: true }
-◇ injected env (0) from ../../.env.local // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
-◇ injected env (0) from ../../.env.test // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (102) from ../../.env // tip: ⌘ override existing { override: true }
+◇ injected env (0) from ../../.env.local // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from ../../.env.test // tip: ◈ secrets for agents [www.dotenvx.com]
 [JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
 [JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
 [JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
@@ -10,35 +10,108 @@
 [JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
 
 Running 595 tests using 10 workers
-◇ injected env (0) from ../../.env // tip: ⌘ enable debugging { debug: true }
-◇ injected env (0) from ../../.env.local // tip: ◈ secrets for agents [www.dotenvx.com]
-◇ injected env (0) from ../../.env.test // tip: ⌘ custom filepath { path: '/custom/path/.env' }
-◇ injected env (0) from ../../.env // tip: ◈ secrets for agents [www.dotenvx.com]
-◇ injected env (0) from ../../.env.local // tip: ⌁ auth for agents [www.vestauth.com]
-◇ injected env (0) from ../../.env.test // tip: ⌘ enable debugging { debug: true }
-◇ injected env (0) from ../../.env // tip: ◈ encrypted .env [www.dotenvx.com]
-◇ injected env (0) from ../../.env.local // tip: ◈ secrets for agents [www.dotenvx.com]
-◇ injected env (0) from ../../.env.test // tip: ◈ encrypted .env [www.dotenvx.com]
-◇ injected env (0) from ../../.env // tip: ◈ encrypted .env [www.dotenvx.com]
 ◇ injected env (0) from ../../.env // tip: ⌘ override existing { override: true }
-◇ injected env (0) from ../../.env.local // tip: ◈ secrets for agents [www.dotenvx.com]
-◇ injected env (0) from ../../.env.test // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
-◇ injected env (0) from ../../.env.local // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
-◇ injected env (0) from ../../.env.test // tip: ⌁ auth for agents [www.vestauth.com]
-◇ injected env (0) from ../../.env // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from ../../.env.local // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from ../../.env.test // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (0) from ../../.env // tip: ⌘ override existing { override: true }
 ◇ injected env (0) from ../../.env.local // tip: ⌁ auth for agents [www.vestauth.com]
-◇ injected env (0) from ../../.env.test // tip: ⌘ enable debugging { debug: true }
-◇ injected env (0) from ../../.env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from ../../.env.test // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (0) from ../../.env // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from ../../.env.local // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from ../../.env.test // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from ../../.env // tip: ⌘ override existing { override: true }
 ◇ injected env (0) from ../../.env.local // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
 ◇ injected env (0) from ../../.env.test // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from ../../.env // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from ../../.env.local // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from ../../.env.test // tip: ⌘ override existing { override: true }
+◇ injected env (0) from ../../.env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from ../../.env.local // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from ../../.env.test // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
 ◇ injected env (0) from ../../.env // tip: ⌘ suppress logs { quiet: true }
-◇ injected env (0) from ../../.env.local // tip: ⌘ override existing { override: true }
-◇ injected env (0) from ../../.env.test // tip: ⌘ custom filepath { path: '/custom/path/.env' }
-◇ injected env (0) from ../../.env // tip: ◈ secrets for agents [www.dotenvx.com]
-◇ injected env (0) from ../../.env.local // tip: ⌘ custom filepath { path: '/custom/path/.env' }
-◇ injected env (0) from ../../.env.test // tip: ⌘ suppress logs { quiet: true }
-◇ injected env (0) from ../../.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
 ◇ injected env (0) from ../../.env.local // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from ../../.env.test // tip: ⌘ override existing { override: true }
+◇ injected env (0) from ../../.env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from ../../.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (0) from ../../.env.local // tip: ⌘ override existing { override: true }
+◇ injected env (0) from ../../.env.test // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from ../../.env.local // tip: ◈ secrets for agents [www.dotenvx.com]
+◇ injected env (0) from ../../.env.test // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from ../../.env // tip: ⌘ override existing { override: true }
+◇ injected env (0) from ../../.env.local // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from ../../.env.test // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+··········F·◇ injected env (0) from ../../.env // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from ../../.env.local // tip: ⌁ auth for agents [www.vestauth.com]
 ◇ injected env (0) from ../../.env.test // tip: ⌘ enable debugging { debug: true }
 [JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
 [JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
@@ -47,109 +120,153 @@ Running 595 tests using 10 workers
 [JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
 [JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
 [JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
-[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
-[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
-[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
-[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
-[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
-[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
-[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
-[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
-[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
-[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
-[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
-[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
-[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
-[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
-[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
-[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
-[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
-[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
-[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
-[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
-[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
-[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
-[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
-[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
-[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
-[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
-[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
-[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
-················································································
-····················································°···°··°····°··°·····°·°····
-°······°··°·······°·····°·°··{
-  token: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MjgiLCJzdWIiOiI5MCIsImlhdCI6MTc5NDk5ODAzNywiZXhwIjoxNzk1MDAxNjM3fQ.Dpvw5WZqKmdoGFO5iCMGCG8z0Z9LUQXk8unaMq7RmGA',
-  expiresAt: '2026-11-18T11:33:57.497Z',
+····································································
+······················································°···°····°··°···°····°··°·
+···°···°·····°····°···°···°··°{
+  token: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MjkiLCJzdWIiOiI5MSIsImlhdCI6MTc5NTAwNDYxNSwiZXhwIjoxNzk1MDA4MjE1fQ.-AwgWHuYWaEpZ3LlcmGURpbCSS4oFIyKz24l5MhQBzI',
+  expiresAt: '2026-11-18T13:23:35.241Z',
   expiresIn: 3600
 }
-{
-  token: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MjkiLCJzdWIiOiI5MSIsImlhdCI6MTc5NDk5ODAzNywiZXhwIjoxNzk1MDA1MjM3fQ.HJuCB3SQ9lhFBriuJurrswcA-tBQf2hftn07347qvwY',
-  expiresAt: '2026-11-18T12:33:57.517Z',
+··{
+  token: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzAiLCJzdWIiOiI5MiIsImlhdCI6MTc5NTAwNDYxNSwiZXhwIjoxNzk1MDExODE1fQ.mUqWtQdV8tcFDPeIbYudk1hEq4M2a1sGR9nUIoxEQvM',
+  expiresAt: '2026-11-18T14:23:35.542Z',
   expiresIn: 7200
 }
-··°Create response: {
-  token: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzEiLCJzdWIiOiI5MyIsImlhdCI6MTc5NDk5ODAzNywiZXhwIjoxNzk1MDAxNjM3fQ.zVmbm2pFvM2-slImR45k82__JeRtpNrbJDXsGxeXVbg',
-  expiresAt: '2026-11-18T11:33:57.810Z',
+·Create response: {
+  token: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzEiLCJzdWIiOiI5MyIsImlhdCI6MTc5NTAwNDYxNSwiZXhwIjoxNzk1MDA4MjE1fQ.gDrK83U_lNnI30kOpDX3xbE1xJOI8dd0nT3eLMA_Lpg',
+  expiresAt: '2026-11-18T13:23:35.639Z',
   expiresIn: 3600
 }
-·Verify response: { success: true }
+·Create response: {
+  token: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzIiLCJzdWIiOiI5NCIsInNjb3BlIjoiZG9jdW1lbnRJZDoxIiwiaWF0IjoxNzk1MDA0NjE1LCJleHAiOjE3OTUwMDgyMTV9.Rzr5pbh2sxp7qojob0X3p2L-xDfLUnn-05wzjZAuCNA',
+  expiresAt: '2026-11-18T13:23:35.692Z',
+  expiresIn: 3600
+}
+Verify response: { success: true }
+Verify response: { success: true }
 ··Invalid token response: { success: false }
-Create response: {
-  token: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzMiLCJzdWIiOiI5NSIsInNjb3BlIjoiZG9jdW1lbnRJZDoxIiwiaWF0IjoxNzk0OTk4MDM4LCJleHAiOjE3OTUwMDE2Mzh9.IY1-ewG20GnyCYrUm0g1DVHA2sJhCl1KJJ7EaZoWkbg',
-  expiresAt: '2026-11-18T11:33:58.134Z',
-  expiresIn: 3600
-}
-·Verify response: { success: true }
 ··Create response: {
-  token: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzYiLCJzdWIiOiI5NyIsInNjb3BlIjoiZG9jdW1lbnRJZDoxIiwiaWF0IjoxNzk0OTk4MDM4LCJleHAiOjE3OTUwMDE2Mzh9.0wh0ooDv0u7Llec3aN__YmL65vgkihPBcaw-Xm7gy_c',
-  expiresAt: '2026-11-18T11:33:58.434Z',
+  token: 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MzQiLCJzdWIiOiI5NiIsInNjb3BlIjoiZG9jdW1lbnRJZDoxIiwiaWF0IjoxNzk1MDA0NjE1LCJleHAiOjE3OTUwMDgyMTV9.deOR-XDIpTFr-J9lfzgVgVCDGsCFBAxtTUnfOo4xlW0',
+  expiresAt: '2026-11-18T13:23:35.898Z',
   expiresIn: 3600
 }
 Invalid token response: { success: false }
-···························{
-  createdEnvelopeId: 'envelope_lmtrsmsodwlrisde',
-  userEmail: 'd1620018ee@test.documenso.com'
+··························{
+  createdEnvelopeId: 'envelope_refzoovxuryndabc',
+  userEmail: '4200ad420f@test.documenso.com'
 }
-···············
-·········································································°·°····
-··°······°··°·····°······°·····°····°······°··°····°···°°··°·····°·°············
+················
+·········································································°·°···°
+····°···°···°·····°······°··°···°····°·······°·····°····°··°··°····°············
 ················································································
 ·········································°°°°°°°°°······························
-··············°°°°°°°°°°°°·········
+·········FF···°°°°°°°°°°°°·······◇ injected env (0) from ../../.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from ../../.env.local // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from ../../.env.test // tip: ◈ secrets for agents [www.dotenvx.com]
+◇ injected env (0) from ../../.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from ../../.env.local // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from ../../.env.test // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)
+[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)
+[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)
+[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)
+··
+
+  1) [api] › e2e/api/trpc/admin/admin-find-documents.spec.ts:2:2564 › [ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively 
+
+    Error: apiRequestContext.get: read ECONNRESET
+    Call log:
+      - → GET http://localhost:3000/api/trpc/admin.document.find?input=%7B%22json%22%3A%7B%22query%22%3A%22recipient%3ARECIPIENT-NAME-582333F933%22%2C%22page%22%3A1%2C%22perPage%22%3A20%7D%7D
+        - user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+        - cookie: __disable_animations=true; csrfToken=z4parfn7rz6yh75pi3wcleg4fs4gdkcn.cUJmUcB8ko3p3QBusBdq4GxBezMFEqJFtlZREJjyi48%3D; sessionId=ii6myptwh2xcpmac6j5rda6n2gt2sokg.TnNrA69kxy1Bt5PGFs26qYot3NM%2F0iZ%2BEjq%2BFtacwg0%3D; lang=ImVuIg%3D%3D; preferred-team-url=personal_hwfzndzaakwhbbhb
+
+
+      1 | import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
+    > 2 | import { seedPendingDocument } from '@documenso/prisma/seed/documents';
+        |                                                                                                                ^
+      3 | import { seedUser } from '@documenso/prisma/seed/users';
+      4 | import type { Page } from '@playwright/test';
+      5 | import { expect, test } from '@playwright/test';
+        at callAdminFindDocuments (/home/runner/work/_temp/l2_target/packages/app-tests/e2e/api/trpc/admin/admin-find-documents.spec.ts:2:902)
+        at /home/runner/work/_temp/l2_target/packages/app-tests/e2e/api/trpc/admin/admin-find-documents.spec.ts:2:3193
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/api-trpc-admin-admin-find--bfe5a-ent-name-case-insensitively-api/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/api-trpc-admin-admin-find--bfe5a-ent-name-case-insensitively-api/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/api-trpc-admin-admin-find--bfe5a-ent-name-case-insensitively-api/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/api-trpc-admin-admin-find--bfe5a-ent-name-case-insensitively-api/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [api] › e2e/api/v2/update-envelope-items.spec.ts:2:8077 › Update envelope items › should reject order change on a PENDING envelope 
+
+    Error: expect(received).toBeFalsy()
+
+    Received: true
+
+      1 | import fs from 'node:fs';
+    > 2 | import path from 'node:path';
+        |                                                                      ^
+      3 | import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
+      4 | import { createApiToken } from '@documenso/lib/server-only/public-api/create-api-token';
+      5 | import { prisma } from '@documenso/prisma';
+        at /home/runner/work/_temp/l2_target/packages/app-tests/e2e/api/v2/update-envelope-items.spec.ts:2:8522
+
+    Error Context: test-results/api-v2-update-envelope-ite-10464-hange-on-a-PENDING-envelope-api/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/api-v2-update-envelope-ite-10464-hange-on-a-PENDING-envelope-api/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/api-v2-update-envelope-ite-10464-hange-on-a-PENDING-envelope-api/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [api] › e2e/api/v2/update-envelope-items.spec.ts:2:8603 › Update envelope items › should reject combined title and order change on a PENDING envelope 
+
+    Error: expect(received).toBeFalsy()
+
+    Received: true
+
+      1 | import fs from 'node:fs';
+    > 2 | import path from 'node:path';
+        |                                                                      ^
+      3 | import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
+      4 | import { createApiToken } from '@documenso/lib/server-only/public-api/create-api-token';
+      5 | import { prisma } from '@documenso/prisma';
+        at /home/runner/work/_temp/l2_target/packages/app-tests/e2e/api/v2/update-envelope-items.spec.ts:2:9091
+
+    Error Context: test-results/api-v2-update-envelope-ite-0bb5d-hange-on-a-PENDING-envelope-api/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/api-v2-update-envelope-ite-0bb5d-hange-on-a-PENDING-envelope-api/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/api-v2-update-envelope-ite-0bb5d-hange-on-a-PENDING-envelope-api/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [api] › e2e/api/trpc/admin/admin-find-documents.spec.ts:2:2564 › [ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively 
+    [api] › e2e/api/v2/update-envelope-items.spec.ts:2:8077 › Update envelope items › should reject order change on a PENDING envelope 
+    [api] › e2e/api/v2/update-envelope-items.spec.ts:2:8603 › Update envelope items › should reject combined title and order change on a PENDING envelope 
   52 skipped
-  543 passed (3.1m)
+  540 passed (3.8m)
