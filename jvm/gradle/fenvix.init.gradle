@@ -1,0 +1,66 @@
+// fenvix: Gradle wiring of the JVM shell, as an init-script plugin.
+//
+//   gradle test --init-script fenvix.init.gradle -Dfenvix.agent=/path/fenvix-agent.jar -Dfenvix.det=1 [-Dfenvix.seed=N]
+//
+// (the `fenvix-jvm run` CLI adds these arguments). For every Test task of every
+// project it adds -javaagent, and under --det it makes the run serial
+// (maxParallelForks = 1, forkEvery = 0) and never up to date or taken from the
+// build cache, so that the tests really run. Options are read from system
+// properties (-D) or project properties (-P).
+
+class FenvixJvmPlugin implements Plugin<Gradle> {
+    static String opt(Gradle g, String k, String d) {
+        def v = System.getProperty(k)
+        if (v == null) v = g.startParameter.projectProperties.get(k)
+        if (v == null) v = System.getenv(k.toUpperCase().replace('.', '_'))
+        return v == null ? d : v
+    }
+
+    static boolean on(String v) { v in ['1', 'true', 'yes'] }
+
+    void apply(Gradle gradle) {
+        String agent = opt(gradle, 'fenvix.agent', null)
+        if (agent == null) return
+        boolean det = on(opt(gradle, 'fenvix.det', '0'))
+        boolean deps = on(opt(gradle, 'fenvix.deps', '0'))
+        if (!det && !deps) return
+        String root = opt(gradle, 'fenvix.root', gradle.startParameter.currentDir.absolutePath)
+        String out = opt(gradle, 'fenvix.out', root + '/.fenvix')
+        String seed = opt(gradle, 'fenvix.seed', '0')
+        String disable = opt(gradle, 'fenvix.disable', '')
+        String allow = opt(gradle, 'fenvix.allow.hosts', '')
+        String extra = opt(gradle, 'fenvix.jvmargs', '')
+        gradle.allprojects { project ->
+            project.tasks.withType(Test).configureEach { Test t ->
+                List<String> o = []
+                if (det) o << 'det=1'
+                if (deps) o << 'deps=1'
+                o << "seed=${seed}" << "root=${root}" << "out=${out}"
+                if (disable) o << "disable=${disable.replace(',', ';')}"
+                if (allow) o << "allow.hosts=${allow.replace(',', ';')}"
+                t.jvmArgs("-javaagent:${agent}=${o.join(',')}")
+                if (extra) t.jvmArgs(extra.split(' ').findAll { it } as List)
+                t.systemProperty('fenvix.module', project.path == ':' ? '' : project.path)
+                t.systemProperty('fenvix.tool', "gradle ${gradle.gradleVersion}")
+                if (det) {
+                    t.maxParallelForks = 1
+                    t.forkEvery = 0
+                }
+                t.outputs.upToDateWhen { false }
+                t.outputs.cacheIf { false }
+                t.doFirst {
+                    // test-task configuration that reaches the test JVM (part of the skip key)
+                    def cfg = [
+                        "jvmArgs=${(t.allJvmArgs.findAll { !it.contains('fenvix') }).join(' ')}",
+                        "minHeap=${t.minHeapSize}", "maxHeap=${t.maxHeapSize}",
+                        "framework=${t.testFramework.getClass().simpleName}",
+                        "env=${t.environment.keySet().sort().join(';')}",
+                    ]
+                    t.systemProperty('fenvix.config', cfg.join('|'))
+                }
+            }
+        }
+    }
+}
+
+apply plugin: FenvixJvmPlugin

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent><groupId>dev.fenvix</groupId><artifactId>fenvix-jvm-parent</artifactId><version>0.1.0</version></parent>
+  <artifactId>fenvix-agent</artifactId>
+  <description>Java agent (bytecode rewriting), JUnit Platform listener and orderers, CLI.</description>
+  <dependencies>
+    <dependency><groupId>dev.fenvix</groupId><artifactId>fenvix-rt</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+    <dependency><groupId>org.ow2.asm</groupId><artifactId>asm</artifactId><version>${asm.version}</version></dependency>
+    <dependency><groupId>org.junit.platform</groupId><artifactId>junit-platform-launcher</artifactId><version>${junit.platform.version}</version><scope>provided</scope></dependency>
+    <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter-api</artifactId><version>${junit.jupiter.version}</version><scope>provided</scope></dependency>
+    <dependency><groupId>junit</groupId><artifactId>junit</artifactId><version>4.13.2</version><scope>provided</scope></dependency>
+  </dependencies>
+  <build>
+    <finalName>fenvix-agent</finalName>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Premain-Class>dev.fenvix.agent.Agent</Premain-Class>
+              <Agent-Class>dev.fenvix.agent.Agent</Agent-Class>
+              <Main-Class>dev.fenvix.cli.Main</Main-Class>
+              <Can-Retransform-Classes>true</Can-Retransform-Classes>
+              <Can-Redefine-Classes>true</Can-Redefine-Classes>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals><goal>shade</goal></goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <artifactSet><includes><include>org.ow2.asm:asm</include></includes></artifactSet>
+              <relocations>
+                <relocation><pattern>org.objectweb.asm</pattern><shadedPattern>dev.fenvix.shaded.asm</shadedPattern></relocation>
+              </relocations>
+              <filters><filter><artifact>org.ow2.asm:asm</artifact><excludes><exclude>module-info.class</exclude><exclude>META-INF/**</exclude></excludes></filter></filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

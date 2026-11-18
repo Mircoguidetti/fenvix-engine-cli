@@ -12,3 +12,8 @@ __pycache__/
 /node/*.node
 /node/test/.tmp/
 .detjs/
+jvm/**/target/
+jvm/dist/
+jvm/fixtures/**/build/
+jvm/fixtures/**/.gradle/
+jvm/fixtures/**/.fenvix/

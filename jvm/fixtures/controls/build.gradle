@@ -1,0 +1,13 @@
+plugins { id 'java' }
+repositories { mavenCentral() }
+java { toolchain { languageVersion = JavaLanguageVersion.of(System.getProperty('fx.java', '21') as int) } }
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+test {
+    useJUnitPlatform()
+    systemProperty 'fx.state', System.getProperty('fx.state', "${rootDir}/build/fx-state")
+    testLogging { events 'failed'; exceptionFormat 'short' }
+}

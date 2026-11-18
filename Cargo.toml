@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/detpy-core", "crates/detpy-py", "crates/detpy-node"]
+members = ["crates/detpy-core", "crates/detpy-py", "crates/detpy-node", "crates/fenvix-jvm"]
 
 [workspace.package]
 version = "0.1.0"
