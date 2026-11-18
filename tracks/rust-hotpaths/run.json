@@ -1,0 +1,10 @@
+{
+ "run_id": "p1",
+ "note": "profile of the base engine (cache-proof-step1 24b6d15): home-assistant shards 0,5,10 of 16, pygments, click",
+ "base": "",
+ "profile": [
+  {"spec": "home-assistant", "shards": 16, "only": [0, 5, 10], "reps": 3},
+  {"spec": "pygments", "reps": 5},
+  {"spec": "click", "reps": 5}
+ ]
+}
