@@ -1,7 +1,7 @@
 [
- {"name": "prometheus", "repo": "prometheus/prometheus", "before": "2026-11-18T00:00:00Z", "shards": 6, "timeout": "20m"},
- {"name": "terraform", "repo": "hashicorp/terraform", "before": "2026-11-18T00:00:00Z", "shards": 6, "timeout": "20m"},
+ {"name": "prometheus", "repo": "prometheus/prometheus", "before": "2026-11-18T00:00:00Z", "shards": 8, "timeout": "20m"},
+ {"name": "terraform", "repo": "hashicorp/terraform", "before": "2026-11-18T00:00:00Z", "shards": 8, "timeout": "20m"},
  {"name": "hugo", "repo": "gohugoio/hugo", "before": "2026-11-18T00:00:00Z", "shards": 4, "timeout": "20m"},
- {"name": "telegraf", "repo": "influxdata/telegraf", "before": "2026-11-18T00:00:00Z", "shards": 6, "timeout": "20m"},
+ {"name": "telegraf", "repo": "influxdata/telegraf", "before": "2026-11-18T00:00:00Z", "shards": 6, "timeout": "20m", "go_args": ["-short"]},
  {"name": "caddy", "repo": "caddyserver/caddy", "before": "2026-11-18T00:00:00Z", "shards": 2, "timeout": "20m"}
 ]
