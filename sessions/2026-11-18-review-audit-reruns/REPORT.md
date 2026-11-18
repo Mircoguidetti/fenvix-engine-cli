@@ -82,7 +82,9 @@ Matches the delivery's numbers. The vendored service carries defect 4 (same file
 ## Engine suite (MEASURED, this container, Python 3.13.18, `maturin develop --release`)
 
 * `cargo test -p detpy-core`: **53 passed**, as reported.
-* `pytest tests/`: run in progress at this commit; result in the next commit.
+* `pytest tests/` (with this review's file): **187 passed, 9 skipped, 5 failed** in 449 s. Without the 4 review
+  tests this is the delivery's own count (187 passed, 9 skipped, 1 failed). The 5 failures: the 4 tests of
+  `tests/test_review_r013.py` and the pre-existing one below.
 * The pre-existing failure `test_review_r008d.py::test_finished_startup_process_that_left_a_daemon_is_not_ignored`
   reproduces here too (`'subprocess'` instead of `{}`), as the delivery reports; not this delivery's.
 * `tests/test_cache_audit.py`: 11/11 pass (they do not exercise defects 1-4; two of them assert the wrong behaviour,
