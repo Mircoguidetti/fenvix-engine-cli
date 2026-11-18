@@ -13,6 +13,7 @@ use pyo3::types::PyBytes;
 use std::path::PathBuf;
 use std::sync::{Mutex, MutexGuard};
 
+mod follow;
 mod level0;
 mod precompile;
 mod proofcache;
@@ -266,5 +267,6 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(proofcache::env_all_digest, m)?)?;
     level0::register(m)?;
     precompile::register(m)?;
+    follow::register(m)?;
     Ok(())
 }
