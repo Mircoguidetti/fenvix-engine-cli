@@ -1,0 +1,127 @@
+===== 093409de2d57b1fb.jsonl
+detpy verify: 2 runs, 0 tests
+  run 0: /home/runner/work/_temp/l2_out/etherpad/server-parts/det-1/093409de2d57b1fb.jsonl (partial)
+  run 1: /home/runner/work/_temp/l2_out/etherpad/server-parts/det-2/093409de2d57b1fb.jsonl (partial)
+order: identical in every run
+covered by Level 0: 0  not covered: 0  missing: 0  outcome-unstable: 0
+===== 8bb92e2ed9ba7ebe.jsonl
+detpy verify: 2 runs, 307 tests
+  run 0: /home/runner/work/_temp/l2_out/etherpad/server-parts/det-1/8bb92e2ed9ba7ebe.jsonl
+  run 1: /home/runner/work/_temp/l2_out/etherpad/server-parts/det-2/8bb92e2ed9ba7ebe.jsonl
+order: DIFFERS between runs
+covered by Level 0: 208  not covered: 99  missing: 0  outcome-unstable: 0
+reasons: entropy=60 random=2 time=37
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::settings popup has dialog semantics, Escape closes it, focus returns to trigger [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:aa4d7502e37328ae5b5dc7b14028a037" vs "24:baafb1cedc63104e63a75010f2854517"
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::embed popup has dialog semantics [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #27: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:4b3704d319dae273ea93e852c4704f52" vs "24:7832c436f17ee90921f2591a176adaa2"
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::users popup has dialog semantics with aria-label [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:cfd5f6ad06c2621a8beb41a58a675d0f" vs "24:49e379a685ea81f05c06cdaffb938c9c"
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::users popup closes on Escape even when focus is outside the popup [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #27: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:d0b9607e8c176fb398ac4fd109f424f5" vs "24:b8d9ddd6ec38c234d0a6ff529baa864b"
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::export links have a localized aria-label and matching title [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #36: [time] setTimeout @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:46 = fire+1000000000  <>  [outcome] outcome @  = passed
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::otherusers region has aria-live and aria-label (no aria-role typo) [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #27: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:e020b66bab17521844f90ebfde47d945" vs "24:b09228f7353844289e200140a0c85e0d"
+NOT-COVERED tests/frontend-new/specs/a11y_dialogs.spec.ts::skip link is the first Tab target from a fresh page (WCAG 2.4.1, #7255) [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:08108eec093b56cd7829996bff7be90f" vs "24:56972d6c6711b4061a5d0ed67395c0b8"
+NOT-COVERED tests/frontend-new/specs/anchor_scroll.spec.ts::anchor scrolling::reapplies #L scroll after earlier content changes height [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #46: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 1000  <>  [time] Date.now @ <deps>/express-session/session/cookie.js:93 = 1000
+NOT-COVERED tests/frontend-new/specs/anchor_scroll.spec.ts::anchor scrolling::reapply loop exits early once the target offset is stable [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #27: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:c4628e269b983567a711ec8fa74224df" vs "24:f06b727ec39f812eef81da6794ef93e9"
+NOT-COVERED tests/frontend-new/specs/anchor_scroll.spec.ts::anchor scrolling::user scroll cancels the reapply loop so navigation is not locked [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:1e281af5f201b7ca98e052ca46bb5917" vs "24:fca2d82a8240933fe92f1e57e1e19cf9"
+NOT-COVERED tests/frontend-new/specs/author_token_cookie.spec.ts::author token cookie::author token cookie is HttpOnly and not readable via document.cookie [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:cb48122bba844c903080153318a3d790" vs "24:9d94e5c4b963afb821e3beaa29adbeff"
+NOT-COVERED tests/frontend-new/specs/author_token_cookie.spec.ts::author token cookie::authorID is stable across reload in the same context [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:bef8a9e9aeb558b27596cdec310b21f2" vs "24:9f1224272eeb5a3a938bb065b24bce3a"
+NOT-COVERED tests/frontend-new/specs/author_token_cookie.spec.ts::author token cookie::authorID differs in an isolated second context [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #64: [outcome] outcome @  = passed  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 1000
+NOT-COVERED tests/frontend-new/specs/bold_paste.spec.ts::bold text retains formatting after copy-paste [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #27: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:544d5a9fded0d677e5d56715f9a14cb2" vs "24:a863aca7c9df459b5aa6c76791dd7e9e"
+NOT-COVERED tests/frontend-new/specs/bold.spec.ts::bold button::makes text bold on keypress [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #27: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:eab71e2e63431c7c9dbf71acd82cb80f" vs "24:ac46b0774d885ed6023bc212f0c71b1b"
+NOT-COVERED tests/frontend-new/specs/change_user_color.spec.ts::change user color::Color picker matches original color and remembers the user color after a refresh [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #35: [time] setTimeout @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:46 = fire+1000000000  <>  [time] Date.now @ <deps>/express-session/session/cookie.js:93 = 1000
+NOT-COVERED tests/frontend-new/specs/change_user_name.spec.ts::Remembers the username after a refresh [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #54: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 1000  <>  [time] setInterval @ <deps>/engine.io/build/socket.js:226 = fire+100000000
+NOT-COVERED tests/frontend-new/specs/change_user_name.spec.ts::#myusernameform has 10px left margin and is not width-capped [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:13b884665590a2c477ddd8830e0f5d80" vs "24:f4d3f00cd7c47c66e9ee8116356e5ea9"
+NOT-COVERED tests/frontend-new/specs/chat.spec.ts::Checks showChat=false URL Parameter hides chat then when removed it shows chat [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #60: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:e7cfdbe157ca7b40d7fae6782cd0cfe8" vs "24:dbb8785f656fdc15a7b4e53144a40d3e"
+NOT-COVERED tests/frontend-new/specs/chat.spec.ts::chat title bar lays out as a centred flex row with underscore minimize [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:6f49ba1c735e141cedc51c9d463272ae" vs "24:70fbfb5e7c075c9c59f58142e0c52545"
+NOT-COVERED tests/frontend-new/specs/clear_authorship_color.spec.ts::clear authorship colors can be undone to restore author colors [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #64: [time] Date.now @ src/node/db/Pad.ts:352 = 1000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 2000
+NOT-COVERED tests/frontend-new/specs/collab_client.spec.ts::Messages in the COLLABROOM::bug #4978 regression test [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #23: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 1000  <>  [time] setInterval @ <deps>/engine.io/build/socket.js:226 = fire+100000000
+NOT-COVERED tests/frontend-new/specs/editbar.spec.ts::should go to home on pad [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:5715376b1305e8c66261b6f22dbc9dd1" vs "24:b9a757166f55532063cb3f25b60388cf"
+NOT-COVERED tests/frontend-new/specs/embed_value.spec.ts::embed links::read and write::is an iframe with the correct url parameters and correct size [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #69: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 1000  <>  [time] setTimeout @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:46 = fire+1000000000
+NOT-COVERED tests/frontend-new/specs/embed_value.spec.ts::embed links::when read only option is set::the share link shows a read only url [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #68: [outcome] outcome @  = passed  <>  [time] setTimeout @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:46 = fire+1000000000
+NOT-COVERED tests/frontend-new/specs/embed_value.spec.ts::embed links::when read only option is set::the embed as iframe code is an iframe with the correct url parameters and correct size [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:e8385a126d05fab6e0dd2eddd850dab0" vs "24:66481993f95846570e9c128e35b96eb4"
+NOT-COVERED tests/frontend-new/specs/embed_value.spec.ts::embed links::URL encoding of pad names::share link encodes special characters in pad name [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #27: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:735190c0a90254f0112e47f33e214067" vs "24:11fa3b32fcafa496987960542ecdabee"
+NOT-COVERED tests/frontend-new/specs/error_sanitization.spec.ts::error sanitization::duplicate errors are deduplicated in both modes [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:79b9f8643cdd58156697fd4642a17ef7" vs "24:a11e13c8a51c3384ab8b62d0e9d0f245"
+NOT-COVERED tests/frontend-new/specs/hide_menu_right.spec.ts::showMenuRight URL parameter::showMenuRight=false hides .menu_right [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #59: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:649844872509d612151258cbf99ee410" vs "24:d3be0443030ebdc145b59a6e582f94c4"
+NOT-COVERED tests/frontend-new/specs/hide_menu_right.spec.ts::showMenuRight URL parameter::readonly pad shows .menu_right by default [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #35: [time] setTimeout @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:46 = fire+1000000000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 1000
+NOT-COVERED tests/frontend-new/specs/hide_menu_right.spec.ts::showMenuRight URL parameter::readonly pad with showMenuRight=true keeps the menu visible [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #27: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:6b10d61f0deb3926f7befdd721449ae7" vs "24:7dc591ece56dceb54367901c123afed5"
+NOT-COVERED tests/frontend-new/specs/html10n_form_controls_aria.spec.ts::html10n auto-populates aria-label on <select> with data-l10n-id [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #27: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:b49afee9d1fe4636737e529955c8b953" vs "24:8de8ba4b2263003592316ba08ac9b94f"
+NOT-COVERED tests/frontend-new/specs/html10n_form_controls_aria.spec.ts::no "could not translate element content" warning for <select data-l10n-id> [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:ef3dca772937cbdb38e6bb116f688986" vs "24:fb9b5b748424122cebf409a0c6b024e1"
+NOT-COVERED tests/frontend-new/specs/inactive_color_fade.spec.ts::fadeInactiveAuthorColors (issue #7138)::server-side default is true (legacy fade behavior preserved) [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:7c410d7ba83f82d13afbf580556b8434" vs "24:0ab87d9db458e82b8ff6361ad920adbb"
+NOT-COVERED tests/frontend-new/specs/indentation.spec.ts::indentation button::appends indentation to the indent of previous line if previous line ends with ':', '[', '(', or '{' [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #46: [outcome] outcome @  = passed  <>  [time] Date.now @ <deps>/express-session/session/cookie.js:93 = 1000
+NOT-COVERED tests/frontend-new/specs/indentation.spec.ts::indentation button::issue #2772 shows '*' when multiple indented lines  receive a style and are outdented [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #35: [time] setTimeout @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:46 = fire+1000000000  <>  [time] Date.now @ <deps>/express-session/session/cookie.js:93 = 1000
+NOT-COVERED tests/frontend-new/specs/indentation.spec.ts::indentation button::makes text indented and outdented [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:6cb5c6c3997ba9322444f16cd40f1d9d" vs "24:6106b442f2ec1d8572ad1771b60ee49a"
+NOT-COVERED tests/frontend-new/specs/inner_height.spec.ts::height regression after ace.js refactoring::clientHeight should equal scrollHeight with few lines [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:4a99d56fe7faa1cc08b792f990a21804" vs "24:e8ec99e91228145e42b70f6d0d432872"
+NOT-COVERED tests/frontend-new/specs/italic.spec.ts::italic some text::makes text italic using button [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:fad342df6cdca0e05f948cbdd4fe0b1c" vs "24:7e4e02d20d36c0d77161c68202100158"
+NOT-COVERED tests/frontend-new/specs/ordered_list.spec.ts::issue #5160 ordered list increments correctly after unordered list [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:4c5f5c8b0d6763c45c57d9fe0b730ab9" vs "24:5bdcb182ad1a0e8d1ce8875c6995be84"
+NOT-COVERED tests/frontend-new/specs/ordered_list.spec.ts::issue #5718 consecutive numbering works after indented sub-bullets [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #0: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 1000  <>  [outcome] outcome @  = passed
+NOT-COVERED tests/frontend-new/specs/ordered_list.spec.ts::Pressing Tab in an OL increases and decreases indentation::indent and de-indent list item with keypress [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #19: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 1000  <>  [time] setInterval @ <deps>/engine.io/build/socket.js:226 = schedule:100000000
+NOT-COVERED tests/frontend-new/specs/ordered_list.spec.ts::Pressing indent/outdent button in an OL increases and decreases indentation and bullet / ol formatting::indent and de-indent list item with indent button [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #37: [time] Date.now @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:41 = 1000  <>  [time] Date.now @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:17 = 1000
+NOT-COVERED tests/frontend-new/specs/pad_deletion_token.spec.ts::pad deletion token::second device can delete using the captured token [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #35: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 1000  <>  [time] setTimeout @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:46 = fire+1000000000
+NOT-COVERED tests/frontend-new/specs/pad_deletion_token.spec.ts::pad deletion token::wrong token keeps the pad alive and surfaces a shout [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:2d2dcffaaf257d5551089ba40271f9da" vs "24:7b04517a3079ab3172f221bfd5b789ef"
+NOT-COVERED tests/frontend-new/specs/pad_settings.spec.ts::creator-owned pad settings::shows pad settings only to the creator; delete pad is creator-gated but separate [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #64: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:668715a4bea8a9b2f00e86fd5b7a8dd2" vs "24:91f20864d30eb1873890e54aaae47797"
+NOT-COVERED tests/frontend-new/specs/pad_settings.spec.ts::creator-owned pad settings::pad settings act as defaults until enforcement is enabled [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #71: [time] Date.now @ <deps>/express-session/session/cookie.js:93 = 1000  <>  [time] setTimeout @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:46 = fire+1000000000
+NOT-COVERED tests/frontend-new/specs/pad_settings.spec.ts::creator-owned pad settings::creator can keep authorship colors while pad-wide enforced settings keep them off for other users [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #47: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 1000  <>  [time] setTimeout @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:46 = fire+1000000000
+NOT-COVERED tests/frontend-new/specs/pad_settings.spec.ts::creator-owned pad settings::uses My View defaults for newly created pads without changing an existing pad default [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #60: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:05e621b6f0f13c5a7d19cc26a4323509" vs "24:5a704897c968c6af8b997cd823bc0b7c"
+NOT-COVERED tests/frontend-new/specs/pad_settings.spec.ts::creator-owned pad settings::disabling chat suppresses chat gritter notifications [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #64: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:e230f85bc732427814b863552b7ce057" vs "24:764b937344a780df5ead83d57556d70b"
+NOT-COVERED tests/frontend-new/specs/pad_settings.spec.ts::creator-owned pad settings::settings popup stays scrollable when the viewport is short [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:dbb45e3a310eda7400e5f2ff5d2173ca" vs "24:a0998e1b21e661227676b9dd2211ee49"
+NOT-COVERED tests/frontend-new/specs/padmode.spec.ts::in-pad history mode::Return-to-live exits history and clears the hash [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #37: [time] setTimeout @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:46 = fire+1000000000  <>  [time] Date.now @ <deps>/express-session/session/cookie.js:93 = 1000
+NOT-COVERED tests/frontend-new/specs/padmode.spec.ts::in-pad history mode::legacy /p/:pad/timeslider URL redirects to the pad page [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #47: [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 1000  <>  [time] Date.now @ <deps>/express-session/session/cookie.js:93 = 1000
+NOT-COVERED tests/frontend-new/specs/padmode.spec.ts::in-pad history mode::Follow + Playback speed are inline in the toolbar in history mode [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #27: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:723be9da14a207d1cf5520d0e2d37d79" vs "24:eeb4c105fa6c1a3a63e3b56c0ced020e"
+NOT-COVERED tests/frontend-new/specs/padmode.spec.ts::in-pad history mode::outer toolbar swaps formatting menu for history controls [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #36: [time] setTimeout @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:46 = fire+1000000000  <>  [time] Date.now @ <deps>/express-session/session/cookie.js:93 = 1000
+NOT-COVERED tests/frontend-new/specs/padmode.spec.ts::in-pad history mode::dark mode propagates into the history iframe [chromium]  [entropy] outcomes=passed,passed
+    runs 0 vs 1: event #26: crypto.randomBytes @ <deps>/random-bytes/index.js:77 returned different values: "24:50cf1f93287400f85715346bedb834aa" vs "24:f9a28d43e9e370c838677e17f2afd61a"
+NOT-COVERED tests/frontend-new/specs/padmode.spec.ts::in-pad history mode::line numbers align with each line of text in history mode [chromium]  [time] outcomes=passed,passed
+    runs 0 vs 1: event #36: [time] setTimeout @ <deps>/rate-limiter-flexible/lib/component/MemoryStorage/MemoryStorage.js:46 = fire+1000000000  <>  [time] Date.now @ <deps>/express-session/session/cookie.js:93 = 1000
