@@ -420,6 +420,25 @@ def _is_installer_file(rel_parts: list[str]) -> bool:
             and rel_parts[-1] in _INSTALLER_FILES)
 
 
+def _cached_bytecode(f: str, names) -> bool:
+    """A ``.pyc``/``.pyo`` next to its ``.py`` is a cache of it (legacy layout). Without the ``.py`` it *is* the
+    module: the sourceless loader imports it, so it is keyed."""
+    return f.endswith((".pyc", ".pyo")) and f[:-1] in names
+
+
+def _no_cycle(top: str, dp: str, d: str) -> bool:
+    """Walks follow symlinked directories, as the import system does (a package that is a link to a release
+    directory). A link back to a directory on the walked path (from ``top`` down to ``dp``) is a cycle and is not
+    entered; any other link is walked under its own name, so what each import name resolves to is keyed."""
+    r = os.path.realpath(os.path.join(dp, d))
+    path, rel = top, os.path.relpath(dp, top)
+    on_path = {os.path.realpath(top)}
+    for part in ([] if rel == os.curdir else rel.split(os.sep)):
+        path = os.path.join(path, part)
+        on_path.add(os.path.realpath(path))
+    return r not in on_path
+
+
 def _site_tree(sites: list[str], project_owned: set, project_dirs: list, memo: _Memo, natives: list) -> tuple[str, int]:
     """Every file under every site directory by relative path and bytes: installed distributions, files no RECORD
     lists (packages copied in without metadata, files added to a package after installation, egg-info installs),
@@ -428,11 +447,12 @@ def _site_tree(sites: list[str], project_owned: set, project_dirs: list, memo: _
     rows = []
     proj = tuple(project_dirs)
     for i, s in enumerate(sites):
-        for dp, dn, fn in os.walk(s):
-            dn[:] = sorted(d for d in dn if d != "__pycache__" and not (os.path.join(dp, d) + os.sep).startswith(proj))
+        for dp, dn, fn in os.walk(s, followlinks=True):
+            dn[:] = sorted(d for d in dn if d != "__pycache__" and not (os.path.join(dp, d) + os.sep).startswith(proj)
+                           and _no_cycle(s, dp, d))
             for f in sorted(fn):
                 p = os.path.join(dp, f)
-                if f.endswith((".pyc", ".pyo")) or os.path.normpath(p) in project_owned:
+                if _cached_bytecode(f, fn) or os.path.normpath(p) in project_owned:
                     continue
                 rel = os.path.relpath(p, s)
                 if _is_installer_file(rel.split(os.sep)):
@@ -468,9 +488,9 @@ def _extra_paths(root: str, stdlib: list[str], sites: list[str], memo: _Memo, na
         seen.add(r)
         if os.path.isdir(r):
             files = []
-            for dp, dn, fn in os.walk(r):
-                dn[:] = sorted(d for d in dn if d != "__pycache__")
-                files += [os.path.join(dp, f) for f in sorted(fn) if not f.endswith((".pyc", ".pyo"))]
+            for dp, dn, fn in os.walk(r, followlinks=True):
+                dn[:] = sorted(d for d in dn if d != "__pycache__" and _no_cycle(r, dp, d))
+                files += [os.path.join(dp, f) for f in sorted(fn) if not _cached_bytecode(f, fn)]
                 if len(files) > _EXTRA_PATH_MAX_FILES:
                     break
             if len(files) > _EXTRA_PATH_MAX_FILES:
