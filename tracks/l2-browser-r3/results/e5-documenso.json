@@ -4,9 +4,9 @@
  "repo": "documenso/documenso",
  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
  "status": "ok",
- "run_id": "44382873510",
- "engine_commit": "1cfc30b071acb0225d87f686fdaf37bac31a9349",
- "setup_s": 319,
+ "run_id": "44407937328",
+ "engine_commit": "c6ac321c443de5d1ad3e1bb0919806be3f9c3df1",
+ "setup_s": 327,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -14,15 +14,15 @@
   "det": 0,
   "freeze": 0,
   "freeze_control": 0,
-  "budget_min": 200,
+  "budget_min": 120,
   "run_timeout_min": 45,
   "target_timeout_min": 8,
-  "replays": 10,
+  "replays": 5,
   "control": 5,
   "variants": [
-   "start",
-   "frozen",
-   "tick"
+   "control",
+   "control-w0",
+   "frozen-w0"
   ]
  },
  "pw_dir": "packages/app-tests",
@@ -31,8 +31,8 @@
   "--project=license"
  ],
  "runs": [],
- "epoch": "2026-11-18T20:02:00Z",
- "measured_at": "2026-11-18T20:02:02Z",
+ "epoch": "2026-11-18T22:57:00Z",
+ "measured_at": "2026-11-18T22:57:42Z",
  "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
  "state": {
   "spec": "/home/runner/work/_temp/l2_target/detjs-state.json",
@@ -49,10 +49,10 @@
  },
  "e5": [
   {
-   "variant": "start",
-   "faketime": "@2026-11-18 20:02:00",
+   "variant": "control",
+   "faketime": "",
    "db_rc": 0,
-   "db_now": "2026-11-18 20:02:03.269615+00|2026-11-18 20:02:03.269995+00",
+   "db_now": "2026-11-18 22:57:54.65518+00|2026-11-18 22:57:54.655513+00",
    "db_log": "",
    "targets": [
     {
@@ -64,39 +64,34 @@
       "passed",
       "passed",
       "passed",
-      "passed",
-      "passed",
-      "passed",
-      "passed",
-      "passed",
       "passed"
      ],
      "errors": [],
      "verify": {
       "status": "diverged",
-      "distinct_fingerprints": 10,
-      "runs": 10,
+      "distinct_fingerprints": 5,
+      "runs": 5,
       "divergence": {
        "run_a": 0,
        "run_b": 1,
-       "index": 14,
+       "index": 29,
        "window": null,
        "event_a": {
         "t": 0,
         "s": "net",
         "o": "browser.done",
         "at": "",
-        "v": "GET http://localhost:3000/api/auth/session-json 200 52eabee5c6ec8c0044acfcfdfe421758"
+        "v": "GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D 200 d4ddf7979b5f6b72ef3cf7715d643b82"
        },
        "event_b": {
         "t": 0,
         "s": "net",
         "o": "browser.done",
         "at": "",
-        "v": "GET http://localhost:3000/api/auth/session-json 200 0d7f3f7030a82cf9a8755ac9f58b05a7"
+        "v": "GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D 200 bf4b95caf6a2ed5740becb31dfd90aec"
        },
        "reason": "net",
-       "description": "event #14: browser.done @  returned different values: \"GET http://localhost:3000/api/auth/session-json 200 52eabee5c6ec8c0044acfcfdfe421758\" vs \"GET http://localhost:3000/api/auth/session-json 200 0d7f3f7030a82cf9a8755ac9f58b05a7\""
+       "description": "event #29: browser.done @  returned different values: \"GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D 200 d4ddf7979b5f6b72ef3cf7715d643b82\" vs \"GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D 200 bf4b95caf6a2ed5740becb31dfd90aec\""
       }
      }
     },
@@ -109,49 +104,44 @@
       "passed",
       "passed",
       "passed",
-      "passed",
-      "passed",
-      "passed",
-      "passed",
-      "passed",
       "passed"
      ],
      "errors": [],
      "verify": {
       "status": "diverged",
-      "distinct_fingerprints": 10,
-      "runs": 10,
+      "distinct_fingerprints": 5,
+      "runs": 5,
       "divergence": {
        "run_a": 0,
        "run_b": 1,
-       "index": 14,
+       "index": 24,
        "window": null,
        "event_a": {
         "t": 0,
-        "s": "net",
-        "o": "browser.done",
+        "s": "sched",
+        "o": "sched.io",
         "at": "",
-        "v": "GET http://localhost:3000/api/auth/session-json 200 b6bbed14ea4c829acd5ce1de158b75ad"
+        "v": "0/4:api POST http://localhost:3000/api/trpc/admin.recipient.delete b74a6d629672bf77f02ead3d92eeb3eb"
        },
        "event_b": {
         "t": 0,
-        "s": "net",
-        "o": "browser.done",
+        "s": "sched",
+        "o": "sched.io",
         "at": "",
-        "v": "GET http://localhost:3000/api/auth/session-json 200 71434343f713c24425f5a63cae13478e"
+        "v": "0/3:browser GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D -"
        },
-       "reason": "net",
-       "description": "event #14: browser.done @  returned different values: \"GET http://localhost:3000/api/auth/session-json 200 b6bbed14ea4c829acd5ce1de158b75ad\" vs \"GET http://localhost:3000/api/auth/session-json 200 71434343f713c24425f5a63cae13478e\""
+       "reason": "sched",
+       "description": "event #24: first diverging scheduling choice: sched.io 0/4:api POST http://localhost:3000/api/trpc/admin.recipient.delete b74a6d629672bf77f02ead3d92eeb3eb @   <>  sched.io 0/3:browser GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D - @ "
       }
      }
     }
    ]
   },
   {
-   "variant": "frozen",
-   "faketime": "2026-11-18 20:02:00",
+   "variant": "control-w0",
+   "faketime": "",
    "db_rc": 0,
-   "db_now": "2026-11-18 20:02:00+00|2026-11-18 20:02:00+00",
+   "db_now": "2026-11-18 23:00:29.825214+00|2026-11-18 23:00:29.825483+00",
    "db_log": "",
    "targets": [
     {
@@ -163,39 +153,34 @@
       "passed",
       "passed",
       "passed",
-      "passed",
-      "passed",
-      "passed",
-      "passed",
-      "passed",
       "passed"
      ],
      "errors": [],
      "verify": {
       "status": "diverged",
-      "distinct_fingerprints": 10,
-      "runs": 10,
+      "distinct_fingerprints": 5,
+      "runs": 5,
       "divergence": {
        "run_a": 0,
        "run_b": 1,
-       "index": 14,
+       "index": 24,
        "window": null,
        "event_a": {
         "t": 0,
-        "s": "net",
-        "o": "browser.done",
+        "s": "sched",
+        "o": "sched.io",
         "at": "",
-        "v": "GET http://localhost:3000/api/auth/session-json 200 4857cea1e25925534da671e988b3fa8e"
+        "v": "0/3:browser GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D -"
        },
        "event_b": {
         "t": 0,
-        "s": "net",
-        "o": "browser.done",
+        "s": "sched",
+        "o": "sched.io",
         "at": "",
-        "v": "GET http://localhost:3000/api/auth/session-json 200 3a063af8c684a6b570dbd000f22e13ab"
+        "v": "0/4:api GET http://localhost:3000/api/trpc/admin.document.find?input=%7B%22json%22%3A%7B%22query%22%3A%22recipient%3Aanything%22%2C%22page%22%3A1%2C%22perPage%22%3A20%7D%7D -"
        },
-       "reason": "net",
-       "description": "event #14: browser.done @  returned different values: \"GET http://localhost:3000/api/auth/session-json 200 4857cea1e25925534da671e988b3fa8e\" vs \"GET http://localhost:3000/api/auth/session-json 200 3a063af8c684a6b570dbd000f22e13ab\""
+       "reason": "sched",
+       "description": "event #24: first diverging scheduling choice: sched.io 0/3:browser GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D - @   <>  sched.io 0/4:api GET http://localhost:3000/api/trpc/admin.document.find?input=%7B%22json%22%3A%7B%22query%22%3A%22recipient%3Aanything%22%2C%22page%22%3A1%2C%22perPage%22%3A20%7D%7D - @ "
       }
      }
     },
@@ -208,49 +193,44 @@
       "passed",
       "passed",
       "passed",
-      "passed",
-      "passed",
-      "passed",
-      "passed",
-      "passed",
       "passed"
      ],
      "errors": [],
      "verify": {
       "status": "diverged",
-      "distinct_fingerprints": 10,
-      "runs": 10,
+      "distinct_fingerprints": 5,
+      "runs": 5,
       "divergence": {
        "run_a": 0,
        "run_b": 1,
-       "index": 14,
+       "index": 29,
        "window": null,
        "event_a": {
         "t": 0,
         "s": "net",
         "o": "browser.done",
         "at": "",
-        "v": "GET http://localhost:3000/api/auth/session-json 200 6cfc4823d513ce1548fc052204e3590d"
+        "v": "GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D 200 98fc2b4b6381ad3e9f71995d010793db"
        },
        "event_b": {
         "t": 0,
         "s": "net",
         "o": "browser.done",
         "at": "",
-        "v": "GET http://localhost:3000/api/auth/session-json 200 99568960c42247cb463e1c7b66fb70cd"
+        "v": "GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D 200 c7237f913f1a022fef4d93d30711b9c9"
        },
        "reason": "net",
-       "description": "event #14: browser.done @  returned different values: \"GET http://localhost:3000/api/auth/session-json 200 6cfc4823d513ce1548fc052204e3590d\" vs \"GET http://localhost:3000/api/auth/session-json 200 99568960c42247cb463e1c7b66fb70cd\""
+       "description": "event #29: browser.done @  returned different values: \"GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D 200 98fc2b4b6381ad3e9f71995d010793db\" vs \"GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D 200 c7237f913f1a022fef4d93d30711b9c9\""
       }
      }
     }
    ]
   },
   {
-   "variant": "tick",
-   "faketime": "@2026-11-18 20:02:00 i0.001",
+   "variant": "frozen-w0",
+   "faketime": "2026-11-18 22:57:00",
    "db_rc": 0,
-   "db_now": "2026-11-18 20:02:00.137+00|2026-11-18 20:02:00.139+00",
+   "db_now": "2026-11-18 22:57:00+00|2026-11-18 22:57:00+00",
    "db_log": "",
    "targets": [
     {
@@ -262,39 +242,34 @@
       "passed",
       "passed",
       "passed",
-      "passed",
-      "passed",
-      "passed",
-      "passed",
-      "passed",
       "passed"
      ],
      "errors": [],
      "verify": {
       "status": "diverged",
-      "distinct_fingerprints": 10,
-      "runs": 10,
+      "distinct_fingerprints": 5,
+      "runs": 5,
       "divergence": {
        "run_a": 0,
        "run_b": 1,
-       "index": 14,
+       "index": 24,
        "window": null,
        "event_a": {
         "t": 0,
-        "s": "net",
-        "o": "browser.done",
+        "s": "sched",
+        "o": "sched.io",
         "at": "",
-        "v": "GET http://localhost:3000/api/auth/session-json 200 d526b29e38a6c59939a710c008977980"
+        "v": "0/4:api GET http://localhost:3000/api/trpc/admin.document.find?input=%7B%22json%22%3A%7B%22query%22%3A%22recipient%3Aanything%22%2C%22page%22%3A1%2C%22perPage%22%3A20%7D%7D -"
        },
        "event_b": {
         "t": 0,
-        "s": "net",
-        "o": "browser.done",
+        "s": "sched",
+        "o": "sched.io",
         "at": "",
-        "v": "GET http://localhost:3000/api/auth/session-json 200 c715fdd53a5f5b4cf53789cc94ed71aa"
+        "v": "0/3:browser GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D -"
        },
-       "reason": "net",
-       "description": "event #14: browser.done @  returned different values: \"GET http://localhost:3000/api/auth/session-json 200 d526b29e38a6c59939a710c008977980\" vs \"GET http://localhost:3000/api/auth/session-json 200 c715fdd53a5f5b4cf53789cc94ed71aa\""
+       "reason": "sched",
+       "description": "event #24: first diverging scheduling choice: sched.io 0/4:api GET http://localhost:3000/api/trpc/admin.document.find?input=%7B%22json%22%3A%7B%22query%22%3A%22recipient%3Aanything%22%2C%22page%22%3A1%2C%22perPage%22%3A20%7D%7D - @   <>  sched.io 0/3:browser GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D - @ "
       }
      }
     },
@@ -307,44 +282,39 @@
       "passed",
       "passed",
       "passed",
-      "passed",
-      "passed",
-      "passed",
-      "passed",
-      "passed",
       "passed"
      ],
      "errors": [],
      "verify": {
       "status": "diverged",
-      "distinct_fingerprints": 10,
-      "runs": 10,
+      "distinct_fingerprints": 5,
+      "runs": 5,
       "divergence": {
        "run_a": 0,
        "run_b": 1,
-       "index": 14,
+       "index": 24,
        "window": null,
        "event_a": {
         "t": 0,
-        "s": "net",
-        "o": "browser.done",
+        "s": "sched",
+        "o": "sched.io",
         "at": "",
-        "v": "GET http://localhost:3000/api/auth/session-json 200 36f715e577b2def051d330acdae160ac"
+        "v": "0/3:browser GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D -"
        },
        "event_b": {
         "t": 0,
-        "s": "net",
-        "o": "browser.done",
+        "s": "sched",
+        "o": "sched.io",
         "at": "",
-        "v": "GET http://localhost:3000/api/auth/session-json 200 86cd1193bec9ab912ef7724308393c9b"
+        "v": "0/4:api POST http://localhost:3000/api/trpc/admin.recipient.delete b74a6d629672bf77f02ead3d92eeb3eb"
        },
-       "reason": "net",
-       "description": "event #14: browser.done @  returned different values: \"GET http://localhost:3000/api/auth/session-json 200 36f715e577b2def051d330acdae160ac\" vs \"GET http://localhost:3000/api/auth/session-json 200 86cd1193bec9ab912ef7724308393c9b\""
+       "reason": "sched",
+       "description": "event #24: first diverging scheduling choice: sched.io 0/3:browser GET http://localhost:3000/api/trpc/folder.getFolders,team.member.getMany?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22type%22%3A%22DOCUMENT%22%2C%22parentId%22%3Anull%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22teamId%22%3A6%7D%7D%7D - @   <>  sched.io 0/4:api POST http://localhost:3000/api/trpc/admin.recipient.delete b74a6d629672bf77f02ead3d92eeb3eb @ "
       }
      }
     }
    ]
   }
  ],
- "elapsed_min": 15.3
+ "elapsed_min": 7.9
 }
