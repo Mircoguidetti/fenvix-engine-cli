@@ -1,0 +1,239 @@
+{
+ "name": "etherpad",
+ "repo": "ether/etherpad-lite",
+ "ref": "263e4a5b5977c0abffbc70d2aea243a721e9c053",
+ "status": "ok",
+ "run_id": "44275149752",
+ "setup_s": 28,
+ "params": {
+  "baseline": 4,
+  "stress": 2,
+  "serial": 1,
+  "det": 2,
+  "replays": 10,
+  "seeds": 4,
+  "max_targets": 3,
+  "budget_min": 150,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "target_plain": 3,
+  "ablation_tests": 3,
+  "mode": "diagnose"
+ },
+ "pw_dir": "src",
+ "pw_args": [
+  "--project=chromium"
+ ],
+ "server_outside_runner": true,
+ "runs": [],
+ "epoch": "2026-11-18T09:23:00Z",
+ "measured_at": "2026-11-18T09:23:59Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "diagnosis": [
+  {
+   "key": "embed_value.spec.ts::embed links::when read only option is set::the embed as iframe code is an iframe with the correct url parameters and correct size [chromium]",
+   "file": "embed_value.spec.ts",
+   "grep": "the embed as iframe code is an iframe with the correct url parameters and correct size",
+   "project": "chromium",
+   "known": true,
+   "replays": [
+    "passed",
+    "passed"
+   ],
+   "walls": [
+    5.9,
+    3.2
+   ],
+   "matched_key": "embed_value.spec.ts::embed links::when read only option is set::the embed as iframe code is an iframe with the correct url parameters and correct size [chromium]",
+   "browser": {
+    "status": "diverged",
+    "distinct_fingerprints": 2,
+    "runs": 2,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 47,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:9001 97bd8be8e39855eee20f2876fdb12560 241"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:9001 c060b446d60a815c4ca2ba31b71e5980 225"
+     },
+     "reason": "other",
+     "description": "event #47: server.fingerprint @  returned different values: \"http://localhost:9001 97bd8be8e39855eee20f2876fdb12560 241\" vs \"http://localhost:9001 c060b446d60a815c4ca2ba31b71e5980 225\""
+    }
+   },
+   "server": [
+    {
+     "part": "093409de2d57b1fb.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 0,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": true,
+      "reasons": {}
+     },
+     "tests": []
+    },
+    {
+     "part": "8bb92e2ed9ba7ebe.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 1,
+      "stable": 0,
+      "diverged": 1,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": true,
+      "reasons": {
+       "time": 1
+      }
+     },
+     "tests": [
+      {
+       "nodeid": "tests/frontend-new/specs/embed_value.spec.ts::embed links::when read only option is set::the embed as iframe code is an iframe with the correct url parameters and correct size [chromium]",
+       "status": "diverged",
+       "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": 11,
+        "window": null,
+        "event_a": {
+         "t": 0,
+         "s": "time",
+         "o": "Date.now",
+         "at": "<deps>/tsx/dist/register-B1c7OH6V.cjs:19",
+         "v": "9000"
+        },
+        "event_b": {
+         "t": 0,
+         "s": "time",
+         "o": "process.hrtime",
+         "at": "<deps>/measured-core/lib/util/Stopwatch.js:46",
+         "v": "9000"
+        },
+        "reason": "time",
+        "description": "event #11: [time] Date.now @ <deps>/tsx/dist/register-B1c7OH6V.cjs:19 = 9000  <>  [time] process.hrtime @ <deps>/measured-core/lib/util/Stopwatch.js:46 = 9000"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "embed_value.spec.ts::embed links::URL encoding of pad names::share link encodes special characters in pad name [chromium]",
+   "file": "embed_value.spec.ts",
+   "grep": "share link encodes special characters in pad name",
+   "project": "chromium",
+   "known": false,
+   "replays": [
+    "passed",
+    "passed"
+   ],
+   "walls": [
+    3.2,
+    3.1
+   ],
+   "matched_key": "embed_value.spec.ts::embed links::URL encoding of pad names::share link encodes special characters in pad name [chromium]",
+   "browser": {
+    "status": "diverged",
+    "distinct_fingerprints": 2,
+    "runs": 2,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 44,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:9001 4b3f82a82f75fc4ecfaafaf63983ec0c 206"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:9001 da0ac04f49e210ade517d08627a96149 204"
+     },
+     "reason": "other",
+     "description": "event #44: server.fingerprint @  returned different values: \"http://localhost:9001 4b3f82a82f75fc4ecfaafaf63983ec0c 206\" vs \"http://localhost:9001 da0ac04f49e210ade517d08627a96149 204\""
+    }
+   },
+   "server": [
+    {
+     "part": "093409de2d57b1fb.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 0,
+      "stable": 0,
+      "diverged": 0,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": true,
+      "reasons": {}
+     },
+     "tests": []
+    },
+    {
+     "part": "8bb92e2ed9ba7ebe.jsonl",
+     "summary": {
+      "runs": 2,
+      "tests": 1,
+      "stable": 0,
+      "diverged": 1,
+      "missing": 0,
+      "outcome_unstable": 0,
+      "order_identical": true,
+      "reasons": {
+       "time": 1
+      }
+     },
+     "tests": [
+      {
+       "nodeid": "tests/frontend-new/specs/embed_value.spec.ts::embed links::URL encoding of pad names::share link encodes special characters in pad name [chromium]",
+       "status": "diverged",
+       "divergence": {
+        "run_a": 0,
+        "run_b": 1,
+        "index": 22,
+        "window": null,
+        "event_a": {
+         "t": 0,
+         "s": "time",
+         "o": "Date",
+         "at": "src/node/utils/Minify.ts:208",
+         "v": "24000"
+        },
+        "event_b": {
+         "t": 0,
+         "s": "time",
+         "o": "Date",
+         "at": "<deps>/log4js/lib/LoggingEvent.js:59",
+         "v": "24000"
+        },
+        "reason": "time",
+        "description": "event #22: [time] Date @ src/node/utils/Minify.ts:208 = 24000  <>  [time] Date @ <deps>/log4js/lib/LoggingEvent.js:59 = 24000"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "elapsed_min": 0.8
+}
