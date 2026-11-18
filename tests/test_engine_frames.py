@@ -31,3 +31,36 @@ def test_stack_inspection_does_not_see_detpy(pytester, flags):
     pytester.makepyfile(test_inner=INNER)
     result = pytester.runpytest_subprocess(*flags, "-p", "no:cacheprovider", timeout=60)
     result.assert_outcomes(passed=1)
+
+
+ENTROPY = r'''
+import threading, uuid
+
+def test_worker_draws_entropy():
+    out = []
+    t = threading.Thread(target=lambda: out.append(str(uuid.uuid4())))
+    t.start()
+    t.join()
+    print("UUID", out[0])
+'''
+
+
+def _fingerprint(pytester, *flags):
+    import json
+
+    out = pytester.path / "o.json"
+    result = pytester.runpytest_subprocess(*flags, f"--det-outcomes={out}", "-p", "no:cacheprovider", "-s", timeout=60)
+    result.assert_outcomes(passed=1)
+    fps = json.loads(out.read_text())["fingerprints"]
+    return next(iter(fps.values()))
+
+
+def test_det_threads_implies_deterministic_entropy(pytester):
+    """--det-threads alone gives one fingerprint for a test whose worker thread
+    draws entropy (R-007 FIX 1: it needed --det-urandom too)."""
+    pytester.makepyfile(test_inner=ENTROPY)
+    runs = {_fingerprint(pytester, "--det", "--det-threads") for _ in range(3)}
+    assert len(runs) == 1
+    # the opt-out keeps real entropy
+    real = {_fingerprint(pytester, "--det", "--det-threads", "--det-threads-real-urandom") for _ in range(2)}
+    assert len(real) == 2

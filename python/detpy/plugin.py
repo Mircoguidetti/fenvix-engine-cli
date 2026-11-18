@@ -71,6 +71,8 @@ def pytest_addoption(parser, pluginmanager):
                 help="real seconds to batch near-simultaneous foreign wake-ups")
     g.addoption("--det-threads", action="store_true", default=False,
                 help="Level 1 prototype: deterministic thread scheduling driven by a seed (needs --det)")
+    g.addoption("--det-threads-real-urandom", action="store_true", default=False,
+                help="--det-threads without the deterministic os.urandom/uuid4/secrets it implies")
     g.addoption("--det-threads-seed", type=int, default=None, metavar="N",
                 help="seed of the thread scheduler (default: --det-seed; 0 = calm profile, no exploration)")
     g.addoption("--det-threads-grace", type=float, default=1.0, metavar="S",
@@ -309,7 +311,11 @@ def _install(config, ns, controls) -> None:
         controls=controls,
         record_net=ns.det_record,
         allow_hosts=tuple(ns.det_allow_host),
-        control_urandom=ns.det_urandom,
+        # --det-threads implies --det-urandom: a thread that draws entropy (uuid4 per
+        # worker in easypy) makes every run's fingerprint differ, which defeats the
+        # point of a deterministic interleaving (review R-007 FIX 1).
+        control_urandom=ns.det_urandom or (getattr(ns, "det_threads", False)
+                                           and not getattr(ns, "det_threads_real_urandom", False)),
         max_events=ns.det_max_events,
     )
     _state.STATE.config = cfg
