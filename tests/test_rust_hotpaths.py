@@ -297,3 +297,29 @@ def test_record_session_rust_unit_ranges_match_file_facts(tmp_path):
     ixs = [a, None, b]
     want = [[] if ix is None else [(x, y) for _, x, y, _ in st.file_facts(ix)[4]] for ix in ixs]
     assert st.unit_ranges(ixs) == want == [[(2, 4), (6, 9)], [], []]
+
+
+
+# ---------------------------------------------------------------------------
+# followed children: a log whose tracer is gone is final
+@pytest.mark.skipif(not os.path.isdir("/proc/self"), reason="needs /proc")
+def test_tracer_prefixes_lists_live_log_writers_only(tmp_path):
+    import subprocess
+
+    from detpy import _core
+
+    logdir = str(tmp_path) + os.sep
+    p = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)", "-o", logdir + "s1-1", "x"])
+    q = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)", "-o", "/elsewhere/s1-2"])
+    try:
+        for _ in range(200):
+            got = _core.tracer_prefixes(logdir)
+            if got:
+                break
+        assert got == [logdir + "s1-1"]
+    finally:
+        p.kill()
+        q.kill()
+        p.wait()
+        q.wait()
+    assert _core.tracer_prefixes(logdir) == []

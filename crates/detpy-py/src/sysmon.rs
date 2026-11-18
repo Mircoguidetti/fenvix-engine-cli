@@ -366,3 +366,32 @@ impl SocketScan {
         })
     }
 }
+
+/// `-o` arguments under `logdir` of every live process (strace tracers of followed children, or strace itself
+/// before it forks its tracer). A child's trace log is written only by its tracer: when no live process holds
+/// the log's prefix, nothing more will be written to it. `None` when that cannot be known (no /proc, an
+/// undecodable argument).
+#[pyfunction]
+pub fn tracer_prefixes(py: Python<'_>, logdir: &str) -> Option<Vec<String>> {
+    py.detach(|| {
+        let mut out = Vec::new();
+        let rd = std::fs::read_dir("/proc").ok()?;
+        for e in rd.flatten() {
+            let name = e.file_name();
+            let Some(n) = name.to_str() else { continue };
+            if n.is_empty() || !n.bytes().all(|b| b.is_ascii_digit()) {
+                continue;
+            }
+            let Ok(cmd) = std::fs::read(e.path().join("cmdline")) else { continue };
+            let args: Vec<&[u8]> = cmd.split(|&b| b == 0).collect();
+            for w in args.windows(2) {
+                if w[0] == b"-o" && w[1].starts_with(logdir.as_bytes()) {
+                    out.push(std::str::from_utf8(w[1]).ok()?.to_string());
+                }
+            }
+        }
+        out.sort();
+        out.dedup();
+        Some(out)
+    })
+}

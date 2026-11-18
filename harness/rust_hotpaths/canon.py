@@ -38,7 +38,7 @@ def canon(path: str) -> dict:
     return {"tests": out, "written": s.get("written", {})}
 
 
-def diff(a: dict, b: dict, limit: int = 20) -> list:
+def diff(a: dict, b: dict, limit: int = 20, ignore=()) -> list:
     d = []
     if a["written"] != b["written"]:
         d.append("written differs")
@@ -46,9 +46,10 @@ def diff(a: dict, b: dict, limit: int = 20) -> list:
     for nid in sorted(set(ta) | set(tb)):
         if nid not in ta or nid not in tb:
             d.append(f"{nid}: only in {'A' if nid in ta else 'B'}")
-        elif ta[nid] != tb[nid]:
-            ks = [k for k in ta[nid] if ta[nid][k] != tb[nid].get(k)]
-            d.append(f"{nid}: differs in {ks}")
+        else:
+            ks = [k for k in ta[nid] if k not in ignore and ta[nid][k] != tb[nid].get(k)]
+            if ks:
+                d.append(f"{nid}: differs in {ks}")
         if len(d) >= limit:
             break
     return d
@@ -56,8 +57,14 @@ def diff(a: dict, b: dict, limit: int = 20) -> list:
 
 if __name__ == "__main__":
     a, b = canon(sys.argv[1]), canon(sys.argv[2])
-    d = diff(a, b)
-    print(f"A {len(a['tests'])} entries, B {len(b['tests'])} entries, {len(d)} difference(s)")
-    for x in d:
+    # Level 0 fingerprints of tests whose event order is not deterministic (threads) differ between two runs of
+    # the same engine: listed apart
+    d = diff(a, b, limit=10**9, ignore=("fingerprint",))
+    fp = [n for n in a["tests"] if n in b["tests"] and a["tests"][n]["fingerprint"] != b["tests"][n]["fingerprint"]]
+    print(f"A {len(a['tests'])} entries, B {len(b['tests'])} entries, {len(d)} difference(s) "
+          f"(fingerprint only: {len(fp)})")
+    for x in d[:20]:
         print(" ", x)
+    for n in fp[:5]:
+        print("  fingerprint:", n)
     sys.exit(1 if d else 0)

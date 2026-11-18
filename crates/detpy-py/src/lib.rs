@@ -248,6 +248,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<sysmon::LineRecorder>()?;
     m.add_function(wrap_pyfunction!(sysmon::set_audit_hook, m)?)?;
     m.add_class::<sysmon::SocketScan>()?;
+    m.add_function(wrap_pyfunction!(sysmon::tracer_prefixes, m)?)?;
     m.add_class::<proofcache::ProofCache>()?;
     m.add_function(wrap_pyfunction!(proofcache::file_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::listing_digest, m)?)?;

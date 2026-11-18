@@ -596,9 +596,23 @@ class Capture:
         # once, briefly, then not at all
         budget_end = _mono() + 3.0
         wait = 1.0
+        # a log is written only by its tracer: one whose tracer is gone is final now, so waiting for it cannot
+        # change it. It is not waited for, but the wait is charged to the budget as if it had been (the decisions
+        # about the other children stay those of waiting). None: unknown, every log is waited for.
+        try:
+            alive = _core.tracer_prefixes(fo.logdir + os.sep)
+        except Exception:
+            alive = None
+        alive = None if alive is None else set(alive)
         for sp in fo.spawns:
             self.children += 1
-            logs = follow._wait_logs(sp.prefix, max(0.0, min(wait, budget_end - _mono())))
+            timeout = max(0.0, min(wait, budget_end - _mono()))
+            if alive is None or sp.prefix in alive:
+                logs = follow._wait_logs(sp.prefix, timeout)
+            else:
+                logs = follow._wait_logs(sp.prefix, 0.0)
+                if not (logs and all(follow._complete(f) for f in logs)):
+                    budget_end -= timeout
             if logs and not all(follow._complete(f) for f in logs):
                 wait = 0.05
             ctx = sp.ctx
