@@ -59,6 +59,9 @@ struct Slot {
     fid: u64,
     entry: i64,
     module: bool,
+    /// code-object level (`add_code(rep=...)`): the code is armed with `PY_START` only and its first start in a
+    /// context stands for every line it runs (`rep`, a line of its body); -1 = line level
+    rep: i64,
     _code: Py<PyAny>,
 }
 
@@ -115,13 +118,14 @@ impl LineRecorder {
     }
 
     /// Register a code object: `fid` is the file id (not shifted), `entry` the
-    /// entry line `LINE` never reports (-1 if none), `module` for module bodies.
-    #[pyo3(signature = (code, fid, entry, module = false))]
-    fn add_code(&self, code: &Bound<'_, PyAny>, fid: u64, entry: i64, module: bool) {
+    /// entry line `LINE` never reports (-1 if none), `module` for module bodies; `rep` >= 0 records the code at
+    /// code-object level (its starts, as line `rep`) instead of line by line.
+    #[pyo3(signature = (code, fid, entry, module = false, rep = -1))]
+    fn add_code(&self, code: &Bound<'_, PyAny>, fid: u64, entry: i64, module: bool, rep: i64) {
         let mut g = lock(&self.inner);
         g.codes.insert(
             code.as_ptr() as usize,
-            Slot { fid: fid << SHIFT, entry, module, _code: code.clone().unbind() },
+            Slot { fid: fid << SHIFT, entry, module, rep, _code: code.clone().unbind() },
         );
     }
 
@@ -141,7 +145,11 @@ impl LineRecorder {
     fn start(&self, py: Python<'_>, code: &Bound<'_, PyAny>, _offset: i64) -> Py<PyAny> {
         let mut g = lock(&self.inner);
         let Some(s) = g.codes.get(&(code.as_ptr() as usize)) else { return py.None() };
-        let (fid, entry, module) = (s.fid, s.entry, s.module);
+        let (fid, entry, module, rep) = (s.fid, s.entry, s.module, s.rep);
+        if rep >= 0 {
+            let flag = if g.import_depth > 0 { IMPORT_FLAG } else { 0 };
+            return self.hit(py, &mut g, flag | fid | (rep as u64 & LINE_MASK), code);
+        }
         if module {
             g.import_depth += 1;
         }

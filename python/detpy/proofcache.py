@@ -124,6 +124,29 @@ def entry_line(code) -> int | None:
     return ln if ln is not None and ln == lr else None
 
 
+def rep_line(code) -> int | None:
+    """Code-object level capture: the first line ``LINE`` reports when ``code`` starts (the line of its first
+    instruction after the prelude), which stands for every line of a plain function."""
+    co = code.co_code
+    r = 0
+    while r < len(co) and co[r] in _PRELUDE:
+        r += 2
+    if r >= len(co) or co[r] != _RESUME:
+        return None
+    for start, _end, line in code.co_lines():
+        if start > r and line is not None:
+            return line
+    return None
+
+
+# Line capture granularity (experiment, DETPY_CACHE_LINES): "line" (default) arms every code object with LINE;
+# "code" arms plain functions (not module or class bodies, not generators or coroutines) with PY_START only and
+# records one location per start (rep_line), see REPORT-2.
+_CODE_LEVEL = os.environ.get("DETPY_CACHE_LINES", "line") == "code"
+_CO_PLAIN_EXCLUDE = 0x20 | 0x80 | 0x100 | 0x200  # CO_GENERATOR | CO_COROUTINE | CO_ITERABLE_COROUTINE | CO_ASYNC_GENERATOR
+_CO_OPTIMIZED = 0x1
+
+
 # ---------------------------------------------------------------------------
 class Capture:
     """Records, per context, executed code, data reads, environment reads and events."""
@@ -255,6 +278,16 @@ class Capture:
             self._armed.add(id(c))
             e = entry_line(c)
             module = c.co_name == "<module>"
+            rep = None
+            if _CODE_LEVEL and not module and c.co_flags & _CO_OPTIMIZED and not c.co_flags & _CO_PLAIN_EXCLUDE:
+                rep = rep_line(c)
+            if rep is not None:
+                ev = START
+                self._events[id(c)] = ev
+                self.rec.add_code(c, self.fid[fn], -1, False, rep)
+                set_local(tool, c, ev)
+                stack.extend(k for k in c.co_consts if isinstance(k, CodeType))
+                continue
             ev = LINE
             if e is not None or module:
                 ev |= START
