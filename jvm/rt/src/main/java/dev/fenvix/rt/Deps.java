@@ -301,7 +301,7 @@ public final class Deps {
     // --------------------------------------------------------------- output
     static String outPath() {
         String mod = Det.MODULE.isEmpty() ? "root" : Det.MODULE.replaceAll("[^A-Za-z0-9_.-]", "_");
-        return Det.OUT + "/deps/" + mod + "-" + ProcessHandle.current().pid() + ".jsonl";
+        return Det.OUT + "/deps/" + mod + "-" + Compat.pid() + ".jsonl";
     }
 
     static void write(Scope s, String outcome) {

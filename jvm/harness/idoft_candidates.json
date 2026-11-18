@@ -1,0 +1,2439 @@
+[
+ {
+  "url": "https://github.com/alibaba/alibabacloud-tairjedis-sdk",
+  "sha": "f6215930b9e21a5252c95296d9924b3c4524d9f6",
+  "module": ".",
+  "tests": {
+   "com.aliyun.tair.tests.tairbloom.TairBloomClusterTest.bfaddTest": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomClusterTest.bfinsert": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomClusterTest.bfinsertBinary": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomClusterTest.bfinsertTest": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomClusterTest.bfmaddTest": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomPipelineTest.bfaddPipelineTest": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomPipelineTest.bfinsertPipelineTest": "OD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomPipelineTest.bfmaddPipelineTest": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfaddException": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfaddTest": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfcommandTest": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfdebugException": "OD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfexistsException": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfinsert": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfinsertBinary": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfinsertException": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfinsertTest": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfmaddException": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfmaddTest": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfmexistsException": "NOD",
+   "com.aliyun.tair.tests.tairbloom.TairBloomTest.bfreserveException": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.avgArrayTest": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.cpcAccurateEstimationTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.cpcMupdate2EstTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.cpcMupdate2JudTest": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.cpcMupdateTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.cpcupdate2judTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.cpcupdateExpireTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.firstArrayTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.firstTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.lastArrayTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.lastTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.maxArrayTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.maxTest": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.minArrayTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.minTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.stddevTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.sumArrayTest": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcClusterTestNew.sumTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcPipelineTest.cpcupdateTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.avgArrayTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.cpcAccurateEstimationTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.cpcArrayEstimateRangeTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.cpcMupdate2EstTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.cpcMupdate2JudTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.cpcMupdateTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.cpcupdate2judTest": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.cpcupdateExpireTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.cpcupdateTest": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.firstTest": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.lastArrayTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.lastTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.maxArrayTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.maxTest": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.minArrayTest": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.minTest": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.sketchesBatchWriteTest": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.sketchesTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.stddevArrayTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.stddevTest": "NOD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.sumArrayTest": "OD",
+   "com.aliyun.tair.tests.taircpc.TairCpcTestNew.sumTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonarrappendException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonArrappendTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonarrinsertException": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonArrinsertTest": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonarrlenException": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonArrlenTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonArrlenTest2": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonarrpopException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonArrpopTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonarrtrimException": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonArrtrimTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsondelException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonDelTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsongetException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonGetTest": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonmgetException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonMgetTest": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonMgetTestBinary": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonnumincrbyException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonNumincrbyTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonsetException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonSetTestBinary": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonSetWithException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonSetWithNXXX": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonSetWithNXXXBinary": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonstrappendException": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonStrappendTest": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonstrlenException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonStrlenTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocClusterTest.jsonTypeTest": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocPipelineTest.jsonSetTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocPipelineTest.jsonSetTestBinary": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocPipelineTest.pipelineTest2": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocPipelineTest.pipelineTest2Binary": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonarrappendException": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonArrappendTest": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonarrinsertException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonArrinsertTest": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonarrlenException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonArrlenTest2": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonarrpopException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonArrpopTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonarrtrimException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonArrtrimTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsondelException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonDelTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsongetException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonGetTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonGetWithXmlAndYaml": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonmgetException": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonMgetTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonMgetTestBinary": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonnumincrbyException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonNumincrbyTest": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonsetException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonSetTest": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonSetTestBinary": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonSetWithException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonSetWithNXXX": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonSetWithNXXXBinary": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonstrappendException": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonStrappendTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonstrlenException": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonStrlenTest": "NOD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsontypeException": "OD",
+   "com.aliyun.tair.tests.tairdoc.TairDocTest.jsonTypeTest": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisClusterTest.gisBigKeyTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisClusterTest.gisContainsTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisClusterTest.gisdelKeyNotExistTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisClusterTest.gisdelKeyTypeErrorTest": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisClusterTest.gisdelTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisClusterTest.gisdelValueNotExistsTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisClusterTest.gisGetallTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisClusterTest.gisSearchBigKeyTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisClusterTest.gisSearchByMember": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisClusterTest.gisSearchWithParams": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisPipelineTest.gisContainsTest": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisPipelineTest.gisContainsTest2": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisPipelineTest.gisdelTest": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisPipelineTest.gisdelValueNotExistsTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisPipelineTest.gisGetallPipelineTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisPipelineTest.gisSearchPipelineTest": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisPipelineTest.gisSearchPipelineTestBinary": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisaddException": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisBigKeyTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.giscontainsException": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisContainsTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisdelException": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisdelKeyNotExistTest": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisdelKeyTypeErrorTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisdelTest": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisdelValueNotExistsTest": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisgetallException": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisGetallTest": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisgetException": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisintersectsException": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisSearchBigKeyTest": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisSearchByMember": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gissearchException": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gissearchTest": "OD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisSearchWithParams": "NOD",
+   "com.aliyun.tair.tests.tairgis.TairGisTest.gisWithinTest": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhashBigKey": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhdel": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhexists": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhexistsException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhexpireAt": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhexpireatException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhexpireAtWithNoActive": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhexpireException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhexpireWithNoActive": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhget": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhgetAll": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhgetAllException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhgetallException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhgetwithver": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhgetwithverException": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhgetwithverPipeline": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhincrBy": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhincrbyException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhincrbyfloatException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhincrByFloatWithBoundary": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhincrByFloatWithExpire": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhincrByFloatWithVersion": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhincrByWithBoundary": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhincrByWithExpire": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhincrByWithVersion": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhkeys": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhkeysException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhlenException": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhmget": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhmgetException": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhmgetwithver": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhmgetwithverException": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhmset": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhmsetException": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhmsetwithopts": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhmsetwithoptsException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhpexpireatException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhpexpireAtWithNoActive": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhpexpireException": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhpexpireWithNoActive": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhpttlException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhscanTest": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhset": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhsetException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhsetnx": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhsetnxException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhsetparams": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhsetverException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhsetwitnoactive": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhstrlenException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhttl": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhttlException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhvals": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhvalsException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhver": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.exhverException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashClusterTest.extestBinaryHstrLen": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashPipelineTest.exhexpirewitnoactivePipeline": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashPipelineTest.exhincrByFloatWithBoundaryPipeline": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashPipelineTest.exhincrByFloatWithExpirePipeline": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashPipelineTest.exhincrByFloatWithVersionPipeline": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashPipelineTest.exhincrByWithBoundaryPipeline": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashPipelineTest.exhincrByWithExpirePipeline": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashPipelineTest.exhincrByWithVersionPipeline": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashPipelineTest.exhpexpireAtWithNoActivePipeline": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashPipelineTest.exhpexpireWithNoActivePipeline": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashPipelineTest.exhsetwitnoactivePipeline": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashPipelineTest.tairHashPipelineTest": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhashBigKey": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhdel": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhdelException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhexists": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhexistsException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhexpireAt": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhexpireatException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhexpireAtWithNoActive": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhexpireException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhexpireWithNoActive": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhget": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhgetAll": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhgetAllException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhgetallException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhgetAllPipeline": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhgetException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhgetwithver": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhgetwithverException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhgetwithverPipeline": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhincrBy": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhincrbyException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhincrByFloat": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhincrbyfloatException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhincrByFloatWithBoundary": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhincrByFloatWithExpire": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhincrByFloatWithVersion": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhincrByWithBoundary": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhincrByWithExpire": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhincrByWithVersion": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhkeys": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhkeysException": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhlen": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhmget": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhmgetException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhmgetwithver": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhmgetwithverPipeline": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhmset": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhmsetException": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhmsetwithopts": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhmsetwithoptsException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhpexpireatException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhpexpireAtWithNoActive": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhpexpireException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhpttlException": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhscanException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhscanTest": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhscanunorderTest": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhscanunorderWithParamsTest": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhset": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhsetException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhsetnx": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhsetnxException": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhsetparams": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhsetverException": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhsetwitnoactive": "OD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhstrlenException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhttl": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhttlException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhvals": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhvalsException": "NOD",
+   "com.aliyun.tair.tests.tairhash.TairHashTest.exhverException": "OD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringClusterTest.trbitrangeingtest": "NOD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringClusterTest.trbitstests": "NOD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringClusterTest.trmultikeytest": "OD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringPipelineTest.tairroaringtest": "NOD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringPipelineTest.trbitoptest": "NOD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringPipelineTest.trbitsrange_mixedtest": "NOD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringTest.trappendbitarryatest": "OD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringTest.trbitoptest": "NOD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringTest.trbitrangeing_mixed_test": "NOD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringTest.trbits_mixed_test": "NOD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringTest.trbit_mixed_test": "NOD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringTest.tremptytest": "OD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringTest.trloadstringtest": "NOD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringTest.trmultikeytest": "OD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringTest.trscantest": "NOD",
+   "com.aliyun.tair.tests.tairroaring.TairRoaringTest.trstatus_mixed_test": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.searchcachetest": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tfdelall": "OD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tfdeldoc": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tfincrfloatdocfield": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tfincrlongdocfield": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tfscandocid": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tfscandocidwithcount": "OD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tfscandocidwithmatch": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tftadddoc": "OD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tftcreateindex": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tftdeldocfield": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tftmaddtestbyte": "OD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tftmaddteststring": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.tfupdatedocfield": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchClusterTest.unicodetest": "OD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchPipelineTest.tftmaddtest": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchPipelineTest.tfttest": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.searchcachetest": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tfdelall": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tfdeldoc": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tfincrfloatdocfield": "OD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tfincrlongdocfield": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tfscandocid": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tfscandocidwithcount": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tfscandocidwithmatch": "OD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tftadddoc": "OD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tftcreateindex": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tftdeldocfield": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tftmaddtestbyte": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tftmaddteststring": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tftupdateindex": "NOD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.tfupdatedocfield": "OD",
+   "com.aliyun.tair.tests.tairsearch.TairSearchTest.unicodetest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringClusterTest.excadTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringClusterTest.excasTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringClusterTest.exincrbyfloatParamsTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringClusterTest.exincrbyfloatTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringClusterTest.exincrbyParamsTest": "OD",
+   "com.aliyun.tair.tests.tairstring.TairStringClusterTest.exincrbyTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringClusterTest.exsetClusterTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringClusterTest.exsetParamsTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringClusterTest.exsetverTest": "OD",
+   "com.aliyun.tair.tests.tairstring.TairStringPipelineTest.excadPipelineTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringPipelineTest.excasPipelineTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringPipelineTest.exincrbyfloatParamsPipelineTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringPipelineTest.exincrbyfloatPipelineTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringPipelineTest.exincrbyPipelineTest": "OD",
+   "com.aliyun.tair.tests.tairstring.TairStringPipelineTest.exsetParamsPipelineTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringPipelineTest.exsetPipelineTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringPipelineTest.exsetverPipelineTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringTest.excadTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringTest.excasTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringTest.exincrbyfloatParamsTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringTest.exincrbyfloatTest": "OD",
+   "com.aliyun.tair.tests.tairstring.TairStringTest.exincrbyTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringTest.exsetParamsTest": "OD",
+   "com.aliyun.tair.tests.tairstring.TairStringTest.exsetTest": "NOD",
+   "com.aliyun.tair.tests.tairstring.TairStringTest.exsetverTest": "OD",
+   "com.aliyun.tair.tests.tairts.TairTsClusterTest.extsaddTest": "OD",
+   "com.aliyun.tair.tests.tairts.TairTsPipelineTest.extsaddTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsStringClusterTest.extsStringAddTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsStringClusterTest.extsStringRangeTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsStringTest.extsaddAlterTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsStringTest.extsaddTest": "OD",
+   "com.aliyun.tair.tests.tairts.TairTsStringTest.extsgetTest": "OD",
+   "com.aliyun.tair.tests.tairts.TairTsStringTest.extsmaddTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsStringTest.extsmrangeByteTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsStringTest.extsmrangeLabelsByteTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsStringTest.extsmrangeLabelsTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsStringTest.extsmrangeTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsStringTest.extsqueryTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsStringTest.extsrangeTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsaddTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsAlterTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsmaddTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsmrangeByteTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsmrangeKeysByteTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsmrangeKeysLabelsTest": "OD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsmrangeKeysTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsmrangeLabelsByteTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsmrangeLabelsTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsmrangeSkeysLabelsByteTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsmrangeTest": "OD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsprangeAggregationSkeyByteTest": "OD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsprangeAggregationSkeyRevTest": "OD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsprangeAggregationSkeyTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsprangeByteTest": "OD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsprangeTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsqueryTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsrangeTest": "OD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsRawMIncrTest": "NOD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsRawMModifyTest": "OD",
+   "com.aliyun.tair.tests.tairts.TairTsTest.extsRawModifyTest": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_create_index_test": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_del": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_del_index": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_get_index": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_hdel": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_hgetall": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_hmgetall": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_hset": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_knnsearch": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_knnsearch_filter": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_knnsearch_with_params": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_mknnsearch_filter": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_mknnsearch_with_params": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_scan": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorClusterTest.tvs_scan_index": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_create_index_test": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_del": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_del_index": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_hdel": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_hmgetall": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_hset": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_knnsearch": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_knnsearch_filter": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_knnsearch_with_params": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_mknnsearch": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_mknnsearch_filter": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_mknnsearch_with_params": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorPipelineTest.tvs_scan_index": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_create_index": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_create_index_withoption_args": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_create_index_with_datatype": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_del": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_del_index": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_get_index": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_hdel": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_hgetall": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_hgetall_data_bin": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_hmgetall": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_hset": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_hset_data_bin": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_knnsearch": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_knnsearch_with_databin": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_knnsearch_with_filter": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_knnsearch_with_params": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_mknnsearch": "OD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_mknnsearch_with_params": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_scan": "NOD",
+   "com.aliyun.tair.tests.tairvector.TairVectorTest.tvs_scan_index": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetPipelineTest.exzbasic": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zadd": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zaddWithParams": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zcard": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zcount": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zincrby": "OD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zlexcount": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zrange": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zrangeByLex": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zrangeByLexBinary": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zrangebyscore": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zrangeWithScores": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zrank": "OD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zrem": "OD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zremrangeByLex": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zremrangeByRank": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zremrangeByScore": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zrevrange": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zrevrank": "NOD",
+   "com.aliyun.tair.tests.tairzset.TairZsetTest.zscore": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/pholser/junit-quickcheck",
+  "sha": "9361b6dae25b193782604d071754eb7fc566390a",
+  "module": "core",
+  "tests": {
+   "com.pholser.junit.quickcheck.ComponentizedGeneratorsIsolateConfigurationFromComponentsTest.boxOfFoo": "NIO",
+   "com.pholser.junit.quickcheck.EnumPropertyParameterTypesTest.cyclesThroughEnumValuesWhenMarkedWithValuesOf": "NIO",
+   "com.pholser.junit.quickcheck.EnumPropertyParameterTypesTest.usesRegularTrialCount": "NIO",
+   "com.pholser.junit.quickcheck.EnumPropertyParameterTypesTest.whenConstrained": "NIO",
+   "com.pholser.junit.quickcheck.EnumPropertyParameterTypesTest.whenCyclingAndConstrained": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.ctorOnly": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.enums": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.explicitConversion": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.favorValueOf": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.manyParameters": "ID;NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.manyParametersWithBooleanAndEnum": "ID;NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.primitiveBooleans": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.primitiveBytes": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.primitiveChars": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.primitiveDoubles": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.primitiveFloats": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.primitiveIntegers": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.primitiveLongs": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.primitiveShorts": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.strings": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.wrapperBooleans": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.wrapperBytes": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.wrapperChars": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.wrapperDoubles": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.wrapperFloats": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.wrapperIntegers": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.wrapperLongs": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetButIncludingAnotherTest.wrapperShorts": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.booleansUnmarked": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.ctorOnly": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.enums": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.enumsUnmarked": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.explicitConversion": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.favorValueOf": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.manyParameters": "ID;NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.manyParametersWithBooleanAndEnum": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.primitiveBooleans": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.primitiveBytes": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.primitiveChars": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.primitiveDoubles": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.primitiveFloats": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.primitiveIntegers": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.primitiveLongs": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.primitiveShorts": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.strings": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.wrapperBooleans": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.wrapperBytes": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.wrapperChars": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.wrapperDoubles": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.wrapperFloats": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.wrapperIntegers": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.wrapperLongs": "NIO",
+   "com.pholser.junit.quickcheck.ExhaustingAGivenSetTest.wrapperShorts": "NIO",
+   "com.pholser.junit.quickcheck.LambdaPropertyParameterTypesTest.unboxingAFoo": "NIO",
+   "com.pholser.junit.quickcheck.PropertiesWithExplicitGeneratorsTest.explicitGeneratorTakesPrecedence": "NIO",
+   "com.pholser.junit.quickcheck.PropertyExhaustiveSampleSizeTest.shouldFeedADefaultNumberOfValuesToAProperty": "NIO",
+   "com.pholser.junit.quickcheck.PropertyExhaustiveSampleSizeTest.shouldRespectTrialCountIfSpecified": "NIO",
+   "com.pholser.junit.quickcheck.PropertyExhaustiveSampleSizeTest.trialCountHoldsForEntirePropertyRatherThanIndividualParameters": "NIO",
+   "com.pholser.junit.quickcheck.PropertyParameterConfigurationIsolationTest.acrossParametersOfParametersOfArrayTypeAndTypeWithOneConstant": "NIO",
+   "com.pholser.junit.quickcheck.PropertyParameterConfigurationIsolationTest.acrossParametersOfParametersOfParameterizedTypeAndUnparameterizedTypeWithOneConstant": "NIO",
+   "com.pholser.junit.quickcheck.PropertyParameterConfigurationIsolationTest.acrossParametersOfSameArrayType": "NIO",
+   "com.pholser.junit.quickcheck.PropertyParameterConfigurationIsolationTest.acrossParametersOfSameArrayTypeWithOneConstant": "NIO",
+   "com.pholser.junit.quickcheck.PropertyParameterConfigurationIsolationTest.acrossParametersOfSameParameterizedType": "NIO",
+   "com.pholser.junit.quickcheck.PropertyParameterConfigurationIsolationTest.acrossParametersOfSameParameterizedTypeWithOneConstant": "NIO",
+   "com.pholser.junit.quickcheck.PropertyParameterConfigurationIsolationTest.acrossParametersOfSameType": "NIO",
+   "com.pholser.junit.quickcheck.PropertyParameterConfigurationIsolationTest.acrossParametersOfSameTypeWithOneConstant": "NIO",
+   "com.pholser.junit.quickcheck.PropertyTupleSampleSizeTest.shouldFeedADefaultNumberOfValuesToAProperty": "NIO",
+   "com.pholser.junit.quickcheck.PropertyTupleSampleSizeTest.shouldRespectTrialCountIfSpecified": "NIO",
+   "com.pholser.junit.quickcheck.PropertyTupleSampleSizeTest.trialCountHoldsForEntirePropertyRatherThanIndividualParameters": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.alsoHonorsGeneratorsApartFromFixedSet": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.ctorOnly": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.enums": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.explicitConversion": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.favorValueOf": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.manyParameters": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.primitiveBooleans": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.primitiveBytes": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.primitiveChars": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.primitiveDoubles": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.primitiveFloats": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.primitiveIntegers": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.primitiveLongs": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.primitiveShorts": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.strings": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.wrapperBooleans": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.wrapperBytes": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.wrapperChars": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.wrapperDoubles": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.wrapperFloats": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.wrapperIntegers": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.wrapperLongs": "NIO",
+   "com.pholser.junit.quickcheck.SamplingButAlsoIncludingAGivenSetTest.wrapperShorts": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.ctorOnly": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.enums": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.explicitConversion": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.favorValueOf": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.manyParameters": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.onlyTrumpsAlso": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.onlyTrumpsGenerators": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.primitiveBooleans": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.primitiveBytes": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.primitiveChars": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.primitiveDoubles": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.primitiveFloats": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.primitiveIntegers": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.primitiveLongs": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.primitiveShorts": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.strings": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.wrapperBooleans": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.wrapperBytes": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.wrapperChars": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.wrapperDoubles": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.wrapperFloats": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.wrapperIntegers": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.wrapperLongs": "NIO",
+   "com.pholser.junit.quickcheck.SamplingOnlyFromAGivenSetTest.wrapperShorts": "NIO",
+   "com.pholser.junit.quickcheck.ShrinkingTest.assumptionFailureWhileShrinking": "NIO",
+   "com.pholser.junit.quickcheck.ShrinkingTest.disablingShrinking": "NIO",
+   "com.pholser.junit.quickcheck.UsualJUnitMachineryOnPropertyBasedTest.orderingOfStatements": "NIO;OD",
+   "com.pholser.junit.quickcheck.UsualJUnitMachineryOnShrinkingPropertyBasedTest.orderingOfStatements": "NIO",
+   "com.pholser.junit.quickcheck.UsualJUnitMachineryOnSubclassPropertyTest.expectedOrderingOfMethods": "NIO",
+   "com.pholser.junit.quickcheck.UsualJUnitMachineryOnTraitBasedPropertyTest.expectedOrderingOfMethods": "NIO"
+  }
+ },
+ {
+  "url": "https://github.com/j256/ormlite-core",
+  "sha": "632b87c2a455b8eab4a6c09324e1f166273588d8",
+  "module": ".",
+  "tests": {
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testAssignEmptyForeignCollectionThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testCallBatchTasksThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testCloseLastIteratorThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testCloseLastIteratorThrows": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testCommitThrows": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testCountOfPreparedThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testCountOfThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testCreateCollectionThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testCreateIfNotExistsThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testCreateObjectInstanceThrows": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testCreateOrUpdateThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testCreateThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testDeleteByIdThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testDeleteCollectionThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testDeleteIdsThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testDeletePreparedThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testDeleteThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testEndThreadConnectionThrows": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testExecuteRawNoArgsThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testExecuteRawThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testExtractIdThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testGetEmptyForeignCollectionThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testGetSelectStarRowMapperThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testIdExistsThrows": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testIsAutoCommitThrows": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testIsTableExistsThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testIteratorQueryFlags": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testIteratorThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testMapSelectStarRowThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testObjectsEqualThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryForAllThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryForEqThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryForFieldsValuesArgsThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryForFieldsValuesThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryForFirstPreparedThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryForIdThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryForMatchingArgsThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryForMatchingThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryForSameIdThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryRawDatatypesThrows": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryRawDateTypesThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryRawMapperThrows": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryRawRowMapperThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryRawThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryRawValueThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testQueryThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testRefreshThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testRollbackThrows": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testSetAutoCommitThrows": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testSetObjectCacheCacheThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testSetObjectCacheThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testStartThreadConnectionThrows": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testUpdateIdThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testUpdatePreparedThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testUpdateRawThrow": "OD-Vic",
+   "com.j256.ormlite.dao.RuntimeExceptionDaoTest.testUpdateThrow": "OD-Vic",
+   "com.j256.ormlite.db.BaseDatabaseTypeTest.testDriverNotFound": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testConnectionLeakCreateList": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testDaoTransactionManagerCommitted": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testNestedTransactions": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testNestedTransactionsReleaseFails": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testNonRuntimeExceptionWiredRollBack": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testRollBack": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testSpringWiredRollBack": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testTransactionManager": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testTransactionManagerAutoCommitOn": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testTransactionManagerAutoCommitSupported": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testTransactionManagerRollback": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testTransactionManagerRollbackNullSavePoint": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testTransactionManagerRollbackOtherException": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testTransactionManagerSavePointNull": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testTransactionManagerTableName": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testTransactionWithinTransaction": "OD-Vic",
+   "com.j256.ormlite.misc.TransactionManagerTest.testTransactionWithinTransactionFails": "OD-Vic",
+   "com.j256.ormlite.stmt.QueryBuilderWithSchemaTest.testQueryRawColumnsNotQuery": "OD-Vic",
+   "com.j256.ormlite.stmt.StatementExecutorTest.testCallBatchTasksNestedInTransaction": "OD-Vic",
+   "com.j256.ormlite.support.BaseConnectionSourceTest.testClearDifferentConnection": "OD-Vic",
+   "com.j256.ormlite.support.BaseConnectionSourceTest.testClearNone": "OD-Vic",
+   "com.j256.ormlite.support.DatabaseConnectionProxyFactoryTest.testBasic": "OD-Vic",
+   "com.j256.ormlite.support.DatabaseConnectionProxyFactoryTest.testChangeInsertValue": "OD-Vic",
+   "com.j256.ormlite.table.SchemaUtilsTest.testCreateIfNotExists": "OD-Vic",
+   "com.j256.ormlite.table.SchemaUtilsTest.testCreateSchema": "OD-Vic",
+   "com.j256.ormlite.table.SchemaUtilsTest.testCreateSchemaDao": "OD-Vic",
+   "com.j256.ormlite.table.SchemaUtilsTest.testCreateSchemaName": "OD-Vic",
+   "com.j256.ormlite.table.SchemaUtilsTest.testDropSchema": "OD-Vic",
+   "com.j256.ormlite.table.SchemaUtilsTest.testDropSchemaThrow": "OD-Vic",
+   "com.j256.ormlite.table.TableUtilsTest.testMissingCreate": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/abel533/Mapper",
+  "sha": "3c0b3307011fad53f811e08d05147d94fc6c0d67",
+  "module": "base",
+  "tests": {
+   "tk.mybatis.mapper.test.able.TestBasicAble.testInsert": "OD",
+   "tk.mybatis.mapper.test.country.TestDeleteByPrimaryKey.testDynamicDelete": "OD",
+   "tk.mybatis.mapper.test.country.TestDeleteByPrimaryKey.testDynamicDeleteEntity": "OD",
+   "tk.mybatis.mapper.test.country.TestDeleteByPrimaryKey.testDynamicDeleteException": "OD",
+   "tk.mybatis.mapper.test.country.TestDeleteByPrimaryKey.testDynamicDeleteMap": "OD",
+   "tk.mybatis.mapper.test.country.TestExistsWithPrimaryKey.testDynamicExistsWithPrimaryKey": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestInsert.testDynamicInsert": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestInsertSelective.testDynamicInsertSelective": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestInsertSelective.testDynamicInsertSelectiveNull": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelect.testAllColumns": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelect.testDynamicSelect": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelect.testDynamicSelectAll": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelect.testDynamicSelectNotFoundKeyProperties": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelect.testDynamicSelectPage": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelectAll.testDynamicSelectPage": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelectAll.testDynamicSelectPage2": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelectByPrimaryKey.testDynamicSelectByPrimaryKey": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelectByPrimaryKey.testDynamicSelectByPrimaryKey2": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelectByPrimaryKey.testSelectByPrimaryKeyMap": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelectCount.testDynamicSelect": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelectCount.testDynamicSelectAllByNull": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelectCount.testDynamicSelectCount": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelectOne.testDynamicSelect": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelectOne.testDynamicSelectAll": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestSelectOne.testDynamicSelectAllByNull": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKey.testDynamicUpdateByPrimaryKey": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKey.testDynamicUpdateByPrimaryKeyNotFoundKeyProperties": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKey.testUpdateByPrimaryKeyAndVersion": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKeySelective.testDynamicUpdateByPrimaryKeySelective": "OD-Vic",
+   "tk.mybatis.mapper.test.country.TestUpdateByPrimaryKeySelective.testDynamicUpdateByPrimaryKeySelectiveNotFoundKeyProperties": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestDeleteByExample.testDeleteByExample": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestDeleteByExample.testDeleteByExample2": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestDeleteByExample.testDeleteByExample3": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestExampleBuilder.testBetween": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestExampleBuilder.testDistinct": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestExampleBuilder.testEqualTo": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestExampleBuilder.testExampleBuilder": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestExampleBuilder.testForUpdate": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestExampleBuilder.testIn": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestExampleBuilder.testMultiWhereCompound": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestExampleBuilder.testOrderBy": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestExampleBuilder.testWhereCompound0": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestExampleBuilder.testWhereCompound1": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestExampleBuilder.testWhereOrWhereCompound": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectByExample.testAndExample": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectByExample.testAndOr": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectByExample.testExcludeColumnsByExample": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectByExample.testOrderBy": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectByExample.testSelectByExample": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectByExample.testSelectByExample2": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectByExample.testSelectByExample3": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectByExample.testSelectByExample4": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectByExample.testSelectByExampleForUpdate": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectByExample.testSelectByExampleInNotIn": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectByExample.testSelectByExampleInNotIn2": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectByExample.testSelectPropertisCheckCorrect": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectCountByExample.testSelectCountByExample": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectCountByExample.testSelectCountByExample2": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectCountByExample.testSelectCountByExample3": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectCountByExample.testSelectCountByExampleForUpdate": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectOneByExample.testSelectByExample": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestSelectOneByExample.testSelectOneByExampleException": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestUpdateByExample.testUpdateByExample": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestUpdateByExample.testUpdateByExample2": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestUpdateByExampleSelective.testUpdateByExampleSelective": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestUpdateByExampleSelective.testUpdateByExampleSelective2": "OD-Vic",
+   "tk.mybatis.mapper.test.example.TestUpdateByExampleSelective.testUpdateByExampleSelective3": "OD-Vic",
+   "tk.mybatis.mapper.test.ids.TestIds.testDeleteByIds": "OD-Vic",
+   "tk.mybatis.mapper.test.ids.TestIds.testSelectByIds": "OD-Vic",
+   "tk.mybatis.mapper.test.rowbounds.TestSelectRowBounds.testSelectByExample": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/TooTallNate/Java-WebSocket",
+  "sha": "fa3909c391195178ccf5a92d4ac342a30ae247c8",
+  "module": ".",
+  "tests": {
+   "org.java_websocket.issues.Issue256Test.runReconnectBlockingScenario0": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectBlockingScenario1": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectBlockingScenario2": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectBlockingScenario3": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectBlockingScenario4": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectBlockingScenario5": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectBlockingScenario6": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectBlockingScenario7": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectBlockingScenario8": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectBlockingScenario9": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectScenario0": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectScenario1": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectScenario2": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectScenario3": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectScenario4": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectScenario5": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectScenario6": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectScenario7": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectScenario8": "NDOD;TD",
+   "org.java_websocket.issues.Issue256Test.runReconnectScenario9": "NDOD;TD",
+   "org.java_websocket.issues.Issue580Test.runNoCloseBlockingTestScenario0": "NDOD;TD",
+   "org.java_websocket.issues.Issue580Test.runNoCloseBlockingTestScenario2": "TD",
+   "org.java_websocket.issues.Issue580Test.runNoCloseBlockingTestScenario3": "NDOD;TD",
+   "org.java_websocket.issues.Issue580Test.runNoCloseBlockingTestScenario4": "NDOD;TD",
+   "org.java_websocket.issues.Issue580Test.runNoCloseBlockingTestScenario5": "TD",
+   "org.java_websocket.issues.Issue580Test.runNoCloseBlockingTestScenario6": "NDOD",
+   "org.java_websocket.issues.Issue580Test.runNoCloseBlockingTestScenario8": "NDOD;TD",
+   "org.java_websocket.issues.Issue621Test.testIssue": "NDOD",
+   "org.java_websocket.issues.Issue677Test.testIssue": "NDOD;OD-Vic;TD",
+   "org.java_websocket.issues.Issue713Test.testIssue": "NDOD;TD",
+   "org.java_websocket.misc.OpeningHandshakeRejectionTest.testHandshakeRejectionTestCase0": "NDOD;TD",
+   "org.java_websocket.misc.OpeningHandshakeRejectionTest.testHandshakeRejectionTestCase1": "TD",
+   "org.java_websocket.misc.OpeningHandshakeRejectionTest.testHandshakeRejectionTestCase10": "NDOD;TD",
+   "org.java_websocket.misc.OpeningHandshakeRejectionTest.testHandshakeRejectionTestCase11": "NDOD;TD",
+   "org.java_websocket.misc.OpeningHandshakeRejectionTest.testHandshakeRejectionTestCase2": "TD",
+   "org.java_websocket.misc.OpeningHandshakeRejectionTest.testHandshakeRejectionTestCase3": "TD",
+   "org.java_websocket.misc.OpeningHandshakeRejectionTest.testHandshakeRejectionTestCase4": "TD",
+   "org.java_websocket.misc.OpeningHandshakeRejectionTest.testHandshakeRejectionTestCase5": "TD",
+   "org.java_websocket.misc.OpeningHandshakeRejectionTest.testHandshakeRejectionTestCase6": "TD",
+   "org.java_websocket.misc.OpeningHandshakeRejectionTest.testHandshakeRejectionTestCase7": "TD",
+   "org.java_websocket.misc.OpeningHandshakeRejectionTest.testHandshakeRejectionTestCase8": "TD",
+   "org.java_websocket.misc.OpeningHandshakeRejectionTest.testHandshakeRejectionTestCase9": "TD",
+   "org.java_websocket.protocols.ProtoclHandshakeRejectionTest.testHandshakeRejectionTestCase10": "NDOD;TD",
+   "org.java_websocket.protocols.ProtoclHandshakeRejectionTest.testHandshakeRejectionTestCase11": "TD",
+   "org.java_websocket.protocols.ProtoclHandshakeRejectionTest.testHandshakeRejectionTestCase13": "TD",
+   "org.java_websocket.protocols.ProtoclHandshakeRejectionTest.testHandshakeRejectionTestCase14": "TD",
+   "org.java_websocket.protocols.ProtoclHandshakeRejectionTest.testHandshakeRejectionTestCase16": "TD",
+   "org.java_websocket.protocols.ProtoclHandshakeRejectionTest.testHandshakeRejectionTestCase17": "TD",
+   "org.java_websocket.protocols.ProtoclHandshakeRejectionTest.testHandshakeRejectionTestCase2": "TD",
+   "org.java_websocket.protocols.ProtoclHandshakeRejectionTest.testHandshakeRejectionTestCase3": "TD",
+   "org.java_websocket.protocols.ProtoclHandshakeRejectionTest.testHandshakeRejectionTestCase4": "TD",
+   "org.java_websocket.protocols.ProtoclHandshakeRejectionTest.testHandshakeRejectionTestCase6": "TD",
+   "org.java_websocket.protocols.ProtoclHandshakeRejectionTest.testHandshakeRejectionTestCase8": "TD",
+   "org.java_websocket.protocols.ProtoclHandshakeRejectionTest.testHandshakeRejectionTestCase9": "TD"
+  }
+ },
+ {
+  "url": "https://github.com/alibaba/wasp",
+  "sha": "b2593d8e4b31ca6da0cd2f3e18356338d9b6dace",
+  "module": ".",
+  "tests": {
+   "com.alibaba.wasp.client.TestAdmin.testCheckWaspAvailableClosesConnection": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testCloseEntityGroupIfInvalidEntityGroupNameIsPassed": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testCloseEntityGroupThatFetchesTheEGIFromMeta": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testCloseEntityGroupWhenEncodedEntityGroupNameIsNotGiven": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testCloseEntityGroupWhenServerNameIsEmpty": "OD",
+   "com.alibaba.wasp.client.TestAdmin.testCreateTable": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testCreateTableWithEmptyRowInTheSplitKeys": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testCreateTableWithOnlyEmptyStartRow": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testDisableAndEnableTable": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testDisableAndEnableTables": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testDisableEnableTableHasChilds": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testEmptyFTable": "OD",
+   "com.alibaba.wasp.client.TestAdmin.testEnableDisableAddColumnDeleteColumn": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testGetTableEntityGroups": "OD",
+   "com.alibaba.wasp.client.TestAdmin.testOnlineChangeTableSchema": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testShouldCloseTheEntityGroupBasedOnTheEncodedEntityGroupName": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testShouldFailOnlineSchemaUpdateIfOnlineSchemaIsNotEnabled": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testSplitUnknownTable": "OD",
+   "com.alibaba.wasp.client.TestAdmin.testTableExist": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testTableExistsExceptionWithATable": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testTableLocked": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testTableNameClash": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testTableNotDisabledExceptionWithATable": "NOD",
+   "com.alibaba.wasp.client.TestAdmin.testTableNotEnabledExceptionWithATable": "NOD",
+   "com.alibaba.wasp.client.TestDataCorrectness.testSelectFromChildTableUsingRandomIndex": "OD",
+   "com.alibaba.wasp.client.TestDataCorrectness.testSelectFromParentTableUsingRandomIndex": "NOD",
+   "com.alibaba.wasp.client.TestFClientLoadBalance.testExecute": "OD",
+   "com.alibaba.wasp.client.TestFClientLoadBalance.testExecuteWhenWaspClose": "NOD",
+   "com.alibaba.wasp.client.TestFClientLoadBalance.testNextWithWrongSession": "NOD",
+   "com.alibaba.wasp.client.TestFromClientSide.testCreateTable": "OD",
+   "com.alibaba.wasp.client.TestFromClientSide.testCreateTableAndIndex": "OD",
+   "com.alibaba.wasp.client.TestFromClientSide.testDeleteNotOnlyPK": "NOD",
+   "com.alibaba.wasp.client.TestFromClientSide.testExecute": "NOD",
+   "com.alibaba.wasp.client.TestFromClientSide.testGetSql": "NOD",
+   "com.alibaba.wasp.client.TestFromClientSide.testInsertWithSomePK": "NOD",
+   "com.alibaba.wasp.client.TestFromClientSide.testInvalidDatatype": "NOD",
+   "com.alibaba.wasp.client.TestFromClientSide.testLoopCreateDropTable": "OD",
+   "com.alibaba.wasp.client.TestFromClientSide.testMutilColSql": "NOD",
+   "com.alibaba.wasp.client.TestFromClientSide.testNormalSql": "OD",
+   "com.alibaba.wasp.client.TestFromClientSide.testQueryNext": "NOD",
+   "com.alibaba.wasp.client.TestFromClientSide.testScanSql": "OD",
+   "com.alibaba.wasp.client.TestFromClientSide.testSelectNotUseIndex": "OD",
+   "com.alibaba.wasp.client.TestFromClientSide.testSpecharsValue": "NOD",
+   "com.alibaba.wasp.client.TestFromClientSide.testSqlExecute": "OD",
+   "com.alibaba.wasp.client.TestFromClientSide.testUpdateNotOnlyPK": "NOD",
+   "com.alibaba.wasp.client.TestFromClientSide.testUpdateNullValueColumn": "NOD",
+   "com.alibaba.wasp.client.TestFromClientSide.testUpdatePK": "NOD",
+   "com.alibaba.wasp.executor.TestExecutorService.testExecutorService": "TD"
+  }
+ },
+ {
+  "url": "https://github.com/Thomas-S-B/visualee",
+  "sha": "88732d9dbe5031dad9c9f85a4c4b35e5f1551f95",
+  "module": "visualee",
+  "tests": {
+   "de.strullerbaumann.visualee.dependency.boundary.DependencyContainerTest.testFindAllDependenciesWith": "OD",
+   "de.strullerbaumann.visualee.dependency.boundary.DependencyContainerTest.testGetRelevantClassesDirectlyConnected": "OD",
+   "de.strullerbaumann.visualee.dependency.boundary.DependencyContainerTest.testGetRelevantClassesFilter": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerEJBTest.testFindAndSetAttributesEJBSetterWithAnnotations": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerEJBTest.testFindAndSetAttributesEJBWithParameter": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerEJBTest.testFindAndSetAttributesSetEJB": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerEJBTest.testFindAndSetAttributesSetEJBPackageView": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerEventTest.testFindAndSetAttributesSetInstance": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerEventTest.testFindEvents": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerInjectTest.testFindAndSetAttributesInjectSetterWithAnnotations": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerInjectTest.testFindAndSetAttributesSetInject": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerInjectTest.testFindEventNamedClass": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerInstanceTest.testFindAndSetAttributesSetInstance": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerInstanceTest.testFindAndSetAttributesSetInstanceGeneric": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerObservesTest.testFindAndSetAttributesObserves": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerObservesTest.testObservesAnnotated": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerObservesTest.testObservesDuring": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerObservesTest.testObservesNotify": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerObservesTest.testObservesWithPhases": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerProducesTest.testFindAndSetAttributesProduces": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerProducesTest.testFindAndSetAttributesStaticProduces": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerResourceTest.testFindAndSetAttributesResource": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerResourceTest.testFindAndSetAttributesResourceInstance": "OD",
+   "de.strullerbaumann.visualee.examiner.cdi.ExaminerResourceTest.testFindAndSetAttributesResourceMappedName": "OD",
+   "de.strullerbaumann.visualee.examiner.JavaSourceInspectorTest.testFindAndSetAttributesIgnoreCommentBlocks": "OD",
+   "de.strullerbaumann.visualee.examiner.JavaSourceInspectorTest.testFindAndSetAttributesIgnoreComments": "OD",
+   "de.strullerbaumann.visualee.examiner.JavaSourceInspectorTest.testSetGroupNrs": "OD",
+   "de.strullerbaumann.visualee.examiner.jpa.JPAExaminerTest.testFindAndSetAttributesIgnoreCommentBlocks": "OD",
+   "de.strullerbaumann.visualee.examiner.jpa.JPAExaminerTest.testFindAndSetAttributesIgnoreComments": "OD",
+   "de.strullerbaumann.visualee.examiner.jpa.JPAExaminerTest.testFindAndSetAttributesManyToMany": "OD",
+   "de.strullerbaumann.visualee.examiner.jpa.JPAExaminerTest.testFindAndSetAttributesManyToOne": "OD",
+   "de.strullerbaumann.visualee.filter.boundary.FilterContainerTest.testIsOkExcludeFalse": "OD",
+   "de.strullerbaumann.visualee.filter.boundary.FilterContainerTest.testIsOkIncludeTrue": "OD",
+   "de.strullerbaumann.visualee.filter.entity.ClassFilterTest.testIsOkExcludeFalse": "OD",
+   "de.strullerbaumann.visualee.filter.entity.ClassFilterTest.testIsOkIncludeTrue": "OD",
+   "de.strullerbaumann.visualee.filter.entity.PackageFilterTest.testIsOkExcludeFalse": "OD",
+   "de.strullerbaumann.visualee.filter.entity.PackageFilterTest.testIsOkIncludeTrue": "OD",
+   "de.strullerbaumann.visualee.filter.entity.SourcecodeFilterTest.testIsOkExcludeFalse": "OD",
+   "de.strullerbaumann.visualee.filter.entity.SourcecodeFilterTest.testIsOkIncludeTrue": "OD",
+   "de.strullerbaumann.visualee.source.boundary.JavaSourceContainerTest.testAddJavaSourceDoublette": "OD",
+   "de.strullerbaumann.visualee.source.boundary.JavaSourceContainerTest.testGetJavaSourceByName": "OD",
+   "de.strullerbaumann.visualee.source.entity.JavaSourceTest.testGetDependenciesOfType": "OD",
+   "de.strullerbaumann.visualee.ui.graph.boundary.GraphCreatorTest.testBuildJSONLinks": "OD",
+   "de.strullerbaumann.visualee.ui.graph.boundary.GraphCreatorTest.testBuildJSONNode": "OD",
+   "de.strullerbaumann.visualee.ui.graph.boundary.GraphCreatorTest.testBuildJSONNodes": "OD",
+   "de.strullerbaumann.visualee.ui.graph.control.DescriptionTest.testGenerateDescription": "OD",
+   "de.strullerbaumann.visualee.ui.graph.control.DescriptionTest.testGenerateDescription2": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/danfickle/openhtmltopdf",
+  "sha": "4a0612fab7b3a55e3e11d485233b063006d03b0f",
+  "module": "openhtmltopdf-examples",
+  "tests": {
+   "com.openhtmltopdf.freemarker.FreeMarkerGeneratorTest.testFreeMarkerGenerator": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testBookmarkBodySimple": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testBookmarkHeadAfterOverflowPage": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testBookmarkHeadNested": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testBookmarkHeadOnOverflowPage": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testBookmarkHeadSimple": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testBookmarkHeadTransform": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testFormControlAfterOverflowPage": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testFormControlOverflowPage": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testFormControlText": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testInputWithoutNameAttribute": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testIssue458PageContentRepeatedInMargin": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkAfterOverflowTarget": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkAreaAfterOverflowPage": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkAreaMultipleBoxes": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkAreaMultipleLine": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkAreaMultiplePage": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkAreaOverflowPage": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkAreaPageMargin": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkAreaPageMarginTransform": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkAreaTransformNested": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkAreaTransformRotate": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkAreaTransformTranslateY": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkExternalUrl": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkInlineTarget": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkOnOverflowTarget": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkSimpleBlock": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testLinkTransformTarget": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testMetaInformation": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testPR480LinkShapes": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testPr489DiagnosticConsumer": "OD",
+   "com.openhtmltopdf.nonvisualregressiontests.NonVisualRegressionTest.testPr492InfiniteLoopBugsInLineBreakingFuzz": "OD",
+   "com.openhtmltopdf.testcases.ConcateOutputTest.testConcateOutput": "OD",
+   "com.openhtmltopdf.testcases.TestcaseRunnerTest.runTestcaseRunner": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/kevinsawicki/http-request",
+  "sha": "2d62a3e9da726942a93cf16b6e91c0187e6c0136",
+  "module": "lib",
+  "tests": {
+   "com.github.kevinsawicki.http.HttpRequestTest.basicProxyAuthentication": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.deleteWithEscapedMappedQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.deleteWithEscapedVarargsQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.deleteWithMappedQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.deleteWithVarargsQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.getUrlEncodedWithPercent": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.getUrlEncodedWithSpace": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.getUrlEncodedWithUnicode": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.getWithEscapedMappedQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.getWithEscapedVarargsQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.getWithMappedQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.getWithVarargsQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.headWithEscapedMappedQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.headWithEscapedVarargsQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.headWithMappedQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.headWithVaragsQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.postWithEscapedMappedQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.postWithEscapedVarargsQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.postWithMappedQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.postWithNumericQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.postWithVaragsQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.putWithEscapedMappedQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.putWithEscapedVarargsQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.putWithMappedQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.putWithVarargsQueryParams": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.singleSslSocketFactory": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.singleVerifier": "OD-Vic",
+   "com.github.kevinsawicki.http.HttpRequestTest.verifierAccepts": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/alibaba/nacos",
+  "sha": "f136dde8fae27797156f0ecb9abbe80774beaea4",
+  "module": "config",
+  "tests": {
+   "com.alibaba.nacos.config.server.configuration.ConditionDistributedEmbedStorageTest.testMatches": "OD-Vic",
+   "com.alibaba.nacos.config.server.configuration.ConditionOnEmbeddedStorageTest.testMatches": "OD-Vic",
+   "com.alibaba.nacos.config.server.configuration.ConditionOnExternalStorageTest.testMatches": "OD-Vic",
+   "com.alibaba.nacos.config.server.configuration.ConditionStandaloneEmbedStorageTest.testMatches": "OD-Vic",
+   "com.alibaba.nacos.config.server.controller.ConfigControllerTest.testDeleteConfig": "OD-Vic",
+   "com.alibaba.nacos.config.server.controller.ConfigControllerTest.testDetailConfigInfo": "OD-Vic",
+   "com.alibaba.nacos.config.server.controller.ConfigControllerTest.testGetConfig": "OD-Vic",
+   "com.alibaba.nacos.config.server.controller.ConfigControllerTest.testPublishConfig": "OD-Vic",
+   "com.alibaba.nacos.config.server.controller.ConfigOpsControllerTest.testDerbyOps": "OD-Vic",
+   "com.alibaba.nacos.config.server.controller.ConfigOpsControllerTest.testImportDerby": "OD-Vic",
+   "com.alibaba.nacos.config.server.controller.ConfigServletInnerTest.testDoGetConfigV1": "OD-Vic",
+   "com.alibaba.nacos.config.server.controller.ConfigServletInnerTest.testDoGetConfigV2": "OD-Vic",
+   "com.alibaba.nacos.config.server.controller.ConfigServletInnerTest.testDoGetConfigV3": "OD-Vic",
+   "com.alibaba.nacos.config.server.model.ConfigInfoTest.testPrecisionIssue": "OD-Vic",
+   "com.alibaba.nacos.config.server.remote.ConfigPublishRequestHandlerTest.testHandle": "OD-Vic",
+   "com.alibaba.nacos.config.server.remote.ConfigQueryRequestHandlerTest.testHandle": "OD-Vic",
+   "com.alibaba.nacos.config.server.service.ClientTrackServiceTest.testTrackClientMd5": "OD-Vic",
+   "com.alibaba.nacos.config.server.service.ConfigChangePublisherTest.testConfigChangeNotify": "OD-Vic",
+   "com.alibaba.nacos.config.server.service.DiskServiceUnitTest.testCreateConfig": "OD-Vic",
+   "com.alibaba.nacos.config.server.utils.DiskUtilsTest.testTargetBetaFile": "OD-Vic",
+   "com.alibaba.nacos.config.server.utils.MD5UtilTest.testCompareMd5": "OD-Vic",
+   "com.alibaba.nacos.config.server.utils.PropertyUtilTest.testGetPropertyV1": "OD-Vic",
+   "com.alibaba.nacos.config.server.utils.PropertyUtilTest.testGetPropertyV2": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/apache/dubbo",
+  "sha": "5349c13a36d277a090e1dc68fbe7c3b46d78fc90",
+  "module": "dubbo-common",
+  "tests": {
+   "org.apache.dubbo.common.beanutil.JavaBeanSerializeUtilTest.testDeserializeBean": "OD-Vic",
+   "org.apache.dubbo.common.beanutil.JavaBeanSerializeUtilTest.testDeserialize_Array": "OD-Vic",
+   "org.apache.dubbo.common.extension.ExtensionLoaderTest.testInjectExtension": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.testArrayToCollection": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.testCollectionToArray": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.testListPojoListPojo": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.testMapField": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.testPojoList": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.testPublicField": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.testRealizeLinkedList": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.testStackOverflow": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.test_has_no_nullary_constructor_pojo": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.test_LoopPojoInList": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.test_LoopPojoInMap": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.test_Loop_pojo": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.test_Map_List_pojo": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.test_pojo": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.test_PojoArray": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.test_PojoInList": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.test_simpleCollection": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.test_total": "OD-Vic",
+   "org.apache.dubbo.common.utils.PojoUtilsTest.test_total_Array": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/apache/avro",
+  "sha": "efe9aa7fbe457805dc894a9186e1267603d82dd2",
+  "module": "lang/java/ipc-jetty",
+  "tests": {
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testAdd": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testClassLoader": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testConnectionRefusedOneWay": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testEcho": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testEchoBytes": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testEmptyEchoBytes": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testError": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testGetRemote": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testHashCode": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testHello": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testOneWay": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testParamVariation": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testRepeatedAccess": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testStatelessOneway": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testTimeout": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttp.testUndeclaredError": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttps.testClassLoader": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttps.testConnectionRefusedOneWay": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttps.testGetRemote": "OD",
+   "org.apache.avro.ipc.jetty.TestProtocolHttps.testHashCode": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/json-iterator/java",
+  "sha": "6925cf4c19d313504b416f58a349a36bf563e0e1",
+  "module": ".",
+  "tests": {
+   "com.jsoniter.extra.TestPreciseFloat.test_direct_encode": "OD",
+   "com.jsoniter.extra.TestPreciseFloat.test_indirect_encode": "OD",
+   "com.jsoniter.IterImplForStreamingTest.testLoadMore": "OD",
+   "com.jsoniter.output.TestObject.test_omit_selft_defined": "OD",
+   "com.jsoniter.output.TestObject.test_transient_field_getter": "OD",
+   "com.jsoniter.TestBoolean.test_streaming": "OD",
+   "com.jsoniter.TestFloat.test_streaming": "OD",
+   "com.jsoniter.TestInteger.test_streaming": "OD",
+   "com.jsoniter.TestIO.test_read_byte": "OD",
+   "com.jsoniter.TestIO.test_read_bytes": "OD",
+   "com.jsoniter.TestIO.test_unread_byte": "OD",
+   "com.jsoniter.TestMap.test_MapKeyCodec": "OD",
+   "com.jsoniter.TestObject.test_inheritance": "OD",
+   "com.jsoniter.TestReadAny.test_read_any_in_streaming": "OD",
+   "com.jsoniter.TestSkip.test_skip_string_streaming": "OD",
+   "com.jsoniter.TestString.test_long_string_in_streaming": "OD",
+   "com.jsoniter.TestString.test_normal_escape": "OD",
+   "com.jsoniter.TestString.test_string_across_buffer": "OD",
+   "com.jsoniter.TestString.test_unicode_escape": "OD",
+   "com.jsoniter.TestString.test_utf8": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/alibaba/fastjson",
+  "sha": "e05e9c5e4be580691cc55a59f3256595393203a1",
+  "module": ".",
+  "tests": {
+   "com.alibaba.json.bvt.bug.Issue_717.test_for_issue": "OD",
+   "com.alibaba.json.bvt.date.DateTest.test_date": "OD",
+   "com.alibaba.json.bvt.date.DateTest_tz.test_codec": "OD",
+   "com.alibaba.json.bvt.issue_1200.Issue1298.test_for_issue": "OD",
+   "com.alibaba.json.bvt.issue_1200.Issue1298.test_for_issue_1": "OD",
+   "com.alibaba.json.bvt.issue_1600.Issue1679.test_for_issue": "OD",
+   "com.alibaba.json.bvt.issue_1700.Issue1769.test_for_issue": "OD",
+   "com.alibaba.json.bvt.issue_1900.Issue1977.test_for_issue": "OD",
+   "com.alibaba.json.bvt.parser.DefaultExtJSONParser_parseArray.test_7": "OD",
+   "com.alibaba.json.bvt.parser.DefaultExtJSONParser_parseArray.test_8": "OD",
+   "com.alibaba.json.bvt.parser.deser.AbstractSerializeTest.test_mapping_1": "NOD",
+   "com.alibaba.json.bvt.parser.deser.AbstractSerializeTest.test_mapping_2": "NOD",
+   "com.alibaba.json.bvt.serializer.ConcurrentHashMapTest5.test_concurrentHashmap": "NDOD",
+   "com.alibaba.json.bvt.serializer.ConcurrentHashMapTest6.test_concurrentHashmap": "NDOD",
+   "com.alibaba.json.bvt.serializer.date.DateTest4_indian.test_date": "OD",
+   "com.alibaba.json.bvt.serializer.date.DateTest5_iso8601.test_date": "OD",
+   "com.alibaba.json.bvt.serializer.JSONFieldTest5.test_jsonField": "OD",
+   "com.alibaba.json.bvt.serializer.JSONSerializerTest2.test_0": "OD",
+   "com.alibaba.json.bvt.serializer.MaxBufSizeTest.test_max_buf": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/zalando/riptide",
+  "sha": "dcf4af17abfd312243897e79e0577d1e28537e7d",
+  "module": "riptide-spring-boot-autoconfigure",
+  "tests": {
+   "org.zalando.riptide.autoconfigure.AccessTokensDefaultCredentialsDirectoryTest.shouldUseCredentialsDirectory": "NOD",
+   "org.zalando.riptide.autoconfigure.AccessTokensMissingTest.shouldFailDueToMissingAccessTokenUrl": "NOD",
+   "org.zalando.riptide.autoconfigure.AccessTokensPropertiesTest.shouldRun": "NOD",
+   "org.zalando.riptide.autoconfigure.CircuitBreakerTest.shouldAutowireCircuitBreakers": "NOD",
+   "org.zalando.riptide.autoconfigure.ClientConfigurationTest.shouldApplyTimeouts": "NOD",
+   "org.zalando.riptide.autoconfigure.ClientConfigurationTest.shouldWireNonOAuthCorrectly": "NOD",
+   "org.zalando.riptide.autoconfigure.ClientConfigurationTest.shouldWireOAuthCorrectly": "NOD",
+   "org.zalando.riptide.autoconfigure.HttpMessageConvertersOverrideTest.shouldOverride": "NOD",
+   "org.zalando.riptide.autoconfigure.LogbookCompatibilityTest.shouldUseInterceptors": "NOD",
+   "org.zalando.riptide.autoconfigure.metrics.MetricsTest.shouldRecordCircuitBreakers": "NOD",
+   "org.zalando.riptide.autoconfigure.metrics.MetricsTest.shouldRecordRequests": "NOD",
+   "org.zalando.riptide.autoconfigure.metrics.MetricsTest.shouldRecordRetries": "NOD",
+   "org.zalando.riptide.autoconfigure.ObjectMapperOverrideTest.shouldOverride": "NOD",
+   "org.zalando.riptide.autoconfigure.PluginTest.shouldUseBackupRequestPlugin": "NOD",
+   "org.zalando.riptide.autoconfigure.PluginTest.shouldUseOriginalStackTracePlugin": "NOD",
+   "org.zalando.riptide.autoconfigure.retry.RetryTest.shouldRetryForAtMostMaxRetriesTimes": "NOD",
+   "org.zalando.riptide.autoconfigure.url.UrlResolutionTest.shouldAppendUrl": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/biojava/biojava",
+  "sha": "e99364ac14294adeb9385b7b93c602c2d9b66bb6",
+  "module": "biojava-structure",
+  "tests": {
+   "org.biojava.nbio.structure.align.util.AtomCacheTest.testEmptyChemComp": "NOD",
+   "org.biojava.nbio.structure.align.util.AtomCacheTest.testEmptyGZChemComp": "NOD",
+   "org.biojava.nbio.structure.align.util.AtomCacheTest.testFetchBehavior": "NOD",
+   "org.biojava.nbio.structure.align.util.AtomCacheTest.testGetStructureForDomain1": "NOD",
+   "org.biojava.nbio.structure.align.util.AtomCacheTest.testGetStructureForDomain2": "NOD",
+   "org.biojava.nbio.structure.align.util.AtomCacheTest.testGetStructureForDomain3": "NOD",
+   "org.biojava.nbio.structure.io.mmtf.TestMmtfPerformance.test3HBX": "NOD",
+   "org.biojava.nbio.structure.io.mmtf.TestMmtfRoundTrip.testStructWithBranchedEntitiesRoundTrip": "NOD",
+   "org.biojava.nbio.structure.io.TestNonDepositedFiles.testStructureWithBranchedEntities": "NOD",
+   "org.biojava.nbio.structure.io.TestURLBasedFileParsing.testMMcifURL": "NOD",
+   "org.biojava.nbio.structure.PDBStatusTest.testGetCurrent": "NOD",
+   "org.biojava.nbio.structure.PDBStatusTest.testGetStatus": "NOD",
+   "org.biojava.nbio.structure.PDBStatusTest.testGetStatusMultipleIds": "NOD",
+   "org.biojava.nbio.structure.TestAtomCache.testFetchCurrent1HHB": "NOD",
+   "org.biojava.nbio.structure.TestAtomCache.testFetchObsolete": "NOD",
+   "org.biojava.nbio.structure.TestLoadStructureFromURL.testLoadStructureFromURL": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/spring-projects/spring-ws",
+  "sha": "e8d89c9eb0929dda304174729c9c69fb29f448eb",
+  "module": "spring-ws-core",
+  "tests": {
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap11WebServiceTemplateIntegrationTest.attachment": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap11WebServiceTemplateIntegrationTest.fault": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap11WebServiceTemplateIntegrationTest.faultNonCompliant": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap11WebServiceTemplateIntegrationTest.marshalSendAndReceiveNoResponse": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap11WebServiceTemplateIntegrationTest.marshalSendAndReceiveResponse": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap11WebServiceTemplateIntegrationTest.notFound": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap11WebServiceTemplateIntegrationTest.sendSourceAndReceiveToResultNoResponse": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap12WebServiceTemplateIntegrationTest.attachment": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap12WebServiceTemplateIntegrationTest.marshalSendAndReceiveNoResponse": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap12WebServiceTemplateIntegrationTest.marshalSendAndReceiveResponse": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap12WebServiceTemplateIntegrationTest.notFound": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap12WebServiceTemplateIntegrationTest.receiverFault": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap12WebServiceTemplateIntegrationTest.senderFault": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap12WebServiceTemplateIntegrationTest.sendSourceAndReceiveToResult": "OD-Vic",
+   "org.springframework.ws.client.core.AxiomNonStreamingSoap12WebServiceTemplateIntegrationTest.sendSourceAndReceiveToResultNoResponse": "OD-Vic",
+   "org.springframework.ws.server.endpoint.mapping.EndpointMappingTest.endpointPrototype": "NIO"
+  }
+ },
+ {
+  "url": "https://github.com/apache/servicecomb-java-chassis",
+  "sha": "ec76b1a15704c15bab437e64739e6d483562850d",
+  "module": "swagger/swagger-generator/generator-core",
+  "tests": {
+   "org.apache.servicecomb.swagger.generator.core.processor.annotation.OperationMethodAnnotationProcessorTest.testBlankMediaType": "OD",
+   "org.apache.servicecomb.swagger.generator.core.processor.annotation.OperationMethodAnnotationProcessorTest.testBodyParam": "OD",
+   "org.apache.servicecomb.swagger.generator.core.processor.annotation.OperationMethodAnnotationProcessorTest.testConvertTags": "OD",
+   "org.apache.servicecomb.swagger.generator.core.processor.annotation.OperationMethodAnnotationProcessorTest.testConvertTagsOnMethodWithNoTag": "OD",
+   "org.apache.servicecomb.swagger.generator.core.processor.annotation.OperationMethodAnnotationProcessorTest.testMultiMediaType": "OD",
+   "org.apache.servicecomb.swagger.generator.core.processor.annotation.OperationMethodAnnotationProcessorTest.testSingleMediaType": "OD",
+   "org.apache.servicecomb.swagger.generator.core.TestApiResponse.checkApiResponseHeader": "OD",
+   "org.apache.servicecomb.swagger.generator.core.TestApiResponse.checkMulti": "OD",
+   "org.apache.servicecomb.swagger.generator.core.TestApiResponse.checkResponseDesc": "OD",
+   "org.apache.servicecomb.swagger.generator.core.TestApiResponse.checkResponseHeader": "OD",
+   "org.apache.servicecomb.swagger.generator.core.TestApiResponse.checkSingle": "OD",
+   "org.apache.servicecomb.swagger.generator.core.TestOperationGenerator.apiOperationNoTag": "OD",
+   "org.apache.servicecomb.swagger.generator.core.TestOperationGenerator.apiOperationThenResponse": "OD",
+   "org.apache.servicecomb.swagger.generator.core.TestOperationGenerator.noApiOperation": "OD",
+   "org.apache.servicecomb.swagger.generator.core.TestOperationGenerator.responseThenApiOperation": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/wro4j/wro4j",
+  "sha": "185ab607f1d649ca38b4a772831ee754cd4649fb",
+  "module": "wro4j-core",
+  "tests": {
+   "ro.isdc.wro.model.resource.processor.TestJsMinProcessor.shouldProcessRegexpContainingCurlyBraces": "OD-Vic",
+   "ro.isdc.wro.model.resource.support.change.TestResourceChangeInfo.cannotCheckChangeForNullGroupName": "OD-Vic",
+   "ro.isdc.wro.model.resource.support.change.TestResourceWatcher.cannotCheckNullCacheEntry": "OD-Vic",
+   "ro.isdc.wro.model.resource.support.hash.TestConfigurableHashStrategy.cannotConfigureInvalidAlias": "OD-Vic",
+   "ro.isdc.wro.model.resource.support.naming.TestConfigurableNamingStrategy.cannotConfigureInvalidAlias": "OD-Vic",
+   "ro.isdc.wro.model.resource.support.naming.TestDefaultHashEncoderNamingStrategy.cannotAcceptNullStream": "OD-Vic",
+   "ro.isdc.wro.model.resource.support.naming.TestDefaultHashEncoderNamingStrategy.shouldRenameResourceWithSomeContent": "OD-Vic",
+   "ro.isdc.wro.model.resource.support.naming.TestHashEncoderNamingStrategy.cannotAcceptNullStream": "OD-Vic",
+   "ro.isdc.wro.model.resource.support.naming.TestHashEncoderNamingStrategy.shouldRenameResourceWithSomeContent": "OD-Vic",
+   "ro.isdc.wro.model.resource.support.TestDefaultResourceAuthorizationManager.shouldContainOnlyOneResourceWhenSameIsAddedTwice": "OD-Vic",
+   "ro.isdc.wro.model.TestWroModel.shouldNotReturnDuplicatedResources": "OD-Vic",
+   "ro.isdc.wro.util.provider.TestProviderFinder.shouldFindConfigurableProviders": "OD-Vic",
+   "ro.isdc.wro.util.TestProxyFactory.cannotCreateProxyFromNullObjectFactory": "OD-Vic",
+   "ro.isdc.wro.util.TestSchedulerHelper.canAcceptNullRunnableWhenPeriodIsZero": "OD-Vic",
+   "ro.isdc.wro.util.TestWroUtil.shouldJoinTwoPaths": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/apache/shardingsphere-elasticjob",
+  "sha": "b022898ef1b8c984e17efb2a422ee45f6b13e46e",
+  "module": "elastic-job-lite-core",
+  "tests": {
+   "io.elasticjob.lite.event.rdb.JobEventRdbSearchTest.assertFindJobExecutionEventsWithTime": "NOD;OD-Vic",
+   "io.elasticjob.lite.event.rdb.JobEventRdbSearchTest.assertFindJobStatusTraceEventsWithTime": "NDOD;OD-Vic",
+   "io.elasticjob.lite.event.rdb.JobEventRdbStorageTest.assertAddJobStatusTraceEventWhenFailoverWithTaskFailedState": "NIO",
+   "io.elasticjob.lite.event.rdb.JobEventRdbStorageTest.assertAddJobStatusTraceEventWhenFailoverWithTaskStagingState": "NIO",
+   "io.elasticjob.lite.internal.election.ElectionListenerManagerTest.assertLeaderElectionWhenRemoveLeaderInstancePathWithAvailableServerButJobInstanceIsShutdown": "OD-Vic",
+   "io.elasticjob.lite.internal.failover.FailoverServiceTest.assertGetLocalFailoverItemsIfShutdown": "OD-Vic",
+   "io.elasticjob.lite.internal.instance.ShutdownListenerManagerTest.assertIsShutdownAlready": "OD-Vic",
+   "io.elasticjob.lite.internal.instance.TriggerListenerManagerTest.assertTriggerWhenJobIsNotRunning": "OD",
+   "io.elasticjob.lite.internal.schedule.JobRegistryTest.assertGetCurrentShardingTotalCountIfNull": "OD-Vic",
+   "io.elasticjob.lite.internal.sharding.ShardingListenerManagerTest.assertListenServersChangedJobListenerWhenIsInstanceChangeButJobInstanceIsShutdown": "OD",
+   "io.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenterModifyTest.assertPersistEphemeralSequential": "OD-Vic",
+   "io.elasticjob.lite.reg.zookeeper.ZookeeperRegistryCenterModifyTest.assertPersistSequential": "NIO",
+   "io.elasticjob.lite.util.json.GsonFactoryTest.assertRegisterTypeAdapter": "NIO"
+  }
+ },
+ {
+  "url": "https://github.com/spring-cloud/spring-cloud-kubernetes",
+  "sha": "3351926041a630aee0961ba0e1be8f035e4ba2ca",
+  "module": "spring-cloud-kubernetes-fabric8-config",
+  "tests": {
+   "org.springframework.cloud.kubernetes.fabric8.config.ConfigMapsFromFilePathsTests.farewellInputShouldReturnPropertyFromSecondFile": "OD",
+   "org.springframework.cloud.kubernetes.fabric8.config.ConfigMapsFromFilePathsTests.morningInputShouldReturnDefaultValue": "OD",
+   "org.springframework.cloud.kubernetes.fabric8.config.ConfigMapsTests.testConfig": "OD",
+   "org.springframework.cloud.kubernetes.fabric8.config.ConfigMapWithIncludeProfileSpecificSourcesTests.testOne": "OD",
+   "org.springframework.cloud.kubernetes.fabric8.config.CoreTest.kubernetesClientConfigBeanShouldBeConfigurableViaSystemProperties": "OD",
+   "org.springframework.cloud.kubernetes.fabric8.config.Fabric8ConfigMapPropertySourceLocatorRetryTests$ConfigRetryEnabled.locateShouldNotRetryWhenThereIsNoFailure": "OD",
+   "org.springframework.cloud.kubernetes.fabric8.config.Fabric8ConfigMapPropertySourceLocatorRetryTests$ConfigRetryEnabled.locateShouldRetryAndFail": "OD",
+   "org.springframework.cloud.kubernetes.fabric8.config.Fabric8ConfigMapPropertySourceLocatorRetryTests$ConfigRetryEnabled.locateShouldRetryAndRecover": "OD",
+   "org.springframework.cloud.kubernetes.fabric8.config.Fabric8SecretsPropertySourceLocatorRetryTests$SecretsRetryEnabled.locateShouldNotRetryWhenThereIsNoFailure": "OD",
+   "org.springframework.cloud.kubernetes.fabric8.config.Fabric8SecretsPropertySourceLocatorRetryTests$SecretsRetryEnabled.locateShouldRetryAndFail": "OD",
+   "org.springframework.cloud.kubernetes.fabric8.config.Fabric8SecretsPropertySourceLocatorRetryTests$SecretsRetryEnabled.locateShouldRetryAndRecover": "OD",
+   "org.springframework.cloud.kubernetes.fabric8.config.MultipleConfigMapsTests.testCommonMessage": "OD",
+   "org.springframework.cloud.kubernetes.fabric8.config.MultipleConfigMapsTests.testMessage3": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/doanduyhai/Achilles",
+  "sha": "e3099bdce342910951c4862c78751fd81ed4552e",
+  "module": "integration-test-2_1",
+  "tests": {
+   "info.archinnov.achilles.it.bugs.TestEntityWithCaseSensitivePKIT.should_dsl_select_with_token_value": "TD",
+   "info.archinnov.achilles.it.TestALLEntityAsChild.should_insert": "TD",
+   "info.archinnov.achilles.it.TestDSLSimpleEntity.should_dsl_select_with_token_value": "TD",
+   "info.archinnov.achilles.it.TestEntityWithComplexIndices.should_query_using_collection_index": "TD",
+   "info.archinnov.achilles.it.TestEntityWithComplexIndices.should_query_using_full_collection_index": "TD",
+   "info.archinnov.achilles.it.TestEntityWithComplexIndices.should_query_using_index_and_clustering_column": "TD",
+   "info.archinnov.achilles.it.TestEntityWithComplexIndices.should_query_using_index_and_clustering_column_slice": "TD",
+   "info.archinnov.achilles.it.TestEntityWithComplexIndices.should_query_using_index_and_multi_clustering_columns_slice": "TD",
+   "info.archinnov.achilles.it.TestEntityWithComplexIndices.should_query_using_map_key_entry": "TD",
+   "info.archinnov.achilles.it.TestEntityWithComplexIndices.should_query_using_map_key_index": "TD",
+   "info.archinnov.achilles.it.TestEntityWithComplexIndices.should_query_using_map_key_value": "TD",
+   "info.archinnov.achilles.it.TestEntityWithComplexIndices.should_query_using_simple_index": "TD"
+  }
+ },
+ {
+  "url": "https://github.com/ktuukkan/marine-api",
+  "sha": "af0003847db9ba822f67d4f1dceb8de3fe63250a",
+  "module": ".",
+  "tests": {
+   "net.sf.marineapi.ais.event.AbstractAISMessageListenerTest.testBasicListenerWithUnexpectedMessage": "OD-Vic",
+   "net.sf.marineapi.ais.event.AbstractAISMessageListenerTest.testConstructor": "OD-Vic",
+   "net.sf.marineapi.ais.event.AbstractAISMessageListenerTest.testGenericsListener": "OD-Vic",
+   "net.sf.marineapi.ais.event.AbstractAISMessageListenerTest.testGenericsListenerDefaultConstructorThrows": "OD-Vic",
+   "net.sf.marineapi.ais.event.AbstractAISMessageListenerTest.testOnMessageWithExpectedMessage": "OD-Vic",
+   "net.sf.marineapi.ais.event.AbstractAISMessageListenerTest.testParametrizedConstructor": "OD-Vic",
+   "net.sf.marineapi.ais.event.AbstractAISMessageListenerTest.testSequenceListener": "OD-Vic",
+   "net.sf.marineapi.ais.event.AbstractAISMessageListenerTest.testSequenceListenerWithIncorrectOrder": "OD-Vic",
+   "net.sf.marineapi.ais.event.AbstractAISMessageListenerTest.testSequenceListenerWithMixedOrder": "OD-Vic",
+   "net.sf.marineapi.ais.parser.AISMessageFactoryTest.testCreate": "OD-Vic",
+   "net.sf.marineapi.ais.parser.AISMessageFactoryTest.testCreateWithIncorrectOrder": "OD-Vic",
+   "net.sf.marineapi.ais.parser.AISMessageFactoryTest.testCreateWithTwo": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/kagkarlsson/db-scheduler",
+  "sha": "4a8a28e60640dcd03e8d3bf212f483d35b0b6310",
+  "module": ".",
+  "tests": {
+   "com.github.kagkarlsson.scheduler.compatibility.HsqlCompatibilityTest.test_compatibility": "NDOD;OD-Vic;TD",
+   "com.github.kagkarlsson.scheduler.compatibility.HsqlCompatibilityTest.test_jdbc_repository_compatibility": "OD-Vic",
+   "com.github.kagkarlsson.scheduler.compatibility.HsqlCompatibilityTest.test_jdbc_repository_compatibility_set_data": "OD-Vic",
+   "com.github.kagkarlsson.scheduler.compatibility.HsqlCompatibilityTest.test_jdbc_repository_compatibility_with_data": "NDOD;OD-Vic",
+   "com.github.kagkarlsson.scheduler.DeadExecutionsTest.scheduler_should_detect_dead_execution_that_never_updated_heartbeat": "NDOD;OD-Vic",
+   "com.github.kagkarlsson.scheduler.DeadExecutionsTest.scheduler_should_handle_dead_executions": "NDOD;OD-Vic",
+   "com.github.kagkarlsson.scheduler.SchedulerClientTest.client_should_be_able_to_fetch_executions_for_task": "NDOD;OD-Vic",
+   "com.github.kagkarlsson.scheduler.SchedulerClientTest.client_should_be_able_to_schedule_executions": "NDOD;OD-Vic",
+   "com.github.kagkarlsson.scheduler.SchedulerClientTest.should_be_able_to_schedule_other_executions_from_an_executionhandler": "NDOD;OD-Vic",
+   "com.github.kagkarlsson.scheduler.SchedulerTest.scheduler_should_execute_rescheduled_task_when_exactly_due": "NOD;UD",
+   "com.github.kagkarlsson.scheduler.WaiterTest.should_wait_until_woken": "NDOD;TD"
+  }
+ },
+ {
+  "url": "https://github.com/yangfuhai/jboot",
+  "sha": "4bffb4dff4ce5190917491a1b68f79efbfe99650",
+  "module": ".",
+  "tests": {
+   "io.jboot.test.cache.caffeine.CaffeineTester.testDue": "OD",
+   "io.jboot.test.cache.caffeine.CaffeineTester.testGet": "OD",
+   "io.jboot.test.cache.caffeine.CaffeineTester.testPut": "OD",
+   "io.jboot.test.cache.caffeine.CaffeineTester.testTtl": "OD",
+   "io.jboot.test.cache.ehcache.EhCacheTester.testGet": "OD",
+   "io.jboot.test.cache.ehcache.EhCacheTester.testPut": "OD",
+   "io.jboot.test.cache.j2cache.J2CacheTester.testGet": "OD",
+   "io.jboot.test.cache.j2cache.J2CacheTester.testPut": "OD",
+   "io.jboot.test.cache.redis.RedisCacheTester.testCacheType": "OD",
+   "io.jboot.test.cache.redis.RedisCacheTester.testGet": "OD",
+   "io.jboot.test.cache.redis.RedisCacheTester.testPut": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/apache/archiva",
+  "sha": "292dbe1bb4323dd299d36b78f37d9c1d55c889f8",
+  "module": "archiva-modules/archiva-base/archiva-repository-layer",
+  "tests": {
+   "org.apache.archiva.repository.base.managed.BasicManagedRepositoryValidatorTest.apply": "OD",
+   "org.apache.archiva.repository.base.managed.BasicManagedRepositoryValidatorTest.applyForUpdate": "OD",
+   "org.apache.archiva.repository.base.managed.BasicManagedRepositoryValidatorTest.applyUpdateWithExistingRepo": "OD",
+   "org.apache.archiva.repository.base.managed.BasicManagedRepositoryValidatorTest.applyWithBadName": "OD",
+   "org.apache.archiva.repository.base.managed.BasicManagedRepositoryValidatorTest.applyWithBadSchedulingExpression": "OD",
+   "org.apache.archiva.repository.base.managed.BasicManagedRepositoryValidatorTest.applyWithEmptyId": "OD",
+   "org.apache.archiva.repository.base.managed.BasicManagedRepositoryValidatorTest.applyWithExistingRepo": "OD",
+   "org.apache.archiva.repository.base.managed.BasicManagedRepositoryValidatorTest.applyWithNullObject": "OD",
+   "org.apache.archiva.repository.base.managed.BasicManagedRepositoryValidatorTest.getFlavour": "OD",
+   "org.apache.archiva.repository.base.managed.BasicManagedRepositoryValidatorTest.isFlavour": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/jenkinsci/remoting",
+  "sha": "abf0455a68ad6c52a57e912bb89d51f883f77542",
+  "module": ".",
+  "tests": {
+   "hudson.remoting.ClassFilterTest.capabilityRead": "OD",
+   "hudson.remoting.ClassFilterTest.transport_chunking": "OD",
+   "hudson.remoting.ClassFilterTest.transport_nio": "OD",
+   "hudson.remoting.ClassFilterTest.transport_non_chunking": "OD",
+   "hudson.remoting.ClassFilterTest.userRequest": "OD",
+   "hudson.remoting.ClassFilterTest.userRequest_singleClassLoader": "OD",
+   "hudson.remoting.DefaultClassFilterTest.testDefaultsNoOverride": "OD",
+   "hudson.remoting.DefaultClassFilterTest.testDefaultsOverrideExists": "OD",
+   "hudson.remoting.DiagnosedStreamCorruptionExceptionTest.blockingStreamShouldNotPreventDiagnosis": "OD",
+   "hudson.remoting.DiagnosedStreamCorruptionExceptionTest.exercise": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/spring-cloud/spring-cloud-netflix",
+  "sha": "dc67500445d3ce7382771e39b64ca93bbebc04c7",
+  "module": "spring-cloud-netflix-eureka-server",
+  "tests": {
+   "org.springframework.cloud.netflix.eureka.server.ApplicationContextTests.catalogLoads": "OD-Vic",
+   "org.springframework.cloud.netflix.eureka.server.ApplicationContextTests.dashboardLoads": "OD-Vic",
+   "org.springframework.cloud.netflix.eureka.server.ApplicationDashboardDisabledTests.catalogLoads": "OD-Vic",
+   "org.springframework.cloud.netflix.eureka.server.ApplicationDashboardPathTests.catalogLoads": "OD-Vic",
+   "org.springframework.cloud.netflix.eureka.server.ApplicationDashboardPathTests.dashboardLoads": "OD-Vic",
+   "org.springframework.cloud.netflix.eureka.server.ApplicationServletPathTests.catalogLoads": "OD-Vic",
+   "org.springframework.cloud.netflix.eureka.server.ApplicationServletPathTests.dashboardLoads": "OD-Vic",
+   "org.springframework.cloud.netflix.eureka.server.ApplicationTests.catalogLoads": "OD-Vic",
+   "org.springframework.cloud.netflix.eureka.server.ApplicationTests.noDoubleSlashes": "OD-Vic",
+   "org.springframework.cloud.netflix.eureka.server.RefreshablePeerEurekaNodesTests.dashboardUpdatedAsSoonAsRefreshed": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/apache/httpcore",
+  "sha": "49247d208bde47f652812493e1d3576e136b8eb8",
+  "module": "httpcore-nio",
+  "tests": {
+   "org.apache.http.nio.protocol.TestAsyncNHttpHandlers.testDelayedHttpException": "TD",
+   "org.apache.http.nio.protocol.TestAsyncNHttpHandlers.testDelayedHttpGets": "TD",
+   "org.apache.http.nio.protocol.TestAsyncNHttpHandlers.testHttpPostsChunked": "TD",
+   "org.apache.http.nio.protocol.TestAsyncNHttpHandlers.testNoRequestHandler": "TD",
+   "org.apache.http.nio.protocol.TestAsyncNHttpHandlers.testNoServiceHandler": "TD",
+   "org.apache.http.nio.protocol.TestBufferingNHttpHandlers.testHttpPostsChunked": "TD",
+   "org.apache.http.nio.protocol.TestBufferingNHttpHandlers.testHttpPostsHTTP10": "TD",
+   "org.apache.http.nio.protocol.TestThrottlingNHttpHandlers.testSimpleHttpGets": "TD",
+   "org.apache.http.nio.protocol.TestThrottlingNHttpHandlers.testSimpleHttpPostsChunked": "TD"
+  }
+ },
+ {
+  "url": "https://github.com/FasterXML/jackson-dataformat-xml",
+  "sha": "2d08f8d0b0248a00c2c79b9a07e936b3287edb07",
+  "module": ".",
+  "tests": {
+   "com.fasterxml.jackson.dataformat.xml.jaxb.AttributesWithJAXBTest.testTwoAttributes": "OD",
+   "com.fasterxml.jackson.dataformat.xml.jaxb.WithJAXBAnnotationsTest.testPersonAsXml": "OD",
+   "com.fasterxml.jackson.dataformat.xml.lists.Issue101UnwrappedListAttributesTest.testWithTwoAttributes": "OD",
+   "com.fasterxml.jackson.dataformat.xml.lists.ListAnnotationSharingTest.testAnnotationSharing": "OD",
+   "com.fasterxml.jackson.dataformat.xml.misc.UnwrappingWithXMLTest.testUnwrappingWithAttribute": "OD",
+   "com.fasterxml.jackson.dataformat.xml.ser.TestIndentation.testMultiLevel172": "OD",
+   "com.fasterxml.jackson.dataformat.xml.ser.TestJDKSerializability.testMapper": "OD",
+   "com.fasterxml.jackson.dataformat.xml.ser.TestSerializationAttr.testIssue6": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/square/retrofit",
+  "sha": "ae28c3d5f6fe54f6ca409cdf82106efb47609f8f",
+  "module": "retrofit-adapters/rxjava",
+  "tests": {
+   "retrofit2.adapter.rxjava.CancelDisposeTest.cancelDoesNotDispose": "NOD",
+   "retrofit2.adapter.rxjava.CompletableThrowingSafeSubscriberTest.throwingInOnCompleteDeliveredToPlugin": "NDOD;NOD",
+   "retrofit2.adapter.rxjava.CompletableThrowingTest.bodyThrowingInOnErrorDeliveredToPlugin": "NOD",
+   "retrofit2.adapter.rxjava.CompletableThrowingTest.throwingInOnCompleteDeliveredToPlugin": "NDOD;NOD",
+   "retrofit2.adapter.rxjava.ObservableThrowingTest.responseThrowingInOnCompleteDeliveredToPlugin": "NOD",
+   "retrofit2.adapter.rxjava.SingleThrowingTest.bodyThrowingInOnSuccessDeliveredToPlugin": "NDOD;NOD",
+   "retrofit2.adapter.rxjava.SingleThrowingTest.responseThrowingInOnErrorDeliveredToPlugin": "NDOD",
+   "retrofit2.adapter.rxjava.SingleThrowingTest.responseThrowingInOnSuccessDeliveredToPlugin": "NDOD;NOD"
+  }
+ },
+ {
+  "url": "https://github.com/alibaba/spring-cloud-alibaba",
+  "sha": "add08b6822cb7cf6b2a429dd30b0ed0e49a7db49",
+  "module": "spring-cloud-alibaba-starters/spring-cloud-starter-alibaba-nacos-config",
+  "tests": {
+   "com.alibaba.cloud.nacos.configdata.NacosConfigDataLocationResolverTest.testDataIdMustBeSpecified": "OD",
+   "com.alibaba.cloud.nacos.configdata.NacosConfigDataLocationResolverTest.testInvalidDataId": "OD",
+   "com.alibaba.cloud.nacos.configdata.NacosConfigDataLocationResolverTest.testResolveProfileSpecific_givenNothing_thenReturnDefaultProfile": "OD",
+   "com.alibaba.cloud.nacos.configdata.NacosConfigDataLocationResolverTest.testStartWithASlashIsOK": "OD",
+   "com.alibaba.cloud.nacos.configdata.NacosConfigDataLocationResolverTest.testUrisInLocationShouldOverridesProperty": "OD",
+   "com.alibaba.cloud.nacos.configdata.NacosConfigDataLocationResolverTest.whenCustomizeSuffix_thenOverrideDefault": "OD",
+   "com.alibaba.cloud.nacos.configdata.NacosConfigDataLocationResolverTest.whenNoneInBootstrapContext_thenCreateNewConfigClientProperties": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/querydsl/querydsl",
+  "sha": "2bf234caf78549813a1e0f44d9c30ecc5ef734e3",
+  "module": "querydsl-hibernate-search",
+  "tests": {
+   "com.querydsl.hibernate.search.SearchQueryTest.count": "NOD",
+   "com.querydsl.hibernate.search.SearchQueryTest.list": "NIO;NOD",
+   "com.querydsl.hibernate.search.SearchQueryTest.listResults": "NOD;OD-Brit",
+   "com.querydsl.hibernate.search.SearchQueryTest.no_where": "NIO;NOD",
+   "com.querydsl.hibernate.search.SearchQueryTest.ordering": "NIO;NOD",
+   "com.querydsl.hibernate.search.SearchQueryTest.paging": "NOD",
+   "com.querydsl.hibernate.search.SearchQueryTest.singleResult": "OD-Brit"
+  }
+ },
+ {
+  "url": "https://github.com/vert-x3/vertx-rabbitmq-client",
+  "sha": "7305bcd5173cd32a0d2b382a69bdb7027851bd10",
+  "module": ".",
+  "tests": {
+   "io.vertx.rabbitmq.RabbitMQClientReconnectTest.testReconnect": "NOD",
+   "io.vertx.rabbitmq.RabbitMQConsumptionStreamingTest.keepMostRecentOptionShouldWorks": "NOD",
+   "io.vertx.rabbitmq.RabbitMQConsumptionStreamingTest.pauseAndResumeShouldWork": "NOD",
+   "io.vertx.rabbitmq.RabbitMQServiceTest.testBasicCancel": "NOD",
+   "io.vertx.rabbitmq.RabbitMQServiceTest.testBasicConsume": "NOD",
+   "io.vertx.rabbitmq.RabbitMQServiceTest.testGetMessageCount": "NOD",
+   "io.vertx.rabbitmq.RabbitMQServiceTest.testMessageOrderingWhenConsumingNewApi": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/baidu/Jprotobuf-rpc-socket",
+  "sha": "88bb62d511a7288087fe042855bb708247758e93",
+  "module": "jprotobuf-rpc-core",
+  "tests": {
+   "com.baidu.jprotobuf.pbrpc.proto.EchoServicePerformanceTest.multiExecuteValidTest": "NOD",
+   "com.baidu.jprotobuf.pbrpc.proto.EchoServicePerformanceTest.performance20TreadsTest": "NOD",
+   "com.baidu.jprotobuf.pbrpc.proto.EchoServicePerformanceTest.performanceOneTreadTest2": "NOD",
+   "com.baidu.jprotobuf.pbrpc.proto.EchoServicePerformanceTest.performanceOneTreadTestWithLongText": "NOD",
+   "com.baidu.jprotobuf.pbrpc.proto.EchoServiceTest.testAttachment": "NOD",
+   "com.baidu.jprotobuf.pbrpc.TrunkEchoServiceTest.testGzip": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/fluent/fluent-logger-java",
+  "sha": "da14ec349bf0904da9865940b57b87563616ee04",
+  "module": ".",
+  "tests": {
+   "org.fluentd.logger.TestFluentLogger.testClose": "NDOD;UD",
+   "org.fluentd.logger.TestFluentLogger.testFlushOnClose": "NDOD;UD",
+   "org.fluentd.logger.TestFluentLogger.testInMultiThreading": "NDOD",
+   "org.fluentd.logger.TestFluentLogger.testNormal01": "NDOD;UD",
+   "org.fluentd.logger.TestFluentLogger.testNormal02": "NDOD;UD",
+   "org.fluentd.logger.TestFluentLogger.testReconnection": "NDOD;UD;NOD"
+  }
+ },
+ {
+  "url": "https://github.com/jnr/jnr-posix",
+  "sha": "dbda72ce198a8dd766c30c591d63d726d2a28a7c",
+  "module": ".",
+  "tests": {
+   "jnr.posix.GroupTest.getgroups": "OD",
+   "jnr.posix.NlLanginfoTest.testNlLanginfo": "OD",
+   "jnr.posix.SpawnTest.closeInput": "OD",
+   "jnr.posix.SpawnTest.inputPipe": "OD",
+   "jnr.posix.SpawnTest.outputPipe": "OD",
+   "jnr.posix.SpawnTest.validPid": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/networknt/light-4j",
+  "sha": "fcded1683dcbd41a968e221494778aa6b71e7428",
+  "module": "config",
+  "tests": {
+   "com.networknt.config.ConfigEscapeTest.testSql1": "OD",
+   "com.networknt.config.ConfigEscapeTest.testSql2": "OD",
+   "com.networknt.config.ConfigEscapeTest.testValuesEscape": "OD",
+   "com.networknt.config.TestCentralizedManagement.testMap_allowEmptyStringOverwrite": "OD",
+   "com.networknt.config.TestCentralizedManagement.testMap_allowNullOverwrite": "OD",
+   "com.networknt.config.TestCentralizedManagement.testMap_mergeApplied_mutatesInPlaceCorrectly": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/openpojo/openpojo",
+  "sha": "9badbcc4593e797accfed5e51bec9f2b843f0f67",
+  "module": ".",
+  "tests": {
+   "com.openpojo.issues.issue112.IssueTest.shouldNotFail": "OD;UD",
+   "com.openpojo.reflection.impl.PojoClassImplTest.shouldCreateInstanceOnAbstract": "NOD;UD",
+   "com.openpojo.validation.test.impl.GetterTesterTest.shouldSuccessfullyValidateEvenIfLoggingFails": "OD-Vic",
+   "com.openpojo.validation.test.impl.SerializableTesterTest.shouldSkipOverNonSerializableClass": "OD-Vic",
+   "com.openpojo.validation.test.impl.SetterTesterTest.shouldSuccessfullyValidateEvenIfLoggingFails": "OD;UD",
+   "com.openpojo.validation.utils.ValidationHelperTest.shouldReportMissingASMProperly": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/rrd4j/rrd4j",
+  "sha": "5e0c9c7e138167388721a0620b95526e89fd6059",
+  "module": ".",
+  "tests": {
+   "org.rrd4j.core.jrrd.ExportImport.testExport": "OD-Vic",
+   "org.rrd4j.core.jrrd.ExportImport.testImport": "OD-Vic",
+   "org.rrd4j.core.LongRunning.testVersion1": "OD-Vic",
+   "org.rrd4j.core.LongRunning.testVersion2": "OD-Vic",
+   "org.rrd4j.demo.RunDemo.runDemo": "OD-Vic",
+   "org.rrd4j.graph.FontTest.testClean": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/vert-x3/vertx-mqtt",
+  "sha": "c8213e0f41150a1a02f4ad1185762494b52c6350",
+  "module": ".",
+  "tests": {
+   "io.vertx.mqtt.test.server.MqttServerClientIdentifierTest.testValidClientIdentifier": "OD",
+   "io.vertx.mqtt.test.server.MqttServerClientPublishTest.publishQos0": "OD",
+   "io.vertx.mqtt.test.server.MqttServerConnectionTest.accepted": "OD",
+   "io.vertx.mqtt.test.server.MqttServerConnectionTest.connectionAlreadyAccepted": "OD",
+   "io.vertx.mqtt.test.server.MqttServerConnectionTest.noConnectSent": "OD",
+   "io.vertx.mqtt.test.server.MqttServerUnsubscribeTest.unsubscribe": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/alibaba/easy-retry",
+  "sha": "16e0c4156347658c1fd701ad4bf53aeeb214ce50",
+  "module": "easy-retry-extensions",
+  "tests": {
+   "com.alibaba.easyretry.extension.mybatis.access.MybatisRetryTaskAccessTest.finish": "OD-Vic",
+   "com.alibaba.easyretry.extension.mybatis.access.MybatisRetryTaskAccessTest.handle": "OD-Vic",
+   "com.alibaba.easyretry.extension.mybatis.access.MybatisRetryTaskAccessTest.stop": "OD-Vic",
+   "com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAOImplTest.deleteRetryTask": "OD-Vic",
+   "com.alibaba.easyretry.extension.mybatis.dao.RetryTaskDAOImplTest.listRetryTask": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/CloudSlang/cloud-slang",
+  "sha": "48923570780dd096e0cf17ef657b6b1fdc50dc31",
+  "module": "cloudslang-entities",
+  "tests": {
+   "io.cloudslang.fortest.SensitiveValueTest.testEncryptedStringSensitiveValue": "OD",
+   "io.cloudslang.fortest.SensitiveValueTest.testEncryptedStringSensitiveValuePreEncrypted": "OD",
+   "io.cloudslang.fortest.SensitiveValueTest.testSensitiveValueEncryptDecrypt": "OD",
+   "io.cloudslang.lang.entities.bindings.values.ValueFactoryTest.testCreatePyObjectValueFromValueSensitive": "OD",
+   "io.cloudslang.lang.entities.DeserializeTest.testDeserializeInput": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/spring-cloud/spring-cloud-gcp",
+  "sha": "7ab8b2c249c825b499de5b66d080e64ddd0cced5",
+  "module": "spring-cloud-gcp-storage",
+  "tests": {
+   "org.springframework.cloud.gcp.storage.GoogleStorageTests.testBucketNoBlobResourceStatuses": "OD",
+   "org.springframework.cloud.gcp.storage.GoogleStorageTests.testValidBucket": "OD",
+   "org.springframework.cloud.gcp.storage.GoogleStorageTests.testWritableOutputStream": "OD",
+   "org.springframework.cloud.gcp.storage.GoogleStorageTests.testWritableOutputStreamWithAutoCreateOnNonExistantBlob": "OD",
+   "org.springframework.cloud.gcp.storage.GoogleStorageTests.testWritableOutputStreamWithAutoCreateOnNullBlob": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/undertow-io/undertow",
+  "sha": "d0efffad5d2034bb07525cac9b299dac72c3045d",
+  "module": "websockets-jsr",
+  "tests": {
+   "io.undertow.websockets.jsr.test.annotated.AnnotatedEndpointTest.testCloseReason": "OD-Vic",
+   "io.undertow.websockets.jsr.test.JsrWebSocketServer07Test.testErrorHandling": "TD;OD-Vic",
+   "io.undertow.websockets.jsr.test.JsrWebSocketServer08Test.testErrorHandling": "TD;OD-Vic",
+   "io.undertow.websockets.jsr.test.JsrWebSocketServer13Test.testErrorHandling": "TD;OD-Vic",
+   "io.undertow.websockets.jsr.test.reconnect.ClientEndpointReconnectTestCase.testAnnotatedClientEndpoint": "TD"
+  }
+ },
+ {
+  "url": "https://github.com/vmware/admiral",
+  "sha": "e4b02936cc7d4ff2714e7231db0c4373ba5d48a2",
+  "module": "adapter/registry",
+  "tests": {
+   "com.vmware.admiral.adapter.registry.service.RegistryAdapterServiceProxyTest.testInitWithProxyWithList": "TD;UD",
+   "com.vmware.admiral.adapter.registry.service.RegistryAdapterServiceTest.testDockerHubListImageTags": "TD;UD",
+   "com.vmware.admiral.adapter.registry.service.RegistryAdapterServiceTest.testSameRegistryAsGlobalAndProject": "TD;UD",
+   "com.vmware.admiral.adapter.registry.service.RegistryAdapterServiceTest.testSameRegistryTwoDifferentProjectsNotRemoveOldTenantLinkShouldFail": "TD;UD",
+   "com.vmware.admiral.adapter.registry.service.RegistryAdapterServiceTest.testV1Ping": "TD;UD"
+  }
+ },
+ {
+  "url": "https://github.com/winder/Universal-G-Code-Sender",
+  "sha": "4426f71c900ddd4a1eeb3957f3275cedc6312534",
+  "module": "ugs-core",
+  "tests": {
+   "com.willwinder.universalgcodesender.GrblControllerTest.rawResponseHandlerOnErrorWithNoSentCommandsShouldSendMessageToConsole": "OD",
+   "com.willwinder.universalgcodesender.GrblControllerTest.rawResponseHandlerWithKnownErrorShouldWriteMessageToConsole": "OD",
+   "com.willwinder.universalgcodesender.GrblControllerTest.rawResponseHandlerWithUnknownErrorShouldWriteGenericMessageToConsole": "OD",
+   "com.willwinder.universalgcodesender.GrblControllerTest.testGetGrblVersion": "OD",
+   "com.willwinder.universalgcodesender.GrblControllerTest.testIsReadyToStreamFile": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/apache/shenyu",
+  "sha": "10375c5204c67f9889235f19fe2d6e8eb0438a5a",
+  "module": "shenyu-client/shenyu-client-http/shenyu-client-springmvc",
+  "tests": {
+   "org.apache.shenyu.client.springmvc.init.SpringMvcClientEventListenerTest.testNormalBeanProcess": "OD",
+   "org.apache.shenyu.client.springmvc.init.SpringMvcClientEventListenerTest.testOnApplicationEventError": "OD",
+   "org.apache.shenyu.client.springmvc.init.SpringMvcClientEventListenerTest.testShenyuBeanProcess": "OD",
+   "org.apache.shenyu.client.springmvc.init.SpringMvcClientEventListenerTest.testWithShenyuClientAnnotation": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/Apache/Struts",
+  "sha": "13d9053050c9e4fb2ef049db6a37d3f6eebf48fa",
+  "module": "plugins/portlet",
+  "tests": {
+   "org.apache.struts2.portlet.dispatcher.Jsr168DispatcherTest.testProcessAction_ok": "OD-Vic",
+   "org.apache.struts2.portlet.dispatcher.Jsr168DispatcherTest.testRender_ok": "OD-Vic",
+   "org.apache.struts2.portlet.dispatcher.Jsr286DispatcherTest.testProcessAction_ok": "OD-Vic",
+   "org.apache.struts2.portlet.dispatcher.Jsr286DispatcherTest.testRender_ok": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/awspring/spring-cloud-aws",
+  "sha": "178a524976521531272277b20a077b810aef19ff",
+  "module": "spring-cloud-aws-context",
+  "tests": {
+   "org.springframework.cloud.aws.context.annotation.OnAwsCloudEnvironmentConditionTest.condition_methodAnnotation_shouldCreateBeanFoo": "OD",
+   "org.springframework.cloud.aws.context.annotation.OnAwsCloudEnvironmentConditionTest.condition_methodAnnotation_shouldNotCreateBeanFoo": "OD",
+   "org.springframework.cloud.aws.context.annotation.OnAwsCloudEnvironmentConditionTest.condition_typeAnnotation_shouldCreateBeanFoo": "OD",
+   "org.springframework.cloud.aws.context.annotation.OnAwsCloudEnvironmentConditionTest.condition_typeAnnotation_shouldNotCreateBeanFoo": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/helidon-io/helidon-build-tools",
+  "sha": "c60640f0aee61b44f377b7a1fff70022ed8846ca",
+  "module": "archetype/engine-v2",
+  "tests": {
+   "io.helidon.build.archetype.engine.v2.util.InputPermutationsTest.testConditionals": "NOD",
+   "io.helidon.build.archetype.engine.v2.util.InputPermutationsTest.testE2e": "NOD",
+   "io.helidon.build.archetype.engine.v2.util.InputPermutationsTest.testExternals2": "NOD",
+   "io.helidon.build.archetype.engine.v2.util.InputPermutationsTest.testFilters": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/jitsi/jicofo",
+  "sha": "2cae36e1e6781b438e52156d82cc32f8dea021b9",
+  "module": ".",
+  "tests": {
+   "org.jitsi.jicofo.auth.ShibbolethAuthenticationAuthorityTest.testShibbolethAuthenticationModule": "OD",
+   "org.jitsi.jicofo.auth.XMPPAuthenticationAuthorityTest.testXmppDomainAuthentication": "OD",
+   "org.jitsi.jicofo.RolesTest.testPassModeratorRole": "OD",
+   "org.jitsi.jicofo.XmppTest.testAllocateConference": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/nationalsecurityagency/timely",
+  "sha": "16d73a18453d9ec9476f509faf2dd700716e47ac",
+  "module": "server",
+  "tests": {
+   "timely.server.sample.iterators.TimeSeriesGroupingIteratorTest.testAdditionalTimeSeries": "NDOI",
+   "timely.server.sample.iterators.TimeSeriesGroupingIteratorTest.testManySparseTimeSeries": "NDOI",
+   "timely.server.sample.iterators.TimeSeriesGroupingIteratorTest.testMultipleTimeSeriesMovingAverage": "NDOI",
+   "timely.server.sample.iterators.TimeSeriesGroupingIteratorTest.testTimeSeriesDropOff": "NDOI"
+  }
+ },
+ {
+  "url": "https://github.com/outbrain/aletheia",
+  "sha": "024a4b7ea4c186329bbe1e20bb31048d95add836",
+  "module": "aletheia-core",
+  "tests": {
+   "com.outbrain.aletheia.SampleDomainClassDatumTest.testDatumRoutes": "NOD",
+   "com.outbrain.aletheia.SampleDomainClassDatumTest.test_avro_route": "NOD",
+   "com.outbrain.aletheia.SampleDomainClassDatumTest.test_json_route": "NOD",
+   "com.outbrain.aletheia.SampleDomainClassDatumTest.test_multiple_routes": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/pippo-java/pippo",
+  "sha": "ae898b6c478af7365b04c2f5bf9331abf496b166",
+  "module": "pippo-session-parent/pippo-session-mongodb",
+  "tests": {
+   "ro.pippo.session.mongodb.MongoDBSessionDataStorageTest.testCreate": "NOD",
+   "ro.pippo.session.mongodb.MongoDBSessionDataStorageTest.testDelete": "NOD",
+   "ro.pippo.session.mongodb.MongoDBSessionDataStorageTest.testGet": "NOD",
+   "ro.pippo.session.mongodb.MongoDBSessionDataStorageTest.testSave": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/spring-cloud/spring-cloud-aws",
+  "sha": "8d1675bd900071094ed92e638e8ff2ca093a6633",
+  "module": "spring-cloud-aws-context",
+  "tests": {
+   "org.springframework.cloud.aws.context.annotation.OnAwsCloudEnvironmentConditionTest.condition_methodAnnotation_shouldCreateBeanFoo": "OD",
+   "org.springframework.cloud.aws.context.annotation.OnAwsCloudEnvironmentConditionTest.condition_methodAnnotation_shouldNotCreateBeanFoo": "OD",
+   "org.springframework.cloud.aws.context.annotation.OnAwsCloudEnvironmentConditionTest.condition_typeAnnotation_shouldCreateBeanFoo": "OD",
+   "org.springframework.cloud.aws.context.annotation.OnAwsCloudEnvironmentConditionTest.condition_typeAnnotation_shouldNotCreateBeanFoo": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/alibaba/Sentinel",
+  "sha": "0a34fc4d11392f0587e7ba5bf2626f902b23c750",
+  "module": "sentinel-adapter/sentinel-jax-rs-adapter",
+  "tests": {
+   "com.alibaba.csp.sentinel.adapter.jaxrs.ClientFilterTest.testClientFallback": "OD-Vic",
+   "com.alibaba.csp.sentinel.adapter.jaxrs.ProviderFilterTest.testCustomRequestOriginParser": "OD-Vic",
+   "com.alibaba.csp.sentinel.adapter.jaxrs.ProviderFilterTest.testDefaultFallback": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/ConsenSys/tessera",
+  "sha": "ecdd1a2ce6412c11a8ae722d7a4527a4a66da688",
+  "module": "tessera-partyinfo",
+  "tests": {
+   "com.quorum.tessera.discovery.DiscoveryFactoryTest.defaultConstructor": "OD",
+   "com.quorum.tessera.discovery.DiscoveryFactoryTest.provideAutoDiscovery": "OD",
+   "com.quorum.tessera.discovery.DiscoveryFactoryTest.provideDisabledAutoDiscovery": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/davidmoten/rxjava2-extras",
+  "sha": "d0315b6ecb0d24437ec0d440b6d768e89247d56c",
+  "module": ".",
+  "tests": {
+   "com.github.davidmoten.rx2.buffertofile.FlowableOnBackpressureBufferToFileTest.testCancel": "NDOD",
+   "com.github.davidmoten.rx2.buffertofile.FlowableOnBackpressureBufferToFileTest.testCancelObservable": "NDOD;OD-Vic",
+   "com.github.davidmoten.rx2.internal.flowable.FlowableServerSocketTest.testLoad": "NDOD;TD"
+  }
+ },
+ {
+  "url": "https://github.com/fromage/redpipe",
+  "sha": "0aff891d6befdf0dcc2bdbfda22262cdf82ac66f",
+  "module": "redpipe-templating-freemarker",
+  "tests": {
+   "net.redpipe.templating.freemarker.ApiTest.checkMail": "NOD",
+   "net.redpipe.templating.freemarker.ApiTest.checkTemplateNegociationSingleHtml": "NOD",
+   "net.redpipe.templating.freemarker.ApiTest.checkTemplateNegociationText": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/javadelight/delight-nashorn-sandbox",
+  "sha": "da35edc0a75424bad8cbf60959fae253202154c4",
+  "module": ".",
+  "tests": {
+   "delight.nashornsandbox.TestGetFunction.test": "NDOD;OD-Brit;TD",
+   "delight.nashornsandbox.TestIssue34.testIssue34_Scenario1": "NDOD",
+   "delight.nashornsandbox.TestMemoryLimit.test_no_abuse": "NDOD;NOD"
+  }
+ },
+ {
+  "url": "https://github.com/logzio/sawmill",
+  "sha": "e493c2e279b8820c0fdc2c79ab760d6759eb5a4a",
+  "module": "sawmill-core",
+  "tests": {
+   "io.logz.sawmill.PipelineExecutorTest.testOnSuccessPipelineExecution": "NOD",
+   "io.logz.sawmill.PipelineExecutorTest.testWarnLongProcessingExecution": "NOD",
+   "io.logz.sawmill.processors.ConvertFieldProcessorTest.testConvertToBoolean": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/qos-ch/logback",
+  "sha": "0f57531977287fd3d8c9046e9f68e281715f3b10",
+  "module": "logback-classic",
+  "tests": {
+   "ch.qos.logback.classic.net.SMTPAppender_GreenTest.testCustomBufferSize": "TD",
+   "ch.qos.logback.classic.net.SMTPAppender_GreenTest.testCustomEvaluator": "TD",
+   "ch.qos.logback.classic.turbo.ReconfigureOnChangeTest.scan_LOGBACK_474": "TD"
+  }
+ },
+ {
+  "url": "https://github.com/spinn3r/noxy",
+  "sha": "d53a49421f385c70b5abe7e8cda84ff3a7b59c71",
+  "module": "noxy-discovery-zookeeper",
+  "tests": {
+   "com.spinn3r.noxy.discovery.zookeeper.ZKTest.testBulkClusterJoining": "NDOD;UD;NOD",
+   "com.spinn3r.noxy.discovery.zookeeper.ZKTest.testDiscoveryListener": "NDOD;UD;NOD",
+   "com.spinn3r.noxy.discovery.zookeeper.ZKTest.testMembershipJoinAndLeave": "NDOD;UD"
+  }
+ },
+ {
+  "url": "https://github.com/wikidata/wikidata-toolkit",
+  "sha": "20de6f7f12319f54eb962ff6e8357b3f5695d54d",
+  "module": "wdtk-dumpfiles",
+  "tests": {
+   "org.wikidata.wdtk.dumpfiles.MwDumpFileProcessingTest.testMwDailyDumpFileProcessing": "OD-Brit",
+   "org.wikidata.wdtk.dumpfiles.MwDumpFileProcessingTest.testMwMostRecentFullDumpFileProcessing": "OD-Brit",
+   "org.wikidata.wdtk.dumpfiles.MwDumpFileProcessingTest.testMwRecentCurrentDumpFileProcessing": "OD-Brit"
+  }
+ },
+ {
+  "url": "https://github.com/Accenture/mercury",
+  "sha": "8586dc79f8bf75a929896f0aac03fe95824d9578",
+  "module": "system/platform-core",
+  "tests": {
+   "org.platformlambda.core.MulticastTest.routingTest": "TD",
+   "org.platformlambda.core.ObjectStreamTest.asyncReadWrite": "TD"
+  }
+ },
+ {
+  "url": "https://github.com/alibaba/easyexcel",
+  "sha": "756f16e42fbd7bc5c7fa18426cbc02fc81a42057",
+  "module": ".",
+  "tests": {
+   "com.alibaba.easyexcel.test.core.simple.SimpleDataTest.t03SynchronousRead07": "OD",
+   "com.alibaba.easyexcel.test.core.simple.SimpleDataTest.t04SynchronousRead03": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/apache/incubator-seata",
+  "sha": "4959cfb49009d3e4c349fd2c95e590184bd5a9a8",
+  "module": "common",
+  "tests": {
+   "org.apache.seata.common.rpc.RpcStatusTest.beginCount": "OD",
+   "org.apache.seata.common.rpc.RpcStatusTest.endCount": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/apache/skywalking",
+  "sha": "edf0bce37f682c093d1ea5bcca0a6d2d1ecc2cc4",
+  "module": "apm-commons/apm-datacarrier",
+  "tests": {
+   "org.apache.skywalking.apm.commons.datacarrier.consumer.testConsumerLessThanChannel": "OD",
+   "org.apache.skywalking.apm.commons.datacarrier.consumer.testConsumerMoreThanChannel": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/c2mon/c2mon",
+  "sha": "d80687b119c713dd177a58cf53a997d8cc5ca264",
+  "module": "c2mon-daq/c2mon-daq-core",
+  "tests": {
+   "cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest.testAverage": "NDOD",
+   "cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest.testNoActivationOnFirstRecord": "NOD;UD"
+  }
+ },
+ {
+  "url": "https://github.com/dianping/cat",
+  "sha": "c4715a6aa6403af4c017b9180f9a3322afda9434",
+  "module": "cat-client",
+  "tests": {
+   "com.dianping.cat.message.context.MessageIdFactoryTest.testDefaultDomainInParallel": "NOD",
+   "com.dianping.cat.message.context.MessageIdFactoryTest.testGivenDomainInParallel": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/dromara/hutool",
+  "sha": "12969f248329f81f76eb5bece8c718ac1c63f7b1",
+  "module": "hutool-core",
+  "tests": {
+   "cn.hutool.core.text.StrJoinerTest.joinMultiArrayTest": "OD",
+   "cn.hutool.core.util.JAXBUtilTest.beanToXmlTest": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/dropwizard/dropwizard",
+  "sha": "07dfaed697427e208d65049f80a5d1949833b7cd",
+  "module": "dropwizard-logging",
+  "tests": {
+   "io.dropwizard.logging.DefaultLoggingFactoryPrintErrorMessagesTest.testLogbackStatusPrinterPrintStreamIsRestoredToSystemOut": "OD-Vic",
+   "io.dropwizard.logging.DefaultLoggingFactoryTest.testConfigure": "NOD;OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/eBay/mTracker",
+  "sha": "dbead631bb0e8cacbb4448fef7aa2fe3aefc034b",
+  "module": "core",
+  "tests": {
+   "com.ccoe.build.core.utils.FileUtilsTest.testModifyProperty": "NIO",
+   "com.ccoe.build.core.utils.FileUtilsTest.testWrite": "NIO"
+  }
+ },
+ {
+  "url": "https://github.com/eclipse-ee4j/tyrus",
+  "sha": "d86e0cb0a4f26ba89daf8668137c156e57fea565",
+  "module": "tests/e2e/non-deployable",
+  "tests": {
+   "org.glassfish.tyrus.test.e2e.non_deployable.ExtendedExtensionTest.extendedExtensionTest": "NIO",
+   "org.glassfish.tyrus.test.e2e.non_deployable.ServerExecutorsManagementTest.testExecutorServicesGetClosed": "NOD;UD"
+  }
+ },
+ {
+  "url": "https://github.com/espertechinc/esper",
+  "sha": "590fa9c9eb854f1420b9d337b802aca19f963cc0",
+  "module": "regression-run",
+  "tests": {
+   "com.espertech.esper.regressionrun.suite.epl.TestSuiteEPLSpatial.testEPLSpatialMXCIFQuadTreeFilterIndex": "NOD",
+   "com.espertech.esper.regressionrun.suite.epl.TestSuiteEPLSpatial.testEPLSpatialPointRegionQuadTreeEventIndex": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/flaxsearch/luwak",
+  "sha": "c27ec08c803db6ca6be1b6e8017f45667e603161",
+  "module": "luwak",
+  "tests": {
+   "uk.co.flax.luwak.matchers.TestParallelMatcher.testParallelSlowLog": "NDOD;OD-Brit;TD",
+   "uk.co.flax.luwak.matchers.TestPartitionMatcher.testParallelSlowLog": "NDOD;OD-Brit;TD"
+  }
+ },
+ {
+  "url": "https://github.com/Lucky-Dhakad/semanticvectors",
+  "sha": "cf2d883c5fafd84ca2530fb15e62ba399ebc7176",
+  "module": ".",
+  "tests": {
+   "pitt.search.semanticvectors.integrationtests.RegressionTests.testBuildAndSearchComplexPermutationIndex": "NOD",
+   "pitt.search.semanticvectors.vectors.ComplexVectorTest.testComplexOrthogonalize": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/OpenHFT/Chronicle-Wire",
+  "sha": "27a9efc3ced000f46e0f46263614e08896058290",
+  "module": ".",
+  "tests": {
+   "net.openhft.chronicle.wire.TextWireTest.testSingleQuote": "OD-Brit",
+   "net.openhft.chronicle.wire.YamlWireTest.testSingleQuote": "OD-Brit"
+  }
+ },
+ {
+  "url": "https://github.com/oracle/oci-java-sdk",
+  "sha": "2e9982f268420efd4010d8dc8370e9d9ade67ec2",
+  "module": "bmc-objectstorage/bmc-objectstorage-extensions",
+  "tests": {
+   "com.oracle.bmc.objectstorage.transfer.ProgressTrackerTest.multipartUploadProgressTrackerFactory_simulateRealLifeScenario": "NOD",
+   "com.oracle.bmc.objectstorage.transfer.ProgressTrackerTest.singleUploadProgressTrackerFactory_resetProgressTracker": "NDOD"
+  }
+ },
+ {
+  "url": "https://github.com/pinterest/secor",
+  "sha": "0927a127e3014ee494c97f8c0c25dafe9cf5ac27",
+  "module": ".",
+  "tests": {
+   "com.pinterest.secor.io.FileReaderWriterFactoryTest.testDelimitedTextFileReader": "NOD",
+   "com.pinterest.secor.io.FileReaderWriterFactoryTest.testDelimitedTextFileWriter": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/spring-projects/spring-data-envers",
+  "sha": "5637994be37747e82b2d6d5b34555e2bee791fe6",
+  "module": ".",
+  "tests": {
+   "org.springframework.data.envers.repository.support.QueryDslRepositoryIntegrationTests.testWithQueryDsl": "OD-Vic",
+   "org.springframework.data.envers.repository.support.QueryDslRepositoryIntegrationTests.testWithRevisions": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/tbsalling/aismessages",
+  "sha": "7b0c4c708b6bb9a6da3d5737bcad1857ade8a931",
+  "module": ".",
+  "tests": {
+   "dk.tbsalling.aismessages.nmea.NMEAMessageHandlerTest.canHandleFragmentedMessageReceived": "OD-Vic",
+   "dk.tbsalling.aismessages.nmea.NMEAMessageHandlerTest.canHandleUnfragmentedMessageReceived": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/visallo/vertexium",
+  "sha": "f1fd59e23610312cf0ec6756ea01baaf56cdb74e",
+  "module": "accumulo",
+  "tests": {
+   "org.vertexium.accumulo.AccumuloGraphTest.testFindPathsMultiplePaths": "NOD",
+   "org.vertexium.accumulo.AccumuloGraphTest.testFindRelatedEdgesPerformance": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/wso2/carbon-apimgt",
+  "sha": "a82213e40e7e6aa529341fdd1d1c3de776949e64",
+  "module": "analyzer-modules/org.wso2.carbon.apimgt.throttling.siddhi.extension",
+  "tests": {
+   "org.wso2.carbon.apimgt.throttling.siddhi.extension.ThrottleTimeBatchWindowTestCase.throttleTimeWindowBatchTest1": "NOD",
+   "org.wso2.carbon.apimgt.throttling.siddhi.extension.ThrottleTimeBatchWindowTestCase.throttleTimeWindowBatchTest2": "NDOD"
+  }
+ },
+ {
+  "url": "https://github.com/alibaba/asyncload",
+  "sha": "9891e7086bff81ebdd4991435d21b549e48e874d",
+  "module": ".",
+  "tests": {
+   "com.alibaba.asyncload.AsyncLoadThreadLocalTest.testInheritableThreadLocalRunnerSet": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/alien4cloud/alien4cloud",
+  "sha": "eb57d0feca6c37e0a4aafc3feef494e43e02ecda",
+  "module": "alien4cloud-security",
+  "tests": {
+   "alien4cloud.security.LdapAuthenticationProviderTest.testLdapUserImport": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/apache/cayenne",
+  "sha": "5209b9f533ab5f2ac97d31eeb3d1dd2c4dbd64d8",
+  "module": "cayenne-client",
+  "tests": {
+   "org.apache.cayenne.CayenneContextClientChannelEventsIT.testSyncToOneRelationship": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/apache/geronimo-batchee",
+  "sha": "0071edabb6b340cc16f8e9d0e17ff25720b4d0fe",
+  "module": "tools/cli",
+  "tests": {
+   "org.apache.batchee.cli.MainTest.executions": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/apache/incubator-uniffle",
+  "sha": "6fb2a9a63132ab9abbde2f1f9240f9caf2f5d0f0",
+  "module": "common",
+  "tests": {
+   "org.apache.uniffle.common.rpc.GrpcServerTest.testGrpcExecutorPool": "TD"
+  }
+ },
+ {
+  "url": "https://github.com/apache/karaf",
+  "sha": "b368a87cba0f0e235d5dae72fd6c3559b50fb75c",
+  "module": ".",
+  "tests": {
+   "org.apache.karaf.main.MainLockingTest.testLostMasterLockAfterThreshold": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/apache/logging-log4j2",
+  "sha": "3de64e8ccdc9a0acfb1caf757c398dd9669b6d84",
+  "module": "log4j-core",
+  "tests": {
+   "org.apache.logging.log4j.core.appender.RollingAppenderDirectCronTest.testRollover": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/apache/unomi",
+  "sha": "dfb021dd97180e435ff70d9c5e886bf074bd1a32",
+  "module": "persistence-elasticsearch",
+  "tests": {
+   "org.apache.unomi.persistence.elasticsearch.ElasticsearchPersistenceTest.testCreateIndex": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/apereo/java-cas-client",
+  "sha": "574b74fa64e4c95bda00ff41d06d358684a0b2e6",
+  "module": "cas-client-core",
+  "tests": {
+   "org.jasig.cas.client.validation.AssertionImplTests.testAssertionValidity": "NOD;UD"
+  }
+ },
+ {
+  "url": "https://github.com/cescoffier/vertx-completable-future",
+  "sha": "011d3cd963b9a810c2e8e616da27bbfd8a3c717e",
+  "module": ".",
+  "tests": {
+   "me.escoffier.vertx.completablefuture.VertxCompletableFutureTest.testAcceptEitherAsyncWithExecutor": "TD"
+  }
+ },
+ {
+  "url": "https://github.com/codingchili/excelastic",
+  "sha": "6bb7884b1e70f9e588d75bdaf132a84f6e896a7a",
+  "module": ".",
+  "tests": {
+   "com.codingchili.TestWriter.shouldWriteToElasticPort": "NDOD;OD-Vic;NOD"
+  }
+ },
+ {
+  "url": "https://github.com/CrawlScript/WebCollector",
+  "sha": "016b61a1f6e52cf2ffb048a2abcc01d767beb0ab",
+  "module": ".",
+  "tests": {
+   "cn.edu.hfut.dmic.webcollector.util.OkHttpRequesterTest.testHttpCode": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/ctco/cukes",
+  "sha": "b483e1a8f261b80a66291a42fc455256b0b5059c",
+  "module": "cukes-core",
+  "tests": {
+   "lv.ctco.cukes.core.RunCukesTest.When let variable \"var1\" to be random password with length 8": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/elasticjob/elastic-job-lite",
+  "sha": "a7042cf4872d784d619e4560cdfa0f92b0311965",
+  "module": "elasticjob-infra/elasticjob-infra-common",
+  "tests": {
+   "org.apache.shardingsphere.elasticjob.infra.concurrent.ElasticJobExecutorServiceTest.assertCreateExecutorService": "TD"
+  }
+ },
+ {
+  "url": "https://github.com/FasterXML/jackson-databind",
+  "sha": "9b11650a6c3fee9ef9e3fb264d2244f65affc2ee",
+  "module": ".",
+  "tests": {
+   "com.fasterxml.jackson.databind.introspect.TestNamingStrategyStd.testUpperSnakeCaseTranslations": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/feroult/yawp",
+  "sha": "b3bcf9c958d51b3b3f8fdd0ccc26923d5a531da1",
+  "module": "yawp-testing/yawp-testing-appengine",
+  "tests": {
+   "io.yawp.testing.appengine.pipes.flow.FlowDropsTest.testFlowDropsToSameSink": "NDOD;TD"
+  }
+ },
+ {
+  "url": "https://github.com/fhoeben/hsac-fitnesse-fixtures",
+  "sha": "a64c18d9c4bac8271275c7b089d40be20f0604b5",
+  "module": ".",
+  "tests": {
+   "nl.hsac.fitnesse.fixture.slim.FileFixtureTest.testDelete": "OD-Brit"
+  }
+ },
+ {
+  "url": "https://github.com/funkygao/cp-ddd-framework",
+  "sha": "8c69f6a50db83459356a2ae66a910b1905fe4eb5",
+  "module": "dddplus-test",
+  "tests": {
+   "io.github.dddplus.testing.LogAssertTest.contains": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/gooddata/GoodData-CL",
+  "sha": "58728ec3e57ea9a4d689f38b0b385e8724af618c",
+  "module": "connector",
+  "tests": {
+   "com.gooddata.csv.DataTypeGuessTest.testIsDate": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/google/java-monitoring-client-library",
+  "sha": "3212364c3e535530c3d96e127c42d302e2c0064b",
+  "module": "metrics",
+  "tests": {
+   "com.google.monitoring.metrics.MetricRegistryImplTest.testRegisterAndUnregister_tracksRegistrations": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/googleapis/google-auth-library-java",
+  "sha": "0a8412fcf9de4ac568b9f88618e44087dd31b144",
+  "module": "appengine",
+  "tests": {
+   "com.google.auth.appengine.AppEngineCredentialsTest.warnsDefaultCredentialsWithTransport": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/hexagonframework/spring-data-ebean",
+  "sha": "dd11b97654982403b50dd1d5369cadad71fce410",
+  "module": ".",
+  "tests": {
+   "org.springframework.data.ebean.repository.UserRepositoryIntegrationTest.deleteById": "OD-Brit"
+  }
+ },
+ {
+  "url": "https://github.com/jfree/jfreechart",
+  "sha": "520a4be69ba932061ab9b89f328842caf152e1d9",
+  "module": ".",
+  "tests": {
+   "org.jfree.data.time.DayTest.testParseDay": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/jhipster/jhipster-registry",
+  "sha": "00db36611da5fc7aaf9d5372aa90f2465d80c0c4",
+  "module": ".",
+  "tests": {
+   "io.github.jhipster.registry.web.rest.AccountResourceTest.testGetUnknownAccount": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/kanwangzjm/funiture",
+  "sha": "71ca0fb0658b3d839d9e049ac36429207f05329b",
+  "module": ".",
+  "tests": {
+   "com.app.mvc.dao.ShortUrlDaoTest.testSave": "NIO"
+  }
+ },
+ {
+  "url": "https://github.com/knightliao/disconf",
+  "sha": "2ac5c8275ad8cdc101522ad01a8ba87e53b73b68",
+  "module": "disconf-client",
+  "tests": {
+   "com.baidu.disconf.client.test.DisconfMgrTestCase.demo": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/kubernetes-client/java",
+  "sha": "e19a0ecbc9af258c43b486843df139c8ec8f117e",
+  "module": "spring",
+  "tests": {
+   "io.kubernetes.client.spring.extended.controller.KubernetesInformerCreatorTest.testInformerInjection": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/lcw2004/one",
+  "sha": "7b9b249ab1c09f39be885f95a27a756288be4548",
+  "module": "one-notify",
+  "tests": {
+   "com.lcw.one.main.EmailServiceTest.sendEmailList": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/looly/hutool",
+  "sha": "91565d052d2771dd26547e79c619ee8c31497e8f",
+  "module": "hutool-core",
+  "tests": {
+   "cn.hutool.core.io.FileTypeUtilTest.fileTypeUtilTest": "ID;NIO"
+  }
+ },
+ {
+  "url": "https://github.com/marcosbarbero/spring-cloud-zuul-ratelimit",
+  "sha": "ae9603f45af05c4a0f940d81b313f273f62f3464",
+  "module": "spring-cloud-zuul-ratelimit-tests/bucket4j-infinispan",
+  "tests": {
+   "com.marcosbarbero.tests.it.Bucket4jInfinispanApplicationTestIT.testExceedingQuotaCapacityRequest": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/neo4j/neo4j",
+  "sha": "c68156edf24164435ab1ac257ec633134c2887f7",
+  "module": "community/lock",
+  "tests": {
+   "org.neo4j.kernel.impl.locking.forseti.LockingCompatibilityTest$RWLock.shouldIncludeDeadlockCycleForSimpleUpdateDeadlock": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/nlighten/tomcat_exporter",
+  "sha": "69b30031ed7099a83cb575d429bf7fddb77f0c0a",
+  "module": "client",
+  "tests": {
+   "nl.nlighten.prometheus.tomcat.TomcatGenericExportsTest.testRequestProcessorMetrics": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/odrotbohm/sos",
+  "sha": "d4ed68a143b637c7e2d523edad1b105bf6c2d996",
+  "module": "20-modulith",
+  "tests": {
+   "example.sos.modulith.orders.EmailNotificationTest.completingAnOrderUpdatesInventory": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/opengoofy/hippo4j",
+  "sha": "cf854b3cb3c47fd339421e5a46a3ae3229c53829",
+  "module": "infra/common",
+  "tests": {
+   "cn.hippo4j.common.toolkit.logtracing.LogMessageTest.testToStringShouldPrintMessageAndAllKeyAndValuePairs": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/orbisgis/h2gis",
+  "sha": "bc5ceab8e5ad82e8b6ec0b5c47898e45fa3d62b2",
+  "module": "h2gis-functions",
+  "tests": {
+   "org.h2gis.functions.io.dbf.DBFEngineTest.readDBFRussianWrongEncodingThenWriteThenRead": "NIO"
+  }
+ },
+ {
+  "url": "https://github.com/orbit/orbit",
+  "sha": "c4904af2f3745fea93871493edd7e09348e77768",
+  "module": "actors/runtime",
+  "tests": {
+   "cloud.orbit.actors.extensions.test.LengthFieldHandlerTest.randomMessages": "NDOD;NOD"
+  }
+ },
+ {
+  "url": "https://github.com/OryxProject/oryx",
+  "sha": "72ae4bb3cc49d92b77e76d8a30fca8b6549b8865",
+  "module": "framework/oryx-common",
+  "tests": {
+   "com.cloudera.oryx.common.io.IOUtilsTest.testDistinctFreePorts": "NDOD;NOD"
+  }
+ },
+ {
+  "url": "https://github.com/ppiastucki/recast4j",
+  "sha": "01d478e190b731d2fe861e3b969b4c8dd04f0ede",
+  "module": "detourtilecache",
+  "tests": {
+   "org.recast4j.detour.tilecache.TileCacheTest.testPerformance": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/questdb/questdb",
+  "sha": "802e00fbbab89b05057fe1850e4579aad106448c",
+  "module": "core/src/test/java/io/questdb/test/griffin/engine/functions/regex",
+  "tests": {
+   "io.questdb.test.griffin.engine.functions.regex.RegexpReplaceStrFunctionFactoryTest.testStackOverFlowError": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/rest-assured/rest-assured",
+  "sha": "bbede9fff77d4f1b751cdada0bdf8fe8d928919a",
+  "module": "spring-web-test-client",
+  "tests": {
+   "io.restassured.module.webtestclient.WebTestClientSpecificationMergingTest.web_test_client_factory_is_not_overwritten_when_not_defined_in_specification": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/sonatype-nexus-community/nexus-repository-helm",
+  "sha": "60a9e8de0d97bfa4e3f7ee6bb87d518e398f03f2",
+  "module": ".",
+  "tests": {
+   "org.sonatype.repository.helm.internal.metadata.IndexYamlBuilderTest.testChartIndexPassedCorrectly": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/spotify/helios",
+  "sha": "aebf68dcbdf9d3850478e8bddd2c478fa5fa282a",
+  "module": "helios-services",
+  "tests": {
+   "com.spotify.helios.agent.SupervisorTest.verifySupervisorStartsAndStopsDockerContainer": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/spring-cloud/spring-cloud-config",
+  "sha": "a8f6955495d38f2dfab53c28def4cd6f4a2920d1",
+  "module": "spring-cloud-config-client-tls-tests",
+  "tests": {
+   "org.springframework.cloud.config.client.tls.ConfigClientTlsTests.nonExistKeyStoreCauseFailure": "OD"
+  }
+ },
+ {
+  "url": "https://github.com/square/okhttp",
+  "sha": "129c937fb33328e1f4ee8815a94e89676f242c2c",
+  "module": "okhttp-tests",
+  "tests": {
+   "com.squareup.okhttp.internal.spdy.SpdyConnectionTest.receiveGoAway": "TD"
+  }
+ },
+ {
+  "url": "https://github.com/takari/ollie",
+  "sha": "60c0ec5007779863a82c01eeba1a81f6864bb083",
+  "module": "ollie",
+  "tests": {
+   "com.walmartlabs.ollie.app.OllieSslServerTest.validate": "NOD"
+  }
+ },
+ {
+  "url": "https://github.com/tools4j/unix4j",
+  "sha": "367da7d262e682a08577cdf19ebbbdd8a46870fe",
+  "module": "unix4j-core/unix4j-command",
+  "tests": {
+   "org.unix4j.unix.FindFileTimeDependentTest.find_fileCreatedBeforeNow": "OD-Vic"
+  }
+ },
+ {
+  "url": "https://github.com/vaadin/flow",
+  "sha": "26aacd3cdf51c7e0a18ae21318d366ce7f91be8a",
+  "module": "flow-polymer-template",
+  "tests": {
+   "com.vaadin.flow.component.polymertemplate.NpmTemplateParserTest.should_FindCorrectDataInStats": "OD"
+  }
+ }
+]

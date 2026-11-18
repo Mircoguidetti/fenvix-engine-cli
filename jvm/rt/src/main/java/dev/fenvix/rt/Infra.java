@@ -66,6 +66,6 @@ public final class Infra {
     /** JDK classes: loaded by the bootstrap or platform class loader. */
     public static boolean isJdk(Class<?> c) {
         ClassLoader l = c.getClassLoader();
-        return l == null || l == ClassLoader.getPlatformClassLoader();
+        return l == null || l == Compat.platformLoader();
     }
 }

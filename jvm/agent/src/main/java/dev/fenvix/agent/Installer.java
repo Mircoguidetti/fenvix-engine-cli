@@ -20,11 +20,7 @@ final class Installer {
 
     static void install(Instrumentation inst, Path dir) throws Exception {
         Native.load(System.getProperty("fenvix.native"));
-        Module rt = Det.class.getModule();
-        Module base = Object.class.getModule();
-        inst.redefineModule(base, Set.of(rt), Map.of(),
-                Map.of("java.lang", Set.of(rt), "java.util", Set.of(rt), "java.util.concurrent", Set.of(rt)),
-                Set.of(), Map.of());
+        if (dev.fenvix.rt.Compat.javaMajor() >= 9) Modules.open(inst);
         Det.configure();
         if (!Det.ON && !Det.DEPS) return;
         if (Det.ON) {

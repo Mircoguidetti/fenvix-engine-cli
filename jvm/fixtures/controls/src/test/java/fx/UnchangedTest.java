@@ -18,7 +18,7 @@ class UnchangedTest {
         TreeMap<String, Integer> m = new TreeMap<>();
         m.put("b", 2);
         m.put("a", 1);
-        assertEquals(List.of("a", "b"), List.copyOf(m.keySet()));
+        assertEquals(java.util.Arrays.asList("a", "b"), new java.util.ArrayList<>(m.keySet()));
     }
 
     @Test

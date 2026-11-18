@@ -154,7 +154,7 @@ public final class Lifecycle {
             while (e.hasMoreElements()) {
                 URL u = e.nextElement();
                 try (InputStream in = u.openStream()) {
-                    m.put("junit-platform.properties#" + (i++), Native.digest(in.readAllBytes()));
+                    m.put("junit-platform.properties#" + (i++), Native.digest(Compat.readAll(in)));
                 }
             }
         } catch (Exception ignored) {

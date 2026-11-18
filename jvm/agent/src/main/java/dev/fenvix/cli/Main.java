@@ -40,7 +40,12 @@ public final class Main {
                 System.out.println(merge(args.length > 1 ? args[1] : ".fenvix"));
                 break;
             case "verify":
-                System.out.print(verify(Arrays.copyOfRange(args, 1, args.length)));
+                if (args.length > 1 && args[1].equals("--json")) {
+                    Class<?> n = nativeClass();
+                    System.out.print((String) n.getMethod("verify", String[].class).invoke(null, (Object) Arrays.copyOfRange(args, 2, args.length)));
+                } else {
+                    System.out.print(verify(Arrays.copyOfRange(args, 1, args.length)));
+                }
                 break;
             case "paths": {
                 Path d = assets();

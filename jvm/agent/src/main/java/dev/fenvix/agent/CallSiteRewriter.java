@@ -140,7 +140,7 @@ final class CallSiteRewriter implements ClassFileTransformer {
     @Override
     public byte[] transform(ClassLoader loader, String name, Class<?> redefined, ProtectionDomain pd, byte[] bytes) {
         if (name == null || loader == null || redefined != null) return null;
-        if (loader == ClassLoader.getPlatformClassLoader()) return null;
+        if (loader == dev.fenvix.rt.Compat.platformLoader()) return null;
         if (Infra.isInfra(name) || name.equals("module-info") || name.startsWith("dev/fenvix/")) return null;
         try {
             String src = "";

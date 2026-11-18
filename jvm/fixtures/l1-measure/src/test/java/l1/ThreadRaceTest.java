@@ -43,6 +43,6 @@ class ThreadRaceTest {
         }
         ex.shutdown();
         ex.awaitTermination(30, TimeUnit.SECONDS);
-        assertEquals(List.of(0, 1, 2, 3, 4, 5, 6, 7), done);
+        assertEquals(java.util.Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7), done);
     }
 }

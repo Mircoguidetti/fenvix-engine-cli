@@ -52,7 +52,7 @@ public class FenvixListener implements TestExecutionListener {
         for (TestIdentifier root : testPlan.getRoots()) collect(testPlan, root, order);
         if (Det.ON) {
             String out = System.getProperty("fenvix.out", ".fenvix");
-            String pid = String.valueOf(ProcessHandle.current().pid());
+            String pid = dev.fenvix.rt.Compat.pid();
             int n = PLANS.incrementAndGet();
             String name = System.currentTimeMillis() + "-" + (module.isEmpty() ? "root" : module.replace('/', '_')) + "-" + pid + "-" + n;
             File part = new File(out, "parts/" + name + ".jsonl");

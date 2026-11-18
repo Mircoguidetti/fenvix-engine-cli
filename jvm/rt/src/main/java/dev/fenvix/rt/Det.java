@@ -85,7 +85,7 @@ public final class Det {
         EPOCH_MS = Long.parseLong(System.getProperty("fenvix.epoch.ms", String.valueOf(EPOCH_MS)));
         TIMER_BUDGET = Integer.parseInt(System.getProperty("fenvix.timer.budget", "100000"));
         for (String h : System.getProperty("fenvix.allow.hosts", "").split(",")) {
-            if (!h.isBlank()) ALLOW_HOSTS.add(h.trim().toLowerCase(Locale.ROOT));
+            if (!h.trim().isEmpty()) ALLOW_HOSTS.add(h.trim().toLowerCase(Locale.ROOT));
         }
         ROOT = System.getProperty("fenvix.root", System.getProperty("user.dir"));
         MODULE = System.getProperty("fenvix.module", "");

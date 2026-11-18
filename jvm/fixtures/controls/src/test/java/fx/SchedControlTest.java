@@ -48,7 +48,7 @@ class SchedControlTest {
         ses.schedule(() -> { order.add(1); all.countDown(); }, 100, TimeUnit.MILLISECONDS);
         ses.schedule(() -> { order.add(2); all.countDown(); }, 200, TimeUnit.MILLISECONDS);
         assertTrue(all.await(10, TimeUnit.SECONDS));
-        assertEquals(List.of(1, 2, 3), order);
+        assertEquals(java.util.Arrays.asList(1, 2, 3), order);
         ses.shutdown();
     }
 

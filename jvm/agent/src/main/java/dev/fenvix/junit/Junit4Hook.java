@@ -102,7 +102,7 @@ public final class Junit4Hook {
             String out = System.getProperty("fenvix.out", ".fenvix");
             String mod = Ids.module(System.getProperty("fenvix.module", ""));
             String name = System.currentTimeMillis() + "-" + (mod.isEmpty() ? "root" : mod.replace('/', '_')) + "-"
-                    + ProcessHandle.current().pid() + "-j4";
+                    + dev.fenvix.rt.Compat.pid() + "-j4";
             Det.openTrace(new File(out, "parts/" + name + ".jsonl").getPath(),
                     Lifecycle.metaJson("junit4", junitVersion(), "one JVM per build module, serial"), order.toArray(new String[0]));
         }

@@ -55,6 +55,14 @@ public final class Agent {
         Installer.install(inst, dir);
     }
 
+    static byte[] readAll(InputStream in) throws java.io.IOException {
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        byte[] buf = new byte[1 << 14];
+        int n;
+        while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+        return out.toByteArray();
+    }
+
     /** Self location of the agent jar. */
     static File self() throws Exception {
         return new File(Agent.class.getProtectionDomain().getCodeSource().getLocation().toURI());
@@ -79,7 +87,7 @@ public final class Agent {
         for (int i = 0; i < names.length; i++) {
             try (InputStream in = Agent.class.getResourceAsStream("/fenvix/" + names[i])) {
                 if (in == null) throw new IllegalStateException("fenvix agent jar lacks /fenvix/" + names[i]);
-                data[i] = in.readAllBytes();
+                data[i] = readAll(in);
             }
             md.update(data[i]);
         }
