@@ -144,6 +144,15 @@ def main():
     checkout(repo, green)
     freeze = d.get("freeze") or {}
     if not freeze:
+        # same project, another arm of the same window: its "before" environment is this window's environment
+        for other, (pj, arm2, run2, sh2) in SCEN.items():
+            if pj == project and arm2 != arm:
+                fz = (h2h_result(run2, f"{pj}-{arm2}", sh2).get("freeze") or {}).get("0")
+                if fz:
+                    freeze = {"0": fz}
+                    res_note = f"environment from the {arm2} arm's freeze"
+                    break
+    if not freeze:
         # the head-to-head recorded no freeze for this arm (environment variables only): resolve the project's own
         # test requirements once at the green commit and freeze them, so both sides use the same distributions
         tmpv = WORK / "venvs-c" / f"{a.scenario}-resolve"

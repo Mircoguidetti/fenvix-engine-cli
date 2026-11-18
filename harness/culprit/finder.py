@@ -205,6 +205,64 @@ def commit_candidates(repo, commits: list[str], changes: list[dict]) -> list[str
     return out
 
 
+# ---------------------------------------------------------------------------- input groups
+_TZ_FILES = ("/usr/share/zoneinfo/", "/etc/localtime", "/etc/timezone")
+_LOCALE_FILES = ("/usr/lib/locale/", "/usr/share/locale/", "/usr/share/i18n/")
+_RUNNER_DISTS = {"pytest", "pluggy", "iniconfig", "packaging"}
+
+
+def group_inputs(inputs: list[dict], genv: dict, renv: dict) -> tuple[list[dict], dict]:
+    """Fold the consequences of one change into the change itself, using the two job definitions.
+
+    * a variable the two jobs set to the same value is not a candidate, even when only one run read it (the read
+      differs because something else changed);
+    * a variable the jobs set differently heads a group: its ``tzlocale`` twin, and for TZ / LANG / LC_* the zone or
+      locale files the C library read;
+    * a change of pytest's options or ini values follows a change of pytest or of a pytest plugin distribution.
+    Returns (candidates, {head: [folded ids]}).
+    """
+    changed_vars = {n for n in set(genv) | set(renv) if genv.get(n) != renv.get(n)}
+    dists = {c["name"] for c in inputs if c["kind"] == "dist"}
+    plugin_change = bool(dists & _RUNNER_DISTS) or any(n.startswith("pytest-") for n in dists)
+    heads, folded, out = {}, {}, []
+    for c in inputs:
+        var_like = c["kind"] in ("env", "tzlocale") and c.get("name") not in ("*", "tzfile") \
+            and "/" not in c.get("name", "/")
+        if var_like and c["name"] not in changed_vars:
+            folded.setdefault("(same value in both jobs)", []).append(c["id"])
+            continue
+        if var_like and c.get("name") in changed_vars:
+            h = f"env:{c['name']}"
+            if h not in heads:
+                heads[h] = {"kind": "env", "id": h, "name": c["name"]}
+                out.append(heads[h])
+            if c["id"] != h:
+                folded.setdefault(h, []).append(c["id"])
+            continue
+        if (c["kind"] == "tzlocale" and c.get("name") in ("tzfile", "/etc/localtime")) or \
+                (c["kind"] == "data" and c["path"].startswith(_TZ_FILES)):
+            if "TZ" in changed_vars:
+                folded.setdefault("env:TZ", []).append(c["id"])
+                if "env:TZ" not in heads:
+                    heads["env:TZ"] = {"kind": "env", "id": "env:TZ", "name": "TZ"}
+                    out.append(heads["env:TZ"])
+                continue
+        if c["kind"] == "data" and c["path"].startswith(_LOCALE_FILES):
+            lv = sorted(v for v in changed_vars if v == "LANG" or v.startswith("LC_"))
+            if lv:
+                h = f"env:{lv[0]}"
+                folded.setdefault(h, []).append(c["id"])
+                if h not in heads:
+                    heads[h] = {"kind": "env", "id": h, "name": lv[0]}
+                    out.append(heads[h])
+                continue
+        if c["kind"] == "config" and c["field"] in ("ini", "options") and plugin_change:
+            folded.setdefault("(pytest or plugin distribution)", []).append(c["id"])
+            continue
+        out.append(c)
+    return out, folded
+
+
 # ---------------------------------------------------------------------------- environments
 class EnvBuilder:
     """Builds the environment a replay runs in: CI variables plus a virtualenv with a given distribution set."""
@@ -263,7 +321,7 @@ class Finder:
 
     # -- one replay
     def _replay(self, sha: str, env_vars: dict, dists: dict | None, venv: Path | None, expect_runtime=None,
-                why=""):
+                why="", args=None):
         if dists is not None:
             at = self.green.get("prefix") if dists == self._green_dists else None
             venv, secs, fresh = self.builder.venv_for(self.repo, dists, at=at)
@@ -272,7 +330,8 @@ class Finder:
         checkout(self.repo, sha)
         with tempfile.TemporaryDirectory() as td:
             kp = os.path.join(td, "k.json")
-            r = run_det(self.repo, venv, self.nodeid, env_vars, keys=kp, args=self.det_args)
+            r = run_det(self.repo, venv, self.nodeid, env_vars, keys=kp,
+                        args=self.det_args if args is None else args)
             runtime = None
             try:
                 with open(kp) as fh:
@@ -319,6 +378,8 @@ class Finder:
                 pruned.append(c["id"])
                 continue
             inputs.append(c)
+        inputs, grouped = group_inputs(inputs, self.green.get("env") or {}, self.red.get("env") or {})
+        res["grouped_inputs"] = grouped
         cands = commit_candidates(self.repo, commits, changes)
         res.update({"commits_in_range": len(commits), "commit_candidates": len(cands),
                     "input_candidates": [c["id"] for c in inputs], "pruned_inputs": pruned})
@@ -353,8 +414,10 @@ class Finder:
                 cands = []
         if cands:
             env_vars = green_env if bool(inputs) else red_env
-            dists = green_dists if (build and inputs) else None
-            venv = g_venv if inputs else self.red.get("venv")
+            if build:  # replays in the environment rebuilt from the green key, at the CI path
+                dists, venv = green_dists, None
+            else:
+                dists, venv = None, (g_venv if inputs else self.red.get("venv"))
             expect = g["runtime"]
             lo, hi = -1, len(cands) - 1  # cands[hi] is known red (nothing after it changes an input)
             while hi - lo > 1:
@@ -370,8 +433,9 @@ class Finder:
             while len(cur) > 1:
                 half = cur[: len(cur) // 2]
                 env_vars, dists = self._apply(green_env, red_env, green_dists, r, half)
+                args = self.red.get("det_args") if any(c["kind"] == "epoch" for c in half) else None
                 o = self._replay(self.red["sha"], env_vars, dists if build else None, g_venv,
-                                 why=f"apply {[c['id'] for c in half]}")
+                                 why=f"apply {[c['id'] for c in half]}", args=args)
                 cur = half if o == "fail" else cur[len(cur) // 2:]
             culprit = {"input": cur[0]["id"], "detail": cur[0]}
         else:

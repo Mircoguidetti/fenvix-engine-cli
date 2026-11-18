@@ -204,8 +204,9 @@ def main():
             gi = len(fp) - kk
             g, later = fp[gi], fp[gi + 1:]
             checkout(repo, g)
-            code, out, _ = run_plain(repo, venv, plain, timeout=1200)
+            code, out, base_s = run_plain(repo, venv, plain, timeout=1200)
             base_failed = failed_ids(out)
+            mut_timeout = max(60, 5 * base_s)  # a mutant can loop forever: such a mutant is rejected
             if code not in (0, 1):
                 print(f"{a.name} k={kk}: suite unusable at {g[:10]} (exit {code})", flush=True)
                 continue
@@ -229,8 +230,10 @@ def main():
                 if mt is None:
                     continue
                 p.write_text(mt)
-                code2, out2, _ = run_plain(repo, venv, plain, timeout=1200)
+                code2, out2, _ = run_plain(repo, venv, plain, timeout=mut_timeout)
                 p.write_text(orig)
+                if code2 == 124:
+                    continue
                 killed = sorted(failed_ids(out2) - base_failed)
                 killed = [t for t in killed if "::" in t]
                 if not killed:

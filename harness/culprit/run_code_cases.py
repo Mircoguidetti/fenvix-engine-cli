@@ -35,7 +35,7 @@ def main():
     done = set()
     if os.path.exists(a.out):
         done = {json.loads(l)["id"] for l in open(a.out)}
-    kdir = Path(a.keys_dir or tempfile.mkdtemp(prefix="keys-"))
+    kdir = Path(a.keys_dir or tempfile.mkdtemp(prefix="keys-")).resolve()
     kdir.mkdir(parents=True, exist_ok=True)
     for line in open(a.cases):
         c = json.loads(line)
