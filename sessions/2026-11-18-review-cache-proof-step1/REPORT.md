@@ -1,4 +1,4 @@
-FIX 4
+FIX 5
 
 # Review R-009: cache with proof, step 1 (skip on large repositories)
 
@@ -13,10 +13,10 @@ INTERMEDIATE-1.md. I checked the report's figures as quoted in the review reques
 committed in the engine (`tracks/cache-proof/results/`). I could not check its wording, its stated limits or the
 brief's acceptance criteria. This file is written to the engine review branch, not to brain `main`.
 
-Failing tests: `tests/test_review_r009.py` on engine branch `claude/review-r009-tests` (5 tests, all fail on
+Failing tests: `tests/test_review_r009.py` on engine branch `claude/review-r009-tests` (6 tests, all fail on
 `646e28e`). No GitHub Actions used.
 
-## Verdict: FIX 4
+## Verdict: FIX 5
 
 | # | Finding | Severity | Test |
 |---|---|---|---|
@@ -24,9 +24,29 @@ Failing tests: `tests/test_review_r009.py` on engine branch `claude/review-r009-
 | F2 | A followed child's reads under `/dev/shm` are skipped (in-process they are refused) | wrong reuse, new in step 1 | `test_child_read_of_dev_shm_is_an_input_or_refused` |
 | F3 | `TZ` (read by C `getenv`) and `/etc/localtime` are not inputs: `time.localtime` results are reused under another time zone | wrong reuse | `test_timezone_read_by_c_is_an_input` |
 | F4 | Real-clock reads outside the virtual clock (a child process, C code such as sqlite `'now'`) are neither refused nor bounded: results are reused after the real date passed a threshold | wrong reuse; known Level 0 limit (LIMITS S1, `follow.py` docstring) that the cache turns into permanent staleness | `test_real_clock_read_in_c_is_not_reused_after_it_moves`, `test_child_real_clock_is_not_reused_after_it_moves` |
+| F5 | Reads under `.git/` in the test process are dropped (`_SKIP_PARTS`): a test whose expected value or IDs come from HEAD is reused as passed at a commit where it fails (the R-010 hole, still present in `--det-cache`) | wrong reuse | `test_git_head_read_is_an_input` |
 
 Each test changes only what a fresh run would see, then asserts the cache does not reuse the old result. In every
 case the fresh `--det` run fails and the cache reports the old pass "with proof".
+
+## F5: reads under `.git/` (coordinator's extra check, from R-010)
+
+The same hole exists in `--det-cache`, but only in the test process. `_SKIP_PARTS` contains `/.git/`, and
+`Capture._ignored()` drops every in-process open of a path containing it. A test that reads `.git/HEAD` and the
+ref it points to in its own process (a hand-rolled `git_sha()` helper, dulwich, pygit2 through Python file
+reads) records no input for them. In `test_git_head_read_is_an_input`, after one new commit
+(`git commit --allow-empty`, which changes only `.git/refs/heads/main`), `test_in_process` is **reused as
+passed**, while a fresh run fails.
+
+The child path holds: `git rev-parse HEAD` run through `subprocess` is followed, and `child_ignored()` does not
+use `_SKIP_PARTS`. Its `.git/` reads become inputs, so `test_child` re-ran and failed as it should. That covers
+prefect's `tests/utilities/test_dockerutils.py` shape *when it shells out to git*. A library that reads `.git/`
+in the test process (dulwich, `setuptools_scm`'s fallbacks, version helpers that parse `.git/HEAD`) is not
+covered.
+
+Fix: drop `.git` from `_SKIP_PARTS` for content reads (keep it only for code-file discovery, line 228). Or turn
+a `.git/` read into an input of the reading context. The digests are cheap: `.git/HEAD` plus the one ref file,
+or `packed-refs`. Objects are content-addressed, so a changed SHA always comes with a changed ref.
 
 ## 1. Subprocess handling (home-assistant 0% to 73%)
 
@@ -159,7 +179,7 @@ Fairness:
 ## 5. Engine suite
 
 `pytest` at `646e28e` (Python 3.13.18, strace 6.8, local release build): **134 passed, 6 skipped** in 360 s.
-This matches the commit message. With the review tests: the 5 in `tests/test_review_r009.py` fail, as intended.
+This matches the commit message. With the review tests: the 6 in `tests/test_review_r009.py` fail, as intended.
 
 ## Required for approval
 
@@ -168,5 +188,7 @@ This matches the commit message. With the review tests: the 5 in `tests/test_rev
 3. F3: `TZ`, `/etc/localtime` and the locale variables are in the key. Test 3 passes.
 4. F4: a real-time bound on reuse, or a refusal, for real-clock reads outside the virtual clock. Tests 4 and 5
    pass, or the claim names the limit and its bound. The brief owner decides which.
-5. Report wording: "0 wrong" is change-driven verification only (section 3). Give the 1.47x split (1.22 x 1.20).
+5. F5: in-process `.git/` reads are inputs. Test 6 passes; the existing tests still pass (the cache directory and
+   `.detpy/` stay excluded).
+6. Report wording: "0 wrong" is change-driven verification only (section 3). Give the 1.47x split (1.22 x 1.20).
    State that home-assistant's walk never moved the epoch.

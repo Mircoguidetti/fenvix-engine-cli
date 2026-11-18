@@ -144,3 +144,54 @@ def test_child_real_clock_is_not_reused_after_it_moves(pytester, run_cache):
     r, reused, data = run_cache()
     assert reused == set()
     r.assert_outcomes(failed=1)
+
+
+def _git(path, *args):
+    import subprocess
+
+    subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *args], cwd=path, check=True,
+                   capture_output=True)
+
+
+GIT_TEST = """
+    import os, subprocess
+
+    EXPECTED = open("expected.txt").read().strip()
+
+    def head_in_process():
+        ref = open(".git/HEAD").read().split()[-1]
+        return open(os.path.join(".git", ref)).read().strip()
+
+    def head_by_child():
+        return subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
+
+    def test_in_process():
+        assert head_in_process() == EXPECTED
+
+    def test_child():
+        assert head_by_child() == EXPECTED
+    """
+
+
+@pytest.mark.skipif(shutil.which("git") is None, reason="needs git")
+def test_git_head_read_is_an_input(pytester, run_cache):
+    # R-010's hole in the skip study (reads under .git/ excluded), checked on --det-cache: a test whose expected
+    # value or IDs come from HEAD (prefect tests/utilities/test_dockerutils.py shape). The child path (git rev-parse)
+    # records .git/ reads; the in-process path skips every path containing /.git/ (_SKIP_PARTS).
+    project(pytester, **{"test_m.py": GIT_TEST, "expected.txt": "x\n"})
+    (pytester.path / ".gitignore").write_text("*\n!.gitignore\n")
+    _git(pytester.path, "init", "-q", "-b", "main")
+    _git(pytester.path, "commit", "-q", "--allow-empty", "-m", "one")
+    import subprocess
+
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=pytester.path, capture_output=True, text=True).stdout
+    (pytester.path / "expected.txt").write_text(head)
+    run_cache()
+    _, reused, _ = run_cache()
+    assert reused == ids("test_in_process", "test_child")
+    # a new commit: only HEAD's ref under .git/ changes; a fresh run of both tests fails
+    _git(pytester.path, "commit", "-q", "--allow-empty", "-m", "two")
+    r, reused, data = run_cache()
+    assert "test_m.py::test_child" not in reused  # holds on 646e28e
+    assert "test_m.py::test_in_process" not in reused  # fails on 646e28e
+    r.assert_outcomes(failed=2)
