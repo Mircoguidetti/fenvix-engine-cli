@@ -221,7 +221,7 @@ class Walk:
             if prev:
                 _, diff, _ = sh(["git", "diff", "--name-only", prev, sha], cwd=self.repo)
                 rec["changed_files"] = [x for x in diff.splitlines() if x][:400]
-            overhead = first or (self.a.overhead_every and i % self.a.overhead_every == 0)
+            overhead = (first and not getattr(self.a, "no_first_overhead", False)) or bool(self.a.overhead_every and i % self.a.overhead_every == 0)
             if overhead:
                 rp = os.path.join(self.work, "plain.json")
                 rc, dt = self.plain(rp)
@@ -298,8 +298,21 @@ def main():
     ap.add_argument("--nx", action="store_true")
     ap.add_argument("--budget", type=int, default=19800, help="stop starting commits after this many seconds")
     ap.add_argument("--nx-only", action="store_true", help="only Nx affected per transition (no install, no test runs)")
+    ap.add_argument("--no-first-overhead", action="store_true")
     a = ap.parse_args()
     shas = load_json(a.commits)
+    spec = load_json(a.spec)
+    if spec.get("window") and not a.nx_only:
+        lo0, hi0 = spec["window"]
+        base_offset = lo0
+        shas = shas[lo0:hi0]
+    else:
+        base_offset = 0
+    if spec.get("run_timeout"):
+        a.run_timeout = int(spec["run_timeout"])
+    if spec.get("overhead") == "shard0" and a.shard != 0:
+        a.overhead_every = 0
+        a.no_first_overhead = True
     if a.nx_only:
         a.shard = 0
         w = Walk(a)
@@ -321,7 +334,7 @@ def main():
     per = -(-(n - 1) // a.nshards)
     lo = a.shard * per
     hi = min(n, lo + per + 1)
-    a.offset = lo
+    a.offset = base_offset + lo
     w = Walk(a)
     t0 = time.time()
     sub = shas[lo:hi]

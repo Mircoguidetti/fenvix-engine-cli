@@ -1,9 +1,32 @@
 {
- "name": "lexical", "url": "https://github.com/facebook/lexical", "node": "24", "runner": "vitest",
- "install": ["corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent || pnpm install --reporter=silent"],
- "install_files": ["pnpm-lock.yaml", "package.json", "packages/*/package.json", "pnpm-workspace.yaml"],
+ "name": "lexical",
+ "url": "https://github.com/facebook/lexical",
+ "node": "24",
+ "runner": "vitest",
+ "install": [
+  "corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent || pnpm install --reporter=silent"
+ ],
+ "install_files": [
+  "pnpm-lock.yaml",
+  "package.json",
+  "packages/*/package.json",
+  "pnpm-workspace.yaml"
+ ],
  "build": [],
- "args": ["--project", "unit", "--project", "scripts-unit"],
+ "args": [
+  "--project",
+  "unit",
+  "--project",
+  "scripts-unit"
+ ],
  "plain": "pnpm exec vitest run --project unit --project scripts-unit --reporter=json --outputFile={report}",
- "shards": 3, "source": "51 first-parent commits of main before 2026-11-17 (Vitest monorepo, ~30 packages)"
+ "shards": 5,
+ "source": "51 first-parent commits of main before 2026-11-17 (Vitest monorepo, ~30 packages)",
+ "window": [
+  40,
+  51
+ ],
+ "run_timeout": 6000,
+ "overhead": "shard0",
+ "note": "r2: 1000 test files / 40,535 tests (800 s with the project's 4-worker run): a serial Level 0 run takes ~50 min, so the last 10 transitions only, 2 per shard"
 }
