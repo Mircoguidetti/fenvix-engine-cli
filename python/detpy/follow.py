@@ -542,7 +542,7 @@ def _parse_one(lines: list[str], cwd: str, res: Result) -> None:
             if not ok or not wr:
                 ops.append(("r", p))
             else:
-                if "O_RDWR" in flags and "O_TRUNC" not in flags:
+                if "O_RDWR" in flags and "O_TRUNC" not in flags and not ("O_CREAT" in flags and "O_EXCL" in flags):
                     ops.append(("r", p))
                 ops.append(("w", p))
             continue

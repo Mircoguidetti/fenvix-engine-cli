@@ -634,3 +634,26 @@ def test_time_zone_file_content_is_configuration(tmp_path, monkeypatch):
     (z / "Test_Zone").write_bytes(b"TZif-two")  # a tzdata update changes the zone's rules
     b = proofcache.tz_locale_identity()
     assert a["TZ"] == "Test_Zone" and a["tzfile"] and a["tzfile"] != b["tzfile"]
+
+
+def test_exclusive_create_at_import_does_not_drop_every_reuse(pytester, run_cache):
+    # ctypes.util.find_library's compiler fallback creates a NamedTemporaryFile at import time; under --det-urandom
+    # its name is the same in every run. The O_CREAT|O_EXCL open was taken as a read, so every test had that path
+    # as an input and the next session, which writes it again, dropped every reused result as stale.
+    project(pytester, **{"pkg/lib.py": """
+        import tempfile
+
+        T = tempfile.NamedTemporaryFile()
+        T.write(b"x")
+        T.flush()
+        """, "test_m.py": """
+        import pkg.lib
+
+        def test_a():
+            assert pkg.lib.T.name
+        """})
+    run_cache("--det-urandom")
+    for _ in range(2):
+        _, reused, data = run_cache("--det-urandom")
+        assert reused == ids("test_a")
+        assert not data["cache"]["stale_reuses"]

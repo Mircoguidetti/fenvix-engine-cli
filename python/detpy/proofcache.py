@@ -458,12 +458,14 @@ class Capture:
             if isinstance(mode, str):
                 reads = "r" in mode or "+" in mode
                 writes = any(ch in mode for ch in "wax+")
-                trunc = "w" in mode
+                trunc = "w" in mode or "x" in mode  # "x": created here, nothing to read
             else:
                 acc = (flags or 0) & _O_ACC
                 reads = acc in (os.O_RDONLY, os.O_RDWR)
                 writes = acc in (os.O_WRONLY, os.O_RDWR) or bool((flags or 0) & os.O_CREAT)
-                trunc = bool((flags or 0) & os.O_TRUNC)
+                # O_CREAT|O_EXCL (NamedTemporaryFile, mkstemp): the file did not exist, so it is an output only
+                trunc = bool((flags or 0) & os.O_TRUNC) or (flags or 0) & (os.O_CREAT | os.O_EXCL) == (
+                    os.O_CREAT | os.O_EXCL)
             kind = self._caller_kind()
             if kind in ("import", "infra"):
                 return
