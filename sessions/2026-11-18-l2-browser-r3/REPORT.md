@@ -91,8 +91,9 @@ the same job (20 for etherpad, solid-start and uptime-kuma; 2 runs of shard 1/3 
 | uptime-kuma (71) | **10 = 14.1%** (10) | 9 in both; "filters monitors by tag" new; "data retention" no longer counted (it failed once plain this time) | 0 | 9 (6) | sched 49, net 11 | x3.8 |
 | sveltekit (254, new) | **43 = 16.9%** | - | 0 | 144 | other 60, sched 33, net 15 | **x13.5** |
 
-So fix 697c9729 and the R1/R2 clock did not change the broken lists of the 4 projects (MEASURED: 34 of 35 round-2
-broken tests broken again, 1 new). Identical fingerprints moved within 3 on etherpad, solid-start and uptime-kuma, but
+So fix 697c9729 and the R1/R2 clock did not change the broken lists of the 4 projects (MEASURED: 34 of the 36 round-2
+broken tests are broken again; etherpad `timeslider follow` passes now; uptime-kuma "data retention" failed once plain so
+it no longer counts as ours; 1 new). Identical fingerprints moved within 3 on etherpad, solid-start and uptime-kuma, but
 **fell on actual from 49 to 26** with first divergences now at `random` events (page draw counts). Cause: PENDING (A/B
 job below).
 
