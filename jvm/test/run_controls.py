@@ -89,6 +89,7 @@ def main():
     ap.add_argument("--fixtures", default="junit5,junit4")
     ap.add_argument("--out", default=os.path.join(JVM, "test", "results", "controls.json"))
     a = ap.parse_args()
+    os.makedirs(os.path.dirname(a.out), exist_ok=True)
     logs = os.path.join(os.path.dirname(a.out), "logs")
     os.makedirs(logs, exist_ok=True)
     ok_all = True

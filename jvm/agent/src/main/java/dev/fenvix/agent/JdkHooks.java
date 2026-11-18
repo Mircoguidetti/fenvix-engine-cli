@@ -69,6 +69,9 @@ final class JdkHooks implements ClassFileTransformer {
         // directory listings (sorted under --det, recorded)
         add(new Hook("java/io/File", "normalizedList", "()[Ljava/lang/String;", Kind.EXIT_FILTER, DET, "fsList",
                 "(Ljava/io/File;[Ljava/lang/String;)[Ljava/lang/String;", 0));
+        // JDK 11-16 have no File.normalizedList(): hook File.list() there (see transform)
+        add(new Hook("java/io/File", "list", "()[Ljava/lang/String;", Kind.EXIT_FILTER, DET, "fsList",
+                "(Ljava/io/File;[Ljava/lang/String;)[Ljava/lang/String;", 0));
         add(new Hook("sun/nio/fs/UnixFileSystemProvider", "newDirectoryStream",
                 "(Ljava/nio/file/Path;Ljava/nio/file/DirectoryStream$Filter;)Ljava/nio/file/DirectoryStream;", Kind.EXIT_FILTER, DET,
                 "fsDirStream", "(Ljava/nio/file/DirectoryStream;Ljava/nio/file/Path;)Ljava/nio/file/DirectoryStream;", 1));
@@ -134,6 +137,10 @@ final class JdkHooks implements ClassFileTransformer {
         List<Hook> mine = new ArrayList<>();
         for (Hook h : HOOKS) if (h.cls.equals(name)) mine.add(h);
         if (mine.isEmpty()) return null;
+        if (name.equals("java/io/File")) {
+            boolean hasNormalized = new String(bytes, java.nio.charset.StandardCharsets.ISO_8859_1).contains("normalizedList");
+            mine.removeIf(h -> hasNormalized ? h.method.equals("list") : h.method.equals("normalizedList"));
+        }
         try {
             ClassReader cr = new ClassReader(bytes);
             ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);

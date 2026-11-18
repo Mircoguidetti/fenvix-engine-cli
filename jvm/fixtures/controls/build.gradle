@@ -1,6 +1,5 @@
 plugins { id 'java' }
 repositories { mavenCentral() }
-java { toolchain { languageVersion = JavaLanguageVersion.of(System.getProperty('fx.java', '21') as int) } }
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.3')
     testImplementation 'org.junit.jupiter:junit-jupiter'
