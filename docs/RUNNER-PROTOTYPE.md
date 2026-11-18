@@ -18,6 +18,8 @@ Prototype scope: one machine, registered as a GitHub **self-hosted runner** (fre
 | `.github/workflows/fenvix-demo.yml` | the real thing: `runs-on: [self-hosted, fenvix]` |
 | `.github/workflows/fenvix-demo-hosted.yml` | rehearsal on a GitHub-hosted machine (free on a public repository); the cache directory is carried from job 1 to job 2 as an artifact, because two hosted jobs never share a machine |
 | `tests/test_runner_wrapper.py` | wrapper tests: reuse with proof in job 2 and verify = 0 wrong; an order-dependent failure is reported flaky with its replay |
+| `tests/test_runner_node.py` + `tests/fixtures/runner-node/` | Node path: a Vitest (npm) and a Jest (yarn 1) project with order-dependent tests, a mixed Python + Vitest (pnpm) repository; the replay commands are run and must fail again; `--det-cache` is a no-op until detjs has it |
+| `.github/workflows/fenvix-demo-node-hosted.yml` | Node rehearsal on hosted machines: engines built by `bootstrap.sh engines`, `unjs/ufo` (public Vitest project), the mixed repository as one job per language, the fixtures and the wrapper tests |
 
 Demo target: `pygments/pygments`, commit N = `9c436b34` ("Go lexer improvements"), N+1 = `b6aaaca7` ("Groff formatter:
 don't duplicate a character when word-wrapping": `pygments/formatters/groff.py` changed, one test file grew). Any
@@ -27,6 +29,48 @@ Engine: `BASE` 1573079 + cache-proof patches 0001-0008 (`tracks/cache-proof/patc
 `claude/loving-maxwell-58mv2w`). The latest commit of `claude/cache-proof-step1` was not used: its suite fails
 `tests/test_proofcache.py::test_module_level_change_reruns_every_test_that_had_the_module_loaded` in the full run
 (2 of 2 runs; it passes alone): the test after the edit runs the *old* module (stale bytecode), see the session report.
+
+## Node (Vitest, Jest)
+
+The same wrapper, the same `summary.json` keys (schema `fenvix-summary/2`) and the same step summary as Python. In
+the customer's workflow, one job per language:
+
+```yaml
+jobs:
+  python:
+    runs-on: [self-hosted, fenvix]
+    steps: [checkout, venv + project + detpy, run: fenvix-run --lang python --python .venv/bin/python]
+  node:
+    runs-on: [self-hosted, fenvix]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4          # optional: without it the machine's Node LTS is used
+        with: {node-version: 22}
+      - run: fenvix-run --lang node          # Vitest or Jest, found in package.json
+```
+
+What `fenvix-run --lang node` does:
+
+1. **Dependencies** as the project's CI installs them, from the lockfile, when `node_modules` is missing:
+   `npm ci`, `pnpm install --frozen-lockfile`, `yarn install --frozen-lockfile` (yarn 1) or `--immutable` (berry),
+   `bun install --frozen-lockfile`; a lockfile at the workspace root is found from a package directory; a pinned
+   `packageManager` goes through corepack. `--install always|never`, `--install-cmd '...'` override it.
+2. **Tests**: `detjs vitest run --det` or `detjs jest --det` (detjs runs the project's own Vitest 1.4–5 / Jest), with
+   the runner flags of the project's `test` script (`vitest run --typecheck` -> `--typecheck`; watch/coverage/in-band
+   flags dropped), the detjs trace (outcome and fingerprint per test) and the runner's JSON report (timings).
+3. **Failures** run again alone (file + exact name). A test that passes alone is **flaky**; the wrapper then looks for
+   the shortest replay that fails again (the test's file; then each earlier test of that file together with it) and
+   runs it: the summary's `replay` was seen to fail again in the job (`replay_reproduces: true`), `minimise` names
+   the test that leaves the state behind, `explanation` says it in words.
+4. **Cache with proof**: not for Node yet. `--det-cache` is wired: it passes `--det-cache=<machine cache dir>`
+   (and `--det-cache-receipts` if listed) once `detjs --det-help` lists the flag (claude/node-cache-proof); until
+   then it is a no-op, said in `cache_status` and in the step summary. The cache directory is per project and Node
+   major (`<key>-node<major>`), never shared with the Python cache (`<key>-py<ver>`).
+
+`runner/bootstrap.sh` installs Node 26.13.1 (the Active LTS on 2026-11-18, SHA-256 checked) in `$FENVIX_HOME/node`
+with corepack shims, builds detjs from `claude/node-l0` at a pinned commit (`FENVIX_DETJS_REF`) into
+`$FENVIX_HOME/detjs`, and adds `FENVIX_DETJS` and `$FENVIX_HOME/bin/detjs` (which runs with the job's own `node`) to
+the job environment. `bootstrap.sh engines` does only tools + engines (what a machine image bakes in).
 
 ## How a job flows
 
@@ -111,7 +155,7 @@ our GitHub App, so no job ever sees another job's machine or our credentials.
 | cache | a directory on the one machine | a **shared cache service**: entries keyed by project + runtime + config, served to every VM; content-addressed, per-customer isolation and encryption; the engine already merges stores under a lock and keeps per-entry receipts |
 | reporting | `$GITHUB_STEP_SUMMARY` + receipts artifact | the same plus a **PR comment** / check run per PR ("N tests skipped with proof, M minutes saved, flaky: ... replay: ..."), and a dashboard |
 | trust | verify step re-runs the whole suite (doubles the time; demo only) | sampled verification (`--det-cache-verify=FRACTION`) on a share of jobs, plus the nightly full run |
-| other languages | Python (pytest) | Node (Vitest/Jest) shell on the same core |
+| other languages | Python (pytest), Node (Vitest/Jest, no cache yet) | Node cache with proof (detjs `--det-cache`), Go |
 | billing / pricing | none | per CI run (DECISIONS 2026-11-17); not before the founder decides |
 
 ## Known limits seen in this prototype

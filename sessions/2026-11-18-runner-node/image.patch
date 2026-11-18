@@ -1,0 +1,134 @@
+fenvix-app (branch claude/github-app), infra/: Node engine in the runs-on: fenvix machine image.
+Written by the runner-node session of fenvix-engine-cli (branch claude/runner-node); NOT pushed to fenvix-app.
+
+What it does: adds one EC2 Image Builder component, infra/imagebuilder/components/fenvix-node.yml, which runs
+runner/bootstrap.sh engines (FENVIX_LANGS=node) from fenvix-engine-cli at a pinned commit: Node 26.13.1 (Active LTS,
+SHA-256 checked), corepack shims (pnpm/yarn), detjs built from claude/node-l0 8e9209b, fenvix-run with the Node
+path; then adds FENVIX_DETJS and the Node directories to the Actions runner's .env; validates (node version, pnpm,
+yarn, detjs --det-help, .env line) and tests (a Vitest fixture with an order-dependent test must be reported flaky
+with a replay that reproduces it). Every phase was run (parameters substituted, scratch paths) in the session's
+container: all passed.
+
+LIMIT: this session could not read fenvix-app (the read was refused), so the patch was written without seeing the
+current recipe. Two consequences, to check when applying:
+  1. The component file path (infra/imagebuilder/components/) is a guess: move it next to the existing components.
+     Defaults to check: FenvixHome=/opt/fenvix (must be the FENVIX_HOME the Python component uses) and
+     RunnerEnvFile=/opt/actions-runner/.env (the runner directory of the image). The base image must have apt-get
+     (Ubuntu/Debian; bootstrap installs missing tools with it) and python3 (fenvix-run).
+  2. The recipe itself needs one more component entry, after the Python engine and before the runner configuration.
+     Not in the diff (its context is unknown). Depending on how the recipe is written:
+       CloudFormation  AWS::ImageBuilder::Component  FenvixNodeComponent: {Platform: Linux, Version: 1.0.0,
+                       Name: fenvix-node, Data: !Sub/Fn::Transform of the file above}  and in the recipe's
+                       Components: - ComponentArn: !Ref FenvixNodeComponent
+       Terraform       resource "aws_imagebuilder_component" "fenvix_node" { name = "fenvix-node" platform = "Linux"
+                       version = "1.0.0" data = file("${path.module}/imagebuilder/components/fenvix-node.yml") }
+                       and in aws_imagebuilder_image_recipe: component { component_arn = aws_imagebuilder_component.fenvix_node.arn }
+       CDK             new imagebuilder.CfnComponent(this, 'FenvixNode', { name: 'fenvix-node', platform: 'Linux',
+                       version: '1.0.0', data: fs.readFileSync('.../fenvix-node.yml', 'utf8') }) and
+                       { componentArn: fenvixNode.attrArn } in the recipe's components
+     Bump the recipe version (recipes are immutable).
+  Disk: the build leaves ~0.4 GB under /opt/fenvix (Node ~190 MB, Rust toolchain in /root, detjs ~3 MB); the Rust
+  target directory of the detjs build is removed.
+
+Apply from the fenvix-app root:  git apply image.patch
+
+diff --git a/infra/imagebuilder/components/fenvix-node.yml b/infra/imagebuilder/components/fenvix-node.yml
+new file mode 100644
+index 0000000..67e4a56
+--- /dev/null
++++ b/infra/imagebuilder/components/fenvix-node.yml
+@@ -0,0 +1,94 @@
++# EC2 Image Builder component (AWSTOE): Node engine of `runs-on: fenvix` machines.
++#
++# Bakes into the image what runner/bootstrap.sh (fenvix-engine-cli, branch claude/runner-node) installs for Node jobs:
++#   /opt/fenvix/node         Node 26.13.1 (Active LTS, SHA-256 checked) + corepack shims for pnpm and yarn
++#   /opt/fenvix/detjs        detjs (napi core built from claude/node-l0 8e9209b + Vitest/Jest shells)
++#   /opt/fenvix/bin/detjs    detjs command (runs with the job's own node when the job uses setup-node)
++#   /opt/fenvix/bin/fenvix-run  the job wrapper (Python and Node paths)
++# and the job environment the runner reads (FENVIX_DETJS, PATH). Jobs call
++#   fenvix-run --project . --lang node      (Vitest or Jest; dependencies installed from the lockfile)
++#
++# Order in the recipe: after the component that installs the Python engine (detpy) and before the one that configures
++# the Actions runner. Build time: ~4 min on a c7i.large (Rust build of the napi core ~1 min, Node download, corepack).
++name: fenvix-node
++description: Node LTS, corepack and detjs (fenvix Node engine) for runs-on fenvix jobs
++schemaVersion: 1.0
++
++parameters:
++  - EngineCommit:
++      type: string
++      # claude/runner-node: bootstrap.sh with install_node/build_detjs and fenvix-run with the Node path
++      default: 5fffd755551052598d619ffec01001abeeb8f307
++      description: commit of Mircoguidetti/fenvix-engine-cli whose runner/bootstrap.sh and fenvix-run are installed
++  - FenvixHome:
++      type: string
++      default: /opt/fenvix
++      description: FENVIX_HOME of the image (the same directory the Python engine uses)
++  - RunnerEnvFile:
++      type: string
++      default: /opt/actions-runner/.env
++      description: the .env file of the Actions runner (its variables are exported to every job)
++
++phases:
++  - name: build
++    steps:
++      - name: EngineSource
++        action: ExecuteBash
++        inputs:
++          commands:
++            - set -euo pipefail
++            - rm -rf /opt/fenvix-src && mkdir -p /opt/fenvix-src && cd /opt/fenvix-src
++            - git init -q . && git fetch -q --depth 1 https://github.com/Mircoguidetti/fenvix-engine-cli {{ EngineCommit }}
++            - git checkout -q --detach FETCH_HEAD
++      - name: NodeAndDetjs
++        action: ExecuteBash
++        inputs:
++          commands:
++            - set -euo pipefail
++            # tools (git, curl, xz, strace, build-essential via apt-get, uv, Rust), Node LTS + corepack, detjs
++            - FENVIX_HOME={{ FenvixHome }} FENVIX_LANGS=node /opt/fenvix-src/runner/bootstrap.sh engines
++            - chmod -R a+rX {{ FenvixHome }}/node {{ FenvixHome }}/detjs {{ FenvixHome }}/bin
++            - rm -rf {{ FenvixHome }}/src/detjs/target
++      - name: JobEnvironment
++        action: ExecuteBash
++        inputs:
++          commands:
++            - set -euo pipefail
++            - mkdir -p "$(dirname '{{ RunnerEnvFile }}')" && touch '{{ RunnerEnvFile }}'
++            - sed -i '/^FENVIX_DETJS=/d' '{{ RunnerEnvFile }}'
++            - echo 'FENVIX_DETJS={{ FenvixHome }}/detjs/bin/detjs.js' >> '{{ RunnerEnvFile }}'
++            # PATH: keep the line the Python component wrote, add the Node directories in front once
++            - |
++              if grep -q '^PATH=' '{{ RunnerEnvFile }}'; then
++                grep -q '{{ FenvixHome }}/node/bin' '{{ RunnerEnvFile }}' || \
++                  sed -i 's|^PATH=|PATH={{ FenvixHome }}/bin:{{ FenvixHome }}/node/bin:|' '{{ RunnerEnvFile }}'
++              else
++                echo 'PATH={{ FenvixHome }}/bin:{{ FenvixHome }}/node/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' >> '{{ RunnerEnvFile }}'
++              fi
++
++  - name: validate
++    steps:
++      - name: NodeEngine
++        action: ExecuteBash
++        inputs:
++          commands:
++            - set -euo pipefail
++            - export PATH={{ FenvixHome }}/bin:{{ FenvixHome }}/node/bin:$PATH
++            - test "$(node --version)" = v26.13.1
++            - pnpm --version && yarn --version
++            - detjs --det-help | grep -q -- --det-seed
++            - grep -q '^FENVIX_DETJS={{ FenvixHome }}/detjs/bin/detjs.js$' '{{ RunnerEnvFile }}'
++
++  - name: test
++    steps:
++      - name: FlakyFixture
++        action: ExecuteBash
++        inputs:
++          commands:
++            - set -euo pipefail
++            - export PATH={{ FenvixHome }}/bin:{{ FenvixHome }}/node/bin:$PATH FENVIX_DETJS={{ FenvixHome }}/detjs/bin/detjs.js
++            - work=$(mktemp -d) && cp -r /opt/fenvix-src/tests/fixtures/runner-node/vitest-app "$work/app"
++            # The fixture's suite fails on purpose (an order-dependent test); the summary must report it flaky.
++            - FENVIX_CACHE_ROOT="$work/cache" fenvix-run --project "$work/app" --out "$work/out" || true
++            - python3 -c "import json,sys; s=json.load(open(sys.argv[1])); f=s['flaky']; assert s['language']=='node' and len(f)==1 and f[0]['replay_reproduces'] is True, f" "$work/out/summary.json"
++            - rm -rf "$work"
