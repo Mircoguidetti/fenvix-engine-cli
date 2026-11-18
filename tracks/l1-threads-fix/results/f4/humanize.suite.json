@@ -1,0 +1,162 @@
+{
+ "name": "humanize",
+ "set": "popular",
+ "url": "https://github.com/python-humanize/humanize",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009797",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "Intel(R) Xeon(R) 6973P-C"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "a95004512dde4e8f0269946bb4af754382347441",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e .[tests] freezegun",
+ "collected": 908,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 7.313,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 762,
+    "skipped": 146
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 8.524,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 762,
+    "skipped": 146
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 9.394,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 762,
+    "skipped": 146
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 9.752,
+   "exit": 0,
+   "timed_out": false,
+   "counts": {
+    "passed": 762,
+    "skipped": 146
+   },
+   "stats": {
+    "decisions": 0,
+    "switches": 0,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 0,
+    "managed": 1
+   },
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  }
+ ],
+ "suite_seeds": [
+  1
+ ],
+ "mtimes_restored": [
+  0,
+  0,
+  0,
+  0
+ ],
+ "warmup": [
+  {
+   "duration_s": 13.552,
+   "exit": 0,
+   "timed_out": false
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 1,
+  "loaded_runs": 5
+ }
+}
