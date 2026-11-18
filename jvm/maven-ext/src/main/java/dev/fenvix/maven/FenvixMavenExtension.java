@@ -124,7 +124,7 @@ public class FenvixMavenExtension extends AbstractMavenLifecycleParticipant {
                 set(c, "runOrder", "alphabetical");
             } else {
                 set(c, "runOrder", "random");
-                set(c, "runOrder.random.seed", seed);
+                set(c, "runOrderRandomSeed", seed);
             }
             Xpp3Dom cp = c.getChild("configurationParameters");
             if (cp != null && cp.getValue() != null) {

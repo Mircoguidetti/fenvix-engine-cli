@@ -45,6 +45,7 @@ public class FenvixListener implements TestExecutionListener {
     @Override
     public void testPlanExecutionStarted(TestPlan testPlan) {
         if (!on) return;
+        Flags.platformActive = true;
         plan = testPlan;
         module = Ids.module(System.getProperty("fenvix.module", ""));
         List<String> order = new ArrayList<>();
@@ -81,6 +82,7 @@ public class FenvixListener implements TestExecutionListener {
     @Override
     public void testPlanExecutionFinished(TestPlan testPlan) {
         if (!on) return;
+        Flags.platformActive = false;
         if (Det.ON) Det.closeTrace();
     }
 

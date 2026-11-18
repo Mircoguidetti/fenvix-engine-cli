@@ -37,6 +37,7 @@ final class Installer {
             System.setProperty("junit.jupiter.execution.parallel.enabled", "false");
         }
         inst.addTransformer(new CallSiteRewriter(), false);
+        inst.addTransformer(new RunnerHooks(), false);
         JdkHooks hooks = new JdkHooks();
         inst.addTransformer(hooks, true);
         List<Class<?>> targets = new ArrayList<>();

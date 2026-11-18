@@ -80,7 +80,17 @@ public final class Lifecycle {
         return "default";
     }
 
+    /**
+     * JVM arguments left out of the runtime identity: the agent, worker ids,
+     * debugging, and user system properties (-Dkey=value outside java.*, jdk.*,
+     * sun.*, javax.*, com.sun.*): those are part of the key only where a test
+     * reads them.
+     */
     static boolean volatileArg(String a) {
+        if (a.startsWith("-D") && !(a.startsWith("-Djava.") || a.startsWith("-Djdk.") || a.startsWith("-Dsun.")
+                || a.startsWith("-Djavax.") || a.startsWith("-Dcom.sun."))) {
+            return true;
+        }
         return a.startsWith("-javaagent:") || a.startsWith("-Dfenvix.") || a.contains("worker") || a.startsWith("-Xlog")
                 || a.startsWith("-agentlib:jdwp") || a.startsWith("-Djava.io.tmpdir") || a.startsWith("-Dbasedir")
                 || a.startsWith("-Duser.dir") || a.startsWith("@");

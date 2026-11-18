@@ -379,6 +379,19 @@ public final class Deps {
         }
         sb.append(",\"classes\":");
         Json.map(sb, cls);
+        // every variable and property this JVM could read (value digests), and the class path
+        Map<String, String> env = new TreeMap<>();
+        for (Map.Entry<String, String> e : System.getenv().entrySet()) env.put(e.getKey(), digestValue(e.getValue()));
+        sb.append(",\"env_all\":");
+        Json.map(sb, env);
+        Map<String, String> props = new TreeMap<>();
+        for (String k : System.getProperties().stringPropertyNames()) props.put(k, digestValue(String.valueOf(System.getProperty(k))));
+        sb.append(",\"props_all\":");
+        Json.map(sb, props);
+        List<String> cp = new ArrayList<>();
+        for (String p : System.getProperty("java.class.path", "").split(File.pathSeparator)) if (!p.isEmpty()) cp.add(p);
+        sb.append(",\"classpath\":");
+        Json.strs(sb, cp);
         sb.append("}\n");
         emit(sb.toString());
     }

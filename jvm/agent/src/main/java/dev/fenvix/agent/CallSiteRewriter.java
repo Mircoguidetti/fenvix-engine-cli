@@ -143,8 +143,12 @@ final class CallSiteRewriter implements ClassFileTransformer {
         if (loader == ClassLoader.getPlatformClassLoader()) return null;
         if (Infra.isInfra(name) || name.equals("module-info") || name.startsWith("dev/fenvix/")) return null;
         try {
+            String src = "";
+            if (pd != null && pd.getCodeSource() != null && pd.getCodeSource().getLocation() != null) {
+                String loc = pd.getCodeSource().getLocation().getPath();
+                if (Infra.isToolDistribution(loc)) return null; // the build tool's own libraries (Gradle worker)
+            }
             if (Det.DEPS) {
-                String src = "";
                 if (pd != null && pd.getCodeSource() != null && pd.getCodeSource().getLocation() != null) {
                     try {
                         src = new java.io.File(pd.getCodeSource().getLocation().toURI()).getPath();
@@ -152,7 +156,9 @@ final class CallSiteRewriter implements ClassFileTransformer {
                         src = pd.getCodeSource().getLocation().toString();
                     }
                 }
-                Deps.classDefined(name, Native.digest(bytes), src);
+                // classes without a code source are generated at run time (proxies, mocks): their
+                // definition derives from other classes, they are not part of the key
+                if (!src.isEmpty()) Deps.classDefined(name, Native.digest(bytes), src);
             }
             ClassReader cr = new ClassReader(bytes);
             ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);

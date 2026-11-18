@@ -51,10 +51,10 @@ class FenvixJvmPlugin implements Plugin<Gradle> {
                 t.doFirst {
                     // test-task configuration that reaches the test JVM (part of the skip key)
                     def cfg = [
-                        "jvmArgs=${(t.allJvmArgs.findAll { !it.contains('fenvix') }).join(' ')}",
+                        "jvmArgs=${(t.allJvmArgs.findAll { !it.contains('fenvix') && !it.startsWith('-D') }).join(' ')}",
                         "minHeap=${t.minHeapSize}", "maxHeap=${t.maxHeapSize}",
                         "framework=${t.testFramework.getClass().simpleName}",
-                        "env=${t.environment.keySet().sort().join(';')}",
+
                     ]
                     t.systemProperty('fenvix.config', cfg.join('|'))
                 }

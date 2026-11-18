@@ -88,6 +88,11 @@ final class JdkHooks implements ClassFileTransformer {
         add(new Hook("sun/nio/fs/UnixFileSystemProvider", "readAttributes",
                 "(Ljava/nio/file/Path;Ljava/lang/Class;[Ljava/nio/file/LinkOption;)Ljava/nio/file/attribute/BasicFileAttributes;",
                 Kind.ENTRY, DET, "nioProbe", "(Ljava/nio/file/Path;)V", 1));
+        add(new Hook("sun/nio/fs/UnixFileSystemProvider", "exists", "(Ljava/nio/file/Path;[Ljava/nio/file/LinkOption;)Z",
+                Kind.ENTRY, DET, "nioProbe", "(Ljava/nio/file/Path;)V", 1));
+        add(new Hook("sun/nio/fs/UnixFileSystemProvider", "readAttributesIfExists",
+                "(Ljava/nio/file/Path;Ljava/lang/Class;[Ljava/nio/file/LinkOption;)Ljava/nio/file/attribute/BasicFileAttributes;",
+                Kind.ENTRY, DET, "nioProbe", "(Ljava/nio/file/Path;)V", 1));
         add(new Hook("java/io/UnixFileSystem", "getBooleanAttributes", "(Ljava/io/File;)I", Kind.ENTRY, DET, "fsProbe",
                 "(Ljava/io/File;)V", 1));
         // classpath resources (capture)

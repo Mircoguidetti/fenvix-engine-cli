@@ -594,6 +594,8 @@ public final class Det {
 
     /** Thread names of infrastructure threads created after the baseline. */
     static boolean infraThread(Thread t) {
+        ThreadGroup g = t.getThreadGroup();
+        if (g != null && "system".equals(g.getName())) return true; // Reference Handler, Finalizer, ...
         String n = t.getName();
         return n.startsWith("junit-") || n.startsWith("fenvix-") || n.equals("process reaper")
                 || n.startsWith("surefire-") || n.startsWith("Common-Cleaner") || n.startsWith("Attach Listener")

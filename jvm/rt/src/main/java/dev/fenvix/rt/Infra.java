@@ -45,6 +45,19 @@ public final class Infra {
         return false;
     }
 
+    /**
+     * A code source inside the build tool's own distribution (Gradle's lib/ and
+     * worker jars, the Gradle wrapper's distributions): infrastructure whatever
+     * the package name (Gradle bundles kryo, slf4j, native-platform, ...). Its
+     * version is part of the runtime identity instead.
+     */
+    public static boolean isToolDistribution(String path) {
+        if (path == null) return false;
+        return (path.contains("/gradle-") && path.contains("/lib/")) || path.contains("/.gradle/caches/") && path.contains("/workerMain/")
+                || path.contains("/.gradle/wrapper/dists/") || path.contains("/generated-gradle-jars/")
+                || path.contains("/org/apache/maven/surefire/");
+    }
+
     /** Same test for a binary (dot-separated) class name. */
     public static boolean isInfraDotted(String className) {
         return className == null || isInfra(className.replace('.', '/'));

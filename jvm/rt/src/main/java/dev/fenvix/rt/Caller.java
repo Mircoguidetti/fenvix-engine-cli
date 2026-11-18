@@ -12,14 +12,20 @@ final class Caller {
     private static final StackWalker WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
     static String user() {
+        boolean[] loading = {false};
         Optional<StackWalker.StackFrame> f = WALKER.walk(s -> s.filter(fr -> {
             Class<?> c = fr.getDeclaringClass();
             ClassLoader l = c.getClassLoader();
+            String m = fr.getMethodName();
+            if (m.equals("loadClass") || m.equals("findClass") || m.equals("defineClass") || m.equals("loadClassOrNull")
+                    || m.equals("findLoadedClass") || m.equals("findBootstrapClassOrNull")) {
+                loading[0] = true; // class loading triggered by the code: the class digests cover it
+            }
             if (l == null || l == ClassLoader.getPlatformClassLoader()) return false;
             String n = c.getName();
             return !n.startsWith("dev.fenvix.") && !n.startsWith("jdk.") && !n.startsWith("sun.");
         }).findFirst());
-        if (!f.isPresent()) return null;
+        if (!f.isPresent() || loading[0]) return null;
         StackWalker.StackFrame fr = f.get();
         String n = fr.getClassName();
         if (Infra.isInfraDotted(n)) return null;
