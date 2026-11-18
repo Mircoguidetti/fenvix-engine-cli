@@ -1,0 +1,9 @@
+{
+  "gson": {"url": "https://github.com/google/gson", "tool": "maven", "jdk": "17", "before": "2026-11-15", "args": ["-pl", "gson", "-am"]},
+  "jackson-databind": {"url": "https://github.com/FasterXML/jackson-databind", "tool": "maven", "jdk": "17", "before": "2026-11-15"},
+  "commons-lang": {"url": "https://github.com/apache/commons-lang", "tool": "maven", "jdk": "17", "before": "2026-11-15"},
+  "commons-io": {"url": "https://github.com/apache/commons-io", "tool": "maven", "jdk": "17", "before": "2026-11-15"},
+  "mockito": {"url": "https://github.com/mockito/mockito", "tool": "gradle", "jdk": "17", "before": "2026-11-15"},
+  "moshi": {"url": "https://github.com/square/moshi", "tool": "gradle", "jdk": "21", "before": "2026-11-15"},
+  "retrofit": {"url": "https://github.com/square/retrofit", "tool": "gradle", "jdk": "17", "before": "2026-11-15"}
+}
