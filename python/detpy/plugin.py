@@ -11,7 +11,7 @@ import warnings
 
 import pytest
 
-from . import __version__, _core, _sites, _state, aio, clock, fsorder, network, reexec, seeds, threads
+from . import __version__, _core, _sites, _state, aio, clock, frames, fsorder, network, reexec, seeds, threads
 from ._patch import Patcher
 
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net")
@@ -327,6 +327,7 @@ def _install(config, ns, controls) -> None:
             # plugin defined may stay active (documented limit).
             pm.unregister(name=name)
             S.disabled_plugins.append(name + " (unregistered after loading)")
+    frames.install(_PATCHER)  # detpy's frames stay invisible to stack inspection of other threads
     if "seeds" in controls:
         seeds.install(_PATCHER, cfg.control_urandom)
     for plugin in pm.get_plugins():
