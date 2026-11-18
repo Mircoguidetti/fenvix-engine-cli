@@ -28,6 +28,33 @@ pub const SHIFT: u32 = 24;
 pub const IMPORT_FLAG: u64 = 1 << 63;
 const LINE_MASK: u64 = (1 << SHIFT) - 1;
 
+/// Multiplicative hasher for the recorder's integer keys (code object addresses, packed locations): the
+/// callbacks run for every new line of every context, and SipHash dominated their cost (MEASURED on
+/// home-assistant). Keys are not attacker-controlled.
+#[derive(Default, Clone, Copy)]
+struct IntHasher(u64);
+
+impl std::hash::Hasher for IntHasher {
+    fn finish(&self) -> u64 {
+        // the product's entropy is in its high bits; hashbrown indexes buckets with the low ones (aligned
+        // addresses would otherwise all collide)
+        self.0.rotate_left(26)
+    }
+    fn write(&mut self, bytes: &[u8]) {
+        for &b in bytes {
+            self.write_u64(b as u64);
+        }
+    }
+    fn write_u64(&mut self, n: u64) {
+        self.0 = (self.0.rotate_left(5) ^ n).wrapping_mul(0x517c_c1b7_2722_0a95);
+    }
+    fn write_usize(&mut self, n: usize) {
+        self.write_u64(n as u64);
+    }
+}
+
+type IntMap<K, V> = HashMap<K, V, std::hash::BuildHasherDefault<IntHasher>>;
+
 struct Slot {
     fid: u64,
     entry: i64,
@@ -37,11 +64,11 @@ struct Slot {
 
 #[derive(Default)]
 struct Inner {
-    codes: HashMap<usize, Slot>,
-    seen: HashMap<u64, u32>,
+    codes: IntMap<usize, Slot>,
+    seen: IntMap<u64, u32>,
     buf: Vec<u64>,
     hot_codes: Vec<Py<PyAny>>,
-    hot_ids: HashMap<usize, ()>,
+    hot_ids: IntMap<usize, ()>,
     import_depth: u32,
 }
 

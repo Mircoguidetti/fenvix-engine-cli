@@ -138,7 +138,9 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
     # mtimes, each dist-info's RECORD) is the one of the last complete precompile: an installer changes it. A
     # module edited in place without that is loaded from source under the same fixed seed, in every run alike.
     # The project is always checked (it changes at every commit).
-    stamps_path = os.path.join(prefix, "stamps.json")
+    # v2: stamps written before library directories inside a virtual environment were compiled (they were excluded)
+    # do not count
+    stamps_path = os.path.join(prefix, "stamps-v2.json")
     try:
         import json
 
@@ -156,8 +158,15 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
         fresh[d] = st
         if stamps.get(d) != st:
             todo.append(d)
-    if todo:
-        cmd = [sys.executable, "-m", "compileall", "-qq", "-j", "0", "-x", _EXCLUDE, *todo]
+    # the exclusions (VCS, tool caches, virtual environments) apply to the project's tree only: a library
+    # directory is itself inside a virtual environment (venv/lib/python3.X/site-packages), and excluding it there
+    # left every installed module to be compiled from source at every run
+    project = [d for d in todo if root_real is not None and os.path.realpath(d) == root_real]
+    libs = [d for d in todo if d not in project]
+    for dirs_, extra in ((libs, []), (project, ["-x", _EXCLUDE])):
+        if not dirs_:
+            continue
+        cmd = [sys.executable, "-m", "compileall", "-qq", "-j", "0", *extra, *dirs_]
         p = subprocess.run(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
                            stderr=subprocess.DEVNULL)
         if p.returncode not in (0, 1):  # 1: some file does not compile (it never will); else: interrupted

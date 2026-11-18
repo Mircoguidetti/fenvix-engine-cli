@@ -52,6 +52,13 @@ enum Line {
     Footer(Footer),
 }
 
+/// A test line serialized from a borrowed record (byte-identical to `Line::Test`, without copying the events).
+#[derive(Serialize)]
+#[serde(tag = "type", rename_all = "lowercase")]
+enum TestLine<'a> {
+    Test(&'a TestRecord),
+}
+
 /// Digest of an ordered list of test ids.
 pub fn order_digest<S: AsRef<str>>(ids: &[S]) -> String {
     let mut buf = Vec::new();
@@ -87,7 +94,9 @@ impl TraceWriter {
 
     pub fn write_test(&mut self, rec: &TestRecord) -> io::Result<()> {
         self.executed.push(rec.nodeid.clone());
-        self.write_line(&Line::Test(rec.clone()))
+        serde_json::to_writer(&mut self.out, &TestLine::Test(rec)).map_err(io::Error::other)?;
+        self.out.write_all(b"\n")?;
+        self.out.flush()
     }
 
     pub fn finish(mut self) -> io::Result<Footer> {
@@ -239,5 +248,24 @@ mod tests {
     fn order_digest_is_order_sensitive() {
         assert_ne!(order_digest(&["a", "b"]), order_digest(&["b", "a"]));
         assert_ne!(order_digest(&["ab"]), order_digest(&["a", "b"]));
+    }
+}
+
+#[cfg(test)]
+mod borrowed_line_tests {
+    use super::*;
+    use crate::event::{Event, Source};
+    use crate::fingerprint::Fingerprinter;
+
+    #[test]
+    fn borrowed_test_line_is_byte_identical() {
+        let mut fp = Fingerprinter::new(10, 2);
+        for i in 0..25 {
+            fp.push(Event::new(Source::Time, "time.time", "a.py:1", &i.to_string()));
+        }
+        let rec = fp.finish("t::x \"q\"", 3, "passed");
+        let a = serde_json::to_string(&Line::Test(rec.clone())).unwrap();
+        let b = serde_json::to_string(&TestLine::Test(&rec)).unwrap();
+        assert_eq!(a, b);
     }
 }

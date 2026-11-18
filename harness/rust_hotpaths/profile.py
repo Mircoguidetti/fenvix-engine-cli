@@ -4,7 +4,7 @@
 For one spec (and shard) at its HEAD commit, set up as the cache-proof walk does, then run interleaved:
 
 * ``P0``  plain pytest (no ``--det``);
-* ``B``   ``pytest --det`` (no cache);
+* ``B:<engine>``   ``pytest --det`` (no cache);
 * ``C:<engine>``  cold run ``--det --det-cache=<empty dir>`` for every engine wheel given (``--wheel NAME=PATH``,
   swapped in place with ``uv pip install --reinstall-package detpy``);
 * ``W:<engine>``  warm run: the same cache again (every result reusable unless not cacheable).
@@ -35,6 +35,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 sys.path.insert(0, str(ROOT / "harness" / "cache_proof"))
 sys.path.insert(0, str(ROOT / "harness"))
+sys.path.insert(0, str(HERE))
 import walk as W  # noqa: E402
 
 # ---------------------------------------------------------------------------
@@ -120,11 +121,20 @@ class Prof:
                              "--no-deps", os.path.abspath(self.engines[eng])], timeout=600)
         if code:
             raise RuntimeError(f"install {eng}: {out[-400:]}")
+        # one bytecode cache per engine behind one path (the path is in the environment the tests see): an
+        # engine's precompile stamps must not decide what another compiles
+        fixed = self.w.work / "pyc"
+        if self.cur is not None and fixed.exists():
+            fixed.rename(self.w.work / f"pyc-{self.cur}")
+        mine = self.w.work / f"pyc-{eng}"
+        if mine.exists():
+            mine.rename(fixed)
         self.cur = eng
 
     def env(self) -> dict:
         env = self.w.env()
         env["PYTHONPATH"] = os.pathsep.join([str(ROOT / "harness" / "cache_proof"), str(HERE / "execcap")])
+        env["DETPY_PYC_CACHE"] = str(self.w.work / "pyc")
         return env
 
     def cmd(self, variant: str, cache: Path | None, units) -> list[str]:
@@ -192,6 +202,37 @@ class Prof:
             p["tail"] = out[-1500:]
         self.res["profiles"][tag] = p
 
+    @staticmethod
+    def receipts(cache: Path) -> dict:
+        """Warm-run decisions: {nodeid: [reused, why, receipt sizes]}."""
+        out = {}
+        try:
+            for line in (cache / "receipts.jsonl").read_text().splitlines():
+                x = json.loads(line)
+                out[x["nodeid"]] = [x["reused"], x.get("why"), x.get("n_units"), x.get("n_skeleton"),
+                                    x.get("n_hooks"), x.get("n_content"), x.get("n_data"), x.get("n_env")]
+        except (OSError, ValueError):
+            pass
+        return out
+
+    def compare(self) -> None:
+        """Cold-run stores and warm-run decisions of the engines, against the first one."""
+        import canon
+
+        engs = list(self.engines)
+        a = canon.canon(str(self.w.work / f"store-{engs[0]}.json"))
+        out = {}
+        for e in engs[1:]:
+            b = canon.canon(str(self.w.work / f"store-{e}.json"))
+            d = canon.diff(a, b, limit=10**9, ignore=("fingerprint",))
+            fp = [n for n in a["tests"] if n in b["tests"] and a["tests"][n]["fingerprint"] != b["tests"][n]["fingerprint"]]
+            ra, rb = self.res["receipts"].get(engs[0], {}), self.res["receipts"].get(e, {})
+            rd = [n for n in sorted(set(ra) | set(rb)) if ra.get(n) != rb.get(n)]
+            out[e] = {"entries": [len(a["tests"]), len(b["tests"])], "store_diffs": d[:50], "n_store_diffs": len(d),
+                      "fingerprint_only": fp[:50], "n_fingerprint_only": len(fp), "receipt_diffs": rd[:50],
+                      "n_receipt_diffs": len(rd), "n_receipts": [len(ra), len(rb)]}
+        self.res["equivalence"] = out
+
     def save(self):
         self.out.parent.mkdir(parents=True, exist_ok=True)
         self.out.write_text(json.dumps(self.res, indent=1))
@@ -215,29 +256,40 @@ class Prof:
             units = w.collectable(units, st)
         self.res.update(sha=sha, units=len(units), dropped=st.get("dropped_units", []))
         cache = w.work / "prof-cache"
-        # warm-up: precompile under the fixed seed, imports in the page cache
-        self.run("B", units, None)
+        # warm-up: precompile under the fixed seed (each engine its own cache), imports in the page cache
+        for eng in self.engines:
+            self.use(eng)
+            self.run("B", units, None)
         for r in range(self.a.reps):
             W.log(f"round {r}")
-            for v in ("P0", "B"):
-                x = self.run(v, units, None)
-                self.res["walls"][v].append(x["wall"])
-                self.res["cache"].setdefault(v, []).append(x)
+            x = self.run("P0", units, None)
+            self.res["walls"]["P0"].append(x["wall"])
+            self.res["cache"].setdefault("P0", []).append(x)
             for eng in self.engines:
                 self.use(eng)
+                x = self.run("B", units, None)
+                self.res["walls"][f"B:{eng}"].append(x["wall"])
+                self.res["cache"].setdefault(f"B:{eng}", []).append(x)
                 shutil.rmtree(cache, ignore_errors=True)
                 c = self.run("C", units, cache)
+                if r == 0:
+                    shutil.copy(cache / "proof-cache.json", w.work / f"store-{eng}.json")
                 self.res["walls"][f"C:{eng}"].append(c["wall"])
                 self.res["cache"].setdefault(f"C:{eng}", []).append(c)
                 wm = self.run("C", units, cache)
+                if r == 0:
+                    self.res.setdefault("receipts", {})[eng] = self.receipts(cache)
                 self.res["walls"][f"W:{eng}"].append(wm["wall"])
                 self.res["cache"].setdefault(f"W:{eng}", []).append(wm)
             self.save()
+        if len(self.engines) > 1:
+            self.compare()
+            self.save()
         if self.a.pyspy:
             self.profile("P0", units, None, "P0")
-            self.profile("B", units, None, "B")
             for eng in self.engines:
                 self.use(eng)
+                self.profile("B", units, None, f"B:{eng}")
                 self.profile("C", units, cache, f"C:{eng}")
                 self.save()
         self.res["finished"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())

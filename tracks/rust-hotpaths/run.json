@@ -1,7 +1,7 @@
 {
- "run_id": "p1",
- "note": "profile of the base engine (cache-proof-step1 24b6d15): home-assistant shards 0,5,10 of 16, pygments, click",
- "base": "",
+ "run_id": "p2",
+ "note": "base engine (cache-proof-step1 24b6d15) vs this commit, interleaved in the same job: home-assistant shards 0,5,10 of 16, pygments, click; cold stores and warm receipts compared",
+ "base": "24b6d15e043a2f42834809ea41b5cca0f60849d3",
  "profile": [
   {"spec": "home-assistant", "shards": 16, "only": [0, 5, 10], "reps": 3},
   {"spec": "pygments", "reps": 5},
