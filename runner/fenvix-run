@@ -217,7 +217,8 @@ def cmd_run(a: argparse.Namespace, extra: list[str]) -> int:
         env["FENVIX_CACHE_LOCAL"] = str(cache)
         env["FENVIX_CACHE_REPORT"] = str(remote_p)
         if not env.get("FENVIX_CACHE_TOKEN") and not env.get("FENVIX_CACHE_TOKEN_FILE"):
-            log("warning: no FENVIX_CACHE_TOKEN: the service will refuse the requests (local mirror only)")
+            log("warning: no FENVIX_CACHE_TOKEN or FENVIX_CACHE_TOKEN_FILE: the service will refuse the requests "
+                "(local mirror only)")
     else:
         cache = Path(a.cache) if a.cache else Path(DEFAULT_ROOT) / ns
         cache_arg = str(cache)

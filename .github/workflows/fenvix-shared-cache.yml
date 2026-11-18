@@ -122,9 +122,10 @@ jobs:
               >"$RUNNER_TEMP/service.log" 2>&1 &
           echo $! >"$RUNNER_TEMP/service.pid"
           for _ in $(seq 50); do curl -sf "http://127.0.0.1:$PORT/v1/health" && break; sleep 0.2; done
-          token="$("$svc" -m detpy.cache_service token --data "$RUNNER_TEMP/service-data" --org fenvix-demo)"
-          echo "::add-mask::$token"
-          echo "FENVIX_CACHE_TOKEN=$token" >>"$GITHUB_ENV"
+          # the token goes to a private file, never to the log or to $GITHUB_ENV (which step logs print)
+          (umask 077; "$svc" -m detpy.cache_service token --data "$RUNNER_TEMP/service-data" --org fenvix-demo \
+              >"$RUNNER_TEMP/cache-token")
+          echo "FENVIX_CACHE_TOKEN_FILE=$RUNNER_TEMP/cache-token" >>"$GITHUB_ENV"
       - name: Project at commit N (fresh virtualenv at the runner's fixed path)
         run: engine/runner/ci-project-env.sh "${{ matrix.repo }}" "${{ matrix.n }}" "${{ matrix.extra }}"
       - name: Job 1 on machine 1 (commit N, pushes to the service)
@@ -185,9 +186,10 @@ jobs:
               >"$RUNNER_TEMP/service.log" 2>&1 &
           echo $! >"$RUNNER_TEMP/service.pid"
           for _ in $(seq 50); do curl -sf "http://127.0.0.1:$PORT/v1/health" && break; sleep 0.2; done
-          token="$("$svc" -m detpy.cache_service token --data "$RUNNER_TEMP/service-data" --org fenvix-demo)"
-          echo "::add-mask::$token"
-          echo "FENVIX_CACHE_TOKEN=$token" >>"$GITHUB_ENV"
+          # the token goes to a private file, never to the log or to $GITHUB_ENV (which step logs print)
+          (umask 077; "$svc" -m detpy.cache_service token --data "$RUNNER_TEMP/service-data" --org fenvix-demo \
+              >"$RUNNER_TEMP/cache-token")
+          echo "FENVIX_CACHE_TOKEN_FILE=$RUNNER_TEMP/cache-token" >>"$GITHUB_ENV"
       - name: Project at commit N+1 (fresh virtualenv at the same path, as the next job on a machine)
         run: engine/runner/ci-project-env.sh "${{ matrix.repo }}" "${{ matrix.n1 }}" "${{ matrix.extra }}"
       - name: Job 2 on machine 2 (commit N+1, empty disk, pulls from the service)
@@ -231,6 +233,6 @@ jobs:
           done
           python3 runner/shared-cache-compare merged/pygments merged/click merged/marshmallow --json compare.json \
               | tee -a "$GITHUB_STEP_SUMMARY"
-          python3 -c "import json; print(json.dumps(json.load(open('compare.json')), indent=1))"
+          python3 -c "import json; [print(json.dumps(c, separators=(',', ':'))) for c in json.load(open('compare.json'))]"
       - uses: actions/upload-artifact@v4
         with: {name: shared-cache-compare, path: compare.json, retention-days: 30}
