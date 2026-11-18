@@ -1,15 +1,13 @@
 {
- "run_id": "p3",
- "note": "base engine (24b6d15) vs this commit, interleaved; noise-aware equivalence with per-entry difference details; equivalence probe (facts, distributions)",
- "base": "24b6d15e043a2f42834809ea41b5cca0f60849d3",
+ "run_id": "p4",
+ "note": "review R-015 fixes (checked-hash bytecode for libraries and project, code-changed-during-session refusal) vs the branch before them (3d20406), interleaved",
+ "base": "3d20406930b6999e57a1bc6031b5dbd34b53c162",
  "profile": [
   {
    "spec": "home-assistant",
    "shards": 16,
    "only": [
-    0,
-    5,
-    10
+    0
    ],
    "reps": 3
   },
