@@ -53,7 +53,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 API = "v1"
-MAX_BODY = 512 * 1024 * 1024
+MAX_BODY = 64 * 1024 * 1024  # decompressed; the client sends at most ~16 MB of documents per request
 MAX_IDS = 50_000
 _ID_CHARS = set("0123456789abcdef")
 
@@ -286,14 +286,22 @@ class Handler(BaseHTTPRequestHandler):
         return t
 
     def _body(self):
+        """The JSON body, read only after the token was checked. Compressed bodies are inflated in bounded steps:
+        anything that would exceed MAX_BODY is refused while it streams (no gzip bomb)."""
         n = int(self.headers.get("Content-Length") or 0)
-        if n > MAX_BODY:
+        if n < 0 or n > MAX_BODY:
             raise ValueError("body too large")
         raw = self.rfile.read(n) if n else b""
         if (self.headers.get("Content-Encoding") or "").lower() == "gzip":
-            raw = gzip.decompress(raw)
-            if len(raw) > MAX_BODY:
+            d = zlib.decompressobj(16 + zlib.MAX_WBITS)
+            out = bytearray(d.decompress(raw, MAX_BODY + 1))
+            while len(out) <= MAX_BODY and d.unconsumed_tail:
+                out += d.decompress(d.unconsumed_tail, MAX_BODY + 1 - len(out))
+            if len(out) > MAX_BODY:
                 raise ValueError("body too large")
+            if not d.eof:
+                raise ValueError("truncated gzip body")
+            raw = bytes(out)
         return json.loads(raw or b"{}")
 
     def _route(self):
@@ -320,13 +328,15 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         route, ns = self._route()
         writes = route in ("blobs/put", "ns:keys", "ns:runs")
+        tok = self._auth(write=writes)  # before the body is read: an unknown caller costs a header parse, nothing more
+        if tok is None:
+            self.close_connection = True  # the unread body must not be taken for the next request
+            return
         try:
             body = self._body()
-        except (ValueError, OSError, EOFError) as e:
+        except (ValueError, OSError, EOFError, zlib.error) as e:
+            self.close_connection = True
             return self._error(400, f"bad body: {e}")
-        tok = self._auth(write=writes)
-        if tok is None:
-            return
         org, st = tok["org"], self.app.store
         if ns is not None and not _valid_ns(ns):
             return self._error(400, "bad namespace")

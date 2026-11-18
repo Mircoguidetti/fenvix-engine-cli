@@ -372,3 +372,14 @@ def test_candidates_are_checked_when_the_project_looks_as_the_tests_saw_it(servi
     shutil.rmtree(proj / ".detpy")  # machine 2 checks out a clean tree
     _, o2, rep2 = machine_run(pytester, tmp_path, url, t["a"], "2", *args)
     assert o2["cache"]["reused"] == 1 and rep2["pull_proven"] == 1
+
+
+def test_service_refuses_a_gzip_bomb_from_a_known_token_while_inflating(service):
+    svc, t = service
+    body = gzip.compress(b"0" * (cs.MAX_BODY + 1024))  # inflates past the limit
+    req = urllib.request.Request(f"{svc.url}/v1/blobs/put", data=body, method="POST",
+                                 headers={"Authorization": f"Bearer {t['a']}", "Content-Encoding": "gzip",
+                                          "Content-Type": "application/json"})
+    with pytest.raises(urllib.error.HTTPError) as ei:
+        urllib.request.urlopen(req, timeout=60)
+    assert ei.value.code == 400 and b"too large" in ei.value.read()
