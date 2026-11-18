@@ -1772,6 +1772,133 @@ impl CaptureCore {
         out
     }
 
+    fn child_ignored(slf: &Bound<'_, Self>, p: Bound<'_, PyString>) -> PyResult<bool> {
+        let me = slf.get();
+        let l = me.logdir_w(slf.as_any())?;
+        Ok(me.child_ignored_w(l.as_deref(), &w_of(&p)?))
+    }
+
+    #[pyo3(signature = (ctx, p, kind = "f"))]
+    fn child_read(slf: &Bound<'_, Self>, ctx: usize, p: Bound<'_, PyString>, kind: &str) -> PyResult<()> {
+        let me = slf.get();
+        let l = me.logdir_w(slf.as_any())?;
+        me.child_read_w(slf.py(), l.as_deref(), ctx, &w_of(&p)?, kind.as_bytes().first().copied().unwrap_or(b'f'))
+    }
+
+    fn _credit_child(slf: &Bound<'_, Self>, ctx: usize, sp: &Bound<'_, PyAny>, res: &Bound<'_, PyAny>) -> PyResult<()> {
+        let me = slf.get();
+        let l = me.logdir_w(slf.as_any())?;
+        me.credit_child_impl(slf.py(), l.as_deref(), ctx, sp, res)
+    }
+
+    /// Turn the strace logs of the followed children into inputs (or refusals) of the contexts that started them.
+    ///
+    /// A log is complete once the detached tracer wrote its process's exit, normally within milliseconds of the
+    /// exit; a process still running (a daemon, multiprocessing's resource tracker) never completes: it is waited
+    /// for once, briefly (1 s, then 50 ms), within a 3 s budget. A log whose tracer is gone is final now and is not
+    /// waited for, but its wait is charged to the budget as if it had been (the decisions about the other children
+    /// stay those of waiting). Every test, fixture or collection context that ran during a tree's lifetime gets the
+    /// tree's inputs and refusals (review R-009 F1), as the context that started it does.
+    fn collect_children(slf: &Bound<'_, Self>) -> PyResult<()> {
+        let py = slf.py();
+        let me = slf.get();
+        let fo = slf.getattr(intern!(py, "follower"))?;
+        if fo.is_none() {
+            return Ok(());
+        }
+        let follow = py.import("detpy.follow")?;
+        let logdir_s = fo.getattr("logdir")?;
+        let logdir = w_any(&logdir_s)?;
+        let fsenc = os_mod(py)?.getattr("fsencode")?;
+        let logdir_fs: Vec<u8> = fsenc.call1((&logdir_s,))?.extract()?;
+        let t0 = std::time::Instant::now();
+        let mono = || t0.elapsed().as_secs_f64();
+        let mut budget_end = mono() + 3.0;
+        let mut wait = 1.0f64;
+        let alive: Option<HashSet<String>> = {
+            let mut probe = String::from_utf8_lossy(&logdir_fs).into_owned();
+            probe.push('/');
+            if std::str::from_utf8(&logdir_fs).is_ok() {
+                crate::sysmon::tracer_prefixes(py, &probe).map(|v| v.into_iter().collect())
+            } else {
+                None
+            }
+        };
+        let logs_of = |prefix: &std::ffi::OsString| -> PyResult<Vec<std::ffi::OsString>> {
+            crate::follow::follow_logs(py, prefix.clone())
+        };
+        let all_complete = |logs: &[std::ffi::OsString]| -> PyResult<bool> {
+            for f in logs {
+                if !crate::follow::follow_complete(py, f.clone())? {
+                    return Ok(false);
+                }
+            }
+            Ok(true)
+        };
+        let wait_logs = |prefix: &std::ffi::OsString, timeout: f64| -> PyResult<Vec<std::ffi::OsString>> {
+            let t_end = mono() + timeout;
+            loop {
+                let logs = logs_of(prefix)?;
+                if !logs.is_empty() && all_complete(&logs)? {
+                    return Ok(logs);
+                }
+                if mono() > t_end {
+                    return Ok(logs);
+                }
+                py.detach(|| std::thread::sleep(std::time::Duration::from_millis(10)));
+            }
+        };
+        for sp in fo.getattr("spawns")?.try_iter()? {
+            let sp = sp?;
+            lock(&me.st).children += 1;
+            let timeout = 0.0f64.max(wait.min(budget_end - mono()));
+            let prefix_s = sp.getattr("prefix")?;
+            let prefix: std::ffi::OsString = {
+                let b: Vec<u8> = fsenc.call1((&prefix_s,))?.extract()?;
+                std::ffi::OsStr::from_bytes(&b).to_os_string()
+            };
+            let live = match &alive {
+                None => true,
+                Some(a) => prefix_s.cast::<PyString>()?.to_cow().map(|c| a.contains(c.as_ref())).unwrap_or(false),
+            };
+            let logs = if live {
+                wait_logs(&prefix, timeout)?
+            } else {
+                let l = wait_logs(&prefix, 0.0)?;
+                if !(!l.is_empty() && all_complete(&l)?) {
+                    budget_end -= timeout;
+                }
+                l
+            };
+            if !logs.is_empty() && !all_complete(&logs)? {
+                wait = 0.05;
+            }
+            let ctx: usize = sp.getattr("ctx")?.extract()?;
+            if logs.is_empty() {
+                let d = w_any(&sp.getattr("detail")?)?;
+                me.flag_impl(py, ctx, b"spawn", Some(cat(&[&d, b" [not followed: no trace log]"])))?;
+                continue;
+            }
+            let fsdec = os_mod(py)?.getattr("fsdecode")?;
+            let logs_py: Vec<Bound<'_, PyAny>> = logs.iter().map(|l| fsdec.call1((l.clone(),))).collect::<PyResult<_>>()?;
+            let res = follow.getattr("parse")?.call1((PyList::new(py, &logs_py)?, sp.getattr("cwd")?))?;
+            for f in &logs {
+                let _ = std::fs::remove_file(f);
+            }
+            let bad = res.getattr("bad")?;
+            let still = bad.is_truthy()? && w_any(&bad).map(|b| contains(&b, b"still running")).unwrap_or(false);
+            let t0r: Option<f64> = res.getattr("t0")?.extract()?;
+            let t1r: Option<f64> = if still { Some(f64::INFINITY) } else { res.getattr("t1")?.extract()? };
+            let mut others: Vec<usize> = me._contexts_during(t0r, t1r).into_iter().filter(|&c| c != ctx).collect();
+            others.sort_unstable();
+            for c in std::iter::once(ctx).chain(others) {
+                me.credit_child_impl(py, Some(&logdir), c, &sp, &res)?;
+            }
+        }
+        let _ = std::fs::remove_dir(std::ffi::OsStr::from_bytes(&logdir_fs));
+        Ok(())
+    }
+
     /// Whether `ctx` already has `flag` (for the Python callers that build a detail).
     fn has_flag(&self, ctx: usize, flag: Bound<'_, PyString>) -> PyResult<bool> {
         let f = w_of(&flag)?;
@@ -1782,6 +1909,139 @@ impl CaptureCore {
     fn why_of<'py>(&self, py: Python<'py>, ctx: usize, flag: Bound<'py, PyString>) -> PyResult<Option<Bound<'py, PyAny>>> {
         let f = w_of(&flag)?;
         lock(&self.st).why.get(&(ctx, f)).map(|d| py_of(py, d)).transpose()
+    }
+}
+
+fn w_any(o: &Bound<'_, PyAny>) -> PyResult<W> {
+    w_of(o.cast::<PyString>()?)
+}
+
+fn cat(parts: &[&[u8]]) -> W {
+    parts.concat()
+}
+
+impl CaptureCore {
+    /// `Capture.child_ignored(p)`: paths a followed child touches that are not inputs (bytecode caches, pytest's
+    /// temporary directory, the follower's own logs, this interpreter's standard library and distributions).
+    fn child_ignored_w(&self, logdir: Option<&[u8]>, p: &[u8]) -> bool {
+        if contains(p, b"/__pycache__/") {
+            return true;
+        }
+        let st = lock(&self.st);
+        if let Some(bt) = &st.basetemp {
+            if p == bt.as_slice() || (p.starts_with(bt) && p.get(bt.len()) == Some(&b'/')) {
+                return true;
+            }
+        }
+        if let Some(l) = logdir {
+            if p.starts_with(l) {
+                return true;
+            }
+        }
+        for d in &st.site_dirs {
+            if p.starts_with(d) {
+                return !st.dist_info_ok.iter().any(|x| p.starts_with(x));
+            }
+        }
+        st.stdlib_dirs.iter().any(|d| p.starts_with(d)) || p == b"/dev/null"
+    }
+
+    fn logdir_w(&self, slf: &Bound<'_, PyAny>) -> PyResult<Option<W>> {
+        let fo = slf.getattr(intern!(slf.py(), "follower"))?;
+        if fo.is_none() {
+            return Ok(None);
+        }
+        Ok(Some(w_any(&fo.getattr("logdir")?)?))
+    }
+
+    fn child_read_w(&self, py: Python<'_>, logdir: Option<&[u8]>, ctx: usize, p: &[u8], kind: u8) -> PyResult<()> {
+        if !self.child_ignored_w(logdir, p) {
+            self.read_impl(py, ctx, p, kind)?;
+        }
+        Ok(())
+    }
+
+    /// `Capture._credit_child(ctx, sp, res)`: the inputs, writes and refusals of one followed process tree, as
+    /// inputs of context `ctx`.
+    fn credit_child_impl(&self, py: Python<'_>, logdir: Option<&[u8]>, ctx: usize, sp: &Bound<'_, PyAny>, res: &Bound<'_, PyAny>) -> PyResult<()> {
+        let detail = w_any(&sp.getattr("detail")?)?;
+        let opt = |name: &str| -> PyResult<Option<W>> {
+            let v = res.getattr(name)?;
+            if v.is_truthy()? { Ok(Some(w_any(&v)?)) } else { Ok(None) }
+        };
+        if let Some(bad) = opt("bad")? {
+            self.flag_impl(py, ctx, b"spawn", Some(cat(&[&detail, b" [not followed: ", &bad, b"]"])))?;
+        }
+        if let Some(net) = opt("net")? {
+            self.flag_impl(py, ctx, b"spawn", Some(cat(&[&detail, b" [network: ", &net, b"]"])))?;
+        }
+        if let Some(clock) = opt("clock")? {
+            if !sp.getattr("clock_exempt")?.is_truthy()? {
+                self.flag_impl(py, ctx, b"spawn", Some(cat(&[&detail, b" [", &clock, b"]"])))?;
+            }
+        }
+        if let Some(u) = opt("unshimmed")? {
+            self.flag_impl(
+                py,
+                ctx,
+                b"spawn",
+                Some(cat(&[&detail, b" [clock not observable: ", &u, b" ran without the clock shim]"])),
+            )?;
+        }
+        let entropy: i64 = res.getattr("entropy")?.extract()?;
+        lock(&self.st).child_entropy += entropy;
+        let exe = w_any(&sp.getattr("exe")?)?;
+        self.child_read_w(py, logdir, ctx, &exe, b'f')?;
+        let pids = res.getattr("pids")?;
+        let mut own: HashSet<W> = HashSet::new();
+        for item in res.getattr("ops")?.try_iter()? {
+            let item = item?;
+            let t = item.cast::<PyTuple>()?;
+            let op = w_any(&t.get_item(0)?)?;
+            let po = t.get_item(1)?;
+            let ps = po.cast::<PyString>()?;
+            let p = w_of(ps)?;
+            match crate::follow::follow_special(ps, &pids)? {
+                Some("skip") => continue,
+                Some("entropy") => {
+                    lock(&self.st).child_entropy += 1;
+                    continue;
+                }
+                Some("proc") => {
+                    if op == b"d" || (op != b"w" && !exists(&p)) {
+                        self.read_impl(py, ctx, &p, if op == b"d" { b'd' } else { b'f' })?;
+                    } else {
+                        self.flag_impl(py, ctx, b"spawn", Some(cat(&[&detail, b" [reads ", &p, b"]"])))?;
+                    }
+                    continue;
+                }
+                _ => {}
+            }
+            if op == b"w" {
+                own.insert(p.clone());
+                if !self.child_ignored_w(logdir, &p) {
+                    self.wrote_impl(ctx, &p);
+                }
+                continue;
+            }
+            if own.contains(&p) {
+                continue; // the tree wrote it first: internal
+            }
+            if op == b"x" {
+                if let Some(fsb) = fs_bytes(&p) {
+                    let path = std::ffi::OsString::from(std::ffi::OsStr::from_bytes(&fsb));
+                    if let Some(interp) = crate::follow::follow_shebang(py, path)? {
+                        let s = os_mod(py)?.getattr("fsdecode")?.call1((interp,))?;
+                        let iw = w_any(&s)?;
+                        if !iw.is_empty() {
+                            self.child_read_w(py, logdir, ctx, &iw, b'f')?;
+                        }
+                    }
+                }
+            }
+            self.child_read_w(py, logdir, ctx, &p, if op == b"d" { b'd' } else { b'f' })?;
+        }
+        Ok(())
     }
 }
 
