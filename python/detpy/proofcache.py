@@ -151,6 +151,8 @@ class Capture:
         self.flags: dict[int, set] = {}  # "net", "spawn", "proc", "time", "entropy", "netrec", "foreign:<path>"
         self.why: dict[tuple, str] = {}  # (context, flag) -> first occurrence (what and where), for the reports
         self.writers: dict[str, set] = {}  # abs path -> context indices that wrote it
+        # abs path -> whether it existed at its first exclusive create in the session, if nothing had written it
+        self.excl_pre: dict[str, bool] = {}
         self._hashed: dict[str, str] = {}  # abs path -> dep at first read in the session
         self.loaded_order: list[tuple[str, int]] = []  # (rel module file, index of the test after which it was seen)
         self._seen_mods: set[str] = set()
@@ -412,6 +414,13 @@ class Capture:
             return
         if kind == "m":
             kind = "f"  # a machine identity file under /sys read on purpose (uuid.getnode): its content is the input
+        elif kind == "a":
+            # a child's exclusive create that succeeded: the path did not exist then (its state now is irrelevant)
+            if p in self.writers:
+                self.flags.setdefault(ctx, set()).add("rw:" + p)
+            else:
+                self.data.setdefault(ctx, {})[self._key(p)] = "missing"
+            return
         elif p.startswith(("/proc/", "/sys/", "/dev/")) and not p.startswith("/dev/shm/") \
                 and (kind != "d" and os.path.exists(p)):
             # the content of a pseudo-file (process state, kernel tunables, a device) is not a file's content;
@@ -460,19 +469,26 @@ class Capture:
             if isinstance(mode, str):
                 reads = "r" in mode or "+" in mode
                 writes = any(ch in mode for ch in "wax+")
-                trunc = "w" in mode or "x" in mode  # "x": created here, nothing to read
+                excl = "x" in mode
+                trunc = "w" in mode or excl
             else:
                 acc = (flags or 0) & _O_ACC
                 reads = acc in (os.O_RDONLY, os.O_RDWR)
                 writes = acc in (os.O_WRONLY, os.O_RDWR) or bool((flags or 0) & os.O_CREAT)
-                # O_CREAT|O_EXCL (NamedTemporaryFile, mkstemp): the file did not exist, so it is an output only
-                trunc = bool((flags or 0) & os.O_TRUNC) or (flags or 0) & (os.O_CREAT | os.O_EXCL) == (
-                    os.O_CREAT | os.O_EXCL)
+                excl = (flags or 0) & (os.O_CREAT | os.O_EXCL) == (os.O_CREAT | os.O_EXCL)
+                trunc = bool((flags or 0) & os.O_TRUNC) or excl
             kind = self._caller_kind()
             if kind in ("import", "infra"):
                 return
             ctx = self._cur()
-            if reads and not trunc:
+            if excl:
+                # review R-009b R2: an exclusive create (a lock or pid file, mkstemp, mode "x") succeeds or fails on
+                # whether the path exists, so that is an input: "missing", or the content it fails on. (The open has
+                # not happened yet.) The first one in the session is remembered for the reuse decision (_decide).
+                if p not in self.writers and p not in self.excl_pre:
+                    self.excl_pre[p] = os.path.lexists(p)
+                self.read(ctx, p, "f")
+            elif reads and not trunc:
                 self.read(ctx, p, "f")
             if writes:
                 self.wrote(ctx, p)
@@ -716,6 +732,10 @@ class Capture:
                 continue
             if p in own:
                 continue  # the tree wrote it first: internal
+            if op == "a":
+                if not self.child_ignored(p):
+                    self.read(ctx, p, "a")
+                continue
             if op == "x":
                 interp = follow.shebang(p)
                 if interp:
@@ -1090,6 +1110,14 @@ class ProofCachePlugin:
         for (path, content), f in zip(changed, facts):
             if f is not None:
                 store.set_fresh(path, content, f[0], f[1], f[2], f[3])
+        # review R-009b R2: a path this session's code (import time, collection) created with an exclusive create
+        # that found it missing: the recorded "missing" is compared with what that code saw, not with the file it
+        # then created (a NamedTemporaryFile held in a module global); see the stale check in _record_all
+        self.excl_seeded = {}
+        for p, present in cap.excl_pre.items():
+            if not present and p in cap.writers:
+                store.observed(cap._key(p), "missing")
+                self.excl_seeded[p] = set(cap.writers[p])
         rng = random.Random(f"detpy-cache-verify:{self.run_id}")
         for i, item in enumerate(items):
             nid = item.nodeid
@@ -1361,7 +1389,12 @@ class ProofCachePlugin:
             written.setdefault(p, set()).update(w)
         # persisted for the next sessions: paths in the repository only (temporary files have fresh names)
         store.add_written({p: w for p, w in session_written.items() if not os.path.isabs(p)})
-        # results reused in this session whose input files code of this session then wrote: drop them
+        # results reused in this session whose input files code of this session then wrote: drop them (not a path
+        # whose recorded absence was compared with what this session's code saw before it created it, when nothing
+        # wrote it after the decision)
+        for p, w in getattr(self, "excl_seeded", {}).items():
+            if cap.writers.get(p) == w:
+                session_written.pop(cap._key(p), None)
         for nid in self.hits:
             if not session_written:
                 break

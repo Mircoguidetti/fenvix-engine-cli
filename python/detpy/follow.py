@@ -137,7 +137,8 @@ class Spawn:
 
 
 class Result:
-    """What one spawn's process tree did: ordered (op, path) with op r = probe/read, d = listing, w = write."""
+    """What one spawn's process tree did: ordered (op, path) with op r = probe/read, d = listing, w = write,
+    a = an exclusive create that succeeded (the path did not exist)."""
 
     def __init__(self):
         self.ops: list[tuple[str, str]] = []
@@ -589,7 +590,9 @@ def _parse_one(lines: list[str], cwd: str, res: Result, times: list | None = Non
             if not ok or not wr:
                 ops.append(("r", p))
             else:
-                if "O_RDWR" in flags and "O_TRUNC" not in flags and not ("O_CREAT" in flags and "O_EXCL" in flags):
+                if "O_CREAT" in flags and "O_EXCL" in flags:
+                    ops.append(("a", p))  # review R-009b R2: it succeeded, so the path did not exist: an input
+                elif "O_RDWR" in flags and "O_TRUNC" not in flags:
                     ops.append(("r", p))
                 ops.append(("w", p))
                 _wrote_at(res, p, t)

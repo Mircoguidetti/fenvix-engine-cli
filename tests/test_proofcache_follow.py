@@ -674,6 +674,25 @@ def test_exclusive_create_at_import_does_not_drop_every_reuse(pytester, run_cach
         assert not data["cache"]["stale_reuses"]
 
 
+
+def test_child_exclusive_create_is_an_input(pytester, run_cache):
+    # review R-009b R2, in a child: a successful O_CREAT|O_EXCL open means the path did not exist
+    project(pytester, **{"test_m.py": """
+        import subprocess, sys
+
+        CODE = "import os; os.close(os.open('app.lock', os.O_CREAT | os.O_EXCL | os.O_WRONLY)); os.remove('app.lock')"
+
+        def test_lock():
+            subprocess.run([sys.executable, "-c", CODE], check=True)
+        """})
+    run_cache()
+    _, reused, _ = run_cache()
+    assert reused == ids("test_lock")
+    (pytester.path / "app.lock").write_text("")
+    r, reused, _ = run_cache()
+    assert reused == set()
+    r.assert_outcomes(failed=1)
+
 def test_child_netlink_is_network(pytester, run_cache):
     # `ip link` (uuid.getnode's fallback) asks the kernel over netlink: bind, then send() without an address
     project(pytester, **{"test_m.py": """
