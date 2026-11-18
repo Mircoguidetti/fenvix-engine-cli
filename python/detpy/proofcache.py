@@ -155,6 +155,13 @@ class Capture:
         self.import_ctx = -1  # pseudo context for import-time data/env/flags
         self.active = False
         self._socks: dict | None = None  # fd -> socket inode at the last scan
+        # start-up: from the start until the first collection, fixture or test context. Popen objects started then
+        # (with the spawn detail) are checked when it ends: see _end_startup
+        self.startup = True
+        self._startup_popens: list = []
+        # start-up enumerations of the environment ((enumerating frame, context)): one made by the frame that then
+        # starts a process with an explicit env is that process's input (platform._syscmd_file: dict(os.environ, ...))
+        self._startup_env_all: list = []
 
     # -- contexts -------------------------------------------------------------
     def ctx_index(self, name: str) -> int:
@@ -167,6 +174,8 @@ class Capture:
     def switch(self, name: str) -> None:
         if name == self.ctx:
             return
+        if self.startup and name not in _GLOBAL_CTX:
+            self._end_startup()
         if self.active:
             # startup sockets (pytest, plugins, the runner) are the baseline; the scan's own reads are not inputs
             self.active = False
@@ -189,6 +198,19 @@ class Capture:
             for code in hot:
                 set_local(tool, code, 0)
                 set_local(tool, code, ev[id(code)])
+
+    def _end_startup(self) -> None:
+        """A process started at start-up, outside every test, is not an input of the tests once it has finished and
+        its pipes are closed: nothing can talk to it any more. One still running (or with a pipe still open) when the
+        tests start may be talked to by any test: the start-up context keeps the spawn, as before."""
+        self.startup = False
+        for p, detail in self._startup_popens:
+            pipes = (p.stdin, p.stdout, p.stderr)
+            if p.returncode is None or any(f is not None and not f.closed for f in pipes):
+                self.flag(0, "spawn", detail + ", still running when the tests start")
+        for _frame, ctx in self._startup_env_all:  # not handed to a start-up process: inputs of every test
+            self.env.setdefault(ctx, set()).add("*")
+        self._startup_popens = self._startup_env_all = []
 
     def _cur(self) -> int:
         if self.rec is not None and self.rec.import_depth:
@@ -490,7 +512,16 @@ class Capture:
                 # dynamic linker's cache: that file is the input
                 self.read(self._cur(), _LD_SO_CACHE, "f")
                 return
-            self.flag(self._cur(), "spawn", _spawn_detail(event, args))
+            ctx = self._cur()
+            if self.startup and event == "subprocess.Popen" and self.ctx_names[ctx] in _GLOBAL_CTX:
+                p = _popen_being_started()
+                if p is not None:  # start-up (pytest-benchmark's `file -b`): decided when start-up ends
+                    self._startup_popens.append((p, _spawn_detail(event, args)))
+                    if len(args) > 3 and args[3] is not None:
+                        spawner = _outer_frame(_SUBPROCESS_FILE)
+                        self._startup_env_all = [x for x in self._startup_env_all if x[0] is not spawner]
+                    return
+            self.flag(ctx, "spawn", _spawn_detail(event, args))
         else:
             idx = _WRITE_EVENTS.get(event)
             if idx is None or self._caller_kind() == "infra":
@@ -582,6 +613,13 @@ def _note_env(key) -> None:
     cap = _ENV_CAPTURE
     if cap is None or not cap.active or not _env_caller_is_user():
         return
+    if key == "*" and cap.startup:
+        ctx = cap._cur()
+        if cap.ctx_names[ctx] in _GLOBAL_CTX:  # start-up, not import time: decided at the next start-up Popen
+            f = _outer_frame(_ENV_ITER_FILES)
+            if f is not None:
+                cap._startup_env_all.append((f, ctx))
+                return
     cap.env_read(os.fsdecode(key) if isinstance(key, (str, bytes)) else repr(key))
 
 
@@ -1288,6 +1326,38 @@ def _is_find_library_ldconfig(args) -> bool:
             return True
         f = f.f_back
     return False
+
+
+_SUBPROCESS_FILE = ("subprocess.py",)
+_ENV_ITER_FILES = ("<frozen _collections_abc>", "_collections_abc.py", "<frozen os>", "os.py")
+
+
+def _outer_frame(skip: tuple):
+    """The innermost calling frame outside detpy and the files named in ``skip`` (the code that enumerates the
+    environment, or that starts a process)."""
+    f = sys._getframe(2)
+    while f is not None:
+        fn = f.f_code.co_filename
+        if not fn.startswith(_DETPY_DIR) and not (fn in skip or os.path.basename(fn) in skip):
+            return f
+        f = f.f_back
+    return None
+
+
+def _popen_being_started():
+    """The ``subprocess.Popen`` whose ``__init__`` raised the ``subprocess.Popen`` audit event (else None)."""
+    import subprocess
+
+    f = sys._getframe(2)
+    for _ in range(8):
+        if f is None:
+            break
+        if f.f_code.co_name in ("_execute_child", "__init__"):
+            p = f.f_locals.get("self")
+            if isinstance(p, subprocess.Popen):
+                return p
+        f = f.f_back
+    return None
 
 
 def _numeric_host(host: str) -> bool:

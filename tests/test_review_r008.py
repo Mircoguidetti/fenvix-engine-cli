@@ -198,8 +198,11 @@ def _two_machines(pytester, tmp_path, monkeypatch, token_url, files, env1, env2,
     url = f"{svc.url}/org-a/project"
     for k, v in env1.items():
         monkeypatch.setenv(k, v)
-    r1, _, _ = machine_run(pytester, tmp_path, url, token, "1")
+    r1, o1, rep1 = machine_run(pytester, tmp_path, url, token, "1")
     r1.assert_outcomes(passed=1)
+    # machine 1 must really record and push: with nothing pushed, machine 2 has nothing to reuse and the test would
+    # pass without checking anything (REPORT-3: pytest-benchmark's start-up Popen made every test uncacheable)
+    assert rep1.get("push_entries", 0) > 0, f"machine 1 pushed nothing: {o1['cache'].get('not_cached_where')}"
     for k in env1:
         monkeypatch.delenv(k, raising=False)
     for k, v in env2.items():
