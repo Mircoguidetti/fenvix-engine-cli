@@ -75,7 +75,67 @@ the failure messages; mechanism ESTIMATED where marked):
 
 ## 4. E2, E5, E6
 
-PENDING
+### E2 freeze-before-observe (actual, run 44327291710, MEASURED)
+
+`--det-freeze=on`: at the end of the test function the pages stop receiving virtual time and the final DOM and page
+random stats are taken at once (no real-time settle loop). 10 frozen replays and 5 control replays (same engine, no
+freeze) of actual's 3 targets that passed in round 2:
+
+| Target | Frozen: outcomes, fingerprints | Control: outcomes, fingerprints | First divergence (frozen) |
+|---|---|---|---|
+| "applies budget template" | 10 P, **6 fp** | 5 P, 3 fp | event #199 `page.random` (draw counts 699 vs 702) |
+| "extends after budgeting the last month" (desktop) | 10 P, **1 fp** | 5 P, **1 fp** | - |
+| "reconciles an account" | 10 P, **10 fp** | 5 P, 5 fp | event #3: `server.busy` vs `worker.seeded` (a scheduling event, at the start) |
+
+**Decision (MEASURED):** freezing the observation does not make actual's replays identical. Where they differ, the
+divergence is in the page's work before the end of the test (draw counts) or in scheduling at the start. Class A on
+actual is not only our settle loop. "extends after budgeting" already gives one fingerprint on this engine with or
+without freeze (round 2: 3 fp). The fixture test (`l2r3.test.js` E2) shows the same thing: a page that keeps ticking
+while the runner polls in real time gives 2 fingerprints in 3 runs, frozen. The cheapest next check of lockstep's core
+hypothesis is the reviewer's E3 (grants only while a runner call is in flight), not run this round.
+
+### E5 database clock under libfaketime (documenso, MEASURED)
+
+Postgres (container, same data volume) and the app server's Node process (Prisma's Rust engine lives in it) under
+libfaketime pinned to the run's epoch, `FAKETIME_DONT_FAKE_MONOTONIC=1`. Three variants, 10 `--det` replays of 2
+targets each (run 44382873510; attempts 1 and 2 failed to start Postgres under libfaketime, kept as
+`e5-documenso-attempt1/2.json`; the control comes from attempt 1, run 44327291710):
+
+| Variant | Database `now()` confirmed | FIND_DOCUMENTS non-admin | DELETE_RECIPIENT missing reason | First divergence |
+|---|---|---|---|---|
+| control (real clocks) | real time | 5 P, **5 fp** | 5 P, **5 fp** | `GET /api/auth/session-json` body |
+| start-at epoch (clock runs) | `20:02:03.27` | 10 P, **10 fp** | 10 P, **10 fp** | same |
+| frozen at epoch | `20:02:00` exactly | 10 P, **10 fp** | 10 P, **10 fp** | same |
+| epoch + 1 ms per clock call | `20:02:00.137` | 10 P, **10 fp** | 10 P, **10 fp** | same |
+
+**Decision (MEASURED):** with the database clock and the app process's clock pinned, documenso still gives a new
+fingerprint in every replay, and the first diverging event does not move. The database clock is not what makes
+documenso diverge, or not alone; round 2's class C (and its "clock shim second" proposal) rests on run-2 texts that
+showed `createdAt` differences, but those are not the first divergence under pinned clocks. What differs in
+`session-json`: PENDING (job `e5diag`, run 44389754462, two replays with the bodies kept). libfaketime itself works for
+Postgres (also checked locally on Postgres 16 in all three modes): a clock shim costs about an hour of setup, as the
+reviewer expected, but buys nothing measurable here yet.
+
+### E6 a seed space that reaches the deadlines
+
+Fixture (local, MEASURED, `l2r3.test.js` E6): a page loads data with three chained fetches and the test expects it
+within 2 s. Round 2's latency list (`0,0,0,1,5,25` chunks = max 500 ms): seeds 1-8 **all pass**. With a choice `D` that
+holds a message for 1.5 x the deadline (`--det-latency=0,0,1,5,25,D`): seed 6 fails, and its 3 replays fail with **one
+fingerprint**. So exploration can reach load-induced timeouts once the seed space reaches the deadlines.
+
+Real targets (run 44383743101, MEASURED): the two real flakes that fail without load and run in one worker:
+
+| Target (real failure) | Round-2 list, seeds 1-8 | Deadline list, seeds 1-8 | Failing seed replayed 5x | Same failure as the real one? |
+|---|---|---|---|---|
+| actual "extends after budgeting" ("Failed to navigate to the next month", 4/20 plain) | 8 P | 8 F (7 "selected-budget-month not found", 1 timeout) | 5 F, 3 fp | **no**: the hold breaks the page before the step that flakes |
+| uptime-kuma "data retention" (received "18030", 1/20 plain) | 1 P, 7 F (received "180" or "") | 8 F (field not found / "180") | 5 F, 5 fp (round-2 list), 5 F, 3 fp (deadline) | **no** |
+
+**Decision (MEASURED):** a seed space that reaches the deadlines reproduces a timeout on a fixture, but on the two real
+targets it produces failures of our own (earlier steps, other values) and never the real one. Holding any message
+blindly breaks the test at its first wait. Reproducing a real flake needs a seed space aimed at the step that flakes
+(hold only messages released after the page the failing step uses has settled, ranked by distance to the failing
+assertion), and a way to say "same failure": the failure message and location must match the plain failure.
+aggregate.py should count a seed as reproducing only then (today: any failure counts).
 
 ## 5. Step 3: the 4 non-documenso suites on this engine
 
