@@ -1,8 +1,7 @@
 {
- "run_id": "s1f",
- "note": "R-009 fix round (F1-F5 + exclusive-create fix): home-assistant 16 shards x 50 commits (same sample as s1d), structlog",
+ "run_id": "s1g",
+ "note": "R-009 fix round, second measurement: home-assistant 16 shards x 50 commits (same sample) after the netlink / uuid.getnode / find_library fixes",
  "walk": [
-  {"spec": "home-assistant", "shards": 16},
-  {"spec": "structlog"}
+  {"spec": "home-assistant", "shards": 16}
  ]
 }
