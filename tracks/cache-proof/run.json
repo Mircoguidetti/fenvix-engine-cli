@@ -1,7 +1,8 @@
 {
- "run_id": "s1e",
- "note": "step 1: attrs and isort again (both hit the 6 h job limit in s1d: Level 0 clock deadlock with hypothesis's gc callback, fixed)",
+ "run_id": "s1f",
+ "note": "R-009 fix round (F1-F5 + exclusive-create fix): home-assistant 16 shards x 50 commits (same sample as s1d), structlog",
  "walk": [
-  {"spec": "attrs"}, {"spec": "isort"}
+  {"spec": "home-assistant", "shards": 16},
+  {"spec": "structlog"}
  ]
 }
