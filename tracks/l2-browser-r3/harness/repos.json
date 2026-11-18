@@ -93,5 +93,20 @@
     "det": 2
    }
   }
+ },
+ "sveltekit": {
+  "repo": "sveltejs/kit",
+  "ref": "7a1296872cde5e807832f7714c635df956d37643",
+  "node": "24",
+  "why": "new Playwright project (round 3, E1): CI retries 2 and a flaky-test reporter in the repository; basics js shard 1/2, 4 workers",
+  "ci_retries": 2,
+  "ci_trace": "retain-on-failure",
+  "r3": {
+   "e1": {
+    "plain": 20,
+    "stress": 10,
+    "det": 2
+   }
+  }
  }
 }
