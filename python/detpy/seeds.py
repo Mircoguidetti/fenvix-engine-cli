@@ -10,6 +10,11 @@
 * ``os.urandom`` / ``SystemRandom`` / ``uuid4`` / ``secrets`` are *observed*
   (their output is digested into the fingerprint) but not controlled, unless
   ``--det-urandom`` is given.
+
+The recording stand-ins (``random.random`` ... ``random.shuffle``, ``random.randbytes``, ``random.seed``,
+``random.Random.seed``, ``os.urandom`` / ``random._urandom``, ``numpy.random.default_rng``) and the per-test counter
+of derived seeds are Rust (``_core.stand_in``, ``crates/detpy-py/src/seeds.rs``): a draw runs no detpy Python frame.
+The Python original is ``tests/rust_hotpaths_ref/_ref_l0_seeds.py``.
 """
 
 from __future__ import annotations
@@ -20,73 +25,22 @@ import random
 import sys
 
 from . import _core, _state
-from ._patch import Patcher, disguise
+from ._patch import Patcher
 
 _real_seed = random.Random.seed
 _real_urandom = os.urandom
-_counter = {"n": 0}
-_urandom_rng: random.Random | None = None
+_urandom_rng: random.Random | None = None  # read by the os.urandom stand-in (--det-urandom)
 
 _NUMERIC = ("random", "uniform", "randint", "randrange", "getrandbits", "gauss", "normalvariate",
             "lognormvariate", "expovariate", "vonmisesvariate", "gammavariate", "triangular",
             "betavariate", "paretovariate", "weibullvariate", "binomialvariate")
 _SEQUENCE = ("choice", "choices", "sample", "shuffle")
 
-
-def _key(tag: str) -> str:
-    return f"{_state.STATE.nodeid or '<session>'}\0{tag}\0{_counter['n']}"
-
-
-def _seed(self, a=None, version=2):
-    if a is None and not isinstance(self, random.SystemRandom):
-        a = _core.derive_seed(_state.STATE.config.seed, _key("Random"))
-        _counter["n"] += 1
-        _state.record("random", "Random.seed(None)", str(a))
-    return _real_seed(self, a, version)
-
-
-def _wrap_numeric(name, fn):
-    def wrapper(*args, **kwargs):
-        value = fn(*args, **kwargs)
-        _state.record("random", f"random.{name}", repr(value))
-        return value
-
-    wrapper.__doc__ = fn.__doc__
-    wrapper.__wrapped__ = fn
-    return disguise(wrapper, "random", name)
-
-
-def _wrap_sequence(name, fn):
-    def wrapper(*args, **kwargs):
-        value = fn(*args, **kwargs)
-        n = len(args[0]) if args and hasattr(args[0], "__len__") else -1
-        _state.record("random", f"random.{name}", f"n={n}")
-        return value
-
-    wrapper.__doc__ = fn.__doc__
-    wrapper.__wrapped__ = fn
-    return disguise(wrapper, "random", name)
-
-
-def _module_seed(fn):
-    def seed(a=None, version=2):
-        if a is None:
-            a = _core.derive_seed(_state.STATE.config.seed, _key("random.seed"))
-            _counter["n"] += 1
-        _state.record("random", "random.seed", repr(a) if isinstance(a, (int, str)) else type(a).__name__)
-        return fn(a, version)
-
-    seed.__wrapped__ = fn
-    return disguise(seed, "random", "seed")
-
-
-def _urandom(n):
-    if _urandom_rng is not None:
-        data = _urandom_rng.randbytes(n)
-    else:
-        data = _real_urandom(n)
-    _state.record("entropy", "os.urandom", f"{n}:{_core.digest(data)}")
-    return data
+# Random.seed(self, a=None, version=2): a seed derived from the test and the counter when ``a`` is None.
+_seed = _core.stand_in("random_seed", globals(), "random", "seed", qualname="Random.seed", doc=_real_seed.__doc__,
+                       wrapped=_real_seed, fname="_seed")
+# os.urandom(n) (random._urandom: SystemRandom, secrets), from _urandom_rng under --det-urandom.
+_urandom = _core.stand_in("urandom", globals(), "os", "urandom", wrapped=_real_urandom)
 
 
 def install(patcher: Patcher, control_urandom: bool) -> None:
@@ -95,22 +49,18 @@ def install(patcher: Patcher, control_urandom: bool) -> None:
     inst = random._inst
     for name in _NUMERIC:
         if hasattr(random, name):
-            patcher.set(random, name, _wrap_numeric(name, getattr(inst, name)))
+            fn = getattr(inst, name)
+            patcher.set(random, name, _core.stand_in("numeric", fn, "random", name, doc=fn.__doc__))
     for name in _SEQUENCE:
         if hasattr(random, name):
-            patcher.set(random, name, _wrap_sequence(name, getattr(inst, name)))
+            fn = getattr(inst, name)
+            patcher.set(random, name, _core.stand_in("sequence", fn, "random", name, doc=fn.__doc__))
     if hasattr(inst, "randbytes"):
-        rb = inst.randbytes
-
-        def randbytes(n):
-            data = rb(n)
-            _state.record("random", "random.randbytes", _core.digest(data))
-            return data
-
-        patcher.set(random, "randbytes", disguise(randbytes, "random", "randbytes"))
-    patcher.set(random, "seed", _module_seed(inst.seed))
-    patcher.set(os, "urandom", disguise(_urandom, "os", "urandom"))
-    patcher.set(random, "_urandom", _urandom)  # SystemRandom / secrets
+        patcher.set(random, "randbytes", _core.stand_in("randbytes", inst.randbytes, "random", "randbytes"))
+    patcher.set(random, "seed", _core.stand_in("module_seed", inst.seed, "random", "seed"))
+    patcher.set(os, "urandom", _urandom)
+    patcher.set(random, "_urandom", _core.stand_in("urandom", globals(), "random", "_urandom", wrapped=_real_urandom,
+                                                   fname="urandom"))
     if control_urandom:
         _urandom_rng = random.Random()
         _real_seed(_urandom_rng, _core.derive_seed(_state.STATE.config.seed, "<urandom>"))
@@ -128,25 +78,13 @@ def uninstall() -> None:
     _urandom_rng = None
 
 
-def _numpy_default_rng(real):
-    def default_rng(seed=None):
-        if seed is None:
-            seed = _core.derive_seed(_state.STATE.config.seed, _key("default_rng"))
-            _counter["n"] += 1
-            _state.record("random", "numpy.default_rng(None)", str(seed))
-        return real(seed)
-
-    default_rng.__wrapped__ = real
-    return disguise(default_rng, "numpy.random", "default_rng")
-
-
 _numpy_patched: list = []
 
 
 def start_test(patcher: Patcher, nodeid: str) -> None:
     """Re-seed every generator for ``nodeid``."""
     base = _state.STATE.config.seed
-    _counter["n"] = 0
+    _core.seeds_reset_counter()
     s = _core.derive_seed(base, nodeid)
     _real_seed(random._inst, s)
     if _urandom_rng is not None:
@@ -160,7 +98,8 @@ def start_test(patcher: Patcher, nodeid: str) -> None:
         try:
             np.random.seed(s & 0xFFFFFFFF)
             if not _numpy_patched and hasattr(np.random, "default_rng"):
-                patcher.set(np.random, "default_rng", _numpy_default_rng(np.random.default_rng))
+                real = np.random.default_rng
+                patcher.set(np.random, "default_rng", _core.stand_in("default_rng", real, "numpy.random", "default_rng"))
                 _numpy_patched.append(True)
         except Exception:  # pragma: no cover - exotic numpy builds
             pass

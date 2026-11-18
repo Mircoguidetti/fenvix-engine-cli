@@ -79,55 +79,18 @@ def refresh(rootdir: str | None = None) -> None:
     _core.l0_sites_cleared()
 
 
-def norm_path(path: object) -> str:
-    """Machine independent rendering of a filesystem path argument."""
-    if isinstance(path, int):
-        return "<fd>"
-    if path is None:
-        return "."
-    try:
-        s = os.fsdecode(os.fspath(path))  # type: ignore[arg-type]
-    except TypeError:
-        return f"<{type(path).__name__}>"
-    if not s:
-        s = _real_getcwd()
-    elif not os.path.isabs(s):
-        s = os.path.normpath(os.path.join(_real_getcwd(), s))
-    else:
-        s = os.path.normpath(s)
-    return _shorten(s)
+# norm_path(path): machine independent rendering of a filesystem path argument (an int: "<fd>", None: ".", not a
+# path: "<TypeName>"; else made absolute against _real_getcwd() and normalised, then shortened); _shorten(s): an
+# absolute path relative to the first of pytest's basetemp (provider above), _rootdir, _site_dirs, _stdlib_dirs,
+# the temporary directory (pytest's numbered directories renamed) and the home directory that contains it. In Rust
+# (``crates/detpy-py/src/fsorder.rs``), reading the globals above at every call; the Python original is
+# ``tests/rust_hotpaths_ref/_ref_l0_sites_norm.py``.
+norm_path = _core.l0_norm_path
+_shorten = _core.l0_shorten
 
 
 def _under(path: str, base: str) -> bool:
     return path == base or path.startswith(base + os.sep)
-
-
-def _rel(path: str, base: str) -> str:
-    """Relative path of an absolute ``path`` under ``base``, by string only
-    (os.path.relpath would call os.getcwd)."""
-    return "." if path == base else path[len(base) + 1:]
-
-
-def _shorten(s: str) -> str:
-    if _basetemp_provider is not None:
-        bt = _basetemp_provider()
-        if bt and _under(s, bt):
-            return "<basetemp>/" + _rel(s, bt).replace(os.sep, "/")
-    if _rootdir and _under(s, _rootdir):
-        rel = _rel(s, _rootdir)
-        return rel.replace(os.sep, "/")
-    for d in _site_dirs:
-        if _under(s, d):
-            return "<site>/" + _rel(s, d).replace(os.sep, "/")
-    for d in _stdlib_dirs:
-        if _under(s, d):
-            return "<stdlib>/" + _rel(s, d).replace(os.sep, "/")
-    s = _PYTEST_TMP.sub("pytest-of-U/pytest-N", s)
-    if _under(s, _TMP):
-        return "<tmp>/" + _rel(s, _TMP).replace(os.sep, "/")
-    if _HOME and _HOME != "/" and _under(s, _HOME):
-        return "~/" + _rel(s, _HOME).replace(os.sep, "/")
-    return s.replace(os.sep, "/")
 
 
 def _classify(filename: str) -> tuple[str, str]:

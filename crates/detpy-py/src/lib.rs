@@ -20,6 +20,11 @@ mod precompile;
 mod proofcache;
 mod sysmon;
 
+// Level 0 seeds and filesystem order
+mod fsorder;
+mod seeds;
+mod standin;
+
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     // A panic while holding the lock must not make every later call fail.
     m.lock().unwrap_or_else(|e| e.into_inner())
@@ -272,5 +277,9 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     capture::register(m)?;
     precompile::register(m)?;
     follow::register(m)?;
+    // Level 0 seeds and filesystem order
+    standin::register(m)?;
+    seeds::register(m)?;
+    fsorder::register(m)?;
     Ok(())
 }

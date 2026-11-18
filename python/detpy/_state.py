@@ -90,9 +90,9 @@ def digest(data: bytes) -> str:
     return _core.digest(data)
 
 
-def digest_names(names: list) -> str:
-    parts = [n if isinstance(n, bytes) else str(n).encode("utf-8", "surrogateescape") for n in names]
-    return _core.digest(b"\0".join(parts))
+# digest_names(names): digest of the names (bytes as they are, others str(n) encoded "utf-8" / "surrogateescape")
+# joined by NUL. In Rust; the Python original is ``tests/rust_hotpaths_ref/_ref_l0_state.py``.
+digest_names = _core.l0_digest_names
 
 
 _core.l0_configure(STATE, globals(), vars(_sites))
