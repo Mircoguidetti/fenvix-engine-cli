@@ -1,6 +1,6 @@
 {
- "run_id": "w2",
- "note": "round 2 engine (Rust clock, call sites, event path, listener memo; line-level capture): same specs and commits as w1 / s1f / w0; every reuse checked by a fresh --det run",
+ "run_id": "w3",
+ "note": "round 2 final engine (Rust clock, call sites, event path, listener memo, project bytecode check in Rust; line-level capture): same specs and commits as w1 / s1f / w0; every reuse checked by a fresh --det run. Replaces w2 (cancelled after click and pygments: engine without the bytecode check)",
  "walk": [
   {"spec": "home-assistant", "shards": 16},
   {"spec": "click"},
