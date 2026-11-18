@@ -8,9 +8,13 @@ through the same per-context maps).
 Labels: MEASURED (numbers from runs named here), ESTIMATED (derived), not marked = description. Profile of the base
 engine and method: [INTERMEDIATE-1.md](INTERMEDIATE-1.md).
 
-PARTIAL because the home-assistant target (cold run <= 1.1x plain pytest) is not reached: **1.27-1.41x** on the
-profiled shards and **1.30x** in the walk, from 1.41-1.57x and 1.47x. Every reuse checked so far is right (0 wrong);
-the home-assistant verification walk was still running when this was written (status under "Verification walk").
+PARTIAL because the home-assistant target (cold run <= 1.1x plain pytest) is not reached: **1.20-1.41x** on the
+profiled shards and **1.30x** in the walk, from 1.36-1.57x and 1.47x. Every reuse checked is right (0 wrong); the
+verification walks are complete (status under "Verification walk").
+
+Corrected after review R-015 (finding F4; fixes of F1-F3 and the measurements after them: [REPORT-2.md](REPORT-2.md)):
+the p3 home-assistant shard 5 results (committed at cdf0607, before this report) are added, the walk rows are the
+finished walks at 3d20406 instead of the f547f00 snapshot, and ratios of medians are labelled ESTIMATED.
 
 ## Exit numbers
 
@@ -22,37 +26,42 @@ pytest, and for each engine (base 24b6d15 and this branch, swapped in the same v
 `--det`, a cold `--det-cache` (empty cache) and a warm one (same cache again). Medians of 3 (home-assistant) or 5
 rounds.
 
-Run `p3` (this branch at 3131a06, all engine commits; home-assistant shard 5 had not finished) and run `p2`
-(this branch at 58dddd1: changes 1-6 and 10 of the table below; it has the three shards):
+Run `p3` (this branch at 3131a06, all engine commits) and run `p2` (this branch at 58dddd1: changes 1-6 and 10 of
+the table below); both have the three home-assistant shards. Wall times are MEASURED medians; the ratio columns are
+ESTIMATED (ratios of medians, which can come from different rounds; where the median of the per-round ratios differs
+by more than 0.05 it is given in brackets):
 
 | project | tests | plain pytest | --det base / new | cold base / new | warm base / new | --det / plain base / new | cold / --det base / new |
 |---|---|---|---|---|---|---|---|
 | click (p3) | 2653 | 7.4s | 8.0s / 7.8s | 13.8s / **9.7s** | 8.5s / 5.1s | 1.08x / 1.05x | 1.72x / 1.24x |
 | pygments (p3) | 5346 | 14.5s | 16.3s / 16.1s | 21.0s / **18.9s** | 5.4s / 4.7s | 1.12x / 1.11x | 1.29x / 1.17x |
 | home-assistant 0/16 (p3) | 444 | 38.5s | 54.0s / 48.2s | 57.9s / **49.5s** | 19.9s / 14.5s | 1.40x / 1.25x | 1.07x / 1.03x |
-| home-assistant 10/16 (p3) | 624 | 25.5s | 37.1s / 31.8s | 36.8s / **36.0s** | 14.2s / 11.5s | 1.46x / 1.25x | 0.99x / 1.13x |
-| home-assistant 0/16 (p2) | 444 | 28.0s | 38.9s / 35.1s | 43.9s / **38.4s** | 15.7s / 11.9s | 1.39x / 1.25x | 1.13x / 1.10x |
+| home-assistant 5/16 (p3) | 1428 | 54.0s | 65.2s / 58.1s | 73.3s / **64.8s** | 72.0s / 65.7s | 1.21x / 1.08x | 1.12x / 1.12x |
+| home-assistant 10/16 (p3) | 624 | 25.5s | 37.1s / 31.8s | 36.8s / **36.0s** | 14.2s / 11.5s | 1.46x (1.38x) / 1.25x | 0.99x (1.14x) / 1.13x (1.05x) |
+| home-assistant 0/16 (p2) | 444 | 28.0s | 38.9s / 35.1s | 43.9s / **38.4s** | 15.7s / 11.9s | 1.39x / 1.25x | 1.13x (1.18x) / 1.10x |
 | home-assistant 5/16 (p2) | 1428 | 57.9s | 70.5s / 66.0s | 81.5s / **73.3s** | 79.6s / 72.0s | 1.22x / 1.14x | 1.16x / 1.11x |
 | home-assistant 10/16 (p2) | 624 | 24.9s | 33.2s / 30.7s | 37.6s / **32.7s** | 14.4s / 11.1s | 1.33x / 1.23x | 1.13x / 1.06x |
 
 Home-assistant walls move by 10-30 % between runs of the same job on different runners (plain pytest of shard 0:
-28.0 s in p2, 38.5 s in p3; in p3 shard 10 the base's cold run was faster than its own `--det` run): read the
+28.0 s in p2, 38.5 s in p3; in p3 shard 10 the ratio of the base's medians puts its cold run below its own `--det`
+run, 0.99x, an artefact of medians taken from different rounds: the median of the per-round ratios is 1.14x): read the
 home-assistant rows as ranges. The walk's cold/plain ratio below, 16 shards over many commits, is the steadier number.
 
-Cold run / plain pytest, the price-relevant number:
+Cold run / plain pytest, the price-relevant number (ESTIMATED: ratios of the MEASURED medians above; the walk rows
+are medians of per-commit ratios):
 
 | project | base | this branch | target |
 |---|---|---|---|
 | click | 1.86x (p3) | **1.30x** (p3) | 1.1x |
 | pygments | 1.44x (p3) | **1.30x** (p3) | 1.1x |
-| home-assistant 0/16 | 1.50x (p3), 1.57x (p2) | **1.28x** (p3), 1.37x (p2) | 1.1x |
-| home-assistant 5/16 | 1.41x (p2) | **1.27x** (p2) | 1.1x |
-| home-assistant 10/16 | 1.44x (p3), 1.51x (p2) | **1.41x** (p3), 1.31x (p2) | 1.1x |
+| home-assistant 0/16 | 1.50x (p3; 1.57x as median of per-round ratios), 1.57x (p2) | **1.28x** (p3), 1.37x (p2) | 1.1x |
+| home-assistant 5/16 | 1.36x (p3), 1.41x (p2) | **1.20x** (p3), 1.27x (p2) | 1.1x |
+| home-assistant 10/16 | 1.44x (p3), 1.51x (p2) | **1.41x** (p3; 1.36x as median of per-round ratios), 1.31x (p2) | 1.1x |
 | home-assistant, walk (16 shards, every 10th commit, median) | 1.47x (s1f) | **1.30x** (w1) | 1.1x |
 | click, walk | 1.72x (w0) | **1.08x** (w1) | 1.1x |
 | pygments, walk | 1.46x (w0) | **1.31x** (w1) | 1.1x |
 
-Home-assistant: **1.27-1.41x, target 1.1x not reached.** Click reaches it in the walk (1.08x) but not at its HEAD
+Home-assistant: **1.20-1.41x, target 1.1x not reached.** Click reaches it in the walk (1.08x) but not at its HEAD
 commit (1.30x: more tests, more followed children); pygments 1.30-1.31x.
 
 ### Verification walk (MEASURED, workflow `rust-hotpaths-walk`, run `w1`, engine f7501bf)
@@ -64,19 +73,20 @@ mismatch re-run once to tell wrong from flaky (`harness/cache_proof/walk.py`, un
 | project | commits compared | reused results base / new | reused test time base / new | commits with a different reuse count | verified reuses (wrong, flaky) | cache run A, median base / new | cold / plain pytest, median base / new |
 |---|---|---|---|---|---|---|---|
 | click (w0 = base engine 24b6d15, same commits) | 43 | 28,700 / 28,700 | 31.5% / 31.5% | **0** | 28,700 (**0**, 0) | 12.8s / 7.6s | 1.72x / 1.08x |
-| pygments (w0 = base engine, same commits) | 49 | 52,813 / 52,813 | 20.2% / 20.2% | **0** | 58,136 (**0**, 0) | 21.4s / 18.5s | 1.46x / 1.31x |
-| home-assistant (s1f = base walk, same commits) | 29 with all 16 shards in both | 213,929 / 213,918 | 61.3% / 62.1% | 7 (1-2 results of ~9,600 each) | 374,425 (**0**, 1) | 507.2s / 395.3s | 1.47x / 1.30x |
+| pygments (w0 = base engine, same commits) | 50 | 58,136 / 58,136 | 21.7% / 21.8% | **0** | 58,136 (**0**, 0) | 21.4s / 18.5s | 1.45x / 1.31x |
+| home-assistant (s1f = base walk, same commits) | 49 with all 16 shards in both | 374,443 / 374,425 | 63.7% / 64.6% | 15 (1-2 results of ~9,600 each) | 374,425 (**0**, 1) | 507.2s / 395.3s | 1.47x / 1.30x |
 
 * **0 wrong reuses** in every walk so far (MEASURED). The one home-assistant mismatch is flaky
   (`tests/components/mqtt/test_sensor.py::test_cleanup_triggers_and_restoring_state[hass_config0]`: cached passed,
   fresh failed, fresh again passed).
 * Reuse share: identical at every commit on click and pygments (w0, base engine, vs w1); on home-assistant within 1-2
   results per commit, the size of the base's own run-to-run variation (finding 2).
-* Walk status when written: click and pygments complete (51 commits, w0 and w1); home-assistant w1: 15 shards at
-  50 commits, shard 4 at 30 (still running; results commit themselves to `tracks/rust-hotpaths/walk/w1/`; the
-  base walk s1f has one shard at 40, so 29 commits have all 16 shards in both). The w1 engine (f7501bf) lacks
-  changes 8, 9, 11 and the shared-string part of 3 (8, 9 and 3 are output-identical; click: identical stores and
-  receipts against the base) and df409cb from `claude/cache-proof-step1`; p3's engine (3131a06) lacks 11 and
+* Walk status: complete at 3d20406 (click 43 commits compared, pygments 50 of 51, home-assistant 49 with all 16
+  shards in both walks; re-derived with `compare_walks.py` for this correction). The first version of this report used
+  the f547f00 snapshot (home-assistant: 29 commits; pygments: 49, with the verified count already over all w1
+  commits) and gave the base walk as the limit; the limit was w1 shard 4, then at 30 commits. The w1 engine (f7501bf)
+  lacks changes 8, 9, 11 and the shared-string part of 3 (8, 9 and 3 are output-identical; click: identical stores
+  and receipts against the base) and df409cb from `claude/cache-proof-step1`; p3's engine (3131a06) lacks 11 and
   df409cb.
 * The s1d click walk (older engine) reused 336 more: 24 `less` children that the base's R-009 F4 fix refuses
   ("reads the real clock"), not this branch (w0, with the base engine, reuses exactly what w1 does).
@@ -88,7 +98,7 @@ In order of measured gain. "Identical" = checked as described in "Equivalence".
 | # | change | where | gain (MEASURED) | identical? |
 |---|---|---|---|---|
 | 1 | Followed children: a trace log whose strace tracer is gone is final, so it is not waited for; the wait it would have had is charged to the 3 s budget so every other child gets the wait it had before. `_core.tracer_prefixes` scans `/proc/*/cmdline` for live `-o <prefix>` arguments. | `sysmon.rs`, `Capture.collect_children` | click: children phase 3.0 s -> 0.12 s per cold *and* warm run (13 pager children killed before strace wrote a log) | yes |
-| 2 | `--det` precompile compiled nothing installed: the project exclusions (`venv/`, `.venv/`, `.git/` ...) were applied to the library directories too, which live in a venv themselves, so with `PYTHONDONTWRITEBYTECODE=1` every installed module was compiled from source at every `--det` run. Libraries are now compiled without them (the project keeps them); `stamps-v2.json` so the old stamps do not hide the fix. | `reexec.py` | home-assistant `--det`: 1.22-1.39x -> 1.14-1.25x plain | **behaviour change of `--det`**, see below |
+| 2 | `--det` precompile compiled nothing installed: the project exclusions (`venv/`, `.venv/`, `.git/` ...) were applied to the library directories too, which live in a venv themselves, so with `PYTHONDONTWRITEBYTECODE=1` every installed module was compiled from source at every `--det` run. Libraries are now compiled without them (the project keeps them); `stamps-v2.json` so the old stamps do not hide the fix. | `reexec.py` | home-assistant `--det`: 1.21-1.46x -> 1.08-1.25x plain (p2/p3, ESTIMATED from MEASURED medians) | **behaviour change of `--det`**, see below |
 | 3 | Per-test assembly of every test's inputs (`_record_all`'s Python loop: copies of the global inputs per test, a pass over every loaded module per test) -> `detpy_core::record::record_session`, fed one plan of plain data (JSON). Global reads are shared (`Arc<str>`, same JSON) and overlaid per test instead of copied. `ProofCache.unit_ranges` replaces one `file_facts` conversion per file. | `detpy-core/src/record.rs`, `proofcache.rs`, `_record_captured`/`_plan` | record.loop samples, pygments: 617 (p1, base) -> 201 (p3); HA-shaped plan 0.19 s -> 0.10 s for 624 tests | yes |
 | 4 | Line recorder maps: multiplicative integer hasher instead of SipHash (the top frame of the LINE callback on home-assistant) | `sysmon.rs` | ~30-40 % less per callback (bench) | yes (same maps, other hash) |
 | 5 | Socket scan at every context switch: Rust, by `fstat` of each descriptor (was `os.listdir` through detpy's sorted listdir plus a `readlink` per descriptor) | `sysmon.rs` `SocketScan` | 318 -> 108 us per scan at 204 descriptors | yes |
@@ -106,6 +116,10 @@ Sizes: `python/detpy` 6,124 lines (from ~6,200), `crates/` 4,705 (from ~3,800). 
 assembly), `SocketScan`, `tracer_prefixes`, `dist_identity`, `unit_ranges`, `record_session`.
 
 ### The two bytecode changes (#2, #11)
+
+Superseded after review R-015 (F2, F3; [REPORT-2.md](REPORT-2.md)): every cached `.pyc` (libraries and project) is
+now a checked-hash pyc, validated against its source's content at import; #11's 2 s drop is removed. What follows
+describes the state this report measured.
 
 Before, under `--det` every installed module was compiled from source at every run (deterministic: same fixed hash
 seed); now it is loaded from the deterministic bytecode cache, compiled under the same seed, which is what
@@ -160,7 +174,8 @@ that load exactly what they loaded before. The other nine changes keep keys, rec
 
 ## What is left between home-assistant and 1.1x
 
-Home-assistant cold run now: `--det` 1.14-1.25x plain, capture on top 1.03-1.13x (MEASURED p2/p3). Both must
+Home-assistant cold run now: `--det` 1.08-1.25x plain, capture on top 1.03-1.13x (ESTIMATED from MEASURED p2/p3
+medians). Both must
 shrink to reach 1.1x:
 
 * **`--det` itself (the larger part).** After the precompile fix what remains is spread over the Python wrappers
