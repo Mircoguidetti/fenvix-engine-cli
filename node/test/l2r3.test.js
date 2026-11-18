@@ -156,3 +156,26 @@ test('E2: freeze-before-observe takes the final state at the end of the test fun
   const v = verify(runs.map((r) => r.trace.path));
   console.log(`E2 fixture (page ticking during real-time polling): ${v.tests[0].distinct_fingerprints} fingerprints in 3 runs`);
 });
+
+// ---------------------------------------------------------------------------------------------
+// Found in round 3 while building E6 (not fixed; `todo` until it is): a page fetch whose body the page never reads
+// does not complete (no `requestfinished`), so the network queue holds every later message until the 5 s completion
+// timeout. The test passes without detjs (210 ms) and fails under --det on its 2 s deadline: broken by the controls.
+const UR_PORT = 4704;
+const UR_APP = `
+const http = require('http');
+http.createServer((req, res) => {
+  if (req.url === '/health') return res.end('ok');
+  if (req.url.startsWith('/api/')) { res.setHeader('content-type', 'application/json'); return res.end('{"v":"loaded"}'); }
+  res.setHeader('content-type', 'text/html');
+  res.end('<!doctype html><div id=out>wait</div><script>' +
+    'fetch("/api/a").then(() => fetch("/api/data")).then((r) => r.json()).then((j) => { out.textContent = j.v; });</script>');
+}).listen(${UR_PORT});
+`;
+test('unread fetch body: a response whose body the page never reads does not hold the queue (passes plain and under --det)', { skip, todo: 'known defect (round 3): queue waits for requestfinished', timeout: 600000 }, () => {
+  const dir = project('unread', { app: UR_APP, port: UR_PORT, specs: { 'ur.spec.js': DL_SPEC } });
+  const plain = pw(dir, ['test'], 'ur-plain');
+  assert.equal(plain.status, 0, plain.out.slice(-800));
+  const det = pw(dir, ['--det', 'test'], 'ur-det');
+  assert.deepEqual(outcomes(det), ['passed'], det.out.slice(-1200));
+});
