@@ -1,12 +1,7 @@
 {
- "run_id": "s1d",
- "note": "step 1 measurement: children followed under strace, own loopback servers, cache epoch, device listings, own-socket writes; home-assistant 16 shards x 50 commits (r5 sample), pylint, structlog, 13 more libraries",
+ "run_id": "s1e",
+ "note": "step 1: attrs and isort again (both hit the 6 h job limit in s1d: Level 0 clock deadlock with hypothesis's gc callback, fixed)",
  "walk": [
-  {"spec": "home-assistant", "shards": 16},
-  {"spec": "pylint"},
-  {"spec": "structlog"},
-  {"spec": "arrow"}, {"spec": "attrs"}, {"spec": "boltons"}, {"spec": "click"}, {"spec": "flask"},
-  {"spec": "isort"}, {"spec": "jinja"}, {"spec": "marshmallow"}, {"spec": "more-itertools"},
-  {"spec": "pygments"}, {"spec": "sqlparse"}, {"spec": "toolz"}, {"spec": "werkzeug"}
+  {"spec": "attrs"}, {"spec": "isort"}
  ]
 }
