@@ -40,7 +40,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import json, os
-          d = {"label": "run", "repos": ["docusaurus", "vue-core", "lexical", "react-native"], "tests": True, "shards": {}}
+          d = {"label": "run", "repos": ["docusaurus", "vue-core", "lexical", "react-native"], "tests": True, "shards": {}, "windows": {}}
           try:
               d.update(json.load(open("harness/node_cache/RUN")))
           except Exception as e:
@@ -51,7 +51,8 @@ jobs:
               spec = json.load(open(f"harness/node_cache/specs/{r}.json"))
               n = int(d["shards"].get(r, spec.get("shards", 1)))
               for k in range(n):
-                  inc.append({"repo": r, "shard": k, "nshards": n, "node": spec["node"]})
+                  w = d["windows"].get(r)
+                  inc.append({"repo": r, "shard": k, "nshards": n, "node": spec["node"], "window": f"{w[0]}:{w[1]}" if w else ""})
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
               f.write(f"matrix={json.dumps({'include': inc})}\n")
               f.write(f"label={d['label']}\n")
@@ -121,7 +122,8 @@ jobs:
           python3 harness/node_cache/walk.py --spec harness/node_cache/specs/${{ matrix.repo }}.json \
             --repo /tmp/repo --work /tmp/work --out /tmp/out/${{ matrix.repo }}-${{ matrix.shard }}.json \
             --commits harness/node_cache/commits/${{ matrix.repo }}-commits.json \
-            --shard ${{ matrix.shard }} --nshards ${{ matrix.nshards }} --nx --budget 18600 --run-timeout 3000
+            --shard ${{ matrix.shard }} --nshards ${{ matrix.nshards }} --budget 18600 --run-timeout 3000 \
+            ${{ matrix.window && format('--window={0}', matrix.window) || '' }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:

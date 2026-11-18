@@ -270,6 +270,10 @@ for (const runner of RUNNERS) {
       });
       const files = [F(runner, 'a')];
       cycle(runner, dir, files, { 'tsconfig.json': '{"compilerOptions":{"strict":true}}' }, files);
+      // output settings are not configuration: another report file still reuses everything
+      const out2 = path.join(dir, '.detjs', 'other-report.json');
+      const rOut = crun(runner, dir, runner === 'vitest' ? [`--outputFile.json=${out2}`] : []);
+      assert.deepEqual(ran(rOut, files), [], `another report path must not change the configuration\n${show(rOut)}`);
       const r = crun(runner, dir, ['--det-seed=5']);
       assert.deepEqual(ran(r, files), files, show(r));
       assert.match(JSON.stringify(r.summary.misses), /config/);

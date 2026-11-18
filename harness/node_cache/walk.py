@@ -307,9 +307,12 @@ def main():
     ap.add_argument("--budget", type=int, default=19800, help="stop starting commits after this many seconds")
     ap.add_argument("--nx-only", action="store_true", help="only Nx affected per transition (no install, no test runs)")
     ap.add_argument("--no-first-overhead", action="store_true")
+    ap.add_argument("--window", default="", help="LO:HI slice of the commit list (overrides the spec's window)")
     a = ap.parse_args()
     shas = load_json(a.commits)
     spec = load_json(a.spec)
+    if a.window:
+        spec["window"] = [int(x) for x in a.window.split(":")]
     if spec.get("window") and not a.nx_only:
         lo0, hi0 = spec["window"]
         base_offset = lo0

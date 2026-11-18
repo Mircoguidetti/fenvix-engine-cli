@@ -53,7 +53,9 @@ function digest(x) {
 
 // detjs' own per-session values inside a runner configuration (runner shim path, sequencer, the run's seed)
 const OWN_STRING = /[\\/]node_modules[\\/]\.detjs[\\/]runner-\d+\.mjs$/;
-const ANY_VOLATILE = new Set(['webSocketToken', 'tokenCreated']);
+// output and selection settings never change a result; the resolved configuration repeats them at several depths
+const ANY_VOLATILE = new Set(['webSocketToken', 'tokenCreated', 'outputFile', 'reporters', 'reporter', 'shard', 'changed',
+  'passWithNoTests', 'filters', 'cliExclude', 'related']);
 const NESTED_VOLATILE = new Set(['api.token', 'sequence.seed', 'sequence.sequencer', 'sequence.shuffle', 'sequence.concurrent']);
 
 /** Deterministic, cycle-safe digestable form of a configuration value (`volatile`: top-level keys left out). */
