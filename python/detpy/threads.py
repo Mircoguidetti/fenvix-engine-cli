@@ -95,7 +95,7 @@ class T:
 
     __slots__ = ("idx", "key", "ident", "native", "name", "sid", "gate", "handed", "state", "wait",
                  "wait_obj", "deadline", "tseq", "timed_out", "exc", "pred", "real_deadline", "thread",
-                 "budget")
+                 "budget", "wait_t0", "wait_len")
 
     def __init__(self, idx: int, sid: str, name: str) -> None:
         self.idx = idx
@@ -118,6 +118,8 @@ class T:
         self.real_deadline = None
         self.thread = None
         self.budget = 0
+        self.wait_t0 = 0.0  # real time the current wait began
+        self.wait_len = None  # its timeout in seconds (None: no timeout)
 
 
 class _SchedMutex:
@@ -723,6 +725,8 @@ def _block(me, state: str, what: str, obj=None, timeout_ns=None, pred=None, real
     me.timed_out = False
     me.tseq += 1
     me.real_deadline = None if real_timeout is None else _real_monotonic() + real_timeout
+    me.wait_t0 = _real_monotonic()
+    me.wait_len = None if timeout_ns is None else max(0, timeout_ns) / 1e9
     if timeout_ns is not None:
         me.deadline = _now() + max(0, timeout_ns)
         S.seq += 1
@@ -1702,11 +1706,15 @@ def _idle_duty() -> None:
         left = max(0.0, (timer[0] - _now()) / 1e9)
         if outside:
             limit = CFG.grace
-            if timer[1].state == IOWAIT:
+            t1 = timer[1]
+            if t1.state == IOWAIT and t1.wait_len is not None:
                 # A socket timeout while work outside the scheduler (an unmanaged
                 # server thread, a child process, an escaped thread) may answer:
-                # that answer comes in real time, so the timeout is real time too.
-                limit = max(limit, left)
+                # that answer comes in real time, so the timeout is real time too,
+                # counted from the start of the wait. Not from the virtual time
+                # left: an unmanaged thread's sleep advances the shared virtual
+                # clock at once and shortened it (a race in the outside-server test).
+                limit = 0.0 if _real_monotonic() - t1.wait_t0 >= t1.wait_len else float("inf")
         elif io:
             # Only I/O waiters: give data in flight as much real time as the
             # virtual time to the next timer (at most the grace), as a real run would.

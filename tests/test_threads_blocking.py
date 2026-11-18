@@ -186,7 +186,9 @@ def test_blocking_recv_from_a_slow_outside_server():
     assert _ask(SLOW) == b"pong"
 
 def test_socket_timeout_longer_than_the_outside_reply():
-    assert _ask(SLOW, timeout=6.0) == b"pong"
+    # The server's sleep (an unmanaged thread) advances the shared virtual clock by
+    # 3 s at once: a timeout counted on that clock had 1 s left for a 3 s reply.
+    assert _ask(SLOW, timeout=4.0) == b"pong"
 
 def test_managed_thread_waits_for_the_outside_server():
     got = []
