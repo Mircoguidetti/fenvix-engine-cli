@@ -1,0 +1,192 @@
+{
+ "name": "anyio",
+ "set": "popular",
+ "url": "https://github.com/agronholm/anyio",
+ "runner": "ip-10-0-142-128",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009936",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.82.6",
+  "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "9df02f0b8362e9f4a1fc3a4404052d0d7016e4f0",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group test",
+ "collected": 4852,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 67.776,
+   "exit": 0,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 3615,
+    "skipped": 1192,
+    "xfailed": 5
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 76.332,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 3612,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 3
+   },
+   "stats": null,
+   "tail": "======================== short test summary info ====================================================================\nFAILED tests/test_sockets.py::test_getaddrinfo[asyncio] - socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)\nFAILED tests/test_sockets.py::test_getaddrinfo[asyncio+eager] - socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)\nFAILED tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops - TimeoutError\n3 failed, 3612 passed, 1192 skipped, 5 xfailed in 75.16s (0:01:15)\n",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 74.481,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 3613,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 2
+   },
+   "stats": {
+    "decisions": 7512,
+    "switches": 19422,
+    "escapes": 31,
+    "deadlocks": 0,
+    "timer_jumps": 13,
+    "managed": 656
+   },
+   "tail": "in_yields=7319 spin_ticks=37219 interrupted=0\n=================================================================== short test summary info ====================================================================\nFAILED tests/test_sockets.py::test_getaddrinfo[asyncio] - socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)\nFAILED tests/test_sockets.py::test_getaddrinfo[asyncio+eager] - socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)\n2 failed, 3613 passed, 1192 skipped, 5 xfailed in 73.36s (0:01:13)\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]": "FAILED socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]": "FAILED socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)"
+   }
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 75.1,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 3613,
+    "skipped": 1192,
+    "xfailed": 5,
+    "failed": 2
+   },
+   "stats": {
+    "decisions": 10039,
+    "switches": 18185,
+    "escapes": 52,
+    "deadlocks": 0,
+    "timer_jumps": 14,
+    "managed": 663
+   },
+   "tail": "in_yields=8165 spin_ticks=42058 interrupted=0\n=================================================================== short test summary info ====================================================================\nFAILED tests/test_sockets.py::test_getaddrinfo[asyncio] - socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)\nFAILED tests/test_sockets.py::test_getaddrinfo[asyncio+eager] - socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)\n2 failed, 3613 passed, 1192 skipped, 5 xfailed in 73.99s (0:01:13)\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_sockets.py::test_getaddrinfo[asyncio]": "FAILED socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)",
+    "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]": "FAILED socket.gaierror: [Errno -2] detpy: DNS lookup of 'xn--fa-hia.de' blocked (Level 0 closes the network)"
+   }
+  }
+ ],
+ "suite_seeds": [
+  1
+ ],
+ "mtimes_restored": [
+  8,
+  8,
+  8,
+  8
+ ],
+ "warmup": [
+  {
+   "duration_s": 81.614,
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [
+   "tests/test_sockets.py::test_getaddrinfo[asyncio+eager]",
+   "tests/test_sockets.py::test_getaddrinfo[asyncio]",
+   "tests/test_to_thread.py::test_asyncio_worker_pool_concurrent_loops"
+  ],
+  "n_broken": 3,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "broken_by_l1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   1,
+   1
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 1,
+  "loaded_runs": 5
+ }
+}
