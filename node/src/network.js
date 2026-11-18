@@ -442,7 +442,15 @@ function saveRecordings() {
   return n;
 }
 
+/** Suspend the closed network (detjs' own shared-cache requests, outside tests); returns the restore function. */
+function openNetwork() {
+  const saved = POLICY;
+  POLICY = null;
+  return () => { POLICY = saved; };
+}
+
 module.exports = {
+  openNetwork,
   installProcess, saveRecordings, NetworkBlockedError, isLocalName,
   get mode() { return POLICY ? POLICY.mode : null; },
 };
