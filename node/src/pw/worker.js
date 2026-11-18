@@ -74,6 +74,21 @@ function flush(key) {
 }
 process.on('exit', () => { try { flush(); } catch { /* ignore */ } });
 
+// Diagnosis (DETJS_PW_DIAG_DIR): the texts behind the digests (response bodies, frames, final DOM),
+// one file per test, so that two replays can be diffed where their fingerprints diverge.
+const DIAG_DIR = ENV.DETJS_PW_DIAG_DIR || '';
+const DIAG_MAX = Number(ENV.DETJS_PW_DIAG_MAX || 4000);
+function diag(key, op, target, data, max = DIAG_MAX) {
+  if (!DIAG_DIR || !key) return;
+  try {
+    let text = data === undefined || data === null ? '' : Buffer.isBuffer(data) ? data.toString('utf8') : String(data);
+    if (text.length > max) text = `${text.slice(0, max)}...[${text.length}]`;
+    const name = testIdOf(key).replace(/[^A-Za-z0-9._-]+/g, '_').slice(-180);
+    fs.mkdirSync(DIAG_DIR, { recursive: true });
+    fs.appendFileSync(path.join(DIAG_DIR, `${name}.jsonl`), `${JSON.stringify({ t: Date.now() - T_START, op, target, text })}\n`);
+  } catch { /* diagnosis never breaks a run */ }
+}
+
 function digest(data) {
   if (data === undefined || data === null) return '-';
   return native.digest(Buffer.isBuffer(data) ? data : Buffer.from(String(data)));
@@ -202,6 +217,7 @@ async function pump() {
   const chosen = sorted[idx].it;
   QUEUE.pending.splice(QUEUE.pending.indexOf(chosen), 1);
   rec(chosen.test, 'sched', 'sched.io', `${idx}/${n}:${keyOf(chosen)}`);
+  diag(chosen.test, 'sched.io', keyOf(chosen), sorted.map((x) => x.k).join('\n'));
   dbg('release', keyOf(chosen));
   QUEUE.busy = true;
   const done = () => {
@@ -278,7 +294,7 @@ async function routeHandler(route, request) {
       const resp = await r.response();
       if (resp) {
         let body = '-';
-        try { body = digest(await resp.body()); } catch { body = 'nobody'; }
+        try { const buf = await resp.body(); body = digest(buf); diag(key, 'browser.body', `${item.method} ${item.target} ${resp.status()}`, buf); } catch { body = 'nobody'; }
         how = `${resp.status()} ${body}`;
       }
     } catch { /* ignore */ }
@@ -340,11 +356,12 @@ async function setupWebSockets(ctx) {
       // Page -> server frames are messages to the app like requests: same queue, same barrier.
       enqueue({ kind: 'ws', conn, test: k, method: 'SEND', target: targetOf(ws.url()), bodyDigest: digest(m) }).then((release) => {
         rec(k, 'net', 'ws.send', digest(m));
+        diag(k, 'ws.send', targetOf(ws.url()), m, 1500);
         try { server.send(m); } finally { release(); }
       });
     });
     server.onMessage((m) => {
-      if (wsKeep(m)) rec(currentKey() || key, 'net', 'ws.recv', digest(m));
+      if (wsKeep(m)) { rec(currentKey() || key, 'net', 'ws.recv', digest(m)); diag(currentKey() || key, 'ws.recv', targetOf(ws.url()), m, 1500); }
       ws.send(m);
     });
     ws.onClose((code, reason) => { try { server.close({ code, reason }); } catch { /* closed */ } });
@@ -480,6 +497,8 @@ async function finishContext(ctx) {
       ]);
       if (res.stats) rec(key, 'random', 'page.random', `${res.stats.random}/${res.stats.crypto}/${res.stats.uuid}:${res.stats.digest}`);
       rec(key, 'other', 'dom.digest', digest(res.dom));
+      diag(key, 'dom', page.url(), res.dom, 400000);
+      if (res.stats) diag(key, 'page.random', page.url(), JSON.stringify(res.stats));
     } catch (e) {
       rec(key, 'other', 'dom.digest', 'unavailable');
     }
@@ -526,7 +545,7 @@ function patchApiRequest(reqCtx) {
     try {
       const resp = await origFetch.call(this, urlOrRequest, opts);
       let b = '-';
-      try { b = digest(await resp.body()); } catch { b = 'nobody'; }
+      try { const buf = await resp.body(); b = digest(buf); diag(key, 'api.body', `${method} ${item.target} ${resp.status()}`, buf); } catch { b = 'nobody'; }
       rec(key, 'net', 'api.done', `${method} ${item.target} ${resp.status()} ${b}`);
       return resp;
     } catch (e) {
