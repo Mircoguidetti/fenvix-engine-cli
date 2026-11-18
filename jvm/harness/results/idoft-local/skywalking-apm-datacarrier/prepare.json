@@ -1,0 +1,19 @@
+{
+ "name": "skywalking-apm-datacarrier",
+ "url": "https://github.com/apache/skywalking",
+ "sha": "edf0bce37f682c093d1ea5bcca0a6d2d1ecc2cc4",
+ "module": "apm-commons/apm-datacarrier",
+ "status": "documented-tests-absent",
+ "build_jdk8_install": {
+  "rc": 0,
+  "seconds": 24.8
+ },
+ "jdk": "8",
+ "first_run": {
+  "wall": 22.8,
+  "test_seconds": 14.7,
+  "tests": 18,
+  "failed": 0
+ },
+ "documented_present": 0
+}

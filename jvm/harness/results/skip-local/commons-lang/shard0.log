@@ -1898,3 +1898,900 @@ $ git checkout -q -f 1b828e926bf5c43c329521561c4527c9f5266d0d
 $ git clean -qfdx -e .gradle
 
 [rc=0 1.3s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/walk-local/cap/1b828e926bf5c43c329521561c4527c9f5266d0d -- mvn -B -q test -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dspotless.check.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmoditect.skip=true -Dbnd.skip=true -Dmaven.site.skip=true -Dinvoker.skip=true
+a.base/java.util.stream.Streams$RangeIntSpliterator.forEachRemaining(Streams.java:108)
+	at java.base/java.util.Spliterator$OfInt.forEachRemaining(Spliterator.java:711)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testStopInstantSimple -- Time elapsed: 0.022 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at org.apache.commons.lang3.time.StopWatchTest.testStopInstantSimple(StopWatchTest.java:475)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testStopTimeSimple -- Time elapsed: 0.022 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at org.apache.commons.lang3.time.StopWatchTest.testStopTimeSimple(StopWatchTest.java:489)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testSimple -- Time elapsed: 0.022 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: duration: PT0.000002S ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:42)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:191)
+	at org.apache.commons.lang3.time.StopWatchTest.testSimple(StopWatchTest.java:382)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testSuspend -- Time elapsed: 0.068 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: suspendTimeFromNanos 0 >= sleepMillis 20 ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:42)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:191)
+	at org.apache.commons.lang3.time.StopWatchTest.testSuspend(StopWatchTest.java:526)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] Failures: 
+[ERROR]   MultiBackgroundInitializerSupplierTest.testClose:117 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException:159 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest>MultiBackgroundInitializerTest.testIsInitialized:451 children never started
+[ERROR]   MultiBackgroundInitializerTest.testIsInitialized:451 children never started
+[ERROR]   StopWatchTest.testFormatSplitTime:146 expected: not equal but was: <00:00:00.000>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testSimple:382 duration: PT0.000002S ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testSplit:406 splitTime: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testStopInstantSimple:475 expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testStopTimeSimple:489 expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testSuspend:526 suspendTimeFromNanos 0 >= sleepMillis 20 ==> expected: <true> but was: <false>
+[ERROR] Errors: 
+[ERROR]   ConcurrentUtilsTest.testConstantFuture_Integer:55 » NullPointer Cannot invoke "java.util.concurrent.TimeUnit.toNanos(long)" because "u" is null
+[ERROR]   ConcurrentUtilsTest.testConstantFuture_null:73 » NullPointer Cannot invoke "java.util.concurrent.TimeUnit.toNanos(long)" because "u" is null
+[ERROR] Tests run: 98030, Failures: 20, Errors: 2, Skipped: 18
+[ERROR] There are test failures.
+
+See /tmp/walk-local/commons-lang/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+Exception in thread "main" java.util.zip.ZipException: ZipFile invalid LOC header (bad signature)
+	at java.base/java.util.zip.ZipFile$ZipFileInputStream.initDataOffset(ZipFile.java:928)
+	at java.base/java.util.zip.ZipFile$ZipFileInputStream.read(ZipFile.java:939)
+	at java.base/java.util.zip.ZipFile$ZipFileInflaterInputStream.fill(ZipFile.java:456)
+	at java.base/java.util.zip.InflaterInputStream.read(InflaterInputStream.java:158)
+	at java.base/java.io.FilterInputStream.read(FilterInputStream.java:132)
+	at java.base/java.io.FilterInputStream.read(FilterInputStream.java:106)
+	at dev.fenvix.agent.Agent.readAll(Agent.java:62)
+	at dev.fenvix.agent.Agent.extract(Agent.java:90)
+	at dev.fenvix.agent.Agent.extractAll(Agent.java:81)
+	at dev.fenvix.cli.Main.assets(Main.java:73)
+	at dev.fenvix.cli.Main.rtLoader(Main.java:78)
+	at dev.fenvix.cli.Main.nativeClass(Main.java:83)
+	at dev.fenvix.cli.Main.merge(Main.java:107)
+	at dev.fenvix.cli.Main.run(Main.java:195)
+	at dev.fenvix.cli.Main.main(Main.java:37)
+
+[rc=1 269.9s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-0 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[ERROR] Tests run: 22, Failures: 4, Errors: 0, Skipped: 0, Time elapsed: 0.586 s <<< FAILURE! -- in org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions -- Time elapsed: 0.018 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions(MultiBackgroundInitializerSupplierTest.java:231)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testClose -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testClose(MultiBackgroundInitializerSupplierTest.java:117)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException(MultiBackgroundInitializerSupplierTest.java:159)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException(MultiBackgroundInitializerSupplierTest.java:192)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] Failures: 
+[ERROR]   MultiBackgroundInitializerSupplierTest.testClose:117 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException:159 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException:192 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions:231 children never started
+[ERROR] Tests run: 22, Failures: 4, Errors: 0, Skipped: 0
+[ERROR] There are test failures.
+
+See /tmp/walk-local/commons-lang/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+fenvix-jvm: trace /tmp/rerun-0/trace.jsonl {"n_tests":22,"order_digest":"16fc309afbe97015f386d1b41ae45720","skipped":[]}
+
+[rc=0 7.6s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-1 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[ERROR] Tests run: 22, Failures: 4, Errors: 0, Skipped: 0, Time elapsed: 0.451 s <<< FAILURE! -- in org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions -- Time elapsed: 0.014 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions(MultiBackgroundInitializerSupplierTest.java:231)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testClose -- Time elapsed: 0.009 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testClose(MultiBackgroundInitializerSupplierTest.java:117)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException(MultiBackgroundInitializerSupplierTest.java:159)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException(MultiBackgroundInitializerSupplierTest.java:192)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] Failures: 
+[ERROR]   MultiBackgroundInitializerSupplierTest.testClose:117 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException:159 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException:192 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions:231 children never started
+[ERROR] Tests run: 22, Failures: 4, Errors: 0, Skipped: 0
+[ERROR] There are test failures.
+
+See /tmp/walk-local/commons-lang/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+fenvix-jvm: trace /tmp/rerun-1/trace.jsonl {"n_tests":22,"order_digest":"16fc309afbe97015f386d1b41ae45720","skipped":[]}
+
+[rc=0 7.0s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-0 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+fenvix-jvm: trace /tmp/rerun-0/trace.jsonl {"n_tests":22,"order_digest":"16fc309afbe97015f386d1b41ae45720","skipped":[]}
+
+[rc=0 7.9s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-1 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+fenvix-jvm: trace /tmp/rerun-1/trace.jsonl {"n_tests":22,"order_digest":"16fc309afbe97015f386d1b41ae45720","skipped":[]}
+
+[rc=0 7.6s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-0 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+fenvix-jvm: trace /tmp/rerun-0/trace.jsonl {"n_tests":18,"order_digest":"c1daddd0d9628f1af147d65cca4020ff","skipped":[]}
+
+[rc=0 7.3s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-1 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+fenvix-jvm: trace /tmp/rerun-1/trace.jsonl {"n_tests":18,"order_digest":"c1daddd0d9628f1af147d65cca4020ff","skipped":[]}
+
+[rc=0 7.7s]
+$ git checkout -q -f 9368465e7575810c45acd9d2e6f805cd002f4ff8
+
+[rc=0 0.0s]
+$ git clean -qfdx -e .gradle
+
+[rc=0 4.0s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/walk-local/cap/9368465e7575810c45acd9d2e6f805cd002f4ff8 -- mvn -B -q test -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dspotless.check.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmoditect.skip=true -Dbnd.skip=true -Dmaven.site.skip=true -Dinvoker.skip=true
+or: getTime() millis: 0 ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:42)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:191)
+	at org.apache.commons.lang3.time.StopWatchTest.testGetTime(StopWatchTest.java:295)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.Optional.ifPresent(Optional.java:178)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.IntPipeline$1$1.accept(IntPipeline.java:180)
+	at java.base/java.util.stream.Streams$RangeIntSpliterator.forEachRemaining(Streams.java:108)
+	at java.base/java.util.Spliterator$OfInt.forEachRemaining(Spliterator.java:711)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testStopInstantSimple -- Time elapsed: 0.022 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at org.apache.commons.lang3.time.StopWatchTest.testStopInstantSimple(StopWatchTest.java:475)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testStopTimeSimple -- Time elapsed: 0.022 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at org.apache.commons.lang3.time.StopWatchTest.testStopTimeSimple(StopWatchTest.java:489)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testSimple -- Time elapsed: 0.022 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: duration: PT0.000002S ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:42)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:191)
+	at org.apache.commons.lang3.time.StopWatchTest.testSimple(StopWatchTest.java:382)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testSuspend -- Time elapsed: 0.068 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: suspendTimeFromNanos 0 >= sleepMillis 20 ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:42)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:191)
+	at org.apache.commons.lang3.time.StopWatchTest.testSuspend(StopWatchTest.java:526)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] Failures: 
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions:231 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest>MultiBackgroundInitializerTest.testIsInitialized:451 children never started
+[ERROR]   MultiBackgroundInitializerTest.testIsInitialized:451 children never started
+[ERROR]   StopWatchTest.testFormatSplitTime:146 expected: not equal but was: <00:00:00.000>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testSimple:382 duration: PT0.000002S ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testSplit:406 splitTime: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testStopInstantSimple:475 expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testStopTimeSimple:489 expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testSuspend:526 suspendTimeFromNanos 0 >= sleepMillis 20 ==> expected: <true> but was: <false>
+[ERROR] Errors: 
+[ERROR]   ConcurrentUtilsTest.testConstantFuture_Integer:55 » NullPointer Cannot invoke "java.util.concurrent.TimeUnit.toNanos(long)" because "u" is null
+[ERROR]   ConcurrentUtilsTest.testConstantFuture_null:73 » NullPointer Cannot invoke "java.util.concurrent.TimeUnit.toNanos(long)" because "u" is null
+[ERROR] Tests run: 98030, Failures: 19, Errors: 2, Skipped: 18
+[ERROR] There are test failures.
+
+See /tmp/walk-local/commons-lang/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+fenvix-jvm: trace /tmp/walk-local/cap/9368465e7575810c45acd9d2e6f805cd002f4ff8/trace.jsonl {"n_tests":98028,"order_digest":"f2c3e9e1d99799d4f25e79c89b86a172","skipped":[]}
+
+[rc=0 291.6s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-0 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[ERROR] Tests run: 22, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 0.555 s <<< FAILURE! -- in org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testClose -- Time elapsed: 0.007 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testClose(MultiBackgroundInitializerSupplierTest.java:117)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException(MultiBackgroundInitializerSupplierTest.java:159)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException -- Time elapsed: 0.008 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException(MultiBackgroundInitializerSupplierTest.java:192)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] Failures: 
+[ERROR]   MultiBackgroundInitializerSupplierTest.testClose:117 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException:159 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException:192 children never started
+[ERROR] Tests run: 22, Failures: 3, Errors: 0, Skipped: 0
+[ERROR] There are test failures.
+
+See /tmp/walk-local/commons-lang/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+fenvix-jvm: trace /tmp/rerun-0/trace.jsonl {"n_tests":22,"order_digest":"16fc309afbe97015f386d1b41ae45720","skipped":[]}
+
+[rc=0 7.0s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-1 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+fenvix-jvm: trace /tmp/rerun-1/trace.jsonl {"n_tests":22,"order_digest":"16fc309afbe97015f386d1b41ae45720","skipped":[]}
+
+[rc=0 7.3s]
+$ git checkout -q -f 651283fedbdd1fc59cc2e7cf8c14ca2b7dd691bf
+
+[rc=0 0.0s]
+$ git clean -qfdx -e .gradle
+
+[rc=0 1.2s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/walk-local/cap/651283fedbdd1fc59cc2e7cf8c14ca2b7dd691bf -- mvn -B -q test -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dspotless.check.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmoditect.skip=true -Dbnd.skip=true -Dmaven.site.skip=true -Dinvoker.skip=true
+(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:42)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:191)
+	at org.apache.commons.lang3.time.StopWatchTest.testGetTime(StopWatchTest.java:295)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.Optional.ifPresent(Optional.java:178)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.IntPipeline$1$1.accept(IntPipeline.java:180)
+	at java.base/java.util.stream.Streams$RangeIntSpliterator.forEachRemaining(Streams.java:108)
+	at java.base/java.util.Spliterator$OfInt.forEachRemaining(Spliterator.java:711)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testStopInstantSimple -- Time elapsed: 0.022 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at org.apache.commons.lang3.time.StopWatchTest.testStopInstantSimple(StopWatchTest.java:475)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testStopTimeSimple -- Time elapsed: 0.027 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at org.apache.commons.lang3.time.StopWatchTest.testStopTimeSimple(StopWatchTest.java:489)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testSimple -- Time elapsed: 0.045 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: duration: PT0.000002S ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:42)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:191)
+	at org.apache.commons.lang3.time.StopWatchTest.testSimple(StopWatchTest.java:382)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testSuspend -- Time elapsed: 0.076 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: suspendTimeFromNanos 0 >= sleepMillis 20 ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:42)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:191)
+	at org.apache.commons.lang3.time.StopWatchTest.testSuspend(StopWatchTest.java:526)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] Failures: 
+[ERROR]   MultiBackgroundInitializerSupplierTest.testClose:117 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException:159 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException:192 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions:231 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest>MultiBackgroundInitializerTest.testIsInitialized:451 children never started
+[ERROR]   MultiBackgroundInitializerTest.testIsInitialized:451 children never started
+[ERROR]   StopWatchTest.testFormatSplitTime:146 expected: not equal but was: <00:00:00.000>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testSimple:382 duration: PT0.000002S ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testSplit:406 splitTime: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testStopInstantSimple:475 expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testStopTimeSimple:489 expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testSuspend:526 suspendTimeFromNanos 0 >= sleepMillis 20 ==> expected: <true> but was: <false>
+[ERROR] Errors: 
+[ERROR]   ConcurrentUtilsTest.testConstantFuture_Integer:55 » NullPointer Cannot invoke "java.util.concurrent.TimeUnit.toNanos(long)" because "u" is null
+[ERROR]   ConcurrentUtilsTest.testConstantFuture_null:73 » NullPointer Cannot invoke "java.util.concurrent.TimeUnit.toNanos(long)" because "u" is null
+[ERROR] Tests run: 98034, Failures: 22, Errors: 2, Skipped: 18
+[ERROR] There are test failures.
+
+See /tmp/walk-local/commons-lang/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+fenvix-jvm: trace /tmp/walk-local/cap/651283fedbdd1fc59cc2e7cf8c14ca2b7dd691bf/trace.jsonl {"n_tests":98032,"order_digest":"26e81a0cbf5c6a12a4cb7b56f1ac9a24","skipped":[]}
+
+[rc=0 294.3s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-0 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[ERROR] Tests run: 22, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.320 s <<< FAILURE! -- in org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testClose -- Time elapsed: 0.007 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testClose(MultiBackgroundInitializerSupplierTest.java:117)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException(MultiBackgroundInitializerSupplierTest.java:159)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] Failures: 
+[ERROR]   MultiBackgroundInitializerSupplierTest.testClose:117 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException:159 children never started
+[ERROR] Tests run: 22, Failures: 2, Errors: 0, Skipped: 0
+[ERROR] There are test failures.
+
+See /tmp/walk-local/commons-lang/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+fenvix-jvm: trace /tmp/rerun-0/trace.jsonl {"n_tests":22,"order_digest":"16fc309afbe97015f386d1b41ae45720","skipped":[]}
+
+[rc=0 7.2s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-1 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+fenvix-jvm: trace /tmp/rerun-1/trace.jsonl {"n_tests":22,"order_digest":"16fc309afbe97015f386d1b41ae45720","skipped":[]}
+
+[rc=0 7.6s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-0 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[ERROR] Tests run: 22, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.619 s <<< FAILURE! -- in org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException -- Time elapsed: 0.024 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException(MultiBackgroundInitializerSupplierTest.java:192)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] Failures: 
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException:192 children never started
+[ERROR] Tests run: 22, Failures: 1, Errors: 0, Skipped: 0
+[ERROR] There are test failures.
+
+See /tmp/walk-local/commons-lang/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+fenvix-jvm: trace /tmp/rerun-0/trace.jsonl {"n_tests":22,"order_digest":"16fc309afbe97015f386d1b41ae45720","skipped":[]}
+
+[rc=0 7.5s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-1 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[ERROR] Tests run: 22, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.514 s <<< FAILURE! -- in org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions -- Time elapsed: 0.028 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions(MultiBackgroundInitializerSupplierTest.java:231)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException -- Time elapsed: 0.007 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException(MultiBackgroundInitializerSupplierTest.java:159)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] Failures: 
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithCheckedException:159 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions:231 children never started
+[ERROR] Tests run: 22, Failures: 2, Errors: 0, Skipped: 0
+[ERROR] There are test failures.
+
+See /tmp/walk-local/commons-lang/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+fenvix-jvm: trace /tmp/rerun-1/trace.jsonl {"n_tests":22,"order_digest":"16fc309afbe97015f386d1b41ae45720","skipped":[]}
+
+[rc=0 6.8s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-0 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+java:30)
+	at org.junit.platform.launcher.core.CompositeEngineExecutionListener.notifyEach(CompositeEngineExecutionListener.java:80)
+	at org.junit.platform.launcher.core.CompositeEngineExecutionListener.executionFinished(CompositeEngineExecutionListener.java:59)
+	at org.junit.platform.launcher.core.DelegatingEngineExecutionListener.executionFinished(DelegatingEngineExecutionListener.java:47)
+	at org.junit.platform.launcher.core.StackTracePruningEngineExecutionListener.executionFinished(StackTracePruningEngineExecutionListener.java:46)
+	at org.junit.platform.launcher.core.DelegatingEngineExecutionListener.executionFinished(DelegatingEngineExecutionListener.java:47)
+	at org.junit.platform.launcher.core.OutcomeDelayingEngineExecutionListener.executionFinished(OutcomeDelayingEngineExecutionListener.java:63)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.reportCompletion(NodeTestTask.java:201)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:106)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:161)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:147)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:145)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:101)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:161)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:147)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:145)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:101)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.executeEngine(EngineExecutionOrchestrator.java:230)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.failOrExecuteEngine(EngineExecutionOrchestrator.java:204)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:172)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:101)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:64)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:150)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:63)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:109)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:91)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$1(InterceptingLauncher.java:39)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:38)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LauncherAdapter.executeWithoutCancellationToken(LauncherAdapter.java:60)
+	at org.apache.maven.surefire.junitplatform.LauncherAdapter.execute(LauncherAdapter.java:52)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:334)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:304)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:251)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:409)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:190)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:547)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:535)
+
+[ERROR] Tests run: 22, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.823 s <<< FAILURE! -- in org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions -- Time elapsed: 0.021 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions(MultiBackgroundInitializerSupplierTest.java:231)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testClose -- Time elapsed: 0.016 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testClose(MultiBackgroundInitializerSupplierTest.java:117)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] Failures: 
+[ERROR]   MultiBackgroundInitializerSupplierTest.testClose:117 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions:231 children never started
+[ERROR] Tests run: 22, Failures: 2, Errors: 0, Skipped: 0
+[ERROR] There are test failures.
+
+See /tmp/walk-local/commons-lang/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+fenvix-jvm: trace /tmp/rerun-0/trace.jsonl {"n_tests":22,"order_digest":"16fc309afbe97015f386d1b41ae45720","skipped":[]}
+
+[rc=0 7.9s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/rerun-1 -- mvn -B -q surefire:test -Dtest=org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.test.failure.ignore=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[ERROR] Tests run: 22, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.479 s <<< FAILURE! -- in org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest
+[ERROR] org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException -- Time elapsed: 0.017 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: children never started
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException(MultiBackgroundInitializerSupplierTest.java:192)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] Failures: 
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithRuntimeException:192 children never started
+[ERROR] Tests run: 22, Failures: 1, Errors: 0, Skipped: 0
+[ERROR] There are test failures.
+
+See /tmp/walk-local/commons-lang/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+fenvix-jvm: trace /tmp/rerun-1/trace.jsonl {"n_tests":22,"order_digest":"16fc309afbe97015f386d1b41ae45720","skipped":[]}
+
+[rc=0 6.5s]
+$ git checkout -q -f 8d22ce831edd3f59e486db32675633621391a6ce
+
+[rc=0 0.0s]
+$ git clean -qfdx -e .gradle
+
+[rc=0 2.8s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det --deps --out=/tmp/walk-local/cap/8d22ce831edd3f59e486db32675633621391a6ce -- mvn -B -q test -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dspotless.check.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmoditect.skip=true -Dbnd.skip=true -Dmaven.site.skip=true -Dinvoker.skip=true
+i.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:42)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:191)
+	at org.apache.commons.lang3.time.StopWatchTest.testGetTime(StopWatchTest.java:295)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.Optional.ifPresent(Optional.java:178)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.IntPipeline$1$1.accept(IntPipeline.java:180)
+	at java.base/java.util.stream.Streams$RangeIntSpliterator.forEachRemaining(Streams.java:108)
+	at java.base/java.util.Spliterator$OfInt.forEachRemaining(Spliterator.java:711)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testStopInstantSimple -- Time elapsed: 0.021 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at org.apache.commons.lang3.time.StopWatchTest.testStopInstantSimple(StopWatchTest.java:475)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testStopTimeSimple -- Time elapsed: 0.022 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at org.apache.commons.lang3.time.StopWatchTest.testStopTimeSimple(StopWatchTest.java:489)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testSimple -- Time elapsed: 0.022 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: duration: PT0.000002S ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:42)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:191)
+	at org.apache.commons.lang3.time.StopWatchTest.testSimple(StopWatchTest.java:382)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] org.apache.commons.lang3.time.StopWatchTest.testSuspend -- Time elapsed: 0.069 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: suspendTimeFromNanos 0 >= sleepMillis 20 ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:42)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:191)
+	at org.apache.commons.lang3.time.StopWatchTest.testSuspend(StopWatchTest.java:526)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[ERROR] Failures: 
+[ERROR]   MultiBackgroundInitializerSupplierTest.testClose:117 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest.testCloseWithTwoExceptions:231 children never started
+[ERROR]   MultiBackgroundInitializerSupplierTest>MultiBackgroundInitializerTest.testIsInitialized:451 children never started
+[ERROR]   MultiBackgroundInitializerTest.testIsInitialized:451 children never started
+[ERROR]   StopWatchTest.testFormatSplitTime:146 expected: not equal but was: <00:00:00.000>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testGetTime:295 getTime() millis: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testSimple:382 duration: PT0.000002S ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testSplit:406 splitTime: 0 ==> expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testStopInstantSimple:475 expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testStopTimeSimple:489 expected: <true> but was: <false>
+[ERROR]   StopWatchTest.testSuspend:526 suspendTimeFromNanos 0 >= sleepMillis 20 ==> expected: <true> but was: <false>
+[ERROR] Errors: 
+[ERROR]   ConcurrentUtilsTest.testConstantFuture_Integer:55 » NullPointer Cannot invoke "java.util.concurrent.TimeUnit.toNanos(long)" because "u" is null
+[ERROR]   ConcurrentUtilsTest.testConstantFuture_null:73 » NullPointer Cannot invoke "java.util.concurrent.TimeUnit.toNanos(long)" because "u" is null
+[ERROR] Tests run: 98034, Failures: 20, Errors: 2, Skipped: 18
+[ERROR] There are test failures.
+
+See /tmp/walk-local/commons-lang/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+fenvix-jvm: trace /tmp/walk-local/cap/8d22ce831edd3f59e486db32675633621391a6ce/trace.jsonl {"n_tests":98032,"order_digest":"26e81a0cbf5c6a12a4cb7b56f1ac9a24","skipped":[]}
+
+[rc=0 288.9s]
+$ git checkout -q -f adc2e69162ba6bb4ddaf356a5ebc502cfceda2f0
+
+[rc=0 0.0s]
+$ git clean -qfdx -e .gradle
+
+[rc=0 4.1s]

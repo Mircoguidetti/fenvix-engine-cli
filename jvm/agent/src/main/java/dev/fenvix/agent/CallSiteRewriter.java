@@ -151,6 +151,9 @@ final class CallSiteRewriter implements ClassFileTransformer {
         if (name == null || loader == null || redefined != null) return null;
         if (loader == dev.fenvix.rt.Compat.platformLoader()) return null;
         if (Infra.isInfra(name) || name.equals("module-info") || name.startsWith("dev/fenvix/")) return null;
+        // JDK code loaded by the application loader (JDK 8 tools.jar: the attach API's retry loop
+        // must keep real sleeps; found on incubator-seata with Mockito's inline mock maker)
+        if (jdkOwner(name)) return null;
         try {
             String src = "";
             if (pd != null && pd.getCodeSource() != null && pd.getCodeSource().getLocation() != null) {

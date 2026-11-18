@@ -392,6 +392,171 @@
    "module_cache_hits": 0,
    "modules": 1,
    "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "1b828e926bf5c43c329521561c4527c9f5266d0d",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 269.9,
+   "tests": 98028,
+   "test_ms": 169642,
+   "failed": 22,
+   "prev": "1a3e0365d5eac64b465d2ff440b2f42ebfd6132b",
+   "reused": 97482,
+   "verified": 97482,
+   "wrong": [],
+   "flaky": [
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testIsInitialized()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testCloseWithCheckedException()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    },
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerTest::testIsInitialized()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "share_time_skipped": 0.9811,
+   "share_tests_skipped": 0.9944,
+   "rerun_reasons": {
+    "prop": 422,
+    "not-passed": 35,
+    "after": 89
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "9368465e7575810c45acd9d2e6f805cd002f4ff8",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 291.6,
+   "tests": 98028,
+   "test_ms": 173583,
+   "failed": 21,
+   "prev": "1b828e926bf5c43c329521561c4527c9f5266d0d",
+   "reused": 97449,
+   "verified": 97449,
+   "wrong": [],
+   "flaky": [
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testCloseWithTwoExceptions()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "share_time_skipped": 0.9788,
+   "share_tests_skipped": 0.9941,
+   "rerun_reasons": {
+    "prop": 422,
+    "not-passed": 38,
+    "after": 89,
+    "code": 30
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "651283fedbdd1fc59cc2e7cf8c14ca2b7dd691bf",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 294.3,
+   "tests": 98032,
+   "test_ms": 183994,
+   "failed": 24,
+   "prev": "9368465e7575810c45acd9d2e6f805cd002f4ff8",
+   "reused": 97347,
+   "verified": 97347,
+   "wrong": [
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testCloseWithRuntimeException()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      null,
+      "failed"
+     ]
+    }
+   ],
+   "flaky": [
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testClose()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "failed",
+      "passed"
+     ]
+    },
+    {
+     "test": "org.apache.commons.lang3.concurrent.MultiBackgroundInitializerSupplierTest::testCloseWithCheckedException()",
+     "module": "",
+     "fresh": "failed",
+     "reruns": [
+      "passed",
+      "failed"
+     ]
+    }
+   ],
+   "share_time_skipped": 0.98,
+   "share_tests_skipped": 0.993,
+   "rerun_reasons": {
+    "code": 134,
+    "prop": 421,
+    "not-passed": 37,
+    "after": 89
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "8d22ce831edd3f59e486db32675633621391a6ce",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 288.9,
+   "tests": 98032,
+   "test_ms": 176472,
+   "failed": 22,
+   "prev": "651283fedbdd1fc59cc2e7cf8c14ca2b7dd691bf",
+   "reused": 97481,
+   "verified": 97481,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.9814,
+   "share_tests_skipped": 0.9944,
+   "rerun_reasons": {
+    "prop": 422,
+    "not-passed": 40,
+    "after": 89
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
   }
  ]
 }

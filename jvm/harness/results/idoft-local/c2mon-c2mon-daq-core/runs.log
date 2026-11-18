@@ -1,0 +1,776 @@
+$ mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1882693643 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=792566320
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+19:52:30.812 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+19:52:31.142 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:52:31.143 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:52:31.145 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.29 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.04 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.059 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.125 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.105 sec
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+19:52:32.534 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+19:52:32.541 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+19:52:32.544 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.036 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+19:52:32.551 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.191 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 sec
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.088 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.027 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.15 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.671 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.502 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+
+Results :
+
+Tests run: 125, Failures: 0, Errors: 0, Skipped: 8
+
+
+[rc=0 17.6s]
+$ mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1882711258 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=792583882
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+19:52:47.603 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+19:52:47.644 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:52:47.650 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:52:47.651 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.23 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.067 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.078 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.166 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.112 sec
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+19:52:49.099 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+19:52:49.104 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+19:52:49.107 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+19:52:49.110 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.187 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 sec
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.091 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.024 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.108 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.871 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.517 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0 sec
+
+Results :
+
+Tests run: 125, Failures: 0, Errors: 0, Skipped: 8
+
+
+[rc=0 19.8s]
+$ mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1882731075 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=792603639
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+19:53:07.103 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+19:53:07.165 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:53:07.166 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:53:07.170 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.193 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.081 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.178 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.137 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.109 sec
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+19:53:08.739 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+19:53:08.741 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+19:53:08.743 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+19:53:08.754 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.194 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 sec
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.104 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.035 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.687 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.652 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.513 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.006 sec
+
+Results :
+
+Tests run: 125, Failures: 0, Errors: 0, Skipped: 8
+
+
+[rc=0 18.0s]
+$ mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1882749037 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=792621548
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+19:53:25.442 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+19:53:25.569 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:53:25.571 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:53:25.573 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.887 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.08 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.082 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.282 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.651 sec
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+19:53:27.730 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+19:53:27.732 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+19:53:27.735 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.026 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+19:53:27.747 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.191 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.073 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.04 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.038 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.891 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.507 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+
+Results :
+
+Tests run: 125, Failures: 0, Errors: 0, Skipped: 8
+
+
+[rc=0 20.7s]
+$ mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1882769790 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=792642239
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+19:53:47.274 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+19:53:47.333 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:53:47.335 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:53:47.339 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.414 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.03 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.057 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.238 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.12 sec
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+19:53:48.810 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+19:53:48.813 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+19:53:48.815 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.02 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+19:53:48.827 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.206 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 sec
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.106 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.032 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.431 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.002 sec
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.649 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.507 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+
+Results :
+
+Tests run: 125, Failures: 0, Errors: 0, Skipped: 8
+
+
+[rc=0 20.0s]
+$ mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1882789774 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=792662163
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+19:54:04.418 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+19:54:04.507 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:54:04.511 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:54:04.515 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.988 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.04 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.185 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.111 sec
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+19:54:05.928 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+19:54:05.931 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+19:54:05.936 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+19:54:05.947 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.373 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 sec
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.119 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.062 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.036 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.657 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.529 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+
+Results :
+
+Tests run: 125, Failures: 0, Errors: 0, Skipped: 8
+
+
+[rc=0 17.1s]
+$ mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1882806844 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=792679181
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+19:54:25.854 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+19:54:25.890 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:54:25.891 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:54:25.892 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.717 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.143 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.13 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.275 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.107 sec
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+19:54:27.813 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+19:54:27.815 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+19:54:27.816 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.02 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+19:54:27.819 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.189 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.945 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.002 sec
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.236 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.502 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+
+Results :
+
+Tests run: 125, Failures: 0, Errors: 0, Skipped: 8
+
+
+[rc=0 22.0s]
+$ mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1882828807 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=792701079
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+19:54:43.785 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+19:54:43.839 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:54:43.844 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:54:43.847 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.905 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.071 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.062 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.216 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.112 sec
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+19:54:45.421 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+19:54:45.425 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+19:54:45.426 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+19:54:45.431 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.19 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 sec
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.076 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.587 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.651 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.558 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0 sec
+
+Results :
+
+Tests run: 125, Failures: 0, Errors: 0, Skipped: 8
+
+
+[rc=0 15.7s]
+$ mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1882844591 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=792716815
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+19:55:00.849 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+19:55:00.913 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:55:00.921 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:55:00.922 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.009 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.052 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.107 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.105 sec
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+19:55:02.267 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+19:55:02.271 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+19:55:02.276 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.055 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+19:55:02.283 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.202 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.125 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.046 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.119 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.004 sec
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.672 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.505 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+
+Results :
+
+Tests run: 125, Failures: 0, Errors: 0, Skipped: 8
+
+
+[rc=0 18.4s]
+$ mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1882863021 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=792735190
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+19:55:17.351 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+19:55:17.400 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:55:17.404 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:55:17.405 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.13 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.086 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.059 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.219 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.108 sec
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+19:55:18.947 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+19:55:18.950 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+19:55:18.956 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.029 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+19:55:18.960 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.188 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 sec
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.116 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.071 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.465 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0 sec
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.653 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.504 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.002 sec
+
+Results :
+
+Tests run: 125, Failures: 0, Errors: 0, Skipped: 8
+
+
+[rc=0 16.0s]
+$ mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1882879037 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=792751157
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+19:55:36.993 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+19:55:37.117 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:55:37.119 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+19:55:37.123 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.249 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.033 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.051 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.358 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.103 sec
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+19:55:38.705 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+19:55:38.713 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+19:55:38.720 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+19:55:38.737 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.203 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 sec
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.08 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.033 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.678 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.661 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.541 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0 sec
+
+Results :
+
+Tests run: 125, Failures: 0, Errors: 0, Skipped: 8
+
+
+[rc=0 20.0s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det-seed=0 --out=/home/user/fenvix-engine-cli/jvm/harness/results/idoft-local/c2mon-c2mon-daq-core/fx/r12 -- mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.91 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.496 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.064 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.02 sec
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+00:00:00.000 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+00:00:00.000 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+00:00:00.000 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+00:00:00.000 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.913 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.054 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.035 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.014 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.109 sec
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+00:00:00.000 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+00:00:00.000 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+00:00:00.000 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.02 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+00:00:00.000 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.239 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.004 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.534 sec <<< FAILURE!
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.439 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.009 sec
+
+Results :
+
+Failed tests: 
+  testAverage(cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest)
+
+Tests run: 125, Failures: 1, Errors: 0, Skipped: 8
+
+[ERROR] There are test failures.
+
+Please refer to /tmp/jvm-work/c2mon-c2mon-daq-core/c2mon-daq/c2mon-daq-core/target/surefire-reports for the individual test results.
+fenvix-jvm: trace /home/user/fenvix-engine-cli/jvm/harness/results/idoft-local/c2mon-c2mon-daq-core/fx/r12/trace.jsonl {"n_tests":125,"order_digest":"b9eb6e76481bfebf1aa6b6fa7a190bd7","skipped":[]}
+
+[rc=0 25.7s]
+$ java -jar /home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar run --det-seed=0 --out=/home/user/fenvix-engine-cli/jvm/harness/results/idoft-local/c2mon-c2mon-daq-core/fx/r13 -- mvn -B -q surefire:test -pl c2mon-daq/c2mon-daq-core -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running cern.c2mon.daq.common.conf.ConfigurationControllerTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.436 sec
+Running cern.c2mon.daq.common.conf.ConfigurationUpdaterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 sec
+Running cern.c2mon.daq.common.conf.EquipmentUnitAddRemoveTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.971 sec
+Running cern.c2mon.daq.common.conf.ProcessConfigurationLoaderTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.053 sec
+Running cern.c2mon.daq.common.conf.TagChangerHelperTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 sec
+Running cern.c2mon.daq.common.impl.EquipmentMessageSenderTest
+00:00:00.000 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert value of type java.lang.String to cern.c2mon.daq.common.impl.EquipmentMessageSenderTest$ArbitraryObject.
+00:00:00.000 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+00:00:00.000 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "test" to Float.
+00:00:00.000 [main] ERROR c.c.shared.common.type.TypeConverter - Conversion error: Cannot convert String value "asdasdasd" to Float.
+Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.818 sec
+Running cern.c2mon.daq.common.impl.EquipmentTimeDeadbandTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.049 sec
+Running cern.c2mon.daq.common.impl.SDTTimeDeadbandSchedulerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.062 sec
+Running cern.c2mon.daq.common.messaging.impl.ActiveRequestSenderTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 6, Time elapsed: 0.025 sec
+Running cern.c2mon.daq.common.messaging.impl.AliveTimerTest
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.127 sec <<< FAILURE!
+Running cern.c2mon.daq.common.messaging.impl.RequestControllerTest
+00:00:00.000 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have a data tag with id: 20
+00:00:00.000 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have equipment with id: 20
+00:00:00.000 [main] ERROR c.c.d.c.m.impl.RequestController - process null does not have id: 2
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 sec
+Running cern.c2mon.daq.common.messaging.impl.SourceCommandExecutorTest
+00:00:00.000 [SourceCommandExecutor] ERROR c.c.d.c.m.impl.SourceCommandExecutor - run(): Unexpected error executing the command : null
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.229 sec
+Running cern.c2mon.daq.common.tools.DataTagValueValidatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 sec
+Running cern.c2mon.daq.filter.dynamic.CounterMovingAverageTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec
+Running cern.c2mon.daq.filter.dynamic.CounterTimeDeadbandActivatorTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 sec
+Running cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.537 sec
+Running cern.c2mon.daq.filter.dynamic.DiffTimeDeadbandActivatorTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.681 sec
+Running cern.c2mon.daq.tools.DataTagValueFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.005 sec
+
+Results :
+
+Failed tests: 
+  testAliveTimer(cern.c2mon.daq.common.messaging.impl.AliveTimerTest): 
+
+Tests run: 125, Failures: 1, Errors: 0, Skipped: 8
+
+[ERROR] There are test failures.
+
+Please refer to /tmp/jvm-work/c2mon-c2mon-daq-core/c2mon-daq/c2mon-daq-core/target/surefire-reports for the individual test results.
+fenvix-jvm: trace /home/user/fenvix-engine-cli/jvm/harness/results/idoft-local/c2mon-c2mon-daq-core/fx/r13/trace.jsonl {"n_tests":125,"order_digest":"b9eb6e76481bfebf1aa6b6fa7a190bd7","skipped":[]}
+
+[rc=0 27.8s]
