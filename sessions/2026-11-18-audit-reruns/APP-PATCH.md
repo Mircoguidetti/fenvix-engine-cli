@@ -1,5 +1,15 @@
 # fenvix-app: how to apply `app.patch`
 
+**R-013 update (REPORT-2.md):** commit 2 now vendors the service of engine commit `49f0bd5`
+(SHA-256 `1e624a663ee5afcefb66eaec45c9188041b3b45710412b80c5d629f4fed4eea4`): marks with `seq` and `?after=`,
+`GET /v1/audit` counting every token's wrong skips (its `test/cache.test.ts` expectation changed accordingly:
+`checked 1, wrong 1, checked_without_summary 1` after the read-only mark). Commit 1 is unchanged. This session could
+not reach `fenvix-app` (the session's GitHub proxy refuses the repository; attaching it was out of scope), so commit 2
+was regenerated from the patch text: the vendored file's diff from its known base (`1ad68b4`, engine `9ec28a4`)
+reproduces the engine file byte for byte (checked), the other hunks keep their context. **The app suites were not
+re-run on it**, and the post-image `index` hash of `test/cache.test.ts` is the old one (only `git am --3way` reads
+index lines, and it reads the pre-image, which is unchanged).
+
 `app.patch` holds two commits for `Mircoguidetti/fenvix-app`, branch `claude/github-app`, made on top of
 **`44d2a331fd000f172c8f3f67d4701024f08b6efd`** (Review R-012 fixes (docs)), the branch head when this session finished.
 Another session was editing that branch, so nothing was pushed there.
@@ -7,7 +17,7 @@ Another session was editing that branch, so nothing was pushed there.
 | # | commit (in this session's clone) | what | apply when |
 |---|---|---|---|
 | 1 | `53847c7` Cache audit: summary audit block, wrong-skip alert... | App parses `summary.json` → `audit`, stores the counts on `ci_runs`, one `ci_audit_alerts` row and one ERROR log line per wrong skip, check run and PR comment rows, dashboard (overview card with the per-project and all-project bound and the open alerts, run page fact), migration `0014_cache_audit.sql` with its RLS test, data contract | now |
-| 2 | `2f0f02a` Shared cache service: vendor the engine's cache audit version... | `infra/github-app/lib/cache/cache_service.py` = engine `claude/audit-reruns` `cf33351` byte for byte (untrusted keys, `GET /v1/audit`), PROVENANCE, its pinned SHA-256 in `test/cache.test.ts` plus checks for marks and `/v1/audit` through the signed-token wrapper, `engineCliCommit` in `cdk.json` and `DEPLOY-AWS.md` | only after the engine branch `claude/audit-reruns` is approved (it moves the runners and the cache machine to that engine commit) |
+| 2 | `2f0f02a` Shared cache service: vendor the engine's cache audit version... | `infra/github-app/lib/cache/cache_service.py` = engine `claude/audit-reruns` `49f0bd5` (R-013 fixes) byte for byte (untrusted keys, `GET /v1/audit`), PROVENANCE, its pinned SHA-256 in `test/cache.test.ts` plus checks for marks and `/v1/audit` through the signed-token wrapper, `engineCliCommit` in `cdk.json` and `DEPLOY-AWS.md` | only after the engine branch `claude/audit-reruns` is approved (it moves the runners and the cache machine to that engine commit) |
 
 ## Apply
 

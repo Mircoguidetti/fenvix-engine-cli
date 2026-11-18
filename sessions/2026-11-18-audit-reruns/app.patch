@@ -973,7 +973,7 @@ Subject: [PATCH 2/2] Shared cache service: vendor the engine's cache audit
  version (untrusted keys, GET /v1/audit); runners and service at the same
  engine commit
 
-python/detpy/cache_service.py from fenvix-engine-cli claude/audit-reruns cf33351 byte for byte; engineCliCommit
+python/detpy/cache_service.py from fenvix-engine-cli claude/audit-reruns 49f0bd5 byte for byte; engineCliCommit
 bumped to the same commit (the runners' client and the service go together). Apply only once the engine branch is
 approved.
 
@@ -983,9 +983,9 @@ Claude-Session: https://claude.ai/code/session_01YAF6Dfpa6pw8ofzmBuEkrk
  docs/DEPLOY-AWS.md                          |   2 +-
  infra/github-app/cdk.json                   |   2 +-
  infra/github-app/lib/cache/PROVENANCE.md    |   4 +-
- infra/github-app/lib/cache/cache_service.py | 118 +++++++++++++++++++-
+ infra/github-app/lib/cache/cache_service.py | 162 ++++++++++++++++++++++++++++++-
  infra/github-app/test/cache.test.ts         |  13 ++-
- 5 files changed, 129 insertions(+), 10 deletions(-)
+ 5 files changed, 173 insertions(+), 10 deletions(-)
 
 diff --git a/docs/DEPLOY-AWS.md b/docs/DEPLOY-AWS.md
 index 48fba30..ef1b9ff 100644
@@ -994,7 +994,7 @@ index 48fba30..ef1b9ff 100644
 @@ -289,3 +289,3 @@ The other settings keep their defaults:
  - `demoMaxHours` `12`: the reaper terminates a demo machine somebody forgot to take down;
 -- `engineCliCommit` `a20b93d` (`claude/shared-cache`);
-+- `engineCliCommit` `cf33351` (`claude/audit-reruns`: the shared cache with the cache audit);
++- `engineCliCommit` `49f0bd5` (`claude/audit-reruns`: the shared cache with the cache audit);
  - `domainName` `github.fenvix.dev`, `logRetentionDays` `14`, `summaryWaitSeconds` `600`.
 diff --git a/infra/github-app/cdk.json b/infra/github-app/cdk.json
 index 0bb0778..7c1eb32 100644
@@ -1003,7 +1003,7 @@ index 0bb0778..7c1eb32 100644
 @@ -44,3 +44,3 @@
      "runnerVolumeGb": "30",
 -    "engineCliCommit": "a20b93d7f840b23f71c73c03efdaee3d6a233252",
-+    "engineCliCommit": "cf33351336144531b87e6d22e7497c137870446a",
++    "engineCliCommit": "49f0bd5468453b64b3ac0e70eca339d28be4b1e8",
      "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
 diff --git a/infra/github-app/lib/cache/PROVENANCE.md b/infra/github-app/lib/cache/PROVENANCE.md
 index 0c4b149..cd015a1 100644
@@ -1013,28 +1013,31 @@ index 0c4b149..cd015a1 100644
  `cache_service.py` is `python/detpy/cache_service.py` from `Mircoguidetti/fenvix-engine-cli` at commit
 -`a20b93d7f840b23f71c73c03efdaee3d6a233252` (branch `claude/shared-cache`), byte for byte (standard library only).
 -SHA-256 `2b93cd9aac59ba160bc28ae0e9c4b725b0abd29ec6784e5ed910f479eeea33a8` (checked by `test/cache.test.ts`). To update:
-+`cf33351336144531b87e6d22e7497c137870446a` (branch `claude/audit-reruns`: the shared cache plus the cache audit's untrusted keys and `GET /v1/audit`), byte for byte (standard library only).
-+SHA-256 `5f09e9098464abcf8c6087e1147850f044d80ab25997a282c42709defc76b9f9` (checked by `test/cache.test.ts`). To update:
++`49f0bd5468453b64b3ac0e70eca339d28be4b1e8` (branch `claude/audit-reruns`: the shared cache plus the cache audit's untrusted keys and `GET /v1/audit`), byte for byte (standard library only).
++SHA-256 `1e624a663ee5afcefb66eaec45c9188041b3b45710412b80c5d629f4fed4eea4` (checked by `test/cache.test.ts`). To update:
  copy the file from the new commit, change the commit and the SHA-256 here and in the test, and bump `engineCliCommit`
 diff --git a/infra/github-app/lib/cache/cache_service.py b/infra/github-app/lib/cache/cache_service.py
-index 1ad68b4..53c399e 100644
+index 1ad68b4..c037572 100644
 --- a/infra/github-app/lib/cache/cache_service.py
 +++ b/infra/github-app/lib/cache/cache_service.py
-@@ -18,2 +18,7 @@ Model (every request is scoped to the organization of its token; a token never r
+@@ -18,2 +18,10 @@ Model (every request is scoped to the organization of its token; a token never r
  * **runs**: an append-only log of runs with their receipts blob and summary.
 +* **untrusted**: an append-only log of proof keys a cache audit found wrong (a reusable result that two fresh runs
 +  contradicted). A lookup leaves out every entry filed under a proof key before that key was marked; an entry
-+  filed after the mark (a fresh run that recorded the key again) is returned. Any token of the organization may
-+  mark a key: a mark only stops reuse. ``GET /v1/audit`` sums the runs' audit counts per namespace (project) and
-+  over all of them, with the 95% upper bound on the wrong-skip rate.
++  filed after the mark (a fresh run that recorded the key again) is returned. Every client follows the log
++  (``?after=SEQ``) and applies each mark once to its own local mirror, so a machine that already holds the wrong
++  entry stops reusing it too. Any token of the organization may mark a key: a mark only stops reuse.
++  ``GET /v1/audit`` sums the audit counts per namespace (project) and over all of them, with the 95% upper bound
++  on the wrong-skip rate: ``checked``/``matched`` from the run summaries (write tokens), ``wrong`` from every
++  token's jobs (summaries and the untrusted log).
  
-@@ -34,2 +39,5 @@ Endpoints (JSON in, JSON out)::
+@@ -34,2 +42,5 @@ Endpoints (JSON in, JSON out)::
      GET  /v1/ns/<ns>/runs                                              -> {"runs": [...]}
 +    POST /v1/ns/<ns>/untrusted {"put": [{"proof_key", "nodeid", "run", "reason"}]} -> {"added": n}
-+    GET  /v1/ns/<ns>/untrusted                                         -> {"untrusted": [...]}
++    GET  /v1/ns/<ns>/untrusted[?after=SEQ&limit=N]                     -> {"untrusted": [{"seq", "proof_key", ...}]}
 +    GET  /v1/audit                                                     -> {"projects": {ns: {...}}, "all": {...}}
      GET  /v1/stats                                                     -> counts for the token's organization
-@@ -76,2 +84,35 @@ def _valid_ns(s: str) -> bool:
+@@ -76,2 +87,35 @@ def _valid_ns(s: str) -> bool:
  
 +def upper_bound_95(checked: int, wrong: int) -> float:
 +    """One-sided 95% upper bound on the wrong-skip rate: 3/n when no wrong skip (rule of three), else the exact
@@ -1070,7 +1073,7 @@ index 1ad68b4..53c399e 100644
 +
 +
  # ---------------------------------------------------------------------------------------------------------------------
-@@ -140,2 +181,10 @@ class Store:
+@@ -140,2 +184,10 @@ class Store:
                  ns TEXT NOT NULL, run TEXT NOT NULL, receipts TEXT, summary TEXT, at REAL NOT NULL);
 +            CREATE TABLE IF NOT EXISTS untrusted (seq INTEGER PRIMARY KEY AUTOINCREMENT, org TEXT NOT NULL,
 +                ns TEXT NOT NULL, proof_key TEXT NOT NULL, nodeid TEXT, run TEXT, reason TEXT, label TEXT,
@@ -1081,14 +1084,14 @@ index 1ad68b4..53c399e 100644
 +            CREATE TRIGGER IF NOT EXISTS untrusted_append_only_d BEFORE DELETE ON untrusted
 +                BEGIN SELECT RAISE(ABORT, 'append-only'); END;
              CREATE TRIGGER IF NOT EXISTS blobs_append_only_u BEFORE UPDATE ON blobs
-@@ -153,2 +202,6 @@ class Store:
+@@ -153,2 +205,6 @@ class Store:
          """)
 +        # the proof key of each key row (stores created before the audit have none: the client still checks them)
 +        if "proof_key" not in {r[1] for r in db.execute("PRAGMA table_info(keys)")}:
 +            db.execute("ALTER TABLE keys ADD COLUMN proof_key TEXT")
 +        db.execute("CREATE INDEX IF NOT EXISTS keys_proof ON keys (org, ns, proof_key)")
          db.commit()
-@@ -206,6 +259,10 @@ class Store:
+@@ -206,6 +262,10 @@ class Store:
              raise ValueError(f"{len(absent)} entry documents are not stored (upload them first)")
 +        # the proof key is read from the stored entry document itself, never taken from the request
 +        pk = {i: (d.get("proof_key") if isinstance(d, dict) and isinstance(d.get("proof_key"), str) else None)
@@ -1101,7 +1104,7 @@ index 1ad68b4..53c399e 100644
 +                                 "VALUES (?,?,?,?,?,?,?)",
 +                                 (org, ns, r["key"], r["doc"], str(r.get("run") or ""), now, pk.get(r["doc"])))
                  added += cur.rowcount
-@@ -213,2 +270,43 @@ class Store:
+@@ -213,2 +273,78 @@ class Store:
  
 +    def add_untrusted(self, org: str, ns: str, rows: list[dict], label: str = "") -> int:
 +        db, now, added = self.db(), time.time(), 0
@@ -1116,36 +1119,71 @@ index 1ad68b4..53c399e 100644
 +                added += 1
 +        return added
 +
-+    def untrusted(self, org: str, ns: str, limit: int = 1000) -> list[dict]:
-+        rows = self.db().execute("SELECT proof_key, nodeid, run, reason, at FROM untrusted WHERE org=? AND ns=? "
-+                                 "ORDER BY seq DESC LIMIT ?", (org, ns, limit)).fetchall()
-+        return [{"proof_key": r[0], "nodeid": r[1], "run": r[2], "reason": r[3], "at": r[4]} for r in rows]
++    def untrusted(self, org: str, ns: str, limit: int = 1000, after: int | None = None) -> list[dict]:
++        """Marks of a namespace: newest first, or, with ``after``, the marks after that sequence number oldest first
++        (how clients follow the log: every machine applies each mark to its own mirror once)."""
++        if after is None:
++            q, args = "ORDER BY seq DESC LIMIT ?", (org, ns, limit)
++        else:
++            q, args = "AND seq > ? ORDER BY seq LIMIT ?", (org, ns, after, limit)
++        rows = self.db().execute("SELECT seq, proof_key, nodeid, run, reason, at FROM untrusted WHERE org=? AND ns=? "
++                                 + q, args).fetchall()
++        return [{"seq": r[0], "proof_key": r[1], "nodeid": r[2], "run": r[3], "reason": r[4], "at": r[5]}
++                for r in rows]
 +
 +    def audit(self, org: str) -> dict:
-+        """Audit counts of every run of the organization, per namespace (project) and over all of them."""
++        """Audit counts per namespace (project) and over all of them.
++
++        ``checked`` and ``matched`` come from the run summaries, which only write tokens can file. ``wrong`` counts
++        every wrong skip found by any token's job: the distinct (run, test) pairs of the summaries' ``wrong_ids`` and
++        of the untrusted log (a pull-request job marks its wrong skips there, it cannot file a summary). A wrong skip
++        known only from the log was checked by its job: it is added to ``checked`` (``checked_without_summary``), so
++        the bound never counts fewer checks than wrong skips; the matched checks of those jobs are unknown, which
++        makes the bound higher (conservative), never lower."""
++        db = self.db()
++        zero = {"runs": 0, "checked": 0, "matched": 0, "wrong": 0, "flaky_evidence": 0, "checked_without_summary": 0}
 +        per: dict[str, dict] = {}
-+        for ns, summary in self.db().execute("SELECT ns, summary FROM runs WHERE org=? ORDER BY seq", (org,)):
++        wrong_seen: dict[str, set] = {}
++        for ns, run, summary in db.execute("SELECT ns, run, summary FROM runs WHERE org=? ORDER BY seq", (org,)):
 +            try:
 +                a = (json.loads(summary or "null") or {}).get("audit")
 +            except (ValueError, AttributeError):
 +                a = None
 +            if not isinstance(a, dict):
 +                continue
-+            p = per.setdefault(ns, {"runs": 0, "checked": 0, "matched": 0, "wrong": 0, "flaky_evidence": 0})
++            p = per.setdefault(ns, dict(zero))
++            seen = wrong_seen.setdefault(ns, set())
 +            p["runs"] += 1
-+            for k in ("checked", "matched", "wrong", "flaky_evidence"):
++            for k in ("checked", "matched", "flaky_evidence"):
 +                v = a.get(k)
 +                p[k] += v if isinstance(v, int) and v >= 0 else 0
-+        total = {"runs": 0, "checked": 0, "matched": 0, "wrong": 0, "flaky_evidence": 0}
-+        for p in per.values():
++            ids = [i for i in (a.get("wrong_ids") or []) if isinstance(i, str)]
++            n = a.get("wrong")
++            n = n if isinstance(n, int) and n >= 0 else 0
++            seen.update((run, i) for i in ids)
++            # wrong skips the summary counts but does not name (``wrong_ids`` is capped)
++            seen.update((run, f"#{j}") for j in range(max(0, n - len(set(ids)))))
++        for ns, run, nodeid in db.execute("SELECT ns, run, nodeid FROM untrusted WHERE org=? ORDER BY seq", (org,)):
++            p = per.setdefault(ns, dict(zero))
++            seen = wrong_seen.setdefault(ns, set())
++            if (run, nodeid) not in seen:
++                seen.add((run, nodeid))
++                p["checked_without_summary"] += 1
++        total = dict(zero)
++        for ns, p in per.items():
++            p["wrong"] = len(wrong_seen.get(ns, ()))
++            p["checked"] += p["checked_without_summary"]
 +            for k in total:
 +                total[k] += p[k]
 +            p["upper_bound_95"] = upper_bound_95(p["checked"], p["wrong"])
 +        total["upper_bound_95"] = upper_bound_95(total["checked"], total["wrong"])
-+        return {"projects": per, "all": total}
++        return {"projects": per, "all": total,
++                "counted": "checked, matched and flaky_evidence: run summaries (write tokens); wrong: every token's "
++                           "jobs (summaries and the untrusted log); checked_without_summary: wrong skips known only "
++                           "from the untrusted log, each counted as one check"}
 +
      def lookup(self, org: str, ns: str, keys: list[str], limit: int) -> dict:
-@@ -216,4 +314,5 @@ class Store:
+@@ -216,4 +352,5 @@ class Store:
          for k in keys:
 -            rows = db.execute("SELECT doc FROM keys WHERE org=? AND ns=? AND key=? ORDER BY seq DESC LIMIT ?",
 -                              (org, ns, k, limit)).fetchall()
@@ -1153,14 +1191,20 @@ index 1ad68b4..53c399e 100644
 +                              "untrusted u WHERE u.org=k.org AND u.ns=k.ns AND u.proof_key=k.proof_key AND "
 +                              "u.keys_seq >= k.seq) ORDER BY seq DESC LIMIT ?", (org, ns, k, limit)).fetchall()
              if rows:
-@@ -325,2 +424,6 @@ class Handler(BaseHTTPRequestHandler):
+@@ -325,2 +462,12 @@ class Handler(BaseHTTPRequestHandler):
              return self._send(200, {"runs": self.app.store.runs(tok["org"], ns)})
 +        if route == "ns:untrusted" and ns and _valid_ns(ns):
-+            return self._send(200, {"untrusted": self.app.store.untrusted(tok["org"], ns)})
++            q = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query)
++            try:
++                after = int(q["after"][0]) if "after" in q else None
++                limit = max(1, min(int(q.get("limit", ["1000"])[0]), 10_000))
++            except ValueError:
++                return self._error(400, "bad after or limit")
++            return self._send(200, {"untrusted": self.app.store.untrusted(tok["org"], ns, limit, after)})
 +        if route == "audit":
 +            return self._send(200, self.app.store.audit(tok["org"]))
          self._error(404, "not found")
-@@ -373,2 +476,9 @@ class Handler(BaseHTTPRequestHandler):
+@@ -373,2 +520,9 @@ class Handler(BaseHTTPRequestHandler):
                  return self._send(200, {"found": st.lookup(org, ns, keys, limit)})
 +            if route == "ns:untrusted":
 +                rows = body.get("put", [])
@@ -1177,22 +1221,22 @@ index 5169857..570414a 100644
 @@ -18,5 +18,5 @@ describe("the shared cache service (vendored, pinned)", () => {
      const sha = createHash("sha256").update(readFileSync(FILE)).digest("hex");
 -    assert.equal(sha, "2b93cd9aac59ba160bc28ae0e9c4b725b0abd29ec6784e5ed910f479eeea33a8");
-+    assert.equal(sha, "5f09e9098464abcf8c6087e1147850f044d80ab25997a282c42709defc76b9f9");
++    assert.equal(sha, "1e624a663ee5afcefb66eaec45c9188041b3b45710412b80c5d629f4fed4eea4");
      assert.match(readFileSync(new URL("../lib/cache/PROVENANCE.md", import.meta.url), "utf8"), new RegExp(sha));
 -    assert.match(readFileSync(new URL("../cdk.json", import.meta.url), "utf8"), /"engineCliCommit": "a20b93d7f840b23f71c73c03efdaee3d6a233252"/);
-+    assert.match(readFileSync(new URL("../cdk.json", import.meta.url), "utf8"), /"engineCliCommit": "cf33351336144531b87e6d22e7497c137870446a"/);
++    assert.match(readFileSync(new URL("../cdk.json", import.meta.url), "utf8"), /"engineCliCommit": "49f0bd5468453b64b3ac0e70eca339d28be4b1e8"/);
    });
 @@ -71,2 +71,11 @@ describe("the shared cache service (vendored, pinned)", () => {
        assert.equal((await call("/v1/stats", null)).status, 401);
 +      // The cache audit: a pull request's read-only token marks a key untrusted in its own organization (a mark only
-+      // stops reuse); another customer sees none of it; GET /v1/audit sums the organization's audited runs.
++      // stops reuse); another customer sees none of it; GET /v1/audit counts its wrong skip.
 +      const mark = await call("/v1/ns/acme%2Fshop/untrusted", acmeRead, { put: [{ proof_key: "k".repeat(32), nodeid: "t::a", run: "r1", reason: "cached passed, fresh failed" }] });
 +      assert.equal(mark.status, 200);
 +      const marks = async (t: string) => ((await (await call("/v1/ns/acme%2Fshop/untrusted", t)).json()) as { untrusted: { proof_key: string }[] }).untrusted.map((m) => m.proof_key);
 +      assert.deepEqual(await marks(acmeWrite), ["k".repeat(32)]);
 +      assert.deepEqual(await marks(globexRead), [], "another customer sees no mark");
 +      const audit = await (await call("/v1/audit", acmeRead)).json() as { all: Record<string, number> };
-+      assert.deepEqual(audit.all, { runs: 0, checked: 0, matched: 0, wrong: 0, flaky_evidence: 0, upper_bound_95: 1 });
++      assert.deepEqual(audit.all, { runs: 0, checked: 1, matched: 0, wrong: 1, flaky_evidence: 0, checked_without_summary: 1, upper_bound_95: 1 }, "the read-only job's wrong skip counts (untrusted log)");
      } finally {
 -- 
 2.43.0
