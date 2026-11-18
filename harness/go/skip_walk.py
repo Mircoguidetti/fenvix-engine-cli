@@ -104,8 +104,8 @@ def main():
             json.dump(result, f, separators=(",", ":"))
 
     if not src.exists():
-        code, out, err = sh(["git", "clone", "-q", "--filter=blob:none", "--no-checkout",
-                             f"https://github.com/{spec['repo']}", str(src)], timeout=3600)
+        url = spec.get("local_path") or f"https://github.com/{spec['repo']}"
+        code, out, err = sh(["git", "clone", "-q", "--filter=blob:none", "--no-checkout", url, str(src)], timeout=3600)
         if code != 0:
             result["error"] = err[-2000:]
             flush()
@@ -159,7 +159,8 @@ def main():
                 decisions = [json.loads(l) for l in f if l.strip()]
         except OSError:
             row["notes"] = "no decisions file"
-        # 2. go's own test cache
+        # 2. go's own test cache (it does not cache results that read files modified in the last 2 s)
+        time.sleep(max(0.0, 2.1 - (time.time() - t_commit)))
         t = time.time()
         code2, out2, _ = sh(["go", "test", "-json", f"-timeout={timeout}", *go_args, *pkgs], cwd=moddir, env=env,
                             timeout=4 * 3600)
