@@ -46,6 +46,7 @@ P.update(CFG.get("r3", {}).get(JOB, {}))
 P.update((RUN.get("params") or {}).get(JOB, {}))
 P.update((RUN.get("params") or {}).get(f"{JOB}:{NAME}", {}))
 DEADLINE = T0 + P["budget_min"] * 60
+os.environ.update({k: str(v) for k, v in (P.get("env") or {}).items()})  # A/B switches of the engine (e.g. "ab" jobs)
 EPOCH = time.strftime("%Y-%m-%dT%H:%M:00Z", time.gmtime(T0))
 os.environ["L2_EPOCH"] = EPOCH
 LOG = open(OUT / "exp.log", "a")
@@ -298,7 +299,7 @@ E1 = CFG.get("r3", {}).get("e1_args")
 SEL = E1.split() if E1 else PW_ARGS
 R["e1_args"] = SEL
 
-if JOB == "e1":
+if JOB in ("e1", "ab"):
     phase_runs("plain", P["plain"], SEL)
     phase_runs("stress", P["stress"], SEL, stress=True)
     for j, extra in enumerate(CFG.get("r3", {}).get("e1_extra", []), 1):
@@ -322,7 +323,7 @@ if JOB == "e1":
         save()
     # E2: freeze-before-observe on listed targets (10 replays each, plus control replays without it)
     R["freeze"] = []
-    for spec in CFG.get("r3", {}).get("freeze_targets", []) if P["freeze"] else []:
+    for spec in CFG.get("r3", {}).get("freeze_targets", []) if P["freeze"] else []:  # noqa
         F = {**spec, "frozen": [], "control": []}
         R["freeze"].append(F)
         args = target_args(spec)
@@ -342,7 +343,7 @@ if JOB == "e1":
             save()
     # H3: the printed replay command of a failing target, run as printed
     R["replay"] = []
-    for spec in CFG.get("r3", {}).get("replay_targets", []):
+    for spec in CFG.get("r3", {}).get("replay_targets", []) if P.get("replay", True) else []:
         if not budget_for(600):
             break
         X = {**spec}
