@@ -91,7 +91,8 @@ def main():
             verdict[u] = "incomplete"
             continue
         def stable(xs):
-            ts = [json.dumps(x["tests"], sort_keys=True) for x in xs]
+            # test outcomes and the file's pass/fail: an exit-code-only change is a change (R-010 fix 2)
+            ts = [json.dumps([x["tests"], x["code"] == 0], sort_keys=True) for x in xs]
             return ts[0] if len(set(ts)) == 1 else None
         rp, cp = stable(r["plain"]), stable(c["plain"])
         all_rec = stable(r["plain"] + [r["traced"]] + r["loaded"])

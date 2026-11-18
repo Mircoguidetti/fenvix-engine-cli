@@ -243,17 +243,27 @@ def walk_summary(shards, spec):
 
 
 def classify(v, t):
-    """None (same outcome), "flaky" or "wrong" for one verification item."""
+    """None (same outcome), "flaky" or "wrong" for one verification item.
+
+    A mismatch is "wrong" unless there is evidence that the fresh result flips between runs at the same commit
+    (R-010 fix 2):
+      * a rerun in the walk disagreed with the fresh run on (test outcomes, exit code == 0); or
+      * a re-check (recheck.py, results/*/recheck/*.json) reran the unit and its verdict is in FLAKY_VERDICTS.
+    Items written before the fix have no ``rerun_codes``: their reruns compared the test outcomes only. When such
+    an item differs in the exit code alone (``diff`` empty), its reruns could not tell, so they are no evidence.
+    """
     if v["same"]:
         return None
-    # wrong hit: the fresh outcome differs from the cached one and is reproducible; otherwise the unit is flaky
-    reproducible = (v.get("rerun_matches_fresh") == 2) if "rerun_matches_fresh" in v else True
-    # a re-check (recheck.py or results/*/recheck/*.json) that reran the unit at the cached commit and found the
-    # cached outcome itself not reproducible overrides: flaky, not wrong (accepted verdicts: FLAKY_VERDICTS)
     rc = recheck_verdicts().get((v["unit"], t.get("sha")))
-    if v.get("rerun_matches_cache") or not reproducible or recheck_says_flaky(rc):
+    if recheck_says_flaky(rc):
         return "flaky"
-    return "wrong"
+    if "rerun_matches_fresh" in v:
+        if "rerun_codes" not in v and not v.get("diff"):
+            return "wrong"          # exit-code-only mismatch, reruns blind to the exit code: no evidence
+        flips = v["rerun_matches_fresh"] < 2 or bool(v.get("rerun_matches_cache"))
+    else:
+        flips = bool(v.get("rerun_matches_cache"))   # Go: one rerun, compared on the package's pass/fail
+    return "flaky" if flips else "wrong"
 
 
 def verify_by_rule(lang, rules, verify, closure_ver, xverify, has_xverify):

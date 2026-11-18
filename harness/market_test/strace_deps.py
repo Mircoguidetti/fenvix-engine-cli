@@ -192,7 +192,10 @@ def _keep(path: str, roots) -> bool:
     return False
 
 
-SKIP_PARTS = ("/.git/", "/.pytest_cache", "/.mypy_cache", "/.hypothesis", "/node_modules/.vite",
+# R-010 fix 1: reads under .git/ are inputs (git rev-parse HEAD, git describe, a version derived from git): HEAD,
+# the refs, packed-refs, the index and the configuration are kept. Only the object store stays out of the key: its
+# content is addressed by the commit and the index, which are in the key, and it grows with every fetch.
+SKIP_PARTS = ("/.git/objects/", "/.pytest_cache", "/.mypy_cache", "/.hypothesis", "/node_modules/.vite",
               "/node_modules/.cache", "/.ruff_cache", "/.s2rec/", "/.coverage")
 
 

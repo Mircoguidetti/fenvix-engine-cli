@@ -540,6 +540,13 @@ class Walker:
             if p in rw:
                 # opened read-write (or read, then written) by the run: the dependency is the content before the run
                 rel = p[len(src):] if p.startswith(src) else None
+                if rel is not None and rel.startswith(".git/"):
+                    # git's own files (the index refreshed by `git status`): neither tracked nor ignored, but an
+                    # input. The content before the run is gone, so the content now is recorded: any later
+                    # difference reruns the unit (R-010 fix 1)
+                    reads[p] = self.hasher.file(p)
+                    n_rw += 1
+                    continue
                 if rel is not None and "/node_modules/" not in "/" + rel:
                     if rel in self.tracked():
                         reads[p] = self.committed_hash(p)
@@ -608,13 +615,29 @@ class Walker:
                     h = self.hasher.file(str(f))
                     if h:
                         reads[str(f)] = h
+        # R-010 fix 1: a unit that read or listed anything under the checkout's .git/ (git rev-parse HEAD, git log,
+        # git describe, a version string derived from git) depends on the commit: the resolved HEAD enters its key.
+        # The .git files it read (HEAD, refs, packed-refs, index, config) are in ``reads`` / ``lists`` like any
+        # other file; .git/objects stays out (strace_deps.SKIP_PARTS).
+        gitdir = str(self.src / ".git")
+        git_paths = sorted(p for p in list(reads) + list(deps["lists"]) if p == gitdir or p.startswith(gitdir + "/"))
+        for p in git_paths:
+            if p in deps["lists"] and p not in lists:
+                lists[p] = Hasher.listing(p)
+        gitkey = {"head": self.head(), "n": len(git_paths), "paths": [p[len(gitdir) + 1:] for p in git_paths][:12]} \
+            if git_paths else None
         env = env if env is not None else self.env()
         nonloop = external(deps["net"], env)   # a connect to a loopback HTTP(S) proxy is external (R-002b)
         envk = {n: env_value(n, env) for n in sorted(env_names) if not n.startswith(HARNESS_ENV)}
         return {"reads": reads, "exists": exists, "missing": deps["missing"], "lists": lists, "py": py,
                 "net": len(deps["net"]), "net_ext": len(nonloop), "net_ext_addr": sorted({x[0] for x in nonloop})[:5],
                 "execs": len(deps["execs"]), "nread_src": sum(1 for p in reads if p.startswith(src)), "n_rw": n_rw,
-                "env": envk, "runtime": self.runtime()}
+                "env": envk, "runtime": self.runtime(), "git": gitkey}
+
+    def head(self):
+        """The commit HEAD resolves to in the checkout (None outside a repository)."""
+        out = git(self.src, "rev-parse", "--verify", "-q", "HEAD", check=False).strip()
+        return out or None
 
     def _has_tracked_below(self, rel):
         cache = self.__dict__.setdefault("_tb_cache", {})
@@ -660,6 +683,8 @@ class Walker:
                 if d["runtime"].get(k) != now.get(k):
                     reasons.append(("runtime", k))
                     break
+        if d.get("git") and d["git"].get("head") != self.head():
+            reasons.append(("git", "HEAD"))    # the unit read the checkout's .git: the commit is its input
         if d.get("env"):
             cur = self.env()
             for n, h in d["env"].items():
@@ -773,7 +798,7 @@ class Walker:
 
     def reason_label(self, r):
         kind, what = r
-        if kind in ("runtime", "env-var"):
+        if kind in ("runtime", "env-var", "git"):
             return f"{kind}:{what}"
         return kind + ":" + self.kind_of(what)
 
@@ -884,11 +909,15 @@ class Walker:
                 if not same:
                     diff = sorted(k for k in set(a) | set(b) if a.get(k) != b.get(k))[:10]
                     item["diff"] = diff
-                    # flaky? two more plain runs at this commit
-                    again = [outcome_summary((self.run_unit(u, traced_run=False, tag=f"re{k}")["tests"]) or {})
-                             for k in range(2)]
-                    item["rerun_matches_cache"] = sum(1 for x in again if x == a)
-                    item["rerun_matches_fresh"] = sum(1 for x in again if x == b)
+                    # flaky? two more plain runs at this commit. A rerun matches a result only when both the test
+                    # outcomes and the file's pass/fail (exit code == 0) match (R-010 fix 2): a mismatch is flaky
+                    # only if a rerun disagrees with the fresh run, never because the reruns could not tell
+                    again = [self.run_unit(u, traced_run=False, tag=f"re{k}") for k in range(2)]
+                    sig = [(outcome_summary(r.get("tests") or {}), r["code"] == 0) for r in again]
+                    item["cache_code"], item["fresh_code"] = old["code"], new["code"]
+                    item["rerun_codes"] = [r["code"] for r in again]
+                    item["rerun_matches_cache"] = sum(1 for x in sig if x == (a, old["code"] == 0))
+                    item["rerun_matches_fresh"] = sum(1 for x in sig if x == (b, new["code"] == 0))
                 return item
             vres = [compare(u) for u in ver]
             # extra skips of the other rules (func+guard, func, ~cfg): units closure reran but that rule would

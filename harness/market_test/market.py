@@ -113,6 +113,38 @@ def inval_detail(shards, bad, frac_threshold=0.01):
     return {x["i"]: x for x in out}
 
 
+def rekey_git(shards, git_units):
+    """R-010 fix 1 applied to walks recorded before it: a unit that reads the checkout's .git (measured by
+    gitkey.py) has the commit in its key, so the proof rule reruns it at every transition. Its verification items
+    are no longer verified skips: they are moved to ``rekeyed`` (counted apart). Returns (shards, rekeyed items)."""
+    out, moved = [], []
+    for sh in shards:
+        sh = dict(sh)
+        ts = []
+        for t in sh.get("transitions", []):
+            t = dict(t)
+            dec = dict(t.get("decisions") or {})
+            for u in t.get("tests") or {}:
+                if u in git_units and not (dec.get(u) or {}).get("closure"):
+                    dec[u] = {**{k: "git:HEAD" for k in ("closure", "closure~cfg", "func+guard", "func+guard~cfg",
+                                                         "func")}}
+            t["decisions"] = dec
+            keep = []
+            for v in t.get("verify", []):
+                if v["unit"] in git_units:
+                    moved.append({"i": t["i"], "sha": t["sha"], **v})
+                else:
+                    keep.append(v)
+            t["verify"] = keep
+            ts.append(t)
+        sh["transitions"] = ts
+        out.append(sh)
+    return out, moved
+
+
+GIT_UNITS = {}   # repository name -> units that read .git (from --git-units files written by gitkey.py)
+
+
 def full_suite_s(summary_units, frac):
     return sum(c["test"] for c in summary_units.values()) / frac
 
@@ -122,6 +154,9 @@ def summarize(name, shards):
     frac = spec.get("units", {}).get("sample", 1.0)
     nsh = shards[0].get("nshards", 1)
     bad = baseline_failing(shards)
+    base_name = name.rsplit("-", 1)[0] if name.rsplit("-", 1)[-1] in ("mid", "late") else name
+    git_units = GIT_UNITS.get(base_name) or set()
+    shards, rekeyed = rekey_git(shards, git_units) if git_units else (shards, [])
     s_all = aggregate.walk_summary(shards, spec)
     s_ok = aggregate.walk_summary(drop_units(shards, bad), spec)
     units = {}
@@ -157,6 +192,8 @@ def summarize(name, shards):
         "invalidate_all_why_path": dict(inval_paths.most_common(8)),
         "verified": vr.get("checked", 0), "wrong": vr.get("wrong", 0), "flaky": vr.get("flaky", 0),
         "wrong_hits": s_all["wrong_hits"], "flaky_in_verify": s_all["flaky_in_verify"],
+        "git_units": sorted(git_units & set(units)), "rekeyed_verify": len(rekeyed),
+        "rekeyed_verify_mismatch": [v for v in rekeyed if not v["same"]],
         "full_suite_test_s": full_all, "full_suite_test_s_ok": full_ok, "full_suite_unit_wall_s": wall_all,
         "commits_per_day": cpd, "capture_overhead": s_all["capture_overhead_ratio"],
         "rerun_kinds": kinds, "rerun_paths": paths, "rows": s_ok["rows"], "rows_all": out_rows_all,
@@ -187,7 +224,7 @@ def merge_late(early, late):
     m["skip_time_ok"] = aggregate.stats([r["closure"] for r in rows])
     m["skip_time_all"] = aggregate.stats([r["closure"] for r in rows_all])
     m["invalidate_all_ok"] = sum(1 for r in rows if r["closure"] < 0.01)
-    for k in ("verified", "wrong", "flaky"):
+    for k in ("verified", "wrong", "flaky", "rekeyed_verify", "rekeyed_verify_mismatch"):
         m[k] = early[k] + late[k]
     m["wrong_hits"] = early["wrong_hits"] + late["wrong_hits"]
     m["flaky_in_verify"] = early["flaky_in_verify"] + late["flaky_in_verify"]
@@ -224,6 +261,13 @@ def main(argv):
     js = argv[argv.index("--json") + 1] if "--json" in argv else None
     if js:
         run_ids.remove(js)
+    while "--git-units" in argv:   # gitkey.py outputs: units that read .git rerun at every transition (R-010 fix 1)
+        k = argv.index("--git-units")
+        f = argv[k + 1]
+        del argv[k:k + 2]
+        run_ids.remove(f)
+        d = json.loads(Path(f).read_text())
+        GIT_UNITS.setdefault(d["spec"], set()).update(d.get("git_units") or [])
     rows = []
     for name, shards in sorted(shards_of(run_ids).items()):
         nsh = shards[0].get("nshards", 1)
