@@ -155,6 +155,7 @@ class _Session:
         self.rebound: list[str] = []
         self.saved_cassette = 0
         self.index = 0
+        self.rewrite_cache = False
 
 
 S = _Session()
@@ -349,6 +350,47 @@ def _install(config, ns, controls) -> None:
         S.rebound = clock.install(_PATCHER, cfg.epoch_ns, cfg.tick_ns, _skip_module, cfg.tick_adapt)
     if "fs" in controls:
         fsorder.install(_PATCHER)
+    if "bytecode" in controls and reexec.bytecode_active(_hashseed_value()):
+        S.rewrite_cache = _cache_rewritten_tests()
+
+
+def _cache_rewritten_tests() -> bool:
+    """Keep pytest's assertion-rewritten test modules (and conftests) in the deterministic bytecode cache.
+
+    Under ``--det`` the interpreter runs with ``PYTHONDONTWRITEBYTECODE=1`` and ``PYTHONPYCACHEPREFIX`` set to the
+    precompile's cache: pytest looks for its rewritten pycs there but never writes them, so every test module was
+    parsed, rewritten and compiled again at every run (click: ~12 % of a fully reused run, MEASURED). pytest >= 9
+    keeps them as checked-hash pycs (``_read_pyc`` compares the source's hash before use), so a stale one never
+    runs; detpy writes them with pytest's own writer. The module then runs from the marshalled code in the first
+    run too (``marshal.loads``), as it does in every later run: a set constant has one layout in every run.
+    Older pytest versions (timestamp pycs, ``(mtime, size)``: stale same-size edits, review R-015) are left alone;
+    ``DETPY_REWRITE_CACHE=0`` turns it off."""
+    if os.environ.get("DETPY_REWRITE_CACHE", "1") == "0":
+        return False
+    try:
+        import marshal
+
+        from _pytest.assertion import rewrite as rw
+
+        if b"\x03\x00\x00\x00" not in rw._read_pyc.__code__.co_consts:
+            return False  # not a checked-hash reader
+        real, write_pyc, cache_dir_of, tail, key = (rw._rewrite_test, rw._write_pyc, rw.get_cache_dir, rw.PYC_TAIL,
+                                                    rw.assertstate_key)
+    except (ImportError, AttributeError):
+        return False
+
+    def _rewrite_test(fn, config):
+        source_hash, co = real(fn, config)
+        cache_dir = cache_dir_of(fn)
+        try:
+            os.makedirs(cache_dir, exist_ok=True)
+            write_pyc(config.stash[key], co, source_hash, cache_dir / (fn.name[:-3] + tail))
+        except (OSError, KeyError):
+            pass
+        return source_hash, marshal.loads(marshal.dumps(co))
+
+    _PATCHER.set(rw, "_rewrite_test", _rewrite_test)
+    return True
 
 
 def _owner(config) -> bool:
