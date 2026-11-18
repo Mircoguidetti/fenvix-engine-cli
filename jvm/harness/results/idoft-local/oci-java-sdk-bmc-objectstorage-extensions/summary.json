@@ -1,0 +1,40 @@
+{
+ "name": "oci-java-sdk-bmc-objectstorage-extensions",
+ "url": "https://github.com/oracle/oci-java-sdk",
+ "sha": "2e9982f268420efd4010d8dc8370e9d9ade67ec2",
+ "module": "bmc-objectstorage/bmc-objectstorage-extensions",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 62,
+ "documented": 2,
+ "documented_present": 2,
+ "documented_categories": {
+  "NDOD": 1,
+  "NOD": 1
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 0,
+ "broken_tests": [],
+ "fingerprint_coverage": "60/62",
+ "fingerprint_covered": 60,
+ "fingerprinted": 62,
+ "timing_base_s": [
+  19.265,
+  18.967000000000002,
+  18.386
+ ],
+ "timing_det_s": [
+  5.061,
+  5.566,
+  4.639
+ ],
+ "slowdown": -0.7332,
+ "seconds": 817.6
+}

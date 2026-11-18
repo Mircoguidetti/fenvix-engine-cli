@@ -1,0 +1,107 @@
+$ mvn -B -q surefire:test -pl regression-run -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1889110453 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=798963879
+ent name--(b=SupportBean_B -> d=SupportBean_D)  and (a=SupportBean_A -> e=SupportBean_E) partition -1 pattern (b=SupportBean_B -> d=SupportBean_D) evaluate-true { from: EvalFollowedByStateNode@ceacc90 map: {b=id=B1, d=id=D1, a=, e=} quitted: true}
+21:48:01,051 INFO  [audit] Statement name--b=SupportBean_B() -> ((d=SupportBean_D() -> a=SupportBean_A()) or (a=SupportBean_A() -> e=SupportBean_E())) partition -1 pattern-instances (e=SupportBean_E) decreased to 0
+21:48:01,051 INFO  [audit] Statement name--b=SupportBean_B() -> ((d=SupportBean_D() -> a=SupportBean_A()) or (a=SupportBean_A() -> e=SupportBean_E())) partition -1 pattern (e=SupportBean_E) evaluate-true { from: EvalFilterStateNode@4993b1f1 map: {b=id=B1, d=, a=id=A2, e=id=E1} quitted: true}
+21:48:01,051 INFO  [audit] Statement name--b=SupportBean_B() -> ((d=SupportBean_D() -> a=SupportBean_A()) or (a=SupportBean_A() -> e=SupportBean_E())) partition -1 pattern-instances (a=SupportBean_A -> e=SupportBean_E) decreased to 0
+21:48:01,051 INFO  [audit] Statement name--b=SupportBean_B() -> ((d=SupportBean_D() -> a=SupportBean_A()) or (a=SupportBean_A() -> e=SupportBean_E())) partition -1 pattern (a=SupportBean_A -> e=SupportBean_E) evaluate-true { from: EvalFollowedByStateNode@795d28c4 map: {b=id=B1, d=, a=id=A2, e=id=E1} quitted: true}
+21:48:01,051 INFO  [audit] Statement name--b=SupportBean_B() -> ((d=SupportBean_D() -> a=SupportBean_A()) or (a=SupportBean_A() -> e=SupportBean_E())) partition -1 pattern-instances ((d=SupportBean_D -> a=SupportBean_A) or (a=SupportBean_A -> e=SupportBean_E)) decreased to 0
+21:48:01,051 INFO  [audit] Statement name--b=SupportBean_B() -> ((d=SupportBean_D() -> a=SupportBean_A()) or (a=SupportBean_A() -> e=SupportBean_E())) partition -1 pattern-instances (d=SupportBean_D -> a=SupportBean_A) decreased to 0
+21:48:01,051 INFO  [audit] Statement name--b=SupportBean_B() -> ((d=SupportBean_D() -> a=SupportBean_A()) or (a=SupportBean_A() -> e=SupportBean_E())) partition -1 pattern-instances (a=SupportBean_A) decreased to 0
+21:48:01,051 INFO  [audit] Statement name--b=SupportBean_B() -> ((d=SupportBean_D() -> a=SupportBean_A()) or (a=SupportBean_A() -> e=SupportBean_E())) partition -1 pattern ((d=SupportBean_D -> a=SupportBean_A) or (a=SupportBean_A -> e=SupportBean_E)) evaluate-true { from: EvalOrStateNode@4c78df6e map: {b=id=B1, d=, a=id=A2, e=id=E1} quitted: true}
+21:48:01,051 INFO  [audit] Statement name--b=SupportBean_B() -> ((d=SupportBean_D() -> a=SupportBean_A()) or (a=SupportBean_A() -> e=SupportBean_E())) partition -1 pattern-instances (b=SupportBean_B -> (d=SupportBean_D -> a=SupportBean_A) or (a=SupportBean_A -> e=SupportBean_E)) decreased to 0
+21:48:01,051 INFO  [audit] Statement name--b=SupportBean_B() -> ((d=SupportBean_D() -> a=SupportBean_A()) or (a=SupportBean_A() -> e=SupportBean_E())) partition -1 pattern (b=SupportBean_B -> (d=SupportBean_D -> a=SupportBean_A) or (a=SupportBean_A -> e=SupportBean_E)) evaluate-true { from: EvalFollowedByStateNode@19a2950b map: {b=id=B1, d=, a=id=A2, e=id=E1} quitted: true}
+21:48:01,052 INFO  [audit] Statement name--(b=SupportBean_B -> d=SupportBean_D)  and (a=SupportBean_A -> e=SupportBean_E) partition -1 pattern-instances (e=SupportBean_E) decreased to 0
+21:48:01,052 INFO  [audit] Statement name--(b=SupportBean_B -> d=SupportBean_D)  and (a=SupportBean_A -> e=SupportBean_E) partition -1 pattern (e=SupportBean_E) evaluate-true { from: EvalFilterStateNode@668fb88d map: {b=, d=, a=id=A1, e=id=E1} quitted: true}
+21:48:01,052 INFO  [audit] Statement name--(b=SupportBean_B -> d=SupportBean_D)  and (a=SupportBean_A -> e=SupportBean_E) partition -1 pattern-instances (a=SupportBean_A -> e=SupportBean_E) decreased to 0
+21:48:01,052 INFO  [audit] Statement name--(b=SupportBean_B -> d=SupportBean_D)  and (a=SupportBean_A -> e=SupportBean_E) partition -1 pattern (a=SupportBean_A -> e=SupportBean_E) evaluate-true { from: EvalFollowedByStateNode@13cd0760 map: {b=, d=, a=id=A1, e=id=E1} quitted: true}
+21:48:01,052 INFO  [audit] Statement name--(b=SupportBean_B -> d=SupportBean_D)  and (a=SupportBean_A -> e=SupportBean_E) partition -1 pattern-instances ((b=SupportBean_B -> d=SupportBean_D) and (a=SupportBean_A -> e=SupportBean_E)) decreased to 0
+21:48:01,052 INFO  [audit] Statement name--(b=SupportBean_B -> d=SupportBean_D)  and (a=SupportBean_A -> e=SupportBean_E) partition -1 pattern ((b=SupportBean_B -> d=SupportBean_D) and (a=SupportBean_A -> e=SupportBean_E)) evaluate-true { from: EvalAndStateNode@4919d7c5 map: {b=id=B1, d=id=D1, a=id=A1, e=id=E1} quitted: true}
+21:48:04,323 INFO  [EPRuntimeImpl] Destroying runtime URI 'default'
+21:48:04,335 INFO  [EPRuntimeImpl] Initializing runtime URI 'default' version 8.0.0
+21:48:04,339 INFO  [RegressionRunner] Running test PatternFollowedBy
+21:48:04,548 INFO  [RegressionRunner] Running test PatternAnd
+21:48:05,021 INFO  [RegressionRunner] Running test PatternFilterAndSceneTwo
+21:48:05,157 INFO  [RegressionRunner] Running test PatternOr
+21:48:07,477 INFO  [RegressionRunner] Running test PatternInvalid
+21:48:07,486 INFO  [EPRuntimeImpl] Destroying runtime URI 'default'
+21:48:07,493 INFO  [EPRuntimeImpl] Initializing runtime URI 'default' version 8.0.0
+21:48:07,495 INFO  [RegressionRunner] Running test PatternMicrosecondResolution
+21:48:09,196 INFO  [EPRuntimeImpl] Destroying runtime URI 'default'
+21:48:09,204 INFO  [EPRuntimeImpl] Initializing runtime URI 'default' version 8.0.0
+21:48:09,207 INFO  [RegressionRunner] Running test PatternGuardWhileSimple
+21:48:09,380 INFO  [RegressionRunner] Running test PatternOp
+21:48:09,518 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern-instances (a=SupportBean_A -> (every b=SupportBean_B) while (b.id!="B2")) increased to 1
+21:48:09,518 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern-instances (a=SupportBean_A) increased to 1
+21:48:09,713 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (a=SupportBean_A -> (every b=SupportBean_B) while (b.id!="B3")) increased to 1
+21:48:09,713 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (a=SupportBean_A) increased to 1
+21:48:09,916 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances ((every b=SupportBean_B) while (b.id!="B3")) increased to 1
+21:48:09,917 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (every b=SupportBean_B) increased to 1
+21:48:09,917 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (b=SupportBean_B) increased to 1
+21:48:10,230 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B1') partition -1 pattern-instances ((every b=SupportBean_B) while (b.id!="B1")) increased to 1
+21:48:10,230 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B1') partition -1 pattern-instances (every b=SupportBean_B) increased to 1
+21:48:10,231 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B1') partition -1 pattern-instances (b=SupportBean_B) increased to 1
+21:48:10,235 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (a=SupportBean_A) decreased to 0
+21:48:10,235 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (a=SupportBean_A) evaluate-true { from: EvalFilterStateNode@5628a676 map: {a=id=A1, b=} quitted: true}
+21:48:10,235 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances ((every b=SupportBean_B) while (b.id!="B3")) increased to 1
+21:48:10,235 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (every b=SupportBean_B) increased to 1
+21:48:10,235 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (b=SupportBean_B) increased to 1
+21:48:10,235 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern-instances (a=SupportBean_A) decreased to 0
+21:48:10,236 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern (a=SupportBean_A) evaluate-true { from: EvalFilterStateNode@1f563eeb map: {a=id=A1, b=} quitted: true}
+21:48:10,236 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern-instances ((every b=SupportBean_B) while (b.id!="B2")) increased to 1
+21:48:10,236 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern-instances (every b=SupportBean_B) increased to 1
+21:48:10,236 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern-instances (b=SupportBean_B) increased to 1
+21:48:10,236 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B1') partition -1 pattern (b=SupportBean_B) evaluate-true { from: EvalFilterStateNode@53c3b9d5 map: {b=id=B1} quitted: false}
+21:48:10,236 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B1') partition -1 pattern (every b=SupportBean_B) evaluate-true { from: EvalEveryStateNode@2a0d3798 map: {b=id=B1} quitted: false}
+21:48:10,236 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B1') partition -1 pattern-instances (every b=SupportBean_B) decreased to 0
+21:48:10,236 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B1') partition -1 pattern-instances (b=SupportBean_B) decreased to 0
+21:48:10,237 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B1') partition -1 pattern ((every b=SupportBean_B) while (b.id!="B1")) evaluate-false { from EvalGuardStateNode@408f468f}
+21:48:10,237 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B1') partition -1 pattern-instances ((every b=SupportBean_B) while (b.id!="B1")) decreased to 0
+21:48:10,238 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (b=SupportBean_B) evaluate-true { from: EvalFilterStateNode@e1c20b3 map: {b=id=B1} quitted: false}
+21:48:10,238 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (every b=SupportBean_B) evaluate-true { from: EvalEveryStateNode@405f2db4 map: {b=id=B1} quitted: false}
+21:48:10,239 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern ((every b=SupportBean_B) while (b.id!="B3")) evaluate-true { from: EvalGuardStateNode@32d73d0 map: {b=id=B1} quitted: false}
+21:48:10,239 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (b=SupportBean_B) evaluate-true { from: EvalFilterStateNode@39acf604 map: {a=id=A1, b=id=B1} quitted: false}
+21:48:10,239 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (every b=SupportBean_B) evaluate-true { from: EvalEveryStateNode@56da503a map: {a=id=A1, b=id=B1} quitted: false}
+21:48:10,240 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern ((every b=SupportBean_B) while (b.id!="B3")) evaluate-true { from: EvalGuardStateNode@7da9d390 map: {a=id=A1, b=id=B1} quitted: false}
+21:48:10,240 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (a=SupportBean_A -> (every b=SupportBean_B) while (b.id!="B3")) evaluate-true { from: EvalFollowedByStateNode@6fd1e5d8 map: {a=id=A1, b=id=B1} quitted: false}
+21:48:10,240 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern (b=SupportBean_B) evaluate-true { from: EvalFilterStateNode@70aa801 map: {a=id=A1, b=id=B1} quitted: false}
+21:48:10,240 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern (every b=SupportBean_B) evaluate-true { from: EvalEveryStateNode@59486232 map: {a=id=A1, b=id=B1} quitted: false}
+21:48:10,241 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern ((every b=SupportBean_B) while (b.id!="B2")) evaluate-true { from: EvalGuardStateNode@3c8adc5a map: {a=id=A1, b=id=B1} quitted: false}
+21:48:10,241 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern (a=SupportBean_A -> (every b=SupportBean_B) while (b.id!="B2")) evaluate-true { from: EvalFollowedByStateNode@5d97b2a1 map: {a=id=A1, b=id=B1} quitted: false}
+21:48:10,242 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (b=SupportBean_B) evaluate-true { from: EvalFilterStateNode@e1c20b3 map: {b=id=B2} quitted: false}
+21:48:10,242 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (every b=SupportBean_B) evaluate-true { from: EvalEveryStateNode@405f2db4 map: {b=id=B2} quitted: false}
+21:48:10,242 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern ((every b=SupportBean_B) while (b.id!="B3")) evaluate-true { from: EvalGuardStateNode@32d73d0 map: {b=id=B2} quitted: false}
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (b=SupportBean_B) evaluate-true { from: EvalFilterStateNode@39acf604 map: {a=id=A1, b=id=B2} quitted: false}
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (every b=SupportBean_B) evaluate-true { from: EvalEveryStateNode@56da503a map: {a=id=A1, b=id=B2} quitted: false}
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern ((every b=SupportBean_B) while (b.id!="B3")) evaluate-true { from: EvalGuardStateNode@7da9d390 map: {a=id=A1, b=id=B2} quitted: false}
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (a=SupportBean_A -> (every b=SupportBean_B) while (b.id!="B3")) evaluate-true { from: EvalFollowedByStateNode@6fd1e5d8 map: {a=id=A1, b=id=B2} quitted: false}
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern (b=SupportBean_B) evaluate-true { from: EvalFilterStateNode@70aa801 map: {a=id=A1, b=id=B2} quitted: false}
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern (every b=SupportBean_B) evaluate-true { from: EvalEveryStateNode@59486232 map: {a=id=A1, b=id=B2} quitted: false}
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern-instances (every b=SupportBean_B) decreased to 0
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern-instances (b=SupportBean_B) decreased to 0
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern ((every b=SupportBean_B) while (b.id!="B2")) evaluate-false { from EvalGuardStateNode@3c8adc5a}
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern-instances ((every b=SupportBean_B) while (b.id!="B2")) decreased to 0
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern (a=SupportBean_A -> (every b=SupportBean_B) while (b.id!="B2")) evaluate-false { from EvalFollowedByStateNode@5d97b2a1}
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern-instances (a=SupportBean_A -> (every b=SupportBean_B) while (b.id!="B2")) decreased to 0
+21:48:10,242 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B2') partition -1 pattern-instances (a=SupportBean_A -> (every b=SupportBean_B) while (b.id!="B2")) decreased to -1
+21:48:10,242 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (b=SupportBean_B) evaluate-true { from: EvalFilterStateNode@e1c20b3 map: {b=id=B3} quitted: false}
+21:48:10,242 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (every b=SupportBean_B) evaluate-true { from: EvalEveryStateNode@405f2db4 map: {b=id=B3} quitted: false}
+21:48:10,243 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (every b=SupportBean_B) decreased to 0
+21:48:10,243 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (b=SupportBean_B) decreased to 0
+21:48:10,243 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern ((every b=SupportBean_B) while (b.id!="B3")) evaluate-false { from EvalGuardStateNode@32d73d0}
+21:48:10,243 INFO  [audit] Statement name--(every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances ((every b=SupportBean_B) while (b.id!="B3")) decreased to 0
+21:48:10,243 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (b=SupportBean_B) evaluate-true { from: EvalFilterStateNode@39acf604 map: {a=id=A1, b=id=B3} quitted: false}
+21:48:10,243 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (every b=SupportBean_B) evaluate-true { from: EvalEveryStateNode@56da503a map: {a=id=A1, b=id=B3} quitted: false}
+21:48:10,243 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (every b=SupportBean_B) decreased to 0
+21:48:10,243 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (b=SupportBean_B) decreased to 0
+21:48:10,243 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern ((every b=SupportBean_B) while (b.id!="B3")) evaluate-false { from EvalGuardStateNode@7da9d390}
+21:48:10,243 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances ((every b=SupportBean_B) while (b.id!="B3")) decreased to 0
+21:48:10,243 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern (a=SupportBean_A -> (every b=SupportBean_B) while (b.id!="B3")) evaluate-false { from EvalFollowedByStateNode@6fd1e5d8}
+21:48:10,243 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (a=SupportBean_A -> (every b=SupportBean_B) while (b.id!="B3")) decreased to 0
+21:48:10,243 INFO  [audit] Statement name--a=SupportBean_A -> (every b=SupportBean_B) while(b.id != 'B3') partition -1 pattern-instances (a=SupportBean_A -> (every b=SupportBean_B) while (b.id!="B3")) decreased to -1
+21:48:12,753 INFO  [RegressionRunner] Running test PatternVariable
+21:48:13,020 INFO  [RegressionRunner] Running test PatternInvalid
+21:48:13,029 INFO  [EPRuntimeImpl] Destroying runtime URI 'default'
+21:48:13,035 INFO  [EPRuntimeImpl] Initializing runtime URI 'default' version 8.0.0
+21:48:13,039 INFO  [RegressionRunner] Running test PatternExpressionText
+
+[rc=-9 540.0s]

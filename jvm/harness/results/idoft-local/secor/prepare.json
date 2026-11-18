@@ -1,0 +1,55 @@
+{
+ "name": "secor",
+ "url": "https://github.com/pinterest/secor",
+ "sha": "0927a127e3014ee494c97f8c0c25dafe9cf5ac27",
+ "module": ".",
+ "status": "build-failed",
+ "build_jdk8_test-compile": {
+  "rc": 1,
+  "seconds": 25.2
+ },
+ "build_jdk8_test-compile_compat": {
+  "rc": 1,
+  "seconds": 7.0
+ },
+ "build_jdk8_install": {
+  "rc": 1,
+  "seconds": 7.4
+ },
+ "build_jdk8_install_compat": {
+  "rc": 1,
+  "seconds": 5.1
+ },
+ "build_jdk11_test-compile": {
+  "rc": 1,
+  "seconds": 7.9
+ },
+ "build_jdk11_test-compile_compat": {
+  "rc": 1,
+  "seconds": 7.7
+ },
+ "build_jdk11_install": {
+  "rc": 1,
+  "seconds": 7.3
+ },
+ "build_jdk11_install_compat": {
+  "rc": 1,
+  "seconds": 6.3
+ },
+ "build_jdk17_test-compile": {
+  "rc": 1,
+  "seconds": 7.6
+ },
+ "build_jdk17_test-compile_compat": {
+  "rc": 1,
+  "seconds": 7.0
+ },
+ "build_jdk17_install": {
+  "rc": 1,
+  "seconds": 6.8
+ },
+ "build_jdk17_install_compat": {
+  "rc": 1,
+  "seconds": 6.4
+ }
+}

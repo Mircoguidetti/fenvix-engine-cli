@@ -1,0 +1,42 @@
+{
+ "name": "luwak-luwak",
+ "url": "https://github.com/flaxsearch/luwak",
+ "sha": "c27ec08c803db6ca6be1b6e8017f45667e603161",
+ "module": "luwak",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 202,
+ "documented": 2,
+ "documented_present": 2,
+ "documented_categories": {
+  "NDOD;OD-Brit;TD": 2
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 2,
+ "broken_by_det": 2,
+ "broken_tests": [
+  "uk.co.flax.luwak.TestCachePurging::testBackgroundPurges",
+  "uk.co.flax.luwak.TestCachePurging::testConcurrentPurges"
+ ],
+ "fingerprint_coverage": "165/202",
+ "fingerprint_covered": 165,
+ "fingerprinted": 202,
+ "timing_base_s": [
+  17.635,
+  15.96,
+  16.366999999999997
+ ],
+ "timing_det_s": [
+  16.983999999999998,
+  15.840000000000002,
+  15.495000000000001
+ ],
+ "slowdown": -0.0322,
+ "seconds": 1061.8
+}

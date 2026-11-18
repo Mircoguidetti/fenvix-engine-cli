@@ -1,0 +1,55 @@
+{
+ "name": "spring-data-envers",
+ "url": "https://github.com/spring-projects/spring-data-envers",
+ "sha": "5637994be37747e82b2d6d5b34555e2bee791fe6",
+ "module": ".",
+ "status": "build-failed",
+ "build_jdk8_test-compile": {
+  "rc": 1,
+  "seconds": 3.6
+ },
+ "build_jdk8_test-compile_compat": {
+  "rc": 1,
+  "seconds": 3.5
+ },
+ "build_jdk8_install": {
+  "rc": 1,
+  "seconds": 3.1
+ },
+ "build_jdk8_install_compat": {
+  "rc": 1,
+  "seconds": 3.6
+ },
+ "build_jdk11_test-compile": {
+  "rc": 1,
+  "seconds": 3.5
+ },
+ "build_jdk11_test-compile_compat": {
+  "rc": 1,
+  "seconds": 3.4
+ },
+ "build_jdk11_install": {
+  "rc": 1,
+  "seconds": 4.3
+ },
+ "build_jdk11_install_compat": {
+  "rc": 1,
+  "seconds": 4.2
+ },
+ "build_jdk17_test-compile": {
+  "rc": 1,
+  "seconds": 4.2
+ },
+ "build_jdk17_test-compile_compat": {
+  "rc": 1,
+  "seconds": 4.0
+ },
+ "build_jdk17_install": {
+  "rc": 1,
+  "seconds": 4.1
+ },
+ "build_jdk17_install_compat": {
+  "rc": 1,
+  "seconds": 4.1
+ }
+}

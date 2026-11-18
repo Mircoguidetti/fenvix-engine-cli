@@ -1,0 +1,55 @@
+{
+ "name": "Chronicle-Wire",
+ "url": "https://github.com/OpenHFT/Chronicle-Wire",
+ "sha": "27a9efc3ced000f46e0f46263614e08896058290",
+ "module": ".",
+ "status": "build-failed",
+ "build_jdk8_test-compile": {
+  "rc": 1,
+  "seconds": 6.9
+ },
+ "build_jdk8_test-compile_compat": {
+  "rc": 1,
+  "seconds": 5.5
+ },
+ "build_jdk8_install": {
+  "rc": 1,
+  "seconds": 5.8
+ },
+ "build_jdk8_install_compat": {
+  "rc": 1,
+  "seconds": 5.2
+ },
+ "build_jdk11_test-compile": {
+  "rc": 1,
+  "seconds": 5.6
+ },
+ "build_jdk11_test-compile_compat": {
+  "rc": 1,
+  "seconds": 6.3
+ },
+ "build_jdk11_install": {
+  "rc": 1,
+  "seconds": 6.3
+ },
+ "build_jdk11_install_compat": {
+  "rc": 1,
+  "seconds": 7.7
+ },
+ "build_jdk17_test-compile": {
+  "rc": 1,
+  "seconds": 5.7
+ },
+ "build_jdk17_test-compile_compat": {
+  "rc": 1,
+  "seconds": 7.0
+ },
+ "build_jdk17_install": {
+  "rc": 1,
+  "seconds": 6.4
+ },
+ "build_jdk17_install_compat": {
+  "rc": 1,
+  "seconds": 8.7
+ }
+}

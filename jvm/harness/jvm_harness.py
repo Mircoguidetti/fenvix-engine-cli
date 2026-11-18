@@ -224,7 +224,9 @@ def prepare(c, work, out, max_first_run, jdks):
     documented = [t for t in c["tests"] if any(k.endswith("::" + t.split(".")[-1]) and k.startswith(".".join(t.split(".")[:-1]) + "::")
                                                for k in first["outcomes"])]
     res["documented_present"] = len(documented)
-    if not first["outcomes"]:
+    if first["rc"] == -9:
+        res["status"] = "too-slow"
+    elif not first["outcomes"]:
         res["status"] = "no-tests-ran"
     elif first["wall"] > max_first_run:
         res["status"] = "too-slow"
