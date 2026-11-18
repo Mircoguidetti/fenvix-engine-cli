@@ -1,0 +1,118 @@
+$ git fetch -q origin 8586dc79f8bf75a929896f0aac03fe95824d9578
+
+[rc=0 0.9s]
+$ git checkout -q -f 8586dc79f8bf75a929896f0aac03fe95824d9578
+
+[rc=0 0.0s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install -pl system/platform-core -am
+d, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.21, start=2026-11-18T18:18:23.461Z, from=unit.test, id=100, round_trip=1.358, status=400}
+2026-11-18 18:18:23.464 INFO  org.platformlambda.core.system.ServiceQueue:88 - PRIVATE trace.detector started in worker pool
+2026-11-18 18:18:23.464 INFO  org.platformlambda.core.PostOfficeTest:707 - Trace detector got {my_trace_path=GET /api/trace, my_trace_id=101, my_route=trace.detector}
+2026-11-18 18:18:23.465 INFO  org.platformlambda.core.system.ServiceQueue:126 - trace.detector stopped
+2026-11-18 18:18:23.465 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=GET /api/trace, service=trace.detector, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.141, start=2026-11-18T18:18:23.464Z, from=unit.test, id=101, round_trip=0.479, status=200}
+2026-11-18 18:18:23.467 INFO  org.platformlambda.core.system.ServiceQueue:88 - PRIVATE hello.future.3 started in worker pool
+2026-11-18 18:18:23.468 INFO  org.platformlambda.core.system.ServiceQueue:126 - hello.future.3 stopped
+2026-11-18 18:18:23.477 INFO  org.platformlambda.core.system.ServiceQueue:69 - STREAM stream.d5066b89341149c4b65e240195ea5b40.out started as coroutine
+2026-11-18 18:18:23.478 INFO  org.platformlambda.core.system.ServiceQueue:88 - PRIVATE stream.d5066b89341149c4b65e240195ea5b40.in started as coroutine
+2026-11-18 18:18:23.478 INFO  org.platformlambda.core.system.ObjectStreamIO:95 - Stream d5066b89341149c4b65e240195ea5b40 created, idle expiry 60 seconds
+2026-11-18 18:18:23.479 INFO  org.platformlambda.core.mock.EventApiAuth:38 - Event API authorization POST /api/event = PASS
+2026-11-18 18:18:23.480 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=POST /api/event, service=event.api.auth, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.219, start=2026-11-18T18:18:23.479Z, from=http.request, id=1231, round_trip=0.635, status=200}
+2026-11-18 18:18:23.493 INFO  org.platformlambda.core.system.ServiceQueue:126 - stream.d5066b89341149c4b65e240195ea5b40.in stopped
+2026-11-18 18:18:23.494 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=TEST /remote/event/large/k, service=hello.world, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.023, start=2026-11-18T18:18:23.493Z, from=event.api.forwarder, id=1231, round_trip=0.851, status=200}
+2026-11-18 18:18:23.495 INFO  org.platformlambda.core.system.ServiceQueue:126 - stream.d5066b89341149c4b65e240195ea5b40.out stopped
+2026-11-18 18:18:23.495 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=POST /api/event, service=async.http.response, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, start=2026-11-18T18:18:23.495Z, exec_time=0.201, from=event.api.service, id=1231}
+2026-11-18 18:18:23.498 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=TEST /remote/event/large/k, service=async.http.request, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.0, start=2026-11-18T18:18:23.472Z, from=event.api.forwarder, id=1231, round_trip=24.787, status=200}
+2026-11-18 18:18:23.499 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=TEST /remote/event/large/k, service=event.api.forwarder, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=29.347, start=2026-11-18T18:18:23.468Z, from=unit.test, id=1231, round_trip=30.086, status=200}
+2026-11-18 18:18:23.504 INFO  org.platformlambda.core.mock.HelloWorld:38 - Simulate delay for 1000 ms
+2026-11-18 18:18:23.504 INFO  org.platformlambda.core.mock.HelloWorld:38 - Simulate delay for 1000 ms
+2026-11-18 18:18:23.504 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=/api/non-blocking/fork-n-join, service=hello.world, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.014, start=2026-11-18T18:18:23.503Z, from=long.running.rpc, id=20000, round_trip=0.794, status=200}
+2026-11-18 18:18:23.505 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=/api/non-blocking/fork-n-join, service=hello.world, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.028, start=2026-11-18T18:18:23.503Z, from=long.running.rpc, id=20000, round_trip=0.867, status=200}
+2026-11-18 18:18:24.006 INFO  org.platformlambda.core.services.DistributedTrace:80 - trace={path=/api/non-blocking/fork-n-join, service=long.running.rpc, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=502.251, start=2026-11-18T18:18:23.503Z, from=unit.test, id=20000, round_trip=502.838, status=200}, annotations={time=2026-11-18T18:18:23.503Z, demo=long-running}
+2026-11-18 18:18:24.013 INFO  org.platformlambda.core.mock.EventApiAuth:38 - Event API authorization POST /api/event = PASS
+2026-11-18 18:18:24.014 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=POST /api/event, service=event.api.auth, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.272, start=2026-11-18T18:18:24.013Z, from=http.request, id=123, round_trip=0.681, status=200}
+2026-11-18 18:18:24.014 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=TEST /remote/event, service=hello.world, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.023, start=2026-11-18T18:18:24.014Z, from=event.api.forwarder, id=123, round_trip=0.425, status=200}
+2026-11-18 18:18:24.015 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=POST /api/event, service=async.http.response, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, start=2026-11-18T18:18:24.014Z, exec_time=0.087, from=event.api.service, id=123}
+2026-11-18 18:18:24.016 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=TEST /remote/event, service=async.http.request, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.0, start=2026-11-18T18:18:24.007Z, from=event.api.forwarder, id=123, round_trip=8.583, status=200}
+2026-11-18 18:18:24.017 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=TEST /remote/event, service=event.api.forwarder, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=8.907, start=2026-11-18T18:18:24.007Z, from=unit.test, id=123, round_trip=9.595, status=200}
+2026-11-18 18:18:24.017 INFO  org.platformlambda.core.mock.TraceDetector:28 - Trace detector got {my_trace_path=GET /api/trace, my_trace_id=102, my_route=coroutine.trace.detector}
+2026-11-18 18:18:24.017 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=GET /api/trace, service=coroutine.trace.detector, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.178, start=2026-11-18T18:18:24.017Z, from=unit.test, id=102, round_trip=0.758, status=200}
+2026-11-18 18:18:24.019 INFO  org.platformlambda.core.system.ServiceQueue:88 - PRIVATE demo.private.function started in worker pool
+2026-11-18 18:18:24.023 INFO  org.platformlambda.core.mock.EventApiAuth:38 - Event API authorization POST /api/event = PASS
+2026-11-18 18:18:24.024 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=POST /api/event, service=event.api.auth, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.32, start=2026-11-18T18:18:24.022Z, from=http.request, id=ccfb4fd488c842d9a13951ffb5352c9c, round_trip=0.687, status=200}
+2026-11-18 18:18:24.025 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=POST /api/event, service=async.http.response, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, start=2026-11-18T18:18:24.023Z, exec_time=0.085, from=event.api.service, id=ccfb4fd488c842d9a13951ffb5352c9c}
+2026-11-18 18:18:24.026 INFO  org.platformlambda.core.system.ServiceQueue:88 - PRIVATE distributed.trace.forwarder started in worker pool
+2026-11-18 18:18:24.026 INFO  org.platformlambda.core.system.ServiceQueue:88 - PRIVATE another.simple.function started in worker pool
+2026-11-18 18:18:24.028 INFO  org.platformlambda.core.services.DistributedTrace:80 - trace={path=GET /api/hello/telemetry, service=another.simple.function, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.024, start=2026-11-18T18:18:24.026Z, from=unit.test, id=09d483e09a2c4cd5bec49ab4ebe04ac6, round_trip=1.879, status=200}, annotations={hello=world}
+2026-11-18 18:18:24.028 INFO  org.platformlambda.core.PostOfficeTest:680 - RPC response verified
+2026-11-18 18:18:24.028 INFO  org.platformlambda.core.system.ServiceQueue:126 - distributed.trace.forwarder stopped
+2026-11-18 18:18:24.028 INFO  org.platformlambda.core.system.ServiceQueue:126 - another.simple.function stopped
+2026-11-18 18:18:24.036 INFO  org.platformlambda.core.mock.EventApiAuth:38 - Event API authorization POST /api/event = FAIL
+2026-11-18 18:18:24.036 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=POST /api/event, service=event.api.auth, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.172, start=2026-11-18T18:18:24.035Z, from=http.request, id=123, round_trip=0.46, status=200}
+2026-11-18 18:18:24.036 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=POST /api/event, service=async.http.response, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, start=2026-11-18T18:18:24.036Z, exec_time=0.193, from=event.api.auth, id=123}
+2026-11-18 18:18:24.038 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=TEST /remote/event, service=async.http.request, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.0, start=2026-11-18T18:18:24.031Z, from=event.api.forwarder, id=123, round_trip=6.996, status=401}
+2026-11-18 18:18:24.039 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=TEST /remote/event, service=event.api.forwarder, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=7.17, start=2026-11-18T18:18:24.030Z, from=unit.test, id=123, round_trip=7.606, status=401}
+2026-11-18 18:18:24.040 INFO  org.platformlambda.core.system.ServiceQueue:91 - PRIVATE hello.future.5 with 5 instances started in worker pool
+2026-11-18 18:18:24.041 INFO  org.platformlambda.core.PostOfficeTest:980 - Received event {seq=1, partial_result=true, my_route=hello.future.5}, hello world.1
+2026-11-18 18:18:24.041 INFO  org.platformlambda.core.PostOfficeTest:980 - Received event {seq=4, partial_result=true, my_route=hello.future.5}, hello world.4
+2026-11-18 18:18:24.041 INFO  org.platformlambda.core.PostOfficeTest:980 - Received event {seq=2, partial_result=true, my_route=hello.future.5}, hello world.2
+2026-11-18 18:18:24.041 INFO  org.platformlambda.core.PostOfficeTest:980 - Received event {seq=5, partial_result=true, my_route=hello.future.5}, hello world.5
+2026-11-18 18:18:24.041 INFO  org.platformlambda.core.PostOfficeTest:980 - Received event {seq=3, partial_result=true, my_route=hello.future.5}, hello world.3
+2026-11-18 18:18:24.042 INFO  org.platformlambda.core.mock.HelloWorld:38 - Simulate delay for 1000 ms
+2026-11-18 18:18:24.505 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=/api/non-blocking/fork-n-join, service=hello.world, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, start=2026-11-18T18:18:23.503Z, exec_time=1000.667, from=long.running.rpc, remark=Response not delivered - Route r.cb57e864822a4e4b83cfcc54fca399d0@20261118cb8e82f1dcce45ae15ab8f84666f6cad not found, id=20000}
+2026-11-18 18:18:24.506 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=/api/non-blocking/fork-n-join, service=hello.world, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, start=2026-11-18T18:18:23.504Z, exec_time=1000.84, from=long.running.rpc, remark=Response not delivered - Route r.cb57e864822a4e4b83cfcc54fca399d0@20261118cb8e82f1dcce45ae15ab8f84666f6cad not found, id=20000}
+2026-11-18 18:18:24.842 INFO  org.platformlambda.core.system.ServiceQueue:126 - hello.future.5 stopped
+2026-11-18 18:18:24.849 INFO  org.platformlambda.core.mock.EventApiAuth:38 - Event API authorization POST /api/event = PASS
+2026-11-18 18:18:24.853 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=POST /api/event, service=event.api.auth, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=5.336, start=2026-11-18T18:18:24.847Z, from=http.request, id=12003, round_trip=5.857, status=200}
+2026-11-18 18:18:24.853 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=POST /api/event, service=async.http.response, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, start=2026-11-18T18:18:24.853Z, exec_time=0.083, from=event.api.service, id=12003}
+2026-11-18 18:18:24.854 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=TEST /remote/event/oneway/k, service=hello.world, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, start=2026-11-18T18:18:24.853Z, exec_time=0.033, from=event.api.forwarder, id=12003}
+2026-11-18 18:18:24.855 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=TEST /remote/event/oneway/k, service=async.http.request, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=0.0, start=2026-11-18T18:18:24.843Z, from=event.api.forwarder, id=12003, round_trip=11.444, status=200}
+2026-11-18 18:18:24.855 INFO  org.platformlambda.core.services.DistributedTrace:78 - trace={path=TEST /remote/event/oneway/k, service=event.api.forwarder, success=true, origin=20261118cb8e82f1dcce45ae15ab8f84666f6cad, exec_time=11.821, start=2026-11-18T18:18:24.842Z, from=unit.test, id=12003, round_trip=12.214, status=202}
+2026-11-18 18:18:24.896 INFO  org.platformlambda.core.util.ManagedCache:57 - Housekeeper started
+2026-11-18 18:18:24.897 INFO  org.platformlambda.core.util.ManagedCache:94 - Created cache (hello.world), expiry 1 second, maxItems=100
+2026-11-18 18:18:24.897 INFO  org.platformlambda.core.util.SimpleCache:80 - Created cache (simple.cache), expiry 1 second
+2026-11-18 18:18:25.043 WARN  org.platformlambda.core.system.WorkerQueue:134 - Event not delivered - Route r.19c823290ce646739bcfa4afa7bc7c42@20261118cb8e82f1dcce45ae15ab8f84666f6cad not found, from=unknown, to=hello.world, type=response, exec_time=1000.882
+2026-11-18 18:18:27.062 INFO  org.platformlambda.core.models.EventEnvelope:222 - Stacktrace binary payload size for java.lang.IllegalArgumentException = 2412
+2026-11-18 18:18:27.064 INFO  org.platformlambda.core.MulticastTest:42 - Unit test loaded with org.platformlambda.core.system.EventEmitter@894858
+2026-11-18 18:18:27.066 INFO  org.platformlambda.core.system.ServiceQueue:88 - PRIVATE v1.hello.service.1 started in worker pool
+2026-11-18 18:18:27.066 INFO  org.platformlambda.core.system.ServiceQueue:88 - PRIVATE v1.hello.service.2 started in worker pool
+2026-11-18 18:18:27.071 INFO  org.platformlambda.core.MulticastTest:75 - Result from v1.hello.service.1 is correct
+2026-11-18 18:18:27.072 INFO  org.platformlambda.core.MulticastTest:75 - Result from v1.hello.service.2 is correct
+2026-11-18 18:18:27.075 INFO  org.platformlambda.core.system.ServiceQueue:69 - STREAM stream.ef514190d3c94dc4b5f8ecce2fab9bef.out started as coroutine
+2026-11-18 18:18:27.076 INFO  org.platformlambda.core.system.ServiceQueue:88 - PRIVATE stream.ef514190d3c94dc4b5f8ecce2fab9bef.in started as coroutine
+2026-11-18 18:18:27.076 INFO  org.platformlambda.core.system.ObjectStreamIO:95 - Stream ef514190d3c94dc4b5f8ecce2fab9bef created, idle expiry 1 second
+2026-11-18 18:18:27.076 INFO  org.platformlambda.core.system.ServiceQueue:69 - STREAM stream.e815d118374145bab75998f3ddc873ec.out started as coroutine
+2026-11-18 18:18:27.076 INFO  org.platformlambda.core.system.ServiceQueue:88 - PRIVATE stream.e815d118374145bab75998f3ddc873ec.in started as coroutine
+2026-11-18 18:18:27.076 INFO  org.platformlambda.core.system.ObjectStreamIO:95 - Stream e815d118374145bab75998f3ddc873ec created, idle expiry 5 seconds
+2026-11-18 18:18:28.183 WARN  org.platformlambda.core.system.ObjectStreamIO:150 - stream.ef514190d3c94dc4b5f8ecce2fab9bef.in expired. Inactivity for 1 second (2026-11-18T18:18:27.076Z - 2026-11-18T18:18:27.076Z)
+2026-11-18 18:18:28.183 INFO  org.platformlambda.core.ObjectStreamTest:75 - stream.ef514190d3c94dc4b5f8ecce2fab9bef.in has expired
+2026-11-18 18:18:28.183 INFO  org.platformlambda.core.ObjectStreamTest:78 - stream.e815d118374145bab75998f3ddc873ec.in is still active
+2026-11-18 18:18:28.184 INFO  org.platformlambda.core.system.ServiceQueue:126 - stream.ef514190d3c94dc4b5f8ecce2fab9bef.in stopped
+2026-11-18 18:18:28.184 INFO  org.platformlambda.core.system.ServiceQueue:126 - stream.ef514190d3c94dc4b5f8ecce2fab9bef.out stopped
+2026-11-18 18:18:32.184 WARN  org.platformlambda.core.system.ObjectStreamIO:150 - stream.e815d118374145bab75998f3ddc873ec.in expired. Inactivity for 5 seconds (2026-11-18T18:18:27.076Z - 2026-11-18T18:18:27.077Z)
+2026-11-18 18:18:32.185 INFO  org.platformlambda.core.system.ServiceQueue:69 - STREAM stream.5f7def3c724b47e39472c13982387290.out started as coroutine
+2026-11-18 18:18:32.185 INFO  org.platformlambda.core.system.ServiceQueue:88 - PRIVATE stream.5f7def3c724b47e39472c13982387290.in started as coroutine
+2026-11-18 18:18:32.185 INFO  org.platformlambda.core.system.ObjectStreamIO:95 - Stream 5f7def3c724b47e39472c13982387290 created, idle expiry 1 second
+2026-11-18 18:18:32.185 INFO  org.platformlambda.core.ObjectStreamTest:95 - Using stream.5f7def3c724b47e39472c13982387290.in@20261118cb8e82f1dcce45ae15ab8f84666f6cad
+2026-11-18 18:18:32.185 INFO  org.platformlambda.core.system.ServiceQueue:126 - stream.e815d118374145bab75998f3ddc873ec.in stopped
+2026-11-18 18:18:32.185 INFO  org.platformlambda.core.ObjectStreamTest:105 - Beginning of Stream
+2026-11-18 18:18:32.185 INFO  org.platformlambda.core.system.ServiceQueue:126 - stream.e815d118374145bab75998f3ddc873ec.out stopped
+2026-11-18 18:18:32.187 INFO  org.platformlambda.core.ObjectStreamTest:118 - hello world 0
+2026-11-18 18:18:32.187 INFO  org.platformlambda.core.ObjectStreamTest:118 - hello world 1
+2026-11-18 18:18:32.188 INFO  org.platformlambda.core.ObjectStreamTest:118 - hello world 2
+2026-11-18 18:18:32.188 INFO  org.platformlambda.core.ObjectStreamTest:118 - hello world 3
+2026-11-18 18:18:32.188 INFO  org.platformlambda.core.ObjectStreamTest:118 - hello world 4
+2026-11-18 18:18:32.189 INFO  org.platformlambda.core.ObjectStreamTest:118 - hello world 5
+2026-11-18 18:18:32.189 INFO  org.platformlambda.core.ObjectStreamTest:118 - hello world 6
+2026-11-18 18:18:32.190 INFO  org.platformlambda.core.ObjectStreamTest:118 - hello world 7
+2026-11-18 18:18:32.190 INFO  org.platformlambda.core.ObjectStreamTest:118 - hello world 8
+2026-11-18 18:18:32.191 INFO  org.platformlambda.core.ObjectStreamTest:118 - hello world 9
+2026-11-18 18:18:32.191 INFO  org.platformlambda.core.ObjectStreamTest:123 - End of Stream
+2026-11-18 18:18:32.192 INFO  org.platformlambda.core.system.ServiceQueue:126 - stream.5f7def3c724b47e39472c13982387290.in stopped
+2026-11-18 18:18:32.192 INFO  org.platformlambda.core.system.ServiceQueue:126 - stream.5f7def3c724b47e39472c13982387290.out stopped
+2026-11-18 18:18:32.193 INFO  org.platformlambda.core.system.PubSub:87 - Created new PubSub instance (system)
+2026-11-18 18:18:32.194 INFO  org.platformlambda.core.system.PubSub:124 - Provider system (org.platformlambda.core.models.MockPubSub@36c54a56) loaded
+2026-11-18 18:18:32.214 INFO  org.platformlambda.core.util.ElasticQueue:399 - Cleared 40 unread events for unread.test/378
+2026-11-18 18:18:34.199 WARN  org.platformlambda.core.models.EventEnvelope:255 - Fall back to Map - Class com.unsafe.models.UnauthorizedObj not in safe.data.models
+2026-11-18 18:18:34.216 WARN  org.platformlambda.core.models.EventEnvelope:255 - Fall back to Map - Expected STRING but was BEGIN_OBJECT at path $.content
+
+[rc=0 54.4s]

@@ -493,3 +493,499 @@ Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_ba
 [ERROR]   mvn <args> -rf :logback-classic
 
 [rc=1 4.7s]
+$ git clone -q --filter=blob:none https://github.com/qos-ch/logback /tmp/jvm-work/logback-logback-classic
+
+[rc=0 3.3s]
+$ git fetch -q origin 0f57531977287fd3d8c9046e9f68e281715f3b10
+
+[rc=0 0.5s]
+$ git checkout -q -f 0f57531977287fd3d8c9046e9f68e281715f3b10
+
+[rc=0 1.4s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install -pl logback-classic -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+project.artifactId
+     [echo] compile classpath: 2.0.0-SNAPSHOT
+     [echo] slfj4:    /root/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar
+     [echo] felix   /root/.m2/repository/org/apache/felix/org.apache.felix.main/2.0.2/org.apache.felix.main-2.0.2.jar
+     [echo] ===============================
+     [echo] basedir:           /tmp/jvm-work/logback-logback-classic/logback-classic
+     [echo] ===============================
+
+copySLF4J_JAR:
+     [echo] Copying /root/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar to lib/
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/lib
+
+init:
+    [mkdir] Created dir: /tmp/jvm-work/logback-logback-classic/logback-classic/target/unit-reports
+
+createIBundle:
+    [mkdir] Created dir: /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+      [jar] Building jar: /tmp/jvm-work/logback-logback-classic/logback-classic/target/iBundle.jar
+
+logback:
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [echo] value of binding = logback
+    [junit] Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+    [junit] Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+    [junit] Running org.slf4j.test_osgi.BundleTest
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.276 sec
+
+testAll:
+project.artifactId
+     [echo] slf4j.version:  1.7.5
+
+testWithoutGroovy:
+    [junit] Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+    [junit] Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+    [junit] Running ch.qos.logback.classic.util.InitializationIntegrationTest
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.088 sec
+
+testConditionalsWithoutJanino:
+    [junit] Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+    [junit] Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+    [junit] Running ch.qos.logback.classic.boolex.ConditionalWithoutJanino
+    [junit] Running ch.qos.logback.classic.boolex.ConditionalWithoutJanino
+    [junit] Tests run: 1, Failures: 0, Errors: 1, Time elapsed: 0.031 sec
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-antrun-plugin:1.4:run (ant-integration-test) on project logback-classic: An Ant BuildException has occured: The following error occurred while executing this line:
+[ERROR] /tmp/jvm-work/logback-logback-classic/logback-classic/integration.xml:40: Test ch.qos.logback.classic.boolex.ConditionalWithoutJanino failed
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :logback-classic
+
+[rc=1 13.0s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= install -pl logback-classic -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+project.artifactId
+     [echo] compile classpath: 2.0.0-SNAPSHOT
+     [echo] slfj4:    /root/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar
+     [echo] felix   /root/.m2/repository/org/apache/felix/org.apache.felix.main/2.0.2/org.apache.felix.main-2.0.2.jar
+     [echo] ===============================
+     [echo] basedir:           /tmp/jvm-work/logback-logback-classic/logback-classic
+     [echo] ===============================
+
+copySLF4J_JAR:
+     [echo] Copying /root/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar to lib/
+
+init:
+
+createIBundle:
+
+logback:
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [echo] value of binding = logback
+    [junit] Running org.slf4j.test_osgi.BundleTest
+    [junit] Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+    [junit] Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.243 sec
+
+testAll:
+project.artifactId
+     [echo] slf4j.version:  1.7.5
+
+testWithoutGroovy:
+    [junit] Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+    [junit] Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+    [junit] Running ch.qos.logback.classic.util.InitializationIntegrationTest
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.08 sec
+
+testConditionalsWithoutJanino:
+    [junit] Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+    [junit] Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+    [junit] Running ch.qos.logback.classic.boolex.ConditionalWithoutJanino
+    [junit] Tests run: 1, Failures: 0, Errors: 1, Time elapsed: 0.026 sec
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-antrun-plugin:1.4:run (ant-integration-test) on project logback-classic: An Ant BuildException has occured: The following error occurred while executing this line:
+[ERROR] /tmp/jvm-work/logback-logback-classic/logback-classic/integration.xml:40: Test ch.qos.logback.classic.boolex.ConditionalWithoutJanino failed
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :logback-classic
+
+[rc=1 7.7s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install -pl logback-classic -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass$3$1 (file:/root/.m2/repository/org/codehaus/groovy/groovy-all/2.0.7/groovy-all-2.0.7.jar) to method java.lang.Object.finalize()
+WARNING: Please consider reporting this to the maintainers of org.codehaus.groovy.reflection.CachedClass$3$1
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+project.artifactId
+     [echo] compile classpath: 2.0.0-SNAPSHOT
+     [echo] slfj4:    /root/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar
+     [echo] felix   /root/.m2/repository/org/apache/felix/org.apache.felix.main/2.0.2/org.apache.felix.main-2.0.2.jar
+     [echo] ===============================
+     [echo] basedir:           /tmp/jvm-work/logback-logback-classic/logback-classic
+     [echo] ===============================
+
+copySLF4J_JAR:
+     [echo] Copying /root/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar to lib/
+
+init:
+
+createIBundle:
+
+logback:
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [echo] value of binding = logback
+    [junit] Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+    [junit] Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+    [junit] Running org.slf4j.test_osgi.BundleTest
+    [junit] WARNING: An illegal reflective access operation has occurred
+    [junit] WARNING: Illegal reflective access by org.apache.felix.framework.util.SecureAction (file:/root/.m2/repository/org/apache/felix/org.apache.felix.main/2.0.2/org.apache.felix.main-2.0.2.jar) to method java.net.URLClassLoader.addURL(java.net.URL)
+    [junit] WARNING: Please consider reporting this to the maintainers of org.apache.felix.framework.util.SecureAction
+    [junit] WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+    [junit] WARNING: All illegal access operations will be denied in a future release
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.396 sec
+
+testAll:
+project.artifactId
+     [echo] slf4j.version:  1.7.5
+
+testWithoutGroovy:
+    [junit] Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+    [junit] Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+    [junit] Running ch.qos.logback.classic.util.InitializationIntegrationTest
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.15 sec
+
+testConditionalsWithoutJanino:
+    [junit] Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+    [junit] Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+    [junit] Running ch.qos.logback.classic.boolex.ConditionalWithoutJanino
+    [junit] Tests run: 1, Failures: 0, Errors: 1, Time elapsed: 0.027 sec
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-antrun-plugin:1.4:run (ant-integration-test) on project logback-classic: An Ant BuildException has occured: The following error occurred while executing this line:
+[ERROR] /tmp/jvm-work/logback-logback-classic/logback-classic/integration.xml:40: Test ch.qos.logback.classic.boolex.ConditionalWithoutJanino failed
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :logback-classic
+
+[rc=1 8.2s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= install -pl logback-classic -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass$3$1 (file:/root/.m2/repository/org/codehaus/groovy/groovy-all/2.0.7/groovy-all-2.0.7.jar) to method java.lang.Object.finalize()
+WARNING: Please consider reporting this to the maintainers of org.codehaus.groovy.reflection.CachedClass$3$1
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+project.artifactId
+     [echo] compile classpath: 2.0.0-SNAPSHOT
+     [echo] slfj4:    /root/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar
+     [echo] felix   /root/.m2/repository/org/apache/felix/org.apache.felix.main/2.0.2/org.apache.felix.main-2.0.2.jar
+     [echo] ===============================
+     [echo] basedir:           /tmp/jvm-work/logback-logback-classic/logback-classic
+     [echo] ===============================
+
+copySLF4J_JAR:
+     [echo] Copying /root/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar to lib/
+
+init:
+
+createIBundle:
+
+logback:
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [copy] Copying 1 file to /tmp/jvm-work/logback-logback-classic/logback-classic/bundle
+     [echo] value of binding = logback
+    [junit] Running org.slf4j.test_osgi.BundleTest
+    [junit] Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+    [junit] Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+    [junit] WARNING: An illegal reflective access operation has occurred
+    [junit] WARNING: Illegal reflective access by org.apache.felix.framework.util.SecureAction (file:/root/.m2/repository/org/apache/felix/org.apache.felix.main/2.0.2/org.apache.felix.main-2.0.2.jar) to method java.net.URLClassLoader.addURL(java.net.URL)
+    [junit] WARNING: Please consider reporting this to the maintainers of org.apache.felix.framework.util.SecureAction
+    [junit] WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+    [junit] WARNING: All illegal access operations will be denied in a future release
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.35 sec
+
+testAll:
+project.artifactId
+     [echo] slf4j.version:  1.7.5
+
+testWithoutGroovy:
+    [junit] Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+    [junit] Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+    [junit] Running ch.qos.logback.classic.util.InitializationIntegrationTest
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.134 sec
+
+testConditionalsWithoutJanino:
+    [junit] Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+    [junit] Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+    [junit] Running ch.qos.logback.classic.boolex.ConditionalWithoutJanino
+    [junit] Tests run: 1, Failures: 0, Errors: 1, Time elapsed: 0.027 sec
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-antrun-plugin:1.4:run (ant-integration-test) on project logback-classic: An Ant BuildException has occured: The following error occurred while executing this line:
+[ERROR] /tmp/jvm-work/logback-logback-classic/logback-classic/integration.xml:40: Test ch.qos.logback.classic.boolex.ConditionalWithoutJanino failed
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :logback-classic
+
+[rc=1 8.1s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install -pl logback-classic -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] Failed to execute goal org.codehaus.gmaven:gmaven-plugin:1.4:compile (default) on project logback-classic: startup failed:
+[ERROR] General error during class generation: Unable to make protected void java.lang.Object.finalize() throws java.lang.Throwable accessible: module java.base does not "opens java.lang" to unnamed module @5dd6a4c8
+[ERROR] 
+[ERROR] java.lang.reflect.InaccessibleObjectException: Unable to make protected void java.lang.Object.finalize() throws java.lang.Throwable accessible: module java.base does not "opens java.lang" to unnamed module @5dd6a4c8
+[ERROR] 	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+[ERROR] 	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+[ERROR] 	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+[ERROR] 	at java.base/java.lang.reflect.AccessibleObject.setAccessible(AccessibleObject.java:130)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3$1.run(CachedClass.java:86)
+[ERROR] 	at java.base/java.security.AccessController.doPrivileged(AccessController.java:318)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3.initValue(CachedClass.java:81)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3.initValue(CachedClass.java:79)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.getLocked(LazyReference.java:46)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.get(LazyReference.java:33)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass.getMethods(CachedClass.java:250)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3.initValue(CachedClass.java:116)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3.initValue(CachedClass.java:79)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.getLocked(LazyReference.java:46)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.get(LazyReference.java:33)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass.getMethods(CachedClass.java:250)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3.initValue(CachedClass.java:116)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3.initValue(CachedClass.java:79)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.getLocked(LazyReference.java:46)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.get(LazyReference.java:33)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass.getMethods(CachedClass.java:250)
+[ERROR] 	at org.codehaus.groovy.reflection.stdclasses.CachedClosureClass.<init>(CachedClosureClass.java:29)
+[ERROR] 	at org.codehaus.groovy.reflection.ClassInfo.createCachedClass(ClassInfo.java:269)
+[ERROR] 	at org.codehaus.groovy.reflection.ClassInfo.access$400(ClassInfo.java:36)
+[ERROR] 	at org.codehaus.groovy.reflection.ClassInfo$LazyCachedClassRef.initValue(ClassInfo.java:435)
+[ERROR] 	at org.codehaus.groovy.reflection.ClassInfo$LazyCachedClassRef.initValue(ClassInfo.java:426)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.getLocked(LazyReference.java:46)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.get(LazyReference.java:33)
+[ERROR] 	at org.codehaus.groovy.reflection.ClassInfo.getCachedClass(ClassInfo.java:89)
+[ERROR] 	at org.codehaus.groovy.reflection.ReflectionCache.getCachedClass(ReflectionCache.java:107)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.BytecodeHelper.box(BytecodeHelper.java:614)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.BytecodeHelper.box(BytecodeHelper.java:606)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.OperandStack.box(OperandStack.java:205)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.CallSiteWriter.makeCallSite(CallSiteWriter.java:302)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.InvocationWriter.makeCall(InvocationWriter.java:237)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.InvocationWriter.makeCall(InvocationWriter.java:76)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.InvocationWriter.writeInvokeStaticMethod(InvocationWriter.java:392)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitStaticMethodCallExpression(AsmClassGenerator.java:684)
+[ERROR] 	at org.codehaus.groovy.ast.expr.StaticMethodCallExpression.visit(StaticMethodCallExpression.java:43)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.StatementWriter.writeReturn(StatementWriter.java:582)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.OptimizingStatementWriter.writeReturn(OptimizingStatementWriter.java:316)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitReturnStatement(AsmClassGenerator.java:505)
+[ERROR] 	at org.codehaus.groovy.ast.stmt.ReturnStatement.visit(ReturnStatement.java:47)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.StatementWriter.writeBlockStatement(StatementWriter.java:81)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.OptimizingStatementWriter.writeBlockStatement(OptimizingStatementWriter.java:155)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitBlockStatement(AsmClassGenerator.java:455)
+[ERROR] 	at org.codehaus.groovy.ast.stmt.BlockStatement.visit(BlockStatement.java:69)
+[ERROR] 	at org.codehaus.groovy.ast.ClassCodeVisitorSupport.visitClassCodeContainer(ClassCodeVisitorSupport.java:101)
+[ERROR] 	at org.codehaus.groovy.ast.ClassCodeVisitorSupport.visitConstructorOrMethod(ClassCodeVisitorSupport.java:112)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitStdMethod(AsmClassGenerator.java:319)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitConstructorOrMethod(AsmClassGenerator.java:276)
+[ERROR] 	at org.codehaus.groovy.ast.ClassCodeVisitorSupport.visitMethod(ClassCodeVisitorSupport.java:123)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitMethod(AsmClassGenerator.java:396)
+[ERROR] 	at org.codehaus.groovy.ast.ClassNode.visitContents(ClassNode.java:1059)
+[ERROR] 	at org.codehaus.groovy.ast.ClassCodeVisitorSupport.visitClass(ClassCodeVisitorSupport.java:50)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitClass(AsmClassGenerator.java:180)
+[ERROR] 	at org.codehaus.groovy.control.CompilationUnit$14.call(CompilationUnit.java:786)
+[ERROR] 	at org.codehaus.groovy.control.CompilationUnit.applyToPrimaryClassNodes(CompilationUnit.java:1027)
+[ERROR] 	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:564)
+[ERROR] 	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:542)
+[ERROR] 	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:519)
+[ERROR] 	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:498)
+[ERROR] 	at org.codehaus.gmaven.runtime.v1_8.ClassCompilerFeature$ClassCompilerImpl.compile(ClassCompilerFeature.java:148)
+[ERROR] 	at org.codehaus.gmaven.plugin.compile.AbstractCompileMojo.compile(AbstractCompileMojo.java:200)
+[ERROR] 	at org.codehaus.gmaven.plugin.compile.AbstractCompileMojo.process(AbstractCompileMojo.java:164)
+[ERROR] 	at org.codehaus.gmaven.plugin.ComponentMojoSupport.doExecute(ComponentMojoSupport.java:60)
+[ERROR] 	at org.codehaus.gmaven.plugin.MojoSupport.execute(MojoSupport.java:69)
+[ERROR] 	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:126)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute2(MojoExecutor.java:328)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute(MojoExecutor.java:316)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:212)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:174)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.access$000(MojoExecutor.java:75)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor$1.run(MojoExecutor.java:162)
+[ERROR] 	at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute(DefaultMojosExecutionStrategy.java:39)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:159)
+[ERROR] 	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:105)
+[ERROR] 	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:73)
+[ERROR] 	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:53)
+[ERROR] 	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:118)
+[ERROR] 	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:261)
+[ERROR] 	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:173)
+[ERROR] 	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:101)
+[ERROR] 	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:906)
+[ERROR] 	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:283)
+[ERROR] 	at org.apache.maven.cli.MavenCli.main(MavenCli.java:206)
+[ERROR] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[ERROR] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[ERROR] 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[ERROR] 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[ERROR] 	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:255)
+[ERROR] 	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:201)
+[ERROR] 	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:361)
+[ERROR] 	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:314)
+[ERROR] 
+[ERROR] 1 error
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :logback-classic
+
+[rc=1 4.4s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= install -pl logback-classic -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=34303 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] Failed to execute goal org.codehaus.gmaven:gmaven-plugin:1.4:compile (default) on project logback-classic: startup failed:
+[ERROR] General error during class generation: Unable to make protected void java.lang.Object.finalize() throws java.lang.Throwable accessible: module java.base does not "opens java.lang" to unnamed module @47be41c6
+[ERROR] 
+[ERROR] java.lang.reflect.InaccessibleObjectException: Unable to make protected void java.lang.Object.finalize() throws java.lang.Throwable accessible: module java.base does not "opens java.lang" to unnamed module @47be41c6
+[ERROR] 	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+[ERROR] 	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+[ERROR] 	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+[ERROR] 	at java.base/java.lang.reflect.AccessibleObject.setAccessible(AccessibleObject.java:130)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3$1.run(CachedClass.java:86)
+[ERROR] 	at java.base/java.security.AccessController.doPrivileged(AccessController.java:318)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3.initValue(CachedClass.java:81)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3.initValue(CachedClass.java:79)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.getLocked(LazyReference.java:46)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.get(LazyReference.java:33)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass.getMethods(CachedClass.java:250)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3.initValue(CachedClass.java:116)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3.initValue(CachedClass.java:79)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.getLocked(LazyReference.java:46)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.get(LazyReference.java:33)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass.getMethods(CachedClass.java:250)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3.initValue(CachedClass.java:116)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass$3.initValue(CachedClass.java:79)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.getLocked(LazyReference.java:46)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.get(LazyReference.java:33)
+[ERROR] 	at org.codehaus.groovy.reflection.CachedClass.getMethods(CachedClass.java:250)
+[ERROR] 	at org.codehaus.groovy.reflection.stdclasses.CachedClosureClass.<init>(CachedClosureClass.java:29)
+[ERROR] 	at org.codehaus.groovy.reflection.ClassInfo.createCachedClass(ClassInfo.java:269)
+[ERROR] 	at org.codehaus.groovy.reflection.ClassInfo.access$400(ClassInfo.java:36)
+[ERROR] 	at org.codehaus.groovy.reflection.ClassInfo$LazyCachedClassRef.initValue(ClassInfo.java:435)
+[ERROR] 	at org.codehaus.groovy.reflection.ClassInfo$LazyCachedClassRef.initValue(ClassInfo.java:426)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.getLocked(LazyReference.java:46)
+[ERROR] 	at org.codehaus.groovy.util.LazyReference.get(LazyReference.java:33)
+[ERROR] 	at org.codehaus.groovy.reflection.ClassInfo.getCachedClass(ClassInfo.java:89)
+[ERROR] 	at org.codehaus.groovy.reflection.ReflectionCache.getCachedClass(ReflectionCache.java:107)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.BytecodeHelper.box(BytecodeHelper.java:614)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.BytecodeHelper.box(BytecodeHelper.java:606)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.OperandStack.box(OperandStack.java:205)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.CallSiteWriter.makeCallSite(CallSiteWriter.java:302)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.InvocationWriter.makeCall(InvocationWriter.java:237)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.InvocationWriter.makeCall(InvocationWriter.java:76)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.InvocationWriter.writeInvokeStaticMethod(InvocationWriter.java:392)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitStaticMethodCallExpression(AsmClassGenerator.java:684)
+[ERROR] 	at org.codehaus.groovy.ast.expr.StaticMethodCallExpression.visit(StaticMethodCallExpression.java:43)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.StatementWriter.writeReturn(StatementWriter.java:582)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.OptimizingStatementWriter.writeReturn(OptimizingStatementWriter.java:316)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitReturnStatement(AsmClassGenerator.java:505)
+[ERROR] 	at org.codehaus.groovy.ast.stmt.ReturnStatement.visit(ReturnStatement.java:47)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.StatementWriter.writeBlockStatement(StatementWriter.java:81)
+[ERROR] 	at org.codehaus.groovy.classgen.asm.OptimizingStatementWriter.writeBlockStatement(OptimizingStatementWriter.java:155)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitBlockStatement(AsmClassGenerator.java:455)
+[ERROR] 	at org.codehaus.groovy.ast.stmt.BlockStatement.visit(BlockStatement.java:69)
+[ERROR] 	at org.codehaus.groovy.ast.ClassCodeVisitorSupport.visitClassCodeContainer(ClassCodeVisitorSupport.java:101)
+[ERROR] 	at org.codehaus.groovy.ast.ClassCodeVisitorSupport.visitConstructorOrMethod(ClassCodeVisitorSupport.java:112)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitStdMethod(AsmClassGenerator.java:319)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitConstructorOrMethod(AsmClassGenerator.java:276)
+[ERROR] 	at org.codehaus.groovy.ast.ClassCodeVisitorSupport.visitMethod(ClassCodeVisitorSupport.java:123)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitMethod(AsmClassGenerator.java:396)
+[ERROR] 	at org.codehaus.groovy.ast.ClassNode.visitContents(ClassNode.java:1059)
+[ERROR] 	at org.codehaus.groovy.ast.ClassCodeVisitorSupport.visitClass(ClassCodeVisitorSupport.java:50)
+[ERROR] 	at org.codehaus.groovy.classgen.AsmClassGenerator.visitClass(AsmClassGenerator.java:180)
+[ERROR] 	at org.codehaus.groovy.control.CompilationUnit$14.call(CompilationUnit.java:786)
+[ERROR] 	at org.codehaus.groovy.control.CompilationUnit.applyToPrimaryClassNodes(CompilationUnit.java:1027)
+[ERROR] 	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:564)
+[ERROR] 	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:542)
+[ERROR] 	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:519)
+[ERROR] 	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:498)
+[ERROR] 	at org.codehaus.gmaven.runtime.v1_8.ClassCompilerFeature$ClassCompilerImpl.compile(ClassCompilerFeature.java:148)
+[ERROR] 	at org.codehaus.gmaven.plugin.compile.AbstractCompileMojo.compile(AbstractCompileMojo.java:200)
+[ERROR] 	at org.codehaus.gmaven.plugin.compile.AbstractCompileMojo.process(AbstractCompileMojo.java:164)
+[ERROR] 	at org.codehaus.gmaven.plugin.ComponentMojoSupport.doExecute(ComponentMojoSupport.java:60)
+[ERROR] 	at org.codehaus.gmaven.plugin.MojoSupport.execute(MojoSupport.java:69)
+[ERROR] 	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:126)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute2(MojoExecutor.java:328)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute(MojoExecutor.java:316)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:212)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:174)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.access$000(MojoExecutor.java:75)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor$1.run(MojoExecutor.java:162)
+[ERROR] 	at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute(DefaultMojosExecutionStrategy.java:39)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:159)
+[ERROR] 	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:105)
+[ERROR] 	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:73)
+[ERROR] 	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:53)
+[ERROR] 	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:118)
+[ERROR] 	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:261)
+[ERROR] 	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:173)
+[ERROR] 	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:101)
+[ERROR] 	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:906)
+[ERROR] 	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:283)
+[ERROR] 	at org.apache.maven.cli.MavenCli.main(MavenCli.java:206)
+[ERROR] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[ERROR] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[ERROR] 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[ERROR] 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[ERROR] 	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:255)
+[ERROR] 	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:201)
+[ERROR] 	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:361)
+[ERROR] 	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:314)
+[ERROR] 
+[ERROR] 1 error
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :logback-classic
+
+[rc=1 4.1s]

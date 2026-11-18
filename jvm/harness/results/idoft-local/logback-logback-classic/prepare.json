@@ -4,28 +4,28 @@
  "sha": "0f57531977287fd3d8c9046e9f68e281715f3b10",
  "module": "logback-classic",
  "status": "build-failed",
- "build_jdk8": {
+ "build_jdk8_install": {
   "rc": 1,
-  "seconds": 33.7
+  "seconds": 13.0
  },
- "build_jdk8_compat": {
+ "build_jdk8_install_compat": {
   "rc": 1,
-  "seconds": 11.7
+  "seconds": 7.7
  },
- "build_jdk11": {
+ "build_jdk11_install": {
   "rc": 1,
-  "seconds": 12.1
+  "seconds": 8.2
  },
- "build_jdk11_compat": {
+ "build_jdk11_install_compat": {
   "rc": 1,
-  "seconds": 12.3
+  "seconds": 8.1
  },
- "build_jdk17": {
+ "build_jdk17_install": {
   "rc": 1,
-  "seconds": 7.0
+  "seconds": 4.4
  },
- "build_jdk17_compat": {
+ "build_jdk17_install_compat": {
   "rc": 1,
-  "seconds": 4.7
+  "seconds": 4.1
  }
 }

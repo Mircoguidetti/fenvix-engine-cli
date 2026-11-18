@@ -1,0 +1,697 @@
+$ mvn -B -q surefire:test -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1877869002 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=787756153
+e map cache.size:456
+2026-11-18 18:33:14.937 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.937 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='Sheet1'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@59f8dd55
+2026-11-18 18:33:14.941 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.942 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"}]
+2026-11-18 18:33:14.942 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.942 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=1, sheetName='Sheet2'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@2992ec29
+2026-11-18 18:33:14.943 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.943 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"}]
+2026-11-18 18:33:14.943 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.943 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=2, sheetName='Sheet3'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@3aa81f71
+2026-11-18 18:33:14.944 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.945 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"}]
+2026-11-18 18:33:14.945 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.945 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=3, sheetName='Sheet4'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@4700cbf9
+2026-11-18 18:33:14.945 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.946 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"}]
+2026-11-18 18:33:14.946 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.946 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=4, sheetName='Sheet5'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@1073cd6a
+2026-11-18 18:33:14.947 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.947 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"},{"title":"表5数据"}]
+2026-11-18 18:33:14.947 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.947 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=5, sheetName='Sheet6'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@4f052b79
+2026-11-18 18:33:14.948 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.948 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"},{"title":"表5数据"},{"title":"表6数据"}]
+2026-11-18 18:33:14.948 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.949 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:33:14.950 DEBUG [main] com.alibaba.excel.analysis.v03.XlsSaxAnalyser:118 - Custom stop!
+2026-11-18 18:33:14.952 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.952 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='Sheet1'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@11cf0f95
+2026-11-18 18:33:14.952 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.952 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"}]
+2026-11-18 18:33:14.953 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.953 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"}]
+2026-11-18 18:33:14.954 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.954 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=1, sheetName='Sheet2'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@37248b1d
+2026-11-18 18:33:14.954 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.954 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"}]
+2026-11-18 18:33:14.955 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.955 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"}]
+2026-11-18 18:33:14.956 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.956 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=2, sheetName='Sheet3'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@a036166
+2026-11-18 18:33:14.956 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.956 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"}]
+2026-11-18 18:33:14.957 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.957 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"}]
+2026-11-18 18:33:14.957 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.958 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=3, sheetName='Sheet4'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@36ca5352
+2026-11-18 18:33:14.959 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.959 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"}]
+2026-11-18 18:33:14.963 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.963 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"}]
+2026-11-18 18:33:14.963 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.963 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=4, sheetName='Sheet5'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@dc96e2c
+2026-11-18 18:33:14.964 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.964 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"},{"title":"表5数据"}]
+2026-11-18 18:33:14.966 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.966 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"},{"title":"表5数据"}]
+2026-11-18 18:33:14.966 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.966 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=5, sheetName='Sheet6'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@661395d0
+2026-11-18 18:33:14.967 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.967 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"},{"title":"表5数据"},{"title":"表6数据"}]
+2026-11-18 18:33:14.968 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.969 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:33:14.971 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:456
+2026-11-18 18:33:14.976 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.976 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='Sheet1'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@2d58415b
+2026-11-18 18:33:14.977 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.977 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"}]
+2026-11-18 18:33:14.977 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.977 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=1, sheetName='Sheet2'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@95b1424
+2026-11-18 18:33:14.978 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.978 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"}]
+2026-11-18 18:33:14.982 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.982 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=2, sheetName='Sheet3'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@5f54cb80
+2026-11-18 18:33:14.983 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.983 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"}]
+2026-11-18 18:33:14.983 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.983 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=3, sheetName='Sheet4'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@1d5bc227
+2026-11-18 18:33:14.984 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.984 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"}]
+2026-11-18 18:33:14.984 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.984 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=4, sheetName='Sheet5'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@efe5c1a
+2026-11-18 18:33:14.985 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.985 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"},{"title":"表5数据"}]
+2026-11-18 18:33:14.985 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.985 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=5, sheetName='Sheet6'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@14a5dfdf
+2026-11-18 18:33:14.985 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.985 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"},{"title":"表5数据"},{"title":"表6数据"}]
+2026-11-18 18:33:14.990 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.991 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:33:14.994 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.994 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='Sheet1'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@14f59ba0
+2026-11-18 18:33:14.994 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.994 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"}]
+2026-11-18 18:33:14.994 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.994 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=1, sheetName='Sheet2'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@1056c776
+2026-11-18 18:33:14.994 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:14.995 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"}]
+2026-11-18 18:33:14.995 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:14.999 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=2, sheetName='Sheet3'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@21750c4c
+2026-11-18 18:33:14.999 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:15.000 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"}]
+2026-11-18 18:33:15.000 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:15.000 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=3, sheetName='Sheet4'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@43184dc
+2026-11-18 18:33:15.000 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:15.000 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"}]
+2026-11-18 18:33:15.000 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:15.000 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=4, sheetName='Sheet5'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@16c04688
+2026-11-18 18:33:15.000 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:15.000 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"},{"title":"表5数据"}]
+2026-11-18 18:33:15.000 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:33:15.000 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=5, sheetName='Sheet6'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@68078fe3
+2026-11-18 18:33:15.001 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:30 - A form is read finished.
+2026-11-18 18:33:15.001 DEBUG [main] com.alibaba.easyexcel.test.core.multiplesheets.MultipleSheetsListener:32 - All row:[{"title":"表1数据"},{"title":"表2数据"},{"title":"表3数据"},{"title":"表4数据"},{"title":"表5数据"},{"title":"表6数据"}]
+
+[rc=0 81.0s]
+$ mvn -B -q surefire:test -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1877950094 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=787837002
+.LargeDataTest:48 - 97 fill success.
+2026-11-18 18:34:14.961 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:141 - Sheet:null is already existed
+2026-11-18 18:34:14.961 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:147 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:34:15.104 INFO [main] com.alibaba.easyexcel.test.core.large.LargeDataTest:48 - 98 fill success.
+2026-11-18 18:34:15.107 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:141 - Sheet:null is already existed
+2026-11-18 18:34:15.107 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:147 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:34:15.251 INFO [main] com.alibaba.easyexcel.test.core.large.LargeDataTest:48 - 99 fill success.
+2026-11-18 18:34:28.898 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:34:28.915 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:34:28.915 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.915 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:34:28.917 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:34:28.917 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.917 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:34:28.917 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:34:28.936 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:34:28.936 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.937 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:34:28.943 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:34:28.945 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:34:28.945 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.945 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@22be936c
+2026-11-18 18:34:28.947 DEBUG [main] com.alibaba.easyexcel.test.core.style.StyleDataListener:32 - First row:{"string":"字符串0","string1":"字符串01"}
+2026-11-18 18:34:28.948 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:34:28.948 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.948 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:34:28.949 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:34:28.949 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.949 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:34:28.949 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:34:28.952 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:34:28.952 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.952 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:34:28.952 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:34:28.953 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.953 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@752de0f7
+2026-11-18 18:34:28.953 DEBUG [main] com.alibaba.easyexcel.test.core.style.StyleDataListener:32 - First row:{"string":"字符串0","string1":"字符串01"}
+2026-11-18 18:34:28.956 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:34:28.956 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.956 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:34:28.957 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:34:28.957 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.957 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:34:28.957 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:34:28.969 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:34:28.970 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:34:28.970 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.971 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:34:28.972 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:34:28.972 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.972 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:34:28.972 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:34:28.981 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:34:28.984 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:34:28.984 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.984 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:34:28.985 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:34:28.986 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:28.986 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:34:28.986 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:34:29.087 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:34:29.108 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.109 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:34:29.111 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:34:29.113 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:34:29.113 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.113 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@4cc883ae
+2026-11-18 18:34:29.117 DEBUG [main] com.alibaba.easyexcel.test.core.encrypt.EncryptDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:34:29.119 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:34:29.119 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.119 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:34:29.119 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:34:29.119 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.120 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:34:29.120 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:34:29.129 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:34:29.130 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.130 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:34:29.136 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:34:29.136 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.136 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@5dd21bef
+2026-11-18 18:34:29.139 DEBUG [main] com.alibaba.easyexcel.test.core.encrypt.EncryptDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:34:29.139 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:34:29.140 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.140 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:34:29.141 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:34:29.141 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.141 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:34:29.142 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:34:29.179 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:34:29.196 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.196 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:34:29.198 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:34:29.201 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:34:29.201 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.201 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@7eaa17b6
+2026-11-18 18:34:29.202 DEBUG [main] com.alibaba.easyexcel.test.core.encrypt.EncryptDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:34:29.203 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:34:29.203 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.203 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:34:29.204 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:34:29.204 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.205 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:34:29.205 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:34:29.208 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:34:29.209 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.209 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:34:29.210 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:34:29.211 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.211 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@aefa2cc
+2026-11-18 18:34:29.211 DEBUG [main] com.alibaba.easyexcel.test.core.encrypt.EncryptDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:34:29.220 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:34:29.220 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.220 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:34:29.222 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:34:29.223 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.223 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:34:29.223 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:34:29.233 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:34:29.233 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.233 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:34:29.235 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:34:29.237 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:34:29.237 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.237 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@6018f058
+2026-11-18 18:34:29.240 DEBUG [main] com.alibaba.easyexcel.test.core.annotation.AnnotationIndexAndNameDataListener:34 - First row:{"index0":"第0个","index1":"第1个","index2":"第2个","index4":"第4个"}
+2026-11-18 18:34:29.241 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:34:29.241 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.241 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:34:29.241 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:34:29.241 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.241 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:34:29.241 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:34:29.243 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:34:29.243 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.243 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:34:29.244 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:34:29.244 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:34:29.244 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@12a56a50
+2026-11-18 18:34:29.244 DEBUG [main] com.alibaba.easyexcel.test.core.annotation.AnnotationIndexAndNameDataListener:34 - First row:{"index0":"第0个","index1":"第1个","index2":"第2个","index4":"第4个"}
+
+[rc=0 73.8s]
+$ mvn -B -q surefire:test -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1878023933 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=787910619
+laString":"1测试","stringNumber":"1","stringNumberDate":"2020-1-1 1:01","stringString":"测试"}
+2026-11-18 18:35:42.227 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:35:42.228 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:35:42.228 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:35:42.228 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:35:42.228 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='Sheet1'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@4bef1605
+2026-11-18 18:35:42.229 DEBUG [main] com.alibaba.excel.analysis.v03.handlers.FormulaRecordHandler:44 - Get formula value error.
+java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(ArrayList.java:659)
+	at java.util.ArrayList.get(ArrayList.java:435)
+	at org.apache.poi.hssf.model.LinkTable.getNameRecord(LinkTable.java:321)
+	at org.apache.poi.hssf.model.InternalWorkbook.getNameRecord(InternalWorkbook.java:1614)
+	at org.apache.poi.hssf.usermodel.HSSFEvaluationWorkbook.getNameText(HSSFEvaluationWorkbook.java:215)
+	at org.apache.poi.ss.formula.ptg.NamePtg.toFormulaString(NamePtg.java:72)
+	at org.apache.poi.ss.formula.FormulaRenderer.toFormulaString(FormulaRenderer.java:91)
+	at org.apache.poi.hssf.model.HSSFFormulaParser.toFormulaString(HSSFFormulaParser.java:90)
+	at com.alibaba.excel.analysis.v03.handlers.FormulaRecordHandler.processRecord(FormulaRecordHandler.java:41)
+	at com.alibaba.excel.analysis.v03.XlsSaxAnalyser.processRecord(XlsSaxAnalyser.java:158)
+	at org.apache.poi.hssf.eventusermodel.MissingRecordAwareHSSFListener.processRecord(MissingRecordAwareHSSFListener.java:203)
+	at org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener.processRecord(FormatTrackingHSSFListener.java:92)
+	at org.apache.poi.hssf.eventusermodel.HSSFRequest.processRecord(HSSFRequest.java:109)
+	at org.apache.poi.hssf.eventusermodel.HSSFEventFactory.genericProcessEvents(HSSFEventFactory.java:179)
+	at org.apache.poi.hssf.eventusermodel.HSSFEventFactory.processEvents(HSSFEventFactory.java:136)
+	at org.apache.poi.hssf.eventusermodel.HSSFEventFactory.processWorkbookEvents(HSSFEventFactory.java:82)
+	at org.apache.poi.hssf.eventusermodel.HSSFEventFactory.processWorkbookEvents(HSSFEventFactory.java:54)
+	at com.alibaba.excel.analysis.v03.XlsSaxAnalyser.execute(XlsSaxAnalyser.java:137)
+	at com.alibaba.excel.analysis.ExcelAnalyserImpl.analysis(ExcelAnalyserImpl.java:115)
+	at com.alibaba.excel.ExcelReader.read(ExcelReader.java:182)
+	at com.alibaba.excel.ExcelReader.read(ExcelReader.java:172)
+	at com.alibaba.excel.read.builder.ExcelReaderSheetBuilder.doRead(ExcelReaderSheetBuilder.java:65)
+	at com.alibaba.easyexcel.test.core.converter.ConverterDataTest.readAllConverter(ConverterDataTest.java:97)
+	at com.alibaba.easyexcel.test.core.converter.ConverterDataTest.t04ReadAllConverter03(ConverterDataTest.java:62)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:316)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:240)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:214)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:155)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+2026-11-18 18:35:42.230 DEBUG [main] com.alibaba.easyexcel.test.core.converter.ReadAllConverterDataListener:71 - First row:{"bigDecimalBoolean":1,"bigDecimalNumber":1.0,"bigDecimalString":1,"booleanBoolean":true,"booleanNumber":true,"booleanString":true,"byteBoolean":1,"byteNumber":1,"byteString":1,"dateNumber":1577840461000,"dateString":1577840461000,"doubleBoolean":1.0,"doubleNumber":1.0,"doubleString":1.0,"floatBoolean":1.0,"floatNumber":1.0,"floatString":1.0,"integerBoolean":1,"integerNumber":1,"integerString":1,"longBoolean":1,"longNumber":1,"longString":1,"shortBoolean":1,"shortNumber":1,"shortString":1,"stringBoolean":"true","stringError":"#VALUE!","stringFormulaNumber":"2","stringFormulaString":"1测试","stringNumber":"1","stringNumberDate":"2020-1-1 1:01","stringString":"测试"}
+2026-11-18 18:35:42.235 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:35:42.236 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:35:42.236 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:35:42.237 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:35:42.238 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:35:42.238 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:35:42.238 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:35:42.370 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:35:42.375 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:35:42.375 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:35:42.375 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:35:42.375 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:35:42.375 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:35:42.376 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:35:42.376 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:35:42.401 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:35:42.411 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:35:42.411 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.411 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:35:42.413 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:35:42.413 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.414 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:35:42.414 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:35:42.443 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:35:42.443 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.443 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:35:42.446 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.446 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='第一个sheet'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@4025c7fe
+2026-11-18 18:35:42.451 DEBUG [main] com.alibaba.easyexcel.test.core.compatibility.CompatibilityDataListener:32 - First row:["字符串00","字符串10"]
+2026-11-18 18:35:42.451 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:35:42.452 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.452 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:35:42.453 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:35:42.453 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.453 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:35:42.453 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:35:42.472 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:35:42.472 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.472 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:35:42.483 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.483 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='第一个sheet'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@1ec79ecd
+2026-11-18 18:35:42.484 DEBUG [main] com.alibaba.easyexcel.test.core.compatibility.CompatibilityDataListener:32 - First row:["字符串00","字符串10"]
+2026-11-18 18:35:42.486 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:35:42.486 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.488 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:35:42.489 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:35:42.489 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.490 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:35:42.490 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:35:42.512 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:35:42.512 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.512 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:35:42.519 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.519 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='第一个sheet'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@5c231e8e
+2026-11-18 18:35:42.520 DEBUG [main] com.alibaba.easyexcel.test.core.compatibility.CompatibilityDataListener:32 - First row:["字符串00","字符串10"]
+2026-11-18 18:35:42.521 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:35:42.521 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.521 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:35:42.522 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:35:42.522 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.523 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:35:42.523 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:35:42.530 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:35:42.530 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.530 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:35:42.533 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.533 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='第一个sheet'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@a036166
+2026-11-18 18:35:42.534 DEBUG [main] com.alibaba.easyexcel.test.core.compatibility.CompatibilityDataListener:32 - First row:["字符串00","字符串10"]
+2026-11-18 18:35:42.535 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:35:42.535 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.535 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:35:42.536 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:35:42.536 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.536 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:35:42.536 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:35:42.548 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:35:42.548 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.548 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:35:42.552 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.552 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='第一个sheet'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@702b1565
+2026-11-18 18:35:42.553 DEBUG [main] com.alibaba.easyexcel.test.core.compatibility.CompatibilityDataListener:32 - First row:["字符串00","字符串10"]
+2026-11-18 18:35:42.560 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:35:42.560 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.560 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:35:42.562 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:35:42.562 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.562 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:35:42.562 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:35:42.582 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:35:42.583 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.583 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:35:42.595 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:35:42.595 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='第一个sheet'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@1056c776
+2026-11-18 18:35:42.597 DEBUG [main] com.alibaba.easyexcel.test.core.compatibility.CompatibilityDataListener:32 - First row:["字符串00","字符串10"]
+
+[rc=0 73.6s]
+$ mvn -B -q surefire:test -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1878097539 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=787984004
+m.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:36:51.127 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.127 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:36:51.127 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:36:51.128 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:36:51.129 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:36:51.129 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:36:51.129 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:36:51.129 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:36:51.130 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@67ab5f2f
+2026-11-18 18:36:51.130 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:36:51.130 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.130 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:36:51.132 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:36:51.132 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.132 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:36:51.132 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:36:51.145 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:36:51.146 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:36:51.146 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:36:51.147 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:36:51.149 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:36:51.149 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:36:51.149 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@4d544a2f
+2026-11-18 18:36:51.150 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:36:51.150 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.150 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:36:51.157 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:36:51.158 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.158 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:36:51.158 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:36:51.158 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:36:51.159 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:36:51.159 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:36:51.159 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:36:51.159 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:36:51.159 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@50bb4db3
+2026-11-18 18:36:51.160 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:36:51.160 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.160 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:36:51.162 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:36:51.162 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.162 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:36:51.162 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:36:51.169 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:36:51.169 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:36:51.169 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:36:51.205 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:36:51.213 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:36:51.213 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:36:51.213 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@38677323
+2026-11-18 18:36:51.214 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:36:51.214 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.214 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:36:51.215 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:36:51.215 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.215 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:36:51.215 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:36:51.219 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:36:51.219 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:36:51.219 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:36:51.220 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:36:51.220 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is NONE
+2026-11-18 18:36:51.220 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@3069a30a
+2026-11-18 18:36:51.240 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:36:51.241 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.242 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:36:51.244 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:36:51.244 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.244 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:36:51.244 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:36:51.274 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:36:51.274 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.275 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:36:51.276 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:36:51.278 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:36:51.278 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.278 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@2e877bdf
+2026-11-18 18:36:51.285 DEBUG [main] com.alibaba.easyexcel.test.core.style.StyleDataListener:32 - First row:{"string":"字符串0","string1":"字符串01"}
+2026-11-18 18:36:51.285 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:36:51.285 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.286 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:36:51.286 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:36:51.286 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.286 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:36:51.286 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:36:51.291 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:36:51.292 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.292 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:36:51.293 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:36:51.293 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.293 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@b7511dd
+2026-11-18 18:36:51.293 DEBUG [main] com.alibaba.easyexcel.test.core.style.StyleDataListener:32 - First row:{"string":"字符串0","string1":"字符串01"}
+2026-11-18 18:36:51.300 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:36:51.300 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.300 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:36:51.307 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:36:51.307 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.307 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:36:51.307 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:36:51.327 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:36:51.327 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:36:51.327 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.328 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:36:51.329 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:36:51.329 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.329 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:36:51.329 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:36:51.340 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:36:51.343 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:36:51.344 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.344 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:36:51.345 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:36:51.346 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.346 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:36:51.346 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:36:51.363 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:36:51.363 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.363 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:36:51.365 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:36:51.371 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:36:51.371 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.371 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@14a5dfdf
+2026-11-18 18:36:51.374 DEBUG [main] com.alibaba.easyexcel.test.core.annotation.AnnotationDataListener:39 - First row:{"date":1577840461000,"number":99.99}
+2026-11-18 18:36:51.375 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:36:51.375 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.375 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:36:51.376 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:36:51.376 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.376 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:36:51.376 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:36:51.378 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:36:51.380 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.380 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:36:51.381 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:36:51.381 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:36:51.381 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@7cfffe6e
+2026-11-18 18:36:51.383 DEBUG [main] com.alibaba.easyexcel.test.core.annotation.AnnotationDataListener:39 - First row:{"date":1577840461000,"number":99.99}
+
+[rc=0 68.0s]
+$ mvn -B -q surefire:test -Dmaven.test.failure.ignore=true -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false -DtrimStackTrace=true -Djacoco.skip=true -Dsurefire.runOrder=random -Dsurefire.runOrder.random.seed=1878165561 -Djunit.jupiter.testmethod.order.default=org.junit.jupiter.api.MethodOrderer$Random -Djunit.jupiter.execution.order.random.seed=788051822
+se map cache.size:137
+2026-11-18 18:38:07.627 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:38:07.628 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.628 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@2b72be49
+2026-11-18 18:38:07.628 DEBUG [main] com.alibaba.easyexcel.test.core.encrypt.EncryptDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:38:07.630 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:38:07.630 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.630 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:38:07.631 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:38:07.632 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.632 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:38:07.632 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:38:07.634 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:38:07.638 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.639 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:38:07.649 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:38:07.649 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.650 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xls.XlsReadSheetHolder@299ca97a
+2026-11-18 18:38:07.650 DEBUG [main] com.alibaba.easyexcel.test.core.encrypt.EncryptDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:38:07.658 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:38:07.659 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.659 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:38:07.660 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:38:07.663 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.663 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:38:07.664 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:38:07.673 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:38:07.674 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.674 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:38:07.676 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:38:07.677 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:38:07.677 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.677 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@7e1db9d3
+2026-11-18 18:38:07.681 DEBUG [main] com.alibaba.easyexcel.test.core.parameter.ParameterDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:38:07.681 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:38:07.681 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.682 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:38:07.683 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:38:07.684 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.684 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:38:07.685 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:38:07.696 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:38:07.696 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.696 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:38:07.698 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:38:07.703 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:38:07.706 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.706 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@733035a9
+2026-11-18 18:38:07.707 DEBUG [main] com.alibaba.easyexcel.test.core.parameter.ParameterDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:38:07.708 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:38:07.708 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.708 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:38:07.710 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:38:07.710 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.710 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:38:07.710 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:38:07.720 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:38:07.720 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.720 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:38:07.721 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:38:07.723 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:38:07.723 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.723 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@5578254a
+2026-11-18 18:38:07.724 DEBUG [main] com.alibaba.easyexcel.test.core.parameter.ParameterDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:38:07.725 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:38:07.725 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.725 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:38:07.726 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:38:07.726 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.726 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:38:07.726 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:38:07.733 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:38:07.733 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.733 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:38:07.734 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:38:07.736 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:38:07.736 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.736 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@20974ddf
+2026-11-18 18:38:07.737 DEBUG [main] com.alibaba.easyexcel.test.core.parameter.ParameterDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:38:07.739 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:38:07.739 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.740 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:38:07.748 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:38:07.748 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.749 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:38:07.749 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:38:07.756 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.756 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:287 - CurrentConfiguration is writeTableHolder
+2026-11-18 18:38:07.768 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:38:07.768 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.769 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:38:07.773 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.773 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@6fb6be5e
+2026-11-18 18:38:07.774 DEBUG [main] com.alibaba.easyexcel.test.core.parameter.ParameterDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:38:07.774 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.774 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:38:07.778 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.778 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@6019f324
+2026-11-18 18:38:07.779 DEBUG [main] com.alibaba.easyexcel.test.core.parameter.ParameterDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:38:07.780 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:38:07.780 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.780 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:38:07.785 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:38:07.785 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.785 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:38:07.786 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:38:07.787 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.788 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:287 - CurrentConfiguration is writeTableHolder
+2026-11-18 18:38:07.800 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:38:07.800 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.801 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:38:07.804 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.805 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@25254888
+2026-11-18 18:38:07.807 DEBUG [main] com.alibaba.easyexcel.test.core.parameter.ParameterDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:38:07.808 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.808 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:38:07.813 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.813 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@419219b1
+2026-11-18 18:38:07.819 DEBUG [main] com.alibaba.easyexcel.test.core.parameter.ParameterDataListener:33 - First row:{"name":"姓名0"}
+2026-11-18 18:38:07.819 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:80 - Begin to Initialization 'WriteContextImpl'
+2026-11-18 18:38:07.819 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.820 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:99 - CurrentConfiguration is writeWorkbookHolder
+2026-11-18 18:38:07.821 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:91 - Initialization 'WriteContextImpl' complete
+2026-11-18 18:38:07.822 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.822 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:157 - CurrentConfiguration is writeSheetHolder
+2026-11-18 18:38:07.822 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:199 - Can not find sheet:0 ,now create it
+2026-11-18 18:38:07.823 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.823 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:287 - CurrentConfiguration is writeTableHolder
+2026-11-18 18:38:07.840 DEBUG [main] com.alibaba.excel.context.WriteContextImpl:381 - Finished write.
+2026-11-18 18:38:07.840 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.841 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:69 - Initialization 'AnalysisContextImpl' complete
+2026-11-18 18:38:07.842 DEBUG [main] com.alibaba.excel.cache.selector.SimpleReadCacheSelector:73 - Use map cache.size:137
+2026-11-18 18:38:07.848 DEBUG [main] com.alibaba.excel.util.SheetUtils:39 - The first is read by default.
+2026-11-18 18:38:07.848 DEBUG [main] com.alibaba.excel.metadata.property.ExcelHeadProperty:92 - The initialization sheet/table 'ExcelHeadProperty' is complete , head kind is CLASS
+2026-11-18 18:38:07.848 DEBUG [main] com.alibaba.excel.context.AnalysisContextImpl:91 - Began to read：ReadSheetHolder{sheetNo=0, sheetName='0'} com.alibaba.excel.read.metadata.holder.xlsx.XlsxReadSheetHolder@6c59806
+2026-11-18 18:38:07.849 DEBUG [main] com.alibaba.easyexcel.test.core.parameter.ParameterDataListener:33 - First row:{"name":"姓名0"}
+
+[rc=0 76.6s]

@@ -4,28 +4,28 @@
  "sha": "e493c2e279b8820c0fdc2c79ab760d6759eb5a4a",
  "module": "sawmill-core",
  "status": "build-failed",
- "build_jdk8": {
+ "build_jdk8_install": {
   "rc": 1,
-  "seconds": 18.2
+  "seconds": 4.7
  },
- "build_jdk8_compat": {
+ "build_jdk8_install_compat": {
   "rc": 1,
-  "seconds": 5.6
+  "seconds": 3.3
  },
- "build_jdk11": {
+ "build_jdk11_install": {
   "rc": 1,
-  "seconds": 6.4
+  "seconds": 3.4
  },
- "build_jdk11_compat": {
+ "build_jdk11_install_compat": {
   "rc": 1,
-  "seconds": 5.7
+  "seconds": 3.5
  },
- "build_jdk17": {
+ "build_jdk17_install": {
   "rc": 1,
-  "seconds": 7.3
+  "seconds": 3.4
  },
- "build_jdk17_compat": {
+ "build_jdk17_install_compat": {
   "rc": 1,
-  "seconds": 7.7
+  "seconds": 3.0
  }
 }
