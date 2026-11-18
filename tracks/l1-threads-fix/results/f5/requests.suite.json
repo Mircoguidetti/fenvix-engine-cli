@@ -1,0 +1,611 @@
+{
+ "name": "requests",
+ "set": "popular",
+ "url": "https://github.com/psf/requests",
+ "runner": "runnervmccnms",
+ "cpu": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009848",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "python_requested": [
+  "3.13"
+ ],
+ "commit": "3c7baaa05ab4aa49cc819ce3a819d260de19c157",
+ "status": "ok",
+ "detail": "",
+ "python": "3.13",
+ "install": "-e . --group test -r requirements-dev.txt",
+ "collected": 635,
+ "kind": "suite",
+ "timing": [
+  {
+   "mode": "plain",
+   "run": 0,
+   "duration_s": 78.505,
+   "exit": 0,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 619,
+    "skipped": 15,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 0,
+   "duration_s": 78.477,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": null,
+   "tail": "o 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 18 warnings in 77.54s (0:01:17)\n[2026-11-18 07:36:44,050] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:36:44,494] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n127.0.0.1 - - [26/Oct/2026 17:14:41] \"GET /get HTTP/1.1\" 200 272\n",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 0,
+   "duration_s": 69.541,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 150,
+    "switches": 1067,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 19 warnings in 68.59s (0:01:08)\n[2026-11-18 07:38:02,538] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:38:02,987] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s1",
+   "run": 0,
+   "duration_s": 70.023,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 172,
+    "switches": 987,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 19 warnings in 69.15s (0:01:09)\n[2026-11-18 07:39:12,069] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:39:12,509] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s2",
+   "run": 0,
+   "duration_s": 70.023,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 677,
+    "switches": 1241,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 19 warnings in 69.14s (0:01:09)\n[2026-11-18 07:40:22,089] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:40:22,513] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s3",
+   "run": 0,
+   "duration_s": 69.967,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 389,
+    "switches": 1089,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 19 warnings in 69.11s (0:01:09)\n[2026-11-18 07:41:32,119] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:41:32,559] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "plain",
+   "run": 1,
+   "duration_s": 77.561,
+   "exit": 0,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 619,
+    "skipped": 15,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 1,
+   "duration_s": 78.297,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": null,
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 18 warnings in 77.44s (0:01:17)\n[2026-11-18 07:43:59,650] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:44:00,098] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 1,
+   "duration_s": 69.215,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 150,
+    "switches": 1053,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 19 warnings in 68.42s (0:01:08)\n[2026-11-18 07:45:17,934] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:45:18,347] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s1",
+   "run": 1,
+   "duration_s": 69.257,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 172,
+    "switches": 991,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 19 warnings in 68.46s (0:01:08)\n[2026-11-18 07:46:27,154] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:46:27,567] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s2",
+   "run": 1,
+   "duration_s": 69.301,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 677,
+    "switches": 1239,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 19 warnings in 68.51s (0:01:08)\n[2026-11-18 07:47:36,411] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:47:36,820] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s3",
+   "run": 1,
+   "duration_s": 69.284,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 389,
+    "switches": 1113,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 19 warnings in 68.49s (0:01:08)\n[2026-11-18 07:48:45,715] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:48:46,126] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "plain",
+   "run": 2,
+   "duration_s": 77.49,
+   "exit": 0,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 619,
+    "skipped": 15,
+    "xfailed": 1
+   },
+   "stats": null,
+   "tail": "",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "det",
+   "run": 2,
+   "duration_s": 78.227,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": null,
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 18 warnings in 77.44s (0:01:17)\n[2026-11-18 07:51:12,487] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:51:12,895] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {}
+  },
+  {
+   "mode": "l1",
+   "run": 2,
+   "duration_s": 69.273,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 150,
+    "switches": 1067,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 19 warnings in 68.48s (0:01:08)\n[2026-11-18 07:52:30,718] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:52:31,130] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s1",
+   "run": 2,
+   "duration_s": 69.206,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 172,
+    "switches": 965,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 19 warnings in 68.40s (0:01:08)\n[2026-11-18 07:53:39,991] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:53:40,404] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s2",
+   "run": 2,
+   "duration_s": 69.902,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 677,
+    "switches": 1235,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 19 warnings in 69.04s (0:01:09)\n[2026-11-18 07:54:49,210] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:54:49,654] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  },
+  {
+   "mode": "l1-s3",
+   "run": 2,
+   "duration_s": 70.04,
+   "exit": 1,
+   "session_failed": false,
+   "timed_out": false,
+   "counts": {
+    "passed": 615,
+    "skipped": 15,
+    "xfailed": 1,
+    "failed": 4
+   },
+   "stats": {
+    "decisions": 389,
+    "switches": 1103,
+    "escapes": 0,
+    "deadlocks": 0,
+    "timer_jumps": 52,
+    "managed": 35
+   },
+   "tail": "0): Failed to establish a new connection: detpy: network access to 10.255.255.1:80 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it\"))\n4 failed, 615 passed, 15 skipped, 1 xfailed, 19 warnings in 69.20s (0:01:09)\n[2026-11-18 07:55:59,112] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n[2026-11-18 07:55:59,549] WARNING in core: flasgger is not installed; serving the static landing page at / and skipping the Swagger UI and /spec.json.\n",
+   "hang": "",
+   "msgs": {
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection",
+    "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]": "FAILED requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPConnection(host='10.255.255.1', port=80): Failed to establish a new connection"
+   }
+  }
+ ],
+ "suite_seeds": [
+  1,
+  2,
+  3
+ ],
+ "mtimes_restored": [
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0
+ ],
+ "warmup": [
+  {
+   "duration_s": 75.384,
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "broken_by_det": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [
+   "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout0]",
+   "tests/test_requests.py::TestTimeout::test_connect_timeout[timeout1]",
+   "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout0]",
+   "tests/test_requests.py::TestTimeout::test_total_timeout_connect[timeout1]"
+  ],
+  "n_broken": 4,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "broken_by_l1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "broken_by_l1_s1": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "broken_by_l1_s2": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "broken_by_l1_s3": {
+  "runs": [
+   3,
+   3
+  ],
+  "broken": [],
+  "n_broken": 0,
+  "sometimes": [],
+  "n_sometimes": 0,
+  "broken_runs": [],
+  "n_broken_runs": 0,
+  "session_failed_tails": []
+ },
+ "unstable": {
+  "plain": [],
+  "det": [],
+  "l1": [],
+  "l1-s1": [],
+  "l1-s2": [],
+  "l1-s3": []
+ },
+ "args": {
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "loaded_runs": 5
+ }
+}
