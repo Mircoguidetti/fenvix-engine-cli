@@ -1,0 +1,31 @@
+{
+ "name": "logging-log4j2-log4j-core",
+ "url": "https://github.com/apache/logging-log4j2",
+ "sha": "3de64e8ccdc9a0acfb1caf757c398dd9669b6d84",
+ "module": "log4j-core",
+ "status": "build-failed",
+ "build_jdk8_install": {
+  "rc": 1,
+  "seconds": 0.1
+ },
+ "build_jdk8_install_compat": {
+  "rc": 1,
+  "seconds": 0.1
+ },
+ "build_jdk11_install": {
+  "rc": 1,
+  "seconds": 9.9
+ },
+ "build_jdk11_install_compat": {
+  "rc": 1,
+  "seconds": 6.4
+ },
+ "build_jdk17_install": {
+  "rc": 1,
+  "seconds": 5.4
+ },
+ "build_jdk17_install_compat": {
+  "rc": 1,
+  "seconds": 5.6
+ }
+}

@@ -1,0 +1,31 @@
+{
+ "name": "cayenne-cayenne-client",
+ "url": "https://github.com/apache/cayenne",
+ "sha": "5209b9f533ab5f2ac97d31eeb3d1dd2c4dbd64d8",
+ "module": "cayenne-client",
+ "status": "build-failed",
+ "build_jdk8_install": {
+  "rc": 1,
+  "seconds": 10.1
+ },
+ "build_jdk8_install_compat": {
+  "rc": 1,
+  "seconds": 6.9
+ },
+ "build_jdk11_install": {
+  "rc": 1,
+  "seconds": 6.8
+ },
+ "build_jdk11_install_compat": {
+  "rc": 1,
+  "seconds": 5.9
+ },
+ "build_jdk17_install": {
+  "rc": 1,
+  "seconds": 5.4
+ },
+ "build_jdk17_install_compat": {
+  "rc": 1,
+  "seconds": 6.6
+ }
+}

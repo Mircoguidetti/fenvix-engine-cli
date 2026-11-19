@@ -475,7 +475,9 @@ public final class Det {
         // sleep for real only while another thread may be working, re-checking every 10 ms
         long left = ms;
         Thread self = Thread.currentThread();
-        while (left > 0 && !quiet(self)) {
+        // fast only when no other thread works and no other thread's timed wait would expire
+        // before this sleep ends (a 1 s sleep must not end before a 300 ms timeout elsewhere)
+        while (left > 0 && !quietUntil(self, MONO_BASE_NS + vstart + ms * 1_000_000L)) {
             long slice = Math.min(left, 10);
             REAL_SLEEPERS.incrementAndGet();
             REAL_SLEEPING.put(self, Boolean.TRUE);
@@ -775,10 +777,23 @@ public final class Det {
     public static boolean quiet(Thread self) {
         for (Thread t : allThreads()) {
             if (t == self || !t.isAlive()) continue;
+            boolean base;
             synchronized (BASELINE) {
-                if (BASELINE.contains(t)) continue;
+                base = BASELINE.contains(t);
+            }
+            if (base) {
+                // a timer created before the first test (a static java.util.Timer) is still the code's;
+                // the infrastructure's own schedulers (Surefire's ping, JUnit's watchers) are not
+                if (!infraThread(t) && t.getName().startsWith("Timer-") && t.getState() != Thread.State.RUNNABLE && timerPending(t)) {
+                    return false;
+                }
+                continue;
             }
             if (infraThread(t) || VirtualScheduler.isDispatcher(t)) continue;
+            // a JDK timer thread (java.util.Timer, a scheduled pool) holds pending timers even when it
+            // waits without a timeout for a task that was just added: count it as working
+            String tn = t.getName();
+            if ((tn.startsWith("Timer-") || tn.contains("pool")) && t.getState() != Thread.State.RUNNABLE && timerPending(t)) return false;
             Thread.State s = t.getState();
             if (DEBUG) System.err.println("fenvix-quiet " + self.getName() + " sees " + t.getName() + " " + s + " " + java.util.Arrays.toString(t.getStackTrace()));
             if (s == Thread.State.WAITING || s == Thread.State.TERMINATED || s == Thread.State.NEW) continue;
@@ -791,6 +806,18 @@ public final class Det {
     }
 
     static int fastFirings;
+
+    /** A JDK timer thread waiting for its next due task (java.util.Timer, scheduled pools). */
+    static boolean timerPending(Thread t) {
+        for (StackTraceElement e : t.getStackTrace()) {
+            String c = e.getClassName();
+            if ((c.equals("java.util.TimerThread") && e.getMethodName().equals("mainLoop"))
+                    || (c.endsWith("ScheduledThreadPoolExecutor$DelayedWorkQueue") && e.getMethodName().equals("take"))) {
+                return true;
+            }
+        }
+        return false;
+    }
     static final boolean DEBUG = Boolean.getBoolean("fenvix.debug.quiet");
 
     /**
@@ -803,6 +830,12 @@ public final class Det {
         StackTraceElement[] st = t.getStackTrace();
         for (StackTraceElement e : st) {
             String c = e.getClassName();
+            // a JDK timer thread waiting for its next due task is not idle: a timer is pending
+            // (java.util.Timer, ScheduledThreadPoolExecutor: real time, limit V4)
+            if ((c.equals("java.util.TimerThread") && e.getMethodName().equals("mainLoop"))
+                    || (c.endsWith("ScheduledThreadPoolExecutor$DelayedWorkQueue") && e.getMethodName().equals("take"))) {
+                return false;
+            }
             if (c.startsWith("java.") || c.startsWith("jdk.") || c.startsWith("sun.") || c.startsWith("dev.fenvix.")) continue;
             return Infra.isInfraDotted(c);
         }

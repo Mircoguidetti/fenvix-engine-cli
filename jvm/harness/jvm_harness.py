@@ -354,11 +354,31 @@ def trace_fps_cache(x):
     return _FPC[k]
 
 
+def recheck(c, out, a):
+    """Broken by --det with the current agent: D new --det runs (seed 0) against the recorded baseline."""
+    rows = json.load(open(os.path.join(out, "tests.json")))
+    res, r = prepare(c, a.work, out + "-recheck", a.max_first_run, a.jdks.split(","))
+    if res["status"] != "ok":
+        return {"name": name_of(c), "status": "recheck-" + res["status"]}
+    det = [r.run("det", seed=0) for _ in range(a.runs)]
+    broken = []
+    for row in rows:
+        t = row["test"]
+        bf = int(row["baseline"].split("F/")[0])
+        df = sum(x["outcomes"].get(t) == "failed" for x in det)
+        if df >= 1 and bf <= 1 and df > bf:
+            broken.append({"test": t, "baseline": row["baseline"], "det_now": f"{df}F/{len(det)}"})
+    s = {"name": name_of(c), "before": sum(1 for x in rows if x["broken_by_det"]), "after": len(broken), "broken_now": broken}
+    json.dump(s, open(os.path.join(out, "recheck.json"), "w"), indent=1)
+    return s
+
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--candidates", default=os.path.join(HERE, "idoft_candidates.json"))
     ap.add_argument("--name", required=True)
-    ap.add_argument("--mode", choices=["prepare", "round"], required=True)
+    ap.add_argument("--mode", choices=["prepare", "round", "recheck"], required=True)
     ap.add_argument("--work", default="/tmp/jvm-work")
     ap.add_argument("--out", default=os.path.join(HERE, "results", "idoft"))
     ap.add_argument("--max-first-run", type=float, default=300)
@@ -373,6 +393,9 @@ def main():
     c = next(x for x in cands if name_of(x) == a.name)
     out = os.path.abspath(os.path.join(a.out, a.name))  # the runs' cwd is the project checkout
     a.work = os.path.abspath(a.work)
+    if a.mode == "recheck":
+        print(json.dumps(recheck(c, out, a), indent=1))
+        return
     os.makedirs(out, exist_ok=True)
     res, r = prepare(c, a.work, out, a.max_first_run, a.jdks.split(","))
     json.dump(res, open(os.path.join(out, "prepare.json"), "w"), indent=1)

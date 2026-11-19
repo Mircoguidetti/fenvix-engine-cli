@@ -1,0 +1,45 @@
+{
+ "name": "asyncload",
+ "url": "https://github.com/alibaba/asyncload",
+ "sha": "9891e7086bff81ebdd4991435d21b549e48e874d",
+ "module": ".",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 59,
+ "documented": 1,
+ "documented_present": 1,
+ "documented_categories": {
+  "OD-Vic": 1
+ },
+ "documented_reproduced": 1,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 3,
+ "broken_by_det": 5,
+ "broken_tests": [
+  "com.alibaba.asyncload.AsyncLoadProxyTest::testProxy_timeout",
+  "com.alibaba.asyncload.spring.AsyncLoadFactoryBeanTest::testFactoryBean",
+  "com.alibaba.asyncload.spring.AsyncLoadSpringCompsiteTest::testPrototype",
+  "com.alibaba.asyncload.spring.AsyncLoadSpringCompsiteTest::testSingleton",
+  "com.alibaba.asyncload.util.AsyncLoadUtilsTest::testGetStatus_Timeout"
+ ],
+ "fingerprint_coverage": "36/59",
+ "fingerprint_covered": 36,
+ "fingerprinted": 59,
+ "timing_base_s": [
+  46.319,
+  46.480999999999995,
+  46.695
+ ],
+ "timing_det_s": [
+  30.569000000000003,
+  31.203000000000003,
+  29.514000000000003
+ ],
+ "slowdown": -0.3423,
+ "seconds": 1819.1
+}

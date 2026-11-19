@@ -1,0 +1,55 @@
+{
+ "name": "karaf",
+ "url": "https://github.com/apache/karaf",
+ "sha": "b368a87cba0f0e235d5dae72fd6c3559b50fb75c",
+ "module": ".",
+ "status": "build-failed",
+ "build_jdk8_test-compile": {
+  "rc": 1,
+  "seconds": 106.9
+ },
+ "build_jdk8_test-compile_compat": {
+  "rc": 1,
+  "seconds": 7.0
+ },
+ "build_jdk8_install": {
+  "rc": 1,
+  "seconds": 59.2
+ },
+ "build_jdk8_install_compat": {
+  "rc": 1,
+  "seconds": 10.3
+ },
+ "build_jdk11_test-compile": {
+  "rc": 1,
+  "seconds": 45.7
+ },
+ "build_jdk11_test-compile_compat": {
+  "rc": 1,
+  "seconds": 8.3
+ },
+ "build_jdk11_install": {
+  "rc": 1,
+  "seconds": 64.2
+ },
+ "build_jdk11_install_compat": {
+  "rc": 1,
+  "seconds": 12.7
+ },
+ "build_jdk17_test-compile": {
+  "rc": 1,
+  "seconds": 15.5
+ },
+ "build_jdk17_test-compile_compat": {
+  "rc": 1,
+  "seconds": 9.6
+ },
+ "build_jdk17_install": {
+  "rc": 1,
+  "seconds": 8.3
+ },
+ "build_jdk17_install_compat": {
+  "rc": 1,
+  "seconds": 10.4
+ }
+}
