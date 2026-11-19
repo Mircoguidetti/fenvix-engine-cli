@@ -13,7 +13,7 @@ REV = os.path.join(HERE, "..", "..", "2026-11-19-review-dep-verdict", "o1-walks"
 for p in ("click", "pygments"):
     rows = {}
     for v, path in (("before", f"{REV}/{p}-before.json.gz"), ("after", f"{REV}/{p}-after.json.gz"),
-                    ("r3a", f"{HERE}/walks/{p}-r3a.json.gz"), ("r3b", f"{HERE}/walks/{p}-r3b.json.gz"),
+                    ("r3a", f"{HERE}/walks/{p}-r3a.json.gz"), ("r3b", f"{HERE}/walks/{p}-r3b.json.gz"), ("r3c", f"{HERE}/walks/{p}-r3c.json.gz"),
                     ("r3", f"{HERE}/walks/{p}-r3.json.gz")):
         if not os.path.exists(path):
             continue
