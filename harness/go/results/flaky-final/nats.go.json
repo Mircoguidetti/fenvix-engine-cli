@@ -1,0 +1,76 @@
+{
+ "spec": {
+  "name": "nats.go",
+  "repo": "nats-io/nats.go",
+  "sha": "a460b81aa6ccb73294a99b4655a0ec32bdb23878",
+  "fix_commit": "31953ef9f98a5a45e0cb0829ab3acb8a0baebede",
+  "fix_date": "2026-03-25T14:26:26.000+01:00",
+  "title": "[FIXED] Fix flaky TestKeyValueWithSources test (#2036)",
+  "tests": [
+   "TestKeyValueWithSources"
+  ],
+  "source": "github commit search 'repo:nats-io/nats.go flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestKeyValueWithSources": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./jetstream/test"
+ ],
+ "imports": [
+  "github.com/nats-io/nats.go/jetstream/test"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 3.5,
+ "build_det_s": 0.1,
+ "baseline_error": "{\"ImportPath\":\"github.com/nats-io/nats-server/v2/server\",\"Action\":\"build-output\",\"Output\":\"# github.com/nats-io/nats.go/jetstream/test\\n\"}\n{\"ImportPath\":\"github.com/nats-io/nats-server/v2/server\",\"Action\":\"build-output\",\"Output\":\"jetstream/test/helper_test.go:29:2: no required module provides package github.com/nats-io/nats-server/v2/server; to add it:\\n\"}\n{\"ImportPath\":\"github.com/nats-io/nats-server/v2/server\",\"Action\":\"build-output\",\"Output\":\"\\tgo get github.com/nats-io/nats-server/v2/server\\n\"}\n{\"ImportPath\":\"github.com/nats-io/nats-server/v2/server\",\"Action\":\"build-fail\"}\n{\"Time\":\"2026-11-19T04:12:39.347102143Z\",\"Action\":\"start\",\"Package\":\"github.com/nats-io/nats.go/jetstream/test\"}\n{\"Time\":\"2026-11-19T04:12:39.347119539Z\",\"Action\":\"output\",\"Package\":\"github.com/nats-io/nats.go/jetstream/test\",\"Output\":\"FAIL\\tgithub.com/nats-io/nats.go/jetstream/test [setup failed]\\n\"}\n{\"Time\":\"2026-11-19T04:12:39.347132979Z\",\"Action\":\"fail\",\"Package\":\"github.com/nats-io/nats.go/jetstream/test\",\"Elapsed\":0,\"FailedBuild\":\"github.com/nats-io/nats-server/v2/server\"}\n",
+ "baseline": {},
+ "baseline_fail_output": {},
+ "seconds": 8.5,
+ "det_error": "{\"ImportPath\":\"github.com/nats-io/nats-server/v2/server\",\"Action\":\"build-output\",\"Output\":\"# github.com/nats-io/nats.go/jetstream/test\\n\"}\n{\"ImportPath\":\"github.com/nats-io/nats-server/v2/server\",\"Action\":\"build-output\",\"Output\":\"jetstream/test/helper_test.go:29:2: no required module provides package github.com/nats-io/nats-server/v2/server; to add it:\\n\"}\n{\"ImportPath\":\"github.com/nats-io/nats-server/v2/server\",\"Action\":\"build-output\",\"Output\":\"\\tgo get github.com/nats-io/nats-server/v2/server\\n\"}\n{\"ImportPath\":\"github.com/nats-io/nats-server/v2/server\",\"Action\":\"build-fail\"}\n{\"Time\":\"2026-11-19T04:12:39.803535492Z\",\"Action\":\"start\",\"Package\":\"github.com/nats-io/nats.go/jetstream/test\"}\n{\"Time\":\"2026-11-19T04:12:39.803553689Z\",\"Action\":\"output\",\"Package\":\"github.com/nats-io/nats.go/jetstream/test\",\"Output\":\"FAIL\\tgithub.com/nats-io/nats.go/jetstream/test [setup failed]\\n\"}\n{\"Time\":\"2026-11-19T04:12:39.803563864Z\",\"Action\":\"fail\",\"Package\":\"github.com/nats-io/nats.go/jetstream/test\",\"Elapsed\":0,\"FailedBuild\":\"github.com/nats-io/nats-server/v2/server\"}\nfenvix-go: trace /tmp/work/trace-s0-r0.jsonl (0 tests, seed 0, controls time,random,crypto,maps,fs,net,serial,fastwait)\n",
+ "det0_fail_output": {},
+ "det0_events_by_source": {},
+ "det0_top_tests_by_events": [],
+ "det0_divergences": [],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 0,
+  "stable": 0,
+  "diverged": 0,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {}
+ },
+ "det0": {},
+ "explore": {},
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/nats-io/nats.go/jetstream/test::TestKeyValueWithSources": {
+   "fail_seeds": [],
+   "passes_in_some_seed": false,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  0,
+  0
+ ],
+ "timing": {
+  "plain": [
+   0,
+   0,
+   0
+  ],
+  "det": [
+   0,
+   0,
+   0
+  ]
+ },
+ "slowdown": null
+}

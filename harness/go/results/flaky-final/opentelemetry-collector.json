@@ -1,0 +1,1477 @@
+{
+ "spec": {
+  "name": "opentelemetry-collector",
+  "repo": "open-telemetry/opentelemetry-collector",
+  "sha": "15cb0b7bec6e89c9a4d6cdb07a592a9b92db9ce0",
+  "fix_commit": "7b3b1f0bfa48f717f72fade94243608ef871e6c2",
+  "fix_date": "2026-11-16T20:37:30.000Z",
+  "title": "[chore][confmap/provider/httpprovider] Fix flaky TestRetrieveContext (#16420)",
+  "tests": [
+   "TestRetrieveContext"
+  ],
+  "source": "github commit search 'repo:open-telemetry/opentelemetry-collector flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestRetrieveContext": "function"
+ },
+ "module_dir": "confmap",
+ "packages": [
+  "./provider/internal/configurablehttpprovider"
+ ],
+ "imports": [
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 19.7,
+ "build_det_s": 24.1,
+ "baseline": {
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestScheme": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestInvalidYAML": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestNonExistent": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestValidateProviderScheme": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestFunctionalityDownloadFileHTTP": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestFunctionalityDownloadFileHTTPS": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveFromShutdownServer": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveErrorsRedactPassword": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestInvalidURI": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestEmptyURI": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestUnsupportedScheme": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveContext": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 147.0,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 230,
+  "outcome": 12,
+  "fs": 1,
+  "entropy": 621,
+  "net": 4
+ },
+ "det0_top_tests_by_events": [
+  [
+   667,
+   "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestFunctionalityDownloadFileHTTPS"
+  ],
+  [
+   98,
+   "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveContext"
+  ],
+  [
+   23,
+   "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveErrorsRedactPassword"
+  ],
+  [
+   17,
+   "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestNonExistent"
+  ],
+  [
+   17,
+   "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestInvalidYAML"
+  ],
+  [
+   17,
+   "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestFunctionalityDownloadFileHTTP"
+  ],
+  [
+   17,
+   "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestEmptyURI"
+  ],
+  [
+   8,
+   "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveFromShutdownServer"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveContext",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 31,
+    "window": null,
+    "event_a": {
+     "t": 7,
+     "s": "time",
+     "o": "time.AfterFunc",
+     "at": "confmap/provider/internal/configurablehttpprovider/provider_test.go:184",
+     "v": "5000000000"
+    },
+    "event_b": {
+     "t": 11,
+     "s": "time",
+     "o": "time.Now",
+     "at": "std:net/http.(*conn).setState",
+     "v": "1000014000"
+    },
+    "reason": "thread",
+    "description": "event #31: [time] time.AfterFunc @ confmap/provider/internal/configurablehttpprovider/provider_test.go:184 = 5000000000 (thread 7)  <>  [time] time.Now @ std:net/http.(*conn).setState = 1000014000 (thread 11)"
+   }
+  },
+  {
+   "nodeid": "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestFunctionalityDownloadFileHTTPS",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 594,
+    "window": null,
+    "event_a": {
+     "t": 5,
+     "s": "time",
+     "o": "time.Now",
+     "at": "std:net/http.(*conn).setState",
+     "v": "15000"
+    },
+    "event_b": {
+     "t": 6,
+     "s": "time",
+     "o": "time.Now",
+     "at": "std:net/http.(*Transport).tryPutIdleConn",
+     "v": "15000"
+    },
+    "reason": "thread",
+    "description": "event #594: [time] time.Now @ std:net/http.(*conn).setState = 15000 (thread 5)  <>  [time] time.Now @ std:net/http.(*Transport).tryPutIdleConn = 15000 (thread 6)"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 12,
+  "stable": 10,
+  "diverged": 2,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 2
+  }
+ },
+ "det0": {
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestNonExistent": [
+   [
+    "passed",
+    "b99ece90cd1f842517dd486cd24d41d6"
+   ],
+   [
+    "passed",
+    "b99ece90cd1f842517dd486cd24d41d6"
+   ],
+   [
+    "passed",
+    "b99ece90cd1f842517dd486cd24d41d6"
+   ]
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestInvalidURI": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestEmptyURI": [
+   [
+    "passed",
+    "f1f92704cc1a6b0eb7df45fd197e5dd3"
+   ],
+   [
+    "passed",
+    "f1f92704cc1a6b0eb7df45fd197e5dd3"
+   ],
+   [
+    "passed",
+    "f1f92704cc1a6b0eb7df45fd197e5dd3"
+   ]
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestScheme": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestFunctionalityDownloadFileHTTP": [
+   [
+    "passed",
+    "0e9a4848108e8188984342b3fc0094e5"
+   ],
+   [
+    "passed",
+    "0e9a4848108e8188984342b3fc0094e5"
+   ],
+   [
+    "passed",
+    "0e9a4848108e8188984342b3fc0094e5"
+   ]
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestUnsupportedScheme": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveFromShutdownServer": [
+   [
+    "passed",
+    "167280e84bb6357832221512bc17e7e1"
+   ],
+   [
+    "passed",
+    "167280e84bb6357832221512bc17e7e1"
+   ],
+   [
+    "passed",
+    "167280e84bb6357832221512bc17e7e1"
+   ]
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveErrorsRedactPassword": [
+   [
+    "passed",
+    "64adc98fbc409ff25a6cf9c65e60212f"
+   ],
+   [
+    "passed",
+    "64adc98fbc409ff25a6cf9c65e60212f"
+   ],
+   [
+    "passed",
+    "64adc98fbc409ff25a6cf9c65e60212f"
+   ]
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveContext": [
+   [
+    "passed",
+    "3275818cd5d35390d2628ff5cbde4805"
+   ],
+   [
+    "passed",
+    "f37d3760216b1ab86ac2d57e33500d26"
+   ],
+   [
+    "passed",
+    "4d3c926749157275008706a975c67c9c"
+   ]
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestFunctionalityDownloadFileHTTPS": [
+   [
+    "passed",
+    "09ac42666b473a23831786bff4dba609"
+   ],
+   [
+    "passed",
+    "c3648e8228969a866f005ce58c388d15"
+   ],
+   [
+    "passed",
+    "b4dc737b3e2402e1112de23941fe1544"
+   ]
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestInvalidYAML": [
+   [
+    "passed",
+    "e447bcef2a741dbafefb907e2b01d5e3"
+   ],
+   [
+    "passed",
+    "e447bcef2a741dbafefb907e2b01d5e3"
+   ],
+   [
+    "passed",
+    "e447bcef2a741dbafefb907e2b01d5e3"
+   ]
+  ],
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestValidateProviderScheme": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ]
+ },
+ "explore": {
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestValidateProviderScheme": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestUnsupportedScheme": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestNonExistent": {
+   "1": [
+    "passed",
+    "083f32f0b8c8623f624c9c1ff0f05d3a"
+   ],
+   "2": [
+    "passed",
+    "75b502dfbf472ed5e512c8c91ba06a3d"
+   ],
+   "3": [
+    "passed",
+    "4727c3b8e36621306a8839e0179263bd"
+   ],
+   "4": [
+    "passed",
+    "b60d6e96380e6be513699f4730bf24a1"
+   ],
+   "5": [
+    "passed",
+    "35b76de074727fdad9f6ad3a289785dd"
+   ],
+   "6": [
+    "passed",
+    "c2c0f8e93de1502803953b106e740dec"
+   ],
+   "7": [
+    "passed",
+    "6f15e60b10bee9508fa7bfc7ebf09079"
+   ],
+   "8": [
+    "passed",
+    "9f240ec367cfe07be1bd0dfaeb3964b8"
+   ],
+   "9": [
+    "passed",
+    "e61c4f3b2cafd9c955ae6f20f488ae3c"
+   ],
+   "10": [
+    "passed",
+    "2dd1cc465d2be3de1ac4e2da2ba935e3"
+   ],
+   "11": [
+    "passed",
+    "9498dbda287433eddd0b25986cab7b38"
+   ],
+   "12": [
+    "passed",
+    "367eef3cbe1beb2550663aea673c8204"
+   ],
+   "13": [
+    "passed",
+    "c7216982ae22f2f225f751abf0c9477e"
+   ],
+   "14": [
+    "passed",
+    "0a6121ec09928610c7dabc4a3f746fc0"
+   ],
+   "15": [
+    "passed",
+    "2874ef3a53cb20c3844d5f64acd5681f"
+   ],
+   "16": [
+    "passed",
+    "e12d4834f2b38bb284ec79936d4b747a"
+   ],
+   "17": [
+    "passed",
+    "785163f5338e7d52949df0c8db8ac457"
+   ],
+   "18": [
+    "passed",
+    "c92e375cdc0a6fbdcbb2bf569e480a6f"
+   ],
+   "19": [
+    "passed",
+    "2705a8d41abd219414e067984ac719a7"
+   ],
+   "20": [
+    "passed",
+    "bca35fbc60db2143ae3da9c377819b62"
+   ]
+  },
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveErrorsRedactPassword": {
+   "1": [
+    "passed",
+    "d6c006cda44dab9cd5669fa9d4eac46b"
+   ],
+   "2": [
+    "passed",
+    "5957c865f739509d8bca70745ecbbcdd"
+   ],
+   "3": [
+    "passed",
+    "1ee32bad7cf4a461123bc3d6a6812c26"
+   ],
+   "4": [
+    "passed",
+    "c37c638df3a892930f0f6d067cb39194"
+   ],
+   "5": [
+    "passed",
+    "bfc4210c17aeb789085285cb23f5e13e"
+   ],
+   "6": [
+    "passed",
+    "f265b380d63efccf4349b4a39af4eb8e"
+   ],
+   "7": [
+    "passed",
+    "208fd605be988a0a23e162b02009963d"
+   ],
+   "8": [
+    "passed",
+    "7932b2baecb151c7f85c6dc40576b11b"
+   ],
+   "9": [
+    "passed",
+    "6a3b792ba217b79b77f0eb4902440b4f"
+   ],
+   "10": [
+    "passed",
+    "b871683be76028e61421430c4f8ad386"
+   ],
+   "11": [
+    "passed",
+    "f3a336c71c761ff3d7fbd68244600298"
+   ],
+   "12": [
+    "passed",
+    "7985c7efe30bb3d1a276e14f78bfd3a6"
+   ],
+   "13": [
+    "passed",
+    "b28247c69c5b28c98f002e1993f91e19"
+   ],
+   "14": [
+    "passed",
+    "3e630770ccedb9c3fd5a835fba2c8c5c"
+   ],
+   "15": [
+    "passed",
+    "35b3be6aec8a953d8b01e52ad2074a9b"
+   ],
+   "16": [
+    "passed",
+    "1bc182ca7160e3cd860e5907e1c7d3f6"
+   ],
+   "17": [
+    "passed",
+    "af0e470b648629195f5415bf3b070a18"
+   ],
+   "18": [
+    "passed",
+    "2b775bb756f12c559582e848220c02f1"
+   ],
+   "19": [
+    "passed",
+    "c05f2489dcb86622353dc66160a4af28"
+   ],
+   "20": [
+    "passed",
+    "52c6c7381353167072c852a81546eb9a"
+   ]
+  },
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveFromShutdownServer": {
+   "1": [
+    "passed",
+    "a243871d15d87857e0066dcb34379d2f"
+   ],
+   "2": [
+    "passed",
+    "f08484a672f7841e2afec1a8543fdaac"
+   ],
+   "3": [
+    "passed",
+    "42a58b1aceea2c270e23c6ed1edbbe00"
+   ],
+   "4": [
+    "passed",
+    "1cfaeabc4303349a60f64363025e4153"
+   ],
+   "5": [
+    "passed",
+    "5885de6395059d82c9e580d3e8382dca"
+   ],
+   "6": [
+    "passed",
+    "e1cfa65143d7012bb1012140ca451f86"
+   ],
+   "7": [
+    "passed",
+    "f04f9a643f4449d01b7bf262019c101a"
+   ],
+   "8": [
+    "passed",
+    "5e54c6c825c401b786e2c7752e77d446"
+   ],
+   "9": [
+    "passed",
+    "0484b5ef7eabd5f474e66ebfc8a4b102"
+   ],
+   "10": [
+    "passed",
+    "b91624b61220913223add0b2ddad1ff0"
+   ],
+   "11": [
+    "passed",
+    "880acf31bb2d680f9ec3879057a08c10"
+   ],
+   "12": [
+    "passed",
+    "6d5243e7e06c6b013f4f6090e9d1bb0d"
+   ],
+   "13": [
+    "passed",
+    "fff607ddc897c1597996dac28ab5a02d"
+   ],
+   "14": [
+    "passed",
+    "52f1006f00bc7425b5ed59d867392d5a"
+   ],
+   "15": [
+    "passed",
+    "8411ec44965dc89053de70570ae1f816"
+   ],
+   "16": [
+    "passed",
+    "99b30d92470da9e217bc6d108ba9ac2a"
+   ],
+   "17": [
+    "passed",
+    "f748aa81932579d8221782c7a248b0f2"
+   ],
+   "18": [
+    "passed",
+    "72c52825d439ee8fba597faf1752e798"
+   ],
+   "19": [
+    "passed",
+    "55fd422290a4c13a84dc2e980df0046c"
+   ],
+   "20": [
+    "passed",
+    "fbbd132992ad6f05ab6a34e0c56bba95"
+   ]
+  },
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestFunctionalityDownloadFileHTTPS": {
+   "1": [
+    "passed",
+    "372f4d852cbea80c840d525f275e519e"
+   ],
+   "2": [
+    "passed",
+    "e290f2d839d8dd90898c44245e0c6d4d"
+   ],
+   "3": [
+    "passed",
+    "47eb3ad37588370b317b10cfdbfb39dc"
+   ],
+   "4": [
+    "passed",
+    "8af207844eab539113e266c0c8650d0b"
+   ],
+   "5": [
+    "passed",
+    "2f5569cbab91239ff40b80e5603e039e"
+   ],
+   "6": [
+    "passed",
+    "7422f81482d7be9f2494364658830f70"
+   ],
+   "7": [
+    "passed",
+    "ea464b8fc5a4db02d27f848c36fbfa77"
+   ],
+   "8": [
+    "passed",
+    "883ca24d82c9cba490b556a303ca8199"
+   ],
+   "9": [
+    "passed",
+    "5a56b218a00503c9fe41a53ed8790e1d"
+   ],
+   "10": [
+    "passed",
+    "c900ee72dc6ce9fc29e371c195bb3427"
+   ],
+   "11": [
+    "passed",
+    "5b1c9e2fa7cc8da55f1ce32f9c6fa24c"
+   ],
+   "12": [
+    "passed",
+    "d599b40c01519715660a2bc32c6a7ad1"
+   ],
+   "13": [
+    "passed",
+    "c3b7ec0f8b5aea1efecd87f8c524a7e4"
+   ],
+   "14": [
+    "passed",
+    "7761c252cdb54a077de98887cc80e6f9"
+   ],
+   "15": [
+    "passed",
+    "e2b6558490d0a4739e4d102fe8cfaebc"
+   ],
+   "16": [
+    "passed",
+    "8825bb35c74803028e8861d303dab977"
+   ],
+   "17": [
+    "passed",
+    "2362c3bd9b337f9e63238cc3ad207b22"
+   ],
+   "18": [
+    "passed",
+    "20ebc989b701bd8328c5fed65c73e3bd"
+   ],
+   "19": [
+    "passed",
+    "5febfeab36405c7eb7970077b83ed035"
+   ],
+   "20": [
+    "passed",
+    "648aff643ec73fb9994dc45a8aa21ff9"
+   ]
+  },
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestInvalidURI": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveContext": {
+   "1": [
+    "passed",
+    "3a891457fd3c55a357c1b619c24b9575"
+   ],
+   "2": [
+    "passed",
+    "926e0266231197f0dfd9140788008890"
+   ],
+   "3": [
+    "passed",
+    "e54a3b520453cd9ad73682dcd1f71c69"
+   ],
+   "4": [
+    "passed",
+    "c263b14b2f43c79fe03672d12205c09e"
+   ],
+   "5": [
+    "passed",
+    "85922cafd8497665aba199337efb0144"
+   ],
+   "6": [
+    "passed",
+    "71e31d0c71725c0adbdb9edcd8cf6c41"
+   ],
+   "7": [
+    "passed",
+    "fc5f1fd0cd226ec3cedbb4e2951b360f"
+   ],
+   "8": [
+    "passed",
+    "e874d7c5ef34e0972bf01926a5999be7"
+   ],
+   "9": [
+    "passed",
+    "8096208b754f49cd2d22f34111f675e7"
+   ],
+   "10": [
+    "passed",
+    "08f3d4b9c06eaee017936dd009027d51"
+   ],
+   "11": [
+    "passed",
+    "2a478bf2db1143ae06beee11ad93a16f"
+   ],
+   "12": [
+    "passed",
+    "6f8c0bfd94572d31904808e6d9a5be27"
+   ],
+   "13": [
+    "passed",
+    "cf94c3bbe41dd4767ba958ee0d130ec5"
+   ],
+   "14": [
+    "passed",
+    "cff84f4e9a67ba83a7290dca8400aafa"
+   ],
+   "15": [
+    "passed",
+    "6aae83838195ba77a5420089d84a8cd7"
+   ],
+   "16": [
+    "passed",
+    "333153bb24cee1fc973353237208ba30"
+   ],
+   "17": [
+    "passed",
+    "a9cb065f903201d150f30cdb552370bd"
+   ],
+   "18": [
+    "passed",
+    "2615f50b78ec67e02713235232a80e01"
+   ],
+   "19": [
+    "passed",
+    "6839da771b95c196c51d7e43de2f0544"
+   ],
+   "20": [
+    "passed",
+    "c3a630824c11f0c280914ffb79eee831"
+   ]
+  },
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestFunctionalityDownloadFileHTTP": {
+   "1": [
+    "passed",
+    "9a8d12955d4223cf1190028a0001ea74"
+   ],
+   "2": [
+    "passed",
+    "8a19eb0da9d184946c658e6eb043f33f"
+   ],
+   "3": [
+    "passed",
+    "19891de20819602265701bdaed605267"
+   ],
+   "4": [
+    "passed",
+    "16e34402e1a327005d25e99bbe693e1f"
+   ],
+   "5": [
+    "passed",
+    "2e080cfb9b87cd0c7bd6e68374f154d8"
+   ],
+   "6": [
+    "passed",
+    "3119dc3cf84dc90bb2539e8f52b071e4"
+   ],
+   "7": [
+    "passed",
+    "ed4ee1c75da9265793f34561c6e095e5"
+   ],
+   "8": [
+    "passed",
+    "3d621f802d88354cf28c8bdfdbc941d8"
+   ],
+   "9": [
+    "passed",
+    "b2bf15ea4561baabbfe94db99bc0c32f"
+   ],
+   "10": [
+    "passed",
+    "5b665ea243493615a6ad4c611044c55b"
+   ],
+   "11": [
+    "passed",
+    "6e8cd3e4a74d985b9ed6bf50ac3b3977"
+   ],
+   "12": [
+    "passed",
+    "ee28376a79577dabc783789c7da325f9"
+   ],
+   "13": [
+    "passed",
+    "b26ac99c3cc9e6a0fcfc596abe8b8f6c"
+   ],
+   "14": [
+    "passed",
+    "07e173b4f4ec88b1e68f376882bbaddb"
+   ],
+   "15": [
+    "passed",
+    "af709849b59311b76acede70f78ed0f5"
+   ],
+   "16": [
+    "passed",
+    "46903367f5575e4a22ccd3c3d4fcaf4b"
+   ],
+   "17": [
+    "passed",
+    "d091bf76011b9813c07d13b2633ed11a"
+   ],
+   "18": [
+    "passed",
+    "4dc318e77eeed61896ca2bb76b2b10b7"
+   ],
+   "19": [
+    "passed",
+    "24fb200f0e24cc03d9831688595f83c8"
+   ],
+   "20": [
+    "passed",
+    "164edce569d2ac57f693c03b3a1a7f8a"
+   ]
+  },
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestEmptyURI": {
+   "1": [
+    "passed",
+    "8dca2a84ed5cee24dd5bc016f1592ddb"
+   ],
+   "2": [
+    "passed",
+    "9db07efd5dce7817dc1e06783c4e632f"
+   ],
+   "3": [
+    "passed",
+    "7d13a3621e9e7dd5b6f9dc5b7818b695"
+   ],
+   "4": [
+    "passed",
+    "4ba74c7a26ce473ce254887e2fbf40e8"
+   ],
+   "5": [
+    "passed",
+    "62279e75b587573aeef6e39d5257504a"
+   ],
+   "6": [
+    "passed",
+    "ca631ae5370990a87b41f2482c5152db"
+   ],
+   "7": [
+    "passed",
+    "04b2e423b6a921d3c5f3863787975dbd"
+   ],
+   "8": [
+    "passed",
+    "e4ec4b1d6ff57856f10d650bf4a4f860"
+   ],
+   "9": [
+    "passed",
+    "f67f70a55e214d2eaa2bb756f0f6babf"
+   ],
+   "10": [
+    "passed",
+    "28c364e20566bdc10a4edc7035d79864"
+   ],
+   "11": [
+    "passed",
+    "30658c9383fd28e083b122178cdacabf"
+   ],
+   "12": [
+    "passed",
+    "5bdb15acd5fcb1aff2cb26a77fca7b49"
+   ],
+   "13": [
+    "passed",
+    "313c4e04bcfffebe5c11ff41a4bfb23c"
+   ],
+   "14": [
+    "passed",
+    "a229c3807068bc35d633f1034dd891e9"
+   ],
+   "15": [
+    "passed",
+    "a2353865cec600058740b404b2d0058e"
+   ],
+   "16": [
+    "passed",
+    "5ff99924a9d6cf1e54f5f489bd2e9548"
+   ],
+   "17": [
+    "passed",
+    "cc6f56df5f729d9a990759d878bcb620"
+   ],
+   "18": [
+    "passed",
+    "6085eb94d561d7969b7a62b84199f7f1"
+   ],
+   "19": [
+    "passed",
+    "3c0debe75e8912b9ac434d32bc131c93"
+   ],
+   "20": [
+    "passed",
+    "3ec270e5cc812e6bd90b24678cc5e237"
+   ]
+  },
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestInvalidYAML": {
+   "1": [
+    "passed",
+    "ac792ba787c44ac84cbbdea5fe1a9efe"
+   ],
+   "2": [
+    "passed",
+    "a04f0c22c0fe735b47aaf243605c2d9b"
+   ],
+   "3": [
+    "passed",
+    "2f40dcf1070d98af44357b10757e320c"
+   ],
+   "4": [
+    "passed",
+    "68aa22d396d28fdbe64146f7e1ebc2d1"
+   ],
+   "5": [
+    "passed",
+    "3214256d4028b2708ef48aa988f998fe"
+   ],
+   "6": [
+    "passed",
+    "30ab68dfa698f1bd1b65175547a952ce"
+   ],
+   "7": [
+    "passed",
+    "42555641205a101b9f44c4f4fc85655b"
+   ],
+   "8": [
+    "passed",
+    "9262b98870bfda9376993cd62a2870d4"
+   ],
+   "9": [
+    "passed",
+    "5ff96682bc3d5fd2839d7b51a7a02c5e"
+   ],
+   "10": [
+    "passed",
+    "bd403c1774a7bf4c206c3e2679b7aac6"
+   ],
+   "11": [
+    "passed",
+    "e7465125b921a6d6cf48ead30c364513"
+   ],
+   "12": [
+    "passed",
+    "b0d8c7f62299c0941db7ca491f50721e"
+   ],
+   "13": [
+    "passed",
+    "8448cc7149e689809a95519be2ef355f"
+   ],
+   "14": [
+    "passed",
+    "6c44fab7ba7ae940b030410247bf18f6"
+   ],
+   "15": [
+    "passed",
+    "05e83bf1245237a895b8f536fd6e3e8f"
+   ],
+   "16": [
+    "passed",
+    "4cef81f1f3d057f132316d217a89c895"
+   ],
+   "17": [
+    "passed",
+    "8fda8c4a443bcd20ce1cc974a0f85d29"
+   ],
+   "18": [
+    "passed",
+    "bac25af6b03cbc6a4cb7933a45fd0291"
+   ],
+   "19": [
+    "passed",
+    "6c37b3ee705acdc13af043eac2089176"
+   ],
+   "20": [
+    "passed",
+    "78ada95dd85b95780a58aeed693b84e9"
+   ]
+  },
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestScheme": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider::TestRetrieveContext": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  10,
+  12
+ ],
+ "timing": {
+  "plain": [
+   2.125,
+   2.163,
+   2.087
+  ],
+  "det": [
+   2.08,
+   2.094,
+   2.081
+  ]
+ },
+ "slowdown": -0.020705882352941195
+}

@@ -1,0 +1,31 @@
+{
+ "sources": {
+  "quic-go": "flaky-r6",
+  "alertmanager": "flaky-r5",
+  "loki": "flaky-r3",
+  "coredns": "flaky-r3",
+  "nats.go": "flaky-r3",
+  "tailscale": "flaky-r3",
+  "pebble": "flaky-r5",
+  "gitea": "flaky-r3",
+  "grpc-go": "flaky-r3",
+  "rclone": "flaky-r5",
+  "go-ethereum": "flaky-r3",
+  "terraform": "flaky-r5",
+  "traefik": "flaky-r3",
+  "cortex": "flaky-r3",
+  "argo-cd": "flaky-r3",
+  "etcd": "flaky-r3",
+  "opentelemetry-go": "flaky-r3",
+  "opentelemetry-collector": "flaky-r3",
+  "temporal": "flaky-r5",
+  "nats-server": "flaky-r3",
+  "prometheus": "flaky-r5",
+  "cli": "flaky-r5",
+  "telegraf": "flaky-r3",
+  "tempo": "flaky-r3"
+ },
+ "missing": [
+  "teleport"
+ ]
+}

@@ -26,6 +26,8 @@ def flaky(d):
     slow = []
     for f in sorted(glob.glob(os.path.join(d, "*.json"))):
         r = json.load(open(f))
+        if "spec" not in r:
+            continue
         name = r["spec"]["name"]
         st = r.get("status")
         base = r.get("baseline", {})
