@@ -40,9 +40,41 @@ def git_out(repo, *args) -> str:
     return p.stdout
 
 
+_STAMP = [0]
+
+
+def fresh_mtime(repo, paths) -> None:
+    """Give ``paths`` (relative to ``repo``) an mtime no earlier run has seen.
+
+    A ``.pyc`` is valid while the source's mtime (whole seconds) and size match the ones it was compiled from.
+    detpy keeps one shared bytecode directory (``~/.cache/detpy/pyc``), and plain runs keep ``__pycache__`` in the
+    tree. Two checkouts within one second of a file whose versions have the same size (a one-token mutation
+    ``==`` -> ``!=``, or ``x + 1 + 0 * 4`` -> ``x * 3 + 0 * 8``) then run the bytecode of the other version: the
+    replay reports the outcome of a different commit. Every rewritten file therefore gets a strictly increasing
+    whole-second stamp (persisted per repository so a later process does not reuse one).
+    """
+    gitdir = Path(git(repo, "rev-parse", "--absolute-git-dir"))
+    sf = gitdir / "culprit-mtime"
+    try:
+        last = int(sf.read_text())
+    except (OSError, ValueError):
+        last = 0
+    stamp = max(int(time.time()) + 1, last + 1, _STAMP[0] + 1)
+    _STAMP[0] = stamp
+    sf.write_text(str(stamp))
+    for rel in paths:
+        f = Path(repo) / rel
+        if f.is_file() and not f.is_symlink():
+            os.utime(f, (stamp, stamp))
+
+
 def checkout(repo, sha: str) -> None:
+    before = git(repo, "rev-parse", "HEAD", check=False)
     git(repo, "checkout", "-q", "-f", sha)
     git(repo, "clean", "-fdq", "-e", ".detpy")
+    if before and len(before) == 40:
+        changed = git(repo, "diff", "--name-only", "--no-renames", before, "HEAD", check=False).split("\n")
+        fresh_mtime(repo, [c for c in changed if c])
 
 
 def base_env(venv: Path, extra: dict | None = None, drop=()) -> dict:
@@ -99,10 +131,19 @@ def run_det(repo, venv: Path, nodeid: str, extra_env: dict | None = None, keys: 
     return {"outcome": outcome_of(code, outcomes, nodeid), "exit": code, "wall": wall, "tail": out[-1500:]}
 
 
+def no_bytecode(env: dict) -> dict:
+    """Plain runs read and write no bytecode (an empty, private cache prefix and no writes): see fresh_mtime."""
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
+    env["PYTHONPYCACHEPREFIX"] = tempfile.mkdtemp(prefix="nopyc-")
+    return env
+
+
 def run_plain(repo, venv: Path, args, extra_env: dict | None = None, timeout=900) -> tuple[int, str, float]:
     cmd = [str(venv / "bin" / "python"), "-m", "pytest", "-p", "no:cacheprovider", *args]
     t0 = time.perf_counter()
-    code, out = sh(cmd, cwd=repo, env=base_env(venv, extra_env), timeout=timeout)
+    env = no_bytecode(base_env(venv, extra_env))
+    code, out = sh(cmd, cwd=repo, env=env, timeout=timeout)
+    shutil.rmtree(env["PYTHONPYCACHEPREFIX"], ignore_errors=True)
     return code, out, time.perf_counter() - t0
 
 
@@ -117,7 +158,7 @@ def git_bisect(repo, venv: Path, good: str, bad: str, script_args: list[str], ex
     """``git bisect run`` with plain pytest; returns the named commit, the executions and the wall time."""
     git(repo, "bisect", "reset", check=False)
     checkout(repo, bad)
-    env = base_env(venv, extra_env)
+    env = no_bytecode(base_env(venv, extra_env))
     t0 = time.perf_counter()
     sh(["git", "-C", str(repo), "bisect", "start", "--first-parent", bad, good], env=env)
     counter = tempfile.NamedTemporaryFile("w", suffix=".count", delete=False)
@@ -131,6 +172,7 @@ def git_bisect(repo, venv: Path, good: str, bad: str, script_args: list[str], ex
     wall = time.perf_counter() - t0
     log = git(repo, "bisect", "log", check=False)
     git(repo, "bisect", "reset", check=False)
+    shutil.rmtree(env["PYTHONPYCACHEPREFIX"], ignore_errors=True)
     steps = sum(1 for line in log.splitlines() if line.startswith("git bisect ") and
                 (line.startswith("git bisect good") or line.startswith("git bisect bad") or
                  line.startswith("git bisect skip")))
