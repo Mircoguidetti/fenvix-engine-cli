@@ -43,6 +43,8 @@ class WardShell:
 
         self.patcher = Patcher()
         self.ids: dict[int, str] = {}
+        self.running = False  # the session's suite is running (a nested suite is a test's own code)
+        self.nested = 0  # depth of nested suites: their fixtures run in the running test's own context
 
     # -- identities ------------------------------------------------------------------------------
     def nid(self, test, index: int | None) -> str:
@@ -96,7 +98,7 @@ class WardShell:
         real_resolve = TestArgumentResolver._resolve_single_arg
 
         def resolve_single_arg(resolver, arg, cache):
-            if not hasattr(arg, "ward_meta"):
+            if not hasattr(arg, "ward_meta") or shell.nested:
                 return real_resolve(resolver, arg, cache)
             from ward.fixtures import Fixture
 
@@ -119,8 +121,15 @@ class WardShell:
         p.set(C, "get_tests_in_modules", get_tests_in_modules)
         if getattr(WR, "get_tests_in_modules", None) is real_get_tests:
             p.set(WR, "get_tests_in_modules", get_tests_in_modules)
-        p.set(Suite, "generate_test_runs", lambda suite, dry_run=False, capture_output=True:
-              shell.generate_test_runs(suite, dry_run, capture_output))
+        real_generate = Suite.generate_test_runs
+
+        def generate_test_runs(suite, dry_run=False, capture_output=True):
+            # a suite run inside a test (ward's own tests run suites) is that test's code: ward's own loop
+            if shell.running:
+                return shell.nested_runs(real_generate(suite, dry_run=dry_run, capture_output=capture_output))
+            return shell.generate_test_runs(suite, dry_run, capture_output)
+
+        p.set(Suite, "generate_test_runs", generate_test_runs)
         return self
 
     def uninstall(self) -> None:
@@ -158,8 +167,25 @@ class WardShell:
             out += [members[q] for q in run.shuffle(ids)]
         return out
 
+    def nested_runs(self, gen):
+        self.nested += 1
+        try:
+            yield from gen
+        finally:
+            self.nested -= 1
+
     def generate_test_runs(self, suite, dry_run: bool, capture_output: bool):
         from ward.fixtures import TeardownResult  # noqa: F401
+        from ward.models import Scope
+        from ward.testing import TestOutcome, TestResult
+
+        self.running = True
+        try:
+            yield from self._generate(suite, dry_run, capture_output)
+        finally:
+            self.running = False
+
+    def _generate(self, suite, dry_run: bool, capture_output: bool):
         from ward.models import Scope
         from ward.testing import TestOutcome, TestResult
 

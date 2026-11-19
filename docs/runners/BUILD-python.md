@@ -126,3 +126,30 @@ To run them on GitHub Actions: copy `tracks/all-runners-python/run.json.example`
 `tracks/all-runners-python/run.json` (edit `run_id`) on `claude/all-runners` and push; the workflow is
 `.github/workflows/all-runners-python.yml` (the cache-proof workflow's jobs, results committed to
 `tracks/all-runners-python/results/<run_id>/`).
+
+## After the first Actions run (ar-py-1)
+
+* Harness: a spec's own install commands now start from a removed environment at every reinstall (`uv venv`
+  refused to overwrite it: healthchecks commits 1-20 were `install-failed`).
+* ward: a suite run inside a test (ward's own tests run suites) took over the session (its loop replaced the
+  session's tests: 0 recorded, every id `new` at every commit). Nested suites now run ward's own loop
+  (`test_a_suite_run_inside_a_test_is_that_tests_code`). ward ids are stable: 371 of 389 of ward's tests reused in an
+  unchanged second run (MEASURED, local).
+* Shared capture: `shutil.rmtree` removes entries by name under a directory descriptor (`os.remove(name,
+  dir_fd=...)`); those were taken as writes of the same names in the working directory, so every test reading
+  e.g. `pyproject.toml` was "reading a file another test wrote" (ward: 376 of 389). Paths with a `dir_fd` are now
+  resolved through `/proc/self/fd` (`test_rmtree_of_a_temporary_directory_is_not_a_write_in_the_project`). The
+  pytest path had the same bug.
+* Shared runtime identity: a `*.egg-info` inside the project's tree (`src/DateTime.egg-info`, left by a setuptools
+  develop install and found through `src` on `sys.path`) was taken as an installed distribution with its version,
+  so every commit that changed the version reran everything (`runtime` misses of zope-datetime, icecream, howdoi).
+  It is the project itself and is left out now; a `.dist-info` in the tree stays a distribution (review R-002 N2).
+* `clock` misses (zope-datetime, icecream, howdoi): the designed epoch rule. The cache keeps its epoch while HEAD's
+  commit time is at most 30 days later; these projects' commits are weeks or months apart, so the epoch moves and
+  every test that read the clock reruns.
+* howdoi: 11 tests start processes (never recorded: `new` at every commit); the others are one `TestCase` class,
+  so one changed test reruns the class (`unit`: the class is the unit of reuse).
+* ward specs: `runner-ward-pointers` removed (its C extension uses frame internals that do not build on Python 3.12+,
+  and the cache needs 3.12+); `runner-ward-ward` gets `setuptools<81` and a 4-commit window (older ward calls
+  `FileFinder.find_module`, removed in 3.12; it fails under plain `ward` too). A second ward repository needs a code
+  search (`"tool.ward" filename:pyproject.toml`).

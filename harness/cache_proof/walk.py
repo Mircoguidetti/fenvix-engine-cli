@@ -164,6 +164,9 @@ class Walk:
     def install(self) -> tuple[bool, str]:
         logf = self.work / "install.log"
         if self.spec.get("install"):
+            # the spec's commands create the environment: start from none at every (re)install (uv venv refuses to
+            # overwrite an existing one, which failed every reinstall after the first)
+            shutil.rmtree(self.venv, ignore_errors=True)
             for cmd in self.spec["install"]:
                 code, out, _ = sh(self.fmt(cmd), cwd=self.src, env=dict(os.environ), timeout=5400, shell=True)
                 with open(logf, "a") as fh:

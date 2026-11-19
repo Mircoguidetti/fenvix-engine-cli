@@ -54,6 +54,18 @@ const WRITE_EVENTS: [(&str, &[usize]); 10] = [
     ("os.link", &[1]),
     ("os.truncate", &[0]),
 ];
+/// (event, path argument, its `dir_fd` argument): a relative path with a directory descriptor is relative to that
+/// directory, not to the working directory (``shutil.rmtree`` removes every entry by name under the descriptor of
+/// its directory: those removals were taken as writes of the same names under the working directory).
+const DIR_FD_ARGS: [(&str, usize, usize); 7] = [
+    ("os.remove", 0, 1),
+    ("os.rmdir", 0, 1),
+    ("os.mkdir", 0, 2),
+    ("os.rename", 0, 2),
+    ("os.rename", 1, 3),
+    ("os.symlink", 1, 2),
+    ("os.link", 1, 3),
+];
 const SPAWN: [&str; 7] = ["subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn"];
 const CO_OPTIMIZED: i64 = 0x1;
 const CO_PLAIN_EXCLUDE: i64 = 0x20 | 0x80 | 0x100 | 0x200;
@@ -936,6 +948,45 @@ impl CaptureCore {
         Ok(Some(normpath(&w)))
     }
 
+    /// The absolute path of a relative path argument given with a directory descriptor (`DIR_FD_ARGS`), from the
+    /// descriptor's target (`/proc/self/fd`); None when there is no descriptor (or it cannot be read: then the path
+    /// is taken as relative to the working directory, as before).
+    fn under_dir_fd<'py>(
+        &self,
+        _py: Python<'py>,
+        event: &str,
+        i: usize,
+        a: &Bound<'py, PyAny>,
+        arg: &dyn Fn(usize) -> Option<Bound<'py, PyAny>>,
+    ) -> PyResult<Option<W>> {
+        let Some(&(_, _, fd_i)) = DIR_FD_ARGS.iter().find(|(e, p, _)| *e == event && *p == i) else { return Ok(None) };
+        let Some(fd) = arg(fd_i) else { return Ok(None) };
+        if !fd.is_instance_of::<pyo3::types::PyInt>() {
+            return Ok(None);
+        }
+        let fd: i64 = fd.extract()?;
+        if fd < 0 {
+            return Ok(None); // AT_FDCWD
+        }
+        let name: W = if let Ok(s) = a.cast::<PyString>() {
+            w_of(s)?
+        } else if let Ok(b) = a.cast::<PyBytes>() {
+            b.as_bytes().to_vec()
+        } else {
+            return Ok(None);
+        };
+        if name.is_empty() || name.starts_with(b"/") {
+            return Ok(None);
+        }
+        let Ok(dir) = std::fs::read_link(format!("/proc/self/fd/{fd}")) else { return Ok(None) };
+        let mut j = dir.as_os_str().as_bytes().to_vec();
+        if !j.ends_with(b"/") {
+            j.push(b'/');
+        }
+        j.extend_from_slice(&name);
+        Ok(Some(normpath(&j)))
+    }
+
     /// `Capture.flag(ctx, flag, detail)`; `detail` None: the first user site.
     fn flag_impl(&self, py: Python<'_>, ctx: usize, flag: &[u8], detail: Option<W>) -> PyResult<()> {
         let new = {
@@ -1284,6 +1335,12 @@ impl CaptureCore {
                 let ctx = self.cur(py)?;
                 for &i in idx.iter() {
                     let a = arg(i).unwrap_or_else(|| py.None().into_bound(py));
+                    if let Some(p) = self.under_dir_fd(py, event, i, &a, &arg)? {
+                        if !self.ignored(&p) {
+                            self.wrote_impl(ctx, &p);
+                        }
+                        continue;
+                    }
                     if let Some(p) = self.abs(py, &a)? {
                         if !self.ignored(&p) {
                             self.wrote_impl(ctx, &p);

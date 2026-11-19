@@ -371,3 +371,26 @@ def test_verify_mode_compares_every_would_be_reuse(tmp_path):
     r = ut(root, det_args=["--det-cache-verify=1"])
     assert r.reused == set() and r.cache.get("verified_ids") == ["test_v.py::V::test_v"], r
     assert r.cache.get("verify_mismatches") in ([], None), r
+
+
+def test_rmtree_of_a_temporary_directory_is_not_a_write_in_the_project(tmp_path):
+    # shutil.rmtree removes entries by name under its directory's descriptor (os.remove(name, dir_fd=...)): those
+    # removals were taken as writes of the same names in the working directory, so a test reading the project's
+    # data.txt was "reading a file another test wrote" and never reused (ward's own suite: 376 of 389 tests)
+    root = tmp_path / "p"
+    write(root, {"data.txt": "1\n", "test_rm.py": """
+        import os, shutil, tempfile, unittest
+
+        class A(unittest.TestCase):
+            def test_tmp(self):
+                d = tempfile.mkdtemp()
+                open(os.path.join(d, "data.txt"), "w").write("x")
+                shutil.rmtree(d)
+
+        class B(unittest.TestCase):
+            def test_read(self):
+                self.assertEqual(open("data.txt").read(), "1\\n")
+        """})
+    ut(root)
+    r = ut(root)
+    assert "test_rm.py::B::test_read" in r.reused, r
