@@ -128,3 +128,25 @@ def test_module_and_global_fixture_reads_are_inputs_of_their_users(tmp_path):
     assert r.outcomes["tests/test_f.py::uses global fixture only"] == "failed", r
     assert r.outcomes["tests/test_f.py::uses module fixture"] == "failed", r
     assert r.reused == {"tests/test_f.py::plain"}, r
+
+
+def test_a_suite_run_inside_a_test_is_that_tests_code(tmp_path):
+    # ward's own tests run suites: the session's loop must not take them as the session (it replaced the
+    # session's tests and recorded nothing)
+    root = tmp_path / "p"
+    write(root, {"tests/test_n.py": """
+        from ward import test
+        from ward._suite import Suite
+
+        @test("runs a suite")
+        def _():
+            assert list(Suite(tests=[]).generate_test_runs()) == []
+
+        @test("plain")
+        def _():
+            pass
+        """})
+    a = wd(root)
+    assert a.cache.get("recorded") == 2 and set(a.outcomes) == {"tests/test_n.py::runs a suite",
+                                                               "tests/test_n.py::plain"}, a
+    assert wd(root).reused == {"tests/test_n.py::runs a suite", "tests/test_n.py::plain"}

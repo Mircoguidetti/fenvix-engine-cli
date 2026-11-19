@@ -2,12 +2,15 @@
  "name": "runner-ward-ward",
  "url": "https://github.com/darrenburns/ward",
  "head": "3289bd641e9b",
- "commits": 21,
+ "commits": 4,
  "mode": "suite",
  "python": "3.12",
  "runner": "ward",
  "runner_args": [
   "test"
  ],
- "note": "ward runs its own suite ([tool.ward] path = tests)"
+ "note": "ward runs its own suite ([tool.ward] path = tests); setuptools<81: older commits import pkg_resources (_ward_version.py) and distutils; only the last 4 first-parent commits run on Python 3.12+ (the cache needs sys.monitoring): older ward calls FileFinder.find_module, removed in 3.12 (MEASURED: commit 07ba8d2f fails under plain `ward` on 3.12)",
+ "pip": [
+  "setuptools<81"
+ ]
 }

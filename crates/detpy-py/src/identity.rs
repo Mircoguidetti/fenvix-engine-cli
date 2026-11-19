@@ -547,6 +547,13 @@ fn dist_infos_w(
             base = Some(b);
             key = Some(k.into_bytes());
         }
+        // `*.egg-info` inside the project's own tree (`src/Name.egg-info`, left by a setuptools develop install and
+        // found through the project's directory on sys.path): the project itself, not an installed distribution.
+        // Its version changes with the commit (every commit that bumped it reran every test); the project's files
+        // are inputs where tests read them. A `.dist-info` in the tree stays a distribution (review R-002 N2)
+        if base.as_ref().is_some_and(|b| b.starts_with(&root_sep_w) && b.ends_with(b".egg-info")) {
+            continue;
+        }
         let memo_hit = key.as_ref().and_then(|k| memo.map.get(k)).and_then(|h| h.clone());
         let hit = match memo_hit {
             Some(h) => h,
