@@ -250,3 +250,31 @@ def test_custom_meta_path_finder(pytester, cycle):
     p, fresh, wrong, rs = cycle(lambda: _w(pytester.path / "virtual" / "vmod.src", "X = 1\n"))
     assert fresh.get("test_mp.py::test_no_virtual") == "failed", rs[2].stdout.str()
     assert wrong == {}, rs[1].stdout.str()
+
+
+@pytest.mark.skipif(__import__("shutil").which("gcc") is None, reason="needs gcc")
+def test_library_a_root_conftest_loads_at_startup(pytester, cycle):
+    # the root conftest is imported before the capture starts: the library it maps is an input of every test
+    import subprocess
+
+    def build(v):
+        c = pytester.path / "n.c"
+        c.write_text(f"int adj(void) {{ return {v}; }}\n")
+        subprocess.run(["gcc", "-shared", "-fPIC", "-o", str(pytester.path / "libadj.so"), str(c)], check=True)
+        c.unlink()
+
+    pytester.makeini("[pytest]\n")
+    build(0)
+    pytester.makeconftest("""
+        import ctypes, os
+        LIB = ctypes.CDLL(os.path.join(os.path.dirname(__file__), "libadj.so"))
+        """)
+    pytester.makepyfile(test_lib="""
+        from conftest import LIB
+
+        def test_adj():
+            assert LIB.adj() == 0
+        """)
+    p, fresh, wrong, rs = cycle(lambda: build(1))
+    assert fresh.get("test_lib.py::test_adj") == "failed", rs[2].stdout.str()
+    assert wrong == {}, rs[1].stdout.str()

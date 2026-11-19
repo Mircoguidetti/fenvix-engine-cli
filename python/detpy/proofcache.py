@@ -540,8 +540,8 @@ class Capture:
         """review R-019c E-8: a shared library loaded during a context (``ctypes.CDLL``, an extension module of the
         repository, a library C code ``dlopen()``s) raises no event Python sees with its resolved path. The files
         newly mapped into the process since the last scan, outside site-packages, the standard library and the
-        temporary directories, are inputs of the context by content. Mappings present at the start are the
-        baseline (the interpreter, pytest's own extensions)."""
+        temporary directories, are inputs of the context by content; those mapped before the capture started are
+        inputs of every test."""
         try:
             with open("/proc/self/maps") as fh:
                 text = fh.read()
@@ -560,9 +560,13 @@ class Capture:
                 continue
             self._maps_seen.add(p)
             new.append(p)
-        if ctx is None or self._maps_baseline:
+        if self._maps_baseline:
+            # mapped before the capture started (the interpreter's libraries, an extension or a ctypes library a
+            # root conftest or plugin loaded at startup): inputs of every test, through the import context
             self._maps_baseline = False
-            return
+            ctx = self.import_ctx
+        if ctx is None:
+            ctx = self.import_ctx  # before the first context (startup, conftest imports): every test's input
         for p in new:
             if p.endswith(" (deleted)") or self._ignored(p) or not os.path.isfile(p):
                 continue
