@@ -195,3 +195,13 @@ func fenvixTests(tests []InternalTest) []InternalTest {
 	}
 	return out
 }
+
+// fenvixDeadline: with the time control on, a test's deadline is moved to the
+// virtual clock (virtual now + the real time remaining), so that arithmetic
+// between it and the virtual clock is meaningful.
+func fenvixDeadline(d time.Time) time.Time {
+	if !runtime.Fenvix_On(runtime.FenvixTime) {
+		return d
+	}
+	return time.FenvixNow().Add(time.Until(d)) // time.Until here: package testing, real clock
+}

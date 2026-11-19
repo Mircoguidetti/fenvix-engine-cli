@@ -10,6 +10,7 @@ package net
 
 import (
 	"runtime"
+	"sync"
 	"syscall"
 )
 
@@ -117,7 +118,7 @@ func fenvixConnect(fd int, sa syscall.Sockaddr) error {
 	default:
 		return syscall.Connect(fd, sa)
 	}
-	local := (ip.IsLoopback() || ip.IsUnspecified()) && port != 53
+	local := (ip.IsLoopback() || ip.IsUnspecified() || fenvixOwnAddress(ip)) && port != 53
 	if local {
 		for _, p := range fenvixProxyPorts() {
 			if p == port {
@@ -136,4 +137,31 @@ func fenvixConnect(fd int, sa syscall.Sockaddr) error {
 	}
 	syscall.Fenvix_Event("net", "connect", addr)
 	return syscall.Connect(fd, sa)
+}
+
+var (
+	fenvixOwnOnce  sync.Once
+	fenvixOwnAddrs []IP
+)
+
+// fenvixOwnAddress reports whether ip is an address of one of this machine's
+// interfaces: a connection to it does not leave the machine.
+func fenvixOwnAddress(ip IP) bool {
+	fenvixOwnOnce.Do(func() {
+		addrs, err := interfaceAddrTable(nil)
+		if err != nil {
+			return
+		}
+		for _, a := range addrs {
+			if n, ok := a.(*IPNet); ok {
+				fenvixOwnAddrs = append(fenvixOwnAddrs, n.IP)
+			}
+		}
+	})
+	for _, a := range fenvixOwnAddrs {
+		if a.Equal(ip) {
+			return true
+		}
+	}
+	return false
 }

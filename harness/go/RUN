@@ -1,1 +1,1 @@
-{"mode": "skip", "set": "skip-r3"}
+{"mode": "flaky", "set": "flaky-r4", "only": ["rclone", "temporal", "pebble", "prometheus", "alertmanager"]}

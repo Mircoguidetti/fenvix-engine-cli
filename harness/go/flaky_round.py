@@ -338,7 +338,7 @@ def main():
 
     # 6. timing (serial)
     if time.time() - T0 < a.budget:
-        plain_t, det_t = [], []
+        plain_t, det_t, detpar_t = [], [], []
         for r in range(3):
             code, out, _ = sh(["go", "test", "-count=1", "-p", "1", "-json", f"-timeout={timeout}", *extra, *pkgs],
                               cwd=moddir, env=env, timeout=3600)
@@ -349,6 +349,12 @@ def main():
                               cwd=moddir, env=env, timeout=3600)
             _, el = parse_json(out)
             det_t.append(sum(x for x in el.values() if x))
+            # --det with t.Parallel kept: separates the cost of running tests one at a time from the hooks' cost
+            code, out, _ = sh([a.fenvix, "test", "--det", "--det-keep-parallel", f"--det-trace={trace}.par", "-json",
+                               f"-timeout={timeout}", *extra, *pkgs], cwd=moddir, env=env, timeout=3600)
+            _, el = parse_json(out)
+            detpar_t.append(sum(x for x in el.values() if x))
+        result["timing_keep_parallel"] = detpar_t
         result["timing"] = {"plain": plain_t, "det": det_t}
         mp, md = statistics.median(plain_t), statistics.median(det_t)
         result["slowdown"] = (md - mp) / mp if mp > 0 else None

@@ -291,3 +291,13 @@ func TestDetUnchangedOnDeterministicPackages(t *testing.T) {
 		t.Fatalf("own packages fail under --det (exit %d):\n%s", code, out)
 	}
 }
+
+// Regressions found on real projects: t.Deadline() arithmetic with the
+// virtual clock (rclone), dialling the machine's own interface address.
+func TestRegressionsFromRealProjects(t *testing.T) {
+	dir := copyFixture(t, "regressions")
+	out, code := runFenvix(t, dir, nil, "test", "--det", "-v", ".")
+	if code != 0 {
+		t.Fatalf("exit %d\n%s", code, out)
+	}
+}

@@ -31,7 +31,12 @@ def flaky(d):
         base = r.get("baseline", {})
         unstable = set(r.get("baseline_unstable", []))
         conf = r.get("confirm", {})
-        documented = [k for k in conf if k.split("::")[1] in r["spec"]["tests"]]
+        loc = r.get("located", {})
+        tops = set(r["spec"]["tests"])
+        for t, how in loc.items():
+            if how.startswith("method (subtest of "):
+                tops |= {x for x in how[len("method (subtest of "):-1].split(",") if x}
+        documented = [k for k in conf if k.split("::")[1] in tops]
         doc_seen = [k for k in documented if k in base]
         doc_flaky_base = [k for k in documented if k in unstable]
         rep_unstable = [k for k in unstable if conf.get(k, {}).get("reproduced")]

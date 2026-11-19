@@ -55,6 +55,15 @@ func fenvixNow(op string) (Time, bool) {
 	return fenvixMake(wall, mono), true
 }
 
+// FenvixNow is the virtual clock now, without a tick or an event (package
+// testing uses it to move a test's deadline to the virtual clock).
+func FenvixNow() Time {
+	if !fenvixTimeOn() {
+		return Now()
+	}
+	return fenvixQuietNow()
+}
+
 func fenvixQuietNow() Time {
 	wall, mono := syscall.Fenvix_ClockQuiet()
 	return fenvixMake(wall, mono)

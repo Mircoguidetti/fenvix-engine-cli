@@ -135,6 +135,9 @@ var patches = []patch{
 	{group: "core", file: "testing/testing.go", ops: []op{
 		{kind: "insert", anchor: "func runTests(", text: "\ttests = fenvixTests(tests)"},
 	}},
+	{group: "time", file: "testing/testing.go", ops: []op{
+		{kind: "replace", anchor: "func (t *T) Deadline() (deadline time.Time, ok bool) {", text: "func (t *T) Deadline() (deadline time.Time, ok bool) {\n\tif d, ok := t.fenvixOrigDeadline(); ok {\n\t\treturn fenvixDeadline(d), true\n\t}\n\treturn time.Time{}, false\n}\n\nfunc (t *T) fenvixOrigDeadline() (deadline time.Time, ok bool) {"},
+	}},
 	{group: "serial", file: "testing/testing.go", ops: []op{
 		{kind: "insert", anchor: "func (t *T) Parallel() {", text: "\tif fenvixSerial() {\n\t\treturn\n\t}"},
 	}},
