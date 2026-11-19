@@ -101,8 +101,11 @@ def freeze_venv(repo: Path, name: str | None, freeze: list[str], python: str, at
     return venv
 
 
-def edit_tree_commits(repo, base, later, edits, cid) -> tuple[str, str]:
-    """Commit the data edit right after ``base`` and replay ``later`` with it (new commits)."""
+def edit_tree_commits(repo, base, later, edits, cid, position: int = 0) -> tuple[str, str]:
+    """Commit the data edit right after ``base`` and replay ``later`` with it (new commits).
+
+    ``position`` > 0 (round 2, review R-019 H5): no commit of its own; the edit is folded into the
+    ``position``-th commit of ``later`` (1-based), the commits before it are kept, the later ones replayed."""
     def tree(sha):
         with tempfile.TemporaryDirectory() as td:
             env = {**os.environ, "GIT_INDEX_FILE": os.path.join(td, "index")}
@@ -121,6 +124,15 @@ def edit_tree_commits(repo, base, later, edits, cid) -> tuple[str, str]:
             return subprocess.run(["git", "-C", str(repo), "write-tree"], env=env, capture_output=True, check=True,
                                   text=True).stdout.strip()
 
+    if position:
+        prev = later[position - 2] if position > 1 else base
+        m = None
+        for sha in later[position - 1:]:
+            prev = commit(repo, tree(sha), prev, subprocess.run(["git", "-C", str(repo), "log", "-1", "--format=%B",
+                                                                 sha], capture_output=True, text=True).stdout, sha)
+            m = m or prev
+        git(repo, "update-ref", f"refs/culprit/{cid}", prev)
+        return m, prev
     m = commit(repo, tree(base), base, f"fixture edit {cid}", None)
     prev = m
     for sha in later:
@@ -151,6 +163,8 @@ def main():
     ap.add_argument("--scenario", required=True)
     ap.add_argument("--decoy", default="none", choices=["none", "tz", "dep"])
     ap.add_argument("--out", required=True)
+    ap.add_argument("--placement", default="first", choices=["first", "random"],
+                    help="data edit: its own commit right after green (round 1) or folded into a random later commit")
     a = ap.parse_args()
     project, arm, run, shard = SCEN[a.scenario]
     cid = f"{a.scenario}-{a.decoy}"
@@ -209,7 +223,11 @@ def main():
     vars0, vars1 = {}, dict(ch.get("env") or {})
     truth, red_head = None, w[-1]
     if arm == "ci-data":
-        truth, red_head = edit_tree_commits(repo, green, later, ch["edits"], cid)
+        position = 0
+        if a.placement == "random":
+            import random
+            position = random.Random(f"round2:{cid}").randint(1, len(later))
+        truth, red_head = edit_tree_commits(repo, green, later, ch["edits"], cid, position)
     elif arm == "ci-env":
         truth = "env:" + next(iter(ch["env"]))
     else:
@@ -223,7 +241,10 @@ def main():
         decoy = "dist:pluggy"
     t = [x for x in d["transitions"] if str(x["i"]) == "3"][0]
     units = sorted(t.get("fresh_bad") or [])
-    res = {"id": cid, "scenario": a.scenario, "decoy": decoy, "truth": truth, "what": ch["what"], "units": units}
+    res = {"id": cid, "scenario": a.scenario, "decoy": decoy, "truth": truth, "what": ch["what"], "units": units,
+           "placement": a.placement}
+    if arm == "ci-data":
+        res["range"] = git(repo, "rev-list", "--first-parent", "--reverse", f"{green}..{red_head}").split()
     if not units:
         res["skip"] = "the head-to-head saw no broken test file for this change"
         with open(a.out, "a") as fh:

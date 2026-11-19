@@ -1,6 +1,22 @@
 # Exact culprit: validation harness (idea 2)
 
-Measurement only, not the product. Report: fenvix-brain-cli `sessions/2026-11-18-exact-culprit/REPORT.md`.
+Measurement only, not the product. Reports: round 1, fenvix-brain-cli `sessions/2026-11-18-exact-culprit/REPORT.md`;
+round 2 (after review R-019), `sessions/2026-11-18-exact-culprit/REPORT-2.md` on this branch.
+
+## Round 2 (review R-019)
+
+* `finder.py` confirms every answer and says "unknown" instead of guessing (R-019 H1-H4): see its docstring.
+* `common.py`: strictly increasing mtimes on checkout, no bytecode for plain runs (a same-size edit within one
+  second ran the other commit's `.pyc`; the review's own control case failed here because of it).
+* `review_r019/`: the reviewer's tests, copied unchanged from `claude/review-r019`.
+* `round2/`: `test_finder_round2.py` (more variants), `placed.py` (kind a2: culprit at a random position, and
+  revert-and-reland histories, truth by a plain walk), `realrevert.py` (kind b: commits the project reverted),
+  `nocode2.py` (added no-code mechanisms: time zone, locale, terminal and interpreter variables), `run_*.sh`,
+  `aggregate2.py`.
+* `results/`: round-2 rows at the root (`a-*.jsonl` = kind a2, `b-*.jsonl`, `c-final.jsonl` = no-code,
+  `c-edit.jsonl` = data-edit commits, `d.jsonl` carried over from round 1, `summary.json`); round 1 moved
+  unchanged to `results/round1/` (`aggregate.py results/round1` still reproduces it).
+
 
 ## Engine change (opt-in, default unchanged)
 

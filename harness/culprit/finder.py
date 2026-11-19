@@ -52,11 +52,16 @@ def norm_dist(name: str) -> str:
 def load_key(path: str, nodeid: str) -> dict | None:
     with open(path) as fh:
         d = json.load(fh)
+    def same(a: str, b: str) -> bool:  # node ids are relative to pytest's rootdir, which may be a subdirectory
+        return a == b or a.endswith("/" + b) or b.endswith("/" + a)
+
     t = d["tests"].get(nodeid)
+    if t is None:
+        t = next((v for k, v in d["tests"].items() if same(k, nodeid)), None)
     if t is None:  # parametrised: the first entry of the same function
         base = nodeid.split("[", 1)[0]
         for k, v in d["tests"].items():
-            if k.split("[", 1)[0] == base:
+            if same(k.split("[", 1)[0], base):
                 t = v
                 break
     dists = {}
@@ -702,7 +707,7 @@ class Finder:
         self._items += [{"kind": "mode", "id": f"mode:{p}", "path": p} for p in mode_paths]
         res.update({"commits_in_range": len(commits), "commit_candidates": len(cands),
                     "input_candidates": [c["id"] for c in inputs], "pruned_inputs": pruned,
-                    "mode_candidates": mode_paths})
+                    "mode_candidates": mode_paths, "candidates": cands})
         green_env = dict(self.green.get("env") or {})
         red_env = dict(self.red.get("env") or {})
         need_env = bool(inputs)

@@ -39,7 +39,7 @@ def main():
     kdir.mkdir(parents=True, exist_ok=True)
     for line in open(a.cases):
         c = json.loads(line)
-        if c["id"] in done:
+        if c["id"] in done or c.get("dropped"):
             continue
         nid = c["red_test"]
         gk, rk = str(kdir / f"{c['id']}-green.json"), str(kdir / f"{c['id']}-red.json")
@@ -49,6 +49,11 @@ def main():
         r = run_det(repo, venv, nid, keys=rk)
         res = {"id": c["id"], "repo": c["repo"], "k": c["k"], "truth": c["planted"], "red_test": nid,
                "green_run": g["outcome"], "red_run": r["outcome"]}
+        for f in ("shape", "positions", "truth_position", "truth_is_planted", "round1"):
+            if f in c:
+                res[f] = c[f]
+        if "range" in c:  # trivial rules (review R-019 H5): oldest and newest commit of (green, red]
+            res["range_first"], res["range_last"] = c["range"][0], c["range"][-1]
         f = Finder(repo, nid, {"sha": c["green"], "env": {}, "venv": venv, "key": gk},
                    {"sha": c["red_head"], "env": {}, "venv": venv, "key": rk})
         try:
