@@ -30,7 +30,44 @@ CPUs shared with other agents: every timing is NOISY), **ESTIMATED**, **DECLARED
 
 ## Local mini-walks
 
-FILLED_BY_MINIWALK
+MEASURED (local, NOISY: this container, 4 CPUs shared with other agents, Node 22.23.5), 2026-11-19, with the final
+code of this branch (the code was not changed while they ran). Raw: `harness/node_cache/results/local-node-a/*.json.gz`,
+tables `harness/node_cache/results/local-node-a/TABLES.md` (`python3 harness/node_cache/aggregate.py local-node-a --md`).
+Commits 26..30 of each window (dependency-cruiser 27..30): 4 transitions (3 for dependency-cruiser); each with a skip
+run from the previous commit's cache and a verify run that runs every file and compares every would-be reuse.
+
+| project (runner) | transitions | skip with proof, test time median / mean | tests reused, median | verified reuses | wrong | flaky |
+|---|---:|---:|---:|---:|---:|---:|
+| commander (`node --test`) | 4 | 91% / 68% | 98% | 3,774 | **0** | 0 |
+| simple-statistics (`node --test`, isolation=none) | 4 | 0% / 25% | 0% | 459 | **0** | 0 |
+| yargs (Mocha 11) | 4 | 34% / 26% | 56% | 1,449 | **0** | 0 |
+| dependency-cruiser (Mocha 12) | 3 | 0% / 6% | 0% | 1,477 | **0** | 0 |
+
+Why files rerun (from each verify run's miss reasons and the changed files): commander 30: a release (`package.json`,
+lockfile: configuration); simple-statistics 28: a change to `src/quantile_sorted.js`, which every test file loads
+through `index.js` (data), 29 and 30: lockfile (runtime); yargs 30: lockfile (runtime), and 3 of 14 files never
+cached (a subprocess test, `integration.mjs`; a bare optional module probe `batman` from `build/lib/utils/apply-extends.js`;
+one file with failures under Level 0, below); dependency-cruiser 28: a release (lockfile), 29: a fixture
+`test/extract/__mocks__/.../node_modules/` changed (every `node_modules` of the project is in the runtime identity:
+coarse but sound), and 72 of 217 files never cached (648 of 2,000 tests probe optional packages with bare specifiers
+from project code, `src/utl/try-import.mjs`: the shared R-021 F5 rule; 52 tests draw OS entropy).
+
+| project | plain (project's command) s | `detjs --det`, no cache s | cold capture s | warm rerun s (files reused) |
+|---|---:|---:|---:|---:|
+| commander | 13.8 | 20.5 | 21.5 | 1.5 (107/109) |
+| simple-statistics | 0.75 | 3.1 | 20.9 | 0.83 (83/83) |
+| yargs | 9.4 | 8.8 | 16.8 | 10.1 (11/14) |
+| dependency-cruiser | 11.7 | 14.7 | 190.3 | 112.5 (144/217) |
+
+Skip run vs verify run, median: commander 2 s vs 21 s (0.08), yargs 10 s vs 16 s (0.61). The cost of one process
+per file is visible where the runner used one process (simple-statistics: 3.1 s in one process, 20.9 s cold per
+file; dependency-cruiser: 14.7 s vs 190 s, about 0.8 s per spec file process, mostly loading Mocha, the
+`--require`/ESM module graph and the capture's module scan per process; NOISY). Reducing it (a pre-warmed process
+pool that forks a clean process per file) is not done here.
+
+Other MEASURED facts from these suites: under `--det`, 3 yargs `commandDir` tests fail because Level 0's sorted
+directory listings change the order of commands the tests expect (the file system's order); dependency-cruiser's
+plain run has 3 failures in this container (stdin and locale dependent), `--det` 2.
 
 ## Integration notes
 
