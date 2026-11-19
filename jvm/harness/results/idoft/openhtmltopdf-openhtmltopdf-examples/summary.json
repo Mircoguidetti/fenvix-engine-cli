@@ -1,0 +1,41 @@
+{
+ "name": "openhtmltopdf-openhtmltopdf-examples",
+ "url": "https://github.com/danfickle/openhtmltopdf",
+ "sha": "4a0612fab7b3a55e3e11d485233b063006d03b0f",
+ "module": "openhtmltopdf-examples",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 258,
+ "documented": 34,
+ "documented_present": 34,
+ "documented_categories": {
+  "OD": 34
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 1,
+ "broken_tests": [
+  "com.openhtmltopdf.visualregressiontests.VisualRegressionTest::testMaliciousSvgInsecureMode"
+ ],
+ "fingerprint_coverage": "258/258",
+ "fingerprint_covered": 258,
+ "fingerprinted": 258,
+ "timing_base_s": [
+  26.303,
+  26.962999999999997,
+  25.89
+ ],
+ "timing_det_s": [
+  26.895,
+  28.084000000000007,
+  27.252
+ ],
+ "slowdown": 0.0361,
+ "seconds": 1422.5
+}
