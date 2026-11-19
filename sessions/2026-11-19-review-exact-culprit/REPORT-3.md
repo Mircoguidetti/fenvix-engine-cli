@@ -1,4 +1,4 @@
-FIX 7: the shipped proof cache (`--det-cache`) reuses a stale pass when a later change adds a module that a failed `try: import` now finds (MEASURED, `test_e1*`), and also for a new `conftest.py`, a namespace package that gains an `__init__.py`, a module that shadows the stdlib, an existing-file check, a vendored zip, a ctypes library and a `.pth` file: 10 failing tests in `harness/culprit/review_r019c/test_cache_stale_reuse.py`. The ini-file change does not cause a wrong reuse. Key validity in the finder states a confident wrong culprit in 5 constructed histories with 0 red-side replays (`test_key_validity_attacks.py`). The same 5 histories are right with inference off. REPORT-4's numbers re-derive exactly, and a re-run of __SAMPLE_N__ population cases gives the same answer in __SAMPLE_SAME__ of __SAMPLE_N__.
+FIX 7: the shipped proof cache (`--det-cache`) reuses a stale pass when a later change adds a module that a failed `try: import` now finds (MEASURED, `test_e1*`), and also for a new `conftest.py`, a namespace package that gains an `__init__.py`, a module that shadows the stdlib, an existing-file check, a vendored zip, a ctypes library and a `.pth` file: 10 failing tests in `harness/culprit/review_r019c/test_cache_stale_reuse.py`. The ini-file change does not cause a wrong reuse. Key validity in the finder states a confident wrong culprit in 5 constructed histories with 0 red-side replays (`test_key_validity_attacks.py`). The same 5 histories are right with inference off. REPORT-4's numbers re-derive exactly, and a re-run of 46 population cases gives the same answer in 46 of 46.
 
 # Review R-019c: exact culprit, round 4
 
@@ -23,7 +23,7 @@ FIX 7: the shipped proof cache (`--det-cache`) reuses a stale pass when a later 
 | `compare_sample.py`, `run_b_sample.sh`, `run_a_sample.sh`, `run_cd_sample.sh`, `sample-rows/` | item 4: re-run drivers (copies of the round-4 drivers with their own output directory), the re-run rows, and the comparison with the committed rows. |
 
 * **Commands:**
-  * `python -m pytest -p no:cacheprovider harness/culprit/review_r019c` gives **15 failed, 12 passed** (MEASURED, about 95 s). The 15 failures are this review's findings.
+  * `python -m pytest -p no:cacheprovider harness/culprit/review_r019c` gives **15 failed, 12 passed** (MEASURED, 143 s). The 15 failures are this review's findings.
   * `python3 harness/culprit/review_r019c/rederive.py harness/culprit/results`
   * `python3 harness/culprit/review_r019c/compare_sample.py harness/culprit/results harness/culprit/review_r019c/sample-rows`
 
@@ -121,7 +121,16 @@ Each history uses the round-4 harness helpers (`round4/test_finder_round4._find`
 
 Drivers: copies of `round4/run_b4.sh` and `run_a4.sh`, plus the c and d lanes of `run_c4.sh` and `run_d4.sh`. They use the same budget (64), 4 workers and today's repository heads, and their output goes to a directory of their own. The comparison is `compare_sample.py`. MEASURED:
 
-__SAMPLE_TABLE__
+| kind | cases re-run | same answer | re-run stated = right | wrong | same executions |
+|---|---:|---:|---:|---:|---:|
+| a2 (attrs, toolz, structlog, sqlparse; placed and reland; seed 19, plus 1 budget unknown) | 10 | 10 | 9 (1 unknown, same suspect = truth) | 0 | 10 |
+| **b real history (all)** | **27** | **27** | **27** | 0 | 27 |
+| c no-code (sqlparse-env × 3 decoys) | 3 | 3 | 3 | 0 | 3 |
+| c data edit (flask-data) | 1 | 1 | 1 | 0 | 1 |
+| d step 4 (krllint ×2, coinbase-commerce-python ×3, Python 3.9) | 5 | 5 | 5 | 0 | 5 |
+| **all** | **46** | **46** | **45** | **0** | **46** |
+
+The re-run reproduces every answer and every execution count exactly, including the unknown sqlparse-k160-17-placed (71 executions, budget hit, suspect ad37fd295a = truth). Rows: `review_r019c/sample-rows/`; comparison: `review_r019c/sample-compare.json`.
 
 The machine was shared between up to 3 of these lanes, so the wall times are NOISY and are not compared.
 
@@ -138,7 +147,7 @@ The machine was shared between up to 3 of these lanes, so the wall times are NOI
 
 ## 6. Verdict detail
 
-* **On the measured populations:** "517 of 532 stated, 0 confident wrong" stands (MEASURED re-derivation; the re-run sample agrees).
+* **On the measured populations:** "517 of 532 stated, 0 confident wrong" stands (MEASURED re-derivation; the re-run of 46 cases gives the same answer and executions in 46 of 46).
 * **As a method:** key validity is **not sound** for inputs the key does not record outside the guarded directories (F-1).
   * REPORT-4 §6 scopes "0 confident wrong" to the measured cases and names one of these shapes as UNKNOWN. That shape is now a confident wrong answer in 2 executions, and so are 4 more.
 * **In the engine:** the shipped cache has 4 classes of wrong reuse (E-1 to E-4). E-1 and E-2 are High because a single common change (adding a module, adding a conftest) triggers them.
