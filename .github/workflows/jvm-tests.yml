@@ -103,7 +103,10 @@ jobs:
       - name: commit results
         run: |
           mkdir -p jvm/test/results/ci
-          for d in art/controls-* art/skipkeys art/l1-measure; do [ -d "$d/ci" ] && cp -r $d/ci/* jvm/test/results/ci/ || true; done
+          # each artifact contributes only its own files (others carry stale copies from the checkout)
+          for d in art/controls-*; do v=${d##*-}; cp $d/ci/controls-java$v.* jvm/test/results/ci/ 2>/dev/null || true; done
+          cp art/skipkeys/ci/skipkeys.* jvm/test/results/ci/ 2>/dev/null || true
+          cp art/l1-measure/ci/l1-measure.* jvm/test/results/ci/ 2>/dev/null || true
           echo "run ${{ github.run_id }} sha ${{ github.sha }}" > jvm/test/results/ci/RUN.txt
           git config user.name "fenvix-ci"; git config user.email "ci@fenvix.invalid"
           git add jvm/test/results/ci
