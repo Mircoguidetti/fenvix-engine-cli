@@ -168,11 +168,9 @@ except ImportError:  # pragma: no cover
 
 
 def install() -> None:
-    """Patch the probes (``_proof.start_capture``). ``DETPY_CACHE_PROBES=0`` leaves them out: only for the equivalence
-    test of the Rust capture with its Python reference (``tests/test_capture_rust.py``), which predates the probes;
-    it restores the capture without them (a probed path is then not an input), never use it in CI."""
-    if os.environ.get("DETPY_CACHE_PROBES", "1") == "0":
-        return
+    """Patch the probes (``_proof.start_capture``). There is no switch to leave them out: a probed path is an input.
+    (The equivalence test of the Rust capture with its pre-probe Python reference replaces this function from its
+    own test-only plugin, ``tests/rust_hotpaths_ref/_capref.py``.)"""
     p = _PATCHER
     p.set(os, "stat", _stat)
     p.set(os, "lstat", _lstat)

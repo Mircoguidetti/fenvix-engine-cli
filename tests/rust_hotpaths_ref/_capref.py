@@ -28,6 +28,14 @@ def _wanted() -> bool:
     return v == "1"
 
 
+if os.environ.get("DETPY_EQ_NO_PROBES") == "1":
+    # the reference predates the probes of paths (``detpy._statcap``): the equivalence test runs both paths without
+    # them. Test-only: the engine itself has no switch that leaves an input out.
+    import detpy._statcap as _statcap
+
+    _statcap.install = lambda: None
+    _statcap.uninstall = lambda: None
+
 if _wanted() and "detpy.proofcache" not in sys.modules:
     import detpy
 

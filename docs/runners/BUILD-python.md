@@ -24,8 +24,9 @@ timings NOISY), **ESTIMATED**, **UNKNOWN**. Per-runner details: `unittest.md`, `
 
 Also in the shared capture: the capture's own Python calls (`realpath` of code files) and frames of the runner
 shell's entry (`runners._detpy_runner_entry`) are not inputs (as pytest's own frames are infrastructure).
-`DETPY_CACHE_PROBES=0` exists only for the equivalence test with the pre-probe Python reference
-(`tests/test_capture_rust.py`).
+The engine has no switch that leaves the probes out; the equivalence test with the pre-probe Python reference
+(`tests/test_capture_rust.py`) removes them from its test-only plugin (`tests/rust_hotpaths_ref/_capref.py`,
+`DETPY_EQ_NO_PROBES=1`).
 
 ## Per runner
 
