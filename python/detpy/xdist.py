@@ -401,6 +401,19 @@ class Controller:
                 raise pytest.UsageError(f"--det-plan: {replay_path}: {e}") from None
             raise
         withdrawn = pc.check_workers(self.ids, p["assign"]) if pc is not None else []
+        if pc is not None:
+            # review R-023b N7: an unproven parallel result is reused only with the planned in-process predecessors it
+            # was recorded with (reused ones included, as a serial entry's are its serial prefix)
+            hits_now = [n for n in self.ids if pc.sess.is_hit(n)]
+            for n, why in pc.store.preds_check({w: list(v) for w, v in p["lists"].items()}, hits_now):
+                if pc.sess.demote(n, why):
+                    withdrawn.append(n)
+                    # it runs after the tests this plan puts before it on its worker, as a fresh run of this plan
+                    # does: those run too (a reused one would not run, and its in-process effects would be missing)
+                    lst = p["lists"][p["assign"][n]]
+                    for m in lst[:lst.index(n)]:
+                        if pc.sess.demote(m, f"placement: a predecessor of {n}, which runs in this session"):
+                            withdrawn.append(m)
         index = {nid: i for i, nid in enumerate(self.ids)}
         # sent: the plan's list of each worker without the results reused in the end
         lists = [[index[nid] for nid in p["lists"].get(w, []) if pc is None or not pc.sess.is_hit(nid)]
@@ -540,7 +553,8 @@ class Controller:
         self._save_durations()
         self._merge_cassettes()
         if proofcache.PLUGIN is not None:
-            proofcache.PLUGIN.merge_workers(self.workeroutput, self.sent, self.racy_edges)
+            proofcache.PLUGIN.merge_workers(self.workeroutput, self.sent, self.racy_edges,
+                                            (self.plan or {}).get("lists") or {})
 
     def _save_durations(self) -> None:
         if not self.durations:

@@ -58,7 +58,7 @@ AVAILABLE = _mon is not None
 # context names: "" startup, "s" between tests, "c|<file>" collection of a file, "f|<scope>|<baseid>|<name>" setup
 # of a wider-scoped fixture, "t|<nodeid>" a test, "i" / "i|<file>" import time. The capture's rules (skipped
 # paths, write events, spawn events, ...) are in crates/detpy-py/src/capture.rs.
-_AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
+_AUDIT_EVENTS = ("exec", "open", "ctypes.dlopen", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
                  "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
@@ -692,7 +692,7 @@ class ProofCachePlugin:
         """``{nodeid: recorded duration}`` of the tests that have an entry: the plan's cache costs."""
         return {n: d for n, d in zip(nids, self.store.durations(list(nids))) if d is not None}
 
-    def merge_workers(self, workeroutput: dict, sent: dict, edges: list = ()) -> None:
+    def merge_workers(self, workeroutput: dict, sent: dict, edges: list = (), lists: dict | None = None) -> None:
         """The controller's end of session: the workers' summaries, then the cross-worker write rule and one merge of
         their shards into the store (``ProofCache.merge_shards``)."""
         t0 = _perf()
@@ -709,7 +709,8 @@ class ProofCachePlugin:
             if out.get("detpy_cache_shard"):
                 paths.append(out["detpy_cache_shard"])
         try:
-            res = json.loads(self.store.merge_shards(paths, list(self.sess.hit_ids), [tuple(e) for e in edges]))
+            res = json.loads(self.store.merge_shards(paths, list(self.sess.hit_ids), [tuple(e) for e in edges],
+                                                     {w: list(v) for w, v in (lists or {}).items()}))
         except Exception as e:  # never break the session: nothing is recorded this time
             self.sess.error = f"merge of the workers' shards: {type(e).__name__}: {e}"
             res = {"merged": 0, "dropped": [], "stale": [], "unreadable": paths}

@@ -1207,6 +1207,44 @@ impl CaptureCore {
                 }
                 Ok(())
             }
+            "ctypes.dlopen" => {
+                // review R-023b N6: a library ctypes is asked to load is an input whether or not it exists (a library
+                // that appears later makes a former OSError a load); a loaded one is also an input by content
+                // (the mapped-files scan). A bare name is looked up by the dynamic loader: the cache file and the
+                // LD_LIBRARY_PATH candidates are inputs.
+                let Some(name) = arg(0) else { return Ok(()) };
+                if name.is_none() || self.caller_kind(py)? != Caller::User {
+                    return Ok(());
+                }
+                let n: W = if let Ok(s) = name.cast::<PyString>() {
+                    w_of(s)?
+                } else if let Ok(b) = name.cast::<PyBytes>() {
+                    b.as_bytes().to_vec()
+                } else {
+                    return Ok(());
+                };
+                let ctx = self.cur(py)?;
+                if n.contains(&b'/') {
+                    if let Some(p) = self.abs(py, &name)? {
+                        if !self.ignored(&p) {
+                            self.read_impl(py, ctx, &p, b's')?;
+                        }
+                    }
+                } else {
+                    self.read_impl(py, ctx, b"/etc/ld.so.cache", b'f')?;
+                    if let Ok(dirs) = std::env::var("LD_LIBRARY_PATH") {
+                        for d in dirs.split(':').filter(|d| !d.is_empty()) {
+                            let mut c = d.as_bytes().to_vec();
+                            c.push(b'/');
+                            c.extend_from_slice(&n);
+                            if !self.ignored(&c) {
+                                self.read_impl(py, ctx, &c, b's')?;
+                            }
+                        }
+                    }
+                }
+                Ok(())
+            }
             "sqlite3.connect" => {
                 let Some(db) = arg(0) else { return Ok(()) };
                 let os = os_mod(py)?;

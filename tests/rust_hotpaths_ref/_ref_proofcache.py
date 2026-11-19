@@ -63,7 +63,7 @@ AVAILABLE = _mon is not None
 # "f|<scope>|<baseid>|<name>" setup of a wider-scoped fixture, "t|<nodeid>" a test
 _GLOBAL_CTX = ("", "s")
 
-_AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
+_AUDIT_EVENTS = ("exec", "open", "ctypes.dlopen", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
                  "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
@@ -808,6 +808,24 @@ class Capture:
                     self.read(self._cur(), f, "f")
                 return
             self.flag(self._cur(), "dns", f"{event} {host} at {_first_user_site()}")
+        elif event == "ctypes.dlopen":
+            name = args[0] if args else None
+            if name is None or self._caller_kind() != "user":
+                return
+            n = os.fsdecode(name) if isinstance(name, (str, bytes)) else None
+            if n is None:
+                return
+            ctx = self._cur()
+            if "/" in n:
+                p = self._abs(n)
+                if p is not None and not self._ignored(p):
+                    self.read(ctx, p, "s")
+            else:
+                self.read(ctx, "/etc/ld.so.cache", "f")
+                for d in [x for x in os.environ.get("LD_LIBRARY_PATH", "").split(":") if x]:
+                    c = d + "/" + n
+                    if not self._ignored(c):
+                        self.read(ctx, c, "s")
         elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
             if self._caller_kind() == "infra":
                 return

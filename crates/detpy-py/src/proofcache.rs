@@ -30,6 +30,8 @@ struct Inner {
     merged_ids: Vec<String>,
     /// The last recorded session's per-test reads (`record::Outcome::reads`): a worker's shard.
     last_reads: BTreeMap<String, Vec<String>>,
+    /// The last recorded session's tests in run order (a worker's in-process order: `Entry::preds`).
+    last_order: Vec<String>,
 }
 
 /// The on-disk store of one cache directory plus the reuse checker of the
@@ -78,7 +80,7 @@ impl ProofCache {
         let store = Store::load(&dir);
         let checker = Checker::new(Current { root, ..Default::default() });
         let written0 = store.written.clone();
-        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new(), last_written: BTreeMap::new(), last_fixtures: BTreeMap::new(), fetched: None, origins: BTreeMap::new(), merged_ids: Vec::new(), last_reads: BTreeMap::new() }) }
+        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new(), last_written: BTreeMap::new(), last_fixtures: BTreeMap::new(), fetched: None, origins: BTreeMap::new(), merged_ids: Vec::new(), last_reads: BTreeMap::new(), last_order: Vec::new() }) }
     }
 
     /// Set the current session state: configuration and runtime digests, clock
@@ -316,6 +318,7 @@ impl ProofCache {
         g.last_fixtures = plan.tests.iter().map(|t| (t.nodeid.clone(), t.fixtures.clone())).collect();
         let out = record::record_session(&mut g.store, &plan);
         g.last_reads = out.reads.clone();
+        g.last_order = plan.tests.iter().map(|t| t.nodeid.clone()).collect();
         for (n, _) in &out.stale {
             g.touched.insert(n.clone());
         }
@@ -342,6 +345,7 @@ impl ProofCache {
         g.last_fixtures = plan.tests.iter().map(|t| (t.nodeid.clone(), t.fixtures.clone())).collect();
         let out = record::record_session(&mut g.store, &plan);
         g.last_reads = out.reads.clone();
+        g.last_order = plan.tests.iter().map(|t| t.nodeid.clone()).collect();
         for (n, _) in &out.stale {
             g.touched.insert(n.clone());
         }
@@ -428,6 +432,29 @@ impl ProofCache {
         proof::racy_readers(&shards, &order, &assign, &waits)
     }
 
+    /// Review R-023b N7: the reused unproven parallel results whose recorded in-process predecessors are not the ones
+    /// this run's plan gives them (`lists`: worker -> the tests it runs, in order, reused ones excluded). `[(nodeid,
+    /// reason)]`. The predecessors are the planned ones (reused tests included), as a serial entry's are its serial
+    /// prefix.
+    fn preds_check(&self, lists: BTreeMap<String, Vec<String>>, hits: Vec<String>) -> Vec<(String, String)> {
+        let g = lock(&self.inner);
+        let hit: BTreeSet<&str> = hits.iter().map(|s| s.as_str()).collect();
+        let mut out = Vec::new();
+        for (w, l) in &lists {
+            for (i, nid) in l.iter().enumerate() {
+                if !hit.contains(nid.as_str()) {
+                    continue;
+                }
+                if let Some(e) = g.store.tests.get(nid) {
+                    if e.placement == proof::PLACEMENT_PARALLEL && e.preds != proof::preds_digest(&l[..i]) {
+                        out.push((nid.clone(), format!("placement: recorded with other tests before it in its worker than this plan puts before it on {w}")));
+                    }
+                }
+            }
+        }
+        out
+    }
+
     /// Recorded durations (seconds) of `nodeids` (None: no entry): the plan's costs.
     fn durations(&self, nodeids: Vec<String>) -> Vec<Option<f64>> {
         let g = lock(&self.inner);
@@ -440,7 +467,9 @@ impl ProofCache {
         let g = lock(&self.inner);
         let mut sub = Store::new();
         g.store.merge_into(&mut sub, &g.touched);
-        // a worker's results are parallel results: a serial session does not reuse them (review R-023 F1)
+        // a worker's results are parallel results: a serial session does not reuse them (review R-023 F1); each
+        // carries its in-process predecessors in this worker (review R-023b N7)
+        // (their planned in-process predecessors are set by the controller's merge, which has the plan)
         for e in sub.tests.values_mut() {
             e.placement = proof::PLACEMENT_PARALLEL.to_string();
         }
@@ -470,8 +499,8 @@ impl ProofCache {
     /// The controller's end of a parallel session: the cross-worker write rule over the shards at `paths`, then one
     /// merge into the store (`detpy_core::proof::merge_shards`). Returns JSON: `merged`, `dropped` [[nodeid, why]],
     /// `stale` [[nodeid, path]], `unreadable` [path].
-    #[pyo3(signature = (paths, hits, edges=Vec::new()))]
-    fn merge_shards(&self, py: Python<'_>, paths: Vec<PathBuf>, hits: Vec<String>, edges: Vec<(String, String)>) -> PyResult<String> {
+    #[pyo3(signature = (paths, hits, edges=Vec::new(), lists=BTreeMap::new()))]
+    fn merge_shards(&self, py: Python<'_>, paths: Vec<PathBuf>, hits: Vec<String>, edges: Vec<(String, String)>, lists: BTreeMap<String, Vec<String>>) -> PyResult<String> {
         let dir = self.dir.clone();
         let (merge, unreadable) = py.detach(|| -> std::io::Result<_> {
             let mut shards = Vec::new();
@@ -483,6 +512,20 @@ impl ProofCache {
                 }
             }
             let ids: Vec<String> = shards.iter().flat_map(|s| s.touched.iter().cloned()).collect();
+            // review R-023b N7: each parallel entry's planned in-process predecessors in this run
+            let mut preds: HashMap<String, String> = HashMap::new();
+            for l in lists.values() {
+                for (i, n) in l.iter().enumerate() {
+                    preds.insert(n.clone(), proof::preds_digest(&l[..i]));
+                }
+            }
+            for s in shards.iter_mut() {
+                for (n, e) in s.store.tests.iter_mut() {
+                    if let Some(d) = preds.get(n) {
+                        e.preds = d.clone();
+                    }
+                }
+            }
             Ok((proof::merge_shards_with(&dir, &mut shards, &hits, &edges)?, unreadable, ids))
         })
         .map(|(m, u, ids)| {
@@ -610,6 +653,7 @@ impl ProofCache {
         g.last_fixtures = plan.tests.iter().map(|t| (t.nodeid.clone(), t.fixtures.clone())).collect();
         let out = record::record_session(&mut g.store, &plan);
         g.last_reads = out.reads.clone();
+        g.last_order = plan.tests.iter().map(|t| t.nodeid.clone()).collect();
         for (n, _) in &out.stale {
             g.touched.insert(n.clone());
         }

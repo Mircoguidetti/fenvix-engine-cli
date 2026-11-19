@@ -122,10 +122,11 @@ def test_reader_waits_for_its_writer_on_another_worker(pytester, tmp_path_factor
     assert p["waits"] == {"tests/test_b_reader.py::test_b_reads": ["tests/test_a_writer.py::test_a_writes"]}
     r.assert_outcomes(passed=1, failed=1)
     assert "waited for a writer on another worker" in r.stdout.str()
-    # s3: A is reused (it does not run, nothing to wait for); B reads the y A left
+    # s3: B (its reader) runs again, so A is not reused (review R-023b N8: a reused writer would not write the file
+    # its reader expects); A runs on the other worker and B waits for it, as in s2
     r, c = cache_run(pytester, 2, "s3", *args)
-    assert c["reused_ids"] == ["tests/test_a_writer.py::test_a_writes"]
-    assert plan_of(pytester)["waits"] == {}
+    assert c["reused_ids"] == []
+    assert plan_of(pytester)["waits"] == {"tests/test_b_reader.py::test_b_reads": ["tests/test_a_writer.py::test_a_writes"]}
     r.assert_outcomes(passed=1, failed=1)
     fresh_run(pytester, 0, "--det-sleep=real", "tests").assert_outcomes(passed=1, failed=1)  # truth
     assert not list((pytester.path / ".detpy" / "barrier").glob("*"))  # cleaned up
