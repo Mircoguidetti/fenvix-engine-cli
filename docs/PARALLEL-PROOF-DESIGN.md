@@ -16,12 +16,12 @@ same esphome selection took 160 s and 180 s: read single local walls as ±12 %.
 ## 0. Answers in short
 
 * **CI shape (DECLARED, 1.1).** Of the 11 market-test repositories (10 with results; haystack's walk produced no
-  units), 7 run pytest-xdist in their unit CI: esphome (`-n auto`, load), pydantic-ai (`-n logical
+  units), 8 run pytest-xdist in their unit CI: esphome (`-n auto`, load), pydantic-ai (`-n logical
   --dist=loadgroup`), prefect (`-n auto/logical --maxprocesses 6 --dist worksteal` + pytest-split, 8/18 groups),
   litellm (`-n 4 --dist loadscope` on 34 of 44 shards), mlflow (6 `-n auto --dist loadscope` shards + 4 serial
   shards), moto (`-n 4 --dist loadscope` for a subset, the rest serial), airflow (non-DB tests `-n <cpus>`), and
   community.general through ansible-test (`-n auto`). Serial: haystack, integrations-core. transformers' public CI
-  is defined outside the repository (`-n 8`, EXTERNAL).
+  is defined outside the repository (`-n 8`, EXTERNAL), its in-repo CircleCI generator uses `-n 4`.
 * **What breaks today with `--det -n 4` (MEASURED, 1.4).** Nothing crashes and the verdict equals serial `--det`
   on esphome and pydantic-ai, but: (1) the trace is lost (every worker and the controller write the same path;
   the controller's header-only `"collection": "failed"` file is what remains); (2) distribution is dynamic: 33 % of
@@ -301,9 +301,11 @@ tests), records the tests it ran, and merges into the store under the directory 
    on A having run before it, in another process, by timing. Worse, B can hash a file *while* A rewrites it. A
    later session reuses B although its input was produced by the session itself. This is a wrong-reuse path that
    does not exist serially.
-2. **Decisions are made N times** (N x the check cost; with `--det-cache-verify` the sampled set differs per
-   worker, so neither the verdict nor the receipts are reproducible).
-3. **Receipts and summary** are written per process; the controller's summary says nothing.
+2. **Decisions are made N times** (MEASURED: identical per-worker receipts covering all 14,446 tests; N x the
+   check cost). With `--det-cache-verify` the sampled set would differ per worker (the RNG is seeded with time + pid,
+   from the code; not run), so neither the verdict nor the receipts would be reproducible.
+3. **Receipts and summary are lost** (MEASURED): the controller's empty receipts file is what remains, and its
+   summary reports 0 reused, 0 ran, 0 recorded.
 
 Design:
 
@@ -381,7 +383,7 @@ capture, `proofcache.py` / `proof.rs`):
 | network: connects (host:port), listens on loopback, DNS | flags only (`net`, `net-local`); a test that connects is never cached | **ports bound and endpoints connected**: store per test (new); a fixed port bound by two tests is a conflict |
 | sqlite connections (path) | yes (data read) | a database file is a written path when the test writes it (sqlite trace callback: `INSERT/UPDATE/DELETE/CREATE`) |
 | subprocesses, native code | flag `subprocess` (followed children: their reads) | **opaque**: unknown footprint |
-| wider-scoped fixtures used (`f|scope|baseid|name`) | yes | **affinity**: tests sharing an expensive module/session fixture prefer one lane (fixture setup is paid once per lane) |
+| wider-scoped fixtures used (`f\|scope\|baseid\|name` contexts) | yes | **affinity**: tests sharing an expensive module/session fixture prefer one lane (fixture setup is paid once per lane) |
 | test duration | yes (`dur`) | cost |
 | in-process state left for later tests (module globals, caches, monkeypatches not undone, imported modules) | **no** (Level 0 does not see Python object mutation) | inferred from history: placement divergences (3.3) |
 
@@ -416,7 +418,7 @@ Two different hazards, two kinds of edges:
   plus the plan metadata). Each lane collects **only the files of its tests** (xdist collects the whole suite in
   every worker: N x collection). No execnet; the parent reads each lane's trace and receipts. The same plan runs on
   one machine or many. Collection is not small: esphome collects 14,548 tests in 11.5 s, pydantic-ai 48,518 tests
-  in 178 s in one process (MEASURED, 1.3).
+  in 178 s in one process (MEASURED, `--collect-only`, local).
 * **xdist compatibility inside lanes.** Suites name resources after the xdist worker (prefect:
   `prefect_{worker_id}.db` and one Postgres database per worker; esphome: per-worker library cache; litellm, mlflow,
   transformers read `PYTEST_XDIST_WORKER`). Without xdist, `worker_id` is `master` in every lane and those
@@ -433,7 +435,7 @@ key (the store entry keeps it, `fingerprint` field). Three cases:
 |---|---|---|
 | equal | the split changed nothing observable by Level 0 for this test | proven; the result counts and may be stored as reusable |
 | no serial fingerprint under this key (new or changed test) | nothing to compare | the result counts; the entry is stored `placement: parallel-unproven`; the next serial audit run (nightly, or a background serial lane on idle runners) provides the serial fingerprint. An unproven entry is reused only by parallel runs with the same plan neighbours, never offered as proof to a serial run |
-| different | the test observed something that depends on where it ran | (1) classify with `verify` (first diverging event: time/random/fs/net/thread/outcome-only); a `thread` divergence that also occurs between two serial runs of the test is noise and is not counted (the serial noise rate is measured per test: 67 of 14,446 on esphome, 59 of them `os.urandom`, 1.4.4); (2) **the verdict for the test is the serial-equivalent result**: the test is rerun at the end, in one process, after exactly its serial predecessors from the same file/module (the cheap approximation; the full serial prefix is the exact one, used when the cheap one still differs). If the outcome flips, the run reports it as `placement-sensitive` with both outcomes and the lost predecessors; (3) the test and its lost predecessors get a together edge for the next plans; (4) the entry is not stored from the parallel run. |
+| different | the test observed something that depends on where it ran | (1) classify with `verify` (first diverging event: time/random/fs/net/thread/outcome-only); a divergence that also occurs between two serial runs of the test (OS entropy, thread interleaving) is noise and is not counted; the serial noise set is kept per test (67 of 14,446 on esphome, 59 of them `os.urandom`, 1.4.4); (2) **the verdict for the test is the serial-equivalent result**: the test is rerun at the end, in one process, after exactly its serial predecessors from the same file/module (the cheap approximation; the full serial prefix is the exact one, used when the cheap one still differs). If the outcome flips, the run reports it as `placement-sensitive` with both outcomes and the lost predecessors; (3) the test and its lost predecessors get a together edge for the next plans; (4) the entry is not stored from the parallel run. |
 
 What the proof covers: everything Level 0 records (clock reads, randomness, fs order, network, entropy, outcome),
 so two runs that agree on the fingerprint executed the same event sequence at the Python API level. What it
@@ -441,12 +443,17 @@ does not cover: what Level 0 does not see (C extensions, subprocess internals, i
 recorded event and no outcome). A test that is placement-sensitive only through such state and whose outcome does
 not change is equal by definition of the fingerprint: the run is still correct for that test.
 
+Cost of the proof (ESTIMATED from 1.4.4): the comparison is a string compare per test. The reruns cover only the
+`placement` tests: 41-50 of 14,446 per run on esphome (0.3 %), each rerun after its same-module predecessors, so a
+few seconds against a 60-80 s parallel run; after the first run the together edges remove most of them from later
+plans.
+
 Customer-facing guarantees (the measurements in 5 check them):
 
 * **0 new failures caused by the split**: a failure in a lane whose serial-equivalent rerun passes is reported as
   placement-sensitive, not as a failure of the change.
-* **0 hidden failures**: a test that passes in a lane but whose serial fingerprint run failed is rerun serially;
-  the serial verdict is the verdict.
+* **0 hidden failures**: a test whose lane outcome differs from its serial record (the store keeps the outcome
+  with the fingerprint) is rerun serially; the serial verdict is the verdict.
 * **0 wrong reuses**: entries are stored only from proven (equal) or serial runs; the cross-lane write rule of 2.5
   applies to lanes.
 
@@ -542,11 +549,11 @@ shard, moto's `-n 4` group, mlflow one parallel shard, all at the market-test HE
 | step | what | tests | the measurement that says it works | size |
 |---|---|---|---|---|
 | P0 | `harness/parallel_proof/`: the runner of this report (variants, per-worker trace shim, fingerprint comparison `cmp_traces.py`, outcome comparison) as an Actions workflow over the xdist set; results committed under `tracks/parallel-proof/` | harness unit tests on a 20-test synthetic project (one polluter/victim pair, one file writer/reader pair, one fixed-port pair) | reproduces 1.4 within the runner noise; prints for each repository the serial-noise rate (tests whose fingerprint differs between two serial `--det` runs) | 1 |
-| P1 | Per-worker traces, controller merge, worker detection; the controller stops opening its own empty trace; cassette per worker | pytester `-n 2`: one trace per worker, merged trace has every test once with `worker`; byte-identical merge from the same worker traces; a killed worker leaves `missing` lines | xdist set: merged trace covers 100 % of the tests that ran (today: one file overwritten by 5 processes) | 1 |
+| P1 | Per-worker traces, controller merge, worker detection; the controller stops opening its own empty trace; cassette per worker | pytester `-n 2`: one trace per worker, merged trace has every test once with `worker`; byte-identical merge from the same worker traces; a killed worker leaves `missing` lines | xdist set: merged trace covers 100 % of the tests that ran (today: the controller's header-only file, 0 tests, 1.4.1) | 1 |
 | P2 | `DetScheduling` (fixed plan, atoms from `--dist`, LPT on recorded durations, stickiness, `--det-plan` replay, `testrun_uid`) in `schedule.rs` + `xdist.py` | Rust property tests (same input → same plan; collection permutation invariance; atoms never split; makespan ≤ 4/3 OPT + max atom); pytester: `loadgroup` groups stay on one worker, two runs give the same per-worker lists, `--det-plan` replays a worker's list serially, worker crash → replacement runs the rest | xdist set, `--det -n 4` twice: identical per-worker lists; per-test fingerprints identical between the two runs except the serial-noise tests from P0; wall of `--det -n 4` ≤ (wall of plain `-n 4`) x (`--det`/plain serial ratio) x 1.05 (a fixed plan must not cost more than 5 % against xdist's dynamic balance) | 2 |
-| P3 | Cache across workers: decision in the controller, worker shards, cross-worker `rw` rule, single merge, deterministic verify sampling, receipts from the controller, isolated audit reruns | pytester: A writes a file in worker 0, B reads it in worker 1 → B not reused next session (fails on today's engine: write it first); serial and `-n 2` sessions take identical reuse decisions; two `-n 2` sessions write identical receipts; a placement mismatch is classified `placement`, not wrong | cache-proof walk (`harness/cache_proof/walk.py`) with `-n 4` on esphome, pydantic-ai, prefect, 50 commits each, every reuse checked by a fresh serial `--det` run: **0 wrong reuses**; reuse share within 1 point of the serial walk on the same commits; warm wall vs plain `-n 4` | 3 |
+| P3 | Cache across workers: decision in the controller, worker shards, cross-worker `rw` rule, single merge, deterministic verify sampling, receipts from the controller, isolated audit reruns; keys equal to serial keys (xdist options volatile, derived `testrun_uid`) | pytester: A writes a file in worker 0, B reads it in worker 1 → B not reused next session (fails on today's engine: write it first); serial and `-n 2` sessions take identical reuse decisions; two `-n 2` sessions write identical receipts; a placement mismatch is classified `placement`, not wrong | cache-proof walk (`harness/cache_proof/walk.py`) with `-n 4` on esphome, pydantic-ai, prefect, 50 commits each, every reuse checked by a fresh serial `--det` run: **0 wrong reuses**; reuse share within 1 point of the serial walk on the same commits (esphome today: 77 % under `-n 4` vs 98 % serial, 1.4.5); a store written by `-n 4` serves a serial run and vice versa; warm wall vs plain `-n 4` | 3 |
 | P4 | Shared cache from the controller (pull before the decision, push after the merge; workers never hold the token) | `test_shared_cache.py` cases rerun with `-n 2`; a worker process has no token in memory or environment | two-machine run (`fenvix-shared-cache.yml`) with `-n 4`: machine 2 reuses 100 % of what machine 1's own warm run reuses, 0 wrong | 1 |
-| P5 | Proof: serial fingerprint kept per entry, parallel vs serial comparison per test, `placement` class in `verify`, serial-equivalent rerun of differing tests, entries tagged `serial` / `parallel-proven` / `parallel-unproven` | synthetic polluter/victim split across workers → `placement`, verdict = serial outcome, edge recorded; noise tests (thread divergence also between serial runs) not counted; an unproven entry is not reused by a serial session | xdist set: count of `placement` tests per repository; **0 new failures caused by the split** (every lane failure whose serial rerun passes is reported as placement-sensitive, none as a failure); **0 hidden failures** (every test that fails serially fails or is flagged in the parallel run) | 3 |
+| P5 | Proof: `tmp_path` counter normalised out of recorded paths (`_sites`), serial fingerprint kept per entry, parallel vs serial comparison per test, `placement` class in `verify`, serial-equivalent rerun of differing tests, entries tagged `serial` / `parallel-proven` / `parallel-unproven` | synthetic polluter/victim split across workers → `placement`, verdict = serial outcome, edge recorded; noise tests (thread divergence also between serial runs) not counted; an unproven entry is not reused by a serial session | xdist set: count of `placement` tests per repository; **0 new failures caused by the split** (every lane failure whose serial rerun passes is reported as placement-sensitive, none as a failure); **0 hidden failures** (every test that fails serially fails or is flagged in the parallel run) | 3 |
 | P6 | Design B lanes without xdist: per-test writers and ports in the footprint, atom/edge graph, exclusion by merge or barrier, lane processes with partial collection, merged trace and receipts | pytester: two tests writing one path never overlap; two tests binding one fixed port never overlap; per-worker-named resources (prefect pattern) give no edge; an opaque (subprocess) test runs in the serial lane; lane crash → its tests `missing`, rest of the run unaffected | xdist set, cold and warm: wall vs plain `-n 4` (targets: cold ≤ `--det` serial ratio x plain `-n 4`, i.e. the engine's serial overhead and no more; warm ≤ 0.6x plain `-n 4`); wall vs `--det` serial (target ≥ 2.5x faster on 4 cores); 0 wrong reuses (walk as in P3); 0 new failures caused by the split (as in P5) | 4 |
 | P7 | Lanes on several machines (plan shared, results joined through the shared cache, merged trace) | two local "machines" (containers) with one service | 2 x 4 vCPU vs 1 x 4 vCPU on prefect and litellm: wall ≤ 0.6x; identical verdicts and fingerprints | 2 |
 | P8 | Recording off the critical path: pipelined recording (serial), deferred recording after the verdict (parallel), shadow capture as an option | the deferred child records exactly the entries the inline recorder would (store equality on the `test_rust_hotpaths` reference project); the post step waits for the child; shadow entries stored only on fingerprint equality | `harness/rust_hotpaths/profile.py` on click, pygments, home-assistant 0/5/10: cold/plain at the verdict vs 4.2's estimates; 0 store differences against the inline recorder | 2-3 |
@@ -555,7 +562,7 @@ shard, moto's `-n 4` group, mlflow one parallel shard, all at the market-test HE
 own scheduler on one and several machines: 6; P8: 2-3). P8 is independent of P1-P7 and can run in parallel with
 them.
 
-Order of value: P1-P3 remove the "4x slower than the customer's `-n auto` job" problem for the four repositories
+Order of value: P1-P3 remove the "several times slower than the customer's `-n auto` job" problem (2.7x on esphome, MEASURED 1.3) for the four repositories
 that run xdist (esphome, prefect, pydantic-ai, litellm) and mlflow/moto's parallel groups; P5 is the claim no
 competitor can make; P6 is where footprints beat duration-only splitting (fewer serial jobs and markers for the
 customer to maintain).
