@@ -1,0 +1,3656 @@
+{
+ "spec": {
+  "name": "tempo",
+  "repo": "grafana/tempo",
+  "sha": "503e48ed63fecb983f8a72d5b2a279c5974cf6fa",
+  "fix_commit": "6274182fb779375d435df382d75b5a6833d4a19a",
+  "fix_date": "2026-02-11T12:50:42.000+01:00",
+  "title": "[bugfix] Fix flaky TestLogClusterCache_MaxSizeEviction (#6425)",
+  "tests": [
+   "TestLogClusterCache_MaxSizeEviction"
+  ],
+  "source": "github commit search 'repo:grafana/tempo flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestLogClusterCache_MaxSizeEviction": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./pkg/drain"
+ ],
+ "imports": [
+  "github.com/grafana/tempo/pkg/drain"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 20.3,
+ "build_det_s": 24.2,
+ "baseline": {
+  "github.com/grafana/tempo/pkg/drain::TestLineTokenizer": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDataHeuristic": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_Mismatch": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_Values": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_MultipleParams": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_PatternMerging": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MaxTokensEnforcement": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_NotExists": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_NoChange": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MinTokensEnforcement": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_Remove": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_DifferentLengthPanics": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_PruneTreeClearsOldBranches": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_ParamMatch": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_String_CacheClearedOnIngest": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_PutGet": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_EmptyString": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_MaxSizeEviction": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_CacheEvictionIntegration": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_NoMatch": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_DifferentLengthPanics": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_PatternEmergence": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_BasicPatternDetection": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_GetQuietly": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_MultipleMerges": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MultipleClusters": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_ParamAlreadySet": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_ExactMatch": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 76.6,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "outcome": 28,
+  "time": 179,
+  "random": 2
+ },
+ "det0_top_tests_by_events": [
+  [
+   39,
+   "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_MaxSizeEviction"
+  ],
+  [
+   32,
+   "github.com/grafana/tempo/pkg/drain::TestDrain_PruneTreeClearsOldBranches"
+  ],
+  [
+   19,
+   "github.com/grafana/tempo/pkg/drain::TestDrain_Train_CacheEvictionIntegration"
+  ],
+  [
+   17,
+   "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MultipleClusters"
+  ],
+  [
+   13,
+   "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_Remove"
+  ],
+  [
+   12,
+   "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_Values"
+  ],
+  [
+   12,
+   "github.com/grafana/tempo/pkg/drain::TestDrain_Train_BasicPatternDetection"
+  ],
+  [
+   11,
+   "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_PutGet"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestDrain_PruneTreeClearsOldBranches",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 16,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:124",
+     "v": "1000000000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Since",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:120",
+     "v": "17000"
+    },
+    "reason": "thread",
+    "description": "event #16: [time] time.NewTicker @ vendor/github.com/maypok86/otter/v2/clock.go:124 = 1000000000 (thread 1)  <>  [time] time.Since @ vendor/github.com/maypok86/otter/v2/clock.go:120 = 17000"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestDrain_Train_BasicPatternDetection",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 1,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Since",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:120",
+     "v": "2000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Since",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:120",
+     "v": "2000"
+    },
+    "reason": "thread",
+    "description": "event #1: [time] time.Since @ vendor/github.com/maypok86/otter/v2/clock.go:120 = 2000 (thread 1)  <>  [time] time.Since @ vendor/github.com/maypok86/otter/v2/clock.go:120 = 2000"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MultipleClusters",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 0,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Since",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:120",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:124",
+     "v": "1000000000"
+    },
+    "reason": "thread",
+    "description": "event #0: [time] time.Since @ vendor/github.com/maypok86/otter/v2/clock.go:120 = 1000 (thread 1)  <>  [time] time.NewTicker @ vendor/github.com/maypok86/otter/v2/clock.go:124 = 1000000000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MinTokensEnforcement",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 0,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:107",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Since",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:120",
+     "v": "1000"
+    },
+    "reason": "thread",
+    "description": "event #0: [time] time.Now @ vendor/github.com/maypok86/otter/v2/clock.go:107 = 1000  <>  [time] time.Since @ vendor/github.com/maypok86/otter/v2/clock.go:120 = 1000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MaxTokensEnforcement",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 0,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:124",
+     "v": "1000000000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Since",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:120",
+     "v": "1000"
+    },
+    "reason": "thread",
+    "description": "event #0: [time] time.NewTicker @ vendor/github.com/maypok86/otter/v2/clock.go:124 = 1000000000 (thread 1)  <>  [time] time.Since @ vendor/github.com/maypok86/otter/v2/clock.go:120 = 1000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestDrain_Train_EmptyString",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 0,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:124",
+     "v": "1000000000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:107",
+     "v": "1000"
+    },
+    "reason": "thread",
+    "description": "event #0: [time] time.NewTicker @ vendor/github.com/maypok86/otter/v2/clock.go:124 = 1000000000 (thread 1)  <>  [time] time.Now @ vendor/github.com/maypok86/otter/v2/clock.go:107 = 1000"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestDrain_Train_CacheEvictionIntegration",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 0,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:107",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:124",
+     "v": "1000000000"
+    },
+    "reason": "thread",
+    "description": "event #0: [time] time.Now @ vendor/github.com/maypok86/otter/v2/clock.go:107 = 1000  <>  [time] time.NewTicker @ vendor/github.com/maypok86/otter/v2/clock.go:124 = 1000000000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestDrain_Train_PatternEmergence",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 0,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:107",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Since",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:120",
+     "v": "1000"
+    },
+    "reason": "thread",
+    "description": "event #0: [time] time.Now @ vendor/github.com/maypok86/otter/v2/clock.go:107 = 1000  <>  [time] time.Since @ vendor/github.com/maypok86/otter/v2/clock.go:120 = 1000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestLineTokenizer",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 0,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Since",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:120",
+     "v": "1000"
+    },
+    "reason": "thread",
+    "description": "event #0: [outcome] outcome @  = passed  <>  [time] time.Since @ vendor/github.com/maypok86/otter/v2/clock.go:120 = 1000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_PutGet",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 0,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:124",
+     "v": "1000000000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/prometheus/client_golang/prometheus/counter.go:99",
+     "v": "1000"
+    },
+    "reason": "thread",
+    "description": "event #0: [time] time.NewTicker @ vendor/github.com/maypok86/otter/v2/clock.go:124 = 1000000000 (thread 1)  <>  [time] time.Now @ vendor/github.com/prometheus/client_golang/prometheus/counter.go:99 = 1000"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_GetQuietly",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 0,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:124",
+     "v": "1000000000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/prometheus/client_golang/prometheus/counter.go:99",
+     "v": "1000"
+    },
+    "reason": "thread",
+    "description": "event #0: [time] time.NewTicker @ vendor/github.com/maypok86/otter/v2/clock.go:124 = 1000000000 (thread 1)  <>  [time] time.Now @ vendor/github.com/prometheus/client_golang/prometheus/counter.go:99 = 1000"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_Remove",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 1,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:124",
+     "v": "1000000000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/prometheus/client_golang/prometheus/counter.go:99",
+     "v": "2000"
+    },
+    "reason": "thread",
+    "description": "event #1: [time] time.NewTicker @ vendor/github.com/maypok86/otter/v2/clock.go:124 = 1000000000 (thread 1)  <>  [time] time.Now @ vendor/github.com/prometheus/client_golang/prometheus/counter.go:99 = 2000"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_NotExists",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 2,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Since",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:120",
+     "v": "3000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:107",
+     "v": "3000"
+    },
+    "reason": "thread",
+    "description": "event #2: [time] time.Since @ vendor/github.com/maypok86/otter/v2/clock.go:120 = 3000 (thread 1)  <>  [time] time.Now @ vendor/github.com/maypok86/otter/v2/clock.go:107 = 3000"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_MaxSizeEviction",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 2,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:124",
+     "v": "1000000000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:107",
+     "v": "3000"
+    },
+    "reason": "thread",
+    "description": "event #2: [time] time.NewTicker @ vendor/github.com/maypok86/otter/v2/clock.go:124 = 1000000000 (thread 1)  <>  [time] time.Now @ vendor/github.com/maypok86/otter/v2/clock.go:107 = 3000"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_Values",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 2,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Since",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:120",
+     "v": "3000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:107",
+     "v": "3000"
+    },
+    "reason": "thread",
+    "description": "event #2: [time] time.Since @ vendor/github.com/maypok86/otter/v2/clock.go:120 = 3000 (thread 1)  <>  [time] time.Now @ vendor/github.com/maypok86/otter/v2/clock.go:107 = 3000"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_NoMatch",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 0,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Since",
+     "at": "vendor/github.com/maypok86/otter/v2/clock.go:120",
+     "v": "1000"
+    },
+    "reason": "thread",
+    "description": "event #0: [outcome] outcome @  = passed  <>  [time] time.Since @ vendor/github.com/maypok86/otter/v2/clock.go:120 = 1000 (thread 1)"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 28,
+  "stable": 12,
+  "diverged": 16,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 16
+  }
+ },
+ "det0": {
+  "github.com/grafana/tempo/pkg/drain::TestDrain_PruneTreeClearsOldBranches": [
+   [
+    "passed",
+    "a015a222881fa3828e2bfe0ed87eefb1"
+   ],
+   [
+    "passed",
+    "6ad42bafc4e64ac36cdf19ad95ff0e63"
+   ],
+   [
+    "passed",
+    "fc8e375ea50e0dfe1200e7cfbf064139"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_Mismatch": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_ExactMatch": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDataHeuristic": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MaxTokensEnforcement": [
+   [
+    "passed",
+    "44db6dfea6174dd8f18a19988faee6b2"
+   ],
+   [
+    "passed",
+    "44db6dfea6174dd8f18a19988faee6b2"
+   ],
+   [
+    "passed",
+    "4d2b6793bc67d4b803c6df73a9a10930"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_NoMatch": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "71e47488ca57bc55605c3305c4c58e4f"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_ParamAlreadySet": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MinTokensEnforcement": [
+   [
+    "passed",
+    "805ed890ed023c8f4dc185301668ce2c"
+   ],
+   [
+    "passed",
+    "805ed890ed023c8f4dc185301668ce2c"
+   ],
+   [
+    "passed",
+    "e04be1a28538ebe5f8960369c1e84a5b"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_DifferentLengthPanics": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_Values": [
+   [
+    "passed",
+    "bf517d569f0ceb72ccc98551552d28b0"
+   ],
+   [
+    "passed",
+    "44838605fcaf893bdab91181ffcfc1bb"
+   ],
+   [
+    "passed",
+    "caa426d3e8884d1cee1772fd027fcda8"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_NotExists": [
+   [
+    "passed",
+    "7bf481054f69087e45625d4216b2f7c3"
+   ],
+   [
+    "passed",
+    "2456713da52bc3deda6a13d6ae66dc81"
+   ],
+   [
+    "passed",
+    "f608c95118318fc06560c066b8d720c7"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_EmptyString": [
+   [
+    "passed",
+    "607999164d61d25903bebd521dadd691"
+   ],
+   [
+    "passed",
+    "607999164d61d25903bebd521dadd691"
+   ],
+   [
+    "passed",
+    "0f2ebc0a3622393ee9467f7678bffb53"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_String_CacheClearedOnIngest": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_GetQuietly": [
+   [
+    "passed",
+    "af3ff35283f3101734a67d7fc61737dd"
+   ],
+   [
+    "passed",
+    "7f042b7f6ff578a0d6a89a7742753049"
+   ],
+   [
+    "passed",
+    "7f042b7f6ff578a0d6a89a7742753049"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_PatternMerging": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_MaxSizeEviction": [
+   [
+    "passed",
+    "998a1652376865f3971148b44f18aaf9"
+   ],
+   [
+    "passed",
+    "8244a2a43e68bd4694085635e5642ad2"
+   ],
+   [
+    "passed",
+    "42b5e4338e7a6d5999cbbb90227edcdc"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MultipleClusters": [
+   [
+    "passed",
+    "c33216ecf084aaf41c33650073e6f93e"
+   ],
+   [
+    "passed",
+    "71a5d50da94339a687b2cbecc9ef4ebf"
+   ],
+   [
+    "passed",
+    "91dc6e767e956804b55d442552be1c70"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_NoChange": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_BasicPatternDetection": [
+   [
+    "passed",
+    "9c10ff49f32e10073e9a401b9781fa17"
+   ],
+   [
+    "passed",
+    "61a5ce5e16731a7660051a8b37ebdf9e"
+   ],
+   [
+    "passed",
+    "61a5ce5e16731a7660051a8b37ebdf9e"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_MultipleParams": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_ParamMatch": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_PatternEmergence": [
+   [
+    "passed",
+    "ac924c7dbc05835ce3815ea7e0506131"
+   ],
+   [
+    "passed",
+    "725fb46bdf865140cb941dfb79fb8aa2"
+   ],
+   [
+    "passed",
+    "ac924c7dbc05835ce3815ea7e0506131"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_MultipleMerges": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLineTokenizer": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "aaa0cad8fd03537366bf858360e6c3a2"
+   ],
+   [
+    "passed",
+    "c62e88d056eee809ad1be6569851b58e"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_DifferentLengthPanics": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_CacheEvictionIntegration": [
+   [
+    "passed",
+    "d90640b37e94fb82961263d76f9faf6f"
+   ],
+   [
+    "passed",
+    "8cf65518c49bd9c5bd88042dacd8526f"
+   ],
+   [
+    "passed",
+    "7b4936c3e85a6825640fe302d023df83"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_Remove": [
+   [
+    "passed",
+    "1d48201b759ad88570cfd28c2a977ae5"
+   ],
+   [
+    "passed",
+    "2456713da52bc3deda6a13d6ae66dc81"
+   ],
+   [
+    "passed",
+    "f608c95118318fc06560c066b8d720c7"
+   ]
+  ],
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_PutGet": [
+   [
+    "passed",
+    "22f3bf0888dac55ddb258f00b0ddb668"
+   ],
+   [
+    "passed",
+    "cc7b091a2ad111a297e5ef3f7a0c8f8d"
+   ],
+   [
+    "passed",
+    "22359cc7dd97e2e2e0c779e2c254c889"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_NoChange": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "fd9e0192b6dd45bb3025563d89d40560"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_ParamMatch": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "60646d1ec18c234818ea7ba3582128c2"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MaxTokensEnforcement": {
+   "1": [
+    "passed",
+    "3a1906212b28f9753ee3f1923122646b"
+   ],
+   "2": [
+    "passed",
+    "a4c8857fc0635ef1ffaa3d82dedf7c83"
+   ],
+   "3": [
+    "passed",
+    "dba29dff23940aeceaeb452901e6d76b"
+   ],
+   "4": [
+    "passed",
+    "cef86c58e8a1d820c4b79a0e5e858c81"
+   ],
+   "5": [
+    "passed",
+    "f8a29b19bcb77f40a3e6c8da02ca73fa"
+   ],
+   "6": [
+    "passed",
+    "46760e41d7a44709e04c91dd5f16d697"
+   ],
+   "7": [
+    "passed",
+    "7c9d6649ce309c93c1b6e736c493d23f"
+   ],
+   "8": [
+    "passed",
+    "56abbd62db1389f83105226a7fd4b28d"
+   ],
+   "9": [
+    "passed",
+    "d295ac09aa2bf8c10cfdaa424ebc21b7"
+   ],
+   "10": [
+    "passed",
+    "25b605cc542c75f0dc8c763f0b8fedb2"
+   ],
+   "11": [
+    "passed",
+    "35400deccb77026f0c2cecdd569d42b1"
+   ],
+   "12": [
+    "passed",
+    "bd76e1e1088469dab9a6024c8e388849"
+   ],
+   "13": [
+    "passed",
+    "b975d7611a011b0501e02c5da9cfee42"
+   ],
+   "14": [
+    "passed",
+    "a43bf03e9af42a2482668f7d7e5b7d9c"
+   ],
+   "15": [
+    "passed",
+    "a6049b685a3d40ae87d4b6eb4b2bb99c"
+   ],
+   "16": [
+    "passed",
+    "0003921d3dc6a1fb3d87a616d702b9d5"
+   ],
+   "17": [
+    "passed",
+    "6a4933467f758bc6e550c6397a9cc5d7"
+   ],
+   "18": [
+    "passed",
+    "7c7ca720de2012031acd685e1f354b35"
+   ],
+   "19": [
+    "passed",
+    "cba5d9be037937ff1d2c7c9bef49cefd"
+   ],
+   "20": [
+    "passed",
+    "f8c2a5699a21e7545963a40a2fab34e5"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_Remove": {
+   "1": [
+    "passed",
+    "bc73e1dd521a5250946b0c227e89a11a"
+   ],
+   "2": [
+    "passed",
+    "2b24f260af6abc285f0e151c5f076bf5"
+   ],
+   "3": [
+    "passed",
+    "96a36aa8ef48dd7f27e78b37eb290cb0"
+   ],
+   "4": [
+    "passed",
+    "902b23da5542d084be9873bc8ac71b5a"
+   ],
+   "5": [
+    "passed",
+    "1d59f7d86b73ba99f3c3c12e76bc20ca"
+   ],
+   "6": [
+    "passed",
+    "1ab82bf66132cc5b2fe5786b21ac364a"
+   ],
+   "7": [
+    "passed",
+    "797a3e49fa18ba284f9d3b1ebba4e2e1"
+   ],
+   "8": [
+    "passed",
+    "ad2dae43ac339ebf52e894ccacbe40a4"
+   ],
+   "9": [
+    "passed",
+    "f3350af598eab55125c4f464af4dec9d"
+   ],
+   "10": [
+    "passed",
+    "b968169209130b7a522e8b41498dc9cf"
+   ],
+   "11": [
+    "passed",
+    "8efd86360d2ccad3ca26713686f273c5"
+   ],
+   "12": [
+    "passed",
+    "eba20dc2e3c0cdbb203505b47193949b"
+   ],
+   "13": [
+    "passed",
+    "921477ebb9e1e808f8a0d6b633cc0394"
+   ],
+   "14": [
+    "passed",
+    "ce74a825fc0c6c66cfb40c1aad0811ef"
+   ],
+   "15": [
+    "passed",
+    "913e6dd170f531be91b351daa3ba31d9"
+   ],
+   "16": [
+    "passed",
+    "992a859a3bb4e3e8dd76bb096f45f1b8"
+   ],
+   "17": [
+    "passed",
+    "fd375cd9bb7334a33404d261528b992a"
+   ],
+   "18": [
+    "passed",
+    "24b23dd253c5367398d0e6099fae343e"
+   ],
+   "19": [
+    "passed",
+    "b3eab2c11dbb2c5a9b52332d45735d15"
+   ],
+   "20": [
+    "passed",
+    "8f8ac7b73c938c21fc63c44a52aceadd"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_PutGet": {
+   "1": [
+    "passed",
+    "ef70fb479ce00939b88a57dd2e09819d"
+   ],
+   "2": [
+    "passed",
+    "4617723e3b85b330511f2559bbbaf9a6"
+   ],
+   "3": [
+    "passed",
+    "b3ac240c78ebe027f6c0fea31a942046"
+   ],
+   "4": [
+    "passed",
+    "92866172089703c4f0dd2044c60f66ab"
+   ],
+   "5": [
+    "passed",
+    "3620537e497a59c658ea1a2736fcd380"
+   ],
+   "6": [
+    "passed",
+    "c09c88ef38cd534eee26fe5c2088cdeb"
+   ],
+   "7": [
+    "passed",
+    "4d291c43e4beaa707437a72b6b68c268"
+   ],
+   "8": [
+    "passed",
+    "2950e3fd80f0213855de10c6bc870224"
+   ],
+   "9": [
+    "passed",
+    "01deb4d5495b7c17805150327db57b2b"
+   ],
+   "10": [
+    "passed",
+    "feb097b633360c7cef789ab93fb6f994"
+   ],
+   "11": [
+    "passed",
+    "d98ef0bbd9357d9f4bd9777e7c0bb75b"
+   ],
+   "12": [
+    "passed",
+    "d4d7366992baa746603a9cffbcd74e23"
+   ],
+   "13": [
+    "passed",
+    "debf8ac77be847c8129b99d16ea8ca56"
+   ],
+   "14": [
+    "passed",
+    "538ee74c759d4e7d0815695d8132130c"
+   ],
+   "15": [
+    "passed",
+    "189fb67b99ac67bb860fd5a0d8a3077e"
+   ],
+   "16": [
+    "passed",
+    "909834b33c24848fbd877bc1c7a15247"
+   ],
+   "17": [
+    "passed",
+    "6463b292b16517f753ad231a2ebe4e25"
+   ],
+   "18": [
+    "passed",
+    "16f8851124f4e73ae4a2d8813e23e5a4"
+   ],
+   "19": [
+    "passed",
+    "f4572146c167e89e6eec6b54fef5622c"
+   ],
+   "20": [
+    "passed",
+    "bfbe8d50f96c537596f9f171bfc12abf"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_ParamAlreadySet": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "97e3807b83ecb8a88418f360add6d036"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_Values": {
+   "1": [
+    "passed",
+    "1ef51fcd67fda390b492d5cb890a4e42"
+   ],
+   "2": [
+    "passed",
+    "3e6b6077959548dae3218885165bb593"
+   ],
+   "3": [
+    "passed",
+    "c7dce2edca4693275a15cb9403e807f4"
+   ],
+   "4": [
+    "passed",
+    "abab94fa085b42dc10f0d85bf61313ba"
+   ],
+   "5": [
+    "passed",
+    "5c9343fb77b44da1c6b77bb58f13f4a8"
+   ],
+   "6": [
+    "passed",
+    "aeccc1d9b39ad0262706bad87875d8ed"
+   ],
+   "7": [
+    "passed",
+    "edb8ca1ae74d7983ddead6d326e2a7ea"
+   ],
+   "8": [
+    "passed",
+    "98d5e4989dd8bb7b1a1cbf151ee339b5"
+   ],
+   "9": [
+    "passed",
+    "e45feacb574c7549633897eeecad0f64"
+   ],
+   "10": [
+    "passed",
+    "e75cd81bde37548534aa3790bf68afa4"
+   ],
+   "11": [
+    "passed",
+    "2447353a68e0b34381541778bcbc9009"
+   ],
+   "12": [
+    "passed",
+    "d74461fd1baf9808a71428d44486a2bb"
+   ],
+   "13": [
+    "passed",
+    "2bb9c6cb81182d0e2a06a6022c20d230"
+   ],
+   "14": [
+    "passed",
+    "699ed7bf57f978d10ac6d5dbcf5c799b"
+   ],
+   "15": [
+    "passed",
+    "58a15fe59cc0ea784421663483d9321f"
+   ],
+   "16": [
+    "passed",
+    "372c49511e7851d546650835a8c14dad"
+   ],
+   "17": [
+    "passed",
+    "96f70c128adc99852b7b5c06f67d29a5"
+   ],
+   "18": [
+    "passed",
+    "345fd3a34e74391f15ce2fba243b36c1"
+   ],
+   "19": [
+    "passed",
+    "5713b2411c460fcf635f9f87b3df9301"
+   ],
+   "20": [
+    "passed",
+    "30c239f9528fc518a99d0e09933a11f1"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_BasicPatternDetection": {
+   "1": [
+    "passed",
+    "7f164997f5c3f988e227f546443fb373"
+   ],
+   "2": [
+    "passed",
+    "dd49ab6fc4dd90d952c48334223ae7af"
+   ],
+   "3": [
+    "passed",
+    "fbb5e8a49986e68bb3a65c5f0d9c38a3"
+   ],
+   "4": [
+    "passed",
+    "cdf33dd346bbfdf34946f5c3462079db"
+   ],
+   "5": [
+    "passed",
+    "aba3f6a7ff43837bf496c9edda76b75f"
+   ],
+   "6": [
+    "passed",
+    "84b74d99f7021a0a28887289c2616fc4"
+   ],
+   "7": [
+    "passed",
+    "0146ada28d83f32fe34657a514a60743"
+   ],
+   "8": [
+    "passed",
+    "f4fa8a66b35df7a69abbd7689188389c"
+   ],
+   "9": [
+    "passed",
+    "ec7ade1d80b4c2b9f33749d8b0caafb7"
+   ],
+   "10": [
+    "passed",
+    "099b4e9eec330ddf6a6b0dd0bb22eea5"
+   ],
+   "11": [
+    "passed",
+    "ea8c50d64fae9dcb016e46e41ed2eaba"
+   ],
+   "12": [
+    "passed",
+    "e6e7190153968189c00f2e31f030eb59"
+   ],
+   "13": [
+    "passed",
+    "b04908724645f13cae497fd7c1ac78ee"
+   ],
+   "14": [
+    "passed",
+    "ce47879c03e494648d054fa1b310d059"
+   ],
+   "15": [
+    "passed",
+    "1eaad1574114fecb0de1ab4f01fae6dd"
+   ],
+   "16": [
+    "passed",
+    "5c081aa3834957e368a6f4a25f9c5851"
+   ],
+   "17": [
+    "passed",
+    "d58d41b005331739244ee6f7cc4fd504"
+   ],
+   "18": [
+    "passed",
+    "4facde61129d3050b1238357845b3b6b"
+   ],
+   "19": [
+    "passed",
+    "63ba9d254c6a01a2e59ab7e381d044d7"
+   ],
+   "20": [
+    "passed",
+    "d5654e94828b1d55bc825f797d51ec41"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MinTokensEnforcement": {
+   "1": [
+    "passed",
+    "4072744f9961ad79150baa2692036355"
+   ],
+   "2": [
+    "passed",
+    "1be69e969f1e750c3b7cc08c42aecac2"
+   ],
+   "3": [
+    "passed",
+    "e810dba926f3de84884cff5be4095db8"
+   ],
+   "4": [
+    "passed",
+    "d225c56219025ca644acf3c676e661c4"
+   ],
+   "5": [
+    "passed",
+    "868c16614954733901927762cd5c15a5"
+   ],
+   "6": [
+    "passed",
+    "dbd70fa235b7e8ec139e343324c70b57"
+   ],
+   "7": [
+    "passed",
+    "a27862f5c49e643c69a612a698739457"
+   ],
+   "8": [
+    "passed",
+    "0c59804d3415bb03c38dc2f51ccecba6"
+   ],
+   "9": [
+    "passed",
+    "f09dbda2b2376fab034f0331857dda1f"
+   ],
+   "10": [
+    "passed",
+    "a05ad241a74c50da1f978392700e69bd"
+   ],
+   "11": [
+    "passed",
+    "887ca71ed24c8bf7adcd38dff0ee36bf"
+   ],
+   "12": [
+    "passed",
+    "010a0de238af312061573e3bfaa00dc0"
+   ],
+   "13": [
+    "passed",
+    "c02ce32ff3809cd948a62639239276b8"
+   ],
+   "14": [
+    "passed",
+    "6b5d47f663f81593e4f915dd62c61312"
+   ],
+   "15": [
+    "passed",
+    "dfc6d272323be00b1abe1f4fb4327a99"
+   ],
+   "16": [
+    "passed",
+    "06eb9d9a8474db23019e48bf4b3502ca"
+   ],
+   "17": [
+    "passed",
+    "c5729e5f9481fcd68de08f44c4d82994"
+   ],
+   "18": [
+    "passed",
+    "a31475dd2d168e1b6ad91ad5b42479ba"
+   ],
+   "19": [
+    "passed",
+    "5da1917ce6a6a6b41b7166e22769c2bb"
+   ],
+   "20": [
+    "passed",
+    "9145df47ccf72c824c87bcea4e7fe04f"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_NotExists": {
+   "1": [
+    "passed",
+    "4036050c62a25b5f19f2ce29511a3d39"
+   ],
+   "2": [
+    "passed",
+    "624ef13cc414bf8e599d9a723d20871b"
+   ],
+   "3": [
+    "passed",
+    "9a5505768e806b6ea9308ef90617f7d8"
+   ],
+   "4": [
+    "passed",
+    "bef1d5828fad673d72a392d7a671eb76"
+   ],
+   "5": [
+    "passed",
+    "977382e39cc6ba2c3d72a665b9e7591e"
+   ],
+   "6": [
+    "passed",
+    "4cb8208afb7238f251b3d90f2927aac2"
+   ],
+   "7": [
+    "passed",
+    "a11d594d0f8f23688fdc19d9cae2c3a0"
+   ],
+   "8": [
+    "passed",
+    "4f07ff81412c143357d4820b6a284205"
+   ],
+   "9": [
+    "passed",
+    "f3350af598eab55125c4f464af4dec9d"
+   ],
+   "10": [
+    "passed",
+    "b1f7dd29fa032bfad3bfbc50874fd2c1"
+   ],
+   "11": [
+    "passed",
+    "a2b75839b709bd11f840de520ab33890"
+   ],
+   "12": [
+    "passed",
+    "bbf8e089af8dfb2b55379a6057a40751"
+   ],
+   "13": [
+    "passed",
+    "bc1f1fe4427a6350435b291057f7772d"
+   ],
+   "14": [
+    "passed",
+    "5a61f0a5317c68c40fffcf9413a898bb"
+   ],
+   "15": [
+    "passed",
+    "998c0bc9def3c34616942f6ecc1cd919"
+   ],
+   "16": [
+    "passed",
+    "992a859a3bb4e3e8dd76bb096f45f1b8"
+   ],
+   "17": [
+    "passed",
+    "0caf33f11391390b0ff66cdfd7e40166"
+   ],
+   "18": [
+    "passed",
+    "24b23dd253c5367398d0e6099fae343e"
+   ],
+   "19": [
+    "passed",
+    "b3eab2c11dbb2c5a9b52332d45735d15"
+   ],
+   "20": [
+    "passed",
+    "b421f6c22b7a59df3033eeffd43b4212"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_EmptyString": {
+   "1": [
+    "passed",
+    "36d04dfaa81bd8bfcc060bec86741532"
+   ],
+   "2": [
+    "passed",
+    "65384a8ad0e27ea1f4e0e5351e3f1a55"
+   ],
+   "3": [
+    "passed",
+    "dba29dff23940aeceaeb452901e6d76b"
+   ],
+   "4": [
+    "passed",
+    "cef86c58e8a1d820c4b79a0e5e858c81"
+   ],
+   "5": [
+    "passed",
+    "f8a29b19bcb77f40a3e6c8da02ca73fa"
+   ],
+   "6": [
+    "passed",
+    "6efa45bd0882bf760e09a73a8002f169"
+   ],
+   "7": [
+    "passed",
+    "7c9d6649ce309c93c1b6e736c493d23f"
+   ],
+   "8": [
+    "passed",
+    "44e0a9c82249e8b1ab282b3843db8ce9"
+   ],
+   "9": [
+    "passed",
+    "d295ac09aa2bf8c10cfdaa424ebc21b7"
+   ],
+   "10": [
+    "passed",
+    "25b605cc542c75f0dc8c763f0b8fedb2"
+   ],
+   "11": [
+    "passed",
+    "e03ac3bb6037e55d58a54872af516232"
+   ],
+   "12": [
+    "passed",
+    "489657d81fe21c3309c053241c7dfb1c"
+   ],
+   "13": [
+    "passed",
+    "318eaf42b60da25b9ce484f0b9de15e8"
+   ],
+   "14": [
+    "passed",
+    "aacdc5bc5af40089f1ff2e35643004cf"
+   ],
+   "15": [
+    "passed",
+    "a2b31a483c564de6766c3c8ec83780f5"
+   ],
+   "16": [
+    "passed",
+    "0003921d3dc6a1fb3d87a616d702b9d5"
+   ],
+   "17": [
+    "passed",
+    "6a4933467f758bc6e550c6397a9cc5d7"
+   ],
+   "18": [
+    "passed",
+    "93e1f1710e4a1760c0488ed7caea0ce6"
+   ],
+   "19": [
+    "passed",
+    "cba5d9be037937ff1d2c7c9bef49cefd"
+   ],
+   "20": [
+    "passed",
+    "ebd69d0fbffb6f29fadda9483e227742"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_CacheEvictionIntegration": {
+   "1": [
+    "passed",
+    "612f243afc5a204b57c3d66dcde132a3"
+   ],
+   "2": [
+    "passed",
+    "cc1643f7f745b347e62f58a8bd802822"
+   ],
+   "3": [
+    "passed",
+    "65755f3adff5707ac27573540a2f3feb"
+   ],
+   "4": [
+    "passed",
+    "42b8600c2f2df4cd5475ed2c5a2b1621"
+   ],
+   "5": [
+    "passed",
+    "a807c4a672881c56eb390f3555c1d4a8"
+   ],
+   "6": [
+    "passed",
+    "822145d8666d7d51a027297257007b88"
+   ],
+   "7": [
+    "passed",
+    "6640cf31ec0e9a9598782f3546b3a54b"
+   ],
+   "8": [
+    "passed",
+    "7131434e253dd4bd4a9da46f19433c9e"
+   ],
+   "9": [
+    "passed",
+    "02329eb6adb0890041c930d74ae3ed4f"
+   ],
+   "10": [
+    "passed",
+    "e377e80cd3ba3bd5b5cd30eabddd821c"
+   ],
+   "11": [
+    "passed",
+    "22f14b13797ef590ef4785292e21e772"
+   ],
+   "12": [
+    "passed",
+    "b4457825d2171619adb5831efc631836"
+   ],
+   "13": [
+    "passed",
+    "b235737754dca531c62854e526a047a6"
+   ],
+   "14": [
+    "passed",
+    "3bdd65f5a469e496892d37feca142fe4"
+   ],
+   "15": [
+    "passed",
+    "c29278e7de7a152b118ca5a30b72ac05"
+   ],
+   "16": [
+    "passed",
+    "72e92101a6f2d013d198a73375e04158"
+   ],
+   "17": [
+    "passed",
+    "35519572a35795fd487cc088b228433e"
+   ],
+   "18": [
+    "passed",
+    "dd8125db7e5615d32daf634be508cb02"
+   ],
+   "19": [
+    "passed",
+    "df8b06591bcda4736ccb18754c548f74"
+   ],
+   "20": [
+    "passed",
+    "cf5a76ef9cf2c7758c58be8a137c3413"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_Mismatch": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_MaxSizeEviction": {
+   "1": [
+    "passed",
+    "1cf45dd15caa3fbd61e0d30f3e35d8ef"
+   ],
+   "2": [
+    "passed",
+    "d39bd50ce0e1effe0fe3d326ed1bc94e"
+   ],
+   "3": [
+    "passed",
+    "b04d18830f42d801991709a94538f4eb"
+   ],
+   "4": [
+    "passed",
+    "0d74e90d1adde6c64175e7cbd9230082"
+   ],
+   "5": [
+    "passed",
+    "a978b95877a1fe418249315ef353cb18"
+   ],
+   "6": [
+    "passed",
+    "d6e78111a5f2cd43b039093bcdbef726"
+   ],
+   "7": [
+    "passed",
+    "e45e7032dddac677b97809fa52a8fcab"
+   ],
+   "8": [
+    "passed",
+    "4fb6994f756031e7afc4e5829d5829a3"
+   ],
+   "9": [
+    "passed",
+    "b41169bdbe5852450024f4f19632a30c"
+   ],
+   "10": [
+    "failed",
+    "295ae943ae3e2da1ed4621bb87e6a748"
+   ],
+   "11": [
+    "failed",
+    "781551acf03d6b191addf7d82562ca27"
+   ],
+   "12": [
+    "passed",
+    "391fcc5e6b82d391537d124f5773aed7"
+   ],
+   "13": [
+    "passed",
+    "9659695cc7f7bb79a3195b32cfa65832"
+   ],
+   "14": [
+    "passed",
+    "51d5613bcebe91c4b5b0eaaad91fe6ef"
+   ],
+   "15": [
+    "passed",
+    "a79859163424750c06a758f972a5288d"
+   ],
+   "16": [
+    "failed",
+    "d2f9d313ba0b877ecd500b728038f3d6"
+   ],
+   "17": [
+    "passed",
+    "bbb236f8c5337a420814a9df2e709992"
+   ],
+   "18": [
+    "passed",
+    "86c6b1ef1c1c924bc337602020873225"
+   ],
+   "19": [
+    "failed",
+    "31f436f70e56817e2127f335c46023aa"
+   ],
+   "20": [
+    "passed",
+    "73b5620e1dd2514eb96389d5a3937572"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_PatternEmergence": {
+   "1": [
+    "passed",
+    "c9d47f00213ef34ff2af44bd3d79451c"
+   ],
+   "2": [
+    "passed",
+    "cae958db2a1e9259937a32993dd6557f"
+   ],
+   "3": [
+    "passed",
+    "570c4569dfe4a2978bb46f6c23f0e472"
+   ],
+   "4": [
+    "passed",
+    "b7c5b889ae4943c44e0ae47a81af2b52"
+   ],
+   "5": [
+    "passed",
+    "933ef41892ef997082ea9e43fa2f587a"
+   ],
+   "6": [
+    "passed",
+    "e227efea8965867a5cec34535d97cf40"
+   ],
+   "7": [
+    "passed",
+    "d09183e2cdb78562aeaf4c9d51243b67"
+   ],
+   "8": [
+    "passed",
+    "0de5280d22d2878dcc89f223dae25a91"
+   ],
+   "9": [
+    "passed",
+    "ac6420a7e65c4b19db4d8a14b34f5688"
+   ],
+   "10": [
+    "passed",
+    "080306d32e66417feeda97e89073fdd9"
+   ],
+   "11": [
+    "passed",
+    "83a1b6630d8e21deb651d548e081ff3c"
+   ],
+   "12": [
+    "passed",
+    "f96a83aafc38068e89cb772dffbc2a57"
+   ],
+   "13": [
+    "passed",
+    "dc4bf712b7bdc0b60f100b8f6a5af92f"
+   ],
+   "14": [
+    "passed",
+    "6e8eea86d0c33a3b4ac5999a07e0e3e3"
+   ],
+   "15": [
+    "passed",
+    "910b7a55989a52f2dc8a44ae10a763d4"
+   ],
+   "16": [
+    "passed",
+    "d1f6b0bddf41c3315329bc11ef85043f"
+   ],
+   "17": [
+    "passed",
+    "008ac2291d2911a5b546427def7dc1e1"
+   ],
+   "18": [
+    "passed",
+    "1078f874714693dbfa04c3416ee7761c"
+   ],
+   "19": [
+    "passed",
+    "4dff79d6a513918f039f574c6eb0d59e"
+   ],
+   "20": [
+    "passed",
+    "596c6e76a611fad40ea412ca4f22a8fb"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_NoMatch": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "a54ea90413d45ffbe446b24ba7a5f60d"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestDataHeuristic": {
+   "1": [
+    "passed",
+    "1e5de289fe76f52efa0fb4823321c638"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "ba57fd2eb723fd9bebc23780199fea8c"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "cdc62325d0aadc72151aac00037636f9"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "97e3807b83ecb8a88418f360add6d036"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "8e676238f6705de21359acaa36333429"
+   ],
+   "19": [
+    "passed",
+    "66aa134988c01cbbccb914aa7512ef1b"
+   ],
+   "20": [
+    "passed",
+    "a54ea90413d45ffbe446b24ba7a5f60d"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_String_CacheClearedOnIngest": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_ExactMatch": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "585a3803152dd7f3334a59aeedac47b1"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestDrain_Train_MultipleClusters": {
+   "1": [
+    "passed",
+    "2c61ba859ef10924b3ff693334ad19b4"
+   ],
+   "2": [
+    "passed",
+    "1e13bc1ffede18e50a000e68a040f241"
+   ],
+   "3": [
+    "passed",
+    "0e65ad92e180f8203d1d32e985eec29e"
+   ],
+   "4": [
+    "passed",
+    "58cee3afa09e25f75eb793d5c5f6cc3e"
+   ],
+   "5": [
+    "passed",
+    "305ea384de759b712d5c47eb6064b2a4"
+   ],
+   "6": [
+    "passed",
+    "872db148bb72e967ab569504bf4cefd0"
+   ],
+   "7": [
+    "passed",
+    "51221d75c94910e9dc6bc3a5f681443f"
+   ],
+   "8": [
+    "passed",
+    "d3074123c49d9173b884af0e8cb534b3"
+   ],
+   "9": [
+    "passed",
+    "8f56d838489cb7aefcf04e5eab7262f8"
+   ],
+   "10": [
+    "passed",
+    "2e8917a85c516592d0096a55eb051637"
+   ],
+   "11": [
+    "passed",
+    "81fe62dbf7bb2a614b7b3e640fbb40d4"
+   ],
+   "12": [
+    "passed",
+    "05c638d56cbf052bab9b854ff85c840a"
+   ],
+   "13": [
+    "passed",
+    "0de067120099d7611fe87b12aeca2e25"
+   ],
+   "14": [
+    "passed",
+    "f8ab6ea34428b14f6f03e6be2d6ac07b"
+   ],
+   "15": [
+    "passed",
+    "3aeacfa606d17f0cab24e85eb3669d02"
+   ],
+   "16": [
+    "passed",
+    "48a5b3c271aacdbda0778058d1e88a7c"
+   ],
+   "17": [
+    "passed",
+    "d77365133c8255dd1a00f473a69c869b"
+   ],
+   "18": [
+    "passed",
+    "b88fb7fbc13cf345316eb68c10ed12ba"
+   ],
+   "19": [
+    "passed",
+    "cf76db16b28bd5fb4112e9189c2239d7"
+   ],
+   "20": [
+    "passed",
+    "1dab1c10f247029e44ccfbfbe2a5a600"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestDrain_PruneTreeClearsOldBranches": {
+   "1": [
+    "passed",
+    "58d6b70b55a1c92a40e1ada642757630"
+   ],
+   "2": [
+    "passed",
+    "804ce92b38196d43936891c1994c3894"
+   ],
+   "3": [
+    "passed",
+    "69fae133f392387dd8898c111d7db8b7"
+   ],
+   "4": [
+    "passed",
+    "0ba64bb8a482b6a210dd0e516f692540"
+   ],
+   "5": [
+    "passed",
+    "06284dcec33f466dbb367803ddad473a"
+   ],
+   "6": [
+    "passed",
+    "b21b3ab82de0606e4260536df30d173f"
+   ],
+   "7": [
+    "passed",
+    "fbb343656f9bec081e109030dcc2b500"
+   ],
+   "8": [
+    "passed",
+    "0bfe409ab04d10d64869d1b9cc273da0"
+   ],
+   "9": [
+    "passed",
+    "268eceeeae5686a953e0c5aab3dc17e6"
+   ],
+   "10": [
+    "passed",
+    "ce601ed033ad5215be0abb6c8ce6b663"
+   ],
+   "11": [
+    "passed",
+    "030a15050c481eb05afe516baa980c0c"
+   ],
+   "12": [
+    "passed",
+    "cb030e597060217506a0dc1af25848fe"
+   ],
+   "13": [
+    "passed",
+    "c3e605d1073f1e343dbbe700145fa27a"
+   ],
+   "14": [
+    "passed",
+    "16692608e0c80e26abb40d691f4cc1ff"
+   ],
+   "15": [
+    "passed",
+    "a8b90892ceb57b661621263aa186a94a"
+   ],
+   "16": [
+    "passed",
+    "7c0963b60c5253e636e9294a92aefe0d"
+   ],
+   "17": [
+    "passed",
+    "db47b8f3fe7c61f3e6e141cf721a8340"
+   ],
+   "18": [
+    "passed",
+    "a4fd35706d232e4bc810bf42849ac853"
+   ],
+   "19": [
+    "passed",
+    "2526d643d70a50161b557c14a81f41d8"
+   ],
+   "20": [
+    "passed",
+    "d7771d446f2b60a7b0928aae1e371d4e"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLineTokenizer": {
+   "1": [
+    "passed",
+    "1e5de289fe76f52efa0fb4823321c638"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "585a3803152dd7f3334a59aeedac47b1"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "cf00de59b83c831600b426e3c9f46130"
+   ],
+   "8": [
+    "passed",
+    "60646d1ec18c234818ea7ba3582128c2"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "47696b7f61ecce73d63f3deee0685c7f"
+   ],
+   "14": [
+    "passed",
+    "bc94f088d5b3aa89b4a76f8e4b545929"
+   ],
+   "15": [
+    "passed",
+    "9cd9ae2ce9fe61a0c2a4c0d9344d3acf"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "96d9e126ec3ed5d6ca897d06e8cf9a87"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_DifferentLengthPanics": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "56009d0e80396ba7258a0c07bc3fc6e4"
+   ],
+   "3": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "a3a102fc50e371d75111911424c1cefe"
+   ],
+   "13": [
+    "passed",
+    "fd9e0192b6dd45bb3025563d89d40560"
+   ],
+   "14": [
+    "passed",
+    "ed3f81f0f35b8d7822376040387ccbaf"
+   ],
+   "15": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ],
+   "16": [
+    "passed",
+    "6ef4445ddc8462446566cfa246c305d1"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "66aa134988c01cbbccb914aa7512ef1b"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_MultipleMerges": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_DifferentLengthPanics": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "fbc36e818d263e652e11956ab863a596"
+   ],
+   "6": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ],
+   "7": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "fa1a44e03badf85042e4709dd4b0bd63"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "62de16cc1a5383f1a1844642fb6281a0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "66aa134988c01cbbccb914aa7512ef1b"
+   ],
+   "20": [
+    "passed",
+    "a54ea90413d45ffbe446b24ba7a5f60d"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_tokenDistance_MultipleParams": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "95aef09646aab360883a589188c90652"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "53114c67646608276f831ed23eb6cade"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogCluster_ingestTokens_PatternMerging": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "56009d0e80396ba7258a0c07bc3fc6e4"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_GetQuietly": {
+   "1": [
+    "passed",
+    "543ef04f96a0cdf47da014825b7eba96"
+   ],
+   "2": [
+    "passed",
+    "45488ac84a341a6051052a9af3752967"
+   ],
+   "3": [
+    "passed",
+    "11238cdf68684076b45381516efd5106"
+   ],
+   "4": [
+    "passed",
+    "0cf6879cce03dbcaa42b1ce3f15f5563"
+   ],
+   "5": [
+    "passed",
+    "280965301f0f414c410e8335982203d1"
+   ],
+   "6": [
+    "passed",
+    "9bb1ebbfcb6de3fb4a4cef8e9bcf35cb"
+   ],
+   "7": [
+    "passed",
+    "d64b1e569facab6258e410bc1a96dc11"
+   ],
+   "8": [
+    "passed",
+    "e0096d9a3bc9add863015ca47245d3d2"
+   ],
+   "9": [
+    "passed",
+    "3347df49dec5756724ef9be30482dc53"
+   ],
+   "10": [
+    "passed",
+    "47218efe3532333bee07d8a9030c1e00"
+   ],
+   "11": [
+    "passed",
+    "7cfb1b9e42345acd5bccf156310642b2"
+   ],
+   "12": [
+    "passed",
+    "09162192b5526cdb500326d7291cb35b"
+   ],
+   "13": [
+    "passed",
+    "7fc3a57ffe10cc6c84047e6dc8677931"
+   ],
+   "14": [
+    "passed",
+    "70a520d3e133465ed3f7bc1b563d4c3c"
+   ],
+   "15": [
+    "passed",
+    "3897147e1df8f2c72860b3c6598539a6"
+   ],
+   "16": [
+    "passed",
+    "5d8630c7f195d41436e519b9f96de19c"
+   ],
+   "17": [
+    "passed",
+    "08254b5768296e77ffbc536a30f438bb"
+   ],
+   "18": [
+    "passed",
+    "b939efeb7246c9e1c21f1fab0e69172c"
+   ],
+   "19": [
+    "passed",
+    "07b34a08ff9a01d21f46b844314f8062"
+   ],
+   "20": [
+    "passed",
+    "69f4783e85da74b9e411a68de1bb609c"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/grafana/tempo/pkg/drain::TestLogClusterCache_MaxSizeEviction": {
+   "fail_seeds": [
+    10,
+    11,
+    16,
+    19
+   ],
+   "passes_in_some_seed": true,
+   "seed": 10,
+   "outcomes": [
+    "passed",
+    "passed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "passed",
+    "passed",
+    "passed",
+    "failed"
+   ],
+   "fingerprints": 9,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  12,
+  28
+ ],
+ "timing": {
+  "plain": [
+   0.007,
+   0.006,
+   0.007
+  ],
+  "det": [
+   0.012,
+   0.012,
+   0.012
+  ]
+ },
+ "slowdown": 0.7142857142857143
+}
