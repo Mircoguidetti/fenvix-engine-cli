@@ -23,6 +23,11 @@ system hashes the source before it uses a ``.pyc``, so stale bytecode never
 runs, whatever the source's mtime says (a timestamp ``.pyc`` is valid for
 ``(int(mtime), size)``: same-size edits within one second, restored or foreign
 mtimes, reinstalled library modules that keep their archive mtimes).
+
+The decisions are in Rust (``crates/detpy-py/src/reexec.rs``, ``crates/detpy-core/src/reexec.rs``): the personality
+read and set, the cache directory, ``plan``, the command line, ``can_reexec``, the precompile's directories and its
+stamps file with the todo/fresh decision. This module keeps the exec itself, ``sysconfig`` and the driver
+subprocess. The Python original is kept verbatim in ``tests/rust_hotpaths_ref/_ref_reexec_r2.py``.
 """
 
 from __future__ import annotations
@@ -46,86 +51,39 @@ SESSION_DEPTH = 0
 
 
 def aslr_disabled() -> bool | None:
-    """True/False on Linux, None when unknown."""
-    try:
-        with open("/proc/self/personality") as f:
-            return bool(int(f.read().strip(), 16) & ADDR_NO_RANDOMIZE)
-    except (OSError, ValueError):
-        return None
+    """True/False on Linux, None when unknown (``/proc/self/personality``)."""
+    return _core().aslr_disabled()
 
 
 def _disable_aslr_for_exec() -> bool:
-    if not sys.platform.startswith("linux"):
-        return False
-    try:
-        import ctypes
-
-        libc = ctypes.CDLL(None, use_errno=True)
-        current = libc.personality(0xFFFFFFFF)
-        if current == -1:
-            return False
-        return libc.personality(current | ADDR_NO_RANDOMIZE) != -1
-    except Exception:
-        return False
+    """``personality(current | ADDR_NO_RANDOMIZE)``, inherited by the exec'd interpreter (Linux only)."""
+    return _core().disable_aslr_for_exec()
 
 
 def pyc_cache_dir(hashseed: str) -> str:
-    base = os.environ.get("DETPY_PYC_CACHE") or os.path.join(
-        os.environ.get("XDG_CACHE_HOME") or os.path.join(os.path.expanduser("~"), ".cache"), "detpy", "pyc"
-    )
-    return os.path.join(base, f"{sys.implementation.cache_tag}-hashseed{hashseed}")
+    return _core().pyc_cache_dir(hashseed)
 
 
 def bytecode_active(hashseed: str) -> bool:
-    prefix = sys.pycache_prefix
-    return bool(sys.flags.dont_write_bytecode and prefix
-                and os.path.realpath(prefix) == os.path.realpath(pyc_cache_dir(hashseed)))
+    return _core().bytecode_active(hashseed)
 
 
 def plan(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True) -> dict:
     """What a re-exec would fix: {'hashseed': bool, 'aslr': bool, 'bytecode': bool}."""
-    need_hash = os.environ.get("PYTHONHASHSEED") != want_hashseed
-    need_aslr = want_no_aslr and aslr_disabled() is False
-    need_bytecode = want_bytecode and not bytecode_active(want_hashseed)
-    return {"hashseed": need_hash, "aslr": need_aslr, "bytecode": need_bytecode}
+    return _core().reexec_plan(want_hashseed, want_no_aslr, want_bytecode)
 
 
 def _argv() -> list[str] | None:
-    orig = getattr(sys, "orig_argv", None)
-    if orig:
-        return [sys.executable] + list(orig[1:])
-    # Python < 3.10: rebuild the command line (interpreter flags are lost).
-    main = sys.modules.get("__main__")
-    spec = getattr(main, "__spec__", None)
-    if spec is not None and spec.name in ("pytest", "pytest.__main__"):
-        return [sys.executable, "-m", "pytest", *sys.argv[1:]]
-    if sys.argv and sys.argv[0]:
-        return [sys.executable, *sys.argv]
-    return None
+    return _core().reexec_argv()
 
 
 def can_reexec() -> tuple[bool, str]:
-    if os.environ.get(MARKER) == "1":
-        return False, "already re-executed"
-    if SESSION_DEPTH > 1:
-        return False, "nested in-process pytest session"
-    if os.name != "posix":
-        return False, "exec is only supported on POSIX"
-    if _argv() is None:
-        return False, "cannot reconstruct the command line"
-    return True, ""
+    return _core().reexec_can(SESSION_DEPTH)
 
 
 def precompile_dirs(rootdir: str | None) -> list[str]:
     paths = sysconfig.get_paths()
-    dirs = []
-    for key in ("stdlib", "purelib", "platlib"):
-        p = paths.get(key)
-        if p and os.path.isdir(p) and os.path.realpath(p) not in map(os.path.realpath, dirs):
-            dirs.append(p)
-    if rootdir and os.path.isdir(rootdir):
-        dirs.append(rootdir)
-    return dirs
+    return _core().reexec_precompile_dirs([paths.get(key) for key in ("stdlib", "purelib", "platlib")], rootdir)
 
 
 def precompile(hashseed: str, rootdir: str | None) -> float:
@@ -147,30 +105,13 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
     # under the same fixed seed, in every run alike.
     # The project is always checked (it changes at every commit).
     # v3: stamps written while the cache held timestamp .pyc files (v2 and earlier) do not count: every library
-    # directory is checked once more, which converts its bytecode to checked-hash pycs
-    stamps_path = os.path.join(prefix, "stamps-v3.json")
-    try:
-        import json
-
-        with open(stamps_path) as fh:
-            stamps = json.load(fh)
-    except (OSError, ValueError):
-        stamps = {}
-    root_real = os.path.realpath(rootdir) if rootdir else None
-    todo, fresh = [], {}
-    for d in dirs:
-        if root_real is not None and os.path.realpath(d) == root_real:
-            todo.append(d)
-            continue
-        st = dir_stamp(d)
-        fresh[d] = st
-        if stamps.get(d) != st:
-            todo.append(d)
-    # the exclusions (VCS, tool caches, virtual environments) apply to the project's tree only: a library
+    # directory is checked once more, which converts its bytecode to checked-hash pycs.
+    # The stamps file's read and write and the todo/fresh decision are in Rust (_core.reexec_precompile_plan).
+    # The exclusions (VCS, tool caches, virtual environments) apply to the project's tree only: a library
     # directory is itself inside a virtual environment (venv/lib/python3.X/site-packages), and excluding it there
     # left every installed module to be compiled from source at every run
-    project = [d for d in todo if root_real is not None and os.path.realpath(d) == root_real]
-    libs = [d for d in todo if d not in project]
+    stamps_path = os.path.join(prefix, "stamps-v3.json")
+    libs, project, stamps = _core().reexec_precompile_plan(dirs, rootdir, stamps_path)
     driver = _driver_source()
     for dirs_, extra in ((libs, []), (project, ["-x", _EXCLUDE])):
         if not dirs_:
@@ -186,15 +127,7 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if p.returncode != 0:  # interrupted: no stamps (a file that does not compile is skipped, not an error)
             return time.perf_counter() - t0
-    try:
-        import json
-
-        tmp = f"{stamps_path}.{os.getpid()}.tmp"
-        with open(tmp, "w") as fh:
-            json.dump({**stamps, **fresh}, fh)
-        os.replace(tmp, stamps_path)
-    except OSError:
-        pass
+    stamps.write(stamps_path)
     return time.perf_counter() - t0
 
 

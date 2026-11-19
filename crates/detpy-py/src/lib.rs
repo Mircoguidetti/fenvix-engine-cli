@@ -26,6 +26,7 @@ mod seeds;
 mod standin;
 
 // rust-hotpaths-2: repro / reexec decisions
+mod reexec;
 mod repro;
 
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
@@ -285,6 +286,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     seeds::register(m)?;
     fsorder::register(m)?;
     // rust-hotpaths-2: repro / reexec decisions
+    reexec::register(m)?;
     repro::register(m)?;
     Ok(())
 }
