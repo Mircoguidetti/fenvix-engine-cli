@@ -1,58 +1,58 @@
 {
- "run_id": "dv15",
+ "run_id": "dv16",
  "ci": false,
  "plan": "harness/dep_verdict/plan-report2.json",
- "note": "REPORT-3: the same 130 pairs and test files on the final REPORT-3 engine e4660e8 (R-020b N1-N3/O2, R-019c E-1..E-9); all 10 repositories on Actions. dv8-dv14 cancelled (engine changes before they produced rows).",
+ "note": "REPORT-3: the same 130 pairs and test files on the final REPORT-3 engine 905fb40; all 10 repositories on Actions, smaller shards (56 jobs). dv8-dv15 cancelled (engine changes before they produced rows; dv9-dv15 never left the queue).",
  "pairs": [
   {
    "spec": "airflow",
-   "shards": 2,
-   "budget_min": 320
+   "shards": 4,
+   "budget_min": 180
   },
   {
    "spec": "integrations-core",
-   "shards": 2,
-   "budget_min": 320
+   "shards": 4,
+   "budget_min": 180
   },
   {
    "spec": "litellm",
-   "shards": 3,
-   "budget_min": 320
+   "shards": 4,
+   "budget_min": 180
   },
   {
    "spec": "mlflow",
-   "shards": 3,
-   "budget_min": 320
+   "shards": 6,
+   "budget_min": 180
   },
   {
    "spec": "prefect",
-   "shards": 2,
-   "budget_min": 320
+   "shards": 4,
+   "budget_min": 180
   },
   {
    "spec": "pydantic-ai",
-   "shards": 3,
-   "budget_min": 320
+   "shards": 6,
+   "budget_min": 180
   },
   {
    "spec": "transformers",
-   "shards": 3,
-   "budget_min": 320
+   "shards": 4,
+   "budget_min": 180
   },
   {
    "spec": "esphome",
-   "shards": 6,
-   "budget_min": 320
+   "shards": 10,
+   "budget_min": 180
   },
   {
    "spec": "moto",
-   "shards": 4,
-   "budget_min": 320
+   "shards": 8,
+   "budget_min": 180
   },
   {
    "spec": "community-general",
-   "shards": 3,
-   "budget_min": 320
+   "shards": 6,
+   "budget_min": 180
   }
  ]
 }
