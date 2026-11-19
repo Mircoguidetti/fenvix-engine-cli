@@ -298,6 +298,9 @@ func cmdTest(args []string) int {
 	}
 	if o.skipCache != "" {
 		want[overlay.CtlDeps] = true
+		// the clock is virtual in skip mode too: the date a test sees is the
+		// epoch, which is in the key (R-025 F6, coordinator follow-up)
+		want[overlay.CtlTime] = true
 		if !o.keepParallel {
 			want[overlay.CtlSerial] = true
 		}
@@ -321,6 +324,14 @@ func cmdTest(args []string) int {
 		ctl |= overlay.Bits[c]
 	}
 	epoch := int64(1735689600) * 1e9
+	if !o.det && o.skipCache != "" {
+		// skip mode without --det: the virtual clock starts at the current
+		// UTC day, so tests see today's date and a time bomb surfaces within
+		// a day; the day is in the key (every cached result is reused on the
+		// day it was recorded only)
+		now := time.Now().UTC()
+		epoch = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC).UnixNano()
+	}
 	if o.det && o.seed != 0 {
 		// exploration also moves the clock: the epoch anywhere in the year
 		// after 2025-01-01 and a tick between 0.5 and 10 µs, both derived from
@@ -355,6 +366,7 @@ func cmdTest(args []string) int {
 	}
 	shim := ""
 	if want[overlay.CtlTime] && ov.Has(overlay.CtlTime) && !o.disable[overlay.CtlTime] && ov.Partial["os-time"] == "" {
+		// also in skip mode: programs a test starts see the virtual date
 		var err error
 		if shim, err = buildShim(); err != nil {
 			fmt.Fprintf(os.Stderr, "fenvix-go: programs started by tests keep the real clock: %v\n", err)

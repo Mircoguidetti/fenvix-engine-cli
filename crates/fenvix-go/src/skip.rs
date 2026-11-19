@@ -276,6 +276,14 @@ pub fn classify(p: &str, drop: &[String], self_binary: &str) -> Class {
     if under("/proc/sys") {
         return Class::Key;
     }
+    // the directory of a process itself (stat'ed to see whether it runs, e.g.
+    // /proc/1): its metadata (type, mode, start time as mtime) is keyed;
+    // files under it change by themselves and stay volatile
+    if let Some(rest) = p.strip_prefix("/proc/") {
+        if !rest.is_empty() && rest.bytes().all(|c| c.is_ascii_digit()) {
+            return Class::Key;
+        }
+    }
     if under("/proc") {
         return Class::Volatile;
     }
@@ -340,6 +348,27 @@ fn outside(a: &Addr, parsed: Option<&Parsed>, own: &[IpAddr], proxies: &BTreeSet
 
 // ------------------------------------------------------------- a session
 
+/// Whether a program is dynamically linked (has an ELF interpreter): only
+/// then does the preloaded clock library reach it. Unknown -> false.
+pub fn dynamically_linked(path: &str) -> bool {
+    use std::io::Read;
+    let Ok(mut f) = std::fs::File::open(path) else { return false };
+    let mut h = vec![0u8; 64];
+    if f.read_exact(&mut h).is_err() || &h[..4] != b"\x7fELF" || h[4] != 2 || h[5] != 1 {
+        return false; // only 64-bit little-endian ELF is checked
+    }
+    let u16_at = |b: &[u8], o: usize| u16::from_le_bytes([b[o], b[o + 1]]) as u64;
+    let u32_at = |b: &[u8], o: usize| u32::from_le_bytes([b[o], b[o + 1], b[o + 2], b[o + 3]]) as u64;
+    let u64_at = |b: &[u8], o: usize| u64::from_le_bytes(b[o..o + 8].try_into().unwrap());
+    let (phoff, phentsize, phnum) = (u64_at(&h, 32), u16_at(&h, 54), u16_at(&h, 56));
+    let mut ph = vec![0u8; (phentsize * phnum) as usize];
+    use std::io::Seek;
+    if f.seek(std::io::SeekFrom::Start(phoff)).is_err() || f.read_exact(&mut ph).is_err() {
+        return false;
+    }
+    (0..phnum as usize).any(|i| u32_at(&ph, i * phentsize as usize) == 3) // PT_INTERP
+}
+
 /// Configuration of one package run (from the Go shell).
 #[derive(Debug, Deserialize)]
 pub struct Config {
@@ -362,6 +391,10 @@ pub struct Config {
     pub verify: bool,
     pub commit: String,
     pub decisions: String,
+    /// programs a test starts get the virtual clock (the preloaded library):
+    /// dynamically linked ones are then reusable
+    #[serde(default)]
+    pub child_clock: bool,
 }
 
 /// One test's result as the shell saw it.
@@ -604,7 +637,10 @@ impl Session {
                     }
                 }
                 b'X' => {
-                    if name != self.cfg.self_binary {
+                    if name == self.cfg.self_binary {
+                    } else if self.cfg.child_clock && name.starts_with('/') && dynamically_linked(name) {
+                        raw.keys.insert(format!("c:{name}"));
+                    } else {
                         raw.unkeyed.insert(format!("exec:{name}"));
                     }
                 }
@@ -658,7 +694,16 @@ impl Session {
         }
         let execs = if drop_first_exec && !d.execs.is_empty() { &d.execs[1..] } else { &d.execs[..] };
         for x in execs {
-            if x != &self.cfg.self_binary {
+            if x == &self.cfg.self_binary {
+                continue;
+            }
+            if self.cfg.child_clock && dynamically_linked(x) {
+                // its clock follows the virtual one; the program file and
+                // everything it reads are keyed through strace
+                raw.keys.insert(format!("c:{x}"));
+            } else {
+                // a static program (Go binaries) ignores the preloaded
+                // library: its clock is real and not in any key
                 raw.unkeyed.insert(format!("exec:{x}"));
             }
         }
@@ -854,6 +899,7 @@ mod tests {
             verify: true,
             commit: String::new(),
             decisions: format!("{dir}/decisions.jsonl"),
+            child_clock: false,
         }
     }
 
@@ -953,6 +999,11 @@ mod tests {
         assert_eq!(classify("/proc/self/maps", &[], ""), Class::Drop);
         assert_eq!(classify("/proc/meminfo", &[], ""), Class::Volatile);
         assert_eq!(classify("/proc/sys/net/core/somaxconn", &[], ""), Class::Key);
+        assert_eq!(classify("/proc/1", &[], ""), Class::Key);
+        assert_eq!(classify("/proc/1/status", &[], ""), Class::Volatile);
+        assert_eq!(classify("/proc/12a", &[], ""), Class::Volatile);
+        assert_eq!(meta_value("/proc/1", true), meta_value("/proc/1", true));
+        assert!(dynamically_linked("/usr/bin/cat"), "cat");
         assert_eq!(classify("/var/lib/x", &[], ""), Class::Key);
         assert_eq!(classify("/dev/urandom", &[], ""), Class::Drop);
         assert_eq!(classify("/c/x", &["/c".into()], ""), Class::Drop);

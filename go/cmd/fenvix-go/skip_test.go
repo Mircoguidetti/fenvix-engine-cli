@@ -98,18 +98,16 @@ var fixtureOrder = []string{"TestIndependent", "TestOwnCode", "TestDependency", 
 
 var allPassing = fixtureOrder[:len(fixtureOrder)-1]
 
-// reusable: every passing test except TestSubprocess, which started another
-// program (cat): its clock and entropy are invisible to the key, so it is
-// never reused (review R-025 F6, REPORT-2). TestNetwork comes after it.
-var reusable = fixtureOrder[:len(fixtureOrder)-2]
+// reusable: every passing test. TestSubprocess starts cat, a dynamically
+// linked program: its clock follows the virtual one (preloaded library) and
+// everything it reads is keyed through strace. Without a C compiler (no
+// library) or for a static program it would not be reusable (REPORT-2).
+var reusable = allPassing
 
 func TestSkipUnchangedReusesAllButNetwork(t *testing.T) {
 	r := newSkipRun(t)
 	got := r.run()
-	expectReuse(t, "unchanged", got, reusable, []string{"TestSubprocess", "TestNetwork"})
-	if w := got["TestSubprocess"].Why; w != "exec:/usr/bin/cat" && w != "exec:/bin/cat" {
-		t.Errorf("TestSubprocess reason %q, want exec:<cat>", w)
-	}
+	expectReuse(t, "unchanged", got, reusable, []string{"TestNetwork"})
 	if got["TestNetwork"].Why != "network" {
 		t.Errorf("TestNetwork reason %q, want network", got["TestNetwork"].Why)
 	}
@@ -147,13 +145,13 @@ func TestSkipKeyInputs(t *testing.T) {
 	step("external file changed", "TestExternalFile")
 	r.env[1] = "SKIPKEY_ENV=two" // environment variable read by the test
 	step("SKIPKEY_ENV changed", "TestEnv")
-	expectReuse(t, "unrelated variable", r.run("UNRELATED_VARIABLE=x"), before("TestSubprocess"), []string{"TestSubprocess"})
+	expectReuse(t, "unrelated variable", r.run("UNRELATED_VARIABLE=x"), before("TestSubprocess"), nil)
 	write("testdata/optional.txt", "now here") // a path probed missing appears
 	step("optional.txt created", "TestMissingPath")
 	write("testdata/dir/b.txt", "b") // a listed directory gets a new entry
 	step("dir listing changed", "TestListing")
-	write("testdata/sub.txt", "sub v2") // file read by a child process (cat): never reused (it started a program)
-	expectReuse(t, "sub.txt changed", r.run(), before("TestSubprocess"), []string{"TestSubprocess"})
+	write("testdata/sub.txt", "sub v2") // file read by a child process (cat): only strace sees it
+	step("sub.txt changed", "TestSubprocess")
 
 	// TZ is read by package time below package os: always in the key
 	r.env[2] = "TZ=Europe/Rome"

@@ -181,6 +181,7 @@ func cmdExec(args []string) int {
 			"test_args": nonNil(runArgs), "env": nonNil(keyEnv), "capture": sess.Skip.Capture, "self_binary": bin,
 			"drop": drop, "own_addrs": nonNil(ownAddresses()), "verify": sess.Skip.Verify,
 			"commit": sess.Skip.Commit, "decisions": filepath.Join(sess.Dir, "decisions.jsonl"),
+			"child_clock": sess.Shim != "",
 		})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "fenvix-go exec:", err)
