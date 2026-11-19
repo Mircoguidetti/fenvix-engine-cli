@@ -25,7 +25,8 @@ class is not built.
   litellm-vertex and **1.2x** on pydantic-ai (P2's target missed on both; cause not found).
 * **The cache's reach on the other repositories is limited by their inputs, not by `-n`**: litellm-vertex and moto
   record 0 entries serially and in parallel (network / OS entropy per test). mlflow's job had an incomplete install
-  (not valid); prefect and the three 50-commit walks were still running.
+  (not valid) and prefect's errored in its server fixture (a harness defect); both were re-run, and the re-run and
+  the three 50-commit walks were still running.
 
 ## Per finding: change, test before / after
 
@@ -325,6 +326,16 @@ CI-FACTS.md; one shard or group where the CI splits).
 * The cache variants were not run: the capture prerequisite of design 5 (2,769 failures under `--det-cache`) is not
   fixed on this branch.
 
+### prefect, group 1 of 8 (SQLite, `--dist worksteal`): first run **not valid**, re-run triggered
+
+In run 44509602787, 2,431 of 2,438 tests errored in **every** variant, plain pytest included: prefect's
+`hosted_api_server` fixture starts `uvicorn` by command name, and the workflow called the venv's Python by path
+without the venv's `bin` on `PATH` (`FileNotFoundError: 'uvicorn'`). A harness defect, not an engine one. What the
+run still shows: identical outcomes in all 14 runs (crosscheck 0 mismatches; fpcompare 0 outcome differences) and
+the cache recording nothing (only 7 tests ran past setup). The workflow now puts the venv's `bin` on `PATH`;
+prefect and mlflow (with the extras its CI installs, Python 3.12 so that the cache rows run) were re-run as
+`r023-p0b-2026-11-19` (commit 82331c6, same engine).
+
 ### mlflow, parallel group 1 of 6: **not a valid measurement**
 
 The job ran, but its install was incomplete: `uv sync --group test --group build` without extras leaves out modules
@@ -350,7 +361,8 @@ extras its CI installs, Python 3.12 for the cache rows.
 
 ## Not done, and why
 
-* **P0 / P3 on Actions**: run 44509602787 was still running when this was written: prefect (group 1, newer uv on the runner) and the three 50-commit walks (esphome, moto's `-n 4` group, litellm vertex; truth = a fresh serial
+* **P0 / P3 on Actions**: run 44509602787 (walks) and the re-run of prefect and mlflow (`r023-p0b-2026-11-19`) were still running when this
+  was written: the three 50-commit walks (esphome, moto's `-n 4` group, litellm vertex; truth = a fresh serial
   `--det` run per commit, `-n 4` cache walk only, stopped after 5 h per job). Their results land in
   `tracks/parallel-proof/results/r023-p0-2026-11-19/` as the jobs finish. The litellm walk will show 0 reuse
   (nothing is cacheable there, above).
