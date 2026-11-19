@@ -10,5 +10,8 @@
   "discover",
   "tests"
  ],
- "note": "CI: python -m unittest discover tests (.github/workflows/pythonapp.yml)"
+ "note": "CI: python -m unittest discover tests (.github/workflows/pythonapp.yml); tests expect TZ=America/Los_Angeles (runtests.sh)",
+ "env": {
+  "TZ": "America/Los_Angeles"
+ }
 }
