@@ -18,6 +18,9 @@ class Bracket {
     this.outcomes = [];
     this.done = false;
     this.anyFailed = false;
+    this.hooks = false; // the preload registered runner-wide beforeEach/afterEach hooks (pre/post)
+    this.pending = null;
+    this.bodyOutcome = null;
     this.t0 = clock.REAL.perfNow();
     controls.openFile(fileId, '');
     if (cap) {
@@ -34,15 +37,62 @@ class Bracket {
     return n === 1 ? base : `${base} #${n}`;
   }
 
+  /**
+   * The runner's first beforeEach hook of a test (registered by the preload, so it runs before the file's own
+   * hooks): the test starts here, so that its hooks run inside it (virtual timers, clock reset, closed network,
+   * capture context), as with jest-circus' test_start. Its id is known only when its body starts (begin): until then
+   * nothing is written to the trace part.
+   */
+  pre() {
+    if (this.current) this.end(this.current.id, 'interrupted', true);
+    if (this.pending) this.post();
+    this.saved = STATE.recorder;
+    STATE.recorder = null;
+    STATE.beginTest(`${this.fileId}::<hooks>`);
+    this.pending = { t0: clock.REAL.perfNow() };
+    this.bodyOutcome = null;
+    if (this.cap) this.cap.setCtx('t');
+  }
+
+  /** The runner's last afterEach hook of a test: the test ends here, with the outcome of its body. */
+  post() {
+    if (this.current) {
+      this.end(this.current.id, this.bodyOutcome || 'interrupted', true);
+    } else if (this.pending) {
+      // hooks ran but no body (a failing beforeEach, a filtered test): nothing to record, the file is not ok
+      this.pending = null;
+      STATE.endTest('interrupted');
+      STATE.recorder = this.saved;
+      if (this.cap) this.cap.setCtx('f');
+    }
+    this.bodyOutcome = null;
+  }
+
   begin(id) {
-    if (this.current) this.end(this.current.id, 'interrupted');
+    if (this.pending) {
+      // started by pre(): name it now
+      STATE.flush();
+      STATE.recorder = this.saved;
+      if (STATE.recorder) STATE.recorder.beginTest(id, STATE.testIndex - 1);
+      STATE.testId = id;
+      this.current = { id, t0: this.pending.t0 };
+      this.pending = null;
+      if (this.cap) this.cap.setCtx('t');
+      return;
+    }
+    if (this.current) this.end(this.current.id, 'interrupted', true);
     STATE.beginTest(id);
     this.current = { id, t0: clock.REAL.perfNow() };
     if (this.cap) this.cap.setCtx('t');
   }
 
-  end(id, outcome) {
+  /** End of a test body: with runner hooks, the test ends in post() (after the file's afterEach hooks). */
+  end(id, outcome, final = false) {
     if (!this.current || this.current.id !== id) return;
+    if (this.hooks && !final) {
+      if (this.bodyOutcome === null || outcome !== 'passed') this.bodyOutcome = outcome;
+      return;
+    }
     const dur = (clock.REAL.perfNow() - this.current.t0) / 1000;
     this.current = null;
     const fp = STATE.endTest(outcome);
@@ -98,7 +148,7 @@ class Bracket {
   finish() {
     if (this.done) return;
     this.done = true;
-    if (this.current) this.end(this.current.id, 'interrupted');
+    if (this.current || this.pending) this.post();
     controls.closeFile();
     const c = this.cfg;
     if (!this.cap || !c.dir) return;

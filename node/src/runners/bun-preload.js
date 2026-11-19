@@ -154,6 +154,10 @@ function installRegistrars(bracket) {
   for (const [k, v] of [['test', test], ['it', it], ['describe', describe]]) {
     if (typeof globalThis[k] === 'function') globalThis[k] = v;
   }
+  // runner-wide hooks: the first beforeEach and the last afterEach of every test (the file's own hooks run inside)
+  bracket.hooks = true;
+  bt.beforeEach(() => bracket.pre());
+  bt.afterEach(() => bracket.post());
   // after the file's own afterAll hooks (registered later, so they run first)
   bt.afterAll(() => bracket.finish());
 }

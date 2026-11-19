@@ -218,6 +218,18 @@ class Driver {
     this.baseline = new Map();
     this.mode = 'virtual';
     this.deferrals = 0;
+    this.released = new Set(); // timers a finished test left pending, now real timers (releaseTest)
+  }
+
+  /** A released timer is due in real time and has not run yet: the event loop must run it first. */
+  releasedDue() {
+    if (!this.released.size) return false;
+    const now = realNowMs();
+    for (const t of this.released) {
+      if (t._destroyed || t._ranReleased) { this.released.delete(t); continue; }
+      if (t._realDeadline <= now + 1) return true;
+    }
+    return false;
   }
 
   takeBaseline() {
@@ -299,7 +311,9 @@ class Driver {
     // for them as the real delay would (found on apollo-client: a mocked
     // response delayed 20 ms arrived before act() had flushed the previous
     // render). Bounded, so that a setImmediate loop cannot starve the timers.
-    if (fastMode && this.deferrals < MAX_DEFERRALS && pendingImmediates() > 0) {
+    // The same for a timer an earlier test left pending, released to real time and now due: it would have run
+    // before this one in a real run (found on wouter under bun test: happy-dom's batched hashchange timer).
+    if (fastMode && this.deferrals < MAX_DEFERRALS && (pendingImmediates() > 0 || this.releasedDue())) {
       this.deferrals += 1;
       const h = REAL.setImmediate(() => this.fire(true));
       if (!this.queue.some((x) => x._ref)) h.unref();
@@ -353,7 +367,9 @@ class Driver {
       t._active = false;
       const remaining = Math.max(0, t._realDeadline - realNowMs());
       const R = t._realm;
+      this.released.add(t);
       const run = () => {
+        t._ranReleased = true;
         if (t._destroyed) return;
         if (t._repeat) {
           t._handle = R.setInterval(() => { if (!t._destroyed) t._fn.apply(undefined, t._args); }, t._delayMs);

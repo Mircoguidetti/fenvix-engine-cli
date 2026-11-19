@@ -39,7 +39,7 @@ const HANDLED = new Set(['file', 'write', 'mmap', 'Glob', 'spawn', 'spawnSync', 
 const SCAN = [
   [/\bBun\s*\.\s*env\b|\bimport\s*\.\s*meta\s*\.\s*env\b|\bBun\s*\[\s*['"`]env['"`]\s*\]|\{[^{}]*\benv\b[^{}]*\}\s*=\s*(?:globalThis\s*\.\s*)?Bun\b/, 'env*', 'Bun.env / import.meta.env'],
   [/(?:[=(,:[?&|!]|\breturn|\bin|\bof)\s*(?:globalThis\s*\.\s*)?Bun\b(?!\s*\.\s*[A-Za-z_$])(?!\s*(?:!==?|===?)\s*['"`]?undefined)/, 'env*', 'Bun used as a value (aliased)'],
-  [/\blastModified\b/, 'stat', 'BunFile#lastModified'],
+  [/\blastModified\b/, 'stat', 'BunFile#lastModified', /\bBun\s*\.\s*file\b|\bBunFile\b/],
   [/\bBun\s*\.\s*fetch\b/, 'connect', 'Bun.fetch (not replaceable: Level 0 does not close it)'],
   [/\bBun\s*\.\s*(?:WebView|ModuleGraph|secrets)\b/, 'runtime-api', 'Bun.WebView / ModuleGraph / secrets'],
 ];
@@ -206,7 +206,9 @@ function installCapture(cap, bracket, notes) {
   };
   wrapCall(Bun, 'file', (a) => {
     const p = pathArg(a[0]);
-    if (p === undefined) cap.flag('runtime-api', `Bun.file(${typeof a[0]}) (descriptor)`);
+    // a descriptor: stdin is an input; others were opened by path (recorded then) or are outputs (stdout, stderr);
+    // reading through a BunFile without a path is flagged by its methods below
+    if (p === undefined) { if (a[0] === 0) cap.flag('runtime-api', 'Bun.file(0) (stdin)'); }
     else if (p === null) cap.flag('connect', `Bun.file(${String(a[0]).slice(0, 120)})`);
     else cap.read(p, 'f');
   });
@@ -444,8 +446,11 @@ function installResolver(cap, bracket) {
     cap.busy++;
     try { src = fs.readFileSync(file, 'latin1'); } catch { return; } finally { cap.busy--; }
     const where = cap.key(file);
-    for (const [re, kind, detail] of SCAN) {
+    const projectFile = cap.where(file) === 'root';
+    for (const [re, kind, detail, alsoInPackages] of SCAN) {
       if (!re.test(src)) continue;
+      // installed packages: only together with a Bun API they use it on (a DOM library's File#lastModified is not one)
+      if (!projectFile && alsoInPackages && !alsoInPackages.test(src)) continue;
       if (kind === 'env*') cap.add(['env', '*'], false);
       else cap.flag(kind, `${detail} in ${where}`);
     }
