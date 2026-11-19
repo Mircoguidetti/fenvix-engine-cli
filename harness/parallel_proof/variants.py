@@ -83,7 +83,7 @@ def main(argv=None) -> int:
         with open(os.path.join(a.out, f"{v}.log"), "w") as f:
             f.write(text)
         plan = os.path.join(a.repo, ".detpy", "plan.json")
-        if "-n" in args and os.path.exists(plan):
+        if "-n" in args and "--det" in args and os.path.exists(plan):
             shutil.copy(plan, os.path.join(a.out, f"{v}.plan.json"))
         rec = {"label": a.label, "variant": v, "wall_s": wall, "rc": rc, "summary": last_line(text),
                "cache": [ln for ln in text.splitlines() if ln.startswith(("reused ", "not reused", "parallel:"))],
