@@ -1,0 +1,14 @@
+[
+ {
+  "repo": "msw-flaky",
+  "pool": "flaky",
+  "nodeid": "src/browser/utils/getAbsoluteWorkerUrl.test.ts::returns absolute worker url relatively to the root",
+  "class": "external",
+  "evidence": "test source uses http://",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=2;passed=8",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ }
+]

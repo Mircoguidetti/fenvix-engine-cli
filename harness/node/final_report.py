@@ -1,0 +1,357 @@
+#!/usr/bin/env python3
+"""Compose docs/REPORT-node-l0.md from the harness results (harness/node/results/node) and
+the "before the L0 fixes" measurements. Every number is taken from the result files.
+
+    python harness/node/final_report.py
+"""
+from __future__ import annotations
+
+import collections
+import csv
+import json
+import statistics
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent.parent
+import sys
+RES = HERE / "results" / (sys.argv[1] if len(sys.argv) > 1 else "node-final")
+OUT = ROOT / "docs" / "REPORT-node-l0.md"
+
+
+def pct(a, b):
+    return f"{100 * a / b:.1f}%" if b else "n/a"
+
+
+def fmt(x, nd=1):
+    return "n/a" if x is None or (isinstance(x, float) and x != x) else f"{x:.{nd}f}"
+
+
+def load(d: Path, pat: str):
+    return [json.loads(p.read_text()) for p in sorted(d.glob(pat))]
+
+
+def main() -> None:
+    summary = json.loads((RES / "summary.json").read_text())
+    meta = summary["meta"]
+    repos = summary["repos"]
+    tot = summary["totals"]
+    T, F, P = (collections.Counter(tot.get(k, {})) for k in ("all", "flaky", "popular"))
+    pw = [s for s in load(RES, "*.summary.json") if s.get("kind") == "playwright" and s.get("status") == "ok"]
+    sel = meta.get("selection", {})
+    discards = sel.get("discarded", []) + [r for r in meta.get("rounds", []) if r.get("status") != "ok"]
+    timings = summary.get("timings", [])
+    causes = collections.Counter(summary.get("not_reproduced_causes", {}))
+    reasons = summary.get("reasons", {})
+    pf = summary.get("pass_fail_reasons", {})
+    broken = summary.get("broken_causes", {})
+    before_runs = []
+    # Latest earlier measurement of each project (later sets override earlier ones): the rounds stopped on
+    # earlier shells, then the full round on d3075a1 and its re-runs before the last fixes.
+    for d in ("node-before-fixes", "node-before-fixes-2", "node-before-fixes-3", "node", "node-rerun", "node-rerun2",
+              "node-before-fixes-5", "node-before-fixes-6"):
+        before_runs += [s for s in load(HERE / "results" / d, "*.summary.json")]
+    before_by = {s["name"]: s for s in before_runs}
+    inactive = {}
+    for d, n in (("node-rerun", "babel-flaky"), ("node", "prettier-flaky")):
+        f = HERE / "results" / d / f"{n}.summary.json"
+        if f.exists():
+            inactive[n] = json.loads(f.read_text())
+    now_by = {s["name"]: s for s in repos}
+    common = sorted(set(before_by) & set(now_by))
+    seeds = [v for s in repos for v in s.get("seeds_needed", [])]
+    nflaky = sum(1 for s in repos if s["kind"] == "flaky")
+    npop = sum(1 for s in repos if s["kind"] == "popular")
+    runners = collections.Counter(s.get("runner", "?").split()[0] for s in repos)
+    sl = [t["slowdown_pct"] for t in timings if t.get("slowdown_pct") is not None]
+
+    L = []
+    A = L.append
+    A("# Node L0 (detjs) — final report\n")
+    A("Session node-l0, 2026-11-16/17. Repository fenvix-engine-cli, branch `claude/node-l0`. Labels: MEASURED (this "
+      "work), ESTIMATED, DECLARED (with source), UNKNOWN; NOISY = shared host (GitHub-hosted runners).\n")
+    A("## Summary\n")
+    S = {k: collections.Counter(v) for k, v in summary.get("strict", {}).items()}
+    SA, SF, SP = (S.get(k, collections.Counter()) for k in ("all", "flaky", "popular"))
+    per_repo = summary.get("per_repo_strict", {})
+    cov_all = SA["covered"] + SA["not_covered"] + SA["nofp_ran"]
+    top = sorted(per_repo.items(), key=lambda kv: -kv[1].get("unstable_strict", 0))[:2]
+    top_rep = sum(v.get("reproduced_strict", 0) for _, v in top)
+    top_uns = sum(v.get("unstable_strict", 0) for _, v in top)
+    conc = (f"The figure is concentrated in the two projects with the most baseline-unstable tests: {' and '.join(n for n, _ in top)} give {top_rep} of the "
+            f"{SA['reproduced_strict']} reproduced tests; without them {SA['reproduced_strict'] - top_rep}/"
+            f"{SA['unstable_strict'] - top_uns} = {pct(SA['reproduced_strict'] - top_rep, SA['unstable_strict'] - top_uns)}.")
+    A(f"* **Main metric (MEASURED):** tests unstable in our baseline that `--det` / `--det-seed` makes reproducible "
+      f"(fail {meta.get('confirm', 10)}/{meta.get('confirm', 10)} under some seed or the fixed order, pass under some "
+      f"`--det` configuration): **{SA['reproduced_strict']}/{SA['unstable_strict']} = "
+      f"{pct(SA['reproduced_strict'], SA['unstable_strict'])}** over {len(repos)} projects ({nflaky} with documented "
+      f"flaky tests, {npop} popular at HEAD; " + ", ".join(f"{k} {v}" for k, v in runners.items()) + "). Tests whose "
+      f"id is not present in every baseline run ({SA['id_unstable']}) are not flaky tests and are excluded, as in the "
+      "Python harness (P-008). Documented-flaky pool: "
+      f"{SF['reproduced_strict']}/{SF['unstable_strict']} = {pct(SF['reproduced_strict'], SF['unstable_strict'])}; "
+      f"popular pool: {SP['reproduced_strict']}/{SP['unstable_strict']} = "
+      f"{pct(SP['reproduced_strict'], SP['unstable_strict'])}. This is about tests that were flaky in our own "
+      "baseline runs; none of the flaky tests named by the projects' issues was flaky in our baseline (see below). "
+      + conc)
+    A(f"* **Fingerprint coverage (MEASURED):** {SA['covered']} of {cov_all} tests that ran under `--det` had one "
+      f"identical fingerprint in every fixed-order `--det` run ({pct(SA['covered'], cov_all)}); {SA['not_covered']} had "
+      f"several, and {SA['nofp_ran']} ran without any fingerprint ({SA['nofp_typecheck']} of them Vitest type-check "
+      "tasks, checked by tsc without executing test code, so the runner hooks never see them; zod runs every test file "
+      "a second time in type-check mode). Reasons for several fingerprints: "
+      + ", ".join(f"`{k}` {v}" for k, v in sorted(reasons.items(), key=lambda kv: -kv[1])) + ".")
+    A(f"* **Tests broken by `--det` (MEASURED):** {SA['broken_strict']} after the L0 fixes of this session "
+      "(fail under fixed-order `--det` but at most once in the baseline).")
+    if sl:
+        A(f"* **Slowdown of `--det` (MEASURED, NOISY):** median {fmt(statistics.median(sl))}% over "
+          f"{len(sl)} projects (serial runner without `--det` vs `--det`, quiet timing pass).")
+    A(f"* **Playwright (MEASURED, measured only):** {len(pw)} projects; see the Playwright section.")
+    A(f"* **Shortfalls (MEASURED):** documented-flaky pool {nflaky}/25 projects, Playwright {len(pw)}/5 (see Projects "
+      "and Playwright). Not in the numbers: babel and prettier (custom Jest runner, Level 0 not applied, J16) and "
+      "matrix-js-sdk (`--det` runs crash in band, UNKNOWN cause).")
+    A(f"* Shell tests (MEASURED): per-control tests for Vitest and Jest, regression tests for every defect fixed in this "
+      "session: 27/27 pass locally; the CI tests job of the last round ran the 20 tests that existed then (20/20).\n")
+
+    A("## What was built (steps 1–3)\n")
+    A("Details in `docs/NODE.md` and `docs/REPORT-node-l0-INTERMEDIATE-1.md`.\n")
+    A("* `crates/detpy-node`: napi-rs bindings of `detpy-core` (Recorder with batched events, Cassette, verifier, "
+      "seeds, hierarchical shuffle, trace merge). Same trace and cassette format as Python; the harness verifies Node "
+      "traces with the Python binding of the same Rust verifier, and CI checks `python -m detpy verify` on a Node trace.")
+    A("* Core: shared event vocabulary cherry-picked from the L1 study branch (2ec240f, encoding 2, with its "
+      "prerequisite `Source::Sched`); additive `order::shuffle_indices` and `trace::merge_traces`.")
+    A("* `node/` (`detjs vitest|jest --det`): order (files sorted / seeded shuffle files → describe → tests), seeds "
+      "(`Math.random`, `crypto.getRandomValues`, `crypto.randomUUID`), virtual clock (`Date`, `performance.now`, "
+      "`process.hrtime`) with the adaptive tick, virtual timers (inside tests only; released to the realm's own timers "
+      "when a test ends), sorted `readdir`/`opendir`, closed network with record/replay (net, tls, dns → http, https, "
+      "fetch), serial execution with the isolation recorded. Ops, sites (source-mapped original `.ts` lines) and header "
+      "meta follow the shared vocabulary.")
+    A("* Tests: one fixture per control and runner that fails in a realistic run without `--det` and passes with it; "
+      "a deterministic suite whose outcomes `--det` does not change; regression tests for each defect found by the "
+      "harness (Vitest projects, jsdom accessors, leaked timers, runner environment variables, `setImmediate` chains before "
+      "fast timers, clock reads that must not inflate time, per-file `performance.now()` origin), each failing before "
+      "its fix and passing after.\n")
+
+    A("## Projects (step 4)\n")
+    A("**Flaky pool.** The public dataset of JavaScript flaky tests of Hashemi, Tahir, Rasheed (ICSME 2022, Zenodo "
+      "10.5281/zenodo.6673741; fetched by an Actions job into `harness/node/dataset/raw/`) was used first, each project "
+      "pinned at the parent of a commit that fixes a flaky test. It has 18 projects and almost none runs on Jest ≥ 27 "
+      "or Vitest at those commits (Node core, Atom, Electron, Meteor, QUnit, Karma, Jest 22–25), so it supplies "
+      f"{sum(1 for s in repos if s['kind'] == 'flaky' and str(s.get('documented_source', '')).find('/commit/') >= 0)} "
+      "measurable project(s). The pool was completed with projects whose GitHub issues document a flaky Jest/Vitest "
+      "test (curated list of popular repositories, then a GitHub-wide issue search restricted to JS/TS repositories with "
+      "≥ 1000 stars), each pinned at the last commit before the issue was opened.")
+    A(f"**Selection (MEASURED).** {len(repos) + len(pw)} projects passed the filters and were measured (clone, install, runner "
+      "found — also in a workspace package —, ≥ 50 test outcomes, < 50% failing, first run < 180 s): "
+      f"{nflaky} documented-flaky, {npop} popular, {len(pw)} Playwright. Discarded: "
+      + ", ".join(f"{k} {v}" for k, v in collections.Counter(d['status'] for d in discards).most_common())
+      + f". Every discarded candidate is listed with its reason in `harness/node/results/{RES.name}/REPORT.md`. "
+      "Candidates discarded at first and re-checked in the final round after harness fixes were not held to the "
+      "180 s limit (excalidraw-flaky, first run 210 s).")
+    if nflaky < 25:
+        A(f"\n**Shortfall:** the documented-flaky pool has {nflaky} measurable projects, not 25 (MEASURED). The other "
+          "candidates (all listed) need a build, a browser, services or an old toolchain (Jest < 27 without "
+          "jest-circus, Vitest < 1.4), or their suites fail on a clean runner.")
+    A("")
+    A(f"## Main results (MEASURED, {meta.get('runs', 10)} baseline + {meta.get('runs', 10)} `--det` runs per project, "
+      f"seeds 1..{meta.get('seeds', 20)} at most, {meta.get('confirm', 10)}/{meta.get('confirm', 10)} confirmation)\n")
+    hit = [r for r in repos if r.get("exploration_budget_hit")]
+    if hit:
+        A(f"Seed exploration stopped on the per-project time budget in {len(hit)} of {len(repos)} projects (MEASURED; "
+          "seeds explored before the stop: " + ", ".join(f"{r['name']} {r.get('seeds_explored')}"
+                                                          for r in sorted(hit, key=lambda r: r['name']))
+          + f"); the other projects explored up to seed {meta.get('seeds', 20)} for every baseline-unstable test that "
+          "the fixed order did not reproduce. Tests of the stopped projects may be reproducible with more seeds.\n")
+    A("| pool | projects | tests | unstable in baseline | reproduced | % | never fail under --det | fail sometimes | always fail |")
+    A("|---|---:|---:|---:|---:|---:|---:|---:|---:|")
+    for label, t, st, n in (("documented flaky", F, SF, nflaky), ("popular", P, SP, npop), ("total", T, SA, len(repos))):
+        A(f"| {label} | {n} | {t['tests']} | {st['unstable_strict']} | {st['reproduced_strict']} | "
+          f"{pct(st['reproduced_strict'], st['unstable_strict'])} | {t['never_fails_under_det'] - st['id_unstable']} | "
+          f"{t['fails_sometimes_under_det']} | {t['always_fails_under_det']} |")
+    A("")
+    partial = {n: v for n, v in per_repo.items() if v.get("runs_normal", 0) < meta.get("runs", 10)
+               or v.get("runs_det", 0) < meta.get("runs", 10)}
+    A("Runs per project (MEASURED): " + (
+        "every project has the full " if not partial else "all projects have the full ")
+      + f"{meta.get('runs', 10)} baseline and {meta.get('runs', 10)} `--det` runs"
+      + ("" if not partial else ", except (partial, stopped by the time budget): " + ", ".join(
+          f"{n} {v.get('runs_normal', 0)}+{v.get('runs_det', 0)}" for n, v in sorted(partial.items())))
+      + f". Tests with ids absent from some baseline runs, excluded: " + ", ".join(
+          f"{n} {v['id_unstable']}" for n, v in sorted(per_repo.items()) if v.get("id_unstable")) + ".\n")
+    if seeds:
+        b = collections.Counter("0 (fixed order)" if v == 0 else "1" if v == 1 else "2-5" if v <= 5 else "6-10"
+                                if v <= 10 else "11-20" for v in seeds)
+        A("Seeds explored before the reproducing seed (MEASURED): " + ", ".join(f"{k}: {v}" for k, v in sorted(b.items()))
+          + f"; median {statistics.median(seeds):.0f}.\n")
+    if pf:
+        A("First diverging event between a passing and a failing `--det` run (MEASURED): "
+          + ", ".join(f"`{k}` {v}" for k, v in sorted(pf.items(), key=lambda kv: -kv[1])) + ".\n")
+    A(f"Documented flaky tests found in the measured suites: {F['known_present']}; flaky in our baseline: "
+      f"{F['known_unstable_baseline']}; reproduced: {F['known_reproduced']} (MEASURED; issue titles often name no test).\n")
+
+    A("## Tests broken by `--det` and the L0 fixes (MEASURED)\n")
+    A("Rounds stopped early on earlier versions of the shell are kept in `harness/node/results/node-before-fixes*`. "
+      "Defects of Level 0 / the shell found by the harness and fixed in this session (each with a regression test):\n")
+    A("| defect (project where found) | effect before the fix |")
+    A("|---|---|")
+    A("| Vitest projects/workspaces ignored the CLI runner (date-fns) | the `--det` controls did not apply in project configs |")
+    A("| Node 18: read-only `Performance.prototype` methods (luxon) | every Jest suite failed to start (58 suites) |")
+    A("| jsdom: `crypto` is an accessor (mobx) | 69 Jest suites failed to start |")
+    A("| leaked virtual timer fired at once (dom-testing-library) | crash of the Jest process |")
+    A("| in-process runners lacked `NODE_ENV=test` / `VITEST` (user-event, jotai) | every user-event suite failed (Babel config) |")
+    A("| runner outside the project root refused by Vite `server.fs` (jotai) | 0 of 44 files ran under `--det` |")
+    A("| in-band Jest never exits on suites with open handles (react-testing-library) | `--det` run timed out |")
+    A("| fast virtual timers fired while React `act()` / scheduler `setImmediate` chains were pending (apollo-client) | "
+      "34 tests broken by `--det` in a local run (MEASURED locally), 3 after the fix (limit J15) |")
+    A("| Jest compiled the detjs `testRunner` with the project's transform (matrix-js-sdk, immutable-js) | every suite "
+      "failed under `--det` (`@babel/runtime` not found; buble syntax error) |")
+    A("| awaited in-process `jest-cli` run added an `at async main` frame to async stacks (babel) | stack-trace inline "
+      "snapshots failed under `--det` |")
+    A("| adaptive tick doubled after 8 clock reads; React's scheduler reads the clock hundreds of times per render "
+      "(recharts) | virtual `performance.now()` ran 194 s ahead within a test; code comparing it with Vitest's fake "
+      "`requestAnimationFrame` timestamps looped: 1113 tests broken by `--det` |")
+    A("| `performance.now()` counted from the process start (recharts) | values grew over a full run: 40 tests broken "
+      "in a full run, none with the file alone; now counted from the start of each test file. recharts is the only "
+      "project re-measured with this fix (commit e747edd); the others were measured on a6d2fbd |")
+    A("| custom Jest `runner` (jest-light-runner) bypasses detjs (babel, prettier) | Level 0 not applied: 0 of ~25 000 "
+      "tests traced; now reported (J16), not fixed |")
+    A("")
+    A("Harness defects fixed on the way (they affected the measurement, not detjs): the project's test-script flags "
+      "(`--config`, Node flags, variables) were ignored (apollo-client: every suite failed), leftover web servers survived "
+      "a run (process groups now killed), runs that hang after writing their report were discarded "
+      "(react-testing-library), the test-script flags were applied even when a plain run was better (vercel: 3212 → 30 "
+      "tests).")
+    A("")
+    if common:
+        A("Per project, the latest measurement before the last fixes (round on d3075a1 and its re-runs, or the earlier "
+          "stopped rounds) against the final round:\n")
+        A("| project | broken by --det before | after |")
+        A("|---|---:|---:|")
+        for n in common:
+            A(f"| {n} | {before_by[n].get('broken_by_det', 0)} | {now_by[n].get('broken_by_det', 0)} |")
+        A("")
+    if broken:
+        A("Remaining causes (`fixed-order` = also fails under `--det` with every Level 0 control off, i.e. an order or "
+          "isolation dependency hidden by the random parallel baseline; otherwise the controls whose `--det-disable` makes "
+          "the test pass):\n")
+        A("| cause &#124; exception | tests |")
+        A("|---|---:|")
+        bc = collections.Counter()
+        for r in repos:
+            f = RES / f"{r['name']}.csv"
+            if not f.exists():
+                continue
+            for row in csv.DictReader(open(f)):
+                if row.get("broken_by_det") != "True":
+                    continue
+                d = {k: int(v) for k, v in (kv.split("=") for kv in row["det_outcomes"].split(";") if "=" in kv)}
+                fails = sum(v for k, v in d.items() if k.startswith(("failed", "error")))
+                runs = sum(v for k, v in d.items() if k != "missing")
+                if fails <= 1:
+                    bc[f"no cause (fails in {fails} of {runs} --det runs: the ablation cannot attribute it)"] += 1
+                else:
+                    bc[row.get("broken_cause") or "unknown"] += 1
+        for k, v in sorted(bc.items(), key=lambda kv: -kv[1])[:15]:
+            A(f"| `{k.replace('|', '&#124;')}` | {v} |")
+        A("")
+
+    if inactive:
+        A("**Level 0 not applied (J16).** " + ", ".join(
+            f"{n} ({s.get('tests', '?')} tests, {s.get('covered', 0)} traced)" for n, s in inactive.items())
+          + " run their tests with the custom Jest runner `jest-light-runner`, which bypasses jest-circus's `testRunner` "
+          "hook: detjs cannot install its controls there, so these projects are excluded from the numbers above "
+          "(MEASURED on the round before the last fixes; replacing the runner by `jest-runner` made every suite fail, "
+          "under `--det` and the serial reference alike).\n")
+
+    A("## Causes of baseline-flaky tests not reproduced (MEASURED, keyword heuristics)\n")
+    A("| concurrency / event order | external | L0 gap | unknown |")
+    A("|---:|---:|---:|---:|")
+    A(f"| {causes['concurrency/event-order']} | {causes['external']} | {causes['l0-gap']} | {causes['unknown']} |\n")
+    A(f"Evidence per test in `harness/node/results/{RES.name}/<repo>.causes.json`.\n")
+
+    A("## Timing\n")
+    if timings:
+        A(f"Quiet timing pass (MEASURED, NOISY): {len(timings)} projects, 3 serial runs without `--det` vs 3 "
+          f"`--det` runs, interleaved on one GitHub-hosted runner each; median slowdown {fmt(statistics.median(sl))}% "
+          f"(min {fmt(min(sl))}%, max {fmt(max(sl))}%). Per project in the harness report. The main cost is the call-site "
+          "resolution on clock-heavy code (J5 in `docs/NODE.md`).\n")
+    else:
+        A("Quiet timing pass: not available (UNKNOWN).\n")
+
+    A("## Playwright end-to-end suites (measured, not built on)\n")
+    if pw:
+        Q = collections.Counter()
+        for s in pw:
+            for k in ("tests", "unstable_baseline", "unstable_det", "became_stable", "never_fails_under_det",
+                      "fails_sometimes_under_det", "always_fails_under_det", "broken_by_det", "reproduced"):
+                Q[k] += s.get(k, 0)
+        A(f"{len(pw)} projects (MEASURED), Chromium, `--retries=0`; baseline = the project's own parallelism; `--det` = "
+          "one worker plus the Level 0 controls inside the Playwright worker processes (no per-test brackets, no traces; "
+          "browser and web servers not controlled).\n")
+        A("| project | tests | unstable in baseline | unstable under --det | broken by --det |")
+        A("|---|---:|---:|---:|---:|")
+        for s in pw:
+            A(f"| {s['name']} | {s['tests']} | {s['unstable_baseline']} | {s['unstable_det']} | "
+              f"{s.get('broken_by_det', 0)} |")
+        A("\nA test unstable in the baseline and stable under `--det` is not credited to Level 0 here: the Playwright "
+          "`--det` runs also change the execution (one worker instead of the project's parallelism), and no run with "
+          "one worker and without `--det` was made to separate the two (pw-msw: 1 test).")
+        allu = T["unstable_baseline"] + Q["unstable_baseline"]
+        A(f"\nBrowser tests unstable in the baseline: {Q['unstable_baseline']} of {Q['tests']}; of all baseline-unstable "
+          f"tests of the round, {pct(Q['unstable_baseline'], allu)} are browser tests (MEASURED, small sample, not weighted). "
+          "What Level 0 covers today in browser tests is only the test "
+          "process (Node side): the browser's clock, randomness, network and scheduling, where most end-to-end "
+          "flakiness lives, are outside it.\n")
+        if len(pw) < 5:
+            A(f"**Shortfall:** {len(pw)} Playwright projects measured, not 5: the other candidates need builds or "
+              "services that fail on a clean runner, a web-server port already in use before the first run (pw-zag, "
+              "pw-tldraw; UNKNOWN which process holds it), or Playwright versions that cannot install Chromium on the "
+              "runner's Ubuntu 26.04 (listed in the harness report).\n")
+    else:
+        A("No Playwright project measured (UNKNOWN).\n")
+
+    A("## Limits found\n")
+    A("The full list with the project where each was found is in `docs/NODE.md` (J1–J17). The ones that matter most "
+      "for the numbers: J4 (fast virtual timers versus real I/O once I/O is pending), J5 (cost of call sites), J15 (CPU "
+      "time is not virtual time: loops bounded by a virtual deadline can exceed the runner's real timeout), J16 (custom "
+      "Jest runners bypass detjs), J17 (extra stack frames of patched calls: deep recursion can overflow under `--det` "
+      "only), J2 (vm pools / browser mode not covered), J3 (Jest `setupFiles` run before the controls), J11 (Playwright "
+      "measured only).\n")
+    A("Not fixed: on matrix-js-sdk every `--det` run of the full suite dies in band (an error thrown by fetch-mock, "
+      "`route already exists`, in a `beforeEach` of `crypto.spec.ts`; in Jest's worker mode such a crash costs one "
+      "worker, in band the whole run), so the project has no `--det` trace and is out of the numbers (UNKNOWN root "
+      "cause). In a subset run of the same project, tests that switch to Jest's modern fake timers inside a test hang "
+      "under `--det` with the virtual clock on (they pass with `--det-disable=time`; UNKNOWN cause).\n")
+
+    A("## Cockpit readiness\n")
+    A("What the Node outputs already give per test, as the Python ones: the outcome per run, the fingerprint (trace "
+      "`test` line), the first diverging event with its reason (Rust verifier, same JSON report for both runtimes), and "
+      "the replay command (`detjs vitest|jest --det [--det-seed=N]` plus the cassette). What would make a stable "
+      "machine-readable verdict harder:\n")
+    A("* **Test identity.** Node test ids are `file::describe::…::name`; names are not unique in JS (duplicates get ` #2`), "
+      "names can be built at run time (`test.each`, template strings) and contain any character, and a Vitest file run by "
+      "two projects yields two identical ids (J9). A cockpit needs a stable id that includes the project and survives "
+      "renames; Python node ids are much more stable.")
+    A("* **Verdict sources are split.** Outcomes come from the runners' JSON reporters, fingerprints from the trace; they "
+      "are joined by id (the harness does it). A single per-test record emitted by the shell (outcome + fingerprint + "
+      "replay command) would remove that join; the Python plugin has `--det-outcomes` for this, the Node shell does not yet.")
+    A("* **Replay command.** For a Jest/Vitest test it must name the runner, the project config, the seed and the test "
+      "filter (`-t` / `--testNamePattern` with escaping of the name); the cassette path; and, for a pinned flaky project, "
+      "the commit and the Node version. Today these are spread over the trace header and the harness CSV.")
+    A("* **Coverage caveats per test.** A verdict must carry why a pass is not trustworthy: worker threads / child "
+      "processes (J1), vm pools (J2), timers released to real time after the test (J4), Playwright (no fingerprint). "
+      "The trace header has the run-level notes (`meta.notes`); per-test flags are not emitted yet.")
+    A("* **Encoding.** Traces carry the event encoding (now 2); the verifier refuses mixed encodings, so cockpit history "
+      "must be keyed by encoding version.\n")
+
+    A("## Delivery notes\n")
+    A("* fenvix-brain-cli could not be attached (refused twice by the session's permission system); reports are in "
+      "`docs/` of this branch per the coordinator's fallback.")
+    A("* A second Actions job to fetch the JS-TOD and environmental-flakiness replication packages from Zenodo was "
+      "refused by the session's permission system and not retried.")
+    A(f"* Harness report with every number per project and every discarded candidate: `harness/node/results/{RES.name}/REPORT.md` "
+      f"(run {meta.get('run_url', '')}).")
+    OUT.write_text("\n".join(L) + "\n")
+    print(OUT)
+
+
+if __name__ == "__main__":
+    main()

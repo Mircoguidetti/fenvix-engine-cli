@@ -74,7 +74,8 @@ impl ProofCache {
     fn begin(&self, config: String, runtime: String, epoch: i64, env: BTreeMap<String, String>) {
         let mut g = lock(&self.inner);
         let root = g.checker.cur.root.clone();
-        g.checker = Checker::new(Current { root, config, runtime, epoch, env });
+        // the pytest shell captures no start-up process outputs: empty, as `record::record_session` records it
+        g.checker = Checker::new(Current { root, config, runtime, epoch, env, startup: String::new() });
     }
 
     /// Known code files whose content changed: `[(path, current content digest)]`.
@@ -260,6 +261,7 @@ impl ProofCache {
                 skeleton,
                 hooks,
                 units,
+                startup: String::new(),
             },
         ))
     }

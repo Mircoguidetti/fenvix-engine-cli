@@ -1,0 +1,12 @@
+{
+  "name": "pnpm-flaky",
+  "kind": "flaky",
+  "status": "baseline-broken",
+  "node": "node v22.23.5",
+  "runner": "jest",
+  "runner_version": "30.4.2",
+  "tests": 0,
+  "first_run_s": 0.5360122450000091,
+  "commit": "0db922d74a906c1cdef3ca66296f9bd41bea4a91",
+  "detail": "0 test outcomes (exit 1): /30.4.1/58198308af0435a83c55203d495b9ff08a3102041e4173d7a5fc72ae5c99a927/node_modules/jest-worker/build/processChild.js:189:7)\n    at process.emit (node:events:519:28)\n    at emit (node:internal/child_process:949:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n"
+}

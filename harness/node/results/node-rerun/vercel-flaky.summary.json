@@ -1,0 +1,81 @@
+{
+  "name": "vercel-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/vercel/vercel",
+  "commit": "17d9ebaf8e9b335d550dea1a243743a74edc772e",
+  "commit_date": "2026-08-03T19:32:53Z",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 115.02379458519998,
+  "det_mean_s": 195.8113883633001,
+  "slowdown_pct": 70.23554914827596,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 3212,
+  "unstable_baseline": 1,
+  "unstable_det": 1,
+  "became_stable": 1,
+  "outcome_changed_by_det": 1,
+  "covered": 2375,
+  "not_covered": 41,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 1,
+  "seeds_needed": [],
+  "seeds_explored": 4,
+  "exploration_runs": 12,
+  "exploration_budget_hit": true,
+  "reasons": {
+    "fs": 32,
+    "time": 1,
+    "entropy": 8
+  },
+  "pass_fail_reasons": {},
+  "broken_by_det": 2,
+  "broken_always": 1,
+  "broken_causes": {
+    "seeds+time+timers+net | AssertionError": 1,
+    "time+timers | TypeError": 1
+  },
+  "broken_examples": {
+    "seeds+time+timers+net | AssertionError": [
+      "packages/cli-exec/tests/index.test.ts::passes timeout through to execa: AssertionError: expected VercelCliError: Vercel CLI command \"/tmp/\u2026 { \u2026(5) } to deeply equal ObjectContaining{\u2026} (first diverging source: time)"
+    ],
+    "time+timers | TypeError": [
+      "packages/cli/test/unit/util/events.test.ts::printEvents()::does not signal alias assignment when the stream errors: TypeError: Invalid state: ReadableStream is locked (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->failed": [
+      "packages/cli/test/unit/util/events.test.ts::printEvents()::does not signal alias assignment when the stream errors"
+    ],
+    "not-reproduced": [
+      "packages/passport/test/unit/index.test.ts::getIdentity::synthesizes a development identity by default outside Vercel (seed 4:9/9) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ]
+  },
+  "runner": "vitest 2.0.3",
+  "node": "node v22.23.5",
+  "documented_source": "https://github.com/vercel/vercel/issues/17501",
+  "documented_hints": [
+    "Investigate and deflake flaky tests reported by Vitest in CI"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 2.0.3; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/vercel-flaky/det_0.json\ndetjs: trace ../../runs/vercel-flaky/det_0.jsonl: 2419 tests, order digest 967621106baee3b62d94995d8e5ca102\n"
+  },
+  "not_reproduced_causes": {
+    "concurrency/event-order": 1
+  }
+}

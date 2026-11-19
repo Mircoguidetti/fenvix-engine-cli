@@ -1,0 +1,72 @@
+{
+  "name": "yup",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/jquense/yup",
+  "commit": "ff31eee8a2b10c938bb3a22544d9e33957a8cf01",
+  "commit_date": "2025-09-22T09:43:22-04:00",
+  "python": "node v22.23.5",
+  "install": "yarn install --immutable",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 6.744759272200002,
+  "det_mean_s": 10.290318730200003,
+  "slowdown_pct": 52.56762050224384,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 476,
+  "unstable_baseline": 42,
+  "unstable_det": 0,
+  "became_stable": 42,
+  "outcome_changed_by_det": 2,
+  "covered": 436,
+  "not_covered": 0,
+  "reproduced": 2,
+  "never_fails_under_det": 40,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    1,
+    1
+  ],
+  "seeds_explored": 20,
+  "exploration_runs": 29,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "outcome-only": 1
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:None->passed": [
+      "test/number.ts::Number types::casting::should not cast 2025-01-01T00:00:00.000Z",
+      "test/number.ts::Number types::integer::invalid:::2025-01-01T00:00:00.000Z"
+    ],
+    "reproduced": [
+      "test/setLocale.ts::Custom locale::should get default locale (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "test/setLocale.ts::Custom locale::should update the main locale (seed 1): "
+    ]
+  },
+  "runner": "vitest 3.2.4",
+  "node": "node v22.23.5",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 3.2.4; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/yup/det_0.json\ndetjs: trace ../../runs/yup/det_0.jsonl: 869 tests, order digest b3b5abc8749f7ed94be4617a757b540e\n"
+  },
+  "not_reproduced_causes": {
+    "unknown": 40
+  }
+}

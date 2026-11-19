@@ -1,0 +1,2128 @@
+{
+ "_comment": "Build harness/node/flaky_candidates.json: Node/TypeScript projects with documented flaky tests.\n\nTwo sources, in this order:\n\n1. The dataset of Hashemi, Tahir, Rasheed, \"An Empirical Study of Flaky Tests in JavaScript\"\n   (ICSME 2022; Zenodo 10.5281/zenodo.6673741, fetched into harness/node/dataset/raw by the\n   node-dataset workflow). Each entry is a commit that fixes (or disables) a flaky test; the\n   project is pinned at the PARENT of that commit, where the flaky test was still present, and\n   the test files changed by the fix are the documented flaky files. Only 18 projects, most of\n   them not using Jest or Vitest (Node core, Atom, Electron, Meteor, jQuery/QUnit, Karma suites):\n   the selection stage keeps those whose suite runs with Jest or Vitest.\n2. GitHub issues that document a flaky Jest/Vitest test (\"flaky\" in the title) in popular\n   projects. The project is pinned at the last commit of the default branch before the issue\n   was opened (resolved by the prepare stage with `git rev-list -1 --before`); the issue title\n   names the flaky test or file when it can.\n\nRequires `gh` (GitHub search API) for source 2.\n",
+ "generated": "2026-11-16T16:58:33Z",
+ "candidates": [
+  {
+   "name": "freecodecamp-flaky",
+   "repo": "freeCodeCamp/freeCodeCamp",
+   "url": "https://github.com/freeCodeCamp/freeCodeCamp",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "827bcfaaa2c71f12bc52a4c660e7213c2c426caf",
+     "cause": "async wait",
+     "response": "disable",
+     "commit_url": "https://github.com/freeCodeCamp/freeCodeCamp/commit/827bcfaaa2c71f12bc52a4c660e7213c2c426caf"
+    },
+    {
+     "fix_commit": "71faba15da2c5bd675e40751a17cc7c2a06681b5",
+     "cause": "async wait",
+     "response": "disable",
+     "commit_url": "https://github.com/freeCodeCamp/freeCodeCamp/commit/71faba15da2c5bd675e40751a17cc7c2a06681b5"
+    }
+   ]
+  },
+  {
+   "name": "react-flaky",
+   "repo": "facebook/react",
+   "url": "https://github.com/facebook/react",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "fc572832b10792ce3aca764648e6f49d29dabadb",
+     "cause": "network",
+     "response": "fix",
+     "commit_url": "https://github.com/facebook/react/commit/fc572832b10792ce3aca764648e6f49d29dabadb"
+    },
+    {
+     "fix_commit": "00748c53e183952696157088a858352cc77b0010",
+     "cause": "concurrency",
+     "response": "fix",
+     "commit_url": "https://github.com/facebook/react/commit/00748c53e183952696157088a858352cc77b0010"
+    },
+    {
+     "fix_commit": "97cd8e179aea9a12e343af6864e0e5994e40a8fc",
+     "cause": "concurrency",
+     "response": "improve",
+     "commit_url": "https://github.com/facebook/react/commit/97cd8e179aea9a12e343af6864e0e5994e40a8fc"
+    },
+    {
+     "fix_commit": "fe9a76ef25bd0cd274598572d5cb0a952edd00da",
+     "cause": "concurrency",
+     "response": "improve",
+     "commit_url": "https://github.com/facebook/react/commit/fe9a76ef25bd0cd274598572d5cb0a952edd00da"
+    },
+    {
+     "fix_commit": "c3310d3e326d241ec42e3db34586ce3d01cf554c",
+     "cause": "imp dependency",
+     "response": "fix",
+     "commit_url": "https://github.com/facebook/react/commit/c3310d3e326d241ec42e3db34586ce3d01cf554c"
+    }
+   ]
+  },
+  {
+   "name": "bootstrap-flaky",
+   "repo": "twbs/bootstrap",
+   "url": "https://github.com/twbs/bootstrap",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "3b2418e6885d31d9cd1eab33b4cb952e876f8cf7",
+     "cause": "UI",
+     "response": "remove",
+     "commit_url": "https://github.com/twbs/bootstrap/commit/3b2418e6885d31d9cd1eab33b4cb952e876f8cf7"
+    },
+    {
+     "fix_commit": "8900d953ed8b7d2416c2c31667790d83853a0a06",
+     "cause": "concurrency/os",
+     "response": "fix",
+     "commit_url": "https://github.com/twbs/bootstrap/commit/8900d953ed8b7d2416c2c31667790d83853a0a06"
+    }
+   ]
+  },
+  {
+   "name": "electron-flaky",
+   "repo": "electron/electron",
+   "url": "https://github.com/electron/electron",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "399216580de88e48f29c56b633b1a380d5ea2203",
+     "cause": "platform",
+     "response": "fix",
+     "commit_url": "https://github.com/electron/electron/commit/399216580de88e48f29c56b633b1a380d5ea2203"
+    },
+    {
+     "fix_commit": "4ce7ca6cfb287b2d260a9e873cfcd4fc975fa15c",
+     "cause": "os",
+     "response": "skip",
+     "commit_url": "https://github.com/electron/electron/commit/4ce7ca6cfb287b2d260a9e873cfcd4fc975fa15c"
+    },
+    {
+     "fix_commit": "145dd33da16525d4b8c60e847e0bb261d58fde6a",
+     "cause": "os",
+     "response": "skip",
+     "commit_url": "https://github.com/electron/electron/commit/145dd33da16525d4b8c60e847e0bb261d58fde6a"
+    },
+    {
+     "fix_commit": "ad6fb2048621f5274772655819d8add7609023c7",
+     "cause": "platform",
+     "response": "disable",
+     "commit_url": "https://github.com/electron/electron/commit/ad6fb2048621f5274772655819d8add7609023c7"
+    },
+    {
+     "fix_commit": "c2d78deeca3a9ea2034e97b688c51cdabfd86cb2",
+     "cause": "async wait",
+     "response": "fix",
+     "commit_url": "https://github.com/electron/electron/commit/c2d78deeca3a9ea2034e97b688c51cdabfd86cb2"
+    },
+    {
+     "fix_commit": "cb4b3e7be02554baaf8560b23b6305d641556829",
+     "cause": "OS",
+     "response": "fix",
+     "commit_url": "https://github.com/electron/electron/commit/cb4b3e7be02554baaf8560b23b6305d641556829"
+    }
+   ]
+  },
+  {
+   "name": "node-flaky",
+   "repo": "nodejs/node",
+   "url": "https://github.com/nodejs/node",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "d75543d8b5ab00c1757c1aafeb4424055a333dfc",
+     "cause": "async wait/resource leak",
+     "response": "fix",
+     "commit_url": "https://github.com/nodejs/node/commit/d75543d8b5ab00c1757c1aafeb4424055a333dfc"
+    },
+    {
+     "fix_commit": "c7ccab31e598e5457052780b0362ece550f4bf66",
+     "cause": "platform",
+     "response": "fix",
+     "commit_url": "https://github.com/nodejs/node/commit/c7ccab31e598e5457052780b0362ece550f4bf66"
+    },
+    {
+     "fix_commit": "f96dffb7aef50aa46531577ec24eb19474207d96",
+     "cause": "resource leak",
+     "response": "fix",
+     "commit_url": "https://github.com/nodejs/node/commit/f96dffb7aef50aa46531577ec24eb19474207d96"
+    },
+    {
+     "fix_commit": "4f387c25cb60ad556fce058546a52f905c3e9d51",
+     "cause": "resource leak",
+     "response": "fix",
+     "commit_url": "https://github.com/nodejs/node/commit/4f387c25cb60ad556fce058546a52f905c3e9d51"
+    },
+    {
+     "fix_commit": "cfb2e0683972e0b0f09f431483e2672640da0b0f",
+     "cause": "async wait",
+     "response": "remove",
+     "commit_url": "https://github.com/nodejs/node/commit/cfb2e0683972e0b0f09f431483e2672640da0b0f"
+    },
+    {
+     "fix_commit": "433afd9e3969481917237f340cf7900269c4acf0",
+     "cause": "os",
+     "response": "fix",
+     "commit_url": "https://github.com/nodejs/node/commit/433afd9e3969481917237f340cf7900269c4acf0"
+    }
+   ]
+  },
+  {
+   "name": "material-ui-flaky",
+   "repo": "mui-org/material-ui",
+   "url": "https://github.com/mui-org/material-ui",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "b04aa0b84ee2254c781e1f2362f288d5773788eb",
+     "cause": "UI",
+     "response": "improve",
+     "commit_url": "https://github.com/mui-org/material-ui/commit/b04aa0b84ee2254c781e1f2362f288d5773788eb"
+    },
+    {
+     "fix_commit": "341d0f3d2aa837cbfe890a6695293180f2164f41",
+     "cause": "UI",
+     "response": "skip",
+     "commit_url": "https://github.com/mui-org/material-ui/commit/341d0f3d2aa837cbfe890a6695293180f2164f41"
+    },
+    {
+     "fix_commit": "004bb030ae626dd85bec84d19d367cb02c75fd2c",
+     "cause": "UI",
+     "response": "fix",
+     "commit_url": "https://github.com/mui-org/material-ui/commit/004bb030ae626dd85bec84d19d367cb02c75fd2c"
+    },
+    {
+     "fix_commit": "734023dc423b7b1792efbc6a4d3f1e77007c3c84",
+     "cause": "environment",
+     "response": "fix",
+     "commit_url": "https://github.com/mui-org/material-ui/commit/734023dc423b7b1792efbc6a4d3f1e77007c3c84"
+    },
+    {
+     "fix_commit": "9d1c2f0ab014c76ddc042dea58a6a9384fc108f4",
+     "cause": "UI",
+     "response": "fix",
+     "commit_url": "https://github.com/mui-org/material-ui/commit/9d1c2f0ab014c76ddc042dea58a6a9384fc108f4"
+    },
+    {
+     "fix_commit": "42a2bf354140987dbc7f4a4817a4b6b044e87320",
+     "cause": "UI",
+     "response": "disable",
+     "commit_url": "https://github.com/mui-org/material-ui/commit/42a2bf354140987dbc7f4a4817a4b6b044e87320"
+    }
+   ]
+  },
+  {
+   "name": "storybook-flaky",
+   "repo": "storybookjs/storybook",
+   "url": "https://github.com/storybookjs/storybook",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "fd7193abe02c4b6f8cf1a2527f322bd5ab687df6",
+     "cause": "UI",
+     "response": "fix",
+     "commit_url": "https://github.com/storybookjs/storybook/commit/fd7193abe02c4b6f8cf1a2527f322bd5ab687df6"
+    },
+    {
+     "fix_commit": "85f1f7f64a1af4fd82296f1a3354528720a97d3e",
+     "cause": "UI",
+     "response": "improve",
+     "commit_url": "https://github.com/storybookjs/storybook/commit/85f1f7f64a1af4fd82296f1a3354528720a97d3e"
+    }
+   ]
+  },
+  {
+   "name": "atom-flaky",
+   "repo": "atom/atom",
+   "url": "https://github.com/atom/atom",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "11f16d3863e8dc0dc829eeae55ac989853ce6e01",
+     "cause": "UI",
+     "response": "improve",
+     "commit_url": "https://github.com/atom/atom/commit/11f16d3863e8dc0dc829eeae55ac989853ce6e01"
+    },
+    {
+     "fix_commit": "c859f2067f10149c18363a0d407b63cf2ccac681",
+     "cause": "async wait",
+     "response": "fix",
+     "commit_url": "https://github.com/atom/atom/commit/c859f2067f10149c18363a0d407b63cf2ccac681"
+    },
+    {
+     "fix_commit": "a71aca850eb484ad49234b8a6f9bcd7d41c20320",
+     "cause": "async wait",
+     "response": "fix",
+     "commit_url": "https://github.com/atom/atom/commit/a71aca850eb484ad49234b8a6f9bcd7d41c20320"
+    },
+    {
+     "fix_commit": "fca0681c53cdc03fab24c40350f4f65cfec1dd25",
+     "cause": "async wait",
+     "response": "improve",
+     "commit_url": "https://github.com/atom/atom/commit/fca0681c53cdc03fab24c40350f4f65cfec1dd25"
+    },
+    {
+     "fix_commit": "a0742f8e9da8ebf5ed3848c10f511fc693ff4269",
+     "cause": "os",
+     "response": "skip",
+     "commit_url": "https://github.com/atom/atom/commit/a0742f8e9da8ebf5ed3848c10f511fc693ff4269"
+    },
+    {
+     "fix_commit": "2a7ddf0d224aa8941dd523eabc2c19e012054da1",
+     "cause": "concurrency",
+     "response": "fix",
+     "commit_url": "https://github.com/atom/atom/commit/2a7ddf0d224aa8941dd523eabc2c19e012054da1"
+    }
+   ]
+  },
+  {
+   "name": "jquery-flaky",
+   "repo": "jquery/jquery",
+   "url": "https://github.com/jquery/jquery",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "91fb18190e5ab9821e3c74b6aecbb5d197c6c5f6",
+     "cause": "browser",
+     "response": "fix",
+     "commit_url": "https://github.com/jquery/jquery/commit/91fb18190e5ab9821e3c74b6aecbb5d197c6c5f6"
+    },
+    {
+     "fix_commit": "2a600c13efd4c6367402ae51f1e9d819585eda7d",
+     "cause": "UI",
+     "response": "disable",
+     "commit_url": "https://github.com/jquery/jquery/commit/2a600c13efd4c6367402ae51f1e9d819585eda7d"
+    },
+    {
+     "fix_commit": "45b3a884d55ce6004f7cec3fd27b42198b147ceb",
+     "cause": "async wait",
+     "response": "disable",
+     "commit_url": "https://github.com/jquery/jquery/commit/45b3a884d55ce6004f7cec3fd27b42198b147ceb"
+    },
+    {
+     "fix_commit": "f73b9479262e6cf8057f29ee74a962cb08c7830c",
+     "cause": "async wait",
+     "response": "fix",
+     "commit_url": "https://github.com/jquery/jquery/commit/f73b9479262e6cf8057f29ee74a962cb08c7830c"
+    },
+    {
+     "fix_commit": "3f5f5433d5ba8bcc1644c8bbb3c1038f97d454bf",
+     "cause": "browser",
+     "response": "skip",
+     "commit_url": "https://github.com/jquery/jquery/commit/3f5f5433d5ba8bcc1644c8bbb3c1038f97d454bf"
+    }
+   ]
+  },
+  {
+   "name": "chart.js-flaky",
+   "repo": "chartjs/Chart.js",
+   "url": "https://github.com/chartjs/Chart.js",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "9f32f0775a38088a829cad6e920989ee98e3c86d",
+     "cause": "browser",
+     "response": "fix",
+     "commit_url": "https://github.com/chartjs/Chart.js/commit/9f32f0775a38088a829cad6e920989ee98e3c86d"
+    }
+   ]
+  },
+  {
+   "name": "element-flaky",
+   "repo": "ElemeFE/element",
+   "url": "https://github.com/ElemeFE/element",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "c5cec198d29f1e9c18e37419ed7255c1f9b70330",
+     "cause": "UI",
+     "response": "fix",
+     "commit_url": "https://github.com/ElemeFE/element/commit/c5cec198d29f1e9c18e37419ed7255c1f9b70330"
+    }
+   ]
+  },
+  {
+   "name": "lodash-flaky",
+   "repo": "lodash/lodash",
+   "url": "https://github.com/lodash/lodash",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "3930c388e466ea4cc752f33896540ebc03e3de00",
+     "cause": "browser",
+     "response": "fix",
+     "commit_url": "https://github.com/lodash/lodash/commit/3930c388e466ea4cc752f33896540ebc03e3de00"
+    },
+    {
+     "fix_commit": "5be66e98c232a617983f9e6ed0dbf96379d96166",
+     "cause": "async wait",
+     "response": "fix",
+     "commit_url": "https://github.com/lodash/lodash/commit/5be66e98c232a617983f9e6ed0dbf96379d96166"
+    }
+   ]
+  },
+  {
+   "name": "moment-flaky",
+   "repo": "moment/moment",
+   "url": "https://github.com/moment/moment",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "5a990196f872ac3dbb520c1bda40d498fde1b3a6",
+     "cause": "time",
+     "response": "fix",
+     "commit_url": "https://github.com/moment/moment/commit/5a990196f872ac3dbb520c1bda40d498fde1b3a6"
+    },
+    {
+     "fix_commit": "ee4d67470240f3464836136356a7b5ebe4099d2f",
+     "cause": "floating point operation",
+     "response": "fix",
+     "commit_url": "https://github.com/moment/moment/commit/ee4d67470240f3464836136356a7b5ebe4099d2f"
+    },
+    {
+     "fix_commit": "a0857cd56fcec6de35d14456dc1db311e6011172",
+     "cause": "time",
+     "response": "fix",
+     "commit_url": "https://github.com/moment/moment/commit/a0857cd56fcec6de35d14456dc1db311e6011172"
+    },
+    {
+     "fix_commit": "99e7f9490774cb92ddbd506320de77665181ee98",
+     "cause": "time",
+     "response": "fix",
+     "commit_url": "https://github.com/moment/moment/commit/99e7f9490774cb92ddbd506320de77665181ee98"
+    },
+    {
+     "fix_commit": "6a55b4b37aa4d01df8a87a3d28b3a486da07f559",
+     "cause": "time",
+     "response": "fix",
+     "commit_url": "https://github.com/moment/moment/commit/6a55b4b37aa4d01df8a87a3d28b3a486da07f559"
+    }
+   ]
+  },
+  {
+   "name": "meteor-flaky",
+   "repo": "meteor/meteor",
+   "url": "https://github.com/meteor/meteor",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "41868fa16586d27a59eac07ec00578785421570a",
+     "cause": "os",
+     "response": "fix",
+     "commit_url": "https://github.com/meteor/meteor/commit/41868fa16586d27a59eac07ec00578785421570a"
+    },
+    {
+     "fix_commit": "2945c5045c688db0480c3ad3bc0e7d1eae058d60",
+     "cause": "async wait",
+     "response": "fix",
+     "commit_url": "https://github.com/meteor/meteor/commit/2945c5045c688db0480c3ad3bc0e7d1eae058d60"
+    },
+    {
+     "fix_commit": "d287d36bac859391c66dd06d2bb0a191e4fd4688",
+     "cause": "async wait",
+     "response": "improve",
+     "commit_url": "https://github.com/meteor/meteor/commit/d287d36bac859391c66dd06d2bb0a191e4fd4688"
+    },
+    {
+     "fix_commit": "e7308c8f84fdb2aa58300b700f4f314fa9efb879",
+     "cause": "async wait",
+     "response": "improve",
+     "commit_url": "https://github.com/meteor/meteor/commit/e7308c8f84fdb2aa58300b700f4f314fa9efb879"
+    },
+    {
+     "fix_commit": "498e5722300e20a015db96bbce447883e456fe39",
+     "cause": "async wait",
+     "response": "improve",
+     "commit_url": "https://github.com/meteor/meteor/commit/498e5722300e20a015db96bbce447883e456fe39"
+    },
+    {
+     "fix_commit": "dc33f7c7a3a94d0db4b838fe22c256c56b497351",
+     "cause": "async wait",
+     "response": "improve",
+     "commit_url": "https://github.com/meteor/meteor/commit/dc33f7c7a3a94d0db4b838fe22c256c56b497351"
+    }
+   ]
+  },
+  {
+   "name": "yarn-flaky",
+   "repo": "yarnpkg/yarn",
+   "url": "https://github.com/yarnpkg/yarn",
+   "source": "hashemi-icsme2022",
+   "pin": "parent-of-fix",
+   "commits": [
+    {
+     "fix_commit": "9e97f50aea60f58042403ff503d757a732756d6a",
+     "cause": "concurrency",
+     "response": "fix",
+     "commit_url": "https://github.com/yarnpkg/yarn/commit/9e97f50aea60f58042403ff503d757a732756d6a"
+    },
+    {
+     "fix_commit": "ccf5812b9bbcc4931b9d32966f48a09e4448a8f0",
+     "cause": "test order",
+     "response": "fix",
+     "commit_url": "https://github.com/yarnpkg/yarn/commit/ccf5812b9bbcc4931b9d32966f48a09e4448a8f0"
+    },
+    {
+     "fix_commit": "0115ece56b9516af5d0ef75db2ceeb2253c3b1b4",
+     "cause": "network",
+     "response": "fix",
+     "commit_url": "https://github.com/yarnpkg/yarn/commit/0115ece56b9516af5d0ef75db2ceeb2253c3b1b4"
+    },
+    {
+     "fix_commit": "c5e2dc59fe0d7eb328c49c3f98d741cace40e6b9",
+     "cause": "test env",
+     "response": "fix",
+     "commit_url": "https://github.com/yarnpkg/yarn/commit/c5e2dc59fe0d7eb328c49c3f98d741cace40e6b9"
+    }
+   ]
+  },
+  {
+   "name": "vite-flaky",
+   "repo": "vitejs/vite",
+   "url": "https://github.com/vitejs/vite",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/vitejs/vite/issues/12883",
+     "title": "Flaky tests when using Vite with Playwright",
+     "created_at": "2023-04-17T09:47:35Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/vitejs/vite/issues/9492",
+     "title": "Flaky tests",
+     "created_at": "2022-08-01T20:16:39Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/vitejs/vite/issues/8715",
+     "title": "[Vite 3] Flaky Dev Server",
+     "created_at": "2022-06-22T10:44:20Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "jest-flaky",
+   "repo": "jestjs/jest",
+   "url": "https://github.com/jestjs/jest",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/jestjs/jest/issues/12918",
+     "title": "[Bug]: Jest tests in GitHub CI environment are flaky",
+     "created_at": "2022-06-07T09:25:17Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/jestjs/jest/issues/12592",
+     "title": "[Bug]: test `notify \u203a does not report --notify flag` is flaky",
+     "created_at": "2022-03-22T13:00:42Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/jestjs/jest/issues/12558",
+     "title": "[Bug]: test \"typescript - reads config from ts file when package.json#type=module\" is flaky",
+     "created_at": "2022-03-08T14:21:21Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "babel-flaky",
+   "repo": "babel/babel",
+   "url": "https://github.com/babel/babel",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/babel/babel/issues/16083",
+     "title": "Flaky Node.js 6 and 8 tests",
+     "created_at": "2023-11-03T12:41:29Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "prettier-flaky",
+   "repo": "prettier/prettier",
+   "url": "https://github.com/prettier/prettier",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/prettier/prettier/issues/18150",
+     "title": "Fix flaky test",
+     "created_at": "2025-10-29T17:23:57Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "query-flaky",
+   "repo": "TanStack/query",
+   "url": "https://github.com/TanStack/query",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/TanStack/query/issues/8163",
+     "title": "Flaky tests in WSL2(Windows 11, Ubuntu20.04)",
+     "created_at": "2024-10-10T12:33:03Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "msw-flaky",
+   "repo": "mswjs/msw",
+   "url": "https://github.com/mswjs/msw",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/mswjs/msw/issues/2557",
+     "title": "Flaky test at `ws.server.connect.browser.test.ts`",
+     "created_at": "2025-07-20T13:50:17Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "apollo-client-flaky",
+   "repo": "apollographql/apollo-client",
+   "url": "https://github.com/apollographql/apollo-client",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/apollographql/apollo-client/issues/11782",
+     "title": "[Tests] Investigate flaky test in `src/link/persisted-queries/__tests__/persisted-queries.test.ts`",
+     "created_at": "2024-04-12T14:38:37Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/apollographql/apollo-client/issues/9822",
+     "title": "ssrForceFetchDelay is flaky and unreliable",
+     "created_at": "2022-06-14T15:11:22Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "react-router-flaky",
+   "repo": "remix-run/react-router",
+   "url": "https://github.com/remix-run/react-router",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/remix-run/react-router/issues/13863",
+     "title": "Flaky tests: Need to be able to disable transitions/detect when transitions start",
+     "created_at": "2025-06-23T18:23:56Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/remix-run/react-router/issues/10511",
+     "title": "[Bug]:  Scroll Restoration seems flaky in 6.11.2",
+     "created_at": "2023-05-19T19:57:04Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "svelte-flaky",
+   "repo": "sveltejs/svelte",
+   "url": "https://github.com/sveltejs/svelte",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/sveltejs/svelte/issues/17110",
+     "title": "$effect.pending flaky behaviour",
+     "created_at": "2025-11-04T09:34:58Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/sveltejs/svelte/issues/11475",
+     "title": "Svelte 5: Flaky State Ownership Warning  - ownership_invalid_binding",
+     "created_at": "2024-05-05T16:04:12Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/sveltejs/svelte/issues/9915",
+     "title": "Svelte 5: Flaky source maps in dev mode",
+     "created_at": "2023-12-14T13:56:40Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "zod-flaky",
+   "repo": "colinhacks/zod",
+   "url": "https://github.com/colinhacks/zod",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/colinhacks/zod/issues/6359",
+     "title": "redos.test.ts is flaky: both tests decide from wall-clock timing",
+     "created_at": "2026-08-10T04:13:56Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "dayjs-flaky",
+   "repo": "iamkun/dayjs",
+   "url": "https://github.com/iamkun/dayjs",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/iamkun/dayjs/issues/2241",
+     "title": "A flaky test in `get-set.test.js` file",
+     "created_at": "2023-02-20T07:38:29Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "excalidraw-flaky",
+   "repo": "excalidraw/excalidraw",
+   "url": "https://github.com/excalidraw/excalidraw",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/excalidraw/excalidraw/issues/11713",
+     "title": "[Bug] Flaky WYSIWYG text editor and other tests",
+     "created_at": "2026-07-19T11:49:47Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "tldraw-flaky",
+   "repo": "tldraw/tldraw",
+   "url": "https://github.com/tldraw/tldraw",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/tldraw/tldraw/issues/9214",
+     "title": "Flaky e2e: live-sharing scenario suite times out waiting for cross-client workspace sync",
+     "created_at": "2026-06-15T16:36:11Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/tldraw/tldraw/issues/5052",
+     "title": "Pasting images between tldraw instances is flaky",
+     "created_at": "2024-12-03T09:57:15Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "trpc-flaky",
+   "repo": "trpc/trpc",
+   "url": "https://github.com/trpc/trpc",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/trpc/trpc/issues/3908",
+     "title": "chore: fix flaky websocket tests",
+     "created_at": "2023-03-03T09:06:37Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/trpc/trpc/issues/1869",
+     "title": "Fix flaky jest test \"test invalidateQueries() with different args\"",
+     "created_at": "2022-05-10T11:50:33Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "pnpm-flaky",
+   "repo": "pnpm/pnpm",
+   "url": "https://github.com/pnpm/pnpm",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/pnpm/pnpm/issues/15387",
+     "title": "Flaky test: publish wait can send a second metadata probe after the timeout deadline",
+     "created_at": "2026-09-23T16:07:33Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/pnpm/pnpm/issues/14560",
+     "title": "Flaky macOS GVS concurrency test fails with ENOENT while importing package files",
+     "created_at": "2026-09-04T18:47:50Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/pnpm/pnpm/issues/13328",
+     "title": "Flaky test: add_resolves_package_selectors_concurrently_and_reports_in_selector_order fails under full-suite load",
+     "created_at": "2026-07-25T11:34:18Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "typescript-eslint-flaky",
+   "repo": "typescript-eslint/typescript-eslint",
+   "url": "https://github.com/typescript-eslint/typescript-eslint",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/typescript-eslint/typescript-eslint/issues/12345",
+     "title": "Repo: Investigate why CI install step is flaky",
+     "created_at": "2026-05-19T11:42:54Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/typescript-eslint/typescript-eslint/issues/5763",
+     "title": "Repo: End-to-end tests are flaky (yet again)",
+     "created_at": "2022-10-07T02:37:18Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "sentry-javascript-flaky",
+   "repo": "getsentry/sentry-javascript",
+   "url": "https://github.com/getsentry/sentry-javascript",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/getsentry/sentry-javascript/issues/26203",
+     "title": "[Flaky CI]: Playwright esm Tests - thirdPartyErrorsFilter third-party error can fire before Sentry.init",
+     "created_at": "2026-11-08T06:10:50Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/getsentry/sentry-javascript/issues/26169",
+     "title": "[Flaky CI]: Node (20.19) Unit Tests - bundler-plugins webpack release-injection test times out",
+     "created_at": "2026-11-06T10:37:34Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/getsentry/sentry-javascript/issues/25591",
+     "title": "Flaky test: `maybeSetUpTunnelRouteRewriteRules` times out on slow CI runners",
+     "created_at": "2026-10-21T01:48:26Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "posthog-js-flaky",
+   "repo": "PostHog/posthog-js",
+   "url": "https://github.com/PostHog/posthog-js",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/PostHog/posthog-js/issues/2292",
+     "title": "Session recording input masking is flaky",
+     "created_at": "2025-09-06T11:50:54Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/PostHog/posthog-js/issues/778",
+     "title": "Testcafe.yml tests are flaky",
+     "created_at": "2023-08-18T16:26:45Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "webdriverio-flaky",
+   "repo": "webdriverio/webdriverio",
+   "url": "https://github.com/webdriverio/webdriverio",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/webdriverio/webdriverio/issues/15932",
+     "title": "[\ud83d\udc1b Bug]: @wdio/ai-service: a timed-out act() replay keeps running and its EffectRecorder drops the next test's effects (flaky frames.e2e.ts on macOS)",
+     "created_at": "2026-10-05T17:25:03Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/webdriverio/webdriverio/issues/12227",
+     "title": "[\ud83d\udc1b Bug]: [appium-service] Running Appium WDIO spec from VS Code debugger is rarely working (extremely flaky)",
+     "created_at": "2024-02-13T03:40:43Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/webdriverio/webdriverio/issues/11724",
+     "title": "[\ud83d\udc1b Bug]: onComplete flaky behaviour",
+     "created_at": "2023-11-25T09:21:52Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "react-testing-library-flaky",
+   "repo": "testing-library/react-testing-library",
+   "url": "https://github.com/testing-library/react-testing-library",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/testing-library/react-testing-library/issues/1419",
+     "title": "Flaky Tests with user.type (missing characters)",
+     "created_at": "2025-10-06T15:17:59Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/testing-library/react-testing-library/issues/1235",
+     "title": "Flaky tests reported for React 18 concurrent mode",
+     "created_at": "2023-08-29T10:03:56Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "happy-dom-flaky",
+   "repo": "capricorn86/happy-dom",
+   "url": "https://github.com/capricorn86/happy-dom",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/capricorn86/happy-dom/issues/2526",
+     "title": "Flaky test: ServerRendererBrowser \"Handles debug error caused while waiting for the page to complete.\"",
+     "created_at": "2026-10-17T19:15:29Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/capricorn86/happy-dom/issues/2022",
+     "title": "Flaky test: Timeout in DetachedWindowAPI",
+     "created_at": "2026-01-21T18:47:52Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/capricorn86/happy-dom/issues/2013",
+     "title": "Flaky test: Cache revalidation race condition",
+     "created_at": "2026-01-20T19:34:39Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "nuxt-flaky",
+   "repo": "nuxt/nuxt",
+   "url": "https://github.com/nuxt/nuxt",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/nuxt/nuxt/issues/32557",
+     "title": "NuxtTime: Flaky testcase",
+     "created_at": "2025-07-08T06:12:37Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/nuxt/nuxt/issues/30867",
+     "title": "flaky test for spa-preloader",
+     "created_at": "2025-02-05T11:51:27Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "vitest-flaky",
+   "repo": "vitest-dev/vitest",
+   "url": "https://github.com/vitest-dev/vitest",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/vitest-dev/vitest/issues/11289",
+     "title": "vmThreads + isolate:false + deps.optimizer: vi.mock misses and duplicate module identity \u2014 green on 4.1.11, flaky every run on 5.0.1",
+     "created_at": "2026-09-16T07:07:13Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/vitest-dev/vitest/issues/10850",
+     "title": "Flaky branch coverage: startOffset restore after mergeProcessCovs is last-read-wins, corrupting AST remap when same-URL entries disagree",
+     "created_at": "2026-07-28T14:09:17Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/vitest-dev/vitest/issues/10618",
+     "title": "Fix flaky tests",
+     "created_at": "2026-06-19T03:24:09Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "material-ui-flaky",
+   "repo": "mui/material-ui",
+   "url": "https://github.com/mui/material-ui",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/mui/material-ui/issues/45566",
+     "title": "[code-infra] Codecov upload flakyness",
+     "created_at": "2025-03-13T12:33:29Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/mui/material-ui/issues/43962",
+     "title": "[test] Flaky argos test docs-getting-started-templates-dashboard-components/MainGrid.png",
+     "created_at": "2024-10-02T08:10:31Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/mui/material-ui/issues/39766",
+     "title": "[test] Opt out of screenshot for flaky tests",
+     "created_at": "2023-11-06T06:02:46Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "next.js-flaky",
+   "repo": "vercel/next.js",
+   "url": "https://github.com/vercel/next.js",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/vercel/next.js/issues/98344",
+     "title": "generateStaticParams with output=export is flaky in dev env with encoded params",
+     "created_at": "2026-09-08T03:42:24Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "sequelize-flaky",
+   "repo": "sequelize/sequelize",
+   "url": "https://github.com/sequelize/sequelize",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/sequelize/sequelize/issues/14161",
+     "title": "Tests are flaky again",
+     "created_at": "2022-02-24T15:28:10Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "react-admin-flaky",
+   "repo": "marmelab/react-admin",
+   "url": "https://github.com/marmelab/react-admin",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/marmelab/react-admin/issues/10301",
+     "title": "5.2.2 -> 5.3.0 nested <ReferenceField link={false}><ReferenceField> generated link is flaky & invalid / used \"parent.id\" and not child.id",
+     "created_at": "2024-10-25T08:31:37Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "astro-flaky",
+   "repo": "withastro/astro",
+   "url": "https://github.com/withastro/astro",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/withastro/astro/issues/5195",
+     "title": "dev: identifying flaky tests?",
+     "created_at": "2022-10-26T06:36:00Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "vuetify-flaky",
+   "repo": "vuetifyjs/vuetify",
+   "url": "https://github.com/vuetifyjs/vuetify",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/vuetifyjs/vuetify/issues/22280",
+     "title": "[Bug Report][3.10.8] `window is not defined` (util/throttle.ts) (Flaky test in vitest)",
+     "created_at": "2025-11-03T18:40:10Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/vuetifyjs/vuetify/issues/18072",
+     "title": "[Bug Report][3.3.13] VImg \"window is not defined\" with Vitest (flaky tests)",
+     "created_at": "2023-08-16T18:13:38Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "quasar-flaky",
+   "repo": "quasarframework/quasar",
+   "url": "https://github.com/quasarframework/quasar",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/quasarframework/quasar/issues/18333",
+     "title": "update to 2.20.1 makes cypress tests flaky for q-inputs",
+     "created_at": "2026-06-22T09:41:01Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "ionic-framework-flaky",
+   "repo": "ionic-team/ionic-framework",
+   "url": "https://github.com/ionic-team/ionic-framework",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/ionic-team/ionic-framework/issues/30423",
+     "title": "bug: Infinite scroll - scrolling to the top test is flaky on CI with Safari",
+     "created_at": "2025-05-25T12:30:22Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "react-three-fiber-flaky",
+   "repo": "pmndrs/react-three-fiber",
+   "url": "https://github.com/pmndrs/react-three-fiber",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/pmndrs/react-three-fiber/issues/3820",
+     "title": "Mock GL context returns undefined framebuffers \u2014 PMREM background test flaky (deterministic under coverage)",
+     "created_at": "2026-08-01T20:50:20Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "pixijs-flaky",
+   "repo": "pixijs/pixijs",
+   "url": "https://github.com/pixijs/pixijs",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/pixijs/pixijs/issues/12085",
+     "title": "Flaky visual test: html-text-stroke-anchor-tagged fails by ~4px across all renderers",
+     "created_at": "2026-06-14T17:17:03Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/pixijs/pixijs/issues/12084",
+     "title": "Flaky test: GCSystem 'lazy hash replacement' is order-dependent",
+     "created_at": "2026-06-14T17:17:02Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "mermaid-flaky",
+   "repo": "mermaid-js/mermaid",
+   "url": "https://github.com/mermaid-js/mermaid",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/mermaid-js/mermaid/issues/7729",
+     "title": "One visual test for Architecture diagrams is flaky/failing in CI",
+     "created_at": "2026-05-08T14:32:51Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/mermaid-js/mermaid/issues/7727",
+     "title": "The Cynefin diagrams are behaving non-deterministic and makes the visual tests flaky",
+     "created_at": "2026-05-08T14:11:48Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "n8n-flaky",
+   "repo": "n8n-io/n8n",
+   "url": "https://github.com/n8n-io/n8n",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/n8n-io/n8n/issues/19316",
+     "title": "GSheets auth is flaky and/or shortlived",
+     "created_at": "2025-09-08T14:31:15Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/n8n-io/n8n/issues/19315",
+     "title": "GSheets auth is flaky and/or shortlived",
+     "created_at": "2025-09-08T14:25:58Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/n8n-io/n8n/issues/7509",
+     "title": "Flaky Flows",
+     "created_at": "2023-10-25T03:32:26Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "medusa-flaky",
+   "repo": "medusajs/medusa",
+   "url": "https://github.com/medusajs/medusa",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/medusajs/medusa/issues/15967",
+     "title": "flaky test: query-index.spec.ts \"filter enum field\" fails intermittently on develop",
+     "created_at": "2026-07-08T19:15:56Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "nx-flaky",
+   "repo": "nrwl/nx",
+   "url": "https://github.com/nrwl/nx",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/nrwl/nx/issues/32865",
+     "title": "Playwright tests running flaky when setting `reuseExistingServer: true` in module federation setup",
+     "created_at": "2025-09-26T15:20:40Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/nrwl/nx/issues/30413",
+     "title": "Run flaky tasks locally?",
+     "created_at": "2025-03-18T13:53:48Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/nrwl/nx/issues/26987",
+     "title": "npm install is flaky related to \"nx\" \"post-install\" native-bindings [includes full repo]",
+     "created_at": "2024-07-18T16:30:45Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "primitives-flaky",
+   "repo": "radix-ui/primitives",
+   "url": "https://github.com/radix-ui/primitives",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/radix-ui/primitives/issues/2444",
+     "title": "Tabs: Snapshot tests for Components with Tab.Content are often flaky",
+     "created_at": "2023-10-10T18:02:29Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "ariakit-flaky",
+   "repo": "ariakit/ariakit",
+   "url": "https://github.com/ariakit/ariakit",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/ariakit/ariakit/issues/8470",
+     "title": "Flaky Firefox test: code-block file tabs keep the scroll position of each file",
+     "created_at": "2026-11-16T02:51:30Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/ariakit/ariakit/issues/8430",
+     "title": "Fix the flaky forced-colors visual captures of Ariakit UI tabs",
+     "created_at": "2026-11-13T21:42:57Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/ariakit/ariakit/issues/8428",
+     "title": "Fix the flaky Safari preview card test for vertical scrolling after a horizontal scroll",
+     "created_at": "2026-11-13T21:42:56Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "mui-x-flaky",
+   "repo": "mui/mui-x",
+   "url": "https://github.com/mui/mui-x",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/mui/mui-x/issues/17862",
+     "title": "[charts][test] Address flaky regression test",
+     "created_at": "2025-05-15T15:43:15Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/mui/mui-x/issues/15372",
+     "title": "[data grid][docs] Fix demos acting flaky in Argos",
+     "created_at": "2024-11-11T12:43:25Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/mui/mui-x/issues/11163",
+     "title": "[data grid][test] Flaky DataGrid screenshot",
+     "created_at": "2023-11-23T15:58:08Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "blueprint-flaky",
+   "repo": "palantir/blueprint",
+   "url": "https://github.com/palantir/blueprint",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/palantir/blueprint/issues/7528",
+     "title": "Fix flaky tests in CI",
+     "created_at": "2025-07-30T15:59:46Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "eui-flaky",
+   "repo": "elastic/eui",
+   "url": "https://github.com/elastic/eui",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/elastic/eui/issues/7761",
+     "title": "[EuiInputPopover] Removed setTimeout causes flaky test behavior",
+     "created_at": "2024-05-15T09:59:08Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "grafana-flaky",
+   "repo": "grafana/grafana",
+   "url": "https://github.com/grafana/grafana",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/grafana/grafana/issues/135077",
+     "title": "E2E: Canvas panel failures and flaky Table tooltip test in Enterprise CI",
+     "created_at": "2026-10-15T14:05:57Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/grafana/grafana/issues/129354",
+     "title": "[Flaky E2E] dashboard-tabs-scroll save test is not idempotent under --repeat-each",
+     "created_at": "2026-07-28T00:31:12Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/grafana/grafana/issues/129025",
+     "title": "Keybinds: Enable skipped flaky test",
+     "created_at": "2026-07-22T15:21:20Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "outline-flaky",
+   "repo": "outline/outline",
+   "url": "https://github.com/outline/outline",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/outline/outline/issues/10443",
+     "title": "Linear integration flaky",
+     "created_at": "2025-10-21T10:07:03Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/outline/outline/issues/8678",
+     "title": "Flaky `files.test.ts`",
+     "created_at": "2025-03-12T13:47:13Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/outline/outline/issues/8344",
+     "title": "Flaky API test",
+     "created_at": "2025-02-06T14:15:36Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "nocodb-flaky",
+   "repo": "nocodb/nocodb",
+   "url": "https://github.com/nocodb/nocodb",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/nocodb/nocodb/issues/6291",
+     "title": "\ud83d\udc1b Bug: PW (flaky) : columnLinkToAnotherRecord.spec.ts",
+     "created_at": "2023-09-01T12:13:52Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "appsmith-flaky",
+   "repo": "appsmithorg/appsmith",
+   "url": "https://github.com/appsmithorg/appsmith",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/appsmithorg/appsmith/issues/40584",
+     "title": "[Bug]: Investigate and Fix Flaky Test: ApiBugs_Spec.ts in EE TBP Blocking Daily Promotion",
+     "created_at": "2025-05-06T05:34:30Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/appsmithorg/appsmith/issues/40106",
+     "title": "[Bug]: [Git Tagging - Packages] - Post import of git package and using it in a query in a new workspace, the versions listed are flaky",
+     "created_at": "2025-04-07T09:04:32Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/appsmithorg/appsmith/issues/40036",
+     "title": "[Bug]: [Git Tagging - Packages] - Command + z causes flaky behavior on the query module screen in packages.",
+     "created_at": "2025-04-02T12:29:00Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "twenty-flaky",
+   "repo": "twentyhq/twenty",
+   "url": "https://github.com/twentyhq/twenty",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/twentyhq/twenty/issues/18485",
+     "title": "Fix flaky/skipped downloadFile unit test in twenty-front",
+     "created_at": "2026-03-07T23:24:19Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/twentyhq/twenty/issues/14369",
+     "title": "Core migrated view from workspace schema flaky error displaying view in FE",
+     "created_at": "2025-09-09T12:50:00Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "documenso-flaky",
+   "repo": "documenso/documenso",
+   "url": "https://github.com/documenso/documenso",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/documenso/documenso/issues/2227",
+     "title": "Playwright tests are flaky",
+     "created_at": "2025-11-20T12:18:27Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "tiptap-flaky",
+   "repo": "ueberdosis/tiptap",
+   "url": "https://github.com/ueberdosis/tiptap",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/ueberdosis/tiptap/issues/8080",
+     "title": "Flaky tests in CI verify test stability across the suite",
+     "created_at": "2026-07-15T19:45:35Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "leaflet-flaky",
+   "repo": "Leaflet/Leaflet",
+   "url": "https://github.com/Leaflet/Leaflet",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/Leaflet/Leaflet/issues/9966",
+     "title": "Flaky tests on Safari",
+     "created_at": "2025-10-28T10:09:37Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/Leaflet/Leaflet/issues/9155",
+     "title": "Flaky tests on Chrome/macOS CI job",
+     "created_at": "2023-11-02T12:15:52Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/Leaflet/Leaflet/issues/8454",
+     "title": "`FirefoxNoTouch` & ``FirefoxTouch` jobs are flaky",
+     "created_at": "2022-09-22T13:59:21Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "openlayers-flaky",
+   "repo": "openlayers/openlayers",
+   "url": "https://github.com/openlayers/openlayers",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/openlayers/openlayers/issues/15942",
+     "title": "Flaky WebGL style parsing test",
+     "created_at": "2024-06-24T20:10:30Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "maplibre-gl-js-flaky",
+   "repo": "maplibre/maplibre-gl-js",
+   "url": "https://github.com/maplibre/maplibre-gl-js",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/maplibre/maplibre-gl-js/issues/908",
+     "title": "Flaky unit test for camera ",
+     "created_at": "2022-01-28T10:04:15Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "undici-flaky",
+   "repo": "nodejs/undici",
+   "url": "https://github.com/nodejs/undici",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/nodejs/undici/issues/5268",
+     "title": "[flaky] test\\tls-cert-leak.js",
+     "created_at": "2026-05-07T13:35:57Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/nodejs/undici/issues/5267",
+     "title": "[flaky] test\\examples.js",
+     "created_at": "2026-05-07T13:29:44Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/nodejs/undici/issues/5266",
+     "title": "[flaky] test\\http2-connection.js",
+     "created_at": "2026-05-07T13:28:32Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "got-flaky",
+   "repo": "sindresorhus/got",
+   "url": "https://github.com/sindresorhus/got",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/sindresorhus/got/issues/2085",
+     "title": "TLS cipher tests are flaky",
+     "created_at": "2022-07-21T16:07:51Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "fastify-flaky",
+   "repo": "fastify/fastify",
+   "url": "https://github.com/fastify/fastify",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/fastify/fastify/issues/5426",
+     "title": "Flaky test on N|Solid 20 MacOS",
+     "created_at": "2024-04-23T09:17:54Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/fastify/fastify/issues/5059",
+     "title": "Test log flaky",
+     "created_at": "2023-09-24T11:42:16Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/fastify/fastify/issues/4888",
+     "title": "ci is flaky",
+     "created_at": "2023-07-08T21:44:47Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "mongoose-flaky",
+   "repo": "Automattic/mongoose",
+   "url": "https://github.com/Automattic/mongoose",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/Automattic/mongoose/issues/16284",
+     "title": "CI: fix/improve flaky tests",
+     "created_at": "2026-05-13T20:22:20Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/Automattic/mongoose/issues/15822",
+     "title": "Flaky Test: closing aggregation cursor emits close event only once (gh-8835)",
+     "created_at": "2025-11-30T07:01:03Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/Automattic/mongoose/issues/12643",
+     "title": "[Test] collection type `timeseries` test seems to be flaky",
+     "created_at": "2022-11-02T09:53:34Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "node-redis-flaky",
+   "repo": "redis/node-redis",
+   "url": "https://github.com/redis/node-redis",
+   "source": "github-issue",
+   "pin": "before-issue",
+   "issues": [
+    {
+     "url": "https://github.com/redis/node-redis/issues/3602",
+     "title": "Flaky test: sentinel scanIterator \"should iterate against the new master when failover completes before scan starts\"",
+     "created_at": "2026-11-09T12:17:28Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/redis/node-redis/issues/3554",
+     "title": "test(search): flaky FT.HYBRID timeout and FT.CURSOR cluster tests in CI",
+     "created_at": "2026-10-29T10:39:20Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "growi-flaky",
+   "repo": "growilabs/growi",
+   "url": "https://github.com/growilabs/growi",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 1480,
+   "issues": [
+    {
+     "url": "https://github.com/growilabs/growi/issues/12252",
+     "title": "flaky: vitest:src/features/opentelemetry/server/anonymization/anonymize-http-requests.instrumentation.spec.ts:URL attributes recorded by the HTTP instrumentation > records / either as received or as the hook set it",
+     "created_at": "2026-11-14T16:18:53Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/growilabs/growi/issues/12252",
+     "title": "flaky: vitest:src/features/opentelemetry/server/anonymization/anonymize-http-requests.instrumentation.spec.ts:URL attributes recorded by the HTTP instrumentation > records / either as received or as the hook set it",
+     "created_at": "2026-11-14T16:18:53Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/growilabs/growi/issues/12251",
+     "title": "flaky: vitest:src/features/change-proposal/server/routes/write-routes.integ.ts:change-proposal write routes > POST /:id/approve > answers a missing, malformed, someone else\u2019s and someone else\u2019s settled proposal with one identical 404",
+     "created_at": "2026-11-14T16:18:06Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "element-web-flaky",
+   "repo": "element-hq/element-web",
+   "url": "https://github.com/element-hq/element-web",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 13663,
+   "issues": [
+    {
+     "url": "https://github.com/element-hq/element-web/issues/33219",
+     "title": "Flaky Jest test: `<VerificationQRCode /> \u203a renders a QR code`",
+     "created_at": "2026-04-21T10:23:35Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/element-hq/element-web/issues/32651",
+     "title": "Flaky jest test: `<MatrixChat /> \u203a with a soft-logged-out session \u203a should show the soft-logout page`",
+     "created_at": "2026-02-26T11:40:07Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/element-hq/element-web/issues/31778",
+     "title": "Flaky Jest test: `RoomView \u203a message search \u203a should close search results when edit is clicked`",
+     "created_at": "2026-01-16T17:57:28Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "opencti-flaky",
+   "repo": "OpenCTI-Platform/opencti",
+   "url": "https://github.com/OpenCTI-Platform/opencti",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 10378,
+   "issues": [
+    {
+     "url": "https://github.com/OpenCTI-Platform/opencti/issues/18142",
+     "title": "fix(tests): the telemetry collector clears the Redis gauges while the integration tests run (flaky test)",
+     "created_at": "2026-09-06T11:23:19Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/OpenCTI-Platform/opencti/issues/18133",
+     "title": "fix(tests): the integration test wait budgets are unmeasured (flaky tests)",
+     "created_at": "2026-09-05T11:25:06Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/OpenCTI-Platform/opencti/issues/18109",
+     "title": "fix(tests): telemetry manager tests poll asynchronous counters with a too short budget (flaky tests)",
+     "created_at": "2026-09-04T10:22:01Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "okou-flaky",
+   "repo": "okou-ai/okou",
+   "url": "https://github.com/okou-ai/okou",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 1161,
+   "issues": [
+    {
+     "url": "https://github.com/okou-ai/okou/issues/29627",
+     "title": "test(e2e): replace flaky Agora firewall probe with Twilio",
+     "created_at": "2026-08-26T10:37:55Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/okou-ai/okou/issues/23780",
+     "title": "test(vsock-guest): remove flaky pidfd exit watcher",
+     "created_at": "2026-07-29T10:34:11Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/okou-ai/okou/issues/23209",
+     "title": "test(api): flaky \"fails after every canonical session preparation snapshot changes\"",
+     "created_at": "2026-07-27T04:38:45Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "kibana-flaky",
+   "repo": "elastic/kibana",
+   "url": "https://github.com/elastic/kibana",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 21378,
+   "issues": [
+    {
+     "url": "https://github.com/elastic/kibana/issues/305624",
+     "title": "[Fleet] Stub the agent enrollment flyout in the agent-based policies table test",
+     "created_at": "2026-11-16T13:23:53Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/elastic/kibana/issues/299789",
+     "title": "[Alerting v2] Make the dispatcher dedup ledger searchable before the tick returns",
+     "created_at": "2026-10-22T10:22:51Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/elastic/kibana/issues/280978",
+     "title": "Duplicate `logstash_functional` ES archives diverge, causing flaky Scout test failures on shared clusters",
+     "created_at": "2026-07-27T09:55:12Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "theia-flaky",
+   "repo": "eclipse-theia/theia",
+   "url": "https://github.com/eclipse-theia/theia",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 21763,
+   "issues": [
+    {
+     "url": "https://github.com/eclipse-theia/theia/issues/18319",
+     "title": "Flaky tests (Oct\u2013Nov 2026)",
+     "created_at": "2026-11-04T21:02:27Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/eclipse-theia/theia/issues/18139",
+     "title": "Flaky test on Node 26: AgentGenericCapabilitiesSettings 'rolls back a swallowed write failure'",
+     "created_at": "2026-10-07T14:52:39Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/eclipse-theia/theia/issues/18016",
+     "title": "Flaky Explorer API test occasionally fails on CI for unrelated PRs",
+     "created_at": "2026-09-12T13:58:10Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "opencove-flaky",
+   "repo": "DeadWaveWave/opencove",
+   "url": "https://github.com/DeadWaveWave/opencove",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 1652,
+   "issues": [
+    {
+     "url": "https://github.com/DeadWaveWave/opencove/issues/693",
+     "title": "Shorten pull request CI: macOS runs its platform tests before merge and the full E2E after it",
+     "created_at": "2026-11-15T04:33:58Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/DeadWaveWave/opencove/issues/683",
+     "title": "Run every browser E2E spec in CI, and make tests that run nowhere visible",
+     "created_at": "2026-11-14T13:31:34Z",
+     "state": "closed"
+    },
+    {
+     "url": "https://github.com/DeadWaveWave/opencove/issues/683",
+     "title": "Run every browser E2E spec in CI, and make tests that run nowhere visible",
+     "created_at": "2026-11-14T13:31:34Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "open-mercato-flaky",
+   "repo": "open-mercato/open-mercato",
+   "url": "https://github.com/open-mercato/open-mercato",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 1941,
+   "issues": [
+    {
+     "url": "https://github.com/open-mercato/open-mercato/issues/8779",
+     "title": "[tracking] CRM \u2014 open issues and unmerged PRs by area (snapshot 2026-11-05)",
+     "created_at": "2026-11-05T12:06:01Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/open-mercato/open-mercato/issues/8073",
+     "title": "Fix: make SearchService availability parallelism test deterministic",
+     "created_at": "2026-10-27T18:47:43Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/open-mercato/open-mercato/issues/7522",
+     "title": "Flaky: queue local.strategy \"delayed jobs remain queued\" times out at 1800ms in CI",
+     "created_at": "2026-10-16T10:10:28Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "workers-sdk-flaky",
+   "repo": "cloudflare/workers-sdk",
+   "url": "https://github.com/cloudflare/workers-sdk",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 4731,
+   "issues": [
+    {
+     "url": "https://github.com/cloudflare/workers-sdk/issues/16168",
+     "title": "Intermittent \"Expected global Vitest state\" assertions from entrypoint wrapper while tests pass",
+     "created_at": "2026-10-09T02:33:30Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/cloudflare/workers-sdk/issues/16056",
+     "title": "vitest-pool-workers: a Workflow waiting on a short timer (retry backoff) intermittently freezes the whole test isolate for ~300 s",
+     "created_at": "2026-10-04T04:41:12Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "langfuse-flaky",
+   "repo": "langfuse/langfuse",
+   "url": "https://github.com/langfuse/langfuse",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 37500,
+   "issues": [
+    {
+     "url": "https://github.com/langfuse/langfuse/issues/20290",
+     "title": "CI Runtime Report: 2026-11-10..2026-11-16 \u2014 best week on record (gated 256s, 2.3% failures); the e2e Build step is cache-bimodal",
+     "created_at": "2026-11-16T08:59:49Z",
+     "state": "open"
+    },
+    {
+     "url": "https://github.com/langfuse/langfuse/issues/20279",
+     "title": "CI Runtime Report: 2026-11-10 .. 2026-11-16 \u2014 best week on record (perceived 276s, \u221225.9%), but runs after 17:00 UTC pay a 45% penalty",
+     "created_at": "2026-11-16T06:08:25Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "qwen-code-flaky",
+   "repo": "QwenLM/qwen-code",
+   "url": "https://github.com/QwenLM/qwen-code",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 30619,
+   "issues": [
+    {
+     "url": "https://github.com/QwenLM/qwen-code/issues/13384",
+     "title": "ci(flaky): Test lane fails on vitest-worker onTaskUpdate RPC timeout under runner load",
+     "created_at": "2026-10-04T07:58:00Z",
+     "state": "open"
+    }
+   ]
+  },
+  {
+   "name": "tunarr-flaky",
+   "repo": "chrisbenincasa/tunarr",
+   "url": "https://github.com/chrisbenincasa/tunarr",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 2731,
+   "issues": [
+    {
+     "url": "https://github.com/chrisbenincasa/tunarr/issues/2138",
+     "title": "Flaky: LanguagePreferencesList test times out at the 5s vitest default in CI",
+     "created_at": "2026-09-21T21:37:04Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "hapi-flaky",
+   "repo": "tiann/hapi",
+   "url": "https://github.com/tiann/hapi",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 5423,
+   "issues": [
+    {
+     "url": "https://github.com/tiann/hapi/issues/1823",
+     "title": "flaky(cli,ci): Windows shim-spawn test in codexMcpProxy.test.ts times out at the vitest 5s default",
+     "created_at": "2026-09-11T10:50:12Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "assistant-ui-flaky",
+   "repo": "assistant-ui/assistant-ui",
+   "url": "https://github.com/assistant-ui/assistant-ui",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 13268,
+   "issues": [
+    {
+     "url": "https://github.com/assistant-ui/assistant-ui/issues/7007",
+     "title": "flaky: react-native MessageContent derived-status cases sit on the 5s vitest timeout",
+     "created_at": "2026-09-08T03:34:05Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "vercel-flaky",
+   "repo": "vercel/vercel",
+   "url": "https://github.com/vercel/vercel",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 16605,
+   "issues": [
+    {
+     "url": "https://github.com/vercel/vercel/issues/17501",
+     "title": "Investigate and deflake flaky tests reported by Vitest in CI",
+     "created_at": "2026-08-14T15:46:21Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "vinext-flaky",
+   "repo": "cloudflare/vinext",
+   "url": "https://github.com/cloudflare/vinext",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 9376,
+   "issues": [
+    {
+     "url": "https://github.com/cloudflare/vinext/issues/2719",
+     "title": "Flaky unit tests: server-booting tests run on vitest's default 5s timeout",
+     "created_at": "2026-07-27T07:31:43Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "podman-desktop-flaky",
+   "repo": "podman-desktop/podman-desktop",
+   "url": "https://github.com/podman-desktop/podman-desktop",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 8180,
+   "issues": [
+    {
+     "url": "https://github.com/podman-desktop/podman-desktop/issues/17285",
+     "title": "Unit tests flaky on Ubuntu due to Vitest v4 EnvironmentTeardownError",
+     "created_at": "2026-04-28T07:51:30Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "librechat-flaky",
+   "repo": "LibreChat-AI/LibreChat",
+   "url": "https://github.com/LibreChat-AI/LibreChat",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 47196,
+   "issues": [
+    {
+     "url": "https://github.com/LibreChat-AI/LibreChat/issues/14471",
+     "title": "Flaky api tests: PrincipalType undefined in packages/api/src/admin/config.ts under parallel jest workers",
+     "created_at": "2026-07-27T23:16:49Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "yosemite-crew-flaky",
+   "repo": "YosemiteCrew/Yosemite-Crew",
+   "url": "https://github.com/YosemiteCrew/Yosemite-Crew",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 2020,
+   "issues": [
+    {
+     "url": "https://github.com/YosemiteCrew/Yosemite-Crew/issues/1822",
+     "title": "Flaky mobileAppYC Jest suite: one random test fails per full parallel run",
+     "created_at": "2026-07-09T06:15:36Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "app-flaky",
+   "repo": "Expensify/App",
+   "url": "https://github.com/Expensify/App",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 5099,
+   "issues": [
+    {
+     "url": "https://github.com/Expensify/App/issues/73713",
+     "title": "[$250] Flaky jest tests",
+     "created_at": "2025-10-29T01:32:23Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "matrix-js-sdk-flaky",
+   "repo": "matrix-org/matrix-js-sdk",
+   "url": "https://github.com/matrix-org/matrix-js-sdk",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 2203,
+   "issues": [
+    {
+     "url": "https://github.com/matrix-org/matrix-js-sdk/issues/4331",
+     "title": "Flaky jest test: `Room \u203a recalculate \u203a recalculates in acceptable time without heroes`",
+     "created_at": "2024-07-29T12:11:45Z",
+     "state": "closed"
+    }
+   ]
+  },
+  {
+   "name": "puppeteer-flaky",
+   "repo": "puppeteer/puppeteer",
+   "url": "https://github.com/puppeteer/puppeteer",
+   "source": "github-issue-search",
+   "pin": "before-issue",
+   "stars": 95846,
+   "issues": [
+    {
+     "url": "https://github.com/puppeteer/puppeteer/issues/11751",
+     "title": "Test: ng-schematics jest test is flaky",
+     "created_at": "2024-01-25T10:14:14Z",
+     "state": "closed"
+    }
+   ]
+  }
+ ]
+}

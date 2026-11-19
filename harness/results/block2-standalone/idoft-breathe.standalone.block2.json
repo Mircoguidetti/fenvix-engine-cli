@@ -1,0 +1,635 @@
+{
+ "name": "idoft-breathe",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_command_context.py::test_manual_context_noccr",
+  "tests/test_loading.py::test_loading",
+  "tests/test_loading.py::test_loading_failure",
+  "tests/test_loading.py::test_reloading",
+  "tests/test_merger.py::test_context_commands",
+  "tests/test_merger.py::test_core_commands",
+  "tests/test_merger.py::test_invalid",
+  "tests/test_merger.py::test_noccr_commands"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009161",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "tests/test_command_context.py::test_manual_context_noccr",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 11,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_command_context.py::test_manual_context"
+   ],
+   "order": [
+    "tests/test_command_context.py::test_manual_context_noccr"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "MimicFailure",
+    "call",
+    "dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['spaghetti'].",
+    "/tmp/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "90c8acd1bb604cd84c14990a94acd35f"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "f1d2a2a7fa474ff5d3b8e06d04628425",
+     "90c8acd1bb604cd84c14990a94acd35f"
+    ]
+   },
+   "runs": 14,
+   "seconds": 17.4,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-breathe/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-breathe/standalone/bundles/test_manual_context_noccr-0058a6f0/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-breathe/standalone/bundles/test_manual_context_noccr-0058a6f0",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-breathe/standalone/bundles/test_manual_context_noccr-0058a6f0"
+  },
+  {
+   "test": "tests/test_loading.py::test_loading",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "brittle",
+   "prefix_length": 2,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_loading.py::test_loading_failure"
+   ],
+   "order": [
+    "tests/test_loading.py::test_loading"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "MimicFailure",
+    "call",
+    "dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['apple'].",
+    "/tmp/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d4e806f8fa368ae281b583ef9fc779ac"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = 44cd034c73b3072ba357f6a882a770ac  <>  [time] time.time @ breathe/grammar/master.py:211 = 1000",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "44cd034c73b3072ba357f6a882a770ac"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "breathe/grammar/master.py:211",
+     "v": "1000"
+    },
+    "fingerprints": [
+     "d06e487fad422f3e7f4383f966c73c60",
+     "d4e806f8fa368ae281b583ef9fc779ac"
+    ]
+   },
+   "runs": 21,
+   "seconds": 22.21,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-breathe/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-breathe/standalone/bundles/test_loading-caf2df6e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-breathe/standalone/bundles/test_loading-caf2df6e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-breathe/standalone/bundles/test_loading-caf2df6e"
+  },
+  {
+   "test": "tests/test_loading.py::test_loading_failure",
+   "configs_searched": 11,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "order",
+   "prefix_length": 10,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_merger.py::test_kaldi_weight_passthrough"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_merger.py::test_kaldi_weight_passthrough",
+    "tests/test_loading.py::test_loading_failure"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 1 == 0",
+    "/tmp/work/src/idoft-breathe/tests/test_loading.py:32"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "278d933bf3a98aede729f9a83a57a1de"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "47ce96a7740a72027800dd92f70d8897",
+     "278d933bf3a98aede729f9a83a57a1de"
+    ]
+   },
+   "runs": 29,
+   "seconds": 43.31,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-breathe/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-breathe/standalone/bundles/test_loading_failure-dc80637b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-breathe/standalone/bundles/test_loading_failure-dc80637b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-breathe/standalone/bundles/test_loading_failure-dc80637b"
+  },
+  {
+   "test": "tests/test_loading.py::test_reloading",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "brittle",
+   "prefix_length": 17,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_loading.py::test_loading_failure"
+   ],
+   "order": [
+    "tests/test_loading.py::test_reloading"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "MimicFailure",
+    "call",
+    "dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['parsnip'].",
+    "/tmp/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "cffc6823c4402e8cfaf436865032090d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = b9635eaf31c214c3c72ad6d717eb2553  <>  [time] time.time @ breathe/grammar/master.py:211 = 1000",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "b9635eaf31c214c3c72ad6d717eb2553"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "breathe/grammar/master.py:211",
+     "v": "1000"
+    },
+    "fingerprints": [
+     "df95ff425ee6e03eaebc10d22b93a0b9",
+     "cffc6823c4402e8cfaf436865032090d"
+    ]
+   },
+   "runs": 21,
+   "seconds": 20.19,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-breathe/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-breathe/standalone/bundles/test_reloading-67e05341/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-breathe/standalone/bundles/test_reloading-67e05341",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-breathe/standalone/bundles/test_reloading-67e05341"
+  },
+  {
+   "test": "tests/test_merger.py::test_context_commands",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 23,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_merger.py::test_core_commands"
+   ],
+   "order": [
+    "tests/test_merger.py::test_context_commands"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "MimicFailure",
+    "call",
+    "dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['test', 'three', 'test', 'four'].",
+    "/tmp/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ddd134a6b83c0c4107864ae4c2f672d4"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b9e6785af75e76956b77cce6d85849d9",
+     "ddd134a6b83c0c4107864ae4c2f672d4"
+    ]
+   },
+   "runs": 22,
+   "seconds": 21.05,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-breathe/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-breathe/standalone/bundles/test_context_commands-cb6dec9e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-breathe/standalone/bundles/test_context_commands-cb6dec9e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-breathe/standalone/bundles/test_context_commands-cb6dec9e"
+  },
+  {
+   "test": "tests/test_merger.py::test_core_commands",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 16,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_command_context.py::test_manual_context"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_command_context.py::test_manual_context",
+    "tests/test_merger.py::test_core_commands"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "MimicFailure",
+    "call",
+    "dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['test', 'three', 'test', 'two', 'banana', 'five'].",
+    "/tmp/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "8475728677d8580fa4cb6b54176ffc8d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "f434aa44cbf3afb37aaa57bf6500c1a9",
+     "8475728677d8580fa4cb6b54176ffc8d"
+    ]
+   },
+   "runs": 20,
+   "seconds": 19.35,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-breathe/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-breathe/standalone/bundles/test_core_commands-556f9376/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-breathe/standalone/bundles/test_core_commands-556f9376",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-breathe/standalone/bundles/test_core_commands-556f9376"
+  },
+  {
+   "test": "tests/test_merger.py::test_invalid",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 17,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_merger.py::test_context_commands"
+   ],
+   "order": [
+    "tests/test_merger.py::test_invalid"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 0 == 1",
+    "/tmp/work/src/idoft-breathe/tests/test_merger.py:84"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "e9c768d3beb18e369df1ccef9d8572df"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 6,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "e51e25d407081e16c5cad53f77b9800f",
+     "e9c768d3beb18e369df1ccef9d8572df"
+    ]
+   },
+   "runs": 20,
+   "seconds": 19.6,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-breathe/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-breathe/standalone/bundles/test_invalid-4ec44357/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-breathe/standalone/bundles/test_invalid-4ec44357",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-breathe/standalone/bundles/test_invalid-4ec44357"
+  },
+  {
+   "test": "tests/test_merger.py::test_noccr_commands",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "brittle",
+   "prefix_length": 20,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_merger.py::test_global_extras"
+   ],
+   "order": [
+    "tests/test_merger.py::test_noccr_commands"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "MimicFailure",
+    "call",
+    "dragonfly.engines.base.engine.MimicFailure: No matching rule found for words ['dictation', 'testing'].",
+    "/tmp/work/venvs/idoft-breathe/lib/python3.9/site-packages/dragonfly/engines/backend_text/engine.py:228"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "4993241fa8fb64409bdab482e1766d90"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = cece94ab6420c3e173f534536220a34e  <>  [time] time.time @ <site>/dragonfly/grammar/elements_compound.py:163 = 1000",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "cece94ab6420c3e173f534536220a34e"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/dragonfly/grammar/elements_compound.py:163",
+     "v": "1000"
+    },
+    "fingerprints": [
+     "4eed2d757713c121ecfa432ea7b4f1e0",
+     "4993241fa8fb64409bdab482e1766d90"
+    ]
+   },
+   "runs": 20,
+   "seconds": 19.43,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-breathe/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-breathe/standalone/bundles/test_noccr_commands-ca74dc28/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-breathe/standalone/bundles/test_noccr_commands-ca74dc28",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-breathe/standalone/bundles/test_noccr_commands-ca74dc28"
+  }
+ ],
+ "seconds": 182.55
+}

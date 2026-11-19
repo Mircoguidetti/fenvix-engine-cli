@@ -1,0 +1,1169 @@
+{
+ "name": "idoft-py-autodoc",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+  "examples/test_gen_each_case.py::TestUnittest::test_get",
+  "examples/test_gen_each_case.py::TestUnittest::test_post",
+  "examples/test_pytest.py::test_index",
+  "examples/test_pytest.py::test_post",
+  "examples/test_requests.py::TestUnittest::test_foo_bar",
+  "examples/test_requests.py::TestUnittest::test_get",
+  "examples/test_requests.py::TestUnittest::test_post",
+  "examples/test_unittest.py::TestUnittest::test_foo_bar",
+  "examples/test_unittest.py::TestUnittest::test_get",
+  "examples/test_unittest.py::TestUnittest::test_post",
+  "tests/test_autodoc.py::TestAutodoc::test_create_document",
+  "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+  "tests/test_autodoc.py::TestAutodoc::test_parse_responses",
+  "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009163",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "brittle",
+   "prefix_length": 1,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+   ],
+   "order": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/idoft-py-autodoc/var/test_foo_bar.rst'",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:171"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "f6b4d289d2cca684b9350969647a2ce6"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = 416126accd0438185ceb3ee0557f8ee7  <>  [time] time.time @ <site>/webtest/app.py:617 = 1000",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "416126accd0438185ceb3ee0557f8ee7"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/webtest/app.py:617",
+     "v": "1000"
+    },
+    "fingerprints": [
+     "35d9288ad2aa8c2e030476387c8106b8",
+     "f6b4d289d2cca684b9350969647a2ce6"
+    ]
+   },
+   "runs": 20,
+   "seconds": 22.14,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_foo_bar-a082d284/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_foo_bar-a082d284",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_foo_bar-a082d284"
+  },
+  {
+   "test": "examples/test_gen_each_case.py::TestUnittest::test_get",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "brittle",
+   "prefix_length": 2,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+   ],
+   "order": [
+    "examples/test_gen_each_case.py::TestUnittest::test_get"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/idoft-py-autodoc/var/test_get.rst'",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:171"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "9415d0d69ca1a98d59fa237a391cdb39"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = ece9511b534efdf7920f1b7b9b8ea2b3  <>  [time] time.time @ <site>/webtest/app.py:617 = 1000",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "ece9511b534efdf7920f1b7b9b8ea2b3"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/webtest/app.py:617",
+     "v": "1000"
+    },
+    "fingerprints": [
+     "4f1481d9e08354ff3bcafee213cd2b0d",
+     "9415d0d69ca1a98d59fa237a391cdb39"
+    ]
+   },
+   "runs": 19,
+   "seconds": 16.27,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_get-f333f00d/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_get-f333f00d",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_get-f333f00d"
+  },
+  {
+   "test": "examples/test_gen_each_case.py::TestUnittest::test_post",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "brittle",
+   "prefix_length": 3,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+   ],
+   "order": [
+    "examples/test_gen_each_case.py::TestUnittest::test_post"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/idoft-py-autodoc/var/test_post.rst'",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:171"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "fc45e5f74e1391c95de6834465683900"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [random] random.state @ <end> = bd61e76e0c267477ccff4d64454a05cb  <>  [time] time.time @ <site>/webtest/app.py:617 = 1000",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "bd61e76e0c267477ccff4d64454a05cb"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/webtest/app.py:617",
+     "v": "1000"
+    },
+    "fingerprints": [
+     "ef29c4c4a3c38a3143e7ba16858eb3f9",
+     "fc45e5f74e1391c95de6834465683900"
+    ]
+   },
+   "runs": 20,
+   "seconds": 17.04,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_post-ab7483f0/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_post-ab7483f0",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_post-ab7483f0"
+  },
+  {
+   "test": "examples/test_pytest.py::test_index",
+   "configs_searched": 8,
+   "status": "reproduced",
+   "config": "7",
+   "seed": 7,
+   "kind": "brittle",
+   "prefix_length": 14,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+   ],
+   "order": [
+    "examples/test_pytest.py::test_index"
+   ],
+   "outcome": "passed+teardown-error",
+   "exception": [
+    "OSError",
+    "teardown",
+    "OSError: Template file not found.",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:149"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d7c881502da7c69fbbbaf217afe46af9"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 4,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs passed+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed+teardown-error"
+    },
+    "fingerprints": [
+     "f41d847422a391f70f735e1d608678c8",
+     "d7c881502da7c69fbbbaf217afe46af9"
+    ]
+   },
+   "runs": 27,
+   "seconds": 31.63,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-seed=7 --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_index-9fcbac0f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_index-9fcbac0f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_index-9fcbac0f"
+  },
+  {
+   "test": "examples/test_pytest.py::test_post",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "brittle",
+   "prefix_length": 5,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+   ],
+   "order": [
+    "examples/test_pytest.py::test_post"
+   ],
+   "outcome": "passed+teardown-error",
+   "exception": [
+    "OSError",
+    "teardown",
+    "OSError: Template file not found.",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:149"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "f52bc7aa3a04007a0d53fed83dfdd05a"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 4,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs passed+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed+teardown-error"
+    },
+    "fingerprints": [
+     "1fece4aefd8ae9d2ea20a0bcd9eed374",
+     "f52bc7aa3a04007a0d53fed83dfdd05a"
+    ]
+   },
+   "runs": 19,
+   "seconds": 16.28,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_post-166747d4/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_post-166747d4",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_post-166747d4"
+  },
+  {
+   "test": "examples/test_requests.py::TestUnittest::test_foo_bar",
+   "configs_searched": 16,
+   "status": "reproduced",
+   "config": "15",
+   "seed": 15,
+   "kind": "brittle",
+   "prefix_length": 15,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+   ],
+   "order": [
+    "examples/test_requests.py::TestUnittest::test_foo_bar"
+   ],
+   "outcome": "passed+teardown-error",
+   "exception": [
+    "FileNotFoundError",
+    "teardown",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/idoft-py-autodoc/var/test_requests.rst'",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:171"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "132e2ecc9b3e90707b7d3349a6eb0aba"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs passed+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed+teardown-error"
+    },
+    "fingerprints": [
+     "c2aa2cbf3a3707fdbd94c304c69d632b",
+     "132e2ecc9b3e90707b7d3349a6eb0aba"
+    ]
+   },
+   "runs": 35,
+   "seconds": 43.58,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-seed=15 --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_foo_bar-fc439ace/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_foo_bar-fc439ace",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_foo_bar-fc439ace"
+  },
+  {
+   "test": "examples/test_requests.py::TestUnittest::test_get",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "brittle",
+   "prefix_length": 14,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+   ],
+   "order": [
+    "examples/test_requests.py::TestUnittest::test_get"
+   ],
+   "outcome": "passed+teardown-error",
+   "exception": [
+    "FileNotFoundError",
+    "teardown",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/idoft-py-autodoc/var/test_requests.rst'",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:171"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "38a0dcfb70e961a97992434c5aeeb6fa"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs passed+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed+teardown-error"
+    },
+    "fingerprints": [
+     "6065bdbf8ed8aafec84c447a5f839102",
+     "38a0dcfb70e961a97992434c5aeeb6fa"
+    ]
+   },
+   "runs": 26,
+   "seconds": 22.64,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_get-615c1019/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_get-615c1019",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_get-615c1019"
+  },
+  {
+   "test": "examples/test_requests.py::TestUnittest::test_post",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "brittle",
+   "prefix_length": 8,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+   ],
+   "order": [
+    "examples/test_requests.py::TestUnittest::test_post"
+   ],
+   "outcome": "passed+teardown-error",
+   "exception": [
+    "FileNotFoundError",
+    "teardown",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/idoft-py-autodoc/var/test_requests.rst'",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:171"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "042262b664323c97221c9988f1f257ac"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs passed+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed+teardown-error"
+    },
+    "fingerprints": [
+     "1617bd65d81fe35c382460c47501603d",
+     "042262b664323c97221c9988f1f257ac"
+    ]
+   },
+   "runs": 19,
+   "seconds": 16.28,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_post-3490f48b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_post-3490f48b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_post-3490f48b"
+  },
+  {
+   "test": "examples/test_unittest.py::TestUnittest::test_foo_bar",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "brittle",
+   "prefix_length": 3,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+   ],
+   "order": [
+    "examples/test_unittest.py::TestUnittest::test_foo_bar"
+   ],
+   "outcome": "passed+teardown-error",
+   "exception": [
+    "FileNotFoundError",
+    "teardown",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/idoft-py-autodoc/var/test_unittest.rst'",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:171"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b75a85d69d87070d5af3c750a5a4d705"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 4,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs passed+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed+teardown-error"
+    },
+    "fingerprints": [
+     "c16acd9f29e76362d3a8ecb38ee02cff",
+     "b75a85d69d87070d5af3c750a5a4d705"
+    ]
+   },
+   "runs": 22,
+   "seconds": 18.85,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_foo_bar-34616c7c/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_foo_bar-34616c7c",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_foo_bar-34616c7c"
+  },
+  {
+   "test": "examples/test_unittest.py::TestUnittest::test_get",
+   "configs_searched": 10,
+   "status": "reproduced",
+   "config": "9",
+   "seed": 9,
+   "kind": "brittle",
+   "prefix_length": 20,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+   ],
+   "order": [
+    "examples/test_unittest.py::TestUnittest::test_get"
+   ],
+   "outcome": "passed+teardown-error",
+   "exception": [
+    "FileNotFoundError",
+    "teardown",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/idoft-py-autodoc/var/test_unittest.rst'",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:171"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "54f320d851246b6e593c656b5663c913"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 4,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs passed+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed+teardown-error"
+    },
+    "fingerprints": [
+     "3c0e39ef672a0e189b89a895234a56de",
+     "54f320d851246b6e593c656b5663c913"
+    ]
+   },
+   "runs": 33,
+   "seconds": 28.82,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-seed=9 --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_get-299829a0/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_get-299829a0",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_get-299829a0"
+  },
+  {
+   "test": "examples/test_unittest.py::TestUnittest::test_post",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "brittle",
+   "prefix_length": 11,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+   ],
+   "order": [
+    "examples/test_unittest.py::TestUnittest::test_post"
+   ],
+   "outcome": "passed+teardown-error",
+   "exception": [
+    "FileNotFoundError",
+    "teardown",
+    "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/idoft-py-autodoc/var/test_unittest.rst'",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:171"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "4a49acd92459a81dcd51d173aaabe9aa"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 4,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs passed+teardown-error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed+teardown-error"
+    },
+    "fingerprints": [
+     "1b429f38317a8673b10d642bd75bae75",
+     "4a49acd92459a81dcd51d173aaabe9aa"
+    ]
+   },
+   "runs": 22,
+   "seconds": 18.98,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_post-210181bc/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_post-210181bc",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_post-210181bc"
+  },
+  {
+   "test": "tests/test_autodoc.py::TestAutodoc::test_create_document",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 13,
+   "minimal_length": 2,
+   "polluters": [
+    "examples/test_pytest.py::test_index"
+   ],
+   "setters": [],
+   "order": [
+    "examples/test_pytest.py::test_index",
+    "tests/test_autodoc.py::TestAutodoc::test_create_document"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "OSError",
+    "call",
+    "OSError: Template file not found.",
+    "/tmp/work/src/idoft-py-autodoc/autodoc/__init__.py:149"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a4418e34385b412a5e5937204d140ab5"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "fs",
+    "description": "event #0: os.scandir @ tests/test_autodoc.py:28 returned different values: \"<fd>|2|501c14dc3f33889a9a251b4c703ae25c\" vs \"<fd>|1|c13ecef43ec79cd6710129c2c64e5765\"",
+    "event_a": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "tests/test_autodoc.py:28",
+     "v": "<fd>|2|501c14dc3f33889a9a251b4c703ae25c"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "tests/test_autodoc.py:28",
+     "v": "<fd>|1|c13ecef43ec79cd6710129c2c64e5765"
+    },
+    "fingerprints": [
+     "30b5a62a5957d770da65c122a58c3655",
+     "a4418e34385b412a5e5937204d140ab5"
+    ]
+   },
+   "runs": 16,
+   "seconds": 13.83,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_create_document-c5972882/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_create_document-c5972882",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_create_document-c5972882"
+  },
+  {
+   "test": "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 25,
+   "minimal_length": 2,
+   "polluters": [
+    "examples/test_unittest.py::TestUnittest::test_post"
+   ],
+   "setters": [],
+   "order": [
+    "examples/test_unittest.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: '{\\n    \"response\": \"create\"\\n  }' != '{\\n  \"response\": \"create\"\\n}'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "733407b7dd253dbe21e47fce85e515f5"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "fs",
+    "description": "event #0: os.scandir @ tests/test_autodoc.py:28 returned different values: \"<fd>|2|501c14dc3f33889a9a251b4c703ae25c\" vs \"<fd>|1|c13ecef43ec79cd6710129c2c64e5765\"",
+    "event_a": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "tests/test_autodoc.py:28",
+     "v": "<fd>|2|501c14dc3f33889a9a251b4c703ae25c"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "tests/test_autodoc.py:28",
+     "v": "<fd>|1|c13ecef43ec79cd6710129c2c64e5765"
+    },
+    "fingerprints": [
+     "a3509da2e2266ac3437fcdc3339ca7bc",
+     "733407b7dd253dbe21e47fce85e515f5"
+    ]
+   },
+   "runs": 18,
+   "seconds": 15.68,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_parse_response-7bc7a2fe/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_parse_response-7bc7a2fe",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_parse_response-7bc7a2fe"
+  },
+  {
+   "test": "tests/test_autodoc.py::TestAutodoc::test_parse_responses",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 6,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: Lists differ: [{'status_code': 200, 'response_content_type[429 chars]**'}] != [{'response_content_type': 'application/json[429 chars]=='}]",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "155eb65c57ff765e902f4bbf5c46eb33"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "67cc09b82791346afb874585ffb4b8c6",
+     "155eb65c57ff765e902f4bbf5c46eb33"
+    ]
+   },
+   "runs": 19,
+   "seconds": 16.16,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_parse_responses-9ebbef71/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_parse_responses-9ebbef71",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_parse_responses-9ebbef71"
+  },
+  {
+   "test": "tests/test_autodoc.py::TestAutodoc::test_should_change_separators",
+   "configs_searched": 7,
+   "status": "reproduced",
+   "config": "6",
+   "seed": 6,
+   "kind": "order",
+   "prefix_length": 15,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_not_generate.py::TestAutodocNotGenerate::test_should_not_generate",
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: '=====' != '*****'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "83ef94ba7a73e38b382078b78f166f3e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "fs",
+    "description": "event #0: os.scandir @ tests/test_autodoc.py:28 returned different values: \"<fd>|2|501c14dc3f33889a9a251b4c703ae25c\" vs \"<fd>|1|c13ecef43ec79cd6710129c2c64e5765\"",
+    "event_a": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "tests/test_autodoc.py:28",
+     "v": "<fd>|2|501c14dc3f33889a9a251b4c703ae25c"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "tests/test_autodoc.py:28",
+     "v": "<fd>|1|c13ecef43ec79cd6710129c2c64e5765"
+    },
+    "fingerprints": [
+     "c8de07bc6c8c2b2a97318c960b3521bd",
+     "83ef94ba7a73e38b382078b78f166f3e"
+    ]
+   },
+   "runs": 21,
+   "seconds": 17.94,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-py-autodoc/bin/python",
+   "command": "pytest --det --det-seed=6 --det-order=/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_should_change_separators-f07858c6/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_should_change_separators-f07858c6",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-py-autodoc/standalone/bundles/test_should_change_separators-f07858c6"
+  }
+ ],
+ "seconds": 316.14
+}

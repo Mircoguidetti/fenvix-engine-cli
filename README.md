@@ -49,6 +49,26 @@ Other options: `--det-disable=time,fs,bytecode,...`, `--det-sleep=real`, `--det-
 `--det-allow-host=H`, `--det-max-events=N`, `--det-keep-aslr`, `--det-no-reexec`,
 `--det-outcomes=PATH` (outcome map, also without `--det`). See `pytest --help`.
 
+## Node / TypeScript (detjs)
+
+The same core drives `detjs`, a Level 0 shell for **Vitest** and **Jest**
+(napi-rs bindings in `crates/detpy-node`, shell in `node/`). Traces and
+cassettes share the Python format, so one verifier reads both.
+
+```bash
+cd node && npm run build && npm test     # build the addon; per-control tests on Vitest and Jest
+detjs vitest run --det                   # or detjs jest --det; DETJS=1 also enables it
+detjs vitest run --det --det-seed=3      # reproducible shuffle of files and tests
+detjs verify run1.jsonl .detjs/trace.jsonl
+detjs vitest run --det --det-cache=.detjs-cache   # skip test files with proof (receipts in .detjs/receipts.jsonl)
+```
+
+Cache with proof for Vitest and Jest (same Rust proof core, receipts and shared cache service as `pytest --det-cache`):
+[docs/NODE-CACHE.md](docs/NODE-CACHE.md).
+
+Controls, architecture and limits: [docs/NODE.md](docs/NODE.md). Harness:
+`harness/node/` (results in `harness/node/results/`).
+
 ## Tests
 
 ```bash

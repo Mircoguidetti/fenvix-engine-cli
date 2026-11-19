@@ -1,0 +1,78 @@
+{
+  "name": "h3",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/unjs/h3",
+  "commit": "2f29b875617e8daf39d25118f7474fd4c24fbfe1",
+  "commit_date": "2026-11-10T18:53:00+01:00",
+  "python": "node v20.20.2",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 14.216943188399991,
+  "det_mean_s": 25.945723397599988,
+  "slowdown_pct": 82.49860784961034,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 3386,
+  "unstable_baseline": 5,
+  "unstable_det": 0,
+  "became_stable": 5,
+  "outcome_changed_by_det": 4,
+  "covered": 3310,
+  "not_covered": 8,
+  "reproduced": 5,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    2,
+    1,
+    1,
+    1,
+    1
+  ],
+  "seeds_explored": 2,
+  "exploration_runs": 20,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "entropy": 4,
+    "time": 4
+  },
+  "pass_fail_reasons": {
+    "time": 3,
+    "random": 2
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "reproduced": [
+      "test/happydom.test.ts::happydom::render works (seed 2): event #0: [time] setTimeout @ <deps>/happy-dom/lib/async-task-manager/AsyncTaskManager.js:217 = schedule:1000000  <>  [outcome] outcome @  = failed",
+      "test/session.test.ts::session::node::gets same session back (node) (seed 1): event #2: [time] setTimeout @ <node> = schedule:3000000000  <>  [time] Date.now @ <node> = 3000",
+      "test/session.test.ts::session::node::set session data (node) (seed 1): event #5: [time] Date.now @ src/utils/internal/iron-crypto.ts:92 = 5000  <>  [time] Date.now @ src/utils/session.ts:227 = 5000"
+    ],
+    "changed:failed->passed": [
+      "test/session.test.ts::session::node::gets same session back (concurrent) (node)",
+      "test/session.test.ts::session::node::initiates session (node)"
+    ]
+  },
+  "runner": "vitest 5.0.5",
+  "node": "node v20.20.2",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 5.0.5; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v20.20.2\nJSON report written to /tmp/work/runs/h3/det_0.json\ndetjs: trace ../../runs/h3/det_0.jsonl: 3324 tests, order digest 2b6afae083f88e7fbc702ddc64ba600f\n\u001b[33mTesting types with tsc and vue-tsc is an experimental feature.\nBreaking changes might not follow SemVer, please pin Vitest's version when using it.\u001b[39m\n(node:5058) [UNDICI-FETCH-patch] Warning: Using `patch` is highly likely to result in a `405 Method Not Allowed`. `PATCH` is much more likely to succeed.\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:5201) [UNDICI-FETCH-patch] Warning: Using `patch` is highly likely to result in a `405 Method Not Allowed`. `PATCH` is much more likely to succeed.\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:5234) [UNDICI-FETCH-patch] Warning: Using `patch` is highly likely to result in a `405 Method Not Allowed`. `PATCH` is much more likely to succeed.\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:5862) [UNDICI-FETCH-patch] Warning: Using `patch` is highly likely to result in a `405 Method Not Allowed`. `PATCH` is much more likely to succeed.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  },
+  "not_reproduced_causes": {}
+}

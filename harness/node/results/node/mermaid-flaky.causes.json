@@ -1,0 +1,38 @@
+[
+ {
+  "repo": "mermaid-flaky",
+  "pool": "flaky",
+  "nodeid": "packages/mermaid/src/diagrams/sequence/sequenceDiagram.spec.js::more than one sequence diagram::should not have duplicated messages",
+  "class": "concurrency/event-order",
+  "evidence": "test source uses async , await ",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=1;passed=9",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ },
+ {
+  "repo": "mermaid-flaky",
+  "pool": "flaky",
+  "nodeid": "packages/mermaid/src/diagrams/sequence/sequenceDiagram.spec.js::when parsing a sequenceDiagram::should handle notes and messages with nowrap or line breaks",
+  "class": "concurrency/event-order",
+  "evidence": "test source uses async , await ",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=2;passed=8",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ },
+ {
+  "repo": "mermaid-flaky",
+  "pool": "flaky",
+  "nodeid": "packages/mermaid/src/diagrams/sequence/sequenceDiagram.spec.js::when parsing a sequenceDiagram::should handle notes and messages without wrap specified",
+  "class": "concurrency/event-order",
+  "evidence": "test source uses async , await ",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=2;passed=8",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ }
+]

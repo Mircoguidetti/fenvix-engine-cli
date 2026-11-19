@@ -1,0 +1,364 @@
+{
+ "meta": {
+  "set": "node-validate4",
+  "runs": 2,
+  "seeds": 1,
+  "confirm": 2,
+  "timing_runs": 3,
+  "executor": "GitHub Actions (ubuntu-latest)",
+  "run_url": "https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/43917700732",
+  "detjs": "0.1.0",
+  "date": "2026-11-16 17:31 UTC",
+  "selection": {
+   "selected": [
+    "luxon",
+    "mobx",
+    "pw-slate"
+   ],
+   "discarded": []
+  },
+  "rounds": [
+   {
+    "name": "luxon",
+    "kind": "popular",
+    "status": "ok",
+    "url": "https://github.com/moment/luxon",
+    "commit": "f427515a38f6a671f8de663e6bcc040ed81f114e",
+    "commit_date": "2026-08-09T14:44:44+02:00",
+    "python": "node v18.20.8",
+    "install": "npm ci --no-audit --no-fund",
+    "pytest_args": [],
+    "xdist": true,
+    "runs": 2,
+    "baseline_mean_s": 2.1577118489999982,
+    "det_mean_s": 8.961929658000003,
+    "slowdown_pct": 315.34413699185325,
+    "precompile_first_s": null,
+    "precompile_rest_median_s": null,
+    "tests": 1204,
+    "unstable_baseline": 0,
+    "unstable_det": 0,
+    "became_stable": 0,
+    "outcome_changed_by_det": 0,
+    "covered": 1204,
+    "not_covered": 0,
+    "reproduced": 0,
+    "never_fails_under_det": 0,
+    "always_fails_under_det": 0,
+    "fails_sometimes_under_det": 0,
+    "seeds_needed": [],
+    "seeds_explored": 0,
+    "exploration_runs": 0,
+    "exploration_budget_hit": false,
+    "reasons": {},
+    "pass_fail_reasons": {},
+    "broken_by_det": 0,
+    "broken_always": 0,
+    "broken_causes": {},
+    "broken_examples": {},
+    "ablation_runs": 0,
+    "known_flaky": 0,
+    "known_present": 0,
+    "known_unstable_baseline": 0,
+    "known_reproduced": 0,
+    "known_categories": {},
+    "examples": {},
+    "runner": "jest 29.4.3",
+    "node": "node v18.20.8",
+    "documented_source": "",
+    "documented_hints": [],
+    "random_order_baseline": false,
+    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+    "diagnostics": {
+     "first_det_log_tail": " 314 |   });\n      315 |   test(\"Ordinal, end just weekday\", () => {\n\n      at Object.toBe (test/interval/parse.test.js:312:29)\n\n  \u25cf Interval.fromISO defaults missing values in end to start \u203a Ordinal, end just weekday\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: \"2025-05-12T09:00:00.000-04:00\"\n    Received: \"2025-05-12T09:00:00.000+00:00\"\n\n      315 |   test(\"Ordinal, end just weekday\", () => {\n      316 |     const i = Interval.fromISO(\"2025-132T09/4T15:30\");\n    > 317 |     expect(i.start.toISO()).toBe(\"2025-05-12T09:00:00.000-04:00\");\n          |                             ^\n      318 |     expect(i.end.toISO()).toBe(\"2025-05-15T15:30:00.000-04:00\");\n      319 |   });\n      320 |   test(\"Ordinal, end weekNumber and weekday\", () => {\n\n      at Object.toBe (test/interval/parse.test.js:317:29)\n\n  \u25cf Interval.fromISO defaults missing values in end to start \u203a Ordinal, end weekNumber and weekday\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: \"2025-05-12T09:00:00.000-04:00\"\n    Received: \"2025-05-12T09:00:00.000+00:00\"\n\n      320 |   test(\"Ordinal, end weekNumber and weekday\", () => {\n      321 |     const i = Interval.fromISO(\"2025-132T09/W21-1T15:30\");\n    > 322 |     expect(i.start.toISO()).toBe(\"2025-05-12T09:00:00.000-04:00\");\n          |                             ^\n      323 |     expect(i.end.toISO()).toBe(\"2025-05-19T15:30:00.000-04:00\");\n      324 |   });\n      325 | });\n\n      at Object.toBe (test/interval/parse.test.js:322:29)\n\nFAIL test/zones/local.test.js\n  \u25cf SystemZone.instance provides valid ...\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: \"America/New_York\"\n    Received: \"UTC\"\n\n      13 |\n      14 |   // todo: figure out how to test these without inadvertently testing IANAZone\n    > 15 |   expect(SystemZone.instance.name).toBe(\"America/New_York\"); // this is true for the provided Docker container, what's the right way to test it?\n         |                                    ^\n      16 |   // expect(SystemZone.instance.offsetName()).toBe(\"UTC\");\n      17 |   // expect(SystemZone.instance.formatOffset(0, \"short\")).toBe(\"+00:00\");\n      18 |   // expect(SystemZone.instance.offset()).toBe(0);\n\n      at Object.toBe (test/zones/local.test.js:15:36)\n\n\nTest Suites: 9 failed, 49 passed, 58 total\nTests:       40 failed, 1182 passed, 1222 total\nSnapshots:   1 passed, 1 total\nTime:        9.217 s\nRan all test suites.\nTest results written to: ../../runs/luxon/det_0.json\n"
+    },
+    "not_reproduced_causes": {},
+    "executor": "GitHub Actions",
+    "date": "2026-11-16T17:24:15.799176+00:00"
+   },
+   {
+    "name": "mobx",
+    "kind": "popular",
+    "status": "ok",
+    "url": "https://github.com/mobxjs/mobx",
+    "commit": "bf94b8e866c58995f78189c5412cf06042012720",
+    "commit_date": "2026-11-13T20:04:02+07:00",
+    "python": "node v22.23.5",
+    "install": "npm ci --no-audit --no-fund",
+    "pytest_args": [],
+    "xdist": true,
+    "runs": 2,
+    "baseline_mean_s": 29.016733316,
+    "det_mean_s": 30.996324700000002,
+    "slowdown_pct": 6.8222406789962164,
+    "precompile_first_s": null,
+    "precompile_rest_median_s": null,
+    "tests": 1027,
+    "unstable_baseline": 2,
+    "unstable_det": 0,
+    "became_stable": 2,
+    "outcome_changed_by_det": 12,
+    "covered": 1001,
+    "not_covered": 0,
+    "reproduced": 1,
+    "never_fails_under_det": 1,
+    "always_fails_under_det": 0,
+    "fails_sometimes_under_det": 0,
+    "seeds_needed": [
+     1
+    ],
+    "seeds_explored": 1,
+    "exploration_runs": 2,
+    "exploration_budget_hit": false,
+    "reasons": {},
+    "pass_fail_reasons": {
+     "outcome-only": 1
+    },
+    "broken_by_det": 1,
+    "broken_always": 1,
+    "broken_causes": {
+     "fixed-order (fails without --det too) | Error": 1
+    },
+    "broken_examples": {
+     "fixed-order (fails without --det too) | Error": [
+      "packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::plugins from babel overrides and env count as extra transforms: Error: expect(received).toContain(expected) // indexOf (first diverging source: -)"
+     ]
+    },
+    "ablation_runs": 6,
+    "known_flaky": 0,
+    "known_present": 0,
+    "known_unstable_baseline": 0,
+    "known_reproduced": 0,
+    "known_categories": {},
+    "examples": {
+     "changed:passed->failed": [
+      "packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::plugins from babel overrides and env count as extra transforms"
+     ],
+     "changed:failed->passed": [
+      "packages/mobx/__tests__/base/action.js::auto action should not update state from inside a derivation",
+      "packages/mobx/__tests__/base/action.js::error logging, #1836 - 1"
+     ],
+     "reproduced": [
+      "packages/mobx/__tests__/base/action.js::should be possible to change observed state in an action called from computed (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+     ]
+    },
+    "runner": "jest 30.3.0",
+    "node": "node v22.23.5",
+    "documented_source": "",
+    "documented_hints": [],
+    "random_order_baseline": true,
+    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+    "diagnostics": {
+     "first_det_log_tail": ":\u001b[93m23\u001b[0m - \u001b[91merror\u001b[0m\u001b[90m TS2307: \u001b[0mCannot find module 'mobx' or its corresponding type declarations.\n\n    \u001b[7m3\u001b[0m import * as mobx from \"mobx\"\n    \u001b[7m \u001b[0m \u001b[91m                      ~~~~~~\u001b[0m\n\nFAIL packages/mobx/__tests__/base/extras.js\n  \u25cf Default debug names - production\n\n    Cannot find module '../../dist/mobx.cjs.production.min.js' from '__tests__/base/extras.js'\n\n      921 |\n      922 | test(\"Default debug names - production\", () => {\n    > 923 |     const mobx = require(`../../dist/mobx.cjs.production.min.js`)\n          |                  ^\n      924 |\n      925 |     expect(mobx.getDebugName(mobx.observable({ x() {} }, { x: mobx.action }).x)).toBe(\"x\") // perhaps should be \"<unnamed action>\"??\n      926 |     expect(mobx.getDebugName(mobx.createAtom())).toBe(\"Atom\")\n\n      at Resolver._throwModNotFoundError (../../node_modules/jest-resolve/build/index.js:863:11)\n      at Object.<anonymous> (__tests__/base/extras.js:923:18)\n\n  \u25cf User provided debug names are always respected\n\n    Cannot find module '../../dist/mobx.cjs.production.min.js' from '__tests__/base/extras.js'\n\n      947 | test(\"User provided debug names are always respected\", () => {\n      948 |     const mobxDevelopment = mobx\n    > 949 |     const mobxProduction = require(`../../dist/mobx.cjs.production.min.js`)\n          |                            ^\n      950 |\n      951 |     const name = \"CustomName\"\n      952 |\n\n      at Resolver._throwModNotFoundError (../../node_modules/jest-resolve/build/index.js:863:11)\n      at Object.<anonymous> (__tests__/base/extras.js:949:28)\n\nFAIL packages/mobx/__tests__/base/make-observable.ts\n  \u25cf makeAutoObservable + production build #2751\n\n    Cannot find module '../../dist/mobx.cjs.production.min.js' from '__tests__/base/make-observable.ts'\n\n      1077 |\n      1078 | test(\"makeAutoObservable + production build #2751\", () => {\n    > 1079 |     const mobx = require(`../../dist/mobx.cjs.production.min.js`)\n           |                  ^\n      1080 |     class Foo {\n      1081 |         x = \"x\"\n      1082 |         constructor() {\n\n      at Resolver._throwModNotFoundError (../../node_modules/jest-resolve/build/index.js:863:11)\n      at Object.<anonymous> (__tests__/base/make-observable.ts:1079:18)\n\n\nTest Suites: 29 failed, 43 passed, 72 total\nTests:       4 failed, 9 skipped, 1065 passed, 1078 total\nSnapshots:   82 passed, 82 total\nTime:        34.71 s\nRan all test suites in 7 projects.\nTest results written to: ../../runs/mobx/det_0.json\n"
+    },
+    "not_reproduced_causes": {
+     "unknown": 1
+    },
+    "executor": "GitHub Actions",
+    "date": "2026-11-16T17:31:38.701786+00:00"
+   },
+   {
+    "name": "pw-slate",
+    "kind": "playwright",
+    "status": "no-runner",
+    "detail": "@playwright/test / playwright not resolvable: t evalTypeScript (node:internal/process/execution:291:3)\n    at node:internal/main/eval_string:74:3 {\n  code: 'MODULE_NOT_FOUND',\n  requireStack: [ '/tmp/work/src/pw-slate/x.js' ]\n}\n\nNode.js v22.23.5\n",
+    "executor": "GitHub Actions",
+    "date": "2026-11-16T17:24:17.989821+00:00"
+   }
+  ],
+  "notes": [
+   "Flaky pool: the dataset of Hashemi, Tahir, Rasheed, 'An Empirical Study of Flaky Tests in JavaScript' (ICSME 2022, Zenodo 10.5281/zenodo.6673741) is the public dataset of JavaScript flaky tests used first: each project is pinned at the parent of a commit that fixes a flaky test. It covers only 18 projects, most of which do not run their suites with Jest or Vitest (Node core, Atom, Electron, Meteor, jQuery/QUnit, Karma suites), so it cannot supply 25 projects; the pool is completed with popular projects that have GitHub issues documenting flaky Jest/Vitest tests, each pinned at the last commit before the issue was opened.",
+   "The JS-TOD (order-dependent Jest tests) and environmental-flakiness replication packages were not fetched.",
+   "Only GitHub-hosted runners were used; numbers labelled NOISY come from shared virtual machines."
+  ]
+ },
+ "totals": {
+  "all": {
+   "tests": 2231,
+   "unstable_baseline": 2,
+   "unstable_det": 0,
+   "became_stable": 2,
+   "outcome_changed_by_det": 12,
+   "covered": 2205,
+   "not_covered": 0,
+   "reproduced": 1,
+   "never_fails_under_det": 1,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "broken_by_det": 1,
+   "broken_always": 1
+  },
+  "flaky": {},
+  "popular": {
+   "tests": 2231,
+   "unstable_baseline": 2,
+   "unstable_det": 0,
+   "became_stable": 2,
+   "outcome_changed_by_det": 12,
+   "covered": 2205,
+   "not_covered": 0,
+   "reproduced": 1,
+   "never_fails_under_det": 1,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "broken_by_det": 1,
+   "broken_always": 1
+  }
+ },
+ "reasons": {},
+ "pass_fail_reasons": {
+  "outcome-only": 1
+ },
+ "broken_causes": {
+  "fixed-order (fails without --det too) | Error": 1
+ },
+ "not_reproduced_causes": {
+  "unknown": 1
+ },
+ "timings": [],
+ "repos": [
+  {
+   "name": "luxon",
+   "kind": "popular",
+   "status": "ok",
+   "url": "https://github.com/moment/luxon",
+   "commit": "f427515a38f6a671f8de663e6bcc040ed81f114e",
+   "commit_date": "2026-08-09T14:44:44+02:00",
+   "python": "node v18.20.8",
+   "install": "npm ci --no-audit --no-fund",
+   "pytest_args": [],
+   "xdist": true,
+   "runs": 2,
+   "baseline_mean_s": 2.1577118489999982,
+   "det_mean_s": 8.961929658000003,
+   "slowdown_pct": 315.34413699185325,
+   "precompile_first_s": null,
+   "precompile_rest_median_s": null,
+   "tests": 1204,
+   "unstable_baseline": 0,
+   "unstable_det": 0,
+   "became_stable": 0,
+   "outcome_changed_by_det": 0,
+   "covered": 1204,
+   "not_covered": 0,
+   "reproduced": 0,
+   "never_fails_under_det": 0,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "seeds_needed": [],
+   "seeds_explored": 0,
+   "exploration_runs": 0,
+   "exploration_budget_hit": false,
+   "reasons": {},
+   "pass_fail_reasons": {},
+   "broken_by_det": 0,
+   "broken_always": 0,
+   "broken_causes": {},
+   "broken_examples": {},
+   "ablation_runs": 0,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "known_categories": {},
+   "examples": {},
+   "runner": "jest 29.4.3",
+   "node": "node v18.20.8",
+   "documented_source": "",
+   "documented_hints": [],
+   "random_order_baseline": false,
+   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+   "diagnostics": {
+    "first_det_log_tail": " 314 |   });\n      315 |   test(\"Ordinal, end just weekday\", () => {\n\n      at Object.toBe (test/interval/parse.test.js:312:29)\n\n  \u25cf Interval.fromISO defaults missing values in end to start \u203a Ordinal, end just weekday\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: \"2025-05-12T09:00:00.000-04:00\"\n    Received: \"2025-05-12T09:00:00.000+00:00\"\n\n      315 |   test(\"Ordinal, end just weekday\", () => {\n      316 |     const i = Interval.fromISO(\"2025-132T09/4T15:30\");\n    > 317 |     expect(i.start.toISO()).toBe(\"2025-05-12T09:00:00.000-04:00\");\n          |                             ^\n      318 |     expect(i.end.toISO()).toBe(\"2025-05-15T15:30:00.000-04:00\");\n      319 |   });\n      320 |   test(\"Ordinal, end weekNumber and weekday\", () => {\n\n      at Object.toBe (test/interval/parse.test.js:317:29)\n\n  \u25cf Interval.fromISO defaults missing values in end to start \u203a Ordinal, end weekNumber and weekday\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: \"2025-05-12T09:00:00.000-04:00\"\n    Received: \"2025-05-12T09:00:00.000+00:00\"\n\n      320 |   test(\"Ordinal, end weekNumber and weekday\", () => {\n      321 |     const i = Interval.fromISO(\"2025-132T09/W21-1T15:30\");\n    > 322 |     expect(i.start.toISO()).toBe(\"2025-05-12T09:00:00.000-04:00\");\n          |                             ^\n      323 |     expect(i.end.toISO()).toBe(\"2025-05-19T15:30:00.000-04:00\");\n      324 |   });\n      325 | });\n\n      at Object.toBe (test/interval/parse.test.js:322:29)\n\nFAIL test/zones/local.test.js\n  \u25cf SystemZone.instance provides valid ...\n\n    expect(received).toBe(expected) // Object.is equality\n\n    Expected: \"America/New_York\"\n    Received: \"UTC\"\n\n      13 |\n      14 |   // todo: figure out how to test these without inadvertently testing IANAZone\n    > 15 |   expect(SystemZone.instance.name).toBe(\"America/New_York\"); // this is true for the provided Docker container, what's the right way to test it?\n         |                                    ^\n      16 |   // expect(SystemZone.instance.offsetName()).toBe(\"UTC\");\n      17 |   // expect(SystemZone.instance.formatOffset(0, \"short\")).toBe(\"+00:00\");\n      18 |   // expect(SystemZone.instance.offset()).toBe(0);\n\n      at Object.toBe (test/zones/local.test.js:15:36)\n\n\nTest Suites: 9 failed, 49 passed, 58 total\nTests:       40 failed, 1182 passed, 1222 total\nSnapshots:   1 passed, 1 total\nTime:        9.217 s\nRan all test suites.\nTest results written to: ../../runs/luxon/det_0.json\n"
+   },
+   "not_reproduced_causes": {}
+  },
+  {
+   "name": "mobx",
+   "kind": "popular",
+   "status": "ok",
+   "url": "https://github.com/mobxjs/mobx",
+   "commit": "bf94b8e866c58995f78189c5412cf06042012720",
+   "commit_date": "2026-11-13T20:04:02+07:00",
+   "python": "node v22.23.5",
+   "install": "npm ci --no-audit --no-fund",
+   "pytest_args": [],
+   "xdist": true,
+   "runs": 2,
+   "baseline_mean_s": 29.016733316,
+   "det_mean_s": 30.996324700000002,
+   "slowdown_pct": 6.8222406789962164,
+   "precompile_first_s": null,
+   "precompile_rest_median_s": null,
+   "tests": 1027,
+   "unstable_baseline": 2,
+   "unstable_det": 0,
+   "became_stable": 2,
+   "outcome_changed_by_det": 12,
+   "covered": 1001,
+   "not_covered": 0,
+   "reproduced": 1,
+   "never_fails_under_det": 1,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "seeds_needed": [
+    1
+   ],
+   "seeds_explored": 1,
+   "exploration_runs": 2,
+   "exploration_budget_hit": false,
+   "reasons": {},
+   "pass_fail_reasons": {
+    "outcome-only": 1
+   },
+   "broken_by_det": 1,
+   "broken_always": 1,
+   "broken_causes": {
+    "fixed-order (fails without --det too) | Error": 1
+   },
+   "broken_examples": {
+    "fixed-order (fails without --det too) | Error": [
+     "packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::plugins from babel overrides and env count as extra transforms: Error: expect(received).toContain(expected) // indexOf (first diverging source: -)"
+    ]
+   },
+   "ablation_runs": 6,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "known_categories": {},
+   "examples": {
+    "changed:passed->failed": [
+     "packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::plugins from babel overrides and env count as extra transforms"
+    ],
+    "changed:failed->passed": [
+     "packages/mobx/__tests__/base/action.js::auto action should not update state from inside a derivation",
+     "packages/mobx/__tests__/base/action.js::error logging, #1836 - 1"
+    ],
+    "reproduced": [
+     "packages/mobx/__tests__/base/action.js::should be possible to change observed state in an action called from computed (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ]
+   },
+   "runner": "jest 30.3.0",
+   "node": "node v22.23.5",
+   "documented_source": "",
+   "documented_hints": [],
+   "random_order_baseline": true,
+   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+   "diagnostics": {
+    "first_det_log_tail": ":\u001b[93m23\u001b[0m - \u001b[91merror\u001b[0m\u001b[90m TS2307: \u001b[0mCannot find module 'mobx' or its corresponding type declarations.\n\n    \u001b[7m3\u001b[0m import * as mobx from \"mobx\"\n    \u001b[7m \u001b[0m \u001b[91m                      ~~~~~~\u001b[0m\n\nFAIL packages/mobx/__tests__/base/extras.js\n  \u25cf Default debug names - production\n\n    Cannot find module '../../dist/mobx.cjs.production.min.js' from '__tests__/base/extras.js'\n\n      921 |\n      922 | test(\"Default debug names - production\", () => {\n    > 923 |     const mobx = require(`../../dist/mobx.cjs.production.min.js`)\n          |                  ^\n      924 |\n      925 |     expect(mobx.getDebugName(mobx.observable({ x() {} }, { x: mobx.action }).x)).toBe(\"x\") // perhaps should be \"<unnamed action>\"??\n      926 |     expect(mobx.getDebugName(mobx.createAtom())).toBe(\"Atom\")\n\n      at Resolver._throwModNotFoundError (../../node_modules/jest-resolve/build/index.js:863:11)\n      at Object.<anonymous> (__tests__/base/extras.js:923:18)\n\n  \u25cf User provided debug names are always respected\n\n    Cannot find module '../../dist/mobx.cjs.production.min.js' from '__tests__/base/extras.js'\n\n      947 | test(\"User provided debug names are always respected\", () => {\n      948 |     const mobxDevelopment = mobx\n    > 949 |     const mobxProduction = require(`../../dist/mobx.cjs.production.min.js`)\n          |                            ^\n      950 |\n      951 |     const name = \"CustomName\"\n      952 |\n\n      at Resolver._throwModNotFoundError (../../node_modules/jest-resolve/build/index.js:863:11)\n      at Object.<anonymous> (__tests__/base/extras.js:949:28)\n\nFAIL packages/mobx/__tests__/base/make-observable.ts\n  \u25cf makeAutoObservable + production build #2751\n\n    Cannot find module '../../dist/mobx.cjs.production.min.js' from '__tests__/base/make-observable.ts'\n\n      1077 |\n      1078 | test(\"makeAutoObservable + production build #2751\", () => {\n    > 1079 |     const mobx = require(`../../dist/mobx.cjs.production.min.js`)\n           |                  ^\n      1080 |     class Foo {\n      1081 |         x = \"x\"\n      1082 |         constructor() {\n\n      at Resolver._throwModNotFoundError (../../node_modules/jest-resolve/build/index.js:863:11)\n      at Object.<anonymous> (__tests__/base/make-observable.ts:1079:18)\n\n\nTest Suites: 29 failed, 43 passed, 72 total\nTests:       4 failed, 9 skipped, 1065 passed, 1078 total\nSnapshots:   82 passed, 82 total\nTime:        34.71 s\nRan all test suites in 7 projects.\nTest results written to: ../../runs/mobx/det_0.json\n"
+   },
+   "not_reproduced_causes": {
+    "unknown": 1
+   }
+  }
+ ]
+}

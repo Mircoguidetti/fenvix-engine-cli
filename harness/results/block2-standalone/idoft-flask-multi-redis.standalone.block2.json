@@ -1,0 +1,1103 @@
+{
+ "name": "idoft-flask-multi-redis",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "test/integration/test_flask_multi_redis.py::test_aggregated_delitem_method",
+  "test/integration/test_flask_multi_redis.py::test_aggregated_setitem_method",
+  "test/integration/test_flask_multi_redis.py::test_aggregator_keys_method",
+  "test/integration/test_flask_multi_redis.py::test_aggregator_set_method",
+  "test/integration/test_flask_multi_redis.py::test_aggregator_strategy",
+  "test/integration/test_flask_multi_redis.py::test_custom_default_config",
+  "test/integration/test_flask_multi_redis.py::test_custom_node",
+  "test/integration/test_flask_multi_redis.py::test_custom_prefix",
+  "test/integration/test_flask_multi_redis.py::test_extension_registration_if_app_has_no_extensions",
+  "test/integration/test_flask_multi_redis.py::test_init_app",
+  "test/integration/test_flask_multi_redis.py::test_loadbalanced_delitem_method",
+  "test/integration/test_flask_multi_redis.py::test_loadbalanced_setitem_method",
+  "test/integration/test_flask_multi_redis.py::test_methods_transmission_from_aggregator",
+  "test/integration/test_flask_multi_redis.py::test_task_runner"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009167",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_aggregated_delitem_method",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 31,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_aggregated_delitem_method"
+   ],
+   "outcome": "error",
+   "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6fc828330e79296ba4e94163743199dd"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "b62d8c9a5ec3af0cf1da523feddd6ded",
+     "6fc828330e79296ba4e94163743199dd"
+    ]
+   },
+   "runs": 21,
+   "seconds": 20.1,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregated_delitem_method-244daf63/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregated_delitem_method-244daf63",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregated_delitem_method-244daf63"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_aggregated_setitem_method",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 17,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_aggregated_setitem_method"
+   ],
+   "outcome": "error",
+   "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2bad9396e63e4ca9a1772ca2586ef822"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "d7e9856df0846dd8b82e7672475fff51",
+     "2bad9396e63e4ca9a1772ca2586ef822"
+    ]
+   },
+   "runs": 20,
+   "seconds": 13.71,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregated_setitem_method-7045a5d3/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregated_setitem_method-7045a5d3",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregated_setitem_method-7045a5d3"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_aggregator_keys_method",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 29,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_aggregator_keys_method"
+   ],
+   "outcome": "error",
+   "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6efe4631d2c411662a419200b91d38df"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "8aea1faf57859b9f76a4cfcbd8698f14",
+     "6efe4631d2c411662a419200b91d38df"
+    ]
+   },
+   "runs": 21,
+   "seconds": 14.06,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregator_keys_method-0e0b96e9/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregator_keys_method-0e0b96e9",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregator_keys_method-0e0b96e9"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_aggregator_set_method",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 23,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_aggregator_set_method"
+   ],
+   "outcome": "error",
+   "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "144090f45c392d465e6eecace5161df7"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "dfed71c7de01be9ba3472f3c6a9c01e2",
+     "144090f45c392d465e6eecace5161df7"
+    ]
+   },
+   "runs": 20,
+   "seconds": 13.33,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregator_set_method-ce641c6e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregator_set_method-ce641c6e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregator_set_method-ce641c6e"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_aggregator_strategy",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 10,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_aggregator_strategy"
+   ],
+   "outcome": "error",
+   "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1a136fe4e74167e229183ed53e9d6f0d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [random] random.randint @ flask_multi_redis/aggregator.py:96 = 0  <>  [random] random.state @ <end> = 5e7479f167333bc4aaad3e7f7b507caa",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.randint",
+     "at": "flask_multi_redis/aggregator.py:96",
+     "v": "0"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "5e7479f167333bc4aaad3e7f7b507caa"
+    },
+    "fingerprints": [
+     "3d1e3b5583c7fcfecbd66f8c7cc0fbef",
+     "1a136fe4e74167e229183ed53e9d6f0d"
+    ]
+   },
+   "runs": 19,
+   "seconds": 12.99,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregator_strategy-5f691bc8/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregator_strategy-5f691bc8",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_aggregator_strategy-5f691bc8"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_custom_default_config",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 21,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_custom_default_config"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "TypeError",
+    "call",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "8947241cb543ae6e820b8043068d2ec5"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [random] random.randint @ flask_multi_redis/main.py:110 = 0  <>  [random] random.state @ <end> = e5bced255d653971b0f1d2e6f300c56b",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.randint",
+     "at": "flask_multi_redis/main.py:110",
+     "v": "0"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "e5bced255d653971b0f1d2e6f300c56b"
+    },
+    "fingerprints": [
+     "d02704882ece888975ef7e261668609f",
+     "8947241cb543ae6e820b8043068d2ec5"
+    ]
+   },
+   "runs": 20,
+   "seconds": 13.51,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_custom_default_config-36bd9efa/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_custom_default_config-36bd9efa",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_custom_default_config-36bd9efa"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_custom_node",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 8,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_custom_node"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "TypeError",
+    "call",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d9e035a5c4aba859e726f51068371bd0"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [random] random.randint @ flask_multi_redis/main.py:110 = 0  <>  [random] random.state @ <end> = 0cbf81d20f8895c6e516493643c38a9a",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.randint",
+     "at": "flask_multi_redis/main.py:110",
+     "v": "0"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "0cbf81d20f8895c6e516493643c38a9a"
+    },
+    "fingerprints": [
+     "0cfa5dba0550b5f3aff13f0039b6bfcd",
+     "d9e035a5c4aba859e726f51068371bd0"
+    ]
+   },
+   "runs": 19,
+   "seconds": 13.21,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_custom_node-39a3517b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_custom_node-39a3517b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_custom_node-39a3517b"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_custom_prefix",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 24,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_custom_prefix"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "TypeError",
+    "call",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b0ff27ed69dfc018b36d649f5ad91b45"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [random] random.randint @ flask_multi_redis/main.py:110 = 0  <>  [random] random.state @ <end> = a9fd9f952a0ec83601267f434668610a",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.randint",
+     "at": "flask_multi_redis/main.py:110",
+     "v": "0"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "a9fd9f952a0ec83601267f434668610a"
+    },
+    "fingerprints": [
+     "9361f36523fc88a1059aac7ab954d103",
+     "b0ff27ed69dfc018b36d649f5ad91b45"
+    ]
+   },
+   "runs": 20,
+   "seconds": 13.22,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_custom_prefix-48ad7342/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_custom_prefix-48ad7342",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_custom_prefix-48ad7342"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_extension_registration_if_app_has_no_extensions",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 12,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_extension_registration_if_app_has_no_extensions"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "TypeError",
+    "call",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "06fdafb997e8e9e1f485f06b6313d0b2"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "51da50cf616517e74c3caea78acc3735",
+     "06fdafb997e8e9e1f485f06b6313d0b2"
+    ]
+   },
+   "runs": 19,
+   "seconds": 12.36,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_extension_registration_if_app_has_no_extensions-a97ab44c/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_extension_registration_if_app_has_no_extensions-a97ab44c",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_extension_registration_if_app_has_no_extensions-a97ab44c"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_init_app",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 33,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_init_app"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "TypeError",
+    "call",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "bded42050c721c08f5b147edfef238df"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [random] random.randint @ flask_multi_redis/main.py:110 = 0  <>  [random] random.state @ <end> = 36887c5a8e1d94165a0b225e6e826947",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.randint",
+     "at": "flask_multi_redis/main.py:110",
+     "v": "0"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "36887c5a8e1d94165a0b225e6e826947"
+    },
+    "fingerprints": [
+     "7835919bb2604adf5ee420d67bb0c600",
+     "bded42050c721c08f5b147edfef238df"
+    ]
+   },
+   "runs": 21,
+   "seconds": 13.45,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_init_app-c720f57c/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_init_app-c720f57c",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_init_app-c720f57c"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_loadbalanced_delitem_method",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 27,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_loadbalanced_delitem_method"
+   ],
+   "outcome": "error",
+   "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "8ef64818f4a976dbc07036c5872a7bec"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "fa753dc2a2c458ec2af6b2f8e7cd9bad",
+     "8ef64818f4a976dbc07036c5872a7bec"
+    ]
+   },
+   "runs": 21,
+   "seconds": 13.52,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_loadbalanced_delitem_method-01f1fa8d/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_loadbalanced_delitem_method-01f1fa8d",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_loadbalanced_delitem_method-01f1fa8d"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_loadbalanced_setitem_method",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 7,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_loadbalanced_setitem_method"
+   ],
+   "outcome": "error",
+   "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6f2bbdd0a949a6096bf5f3d38a8ca463"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [random] random.randint @ flask_multi_redis/main.py:128 = 0  <>  [random] random.state @ <end> = 0a57d302e80c667abd8d1e60fa006bd6",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.randint",
+     "at": "flask_multi_redis/main.py:128",
+     "v": "0"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "0a57d302e80c667abd8d1e60fa006bd6"
+    },
+    "fingerprints": [
+     "de9e3d5ad395f2f940050b2c4b469b61",
+     "6f2bbdd0a949a6096bf5f3d38a8ca463"
+    ]
+   },
+   "runs": 19,
+   "seconds": 12.5,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_loadbalanced_setitem_method-6afeedbc/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_loadbalanced_setitem_method-6afeedbc",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_loadbalanced_setitem_method-6afeedbc"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_methods_transmission_from_aggregator",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 9,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_methods_transmission_from_aggregator"
+   ],
+   "outcome": "error",
+   "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "73568b559f05da5b0bd206de843c7eff"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "5612b52d51f51ae103483da3393a552a",
+     "73568b559f05da5b0bd206de843c7eff"
+    ]
+   },
+   "runs": 19,
+   "seconds": 12.39,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_methods_transmission_from_aggregator-4cc5eb01/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_methods_transmission_from_aggregator-4cc5eb01",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_methods_transmission_from_aggregator-4cc5eb01"
+  },
+  {
+   "test": "test/integration/test_flask_multi_redis.py::test_task_runner",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 22,
+   "minimal_length": 2,
+   "polluters": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error"
+   ],
+   "setters": [],
+   "order": [
+    "test/unit/test_flask_multi_redis.py::test_redis_import_error",
+    "test/integration/test_flask_multi_redis.py::test_task_runner"
+   ],
+   "outcome": "error",
+   "exception": [
+    "TypeError",
+    "setup",
+    "TypeError: 'NoneType' object is not callable",
+    "/tmp/work/src/idoft-flask-multi-redis/flask_multi_redis/redis_node.py:18"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "8f849ae602f856ff4c878f0492783109"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "3df0e80603f220fe643053ca97574ca9",
+     "8f849ae602f856ff4c878f0492783109"
+    ]
+   },
+   "runs": 20,
+   "seconds": 12.85,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-flask-multi-redis/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_task_runner-3804f0ed/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_task_runner-3804f0ed",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-flask-multi-redis/standalone/bundles/test_task_runner-3804f0ed"
+  }
+ ],
+ "seconds": 191.21
+}

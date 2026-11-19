@@ -1,0 +1,67 @@
+{
+  "name": "vueuse",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/vueuse/vueuse",
+  "commit": "bed1dce149ce6760fec13d4798c047f51a563180",
+  "commit_date": "2026-11-10T11:50:10Z",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 83.81584149890008,
+  "det_mean_s": 105.77427879159998,
+  "slowdown_pct": 26.19843325558935,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 1023,
+  "unstable_baseline": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "outcome_changed_by_det": 958,
+  "covered": 64,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 0,
+  "exploration_runs": 0,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->None": [
+      "packages/core/_template/index.test.ts::useCounter::should be defined",
+      "packages/core/_template/index.test.ts::useCounter::should be update counter"
+    ],
+    "changed:skipped->None": [
+      "packages/core/useWebSocket/index.test.ts::useWebSocket::autoClose::should close when scope disposed if true"
+    ],
+    "changed:todo->None": [
+      "packages/shared/utils/index.test.ts::filters::pausableFilter::should pause"
+    ]
+  },
+  "runner": "vitest 5.1.0",
+  "node": "node v22.23.5",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "ommand to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     npx playwright install                                 \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n    at /tmp/work/src/vueuse/node_modules/.pnpm/@vitest+browser-playwright@5.1.0_msw@2.15.0_@types+node@26.6.6_typescript@6.0.3__playwr_f9a9f4463e4073420bcfa11782be0393/node_modules/@vitest/browser-playwright/dist/index.js:1219:55\n    at async PlaywrightBrowserProvider.createContext (/tmp/work/src/vueuse/node_modules/.pnpm/@vitest+browser-playwright@5.1.0_msw@2.15.0_@types+node@26.6.6_typescript@6.0.3__playwr_f9a9f4463e4073420bcfa11782be0393/node_modules/@vitest/browser-playwright/dist/index.js:1392:19)\n    at async PlaywrightBrowserProvider.openBrowserPage (/tmp/work/src/vueuse/node_modules/.pnpm/@vitest+browser-playwright@5.1.0_msw@2.15.0_@types+node@26.6.6_typescript@6.0.3__playwr_f9a9f4463e4073420bcfa11782be0393/node_modules/@vitest/browser-playwright/dist/index.js:1466:19)\n    at async PlaywrightBrowserProvider.openPage (/tmp/work/src/vueuse/node_modules/.pnpm/@vitest+browser-playwright@5.1.0_msw@2.15.0_@types+node@26.6.6_typescript@6.0.3__playwr_f9a9f4463e4073420bcfa11782be0393/node_modules/@vitest/browser-playwright/dist/index.js:1487:23)\n    at async TestProject._openBrowserPage (/tmp/work/src/vueuse/node_modules/.pnpm/vitest@5.1.0_@opentelemetry+api@1.9.1_@types+node@26.6.6_@vitest+browser-playwright@5.1_f9c5d286f05918f1ba489e7cfe268e57/node_modules/vitest/dist/chunks/index.Di8au7q4.js:6748:3)\n    at async BrowserWorker.openPage (/tmp/work/src/vueuse/node_modules/.pnpm/vitest@5.1.0_@opentelemetry+api@1.9.1_@types+node@26.6.6_@vitest+browser-playwright@5.1_f9c5d286f05918f1ba489e7cfe268e57/node_modules/vitest/dist/chunks/index.Di8au7q4.js:4679:3)\n    at async BrowserWorker.openPages (/tmp/work/src/vueuse/node_modules/.pnpm/vitest@5.1.0_@opentelemetry+api@1.9.1_@types+node@26.6.6_@vitest+browser-playwright@5.1_f9c5d286f05918f1ba489e7cfe268e57/node_modules/vitest/dist/chunks/index.Di8au7q4.js:4659:3)\n    at async BrowserWorker.runTests (/tmp/work/src/vueuse/node_modules/.pnpm/vitest@5.1.0_@opentelemetry+api@1.9.1_@types+node@26.6.6_@vitest+browser-playwright@5.1_f9c5d286f05918f1ba489e7cfe268e57/node_modules/vitest/dist/chunks/index.Di8au7q4.js:4603:3) {\n  log: [],\n  name: 'Error',\n  type: 'Unhandled Error'\n}\n"
+  },
+  "not_reproduced_causes": {}
+}

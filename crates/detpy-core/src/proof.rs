@@ -25,6 +25,7 @@
 //! file is compared at the level of its units and skeleton (facts supplied by
 //! the producer for changed files only).
 
+use crate::deps;
 use crate::fingerprint::digest_bytes;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet, HashMap};
@@ -84,7 +85,8 @@ pub struct Entry {
     pub epoch: Option<i64>,
     /// (variable, value digest or "-" when unset); "*" = the whole environment.
     pub env: Vec<(String, String)>,
-    /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>".
+    /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>", and the kinds of
+    /// [`crate::deps`] ("m:", "r:", "e:", "t:", "c:"), "l:", "p:", "g:".
     pub data: Vec<(Str, Str)>,
     /// Set ids (see [`Store::sets`]) of code files whose whole content, skeleton
     /// or hook surface is a dependency.
@@ -93,6 +95,10 @@ pub struct Entry {
     pub hooks: u32,
     /// Flat (file index, unit index) pairs.
     pub units: Vec<u32>,
+    /// Digest of what the processes started at start-up gave back (argv, cwd, exit code, output); empty when
+    /// none was started. An input of every test of the session.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub startup: String,
 }
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
@@ -128,6 +134,7 @@ pub struct Observed {
     pub skeleton: Vec<u32>,
     pub hooks: Vec<u32>,
     pub units: Vec<(u32, u32)>,
+    pub startup: String,
 }
 
 fn push_part(buf: &mut Vec<u8>, part: &str) {
@@ -202,8 +209,133 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         listing_digest(path).map(|d| format!("d:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("s:") {
         format!("s:{}", stat_kind(path))
+    } else if recorded.starts_with("l:") || recorded.starts_with("L:") {
+        link_dep(path)
+    } else if recorded.starts_with("p:") {
+        package_resolution_digest(path).map(|d| format!("p:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("g:") {
+        stem_listing_digest(path).map(|d| format!("g:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("m:") {
+        deps::stat_meta_digest(path).map(|d| format!("m:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("r:") {
+        deps::realpath_digest(path).map(|d| format!("r:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("e:") {
+        deps::typed_listing_digest(path).map(|d| format!("e:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("t:") {
+        deps::tree_listing_digest(path).map(|d| format!("t:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("c:") {
+        deps::copy_tree_digest(path).map(|d| format!("c:{d}")).unwrap_or_else(|| "missing".into())
     } else {
         "unknown".into()
+    }
+}
+
+/// Fields of a package.json that module resolution reads (Node, Vite, bundlers): a package.json is a *resolution*
+/// input through these only; code that reads or imports the file depends on its whole content (recorded apart).
+pub const RESOLUTION_FIELDS: [&str; 11] =
+    ["name", "type", "main", "module", "browser", "exports", "imports", "types", "typings", "jsnext:main", "react-native"];
+
+/// Digest of the resolution fields of a package.json (`None` when missing or not a JSON object: then "missing" or a
+/// whole-content digest is what the caller records).
+pub fn package_resolution_digest(path: &Path) -> Option<String> {
+    let bytes = fs::read(path).ok()?;
+    // raw text of each field: key order inside `exports` (condition order) is significant
+    let obj: HashMap<String, Box<serde_json::value::RawValue>> = serde_json::from_slice(&bytes).ok()?;
+    let mut buf = Vec::new();
+    for k in RESOLUTION_FIELDS {
+        push_part(&mut buf, k);
+        match obj.get(k) {
+            Some(v) => push_part(&mut buf, v.get()),
+            None => push_part(&mut buf, "\u{0}absent"),
+        }
+    }
+    Some(digest_bytes(&buf).short())
+}
+
+#[cfg(test)]
+mod resolution_tests {
+    use super::*;
+
+    #[test]
+    fn package_resolution_fields_only() {
+        let d = tempfile::tempdir().unwrap();
+        let p = d.path().join("package.json");
+        fs::write(&p, r#"{"name":"a","version":"1.0.0","exports":{"import":"./a.mjs","require":"./a.cjs"}}"#).unwrap();
+        let a = package_resolution_digest(&p).unwrap();
+        fs::write(&p, r#"{"name":"a","version":"2.0.0","engines":{"node":">=26"},"exports":{"import":"./a.mjs","require":"./a.cjs"}}"#).unwrap();
+        assert_eq!(package_resolution_digest(&p).unwrap(), a, "version and engines are not resolution fields");
+        fs::write(&p, r#"{"name":"a","exports":{"require":"./a.cjs","import":"./a.mjs"}}"#).unwrap();
+        assert_ne!(package_resolution_digest(&p).unwrap(), a, "condition order is significant");
+        fs::write(&p, r#"{"name":"a","type":"module","exports":{"import":"./a.mjs","require":"./a.cjs"}}"#).unwrap();
+        assert_ne!(package_resolution_digest(&p).unwrap(), a);
+        fs::write(&p, "not json").unwrap();
+        assert_eq!(package_resolution_digest(&p), None);
+        assert_eq!(data_now(&p, "p:x"), "missing");
+    }
+}
+
+/// Digest of the entries of `path`'s directory whose name is `path`'s file name or starts with it followed by a
+/// dot (`src/m` -> `m`, `m.ts`, `m.mjs`, `m.d.ts`, ...): what module resolution can find for that stem. `None`
+/// when the directory cannot be listed.
+pub fn stem_listing_digest(path: &Path) -> Option<String> {
+    let dir = path.parent()?;
+    let stem = os_bytes(path.file_name()?);
+    let mut dotted = stem.clone();
+    dotted.push(b'.');
+    let mut names: Vec<Vec<u8>> = Vec::new();
+    for e in fs::read_dir(dir).ok()? {
+        let e = e.ok()?;
+        let n = os_bytes(&e.file_name());
+        if n == stem || n.starts_with(&dotted) {
+            names.push(n);
+        }
+    }
+    names.sort();
+    Some(digest_bytes(&names.join(&b'\0')).short())
+}
+
+/// Dependency string of a symbolic link's target text (`readlink`, `lstat`): "l:<digest>", "L:<kind>" when the
+/// path is not a link (its own kind, no link followed), "missing" when it does not exist. A non-link is not
+/// recorded as "s:<kind>": that kind follows links, so a regular file replaced by a link to a file would not
+/// change it (review r021 F1c).
+pub fn link_dep(path: &Path) -> String {
+    match fs::read_link(path) {
+        Ok(t) => format!("l:{}", digest_bytes(&os_bytes(t.as_os_str())).short()),
+        Err(_) => match fs::symlink_metadata(path) {
+            Ok(m) => format!(
+                "L:{}",
+                if m.file_type().is_symlink() {
+                    "link"
+                } else if m.is_file() {
+                    "file"
+                } else if m.is_dir() {
+                    "dir"
+                } else {
+                    "other"
+                }
+            ),
+            Err(_) => "missing".into(),
+        },
+    }
+}
+
+#[cfg(all(test, unix))]
+mod link_tests {
+    use super::*;
+
+    #[test]
+    fn file_replaced_by_link_changes_link_dep() {
+        let d = tempfile::tempdir().unwrap();
+        fs::write(d.path().join("t"), "x").unwrap();
+        let p = d.path().join("e");
+        fs::write(&p, "x").unwrap();
+        let a = link_dep(&p);
+        assert_eq!(a, "L:file");
+        assert_eq!(data_now(&p, &a), a);
+        fs::remove_file(&p).unwrap();
+        std::os::unix::fs::symlink("t", &p).unwrap();
+        assert_ne!(data_now(&p, &a), a);
+        assert!(data_now(&p, &a).starts_with("l:"));
     }
 }
 
@@ -311,6 +443,7 @@ impl Store {
             skeleton,
             hooks,
             units: o.units.into_iter().flat_map(|(f, u)| [f, u]).collect(),
+            startup: o.startup,
         };
         e.key = self.key_of(nodeid, &e);
         let k = e.key.clone();
@@ -394,6 +527,11 @@ impl Store {
             push_part(&mut b, p);
             push_part(&mut b, q);
             push_part(&mut b, d);
+        }
+        if !e.startup.is_empty() {
+            // only when start-up processes ran: the keys of the other entries stay as they were
+            push_part(&mut b, "|startup");
+            push_part(&mut b, &e.startup);
         }
         digest_bytes(&b).short()
     }
@@ -565,6 +703,8 @@ pub struct Current {
     pub runtime: String,
     pub epoch: i64,
     pub env: BTreeMap<String, String>,
+    /// Digest of what this session's start-up processes gave back (empty: none).
+    pub startup: String,
 }
 
 /// Why a test cannot reuse its result.
@@ -789,6 +929,12 @@ impl Checker {
                 return Err(Miss { kind: "clock", detail: "the test read the clock and the epoch changed".into() });
             }
         }
+        if e.startup != self.cur.startup {
+            return Err(Miss {
+                kind: "startup",
+                detail: "a process started at start-up gave back a different output or exit code".into(),
+            });
+        }
         for (k, v) in &e.env {
             let now: &str = if k == "*" {
                 if self.env_all_now.is_none() {
@@ -884,7 +1030,7 @@ mod tests {
         });
         let mut env = BTreeMap::new();
         env.insert("HOME".to_string(), "/root".to_string());
-        let cur = Current { root: root.clone(), config: "C".into(), runtime: "R".into(), epoch: 5, env };
+        let cur = Current { root: root.clone(), config: "C".into(), runtime: "R".into(), epoch: 5, env, startup: String::new() };
         s.record(
             "t::a",
             Observed {
@@ -984,6 +1130,27 @@ mod tests {
         s2.tests.insert("t::a".into(), e);
         assert_eq!(Checker::new(c6).check(&s2, "t::a").unwrap_err().kind, "clock");
         assert!(Checker::new(cur).check(&s2, "t::a").is_ok());
+    }
+
+    #[test]
+    fn startup_processes_output_is_an_input_and_absent_keeps_the_key() {
+        let (_d, s, cur) = setup();
+        let key0 = s.tests["t::a"].key.clone();
+        // an entry recorded without start-up processes: serialised and keyed as before
+        assert!(!serde_json::to_string(&s.tests["t::a"]).unwrap().contains("startup"));
+        let mut c = cur.clone();
+        c.startup = "S1".into();
+        assert_eq!(Checker::new(c.clone()).check(&s, "t::a").unwrap_err().kind, "startup");
+        let mut s2 = s.clone();
+        s2.record(
+            "t::a",
+            Observed { outcome: "passed".into(), config: "C".into(), runtime: "R".into(), startup: "S1".into(), ..Default::default() },
+        );
+        assert_ne!(s2.tests["t::a"].key, key0);
+        assert!(Checker::new(c.clone()).check(&s2, "t::a").is_ok());
+        assert_eq!(Checker::new(cur).check(&s2, "t::a").unwrap_err().kind, "startup");
+        c.startup = "S2".into();
+        assert_eq!(Checker::new(c).check(&s2, "t::a").unwrap_err().kind, "startup");
     }
 
     #[test]

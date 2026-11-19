@@ -1,0 +1,5286 @@
+{
+ "name": "idoft-eppy",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "eppy/tests/test_IDF.py::TestIDF::test_popidfobject",
+  "eppy/tests/test_IDF.py::TestIDF::test_removeidfobject",
+  "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_get_referenced_object",
+  "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_getreferingobjs",
+  "eppy/tests/test_case_insensitive.py::test_contains[BUILDING]",
+  "eppy/tests/test_case_insensitive.py::test_contains[BuIlDiNg]",
+  "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+  "eppy/tests/test_case_insensitive.py::test_contains[building]",
+  "eppy/tests/test_case_insensitive.py::test_del[BUILDING]",
+  "eppy/tests/test_case_insensitive.py::test_del[BuIlDiNg]",
+  "eppy/tests/test_case_insensitive.py::test_del[Building]",
+  "eppy/tests/test_case_insensitive.py::test_del[building]",
+  "eppy/tests/test_case_insensitive.py::test_get_and_set[BUILDING]",
+  "eppy/tests/test_case_insensitive.py::test_get_and_set[BuIlDiNg]",
+  "eppy/tests/test_case_insensitive.py::test_get_and_set[Building]",
+  "eppy/tests/test_case_insensitive.py::test_get_and_set[building]",
+  "eppy/tests/test_examples.py::test_pythonic",
+  "eppy/tests/test_fanpower.py::test_fan_maxcfm",
+  "eppy/tests/test_fanpower.py::testfanpower_bhp",
+  "eppy/tests/test_fanpower.py::testfanpower_watts",
+  "eppy/tests/test_hvacbuilder.py::test_connectcomponents",
+  "eppy/tests/test_hvacbuilder.py::test_renamenodes",
+  "eppy/tests/test_hvacbuilder.py::test_replacebranch",
+  "eppy/tests/test_idf_helpers.py::test_getanymentions",
+  "eppy/tests/test_idf_helpers.py::test_getidfkeyswithnodes",
+  "eppy/tests/test_json_functions.py::test_updateidf",
+  "eppy/tests/test_modeleditor.py::test_getallobjlists",
+  "eppy/tests/test_modeleditor.py::test_getiddgroupdict",
+  "eppy/tests/test_modeleditor.py::test_getrefnames",
+  "eppy/tests/test_modeleditor.py::test_idd_index",
+  "eppy/tests/test_modeleditor.py::test_idfinmsequence",
+  "eppy/tests/test_modeleditor.py::test_idfstr",
+  "eppy/tests/test_modeleditor.py::test_initread",
+  "eppy/tests/test_modeleditor.py::test_initreadtxt",
+  "eppy/tests/test_modeleditor.py::test_new",
+  "eppy/tests/test_modeleditor.py::test_newidfobject",
+  "eppy/tests/test_modeleditor.py::test_refname2key",
+  "eppy/tests/test_modeleditor.py::test_rename",
+  "eppy/tests/test_modeleditor.py::test_save",
+  "eppy/tests/test_modeleditor.py::test_save_with_lineendings_and_encodings",
+  "eppy/tests/test_modeleditor.py::test_saveas",
+  "eppy/tests/test_modeleditor.py::test_savecopy",
+  "eppy/tests/test_modeleditor.py::test_zonearea_zonevolume",
+  "eppy/tests/test_parse_error.py::test_capture_real_error",
+  "eppy/tests/test_simpleread.py::test_idfreadtest",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_1_layer_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_2_layer_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_airgap_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_infraredtransparent_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_material",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_nomass_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_roofvegetation_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_1_layer_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_2_layer_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_airgap_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_fails",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_infraredtransparent_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_material",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_nomass_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_roofvegetation_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_1_layer_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_2_layer_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_airgap_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_infraredtransparent_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_material",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_nomass_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_roofvegetation_construction"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009162",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "Intel(R) Xeon(R) 6973P-C"
+ },
+ "bundles": [
+  {
+   "test": "eppy/tests/test_IDF.py::TestIDF::test_popidfobject",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 175,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_IDF.py::TestIDF::test_popidfobject"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "cdea78249e0034c12e5954f096669f0d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "0974ec75d243c33ca81199a7bc80cf1e",
+     "cdea78249e0034c12e5954f096669f0d"
+    ]
+   },
+   "runs": 31,
+   "seconds": 105.1,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_popidfobject-c58c59c0/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_popidfobject-c58c59c0",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_popidfobject-c58c59c0"
+  },
+  {
+   "test": "eppy/tests/test_IDF.py::TestIDF::test_removeidfobject",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 174,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_IDF.py::TestIDF::test_removeidfobject"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "9c86c683604ab09928bd4a56a1170c51"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "873a1deba1e26c3fb8c25efc2e7b9f24",
+     "9c86c683604ab09928bd4a56a1170c51"
+    ]
+   },
+   "runs": 29,
+   "seconds": 90.99,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_removeidfobject-b0ac06a6/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_removeidfobject-b0ac06a6",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_removeidfobject-b0ac06a6"
+  },
+  {
+   "test": "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_get_referenced_object",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 210,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_del[building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_del[building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_get_referenced_object"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "12cec4e2593b020c955102ebf0aa18ff"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "c9dc7a93c311ff679b412659993f1838",
+     "12cec4e2593b020c955102ebf0aa18ff"
+    ]
+   },
+   "runs": 63,
+   "seconds": 215.38,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_get_referenced_object-9759e07f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_get_referenced_object-9759e07f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_get_referenced_object-9759e07f"
+  },
+  {
+   "test": "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_getreferingobjs",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 207,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_del[building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_del[building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_getreferingobjs"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "e08340decd3ba579ecbdc2483f7a8ab3"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "d2f45b8883a4149d33c88280957d2aa7",
+     "e08340decd3ba579ecbdc2483f7a8ab3"
+    ]
+   },
+   "runs": 58,
+   "seconds": 191.93,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_getreferingobjs-3cba6d92/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_getreferingobjs-3cba6d92",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_getreferingobjs-3cba6d92"
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_contains[BUILDING]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 34,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_contains[BUILDING]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "bf9e9e344a1589a2591d29ed2de443d2"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "23835736ce585b2ccd7190d7c055ea75",
+     "bf9e9e344a1589a2591d29ed2de443d2"
+    ]
+   },
+   "runs": 35,
+   "seconds": 113.93,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_contains_BUILDING_-8658ab85/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_contains_BUILDING_-8658ab85",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_contains_BUILDING_-8658ab85"
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_contains[BuIlDiNg]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 26,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_contains[BuIlDiNg]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "21052adbbfc6c9ee224477a3437ab1e7"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "5c3d237d3b2f7d0a554eedad159c9cec",
+     "21052adbbfc6c9ee224477a3437ab1e7"
+    ]
+   },
+   "runs": 27,
+   "seconds": 82.05,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_contains_BuIlDiNg_-efddc35e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_contains_BuIlDiNg_-efddc35e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_contains_BuIlDiNg_-efddc35e"
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 36,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6a9f6701807024cae83d1b0048f684aa"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "f5aa0cb1eb7be5fe4aa970a68b31d325",
+     "6a9f6701807024cae83d1b0048f684aa"
+    ]
+   },
+   "runs": 35,
+   "seconds": 108.69,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_contains_Building_-f771b032/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_contains_Building_-f771b032",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_contains_Building_-f771b032"
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_contains[building]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 33,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_contains[building]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "12dee5e7b84db117cc00f627eff872dc"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "7e989edf2322dc73f5008aee2169225f",
+     "12dee5e7b84db117cc00f627eff872dc"
+    ]
+   },
+   "runs": 35,
+   "seconds": 102.52,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_contains_building_-9413abf1/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_contains_building_-9413abf1",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_contains_building_-9413abf1"
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_del[BUILDING]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 35,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_del[BUILDING]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "02457f28af084a9eb4a4a0af9fc2afdf"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "bf187614c08aac3c4debf82f48169197",
+     "02457f28af084a9eb4a4a0af9fc2afdf"
+    ]
+   },
+   "runs": 35,
+   "seconds": 101.51,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_del_BUILDING_-287ee1f5/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_del_BUILDING_-287ee1f5",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_del_BUILDING_-287ee1f5"
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_del[BuIlDiNg]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 31,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_del[BuIlDiNg]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "3bbcd920ef92de8006d404f9da525749"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "bc62330b4bbaf1e112f2832f6a875d4b",
+     "3bbcd920ef92de8006d404f9da525749"
+    ]
+   },
+   "runs": 24,
+   "seconds": 68.73,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_del_BuIlDiNg_-8761c631/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_del_BuIlDiNg_-8761c631",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_del_BuIlDiNg_-8761c631"
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_del[Building]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 32,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_del[Building]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a94819712b7369e1a4b9c7abc61cf6f4"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "de2e850ddeb73094895dc6d7d0c0086d",
+     "a94819712b7369e1a4b9c7abc61cf6f4"
+    ]
+   },
+   "runs": 24,
+   "seconds": 67.48,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_del_Building_-bac5f559/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_del_Building_-bac5f559",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_del_Building_-bac5f559"
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_del[building]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 27,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_del[building]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1a2f3701de0bfc31831ddbddce3cbb67"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "01744846a563686f9dec4856eeab6e88",
+     "1a2f3701de0bfc31831ddbddce3cbb67"
+    ]
+   },
+   "runs": 27,
+   "seconds": 75.07,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_del_building_-8f4e6d3d/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_del_building_-8f4e6d3d",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_del_building_-8f4e6d3d"
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_get_and_set[BUILDING]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 29,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_get_and_set[BUILDING]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "170080c2c788a0dc88f12164a740c3a0"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "bbe782acb91a7caa62e229b86f87fa5c",
+     "170080c2c788a0dc88f12164a740c3a0"
+    ]
+   },
+   "runs": 24,
+   "seconds": 68.71,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_get_and_set_BUILDING_-57a8106b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_get_and_set_BUILDING_-57a8106b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_get_and_set_BUILDING_-57a8106b"
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_get_and_set[BuIlDiNg]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 30,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_get_and_set[BuIlDiNg]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "30d65a79ea52078bdac49768365e8887"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "d1a89bb06081b4b6029f435c7ccbb028",
+     "30d65a79ea52078bdac49768365e8887"
+    ]
+   },
+   "runs": 24,
+   "seconds": 67.98,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_get_and_set_BuIlDiNg_-9bc11dfb/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_get_and_set_BuIlDiNg_-9bc11dfb",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_get_and_set_BuIlDiNg_-9bc11dfb"
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_get_and_set[Building]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 28,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_get_and_set[Building]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "16ef97d7f52a6167623bb6cde2921953"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "cb7a6dd0ef150941bd59ecae0c43a16c",
+     "16ef97d7f52a6167623bb6cde2921953"
+    ]
+   },
+   "runs": 27,
+   "seconds": 74.91,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_get_and_set_Building_-061ec032/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_get_and_set_Building_-061ec032",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_get_and_set_Building_-061ec032"
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_get_and_set[building]",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 25,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_case_insensitive.py::test_get_and_set[building]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "IndexError",
+    "setup",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0f54c767ac55db9ec70b012d5e1b4594"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs error): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "error"
+    },
+    "fingerprints": [
+     "eb42e929bfa2092ea99613fea67645c2",
+     "0f54c767ac55db9ec70b012d5e1b4594"
+    ]
+   },
+   "runs": 27,
+   "seconds": 75.66,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_get_and_set_building_-877ff154/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_get_and_set_building_-877ff154",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_get_and_set_building_-877ff154"
+  },
+  {
+   "test": "eppy/tests/test_examples.py::test_pythonic",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 216,
+   "minimal_length": 2,
+   "polluters": [
+    "eppy/tests/test_examples.py::test_addobject"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_examples.py::test_addobject",
+    "eppy/tests/test_examples.py::test_pythonic"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert ['PLENUM-1', ...PACE5-1', ...] == ['PLENUM-1', ...PACE5-1', ...]",
+    "/tmp/work/src/idoft-eppy/eppy/tests/test_examples.py:65"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "7ff9b33c7041555b13043a9edd70c607"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "abef226f979a078865677dbfaf0d8659",
+     "7ff9b33c7041555b13043a9edd70c607"
+    ]
+   },
+   "runs": 30,
+   "seconds": 88.08,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_pythonic-fec95990/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_pythonic-fec95990",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_pythonic-fec95990"
+  },
+  {
+   "test": "eppy/tests/test_fanpower.py::test_fan_maxcfm",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 208,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_fanpower.py::test_fan_maxcfm"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0dae650c12c7905cbfb730c7081e2ad8"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "3225e9438b36f2da7a7348a504fe4a59",
+     "0dae650c12c7905cbfb730c7081e2ad8"
+    ]
+   },
+   "runs": 29,
+   "seconds": 90.83,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_fan_maxcfm-1580720b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_fan_maxcfm-1580720b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_fan_maxcfm-1580720b"
+  },
+  {
+   "test": "eppy/tests/test_fanpower.py::testfanpower_bhp",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 216,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_fanpower.py::testfanpower_bhp"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "8a70141c68cf9230eb8b6172a5f5d34b"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "1db6df1b9a480b0e51c6ae589298012f",
+     "8a70141c68cf9230eb8b6172a5f5d34b"
+    ]
+   },
+   "runs": 32,
+   "seconds": 103.29,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/testfanpower_bhp-6221c165/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/testfanpower_bhp-6221c165",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/testfanpower_bhp-6221c165"
+  },
+  {
+   "test": "eppy/tests/test_fanpower.py::testfanpower_watts",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 214,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_fanpower.py::testfanpower_watts"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "831a3cacd1b98ed50831e5ef45a2ab32"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "345e7482ac78b3423dbf0aed3efa6421",
+     "831a3cacd1b98ed50831e5ef45a2ab32"
+    ]
+   },
+   "runs": 37,
+   "seconds": 125.68,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/testfanpower_watts-8519f1b8/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/testfanpower_watts-8519f1b8",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/testfanpower_watts-8519f1b8"
+  },
+  {
+   "test": "eppy/tests/test_hvacbuilder.py::test_connectcomponents",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 133,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_hvacbuilder.py::test_connectcomponents"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "64bc0a87573490bb2535ce9803a5beb0"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "13393bf0d51a3dbe746d6bd7b5ac6609",
+     "64bc0a87573490bb2535ce9803a5beb0"
+    ]
+   },
+   "runs": 26,
+   "seconds": 88.2,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_connectcomponents-54f9cb9f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_connectcomponents-54f9cb9f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_connectcomponents-54f9cb9f"
+  },
+  {
+   "test": "eppy/tests/test_hvacbuilder.py::test_renamenodes",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 129,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_hvacbuilder.py::test_renamenodes"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ddcd4c6c3a668bd7f2c68f4a1105a8ce"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "502540b55ba481a1d38768030933873d",
+     "ddcd4c6c3a668bd7f2c68f4a1105a8ce"
+    ]
+   },
+   "runs": 32,
+   "seconds": 100.03,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_renamenodes-73420ed2/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_renamenodes-73420ed2",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_renamenodes-73420ed2"
+  },
+  {
+   "test": "eppy/tests/test_hvacbuilder.py::test_replacebranch",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 134,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_hvacbuilder.py::test_replacebranch"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "3e9d11db02d6c2e58accfa2958506840"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b6b293c1570bba23b5f726100e7b438d",
+     "3e9d11db02d6c2e58accfa2958506840"
+    ]
+   },
+   "runs": 26,
+   "seconds": 82.54,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_replacebranch-b43b1524/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_replacebranch-b43b1524",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_replacebranch-b43b1524"
+  },
+  {
+   "test": "eppy/tests/test_idf_helpers.py::test_getanymentions",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 161,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_idf_helpers.py::test_getanymentions"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "3259cd80a0a7c6425bd36e1848a5181e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "87e10970e762735400f647c093a71365",
+     "3259cd80a0a7c6425bd36e1848a5181e"
+    ]
+   },
+   "runs": 28,
+   "seconds": 94.2,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_getanymentions-58ac274b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_getanymentions-58ac274b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_getanymentions-58ac274b"
+  },
+  {
+   "test": "eppy/tests/test_idf_helpers.py::test_getidfkeyswithnodes",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 167,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_idf_helpers.py::test_getidfkeyswithnodes"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "3dd4c7a217726f19b0ad927ceaf0c515"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "bd9c3f9a480deb2092c7369aefef32a4",
+     "3dd4c7a217726f19b0ad927ceaf0c515"
+    ]
+   },
+   "runs": 28,
+   "seconds": 96.29,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_getidfkeyswithnodes-e547acf8/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_getidfkeyswithnodes-e547acf8",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_getidfkeyswithnodes-e547acf8"
+  },
+  {
+   "test": "eppy/tests/test_json_functions.py::test_updateidf",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 175,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_json_functions.py::test_updateidf"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a79080ad422a802dbdf858bc4be71210"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "5eacad0c64a291898ccec9113208231d",
+     "a79080ad422a802dbdf858bc4be71210"
+    ]
+   },
+   "runs": 35,
+   "seconds": 114.3,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_updateidf-5a1ae845/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_updateidf-5a1ae845",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_updateidf-5a1ae845"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_getallobjlists",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 71,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_getallobjlists"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c5d1b89b21afebba3c396a2d70da80c4"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "21cce469c38939aa520acd9bfd50224a",
+     "c5d1b89b21afebba3c396a2d70da80c4"
+    ]
+   },
+   "runs": 30,
+   "seconds": 94.66,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_getallobjlists-af2a05e3/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_getallobjlists-af2a05e3",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_getallobjlists-af2a05e3"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_getiddgroupdict",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 70,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_getiddgroupdict"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6dd9699cba83c504fb961067c44b56e3"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "39b4d2eed75a0bd0c663b2187a02bb83",
+     "6dd9699cba83c504fb961067c44b56e3"
+    ]
+   },
+   "runs": 25,
+   "seconds": 80.6,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_getiddgroupdict-0701e190/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_getiddgroupdict-0701e190",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_getiddgroupdict-0701e190"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_getrefnames",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 60,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_getrefnames"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "711cb73dd94f6f7f2c09485f71aba799"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "1a37dfee0aec5937ce619511d999c7a3",
+     "711cb73dd94f6f7f2c09485f71aba799"
+    ]
+   },
+   "runs": 26,
+   "seconds": 85.08,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_getrefnames-e75ea7eb/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_getrefnames-e75ea7eb",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_getrefnames-e75ea7eb"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_idd_index",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "brittle",
+   "prefix_length": 77,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "eppy/tests/test_IDF.py::TestIDF::test_removeidfobject"
+   ],
+   "order": [
+    "eppy/tests/test_modeleditor.py::test_idd_index"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert {'name2refs':...NUNIT'}, ...}} == {}",
+    "/tmp/work/src/idoft-eppy/eppy/tests/test_modeleditor.py:607"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "24437c4d175fe40966055219188a9c75"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "52b9c89083fffa912cddaa59800f2bdb",
+     "24437c4d175fe40966055219188a9c75"
+    ]
+   },
+   "runs": 24,
+   "seconds": 86.73,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_idd_index-ad9de4e7/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_idd_index-ad9de4e7",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_idd_index-ad9de4e7"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_idfinmsequence",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 75,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_idfinmsequence"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d252d3b6fa921c58fc56c9d5255c7c65"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "e5c5da4aa40a2de2d34b75faa3b91f86",
+     "d252d3b6fa921c58fc56c9d5255c7c65"
+    ]
+   },
+   "runs": 28,
+   "seconds": 91.93,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_idfinmsequence-37323203/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_idfinmsequence-37323203",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_idfinmsequence-37323203"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_idfstr",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 72,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_idfstr"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2b531f5badbd65f70f16b2847788f10c"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "f06d7ba8b2cad56d27f55275cabdc9aa",
+     "2b531f5badbd65f70f16b2847788f10c"
+    ]
+   },
+   "runs": 24,
+   "seconds": 82.5,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_idfstr-57676297/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_idfstr-57676297",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_idfstr-57676297"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_initread",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 78,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_initread"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "4aac23db78d9665f8f17a0ad3cdaf8b4"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "ad06d5ae1333ffb47528c6ebf263b7b0",
+     "4aac23db78d9665f8f17a0ad3cdaf8b4"
+    ]
+   },
+   "runs": 31,
+   "seconds": 104.82,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_initread-8655a7b8/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_initread-8655a7b8",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_initread-8655a7b8"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_initreadtxt",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 76,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_initreadtxt"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "74a07dc93d70136e59e1804e276c27bd"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b40c50c69a53ecd8b2fff3abc14044c3",
+     "74a07dc93d70136e59e1804e276c27bd"
+    ]
+   },
+   "runs": 30,
+   "seconds": 99.84,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_initreadtxt-7e6a5df5/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_initreadtxt-7e6a5df5",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_initreadtxt-7e6a5df5"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_new",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 59,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_new"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "5c576c93f4c3655674a85d40359e990b"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "579a8b7f335646ad9f7968809636205e",
+     "5c576c93f4c3655674a85d40359e990b"
+    ]
+   },
+   "runs": 37,
+   "seconds": 119.27,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_new-5aa162da/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_new-5aa162da",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_new-5aa162da"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_newidfobject",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 67,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_newidfobject"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "211299f0c5d3f291f82cf52eadb43499"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "20dc422c4340822f83eff9101f9c9a02",
+     "211299f0c5d3f291f82cf52eadb43499"
+    ]
+   },
+   "runs": 25,
+   "seconds": 82.75,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_newidfobject-a5509734/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_newidfobject-a5509734",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_newidfobject-a5509734"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_refname2key",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 74,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_refname2key"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "8d70f1bb5518c076efc6f9cae54c6444"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "c9e1b587e522aad19044c23bfebf3a31",
+     "8d70f1bb5518c076efc6f9cae54c6444"
+    ]
+   },
+   "runs": 36,
+   "seconds": 121.11,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_refname2key-ecf644b1/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_refname2key-ecf644b1",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_refname2key-ecf644b1"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_rename",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 65,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_rename"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c9a5166ca068480f00b3b0555d7f0f35"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "c8caad7f941b4dac930772b52275eebe",
+     "c9a5166ca068480f00b3b0555d7f0f35"
+    ]
+   },
+   "runs": 31,
+   "seconds": 100.41,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_rename-9aaf4b22/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_rename-9aaf4b22",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_rename-9aaf4b22"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_save",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 79,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_save"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "47e6f2407b0c2246ef83edafc5272031"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "903106acfe633d1e2ca89eca7423e571",
+     "47e6f2407b0c2246ef83edafc5272031"
+    ]
+   },
+   "runs": 25,
+   "seconds": 81.7,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_save-59565dc3/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_save-59565dc3",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_save-59565dc3"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_save_with_lineendings_and_encodings",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 64,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_save_with_lineendings_and_encodings"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "3738875828fafc98647069ed23c4dc5c"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "dd80da6a0d9a8576386abd402cb7f46b",
+     "3738875828fafc98647069ed23c4dc5c"
+    ]
+   },
+   "runs": 26,
+   "seconds": 85.19,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_save_with_lineendings_and_encodings-924394d9/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_save_with_lineendings_and_encodings-924394d9",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_save_with_lineendings_and_encodings-924394d9"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_saveas",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 66,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_saveas"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b49e14d0c27ceda881ee6747cf7eb885"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "c90df6c4564b188f4d413b2828a30141",
+     "b49e14d0c27ceda881ee6747cf7eb885"
+    ]
+   },
+   "runs": 31,
+   "seconds": 101.63,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_saveas-3bc5d9f7/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_saveas-3bc5d9f7",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_saveas-3bc5d9f7"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_savecopy",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 69,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_savecopy"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d11a8ddd03746b40d555d424675115e0"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "a299b10179b3ef80a54ee27d15c4b8a3",
+     "d11a8ddd03746b40d555d424675115e0"
+    ]
+   },
+   "runs": 25,
+   "seconds": 82.12,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_savecopy-63d103c7/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_savecopy-63d103c7",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_savecopy-63d103c7"
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_zonearea_zonevolume",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 63,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_modeleditor.py::test_zonearea_zonevolume"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2b502281886f673a18a5d87c1d61a459"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "abc78cf6842dd2ec770c8a6c3456ab94",
+     "2b502281886f673a18a5d87c1d61a459"
+    ]
+   },
+   "runs": 42,
+   "seconds": 131.73,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_zonearea_zonevolume-6fde1866/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_zonearea_zonevolume-6fde1866",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_zonearea_zonevolume-6fde1866"
+  },
+  {
+   "test": "eppy/tests/test_parse_error.py::test_capture_real_error",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "fails-alone",
+   "prefix_length": 126,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_parse_error.py::test_capture_real_error"
+   ],
+   "outcome": "error",
+   "exception": [
+    "AssertionError",
+    "setup",
+    "assert (8, 0, 0, 8) == (8, 9, 0)",
+    "/tmp/work/src/idoft-eppy/eppy/tests/conftest.py:35"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "78ef4348b7ffebbf8d5b153c5a6d0609"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": null,
+   "runs": 61,
+   "seconds": 414.26,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_capture_real_error-801b2270/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_capture_real_error-801b2270",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_capture_real_error-801b2270"
+  },
+  {
+   "test": "eppy/tests/test_simpleread.py::test_idfreadtest",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 185,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_del[building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_del[building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_simpleread.py::test_idfreadtest"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0639e4f9f877dd499166cadbcd5bce4d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "926569642da2bcef267e5997a954ea2a",
+     "0639e4f9f877dd499166cadbcd5bce4d"
+    ]
+   },
+   "runs": 56,
+   "seconds": 188.28,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_idfreadtest-73f23007/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_idfreadtest-73f23007",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_idfreadtest-73f23007"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_1_layer_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 153,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_1_layer_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "9013a400f8739942e2a08e4ecc67e1dc"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "119c28254fb3d722a954e3f944161814",
+     "9013a400f8739942e2a08e4ecc67e1dc"
+    ]
+   },
+   "runs": 32,
+   "seconds": 107.12,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_1_layer_construction-7782d8c0/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_1_layer_construction-7782d8c0",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_1_layer_construction-7782d8c0"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_2_layer_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 156,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_2_layer_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "44b87dc8d0c46de04df31e36a53762b5"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "050962dfdbcd4eae2bc33a3487a7f768",
+     "44b87dc8d0c46de04df31e36a53762b5"
+    ]
+   },
+   "runs": 32,
+   "seconds": 106.74,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_2_layer_construction-5e34f763/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_2_layer_construction-5e34f763",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_2_layer_construction-5e34f763"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_airgap_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 160,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_airgap_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "5702701af5faee485a715d4d47790a51"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "4cc67de33115842f448b006b85293c80",
+     "5702701af5faee485a715d4d47790a51"
+    ]
+   },
+   "runs": 35,
+   "seconds": 117.95,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_airgap_construction-5f4a47b9/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_airgap_construction-5f4a47b9",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_airgap_construction-5f4a47b9"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_infraredtransparent_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 150,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_infraredtransparent_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "558fc1c045d12e0ae3b29ede77ecd928"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "9988895768725ec55a54f5c69aa863f8",
+     "558fc1c045d12e0ae3b29ede77ecd928"
+    ]
+   },
+   "runs": 29,
+   "seconds": 97.83,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_infraredtransparent_construction-122d04b1/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_infraredtransparent_construction-122d04b1",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_infraredtransparent_construction-122d04b1"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_material",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 158,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_material"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a6b4b9c3f785820db2788c43936768c8"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "bcde389a9d4cd301b37f4aae0dfddc18",
+     "a6b4b9c3f785820db2788c43936768c8"
+    ]
+   },
+   "runs": 26,
+   "seconds": 89.25,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_material-da68c818/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_material-da68c818",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_material-da68c818"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_nomass_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 145,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_nomass_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b12671a2f12e794dbc87086f390b8c4d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "32108cfcc95f68bcffad946ebc4a4405",
+     "b12671a2f12e794dbc87086f390b8c4d"
+    ]
+   },
+   "runs": 37,
+   "seconds": 122.48,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_nomass_construction-05fd07ff/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_nomass_construction-05fd07ff",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_nomass_construction-05fd07ff"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_roofvegetation_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 143,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_roofvegetation_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "e1353f28e3119eac7479cfc4974811a6"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "083311a6fcb7f9c58af7810afb9700ee",
+     "e1353f28e3119eac7479cfc4974811a6"
+    ]
+   },
+   "runs": 25,
+   "seconds": 86.91,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_roofvegetation_construction-90fd521a/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_roofvegetation_construction-90fd521a",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_heatcapacity_roofvegetation_construction-90fd521a"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_1_layer_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 162,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_1_layer_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "35a8f8f94907c82d90d02e20db6419fa"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "9463c1a2793780723fbdcae621a5c1a4",
+     "35a8f8f94907c82d90d02e20db6419fa"
+    ]
+   },
+   "runs": 28,
+   "seconds": 96.33,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_1_layer_construction-a21233fc/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_1_layer_construction-a21233fc",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_1_layer_construction-a21233fc"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_2_layer_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 154,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_2_layer_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c7d200759102069348fb14430d654e8c"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "5b7c55c57bba5af8ad15069f8c83a38a",
+     "c7d200759102069348fb14430d654e8c"
+    ]
+   },
+   "runs": 32,
+   "seconds": 106.86,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_2_layer_construction-8fc8a3fb/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_2_layer_construction-8fc8a3fb",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_2_layer_construction-8fc8a3fb"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_airgap_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 144,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_airgap_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "dd7eb1bceac9edd18fc96c5133065ba6"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "eb761099f91a2ee6c4e213a524e59a95",
+     "dd7eb1bceac9edd18fc96c5133065ba6"
+    ]
+   },
+   "runs": 25,
+   "seconds": 83.66,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_airgap_construction-2f381e6b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_airgap_construction-2f381e6b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_airgap_construction-2f381e6b"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_fails",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 164,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_fails"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "33fa92f06d6dca23945838d2f403684d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "cfdce4c7bf95ddca0a00bec79cd9a70a",
+     "33fa92f06d6dca23945838d2f403684d"
+    ]
+   },
+   "runs": 28,
+   "seconds": 91.83,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_fails-c558c9ec/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_fails-c558c9ec",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_fails-c558c9ec"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_infraredtransparent_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 151,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_infraredtransparent_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "cc1543cac6541abc56833c0a030f91a8"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "d734cec0e1348b93dcbf177c44ac28a7",
+     "cc1543cac6541abc56833c0a030f91a8"
+    ]
+   },
+   "runs": 31,
+   "seconds": 99.55,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_infraredtransparent_construction-3f789fe7/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_infraredtransparent_construction-3f789fe7",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_infraredtransparent_construction-3f789fe7"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_material",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 152,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_material"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0407308c0d35bd81b14c5a10e1a2847d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "ff65d5b37337fb2eb61decf233d0faef",
+     "0407308c0d35bd81b14c5a10e1a2847d"
+    ]
+   },
+   "runs": 31,
+   "seconds": 101.47,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_material-6575716e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_material-6575716e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_material-6575716e"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_nomass_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 146,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_nomass_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ce16ba741cb52d7411647d4724d80d0f"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "c206f332058981e93970702f05725705",
+     "ce16ba741cb52d7411647d4724d80d0f"
+    ]
+   },
+   "runs": 37,
+   "seconds": 123.76,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_nomass_construction-3b6a67b2/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_nomass_construction-3b6a67b2",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_nomass_construction-3b6a67b2"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_roofvegetation_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 155,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_roofvegetation_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "31b0be89a365929714253094380c84bf"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "8f74105f0a32c74cbcde42b03235c37f",
+     "31b0be89a365929714253094380c84bf"
+    ]
+   },
+   "runs": 32,
+   "seconds": 108.97,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_roofvegetation_construction-87ff8f4f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_roofvegetation_construction-87ff8f4f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_rvalue_roofvegetation_construction-87ff8f4f"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_1_layer_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 149,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_1_layer_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "3b34fbfdc1f6243f44c3999a699dac2d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "a16d1da7545f3e73b1f366088d229046",
+     "3b34fbfdc1f6243f44c3999a699dac2d"
+    ]
+   },
+   "runs": 29,
+   "seconds": 98.1,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_1_layer_construction-8aed4de8/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_1_layer_construction-8aed4de8",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_1_layer_construction-8aed4de8"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_2_layer_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 148,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_2_layer_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "fdd34ebb0994ab112e0c279eb998f81e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b07db7fa3bbe2120850a54f1841a50d5",
+     "fdd34ebb0994ab112e0c279eb998f81e"
+    ]
+   },
+   "runs": 37,
+   "seconds": 127.32,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_2_layer_construction-ba7fd197/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_2_layer_construction-ba7fd197",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_2_layer_construction-ba7fd197"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_airgap_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 147,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_airgap_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ba3085c0fb999027329d1b32ff6f2bef"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "87c699873d4737585e7531c3edb0ab1a",
+     "ba3085c0fb999027329d1b32ff6f2bef"
+    ]
+   },
+   "runs": 37,
+   "seconds": 126.88,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_airgap_construction-fa18e884/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_airgap_construction-fa18e884",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_airgap_construction-fa18e884"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_infraredtransparent_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 161,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_infraredtransparent_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "f3d56918f5b814d60a1ee2cd2b251b81"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "5f7ae7138ac4e999d3c97d1466e03858",
+     "f3d56918f5b814d60a1ee2cd2b251b81"
+    ]
+   },
+   "runs": 28,
+   "seconds": 95.92,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_infraredtransparent_construction-6cc3b1d2/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_infraredtransparent_construction-6cc3b1d2",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_infraredtransparent_construction-6cc3b1d2"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_material",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 163,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_material"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b83bd6ac03708bec33f16eab36c7a353"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "632f57af3e6c4f6c0ca2258bd1284bb7",
+     "b83bd6ac03708bec33f16eab36c7a353"
+    ]
+   },
+   "runs": 28,
+   "seconds": 92.36,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_material-cb315567/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_material-cb315567",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_material-cb315567"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_nomass_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 159,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_nomass_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "415607e1e31609699bfa6641fb37f85a"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "d6dd0e9501ea5b4ab10997a7092e0778",
+     "415607e1e31609699bfa6641fb37f85a"
+    ]
+   },
+   "runs": 35,
+   "seconds": 116.1,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_nomass_construction-ed18fb06/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_nomass_construction-ed18fb06",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_nomass_construction-ed18fb06"
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_roofvegetation_construction",
+   "configs_searched": 4,
+   "status": "reproduced",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 157,
+   "minimal_length": 3,
+   "polluters": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF"
+   ],
+   "setters": [],
+   "order": [
+    "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+    "eppy/tests/test_IDF.py::test_IDF",
+    "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_roofvegetation_construction"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "IndexError",
+    "call",
+    "IndexError: list index out of range",
+    "/tmp/work/src/idoft-eppy/eppy/EPlusInterfaceFunctions/parse_idd.py:324"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1afff88fbe85a0268069159f679d02fa"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "c2bf7da3c4c0c4b13571d0065673092f",
+     "1afff88fbe85a0268069159f679d02fa"
+    ]
+   },
+   "runs": 26,
+   "seconds": 88.69,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-eppy/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_roofvegetation_construction-5f1d9381/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_roofvegetation_construction-5f1d9381",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-eppy/standalone/bundles/test_ufactor_roofvegetation_construction-5f1d9381"
+  }
+ ],
+ "seconds": 7115.3
+}

@@ -1,0 +1,712 @@
+{
+ "meta": {
+  "set": "node-rerun",
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "executor": "GitHub Actions (ubuntu-latest)",
+  "run_url": "https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44032723166",
+  "detjs": "0.1.0",
+  "date": "2026-11-17 09:13 UTC",
+  "selection": {
+   "selected": [
+    "matrix-js-sdk-flaky",
+    "babel-flaky",
+    "react-testing-library-flaky",
+    "vercel-flaky"
+   ],
+   "discarded": [],
+   "prepare": {},
+   "only": true,
+   "prior_selected": []
+  },
+  "rounds": [
+   {
+    "name": "babel-flaky",
+    "kind": "flaky",
+    "status": "ok",
+    "url": "https://github.com/babel/babel",
+    "commit": "ddf20013bdfd960308090865777bf4cf3c8d1f8d",
+    "commit_date": "2023-11-03T12:39:46Z",
+    "python": "node v20.20.2",
+    "install": "yarn install --immutable && npm run build",
+    "pytest_args": [],
+    "xdist": true,
+    "runs": 10,
+    "baseline_mean_s": 43.30346692790001,
+    "det_mean_s": 70.54369557570001,
+    "slowdown_pct": 62.90542208353618,
+    "precompile_first_s": null,
+    "precompile_rest_median_s": null,
+    "tests": 25554,
+    "unstable_baseline": 0,
+    "unstable_det": 0,
+    "became_stable": 0,
+    "outcome_changed_by_det": 2,
+    "covered": 0,
+    "not_covered": 0,
+    "reproduced": 0,
+    "never_fails_under_det": 0,
+    "always_fails_under_det": 0,
+    "fails_sometimes_under_det": 0,
+    "seeds_needed": [],
+    "seeds_explored": 0,
+    "exploration_runs": 0,
+    "exploration_budget_hit": false,
+    "reasons": {},
+    "pass_fail_reasons": {},
+    "broken_by_det": 2,
+    "broken_always": 2,
+    "broken_causes": {
+     "fixed-order (fails without --det too) | unknown": 2
+    },
+    "broken_examples": {
+     "fixed-order (fails without --det too) | unknown": [
+      "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config file: @babel/core errors > error inside config file (first diverging source: -)",
+      "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config file with more frames: @babel/core errors > error inside config file with more frames (first diverging source: -)"
+     ]
+    },
+    "ablation_runs": 6,
+    "known_flaky": 0,
+    "known_present": 0,
+    "known_unstable_baseline": 0,
+    "known_reproduced": 0,
+    "known_categories": {},
+    "examples": {
+     "changed:passed->failed": [
+      "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config file",
+      "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config file with more frames"
+     ]
+    },
+    "runner": "jest 29.6.2",
+    "node": "node v20.20.2",
+    "documented_source": "https://github.com/babel/babel/issues/16083",
+    "documented_hints": [
+     "Flaky Node.js 6 and 8 tests"
+    ],
+    "random_order_baseline": true,
+    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+    "diagnostics": {
+     "first_det_log_tail": "ules/jest-cli/build/run.js:124:37)\n\n@babel/core errors > error inside config file with more frames\n    Error: expect(received).toMatchInlineSnapshot(snapshot)\n    \n    Snapshot name: `@babel/core errors error inside config file with more frames 1`\n    \n    - Snapshot  - 0\n    + Received  + 2\n    \n    @@ -1,9 +1,11 @@\n      Error: Error inside config!\n          at f (<CWD>/packages/babel-core/test/fixtures/errors/error-config-file-more-frames/babel.config.js:_:_)\n          at g (<CWD>/packages/babel-core/test/fixtures/errors/error-config-file-more-frames/babel.config.js:_:_)\n          at <CWD>/packages/babel-core/test/fixtures/errors/error-config-file-more-frames/babel.config.js:_:_\n    +     at Module._extensions..js (... internal node frames ...)\n    +     at Object.require.extensions.<computed> [as .js] (<CWD>/node_modules/ts-node/src/index.ts:_:_)\n          at require (... internal node frames ...)\n          at Module.parseSync (<CWD>/packages/babel-core/src/parse.ts:_:_)\n          at <CWD>/packages/babel-core/test/errors-stacks.js:_:_\n          at expectError (<CWD>/packages/babel-core/test/errors-stacks.js:_:_)\n          at <CWD>/packages/babel-core/test/errors-stacks.js:_:_\n        at file:///tmp/work/src/babel-flaky/packages/babel-core/test/errors-stacks.js?1794899633468:137:8\n        at async Promise.all (index 28)\n        at async TestScheduler.scheduleTests (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/TestScheduler.js:283:15)\n        at async runJest (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/runJest.js:367:19)\n        at async _run10000 (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/cli/index.js:343:7)\n        at async runCLI (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/cli/index.js:198:3)\n        at async Object.run (/tmp/work/src/babel-flaky/node_modules/jest-cli/build/run.js:124:37)\n\n\nSnapshot Summary\n \u203a 2 snapshots failed from 1 test suite. Inspect your code changes or re-run jest with `-u` to update them.\n\nTest Suites: 1 failed, 237 passed, 238 total\nTests:       2 failed, 23 skipped, 25564 passed, 25589 total\nSnapshots:   2 failed, 200 passed, 202 total\nTime:        68.914 s\nRan all test suites.\nTest results written to: ../../runs/babel-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/babel-flaky/det_0.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949\n"
+    },
+    "not_reproduced_causes": {},
+    "executor": "GitHub Actions",
+    "date": "2026-11-17T07:38:55.422878+00:00"
+   },
+   {
+    "name": "matrix-js-sdk-flaky",
+    "kind": "flaky",
+    "status": "ok",
+    "url": "https://github.com/matrix-org/matrix-js-sdk",
+    "commit": "dc1cccfeccb0a34dce3f2d7249aef44dbbb92cbe",
+    "commit_date": "2024-07-29T12:11:37Z",
+    "python": "node v20.20.2",
+    "install": "npx -y yarn@1 install --frozen-lockfile --ignore-engines",
+    "pytest_args": [],
+    "xdist": true,
+    "runs": 10,
+    "baseline_mean_s": 95.9896511276,
+    "det_mean_s": NaN,
+    "slowdown_pct": NaN,
+    "precompile_first_s": null,
+    "precompile_rest_median_s": null,
+    "tests": 2707,
+    "unstable_baseline": 137,
+    "unstable_det": 0,
+    "became_stable": 137,
+    "outcome_changed_by_det": 2570,
+    "covered": 0,
+    "not_covered": 0,
+    "reproduced": 0,
+    "never_fails_under_det": 137,
+    "always_fails_under_det": 0,
+    "fails_sometimes_under_det": 0,
+    "seeds_needed": [],
+    "seeds_explored": 20,
+    "exploration_runs": 20,
+    "exploration_budget_hit": false,
+    "reasons": {},
+    "pass_fail_reasons": {},
+    "broken_by_det": 0,
+    "broken_always": 0,
+    "broken_causes": {},
+    "broken_examples": {},
+    "ablation_runs": 0,
+    "known_flaky": 0,
+    "known_present": 0,
+    "known_unstable_baseline": 0,
+    "known_reproduced": 0,
+    "known_categories": {},
+    "examples": {
+     "changed:passed->None": [
+      "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::can bootstrapCrossSigning twice",
+      "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::publishes keys if none were yet published"
+     ],
+     "changed:skipped->None": [
+      "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::get cross signing keys from secret storage and import them",
+      "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::will upload existing cross-signing keys to an established secret storage"
+     ],
+     "changed:failed->None": [
+      "spec/integ/sliding-sync.spec.ts::SlidingSync::lists::should be possible to add an extra list",
+      "spec/integ/sliding-sync.spec.ts::SlidingSync::lists::should be possible to adjust list ranges"
+     ]
+    },
+    "runner": "jest 29.7.0",
+    "node": "node v20.20.2",
+    "documented_source": "https://github.com/matrix-org/matrix-js-sdk/issues/4331",
+    "documented_hints": [
+     "Room \u203a recalculate \u203a recalculates in acceptable time without heroes"
+    ],
+    "random_order_baseline": true,
+    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+    "diagnostics": {
+     "first_det_log_tail": "de_modules/fetch-mock/cjs/lib/set-up-and-tear-down.js:7:8)\n    at Proxy.FetchMock.<computed> (/tmp/work/src/matrix-js-sdk-flaky/node_modules/fetch-mock-jest/node_modules/fetch-mock/cjs/lib/set-up-and-tear-down.js:80:32)\n    at /tmp/work/src/matrix-js-sdk-flaky/spec/test-utils/E2EKeyReceiver.ts:57:30\n    at new Promise (<anonymous>)\n    at new E2EKeyReceiver (/tmp/work/src/matrix-js-sdk-flaky/spec/test-utils/E2EKeyReceiver.ts:55:31)\n    at Object.<anonymous> (/tmp/work/src/matrix-js-sdk-flaky/spec/integ/crypto/crypto.spec.ts:380:27)\n    at Generator.next (<anonymous>)\n    at asyncGeneratorStep (/tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)\n    at _next (/tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)\n    at /tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7\n    at new Promise (<anonymous>)\n    at Object.<anonymous> (/tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)\n    at Promise.then.completed (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/utils.js:231:10)\n    at _callCircusHook (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:281:40)\n    at async _runTest (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:246:5)\n    at async _runTestsForDescribeBlock (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:126:9)\n    at async _runTestsForDescribeBlock (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:121:9)\n    at async run (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:71:3)\n    at async runAndTransformResultsToJestFormat (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async detjsJestRunner (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:146:12)\n    at async runTestInternal (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-runner/build/runTest.js:444:34)\n"
+    },
+    "not_reproduced_causes": {
+     "concurrency/event-order": 116,
+     "unknown": 19,
+     "l0-gap": 2
+    },
+    "executor": "GitHub Actions",
+    "date": "2026-11-17T07:57:59.372983+00:00"
+   },
+   {
+    "name": "react-testing-library-flaky",
+    "kind": "flaky",
+    "status": "ok",
+    "url": "https://github.com/testing-library/react-testing-library",
+    "commit": "1c931a6c03091d725eccee7767d9ec696d5d33c6",
+    "commit_date": "2025-08-07T12:13:48-06:00",
+    "python": "node v18.20.8",
+    "install": "npm install --no-audit --no-fund --legacy-peer-deps",
+    "pytest_args": [],
+    "xdist": true,
+    "runs": 10,
+    "baseline_mean_s": 162.40296071880002,
+    "det_mean_s": 4.4696536484,
+    "slowdown_pct": -97.24780039192808,
+    "precompile_first_s": null,
+    "precompile_rest_median_s": null,
+    "tests": 250,
+    "unstable_baseline": 2,
+    "unstable_det": 0,
+    "became_stable": 2,
+    "outcome_changed_by_det": 0,
+    "covered": 250,
+    "not_covered": 0,
+    "reproduced": 2,
+    "never_fails_under_det": 0,
+    "always_fails_under_det": 0,
+    "fails_sometimes_under_det": 0,
+    "seeds_needed": [
+     1,
+     7
+    ],
+    "seeds_explored": 7,
+    "exploration_runs": 25,
+    "exploration_budget_hit": false,
+    "reasons": {},
+    "pass_fail_reasons": {
+     "random": 2
+    },
+    "broken_by_det": 0,
+    "broken_always": 0,
+    "broken_causes": {},
+    "broken_examples": {},
+    "ablation_runs": 0,
+    "known_flaky": 0,
+    "known_present": 0,
+    "known_unstable_baseline": 0,
+    "known_reproduced": 0,
+    "known_categories": {},
+    "examples": {
+     "reproduced": [
+      "src/__tests__/auto-cleanup-skip.js::second (seed 1): event #0: [outcome] outcome @  = passed  <>  [random] Math.random @ <deps>/source-map/lib/quick-sort.js:43 = 0.3446372303062867",
+      "src/__tests__/events.js::Selection Events::triggers onSelect (seed 7): event #37: [outcome] outcome @  = passed  <>  [random] Math.random @ <deps>/source-map/lib/quick-sort.js:43 = 0.18200230926631555"
+     ]
+    },
+    "runner": "jest 29.7.0",
+    "node": "node v18.20.8",
+    "documented_source": "https://github.com/testing-library/react-testing-library/issues/1419",
+    "documented_hints": [
+     "Flaky Tests with user.type (missing characters)"
+    ],
+    "random_order_baseline": true,
+    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+    "diagnostics": {
+     "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (runInBand); network=block; timers=virtual; node v18.20.8\nPASS src/__tests__/act.js\nPASS src/__tests__/auto-cleanup-skip.js\nPASS src/__tests__/auto-cleanup.js\nPASS src/__tests__/cleanup.js\nPASS src/__tests__/config.js\nPASS src/__tests__/debug.js\nPASS src/__tests__/end-to-end.js\nPASS src/__tests__/error-handlers.js\nPASS src/__tests__/events.js\nPASS src/__tests__/multi-base.js\nPASS src/__tests__/new-act.js\nPASS src/__tests__/render.js\nPASS src/__tests__/renderHook.js\nPASS src/__tests__/rerender.js\nPASS src/__tests__/stopwatch.js\n\nTest Suites: 15 passed, 15 total\nTests:       3 skipped, 247 passed, 250 total\nSnapshots:   11 passed, 11 total\nTime:        3.639 s\nRan all test suites.\nTest results written to: ../../runs/react-testing-library-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/react-testing-library-flaky/det_0.jsonl: 250 tests, order digest f79f796908bf6249092fc86b8a7b1cf0\n",
+     "exit_hang_after_report": [
+      "normal_1",
+      "normal_2",
+      "normal_3",
+      "normal_4",
+      "normal_5",
+      "normal_6",
+      "normal_7",
+      "normal_8",
+      "normal_9"
+     ]
+    },
+    "not_reproduced_causes": {},
+    "executor": "GitHub Actions",
+    "date": "2026-11-17T07:40:37.666317+00:00"
+   },
+   {
+    "name": "vercel-flaky",
+    "kind": "flaky",
+    "status": "ok",
+    "url": "https://github.com/vercel/vercel",
+    "commit": "17d9ebaf8e9b335d550dea1a243743a74edc772e",
+    "commit_date": "2026-08-03T19:32:53Z",
+    "python": "node v22.23.5",
+    "install": "pnpm install --frozen-lockfile",
+    "pytest_args": [],
+    "xdist": true,
+    "runs": 10,
+    "baseline_mean_s": 115.02379458519998,
+    "det_mean_s": 195.8113883633001,
+    "slowdown_pct": 70.23554914827596,
+    "precompile_first_s": null,
+    "precompile_rest_median_s": null,
+    "tests": 3212,
+    "unstable_baseline": 1,
+    "unstable_det": 1,
+    "became_stable": 1,
+    "outcome_changed_by_det": 1,
+    "covered": 2375,
+    "not_covered": 41,
+    "reproduced": 0,
+    "never_fails_under_det": 0,
+    "always_fails_under_det": 0,
+    "fails_sometimes_under_det": 1,
+    "seeds_needed": [],
+    "seeds_explored": 4,
+    "exploration_runs": 12,
+    "exploration_budget_hit": true,
+    "reasons": {
+     "fs": 32,
+     "time": 1,
+     "entropy": 8
+    },
+    "pass_fail_reasons": {},
+    "broken_by_det": 2,
+    "broken_always": 1,
+    "broken_causes": {
+     "seeds+time+timers+net | AssertionError": 1,
+     "time+timers | TypeError": 1
+    },
+    "broken_examples": {
+     "seeds+time+timers+net | AssertionError": [
+      "packages/cli-exec/tests/index.test.ts::passes timeout through to execa: AssertionError: expected VercelCliError: Vercel CLI command \"/tmp/\u2026 { \u2026(5) } to deeply equal ObjectContaining{\u2026} (first diverging source: time)"
+     ],
+     "time+timers | TypeError": [
+      "packages/cli/test/unit/util/events.test.ts::printEvents()::does not signal alias assignment when the stream errors: TypeError: Invalid state: ReadableStream is locked (first diverging source: -)"
+     ]
+    },
+    "ablation_runs": 6,
+    "known_flaky": 0,
+    "known_present": 0,
+    "known_unstable_baseline": 0,
+    "known_reproduced": 0,
+    "known_categories": {},
+    "examples": {
+     "changed:passed->failed": [
+      "packages/cli/test/unit/util/events.test.ts::printEvents()::does not signal alias assignment when the stream errors"
+     ],
+     "not-reproduced": [
+      "packages/passport/test/unit/index.test.ts::getIdentity::synthesizes a development identity by default outside Vercel (seed 4:9/9) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+     ]
+    },
+    "runner": "vitest 2.0.3",
+    "node": "node v22.23.5",
+    "documented_source": "https://github.com/vercel/vercel/issues/17501",
+    "documented_hints": [
+     "Investigate and deflake flaky tests reported by Vitest in CI"
+    ],
+    "random_order_baseline": true,
+    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+    "diagnostics": {
+     "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 2.0.3; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/vercel-flaky/det_0.json\ndetjs: trace ../../runs/vercel-flaky/det_0.jsonl: 2419 tests, order digest 967621106baee3b62d94995d8e5ca102\n"
+    },
+    "not_reproduced_causes": {
+     "concurrency/event-order": 1
+    },
+    "executor": "GitHub Actions",
+    "date": "2026-11-17T09:04:11.109418+00:00"
+   }
+  ],
+  "notes": [
+   "Flaky pool: the dataset of Hashemi, Tahir, Rasheed, 'An Empirical Study of Flaky Tests in JavaScript' (ICSME 2022, Zenodo 10.5281/zenodo.6673741) is the public dataset of JavaScript flaky tests used first: each project is pinned at the parent of a commit that fixes a flaky test. It covers only 18 projects, most of which do not run their suites with Jest or Vitest (Node core, Atom, Electron, Meteor, jQuery/QUnit, Karma suites), so it cannot supply 25 projects; the pool is completed with popular projects that have GitHub issues documenting flaky Jest/Vitest tests, each pinned at the last commit before the issue was opened.",
+   "The JS-TOD (order-dependent Jest tests) and environmental-flakiness replication packages were not fetched.",
+   "Only GitHub-hosted runners were used; numbers labelled NOISY come from shared virtual machines."
+  ]
+ },
+ "totals": {
+  "all": {
+   "tests": 31723,
+   "unstable_baseline": 140,
+   "unstable_det": 1,
+   "became_stable": 140,
+   "outcome_changed_by_det": 2573,
+   "covered": 2625,
+   "not_covered": 41,
+   "reproduced": 2,
+   "never_fails_under_det": 137,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 1,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "broken_by_det": 4,
+   "broken_always": 3
+  },
+  "flaky": {
+   "tests": 31723,
+   "unstable_baseline": 140,
+   "unstable_det": 1,
+   "became_stable": 140,
+   "outcome_changed_by_det": 2573,
+   "covered": 2625,
+   "not_covered": 41,
+   "reproduced": 2,
+   "never_fails_under_det": 137,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 1,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "broken_by_det": 4,
+   "broken_always": 3
+  },
+  "popular": {}
+ },
+ "reasons": {
+  "fs": 32,
+  "time": 1,
+  "entropy": 8
+ },
+ "pass_fail_reasons": {
+  "random": 2
+ },
+ "broken_causes": {
+  "fixed-order (fails without --det too) | unknown": 2,
+  "seeds+time+timers+net | AssertionError": 1,
+  "time+timers | TypeError": 1
+ },
+ "not_reproduced_causes": {
+  "concurrency/event-order": 117,
+  "unknown": 19,
+  "l0-gap": 2
+ },
+ "timings": [],
+ "repos": [
+  {
+   "name": "matrix-js-sdk-flaky",
+   "kind": "flaky",
+   "status": "ok",
+   "url": "https://github.com/matrix-org/matrix-js-sdk",
+   "commit": "dc1cccfeccb0a34dce3f2d7249aef44dbbb92cbe",
+   "commit_date": "2024-07-29T12:11:37Z",
+   "python": "node v20.20.2",
+   "install": "npx -y yarn@1 install --frozen-lockfile --ignore-engines",
+   "pytest_args": [],
+   "xdist": true,
+   "runs": 10,
+   "baseline_mean_s": 95.9896511276,
+   "det_mean_s": NaN,
+   "slowdown_pct": NaN,
+   "precompile_first_s": null,
+   "precompile_rest_median_s": null,
+   "tests": 2707,
+   "unstable_baseline": 137,
+   "unstable_det": 0,
+   "became_stable": 137,
+   "outcome_changed_by_det": 2570,
+   "covered": 0,
+   "not_covered": 0,
+   "reproduced": 0,
+   "never_fails_under_det": 137,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "seeds_needed": [],
+   "seeds_explored": 20,
+   "exploration_runs": 20,
+   "exploration_budget_hit": false,
+   "reasons": {},
+   "pass_fail_reasons": {},
+   "broken_by_det": 0,
+   "broken_always": 0,
+   "broken_causes": {},
+   "broken_examples": {},
+   "ablation_runs": 0,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "known_categories": {},
+   "examples": {
+    "changed:passed->None": [
+     "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::can bootstrapCrossSigning twice",
+     "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::publishes keys if none were yet published"
+    ],
+    "changed:skipped->None": [
+     "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::get cross signing keys from secret storage and import them",
+     "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::will upload existing cross-signing keys to an established secret storage"
+    ],
+    "changed:failed->None": [
+     "spec/integ/sliding-sync.spec.ts::SlidingSync::lists::should be possible to add an extra list",
+     "spec/integ/sliding-sync.spec.ts::SlidingSync::lists::should be possible to adjust list ranges"
+    ]
+   },
+   "runner": "jest 29.7.0",
+   "node": "node v20.20.2",
+   "documented_source": "https://github.com/matrix-org/matrix-js-sdk/issues/4331",
+   "documented_hints": [
+    "Room \u203a recalculate \u203a recalculates in acceptable time without heroes"
+   ],
+   "random_order_baseline": true,
+   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+   "diagnostics": {
+    "first_det_log_tail": "de_modules/fetch-mock/cjs/lib/set-up-and-tear-down.js:7:8)\n    at Proxy.FetchMock.<computed> (/tmp/work/src/matrix-js-sdk-flaky/node_modules/fetch-mock-jest/node_modules/fetch-mock/cjs/lib/set-up-and-tear-down.js:80:32)\n    at /tmp/work/src/matrix-js-sdk-flaky/spec/test-utils/E2EKeyReceiver.ts:57:30\n    at new Promise (<anonymous>)\n    at new E2EKeyReceiver (/tmp/work/src/matrix-js-sdk-flaky/spec/test-utils/E2EKeyReceiver.ts:55:31)\n    at Object.<anonymous> (/tmp/work/src/matrix-js-sdk-flaky/spec/integ/crypto/crypto.spec.ts:380:27)\n    at Generator.next (<anonymous>)\n    at asyncGeneratorStep (/tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)\n    at _next (/tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)\n    at /tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7\n    at new Promise (<anonymous>)\n    at Object.<anonymous> (/tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)\n    at Promise.then.completed (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/utils.js:231:10)\n    at _callCircusHook (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:281:40)\n    at async _runTest (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:246:5)\n    at async _runTestsForDescribeBlock (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:126:9)\n    at async _runTestsForDescribeBlock (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:121:9)\n    at async run (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:71:3)\n    at async runAndTransformResultsToJestFormat (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async detjsJestRunner (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:146:12)\n    at async runTestInternal (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-runner/build/runTest.js:444:34)\n"
+   },
+   "not_reproduced_causes": {
+    "concurrency/event-order": 116,
+    "unknown": 19,
+    "l0-gap": 2
+   }
+  },
+  {
+   "name": "babel-flaky",
+   "kind": "flaky",
+   "status": "ok",
+   "url": "https://github.com/babel/babel",
+   "commit": "ddf20013bdfd960308090865777bf4cf3c8d1f8d",
+   "commit_date": "2023-11-03T12:39:46Z",
+   "python": "node v20.20.2",
+   "install": "yarn install --immutable && npm run build",
+   "pytest_args": [],
+   "xdist": true,
+   "runs": 10,
+   "baseline_mean_s": 43.30346692790001,
+   "det_mean_s": 70.54369557570001,
+   "slowdown_pct": 62.90542208353618,
+   "precompile_first_s": null,
+   "precompile_rest_median_s": null,
+   "tests": 25554,
+   "unstable_baseline": 0,
+   "unstable_det": 0,
+   "became_stable": 0,
+   "outcome_changed_by_det": 2,
+   "covered": 0,
+   "not_covered": 0,
+   "reproduced": 0,
+   "never_fails_under_det": 0,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "seeds_needed": [],
+   "seeds_explored": 0,
+   "exploration_runs": 0,
+   "exploration_budget_hit": false,
+   "reasons": {},
+   "pass_fail_reasons": {},
+   "broken_by_det": 2,
+   "broken_always": 2,
+   "broken_causes": {
+    "fixed-order (fails without --det too) | unknown": 2
+   },
+   "broken_examples": {
+    "fixed-order (fails without --det too) | unknown": [
+     "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config file: @babel/core errors > error inside config file (first diverging source: -)",
+     "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config file with more frames: @babel/core errors > error inside config file with more frames (first diverging source: -)"
+    ]
+   },
+   "ablation_runs": 6,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "known_categories": {},
+   "examples": {
+    "changed:passed->failed": [
+     "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config file",
+     "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config file with more frames"
+    ]
+   },
+   "runner": "jest 29.6.2",
+   "node": "node v20.20.2",
+   "documented_source": "https://github.com/babel/babel/issues/16083",
+   "documented_hints": [
+    "Flaky Node.js 6 and 8 tests"
+   ],
+   "random_order_baseline": true,
+   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+   "diagnostics": {
+    "first_det_log_tail": "ules/jest-cli/build/run.js:124:37)\n\n@babel/core errors > error inside config file with more frames\n    Error: expect(received).toMatchInlineSnapshot(snapshot)\n    \n    Snapshot name: `@babel/core errors error inside config file with more frames 1`\n    \n    - Snapshot  - 0\n    + Received  + 2\n    \n    @@ -1,9 +1,11 @@\n      Error: Error inside config!\n          at f (<CWD>/packages/babel-core/test/fixtures/errors/error-config-file-more-frames/babel.config.js:_:_)\n          at g (<CWD>/packages/babel-core/test/fixtures/errors/error-config-file-more-frames/babel.config.js:_:_)\n          at <CWD>/packages/babel-core/test/fixtures/errors/error-config-file-more-frames/babel.config.js:_:_\n    +     at Module._extensions..js (... internal node frames ...)\n    +     at Object.require.extensions.<computed> [as .js] (<CWD>/node_modules/ts-node/src/index.ts:_:_)\n          at require (... internal node frames ...)\n          at Module.parseSync (<CWD>/packages/babel-core/src/parse.ts:_:_)\n          at <CWD>/packages/babel-core/test/errors-stacks.js:_:_\n          at expectError (<CWD>/packages/babel-core/test/errors-stacks.js:_:_)\n          at <CWD>/packages/babel-core/test/errors-stacks.js:_:_\n        at file:///tmp/work/src/babel-flaky/packages/babel-core/test/errors-stacks.js?1794899633468:137:8\n        at async Promise.all (index 28)\n        at async TestScheduler.scheduleTests (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/TestScheduler.js:283:15)\n        at async runJest (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/runJest.js:367:19)\n        at async _run10000 (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/cli/index.js:343:7)\n        at async runCLI (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/cli/index.js:198:3)\n        at async Object.run (/tmp/work/src/babel-flaky/node_modules/jest-cli/build/run.js:124:37)\n\n\nSnapshot Summary\n \u203a 2 snapshots failed from 1 test suite. Inspect your code changes or re-run jest with `-u` to update them.\n\nTest Suites: 1 failed, 237 passed, 238 total\nTests:       2 failed, 23 skipped, 25564 passed, 25589 total\nSnapshots:   2 failed, 200 passed, 202 total\nTime:        68.914 s\nRan all test suites.\nTest results written to: ../../runs/babel-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/babel-flaky/det_0.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949\n"
+   },
+   "not_reproduced_causes": {}
+  },
+  {
+   "name": "react-testing-library-flaky",
+   "kind": "flaky",
+   "status": "ok",
+   "url": "https://github.com/testing-library/react-testing-library",
+   "commit": "1c931a6c03091d725eccee7767d9ec696d5d33c6",
+   "commit_date": "2025-08-07T12:13:48-06:00",
+   "python": "node v18.20.8",
+   "install": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "pytest_args": [],
+   "xdist": true,
+   "runs": 10,
+   "baseline_mean_s": 162.40296071880002,
+   "det_mean_s": 4.4696536484,
+   "slowdown_pct": -97.24780039192808,
+   "precompile_first_s": null,
+   "precompile_rest_median_s": null,
+   "tests": 250,
+   "unstable_baseline": 2,
+   "unstable_det": 0,
+   "became_stable": 2,
+   "outcome_changed_by_det": 0,
+   "covered": 250,
+   "not_covered": 0,
+   "reproduced": 2,
+   "never_fails_under_det": 0,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "seeds_needed": [
+    1,
+    7
+   ],
+   "seeds_explored": 7,
+   "exploration_runs": 25,
+   "exploration_budget_hit": false,
+   "reasons": {},
+   "pass_fail_reasons": {
+    "random": 2
+   },
+   "broken_by_det": 0,
+   "broken_always": 0,
+   "broken_causes": {},
+   "broken_examples": {},
+   "ablation_runs": 0,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "known_categories": {},
+   "examples": {
+    "reproduced": [
+     "src/__tests__/auto-cleanup-skip.js::second (seed 1): event #0: [outcome] outcome @  = passed  <>  [random] Math.random @ <deps>/source-map/lib/quick-sort.js:43 = 0.3446372303062867",
+     "src/__tests__/events.js::Selection Events::triggers onSelect (seed 7): event #37: [outcome] outcome @  = passed  <>  [random] Math.random @ <deps>/source-map/lib/quick-sort.js:43 = 0.18200230926631555"
+    ]
+   },
+   "runner": "jest 29.7.0",
+   "node": "node v18.20.8",
+   "documented_source": "https://github.com/testing-library/react-testing-library/issues/1419",
+   "documented_hints": [
+    "Flaky Tests with user.type (missing characters)"
+   ],
+   "random_order_baseline": true,
+   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+   "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (runInBand); network=block; timers=virtual; node v18.20.8\nPASS src/__tests__/act.js\nPASS src/__tests__/auto-cleanup-skip.js\nPASS src/__tests__/auto-cleanup.js\nPASS src/__tests__/cleanup.js\nPASS src/__tests__/config.js\nPASS src/__tests__/debug.js\nPASS src/__tests__/end-to-end.js\nPASS src/__tests__/error-handlers.js\nPASS src/__tests__/events.js\nPASS src/__tests__/multi-base.js\nPASS src/__tests__/new-act.js\nPASS src/__tests__/render.js\nPASS src/__tests__/renderHook.js\nPASS src/__tests__/rerender.js\nPASS src/__tests__/stopwatch.js\n\nTest Suites: 15 passed, 15 total\nTests:       3 skipped, 247 passed, 250 total\nSnapshots:   11 passed, 11 total\nTime:        3.639 s\nRan all test suites.\nTest results written to: ../../runs/react-testing-library-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/react-testing-library-flaky/det_0.jsonl: 250 tests, order digest f79f796908bf6249092fc86b8a7b1cf0\n",
+    "exit_hang_after_report": [
+     "normal_1",
+     "normal_2",
+     "normal_3",
+     "normal_4",
+     "normal_5",
+     "normal_6",
+     "normal_7",
+     "normal_8",
+     "normal_9"
+    ]
+   },
+   "not_reproduced_causes": {}
+  },
+  {
+   "name": "vercel-flaky",
+   "kind": "flaky",
+   "status": "ok",
+   "url": "https://github.com/vercel/vercel",
+   "commit": "17d9ebaf8e9b335d550dea1a243743a74edc772e",
+   "commit_date": "2026-08-03T19:32:53Z",
+   "python": "node v22.23.5",
+   "install": "pnpm install --frozen-lockfile",
+   "pytest_args": [],
+   "xdist": true,
+   "runs": 10,
+   "baseline_mean_s": 115.02379458519998,
+   "det_mean_s": 195.8113883633001,
+   "slowdown_pct": 70.23554914827596,
+   "precompile_first_s": null,
+   "precompile_rest_median_s": null,
+   "tests": 3212,
+   "unstable_baseline": 1,
+   "unstable_det": 1,
+   "became_stable": 1,
+   "outcome_changed_by_det": 1,
+   "covered": 2375,
+   "not_covered": 41,
+   "reproduced": 0,
+   "never_fails_under_det": 0,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 1,
+   "seeds_needed": [],
+   "seeds_explored": 4,
+   "exploration_runs": 12,
+   "exploration_budget_hit": true,
+   "reasons": {
+    "fs": 32,
+    "time": 1,
+    "entropy": 8
+   },
+   "pass_fail_reasons": {},
+   "broken_by_det": 2,
+   "broken_always": 1,
+   "broken_causes": {
+    "seeds+time+timers+net | AssertionError": 1,
+    "time+timers | TypeError": 1
+   },
+   "broken_examples": {
+    "seeds+time+timers+net | AssertionError": [
+     "packages/cli-exec/tests/index.test.ts::passes timeout through to execa: AssertionError: expected VercelCliError: Vercel CLI command \"/tmp/\u2026 { \u2026(5) } to deeply equal ObjectContaining{\u2026} (first diverging source: time)"
+    ],
+    "time+timers | TypeError": [
+     "packages/cli/test/unit/util/events.test.ts::printEvents()::does not signal alias assignment when the stream errors: TypeError: Invalid state: ReadableStream is locked (first diverging source: -)"
+    ]
+   },
+   "ablation_runs": 6,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "known_categories": {},
+   "examples": {
+    "changed:passed->failed": [
+     "packages/cli/test/unit/util/events.test.ts::printEvents()::does not signal alias assignment when the stream errors"
+    ],
+    "not-reproduced": [
+     "packages/passport/test/unit/index.test.ts::getIdentity::synthesizes a development identity by default outside Vercel (seed 4:9/9) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ]
+   },
+   "runner": "vitest 2.0.3",
+   "node": "node v22.23.5",
+   "documented_source": "https://github.com/vercel/vercel/issues/17501",
+   "documented_hints": [
+    "Investigate and deflake flaky tests reported by Vitest in CI"
+   ],
+   "random_order_baseline": true,
+   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+   "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 2.0.3; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/vercel-flaky/det_0.json\ndetjs: trace ../../runs/vercel-flaky/det_0.jsonl: 2419 tests, order digest 967621106baee3b62d94995d8e5ca102\n"
+   },
+   "not_reproduced_causes": {
+    "concurrency/event-order": 1
+   }
+  }
+ ]
+}

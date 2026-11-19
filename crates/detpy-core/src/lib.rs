@@ -9,6 +9,8 @@
 //! * [`cassette`]: recorded network conversations for record/replay.
 //! * [`cache`]: result-cache vocabulary (key, policy, storage).
 //! * [`proof`]: cache with proof: per-test recorded inputs, reuse check, receipt.
+//! * [`deps`]: data dependency kinds beyond file contents (`m:`, `r:`, `e:`, `t:`, `c:`) and Vite glob bases.
+//! * [`treehash`]: content digest of directory trees (runtime identity of installed packages).
 //! * [`record`]: end-of-session assembly of every test's inputs from the capture's contexts.
 //! * [`repro`]: `detpy repro` / `explore` decisions (search, ddmin, bundles, explore bookkeeping).
 //! * [`reexec`]: `--det`'s re-exec decisions (personality, realpath, precompile stamps).
@@ -17,6 +19,7 @@
 pub mod backend;
 pub mod cache;
 pub mod cassette;
+pub mod deps;
 pub mod event;
 pub mod fingerprint;
 pub mod order;
@@ -27,6 +30,7 @@ pub mod recorder;
 pub mod reexec;
 pub mod repro;
 pub mod trace;
+pub mod treehash;
 pub mod verify;
 
 pub use event::{Event, Source};

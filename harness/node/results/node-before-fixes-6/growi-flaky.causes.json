@@ -1,0 +1,26 @@
+[
+ {
+  "repo": "growi-flaky",
+  "pool": "flaky",
+  "nodeid": "packages/logger/src/http-logger.spec.ts::createHttpLoggerMiddleware::does not apply morganLikeFormatOptions in production mode",
+  "class": "concurrency/event-order",
+  "evidence": "test source uses async , await ; also process.env",
+  "documented": "",
+  "under_det": "fails",
+  "baseline_outcomes": "failed=5;passed=1",
+  "det_exception": "AssertionError",
+  "pass_fail_reason": ""
+ },
+ {
+  "repo": "growi-flaky",
+  "pool": "flaky",
+  "nodeid": "packages/pluginkit/src/v4/client/utils/growi-facade/growi-react.spec.ts::growiReact()::returns the given react instance in development mode",
+  "class": "concurrency/event-order",
+  "evidence": "test source uses act(; also process.env",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=1;passed=5",
+  "det_exception": "",
+  "pass_fail_reason": "outcome-only"
+ }
+]

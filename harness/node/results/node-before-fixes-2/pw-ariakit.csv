@@ -1,0 +1,11 @@
+nodeid,documented_flaky,baseline_outcomes,baseline_unstable,det_outcomes,det_stable,became_stable,outcome_changed_by_det,reproduced,repro_seed,seeds_needed,best_attempt,pass_fail_reason,pass_fail_divergence,fingerprint_covered,distinct_fingerprints,det_reason,det_divergence,baseline_exception,det_exception,det_exception_message,broken_by_det,broken_cause
+website/tests/ariakit-plus.ts::ensure customer discount is applied only to customer [plus],,skipped=10,False,skipped=10,True,False,False,False,,,,,,False,0,,,,,,False,
+website/tests/ariakit-plus.ts::ensure sale discount is applied [plus],,skipped=10,False,skipped=10,True,False,False,False,,,,,,False,0,,,,,,False,
+website/tests/ariakit-plus.ts::monthly subscriber purchasing Plus [plus],,skipped=10,False,skipped=10,True,False,False,False,,,,,,False,0,,,,,,False,
+website/tests/ariakit-plus.ts::monthly subscriber still has access to Plus [plus],,skipped=10,False,skipped=10,True,False,False,False,,,,,,False,0,,,,,,False,
+website/tests/ariakit-plus.ts::old one-time purchaser still has access to Plus [plus],,skipped=10,False,skipped=10,True,False,False,False,,,,,,False,0,,,,,,False,
+"website/tests/ariakit-plus.ts::purchase Plus from /components, sign out, sign in again, and access the billing page [plus]",,skipped=10,False,skipped=10,True,False,False,False,,,,,,False,0,,,,,,False,
+"website/tests/ariakit-plus.ts::purchase Plus from /plus, sign out, sign in again, and access the billing page [plus]",,skipped=10,False,skipped=10,True,False,False,False,,,,,,False,0,,,,,,False,
+website/tests/ariakit-plus.ts::yearly subscriber purchasing Plus [plus],,skipped=10,False,skipped=10,True,False,False,False,,,,,,False,0,,,,,,False,
+website/tests/ariakit-plus.ts::yearly subscriber still has access to Plus [plus],,skipped=10,False,skipped=10,True,False,False,False,,,,,,False,0,,,,,,False,
+website/tests/header.ts::truncates a long page title without overflowing the header [mobile],,failed=10,False,failed=10,True,False,False,False,,,,,,False,0,,,Error,Error,Error: page.goto: net::ERR_CONNECTION_RESET at http://localhost:3000/examples/select-next-router,False,

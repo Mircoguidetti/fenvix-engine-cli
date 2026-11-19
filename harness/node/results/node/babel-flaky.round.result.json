@@ -1,0 +1,73 @@
+{
+  "name": "babel-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/babel/babel",
+  "commit": "ddf20013bdfd960308090865777bf4cf3c8d1f8d",
+  "commit_date": "2023-11-03T12:39:46Z",
+  "python": "node v20.20.2",
+  "install": "yarn install --immutable && npm run build",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 37.21178570180002,
+  "det_mean_s": 58.748818712399995,
+  "slowdown_pct": 57.87691346819237,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 25554,
+  "unstable_baseline": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "outcome_changed_by_det": 9,
+  "covered": 0,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 0,
+  "exploration_runs": 0,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 9,
+  "broken_always": 9,
+  "broken_causes": {
+    "fixed-order (fails without --det too) | unknown": 9
+  },
+  "broken_examples": {
+    "fixed-order (fails without --det too) | unknown": [
+      "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config file: @babel/core errors > error inside config file (first diverging source: -)",
+      "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config file with more frames: @babel/core errors > error inside config file with more frames (first diverging source: -)",
+      "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config function: @babel/core errors > error inside config function (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->failed": [
+      "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config file",
+      "packages/babel-core/test/errors-stacks.js::@babel/core errors::error inside config file with more frames"
+    ]
+  },
+  "runner": "jest 29.6.2",
+  "node": "node v20.20.2",
+  "documented_source": "https://github.com/babel/babel/issues/16083",
+  "documented_hints": [
+    "Flaky Node.js 6 and 8 tests"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "/babel-flaky/node_modules/@jest/core/build/cli/index.js:343:7)\n        at async runCLI (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/cli/index.js:198:3)\n        at async Object.run (/tmp/work/src/babel-flaky/node_modules/jest-cli/build/run.js:124:37)\n        at async Object.main (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/cli.js:85:3)\n\n@babel/core errors > invalid option in programmatic options\n    Error: expect(received).toMatchInlineSnapshot(snapshot)\n    \n    Snapshot name: `@babel/core errors invalid option in programmatic options 1`\n    \n    - Snapshot  - 0\n    + Received  + 1\n    \n    @@ -2,5 +2,6 @@\n          at Module.parseSync (<CWD>/packages/babel-core/src/parse.ts:_:_)\n          at <CWD>/packages/babel-core/test/errors-stacks.js:_:_\n          at expectError (<CWD>/packages/babel-core/test/errors-stacks.js:_:_)\n          at <CWD>/packages/babel-core/test/errors-stacks.js:_:_\n          at ... internal jest frames ...\n    +     at async Object.main (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/cli.js:_:_)\n        at file:///tmp/work/src/babel-flaky/packages/babel-core/test/errors-stacks.js?1794893628128:240:7\n        at async Promise.all (index 28)\n        at async TestScheduler.scheduleTests (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/TestScheduler.js:283:15)\n        at async runJest (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/runJest.js:367:19)\n        at async _run10000 (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/cli/index.js:343:7)\n        at async runCLI (/tmp/work/src/babel-flaky/node_modules/@jest/core/build/cli/index.js:198:3)\n        at async Object.run (/tmp/work/src/babel-flaky/node_modules/jest-cli/build/run.js:124:37)\n        at async Object.main (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/cli.js:85:3)\n\n\nSnapshot Summary\n \u203a 9 snapshots failed from 1 test suite. Inspect your code changes or re-run jest with `-u` to update them.\n\nTest Suites: 1 failed, 237 passed, 238 total\nTests:       9 failed, 23 skipped, 25557 passed, 25589 total\nSnapshots:   9 failed, 193 passed, 202 total\nTime:        60.207 s\nRan all test suites.\nTest results written to: ../../runs/babel-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/babel-flaky/det_0.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949\n"
+  },
+  "not_reproduced_causes": {},
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T05:54:37.935178+00:00"
+}

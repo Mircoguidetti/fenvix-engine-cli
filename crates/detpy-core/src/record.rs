@@ -641,6 +641,8 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 skeleton: skeleton.into_iter().collect(),
                 hooks: hooks.into_iter().collect(),
                 units: units.into_iter().collect(),
+                // start-up process outputs are not captured by the pytest shell (Node shells only)
+                startup: String::new(),
             },
         );
         out.recorded += 1;

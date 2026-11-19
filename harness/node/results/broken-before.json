@@ -1,0 +1,31 @@
+{
+ "date": "2026-11-16 (round started 17:32 UTC, cancelled 18:30 UTC)",
+ "repos": 18,
+ "broken_by_det": 60,
+ "by_repo": {
+  "preact-signals": 0,
+  "luxon": 0,
+  "query-flaky": 0,
+  "msw-flaky": 0,
+  "redux": 0,
+  "zod-flaky": 0,
+  "svelte-flaky": 0,
+  "pinia": 0,
+  "unstorage": 5,
+  "cheerio": 0,
+  "date-fns": 0,
+  "dom-testing-library": 0,
+  "yup": 0,
+  "jotai": 0,
+  "user-event": 55,
+  "ufo": 0,
+  "immer": 0,
+  "react-redux": 0
+ },
+ "failed_rounds": [
+  "yaml",
+  "react-admin-flaky",
+  "react-testing-library-flaky"
+ ],
+ "note": "Same harness before the L0 fixes found in this round (leaked virtual timers, NODE_ENV/VITEST setup of the in-process runners). Repositories measured: those whose round finished before the cancel."
+}

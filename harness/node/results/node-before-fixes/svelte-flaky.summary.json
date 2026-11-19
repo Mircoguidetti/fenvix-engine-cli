@@ -1,0 +1,73 @@
+{
+  "name": "svelte-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/sveltejs/svelte",
+  "commit": "7a2435471c96c43d6f00144cdb5889772703d786",
+  "commit_date": "2025-11-03T20:53:51-05:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 57.885529713400004,
+  "det_mean_s": 10.822755332700016,
+  "slowdown_pct": -81.30317648247306,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 6969,
+  "unstable_baseline": 20,
+  "unstable_det": 0,
+  "became_stable": 20,
+  "outcome_changed_by_det": 5934,
+  "covered": 930,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 20,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 20,
+  "exploration_runs": 20,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->None": [
+      "packages/svelte/tests/css/test.ts::animations",
+      "packages/svelte/tests/css/test.ts::at-layer"
+    ],
+    "changed:skipped->None": [
+      "packages/svelte/tests/runtime-legacy/test.ts::after-render-prevents-loop (ssr)",
+      "packages/svelte/tests/runtime-legacy/test.ts::after-render-triggers-update (ssr)"
+    ],
+    "changed:failed->None": [
+      "packages/svelte/tests/runtime-runes/test.ts::1000-reading-derived-effects (dom)",
+      "packages/svelte/tests/runtime-runes/test.ts::error-boundary-20 (hydrate)"
+    ]
+  },
+  "runner": "vitest 2.1.9",
+  "node": "node v22.23.5",
+  "documented_source": "https://github.com/sveltejs/svelte/issues/17110",
+  "documented_hints": [
+    "$effect.pending flaky behaviour"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 2.1.9; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/svelte-flaky/det_0.json\ndetjs: trace ../../runs/svelte-flaky/det_0.jsonl: 936 tests, order digest ec39974667b8ed312325284fa54ccc2a\n"
+  },
+  "not_reproduced_causes": {
+    "unknown": 20
+  }
+}

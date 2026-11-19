@@ -1,0 +1,50 @@
+[
+ {
+  "repo": "xstate",
+  "pool": "popular",
+  "nodeid": "examples/effect-workflows/test/inspection.test.ts::runs offline by default",
+  "class": "concurrency/event-order",
+  "evidence": "test source uses async , await , waitfor",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=3;passed=7",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ },
+ {
+  "repo": "xstate",
+  "pool": "popular",
+  "nodeid": "packages/core/test/errors.test.ts::error handling::handled sync errors thrown when starting a child actor should not be reported globally when all of its own observers come with an error listener",
+  "class": "l0-gap",
+  "evidence": "diverging event `time`: a controlled source still differs between runs",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=1;passed=9",
+  "det_exception": "",
+  "pass_fail_reason": "time"
+ },
+ {
+  "repo": "xstate",
+  "pool": "popular",
+  "nodeid": "packages/core/test/errors.test.ts::error handling::uncaught error and an error thrown by the error listener should both be reported globally when not every observer comes with an error listener",
+  "class": "l0-gap",
+  "evidence": "diverging event `time`: a controlled source still differs between runs",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=1;passed=9",
+  "det_exception": "",
+  "pass_fail_reason": "time"
+ },
+ {
+  "repo": "xstate",
+  "pool": "popular",
+  "nodeid": "packages/core/test/errors.test.ts::error handling::unhandled sync errors thrown when starting a child actor should be reported twice globally when not all of its own observers come with an error listener and when the root has no error listener of its own",
+  "class": "concurrency/event-order",
+  "evidence": "test source uses async ",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=1;passed=9",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ }
+]
