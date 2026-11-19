@@ -133,3 +133,60 @@ def test_a_library_memo_written_by_an_earlier_test_is_carried(pytester, monkeypa
     wrong = {n: (o1.get(n), truth.get(n)) for n in reused if o1.get(n) != truth.get(n)}
     assert wrong == {}, r1.stdout.str()
     assert "test_b.py::test_b" not in reused, r1.stdout.str()
+
+
+# -- order dependence (coordinator): B passes only after A set a library's state, fails alone -------------------------
+ORDER_LIB = """
+    STATE = {}
+
+    def configure():
+        STATE["ready"] = True
+    """
+
+
+def _order_project(pytester, monkeypatch, tmp_path_factory):
+    for k in ("PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT", "PYTEST_XDIST_TESTRUNUID", "PYTEST_ADDOPTS"):
+        monkeypatch.delenv(k, raising=False)
+    env = tmp_path_factory.mktemp("env")
+    site, boot = env / "site-packages", env / "boot"
+    site.mkdir()
+    boot.mkdir()
+    (site / "statelib.py").write_text(textwrap.dedent(ORDER_LIB))
+    (boot / "sitecustomize.py").write_text(f"import site\nsite.addsitedir({str(site)!r})\n")
+    monkeypatch.setenv("PYTHONPATH", str(boot))
+    pytester.makeini("[pytest]\n")
+    pytester.makepyfile(test_a="""
+        import statelib
+
+        def test_a():
+            statelib.configure()
+        """, test_b="""
+        import statelib
+
+        def test_b():
+            assert statelib.STATE.get("ready")
+        """)
+
+
+SER = ()
+PAR = ("-n", "2", "-p", "xdist", "--dist", "loadfile")
+
+
+@pytest.mark.parametrize("record,reuse", [("serial", "n2"), ("n2", "serial")])
+def test_an_order_dependent_pass_is_not_reused_in_a_placement_that_fails_it(pytester, monkeypatch, tmp_path_factory,
+                                                                           record, reuse):
+    _order_project(pytester, monkeypatch, tmp_path_factory)
+    cache = f"--det-cache={pytester.path / '.c'}"
+    rec = SER if record == "serial" else PAR
+    use = SER if reuse == "serial" else PAR
+    # the truth of each placement: serially B runs after A and passes; in -n 2 with one file per worker it runs alone
+    _, t_ser, _ = _run(pytester, 10)
+    _, t_par, _ = _run(pytester, 11, *PAR)
+    assert t_ser["test_b.py::test_b"] == "passed"
+    assert t_par["test_b.py::test_b"] == "failed", t_par
+    truth = t_ser if reuse == "serial" else t_par
+    _run(pytester, 0, cache, *rec)
+    r1, o1, reused = _run(pytester, 1, cache, *use)
+    wrong = {n: (o1.get(n), truth.get(n)) for n in reused if o1.get(n) != truth.get(n)}
+    assert wrong == {}, r1.stdout.str()
+    assert o1 == truth, r1.stdout.str()
