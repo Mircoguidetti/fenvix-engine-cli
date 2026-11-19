@@ -34,7 +34,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import checkout, git, git_out, run_det, sh  # noqa: E402
+from common import checkout, git, git_out, run_det, sh, worktrees  # noqa: E402
 
 import subprocess  # noqa: E402
 
@@ -49,21 +49,28 @@ def norm_dist(name: str) -> str:
     return re.sub(r"[-_.]+", "-", name.lower())
 
 
-def load_key(path: str, nodeid: str) -> dict | None:
-    with open(path) as fh:
-        d = json.load(fh)
+def test_entry(d: dict, nodeid: str) -> dict | None:
+    """The entry of one test in a key dump (``--det-cache-keys``)."""
     def same(a: str, b: str) -> bool:  # node ids are relative to pytest's rootdir, which may be a subdirectory
         return a == b or a.endswith("/" + b) or b.endswith("/" + a)
 
-    t = d["tests"].get(nodeid)
+    tests = d.get("tests") or {}
+    t = tests.get(nodeid)
     if t is None:
-        t = next((v for k, v in d["tests"].items() if same(k, nodeid)), None)
+        t = next((v for k, v in tests.items() if same(k, nodeid)), None)
     if t is None:  # parametrised: the first entry of the same function
         base = nodeid.split("[", 1)[0]
-        for k, v in d["tests"].items():
+        for k, v in tests.items():
             if same(k.split("[", 1)[0], base):
                 t = v
                 break
+    return t
+
+
+def load_key(path: str, nodeid: str) -> dict | None:
+    with open(path) as fh:
+        d = json.load(fh)
+    t = test_entry(d, nodeid)
     dists = {}
     for s in d.get("distributions", []):
         nv, _, rec = s.rpartition(":")
@@ -423,6 +430,145 @@ def child_processes(test: dict | None) -> list[str]:
     return sorted(p for p in data if p in _LOADER_READS or re.search(r"/s?bin/[^/]+$", p))
 
 
+# ---------------------------------------------------------------------------- key validity (round 4)
+# A deterministic run is a function of the inputs its key records: a run at commit j that sees, for every input
+# recorded by an earlier run R on the same side (environment, distributions, interpreter, arguments), the value R
+# saw, replays R step by step and ends with R's outcome. This is the proof-cache premise of the engine, applied to
+# one test across commits. It lets the red-side check infer most later commits instead of replaying them.
+# Conservative guards beyond the key (inputs the key does not record, or that this harness cannot rule out):
+#   * pytest configuration files (rootdir and ini discovery, options) at the repository root and the key root;
+#   * every conftest.py and __init__.py on the path from the root to the test file (conftest discovery, rootdir
+#     and package detection);
+#   * the names in every directory on the path of each code or data input (a new module or package shadowing an
+#     import is not in the key: the import system's directory reads are not recorded);
+#   * the mode of every path whose mode a commit of the range changes (``os.access`` and ``os.stat`` are not
+#     inputs of the key);
+#   * no inference from a run the engine itself does not treat as a proof (not cached for a reason other than its
+#     outcome) or that reads a source --det does not control.
+RED_WORKERS = int(os.environ.get("CULPRIT_WORKERS", "4"))  # red-side probes replayed at the same time
+RED_BUDGET = int(os.environ.get("CULPRIT_RED_BUDGET", "32"))  # red-side probes per case (every round), beyond undo
+_CONFIG_NAMES = ("pyproject.toml", "setup.cfg", "tox.ini", "pytest.ini", ".pytest.ini")
+_TREES: dict = {}
+
+
+def tree_of(repo, sha: str) -> dict:
+    """{path: (mode, object id)} of every file and directory of a commit (``ls-tree -r -t``)."""
+    key = (str(repo), sha)
+    if key not in _TREES:
+        out = git_out(repo, "ls-tree", "-r", "-t", "--full-tree", sha)
+        t = {}
+        for line in out.splitlines():
+            meta, _, path = line.partition("\t")
+            f = meta.split()
+            if len(f) >= 3:
+                t[path] = (f[0], f[2])
+        names: dict = {}
+        for path in t:
+            d, _, base = path.rpartition("/")
+            names.setdefault(d, set()).add(base)
+        _TREES[key] = (t, {d: frozenset(v) for d, v in names.items()})
+    return _TREES[key]
+
+
+def _ancestors(path: str) -> list[str]:
+    parts = path.split("/")[:-1]
+    return ["/".join(parts[:i]) for i in range(len(parts) + 1)]
+
+
+class Run:
+    """One replay usable for inference: its commit, outcome and the in-repository inputs its key recorded."""
+
+    def __init__(self, sha: str, outcome: str, items: dict, dirs: set, source: str):
+        self.sha, self.outcome, self.items, self.dirs, self.source = sha, outcome, items, dirs, source
+
+
+def run_from_key(repo, sha: str, outcome: str, kd: dict, entry: dict | None, nodeid: str, source: str):
+    """A ``Run`` from a key dump, or None when the key is no proof of the outcome (see the guards above)."""
+    if entry is None or outcome not in ("pass", "fail"):
+        return None
+    nc = entry.get("not_cached")
+    if nc is not None and not str(nc).startswith("outcome "):
+        return None
+    if set(entry.get("flags") or ()) & set(NONDET_FLAGS):
+        return None
+    try:
+        rel = os.path.relpath(os.path.realpath(kd.get("root") or str(repo)), os.path.realpath(str(repo)))
+    except ValueError:
+        return None
+    if rel.startswith(".."):
+        return None
+    pre = "" if rel == "." else rel.replace(os.sep, "/") + "/"
+    items: dict = {}
+    for k in (entry.get("code") or {}):
+        kind, rest = k.split(":", 1)
+        path, _, unit = rest.partition("::")
+        if os.path.isabs(path):
+            continue  # outside the repository (a distribution): the same on one side
+        items.setdefault(pre + path, set()).add((kind, unit or None))
+    for p in (entry.get("data") or {}):
+        if os.path.isabs(p) or any(x in p for x in _OWN_FILES):
+            continue
+        items.setdefault(pre + p.rstrip("/"), set()).add(("data", None))
+    test_file = pre + nodeid.split("::", 1)[0]
+    extra = {n for n in _CONFIG_NAMES} | {pre + n for n in _CONFIG_NAMES}
+    inif = ((kd.get("config_info") or {}).get("inifile") or "")
+    if inif and not os.path.isabs(inif):
+        extra.add(pre + inif)
+    for d in _ancestors(test_file):
+        for n in ("conftest.py", "__init__.py"):
+            extra.add(f"{d}/{n}" if d else n)
+    items.setdefault(test_file, set()).add(("content", None))
+    for p in extra:
+        items.setdefault(p, set()).add(("content", None))
+    dirs: set = set()
+    for p in items:
+        dirs.update(_ancestors(p))
+    return Run(sha, outcome, items, dirs, source)
+
+
+def agrees(repo, sha: str, run: Run, mode_paths=()) -> bool:
+    """Does commit ``sha`` give every input ``run`` recorded the value it had at ``run.sha``?"""
+    if sha == run.sha:
+        return True
+    tj, nj = tree_of(repo, sha)
+    tr, nr = tree_of(repo, run.sha)
+    for d in run.dirs:
+        if nj.get(d) != nr.get(d):
+            return False
+    for p in mode_paths:
+        if (tj.get(p) or (None,))[0] != (tr.get(p) or (None,))[0]:
+            return False
+    for path, kinds in run.items.items():
+        a, b = tj.get(path), tr.get(path)
+        if a == b:
+            continue
+        if a is None or b is None or a[0] != b[0] or a[0] == "040000":
+            return False
+        fa, fb = _facts_of(repo, sha, path), _facts_of(repo, run.sha, path)
+        for kind, unit in kinds:
+            if kind in ("content", "data"):
+                return False
+            c = {"kind": "code", "what": kind, "unit": unit}
+            if _item_value(fa, c) is None or _item_value(fa, c) != _item_value(fb, c):
+                return False
+    return True
+
+
+
+def critical_wall(steps: list[dict]) -> float:
+    """Seconds of replay on the critical path: every replay in sequence, a batch of parallel replays as its
+    longest one (machine contention aside)."""
+    tot, seen = 0.0, set()
+    for s in steps:
+        b = s.get("batch")
+        if b is None:
+            tot += s.get("wall") or 0.0
+        elif b not in seen:
+            seen.add(b)
+            tot += max((x.get("wall") or 0.0) for x in steps if x.get("batch") == b)
+    return round(tot, 2)
+
+
 class Finder:
     """side = {"sha", "env": {var: value or None}, "venv": Path or None, "key": path}
 
@@ -444,6 +590,12 @@ class Finder:
         self.inferred = 0
         self.reps = 1  # replays per confirmation step (GREEN_REPEATS when the key flags a child process)
         self._memo: dict = {}
+        self.runs: dict = {}  # side id -> [Run]: replays (and CI keys) usable for inference (round 4)
+        self.workers = RED_WORKERS
+        self.budget = RED_BUDGET
+        self.red_probes = 0
+        self.batches = 0
+        self.infer_keys = True  # key-validity inference in the red-side check (off: footprint vectors only)
 
     # -- one replay
     def _replay(self, sha: str, env_vars: dict, dists: dict | None, venv: Path | None, expect_runtime=None,
@@ -458,22 +610,90 @@ class Finder:
             if fresh:
                 self.rebuilds.append({"seconds": secs})
         checkout(self.repo, sha)
+        r, kd = self._run_one(self.repo, None, sha, env_vars, venv, args)
+        return self._record(mk, sha, env_vars, dists, venv, args, r, kd, why, expect_runtime)
+
+    def _run_one(self, repo, worktree, sha, env_vars, venv, args):
         with tempfile.TemporaryDirectory() as td:
             kp = os.path.join(td, "k.json")
-            r = run_det(self.repo, venv, self.nodeid, env_vars, keys=kp, args=args)
-            runtime = None
+            r = run_det(repo, venv, self.nodeid, env_vars, keys=kp, args=args, worktree=worktree)
+            kd = None
             try:
                 with open(kp) as fh:
                     kd = json.load(fh)
-                runtime = kd.get("runtime")
             except (OSError, ValueError):
                 pass
+        return r, kd
+
+    def _record(self, mk, sha, env_vars, dists, venv, args, r, kd, why, expect_runtime, extra=None):
+        runtime = (kd or {}).get("runtime")
         step = {"sha": sha, "why": why, "outcome": r["outcome"], "wall": round(r["wall"], 2), "runtime": runtime}
+        if extra:
+            step.update(extra)
         if expect_runtime is not None:
             step["exact"] = runtime == expect_runtime
         self.steps.append(step)
         self._memo[mk] = r["outcome"]
+        if kd is not None and (expect_runtime is None or runtime == expect_runtime):
+            run = run_from_key(self.repo, sha, r["outcome"], kd, test_entry(kd, self.nodeid), self.nodeid,
+                               f"replay {len(self.steps)}")
+            if run is not None:
+                self.runs.setdefault(self._sid(env_vars, dists, venv, args), []).append(run)
         return r["outcome"]
+
+    @staticmethod
+    def _sid(env_vars, dists, venv, args) -> tuple:
+        """The side a replay runs on (everything but the commit)."""
+        return (tuple(sorted((k, v) for k, v in (env_vars or {}).items())),
+                tuple(sorted(dists.items())) if dists is not None else None,
+                None if dists is not None else str(venv), tuple(args))
+
+    def _side_sid(self, side) -> tuple:
+        env_vars, dists, venv, _ = side
+        return self._sid(env_vars, dists, venv, self.det_args)
+
+    def _infer(self, sha: str, side, mode_paths=()) -> tuple[str | None, str]:
+        """(outcome, source) of ``sha`` on ``side`` without a replay: an earlier replay of the same commit, or a run
+        whose recorded inputs all have the same value at ``sha`` (key validity). (None, "") when neither."""
+        k = self._known(sha, side)
+        if k in ("pass", "fail"):
+            return k, "replayed"
+        if not self.infer_keys:
+            return None, ""
+        for run in self.runs.get(self._side_sid(side), ()):
+            if agrees(self.repo, sha, run, mode_paths):
+                return run.outcome, run.source
+        return None, ""
+
+    def _probe_many(self, shas: list[str], side, why) -> list[str]:
+        """Replay several commits on one side at the same time, each in its own copy of the repository mounted at
+        the repository's path (``run_det(worktree=...)``): the runs see the same paths as a replay in place."""
+        if len(shas) <= 1 or self.workers <= 1:
+            return [self._probe(x, side, why) for x in shas]
+        env_vars, dists, venv, expect = side
+        args = self.det_args
+        if dists is not None:
+            at = self.green.get("prefix") if dists == self._green_dists else None
+            venv, secs, fresh = self.builder.venv_for(self.repo, dists, at=at)
+            if fresh:
+                self.rebuilds.append({"seconds": secs})
+        wts = worktrees(self.repo, len(shas))
+        for w, x in zip(wts, shas):
+            checkout(w, x)
+        from concurrent.futures import ThreadPoolExecutor
+
+        self.batches += 1
+        t0 = time.perf_counter()
+        with ThreadPoolExecutor(len(shas)) as ex:
+            futs = [ex.submit(self._run_one, self.repo, w, x, env_vars, venv, args) for w, x in zip(wts, shas)]
+            res = [f.result() for f in futs]
+        bw = round(time.perf_counter() - t0, 2)
+        outs = []
+        for i, (x, (r, kd)) in enumerate(zip(shas, res)):
+            mk = self._mk(x, env_vars, dists, venv if dists is None else None, args)
+            outs.append(self._record(mk, x, env_vars, dists, venv if dists is None else None, args, r, kd, why,
+                                     expect, extra={"batch": self.batches, "worker": i, "batch_wall": bw}))
+        return outs
 
     @staticmethod
     def _mk(sha, env_vars, dists, venv, args) -> tuple:
@@ -528,6 +748,7 @@ class Finder:
         lo = max([i for i in range(n) if vec[cands[i]] == vec[self.green["sha"]]], default=-1)
         hi = n - 1
         notes = []
+        pos_all = {x: i for i, x in enumerate(commits)}
         for _round in range(MAX_ROUNDS):
             while hi - lo > 1:
                 mid = (lo + hi) // 2
@@ -548,47 +769,106 @@ class Finder:
                     low = pos.get(cands[lo], -1) if lo >= 0 else -1
                     return self._bisect_all(commits, low, pos[c] - 1, side, notes)
                 return self._bisect_all(commits, pos[c], len(commits) - 1, side, notes)
-            # non-monotonic history, red side (review R-019b, N1): C is the answer only if every commit of
-            # (C, red] fails. Commits between candidates keep the footprint state of the candidate before them, so
-            # it is enough that every later candidate's state fails. States already replayed (or equal to the
-            # green or red state) need no execution; the others are probed: first the commits that undo part of
-            # C's diff (a revert, or a fix folded into other work), then those that change C's own inputs again,
-            # then every other later candidate (a fix elsewhere, e.g. in a caller), newest first, up to the budget.
-            # Beyond it the answer is withheld: an unprobed state may pass (fixed), and a newer commit break again.
-            ix = [k for k, (a, b) in enumerate(zip(self._vector(self._parent(c)), vec[c])) if a != b]
-            later = [j for j in range(hi + 1, n)
-                     if any(vec[cands[j]][k] != vec[cands[j - 1]][k] for k in ix)]
-            undo = [j for j in range(hi + 1, n) if self._undoes(c, cands[j])]
-            rest = [j for j in range(n - 1, hi, -1) if j not in undo and j not in later]
-            order = undo + [j for j in later if j not in undo] + rest
-            budget = len(undo) + RETOUCH_CAP
-            probed, unchecked, restarted = 0, set(), False
-            for j in order:
-                v = vec[cands[j]]
-                if v in known:
-                    if known[v] == "pass":  # a later state equal to a passing one: fixed there
-                        self.inferred += 1
-                        notes.append(f"{c[:10]} fixed later: candidate {cands[j][:10]} has a passing state")
-                        lo, hi, restarted = j, n - 1, True
-                        break
-                    continue
-                if probed >= budget:
-                    unchecked.add(v)
-                    continue
-                probed += 1
-                if outcome(j, "red-side check") == "pass":
-                    notes.append(f"{c[:10]} re-broken later: candidate {cands[j][:10]} passes")
-                    lo, hi, restarted = j, n - 1, True
-                    break
-            if restarted:
+            # non-monotonic history, red side (review R-019b, N1; round 4): C is the answer only if every commit
+            # of (C, red] fails. A later commit is inferred when an earlier replay on this side (or the CI key of
+            # this side) recorded inputs that all have the same value there (key validity); the others are
+            # replayed, several at a time, up to the budget. A pass restarts the search above it; an unchecked
+            # rest withholds the answer.
+            st, info = self._red_check(commits, pos_all[c], side, infer=True, undo_of=c)
+            if st == "pass":
+                j = info
+                notes.append(f"{c[:10]} fixed later: {commits[j][:10]} passes")
+                rest_c = [x for x in cands if pos_all[x] > j]
+                if not rest_c:
+                    return self._bisect_all(commits, j, len(commits) - 1, side, notes)
+                cands = [commits[j]] + rest_c
+                n = len(cands)
+                vec[commits[j]] = self._vector(commits[j])
+                for x in rest_c:
+                    vec.setdefault(x, self._vector(x))
+                known.setdefault(vec[commits[j]], "pass")
+                lo, hi = 0, n - 1
                 continue
-            if unchecked:
+            if st == "unchecked":
                 return None, "unknown", "; ".join(notes + [
-                    f"ambiguous: {c[:10]} is confirmed, but {len(unchecked)} later footprint states were not "
-                    f"replayed (one of them may fix it, and a newer commit break it again)",
+                    f"ambiguous: {c[:10]} is confirmed, but {info} later commits were neither replayed nor inferred "
+                    f"(one of them may fix it, and a newer commit break it again)",
                     f"suspect {c}"])
             return {"commit": c}, "confirmed", "; ".join(notes)
         return None, "unknown", "the history changes outcome more than %d times" % MAX_ROUNDS
+
+    def _red_check(self, commits, c_pos: int, side, infer: bool, undo_of: str) -> tuple[str, int | None]:
+        """Every commit of (commits[c_pos], red] must fail on ``side``. Returns ("ok", None), ("pass", j) with j the
+        newest commit found passing, or ("unchecked", count) when the budget ran out.
+
+        Inferred (no replay): the red head; a commit replayed before on this side; with ``infer``, a commit whose
+        values of every input recorded by a replay (or CI key) of this side equal that run's (``agrees``). The
+        rest is grouped by its values of every input any such run recorded (one replay decides a group), and
+        replayed ``self.workers`` at a time: groups holding a commit that undoes the named one first, then newest
+        first. After each batch the inference is redone with the new replays' keys."""
+        last = len(commits) - 1
+        mode_paths = sorted({p for x in commits[c_pos + 1:] for p in mode_changes(self.repo, x)})
+        undo = {j for j in range(c_pos + 1, last) if self._undoes(undo_of, commits[j])}
+        while True:
+            pending = []
+            for j in range(last - 1, c_pos, -1):
+                o, _src = self._infer(commits[j], side, mode_paths) if infer else (self._known(commits[j], side), "")
+                if o == "pass":
+                    self.inferred += 0 if _src == "replayed" else 1
+                    return "pass", j
+                if o is None:
+                    pending.append(j)
+            if not pending:
+                return "ok", None
+            groups: dict = {}
+            runs = self.runs.get(self._side_sid(side), ()) if infer else ()
+            if runs:
+                paths = sorted({p for r in runs for p in r.items})
+                dirs = sorted({d for r in runs for d in r.dirs})
+                for j in pending:
+                    t, nm = tree_of(self.repo, commits[j])
+                    sig = (tuple(t.get(p) for p in paths), tuple(nm.get(d) for d in dirs),
+                           tuple((t.get(p) or (None,))[0] for p in mode_paths))
+                    groups.setdefault(sig, []).append(j)
+            else:
+                for j in pending:
+                    groups[(j,)] = [j]
+            order = sorted(groups.values(), key=lambda g: (not any(j in undo for j in g), -max(g)))
+            left = self.budget + len(undo) - self.red_probes
+            if left <= 0:
+                return "unchecked", len(pending)
+            batch = [max(g) for g in order[: min(self.workers, left)]]
+            self.red_probes += len(batch)
+            outs = self._probe_many([commits[j] for j in batch], side, "red-side check")
+            passed = [j for j, o in zip(batch, outs) if o == "pass"]
+            if passed:
+                return "pass", max(passed)
+            # "missing" (the test does not exist there) counts as not passing, as in the ground truth (a walk back
+            # to the newest passing commit)
+            bad = [j for j, o in zip(batch, outs) if o not in ("fail", "missing")]
+            if bad:  # the commit cannot be decided
+                return "unchecked", len(pending)
+
+    def _ci_runs(self, side, g, r, inputs: bool, build: bool) -> None:
+        """The CI keys as runs of the commit-search side, where they are valid there: the green key always (the
+        side is the green environment, or no non-code input differs), the red key only when the side is the red
+        job's own environment with the same runtime identity."""
+        sid = self._side_sid(side)
+        for side_ok, key, sha, outcome in (
+                (True, self.green["key"], self.green["sha"], "pass"),
+                (not inputs and not build and r.get("runtime") == g.get("runtime"), self.red["key"], self.red["sha"],
+                 "fail")):
+            if not side_ok:
+                continue
+            try:
+                with open(key) as fh:
+                    kd = json.load(fh)
+            except (OSError, ValueError):
+                continue
+            run = run_from_key(self.repo, sha, outcome, kd, test_entry(kd, self.nodeid), self.nodeid,
+                               f"CI key ({outcome})")
+            if run is not None:
+                self.runs.setdefault(sid, []).append(run)
 
     def _hunks(self, sha: str) -> tuple[set, set]:
         """(added lines, removed lines) of a commit against its first parent, stripped, blank lines left out."""
@@ -655,22 +935,16 @@ class Finder:
             ok, why = self._confirm_commit(c, side)
             if not ok:
                 return None, "unknown", "; ".join(notes + [f"{c[:10]}: {why} (outcomes are not monotonic)"])
-            pending = [j for j in range(last - 1, hi, -1) if self._known(commits[j], side) is None]
-            fixed = next((j for j in range(last - 1, hi, -1) if self._known(commits[j], side) == "pass"), None)
-            for j in pending[:FALLBACK_CAP]:
-                if fixed is not None and j < fixed:
-                    break
-                if self._probe(commits[j], side, "red-side check (all commits)") == "pass":
-                    fixed = j
-                    break
-            if fixed is not None:
-                notes.append(f"{c[:10]} fixed later: {commits[fixed][:10]} passes")
-                lo, hi = fixed, last
+            # no footprint to trust here (the search fell back because the key missed an input, or found no
+            # differing input): no key-validity inference, every later commit is replayed (several at a time)
+            st, info = self._red_check(commits, hi, side, infer=False, undo_of=c)
+            if st == "pass":
+                notes.append(f"{c[:10]} fixed later: {commits[info][:10]} passes")
+                lo, hi = info, last
                 continue
-            unchecked = [j for j in pending if self._known(commits[j], side) is None]
-            if unchecked:
+            if st == "unchecked":
                 return None, "unknown", "; ".join(notes + [
-                    f"ambiguous: {c[:10]} is confirmed, but {len(unchecked)} later commits were not replayed "
+                    f"ambiguous: {c[:10]} is confirmed, but {info} later commits were not replayed "
                     f"(one of them may fix it, and a newer commit break it again)", f"suspect {c}"])
             return {"commit": c}, "confirmed", "; ".join(notes)
         return None, "unknown", "; ".join(notes + ["the history changes outcome more than %d times" % MAX_ROUNDS])
@@ -922,6 +1196,7 @@ class Finder:
                     side = (env_vars, green_dists, None, g["runtime"])
                 else:
                     side = (env_vars, None, g_venv if inputs else self.red.get("venv"), g["runtime"])
+                self._ci_runs(side, g, r, bool(inputs), build)
                 culprit, status, why = self._search_commits(commits, cands, side)
             elif inputs:
                 culprit, status, why = self._search_inputs(inputs, g, r, green_env, red_env, green_dists, build,
@@ -950,6 +1225,10 @@ class Finder:
         res["why"] = why
         res["executions"] = len(self.steps)
         res["inferred"] = self.inferred
+        res["red_probes"] = self.red_probes
+        res["workers"], res["budget"], res["batches"] = self.workers, self.budget, self.batches
+        res["infer_keys"] = self.infer_keys
+        res["wall_critical"] = critical_wall(self.steps)
         exa = [s["exact"] for s in self.steps if "exact" in s]
         res["green_env_replays"] = len(exa)
         res["rebuilt_exactly"] = all(exa) if exa else None

@@ -109,8 +109,13 @@ def outcome_of(code: int, outcomes: dict, nodeid: str) -> str:
 
 
 def run_det(repo, venv: Path, nodeid: str, extra_env: dict | None = None, keys: str | None = None,
-            args=(), timeout=900) -> dict:
-    """One deterministic run of one test (``--det`` with an empty proof cache, so nothing is reused)."""
+            args=(), timeout=900, worktree=None) -> dict:
+    """One deterministic run of one test (``--det`` with an empty proof cache, so nothing is reused).
+
+    ``worktree``: run in that copy of the repository, mounted over ``repo`` in a private mount namespace
+    (``unshare -m``), so the run sees exactly the paths a run in ``repo`` sees (editable installs, keys, runtime
+    identity) while other runs use ``repo`` or other copies at the same time (parallel probes, exact culprit
+    round 4)."""
     tmp = tempfile.mkdtemp(prefix="detrun-")
     outp = os.path.join(tmp, "outcomes.json")
     cmd = [str(venv / "bin" / "python"), "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det",
@@ -118,8 +123,14 @@ def run_det(repo, venv: Path, nodeid: str, extra_env: dict | None = None, keys: 
     if keys:
         cmd.append(f"--det-cache-keys={keys}")
     cmd.append(nodeid)
+    cwd = repo
+    if worktree is not None:
+        cmd = ["unshare", "-m", "--propagation", "private", "sh", "-c",
+               'mount --bind "$1" "$2" && cd "$2" && shift 2 && exec "$@"', "ns",
+               os.path.realpath(str(worktree)), os.path.realpath(str(repo)), *cmd]
+        cwd = "/"
     t0 = time.perf_counter()
-    code, out = sh(cmd, cwd=repo, env=base_env(venv, extra_env), timeout=timeout)
+    code, out = sh(cmd, cwd=cwd, env=base_env(venv, extra_env), timeout=timeout)
     wall = time.perf_counter() - t0
     try:
         with open(outp) as fh:
@@ -182,3 +193,30 @@ def git_bisect(repo, venv: Path, good: str, bad: str, script_args: list[str], ex
             named = line.split()[0]
     return {"named": named, "executions": runs, "log_steps": steps, "wall": wall, "exit": code,
             "tail": out[-600:] if named is None else ""}
+
+
+def worktrees(repo, k: int, root: Path | None = None) -> list[Path]:
+    """``k`` copies of ``repo`` for parallel probes (``run_det(worktree=...)``): a full copy (``cp -a``: the files
+    an install generated, ignored by git, come along), whose object store also reads ``repo``'s (alternates), so
+    commits made in ``repo`` later (rebuilt histories) can be checked out in the copy. Made once per repository."""
+    import hashlib
+
+    repo = Path(os.path.realpath(str(repo)))
+    root = Path(root or os.environ.get("CULPRIT_WORKTREES", "/home/user/work/wt"))
+    tag = hashlib.sha256(str(repo).encode()).hexdigest()[:10]
+    out = []
+    for i in range(k):
+        w = root / f"{repo.name}-{tag}-{i}"
+        if not (w / ".git" / "culprit-ok").exists():
+            if w.exists():
+                shutil.rmtree(w)
+            w.parent.mkdir(parents=True, exist_ok=True)
+            code, o = sh(["cp", "-a", str(repo), str(w)], timeout=1800)
+            if code != 0:
+                raise RuntimeError(f"worktree copy failed: {o[-500:]}")
+            alt = w / ".git" / "objects" / "info" / "alternates"
+            alt.parent.mkdir(parents=True, exist_ok=True)
+            alt.write_text(str(repo / ".git" / "objects") + "\n")
+            (w / ".git" / "culprit-ok").write_text("ok")
+        out.append(w)
+    return out
