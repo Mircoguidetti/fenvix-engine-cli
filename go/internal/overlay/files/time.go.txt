@@ -19,8 +19,9 @@ package time
 
 import (
 	"runtime"
-	"syscall"
 	"sync"
+	"sync/atomic"
+	"syscall"
 	"unsafe"
 )
 
@@ -90,9 +91,8 @@ func Sleep(d Duration) {
 
 // fenvixTimer is the virtual side of a timer or ticker.
 type fenvixTimer struct {
-	mu       sync.Mutex
-	deadline int64 // virtual monotonic due time
-	period   int64
+	deadline atomic.Int64 // virtual monotonic due time
+	period   atomic.Int64
 	c        chan Time
 	f        func()
 	op       string
@@ -123,19 +123,19 @@ func fenvixLookup(p unsafe.Pointer) *fenvixTimer {
 }
 
 // fenvixFire runs in the runtime's timer context (possibly a system stack):
-// it only starts a goroutine, like goFunc.
+// it takes the due time of this firing (atomically: a Reset that follows
+// must not change it) and starts a goroutine, like goFunc.
 func fenvixFire(arg any, seq uintptr, delta int64) {
-	go fenvixRun(arg.(*fenvixTimer))
+	st := arg.(*fenvixTimer)
+	due := st.deadline.Load()
+	if p := st.period.Load(); p > 0 {
+		st.deadline.Add(p)
+	}
+	go fenvixRun(st, due)
 }
 
-func fenvixRun(st *fenvixTimer) {
-	st.mu.Lock()
-	due := st.deadline
-	if st.period > 0 {
-		st.deadline += st.period
-	}
+func fenvixRun(st *fenvixTimer, due int64) {
 	f, c, op := st.f, st.c, st.op
-	st.mu.Unlock()
 	syscall.Fenvix_AdvanceTo(op, due)
 	if f != nil {
 		f()
@@ -175,7 +175,8 @@ func NewTimer(d Duration) *Timer {
 	}
 	syscall.Fenvix_Event("time", "time.NewTimer", fenvixDur(d))
 	c := make(chan Time, 1)
-	st := &fenvixTimer{deadline: fenvixWhen(d), c: c, op: "time.timer"}
+	st := &fenvixTimer{c: c, op: "time.timer"}
+	st.deadline.Store(fenvixWhen(d))
 	t := newTimer(when(d), 0, fenvixFire, st, nil)
 	t.C = c
 	fenvixRegister(unsafe.Pointer(t), st)
@@ -189,7 +190,8 @@ func AfterFunc(d Duration, f func()) *Timer {
 		return fenvixOrigAfterFunc(d, f)
 	}
 	syscall.Fenvix_Event("time", "time.AfterFunc", fenvixDur(d))
-	st := &fenvixTimer{deadline: fenvixWhen(d), f: f, op: "time.afterfunc"}
+	st := &fenvixTimer{f: f, op: "time.afterfunc"}
+	st.deadline.Store(fenvixWhen(d))
 	t := newTimer(when(d), 0, fenvixFire, st, nil)
 	fenvixRegister(unsafe.Pointer(t), st)
 	return t
@@ -199,9 +201,7 @@ func AfterFunc(d Duration, f func()) *Timer {
 func (t *Timer) Reset(d Duration) bool {
 	if fenvixTimeOn() {
 		if st := fenvixLookup(unsafe.Pointer(t)); st != nil {
-			st.mu.Lock()
-			st.deadline = fenvixWhen(d)
-			st.mu.Unlock()
+			st.deadline.Store(fenvixWhen(d))
 			drained := fenvixDrain(st.c)
 			return t.fenvixOrigReset(d) || drained
 		}
@@ -229,7 +229,9 @@ func NewTicker(d Duration) *Ticker {
 	}
 	syscall.Fenvix_Event("time", "time.NewTicker", fenvixDur(d))
 	c := make(chan Time, 1)
-	st := &fenvixTimer{deadline: fenvixWhen(d), period: int64(d), c: c, op: "time.tick"}
+	st := &fenvixTimer{c: c, op: "time.tick"}
+	st.deadline.Store(fenvixWhen(d))
+	st.period.Store(int64(d))
 	t := (*Ticker)(unsafe.Pointer(newTimer(when(d), int64(d), fenvixFire, st, nil)))
 	t.C = c
 	fenvixRegister(unsafe.Pointer(t), st)
@@ -240,10 +242,8 @@ func NewTicker(d Duration) *Ticker {
 func (t *Ticker) Reset(d Duration) {
 	if fenvixTimeOn() && d > 0 {
 		if st := fenvixLookup(unsafe.Pointer(t)); st != nil {
-			st.mu.Lock()
-			st.deadline = fenvixWhen(d)
-			st.period = int64(d)
-			st.mu.Unlock()
+			st.deadline.Store(fenvixWhen(d))
+			st.period.Store(int64(d))
 		}
 	}
 	t.fenvixOrigReset(d)

@@ -58,3 +58,21 @@ func TestConcurrentSleepsDoNotAddUp(t *testing.T) {
 		t.Fatalf("4 parallel 20 ms sleeps took %v on the virtual clock", el)
 	}
 }
+
+// quic-go (smoke test; the race window is hard to force): a timer that fired
+// and was then Reset to a long duration moved
+// the virtual clock to the new deadline (idle timeout "exceeded" at once).
+func TestResetAfterFireDoesNotJump(t *testing.T) {
+	start := time.Now()
+	tm := time.NewTimer(time.Millisecond)
+	for i := 0; i < 200; i++ {
+		<-tm.C
+		tm.Reset(time.Millisecond) // fire, then immediately reset (fresh due time)
+	}
+	tm.Reset(time.Hour)
+	time.Sleep(5 * time.Millisecond)
+	tm.Stop()
+	if el := time.Since(start); el > 10*time.Second {
+		t.Fatalf("virtual clock jumped: %v", el)
+	}
+}
