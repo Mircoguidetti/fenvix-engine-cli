@@ -130,6 +130,17 @@ function pageInit(seedHi, seedLo) {
     if (PERF && PERF.now) {
       try { Object.defineProperty(PERF, 'now', { value: function now() { var v = eng(); return v === null || tOrigin === null ? rperf() : v - tOrigin; }, writable: true, configurable: true }); } catch (e) { /* ignore */ }
     }
+    // rAF callbacks get the page clock's time (the frame time while the engine runs a frame), not Chromium's frame
+    // time measured from the document's real creation time.
+    if (typeof G.requestAnimationFrame === 'function' && PERF && PERF.now) {
+      var realRaf = G.requestAnimationFrame;
+      try {
+        Object.defineProperty(G, 'requestAnimationFrame', { value: function requestAnimationFrame(cb) {
+          if (typeof cb !== 'function') return realRaf.apply(this, arguments);
+          return realRaf.call(this, function (ts) { return cb(anc ? G.performance.now() : ts); });
+        }, writable: true, configurable: true });
+      } catch (e) { /* frozen */ }
+    }
     function anchor(baseMs, allowMs) {
       if (tOrigin === null) tOrigin = baseMs - rperf();
       anc = { base: baseMs, perf: rperf(), allow: allowMs };

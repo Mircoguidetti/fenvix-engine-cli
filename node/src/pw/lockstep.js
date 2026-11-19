@@ -222,6 +222,13 @@ class Coordinator {
     this.stallMs = Number(ENV.DETJS_LS_STALL_MS || 3000);
     this.frameMs = Number(ENV.DETJS_LS_FRAME_MS || 16);
     this.frames = ENV.DETJS_LS_FRAMES !== '0';
+    // Frame times handed to Chromium (renderer TimeTicks, ms). A document's animation timeline starts at its real
+    // creation time (the machine's monotonic clock); a frame time before it leaves the timeline unresolved and every
+    // CSS transition/animation frozen at its start (MEASURED: a 100 ms margin transition never moved with frame
+    // times from 1000 ms). Frame times therefore start 6 h ahead of the monotonic clock at launch, so every document
+    // created during the run lies behind them; only differences of frame times reach the page (animation progress),
+    // and rAF timestamps are re-based on the engine page clock (page-init.js).
+    this.frameBase = Number(process.hrtime.bigint() / 1000000n) + Number(ENV.DETJS_LS_FRAME_AHEAD_MS || 6 * 3600 * 1000);
     this.pageClock = ENV.DETJS_LS_PAGE_CLOCK !== '0';
     this.microMax = Number(ENV.DETJS_LS_MICRO_MAX || 200);
     this.fetchMs = Number(ENV.DETJS_LS_FETCH_MS === undefined ? 10 : ENV.DETJS_LS_FETCH_MS);
@@ -714,7 +721,12 @@ class Coordinator {
       if (this.pageClock) await this.anchor(p, p.pageT, (stop - p.pageT) / NS);
       await this.budget(p, stop);
       await wk;
-      if (this.frames && stop === nextFrame && !p.closed) await this.beginFrame(p, stop);
+      if (this.frames && stop === nextFrame && !p.closed) {
+        // The frame's callbacks (rAF, animation events) read the frame time exactly, not engine time plus the
+        // real time the slice happened to take.
+        if (this.pageClock) await this.anchor(p, stop, 0);
+        await this.beginFrame(p, stop);
+      }
       await this.readPageClock(p);
     }
   }
@@ -755,7 +767,7 @@ class Coordinator {
     ACT.ownDepth++;
     try {
       const r = await Promise.race([
-        p.cdp.send('HeadlessExperimental.beginFrame', { frameTimeTicks: 1000 + tNs / NS, interval: this.frameMs, noDisplayUpdates: false }),
+        p.cdp.send('HeadlessExperimental.beginFrame', { frameTimeTicks: this.frameBase + tNs / NS, interval: this.frameMs, noDisplayUpdates: false }),
         realSleep(this.stallMs).then(() => 'timeout'),
       ]);
       if (r === 'timeout') { this.stats.stalls++; this.trace('stall beginFrame'); }

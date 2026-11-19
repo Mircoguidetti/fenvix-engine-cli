@@ -592,12 +592,25 @@ function wsKeep(text) {
 }
 
 let WS_CONNS = 0;
+let WS_OPENS = 0;
 async function setupWebSockets(ctx) {
   if (typeof ctx.routeWebSocket !== 'function') return;
-  await ctx.routeWebSocket(() => true, (ws) => {
+  await ctx.routeWebSocket(() => true, async (ws) => {
     const key = currentKey();
     let server;
-    try { server = ws.connectToServer(); } catch { return; }
+    // Lockstep (round 4): the connection to the server is the engine's (Node side), opened when the scheduler
+    // releases it; the page's socket turns OPEN at that quiet point (MEASURED: with the page's own connection the
+    // 'open' event, and the upgrade probe the client sends from it, landed at real-time moments: 2 vs 3 pending
+    // messages at the same decision, uptime-kuma).
+    const engineSide = LS && key && ENV.DETJS_LS_WS_NODE !== '0' && typeof WebSocket === 'function' && !WS_PASSTHROUGH.test(ws.url());
+    let opened = null;
+    if (engineSide) {
+      const r = await lsSocket(ctx, ws, key);
+      if (!r) return;
+      server = r.server; opened = r.opened;
+    } else {
+      try { server = ws.connectToServer(); } catch { return; }
+    }
     if (WS_PASSTHROUGH.test(ws.url())) {
       ws.onMessage((m) => { if (LS) LS.routedWs++; try { server.send(m); } catch { /* closed */ } });
       server.onMessage((m) => { try { ws.send(m); } catch { /* closed */ } });
@@ -648,7 +661,67 @@ async function setupWebSockets(ctx) {
     });
     ws.onClose((code, reason) => { try { server.close({ code, reason }); } catch { /* closed */ } });
     server.onClose((code, reason) => { try { ws.close({ code, reason }); } catch { /* closed */ } });
+    if (opened) await opened();
   });
+}
+
+/** Lockstep: open the server side of a routed WebSocket from Node, as an engine message ("ws OPEN"). Returns a
+ * server adapter with the WebSocketRoute server API, and `opened()`: turns the page's socket OPEN (its 'open'
+ * handlers run inside that call, at the quiet point) and ends the message. */
+async function lsSocket(ctx, ws, key) {
+  const url = ws.url();
+  const target = targetOf(url);
+  const done = await LS.enqueue({ kind: 'ws', conn: 1000000 + (++WS_OPENS), test: key, method: 'OPEN', target, bodyDigest: '-' });
+  let sock = null;
+  let ok = false;
+  await lockstep.OWN.run(true, async () => {
+    const httpUrl = url.replace(/^ws/, 'http');
+    const headers = {};
+    try { headers.origin = new URL(httpUrl).origin; } catch { /* keep none */ }
+    try {
+      const cookie = (await ctx.cookies(httpUrl)).map((c) => `${c.name}=${c.value}`).join('; ');
+      if (cookie) headers.cookie = cookie;
+    } catch { /* context closing */ }
+    let protocols = [];
+    try { protocols = typeof ws.protocols === 'function' ? ws.protocols() : []; } catch { /* older Playwright */ }
+    try {
+      sock = new WebSocket(url, { protocols, headers });
+      sock.binaryType = 'arraybuffer';
+      ok = await new Promise((res) => {
+        sock.onopen = () => res(true);
+        sock.onerror = () => res(false);
+        sock.onclose = () => res(false);
+      });
+    } catch { ok = false; }
+  });
+  if (!ok) {
+    try { if (sock) sock.close(); } catch { /* closed */ }
+    try { await lockstep.OWN.run(true, () => ws.close({ code: 1000, reason: 'detjs: server connection failed' })); } catch { /* closed */ }
+    done();
+    return null;
+  }
+  let onMsg = null; let onClose = null; const early = [];
+  sock.onmessage = (ev) => {
+    const m = typeof ev.data === 'string' ? ev.data : Buffer.from(ev.data);
+    if (onMsg) onMsg(m); else early.push(m);
+  };
+  sock.onclose = (ev) => { if (onClose) onClose(ev.code, ev.reason); };
+  sock.onerror = () => {};
+  const server = {
+    send: (m) => sock.send(m),
+    onMessage: (h) => { onMsg = h; for (const m of early.splice(0)) h(m); },
+    onClose: (h) => { onClose = h; },
+    close: (o = {}) => {
+      try { sock.close(o.code === 1000 || (o.code >= 3000 && o.code <= 4999) ? o.code : undefined, o.reason); } catch { try { sock.close(); } catch { /* closed */ } }
+    },
+  };
+  const opened = async () => {
+    try {
+      await lockstep.OWN.run(true, () => (ws._channel && ws._channel.ensureOpened ? ws._channel.ensureOpened({}, { signal: undefined, timeout: 0 }) : null));
+    } catch { /* page gone */ }
+    done();
+  };
+  return { server, opened };
 }
 
 // Virtual time is granted in small chunks (policy `advance` with a budget):
