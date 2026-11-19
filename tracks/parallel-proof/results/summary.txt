@@ -1,0 +1,21 @@
+esphome det-n4-probe rc=5 wall=10.4s :: no tests ran in 1.94s
+esphome plain-n4 rc=1 wall=79.6s :: 4 failed, 14529 passed, 15 skipped, 62 warnings in 78.14s (0:01:18)
+esphome det-n4 rc=143 wall=743.2s :: ....................................................
+esphome plain-serial rc=1 wall=159.7s :: 4 failed, 14527 passed, 15 skipped, 2 deselected, 62 warnings in 153.16s (0:02:33)
+esphome plain-n4b rc=1 wall=61.8s :: 4 failed, 14527 passed, 15 skipped, 62 warnings in 60.74s (0:01:00)
+esphome det-serial-a rc=143 wall=1212.9s :: ................................................................
+--- restart (deselect -k 'not udp', --timeout=120, per-worker trace shim)
+esphome plain-serial2 rc=1 wall=179.8s :: 4 failed, 14427 passed, 15 skipped, 102 deselected, 62 warnings in 172.77s (0:02:52)
+esphome plain-n4c rc=1 wall=66.6s :: 4 failed, 14427 passed, 15 skipped, 62 warnings in 64.77s (0:01:04)
+esphome det-serial-a rc=1 wall=177.2s :: 7 failed, 14424 passed, 15 skipped, 102 deselected, 62 warnings in 168.89s (0:02:48)
+esphome det-n4-a rc=1 wall=81.9s :: 7 failed, 14424 passed, 15 skipped, 62 warnings in 79.48s (0:01:19)
+esphome det-serial-b rc=1 wall=175.4s :: 7 failed, 14424 passed, 15 skipped, 102 deselected, 62 warnings in 167.71s (0:02:47)
+esphome det-n4-b rc=1 wall=79.8s :: 7 failed, 14424 passed, 15 skipped, 62 warnings in 77.65s (0:01:17)
+esphome cache-n4-cold rc=1 wall=104.4s :: 7 failed, 14424 passed, 15 skipped, 62 warnings in 101.40s (0:01:41)
+esphome cache-n4-warm rc=1 wall=80.6s :: 7 failed, 14424 passed, 15 skipped, 60 warnings in 76.93s (0:01:16)
+esphome cache-ser-cold rc=1 wall=231.7s :: 7 failed, 14424 passed, 15 skipped, 102 deselected, 62 warnings in 223.45s (0:03:43)
+esphome cache-ser-warm rc=1 wall=103.7s :: 7 failed, 14424 passed, 15 skipped, 102 deselected in 96.42s (0:01:36)
+DONE
+esphome cache-n4-warm2 rc=1 wall=74.8s :: 7 failed, 14424 passed, 15 skipped in 70.89s (0:01:10)
+pydantic-ai plain-serial rc=0 wall=460.7s ::          2 xfailed
+pydantic-ai plain-n4 rc=0 wall=151.3s ::          2 xfailed
