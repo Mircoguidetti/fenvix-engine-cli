@@ -267,6 +267,18 @@ CI-FACTS.md; one shard or group where the CI splits).
 * The moto walk (50 commits) will therefore measure only the `-n 4` verdict against the serial truth per commit,
   with no reuse.
 
+### mlflow, parallel group 1 of 6: **not a valid measurement**
+
+The job ran, but its install was incomplete: `uv sync --group test --group build` without extras leaves out modules
+the selected test files import (optuna, boto3/botocore, kubernetes, azure, fastmcp, starlette's httpx2;
+`logs-tail.txt`). Serially, collection errors abort the run (76 errors, 0 tests); under `-n 4` the 106 collection
+errors are reported and the rest runs. The cache variants did not start: this job used Python 3.11 (mlflow's CI
+version), and `--det-cache` needs 3.12 (`sys.monitoring`). What the files show (MEASURED, not comparable to serial):
+plain `-n 4` 499.4 / 379.5 / 293.3 s (spread 70 %: the runner was not steady), `--det -n 4` 499.6 / 383.6 / 384.7 s;
+**80 failed under `--det -n 4` against 53 in plain `-n 4`** (27 more), with no serial `--det` truth to tell a Level 0
+limit from a split effect (the crosschecks compare with an empty truth and say nothing). To redo: install the
+extras its CI installs, Python 3.12 for the cache rows.
+
 ## Gates
 
 * `tests/test_review_r023.py`: unchanged (`git diff 8ffbaaa -- tests/test_review_r023.py` empty); **17 passed** (three
@@ -280,8 +292,7 @@ CI-FACTS.md; one shard or group where the CI splits).
 
 ## Not done, and why
 
-* **P0 / P3 on Actions**: run 44509602787 was still running when this was written: mlflow (group 1),
-  prefect (group 1, newer uv on the runner), pydantic-ai (no cache variants: the capture prerequisite of design 5 is
+* **P0 / P3 on Actions**: run 44509602787 was still running when this was written: prefect (group 1, newer uv on the runner), pydantic-ai (no cache variants: the capture prerequisite of design 5 is
   not fixed here) and the three 50-commit walks (esphome, moto's `-n 4` group, litellm vertex; truth = a fresh serial
   `--det` run per commit, `-n 4` cache walk only, stopped after 5 h per job). Their results land in
   `tracks/parallel-proof/results/r023-p0-2026-11-19/` as the jobs finish. The litellm walk will show 0 reuse
