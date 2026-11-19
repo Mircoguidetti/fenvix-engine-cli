@@ -1,6 +1,6 @@
 {
  "name": "dependency-cruiser", "url": "https://github.com/sverweij/dependency-cruiser", "node": "22", "runner": "mocha",
- "install": ["npm ci --no-audit --no-fund --silent || npm install --no-audit --no-fund --silent"],
+ "install": ["(npm ci --no-audit --no-fund --silent || npm install --no-audit --no-fund --silent); git checkout -q -- package-lock.json 2>/dev/null || true"],
  "install_files": ["package-lock.json", "package.json"],
  "build": [],
  "env": {"LANG": "en_US.UTF-8", "NODE_OPTIONS": "--no-warnings", "NO_COLOR": "1"},

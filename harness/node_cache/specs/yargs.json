@@ -1,6 +1,6 @@
 {
  "name": "yargs", "url": "https://github.com/yargs/yargs", "node": "22", "runner": "mocha",
- "install": ["npm ci --no-audit --no-fund --silent || npm install --no-audit --no-fund --silent"],
+ "install": ["(npm ci --no-audit --no-fund --silent || npm install --no-audit --no-fund --silent); git checkout -q -- package-lock.json 2>/dev/null || true"],
  "install_files": ["package-lock.json", "package.json"],
  "build": ["npm run compile -- -p tsconfig.test.json > /dev/null 2>&1"],
  "args": ["--enable-source-maps", "--require", "./test/before.mjs", "--timeout=24000", "--check-leaks", "--reporter", "dot"],
