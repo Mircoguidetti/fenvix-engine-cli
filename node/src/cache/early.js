@@ -38,18 +38,35 @@ if (!globalThis[KEY]) {
     const url = require('node:url');
     const { CAPTURE } = require('./capture');
     const root = r === 'main' ? process.cwd() : (process.env.DETJS_ROOT || process.cwd());
+    // user preloads after this one (command line after it, or NODE_OPTIONS without it)
+    const PRE = /^(?:-r|--require|--import|--loader|--experimental-loader)(?:=|$)/;
+    const mine = process.execArgv.findIndex((a) => a === SELF || a.endsWith(`=${SELF}`));
+    const later = process.execArgv.slice(mine + 1).some((a) => PRE.test(a));
+    const nodeOpts = String(process.env.NODE_OPTIONS || '').split(/\s+/).filter((a) => a && !a.includes(SELF));
+    const userPreloads = r === 'main' || later || nodeOpts.some((a) => PRE.test(a));
+    if (!userPreloads) {
+      // nothing runs before the entry module but Vitest itself: the capture starts now, its loader hooks with the
+      // runner (as before early.js), so Vitest's own start-up does not load every module through them
+      CAPTURE.install({ role: r, root, early: true, hooks: false });
+      CAPTURE.endPreload('run');
+      return;
+    }
     CAPTURE.install({ role: r, root, early: true });
     const mainFile = r === 'main' ? path.resolve(process.argv[1]) : null;
     const isEntry = (file) => (mainFile !== null ? file === mainFile : VITEST_ENTRY.test(file));
     const m = require('node:module');
-    const { SYNC_HOOKS, offThreadLoader } = require('./capture');
+    const { SYNC_HOOKS, offThreadLoader, dropSyncHooks } = require('./capture');
     if (typeof m.registerHooks === 'function' && !offThreadLoader()) {
       const h = m.registerHooks({
         load(u, context, next) {
           if (CAPTURE.preload && typeof u === 'string' && u.startsWith('file:')) {
             let f = null;
             try { f = url.fileURLToPath(u.split('?')[0]); } catch { /* ignore */ }
-            if (f !== null && isEntry(f)) CAPTURE.endPreload('run');
+            if (f !== null && isEntry(f)) {
+              CAPTURE.endPreload('run');
+              // a worker's loader hooks are installed again by the runner (capture install)
+              if (r === 'worker') queueMicrotask(dropSyncHooks);
+            }
           }
           return next(u, context);
         },

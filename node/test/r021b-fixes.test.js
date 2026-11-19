@@ -329,6 +329,16 @@ expect(util.inspect(process.env)).toContain("R021BF_Y: 'y'");
     noWrongReuse(runner, dir, F('ce'), { 'env.txt': 'b' });
   });
 
+  t('G4 a custom test environment (a package) named by a file pragma reads a project file in setup', T, () => {
+    const dir = fixture(runner, 'pragmaenv', {
+      'env.txt': 'a',
+      'node_modules/vitest-environment-custom/package.json': JSON.stringify({ name: 'vitest-environment-custom', version: '1.0.0', type: 'module', main: 'index.js' }),
+      'node_modules/vitest-environment-custom/index.js': "import fs from 'node:fs';\nimport path from 'node:path';\nexport default { name: 'custom', viteEnvironment: 'ssr', setup(g) { g.__ENVTXT__ = fs.readFileSync(path.join(process.cwd(), 'env.txt'), 'utf8').trim(); return { teardown() {} }; } };\n",
+      'tests/pe.test.mjs': "// @vitest-environment custom\nimport { test, expect } from 'vitest';\ntest('pe', () => { expect(globalThis.__ENVTXT__).toBe('a'); });\n",
+    });
+    noWrongReuse(runner, dir, F('pe'), { 'env.txt': 'b' });
+  });
+
   t('G4 an execArgv --experimental-loader makes the tests not cacheable', T, () => {
     const dir = fixture(runner, 'loader', {
       'ld.mjs': 'export async function resolve(s, c, n) { return n(s, c); }\n',

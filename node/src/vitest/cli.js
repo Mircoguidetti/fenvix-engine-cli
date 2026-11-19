@@ -77,6 +77,14 @@ async function main(argv) {
       let ordered = keyed;
       if (cfg.shuffle && cfg.controls.has('order')) ordered = native.shuffleIndices(keyed.length, cfg.seed, '').map((i) => keyed[i]);
       if (pc) {
+        // a file that names a custom environment in a pragma: its project's workers start the capture early
+        pc.quiet(() => {
+          for (const k of keyed) {
+            const [project, file] = Array.isArray(k.f) ? [k.f[0], k.f[1]] : [k.f.project, k.f.moduleId ?? k.f.filepath];
+            const c = project && (project.config || project.getConfig?.());
+            if (c && !(Array.isArray(c.execArgv) && c.execArgv.includes(EARLY)) && customEnvPragma(file)) addEarlyCapture(c);
+          }
+        });
         // end of start-up (Vitest sorts after globalSetup): reuse decision
         const skip = await pc.decide(ordered.map((k) => ({ fileId: k.fileId, project: k.project, key: k.key })));
         ordered = ordered.filter((k) => !skip.has(k.key));
@@ -162,9 +170,10 @@ async function main(argv) {
   // nested Vite configuration files leave the global digest only when the root configuration's imports are known
   if (pc) pc.setConfig(configParts(projects, ctx, args, pc), { nestedViteConfigs: !(ctx.vite && ctx.vite.config) });
   // the cache capture starts in each worker before the project's own preloads and the test environment's set-up
-  // (src/cache/early.js; review r021b G4); added after the configuration digest, which covers the project's own
-  // execArgv (the preload modules and what they read are recorded as inputs of the tests)
-  if (pc) for (const pr of projects) addEarlyCapture(pr.config || pr.getConfig?.());
+  // (src/cache/early.js; review r021b G4) where user code can run there (preloads, a custom environment; a
+  // custom environment named by a file's pragma: in the sequencer); added after the configuration digest, which
+  // covers the project's own execArgv (the preload modules and what they read are recorded as inputs of the tests)
+  if (pc) for (const pr of projects) { const c = pr.config || pr.getConfig?.(); if (needsEarly(c)) addEarlyCapture(c); }
   try {
     await ctx.start(filters);
   } catch (e) {
@@ -186,6 +195,41 @@ async function main(argv) {
 }
 
 const EARLY = path.join(__dirname, '..', 'cache', 'early.js');
+const PRELOAD_ARG = /^(?:-r|--require|--import|--loader|--experimental-loader)(?:=|$)/;
+// Vitest's own test environments: their set-up reads no project file
+const BUILTIN_ENVS = new Set(['node', 'jsdom', 'happy-dom', 'edge-runtime']);
+const ENV_PRAGMA = /@(?:vitest|jest)-environment\s+([^\s*]+)/;
+
+/**
+ * Whether user code can run in a worker of project config `c` before the runner: preloads in its execArgv (or in
+ * NODE_OPTIONS: then detjs restarted itself with early.js first there), or a custom test environment. Elsewhere
+ * the capture starts with the runner, as nothing but Vitest runs before it (an early start costs every worker).
+ */
+function needsEarly(c) {
+  if (!c) return false;
+  const argv = [...(Array.isArray(c.execArgv) ? c.execArgv : [])];
+  for (const po of Object.values(c.poolOptions || {})) if (po && Array.isArray(po.execArgv)) argv.push(...po.execArgv);
+  if (argv.some((a) => PRELOAD_ARG.test(String(a)))) return true;
+  if (process.env.DETJS_EARLY === '1') return true;
+  const env = typeof c.environment === 'string' ? c.environment : 'node';
+  if (!BUILTIN_ENVS.has(env)) return true;
+  if (Array.isArray(c.environmentMatchGlobs) && c.environmentMatchGlobs.some((g) => Array.isArray(g) && !BUILTIN_ENVS.has(g[1]))) return true;
+  return false;
+}
+
+/** A test file whose pragma names a custom environment (`// @vitest-environment ./env.ts`). */
+function customEnvPragma(file) {
+  let head = '';
+  try {
+    const fd = fs.openSync(file, 'r');
+    try {
+      const b = Buffer.alloc(8192);
+      head = b.toString('utf8', 0, fs.readSync(fd, b, 0, b.length, 0));
+    } finally { fs.closeSync(fd); }
+  } catch { return false; }
+  const m = ENV_PRAGMA.exec(head);
+  return Boolean(m && !BUILTIN_ENVS.has(m[1]));
+}
 
 /** Put the early capture first among a project's worker preloads (Vitest >= 4: `execArgv`; older: `poolOptions`). */
 function addEarlyCapture(c) {

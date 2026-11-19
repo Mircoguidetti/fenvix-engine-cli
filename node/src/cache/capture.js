@@ -176,11 +176,13 @@ class Capture {
   }
 
   // -- set-up --------------------------------------------------------------------------------------------------
-  install({ role, root, mainAnyReads, early }) {
+  install({ role, root, mainAnyReads, early, hooks = true }) {
     if (this.active) {
       // started early (src/cache/early.js, before user preloads): the runner's installation takes over
       if (this.preload) this.endPreload('run');
       this.stage = 'run';
+      // the loader hooks (left out of Vitest's own start-up: they slow every module it loads)
+      if (!this.loadHooked) installLoaderHooks(this);
       // what Level 0 (installed just before) or the start-up replaced without calling the wrapper is wrapped again;
       // fs is left as is: Level 0's file system order control calls the wrappers it found (src/fsorder.js)
       installEnv(this, process);
@@ -216,7 +218,7 @@ class Capture {
     installDlopen(this);
     installNodeReaders(this);
     installCloneRetry(this);
-    installLoaderHooks(this);
+    if (hooks) installLoaderHooks(this);
     STATE.onEvent = (source, value) => this.levelEvent(source, value);
     require('node:module').syncBuiltinESMExports();
     if (early) {
@@ -1826,4 +1828,4 @@ function installLoaderHooks(cap) {
 const KEY = Symbol.for('detjs.cache.capture');
 const CAPTURE = globalThis[KEY] || (globalThis[KEY] = new Capture());
 
-module.exports = { CAPTURE, Capture, machineFacts, installEnv, installReflection, flagsOf, toPath, INFRA, SYNC_HOOKS, offThreadLoader };
+module.exports = { CAPTURE, Capture, machineFacts, installEnv, installReflection, flagsOf, toPath, INFRA, SYNC_HOOKS, offThreadLoader, dropSyncHooks };
