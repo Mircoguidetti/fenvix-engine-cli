@@ -1,0 +1,33 @@
+{
+ "hidden_failures": [],
+ "new_failures_caused_by_split": [],
+ "only_parallel": 0,
+ "only_serial": 0,
+ "outcome_differences": 0,
+ "parallel_noise": 4,
+ "parallel_plans_identical": true,
+ "parallel_workers_identical": true,
+ "placement": 7,
+ "placement_examples": [
+  "tests/_experimental/bundles/test_dependency_validation.py::TestDependencyValidation::test_rejects_flag_injection_dash_r",
+  "tests/_experimental/bundles/test_execute.py::test_execute_bundle_creates_executor_with_propose_submitting_false",
+  "tests/_experimental/bundles/test_file_collector.py::TestCollectionResult::test_create_empty_result",
+  "tests/cli/test_deploy.py::TestDeployAllEnvVarTemplateDisplay::test_deploy_all_handles_unset_env_var_in_deployment_name",
+  "tests/cli/test_dev.py::test_dev_start_runs_all_services",
+  "tests/cli/test_events.py::test_emit_event_related_array",
+  "tests/cli/test_flow_run.py::test_inspect_flow_run_with_web_flag_no_ui_url"
+ ],
+ "placement_first_source": {
+  "fs": 1,
+  "random": 6
+ },
+ "placement_in_both_parallel_runs": 7,
+ "serial_noise": 1,
+ "serial_noise_examples": [
+  "tests/_experimental/bundles/test_bundles.py::TestSerializedBundleFilesKey::test_serialized_bundle_accepts_files_key_none"
+ ],
+ "serial_noise_first_source": {
+  "entropy": 1
+ },
+ "tests_in_all": 2438
+}
