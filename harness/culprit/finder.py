@@ -438,7 +438,9 @@ def child_processes(test: dict | None) -> list[str]:
 # recorded by an earlier run R on the same side (environment, distributions, interpreter, arguments), the value R
 # saw, replays R step by step and ends with R's outcome. This is the proof-cache premise of the engine, applied to
 # one test across commits. It lets the red-side check infer most later commits instead of replaying them.
-# Conservative guards beyond the key (inputs the key does not record, or that this harness cannot rule out):
+# Round 5 (review R-019c, F-1): the key does not record every input (import probes, existence checks, binaries),
+# so inference also needs the two commits' trees to differ only in changed recorded inputs (``agrees``: diff rule).
+# Earlier guards, kept (now implied by the diff rule, except the run-side checks):
 #   * pytest configuration files (rootdir and ini discovery, options) at the repository root and the key root;
 #   * every conftest.py and __init__.py on the path from the root to the test file (conftest discovery, rootdir
 #     and package detection);
@@ -471,6 +473,18 @@ def tree_of(repo, sha: str) -> dict:
             names.setdefault(d, set()).add(base)
         _TREES[key] = (t, {d: frozenset(v) for d, v in names.items()})
     return _TREES[key]
+
+
+_FILES: dict = {}
+
+
+def _files_of(repo, sha: str) -> dict:
+    """{path: (mode, blob)} of every file (no directory entries) of a commit."""
+    key = (str(repo), sha)
+    if key not in _FILES:
+        t, _ = tree_of(repo, sha)
+        _FILES[key] = {p: e for p, e in t.items() if e[0] != "040000"}
+    return _FILES[key]
 
 
 def _ancestors(path: str) -> list[str]:
@@ -537,6 +551,17 @@ def agrees(repo, sha: str, run: Run, mode_paths=()) -> bool:
         return True
     tj, nj = tree_of(repo, sha)
     tr, nr = tree_of(repo, run.sha)
+    # Diff rule (review R-019c, F-1): the key misses inputs (failed import probes, existence checks, namespace
+    # packages, zip archives, native libraries...), and nothing bounds where they sit. So no inference across a
+    # pair of commits whose trees differ by an added, deleted or renamed path, or by a changed path that is not a
+    # recorded input of the run (whatever its kind, binary or not). Only changes to recorded inputs are then
+    # compared, finely (unit, skeleton, hooks digests).
+    fj, fr = _files_of(repo, sha), _files_of(repo, run.sha)
+    if fj.keys() != fr.keys():
+        return False
+    for path, e in fj.items():
+        if fr[path] != e and path not in run.items:
+            return False
     for d in run.dirs:
         if nj.get(d) != nr.get(d):
             return False
