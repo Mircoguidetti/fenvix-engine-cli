@@ -142,7 +142,7 @@ def test_many_existence_checks_in_one_directory_are_one_dependency(pytester, run
     r, reused, _ = run_cache_plain()
     assert reused == {"test_ex.py::test_count"}, r.stdout.str()
     entry = json.load(open(pytester.path / ".plaincache" / "proof-cache.json"))["tests"]["test_ex.py::test_count"]
-    assert sum(1 for _, d in entry["data"] if d.startswith("s:")) < 8, entry["data"]
+    assert sum(1 for p, d in entry["data"] if d.startswith("s:") and p.startswith("ex/")) < 8, entry["data"]
     (ex / "22.txt").write_text("x")
     r, reused, _ = run_cache_plain()
     assert reused == set(), r.stdout.str()

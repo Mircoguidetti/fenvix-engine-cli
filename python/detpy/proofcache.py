@@ -295,6 +295,7 @@ class Capture:
         _core.set_audit_hook(self._audit, _AUDIT_EVENTS)
         self._patch_sqlite()
         self._patch_stat()
+        self._patch_lookups()
         # code that exists before the start: modules already loaded become whole-content inputs
         pre = False
         for m in list(sys.modules.values()):
@@ -324,6 +325,9 @@ class Capture:
         for obj, name, v in reversed(self._stat_saved):
             setattr(obj, name, v)
         self._stat_saved = []
+        f = getattr(self, "_lookup_finder", None)
+        if f is not None and f in sys.meta_path:
+            sys.meta_path.remove(f)
         if self.tool is not None:
             for ev in (_mon.events.LINE, _mon.events.PY_START, _mon.events.PY_RETURN):
                 _mon.register_callback(self.tool, ev, None)
@@ -501,18 +505,75 @@ class Capture:
             pass  # --det-cache-dists: a file a bump adds or removes under a site directory is an input
         elif self._ignored(p):
             return
+        self._kind(self._cur(), p)
+
+    def _kind(self, ctx: int, p: str) -> str | None:
+        """Record the kind of ``p`` ("s:<kind>") as an input of ``ctx``; returns it (None when not recorded)."""
         if not _encodable(p) or self.root_sep.startswith(p.rstrip(os.sep) + os.sep):
-            return  # the project root and its ancestors are directories for the whole session
+            return None  # the project root and its ancestors are directories for the whole session
         if p in self.writers:
             # a path code of this session created or wrote (a TemporaryDirectory, an output file): its kind is
             # that code's doing. As for a read of it, the test is cached only if every writer is credited to it.
-            self.flags.setdefault(self._cur(), set()).add("rw:" + p)
-            return
+            self.flags.setdefault(ctx, set()).add("rw:" + p)
+            return None
         hk = "s" + p
         dep = self._hashed.get(hk)
         if dep is None:
             dep = self._hashed[hk] = _core.stat_dep(p)
-        self.sdata.setdefault(self._cur(), {}).setdefault(self._key(p), dep)
+        self.sdata.setdefault(ctx, {}).setdefault(self._key(p), dep)
+        return dep
+
+    # -- module lookups ---------------------------------------------------------------------
+    def _patch_lookups(self) -> None:
+        """Exact-culprit REPORT-4 §2.1: a module the import system did *not* find is an input too (``try: import
+        optional``, a namespace package without ``__init__.py``, a module a new file earlier on ``sys.path`` would
+        shadow). A finder in front of ``sys.meta_path`` records, for every lookup, the kind of every path the
+        import system probes in each searched directory outside site-packages and the standard library (Rust:
+        proof::import_candidates), up to the first directory with a regular module or package. It finds
+        nothing itself."""
+        from importlib.machinery import all_suffixes
+
+        cap = self
+        suffixes = list(all_suffixes())
+
+        class _LookupFinder:
+            @staticmethod
+            def find_spec(fullname, path=None, target=None):
+                if not cap.active or cap._in_stat:
+                    return None
+                cap._in_stat = True
+                try:
+                    cap._lookup(fullname.rpartition(".")[2], sys.path if path is None else path, suffixes)
+                except Exception:
+                    pass
+                finally:
+                    cap._in_stat = False
+                return None
+
+            @staticmethod
+            def invalidate_caches():
+                pass
+
+        self._lookup_finder = _LookupFinder
+        sys.meta_path.insert(0, _LookupFinder)
+
+    def _lookup(self, tail: str, entries, suffixes) -> None:
+        ctx = self._cur()
+        for e in list(entries):
+            if not isinstance(e, str):
+                continue
+            d = self._abs(e or ".")
+            if d is None or self._ignored(d.rstrip(os.sep) + os.sep):
+                continue
+            regular = False
+            cands = _core.import_candidates(d, tail, suffixes)  # [package dir, its __init__ files, module files]
+            k = self._kind(ctx, cands[0])
+            # a missing package directory implies missing __init__ files: its own check covers them
+            for c in (cands[1 + len(suffixes):] if k == "s:missing" else cands[1:]):
+                if self._kind(ctx, c) == "s:file":
+                    regular = True
+            if regular:
+                break  # a module or a regular package: later entries are not searched
 
     def _audit(self, event, args):
         if not self.active:
@@ -1635,7 +1696,15 @@ class ProofCachePlugin:
                 for k, v in c_sdata.items():
                     merged.setdefault(k, v)
                 shared_stats[:] = [len(c_sdata), self._compact(merged)]
+            # pytest's own lookups for this test: a conftest.py or __init__.py that appears between the root and the
+            # test file (plugins, fixtures, the test module's import name) changes what runs
             own_s: dict = {}
+            for rel in _core.collection_candidates(os.path.dirname(own)):
+                ap = os.path.join(self.root, rel)
+                dep = cap._hashed.get("s" + ap)
+                if dep is None:
+                    dep = cap._hashed["s" + ap] = _core.stat_dep(ap)
+                own_s.setdefault(rel, dep)
             for c in ctxs:
                 for k, v in cap.sdata.get(c, {}).items():
                     own_s.setdefault(k, v)

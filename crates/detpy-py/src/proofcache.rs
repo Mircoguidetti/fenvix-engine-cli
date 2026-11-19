@@ -264,3 +264,15 @@ pub fn compact_stats(data: Vec<(String, String)>, root: PathBuf, min: usize, ses
     let memo = &mut g.as_mut().expect("set above").1;
     proof::compact_stats_memo(data, &root, min, memo)
 }
+
+/// Paths the import system probes for module `name` in directory `dir`.
+#[pyfunction]
+pub fn import_candidates(dir: &str, name: &str, suffixes: Vec<String>) -> Vec<String> {
+    proof::import_candidates(dir, name, &suffixes)
+}
+
+/// `conftest.py` and `__init__.py` paths pytest looks for from the root down to `rel_dir`.
+#[pyfunction]
+pub fn collection_candidates(rel_dir: &str) -> Vec<String> {
+    proof::collection_candidates(rel_dir)
+}

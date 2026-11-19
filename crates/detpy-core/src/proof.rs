@@ -219,6 +219,37 @@ pub const TREE_LIMIT: usize = 50_000;
 /// Key suffix of a "T:" dependency (the directory is the key without it).
 pub const TREE_SUFFIX: &str = "/\u{1}tree";
 
+/// Paths the import system probes for module `name` in directory `dir` (`FileFinder`): the package directory, its
+/// `__init__` with every suffix, and the module with every suffix (`importlib.machinery.all_suffixes()`).
+pub fn import_candidates(dir: &str, name: &str, suffixes: &[String]) -> Vec<String> {
+    let d = dir.trim_end_matches('/');
+    let mut out = Vec::with_capacity(2 * suffixes.len() + 1);
+    out.push(format!("{d}/{name}"));
+    for s in suffixes {
+        out.push(format!("{d}/{name}/__init__{s}"));
+    }
+    for s in suffixes {
+        out.push(format!("{d}/{name}{s}"));
+    }
+    out
+}
+
+/// Paths pytest looks for between the project root and a test file's directory (`rel_dir`, relative, "" for the
+/// root): `conftest.py` (plugins) and `__init__.py` (the test module's package and import name), in every directory.
+pub fn collection_candidates(rel_dir: &str) -> Vec<String> {
+    let mut out = vec!["conftest.py".to_string(), "__init__.py".to_string()];
+    let mut cur = String::new();
+    for part in rel_dir.split('/').filter(|p| !p.is_empty()) {
+        if !cur.is_empty() {
+            cur.push('/');
+        }
+        cur.push_str(part);
+        out.push(format!("{cur}/conftest.py"));
+        out.push(format!("{cur}/__init__.py"));
+    }
+    out
+}
+
 /// Key suffix of a "t:" dependency (the directory is the key without it).
 pub const KINDS_SUFFIX: &str = "/\u{1}kinds";
 
@@ -252,7 +283,12 @@ pub fn compact_stats_memo(data: Vec<(String, String)>, root: &Path, min: usize, 
             }
         }
     }
-    let big: BTreeSet<&String> = by_dir.iter().filter(|(_, n)| **n >= min).map(|(d, _)| d).collect();
+    // never the project root: its listing changes with every output file a run writes there
+    let big: BTreeSet<&String> = by_dir
+        .iter()
+        .filter(|(d, n)| **n >= min && d.as_str() != "." && !root.starts_with(root.join(d.as_str())))
+        .map(|(d, _)| d)
+        .collect();
     // second level: checks spread over many directories (one per language of an examples tree) under a common
     // ancestor with at least `tree_min` of them become one dependency on the ancestor's whole tree with kinds;
     // never the project root, an ancestor of it or the filesystem root
@@ -1129,6 +1165,20 @@ mod tests {
         // the project root is never a tree
         let flat: Vec<(String, String)> = (0..100).map(|i| (format!("d{i}/x"), "s:missing".to_string())).collect();
         assert_eq!(compact_stats(flat, root, 8).len(), 100);
+    }
+
+    #[test]
+    fn import_and_collection_candidates() {
+        let sx = vec![".py".to_string(), ".so".to_string()];
+        assert_eq!(
+            import_candidates("/r/", "m", &sx),
+            vec!["/r/m", "/r/m/__init__.py", "/r/m/__init__.so", "/r/m.py", "/r/m.so"]
+        );
+        assert_eq!(collection_candidates(""), vec!["conftest.py", "__init__.py"]);
+        assert_eq!(
+            collection_candidates("a/b"),
+            vec!["conftest.py", "__init__.py", "a/conftest.py", "a/__init__.py", "a/b/conftest.py", "a/b/__init__.py"]
+        );
     }
 
     #[test]

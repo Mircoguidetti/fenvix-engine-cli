@@ -256,5 +256,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(proofcache::stat_dep, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::dist_top_of, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::compact_stats, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::import_candidates, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::collection_candidates, m)?)?;
     Ok(())
 }
