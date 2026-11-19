@@ -13,6 +13,20 @@ read from a repository's configuration; **UNKNOWN** = not available, what was ch
 finished when this report was written (state below); P4 (shared cache) is not built; P5 beyond the `placement`
 class is not built.
 
+## In short
+
+* **F1-F6 fixed, R1-R4 moved to Rust.** `tests/test_review_r023.py` (unchanged): 10 failed before, 17 passed after.
+* **Soundness (MEASURED)**: every reused and every ran result of every cache row was compared with fresh serial
+  `--det` runs: **0 mismatches** on esphome (local and Actions, incl. both mixed-store directions), litellm-vertex and
+  moto; 0 outcome differences, 0 new failures caused by the split, 0 hidden failures.
+* **Speed (MEASURED, repeated)**: warm `--det-cache -n 4` is **0.66-0.72x plain `-n 4`** on esphome (local and Actions,
+  three runs each, clear of the noise). `--det -n 4` without a cache is **within the noise of plain `-n 4`** on esphome
+  (not "closed the gap" beyond noise, O1), **0.52x** on moto (the virtual clock skips its real sleeps), **1.25x** on
+  litellm-vertex (cause not found).
+* **The cache's reach on the other repositories is limited by their inputs, not by `-n`**: litellm-vertex and moto
+  record 0 entries serially and in parallel (network / OS entropy per test). mlflow's job had an incomplete install
+  (not valid); prefect, pydantic-ai and the three 50-commit walks were still running.
+
 ## Per finding: change, test before / after
 
 Baseline (before this session's changes, engine of c436a4d = 302d52b + the reviewer's tests + REPORT-R2c merge, Python
