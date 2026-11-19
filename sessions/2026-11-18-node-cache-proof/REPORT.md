@@ -1,4 +1,4 @@
-PARTIAL
+DONE
 
 # Skip with proof for JavaScript / TypeScript (detjs `--det-cache`) — report
 
@@ -12,7 +12,7 @@ tables: `harness/node_cache/results/r*/` (`python3 harness/node_cache/aggregate.
 * **Skip with proof now exists in the product for JS/TS**: `detjs vitest|jest --det --det-cache=DIR|https://…`
   reuses test-file results with proof (same Rust proof core, receipts and shared cache service as
   `pytest --det --det-cache`). On GitHub Actions it was checked against a fresh run at the same commit for every
-  reuse: **0 wrong in 404,192 verified reuses** across five repositories (MEASURED, below).
+  reuse: **0 wrong in 449,270 verified reuses** across five repositories (MEASURED, below).
 * **Share of test time skipped with proof** (MEASURED, GitHub Actions, per transition = one commit after another,
   priced with each file's duration in the fresh run; median / mean):
 
@@ -20,7 +20,7 @@ tables: `harness/node_cache/results/r*/` (`python3 harness/node_cache/aggregate.
   |---|---:|---:|---:|---:|
   | docusaurus (Vitest) | 50 | **88% / 73%** | 26% / 56% | 98% / 81% |
   | vue-core (Vitest) | 50 | **26% / 32%** | 28% / 29% | 25% / 31% |
-  | TanStack Query (Vitest, Nx monorepo) | R5_TQ_N | **R5_TQ_SHARE** | R5_TQ_NX | — |
+  | TanStack Query (Vitest, Nx monorepo) | 50 | **91% / 61%** | 92% / 69% | — |
   | React Native (Jest monorepo) | 9 | **0% / 1%** (53–57% outside `dev-middleware`) | 98% / 87% (unproven) | — |
   | Lexical (Vitest monorepo) | 19 | **0% / 0%** (97% of files in `vmThreads`, not cacheable) | 40% / 51% (approximate) | — |
 
@@ -35,8 +35,10 @@ tables: `harness/node_cache/results/r*/` (`python3 harness/node_cache/aggregate.
   serial `detjs --det` run without cache (TanStack +8–11%, React Native and Lexical ≤ +2%); serial Level 0 itself is
   1.7–2.1× the project's own parallel command (React Native: 30×, from `dev-middleware`, below). Runtime identity:
   0.2–3 s per session (memoised; up to 108,610 installed files / 1.6 GB).
-* **Nx** skips more where the project graph is fine-grained and the change is far from most tests (TanStack Query,
-  React Native, Lexical), and less on single-package repos (docusaurus). Nx reruns nothing for an undeclared input,
+* **Nx** skips about as much as detjs on TanStack Query at the median (92% vs 91%) and more on average (69% vs 61%:
+  release commits and repository-wide configuration edits rerun everything in detjs). It skips more where detjs
+  cannot cache (React Native, Lexical), and much less on single-package repositories (docusaurus: 26% vs 88%),
+  because its unit is the project. Nx reruns nothing for an undeclared input,
   and its skips there carry no proof. In React Native, 95% of the test time is in `dev-middleware` socket suites that
   Nx skips whenever that package is not affected; detjs never reuses them, because they open sockets. **Blacksmith**
   could not be run here; by its own documentation it tracks less (no child processes, no `globalSetup`, lockfile
@@ -87,13 +89,13 @@ each would-be reuse is compared with the fresh result; a mismatch is rechecked t
 reuse). Shares are priced with each file's duration in the verify run. Nx 22.7.12 `show projects --affected
 --base=<i-1> --head=<i>` on the same transitions, priced the same way (package-based inference where the repository
 has no Nx configuration). Runs: r1 = 44349361887 (docusaurus, vue-core, React Native, Lexical), r3 = 44381724251
-(wall times), r4 = 44415205842 and r5 = R5_RUN (TanStack Query).
+(wall times), r4 = 44415205842 and r5 = 44440829981 (TanStack Query).
 
 | project | transitions | skip with proof: time, median / mean | tests reused, median | verified reuses | wrong | flaky mismatches | Nx: time skipped, median / mean |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | docusaurus (r1) | 50 | **88% / 73%** | 94% | 132,108 | **0** | 0 | 26% / 56% |
 | vue-core (r1) | 50 | **26% / 32%** | 46% | 85,112 | **0** | 0 | 28% / 29% |
-| TanStack Query (r5) | R5_TQ_N | **R5_TQ_SHARE** | R5_TQ_TESTS | R5_TQ_VER | **R5_TQ_WRONG** | R5_TQ_FLAKY | R5_TQ_NX |
+| TanStack Query (r5) | 50 | **91% / 61%** | 94% | 158,515 | **0** | 0 | 92% / 69% |
 | TanStack Query (r4, configuration not yet per project) | 50 | 90% / 58% | 91% | 148,985 | **0** | 0 | 92% / 69% |
 | React Native (r1) | 9 | **0% / 1%** | 0% | 22,574 | **0** | 0 | 98% / 87% |
 | Lexical (r1) | 19 | **0% / 0%** | 8% | 50,961 | **0** | 0 | 40% / 51% |
@@ -109,6 +111,14 @@ Transitions that rerun everything, by reason (MEASURED, from each run's miss rea
   `package.json` that their Vite configuration imports (`import packageJson from './package.json'` for `test.name`),
   and reran every package because the configuration was one digest. Fixed in 48d2068c (per-project configuration,
   below) and measured again in r5. Median on the other 34: 93%.
+* TanStack Query (r5, per-project configuration) 14 of 50: transitions 34 and 35 now reuse 95% (were 0%). The rest:
+  7 lockfile changes (release and dependency commits), 2 dependency bumps, 2 edits of `tsconfig*.json` under
+  `examples/` (every `tsconfig*` of the repository is a global input), and 3 changes to a package's `package.json`
+  that its `vite.config.ts` imports. Those now miss as **data**, not configuration: the configuration loader reads
+  the file during start-up, and every project file read at start-up is an input of every test file. Narrowing that
+  rule (a start-up read made for one project's configuration only) is the next step; it needs to tell apart why a
+  file was read at start-up (one project's configuration vs `globalSetup` or a plugin acting on every project), so it
+  was not rushed into this run.
 * React Native 5 of 9: one dependency bump (36), and four times (the first transition of each shard, and 37 after
   the install at 36) the harness's fallback
   `yarn install` (used when `--frozen-lockfile` fails) had rewritten `yarn.lock`, and the next checkout restored it.
@@ -138,6 +148,7 @@ approximate.
 | vue-core | r1, commit 45 | 41.7 | 88.1 | 93.4 | +6% | 1.77 (185/185) |
 | TanStack Query | r4, commit 0 | 78.4 | 136.2 | 145.3 | +7% | 41.2 (161/179) |
 | TanStack Query | r3, commit 50 | 89.5 | 169.7 | 187.9 | +11% | 52.5 (162/180) |
+| TanStack Query | r5, commit 27 | 72.0 | 137.0 | 152.2 | +11% | 40.5 (162/180) |
 | React Native | r1, commit 34 | 72.0 | 2,126.4 | 2,135.4 | +0.4% | 2,087.3 (232/284) |
 | Lexical | r1, commit 34 | 618.8 | 1,157.1 | 1,167.8 | +0.9% | 1,155.3 (12/966) |
 
@@ -147,7 +158,7 @@ approximate.
 | vue-core (r3, last 10) | **25 s vs 64 s** (0.38) | — |
 | vue-core (r1, 50) | 40 s vs 76 s (0.52) | 2,479 s vs 3,678 s |
 | TanStack Query (r4, 50) | 58 s vs 178 s (0.33) | 4,926 s vs 8,793 s |
-| TanStack Query (r5) | R5_TQ_WALL | — |
+| TanStack Query (r5, 50) | **44 s vs 149 s** (0.29) | 3,815 s vs 7,140 s |
 
 The docusaurus skip and warm runs in r1 are not valid wall times: Vitest 5 repeats the JSON reporter's `outputFile`
 inside nested configuration, the harness varied it per run, and those runs missed on configuration. Fixed in
@@ -206,7 +217,12 @@ Blacksmith runs only on its own runners: its skip share on these repositories is
   Jest runners, Vitest type tests (TanStack Query: 78 of 267 files).
 * Coarse inputs that rerun more than needed: every installed package file and the lockfile are one runtime digest (a
   dependency bump reruns everything); the repository's configuration files of other tools (tsconfig, babel, …) and
-  the root `package.json` are global; a file that imports its package's `package.json` depends on all of it.
+  the root `package.json` are global; a file that imports its package's `package.json` depends on all of it; every
+  project file read at start-up (configuration loading included) is an input of every test file (TanStack Query r5:
+  3 of 50 transitions).
+* Coverage of the monorepo walks: React Native 9 of 50 transitions and Lexical 19 of 50 (MEASURED). Under Level 0 one
+  React Native run takes ~35 min (`dev-middleware`) and one Lexical run ~20–25 min, and each job has a ~5 h budget
+  for its shard. Docusaurus, vue-core and TanStack Query cover all 50.
 * Jest decides before `globalSetup` runs (Jest calls the sequencer first): a `globalSetup` that runs processes reruns
   every file.
 * React Native's `dev-middleware` socket suites fail or hang under Level 0 (timer/socket interplay, docs/NODE.md J4).
