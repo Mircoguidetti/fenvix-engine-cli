@@ -1,0 +1,1 @@
+{"fix": "51f5d48d49ea946f1f73060b3dc066f11646c6e4", "repo": "structlog", "subject": "Make stdlib.BoundLogger.exception call Logger.exception (#572)", "overlay": ["tests/test_stdlib.py"], "exit": {"bug": 2, "fixed": 2}, "regression_tests": [], "dropped": "today's environment cannot run the commits (exit {'bug': 2, 'fixed': 2})", "cases": []}

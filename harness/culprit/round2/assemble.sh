@@ -10,6 +10,9 @@ cat $W/results2/c-final.jsonl $W/ncout/c2-*.jsonl > $R/c-final.jsonl     # no-co
 for f in $W/rhout/b-*-cases.jsonl; do cp $f $R/cases/rh-$(basename $f | sed 's/^b-//; s/-cases//'); done
 for f in $W/rhout/b-*.jsonl; do case $f in *-cases.jsonl) ;; *) cp $f $R/scans/reverts-$(basename $f | sed 's/^b-//');; esac; done
 for f in $W/ncout/scan-*.json; do cp $f $R/scans/nocode-$(basename $f | sed 's/^scan-//'); done
-[ -f $W/results2/b.jsonl ] && cp $W/results2/b.jsonl $R/b-reverts.jsonl
+for f in $W/results2/b-*.jsonl; do cp $f $R/; done                      # kind b: real history (finder + bisect)
+for f in $W/fxout/f-*-cases.jsonl; do cp $f $R/cases/fix-$(basename $f | sed 's/^f-//; s/-cases//'); done
+for f in $W/fxout/f-*.jsonl; do case $f in *-cases.jsonl) ;; *) cp $f $R/scans/fixes-$(basename $f | sed 's/^f-//');; esac; done
+cp $W/timing2.jsonl $R/timing-a2.jsonl
 cp $R/round1/d.jsonl $R/d.jsonl                                          # step 4, carried over
 echo assembled

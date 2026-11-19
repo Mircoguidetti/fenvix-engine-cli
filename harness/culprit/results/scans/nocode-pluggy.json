@@ -1,0 +1,33 @@
+{
+ "project": "pluggy",
+ "green": "6f948fe2d144681223192d301bdff24c4015b7b7",
+ "red": "cd05478c8ead668f969cc0da17d85baf46bf413f",
+ "exit": {
+  "base": 0,
+  "tz": 0,
+  "locale": 0,
+  "lang": 0,
+  "no-color": 0,
+  "force-color": 0,
+  "term": 0,
+  "columns": 0,
+  "ci": 0,
+  "optimize": 1,
+  "devmode": 0,
+  "ioenc": 0,
+  "home": 0,
+  "language": 0
+ },
+ "by_change": {
+  "optimize": [
+   "testing/test_details.py::test_parse_hookimpl_override",
+   "testing/test_details.py::test_warn_when_deprecated_specified",
+   "testing/test_details.py::test_warn_when_deprecated_args_specified",
+   "testing/test_details.py::test_warn_when_deprecated_args_with_defaults_specified",
+   "testing/test_details.py::test_plugin_getattr_raises_errors"
+  ],
+  "_session_red": [
+   "optimize"
+  ]
+ }
+}

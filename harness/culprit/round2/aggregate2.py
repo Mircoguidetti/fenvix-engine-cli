@@ -125,6 +125,10 @@ def main():
     tot["without_d"] = {"cases": nd, "correct": sum(out[x]["correct"] for x in ("a2", "b", "c-nocode", "c-edit")),
                         "confident_wrong": sum(out[x]["confident_wrong"] for x in ("a2", "b", "c-nocode", "c-edit")),
                         "executions": stats(out["a2"]["_ex"] + out["b"]["_ex"] + cs["_ex"] + out["c-edit"]["_ex"])}
+    # rebuild of the green environment from the green key (head-to-head scenarios: no-code and data edits)
+    reb = [r for r in c + ce if r.get("placement") and r["finder"].get("green_env_replays")]
+    tot["rebuild_cases"] = len(reb)
+    tot["rebuild_failed"] = sum(1 for r in reb if r["finder"].get("rebuilt_exactly") is False)
     out["overall"] = tot
     for v in out.values():
         if isinstance(v, dict):

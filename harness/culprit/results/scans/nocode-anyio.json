@@ -1,0 +1,26 @@
+{
+ "project": "anyio",
+ "green": "76e89d1962bfd984162ec256b6bee9c2db755375",
+ "red": "9a22293d8ce0ca33e40146e9878b64f7a67c44bc",
+ "exit": {
+  "base": 1,
+  "tz": 1,
+  "locale": 1,
+  "lang": 1,
+  "no-color": 1,
+  "force-color": 1,
+  "term": 1,
+  "columns": 1,
+  "ci": 1,
+  "optimize": 1,
+  "devmode": 1,
+  "ioenc": 1,
+  "home": 1,
+  "language": 1
+ },
+ "by_change": {
+  "devmode": [
+   "tests/test_pytest_plugin.py::test_asyncio"
+  ]
+ }
+}

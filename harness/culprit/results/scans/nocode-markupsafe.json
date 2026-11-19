@@ -1,0 +1,33 @@
+{
+ "project": "markupsafe",
+ "green": "dfa58162f6ba9a0afebab7e924af362cd0bede66",
+ "red": "4e111271b1494995708a9e878a10829b5e10c7ba",
+ "exit": {
+  "base": 0,
+  "tz": 0,
+  "locale": 0,
+  "lang": 0,
+  "no-color": 0,
+  "force-color": 0,
+  "term": 0,
+  "columns": 0,
+  "ci": 0,
+  "optimize": 1,
+  "devmode": 0,
+  "ioenc": 0,
+  "home": 0,
+  "language": 0
+ },
+ "by_change": {
+  "optimize": [
+   "tests/test_escape.py::test_escape[markupsafe._native--]",
+   "tests/test_escape.py::test_escape[markupsafe._native-abcd&><'\"efgh-abcd&amp;&gt;&lt;&#39;&#34;efgh]",
+   "tests/test_escape.py::test_escape[markupsafe._native-&><'\"efgh-&amp;&gt;&lt;&#39;&#34;efgh]",
+   "tests/test_escape.py::test_escape[markupsafe._native-abcd&><'\"-abcd&amp;&gt;&lt;&#39;&#34;]",
+   "tests/test_escape.py::test_escape[markupsafe._native-\\u3053\\u3093\\u306b\\u3061\\u306f&><'\"\\u3053\\u3093\\u3070\\u3093\\u306f-\\u3053\\u3093\\u306b\\u3061\\u306f&amp;&gt;&lt;&#39;&#34;\\u3053\\u3093\\u3070\\u3093\\u306f]"
+  ],
+  "_session_red": [
+   "optimize"
+  ]
+ }
+}

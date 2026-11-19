@@ -1,0 +1,1 @@
+{"fix": "39b31bc9b63abe98497409945e9d382d8918c8fb", "repo": "cachetools", "subject": "Fix #405: Fix Cache.__setitem__ over-evicting when growing an existing key", "overlay": ["tests/__init__.py"], "exit": {"bug": 5, "fixed": 5}, "regression_tests": [], "dropped": "today's environment cannot run the commits (exit {'bug': 5, 'fixed': 5})", "cases": []}
