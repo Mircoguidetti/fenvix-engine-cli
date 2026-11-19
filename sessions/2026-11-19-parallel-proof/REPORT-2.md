@@ -22,10 +22,10 @@ class is not built.
 * **Speed (MEASURED, repeated)**: warm `--det-cache -n 4` is **0.66-0.72x plain `-n 4`** on esphome (local and Actions,
   three runs each, clear of the noise). `--det -n 4` without a cache is **within the noise of plain `-n 4`** on esphome
   (not "closed the gap" beyond noise, O1), **0.52x** on moto (the virtual clock skips its real sleeps), **1.25x** on
-  litellm-vertex (cause not found).
+  litellm-vertex and **1.2x** on pydantic-ai (P2's target missed on both; cause not found).
 * **The cache's reach on the other repositories is limited by their inputs, not by `-n`**: litellm-vertex and moto
   record 0 entries serially and in parallel (network / OS entropy per test). mlflow's job had an incomplete install
-  (not valid); prefect, pydantic-ai and the three 50-commit walks were still running.
+  (not valid); prefect and the three 50-commit walks were still running.
 
 ## Per finding: change, test before / after
 
@@ -305,6 +305,26 @@ CI-FACTS.md; one shard or group where the CI splits).
 * The moto walk (50 commits) will therefore measure only the `-n 4` verdict against the serial truth per commit,
   with no reuse.
 
+### pydantic-ai, the design's subset (8,072 tests, `-n 4 --dist loadgroup`), no cache variants, MEASURED
+
+| variant | runs (wall) | vs plain `-n 4` median (140.1 s) |
+|---|---|---|
+| plain serial | 328.9 s | — |
+| plain `-n 4` | 140.1 / 136.9 / 140.5 s | 1 |
+| `--det` serial | 335.4 / 280.7 s | — |
+| `--det -n 4` a (unit costs) / b / c | 180.1 / 170.4 / 165.9 s | 1.18-1.22x (b, c) |
+
+* `--det -n 4` **misses P2's target** here: 140.1 x (308.1 / 328.9) x 1.05 = 137.8 s (ESTIMATED; one plain serial
+  run); runs b and c take 165.9-170.4 s. The planned makespan of runs b/c is 91-96 s (recorded durations), so about
+  75 s of each run is outside the tests the plan balances (start-up, collection in 4 workers, the controller's merge);
+  which part is UNKNOWN (not profiled). The design measured `--det -n 4` at 139-140 s on this subset with xdist's own
+  scheduling (another engine, local machine).
+* Verdicts: 2 failed in every `--det` run (serial and `-n`: the two LIMITS failures of design 1.4.6), 0 in plain runs;
+  crosscheck 0 mismatches against the serial truth (8,072 tests); fpcompare 0 outcome differences, 0 new failures
+  caused by the split, 0 hidden failures. Serial noise 5,446 of 8,072 (`os.urandom`, as in the design).
+* The cache variants were not run: the capture prerequisite of design 5 (2,769 failures under `--det-cache`) is not
+  fixed on this branch.
+
 ### mlflow, parallel group 1 of 6: **not a valid measurement**
 
 The job ran, but its install was incomplete: `uv sync --group test --group build` without extras leaves out modules
@@ -330,8 +350,7 @@ extras its CI installs, Python 3.12 for the cache rows.
 
 ## Not done, and why
 
-* **P0 / P3 on Actions**: run 44509602787 was still running when this was written: prefect (group 1, newer uv on the runner), pydantic-ai (no cache variants: the capture prerequisite of design 5 is
-  not fixed here) and the three 50-commit walks (esphome, moto's `-n 4` group, litellm vertex; truth = a fresh serial
+* **P0 / P3 on Actions**: run 44509602787 was still running when this was written: prefect (group 1, newer uv on the runner) and the three 50-commit walks (esphome, moto's `-n 4` group, litellm vertex; truth = a fresh serial
   `--det` run per commit, `-n 4` cache walk only, stopped after 5 h per job). Their results land in
   `tracks/parallel-proof/results/r023-p0-2026-11-19/` as the jobs finish. The litellm walk will show 0 reuse
   (nothing is cacheable there, above).
