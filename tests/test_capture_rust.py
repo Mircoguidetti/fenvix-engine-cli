@@ -4,7 +4,8 @@ against the Python ``Capture`` it replaces (``tests/rust_hotpaths_ref/_ref_proof
 
 Whole sessions over projects that exercise every kind of capture (import-time reads, module/session fixtures,
 conftest hooks, a doctest, a non-Python file, env reads of one variable and of the whole environment, clock,
-random, a followed subprocess, a name lookup, a /proc read, sqlite, listings, writes read by later tests, failures,
+random, a followed subprocess, a name lookup, a /proc read, sqlite (schemas read through ATTACH, triggers, own
+definitions, file: URIs), loopback sockets, spawns, listings, writes read by later tests, failures,
 skips, xfails; then edits, a changed variable and a stale reuse): the store written by each session (byte for
 byte, but for the run id and durations), the warm receipts, the outcomes and the cache summary (reasons, where)
 must be identical between the two paths.
@@ -83,6 +84,131 @@ EXTRA = {
         def test_reads_twice():
             assert (HERE / "data.txt").read_text() == (HERE / "data.txt").read_text()
             time.sleep(0)
+        """,
+    # the sqlite trace, the loopback checks and the spawn details (crates/detpy-py/src/sqlcap.rs, sockcap.rs)
+    "test_sqlnet.py": """
+        import os
+        import socket
+        import sqlite3
+        import subprocess
+        from pathlib import Path
+        from urllib.parse import quote
+
+        import pytest
+
+        HERE = Path(__file__).parent
+
+
+        def _make(name, *sql):
+            c = sqlite3.connect(str(HERE / name))
+            for s in sql:
+                c.execute(s)
+            c.commit()
+            c.close()
+
+
+        def test_sql_0_make_dbs():
+            # schemas that read the clock (their statements are flagged here)
+            _make("dflt.sqlite", "create table if not exists o (x, t default current_timestamp)")
+            _make("trig.sqlite", "create table if not exists l (x, t)",
+                  "create trigger if not exists tr after insert on l begin "
+                  "update l set t = datetime('now') where rowid = new.rowid; end")
+            _make("sp ace%.sqlite", "create table if not exists s (x, t default (date('now')))")
+            _make("plain.sqlite", "create table if not exists p (x)")
+
+
+        def test_sql_attach_default():
+            c = sqlite3.connect(str(HERE / "plain.sqlite"))
+            c.execute("select count(*) from p").fetchone()
+            c.execute("attach database '%s' as o" % (HERE / "dflt.sqlite"))
+            c.execute("insert into o.o (x) values (1)")  # the attached schema's default reads the clock
+            c.rollback()
+            c.close()
+
+
+        def test_sql_trigger():
+            c = sqlite3.connect(str(HERE / "trig.sqlite"))
+            c.execute("insert into l (x) values (1)")
+            c.rollback()
+            c.close()
+
+
+        def test_sql_plain():
+            c = sqlite3.connect(database=str(HERE / "plain.sqlite"))
+            c.execute("pragma user_version")
+            c.execute("insert into p (x) values (1)")
+            c.rollback()
+            c.close()
+
+
+        @pytest.fixture(scope="module")
+        def memconn():
+            c = sqlite3.connect(":memory:")
+            c.execute("create temp table t (x, t default current_time)")
+            yield c
+            c.close()
+
+
+        def test_sql_own_schema(memconn):
+            memconn.execute("insert into t (x) values (1)")
+
+
+        def test_sql_uri_escapes():
+            c = sqlite3.connect("file:" + quote(str(HERE / "sp ace%.sqlite")) + "?mode=ro", uri=True)
+            assert c.execute("select count(*) from s").fetchone()
+            c.close()
+
+
+        def test_sql_uri_memory_and_attach():
+            c = sqlite3.connect("file:memdb1?mode=memory&cache=shared", uri=True)
+            c.execute("create table m (x)")
+            c.execute("insert into m values (1)")
+            c.execute("ATTACH 'file://localhost%s?mode=ro' AS s" % quote(str(HERE / "sp ace%.sqlite")))
+            c.execute("select count(*) from m")
+            c.close()
+
+
+        def test_sql_new_file(tmp_path):
+            c = sqlite3.connect(str(tmp_path / "new.sqlite"))
+            c.execute("create table n (x)")
+            c.execute("attach database '%s' as a" % str(tmp_path / "other''s.sqlite").replace("'", "''"))
+            c.execute("create table a.q (y)")
+            c.execute("insert into n values (1)")
+            c.commit()
+            c.close()
+
+
+        def test_socket_own_listener_and_pair():
+            srv = socket.socket()
+            srv.bind(("127.0.0.1", 0))
+            srv.listen()
+            c = socket.socket()
+            c.connect(("127.0.0.1", srv.getsockname()[1]))
+            s, _ = srv.accept()
+            c.sendmsg([b"x"])
+            assert s.recv(1) == b"x"
+            for x in (s, c, srv):
+                x.close()
+
+
+        def test_socket_not_listening():
+            c = socket.socket()
+            try:
+                c.connect(("127.0.0.1", 9))
+            except OSError:
+                pass
+            c.close()
+
+
+        def test_spawn_list_str_shell():
+            subprocess.run(["/bin/sh", "-c", "true"], check=True)
+            subprocess.run("true", check=True)
+            subprocess.run("exit 0", shell=True, check=True)
+
+
+        def test_spawn_os_system_and_posix_spawn():
+            assert os.system("true  ") == 0
+            os.waitpid(os.posix_spawn("/bin/true", ["true"], dict(os.environ)), 0)
         """,
     "pkg/lazy.py": """
         import os
@@ -197,6 +323,18 @@ def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
     assert {"host name lookup", "reads /proc, /sys or /dev", "real clock read outside the virtual clock",
             "outcome", "reads a file another test or fixture wrote"} <= set(nc), nc
     assert new[2]["summary"]["reused"] and new[2]["summary"]["recorded"], new[2]["summary"]
+    # the sqlite trace, the loopback checks and the spawn detail ran (same results on both paths, above)
+    where, ids = s1["not_cached_where"], s1["not_cached_ids"]
+    t = "test_sqlnet.py::test_"
+    assert "the schema of dflt.sqlite (o)" in where[t + "sql_attach_default"], where
+    assert "the schema of trig.sqlite (tr)" in where[t + "sql_trigger"], where
+    assert "this connection's schema" in where[t + "sql_own_schema"], where
+    assert "the schema of sp ace%.sqlite (s)" in where[t + "sql_uri_escapes"], where
+    assert "the schema of sp ace%.sqlite (s)" in where[t + "sql_uri_memory_and_attach"], where
+    assert where[t + "socket_not_listening"].startswith("socket.connect 127.0.0.1:9 at test_sqlnet.py:"), where
+    assert where[t + "spawn_os_system_and_posix_spawn"].startswith("true (os.system) at test_sqlnet.py:"), where
+    for name in ("sql_plain", "sql_new_file", "socket_own_listener_and_pair", "spawn_list_str_shell"):
+        assert "real clock" not in ids.get(t + name, "") and "network" not in ids.get(t + name, ""), ids
 
 
 # ---------------------------------------------------------------------------
