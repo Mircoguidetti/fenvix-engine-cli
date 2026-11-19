@@ -1,0 +1,31 @@
+{
+ "name": "uvu-browserslist",
+ "url": "https://github.com/browserslist/browserslist",
+ "node": "22",
+ "runner": "uvu",
+ "install": [
+  "corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent || pnpm install --reporter=silent"
+ ],
+ "install_files": [
+  "pnpm-lock.yaml",
+  "package.json"
+ ],
+ "build": [],
+ "args": [
+  "test",
+  ".test.js"
+ ],
+ "plain": "node node_modules/uvu/bin.js test .test.js",
+ "shards": 1,
+ "source": "26 first-parent commits of main up to 2026-11-16 (uvu 0.5, `NODE_ENV=test uvu test .test.js`)",
+ "window": [
+  0,
+  26
+ ],
+ "run_timeout": 3000,
+ "overhead": "shard0",
+ "unset_ci": true,
+ "env": {
+  "NODE_ENV": "test"
+ }
+}

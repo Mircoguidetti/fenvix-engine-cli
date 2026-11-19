@@ -1,0 +1,115 @@
+{
+ "uvu-autoprefixer": {
+  "rows": [
+   {
+    "i": 22,
+    "sha": "9cde2bfcb9",
+    "share": 1.0,
+    "tests_share": 1.0,
+    "files": 15,
+    "reused_files": 15,
+    "verified": 288,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 8.21,
+    "skip_s": 0.55,
+    "skip_rc": 0,
+    "verify_rc": 0,
+    "miss_reasons": {},
+    "changed": 1,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 23,
+    "sha": "57486b2dc8",
+    "share": 0.16488372093023257,
+    "tests_share": 0.2518248175182482,
+    "files": 15,
+    "reused_files": 8,
+    "verified": 77,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 8.04,
+    "skip_s": 5.4,
+    "skip_rc": 0,
+    "verify_rc": 0,
+    "miss_reasons": {
+     "data": 7
+    },
+    "changed": 2,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 24,
+    "sha": "02d334360b",
+    "share": 0.7256837675999352,
+    "tests_share": 0.9716312056737588,
+    "files": 16,
+    "reused_files": 15,
+    "verified": 289,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 9.92,
+    "skip_s": 2.4,
+    "skip_rc": 0,
+    "verify_rc": 0,
+    "miss_reasons": {
+     "new": 1
+    },
+    "changed": 2,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 25,
+    "sha": "0f8eeca0e7",
+    "share": 0.14206455951580363,
+    "tests_share": 0.24381625441696114,
+    "files": 16,
+    "reused_files": 8,
+    "verified": 77,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 8.8,
+    "skip_s": 6.8,
+    "skip_rc": 0,
+    "verify_rc": 0,
+    "miss_reasons": {
+     "data": 7,
+     "new": 1
+    },
+    "changed": 2,
+    "nx_share": null,
+    "nx_error": "not run"
+   }
+  ],
+  "overhead": [
+   {
+    "i": 21,
+    "plain_s": 3.16,
+    "det_s": 3.01,
+    "capture_s": 8.19,
+    "cold": true,
+    "warm_s": 0.51,
+    "warm_reused": 15,
+    "files": 15,
+    "identity_s": 0.398,
+    "record_s": 0.083,
+    "packages": {
+     "files": 7291,
+     "bytes": 277390516,
+     "hashed": 7291,
+     "links": 202,
+     "followed": 13
+    }
+   }
+  ],
+  "commits": 5
+ }
+}

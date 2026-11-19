@@ -128,6 +128,8 @@ class Walk:
             for k in ("CI", "GITHUB_ACTIONS"):
                 self.env.pop(k, None)
         self.env["FENVIX_RUNTIME_MEMO"] = os.path.join(self.work, "runtime-memo.json")
+        # environment the project's test script sets (`NODE_ENV=test uvu ...`)
+        self.env.update(self.spec.get("env") or {})
 
     def save(self):
         tmp = self.out + ".tmp"

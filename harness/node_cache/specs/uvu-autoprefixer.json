@@ -1,0 +1,28 @@
+{
+ "name": "uvu-autoprefixer",
+ "url": "https://github.com/postcss/autoprefixer",
+ "node": "22",
+ "runner": "uvu",
+ "install": [
+  "corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent || pnpm install --reporter=silent"
+ ],
+ "install_files": [
+  "pnpm-lock.yaml",
+  "package.json"
+ ],
+ "build": [],
+ "args": [
+  ".",
+  "\\.test\\.js$"
+ ],
+ "plain": "node node_modules/uvu/bin.js . '\\.test\\.js$'",
+ "shards": 1,
+ "source": "26 first-parent commits of main up to 2026-11-18 (uvu 0.5, the project's `unit` script)",
+ "window": [
+  0,
+  26
+ ],
+ "run_timeout": 3000,
+ "overhead": "shard0",
+ "unset_ci": true
+}
