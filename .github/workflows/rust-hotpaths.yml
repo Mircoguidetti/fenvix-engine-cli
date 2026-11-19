@@ -109,7 +109,7 @@ jobs:
           echo "engines: $wheels"
           out="tracks/rust-hotpaths/results/${{ needs.build.outputs.run_id }}/${{ matrix.spec }}-${{ matrix.tag }}.json"
           python3 harness/rust_hotpaths/profile.py --spec "harness/cache_proof/specs/${{ matrix.spec }}.json" \
-            --work "$RUNNER_TEMP/w" --shard "${{ matrix.shard }}" --reps "${{ matrix.reps }}" --pyspy $wheels --out "$out" || true
+            --work "$RUNNER_TEMP/w" --shard "${{ matrix.shard }}" --reps "${{ matrix.reps }}" --pyspy --clean-tmp $wheels --out "$out" || true
           python3 -c "
           import sys; sys.path.insert(0, 'harness/cache_proof'); import walk, glob
           walk.commit_results(sorted(glob.glob('$out') + glob.glob('${out%.json}-*.raw.gz')), 'rust-hotpaths: profile ${{ matrix.spec }} ${{ matrix.tag }}')"

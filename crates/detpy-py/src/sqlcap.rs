@@ -295,46 +295,88 @@ pub(crate) fn attach(py: Python<'_>, b: &[u8]) -> PyResult<Option<(usize, usize)
 // ---------------------------------------------------------------------------------------------------------------
 // `_sqlite_file`
 
-/// `urllib.parse.unquote(s)` (utf-8, errors "replace"): runs of ASCII are unquoted to bytes and decoded, other
-/// characters are kept.
-fn unquote(s: &[u8]) -> W {
+/// The file name sqlite opens for the path of a `file:` URI `s` (a `str` as WTF-8), as the same `str`
+/// (`os.fsdecode`): `os.fsencode(s)` with every `%XX` decoded to its byte, bytes-exact (`urllib.parse.unquote_to_bytes`,
+/// as sqlite's URI parser does; review R-017b F2: `unquote` with `errors="replace"` named `file:%FF.db` and
+/// `file:%FE.db` both `\u{fffd}.db`), up to a decoded NUL (where sqlite's C string ends). None when `s` holds a
+/// surrogate that is not an escaped byte (not encodable: the connect fails).
+fn unquote(s: &[u8]) -> Option<W> {
     if !s.contains(&b'%') {
-        return s.to_vec();
+        return Some(s.to_vec());
     }
-    let mut out = Vec::with_capacity(s.len());
+    let raw = crate::capture::fs_bytes(s)?;
+    let hex = |c: u8| (c as char).to_digit(16);
+    let mut bytes = Vec::with_capacity(raw.len());
     let mut i = 0;
-    while i < s.len() {
-        let start = i;
-        while i < s.len() && s[i] < 0x80 {
-            i += 1;
-        }
-        if i > start {
-            let run = &s[start..i];
-            let mut bytes = Vec::with_capacity(run.len());
-            let mut bits = run.split(|&c| c == b'%');
-            bytes.extend_from_slice(bits.next().unwrap_or(b""));
-            for item in bits {
-                let hex = |c: u8| (c as char).to_digit(16);
-                match (item.first().and_then(|&c| hex(c)), item.get(1).and_then(|&c| hex(c))) {
-                    (Some(h), Some(l)) => {
-                        bytes.push((h * 16 + l) as u8);
-                        bytes.extend_from_slice(&item[2..]);
-                    }
-                    _ => {
-                        bytes.push(b'%');
-                        bytes.extend_from_slice(item);
-                    }
+    while i < raw.len() {
+        if raw[i] == b'%' {
+            if let (Some(h), Some(l)) = (raw.get(i + 1).and_then(|&c| hex(c)), raw.get(i + 2).and_then(|&c| hex(c))) {
+                let b = (h * 16 + l) as u8;
+                if b == 0 {
+                    break;
                 }
+                bytes.push(b);
+                i += 3;
+                continue;
             }
-            out.extend_from_slice(String::from_utf8_lossy(&bytes).as_bytes());
         }
-        let start = i;
-        while i < s.len() && s[i] >= 0x80 {
-            i += 1;
-        }
-        out.extend_from_slice(&s[start..i]);
+        bytes.push(raw[i]);
+        i += 1;
     }
-    out
+    Some(escape_bytes(&bytes))
+}
+
+/// `os.fsdecode(b)` as WTF-8: valid UTF-8 as is, every other byte as its escape surrogate U+DC80..U+DCFF.
+pub(crate) fn escape_bytes(b: &[u8]) -> W {
+    let mut out = Vec::with_capacity(b.len());
+    let mut rest = b;
+    loop {
+        match std::str::from_utf8(rest) {
+            Ok(s) => {
+                out.extend_from_slice(s.as_bytes());
+                return out;
+            }
+            Err(e) => {
+                let ok = e.valid_up_to();
+                out.extend_from_slice(&rest[..ok]);
+                let bad = e.error_len().unwrap_or(rest.len() - ok);
+                for &x in &rest[ok..ok + bad] {
+                    let cp = 0xDC00u32 + u32::from(x);
+                    out.extend_from_slice(&[0xE0 | (cp >> 12) as u8, 0x80 | ((cp >> 6) & 0x3F) as u8, 0x80 | (cp & 0x3F) as u8]);
+                }
+                rest = &rest[ok + bad..];
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Who is connecting (review R-017b F2)
+//
+// The `sqlite3.connect` audit event carries the database name only, not `uri`: the patched `sqlite3.connect`
+// (`Capture._patch_sqlite`) says around the real call who connects and how, and the capture's audit arm reads it.
+
+/// No patched call around this connect (a direct `_sqlite3.connect`): how `uri` was given is unknown.
+pub(crate) const CONNECT_UNKNOWN: u8 = 0;
+/// detpy's own schema query (`Capture._sql_schema_read`): not the test's read.
+pub(crate) const CONNECT_OWN: u8 = 1;
+/// The test's connection, `uri` false.
+pub(crate) const CONNECT_PLAIN: u8 = 2;
+/// The test's connection, `uri` true.
+pub(crate) const CONNECT_URI: u8 = 3;
+
+thread_local! {
+    static CONNECT_MODE: std::cell::Cell<u8> = const { std::cell::Cell::new(CONNECT_UNKNOWN) };
+}
+
+pub(crate) fn connect_mode() -> u8 {
+    CONNECT_MODE.with(|m| m.get())
+}
+
+/// Set this thread's connect mode for the duration of a real `sqlite3.connect` call; returns the previous one.
+#[pyfunction]
+fn sql_connect_mode(mode: u8) -> u8 {
+    CONNECT_MODE.with(|m| m.replace(mode.min(CONNECT_URI)))
 }
 
 fn split_once(s: &[u8], c: u8) -> (&[u8], &[u8]) {
@@ -368,7 +410,7 @@ fn abspath(py: Python<'_>, s: &[u8]) -> PyResult<Option<W>> {
 }
 
 /// `_sqlite_file(s, uri)` for a string `s`.
-fn sqlite_file_str(py: Python<'_>, s: &[u8], uri: bool) -> PyResult<Option<W>> {
+pub(crate) fn sqlite_file_str(py: Python<'_>, s: &[u8], uri: bool) -> PyResult<Option<W>> {
     let owned;
     let mut s = s;
     if uri && s.starts_with(b"file:") {
@@ -382,7 +424,8 @@ fn sqlite_file_str(py: Python<'_>, s: &[u8], uri: bool) -> PyResult<Option<W>> {
         } else {
             path.to_vec()
         };
-        owned = unquote(split_once(&path, b'#').0);
+        let Some(u) = unquote(split_once(&path, b'#').0) else { return Ok(None) };
+        owned = u;
         s = &owned;
     }
     if s.is_empty() || s == b":memory:" {
@@ -533,6 +576,8 @@ impl SqlTrace {
                 i += if inner[i] == b'\'' && inner.get(i + 1) == Some(&b'\'') { 2 } else { 1 };
             }
             if let Some(f) = sqlite_file_str(py, &name, true)? {
+                // review R-017b F2: an attached database is an input too (no audit event for it)
+                core.sql_database(py, std::slice::from_ref(&f))?;
                 lock(&self.conn).dbs.push(f);
             }
             return Ok(());
@@ -603,6 +648,7 @@ fn sqlite_file_of<'py>(py: Python<'py>, db: &Bound<'py, PyAny>, uri: bool) -> Py
 }
 
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(sql_connect_mode, m)?)?;
     m.add_class::<SqlTrace>()?;
     m.add_function(wrap_pyfunction!(sql_real_clock, m)?)?;
     m.add_function(wrap_pyfunction!(sql_statement_kind, m)?)?;

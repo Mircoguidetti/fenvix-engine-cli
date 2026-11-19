@@ -388,10 +388,72 @@ def _install(config, ns, controls) -> None:
     if "fs" in controls:
         fsorder.install(_PATCHER)
     if "bytecode" in controls and reexec.bytecode_active(_hashseed_value()):
-        S.rewrite_cache = _cache_rewritten_tests()
+        S.rewrite_cache = _cache_rewritten_tests(config)
+    else:
+        _hash_checked_imports(config)
 
 
-def _cache_rewritten_tests() -> bool:
+def _hash_checked_imports(config) -> bool:
+    """Review R-019b N5: under ``--det`` without the bytecode control (``--det-no-reexec``, ``--det-disable``, or no
+    re-exec possible), validate the bytecode of every imported project module by its source's hash.
+
+    With the control, the import system reads only the precompile's checked-hash pycs (``reexec``), which it
+    validates by hash itself. Without it, it uses the project's ``__pycache__``, whose timestamp pycs are valid for
+    ``(int(mtime), size)``: after a same-size edit checked out within the same second, the previous version's
+    bytecode runs, and the proof key (from the source) pairs the new source with the old outcome (a cached false
+    pass). ``SourceFileLoader.get_code`` is patched for project sources (under the rootdir, without the precompile's
+    excluded names): a pyc is used only when it is a hash-based pyc of exactly the current source; otherwise the
+    source is compiled and, when bytecode may be written, cached as a checked-hash pyc (which plain Python also
+    validates by hash). The decision and the hash are in Rust (``_core.HashCheckedPycs``); this is the importlib
+    interface. Other modules (libraries) keep the import system's own check."""
+    try:
+        import importlib.util
+        from importlib import _bootstrap_external as be
+        from importlib.machinery import SourceFileLoader
+
+        variant = reexec._hash_variant()
+        compile_bytecode, code_to_hash_pyc = be._compile_bytecode, be._code_to_hash_pyc
+        cache_from_source, magic = importlib.util.cache_from_source, importlib.util.MAGIC_NUMBER
+    except (ImportError, AttributeError):
+        return False
+    root = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
+    check = _core.HashCheckedPycs(os.path.abspath(root), list(reexec._EXCLUDE_NAMES), magic,
+                                  int.from_bytes(magic, "little"), *(variant or (1, 3)))
+    real = SourceFileLoader.get_code
+
+    def get_code(self, fullname):
+        path = self.get_filename(fullname)
+        if variant is None:  # the Rust hash is not the interpreter's: never read a project pyc
+            if not check.applies(path):
+                return real(self, fullname)
+            with open(path, "rb") as fh:
+                return self.source_to_code(fh.read(), path)
+        try:
+            cfile = cache_from_source(path)
+        except NotImplementedError:
+            cfile = None
+        got = check(path, cfile)
+        if got is None:
+            return real(self, fullname)
+        source, source_hash, data = got
+        if data is not None:
+            try:
+                return compile_bytecode(memoryview(data)[16:], name=fullname, bytecode_path=cfile, source_path=path)
+            except (ImportError, EOFError):
+                pass
+        code = self.source_to_code(source, path)
+        if cfile is not None and not sys.dont_write_bytecode:
+            try:
+                self._cache_bytecode(path, cfile, code_to_hash_pyc(code, source_hash, True))
+            except NotImplementedError:
+                pass
+        return code
+
+    _PATCHER.set(SourceFileLoader, "get_code", get_code)
+    return True
+
+
+def _cache_rewritten_tests(config) -> bool:
     """Keep pytest's assertion-rewritten test modules (and conftests) in the deterministic bytecode cache.
 
     Under ``--det`` the interpreter runs with ``PYTHONDONTWRITEBYTECODE=1`` and ``PYTHONPYCACHEPREFIX`` set to the
@@ -400,10 +462,16 @@ def _cache_rewritten_tests() -> bool:
     keeps them as checked-hash pycs (``_read_pyc`` compares the source's hash before use), so a stale one never
     runs; detpy writes them with pytest's own writer. The module then runs from the marshalled code in the first
     run too (``marshal.loads``), as it does in every later run: a set constant has one layout in every run.
+
+    pytest's own check covers the source, the interpreter (magic number, cache tag) and pytest's version only, but
+    the rewritten code also depends on the configuration (``enable_assertion_pass_hook``), the optimisation level
+    and the rewriter itself (review R-017 H1: a run with the option loaded the code an earlier run wrote without
+    it). So under ``--det`` pytest reads, and detpy writes, these pycs under a name keyed on all of that
+    (``_rewrite_key``): a run only ever loads code that its own configuration would have produced. A rewriter
+    replaced by a plugin is not keyed: nothing is read or written then. The pytest-named pycs (written by earlier
+    versions of detpy without the key) are never read under ``--det``.
     Older pytest versions (timestamp pycs, ``(mtime, size)``: stale same-size edits, review R-015) are left alone;
-    ``DETPY_REWRITE_CACHE=0`` turns it off."""
-    if os.environ.get("DETPY_REWRITE_CACHE", "1") == "0":
-        return False
+    ``DETPY_REWRITE_CACHE=0`` turns the cache off (no read, no write)."""
     try:
         import marshal
 
@@ -411,22 +479,194 @@ def _cache_rewritten_tests() -> bool:
 
         if b"\x03\x00\x00\x00" not in rw._read_pyc.__code__.co_consts:
             return False  # not a checked-hash reader
-        real, write_pyc, cache_dir_of, tail, key = (rw._rewrite_test, rw._write_pyc, rw.get_cache_dir, rw.PYC_TAIL,
-                                                    rw.assertstate_key)
+        real, read_pyc, write_pyc, cache_dir_of, tail, ext, key = (
+            rw._rewrite_test, rw._read_pyc, rw._write_pyc, rw.get_cache_dir, rw.PYC_TAIL, rw.PYC_EXT,
+            rw.assertstate_key)
+        originals = (rw.rewrite_asserts, rw.AssertionRewriter)
     except (ImportError, AttributeError):
         return False
+    enabled = os.environ.get("DETPY_REWRITE_CACHE", "1") != "0"
+    memo: list = []
+
+    def keyed_tail():
+        """The pyc tail for this run, or None when the rewrite cannot be keyed (nothing is read or written).
+
+        Review R-017b F1: the key holds a digest of the rewriter as loaded (``_rewriter_digest``), so a plugin or
+        conftest that patches a method of ``AssertionRewriter`` (or a helper of ``rewrite.py``) gets its own pycs.
+        It is re-checked at each read and write by the identity of the namespaces' values (cheap): a conftest
+        loaded later that patches the rewriter changes the key from then on."""
+        if not enabled or (rw.rewrite_asserts, rw.AssertionRewriter) != originals:
+            return None
+        snap = _rewriter_snapshot(rw)
+        if not memo or memo[0] != snap:
+            memo[:] = [snap, _rewrite_key(config, rw)]
+        k = memo[1]
+        return None if k is None else tail[:-len(ext)] + ".det-" + k + ext
+
+    def _read_pyc(source, pyc, trace=lambda x: None):
+        t = keyed_tail()
+        name = pyc.name
+        if t is None or not name.endswith(tail):
+            return None
+        return read_pyc(source, pyc.with_name(name[:-len(tail)] + t), trace)
 
     def _rewrite_test(fn, config):
         source_hash, co = real(fn, config)
+        t = keyed_tail()
+        if t is None:
+            return source_hash, co
         cache_dir = cache_dir_of(fn)
         try:
             os.makedirs(cache_dir, exist_ok=True)
-            write_pyc(config.stash[key], co, source_hash, cache_dir / (fn.name[:-3] + tail))
+            write_pyc(config.stash[key], co, source_hash, cache_dir / (fn.name[:-3] + t))
         except (OSError, KeyError):
             pass
         return source_hash, marshal.loads(marshal.dumps(co))
 
+    _PATCHER.set(rw, "_read_pyc", _read_pyc)
     _PATCHER.set(rw, "_rewrite_test", _rewrite_test)
+    return enabled
+
+
+def _rewrite_key(config, rw) -> str | None:
+    """A digest of everything pytest's assertion rewrite depends on besides the source and the interpreter/pytest
+    version (which pytest's pyc check and name already cover): the ``enable_assertion_pass_hook`` ini option (the
+    one configuration value ``AssertionRewriter`` reads), the optimisation level ``compile`` uses, and the
+    rewriter's own source. None (no cache) when one of them cannot be read."""
+    import hashlib
+
+    try:
+        hook = bool(config.getini("enable_assertion_pass_hook"))
+        with open(rw.__file__, "rb") as fh:
+            code = hashlib.sha256(fh.read()).hexdigest()
+    except (OSError, ValueError, TypeError, AttributeError):
+        return None
+    loaded = _rewriter_digest(rw)
+    if loaded is None:
+        return None
+    parts = f"pass_hook={hook}\noptimize={sys.flags.optimize}\nrewriter={code}\nloaded={loaded}\n"
+    return hashlib.sha256(parts.encode()).hexdigest()[:16]
+
+
+def _rewriter_snapshot(rw) -> tuple:
+    """The identity of what the rewrite runs (compared at each read and write): ``rewrite_asserts``,
+    ``AssertionRewriter``, and the values of their module's and the class's namespaces."""
+    cls = rw.AssertionRewriter
+    return (rw.rewrite_asserts, cls, tuple(vars(cls).values()), tuple(vars(rw).values()))
+
+
+_SIMPLE = (str, bytes, int, float, complex, bool, type(None), type(Ellipsis))
+
+
+def _rewriter_digest(rw, limit: int = 5000) -> str | None:
+    """Review R-017b F1: a digest of pytest's assertion rewriter *as loaded*, stable across runs.
+
+    It covers ``rewrite_asserts`` and every value of ``rewrite.py``'s namespace and of ``AssertionRewriter``'s (by
+    name). A function is its code (bytecode, constants, names, recursively; not its file name or line numbers, so
+    two installs of the same pytest share pycs), its defaults, its closure cells and the globals its code names.
+    Functions are followed wherever they are defined (a plugin's replacement method, and the original it wraps
+    from its closure); a function's globals are followed within its own module (a plugin's helpers), other
+    modules' objects are named. A class of ``rewrite.py`` (or of the referring function's module) is its name,
+    bases and namespace; other classes are named. A constant is its ``repr``, a module its name, anything else its
+    type. None (no cache) past ``limit`` objects."""
+    import hashlib
+    import types
+
+    h = hashlib.sha256()
+    seen: dict = {}
+    todo: list = []
+    home = rw.__name__
+
+    def name(v) -> str:
+        return f"{getattr(v, '__module__', None)}.{getattr(v, '__qualname__', '?')}"
+
+    def ref(v, mod: str | None) -> str:
+        """A token for ``v``; objects to follow are queued and named by their order. ``mod``: the module whose
+        classes and functions are followed (None: functions always)."""
+        if isinstance(v, _SIMPLE):
+            return f"{type(v).__name__}:{v!r}"
+        if isinstance(v, (tuple, list, frozenset, set)):
+            items = [ref(x, mod) for x in v]
+            if isinstance(v, (frozenset, set)):
+                items.sort()
+            return f"{type(v).__name__}({','.join(items)})"
+        if isinstance(v, dict):
+            return "dict(" + ",".join(sorted(f"{ref(k, mod)}={ref(x, mod)}" for k, x in v.items())) + ")"
+        if isinstance(v, (staticmethod, classmethod)):
+            return f"{type(v).__name__}({ref(v.__func__, None)})"
+        if isinstance(v, property):
+            return f"property({ref(v.fget, None)},{ref(v.fset, None)},{ref(v.fdel, None)})"
+        if isinstance(v, types.ModuleType):
+            return f"module:{v.__name__}"
+        if isinstance(v, (types.BuiltinFunctionType, types.MethodWrapperType, types.WrapperDescriptorType)):
+            return f"builtin:{name(v)}"
+        m = getattr(v, "__module__", None)
+        if isinstance(v, type):
+            follow = m == home or m == mod
+        elif isinstance(v, types.FunctionType) or hasattr(v, "__wrapped__"):
+            follow = mod is None or m == mod or m == home
+        else:
+            return f"other:{type(v).__module__}.{type(v).__qualname__}"
+        if not follow:
+            return f"named:{name(v)}"
+        if id(v) not in seen:
+            seen[id(v)] = (len(seen), v)
+            todo.append(v)
+        return f"obj#{seen[id(v)][0]}"
+
+    def code(co) -> str:
+        consts = ",".join(code(c) if isinstance(c, types.CodeType) else ref(c, None) for c in co.co_consts)
+        return (f"code({co.co_qualname}|{co.co_argcount},{co.co_posonlyargcount},{co.co_kwonlyargcount},"
+                f"{co.co_flags}|{co.co_code.hex()}|{','.join(co.co_names)}|{','.join(co.co_varnames)}|"
+                f"{','.join(co.co_freevars)}|{','.join(co.co_cellvars)}|{consts})")
+
+    def names(co):
+        yield from co.co_names
+        for c in co.co_consts:
+            if isinstance(c, types.CodeType):
+                yield from names(c)
+
+    h.update(f"rewrite_asserts={ref(rw.rewrite_asserts, None)}\nclass={ref(rw.AssertionRewriter, None)}\n".encode())
+    for n in sorted(vars(rw)):
+        h.update(f"rw.{n}={ref(vars(rw)[n], None)}\n".encode())
+    while todo:
+        if len(seen) > limit:
+            return None
+        v = todo.pop(0)
+        i = seen[id(v)][0]
+        if isinstance(v, type):
+            body = ";".join(f"{n}={ref(x, None)}" for n, x in sorted(vars(v).items(), key=lambda kv: kv[0])
+                            if n not in ("__dict__", "__weakref__"))
+            bases = ",".join(ref(b, v.__module__) for b in v.__bases__)
+            h.update(f"#{i}=class {name(v)}({bases}){{{body}}}\n".encode())
+            continue
+        f = inspect_unwrap(v)
+        co = getattr(f, "__code__", None)
+        if co is None:
+            h.update(f"#{i}=callable {type(v).__module__}.{type(v).__qualname__}\n".encode())
+            continue
+        cells = ",".join(ref(c.cell_contents, None) if _cell_full(c) else "empty" for c in (f.__closure__ or ()))
+        g, fm = f.__globals__, f.__module__
+        glob = ",".join(f"{n}={ref(g[n], fm)}" for n in sorted(set(names(co))) if n in g)
+        h.update(f"#{i}=function {code(co)} defaults={ref(f.__defaults__, None)} kw={ref(f.__kwdefaults__, None)} "
+                 f"cells=({cells}) globals=({glob})\n".encode())
+    return h.hexdigest()[:16]
+
+
+def inspect_unwrap(v):
+    """``v`` itself when it has code; else what it wraps (``functools.lru_cache`` and the like)."""
+    for _ in range(10):
+        if hasattr(v, "__code__") or not hasattr(v, "__wrapped__"):
+            return v
+        v = v.__wrapped__
+    return v
+
+
+def _cell_full(cell) -> bool:
+    try:
+        cell.cell_contents
+    except ValueError:
+        return False
     return True
 
 

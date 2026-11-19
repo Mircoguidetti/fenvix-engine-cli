@@ -43,6 +43,8 @@ Cold run (empty cache), fully reused run ("floor") and `--det` without cache, ea
 | click | floor / plain | 1.12x | 0.69x | 0.65x | **0.52x** | local floor.py (3 rounds) |
 | pygments | floor / plain | 0.41x | 0.36x | 0.35x | **0.28x** | local floor.py |
 
+**The pygments CI p8 rows include failing runs** (review R-017 H2): in p8 every pygments `--det` run fails from round 3 on (round 2 on for `C:r2` / `W:r2`), exit 1 (2 failing tests in the `C` and `W` runs, which report outcomes), while plain pytest passes in all 5 rounds; this is the temporary-name exhaustion of finding 2. Their medians (cold 1.27x, floor 0.28x, `--det` 1.08x for the final engine) are of 5 rounds of which 3 (4 for `C:r2` / `W:r2`) exited 1. The failures change little in the ratios, but these rows are not runs that passed. Every run behind the local pygments rows exited 0 (`results/local-final/profile-pygments.json`, `floor/final-pygments.json`).
+
 Sources: `tracks/rust-hotpaths/results/p8/` (CI), `results/local-final/profile-*.json`, `floor/final-*.json`. The
 checkpoint's own CI run p5 (base, round 1, checkpoint) measured cold / plain click 1.88 / 1.33 / 1.32, pygments 1.43 /
 1.32 / 1.31, home-assistant 0/16 1.57 / 1.35 / 1.28, 5/16 1.35 / 1.31 / 1.22, 10/16 1.52 / 1.29 / 1.24.
@@ -196,8 +198,13 @@ in every walk (w1, w2, local), so 43 commits are compared.
    that leaves its `mkstemp` file behind (pygments' `test_unicode_options`, `test_valid_output`) finds the same names
    taken at the next run. With this container's Python (`tempfile.TMP_MAX == 20`), about the 20th run in one temporary
    directory fails with "No usable temporary file name found" (MEASURED: the first local pygments floor,
-   `floor/final-pygments-tmpleak.json`; the harnesses now take `--clean-tmp`). Fresh CI runners never see it. Not
-   engine-specific.
+   `floor/final-pygments-tmpleak.json`; the harnesses now take `--clean-tmp`). Not engine-specific. **CI hits it
+   too** (corrected after review R-017 H2; this said CI never sees it): the CI profile p8 runs all of pygments'
+   sessions on one runner in one temporary directory, and there every `--det` run fails from round 3 on (round 2
+   on for `C:r2` / `W:r2`), in `B`, `C` and `W` and in every engine: exit 1, and 2 test failures
+   (`not_cached: {"outcome": 2}`) where the cache reports them. Plain pytest (`P0`) passes in all 5 rounds
+   (`results/p8/pygments-0of1.json`). The pygments CI p8 rows of the headline table are medians that include
+   these failing runs (see the note under the table).
 3. **asyncio and `Queue.get(timeout=...)` advance the virtual clock by real-time-dependent amounts** (the clock
    worker's finding). Fingerprints and later printed monotonic values can vary run to run under load, in every engine.
 4. **In record mode the network policy remembers the last name looked up for an address** (the network worker's

@@ -126,6 +126,9 @@ pub fn uncacheable(flags: &BTreeSet<&str>, control_urandom: bool) -> Option<&'st
     if has("badpath") {
         return Some("reads a path that is not valid UTF-8");
     }
+    if has("badenv") {
+        return Some("reads an environment variable whose name is not valid UTF-8");
+    }
     if has("rclock") {
         return Some("real clock read outside the virtual clock");
     }
@@ -648,6 +651,15 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_badenv_is_uncacheable() {
+        // review R-017 H3: an env name that is not valid UTF-8 refuses the test (it cannot be keyed)
+        let f: BTreeSet<&str> = ["time", "badenv"].into_iter().collect();
+        assert_eq!(uncacheable(&f, false), Some("reads an environment variable whose name is not valid UTF-8"));
+        let f: BTreeSet<&str> = ["badpath", "badenv"].into_iter().collect();
+        assert_eq!(uncacheable(&f, false), Some("reads a path that is not valid UTF-8"));
+    }
 
     fn lcg(s: &mut u64) -> u64 {
         *s = s.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
