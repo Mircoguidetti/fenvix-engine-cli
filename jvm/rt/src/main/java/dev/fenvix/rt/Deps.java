@@ -496,6 +496,11 @@ public final class Deps {
     }
 
     static void beginTest(String id) {
+        if (PROPS_START == null) {
+            synchronized (L) {
+                if (PROPS_START == null) PROPS_START = propsNow();
+            }
+        }
         setScope(new Scope(id, "test", container()));
     }
 
@@ -894,6 +899,39 @@ public final class Deps {
         }
     }
 
+    /** System properties written by tests (System.setProperty, clearProperty, setProperties; "*": all). */
+    static final TreeSet<String> PROPS_WRITTEN = new TreeSet<>();
+    /** Every system property (value digest) when the first test started. */
+    static volatile Map<String, String> PROPS_START;
+
+    static Map<String, String> propsNow() {
+        Map<String, String> props = new TreeMap<>();
+        for (String k : System.getProperties().stringPropertyNames()) props.put(k, digestValue(String.valueOf(System.getProperty(k))));
+        return props;
+    }
+
+    /**
+     * A system property changed by code under test or inside a test: JVM-global state like a
+     * static field. Its readers depend on the tests before them (decider: shared state).
+     */
+    public static void propWrite(String key) {
+        if (!Det.DEPS || key == null) return;
+        if (!Det.enter()) return;
+        try {
+            if (inSession() && Caller.kind() != Caller.USER) return; // the runner's own set-up
+            synchronized (L) {
+                PROPS_WRITTEN.add(key);
+                for (Scope s : targets()) s.swrite = true;
+            }
+        } finally {
+            Det.exit();
+        }
+    }
+
+    public static void propWriteAll(java.util.Properties p) {
+        propWrite("*");
+    }
+
     static String digestValue(String v) {
         return Native.isLoaded() ? Native.digest(v.getBytes(StandardCharsets.UTF_8)) : Integer.toHexString(v.hashCode());
     }
@@ -1064,6 +1102,12 @@ public final class Deps {
         for (String k : System.getProperties().stringPropertyNames()) props.put(k, digestValue(String.valueOf(System.getProperty(k))));
         sb.append(",\"props_all\":");
         Json.map(sb, props);
+        sb.append(",\"props_start\":");
+        Json.map(sb, PROPS_START != null ? PROPS_START : props);
+        synchronized (L) {
+            sb.append(",\"props_written\":");
+            Json.strs(sb, new ArrayList<>(PROPS_WRITTEN));
+        }
         sb.append(",\"classpath\":");
         Json.strs(sb, classPath());
         sb.append(",\"root_dir\":");

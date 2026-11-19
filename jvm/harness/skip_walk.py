@@ -170,8 +170,11 @@ def main():
     ap.add_argument("--work", default="/tmp/walk")
     ap.add_argument("--out", default=os.path.join(HERE, "results", "skip"))
     ap.add_argument("--budget", type=float, default=5.3 * 3600)
+    ap.add_argument("--shas-from", help="walk exactly the commits of an earlier walk (its shard json), for a like-for-like comparison")
     a = ap.parse_args()
     spec = REPOS[a.repo]
+    if a.shas_from:
+        spec = dict(spec, shas=[r["sha"] for r in json.load(open(a.shas_from))["rows"]])
     t_start = time.time()
     a.work = os.path.abspath(a.work)
     out = os.path.abspath(os.path.join(a.out, a.repo))

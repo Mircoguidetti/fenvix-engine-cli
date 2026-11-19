@@ -436,7 +436,10 @@ pub fn key_changed(module: &str, m: &Module, t: &Test, b: &mut State) -> Reason 
         if flag(s, "written") {
             return why("writes", s["id"].as_str().unwrap_or(""));
         }
-        if let Some(n) = strs(s, "net").first() {
+        // a network attempt the shell let through: its result is an input the capture cannot see.
+        // (Attempts blocked by --det are refused the same way in every run: such a test is never
+        // reused either, see decide(), but it leaves the same state behind.)
+        if let Some(n) = strs(s, "net").iter().find(|n| !n.ends_with(":blocked")) {
             return why("network", n.clone());
         }
         if let Some(p) = strs(s, "proc").first() {
@@ -518,16 +521,28 @@ pub fn key_changed(module: &str, m: &Module, t: &Test, b: &mut State) -> Reason 
             }
         }
         if let Some(props) = obj(s, "props") {
+            // properties no test writes: the value read is the value at JVM start; properties tests
+            // write are shared state (the order rule decides), their start values must match
+            let written = props_written(ja, jb);
+            let start_a = props_start(ja);
+            let start_b = props_start(jb);
+            let _ = &props_b;
             for (k, v) in props {
                 if k == "*" {
-                    let fa: BTreeMap<_, _> = map_of(ja, "props_all").into_iter().filter(|(x, _)| !x.starts_with("fenvix.")).collect();
-                    let fb: BTreeMap<_, _> = props_b.clone().into_iter().filter(|(x, _)| !x.starts_with("fenvix.")).collect();
+                    let fa: BTreeMap<_, _> = start_a.iter().filter(|(x, _)| !x.starts_with("fenvix.")).collect();
+                    let fb: BTreeMap<_, _> = start_b.iter().filter(|(x, _)| !x.starts_with("fenvix.")).collect();
                     if fa != fb {
                         return why("prop", "*");
                     }
                     continue;
                 }
-                if props_b.get(k).map(String::as_str).unwrap_or("unset") != v.as_str().unwrap_or("") {
+                if written.contains(k) || written.contains("*") {
+                    if start_a.get(k) != start_b.get(k) {
+                        return why("prop", k.clone());
+                    }
+                    continue;
+                }
+                if start_b.get(k).map(String::as_str).unwrap_or("unset") != v.as_str().unwrap_or("") {
                     return why("prop", k.clone());
                 }
             }
@@ -536,9 +551,28 @@ pub fn key_changed(module: &str, m: &Module, t: &Test, b: &mut State) -> Reason 
     None
 }
 
-/// A scope chain read static state another test could have changed (session scope excluded).
-fn reads_shared(m: &Module, t: &Test) -> bool {
-    chain(m, t).iter().any(|s| s.get("type").and_then(Value::as_str) != Some("session") && flag(s, "mut"))
+/// System properties written by tests in either JVM ("*": all of them).
+fn props_written(ja: &Value, jb: &Value) -> HashSet<String> {
+    strs(ja, "props_written").into_iter().chain(strs(jb, "props_written")).collect()
+}
+
+/// Properties at JVM start (captures without it: at JVM end).
+fn props_start(j: &Value) -> BTreeMap<String, String> {
+    if j.get("props_start").is_some() {
+        map_of(j, "props_start")
+    } else {
+        map_of(j, "props_all")
+    }
+}
+
+/// A scope chain read static state another test could have changed (session scope excluded):
+/// a mutable static, or a system property some test writes.
+fn reads_shared(m: &Module, t: &Test, written: &HashSet<String>) -> bool {
+    chain(m, t).iter().any(|s| {
+        s.get("type").and_then(Value::as_str) != Some("session")
+            && (flag(s, "mut")
+                || (!written.is_empty() && obj(s, "props").map(|p| p.keys().any(|k| k == "*" || written.contains(k) || written.contains("*"))).unwrap_or(false)))
+    })
 }
 
 /// A test that left (or may have left) state behind: it read a mutable static or wrote a static.
@@ -565,8 +599,9 @@ pub type Decisions = BTreeMap<(String, String), Reason>;
 
 /// {(module, id): None (reusable) or (reason, detail)} for every test of A.
 ///
-/// A test of A that failed is never reused, but when its key is unchanged it runs exactly as in
-/// A (deterministic execution), so it leaves the same state behind: for the tests after it, it
+/// A test of A that failed, or that made a network attempt the shell blocked, is never reused, but
+/// when its key is unchanged it runs exactly as in A (deterministic execution), so it leaves the
+/// same state behind: for the tests after it, it
 /// counts as unchanged ("clean"). A test whose key changed, a new test, or a test that depends on
 /// such a test is not clean.
 pub fn decide(mods_a: &Mods, b: &mut State) -> Decisions {
@@ -599,9 +634,16 @@ pub fn decide(mods_a: &Mods, b: &mut State) -> Decisions {
     let mut fin = clean;
     for (mn, m) in mods_a {
         for (tid, t) in &m.tests {
-            if fin[&(mn.clone(), tid.clone())].is_none() && t.rec.get("outcome").and_then(Value::as_str) != Some("passed") {
+            if fin[&(mn.clone(), tid.clone())].is_some() {
+                continue;
+            }
+            if t.rec.get("outcome").and_then(Value::as_str) != Some("passed") {
                 let o = t.rec.get("outcome").and_then(Value::as_str).unwrap_or("none").to_string();
                 fin.insert((mn.clone(), tid.clone()), why("not-passed", o));
+                continue;
+            }
+            if let Some(n) = chain(m, t).iter().flat_map(|s| strs(s, "net")).next() {
+                fin.insert((mn.clone(), tid.clone()), why("network", n));
             }
         }
     }
@@ -645,7 +687,11 @@ fn order_reason(mn: &str, m: &Module, mb: Option<&Module>, tid: &str, t: &Test, 
             return why("order", c);
         }
     }
-    if reads_shared(m, t) {
+    let written = match (m.jvms[t.jvm].record.as_ref(), mb.jvms[tb.jvm].record.as_ref()) {
+        (Some(ja), Some(jb)) => props_written(ja, jb),
+        _ => HashSet::new(),
+    };
+    if reads_shared(m, t, &written) {
         // The decision is taken at the test's position, after the tests before it have run: a test
         // rerun (or new) before it either touched no shared static state when it ran in B (its
         // capture says so), or it may have left other state behind. Reused tests behave as in A.
@@ -790,6 +836,43 @@ mod tests {
         b.extend(scopes());
         b.push(j);
         assert_eq!(get(&run(&a, &b, root.path()), "Reader").as_ref().map(|r| r.0.as_str()), Some("after"));
+    }
+
+    #[test]
+    fn blocked_network_is_never_reused_but_clean_and_written_properties_are_shared_state() {
+        let root = tempfile::tempdir().unwrap();
+        let mut j = jvm_rec(root.path(), json!({}), vec![]);
+        j["props_start"] = json!({"mode": "d1", "other": "o1"});
+        j["props_all"] = json!({"mode": "d2", "other": "o1"});
+        j["props_written"] = json!(["mode"]);
+        let own = |c: &str| json!([c, "<session>"]);
+        let net = test_rec("Net", json!({"net": ["dns:x:blocked"], "scopes": own("N"), "mut": true}));
+        let setter = test_rec("Setter", json!({"swrite": true, "scopes": own("S")}));
+        let reader = test_rec("Reader", json!({"props": {"mode": "d2"}, "scopes": own("R")}));
+        let other = test_rec("Other", json!({"props": {"other": "o1"}, "scopes": own("O")}));
+        let mut a = vec![net, setter.clone(), reader.clone(), other.clone()];
+        a.extend(scopes());
+        a.push(j.clone());
+        let d = run(&a, &a, root.path());
+        assert_eq!(get(&d, "Net").as_ref().map(|r| r.0.as_str()), Some("network"));
+        assert_eq!(get(&d, "Reader"), &None, "value read mid-run is not compared with the end value");
+        assert_eq!(get(&d, "Other"), &None);
+        // the setter changed: the reader of the written property runs again, the other one does not
+        let ja = jvm_rec(root.path(), json!({"Set": format!("{} root:Set.class", short(b"v1"))}), vec![]);
+        let jb = jvm_rec(root.path(), json!({"Set": format!("{} root:Set.class", short(b"v2"))}), vec![]);
+        let fix = |mut x: Value| {
+            x["props_start"] = j["props_start"].clone();
+            x["props_written"] = j["props_written"].clone();
+            x
+        };
+        let setter = test_rec("Setter", json!({"swrite": true, "scopes": own("S"), "classes": ["Set"]}));
+        let mut a = vec![setter.clone(), reader.clone(), other.clone(), fix(ja)];
+        a.extend(scopes());
+        let mut b = vec![setter, reader, other, fix(jb)];
+        b.extend(scopes());
+        let d = run(&a, &b, root.path());
+        assert_eq!(get(&d, "Reader").as_ref().map(|r| r.0.as_str()), Some("after"));
+        assert_eq!(get(&d, "Other"), &None);
     }
 
     #[test]

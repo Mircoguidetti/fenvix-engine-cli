@@ -1271,8 +1271,10 @@ public final class Det {
             if (!external) return;
             String caller = Caller.user();
             if (caller == null) return; // infrastructure
-            if (DEPS) Deps.network(host + ":" + isa.getPort());
-            if (allowed(host) || (a != null && allowed(a.getHostAddress()))) {
+            boolean allow = allowed(host) || (a != null && allowed(a.getHostAddress()));
+            // blocked by --det: refused at the shell, the same way in every run (deterministic input)
+            if (DEPS) Deps.network(host + ":" + isa.getPort() + (NET && !allow ? ":blocked" : ""));
+            if (allow) {
                 record("net", "connect", caller, host + ":" + isa.getPort() + ":allowed");
                 return;
             }
@@ -1300,7 +1302,7 @@ public final class Det {
             if (h.equals(localHostName())) return;
             String caller = Caller.user();
             if (caller == null) return;
-            if (DEPS) Deps.network("dns:" + h);
+            if (DEPS) Deps.network("dns:" + h + (NET && !allowed(h) ? ":blocked" : ""));
             if (allowed(h)) {
                 record("net", "dns", caller, h + ":allowed");
                 return;
@@ -1361,7 +1363,11 @@ public final class Det {
     }
 
     public static Properties getProperties(String site) {
-        if (DEPS) Deps.prop("*", null);
+        // the live Properties object: the caller may read all of them and change them
+        if (DEPS) {
+            Deps.prop("*", null);
+            Deps.propWrite("*");
+        }
         return System.getProperties();
     }
 

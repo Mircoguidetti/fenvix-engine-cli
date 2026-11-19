@@ -192,6 +192,13 @@ final class JdkHooks implements ClassFileTransformer {
                 DEPS, "lookupStatic", "(Ljava/lang/Class;)V", 1));
         add(new Hook(lk, "findVarHandle", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/invoke/VarHandle;", Kind.ENTRY,
                 DEPS, "lookupFind", "(Ljava/lang/Class;)V", 1));
+        // system properties written at run time (JVM-global state)
+        add(new Hook("java/lang/System", "setProperty", "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", Kind.ENTRY, DEPS,
+                "propWrite", "(Ljava/lang/String;)V", 0));
+        add(new Hook("java/lang/System", "clearProperty", "(Ljava/lang/String;)Ljava/lang/String;", Kind.ENTRY, DEPS, "propWrite",
+                "(Ljava/lang/String;)V", 0));
+        add(new Hook("java/lang/System", "setProperties", "(Ljava/util/Properties;)V", Kind.ENTRY, DEPS, "propWriteAll",
+                "(Ljava/util/Properties;)V", 0));
         // inputs the capture cannot see: child processes, native libraries of the project
         add(new Hook("java/lang/ProcessBuilder", "start", "()Ljava/lang/Process;", Kind.ENTRY, DET, "procStart",
                 "(Ljava/lang/ProcessBuilder;)V", 0));
