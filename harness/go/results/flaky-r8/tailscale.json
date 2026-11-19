@@ -1,0 +1,1913 @@
+{
+ "spec": {
+  "name": "tailscale",
+  "repo": "tailscale/tailscale",
+  "sha": "46f938791d5de3534179b48df7db912bc263049f",
+  "fix_commit": "b31eb1c9bc582b9251d515ef634cfc99e1fc44e4",
+  "fix_date": "2026-11-06T19:31:20.000-08:00",
+  "title": "ipn/ipnlocal,ipn/localapi: fix flaky TestResumeIPNBus",
+  "tests": [
+   "TestResumeIPNBus"
+  ],
+  "source": "github commit search 'repo:tailscale/tailscale flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestResumeIPNBus": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./ipn/localapi"
+ ],
+ "imports": [
+  "tailscale.com/ipn/localapi"
+ ],
+ "go_version": "go1.27.3",
+ "build_plain_s": 58.9,
+ "build_det_s": 78.8,
+ "baseline": {
+  "tailscale.com/ipn/localapi::TestValidHost": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestServeUserProfile": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestServeDialSelf": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestResumeIPNBus": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestShouldDenyServeConfigForGOOSAndUserContext": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestSetPushDeviceToken": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestServeDevSetStateStore": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestKeepItSorted": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestWhoIsServiceParams": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestServePeerByID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestServeWatchIPNBus": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestPolicyUsesCallerUserScope": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestServeWithUnhealthyState": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestPolicyUsesDefaultScopeForEmptyUserID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestWhoIsArgTypes": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "tailscale.com/ipn/localapi::TestServeDebugLogGate": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 189.9,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 897,
+  "net": 3,
+  "entropy": 44,
+  "outcome": 16
+ },
+ "det0_top_tests_by_events": [
+  [
+   256,
+   "tailscale.com/ipn/localapi::TestServeWatchIPNBus"
+  ],
+  [
+   247,
+   "tailscale.com/ipn/localapi::TestShouldDenyServeConfigForGOOSAndUserContext"
+  ],
+  [
+   168,
+   "tailscale.com/ipn/localapi::TestServeDevSetStateStore"
+  ],
+  [
+   85,
+   "tailscale.com/ipn/localapi::TestServeDebugLogGate"
+  ],
+  [
+   71,
+   "tailscale.com/ipn/localapi::TestResumeIPNBus"
+  ],
+  [
+   60,
+   "tailscale.com/ipn/localapi::TestServeWithUnhealthyState"
+  ],
+  [
+   49,
+   "tailscale.com/ipn/localapi::TestServeDialSelf"
+  ],
+  [
+   13,
+   "tailscale.com/ipn/localapi::TestSetPushDeviceToken"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "tailscale.com/ipn/localapi::TestShouldDenyServeConfigForGOOSAndUserContext",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 90,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "util/eventbus/subscribe.go:395",
+     "v": "0"
+    },
+    "event_b": {
+     "t": 7,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "net/tstun/wrap.go:857",
+     "v": "1000000000"
+    },
+    "reason": "thread",
+    "description": "event #90: [time] time.NewTimer @ util/eventbus/subscribe.go:395 = 0  <>  [time] time.NewTimer @ net/tstun/wrap.go:857 = 1000000000 (thread 7)"
+   }
+  },
+  {
+   "nodeid": "tailscale.com/ipn/localapi::TestServeWatchIPNBus",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 182,
+    "window": null,
+    "event_a": {
+     "t": 26,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "net/tstun/wrap.go:857",
+     "v": "1000000000"
+    },
+    "event_b": {
+     "t": 26,
+     "s": "time",
+     "o": "time.Now",
+     "at": "std:net/http.(*conn).setState",
+     "v": "76000"
+    },
+    "reason": "thread",
+    "description": "event #182: [time] time.NewTimer @ net/tstun/wrap.go:857 = 1000000000 (thread 26)  <>  [time] time.Now @ std:net/http.(*conn).setState = 76000 (thread 26)"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 16,
+  "stable": 14,
+  "diverged": 2,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 2
+  }
+ },
+ "det0": {
+  "tailscale.com/ipn/localapi::TestServeWithUnhealthyState": [
+   [
+    "passed",
+    "b45fdca9b8bc0526082dc1da4030c322"
+   ],
+   [
+    "passed",
+    "b45fdca9b8bc0526082dc1da4030c322"
+   ],
+   [
+    "passed",
+    "b45fdca9b8bc0526082dc1da4030c322"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestKeepItSorted": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestPolicyUsesCallerUserScope": [
+   [
+    "passed",
+    "eb38492714541840485dd9b085d6f281"
+   ],
+   [
+    "passed",
+    "eb38492714541840485dd9b085d6f281"
+   ],
+   [
+    "passed",
+    "eb38492714541840485dd9b085d6f281"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestWhoIsArgTypes": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestServeUserProfile": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestServePeerByID": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestServeWatchIPNBus": [
+   [
+    "passed",
+    "7e00c386301366e8b77771434f30836c"
+   ],
+   [
+    "passed",
+    "bce02b5a27db882fbea6d48c7ad23927"
+   ],
+   [
+    "passed",
+    "bce02b5a27db882fbea6d48c7ad23927"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestSetPushDeviceToken": [
+   [
+    "passed",
+    "3182281eb74e6ebc5143bddbbbd83016"
+   ],
+   [
+    "passed",
+    "3182281eb74e6ebc5143bddbbbd83016"
+   ],
+   [
+    "passed",
+    "3182281eb74e6ebc5143bddbbbd83016"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestPolicyUsesDefaultScopeForEmptyUserID": [
+   [
+    "passed",
+    "ca76ef7c4d8f1539b4e7ce2e2b71c4b5"
+   ],
+   [
+    "passed",
+    "ca76ef7c4d8f1539b4e7ce2e2b71c4b5"
+   ],
+   [
+    "passed",
+    "ca76ef7c4d8f1539b4e7ce2e2b71c4b5"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestShouldDenyServeConfigForGOOSAndUserContext": [
+   [
+    "passed",
+    "b8b2ccfc72f597c9a6ff22cec6fe55eb"
+   ],
+   [
+    "passed",
+    "4652c7d343a02fa3c797977df8871a3a"
+   ],
+   [
+    "passed",
+    "4652c7d343a02fa3c797977df8871a3a"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestServeDialSelf": [
+   [
+    "passed",
+    "e4457fb0343412609fa63ba1ca6427b8"
+   ],
+   [
+    "passed",
+    "e4457fb0343412609fa63ba1ca6427b8"
+   ],
+   [
+    "passed",
+    "e4457fb0343412609fa63ba1ca6427b8"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestResumeIPNBus": [
+   [
+    "passed",
+    "5cd47052f3ae3e475387024b6f52910e"
+   ],
+   [
+    "passed",
+    "5cd47052f3ae3e475387024b6f52910e"
+   ],
+   [
+    "passed",
+    "5cd47052f3ae3e475387024b6f52910e"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestServeDebugLogGate": [
+   [
+    "passed",
+    "f9bb35130754542055b77f06072dd4a0"
+   ],
+   [
+    "passed",
+    "f9bb35130754542055b77f06072dd4a0"
+   ],
+   [
+    "passed",
+    "f9bb35130754542055b77f06072dd4a0"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestWhoIsServiceParams": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestValidHost": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "tailscale.com/ipn/localapi::TestServeDevSetStateStore": [
+   [
+    "passed",
+    "70b481f72153aab05b42eeee4643b727"
+   ],
+   [
+    "passed",
+    "70b481f72153aab05b42eeee4643b727"
+   ],
+   [
+    "passed",
+    "70b481f72153aab05b42eeee4643b727"
+   ]
+  ]
+ },
+ "explore": {
+  "tailscale.com/ipn/localapi::TestKeepItSorted": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestServePeerByID": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestServeDialSelf": {
+   "1": [
+    "passed",
+    "2f3c3ea12c76c8f51d94646bd58aac3b"
+   ],
+   "2": [
+    "passed",
+    "9360f586888dba656c8e27ba3f162835"
+   ],
+   "3": [
+    "passed",
+    "d479f07b5d50a4fe02172b28bceda69e"
+   ],
+   "4": [
+    "passed",
+    "130a54d28f5ef8973fe66a2b5c300a4d"
+   ],
+   "5": [
+    "passed",
+    "51d23c6faf713651a6f7066bb7bccb88"
+   ],
+   "6": [
+    "passed",
+    "3f376493365997ad0edf396bbe237c0b"
+   ],
+   "7": [
+    "passed",
+    "9740f197c1edda3b9e830b3450754bdf"
+   ],
+   "8": [
+    "passed",
+    "013c1377fd99d065c7d9424259ae58cd"
+   ],
+   "9": [
+    "passed",
+    "a76c5ce68e2f4a985e9258123481baa1"
+   ],
+   "10": [
+    "passed",
+    "9be551ee2b7f43a0791af52ffcd95e2c"
+   ],
+   "11": [
+    "passed",
+    "afdbbe770aec7981e116cf88ece16b84"
+   ],
+   "12": [
+    "passed",
+    "c0d44fe6dff212fc1dd84b1cb06cdb67"
+   ],
+   "13": [
+    "passed",
+    "fe3d2cbc7b795a25530e6dfff70f7c4d"
+   ],
+   "14": [
+    "passed",
+    "6197cb7aa8bf161b25c39ef352666b28"
+   ],
+   "15": [
+    "passed",
+    "58bab4b001187c6b5a0db9f51d1b93bb"
+   ],
+   "16": [
+    "passed",
+    "4124f06dd64c4212555e6f3cf8059de5"
+   ],
+   "17": [
+    "passed",
+    "61a0667e16fb66f1b4d8a3d08ee2b94b"
+   ],
+   "18": [
+    "passed",
+    "cff40cddc71066973743bf14c614e53c"
+   ],
+   "19": [
+    "passed",
+    "fc1dae6cd7cfc4f4b367758402a97146"
+   ],
+   "20": [
+    "passed",
+    "1247e00d639d344757f6272f92c62050"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestServeWatchIPNBus": {
+   "1": [
+    "passed",
+    "87dad48c34969c98efbe31a80208e94a"
+   ],
+   "2": [
+    "passed",
+    "3d6a28d4cb09f8a67ce33e9e49fdd8f9"
+   ],
+   "3": [
+    "passed",
+    "085246e3779410ff61c06fe849d3d422"
+   ],
+   "4": [
+    "passed",
+    "b8a00ed0e469671feec1c3098bf68110"
+   ],
+   "5": [
+    "passed",
+    "bfc49fe894ffe4bfd24cf4f3f98a506e"
+   ],
+   "6": [
+    "passed",
+    "660dfe47134e5d3b0dd5403fa1c11f19"
+   ],
+   "7": [
+    "passed",
+    "0523b68404a577edbdd797f09e9bbb5b"
+   ],
+   "8": [
+    "passed",
+    "0fafc83bb2956aaa58bf1fa906f6a480"
+   ],
+   "9": [
+    "passed",
+    "06a25a721ed95b6f7298a3baae42e149"
+   ],
+   "10": [
+    "passed",
+    "dd218e1a1a725d453a36b2646b6df382"
+   ],
+   "11": [
+    "passed",
+    "d2dc30ad766f81cedc02b225b3902284"
+   ],
+   "12": [
+    "passed",
+    "481862713714c4bdc94fa2a04c2d7986"
+   ],
+   "13": [
+    "passed",
+    "b24c0ada5458c18674d3d140aa76d63f"
+   ],
+   "14": [
+    "passed",
+    "a6168a08460cc0d0d9de2add54473124"
+   ],
+   "15": [
+    "passed",
+    "d1513e4f3e86d3cc87cb126535b95865"
+   ],
+   "16": [
+    "passed",
+    "e72d70526b57ed7ea2cd2a91ef45e5b0"
+   ],
+   "17": [
+    "passed",
+    "dce29016eaadceb753bf6223122d8564"
+   ],
+   "18": [
+    "passed",
+    "d5fdbc9546c149b372192ed8870df1b4"
+   ],
+   "19": [
+    "passed",
+    "d1cfb21bcdd9831d1028665159340ae4"
+   ],
+   "20": [
+    "passed",
+    "83661fa12aa37b87ebe4324a120038b8"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestServeWithUnhealthyState": {
+   "1": [
+    "passed",
+    "bdab24e5787dc2c54a5749d53523acba"
+   ],
+   "2": [
+    "passed",
+    "09baf237e51e626592591314dfee9fc0"
+   ],
+   "3": [
+    "passed",
+    "baea01428a2e8502ce48d06086842aa0"
+   ],
+   "4": [
+    "passed",
+    "523ebf92406952cab8f477d1e18b67b3"
+   ],
+   "5": [
+    "passed",
+    "2794fa2e3edd0ffc032cc2faeae8f117"
+   ],
+   "6": [
+    "passed",
+    "9519f3178603f762b9f7735f20b15111"
+   ],
+   "7": [
+    "passed",
+    "0e8837b4a0f159ea2046542fe86ca1b3"
+   ],
+   "8": [
+    "passed",
+    "de691af188a5165955408e86a6f25161"
+   ],
+   "9": [
+    "passed",
+    "e01f71e9654737ee7528f697aa77960c"
+   ],
+   "10": [
+    "passed",
+    "1c068c30d2e74157879e795b11f7e241"
+   ],
+   "11": [
+    "passed",
+    "11c981716cf4b64c05c16c014f250d22"
+   ],
+   "12": [
+    "passed",
+    "5900430bdea3fc764016f444e1cdfb20"
+   ],
+   "13": [
+    "passed",
+    "1de86f46123d95f9d2d027448ca66d44"
+   ],
+   "14": [
+    "passed",
+    "b5bf3c0ac59bf0ccb49dd72b1e67ca88"
+   ],
+   "15": [
+    "passed",
+    "181bfa75f5dfc01b06a7bf0ed972d835"
+   ],
+   "16": [
+    "passed",
+    "aa246e154580e6336c1820ecdea5046e"
+   ],
+   "17": [
+    "passed",
+    "3312dbb308a0b24d34d582d9ac2cd0d8"
+   ],
+   "18": [
+    "passed",
+    "8a2ece0fc94578f794441c97ecb6a54c"
+   ],
+   "19": [
+    "passed",
+    "d3f9f3b4bb25be2288ea9b1efc156f48"
+   ],
+   "20": [
+    "passed",
+    "79b854f134402f3dc1ba1a4286988574"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestSetPushDeviceToken": {
+   "1": [
+    "passed",
+    "22310ce1a5f519a9bf1cf0165006d5dd"
+   ],
+   "2": [
+    "passed",
+    "a5a03cda78336aee1e2c5a04df84fc85"
+   ],
+   "3": [
+    "passed",
+    "ca550390e7e1de39f7aee70a38e3ec41"
+   ],
+   "4": [
+    "passed",
+    "fad2c5636720aaf58da10e4cec2b47d2"
+   ],
+   "5": [
+    "passed",
+    "daa02b05f468abae1694a7ad3ae79c2a"
+   ],
+   "6": [
+    "passed",
+    "0cb069a85ec390ff1d73aa8fe5e3abf8"
+   ],
+   "7": [
+    "passed",
+    "a54595d2d50930c20fcd3dc2688ff2a9"
+   ],
+   "8": [
+    "passed",
+    "11eefb7b0ef144acc7500dc53039ddd4"
+   ],
+   "9": [
+    "passed",
+    "bb5d8070de12e2a378adcf94e8e002dc"
+   ],
+   "10": [
+    "passed",
+    "79995e2c0c1763b898a93c7b87076d41"
+   ],
+   "11": [
+    "passed",
+    "72baa3b5793ad560f32b0985044b1884"
+   ],
+   "12": [
+    "passed",
+    "333616c21d1f3d07aa2799f4c6c55a46"
+   ],
+   "13": [
+    "passed",
+    "d1897a4404d57675d1d76266f82ca1a2"
+   ],
+   "14": [
+    "passed",
+    "ecd07a84fd85f803b026df20361028b5"
+   ],
+   "15": [
+    "passed",
+    "8052736f032d562940b7e9ce5a862832"
+   ],
+   "16": [
+    "passed",
+    "3e3262b6baf18f228e58c7c03df30db9"
+   ],
+   "17": [
+    "passed",
+    "9342aa579693630efc5d0066d20c2137"
+   ],
+   "18": [
+    "passed",
+    "67a6439f823195875156735dbc50e373"
+   ],
+   "19": [
+    "passed",
+    "7b3fb5ed94a4c1039ccf15d0605e7f00"
+   ],
+   "20": [
+    "passed",
+    "c45b7871266cf7436d2297217ee4edb3"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestPolicyUsesDefaultScopeForEmptyUserID": {
+   "1": [
+    "passed",
+    "44145a47c1cb1dec2c28f99a8362c184"
+   ],
+   "2": [
+    "passed",
+    "9b97f7d884f11da6ab7a41abe1ad5327"
+   ],
+   "3": [
+    "passed",
+    "865cee133e6fe0f1d48a218b7d016063"
+   ],
+   "4": [
+    "passed",
+    "b1e78125880877e575ad74aca1b27faf"
+   ],
+   "5": [
+    "passed",
+    "abf76585fc01a88e7e50efccea9839ac"
+   ],
+   "6": [
+    "passed",
+    "8c5845b47d4060159af73e5cc24b29dc"
+   ],
+   "7": [
+    "passed",
+    "925628d88662ea41dbf9c531e1debf56"
+   ],
+   "8": [
+    "passed",
+    "d07623355286b5090daac3478a94cf0c"
+   ],
+   "9": [
+    "passed",
+    "5bd1c966d6c15b74d72383990879031e"
+   ],
+   "10": [
+    "passed",
+    "70222d155a678850aa89c616c1719a96"
+   ],
+   "11": [
+    "passed",
+    "6891c8e4f1ab3bbb441c862f3ae7c8d2"
+   ],
+   "12": [
+    "passed",
+    "d950d2ea162d3f492d607af4bd2bd6f7"
+   ],
+   "13": [
+    "passed",
+    "e4d444d2c552fccd21b233712bc9e800"
+   ],
+   "14": [
+    "passed",
+    "40d3a5f29e5e6c289bbce79914b63b1f"
+   ],
+   "15": [
+    "passed",
+    "dd94704f8d4e6fff05c623076d29ec5e"
+   ],
+   "16": [
+    "passed",
+    "f326217c19da78ae34fc6aef041b8c56"
+   ],
+   "17": [
+    "passed",
+    "356aeb1d65d190499ba450d3a924dcac"
+   ],
+   "18": [
+    "passed",
+    "8938d1b55e6b5d94e51fc94f57100fdd"
+   ],
+   "19": [
+    "passed",
+    "f5aa71778ba2943dc5c61186c4a087c1"
+   ],
+   "20": [
+    "passed",
+    "c2d56e0c64de82f5f6f90671eebab474"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestPolicyUsesCallerUserScope": {
+   "1": [
+    "passed",
+    "be67e74c3f3ccc5bebadd1b7a2f40bc6"
+   ],
+   "2": [
+    "passed",
+    "4201e104d1d98f15fdc3977139132e99"
+   ],
+   "3": [
+    "passed",
+    "ed8a53862b7fef4431d03d3578fa9d22"
+   ],
+   "4": [
+    "passed",
+    "c7a16895778800e1d6ec62d9b2fd1e45"
+   ],
+   "5": [
+    "passed",
+    "f0da7ba34a1971746a37e56fc6361da9"
+   ],
+   "6": [
+    "passed",
+    "d05ed51e7f81d942ddf3b8361f62b0b0"
+   ],
+   "7": [
+    "passed",
+    "018d268754fe639bcc0675accd30e52c"
+   ],
+   "8": [
+    "passed",
+    "0f1e891c9d2d2d84e0242df555f51420"
+   ],
+   "9": [
+    "passed",
+    "865fb7d14e69d5592d0f62de8ecd3246"
+   ],
+   "10": [
+    "passed",
+    "75245c8dfe0f67738ec90806a22cd3d9"
+   ],
+   "11": [
+    "passed",
+    "c08d8ebffcb8641970ea9e44798121c5"
+   ],
+   "12": [
+    "passed",
+    "ce82ced7281f40f6e70265a1ad686224"
+   ],
+   "13": [
+    "passed",
+    "adb7832351416ff4af2b4fd4f9381b2f"
+   ],
+   "14": [
+    "passed",
+    "6c7bd3014ed961868cffd37a4194c120"
+   ],
+   "15": [
+    "passed",
+    "ef8f6356ab6ac98cc8f7e5796527874d"
+   ],
+   "16": [
+    "passed",
+    "a4ffb3c24bc1f50f6ca7e8f2aff10c17"
+   ],
+   "17": [
+    "passed",
+    "20a23caea5b49432ed9d5e14613f52db"
+   ],
+   "18": [
+    "passed",
+    "85fb8fba0df1f61425c02794ff38d4cd"
+   ],
+   "19": [
+    "passed",
+    "45dc085fee425896642780e8db1da8a8"
+   ],
+   "20": [
+    "passed",
+    "cda99b0c642062d423a957d60fe27e13"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestWhoIsArgTypes": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestWhoIsServiceParams": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestResumeIPNBus": {
+   "1": [
+    "passed",
+    "22236a396eab4965eae4c4bc300ae7a0"
+   ],
+   "2": [
+    "passed",
+    "0f0be9294a89dadeecf080bb2e1afe6b"
+   ],
+   "3": [
+    "passed",
+    "81e816b30e5c06e906f3226c98418c9e"
+   ],
+   "4": [
+    "passed",
+    "78d326fd470e6486c12b93fbe596cf8c"
+   ],
+   "5": [
+    "passed",
+    "3e2f764ac6582e78deba9a64fa0aae5d"
+   ],
+   "6": [
+    "passed",
+    "046bf790fed494645503e5af45146a38"
+   ],
+   "7": [
+    "passed",
+    "dd2873ff52ef5fc0d5d025e9bce72c2b"
+   ],
+   "8": [
+    "passed",
+    "41324a23a7517f00fba6b424830a0e1d"
+   ],
+   "9": [
+    "passed",
+    "f2988f653cd1c4ad5e0d147ec5a77c62"
+   ],
+   "10": [
+    "passed",
+    "f7178e4881bc51f45ea4d875dc0718f7"
+   ],
+   "11": [
+    "passed",
+    "b6559fe3fb3a2319325bf6cf82bfd706"
+   ],
+   "12": [
+    "passed",
+    "4e751e4e954d50ea40d0d359bc1d57e6"
+   ],
+   "13": [
+    "passed",
+    "2f0ab9080c608f4b47e01ad2e5efd8e8"
+   ],
+   "14": [
+    "passed",
+    "77713a9245aef4ec918ad6b15f26f030"
+   ],
+   "15": [
+    "passed",
+    "a6c2a9a8dd057b19096c08fd3f6e3ba8"
+   ],
+   "16": [
+    "passed",
+    "cdbeddee010f4d8fe4e6fe205d32cd86"
+   ],
+   "17": [
+    "passed",
+    "2d13191ca07189a82d45c9dd574c2034"
+   ],
+   "18": [
+    "passed",
+    "eee89b4de3313e1b7bfaa459fed889aa"
+   ],
+   "19": [
+    "passed",
+    "3940a5af1c81ca504b4ed62b0e3108b7"
+   ],
+   "20": [
+    "passed",
+    "e22de7093ee83233a1dd56f2b808ee36"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestServeDebugLogGate": {
+   "1": [
+    "passed",
+    "306e679fc90e3d10e2cd93f36c4d62e5"
+   ],
+   "2": [
+    "passed",
+    "5ee5cd1c7ce34418f1c08c23137f091a"
+   ],
+   "3": [
+    "passed",
+    "7ccb4ad394fee90c748ab4753489cc04"
+   ],
+   "4": [
+    "passed",
+    "0267ebdec33a4695241b691dae7d36d5"
+   ],
+   "5": [
+    "passed",
+    "20e4970f9595f9749010da890160dd34"
+   ],
+   "6": [
+    "passed",
+    "3a68b6d0b23b7d75f122d4f37214327e"
+   ],
+   "7": [
+    "passed",
+    "3d244f7c5bc226166f686da56440364f"
+   ],
+   "8": [
+    "passed",
+    "e5ec12b0f85642866077ecabc82c313b"
+   ],
+   "9": [
+    "passed",
+    "fc38d9e274a18a88f5daf314a9ff4e08"
+   ],
+   "10": [
+    "passed",
+    "6d164d4100d9e36141d0d2dcfa470b44"
+   ],
+   "11": [
+    "passed",
+    "87b78afb24fbe9a4a3224e232fee57b5"
+   ],
+   "12": [
+    "passed",
+    "efbe54393ed1a6880c8a8ad427667e8c"
+   ],
+   "13": [
+    "passed",
+    "db933160e469b9e20bf23e87d004c781"
+   ],
+   "14": [
+    "passed",
+    "fb87800c76f260b49cfcd90ed54910e5"
+   ],
+   "15": [
+    "passed",
+    "f9dc10d4e5a181d6220cda637dace60d"
+   ],
+   "16": [
+    "passed",
+    "d2f8b4825474c952bf6b211ba28cbafd"
+   ],
+   "17": [
+    "passed",
+    "e4084e170432f481a6ab4f4f62e6c92d"
+   ],
+   "18": [
+    "passed",
+    "9e8de751dad1c5ff45fec30f1346d477"
+   ],
+   "19": [
+    "passed",
+    "00a06b50f6b797b95abc6ef21181950a"
+   ],
+   "20": [
+    "passed",
+    "7ccd55135fa57e367579da33e8c8f51f"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestValidHost": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestServeDevSetStateStore": {
+   "1": [
+    "passed",
+    "44b17f186df41e4ffa0f724ea8dfac63"
+   ],
+   "2": [
+    "passed",
+    "c6206494f91b7cf862124a3eca3e90fc"
+   ],
+   "3": [
+    "passed",
+    "a81ca035fb1873cab3cc9193607b1bb8"
+   ],
+   "4": [
+    "passed",
+    "5a30eac0679ba17146cf3a90de3a1a4d"
+   ],
+   "5": [
+    "passed",
+    "3205820c84945becb0271ad06437b2d3"
+   ],
+   "6": [
+    "passed",
+    "1d3498b664ee6859724cc138bf17968e"
+   ],
+   "7": [
+    "passed",
+    "1c6baf9adac75756759a5ae79185738a"
+   ],
+   "8": [
+    "passed",
+    "9fd23edda53ee0add30f10468dfb1351"
+   ],
+   "9": [
+    "passed",
+    "26648768005cd8cbe0ddbf808f5b5881"
+   ],
+   "10": [
+    "passed",
+    "ad6cfd4a44489d3ab706e2cc7a3e0287"
+   ],
+   "11": [
+    "passed",
+    "311bc6f34cacad4dfb2d39222f4320cc"
+   ],
+   "12": [
+    "passed",
+    "0f5416906e82bb1057fe920f01a27e0d"
+   ],
+   "13": [
+    "passed",
+    "8768ff954a6c9c05b176f80df42096d1"
+   ],
+   "14": [
+    "passed",
+    "2c2fd0adfafe9cd7200ae4c4d6e20fb6"
+   ],
+   "15": [
+    "passed",
+    "db8f9b080a784b888e86d6285b45ec1c"
+   ],
+   "16": [
+    "passed",
+    "a2232091e04dd020e6c5df96bb331efa"
+   ],
+   "17": [
+    "passed",
+    "9b52cfd9bd519ad41ef7873da6843ea1"
+   ],
+   "18": [
+    "passed",
+    "e27dec0421a0552a970ab39652c079d1"
+   ],
+   "19": [
+    "passed",
+    "816e629dd9200b4b71aa05b8785dd13f"
+   ],
+   "20": [
+    "passed",
+    "b70886124ea82a56eddf86c70b5b9d08"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestServeUserProfile": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "tailscale.com/ipn/localapi::TestShouldDenyServeConfigForGOOSAndUserContext": {
+   "1": [
+    "passed",
+    "0981c6b19f4da6c2d4c6c431efc2fdd5"
+   ],
+   "2": [
+    "passed",
+    "ddbf1f31aaca13dc25ad6e2ec7764a03"
+   ],
+   "3": [
+    "passed",
+    "292b52fd0854568dcaa81ab2efa6d681"
+   ],
+   "4": [
+    "passed",
+    "44ace29ac226c849b3e8fcfcf6b17690"
+   ],
+   "5": [
+    "passed",
+    "17fa1310baecc03abca5bfb523e81063"
+   ],
+   "6": [
+    "passed",
+    "de339a4b94e8df01b5145ef686bf640b"
+   ],
+   "7": [
+    "passed",
+    "2f828daa80e54e2210affc3983b82b46"
+   ],
+   "8": [
+    "passed",
+    "d7fd62e7f3d8bb0316c24fc56c014c2d"
+   ],
+   "9": [
+    "passed",
+    "770f6007fe23bc0ca05799d1eeefb7fe"
+   ],
+   "10": [
+    "passed",
+    "912ee4918708f779aab65ea856bc2102"
+   ],
+   "11": [
+    "passed",
+    "157ab5701487e57b5ce07ee0cd461262"
+   ],
+   "12": [
+    "passed",
+    "a79dd37e0388dc0788ce37d223a2423d"
+   ],
+   "13": [
+    "passed",
+    "a55c3f6f78a100ff8863d796725da59d"
+   ],
+   "14": [
+    "passed",
+    "e6105fccfd47cfb980309174b78cfc8b"
+   ],
+   "15": [
+    "passed",
+    "5b62e700a075d2166e22aca3626eb733"
+   ],
+   "16": [
+    "passed",
+    "43e19d72082b539c9164256ac6b17861"
+   ],
+   "17": [
+    "passed",
+    "c21c744b898198007b988a2504db1d0c"
+   ],
+   "18": [
+    "passed",
+    "80425f13d058e5de861dbc1689c36baf"
+   ],
+   "19": [
+    "passed",
+    "ddff7e43132b349b951849227d91b224"
+   ],
+   "20": [
+    "passed",
+    "a376e13f3a84b08ffd2f66cbaa2e1f7f"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "tailscale.com/ipn/localapi::TestResumeIPNBus": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  14,
+  16
+ ],
+ "timing_keep_parallel": [
+  0.062,
+  0.064,
+  0.065
+ ],
+ "timing": {
+  "plain": [
+   0.06,
+   0.06,
+   0.062
+  ],
+  "det": [
+   0.062,
+   0.064,
+   0.061
+  ]
+ },
+ "slowdown": 0.03333333333333337
+}
