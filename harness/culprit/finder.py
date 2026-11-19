@@ -398,12 +398,29 @@ class EnvBuilder:
 
 # ---------------------------------------------------------------------------- the finder
 # ---------------------------------------------------------------------------- the finder
-# flags of a key that make one replay no proof: the test read a source --det does not control
-NONDET_FLAGS = ("rclock", "connect", "csock", "dns", "entropy", "net")
-GREEN_REPEATS = 5  # replays of the green side when the key flags an uncontrolled source
-RETOUCH_CAP = 6  # later commits that touch the named commit's inputs again, probed for a newer transition;
-#               beyond it the answer is withheld (unknown, ambiguous) rather than stated
+# flags of a key that make one replay no proof: the test read a source --det does not control. ``spawn`` is a
+# child process the engine did not follow, or followed and found reading the network, the clock or /dev (review
+# R-019b, N3): like in-process entropy, its outcome may change from run to run.
+NONDET_FLAGS = ("rclock", "connect", "csock", "dns", "entropy", "net", "spawn")
+REPEATABLE_FLAGS = ("entropy", "spawn")  # searched (with repeated confirmations) once green and red are stable
+GREEN_REPEATS = 5  # replays of the green (and red) side when the key flags an uncontrolled source
+RETOUCH_CAP = 6  # later footprint states (after the confirmed commit) probed for a newer transition, beyond the
+#               commits that undo the named one; beyond it the answer is withheld (unknown, ambiguous)
+FALLBACK_CAP = 6  # later commits probed after a fallback search over every commit (no footprint to infer from)
 MAX_ROUNDS = 6
+_LOADER_READS = ("/etc/ld.so.cache", "/etc/ld.so.preload")  # read by the dynamic loader of every exec'd program
+
+
+def child_processes(test: dict | None) -> list[str]:
+    """Evidence in a test's key that it ran a child process the engine followed.
+
+    The engine flags ``spawn`` only for a child it could not follow (or that read the network, the clock or /dev).
+    A followed child's own entropy (``getrandom``: every interpreter draws some at start-up) is counted, not
+    flagged, and the key keeps no per-test count; what the key does keep are the child's inputs: the program
+    file (under a ``bin`` directory) and the dynamic loader's reads. In-process code reads neither during a test.
+    """
+    data = (test or {}).get("data", {})
+    return sorted(p for p in data if p in _LOADER_READS or re.search(r"/s?bin/[^/]+$", p))
 
 
 class Finder:
@@ -425,14 +442,14 @@ class Finder:
         self.steps: list[dict] = []
         self.rebuilds: list[dict] = []
         self.inferred = 0
+        self.reps = 1  # replays per confirmation step (GREEN_REPEATS when the key flags a child process)
         self._memo: dict = {}
 
     # -- one replay
     def _replay(self, sha: str, env_vars: dict, dists: dict | None, venv: Path | None, expect_runtime=None,
                 why="", args=None, memo=True):
         args = self.det_args if args is None else list(args) + [a for a in self.det_args if a not in args]
-        mk = (sha, tuple(sorted((k, v) for k, v in (env_vars or {}).items())),
-              tuple(sorted((dists or {}).items())) if dists is not None else None, str(venv), tuple(args))
+        mk = self._mk(sha, env_vars, dists, venv, args)
         if memo and mk in self._memo:
             return self._memo[mk]
         if dists is not None:
@@ -457,6 +474,16 @@ class Finder:
         self.steps.append(step)
         self._memo[mk] = r["outcome"]
         return r["outcome"]
+
+    @staticmethod
+    def _mk(sha, env_vars, dists, venv, args) -> tuple:
+        return (sha, tuple(sorted((k, v) for k, v in (env_vars or {}).items())),
+                tuple(sorted((dists or {}).items())) if dists is not None else None, str(venv), tuple(args))
+
+    def _known(self, sha: str, side) -> str | None:
+        """The outcome of an earlier replay of ``sha`` on ``side``, or None (no execution)."""
+        env_vars, dists, venv, _ = side
+        return self._memo.get(self._mk(sha, env_vars, dists, venv, self.det_args))
 
     # -- footprint state of a commit: the value of every differing in-repository input (and file modes)
     def _vector(self, sha: str) -> tuple:
@@ -521,29 +548,44 @@ class Finder:
                     low = pos.get(cands[lo], -1) if lo >= 0 else -1
                     return self._bisect_all(commits, low, pos[c] - 1, side, notes)
                 return self._bisect_all(commits, pos[c], len(commits) - 1, side, notes)
-            # non-monotonic history: a later commit that touches C's inputs again may have fixed it
+            # non-monotonic history, red side (review R-019b, N1): C is the answer only if every commit of
+            # (C, red] fails. Commits between candidates keep the footprint state of the candidate before them, so
+            # it is enough that every later candidate's state fails. States already replayed (or equal to the
+            # green or red state) need no execution; the others are probed: first the commits that undo part of
+            # C's diff (a revert, or a fix folded into other work), then those that change C's own inputs again,
+            # then every other later candidate (a fix elsewhere, e.g. in a caller), newest first, up to the budget.
+            # Beyond it the answer is withheld: an unprobed state may pass (fixed), and a newer commit break again.
             ix = [k for k, (a, b) in enumerate(zip(self._vector(self._parent(c)), vec[c])) if a != b]
             later = [j for j in range(hi + 1, n)
                      if any(vec[cands[j]][k] != vec[cands[j - 1]][k] for k in ix)]
-            # commits whose diff undoes part of C's diff (a revert, or a fix folded into other work) first,
-            # all of them; then the other re-touching commits, up to RETOUCH_CAP
             undo = [j for j in range(hi + 1, n) if self._undoes(c, cands[j])]
-            order = undo + [j for j in later if j not in undo]
+            rest = [j for j in range(n - 1, hi, -1) if j not in undo and j not in later]
+            order = undo + [j for j in later if j not in undo] + rest
             budget = len(undo) + RETOUCH_CAP
-            restarted = False
-            for j in order[:budget]:
-                if outcome(j, "re-touch check") == "pass":
+            probed, unchecked, restarted = 0, set(), False
+            for j in order:
+                v = vec[cands[j]]
+                if v in known:
+                    if known[v] == "pass":  # a later state equal to a passing one: fixed there
+                        self.inferred += 1
+                        notes.append(f"{c[:10]} fixed later: candidate {cands[j][:10]} has a passing state")
+                        lo, hi, restarted = j, n - 1, True
+                        break
+                    continue
+                if probed >= budget:
+                    unchecked.add(v)
+                    continue
+                probed += 1
+                if outcome(j, "red-side check") == "pass":
                     notes.append(f"{c[:10]} re-broken later: candidate {cands[j][:10]} passes")
-                    lo, hi = j, n - 1
-                    restarted = True
+                    lo, hi, restarted = j, n - 1, True
                     break
             if restarted:
                 continue
-            if len(order) > budget:
-                unchecked = len(order) - budget
+            if unchecked:
                 return None, "unknown", "; ".join(notes + [
-                    f"ambiguous: {c[:10]} is confirmed, but {unchecked} later commits change its inputs again and "
-                    f"were not replayed (one of them may fix it, and a newer commit break it again)",
+                    f"ambiguous: {c[:10]} is confirmed, but {len(unchecked)} later footprint states were not "
+                    f"replayed (one of them may fix it, and a newer commit break it again)",
                     f"suspect {c}"])
             return {"commit": c}, "confirmed", "; ".join(notes)
         return None, "unknown", "the history changes outcome more than %d times" % MAX_ROUNDS
@@ -573,29 +615,65 @@ class Finder:
 
     def _confirm_commit(self, c: str, side) -> tuple[bool, str]:
         p = self._parent(c)
-        if self._probe(p, side, "confirm: parent passes") != "pass":
-            return False, "parent fails"
-        if self._probe(c, side, "confirm: culprit fails") != "fail":
-            return False, "culprit passes"
+        po = self._probe_n(p, side, "confirm: parent passes")
+        if po != "pass":
+            return False, "parent fails" if po == "fail" else "parent flaky (passes and fails)"
+        co = self._probe_n(c, side, "confirm: culprit fails")
+        if co != "fail":
+            return False, "culprit passes" if co == "pass" else "culprit flaky (passes and fails)"
         return True, ""
+
+    def _probe_n(self, sha, side, why) -> str:
+        """``self.reps`` replays (the first may be a memoised one): "pass", "fail" or "flaky"."""
+        outs = {self._probe(sha, side, why)}
+        env_vars, dists, venv, expect = side
+        for i in range(1, self.reps):
+            outs.add(self._replay(sha, env_vars, dists, venv, expect_runtime=expect, why=f"{why} (repeat {i + 1})",
+                                  memo=False))
+        return outs.pop() if len(outs) == 1 else "flaky"
 
     def _bisect_all(self, commits, lo: int, hi: int, side, notes) -> tuple[dict | None, str, str]:
         """Plain binary search over every first-parent commit in (commits[lo], commits[hi]] (lo = -1: green),
-        no pruning, every probe replayed; commits[hi] is known red, commits[lo] known green. Then confirmed."""
+        no pruning, every probe replayed; commits[hi] is known red, commits[lo] known green. Then confirmed.
+
+        Red side (review R-019b, N2): the answer must also be the newest transition, so every commit after it up
+        to the red head must fail. With no footprint to infer from, each unreplayed later commit is probed, newest
+        first, up to FALLBACK_CAP; a pass restarts the search above it, and an unprobed rest withholds the answer.
+        """
         notes = notes + ["footprint pruning missed an input: searched every commit"]
-        while hi - lo > 1:
-            mid = (lo + hi) // 2
-            if self._probe(commits[mid], side, "bisect all commits") == "fail":
-                hi = mid
-            else:
-                lo = mid
-        if hi < 0 or hi <= lo:
-            return None, "unknown", "; ".join(notes + ["no commit fails"])
-        c = commits[hi]
-        ok, why = self._confirm_commit(c, side)
-        if not ok:
-            return None, "unknown", "; ".join(notes + [f"{c[:10]}: {why} (outcomes are not monotonic)"])
-        return {"commit": c}, "confirmed", "; ".join(notes)
+        last = len(commits) - 1
+        for _round in range(MAX_ROUNDS):
+            while hi - lo > 1:
+                mid = (lo + hi) // 2
+                if self._probe(commits[mid], side, "bisect all commits") == "fail":
+                    hi = mid
+                else:
+                    lo = mid
+            if hi < 0 or hi <= lo:
+                return None, "unknown", "; ".join(notes + ["no commit fails"])
+            c = commits[hi]
+            ok, why = self._confirm_commit(c, side)
+            if not ok:
+                return None, "unknown", "; ".join(notes + [f"{c[:10]}: {why} (outcomes are not monotonic)"])
+            pending = [j for j in range(last - 1, hi, -1) if self._known(commits[j], side) is None]
+            fixed = next((j for j in range(last - 1, hi, -1) if self._known(commits[j], side) == "pass"), None)
+            for j in pending[:FALLBACK_CAP]:
+                if fixed is not None and j < fixed:
+                    break
+                if self._probe(commits[j], side, "red-side check (all commits)") == "pass":
+                    fixed = j
+                    break
+            if fixed is not None:
+                notes.append(f"{c[:10]} fixed later: {commits[fixed][:10]} passes")
+                lo, hi = fixed, last
+                continue
+            unchecked = [j for j in pending if self._known(commits[j], side) is None]
+            if unchecked:
+                return None, "unknown", "; ".join(notes + [
+                    f"ambiguous: {c[:10]} is confirmed, but {len(unchecked)} later commits were not replayed "
+                    f"(one of them may fix it, and a newer commit break it again)", f"suspect {c}"])
+            return {"commit": c}, "confirmed", "; ".join(notes)
+        return None, "unknown", "; ".join(notes + ["the history changes outcome more than %d times" % MAX_ROUNDS])
 
     def _probe(self, sha, side, why):
         env_vars, dists, venv, expect = side
@@ -603,21 +681,33 @@ class Finder:
 
     # -- input search --------------------------------------------------------------------------------------
     def _search_inputs(self, inputs, g, r, green_env, red_env, green_dists, build, g_venv):
-        """Optimistic binary split, the named input confirmed alone; when it does not reproduce the red alone,
-        ddmin over the candidates finds the smallest set that does (inputs needed together, review R-019 H1)."""
+        """Optimistic binary split, then confirmation on both sides (review R-019 H1, R-019b N4).
+
+        A set S of inputs (one input, or inputs needed together, found by ddmin) is named only if
+        * green side: S applied alone to the green environment fails, and
+        * red side: the red environment without S (every other candidate input applied) passes.
+        When the red side still fails, another input (or set) breaks the test on its own, and S may only be masked
+        (e.g. a flag whose compatibility shim is also set): the search continues with ddmin over the rest R (which
+        fails, as just replayed). A set found twice, or no set found, ends in "unknown"."""
         tried: dict = {}
 
-        def test(subset, why):
+        def test(subset, why, reps=1):
             key = tuple(sorted(c["id"] for c in subset))
-            if key in tried:
-                return tried[key]
             env_vars, dists = self._apply(green_env, red_env, green_dists, r, subset)
             args = self.red.get("det_args") if any(c["kind"] == "epoch" for c in subset) else None
-            o = self._replay(self.red["sha"], env_vars, dists if build else None, g_venv, why=why, args=args)
-            tried[key] = o
-            return o
+            outs = set()
+            if key in tried:
+                outs.add(tried[key])
+            else:
+                o = self._replay(self.red["sha"], env_vars, dists if build else None, g_venv, why=why, args=args)
+                tried[key] = o
+                outs.add(o)
+            for i in range(1, reps):
+                outs.add(self._replay(self.red["sha"], env_vars, dists if build else None, g_venv,
+                                      why=f"{why} (repeat {i + 1})", args=args, memo=False))
+            return outs.pop() if len(outs) == 1 else "flaky"
 
-        if self.confirm and test([], "confirm: red code, green environment passes") != "pass":
+        if self.confirm and test([], "confirm: red code, green environment passes", self.reps) != "pass":
             return None, "unknown", "the red code fails in the green environment too"
         cur = list(inputs)
         while len(cur) > 1:
@@ -625,16 +715,37 @@ class Finder:
             cur = half if test(half, f"apply {[c['id'] for c in half]}") == "fail" else cur[len(cur) // 2:]
         if not self.confirm:
             return {"input": cur[0]["id"], "detail": cur[0]}, "confirmed", "unconfirmed (confirmation off)"
-        if test(cur, f"confirm: {cur[0]['id']} alone fails") == "fail":
-            return {"input": cur[0]["id"], "detail": cur[0]}, "confirmed", ""
-        if test(inputs, "apply all candidate inputs") != "pass" and len(inputs) > 1:
+        notes = []
+        if test(cur, f"confirm: {cur[0]['id']} alone fails", self.reps) == "fail":
+            found = cur
+        elif len(inputs) > 1 and test(inputs, "apply all candidate inputs") == "fail":
             found = self._ddmin(list(inputs), test)
+            notes.append("found by ddmin")
+        else:
+            return None, "unknown", "the differing inputs applied to the green environment do not reproduce the red"
+        seen = []
+        for _round in range(MAX_ROUNDS):
             ids = sorted(c["id"] for c in found)
-            if len(found) == 1:
-                return {"input": ids[0], "detail": found[0]}, "confirmed", "found by ddmin"
-            return {"input": ids[0], "inputs": ids, "together": True}, "confirmed", \
-                f"{len(ids)} inputs needed together (each alone leaves the test green)"
-        return None, "unknown", "the differing inputs applied to the green environment do not reproduce the red"
+            if ids in seen:
+                return None, "unknown", "; ".join(notes + [
+                    f"more than one input breaks the test on its own: {seen}; removing any one of them leaves the "
+                    "red job red"])
+            seen.append(ids)
+            if len(found) > 1 and test(found, f"confirm: {ids} together fail", self.reps) != "fail":
+                return None, "unknown", "; ".join(notes + [f"{ids} together do not reproduce the red"])
+            rest = [c for c in inputs if c["id"] not in ids]
+            ro = test(rest, f"confirm: red environment without {ids} passes", self.reps) if rest else "pass"
+            if ro == "pass":
+                if len(found) == 1:
+                    return {"input": ids[0], "detail": found[0]}, "confirmed", "; ".join(notes)
+                return {"input": ids[0], "inputs": ids, "together": True}, "confirmed", "; ".join(notes + [
+                    f"{len(ids)} inputs needed together (each alone leaves the test green)"])
+            if ro != "fail":
+                return None, "unknown", "; ".join(notes + [f"red environment without {ids}: {ro}"])
+            notes.append(f"{ids} reproduces the red alone, but the red environment without it still fails "
+                         "(masked, or another input breaks it too): searched the other inputs")
+            found = self._ddmin(rest, test)
+        return None, "unknown", "; ".join(notes + ["no input set explains the red on both sides"])
 
     @staticmethod
     def _ddmin(c: list, test) -> list:
@@ -662,12 +773,19 @@ class Finder:
                 c = nxt
         return c
 
-    # -- uncontrolled sources (review R-019, H3) -----------------------------------------------------------
+    # -- uncontrolled sources (review R-019 H3, R-019b N3) ------------------------------------------------
     def _uncontrolled(self, g, r, green_env, red_env, green_dists, build, g_venv):
-        """None when the replays are proofs; else (status, why). A flagged test is replayed at green up to
-        GREEN_REPEATS times; if it ever fails there, there is no culprit. An entropy-only test is then searched
-        with entropy controlled (``--det-urandom``) if green passes and red fails under it."""
+        """None when the search may go on; else (status, why).
+
+        A flagged test is replayed at green GREEN_REPEATS times; if it ever fails there, there is no culprit
+        ("unknown: flaky"). Flags other than entropy and child processes end in "unknown" (one replay is no
+        proof). A child process (``spawn``: not followed, or followed and found reading the network, the clock or
+        /dev) cannot be controlled either: the red side is replayed GREEN_REPEATS times too (it must fail every
+        time), and every later confirmation replays GREEN_REPEATS times (all pass at the parent, all fail at the
+        culprit). In-process entropy alone is then searched under controlled entropy (``--det-urandom``)."""
         flags = set((g["test"] or {}).get("flags", [])) | set((r["test"] or {}).get("flags", []))
+        if child_processes(g["test"]) or child_processes(r["test"]):
+            flags.add("spawn")  # a followed child: its outcome may change from run to run as well
         nondet = sorted(f for f in flags if f in NONDET_FLAGS)
         if not nondet:
             return None
@@ -676,14 +794,21 @@ class Finder:
             if self._replay(self.green["sha"], green_env, gd, g_venv, why="green repeated (uncontrolled source)",
                             memo=False) == "fail":
                 return "unknown", f"flaky: reads {nondet}; fails at the green commit (green replay {i + 1})"
-        if nondet != ["entropy"]:
+        if any(f not in REPEATABLE_FLAGS for f in nondet):
             return "unknown", f"reads {nondet}, which --det does not control: one replay per step is no proof"
-        self.det_args.append("--det-urandom")
-        og = self._replay(self.green["sha"], green_env, gd, g_venv, why="green, entropy controlled")
-        orr = self._replay(self.red["sha"], red_env, None, self.red.get("venv") or g_venv,
-                           why="red, entropy controlled")
-        if not (og == "pass" and orr == "fail"):
-            return "unknown", f"flaky: reads entropy; under controlled entropy green={og}, red={orr}"
+        r_venv = self.red.get("venv") or g_venv
+        if "spawn" in nondet:
+            for i in range(GREEN_REPEATS):
+                if self._replay(self.red["sha"], red_env, None, r_venv, why="red repeated (child process)",
+                                memo=False) == "pass":
+                    return "unknown", f"flaky: reads {nondet}; passes at the red commit (red replay {i + 1})"
+            self.reps = GREEN_REPEATS
+        if "entropy" in nondet:
+            self.det_args.append("--det-urandom")
+            og = self._replay(self.green["sha"], green_env, gd, g_venv, why="green, entropy controlled")
+            orr = self._replay(self.red["sha"], red_env, None, r_venv, why="red, entropy controlled")
+            if not (og == "pass" and orr == "fail"):
+                return "unknown", f"flaky: reads entropy; under controlled entropy green={og}, red={orr}"
         return None
 
     # -- main ----------------------------------------------------------------------------------------------
@@ -776,6 +901,10 @@ class Finder:
         unc = self._uncontrolled(g, r, green_env, red_env, green_dists, build, g_venv) if self.confirm else None
         res["uncontrolled"] = sorted(f for f in set((g["test"] or {}).get("flags", []))
                                      | set((r["test"] or {}).get("flags", [])) if f in NONDET_FLAGS)
+        if child_processes(g["test"]) or child_processes(r["test"]):
+            res["uncontrolled"] = sorted(set(res["uncontrolled"]) | {"spawn"})
+            res["child_evidence"] = (child_processes(r["test"]) or child_processes(g["test"]))[:4]
+        res["repeats"] = self.reps
         if unc is not None:
             status, why = unc
         else:

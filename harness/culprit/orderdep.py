@@ -235,7 +235,8 @@ def main():
         if (a.repo_name, victim) in done:
             continue
         seed = None if config == "fixed" else int(config)
-        res = {"repo": a.repo_name, "victim": victim, "config": config, "red": s["sha"]}
+        res = {"repo": a.repo_name, "victim": victim, "config": config, "red": s["sha"],
+               "checkout": "fresh-mtime"}  # common.checkout: strictly increasing stamps (review R-019b, M6)
         t0 = time.perf_counter()
         sr = Search(repo, venv)
         checkout(repo, s["sha"])
