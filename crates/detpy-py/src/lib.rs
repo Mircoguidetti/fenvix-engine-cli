@@ -28,6 +28,8 @@ mod standin;
 // rust-hotpaths-2: repro / reexec decisions
 mod reexec;
 mod repro;
+// Level 0 clock, round 2: sleep, wall-derived functions, datetime, wait timeouts
+mod clock;
 
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     // A panic while holding the lock must not make every later call fail.
@@ -288,5 +290,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     // rust-hotpaths-2: repro / reexec decisions
     reexec::register(m)?;
     repro::register(m)?;
+    // Level 0 clock, round 2
+    clock::register(m)?;
     Ok(())
 }

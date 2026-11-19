@@ -30,7 +30,7 @@ use std::sync::{Arc, Mutex, MutexGuard};
 
 const NS: i128 = 1_000_000_000;
 /// `clock._MONO_BASE_NS`: arbitrary, positive, process-independent.
-const MONO_BASE_NS: i128 = 1_000 * NS;
+pub(crate) const MONO_BASE_NS: i128 = 1_000 * NS;
 /// `clock.MAX_TICK_NS`.
 pub const MAX_TICK_NS: i128 = 16_000;
 
@@ -105,10 +105,10 @@ impl ClockState {
 static CLOCK: Mutex<ClockState> = Mutex::new(ClockState::empty());
 
 /// Real functions (`clock.real_*`), called by a stand-in when the clock is not installed (a reference kept after
-/// uninstall), and `clock._time_machine_ns`.
+/// uninstall), and `clock._time_machine_ns` (None: the Rust one, `crate::clock::time_machine_ns`).
 struct ClockHooks {
     reals: Vec<Py<PyAny>>,
-    time_machine_ns: Py<PyAny>,
+    time_machine_ns: Option<Py<PyAny>>,
 }
 
 static HOOKS: Mutex<Option<Arc<ClockHooks>>> = Mutex::new(None);
@@ -162,14 +162,14 @@ pub fn ns_to_secs(n: i128) -> f64 {
     }
 }
 
-fn int_obj(py: Python<'_>, v: i128) -> PyResult<Bound<'_, PyAny>> {
+pub(crate) fn int_obj(py: Python<'_>, v: i128) -> PyResult<Bound<'_, PyAny>> {
     match i64::try_from(v) {
         Ok(x) => Ok(x.into_pyobject(py)?.into_any()),
         Err(_) => Ok(v.into_pyobject(py)?.into_any()),
     }
 }
 
-fn int_arg(v: &Bound<'_, PyAny>) -> PyResult<i128> {
+pub(crate) fn int_arg(v: &Bound<'_, PyAny>) -> PyResult<i128> {
     match v.extract::<i64>() {
         Ok(x) => Ok(x as i128),
         Err(_) => match v.extract::<i128>() {
@@ -188,11 +188,14 @@ fn int_arg(v: &Bound<'_, PyAny>) -> PyResult<i128> {
 }
 
 /// Wall clock at counter `e` (`VirtualClock.wall_ns`): an active `time_machine` travel, else epoch-relative.
-fn wall_ns(py: Python<'_>, e: i128) -> PyResult<i128> {
+pub(crate) fn wall_ns(py: Python<'_>, e: i128) -> PyResult<i128> {
     if time_machine_loaded(py) {
         let hooks = lock(&HOOKS).clone();
         if let Some(h) = hooks {
-            let travel = h.time_machine_ns.bind(py).call1((int_obj(py, e)?,))?;
+            let travel = match &h.time_machine_ns {
+                Some(f) => f.bind(py).call1((int_obj(py, e)?,))?,
+                None => crate::clock::time_machine_ns(py, &int_obj(py, e)?)?,
+            };
             if !travel.is_none() {
                 return int_arg(&travel);
             }
@@ -281,9 +284,10 @@ pub fn perf_counter_ns(py: Python<'_>) -> PyResult<Py<PyAny>> {
 }
 
 /// `clock_set_hooks(reals, time_machine_ns)`: the real `time`, `time_ns`, `monotonic`, `monotonic_ns`,
-/// `perf_counter`, `perf_counter_ns` (in that order) and `clock._time_machine_ns`.
+/// `perf_counter`, `perf_counter_ns` (in that order) and `clock._time_machine_ns` (None: the Rust port of it,
+/// `clock_time_machine_ns`).
 #[pyfunction]
-pub fn clock_set_hooks(reals: Vec<Py<PyAny>>, time_machine_ns: Py<PyAny>) -> PyResult<()> {
+pub fn clock_set_hooks(reals: Vec<Py<PyAny>>, time_machine_ns: Option<Py<PyAny>>) -> PyResult<()> {
     if reals.len() != 6 {
         return Err(PyRuntimeError::new_err("clock_set_hooks: 6 real functions expected"));
     }
@@ -343,10 +347,33 @@ pub fn clock_advance(ns: &Bound<'_, PyAny>) -> PyResult<()> {
     Ok(())
 }
 
-/// `VirtualClock.start_test()` (the Python facade also resets `_EXTERNAL`).
+/// `VirtualClock.start_test()`, and `clock._EXTERNAL["started"] = False` (no process started by this test yet).
 #[pyfunction]
 pub fn clock_start_test() {
+    crate::clock::reset_external();
     lock(&CLOCK).start_test()
+}
+
+/// `CLOCK is not None` for the Rust stand-ins (`clock_activate`).
+pub(crate) fn clock_is_installed() -> bool {
+    lock(&CLOCK).installed
+}
+
+/// `e = CLOCK.read()` and `e - test start` (what `_rel(e)` renders).
+pub(crate) fn clock_read_rel() -> (i128, i128) {
+    let mut g = lock(&CLOCK);
+    let e = g.read();
+    (e, e - g.test_start)
+}
+
+/// `CLOCK.other_event()`.
+pub(crate) fn clock_other_event_rs() {
+    lock(&CLOCK).other_event()
+}
+
+/// `CLOCK.advance(ns)`.
+pub(crate) fn clock_advance_rs(ns: i128) {
+    lock(&CLOCK).advance(ns)
 }
 
 /// `VirtualClock.wall_ns(e)`.
