@@ -1,1 +1,249 @@
-[]
+[
+ {
+  "name": "junit-quickcheck-core",
+  "url": "https://github.com/pholser/junit-quickcheck",
+  "sha": "9361b6dae25b193782604d071754eb7fc566390a",
+  "module": "core",
+  "status": "ok",
+  "build_jdk8_install": {
+   "rc": 0,
+   "seconds": 21.2
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 6.6,
+   "test_seconds": 3.2,
+   "tests": 484,
+   "failed": 0
+  },
+  "documented_present": 122
+ },
+ {
+  "name": "ormlite-core",
+  "url": "https://github.com/j256/ormlite-core",
+  "sha": "632b87c2a455b8eab4a6c09324e1f166273588d8",
+  "module": ".",
+  "status": "ok",
+  "build_jdk8_test-compile": {
+   "rc": 0,
+   "seconds": 23.3
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 7.4,
+   "test_seconds": 2.1,
+   "tests": 1220,
+   "failed": 0
+  },
+  "documented_present": 87
+ },
+ {
+  "name": "Mapper-base",
+  "url": "https://github.com/abel533/Mapper",
+  "sha": "3c0b3307011fad53f811e08d05147d94fc6c0d67",
+  "module": "base",
+  "status": "ok",
+  "build_jdk8_install": {
+   "rc": 0,
+   "seconds": 9.4
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 4.9,
+   "test_seconds": 2.4,
+   "tests": 206,
+   "failed": 0
+  },
+  "documented_present": 70
+ },
+ {
+  "name": "avro-ipc-jetty",
+  "url": "https://github.com/apache/avro",
+  "sha": "efe9aa7fbe457805dc894a9186e1267603d82dd2",
+  "module": "lang/java/ipc-jetty",
+  "status": "ok",
+  "build_jdk8_install": {
+   "rc": 0,
+   "seconds": 32.2
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 8.2,
+   "test_seconds": 2.8,
+   "tests": 35,
+   "failed": 0
+  },
+  "documented_present": 20
+ },
+ {
+  "name": "marine-api",
+  "url": "https://github.com/ktuukkan/marine-api",
+  "sha": "af0003847db9ba822f67d4f1dceb8de3fe63250a",
+  "module": ".",
+  "status": "ok",
+  "build_jdk8_test-compile": {
+   "rc": 0,
+   "seconds": 15.7
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 5.5,
+   "test_seconds": 1.3,
+   "tests": 926,
+   "failed": 0
+  },
+  "documented_present": 12
+ },
+ {
+  "name": "wikidata-toolkit-wdtk-dumpfiles",
+  "url": "https://github.com/wikidata/wikidata-toolkit",
+  "sha": "20de6f7f12319f54eb962ff6e8357b3f5695d54d",
+  "module": "wdtk-dumpfiles",
+  "status": "ok",
+  "build_jdk8_install": {
+   "rc": 0,
+   "seconds": 14.9
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 4.8,
+   "test_seconds": 2.7,
+   "tests": 50,
+   "failed": 0
+  },
+  "documented_present": 3
+ },
+ {
+  "name": "easyexcel",
+  "url": "https://github.com/alibaba/easyexcel",
+  "sha": "756f16e42fbd7bc5c7fa18426cbc02fc81a42057",
+  "module": ".",
+  "status": "ok",
+  "build_jdk8_test-compile": {
+   "rc": 0,
+   "seconds": 27.5
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 69.6,
+   "test_seconds": 64.9,
+   "tests": 108,
+   "failed": 0
+  },
+  "documented_present": 2
+ },
+ {
+  "name": "incubator-seata-common",
+  "url": "https://github.com/apache/incubator-seata",
+  "sha": "4959cfb49009d3e4c349fd2c95e590184bd5a9a8",
+  "module": "common",
+  "status": "ok",
+  "build_jdk8_install": {
+   "rc": 0,
+   "seconds": 29.7
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 17.8,
+   "test_seconds": 7.4,
+   "tests": 552,
+   "failed": 3
+  },
+  "documented_present": 2
+ },
+ {
+  "name": "c2mon-c2mon-daq-core",
+  "url": "https://github.com/c2mon/c2mon",
+  "sha": "d80687b119c713dd177a58cf53a997d8cc5ca264",
+  "module": "c2mon-daq/c2mon-daq-core",
+  "status": "ok",
+  "build_jdk8_install": {
+   "rc": 0,
+   "seconds": 23.3
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 9.7,
+   "test_seconds": 7.5,
+   "tests": 125,
+   "failed": 0
+  },
+  "documented_present": 2
+ },
+ {
+  "name": "cat-cat-client",
+  "url": "https://github.com/dianping/cat",
+  "sha": "c4715a6aa6403af4c017b9180f9a3322afda9434",
+  "module": "cat-client",
+  "status": "ok",
+  "build_jdk8_install": {
+   "rc": 0,
+   "seconds": 26.3
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 7.8,
+   "test_seconds": 0.0,
+   "tests": 67,
+   "failed": 2
+  },
+  "documented_present": 2
+ },
+ {
+  "name": "hutool-hutool-core",
+  "url": "https://github.com/dromara/hutool",
+  "sha": "12969f248329f81f76eb5bece8c718ac1c63f7b1",
+  "module": "hutool-core",
+  "status": "ok",
+  "build_jdk8_install": {
+   "rc": 0,
+   "seconds": 20.2
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 6.3,
+   "test_seconds": 4.1,
+   "tests": 1077,
+   "failed": 23
+  },
+  "documented_present": 2
+ },
+ {
+  "name": "mTracker-core",
+  "url": "https://github.com/eBay/mTracker",
+  "sha": "dbead631bb0e8cacbb4448fef7aa2fe3aefc034b",
+  "module": "core",
+  "status": "ok",
+  "build_jdk8_install": {
+   "rc": 0,
+   "seconds": 14.2
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 3.4,
+   "test_seconds": 1.0,
+   "tests": 38,
+   "failed": 1
+  },
+  "documented_present": 2
+ },
+ {
+  "name": "hutool-hutool-core",
+  "url": "https://github.com/dromara/hutool",
+  "sha": "12969f248329f81f76eb5bece8c718ac1c63f7b1",
+  "module": "hutool-core",
+  "status": "ok",
+  "build_jdk8_install": {
+   "rc": 0,
+   "seconds": 20.2
+  },
+  "jdk": "8",
+  "first_run": {
+   "wall": 6.3,
+   "test_seconds": 4.1,
+   "tests": 1077,
+   "failed": 23
+  },
+  "documented_present": 2
+ }
+]
