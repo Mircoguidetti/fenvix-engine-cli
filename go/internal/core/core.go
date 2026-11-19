@@ -330,3 +330,27 @@ func VirtualProcStat(real string) (string, error) {
 	}
 	return take(p), nil
 }
+
+// SkipDayEpoch is skip mode's clock epoch (the core's rule): 00:00 UTC today.
+func SkipDayEpoch() int64 { return int64(C.fenvix_skip_day_epoch()) }
+
+// SkipSummary is the core's end-of-run summary of a skip run.
+func SkipSummary(decisions, report string, realClock bool) (string, int) {
+	cd, cr := cstr(decisions), cstr(report)
+	defer C.free(unsafe.Pointer(cd))
+	defer C.free(unsafe.Pointer(cr))
+	rc := C.int(0)
+	if realClock {
+		rc = 1
+	}
+	p := C.fenvix_skip_summary(cd, cr, rc)
+	if p == nil {
+		return "", 0
+	}
+	var r struct {
+		Text    string `json:"text"`
+		Expired int    `json:"expired"`
+	}
+	json.Unmarshal([]byte(take(p)), &r)
+	return r.Text, r.Expired
+}

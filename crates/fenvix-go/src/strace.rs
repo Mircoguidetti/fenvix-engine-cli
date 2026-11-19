@@ -31,7 +31,7 @@ use std::path::{Component, Path, PathBuf};
 
 /// The `strace -e trace=` set.
 pub const SYSCALLS: &str = "%file,getdents64,connect,bind,getsockname,sendto,sendmsg,sendmmsg,fchdir,fchmod,fchown,\
-ftruncate,clone,clone3,fork,vfork";
+ftruncate,clone,clone3,fork,vfork,clock_gettime,gettimeofday,time";
 
 /// The strace command prefix that writes its log to `log`.
 pub fn args(log: &str) -> Vec<String> {
@@ -72,6 +72,13 @@ pub struct Deps {
     pub lists: BTreeSet<String>,
     pub execs: Vec<String>,
     pub net: Vec<Addr>,
+    /// the real clock was read outside package time: a raw clock system
+    /// call, or a libc clock read the preloaded library marked
+    pub clock: bool,
+    /// the kernel's network configuration was queried (netlink)
+    pub netlink: bool,
+    /// variables C code read with getenv (marked by the preloaded library)
+    pub env: BTreeSet<String>,
 }
 
 /// The parsed log.
@@ -162,11 +169,33 @@ pub fn clean(p: &str) -> String {
 }
 
 fn absify(cwd: &str, dirpart: &str, p: &str) -> String {
-    if p.starts_with('/') {
-        return clean(p);
+    let path = if p.starts_with('/') {
+        clean(p)
+    } else {
+        let base = if dirpart.is_empty() { cwd } else { dirpart };
+        clean(&PathBuf::from(base).join(p).to_string_lossy())
+    };
+    unalias(&path, cwd)
+}
+
+/// /proc/self/cwd/x and /proc/self/root/x name ordinary paths (review
+/// R-025b V3): rewrite them to the path they name.
+fn unalias(p: &str, cwd: &str) -> String {
+    for pre in ["/proc/self/", "/proc/thread-self/"] {
+        if let Some(rest) = p.strip_prefix(pre) {
+            if let Some(r) = rest.strip_prefix("cwd") {
+                if r.is_empty() || r.starts_with('/') {
+                    return clean(&format!("{cwd}{r}"));
+                }
+            }
+            if let Some(r) = rest.strip_prefix("root") {
+                if r.is_empty() || r.starts_with('/') {
+                    return clean(if r.is_empty() { "/" } else { r });
+                }
+            }
+        }
     }
-    let base = if dirpart.is_empty() { cwd } else { dirpart };
-    clean(&PathBuf::from(base).join(p).to_string_lossy())
+    p.to_owned()
 }
 
 /// Decode a strace-quoted string body (`\n`, `\t`, `\\`, `\"`, `\xHH`, octal).
@@ -415,6 +444,16 @@ pub fn parse(log: &Path, cwd: &str) -> std::io::Result<Parsed> {
         let ok = ret != "?" && !ret.starts_with('-');
         let pcwd = cwds.get(&pid).cloned().unwrap_or_else(|| cwd.to_owned());
         match name.as_str() {
+            "clock_gettime" | "gettimeofday" | "time" => {
+                // the Go runtime reads the clock through the vDSO: a system
+                // call here is code outside package time reading it
+                if !args.starts_with("CLOCK_MONOTONIC") && !args.starts_with("CLOCK_BOOTTIME")
+                    && !args.starts_with("CLOCK_PROCESS") && !args.starts_with("CLOCK_THREAD")
+                {
+                    st.seg().clock = true;
+                }
+                continue;
+            }
             "clone" | "clone3" | "fork" | "vfork" => {
                 if ok && ret != "0" && !cwds.contains_key(ret) {
                     cwds.insert(ret.to_owned(), pcwd);
@@ -466,6 +505,10 @@ pub fn parse(log: &Path, cwd: &str) -> std::io::Result<Parsed> {
                 continue;
             }
             "connect" | "sendto" | "sendmsg" | "sendmmsg" => {
+                if unquoted(&args).contains("AF_NETLINK") || args.contains("<NETLINK:") {
+                    st.seg().netlink = true;
+                    continue;
+                }
                 match sockaddr(&args) {
                     Some(Addr::Unix(p)) => {
                         let p = if p.starts_with('@') { p } else { absify(&pcwd, "", &p) };
@@ -508,13 +551,27 @@ pub fn parse(log: &Path, cwd: &str) -> std::io::Result<Parsed> {
         if let Some(m) = raw.strip_prefix(MARKER) {
             let mut it = m.split('/');
             if let (Some(k), Some(i)) = (it.next(), it.next()) {
-                if let Ok(i) = i.parse::<i64>() {
+                if k == "C" {
+                    st.seg().clock = true; // the preloaded library saw a clock read
+                } else if k == "E" {
+                    st.seg().env.insert(i.to_owned()); // C getenv of variable i
+                } else if let Ok(i) = i.parse::<i64>() {
                     st.cur = if k == "B" { i } else { -1 };
                 }
             }
             continue;
         }
-        let path = absify(&pcwd, &dirpart, &raw);
+        let mut path = absify(&pcwd, &dirpart, &raw);
+        if path.starts_with("/proc/self/") || path.starts_with("/proc/thread-self/") {
+            // /proc/self/fd/N and the like: the file the returned descriptor names
+            if let Some(real) = tail.trim().strip_prefix('<').and_then(|t| t.split('>').next()) {
+                // a file outside /proc (fd/N of an ordinary file); a /proc
+                // path stays /proc/self (process-private)
+                if real.starts_with('/') && !real.starts_with("/proc/") {
+                    path = clean(real);
+                }
+            }
+        }
         let missing = !ok && (tail.contains("ENOENT") || tail.contains("ENOTDIR"));
         let flags = &args[qend..];
         match name.as_str() {

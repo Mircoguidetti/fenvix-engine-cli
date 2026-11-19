@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -334,12 +333,9 @@ func cmdTest(args []string) int {
 	}
 	epoch := int64(1735689600) * 1e9
 	if !o.det && o.skipCache != "" {
-		// skip mode without --det: the virtual clock starts at the current
-		// UTC day, so tests see today's date and a time bomb surfaces within
-		// a day; the day is in the key (every cached result is reused on the
-		// day it was recorded only)
-		now := time.Now().UTC()
-		epoch = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC).UnixNano()
+		// skip mode without --det: the clock starts at the keyed day (the
+		// core's rule, R-025b R2)
+		epoch = core.SkipDayEpoch()
 	}
 	if o.det && o.seed != 0 {
 		// exploration also moves the clock: the epoch anywhere in the year
@@ -381,16 +377,32 @@ func cmdTest(args []string) int {
 			fmt.Fprintf(os.Stderr, "fenvix-go: programs started by tests keep the real clock: %v\n", err)
 		}
 	}
-	if o.det {
+	if o.det || o.skipCache != "" {
 		for _, g := range sortedKeys(ov.Partial) {
 			fmt.Fprintf(os.Stderr, "fenvix-go: on %s: %s\n", ov.GoVersion, ov.Partial[g])
 		}
-		// what --det does not control, said at start (review R-025 D2, D4)
-		fmt.Fprintln(os.Stderr, "fenvix-go: --det does not control (Level 1 and outside the process): goroutine interleaving, "+
-			"real timer delays, select among channels made ready by other goroutines, testing/synctest bubbles, "+
-			"deadlines inside the network poller, clock reads through the vdso or raw syscalls, the clock and "+
-			"entropy of child processes and cgo code, file timestamps (real time; seed 0 starts each test's virtual "+
-			"clock at the real time so they stay comparable)")
+	}
+	if o.det {
+		// what --det does not control, said at start (review R-025 D2, D4;
+		// R-025b D2b, D3b)
+		pid := "the pid (each test binary runs in its own PID namespace)"
+		if !pidNamespace() {
+			pid = "NOT the pid (needs root and util-linux unshare for a PID namespace)"
+		}
+		fmt.Fprintln(os.Stderr, "fenvix-go: --det controls "+pid+"; it does not control (Level 1 and outside "+
+			"the process): goroutine interleaving at timers, real timer delays, testing/synctest bubbles, "+
+			"deadlines inside the network poller, clock reads through the vDSO from C code, the clock of "+
+			"statically linked programs and Go programs a test starts, the entropy of child processes and cgo "+
+			"code. File timestamps at or after a test's start are moved onto its virtual clock (syscall stat "+
+			"family; libc stat in dynamically linked programs); older ones keep their real time")
+	}
+	if o.skipCache != "" && !o.det && !o.skipRealClock {
+		// what the virtual day does not reach (R-025b C2, C3): those tests
+		// are run, never reused
+		fmt.Fprintln(os.Stderr, "fenvix-go: skip mode: tests see the real clock moved to today 00:00 UTC "+
+			"at the start of each test binary (the day is in the key; durations, sleeps and timers are real); a test that reads the real clock another way (C code, a raw system call, "+
+			"a program it starts that reads the clock, any Go program it starts) is never reused. Run "+
+			"--skip-real-clock nightly to catch fixtures that expire during the day")
 	}
 
 	// build flags that matter for go list and for the key
@@ -485,7 +497,7 @@ func cmdTest(args []string) int {
 
 	sess := &session.Session{
 		Dir: dir, Self: self, Det: o.det, Seed: o.seed, Controls: controls, Ctl: ctl, Unavailable: ov.Unavailable,
-		Epoch: epoch, Shim: shim, VProc1Stat: virtualProc1Stat(ov, o.skipRealClock), Sched: schedOn, Tick: o.tick, Adapt: o.adapt, MaxEvents: o.maxEvents, Root: repoRoot(cwd, env["GOMOD"]),
+		Epoch: epoch, Shim: shim, ClockMode: clockMode(o), PidNS: o.det && pidNamespace(), VProc1Stat: virtualProc1Stat(ov, o.skipRealClock), Sched: schedOn, Tick: o.tick, Adapt: o.adapt, MaxEvents: o.maxEvents, Root: repoRoot(cwd, env["GOMOD"]),
 		Goroot: env["GOROOT"], GoVersion: env["GOVERSION"], GOOS: env["GOOS"], GOARCH: env["GOARCH"],
 		CgoEnabled: env["CGO_ENABLED"], GoMaxProcs: gomaxprocs, Pkgs: pkgMap, OverlayHash: ov.Digest,
 		BuildFlags: keyFlags,
@@ -625,61 +637,10 @@ func exitCode(err error) int {
 }
 
 func summarizeSkip(dir, report string, realClock bool) {
-	f, err := os.Open(filepath.Join(dir, "decisions.jsonl"))
-	if err != nil {
-		return
+	text, _ := core.SkipSummary(filepath.Join(dir, "decisions.jsonl"), report, realClock)
+	if text != "" {
+		fmt.Fprintln(os.Stderr, text)
 	}
-	defer f.Close()
-	var out *os.File
-	if report != "" {
-		os.MkdirAll(filepath.Dir(report), 0o755)
-		out, _ = os.Create(report)
-		if out != nil {
-			defer out.Close()
-		}
-	}
-	var n, reused, wrong int
-	var tAll, tReused float64
-	var expired []string
-	sc := bufio.NewScanner(f)
-	sc.Buffer(make([]byte, 1<<20), 1<<24)
-	for sc.Scan() {
-		var d decision
-		if json.Unmarshal(sc.Bytes(), &d) != nil {
-			continue
-		}
-		if out != nil {
-			out.Write(append(sc.Bytes(), '\n'))
-		}
-		n++
-		el := d.Elapsed
-		if el == 0 {
-			el = d.CachedElapsed
-		}
-		tAll += el
-		if realClock && d.Cached == "passed" && d.Fresh != "" && d.Fresh != "passed" {
-			expired = append(expired, d.Pkg+"::"+d.Test)
-		}
-		if d.Reuse {
-			reused++
-			tReused += el
-			if d.Fresh != "" && d.Fresh != d.Cached {
-				wrong++
-			}
-		}
-	}
-	msg := fmt.Sprintf("fenvix-go: skip with proof: %d of %d tests reusable (%.1f of %.1f s of test time)", reused, n, tReused, tAll)
-	if wrong > 0 {
-		msg += fmt.Sprintf("; %d reuse(s) disagreed with the fresh run", wrong)
-	}
-	if realClock {
-		// the reuse counts above are those the virtual-day key would make
-		msg = fmt.Sprintf("fenvix-go: real clock: %d of %d tests ran; %d passed on the virtual day and fail on the real clock", n, n, len(expired))
-		for _, e := range expired {
-			msg += "\n  " + e
-		}
-	}
-	fmt.Fprintln(os.Stderr, msg)
 }
 
 func cmdVerify(args []string) int {
@@ -770,7 +731,7 @@ func buildShim() (string, error) {
 		return "", err
 	}
 	tmp := fmt.Sprintf("%s.%d.tmp", out, os.Getpid())
-	if b, err := exec.Command(cc, "-shared", "-fPIC", "-O2", "-o", tmp, srcPath).CombinedOutput(); err != nil {
+	if b, err := exec.Command(cc, "-shared", "-fPIC", "-O2", "-o", tmp, srcPath, "-ldl").CombinedOutput(); err != nil {
 		return "", fmt.Errorf("%s: %v: %s", cc, err, strings.TrimSpace(string(b)))
 	}
 	return out, os.Rename(tmp, out)
@@ -808,4 +769,25 @@ func virtualProc1Stat(ov *overlay.Result, realMachine bool) string {
 		return ""
 	}
 	return p
+}
+
+// pidNamespace: whether test binaries can run in their own PID namespace
+// with their own /proc (root and util-linux unshare). Said at start when not.
+func pidNamespace() bool {
+	if os.Geteuid() != 0 {
+		return false
+	}
+	if _, err := exec.LookPath("unshare"); err != nil {
+		return false
+	}
+	return exec.Command("unshare", "--pid", "--fork", "--mount-proc", "true").Run() == nil
+}
+
+// clockMode: skip mode without --det runs the real clock moved to the keyed
+// day ("offset"); --det keeps the virtual tick clock.
+func clockMode(o *opts) string {
+	if o.skipCache != "" && !o.det && !o.skipRealClock {
+		return "offset"
+	}
+	return ""
 }

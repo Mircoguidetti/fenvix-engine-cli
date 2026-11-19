@@ -46,6 +46,10 @@ pub const ALWAYS_ENV: &[&str] = &[
     "GOCOVERDIR", "HOME", "TMPDIR", "PATH",
 ];
 
+/// Variables glibc reads internally in a dynamically linked process.
+pub const LIBC_INTERNAL_ENV: &[&str] =
+    &["LOCALDOMAIN", "RES_OPTIONS", "HOSTALIASES", "LOCPATH", "NLSPATH", "GCONV_PATH", "POSIXLY_CORRECT", "TZDIR"];
+
 /// Variable families the dynamic loader and libc read (keyed as one value each).
 pub const ALWAYS_ENV_PREFIXES: &[&str] = &["LD_", "GLIBC_", "MALLOC_"];
 
@@ -175,17 +179,20 @@ pub fn meta_value(p: &str, follow: bool) -> String {
         Ok(m) => m,
         Err(e) => return err_value(&e),
     };
+    use std::os::unix::fs::MetadataExt;
     let mode = m.permissions().mode() & 0o7777;
     let ft = m.file_type();
+    // the owner is part of what a stat shows (review R-025b F2b)
+    let own = format!("{}.{}", m.uid(), m.gid());
     match type_name(ft) {
         "link" => match std::fs::read_link(p) {
             Ok(t) => format!("link:{}", t.to_string_lossy()),
             Err(e) => err_value(&e),
         },
-        "dir" if mode & 0o002 != 0 => format!("dir:{mode:o}"),
-        "dir" => format!("dir:{mode:o}:{}", mtime_ns(&m)),
-        "file" => format!("file:{mode:o}:{}:{}", m.len(), mtime_ns(&m)),
-        t => format!("{t}:{mode:o}"),
+        "dir" if mode & 0o002 != 0 => format!("dir:{mode:o}:{own}"),
+        "dir" => format!("dir:{mode:o}:{own}:{}", mtime_ns(&m)),
+        "file" => format!("file:{mode:o}:{own}:{}:{}", m.len(), mtime_ns(&m)),
+        t => format!("{t}:{mode:o}:{own}"),
     }
 }
 
@@ -194,6 +201,9 @@ pub fn content_value(p: &str) -> String {
     match std::fs::metadata(p) {
         Err(e) => err_value(&e),
         Ok(m) if m.is_dir() => "dir".into(),
+        // a FIFO, socket or device: reading it could block or consume it
+        // (review R-025b R1b); its type and metadata stand for it
+        Ok(m) if !m.is_file() => format!("special:{}", meta_value(p, true)),
         Ok(_) => match std::fs::read(p) {
             Ok(b) => digest_bytes(&b).to_hex()[..32].to_owned(),
             Err(e) => format!("?unreadable:{}", err_value(&e)),
@@ -375,6 +385,53 @@ pub fn dynamically_linked(path: &str) -> bool {
     (0..phnum as usize).any(|i| u32_at(&ph, i * phentsize as usize) == 3) // PT_INTERP
 }
 
+/// Whether a program is written in Go (it carries Go build info). The Go
+/// runtime reads the clock through the vDSO, never through libc, so the
+/// preloaded clock library does not reach it, whatever its linking (review
+/// R-025b C2).
+pub fn is_go_binary(path: &str) -> bool {
+    const MAGIC: &[u8] = b"\xff Go buildinf:";
+    match std::fs::read(path) {
+        Ok(b) => b.windows(MAGIC.len()).any(|w| w == MAGIC),
+        Err(_) => true, // unknown: as if it read the real clock
+    }
+}
+
+/// What a process inherits and the test can observe without reading a file
+/// the key sees (review R-025b P1, V2): CPU affinity (NumCPU, the default
+/// GOMAXPROCS), user and group ids, capabilities, umask, no_new_privs,
+/// seccomp mode, resource limits, nice. Read from this process, whose
+/// attributes the test binary inherits (the shell starts it directly or under
+/// strace, neither of which changes them).
+pub fn process_attributes() -> String {
+    let mut parts = Vec::new();
+    if let Ok(st) = std::fs::read_to_string("/proc/self/status") {
+        for l in st.lines() {
+            let k = l.split(':').next().unwrap_or("");
+            if matches!(k, "Uid" | "Gid" | "Groups" | "CapInh" | "CapPrm" | "CapEff" | "CapBnd" | "CapAmb" | "NoNewPrivs"
+                | "Seccomp" | "Cpus_allowed_list" | "Mems_allowed_list" | "Umask")
+            {
+                parts.push(l.split_whitespace().collect::<Vec<_>>().join(" "));
+            }
+        }
+    }
+    if let Ok(l) = std::fs::read_to_string("/proc/self/limits") {
+        parts.push(l);
+    }
+    if let Ok(st) = std::fs::read_to_string("/proc/self/stat") {
+        if let Some(close) = st.rfind(')') {
+            let f: Vec<&str> = st[close + 1..].split_whitespace().collect();
+            // fields 18 priority, 19 nice, 41 policy (rest[0] is field 3)
+            for i in [18usize, 19, 41] {
+                if let Some(v) = f.get(i - 3) {
+                    parts.push(format!("stat{i}={v}"));
+                }
+            }
+        }
+    }
+    parts.join("\n")
+}
+
 /// Configuration of one package run (from the Go shell).
 #[derive(Debug, Deserialize)]
 pub struct Config {
@@ -401,6 +458,10 @@ pub struct Config {
     /// dynamically linked ones are then reusable
     #[serde(default)]
     pub child_clock: bool,
+    /// the machine's network configuration as the shell sees it (interfaces,
+    /// flags, MTUs, hardware and IP addresses): the value of a netlink query
+    #[serde(default)]
+    pub net_config: String,
     /// read the cache, never write it (the nightly real-clock check)
     #[serde(default)]
     pub read_only: bool,
@@ -484,6 +545,7 @@ pub struct Session {
     why: HashMap<String, String>,
     why_own: HashMap<String, String>,
     reuse: BTreeSet<String>,
+    dynamic_binary: bool,
 }
 
 fn now_ns() -> i64 {
@@ -513,12 +575,15 @@ impl Session {
         parts.extend(cfg.static_parts.iter().cloned());
         parts.push("testflags".into());
         parts.extend(keyed_test_args(&cfg.test_args));
+        parts.push("process".into());
+        parts.push(process_attributes());
         let static_ = hash(&parts);
         let own = cfg.own_addrs.iter().filter_map(|a| a.parse().ok()).collect();
+        let dynamic_binary = dynamically_linked(&cfg.self_binary);
         let mut snapshot = HashMap::new();
         for e in cache.tests.values().chain(cache.own.values()) {
             for k in e.deps.keys() {
-                if !k.starts_with("e:") && !snapshot.contains_key(k) {
+                if !k.starts_with("e:") && !k.starts_with("n:") && !snapshot.contains_key(k) {
                     snapshot.insert(k.clone(), dep_value(k, &env));
                 }
             }
@@ -534,12 +599,16 @@ impl Session {
             why: HashMap::new(),
             why_own: HashMap::new(),
             reuse: BTreeSet::new(),
+            dynamic_binary,
         }
     }
 
     fn value(&self, key: &str) -> String {
         if key.starts_with("e:") {
             return env_value(&key[2..], &self.env);
+        }
+        if key == "n:netlink" {
+            return hash(&[&self.cfg.net_config]);
         }
         self.snapshot.get(key).cloned().unwrap_or_else(|| "?".into())
     }
@@ -577,6 +646,7 @@ impl Session {
             let p = &k[2..];
             return match &k[..2] {
                 "e:" => format!("env:{p}"),
+                "n:" => "netlink".to_owned(),
                 "c:" => format!("file:{p}"),
                 "d:" => format!("listing:{p}"),
                 _ if v == "-" => format!("appeared:{p}"),
@@ -591,6 +661,30 @@ impl Session {
             }
         }
         String::new()
+    }
+
+    /// Whether nothing changed `p` (or, when it is absent, its parent)
+    /// since before this run started, by its change time, which no process
+    /// can set back: another package running at the same time, a daemon or a
+    /// container could otherwise have changed an input this run's strace log
+    /// shows no write to (review R-025b F1b). 50 ms margin for the coarse
+    /// clock of kernel timestamps.
+    fn untouched_since_start(&self, p: &str) -> bool {
+        use std::os::unix::fs::MetadataExt;
+        let limit = self.now - 50_000_000;
+        let ctime = |q: &Path| {
+            std::fs::symlink_metadata(q).ok().map(|m| m.ctime() as i64 * 1_000_000_000 + m.ctime_nsec() as i64)
+        };
+        // the path, or for an absent one its nearest existing ancestor (the
+        // directory whose entries would show it appearing)
+        let mut cur = Some(Path::new(p));
+        while let Some(q) = cur {
+            if let Some(c) = ctime(q) {
+                return c < limit;
+            }
+            cur = q.parent();
+        }
+        false
     }
 
     /// Decide for the tests in execution order; returns the names to reuse.
@@ -647,7 +741,7 @@ impl Session {
                 }
                 b'X' => {
                     if name == self.cfg.self_binary {
-                    } else if self.cfg.child_clock && name.starts_with('/') && dynamically_linked(name) {
+                    } else if self.cfg.child_clock && name.starts_with('/') && dynamically_linked(name) && !is_go_binary(name) {
                         raw.keys.insert(format!("c:{name}"));
                     } else {
                         raw.unkeyed.insert(format!("exec:{name}"));
@@ -706,7 +800,7 @@ impl Session {
             if x == &self.cfg.self_binary {
                 continue;
             }
-            if self.cfg.child_clock && dynamically_linked(x) {
+            if self.cfg.child_clock && dynamically_linked(x) && !is_go_binary(x) {
                 // its clock follows the virtual one; the program file and
                 // everything it reads are keyed through strace
                 raw.keys.insert(format!("c:{x}"));
@@ -715,6 +809,15 @@ impl Session {
                 // library: its clock is real and not in any key
                 raw.unkeyed.insert(format!("exec:{x}"));
             }
+        }
+        if d.clock {
+            raw.unkeyed.insert("clock:read outside package time (C, a program, a raw system call)".into());
+        }
+        if d.netlink {
+            raw.keys.insert("n:netlink".into());
+        }
+        for n in &d.env {
+            raw.keys.insert(format!("e:{n}"));
         }
         for a in &d.net {
             if let Some(o) = outside(a, Some(parsed), &self.own, &proxies) {
@@ -729,14 +832,14 @@ impl Session {
     /// or an entry in it), its value now; else "?" (the test runs again next
     /// time, which takes a pre-run value).
     fn entry_value(&self, key: &str, parsed: Option<&Parsed>) -> String {
-        if key.starts_with("e:") {
-            return env_value(&key[2..], &self.env);
+        if key.starts_with("e:") || key == "n:netlink" {
+            return self.value(key);
         }
         if let Some(v) = self.snapshot.get(key) {
             return v.clone();
         }
         match parsed {
-            Some(p) if !p.changed(&key[2..]) => dep_value(key, &self.env),
+            Some(p) if !p.changed(&key[2..]) && self.untouched_since_start(&key[2..]) => dep_value(key, &self.env),
             _ => "?".into(),
         }
     }
@@ -759,6 +862,14 @@ impl Session {
         for p in ALWAYS_ENV_PREFIXES {
             let n = format!("{p}*");
             e.deps.insert(format!("e:{n}"), env_value(&n, &self.env));
+        }
+        if self.dynamic_binary {
+            // glibc reads these internally (resolver, locale, iconv), below
+            // any hook; C code's own getenv reads are marked by the preloaded
+            // library and keyed one by one (review R-025b A1)
+            for n in LIBC_INTERNAL_ENV {
+                e.deps.insert(format!("e:{n}"), env_value(n, &self.env));
+            }
         }
         let mut net: Vec<String> = raw.net.clone();
         net.sort();
@@ -912,6 +1023,7 @@ mod tests {
             decisions: format!("{dir}/decisions.jsonl"),
             child_clock: false,
             read_only: false,
+            net_config: String::new(),
         }
     }
 
@@ -1041,7 +1153,8 @@ mod tests {
 /// code and stack addresses, exit signal, scheduling policy, the address
 /// layout); every field that changes by itself (state, fault counts, CPU
 /// times, thread count, vsize, rss, kernel stack pointers, current CPU,
-/// delays) is a constant. Tests that read it see the same value in the
+/// delays) is a constant, chosen so that readers stay valid: non-zero CPU
+/// times, vsize and rss (R-025b V1). Tests that read it see the same value in the
 /// recorded and the reused run; the kept fields are keyed through the file
 /// that holds it (a reboot changes starttime: the tests rerun). None when the
 /// content does not parse.
@@ -1063,10 +1176,22 @@ pub fn virtual_proc_stat(real: &str) -> Option<String> {
     let mut out = vec![pid.to_owned(), comm.to_owned()];
     for (i, v) in rest.iter().enumerate() {
         let field = i + 3;
-        out.push(if field == 3 {
-            "S".to_owned()
-        } else if field == 20 {
-            "1".to_owned()
+        // constants a reader can use (review R-025b V1): a sleeping process
+        // that has run, with one thread and a plausible, consistent memory
+        // footprint (16 MiB mapped, 4 MiB resident)
+        let plausible: Option<&str> = match field {
+            3 => Some("S"),
+            10 => Some("1000"),     // minflt
+            12 => Some("10"),       // majflt
+            14 => Some("100"),      // utime (ticks)
+            15 => Some("50"),       // stime (ticks)
+            20 => Some("1"),        // num_threads
+            23 => Some("16777216"), // vsize (bytes)
+            24 => Some("1024"),     // rss (pages)
+            _ => None,
+        };
+        out.push(if let Some(v) = plausible {
+            v.to_owned()
         } else if KEEP.contains(&field) {
             (*v).to_owned()
         } else {
@@ -1092,5 +1217,73 @@ mod proc_tests {
         let c = a.replace(" 28 37748736", " 29 37748736");
         assert_ne!(va, virtual_proc_stat(&c).unwrap(), "another boot: starttime differs");
         assert!(virtual_proc_stat("garbage").is_none());
+    }
+}
+
+/// The epoch of skip mode's clock: 00:00 UTC of the day that contains
+/// `now_ns` (the day is in the key: a result is reused on the day it was
+/// recorded only). Review R-025b R2: the rule lives in the core.
+pub fn day_epoch(now_ns: i64) -> i64 {
+    const DAY: i64 = 86_400 * 1_000_000_000;
+    now_ns - now_ns.rem_euclid(DAY)
+}
+
+/// The end-of-run summary of a skip run from its decisions file (copied to
+/// `report` when given). With `real_clock` (the nightly check), the tests
+/// that passed when recorded on the virtual day and fail on the real clock
+/// are listed. Returns the text to print and the number of such tests.
+pub fn summary(decisions: &str, report: &str, real_clock: bool) -> (String, usize) {
+    let text = std::fs::read_to_string(decisions).unwrap_or_default();
+    if !report.is_empty() {
+        if let Some(d) = Path::new(report).parent() {
+            let _ = std::fs::create_dir_all(d);
+        }
+        let _ = std::fs::write(report, &text);
+    }
+    let (mut n, mut reused, mut wrong) = (0usize, 0usize, 0usize);
+    let (mut t_all, mut t_reused) = (0f64, 0f64);
+    let mut expired = Vec::new();
+    for line in text.lines() {
+        let Ok(d) = serde_json::from_str::<serde_json::Value>(line) else { continue };
+        let s = |k: &str| d.get(k).and_then(|v| v.as_str()).unwrap_or("").to_owned();
+        let f = |k: &str| d.get(k).and_then(|v| v.as_f64()).unwrap_or(0.0);
+        n += 1;
+        let el = if f("elapsed") == 0.0 { f("cached_elapsed") } else { f("elapsed") };
+        t_all += el;
+        let (cached, fresh) = (s("cached"), s("fresh"));
+        if real_clock && cached == "passed" && !fresh.is_empty() && fresh != "passed" {
+            expired.push(format!("{}::{}", s("pkg"), s("test")));
+        }
+        if d.get("reuse").and_then(|v| v.as_bool()).unwrap_or(false) {
+            reused += 1;
+            t_reused += el;
+            if !fresh.is_empty() && fresh != cached {
+                wrong += 1;
+            }
+        }
+    }
+    let mut msg = if real_clock {
+        format!("fenvix-go: real clock: {n} tests ran; {} passed on the virtual day and fail on the real clock", expired.len())
+    } else {
+        let mut m = format!("fenvix-go: skip with proof: {reused} of {n} tests reusable ({t_reused:.1} of {t_all:.1} s of test time)");
+        if wrong > 0 {
+            m += &format!("; {wrong} reuse(s) disagreed with the fresh run");
+        }
+        m
+    };
+    for e in &expired {
+        msg += &format!("\n  {e}");
+    }
+    (msg, expired.len())
+}
+
+#[cfg(test)]
+mod day_tests {
+    #[test]
+    fn day_epoch_is_midnight_utc() {
+        let t = 1_795_130_298_123_456_789i64; // 2026-11-19 ~23:18 UTC
+        let e = super::day_epoch(t);
+        assert_eq!(e % (86_400 * 1_000_000_000), 0);
+        assert!(t - e < 86_400 * 1_000_000_000 && t >= e);
     }
 }

@@ -51,6 +51,8 @@ char *fenvix_skip_decide(FenvixSkip *h, const char *names_json);
 char *fenvix_skip_record(FenvixSkip *h, const char *run_json);
 void fenvix_skip_free(FenvixSkip *h);
 char *fenvix_virtual_proc_stat(const char *real);
+int64_t fenvix_skip_day_epoch(void);
+char *fenvix_skip_summary(const char *decisions, const char *report, int real_clock);
 
 #ifdef __cplusplus
 }

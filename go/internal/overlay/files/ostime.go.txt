@@ -1,45 +1,20 @@
 // Code added by fenvix-go (build-time overlay, --det). Not part of Go.
 //
-// Real time seen next to the virtual clock (review R-025 D2):
-//   * file modification times from Stat, Lstat and File.Stat are moved by
-//     the offset between the virtual and the real clock at the start of the
-//     test, so a file written during the test is as old on the virtual clock
-//     as it is in real time since the test started (cache TTLs, staleness
-//     checks), and older files stay in the virtual past;
-//   * programs the test starts get the same offset for their wall clock
-//     through a preloaded library (dynamically linked programs only).
-//   * Chtimes moves the times it sets the other way, so a time set and read
-//     back is unchanged.
-// Not moved: access and change times through Sys(), File.Stat's raw times
-// set by syscall.UtimesNano.
+// Programs the test starts get the test's clock offset and the real start
+// of the test through a preloaded library (dynamically linked programs that
+// read the clock through libc): their clock and the timestamps their stat
+// calls return are on the test's virtual timeline (review R-025 D2, R-025b
+// D2b). In skip mode the library also marks every clock read (an access of
+// /__fenvix_marker__/C/0, seen by strace): a test whose programs read the
+// clock is not reused (R-025b C2, C3). File timestamps for the test itself
+// are moved in package syscall.
 
 package os
 
 import (
 	"runtime"
 	"syscall"
-	"time"
 )
-
-func fenvixModTime(t time.Time) time.Time {
-	if off, ok := syscall.Fenvix_RealOffset(); ok && runtime.Fenvix_UserG() {
-		return t.Add(time.Duration(off))
-	}
-	return t
-}
-
-// fenvixChtimes moves a time the program sets back to the real timeline, so
-// that Chtimes then Stat returns it unchanged (rclone bisync, found in the
-// flaky round flaky-r8). The zero time (leave unchanged) is kept.
-func fenvixChtimes(t time.Time) time.Time {
-	if t.IsZero() {
-		return t
-	}
-	if off, ok := syscall.Fenvix_RealOffset(); ok && runtime.Fenvix_UserG() {
-		return t.Add(-time.Duration(off))
-	}
-	return t
-}
 
 func fenvixChildAttr(attr *ProcAttr) *ProcAttr {
 	add := syscall.Fenvix_ChildClockEnv()
@@ -54,21 +29,41 @@ func fenvixChildAttr(attr *ProcAttr) *ProcAttr {
 	if env == nil {
 		env = syscall.Environ()
 	}
-	out := make([]string, 0, len(env)+2)
+	out := make([]string, 0, len(env)+3)
 	pre := ""
 	for _, kv := range env {
 		switch {
 		case len(kv) >= 11 && kv[:11] == "LD_PRELOAD=":
 			pre = kv[11:]
 		case len(kv) >= 23 && kv[:23] == "FENVIX_GO_CLOCK_OFFSET=":
+		case len(kv) >= 22 && kv[:22] == "FENVIX_GO_CLOCK_BEGIN=":
 		default:
 			out = append(out, kv)
 		}
 	}
-	lp := add[1]
-	if pre != "" {
+	lp := add[2] // "LD_PRELOAD=<library>"
+	if pre != "" && !fenvixHasLib(pre, add[2][11:]) {
 		lp += ":" + pre
+	} else if pre != "" {
+		lp = "LD_PRELOAD=" + pre
 	}
-	a.Env = append(append(out, add[0]), lp)
+	a.Env = append(append(out, add[0], add[1]), lp)
 	return &a
+}
+
+func fenvixHasLib(list, lib string) bool {
+	for len(list) > 0 {
+		i := 0
+		for i < len(list) && list[i] != ':' && list[i] != ' ' {
+			i++
+		}
+		if list[:i] == lib {
+			return true
+		}
+		if i == len(list) {
+			break
+		}
+		list = list[i+1:]
+	}
+	return false
 }

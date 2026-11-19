@@ -32,7 +32,25 @@ import (
 func fenvixRealSleep(d Duration)
 
 func fenvixTimeOn() bool {
-	return runtime.Fenvix_On(runtime.FenvixTime) && runtime.Fenvix_UserG() && !{{BUBBLED}}
+	return runtime.Fenvix_On(runtime.FenvixTime) && runtime.Fenvix_UserG() && !{{BUBBLED}} && !syscall.Fenvix_OffsetMode()
+}
+
+// fenvixOffsetOn: skip mode's clock (review R-025b S1): the real clock moved
+// by a constant offset, so that the date is the keyed day while durations,
+// sleeps and timers are real and continuous across the tests of a process.
+func fenvixOffsetOn() bool {
+	return runtime.Fenvix_On(runtime.FenvixTime) && runtime.Fenvix_UserG() && !{{BUBBLED}} && syscall.Fenvix_OffsetMode()
+}
+
+// fenvixRealNow is Now without the hook.
+func fenvixRealNow() Time {
+	sec, nsec, mono := now()
+	mono -= startNano
+	sec += unixToInternal - minWall
+	if uint64(sec)>>33 != 0 {
+		return Time{uint64(nsec), sec + minWall, Local}
+	}
+	return Time{hasMonotonic | uint64(sec)<<nsecShift | uint64(nsec), mono, Local}
 }
 
 // fenvixMake builds a Time from a wall clock (Unix ns) and a monotonic
@@ -52,6 +70,12 @@ func fenvixMake(wall, mono int64) Time {
 }
 
 func fenvixNow(op string) (Time, bool) {
+	if syscall.Fenvix_OffsetMode() {
+		if syscall.Fenvix_IsRunnerCall() {
+			return Time{}, false // package testing: real time
+		}
+		return fenvixRealNow().Add(Duration(syscall.Fenvix_WallOffset())), true
+	}
 	wall, mono, runner := syscall.Fenvix_Clock(op)
 	if runner {
 		return Time{}, false

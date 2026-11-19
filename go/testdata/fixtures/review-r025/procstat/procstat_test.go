@@ -26,9 +26,9 @@ func TestInitStat(t *testing.T) {
 }
 
 // TestRealCPUTime depends on a field that changes by itself (utime, field
-// 14): under fenvix it sees the virtual constant 0 in every run.
+// 14): under fenvix it sees the virtual constant 100 in every run.
 func TestRealCPUTime(t *testing.T) {
-	if utime := fields(t)[14-3]; utime != "0" {
+	if utime := fields(t)[14-3]; utime != "100" {
 		t.Fatalf("utime %s: the real, changing value", utime)
 	}
 }

@@ -30,6 +30,8 @@ type Session struct {
 	Ctl         uint32            `json:"ctl"`
 	Unavailable map[string]string `json:"unavailable,omitempty"`
 	Epoch       int64             `json:"epoch"`
+	ClockMode   string            `json:"clock_mode,omitempty"` // "offset": skip mode's real-plus-offset clock
+	PidNS       bool              `json:"pidns,omitempty"`      // --det: test binaries run in their own PID namespace
 	Sched       bool              `json:"sched,omitempty"`      // one P, no async preemption (goroutine scheduling)
 	VProc1Stat  string            `json:"vproc1stat,omitempty"` // virtual copy of /proc/1/stat (keyed path)
 	Shim        string            `json:"shim,omitempty"`       // library preloaded into programs a --det test starts (their clock)

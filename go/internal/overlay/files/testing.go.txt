@@ -176,11 +176,18 @@ func fenvixTests(tests []InternalTest) []InternalTest {
 			fenvixMarker("B", pos)
 			start := time.Now() // package testing: real clock
 			syscall.Fenvix_Begin(seed)
+			// returned: the test function came back normally. A panic (or a
+			// runtime.Goexit outside FailNow/SkipNow) unwinds through the
+			// cleanups first, before testing marks the test failed: record
+			// it as failed (review R-025b X1)
+			returned := false
 			t.Cleanup(func() {
 				events, deps, n := syscall.Fenvix_End()
 				fenvixMarker("X", pos)
 				outcome := "passed"
-				if t.Failed() {
+				if !returned && !t.Skipped() {
+					outcome = "failed"
+				} else if t.Failed() {
 					outcome = "failed"
 				} else if t.Skipped() {
 					outcome = "skipped"
@@ -191,6 +198,7 @@ func fenvixTests(tests []InternalTest) []InternalTest {
 				fenvixRecord('X', []byte(outcome+"\x1f"+fenvixItoa(n)+"\x1f"+fenvixItoa(el)))
 			})
 			f(t)
+			returned = true
 		}})
 	}
 	return out

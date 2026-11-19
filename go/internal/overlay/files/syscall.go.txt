@@ -47,7 +47,10 @@ var fenvix struct {
 	recording bool
 	explore   bool
 	realOff   int64 // virtual wall minus real wall at the start of the test
-	shim      string
+	realBegin int64 // real wall clock at the start of the test
+	shim       string
+	offsetMode bool // skip mode: real clock + a constant offset (no ticks)
+	devCtr    uint64
 	vproc1    string // virtual copy of /proc/1/stat
 	portCtr   uint64
 	inTest    bool
@@ -128,6 +131,8 @@ func fenvixInit() {
 				fenvix.explore = v == "1"
 			case "shim":
 				fenvix.shim = v
+			case "clockmode":
+				fenvix.offsetMode = v == "offset"
 			case "vproc1stat":
 				fenvix.vproc1 = v
 			case "maxev":
@@ -139,7 +144,8 @@ func fenvixInit() {
 		fenvix.tick = fenvix.baseTick
 		fenvix.elapsed = fenvixMonoBase
 		fenvix.wallOff = fenvix.epoch - fenvix.elapsed
-		fenvix.realOff = fenvix.epoch - fenvixRealNow()
+		fenvix.realBegin = fenvixRealNow()
+		fenvix.realOff = fenvix.epoch - fenvix.realBegin
 		fenvix.testT0 = fenvix.elapsed
 		fenvix.goids = make(map[uint64]uint32)
 	})
@@ -345,8 +351,12 @@ func Fenvix_Begin(seed uint64) {
 	fenvix.seed = seed
 	fenvix.gen++
 	fenvix.wallOff = fenvix.epoch - fenvix.elapsed
-	fenvix.realOff = fenvix.epoch - fenvixRealNow()
+	if !fenvix.offsetMode {
+		fenvix.realBegin = fenvixRealNow()
+		fenvix.realOff = fenvix.epoch - fenvix.realBegin
+	}
 	fenvix.portCtr = 0
+	fenvix.devCtr = 0
 	fenvixRawSeed = fenvixMix(seed ^ 0x67657472616e64) // "getrand"
 	fenvixRawCtr = 0
 	fenvixRawRandOn = runtime.Fenvix_On(runtime.FenvixCrypto)
@@ -652,13 +662,65 @@ func Fenvix_RealOffset() (off int64, ok bool) {
 }
 
 // Fenvix_ChildClockEnv: the variables that give a started program the
-// test's clock offset (nil without the time control or the preload library).
+// test's clock offset and real start (nil without the time control or the
+// preload library). The library is last: callers merge it into LD_PRELOAD.
 func Fenvix_ChildClockEnv() []string {
 	off, ok := Fenvix_RealOffset()
 	if !ok || fenvix.shim == "" {
 		return nil
 	}
-	return []string{"FENVIX_GO_CLOCK_OFFSET=" + string(fenvixItoa(nil, off)), "LD_PRELOAD=" + fenvix.shim}
+	fenvix.mu.Lock()
+	begin := fenvix.realBegin
+	fenvix.mu.Unlock()
+	return []string{"FENVIX_GO_CLOCK_OFFSET=" + string(fenvixItoa(nil, off)),
+		"FENVIX_GO_CLOCK_BEGIN=" + string(fenvixItoa(nil, begin)), "LD_PRELOAD=" + fenvix.shim}
+}
+
+const fenvixCoarse = 20_000_000 // 20 ms: kernel timestamps come from a coarse clock
+
+// fenvixShiftStat moves the timestamps of a file the run changed (its
+// change time, which no process can set back, is at or after the real start
+// of the test) onto the virtual timeline; files the run did not change keep
+// their real timestamps, so what a test sees of an input is a function of
+// keyed values (review R-025b C1, D2b).
+func fenvixShiftStat(st *Stat_t) {
+	if st == nil || !runtime.Fenvix_On(runtime.FenvixTime) || !runtime.Fenvix_UserG() {
+		return
+	}
+	fenvixInit()
+	fenvix.mu.Lock()
+	begin, off := fenvix.realBegin, fenvix.realOff
+	fenvix.mu.Unlock()
+	if begin == 0 || TimespecToNsec(st.Ctim) < begin-fenvixCoarse {
+		return
+	}
+	for _, ts := range []*Timespec{&st.Atim, &st.Mtim, &st.Ctim} {
+		*ts = NsecToTimespec(TimespecToNsec(*ts) + off)
+	}
+}
+
+// fenvixUnshiftTimes: times the program sets (Chtimes) are stored moved
+// back to the real timeline; setting them changes the file's change time,
+// so a stat moves them forward again: a time set and read back is unchanged.
+func fenvixUnshiftTimes(ts []Timespec) []Timespec {
+	if len(ts) == 0 || !runtime.Fenvix_On(runtime.FenvixTime) || !runtime.Fenvix_UserG() {
+		return ts
+	}
+	fenvixInit()
+	fenvix.mu.Lock()
+	begin, off := fenvix.realBegin, fenvix.realOff
+	fenvix.mu.Unlock()
+	if begin == 0 {
+		return ts
+	}
+	out := append([]Timespec(nil), ts...)
+	for i := range out {
+		if n := int64(out[i].Nsec); n == (1<<30)-1 || n == (1<<30)-2 { // UTIME_NOW, UTIME_OMIT
+			continue
+		}
+		out[i] = NsecToTimespec(TimespecToNsec(out[i]) - off)
+	}
+	return out
 }
 
 // Fenvix_Port is the next listening port of the test's deterministic stream
@@ -732,4 +794,37 @@ func fenvixRawGetrandom(p, n uintptr) uintptr {
 func Fenvix_VirtualProc1Stat() string {
 	fenvixInit()
 	return fenvix.vproc1
+}
+
+// Fenvix_DetBytes is n bytes of the current test's deterministic stream
+// (the crypto control's seed), for /dev/urandom read through package os.
+func Fenvix_DetBytes(n int) []byte {
+	fenvixInit()
+	fenvix.mu.Lock()
+	seed := fenvix.seed
+	fenvix.devCtr++
+	ctr := fenvix.devCtr
+	fenvix.mu.Unlock()
+	out := make([]byte, n)
+	x := fenvixMix(seed ^ 0x75726e64 ^ ctr*0x9E3779B97F4A7C15) // "urnd"
+	for i := 0; i < n; i += 8 {
+		x = fenvixMix(x)
+		for j := 0; j < 8 && i+j < n; j++ {
+			out[i+j] = byte(x >> (8 * j))
+		}
+	}
+	return out
+}
+
+// Fenvix_OffsetMode: skip mode's clock, the real clock plus a constant
+// offset (epoch minus the real time when the process started).
+func Fenvix_OffsetMode() bool {
+	fenvixInit()
+	return fenvix.offsetMode
+}
+
+// Fenvix_WallOffset is that offset (ns).
+func Fenvix_WallOffset() int64 {
+	fenvixInit()
+	return fenvix.realOff
 }

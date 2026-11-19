@@ -72,6 +72,26 @@ func readRecords(path string) ([]record, error) {
 	}
 }
 
+// netConfig: the machine's network configuration as a netlink query sees
+// it (interfaces with flags, MTU, hardware and IP addresses): the value of
+// the netlink input of the key (review R-025b F5b).
+func netConfig() string {
+	ifs, err := net.Interfaces()
+	if err != nil {
+		return "error:" + err.Error()
+	}
+	var b strings.Builder
+	for _, i := range ifs {
+		fmt.Fprintf(&b, "%s|%v|%d|%s|", i.Name, i.Flags, i.MTU, i.HardwareAddr)
+		addrs, _ := i.Addrs()
+		for _, a := range addrs {
+			b.WriteString(a.String() + ",")
+		}
+		b.WriteByte('\n')
+	}
+	return b.String()
+}
+
 // ownAddresses: the addresses of this machine's interfaces (a connection
 // to one of them does not leave the machine).
 func ownAddresses() []string {
@@ -140,12 +160,28 @@ func cmdExec(args []string) int {
 	if sess.Det && sess.Seed != 0 {
 		explore = 1
 	}
-	cfg := fmt.Sprintf("ctl=%d;epoch=%d;tick=%d;adapt=%d;seed=%d;root=%s;goroot=%s;maxev=%d;explore=%d;shim=%s;vproc1stat=%s",
+	cfg := fmt.Sprintf("ctl=%d;epoch=%d;tick=%d;adapt=%d;seed=%d;root=%s;goroot=%s;maxev=%d;explore=%d;shim=%s;vproc1stat=%s;clockmode=%s",
 		sess.Ctl, sess.Epoch, sess.Tick, sess.Adapt, initSeed, sess.Root, sess.Goroot, sess.MaxEvents, explore, sess.Shim,
-		sess.VProc1Stat)
+		sess.VProc1Stat, sess.ClockMode)
 	childEnv = append(childEnv, "FENVIX_GO_DET="+cfg, "FENVIX_GO_FDS=3,4,5")
 	if sess.GoMaxProcs != "" {
 		childEnv = append(childEnv, "GOMAXPROCS="+sess.GoMaxProcs)
+	}
+	if sess.Shim != "" {
+		// the test binary itself (C code when it is dynamically linked: cgo)
+		// gets the clock library; in skip mode every libc clock read is
+		// marked for strace (review R-025b C3)
+		epochNow := sess.Epoch - time.Now().UnixNano()
+		childEnv = append(childEnv, "FENVIX_GO_CLOCK_OFFSET="+strconv.FormatInt(epochNow, 10),
+			"FENVIX_GO_CLOCK_BEGIN="+strconv.FormatInt(time.Now().UnixNano(), 10))
+		lp := sess.Shim
+		if pre := os.Getenv("LD_PRELOAD"); pre != "" {
+			lp += ":" + pre
+		}
+		childEnv = append(childEnv, "LD_PRELOAD="+lp)
+		if sess.Skip != nil {
+			childEnv = append(childEnv, "FENVIX_GO_CLOCK_MARK=1")
+		}
 	}
 	if sess.Sched {
 		// no signal-based preemption: a goroutine gives way at its own
@@ -182,7 +218,7 @@ func cmdExec(args []string) int {
 			"test_args": nonNil(runArgs), "env": nonNil(keyEnv), "capture": sess.Skip.Capture, "self_binary": bin,
 			"drop": drop, "own_addrs": nonNil(ownAddresses()), "verify": sess.Skip.Verify,
 			"commit": sess.Skip.Commit, "decisions": filepath.Join(sess.Dir, "decisions.jsonl"),
-			"child_clock": sess.Shim != "", "read_only": sess.Skip.RealClock,
+			"child_clock": sess.Shim != "", "read_only": sess.Skip.RealClock, "net_config": netConfig(),
 		})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "fenvix-go exec:", err)
@@ -255,6 +291,11 @@ func cmdExec(args []string) int {
 		cmdArgs = []string{bin}
 	}
 	cmdArgs = append(cmdArgs, runArgs...)
+	if sess.PidNS {
+		// --det: the test binary's pid is the same in every run (its own PID
+		// namespace and /proc; review R-025b D3b)
+		cmdArgs = append([]string{"unshare", "--pid", "--fork", "--mount-proc", "--"}, cmdArgs...)
+	}
 	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 	cmd.Stdin, cmd.Stderr = os.Stdin, os.Stderr
 	stdout.json, stdout.verbose = testJSON, verbose

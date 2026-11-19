@@ -78,9 +78,9 @@ var patches = []patch{
 		{kind: "replace", anchor: "//go:linkname timeSleep time.Sleep", text: "//go:linkname timeSleep time.fenvixRealSleep"},
 	}},
 	{group: "time", file: "time/time.go", ops: []op{
-		{kind: "insert", anchor: "func Now() Time {", text: "\tif fenvixTimeOn() {\n\t\tif t, ok := fenvixNow(\"time.Now\"); ok {\n\t\t\treturn t\n\t\t}\n\t}"},
-		{kind: "insert", anchor: "func Since(t Time) Duration {", text: "\tif fenvixTimeOn() {\n\t\tif n, ok := fenvixNow(\"time.Since\"); ok {\n\t\t\treturn n.Sub(t)\n\t\t}\n\t}"},
-		{kind: "insert", anchor: "func Until(t Time) Duration {", text: "\tif fenvixTimeOn() {\n\t\tif n, ok := fenvixNow(\"time.Until\"); ok {\n\t\t\treturn t.Sub(n)\n\t\t}\n\t}"},
+		{kind: "insert", anchor: "func Now() Time {", text: "\tif fenvixTimeOn() || fenvixOffsetOn() {\n\t\tif t, ok := fenvixNow(\"time.Now\"); ok {\n\t\t\treturn t\n\t\t}\n\t}"},
+		{kind: "insert", anchor: "func Since(t Time) Duration {", text: "\tif fenvixTimeOn() || fenvixOffsetOn() {\n\t\tif n, ok := fenvixNow(\"time.Since\"); ok {\n\t\t\treturn n.Sub(t)\n\t\t}\n\t}"},
+		{kind: "insert", anchor: "func Until(t Time) Duration {", text: "\tif fenvixTimeOn() || fenvixOffsetOn() {\n\t\tif n, ok := fenvixNow(\"time.Until\"); ok {\n\t\t\treturn t.Sub(n)\n\t\t}\n\t}"},
 	}},
 	{group: "time", file: "time/sleep.go", ops: []op{
 		{kind: "replace", anchor: "func Sleep(d Duration)", text: "// Sleep: see zz_fenvix.go"},
@@ -127,12 +127,17 @@ var patches = []patch{
 	{group: "net-ports", file: "net/udpsock_posix.go", ops: []op{
 		{kind: "replace", anchor: "func (sl *sysListener) listenUDP(ctx context.Context, laddr *UDPAddr) (*UDPConn, error) {", text: "func (sl *sysListener) fenvixOrigListenUDP(ctx context.Context, laddr *UDPAddr) (*UDPConn, error) {"},
 	}},
-	{group: "os-time", file: "os/stat_linux.go", ops: []op{
-		{kind: "replace", anchor: "fs.modTime = time.Unix(fs.sys.Mtim.Unix())", text: "\tfs.modTime = fenvixModTime(time.Unix(fs.sys.Mtim.Unix()))"},
+	{group: "sys-time-amd64", file: "syscall/zsyscall_linux_amd64.go", ops: []op{
+		// kernel timestamps on the virtual timeline (review R-025b C1, D2b)
+		{kind: "insert", anchor: "func Fstat(fd int, stat *Stat_t) (err error) {", text: "\tdefer func() {\n\t\tif err == nil {\n\t\t\tfenvixShiftStat(stat)\n\t\t}\n\t}()"},
+		{kind: "insert", anchor: "func fstatat(fd int, path string, stat *Stat_t, flags int) (err error) {", text: "\tdefer func() {\n\t\tif err == nil {\n\t\t\tfenvixShiftStat(stat)\n\t\t}\n\t}()"},
 	}},
-	{group: "os-time", file: "os/file_posix.go", ops: []op{
-		// the inverse move: a time the program sets reads back unchanged
-		{kind: "insert", anchor: "func Chtimes(name string, atime time.Time, mtime time.Time) error {", text: "\tatime, mtime = fenvixChtimes(atime), fenvixChtimes(mtime)"},
+	{group: "sys-time-arm64", file: "syscall/zsyscall_linux_arm64.go", ops: []op{
+		{kind: "insert", anchor: "func Fstat(fd int, stat *Stat_t) (err error) {", text: "\tdefer func() {\n\t\tif err == nil {\n\t\t\tfenvixShiftStat(stat)\n\t\t}\n\t}()"},
+		{kind: "insert", anchor: "func fstatat(dirfd int, path string, stat *Stat_t, flags int) (err error) {", text: "\tdefer func() {\n\t\tif err == nil {\n\t\t\tfenvixShiftStat(stat)\n\t\t}\n\t}()"},
+	}},
+	{group: "sys-time-set", file: "syscall/syscall_linux.go", ops: []op{
+		{kind: "insert", anchor: "func UtimesNano(path string, ts []Timespec) (err error) {", text: "\tts = fenvixUnshiftTimes(ts)"},
 	}},
 	{group: "os-time", file: "os/exec.go", ops: []op{
 		{kind: "insert", anchor: "func StartProcess(name string, argv []string, attr *ProcAttr) (*Process, error) {", text: "\tattr = fenvixChildAttr(attr)"},
@@ -176,7 +181,7 @@ var patches = []patch{
 	{group: "os-virtual", file: "os/file.go", ops: []op{
 		// process-state files a dependency reads (gopsutil: /proc/1/stat) are
 		// served from a virtual copy whose changing fields are constants
-		{kind: "insert", anchor: "func OpenFile(name string, flag int, perm FileMode) (*File, error) {", text: "\tname = fenvixVirtualPath(name)"},
+		{kind: "insert", anchor: "func OpenFile(name string, flag int, perm FileMode) (*File, error) {", text: "\tname = fenvixVirtualPath(name)\n\tif f := fenvixDevRandom(name, flag); f != nil {\n\t\treturn f, nil\n\t}"},
 	}},
 	{group: "os-stat", file: "os/stat.go", ops: []op{
 		{kind: "insert", anchor: "func Stat(name string) (FileInfo, error) {", text: "\tfenvixDep('S', name)"},
@@ -240,10 +245,13 @@ type Result struct {
 // optionalGroups: hooks a control uses when they apply, without depending on
 // them; a missing one is reported at start.
 var optionalGroups = map[string]string{
-	"getrandom":     "getrandom(2) through syscall.Syscall (x/sys/unix.Getrandom...) not controlled",
-	"getrandom-raw": "getrandom(2) through syscall.RawSyscall not controlled",
-	"os-time":       "file modification times and child processes' clocks keep real time",
-	"os-virtual":    "/proc/1/stat is read as is (a test that reads it is not reusable)",
+	"getrandom":      "getrandom(2) through syscall.Syscall (x/sys/unix.Getrandom...) not controlled",
+	"getrandom-raw":  "getrandom(2) through syscall.RawSyscall not controlled",
+	"os-time":        "programs a test starts keep the real clock",
+	"sys-time-amd64": "file timestamps keep real time (stat not shifted on this architecture)",
+	"sys-time-arm64": "file timestamps keep real time (stat not shifted on this architecture)",
+	"sys-time-set":   "times set with Chtimes/UtimesNano are not moved back to the real timeline",
+	"os-virtual":     "/proc/1/stat is read as is (a test that reads it is not reusable)",
 }
 
 // Has reports whether a control is available.

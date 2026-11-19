@@ -325,6 +325,33 @@ var (
 )
 
 // fenvix:if os-virtual
+// fenvixDevRandom: with the crypto control on, /dev/urandom and /dev/random
+// opened for reading are an anonymous file holding 1 MiB of the test's
+// deterministic stream (review R-025b D3b); after it, EOF.
+func fenvixDevRandom(name string, flag int) *File {
+	if (name != "/dev/urandom" && name != "/dev/random") || flag&(O_WRONLY|O_RDWR) != 0 ||
+		!runtime.Fenvix_On(runtime.FenvixCrypto) || !runtime.Fenvix_UserG() {
+		return nil
+	}
+	const oTmpfile = 0o20200000 // O_TMPFILE (with O_DIRECTORY)
+	fd, err := syscall.Open(TempDir(), oTmpfile|syscall.O_RDWR|syscall.O_CLOEXEC, 0o600)
+	if err != nil {
+		return nil
+	}
+	b := syscall.Fenvix_DetBytes(1 << 20)
+	for len(b) > 0 {
+		n, err := syscall.Write(fd, b)
+		if err != nil || n <= 0 {
+			syscall.Close(fd)
+			return nil
+		}
+		b = b[n:]
+	}
+	syscall.Seek(fd, 0, 0)
+	syscall.Fenvix_Event("crypto", "open "+name, "deterministic stream")
+	return NewFile(uintptr(fd), name)
+}
+
 // fenvixVirtualPath: /proc/1/stat is served from its virtual copy (fixed
 // fields from the real file, changing fields constant; built by the Rust
 // core) when fenvix runs with a copy configured.

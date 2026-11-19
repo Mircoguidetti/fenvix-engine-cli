@@ -520,6 +520,25 @@ pub unsafe extern "C" fn fenvix_virtual_proc_stat(real: *const c_char) -> *mut c
     })
 }
 
+/// Skip mode's clock epoch for the current time: 00:00 UTC today (ns).
+#[no_mangle]
+pub extern "C" fn fenvix_skip_day_epoch() -> i64 {
+    let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_nanos() as i64).unwrap_or(0);
+    skip::day_epoch(now)
+}
+
+/// End-of-run summary of a skip run: `{"text": "...", "expired": n}`.
+///
+/// # Safety
+/// Valid strings.
+#[no_mangle]
+pub unsafe extern "C" fn fenvix_skip_summary(decisions: *const c_char, report: *const c_char, real_clock: c_int) -> *mut c_char {
+    guard(ptr::null_mut(), || {
+        let (text, n) = skip::summary(arg(decisions, "decisions")?, arg(report, "report")?, real_clock != 0);
+        Ok(out_string(serde_json::json!({"text": text, "expired": n}).to_string()))
+    })
+}
+
 /// JSON description of the interception backends known to the core.
 #[no_mangle]
 pub extern "C" fn fenvix_backends() -> *mut c_char {

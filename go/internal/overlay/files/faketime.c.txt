@@ -1,32 +1,86 @@
-/* Code added by fenvix-go (--det). Not part of Go.
+/* Code added by fenvix-go (--det and skip mode). Not part of Go.
  *
- * Preloaded into the programs a --det test starts (LD_PRELOAD): their wall
- * clock is shifted by FENVIX_GO_CLOCK_OFFSET (ns), the virtual clock minus the
- * real clock at the start of the test, so that `date`, git and other tools
- * agree with the test's virtual clock (review R-025 D2). Dynamically linked
- * programs only: static binaries (Go programs) keep the real clock. */
+ * Preloaded (LD_PRELOAD) into the programs a test starts, and into the test
+ * binary itself when it is dynamically linked (cgo):
+ *   - the wall clock read through libc (clock_gettime, gettimeofday, time) is
+ *     shifted by FENVIX_GO_CLOCK_OFFSET (ns), the virtual clock minus the real
+ *     clock at the start of the test, so `date`, git and C code agree with the
+ *     test's virtual clock (review R-025 D2);
+ *   - timestamps returned by the stat family of a file the run changed (its
+ *     change time is at or after the real start of the test,
+ *     FENVIX_GO_CLOCK_BEGIN, ns) get the same shift; files the run did not
+ *     change keep their real times (R-025b C1, D2b);
+ *   - with FENVIX_GO_CLOCK_MARK=1 (skip mode), every clock read is marked with
+ *     an access() of /__fenvix_marker__/C/0, which strace attributes to the
+ *     running test: real time reached it, so it is not reused (R-025b C3).
+ * Dynamically linked programs only; static binaries and Go programs (the Go
+ * runtime reads the clock through the vDSO) are not reached. */
 #define _GNU_SOURCE
+#include <dlfcn.h>
+#include <fcntl.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/auxv.h>
+#include <sys/stat.h>
 #include <sys/syscall.h>
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
 
-static long long fenvix_off;
+static char *fenvix_getenv(const char *name);
+static long long fenvix_off, fenvix_begin;
+static int fenvix_mark;
 static int fenvix_init;
 
 static void fenvix_load(void) {
 	if (!fenvix_init) {
-		const char *s = getenv("FENVIX_GO_CLOCK_OFFSET");
+		const char *s = fenvix_getenv("FENVIX_GO_CLOCK_OFFSET");
+		const char *b = fenvix_getenv("FENVIX_GO_CLOCK_BEGIN");
+		const char *m = fenvix_getenv("FENVIX_GO_CLOCK_MARK");
 		fenvix_off = s ? atoll(s) : 0;
+		fenvix_begin = b ? atoll(b) : 0;
+		fenvix_mark = m && m[0] == '1';
 		fenvix_init = 1;
 	}
 }
 
+static void fenvix_marked(void) {
+	if (fenvix_mark)
+		syscall(SYS_access, "/__fenvix_marker__/C/0", F_OK);
+}
+
+static void fenvix_shift_ts(struct timespec *ts) {
+	long long ns = (long long)ts->tv_sec * 1000000000LL + ts->tv_nsec;
+	ns += fenvix_off;
+	ts->tv_sec = ns / 1000000000LL;
+	ts->tv_nsec = ns % 1000000000LL;
+	if (ts->tv_nsec < 0) {
+		ts->tv_nsec += 1000000000LL;
+		ts->tv_sec--;
+	}
+}
+
+/* a file the run changed: its change time (which no process can set back)
+ * is at or after the real start of the test (20 ms margin: kernel
+ * timestamps come from a coarse clock) */
+static int fenvix_changed(long long ctime_ns) {
+	return fenvix_begin != 0 && ctime_ns >= fenvix_begin - 20000000LL;
+}
+
+static void fenvix_shift_stat(struct stat *st) {
+	fenvix_load();
+	if (!fenvix_changed((long long)st->st_ctim.tv_sec * 1000000000LL + st->st_ctim.tv_nsec))
+		return;
+	fenvix_shift_ts(&st->st_atim);
+	fenvix_shift_ts(&st->st_mtim);
+	fenvix_shift_ts(&st->st_ctim);
+}
+
 int clock_gettime(clockid_t c, struct timespec *ts) {
 	long r = syscall(SYS_clock_gettime, c, ts);
+	fenvix_load();
 	if (r == 0 && ts && (c == CLOCK_REALTIME || c == CLOCK_REALTIME_COARSE)) {
-		fenvix_load();
+		fenvix_marked();
 		long long ns = (long long)ts->tv_sec * 1000000000LL + ts->tv_nsec + fenvix_off;
 		ts->tv_sec = ns / 1000000000LL;
 		ts->tv_nsec = ns % 1000000000LL;
@@ -55,4 +109,111 @@ time_t time(time_t *t) {
 	if (t)
 		*t = ts.tv_sec;
 	return ts.tv_sec;
+}
+
+typedef int (*fenvix_stat_fn)(const char *, struct stat *);
+typedef int (*fenvix_fstat_fn)(int, struct stat *);
+typedef int (*fenvix_fstatat_fn)(int, const char *, struct stat *, int);
+typedef int (*fenvix_statx_fn)(int, const char *, int, unsigned int, struct statx *);
+#define FENVIX_NEXT(name, type) static type next_##name; if (!next_##name) next_##name = (type)dlsym(RTLD_NEXT, #name)
+
+int stat(const char *p, struct stat *st) {
+	FENVIX_NEXT(stat, fenvix_stat_fn);
+	int r = next_stat ? next_stat(p, st) : -1;
+	if (r == 0)
+		fenvix_shift_stat(st);
+	return r;
+}
+
+int lstat(const char *p, struct stat *st) {
+	FENVIX_NEXT(lstat, fenvix_stat_fn);
+	int r = next_lstat ? next_lstat(p, st) : -1;
+	if (r == 0)
+		fenvix_shift_stat(st);
+	return r;
+}
+
+int fstat(int fd, struct stat *st) {
+	FENVIX_NEXT(fstat, fenvix_fstat_fn);
+	int r = next_fstat ? next_fstat(fd, st) : -1;
+	if (r == 0)
+		fenvix_shift_stat(st);
+	return r;
+}
+
+int fstatat(int dfd, const char *p, struct stat *st, int fl) {
+	FENVIX_NEXT(fstatat, fenvix_fstatat_fn);
+	int r = next_fstatat ? next_fstatat(dfd, p, st, fl) : -1;
+	if (r == 0)
+		fenvix_shift_stat(st);
+	return r;
+}
+
+/* 64-bit Linux: struct stat64 and struct stat have the same layout */
+int stat64(const char *p, struct stat64 *st) { return stat(p, (struct stat *)st); }
+int lstat64(const char *p, struct stat64 *st) { return lstat(p, (struct stat *)st); }
+int fstat64(int fd, struct stat64 *st) { return fstat(fd, (struct stat *)st); }
+int fstatat64(int dfd, const char *p, struct stat64 *st, int fl) { return fstatat(dfd, p, (struct stat *)st, fl); }
+
+int statx(int dfd, const char *p, int fl, unsigned int mask, struct statx *sx) {
+	FENVIX_NEXT(statx, fenvix_statx_fn);
+	int r = next_statx ? next_statx(dfd, p, fl, mask, sx) : -1;
+	if (r == 0 && sx) {
+		struct statx_timestamp *t[] = {&sx->stx_atime, &sx->stx_btime, &sx->stx_ctime, &sx->stx_mtime};
+		fenvix_load();
+		if (!fenvix_changed((long long)sx->stx_ctime.tv_sec * 1000000000LL + sx->stx_ctime.tv_nsec))
+			return r;
+		for (int i = 0; i < 4; i++) {
+			struct timespec ts = {t[i]->tv_sec, t[i]->tv_nsec};
+			fenvix_shift_ts(&ts);
+			t[i]->tv_sec = ts.tv_sec;
+			t[i]->tv_nsec = ts.tv_nsec;
+		}
+	}
+	return r;
+}
+
+/* Variables C code reads with getenv (review R-025b A1): in skip mode each
+ * read is marked with an access() of /__fenvix_marker__/E/<name>, which
+ * strace attributes to the running test; the variable is then in its key.
+ * Implemented on environ directly (no dlsym: it could call getenv). glibc's
+ * own internal reads (resolver, locale) do not come here; the core keys them
+ * from a fixed list. */
+extern char **environ;
+
+static char *fenvix_getenv(const char *name) {
+	size_t n = strlen(name);
+	if (environ)
+		for (char **e = environ; *e; e++)
+			if (strncmp(*e, name, n) == 0 && (*e)[n] == '=')
+				return *e + n + 1;
+	return NULL;
+}
+
+static void fenvix_mark_env(const char *name) {
+	fenvix_load();
+	if (!fenvix_mark || strlen(name) > 200 || strchr(name, '/'))
+		return;
+	char p[256] = "/__fenvix_marker__/E/";
+	strncat(p, name, sizeof(p) - strlen(p) - 1);
+	syscall(SYS_access, p, F_OK);
+}
+
+char *getenv(const char *name) {
+	if (fenvix_init && fenvix_mark)
+		fenvix_mark_env(name);
+	else if (!fenvix_init) {
+		/* the first call loads the configuration itself (through
+		 * fenvix_getenv, never recursing) */
+		const char *m = fenvix_getenv("FENVIX_GO_CLOCK_MARK");
+		if (m && m[0] == '1')
+			fenvix_mark_env(name);
+	}
+	return fenvix_getenv(name);
+}
+
+char *secure_getenv(const char *name) {
+	if (getauxval(AT_SECURE))
+		return NULL;
+	return getenv(name);
 }
