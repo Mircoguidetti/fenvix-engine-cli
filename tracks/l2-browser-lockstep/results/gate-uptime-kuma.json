@@ -1,9 +1,520 @@
 {
-  "name": "uptime-kuma",
-  "job": "gate",
-  "repo": "louislam/uptime-kuma",
-  "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
-  "status": "setup_failed",
-  "log_tail": "\nIgn:8 https://archive.ubuntu.com/ubuntu resolute/main amd64v3 xfonts-utils amd64 1:7.7+7build1\nErr:9 https://security.ubuntu.com/ubuntu resolute/universe amd64v3 xfonts-cyrillic all 1:1.0.5+nmu1build1\n  Unable to connect to azure.archive.ubuntu.com:http: [IP: 52.250.76.244 80]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.83 443]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 185.125.190.83 443]\nIgn:7 https://archive.ubuntu.com/ubuntu resolute/main amd64v3 xfonts-encodings all 1:1.0.5-0ubuntu3\nIgn:6 https://archive.ubuntu.com/ubuntu resolute/universe amd64v3 fonts-wqy-zenhei all 0.9.45-8build1\nErr:8 https://security.ubuntu.com/ubuntu resolute/main amd64v3 xfonts-utils amd64 1:7.7+7build1\n  Unable to connect to azure.archive.ubuntu.com:http: [IP: 52.250.76.244 80]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.83 443]\n  Connection failed [IP: 91.189.92.24 443]\nIgn:5 https://archive.ubuntu.com/ubuntu resolute/universe amd64v3 fonts-unifont all 1:16.0.04-1build1\nErr:7 https://security.ubuntu.com/ubuntu resolute/main amd64v3 xfonts-encodings all 1:1.0.5-0ubuntu3\n  Unable to connect to azure.archive.ubuntu.com:http: [IP: 52.250.76.244 80]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.83 443]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.82 443]\nIgn:4 https://archive.ubuntu.com/ubuntu resolute/universe amd64v3 fonts-tlwg-loma-otf all 1:0.7.3-1build1\nErr:6 https://security.ubuntu.com/ubuntu resolute/universe amd64v3 fonts-wqy-zenhei all 0.9.45-8build1\n  Unable to connect to azure.archive.ubuntu.com:http: [IP: 52.250.76.244 80]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.83 443]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.82 443]\nIgn:3 https://archive.ubuntu.com/ubuntu resolute/main amd64v3 fonts-freefont-ttf all 20211204+svn4273-4build1\nErr:5 https://security.ubuntu.com/ubuntu resolute/universe amd64v3 fonts-unifont all 1:16.0.04-1build1\n  Unable to connect to azure.archive.ubuntu.com:http: [IP: 52.250.76.244 80]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.83 443]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.82 443]\nIgn:2 https://archive.ubuntu.com/ubuntu resolute/universe amd64v3 fonts-ipafont-gothic all 00303-23ubuntu1\nErr:4 https://security.ubuntu.com/ubuntu resolute/universe amd64v3 fonts-tlwg-loma-otf all 1:0.7.3-1build1\n  Unable to connect to azure.archive.ubuntu.com:http: [IP: 52.250.76.244 80]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.83 443]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.82 443]\nErr:3 https://security.ubuntu.com/ubuntu resolute/main amd64v3 fonts-freefont-ttf all 20211204+svn4273-4build1\n  Unable to connect to azure.archive.ubuntu.com:http: [IP: 52.250.76.244 80]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.83 443]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.82 443]\nErr:2 https://security.ubuntu.com/ubuntu resolute/universe amd64v3 fonts-ipafont-gothic all 00303-23ubuntu1\n  Could not connect to azure.archive.ubuntu.com:80 (52.250.76.244), connection timed out [IP: 52.250.76.244 80]\n  Unable to connect to azure.archive.ubuntu.com:http: [IP: 52.250.76.244 80]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.83 443]\n  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.82 443]\nE: Failed to fetch https://security.ubuntu.com/ubuntu/pool/universe/f/fonts-ipafont/fonts-ipafont-gothic_00303-23ubuntu1_all.deb  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.82 443]\nE: Failed to fetch https://security.ubuntu.com/ubuntu/pool/main/f/fonts-freefont/fonts-freefont-ttf_20211204%2bsvn4273-4build1_all.deb  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.82 443]\nE: Failed to fetch https://security.ubuntu.com/ubuntu/pool/universe/f/fonts-tlwg/fonts-tlwg-loma-otf_0.7.3-1build1_all.deb  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.82 443]\nE: Failed to fetch https://security.ubuntu.com/ubuntu/pool/universe/u/unifont/fonts-unifont_16.0.04-1build1_all.deb  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.82 443]\nE: Failed to fetch https://security.ubuntu.com/ubuntu/pool/universe/f/fonts-wqy-zenhei/fonts-wqy-zenhei_0.9.45-8build1_all.deb  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.82 443]\nE: Failed to fetch https://security.ubuntu.com/ubuntu/pool/main/x/xfonts-encodings/xfonts-encodings_1.0.5-0ubuntu3_all.deb  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 91.189.91.82 443]\nE: Failed to fetch https://security.ubuntu.com/ubuntu/pool/main/x/xfonts-utils/xfonts-utils_7.7%2b7build1_amd64v3.deb  Connection failed [IP: 91.189.92.24 443]\nE: Failed to fetch https://security.ubuntu.com/ubuntu/pool/universe/x/xfonts-cyrillic/xfonts-cyrillic_1.0.5%2bnmu1build1_all.deb  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 185.125.190.83 443]\nE: Failed to fetch https://security.ubuntu.com/ubuntu/pool/universe/x/xfonts-scalable/xfonts-scalable_1.0.3-1.3build1_all.deb  Could not wait for server fd - select (11: Resource temporarily unavailable) [IP: 185.125.190.83 443]\nE: Unable to fetch some archives, maybe run apt update or try with --fix-missing?\nFailed to install browsers\nError: Installation process exited with code: 100\n",
-  "run_id": "44509820700"
+ "name": "uptime-kuma",
+ "job": "gate",
+ "repo": "louislam/uptime-kuma",
+ "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
+ "status": "ok",
+ "run_id": "44522453804",
+ "engine_commit": "2b646c05c0b8f4a3db38a71bd830b768245ab2d9",
+ "setup_s": 64,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 330,
+  "run_timeout_min": 45,
+  "target_timeout_min": 10,
+  "runs": 10,
+  "plain_runs": 2,
+  "per_run_s": 240
+ },
+ "pw_dir": ".",
+ "pw_args": [],
+ "runs": [],
+ "epoch": "2026-11-19T12:28:00Z",
+ "measured_at": "2026-11-19T12:28:38Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "gate": [
+  {
+   "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+   "file": "monitor-history-settings.spec.js",
+   "grep": "saves the data retention period",
+   "project": "specs",
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "errors": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "walls": [
+    56.0,
+    55.7,
+    55.8,
+    56.1,
+    56.0,
+    55.9,
+    55.7,
+    55.9,
+    56.0,
+    56.0
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate-uptime-kuma/g1-det-1.jsonl.gz",
+    "gate-uptime-kuma/g1-det-2.jsonl.gz",
+    "gate-uptime-kuma/g1-det-3.jsonl.gz",
+    "gate-uptime-kuma/g1-det-4.jsonl.gz",
+    "gate-uptime-kuma/g1-det-5.jsonl.gz",
+    "gate-uptime-kuma/g1-det-6.jsonl.gz",
+    "gate-uptime-kuma/g1-det-7.jsonl.gz",
+    "gate-uptime-kuma/g1-det-8.jsonl.gz",
+    "gate-uptime-kuma/g1-det-9.jsonl.gz",
+    "gate-uptime-kuma/g1-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 2,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 40,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/2:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02r5pfk -"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/2:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02rkpfk -"
+      },
+      "reason": "sched",
+      "description": "event #40: first diverging scheduling choice: sched.io 0/2:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02r5pfk - @   <>  sched.io 0/2:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02rkpfk - @ "
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 2,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 5,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02xbcf2 -"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02xecf2 -"
+      },
+      "reason": "sched",
+      "description": "event #5: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02xbcf2 - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02xecf2 - @ "
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 2,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 5,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j037y2ts -"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j03812ts -"
+      },
+      "reason": "sched",
+      "description": "event #5: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j037y2ts - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j03812ts - @ "
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+     "status": "diverged",
+     "distinct_fingerprints": 2,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 8,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cfryg -"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cwryg -"
+      },
+      "reason": "sched",
+      "description": "event #8: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cfryg - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cwryg - @ "
+     }
+    }
+   ],
+   "verify": {
+    "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+    "status": "diverged",
+    "distinct_fingerprints": 2,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 8,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cfryg -"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cwryg -"
+     },
+     "reason": "sched",
+     "description": "event #8: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cfryg - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cwryg - @ "
+    }
+   }
+  },
+  {
+   "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+   "file": "status-page.spec.js",
+   "grep": "RSS feed escapes malicious monitor names",
+   "project": "specs",
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed"
+   ],
+   "errors": [
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t"
+   ],
+   "walls": [
+    79.5,
+    79.8,
+    79.7,
+    79.5,
+    79.7,
+    80.0,
+    79.8,
+    79.2,
+    79.7,
+    79.6
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate-uptime-kuma/g2-det-1.jsonl.gz",
+    "gate-uptime-kuma/g2-det-2.jsonl.gz",
+    "gate-uptime-kuma/g2-det-3.jsonl.gz",
+    "gate-uptime-kuma/g2-det-4.jsonl.gz",
+    "gate-uptime-kuma/g2-det-5.jsonl.gz",
+    "gate-uptime-kuma/g2-det-6.jsonl.gz",
+    "gate-uptime-kuma/g2-det-7.jsonl.gz",
+    "gate-uptime-kuma/g2-det-8.jsonl.gz",
+    "gate-uptime-kuma/g2-det-9.jsonl.gz",
+    "gate-uptime-kuma/g2-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 2,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 57,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/2:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02fvby3 -"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/2:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02g9by3 -"
+      },
+      "reason": "sched",
+      "description": "event #57: first diverging scheduling choice: sched.io 0/2:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02fvby3 - @   <>  sched.io 0/2:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02g9by3 - @ "
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 3,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 5,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02kxph4 -"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02m0ph4 -"
+      },
+      "reason": "sched",
+      "description": "event #5: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02kxph4 - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02m0ph4 - @ "
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 3,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 5,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02xbcf2 -"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02xdcf2 -"
+      },
+      "reason": "sched",
+      "description": "event #5: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02xbcf2 - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j02xdcf2 - @ "
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 3,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 5,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j037y2ts -"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j03802ts -"
+      },
+      "reason": "sched",
+      "description": "event #5: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j037y2ts - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j03802ts - @ "
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+     "status": "diverged",
+     "distinct_fingerprints": 5,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 9,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cfqs2 -"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cvqs2 -"
+      },
+      "reason": "sched",
+      "description": "event #9: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cfqs2 - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cvqs2 - @ "
+     }
+    }
+   ],
+   "verify": {
+    "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+    "status": "diverged",
+    "distinct_fingerprints": 5,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 9,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cfqs2 -"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cvqs2 -"
+     },
+     "reason": "sched",
+     "description": "event #9: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cfqs2 - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=j05cvqs2 - @ "
+    }
+   }
+  }
+ ],
+ "elapsed_min": 23.5
 }
