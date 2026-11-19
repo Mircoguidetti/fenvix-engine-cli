@@ -1,0 +1,466 @@
+{
+ "spec": "pygments",
+ "shard": "0/1",
+ "engines": [
+  "base",
+  "r1",
+  "r2cp",
+  "cur"
+ ],
+ "cpus": 4,
+ "runner": "",
+ "engine_sha": "",
+ "walls": {
+  "P0": [
+   14.66650447500001,
+   13.677161678999937,
+   14.367210923999892
+  ],
+  "K0": [
+   1.3792583370000102,
+   1.8883650090001538,
+   2.0193238800000017
+  ],
+  "W:base": [
+   6.268575986999849,
+   6.033849020999924,
+   5.815356398999938
+  ],
+  "X:base": [
+   0.4205449169999156,
+   0.44790877400009776,
+   0.5129472389999137
+  ],
+  "W:r1": [
+   5.961867061000021,
+   5.171737807999989,
+   5.964276401999996
+  ],
+  "X:r1": [
+   0.4592503349999788,
+   0.42068390200006434,
+   0.4716815189999579
+  ],
+  "W:r2cp": [
+   5.845322317999944,
+   4.652278215000024,
+   5.81719900500002
+  ],
+  "X:r2cp": [
+   0.25341256199999407,
+   0.21968841200009592,
+   0.2777512600000591
+  ],
+  "W:cur": [
+   5.209958422,
+   4.080669770999975,
+   4.366061398000056
+  ],
+  "X:cur": [
+   0.233695760000046,
+   0.20593058600002223,
+   0.2752816579998125
+  ]
+ },
+ "cache": {
+  "C:base": [
+   {
+    "exit": 0,
+    "wall": 19.27771021300009,
+    "n": 5346,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.004,
+     "record_seconds": 2.021,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   }
+  ],
+  "C:r1": [
+   {
+    "exit": 0,
+    "wall": 17.876629940000157,
+    "n": 5346,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.004,
+     "record_seconds": 1.21,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.381,
+      "plan": 0.183,
+      "assemble": 0.531,
+      "save": 0.113
+     }
+    }
+   }
+  ],
+  "C:r2cp": [
+   {
+    "exit": 0,
+    "wall": 17.986846147999813,
+    "n": 5346,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.004,
+     "record_seconds": 1.205,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.341,
+      "plan": 0.209,
+      "assemble": 0.548,
+      "save": 0.106
+     }
+    }
+   }
+  ],
+  "C:cur": [
+   {
+    "exit": 0,
+    "wall": 18.05759810099994,
+    "n": 5346,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.005,
+     "record_seconds": 1.692,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.684,
+      "plan": 0.184,
+      "assemble": 0.71,
+      "save": 0.112
+     }
+    }
+   }
+  ],
+  "W:base": [
+   {
+    "exit": 0,
+    "wall": 6.268575986999849,
+    "n": 5346,
+    "cache": {
+     "reused": 4650,
+     "ran": 696,
+     "recorded": 696,
+     "check_seconds": 0.399,
+     "record_seconds": 0.473,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 6.033849020999924,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.537,
+     "record_seconds": 0.264,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 5.815356398999938,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.459,
+     "record_seconds": 0.279,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   }
+  ],
+  "W:r1": [
+   {
+    "exit": 0,
+    "wall": 5.961867061000021,
+    "n": 5346,
+    "cache": {
+     "reused": 4650,
+     "ran": 696,
+     "recorded": 696,
+     "check_seconds": 0.353,
+     "record_seconds": 0.416,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.003,
+      "plan": 0.033,
+      "assemble": 0.135,
+      "save": 0.244
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 5.171737807999989,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.445,
+     "record_seconds": 0.04,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.032,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 5.964276401999996,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.464,
+     "record_seconds": 0.061,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.053,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   }
+  ],
+  "W:r2cp": [
+   {
+    "exit": 0,
+    "wall": 5.845322317999944,
+    "n": 5346,
+    "cache": {
+     "reused": 4650,
+     "ran": 696,
+     "recorded": 696,
+     "check_seconds": 0.407,
+     "record_seconds": 0.447,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.003,
+      "facts": 0.005,
+      "plan": 0.043,
+      "assemble": 0.159,
+      "save": 0.237
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 4.652278215000024,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.435,
+     "record_seconds": 0.04,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.033,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 5.81719900500002,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.527,
+     "record_seconds": 0.053,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.044,
+      "assemble": 0.004,
+      "save": 0.0
+     }
+    }
+   }
+  ],
+  "W:cur": [
+   {
+    "exit": 0,
+    "wall": 5.209958422,
+    "n": 5346,
+    "cache": {
+     "reused": 4650,
+     "ran": 696,
+     "recorded": 696,
+     "check_seconds": 0.288,
+     "record_seconds": 0.468,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.044,
+      "assemble": 0.173,
+      "save": 0.247
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 4.080669770999975,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.34,
+     "record_seconds": 0.053,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.043,
+      "assemble": 0.005,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 4.366061398000056,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.356,
+     "record_seconds": 0.034,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.003,
+      "plan": 0.027,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   }
+  ]
+ },
+ "profiles": {
+  "W:base": {
+   "wall": 6.380659429000161,
+   "exit": 0,
+   "samples": 1435,
+   "buckets": {
+    "collection": 505,
+    "reuse": 357,
+    "configure": 116,
+    "other": 101,
+    "check": 99,
+    "finish": 90,
+    "imports": 86,
+    "tests": 65,
+    "identity": 16
+   }
+  },
+  "W:r1": {
+   "wall": 5.033471653999868,
+   "exit": 0,
+   "samples": 1259,
+   "buckets": {
+    "collection": 516,
+    "reuse": 267,
+    "check": 117,
+    "other": 113,
+    "configure": 92,
+    "tests": 55,
+    "finish": 48,
+    "imports": 42,
+    "identity": 9
+   }
+  },
+  "W:r2cp": {
+   "wall": 4.894379074999961,
+   "exit": 0,
+   "samples": 1188,
+   "buckets": {
+    "collection": 377,
+    "reuse": 312,
+    "check": 126,
+    "other": 117,
+    "configure": 84,
+    "finish": 61,
+    "tests": 58,
+    "imports": 41,
+    "identity": 12
+   }
+  },
+  "W:cur": {
+   "wall": 4.085390492999977,
+   "exit": 0,
+   "samples": 1018,
+   "buckets": {
+    "collection": 350,
+    "reuse": 232,
+    "other": 97,
+    "configure": 91,
+    "check": 82,
+    "tests": 75,
+    "finish": 40,
+    "imports": 38,
+    "identity": 13
+   }
+  }
+ },
+ "sha": "156d85fdd18d34427fe893527e71da91dcfb0eb5",
+ "units": 0,
+ "median": {
+  "P0": 14.367210923999892,
+  "K0": 1.8883650090001538,
+  "W:base": 6.033849020999924,
+  "X:base": 0.44790877400009776,
+  "W:r1": 5.961867061000021,
+  "X:r1": 0.4592503349999788,
+  "W:r2cp": 5.81719900500002,
+  "X:r2cp": 0.25341256199999407,
+  "W:cur": 4.366061398000056,
+  "X:cur": 0.233695760000046
+ },
+ "floor": {
+  "base": 0.41997358101847054,
+  "r1": 0.4149634255762852,
+  "r2cp": 0.4048941047620179,
+  "cur": 0.30389067308162876
+ },
+ "finished": "2026-11-19T00:06:29Z"
+}
