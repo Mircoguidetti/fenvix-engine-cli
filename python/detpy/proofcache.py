@@ -502,6 +502,11 @@ class Capture:
             return
         if not _encodable(p):
             return
+        if p in self.writers:
+            # a path code of this session created or wrote (a TemporaryDirectory, an output file): its kind is
+            # that code's doing. As for a read of it, the test is cached only if every writer is credited to it.
+            self.flags.setdefault(self._cur(), set()).add("rw:" + p)
+            return
         hk = "s" + p
         dep = self._hashed.get(hk)
         if dep is None:

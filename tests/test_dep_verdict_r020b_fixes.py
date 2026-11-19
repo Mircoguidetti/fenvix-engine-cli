@@ -94,3 +94,23 @@ def test_existence_check_keeps_the_content_dependency(pytester, run_cache_plain)
     assert "test_data.py::test_read_then_check" not in reused, r.stdout.str()
     # the later test carries the earlier test's read (prefix rule)
     assert "test_data.py::test_check_only" not in reused, r.stdout.str()
+
+
+def test_existence_check_of_a_path_the_session_created_is_not_an_input(pytester, run_cache_plain):
+    # click's test_types.py probes symlink support at import time with tempfile.TemporaryDirectory(): its cleanup
+    # stats the random directory it created. That path is this session's own output, not an input (keyed, it would
+    # make every test of the module miss at every later run).
+    pytester.makeini("[pytest]\n")
+    pytester.makepyfile(test_tmp="""
+        import os, tempfile
+
+        with tempfile.TemporaryDirectory(prefix="probe-") as d:
+            open(os.path.join(d, "f"), "w").close()
+            PROBE = os.path.isdir(d)
+
+        def test_probe():
+            assert PROBE
+        """)
+    run_cache_plain()
+    r, reused, _ = run_cache_plain()
+    assert reused == {"test_tmp.py::test_probe"}, r.stdout.str()
