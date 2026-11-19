@@ -1,0 +1,47 @@
+{
+ "hidden_failures": [],
+ "new_failures_caused_by_split": [],
+ "only_parallel": 0,
+ "only_serial": 0,
+ "outcome_differences": 0,
+ "parallel_noise": 2206,
+ "parallel_plans_identical": true,
+ "parallel_workers_identical": true,
+ "placement": 1,
+ "placement_examples": [
+  "tests/test_s3/test_server.py::test_s3_server_post_cors_multiple_origins"
+ ],
+ "placement_first_source": {
+  "time": 1
+ },
+ "placement_in_both_parallel_runs": 1,
+ "serial_noise": 2205,
+ "serial_noise_examples": [
+  "tests/test_batch/test_batch.py::test_batch_regions[cn-northwest-1]",
+  "tests/test_batch/test_batch.py::test_batch_regions[us-west-2]",
+  "tests/test_batch/test_batch_cloudformation.py::test_create_env_cf",
+  "tests/test_batch/test_batch_cloudformation.py::test_create_job_def_cf",
+  "tests/test_batch/test_batch_cloudformation.py::test_create_job_queue_cf",
+  "tests/test_batch/test_batch_compute_envs.py::test_create_ec2_managed_compute_environment__without_required_params",
+  "tests/test_batch/test_batch_compute_envs.py::test_create_fargate_managed_compute_environment[FARGATE]",
+  "tests/test_batch/test_batch_compute_envs.py::test_create_fargate_managed_compute_environment[FARGATE_SPOT]",
+  "tests/test_batch/test_batch_compute_envs.py::test_create_managed_compute_environment[False]",
+  "tests/test_batch/test_batch_compute_envs.py::test_create_managed_compute_environment[True]",
+  "tests/test_batch/test_batch_compute_envs.py::test_create_managed_compute_environment_with_instance_family",
+  "tests/test_batch/test_batch_compute_envs.py::test_create_managed_compute_environment_with_tags[False]",
+  "tests/test_batch/test_batch_compute_envs.py::test_create_managed_compute_environment_with_tags[True]",
+  "tests/test_batch/test_batch_compute_envs.py::test_create_managed_compute_environment_with_unknown_instance_type",
+  "tests/test_batch/test_batch_compute_envs.py::test_create_unmanaged_compute_environment",
+  "tests/test_batch/test_batch_compute_envs.py::test_delete_managed_compute_environment",
+  "tests/test_batch/test_batch_compute_envs.py::test_delete_unmanaged_compute_environment",
+  "tests/test_batch/test_batch_compute_envs.py::test_describe_compute_environment",
+  "tests/test_batch/test_batch_compute_envs.py::test_update_iam_role",
+  "tests/test_batch/test_batch_compute_envs.py::test_update_unmanaged_compute_environment_state"
+ ],
+ "serial_noise_first_source": {
+  "entropy": 2199,
+  "fs": 1,
+  "time": 5
+ },
+ "tests_in_all": 2501
+}
