@@ -99,21 +99,68 @@ function pageInit(seedHi, seedLo) {
     // Lockstep (round 4): requests the page started (fetch, XHR, beacons). The engine compares this count with the
     // requests it intercepted before it takes a decision, so a request still on its way through the browser
     // cannot be missed.
+    // §5(b) (round 4): the page's clock is the engine's. Chromium moves a page's virtual clock by its own rules too
+    // (10 ms per completed fetch, applied when the renderer processes the load: at once or in the next slice,
+    // decided in real time). The engine anchors the page clock before and after every slice
+    // (__detjs.anchor(engineMs, allowMs)): Date and performance.now read engine time plus the page's own progress
+    // inside the slice, capped at the slice's length; between slices they read the engine time exactly.
+    var RD = Date, rnow = RD.now.bind(RD);
+    var PERF = G.performance, rperf = PERF && PERF.now ? PERF.now.bind(PERF) : function () { return rnow(); };
+    var anc = null, tOrigin = null;
+    function eng() {
+      if (!anc) return null;
+      var e = rperf() - anc.perf;
+      if (e < 0) e = 0;
+      if (e > anc.allow) e = anc.allow;
+      return anc.base + e;
+    }
+    var DetDate = function Date() {
+      var a = Array.prototype.slice.call(arguments);
+      var v = eng();
+      if (!new.target) return v === null ? RD() : new RD(Math.floor(v)).toString();
+      if (a.length === 0) return v === null ? Reflect.construct(RD, [], new.target) : Reflect.construct(RD, [Math.floor(v)], new.target);
+      return Reflect.construct(RD, a, new.target);
+    };
+    DetDate.prototype = RD.prototype;
+    DetDate.now = function now() { var v = eng(); return v === null ? rnow() : Math.floor(v); };
+    DetDate.parse = RD.parse; DetDate.UTC = RD.UTC;
+    try { Object.defineProperty(DetDate, 'length', { value: 7 }); } catch (e) { /* ignore */ }
+    try { Object.defineProperty(RD.prototype, 'constructor', { value: DetDate, writable: true, configurable: true }); } catch (e) { /* ignore */ }
+    try { Object.defineProperty(G, 'Date', { value: DetDate, writable: true, configurable: true }); } catch (e) { /* frozen */ }
+    if (PERF && PERF.now) {
+      try { Object.defineProperty(PERF, 'now', { value: function now() { var v = eng(); return v === null || tOrigin === null ? rperf() : v - tOrigin; }, writable: true, configurable: true }); } catch (e) { /* ignore */ }
+    }
+    function anchor(baseMs, allowMs) {
+      if (tOrigin === null) tOrigin = baseMs - rperf();
+      anc = { base: baseMs, perf: rperf(), allow: allowMs };
+      return rnow();
+    }
+
     var reqs = 0;
+    var done = 0; // fetch/XHR responses the page's JS has received (fetch settled, XHR loadend)
     var isNet = function () { return false; };
     if (typeof G.fetch === 'function') {
       var realFetch = G.fetch;
       isNet = function (u) {
         try { return /^https?:$/.test(new URL(String(u && u.url ? u.url : u), location.href).protocol); } catch (e) { return false; }
       };
-      var wrappedFetch = function fetch(input) { if (isNet(input)) reqs++; return realFetch.apply(this, arguments); };
+      var wrappedFetch = function fetch(input) {
+        if (!isNet(input)) return realFetch.apply(this, arguments);
+        reqs++;
+        var pr = realFetch.apply(this, arguments);
+        pr.then(function () { done++; }, function () { done++; });
+        return pr;
+      };
       try { Object.defineProperty(G, 'fetch', { value: wrappedFetch, writable: true, configurable: true }); } catch (e) { /* frozen */ }
     }
     if (G.XMLHttpRequest && G.XMLHttpRequest.prototype && typeof G.XMLHttpRequest.prototype.send === 'function') {
       var realSend = G.XMLHttpRequest.prototype.send;
       var realOpen = G.XMLHttpRequest.prototype.open;
       Object.defineProperty(G.XMLHttpRequest.prototype, 'open', { value: function open(m, u) { this.__detjsNet = isNet(u); return realOpen.apply(this, arguments); }, writable: true, configurable: true });
-      Object.defineProperty(G.XMLHttpRequest.prototype, 'send', { value: function send() { if (this.__detjsNet) reqs++; return realSend.apply(this, arguments); }, writable: true, configurable: true });
+      Object.defineProperty(G.XMLHttpRequest.prototype, 'send', { value: function send() {
+        if (this.__detjsNet) { reqs++; this.addEventListener('loadend', function () { done++; }); }
+        return realSend.apply(this, arguments);
+      }, writable: true, configurable: true });
     }
     if (G.WebSocket && G.WebSocket.prototype && typeof G.WebSocket.prototype.send === 'function') {
       var realWsSend = G.WebSocket.prototype.send;
@@ -136,7 +183,7 @@ function pageInit(seedHi, seedLo) {
       try { Object.defineProperty(G, name, { value: Wrapped, writable: true, configurable: true }); } catch (e) { /* frozen */ }
     });
     Object.defineProperty(G, '__detjs', {
-      value: { reqs: function () { return reqs; }, vnow: (function (D) { return function () { return D.now(); }; })(Date), stats: function () { return { random: stats.random, crypto: stats.crypto, uuid: stats.uuid, digest: stats.dr.toString(16) + '.' + stats.dc.toString(16) }; } },
+      value: { anchor: anchor, reqs: function () { return reqs; }, done: function () { return done; }, vnow: function () { return rnow(); }, stats: function () { return { random: stats.random, crypto: stats.crypto, uuid: stats.uuid, digest: stats.dr.toString(16) + '.' + stats.dc.toString(16) }; } },
       enumerable: false,
     });
   })();

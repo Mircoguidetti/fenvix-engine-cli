@@ -95,7 +95,8 @@ function writeWrapper(configFile) {
   const dir = path.dirname(configFile);
   const ext = path.extname(configFile);
   const tsLike = ['.ts', '.mts', '.cts'].includes(ext);
-  const out = path.join(dir, `playwright.detjs.config${tsLike ? '.ts' : '.mjs'}`);
+  // One wrapper per CLI process: a run that ends must not delete the wrapper of the next one.
+  const out = path.join(dir, `playwright.detjs.${process.pid}.config${tsLike ? '.ts' : '.mjs'}`);
   const wrap = path.join(__dirname, 'wrap.cjs').split(path.sep).join('/');
   const rel = `./${path.basename(configFile)}`;
   fs.writeFileSync(out, [

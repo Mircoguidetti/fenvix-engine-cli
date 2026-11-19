@@ -385,7 +385,9 @@ async function routeHandler(route, request) {
 }
 
 async function routeHandlerInner(route, request, uncount = () => {}) {
+  if (LS) { try { LS.routedAny(request.frame().page()); } catch { /* detached frame / worker */ } }
   const key = currentKey();
+  const reqT = LS ? LS.now() : 0; // engine time at which the page asked (responses are held until reqT + FETCH_MS)
   const url = request.url();
   const type = request.resourceType();
   if (/[?&]__detjs_w=1/.test(url)) {
@@ -399,7 +401,7 @@ async function routeHandlerInner(route, request, uncount = () => {}) {
     if (LS && LOADS.has(type) && /^https?:/.test(url) && !PASSTHROUGH.test(url)) {
       // Lockstep: a subresource is fetched by the engine and handed to the page between two time slices (in URL
       // order), so how long it takes on the network never becomes page time.
-      try { const pg = request.frame().page(); if (pg) return lockstep.OWN.run(true, () => lsLoad(route, request, url, pg)); } catch { /* detached */ }
+      try { const pg = request.frame().page(); if (pg) return lockstep.OWN.run(true, () => lsLoad(route, request, url, pg, reqT)); } catch { /* detached */ }
       trackLoad(request);
     }
     return route.fallback();
@@ -413,7 +415,7 @@ async function routeHandlerInner(route, request, uncount = () => {}) {
       let page = null;
       try { page = request.frame().page(); } catch { page = null; }
       if (page) {
-        const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), page, longPoll: true };
+        const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), page, longPoll: true, reqT };
         LS.addOrigin(new URL(url).origin);
         const pEnq = enqueue(item);
         uncount();
@@ -430,7 +432,7 @@ async function routeHandlerInner(route, request, uncount = () => {}) {
   let nav = false;
   try { nav = type === 'document' && request.isNavigationRequest() && request.frame().parentFrame() === null; } catch { nav = false; }
   const page = request.frame && (() => { try { return request.frame().page(); } catch { return null; } })();
-  const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), nav, page };
+  const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), nav, page, reqT };
   if (LS && isServerHost(url)) LS.addOrigin(new URL(url).origin);
   if (LS && page && !nav) LS.blockOn(page, request);
   const pEnq = enqueue(item);
@@ -537,13 +539,16 @@ async function lsFetch(route, request, item, key, page, url, release, opt = {}) 
   }
   rec(key, 'net', 'browser.done', `${item.method} ${item.target} ${resp.status()} ${digest(body)}`);
   diag(key, 'browser.body', `${item.method} ${item.target} ${resp.status()}`, body);
+  // A main-frame document keeps its page "navigating" until the page has it (Chromium suspends the page meanwhile).
+  const nav = item.nav ? LS.navHold(page) : null;
   release();
-  LS.respond(page, item, async () => { await route.fulfill({ status: resp.status(), headers: out, body }); }, request);
+  LS.respond(page, item, async () => { try { await route.fulfill({ status: resp.status(), headers: out, body }); } finally { if (nav) nav(); } }, request);
   if (opt.noMsg) LS.longPollArrived(item.lsId);
 }
 
 let LOAD_SEQ = 0;
-async function lsLoad(route, request, url, page) {
+async function lsLoad(route, request, url, page, reqT) {
+  LS.blockOn(page, request); // pause policy: the page waits for its subresources like for its fetches
   lockstep.netStart();
   let resp = null;
   let body = null;
@@ -552,7 +557,7 @@ async function lsLoad(route, request, url, page) {
     body = await resp.body();
   } catch {
     lockstep.netEnd();
-    LS.respond(page, { key: `~load ${url}`, lsId: ++LOAD_SEQ }, async () => { await route.abort('failed'); });
+    LS.respond(page, { key: `~load ${url}`, lsId: ++LOAD_SEQ, reqT }, async () => { await route.abort('failed'); });
     return;
   }
   const out = {};
@@ -562,7 +567,7 @@ async function lsLoad(route, request, url, page) {
     out[n] = out[n] === undefined ? value : `${out[n]}${n === 'set-cookie' ? '\n' : ', '}${value}`;
   }
   // Queued before the load counts as finished, so the quiet point that sees the load done also sees its response.
-  LS.respond(page, { key: `~load ${url}`, lsId: ++LOAD_SEQ }, async () => { await route.fulfill({ status: resp.status(), headers: out, body }); });
+  LS.respond(page, { key: `~load ${url}`, lsId: ++LOAD_SEQ, reqT }, async () => { await route.fulfill({ status: resp.status(), headers: out, body }); }, request);
   lockstep.netEnd();
 }
 
@@ -1144,7 +1149,7 @@ function patchBrowserType(bt) {
       // their requests to localhost (WebSocket: ERR_BLOCKED_BY_LOCAL_NETWORK_ACCESS_CHECKS, found on uptime-kuma).
       // Script compilation off the main thread finishes in real time and would let a script start in an earlier or
       // later time slice: compile on the main thread (V8 single-threaded, no script streaming).
-      '--js-flags=--single-threaded',
+      ...(ENV.DETJS_LS_V8_SINGLE === '1' ? ['--js-flags=--single-threaded'] : []), // off by default: it crashes WebAssembly-heavy apps (actual)
       '--disable-features=LocalNetworkAccessChecks,BlockInsecurePrivateNetworkRequests,PrivateNetworkAccessSendPreflights,ScriptStreaming,ScriptStreamingForNonHTTP,ScriptStreamingForInlineScripts,OffMainThreadCSSPaintImageGeneration'] };
     const browser = await origLaunch.call(this, opts);
     patchBrowser(browser);

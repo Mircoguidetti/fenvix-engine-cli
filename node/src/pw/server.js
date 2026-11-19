@@ -240,6 +240,49 @@ function waitQuiet(ms, max, done) {
   REAL_SET_TIMEOUT(step, 2);
 }
 
+// ------------------------------------------------------------------ outbound I/O (round 4, §5(2))
+// HTTP requests the app server makes itself (uptime-kuma's monitor checks, webhooks), DNS lookups and fetch():
+// while one is in flight the server is not quiet, so it completes before the engine decides anything else, at
+// the same engine time in every run.
+const OUTB = { n: 0 };
+function outStart() { OUTB.n++; let open = true; return () => { if (open) { open = false; OUTB.n--; } }; }
+function installOutbound() {
+  for (const mod of [http, https]) {
+    for (const name of ['request', 'get']) {
+      const orig = mod[name];
+      mod[name] = function (...a) {
+        const req = orig.apply(this, a);
+        try {
+          const done = outStart();
+          req.once('close', done);
+          req.once('error', done);
+          req.once('response', (res) => { res.once('end', done); res.once('close', done); res.once('error', done); });
+        } catch { /* not a ClientRequest */ }
+        return req;
+      };
+    }
+  }
+  if (typeof globalThis.fetch === 'function') {
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = function fetch(...a) {
+      const done = outStart();
+      const p = realFetch.apply(this, a);
+      p.then(done, done);
+      return p;
+    };
+  }
+  const dns = require('node:dns');
+  const origLookup = dns.lookup;
+  dns.lookup = function lookup(host, ...rest) {
+    const cbi = rest.findIndex((x) => typeof x === 'function');
+    if (cbi < 0) return origLookup.call(this, host, ...rest);
+    const cb = rest[cbi];
+    const done = outStart();
+    rest[cbi] = function (...r) { done(); return cb.apply(this, r); };
+    return origLookup.call(this, host, ...rest);
+  };
+}
+
 // ------------------------------------------------------------------ lockstep control
 // GET /__detjs/ls/settle?t=T&w=MS&max=MS: the engine clock is now T. The first call attaches the server to the
 // engine (pending timers restart at T). Fires every virtual timer due by T (in order), then waits until the
@@ -256,7 +299,7 @@ function lsQuiet(w, max, done) {
     prev = cur;
     const blocked = [...LSS.msgs.values()].every((st) => clockMod.DRIVER.queue.some((t) => t._ctx === st));
     const due = clockMod.DRIVER.queue.length > 0 && clockMod.DRIVER.queue[0]._due <= LSS.t;
-    const idle = d.utilization < 0.1 && blocked && !due;
+    const idle = d.utilization < 0.1 && blocked && !due && OUTB.n === 0;
     if (process.env.DETJS_LS_QDEBUG) process.stderr.write(`q u=${d.utilization.toFixed(3)} b=${blocked} due=${due} dt=${(now - start).toFixed(1)}\n`);
     if (!idle) idleSince = null; else if (idleSince === null) idleSince = now;
     if (idleSince !== null && now - idleSince >= w) return done(true);
@@ -275,7 +318,12 @@ function writeDbClock() {
   try {
     const d = new (clockMod.REAL.Date)(EPOCH_MS_SRV + LSS.t / 1e6);
     const iso = d.toISOString();
-    require('node:fs').writeFileSync(DB_CLOCK_FILE, `${iso.slice(0, 10)} ${iso.slice(11, 19)}\n`);
+    // Atomic (write + rename): libfaketime re-reads the file on every clock call of the database; a half-written
+    // file read as an empty clock took Postgres down in gate run 2 (documenso: "Server has closed the connection").
+    const fsm = require('node:fs');
+    const tmp = `${DB_CLOCK_FILE}.${process.pid}.tmp`;
+    fsm.writeFileSync(tmp, `${iso.slice(0, 10)} ${iso.slice(11, 19)}\n`);
+    fsm.renameSync(tmp, DB_CLOCK_FILE);
   } catch { /* best effort */ }
 }
 
@@ -401,6 +449,7 @@ function patchServer(proto) {
 if (install()) {
   if (SCOPE) installScope();
   if (LOCKSTEP && SCOPE) {
+    if (process.env.DETJS_LS_OUTBOUND !== '0') installOutbound();
     clockMod.setLockstep({ on: true, now: nowNs, runIn: (ctx, fn) => MSG.run(ctx, fn) });
     // Park: once the server listens (plus DETJS_LS_PARK_MS), its timers stop firing in real time and wait for the
     // engine; a timer that fired between start-up and the first test would make the first response depend on

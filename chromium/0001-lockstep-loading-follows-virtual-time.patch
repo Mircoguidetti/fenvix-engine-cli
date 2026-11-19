@@ -1,0 +1,37 @@
+diff --git a/third_party/blink/renderer/platform/scheduler/main_thread/frame_scheduler_impl.cc b/third_party/blink/renderer/platform/scheduler/main_thread/frame_scheduler_impl.cc
+index e6dccb92..cfed6620 100644
+--- a/third_party/blink/renderer/platform/scheduler/main_thread/frame_scheduler_impl.cc
++++ b/third_party/blink/renderer/platform/scheduler/main_thread/frame_scheduler_impl.cc
+@@ -4,6 +4,8 @@
+ 
+ #include "third_party/blink/renderer/platform/scheduler/main_thread/frame_scheduler_impl.h"
+ 
++#include "base/command_line.h"
++
+ #include <memory>
+ 
+ #include "base/feature_list.h"
+@@ -1545,11 +1547,23 @@ FrameSchedulerImpl::CanRunWhenVirtualTimePausedTaskQueueTraits() {
+   return QueueTraits().SetCanRunWhenVirtualTimePaused(true);
+ }
+ 
++namespace {
++// fenvix lockstep: with --lockstep-loading-follows-virtual-time, loading tasks (response headers, body chunks,
++// load completion) are fenced like timers while virtual time is paused, so a page only sees the network inside a
++// virtual-time budget granted by the engine, never at a real-time dependent moment of a pause.
++bool LockstepLoadingFollowsVirtualTime() {
++  static const bool value = base::CommandLine::ForCurrentProcess()->HasSwitch(
++      "lockstep-loading-follows-virtual-time");
++  return value;
++}
++}  // namespace
++
+ MainThreadTaskQueue::QueueTraits FrameSchedulerImpl::LoadingTaskQueueTraits() {
+   return QueueTraits()
+       .SetCanBePaused(true)
+       .SetCanBeFrozen(true)
+       .SetCanBeDeferred(true)
++      .SetCanRunWhenVirtualTimePaused(!LockstepLoadingFollowsVirtualTime())
+       .SetPrioritisationType(QueueTraits::PrioritisationType::kLoading);
+ }
+ 

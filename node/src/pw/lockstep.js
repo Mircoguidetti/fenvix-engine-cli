@@ -222,6 +222,10 @@ class Coordinator {
     this.stallMs = Number(ENV.DETJS_LS_STALL_MS || 3000);
     this.frameMs = Number(ENV.DETJS_LS_FRAME_MS || 16);
     this.frames = ENV.DETJS_LS_FRAMES !== '0';
+    this.pageClock = ENV.DETJS_LS_PAGE_CLOCK !== '0';
+    this.microMax = Number(ENV.DETJS_LS_MICRO_MAX || 200);
+    this.fetchMs = Number(ENV.DETJS_LS_FETCH_MS === undefined ? 10 : ENV.DETJS_LS_FETCH_MS);
+    this.microMs = Number(ENV.DETJS_LS_MICRO_MS === undefined ? 0.001 : ENV.DETJS_LS_MICRO_MS);
     // pauseIfNetworkFetchesPending: a page's time stops while any of its requests is open, so the real duration
     // of a script or style load never becomes page time (round-3 class A on actual: draw counts).
     // Default `advance`: every response a page gets (app requests, scripts, styles, images) is fetched by the engine
@@ -415,7 +419,12 @@ class Coordinator {
   /** A response the engine fetched for a page: delivered at a quiet point, one at a time per page (the next only
    * after the page saw the previous one, which happens in the page's virtual time). */
   respond(page, item, fulfill, request) {
-    this.responses.push({ page, decision: item.decision || 0, id: item.lsId || 0, key: item.key || '', fulfill, request });
+    // Chromium gives every completed fetch at least FETCH_MS of the page's virtual time (Blink's non-instant
+    // virtual-time pauser: time jumps to start + 10 ms when the load ends). A response handed over earlier would
+    // move the page clock past T by a real-time dependent amount: it is held until T >= start + FETCH_MS.
+    const isDoc = !!item.nav || (request && request.resourceType && request.resourceType() === 'document');
+    const notBefore = isDoc || this.vtPolicy !== 'advance' ? 0 : (item.reqT === undefined ? this.sched.now() : item.reqT) + this.fetchMs * NS;
+    this.responses.push({ page, decision: item.decision || 0, id: item.lsId || 0, key: item.key || '', fulfill, request, notBefore, doc: !!item.nav || (request && request.resourceType && request.resourceType() === 'document') });
     this.responses.sort((a, b) => a.decision - b.decision || (a.key || '').localeCompare(b.key || '') || a.id - b.id);
     activity();
     this.poke();
@@ -426,6 +435,7 @@ class Coordinator {
     let n = 0;
     const busyPages = new Set();
     for (const r of [...this.responses]) {
+      if (r.notBefore > this.sched.now()) continue;
       const p = this.pageState(r.page);
       // With pauseIfNetworkFetchesPending the page's time cannot run while a response is outstanding, so responses
       // are handed over in decision order without waiting for the page to see the previous one.
@@ -446,6 +456,44 @@ class Coordinator {
       const tf = realNow();
       try { await r.fulfill(); } catch { if (p && p.awaiting === r.request) p.awaiting = null; }
       this.trace(`fulfill ${Math.round(realNow() - tf)}ms`);
+      // §5(a): the page sees the response in a micro-slice of its own, right now. Chromium either processes a
+      // fulfilled response while the page's time is paused or at the start of its next slice (decided in real
+      // time inside the renderer); a micro-slice runs every task that is ready (virtual time only moves when the
+      // page is idle), so both cases end in the same state at the same page time.
+      if (p && this.microMs > 0 && this.vtPolicy === 'advance' && !r.doc && !p.closed && p.navs === 0 && !p.inBudget && !p.running) {
+        // The body reaches the renderer through a data pipe in real time: micro-slices (1 us of page time each) run
+        // until the load finished, plus one more for the JS continuation that the finished load resolves.
+        // fetch/XHR: the page's own counter of responses its JS received (fetch settled, XHR loadend) is the
+        // completion signal (the browser-side "finished" can precede the renderer's data-pipe read).
+        let rtype = '';
+        try { rtype = r.request ? r.request.resourceType() : ''; } catch { rtype = ''; }
+        const jsSeen = rtype === 'fetch' || rtype === 'xhr';
+        if (jsSeen) p.expectDone = (p.expectDone || 0) + 1;
+        let finished = !r.request;
+        const onEnd = (x) => { if (x === r.request && !jsSeen) finished = true; };
+        if (r.request) { r.page.on('requestfinished', onEnd); r.page.on('requestfailed', onEnd); }
+        let extra = 0;
+        for (let i = 0; i < this.microMax && !p.closed && p.navs === 0; i++) {
+          if (jsSeen && !finished) {
+            const d = await this.pageDone(p);
+            if (d === null || d >= p.expectDone) finished = true;
+            // A response whose JS never runs (its document went away): stop expecting it.
+            else if (i >= 40) { p.expectDone = d; finished = true; }
+          }
+          // A micro-slice can start a navigation (the page sets location): its document waits in the queue and
+          // Chromium suspends the page until it arrives, so the slice ends after the engine released it.
+          const mto = p.pageT + this.microMs * NS;
+          const b = Promise.all([this.runWorkers(mto), this.budget(p, mto)]);
+          while (await Promise.race([b.then(() => true), realSleep(2).then(() => false)]) === false) {
+            if (p.navs > 0 || this.navPending.length) break;
+          }
+          if (p.navs > 0 || p.inBudget) break;
+          if (finished && ++extra >= 2) break;
+          if (!finished) await realSleep(1);
+        }
+        if (r.request) { r.page.off('requestfinished', onEnd); r.page.off('requestfailed', onEnd); }
+        await this.readPageClock(p);
+      }
       n++;
     }
     return n;
@@ -457,10 +505,97 @@ class Coordinator {
     return null;
   }
 
+  // ------------------------------------------------------------ workers (round 4, §5(2))
+  // Dedicated and shared workers run on their own virtual-time controller: once their page's time is controlled
+  // they stop and never resume (MEASURED: a 10 ms interval in a worker made 0 ticks in 300 ms real + 100 ms of page
+  // budget). The engine attaches to every worker target (browser CDP session, non-flat) and gives it the same
+  // slices as the pages, right after each page slice, so messages between page and worker cross at slice ends.
+  async ensureWorkerControl(ctx) {
+    if (this.workerCtl !== undefined || ENV.DETJS_LS_WORKERS === '0') return;
+    this.workerCtl = null;
+    let browser = null;
+    try { browser = ctx.browser(); } catch { browser = null; }
+    if (!browser || typeof browser.newBrowserCDPSession !== 'function') return;
+    let bs;
+    try { bs = await OWN.run(true, () => browser.newBrowserCDPSession()); } catch { return; }
+    this.workerCtl = { bs, workers: new Map(), nextId: 1, waiters: new Map() };
+    bs.on('Target.receivedMessageFromTarget', (e) => {
+      let m;
+      try { m = JSON.parse(e.message); } catch { return; }
+      const w = this.workerCtl.workers.get(e.sessionId);
+      if (m.id && this.workerCtl.waiters.has(m.id)) { const r = this.workerCtl.waiters.get(m.id); this.workerCtl.waiters.delete(m.id); r(m); return; }
+      if (w && m.method === 'Emulation.virtualTimeBudgetExpired' && w.expired) { const r = w.expired; w.expired = null; w.inBudget = false; r(); activity(); this.poke(); }
+    });
+    bs.on('Target.targetCreated', (e) => { const t = e.targetInfo; if (t && /^(worker|shared_worker)$/.test(t.type)) this.attachWorker(t.targetId).catch(() => {}); });
+    bs.on('Target.targetDestroyed', (e) => {
+      for (const [sid, w] of this.workerCtl.workers) if (w.targetId === e.targetId) { w.closed = true; if (w.expired) { const r = w.expired; w.expired = null; r(); } this.workerCtl.workers.delete(sid); }
+    });
+    bs.on('Target.detachedFromTarget', (e) => {
+      const w = this.workerCtl.workers.get(e.sessionId);
+      if (w) { w.closed = true; if (w.expired) { const r = w.expired; w.expired = null; r(); } this.workerCtl.workers.delete(e.sessionId); }
+    });
+    ACT.ownDepth++;
+    try { await bs.send('Target.setDiscoverTargets', { discover: true }); } catch { /* old browser */ } finally { ACT.ownDepth--; }
+  }
+
+  workerSend(w, method, params) {
+    const wc = this.workerCtl;
+    const id = wc.nextId++;
+    return new Promise((resolve) => {
+      wc.waiters.set(id, resolve);
+      ACT.ownDepth++;
+      wc.bs.send('Target.sendMessageToTarget', { sessionId: w.sessionId, message: JSON.stringify({ id, method, params }) })
+        .catch(() => { wc.waiters.delete(id); resolve(null); }).finally(() => { ACT.ownDepth--; });
+      REAL.setTimeout(() => { if (wc.waiters.has(id)) { wc.waiters.delete(id); resolve(null); } }, 3000);
+    });
+  }
+
+  async attachWorker(targetId) {
+    const wc = this.workerCtl;
+    if (!wc) return;
+    let r;
+    ACT.ownDepth++;
+    try { r = await wc.bs.send('Target.attachToTarget', { targetId, flatten: false }); } catch { return; } finally { ACT.ownDepth--; }
+    const w = { sessionId: r.sessionId, targetId, pageT: this.sched.now(), inBudget: false, expired: null, closed: false };
+    wc.workers.set(w.sessionId, w);
+    await this.workerSend(w, 'Emulation.setVirtualTimePolicy', { policy: 'pause', initialVirtualTime: (this.o.epochMs + this.sched.now() / NS) / 1000 });
+    this.stats.workers = (this.stats.workers || 0) + 1;
+    activity(); this.poke();
+  }
+
+  /** Bring every worker to toNs (after a page slice). */
+  async runWorkers(toNs) {
+    const wc = this.workerCtl;
+    if (!wc || !wc.workers.size) return;
+    await Promise.all([...wc.workers.values()].map((w) => this.runWorker(w, toNs)));
+  }
+
+  async runWorker(w, toNs) {
+    {
+      if (w.closed || w.inBudget) return;
+      const budget = (toNs - w.pageT) / NS;
+      if (budget <= 0) return;
+      w.pageT = toNs;
+      w.inBudget = true;
+      const expired = new Promise((res) => { w.expired = res; });
+      const ok = await this.workerSend(w, 'Emulation.setVirtualTimePolicy', { policy: 'advance', budget });
+      if (!ok || ok.error) { w.inBudget = false; w.expired = null; return; }
+      await this.awaitSlice(expired, () => w.closed, (v) => { w.waitingEngine = v; }, () => {
+        this.trace('stall worker budget'); w.inBudget = false; w.expired = null;
+      });
+    }
+  }
+
   async addPage(ctx, page) {
+    await this.ensureWorkerControl(ctx);
     let cdp;
     try { cdp = await ctx.newCDPSession(page); } catch { return null; }
-    const p = { page, cdp, pageT: this.sched.now(), inBudget: false, expired: null, navs: 0, routed: 0, closed: false, startedDoc: 0, startedBase: 0, blockers: new Set() };
+    const p = { page, cdp, pageT: this.sched.now(), inBudget: false, expired: null, navs: 0, routed: 0, closed: false, startedDoc: 0, startedBase: 0, blockers: new Set(), issued: 0, routedAll: 0 };
+    // Exact request barrier (round 4): the renderer announces every request it starts (Network.requestWillBeSent)
+    // on this session before it answers a later Runtime.evaluate; the engine waits until as many requests reached
+    // its route handler. Parser-started requests (scripts, styles) are covered, which the page counters were not.
+    cdp.on('Network.requestWillBeSent', (e) => { if (e && e.request && /^https?:/.test(e.request.url)) { p.issued++; activity(); } });
+    try { ACT.ownDepth++; await cdp.send('Network.enable', { maxTotalBufferSize: 0, maxResourceBufferSize: 0 }); } catch { /* ignore */ } finally { ACT.ownDepth--; }
     cdp.on('Emulation.virtualTimeBudgetExpired', () => {
       if (!p.inBudget) return;
       p.inBudget = false;
@@ -506,6 +641,36 @@ class Coordinator {
     activity(); this.poke();
   }
 
+  navHold(page) {
+    const p = this.pageState(page);
+    if (!p) return () => {};
+    p.navs++;
+    let open = true;
+    return () => { if (open) { open = false; p.navs = Math.max(0, p.navs - 1); activity(); this.poke(); } };
+  }
+
+  async pageDone(p) {
+    ACT.ownDepth++;
+    try {
+      const r = await Promise.race([
+        p.cdp.send('Runtime.evaluate', { expression: 'self.__detjs && self.__detjs.done ? self.__detjs.done() : -1', returnByValue: true }),
+        realSleep(300).then(() => null),
+      ]);
+      const v = r && r.result ? Number(r.result.value) : -1;
+      if (v < 0) return null;
+      // A new document restarts the page's counter.
+      if (p.doneDoc !== undefined && v < p.doneDoc) p.doneBase = (p.doneBase || 0) + p.doneDoc;
+      p.doneDoc = v;
+      return (p.doneBase || 0) + v;
+    } catch { return null; } finally { ACT.ownDepth--; }
+  }
+
+  /** Any request of `page` reached the route handler. */
+  routedAny(page) {
+    const p = this.pageState(page);
+    if (p) { p.routedAll++; activity(); this.poke(); }
+  }
+
   /** A fetch/XHR of `page` reached the route handler. */
   routed(page) {
     const p = this.pageState(page);
@@ -533,7 +698,11 @@ class Coordinator {
     while (p.pageT < p.target && !p.closed && p.navs === 0) {
       const nextFrame = (Math.floor(p.pageT / F) + 1) * F;
       const stop = this.frames ? Math.min(nextFrame, p.target) : p.target;
+      // Workers and their page share one slice: Chromium ends the page's budget only when its workers reached it.
+      const wk = this.runWorkers(stop);
+      if (this.pageClock) await this.anchor(p, p.pageT, (stop - p.pageT) / NS);
       await this.budget(p, stop);
+      await wk;
       if (this.frames && stop === nextFrame && !p.closed) await this.beginFrame(p, stop);
       await this.readPageClock(p);
     }
@@ -541,7 +710,20 @@ class Coordinator {
 
   /** After every slice: Chromium may have moved the page's clock past the slice (its fixed duration for every
    * completed fetch). Read it at this fixed point of every slice, so the next slice brings it back to T. */
+  /** §5(b): the page clock reads engine time `baseNs` plus at most `allowMs` of the page's own progress. */
+  async anchor(p, baseNs, allowMs) {
+    if (p.closed || p.navs > 0) return;
+    ACT.ownDepth++;
+    try {
+      await Promise.race([
+        p.cdp.send('Runtime.evaluate', { expression: `self.__detjs && self.__detjs.anchor ? self.__detjs.anchor(${this.o.epochMs + baseNs / NS}, ${allowMs}) : 0`, returnByValue: true }),
+        realSleep(300),
+      ]);
+    } catch { /* navigating */ } finally { ACT.ownDepth--; }
+  }
+
   async readPageClock(p) {
+    if (this.pageClock) { await this.anchor(p, p.pageT, 0); return; }
     if (p.closed || p.navs > 0) return;
     ACT.ownDepth++;
     try {
@@ -587,12 +769,33 @@ class Coordinator {
       p.inBudget = false; p.closed = true; this.pages.delete(p); return;
     }
     ACT.ownDepth--;
-    for (;;) {
-      const r = await Promise.race([expired, realSleep(this.serverMaxMs).then(() => 'timeout')]);
-      if (r !== 'timeout') break;
-      if (p.blockers.size > 0 || p.closed) continue; // paused on a request the engine holds: legitimately waiting
-      this.stats.stalls++; this.trace(`stall budget ${budget}ms`); p.inBudget = false; p.expired = null; break;
+    await this.awaitSlice(expired, () => p.closed || p.blockers.size > 0, (v) => { p.waitingEngine = v; }, () => {
+      this.trace(`stall budget ${budget}ms`); p.inBudget = false; p.expired = null;
+    });
+  }
+
+  /** Something the engine holds can keep a slice from ending (a request of the page or of its workers, which
+   * Chromium waits for). While that is so, the page counts as waiting for the engine (quiet). */
+  engineWork() {
+    return this.sched.pending() > 0 || this.holds.length > 0 || this.responses.length > 0 || this.inprogress.size > 0 || ACT.routes > 0;
+  }
+
+  async awaitSlice(expired, legit, setWaiting, onStall) {
+    let since = realNow();
+    let done = false;
+    expired.then(() => { done = true; });
+    while (!done) {
+      await Promise.race([expired, realSleep(10)]);
+      if (done) break;
+      if (legit() || this.engineWork()) {
+        setWaiting(true);
+        since = realNow();
+        activity(); this.poke();
+        continue;
+      }
+      if (realNow() - since > this.serverMaxMs) { this.stats.stalls++; onStall(); break; }
     }
+    setWaiting(false);
   }
 
   /** Wait until every page has finished its budget (a page with a pending navigation counts as paused). */
@@ -601,7 +804,9 @@ class Coordinator {
     for (;;) {
       // A page whose virtual time is paused on one of its requests (pauseIfNetworkFetchesPending) waits for the
       // engine: it is quiet.
-      const busy = [...this.pages].filter((p) => (p.inBudget || p.running) && p.navs === 0 && !p.closed && p.blockers.size === 0);
+      const wk = this.workerCtl ? [...this.workerCtl.workers.values()] : [];
+      const workersWaiting = wk.some((w) => w.waitingEngine);
+      const busy = [...this.pages].filter((p) => (p.inBudget || p.running) && p.navs === 0 && !p.closed && p.blockers.size === 0 && !p.waitingEngine && !workersWaiting);
       if (!busy.length) return true;
       if (realNow() - t > this.serverMaxMs) { this.stats.stalls++; this.diag('stall', 'budget'); return false; }
       await new Promise((r) => { this.wake = r; REAL.setTimeout(r, 50); });
@@ -638,7 +843,7 @@ class Coordinator {
     if (!probed) return;
     const routed = () => [...this.pages].reduce((a, p) => a + p.routed, 0) + this.routedWs;
     const t = realNow();
-    while (routed() < started && realNow() - t < this.probeMaxMs) {
+    while ((routed() < started || [...this.pages].some((p) => !p.closed && p.routedAll < p.issued)) && realNow() - t < this.probeMaxMs) {
       this.stats.probeWaits++;
       await realSleep(2);
     }
@@ -700,7 +905,7 @@ class Coordinator {
       const t2 = realNow();
       await this.probePages();
       const t3 = realNow();
-      if (t3 - t1 > 100) this.trace(`slow-settle paused=${Math.round(t2 - t1)} probe=${Math.round(t3 - t2)} total=${Math.round(t3 - tS)}`);
+      if (t3 - t1 > 100) this.trace(`slow-settle paused=${Math.round(t2 - t1)} probe=${Math.round(t3 - t2)} total=${Math.round(t3 - tS)} pages=${[...this.pages].map((p) => `[run=${p.running} inb=${p.inBudget} navs=${p.navs} blk=${p.blockers.size} url=${(() => { try { return p.page.url().slice(-20); } catch { return '?'; } })()}]`)} navp=${this.navPending.length} pend=${this.sched.pending()} holds=${this.holds.length} resp=${this.responses.length}`);
       // Navigations started by the test code must reach the queue first (their document request).
       const tNav = realNow();
       while (this.navPending.length && realNow() - tNav < this.probeMaxMs) await realSleep(2);
@@ -710,7 +915,7 @@ class Coordinator {
       const window = (async () => {
         while (realNow() - t0 < this.quietMs) {
           await realSleep(2);
-          if (ACT.n !== a0 || ACT.routes > 0 || [...this.pages].some((p) => (p.inBudget || p.running) && p.navs === 0 && p.blockers.size === 0)) return false;
+          if (ACT.n !== a0 || ACT.routes > 0 || [...this.pages].some((p) => (p.inBudget || p.running) && p.navs === 0 && p.blockers.size === 0 && !p.waitingEngine)) return false;
         }
         return true;
       })();
@@ -834,6 +1039,7 @@ class Coordinator {
       this.sched.setWaiting('runner', rs.state === 'waiting');
       let netDue = this.holds.length ? this.holds[0].due : null;
       for (const g of this.admits) if (g.due > this.sched.now() && (netDue === null || g.due < netDue)) netDue = g.due;
+      for (const r of this.responses) if (r.notBefore > this.sched.now() && (netDue === null || r.notBefore < netDue)) netDue = r.notBefore;
       this.sched.setDeadline('net', netDue);
       this.sched.setWaiting('net', false);
       let srvNext = null;

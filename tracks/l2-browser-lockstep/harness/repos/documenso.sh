@@ -15,7 +15,7 @@ setup() {
   if [ "${L2_DB_CLOCK:-1}" = 1 ]; then
     e5_prepare
     mkdir -p "$DBCLOCK_DIR" && chmod 777 "$DBCLOCK_DIR"
-    printf '%s\n' "$(date -u -d "${L2_EPOCH:-2026-01-01T00:00:00Z}" '+%Y-%m-%d %H:%M:%S' 2>/dev/null || date -u '+%Y-%m-%d %H:%M:%S')" > "$DBCLOCK_DIR/ts"
+    date -u '+@%Y-%m-%d %H:%M:%S' > "$DBCLOCK_DIR/ts"
     chmod 666 "$DBCLOCK_DIR/ts"
     local vol
     vol=$(cat "$L2_OUT/pg-volume")
@@ -33,9 +33,21 @@ setup() {
 server_start() {  # MODE SEED
   local pre=""
   if [ -n "${L2_DBCLOCK_FILE:-}" ]; then
-    if [ "$1" = det ]; then pre="export DETJS_LS_DB_CLOCK_FILE='$L2_DBCLOCK_FILE';"
-    else date -u '+@%Y-%m-%d %H:%M:%S' > "$L2_DBCLOCK_FILE"; fi  # plain runs: the database clock runs in real time
+    if [ "$1" = det ]; then
+      pre="export DETJS_LS_DB_CLOCK_FILE='$L2_DBCLOCK_FILE';"
+      # every lockstep run starts at the run's epoch (atomic write: libfaketime reads the file on every call)
+      date -u -d "${L2_EPOCH}" '+%Y-%m-%d %H:%M:%S' > "$L2_DBCLOCK_FILE.tmp" && mv "$L2_DBCLOCK_FILE.tmp" "$L2_DBCLOCK_FILE"
+    else date -u '+@%Y-%m-%d %H:%M:%S' > "$L2_DBCLOCK_FILE.tmp" && mv "$L2_DBCLOCK_FILE.tmp" "$L2_DBCLOCK_FILE"; fi  # plain: real time
   fi
   bg_start "$L2_OUT/server.pid" "$L2_OUT/server-$1.log" bash -c "source '$L2_H/lib.sh'; export NODE_ENV=test; $pre detjs_serve $1 ${2:-none} -- npm run start -w @documenso/remix"
   wait_http http://localhost:3000 300
+}
+
+reset() {  # before every run: the database must be up (a dead one is restarted on its volume, and reported)
+  if ! docker exec database pg_isready -U documenso >/dev/null 2>&1; then
+    echo "detjs-harness: database down before run, restarting" >&2
+    docker logs --tail 30 database >&2 || true
+    docker start database >/dev/null 2>&1 || true
+    wait_cmd 90 docker exec database pg_isready -U documenso || true
+  fi
 }

@@ -368,6 +368,8 @@ if JOB == "gate":
                         total += f.stat().st_size
             k, o = outcome_for(spec, r)
             T["runs"].append(o)
+            if r.get("error"):
+                T.setdefault("run_errors", {})[str(i + 1)] = r["error"][-800:]
             T["errors"].append((r.get("errors") or {}).get(k, "")[:400])
             T["walls"].append(r.get("wall_s"))
             st = [x for x in ls_stats(label) if spec["grep"] in x.get("test", "")]
