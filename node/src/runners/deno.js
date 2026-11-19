@@ -2,11 +2,9 @@
 // `detjs deno-test [--det ...] [deno test args]`: Deno's test runner under Level 0 and the cache with proof.
 //
 // Without --det (and without DETJS=1) `deno test` runs unchanged. With --det:
-// * discovery: `deno test --doc=false ... --filter <none>`-free listing is not offered by Deno, so detjs lists the
-//   files with Deno's own rules through `deno test --no-run --reporter=junit` (the JUnit report of a run that does
-//   not run tests lists no files either), hence: `deno info`-independent walk of the arguments (directories are
-//   walked for `*_test`, `*.test`, `test.*` modules with Deno's extensions, `deno.json` "test.include/exclude"
-//   honoured) — see `discover` below;
+// * discovery: Deno has no listing command, so detjs applies Deno's rules (`discover` below: file arguments as given,
+//   directories walked for `{*_,*.,}test.{js,mjs,ts,mts,jsx,tsx}`, deno.json `test.include/exclude`, `exclude`,
+//   `--ignore=`);
 // * one `deno test` process per file (Deno already gives every file its own isolate, but the process, its
 //   environment, working directory and files are shared), in detjs' order; inside a file, declaration order, or
 //   Deno's own `--shuffle=<seed derived by the core>` with --det-seed;
