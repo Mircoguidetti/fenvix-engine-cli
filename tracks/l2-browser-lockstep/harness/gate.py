@@ -348,7 +348,24 @@ if JOB == "gate":
                 T["budget_stop"] = i
                 break
             label = f"g{len(R['gate'])}-det-{i + 1}"
-            r = run_pw(label, "det", args=args, timeout_s=P["target_timeout_min"] * 60)
+            dd = None
+            if i < P.get("diag_runs", 2):
+                dd = OUT / "diag" / label
+                shutil.rmtree(dd, ignore_errors=True)
+                os.environ["DETJS_PW_DIAG_DIR"] = str(dd / "server")  # the app server (server_start) inherits it
+            r = run_pw(label, "det", args=args, timeout_s=P["target_timeout_min"] * 60,
+                       env_extra={"DETJS_PW_DIAG_DIR": str(dd / "pages")} if dd else None)
+            os.environ.pop("DETJS_PW_DIAG_DIR", None)
+            if dd and dd.exists():
+                # keep the diagnosis texts of the target test (bodies, frames, DOM) for the divergence analysis
+                needle = re.sub(r"[^A-Za-z0-9._-]+", "_", spec["grep"])[:40]
+                total = 0
+                for f in sorted(dd.rglob("*")):
+                    if f.is_file() and needle in f.name and f.stat().st_size < 4_000_000 and total < 10_000_000:
+                        dst = RESULT.parent / f"{JOB}-{NAME}" / "diag" / label / f.relative_to(dd)
+                        dst.parent.mkdir(parents=True, exist_ok=True)
+                        dst.write_bytes(gzip.compress(f.read_bytes()))
+                        total += f.stat().st_size
             k, o = outcome_for(spec, r)
             T["runs"].append(o)
             T["errors"].append((r.get("errors") or {}).get(k, "")[:400])

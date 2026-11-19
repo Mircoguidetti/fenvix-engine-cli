@@ -161,7 +161,9 @@ class RunnerClock {
 
   // ------------------------------------------------------------ timers
   _schedule(t) {
-    t._due = Math.ceil(this.engineNow() + t._delay * NS_PER_MS); // whole ns: the scheduler's clock is an integer
+    // Whole milliseconds: delays computed from clock reads carry sub-microsecond parts that depend on how many
+    // times Playwright read the clock; on the ms grid they do not change the instant a timer fires.
+    t._due = Math.ceil((this.engineNow() + t._delay * NS_PER_MS) / NS_PER_MS - 1e-6) * NS_PER_MS;
     t._seq = this.seq++;
     t._active = true;
     this.byId.set(t.id, t);
@@ -238,7 +240,7 @@ class RunnerClock {
       } finally {
         if (t._repeat && !t._destroyed && !t._active) {
           t._seq = this.seq++;
-          t._due = Math.ceil(t._due + t._delay * NS_PER_MS);
+          t._due = Math.ceil((t._due + t._delay * NS_PER_MS) / NS_PER_MS - 1e-6) * NS_PER_MS;
           t._active = true;
           const q = this.queue;
           let i = 0;

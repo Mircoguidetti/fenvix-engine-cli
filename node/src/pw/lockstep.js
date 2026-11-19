@@ -240,6 +240,7 @@ class Coordinator {
     this.pages = new Set();
     this.servers = new Map(); // origin -> { attached, next, waiting, label }
     this.blocked = new Set();
+    this.routedWs = 0; // WebSocket frames pages sent that reached the engine
     this.quietHooks = [];
     this.window = new Map(); // test key -> events recorded since the last decision (flushed sorted)
     this.late = new Map(); // test key -> [decision, source, op, value] written at the end of the test
@@ -457,7 +458,7 @@ class Coordinator {
   async addPage(ctx, page) {
     let cdp;
     try { cdp = await ctx.newCDPSession(page); } catch { return null; }
-    const p = { page, cdp, pageT: this.sched.now(), inBudget: false, expired: null, navs: 0, routed: 0, closed: false, started: 0, blockers: new Set() };
+    const p = { page, cdp, pageT: this.sched.now(), inBudget: false, expired: null, navs: 0, routed: 0, closed: false, startedDoc: 0, startedBase: 0, blockers: new Set() };
     cdp.on('Emulation.virtualTimeBudgetExpired', () => {
       if (!p.inBudget) return;
       p.inBudget = false;
@@ -526,7 +527,26 @@ class Coordinator {
       const stop = this.frames ? Math.min(nextFrame, p.target) : p.target;
       await this.budget(p, stop);
       if (this.frames && stop === nextFrame && !p.closed) await this.beginFrame(p, stop);
+      await this.readPageClock(p);
     }
+  }
+
+  /** After every slice: Chromium may have moved the page's clock past the slice (its fixed duration for every
+   * completed fetch). Read it at this fixed point of every slice, so the next slice brings it back to T. */
+  async readPageClock(p) {
+    if (p.closed || p.navs > 0) return;
+    ACT.ownDepth++;
+    try {
+      const r = await Promise.race([
+        p.cdp.send('Runtime.evaluate', { expression: 'self.__detjs && self.__detjs.vnow ? self.__detjs.vnow() : 0', returnByValue: true }),
+        realSleep(300).then(() => null),
+      ]);
+      const v = r && r.result ? Number(r.result.value) : 0;
+      if (v > 0) {
+        const pt = (v - this.o.epochMs) * NS;
+        if (pt > p.pageT) p.pageT = pt;
+      }
+    } catch { /* navigating */ } finally { ACT.ownDepth--; }
   }
 
   async beginFrame(p, tNs) {
@@ -582,31 +602,37 @@ class Coordinator {
 
   /** Every fetch/XHR a page started has reached the route handler (exact barrier through the page's counter). */
   async probePages() {
+    // Every fetch/XHR/WebSocket frame a page started must have reached the engine (exact barrier through the
+    // pages' own counters; WebSocket frames cannot be told apart by page, so the barrier is over all pages).
+    let started = 0;
+    let probed = false;
     for (const p of [...this.pages]) {
-      if (p.closed || p.navs > 0 || p.inBudget || p.running || this.navPending.length) continue;
-      let started = null;
+      if (p.closed || p.navs > 0 || p.inBudget || p.running || this.navPending.length) return; // not probeable now
+      let v = null;
       ACT.ownDepth++;
       try {
         const r = await Promise.race([
           p.cdp.send('Runtime.evaluate', { expression: 'self.__detjs && self.__detjs.reqs ? [self.__detjs.reqs(), self.__detjs.vnow()] : [-1, 0]', returnByValue: true }),
           realSleep(300).then(() => null),
         ]);
-        const v = r && r.result && Array.isArray(r.result.value) ? r.result.value : null;
-        started = v ? Number(v[0]) : null;
-        // Chromium adds virtual time of its own for every fetch a page completes (a fixed "non-instant" fetch
-        // duration): the page's clock is read back here so that the next budget only brings it to T.
-        if (v && v[1] > 0) {
-          const pt = (Number(v[1]) - this.o.epochMs) * NS;
-          if (pt > p.pageT) p.pageT = pt;
-        }
-      } catch { started = null; } finally { ACT.ownDepth--; }
-      if (started === null || started < 0) continue;
-      p.started = started;
-      const t = realNow();
-      while (p.routed < started && realNow() - t < this.probeMaxMs && !p.closed) {
-        this.stats.probeWaits++;
-        await realSleep(2);
-      }
+        v = r && r.result && Array.isArray(r.result.value) ? r.result.value : null;
+      } catch { v = null; } finally { ACT.ownDepth--; }
+      if (!v || v[0] < 0) continue;
+      // Chromium adds virtual time of its own for every fetch a page completes (a fixed "non-instant" fetch
+      // duration): the page's clock is read back here so that the next budget only brings it to T.
+
+      // A document's counter restarts at 0: count per page the maximum seen since the last navigation.
+      if (v[0] < p.startedDoc) { p.startedBase = (p.startedBase || 0) + p.startedDoc; }
+      p.startedDoc = Number(v[0]);
+      started += (p.startedBase || 0) + p.startedDoc;
+      probed = true;
+    }
+    if (!probed) return;
+    const routed = () => [...this.pages].reduce((a, p) => a + p.routed, 0) + this.routedWs;
+    const t = realNow();
+    while (routed() < started && realNow() - t < this.probeMaxMs) {
+      this.stats.probeWaits++;
+      await realSleep(2);
     }
   }
 
@@ -772,7 +798,8 @@ class Coordinator {
       // 1. Held messages due now (seeded latency), in (due, release) order.
       if (this.holds.length && this.holds[0].due <= T) {
         const h = this.holds.shift();
-        this.decision(key, 'ls.deliver', `${h.decision} ${this.msgs.get(h.id) ? this.msgs.get(h.id).key : ''}`);
+        const hm = this.msgs.get(h.id);
+        this.decision((hm && hm.item.test) || key, 'ls.deliver', `${h.decision} ${hm ? hm.key : ''}`);
         this.trace(`deliver #${h.id}`);
         this.deliver(h.id, h.info);
         continue;

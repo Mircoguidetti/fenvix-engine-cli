@@ -115,6 +115,10 @@ function pageInit(seedHi, seedLo) {
       Object.defineProperty(G.XMLHttpRequest.prototype, 'open', { value: function open(m, u) { this.__detjsNet = isNet(u); return realOpen.apply(this, arguments); }, writable: true, configurable: true });
       Object.defineProperty(G.XMLHttpRequest.prototype, 'send', { value: function send() { if (this.__detjsNet) reqs++; return realSend.apply(this, arguments); }, writable: true, configurable: true });
     }
+    if (G.WebSocket && G.WebSocket.prototype && typeof G.WebSocket.prototype.send === 'function') {
+      var realWsSend = G.WebSocket.prototype.send;
+      Object.defineProperty(G.WebSocket.prototype, 'send', { value: function send() { var r = realWsSend.apply(this, arguments); reqs++; return r; }, writable: true, configurable: true });
+    }
     // Workers created by the page: their main script URL is marked so that the worker process
     // (worker.js) prepends this seed script to it (request headers do not tell a worker script apart).
     ['Worker', 'SharedWorker'].forEach(function (name) {

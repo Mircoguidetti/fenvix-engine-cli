@@ -407,6 +407,21 @@ async function routeHandlerInner(route, request, uncount = () => {}) {
   if (PASSTHROUGH.test(url) || /text\/event-stream/.test(request.headers().accept || '')) {
     // Long-lived requests (long polling, event streams, dev-server pings) would hold the
     // queue: not ordered, not recorded; they still carry the test bracket.
+    if (LS && !/text\/event-stream/.test(request.headers().accept || '')) {
+      // Lockstep: a long poll is a message too (released in order, its response handed over at a quiet point),
+      // but its completion does not hold the engine: it ends when the server has something to say.
+      let page = null;
+      try { page = request.frame().page(); } catch { page = null; }
+      if (page) {
+        const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), page, longPoll: true };
+        LS.addOrigin(new URL(url).origin);
+        const pEnq = enqueue(item);
+        uncount();
+        const release = await pEnq;
+        release();
+        return lockstep.OWN.run(true, () => lsFetch(route, request, item, key, page, url, () => {}, { noMsg: true }));
+      }
+    }
     if (LS) { request.__detjsLongPoll = true; try { LS.blockOn(request.frame().page(), request); } catch { /* detached */ } }
     if (!isServerHost(url)) return route.fallback();
     released();
@@ -422,7 +437,9 @@ async function routeHandlerInner(route, request, uncount = () => {}) {
   uncount(); // queued: the pending set is complete for this request
   const release = await pEnq;
   if (LS && item.fault && item.fault !== 'none' && require('./faults').applyBrowser(route, item, release)) return;
-  if (LS && type !== 'document' && page && ENV.DETJS_LS_FULFILL !== '0') return lockstep.OWN.run(true, () => lsFetch(route, request, item, key, page, url, release));
+  // Documents too: the bytes of a page reach the renderer at a quiet point, so the parser (and the scripts it
+  // discovers) start at the same page time in every run (found on uptime-kuma's setup page).
+  if (LS && page && ENV.DETJS_LS_FULFILL !== '0') return lockstep.OWN.run(true, () => lsFetch(route, request, item, key, page, url, release));
   let finished = false;
   const finish = (how) => {
     if (finished) return;
@@ -488,12 +505,13 @@ async function routeHandlerInner(route, request, uncount = () => {}) {
 // handed to the page (route.fulfill) as a scheduled delivery: at most one response per page is waiting for the
 // page's time, so the order in which the page sees responses is the engine's, not the network's.
 const HOP = new Set(['content-encoding', 'content-length', 'transfer-encoding', 'connection', 'keep-alive']);
-async function lsFetch(route, request, item, key, page, url, release) {
+async function lsFetch(route, request, item, key, page, url, release, opt = {}) {
   rec(key, 'net', 'browser.request', `${item.method} ${item.target} ${item.bodyDigest}`);
   const headers = { ...request.headers(), 'x-detjs-own': '1' };
   if (isServerHost(url)) {
     ORIGINS.add(new URL(url).origin);
-    Object.assign(headers, { 'x-detjs-test': testIdOf(key), 'x-detjs-msg': String(item.lsId), 'x-detjs-t': String(item.lsT) });
+    Object.assign(headers, { 'x-detjs-test': testIdOf(key), 'x-detjs-t': String(item.lsT) });
+    if (!opt.noMsg) headers['x-detjs-msg'] = String(item.lsId);
   }
   let resp = null;
   let body = null;
@@ -573,7 +591,7 @@ async function setupWebSockets(ctx) {
     let server;
     try { server = ws.connectToServer(); } catch { return; }
     if (WS_PASSTHROUGH.test(ws.url())) {
-      ws.onMessage((m) => { try { server.send(m); } catch { /* closed */ } });
+      ws.onMessage((m) => { if (LS) LS.routedWs++; try { server.send(m); } catch { /* closed */ } });
       server.onMessage((m) => { try { ws.send(m); } catch { /* closed */ } });
       ws.onClose((code, reason) => { try { server.close({ code, reason }); } catch { /* closed */ } });
       server.onClose((code, reason) => { try { ws.close({ code, reason }); } catch { /* closed */ } });
@@ -582,8 +600,15 @@ async function setupWebSockets(ctx) {
     const conn = ++WS_CONNS;
     rec(key, 'net', 'ws.open', targetOf(ws.url()));
     ws.onMessage((m) => {
+      if (LS) LS.routedWs++;
       const k = currentKey() || key;
-      if (!wsKeep(m) || !k) { server.send(m); return; }
+      if (!k || (!wsKeep(m) && !LS)) { server.send(m); return; }
+      if (LS && !wsKeep(m)) {
+        // Lockstep: heartbeats and upgrade probes are ordered too (their timing decides when a client upgrades),
+        // but they are not part of the fingerprint.
+        LS.enqueue({ kind: 'ws', conn, test: k, method: 'SEND', target: targetOf(ws.url()), bodyDigest: digest(m), quiet: true }).then((done) => { try { server.send(m); } finally { done(); } });
+        return;
+      }
       // Page -> server frames are messages to the app like requests: same queue, same barrier.
       if (LS) LS.trace(`ws-send-in ${String(m).slice(0, 80)}`);
       enqueue({ kind: 'ws', conn, test: k, method: 'SEND', target: targetOf(ws.url()), bodyDigest: digest(m) }).then(async (release) => {
@@ -602,7 +627,7 @@ async function setupWebSockets(ctx) {
         if (wsKeep(m)) { rec(currentKey() || key, 'net', 'ws.recv', digest(m)); diag(currentKey() || key, 'ws.recv', targetOf(ws.url()), m, 1500); }
         try { ws.send(m); } catch { /* closed */ }
       };
-      if (!wsKeep(m) || !GATE_PUSH || VTIME === 'off') return deliver();
+      if ((!wsKeep(m) && !LS) || !GATE_PUSH || VTIME === 'off') return deliver();
       if (LS) {
         // Lockstep: a server push is a message like any other; the scheduler decides when it reaches the page.
         const k = currentKey() || key;
@@ -1111,7 +1136,13 @@ function patchBrowserType(bt) {
   proto.launch = async function launch(options = {}) {
     let opts = EXECUTABLE && this.name() === 'chromium' ? { ...options, executablePath: EXECUTABLE } : options;
     // Lockstep: animation frames only when the engine issues them (headless shell; ignored by other builds).
-    if (LS && this.name() === 'chromium' && ENV.DETJS_LS_FRAMES !== '0') opts = { ...opts, args: [...(opts.args || []), '--deterministic-mode'] };
+    if (LS && this.name() === 'chromium' && ENV.DETJS_LS_FRAMES !== '0') opts = { ...opts, args: [...(opts.args || []), '--deterministic-mode',
+      // Documents the engine fulfils have no network address: without this Chromium treats them as public and blocks
+      // their requests to localhost (WebSocket: ERR_BLOCKED_BY_LOCAL_NETWORK_ACCESS_CHECKS, found on uptime-kuma).
+      // Script compilation off the main thread finishes in real time and would let a script start in an earlier or
+      // later time slice: compile on the main thread (V8 single-threaded, no script streaming).
+      '--js-flags=--single-threaded',
+      '--disable-features=LocalNetworkAccessChecks,BlockInsecurePrivateNetworkRequests,PrivateNetworkAccessSendPreflights,ScriptStreaming,ScriptStreamingForNonHTTP,ScriptStreamingForInlineScripts,OffMainThreadCSSPaintImageGeneration'] };
     const browser = await origLaunch.call(this, opts);
     patchBrowser(browser);
     return browser;

@@ -243,7 +243,7 @@ class Driver {
   }
 
   schedule(t) {
-    t._due = Math.ceil((LOCK.attached ? LOCK.now() : CLOCK.elapsed) + t._delayMs * NS_PER_MS);
+    t._due = LOCK.attached ? Math.ceil((LOCK.now() + t._delayMs * NS_PER_MS) / NS_PER_MS - 1e-6) * NS_PER_MS : CLOCK.elapsed + t._delayMs * NS_PER_MS;
     t._seq = this.seq++;
     t._realDeadline = realNowMs() + t._delayMs;
     t._active = true;
