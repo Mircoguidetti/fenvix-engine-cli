@@ -1,0 +1,13 @@
+{
+ "name": "runner-doctest-nameparser",
+ "url": "https://github.com/derek73/python-nameparser",
+ "head": "d7239450ec8c",
+ "commits": 21,
+ "mode": "suite",
+ "python": "3.13",
+ "runner": "doctest",
+ "runner_args": [
+  "README.rst"
+ ],
+ "note": "CI: uv run python -m doctest README.rst (.github/workflows, after pytest); pure Python, no services"
+}
