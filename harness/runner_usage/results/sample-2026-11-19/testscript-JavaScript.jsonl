@@ -1,0 +1,1000 @@
+{"full": "affaan-m/ECC", "lang": "JavaScript", "stars": 306961, "test": "node scripts/ci/check-unicode-safety.js && node scripts/ci/validate-agents.js && node scripts/ci/validate-commands.js && node scripts/ci/validate-rules.js && node scripts/ci/validate-skills.js && node", "hits": [], "delegated": false}
+{"full": "react/react", "lang": "JavaScript", "stars": 252761, "test": "node ./scripts/jest/jest-cli.js", "hits": [], "delegated": false}
+{"full": "DietrichGebert/ponytail", "lang": "JavaScript", "stars": 194586, "test": "node --test tests/*.test.js && npm test --prefix pi-extension", "hits": ["node_test"], "delegated": false}
+{"full": "CyC2018/CS-Notes", "lang": "JavaScript", "stars": 186549, "test": null, "nopkg": true}
+{"full": "Snailclimb/JavaGuide", "lang": "JavaScript", "stars": 159624, "test": null}
+{"full": "vercel/next.js", "lang": "JavaScript", "stars": 143575, "test": "scripts/run-jest.sh --bundler=webpack --headless --", "hits": [], "delegated": false}
+{"full": "Chalarangelo/30-seconds-of-code", "lang": "JavaScript", "stars": 129567, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "nodejs/node", "lang": "JavaScript", "stars": 123790, "test": null, "nopkg": true}
+{"full": "addyosmani/agent-skills", "lang": "JavaScript", "stars": 119087, "test": null, "nopkg": true}
+{"full": "mrdoob/three.js", "lang": "JavaScript", "stars": 118918, "test": "npm run lint && npm run test-unit && npm run test-unit-addons", "hits": [], "delegated": false}
+{"full": "Leonxlnx/taste-skill", "lang": "JavaScript", "stars": 118731, "test": null, "nopkg": true}
+{"full": "axios/axios", "lang": "JavaScript", "stars": 109378, "test": "npm run test:vitest", "hits": ["vitest"], "delegated": false}
+{"full": "mui/material-ui", "lang": "JavaScript", "stars": 99358, "test": "pnpm test:node", "hits": ["vitest"], "delegated": false}
+{"full": "tt-a1i/archify", "lang": "JavaScript", "stars": 97939, "test": "npm run test:core", "hits": [], "delegated": false}
+{"full": "microsoft/Web-Dev-For-Beginners", "lang": "JavaScript", "stars": 97139, "test": null}
+{"full": "louislam/uptime-kuma", "lang": "JavaScript", "stars": 94629, "test": "node --run test-backend && node --run test-e2e", "hits": [], "delegated": false}
+{"full": "sveltejs/svelte", "lang": "JavaScript", "stars": 89752, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "career-ops-hq/career-ops", "lang": "JavaScript", "stars": 83700, "test": null}
+{"full": "Ebony-Vinyl/dsh-our-free-model", "lang": "JavaScript", "stars": 80670, "test": "node scripts/test-all.mjs", "hits": [], "delegated": false}
+{"full": "anuraghazra/github-readme-stats", "lang": "JavaScript", "stars": 79836, "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage", "hits": [], "delegated": false}
+{"full": "cloudflare/security-audit-skill", "lang": "JavaScript", "stars": 75646, "test": null, "nopkg": true}
+{"full": "juliangarnier/anime", "lang": "JavaScript", "stars": 74900, "test": null}
+{"full": "hakimel/reveal.js", "lang": "JavaScript", "stars": 72604, "test": "node scripts/test.js", "hits": [], "delegated": false}
+{"full": "byoungd/up", "lang": "JavaScript", "stars": 70718, "test": null}
+{"full": "expressjs/express", "lang": "JavaScript", "stars": 69665, "test": "mocha --require test/support/env --reporter spec --check-leaks test/ test/acceptance/", "hits": ["mocha"], "delegated": false}
+{"full": "gorhill/uBlock", "lang": "JavaScript", "stars": 69480, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "Mintplex-Labs/anything-llm", "lang": "JavaScript", "stars": 68433, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "chartjs/Chart.js", "lang": "JavaScript", "stars": 67810, "test": "pnpm lint && pnpm test-ci", "hits": [], "delegated": false}
+{"full": "leonardomso/33-js-concepts", "lang": "JavaScript", "stars": 66534, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "webpack/webpack", "lang": "JavaScript", "stars": 66009, "test": "yarn test:base", "hits": ["jest"], "delegated": false}
+{"full": "bilawalsidhu/gods-eye-view", "lang": "JavaScript", "stars": 65875, "test": "node scripts/run-unit-tests.mjs", "hits": [], "delegated": false}
+{"full": "jgraph/drawio-desktop", "lang": "JavaScript", "stars": 64071, "test": "node --test \"src/test/*.test.js\"", "hits": ["node_test"], "delegated": false}
+{"full": "coreyhaines31/marketingskills", "lang": "JavaScript", "stars": 61402, "test": null, "nopkg": true}
+{"full": "lodash/lodash", "lang": "JavaScript", "stars": 61321, "test": "npm run test:main && npm run test:fp", "hits": [], "delegated": false}
+{"full": "jquery/jquery", "lang": "JavaScript", "stars": 60098, "test": "npm run build:all && npm run lint && npm run test:browserless && npm run test:browser && npm run test:esm && npm run test:slim && npm run test:no-deprecated && npm run test:selector-native", "hits": [], "delegated": false}
+{"full": "h5bp/html5-boilerplate", "lang": "JavaScript", "stars": 57690, "test": "gulp archive && mocha --reporter spec --timeout 5000", "hits": ["mocha"], "delegated": false}
+{"full": "gatsbyjs/gatsby", "lang": "JavaScript", "stars": 55914, "test": "npm-run-all --npm-path npm -s lint jest test:peril", "hits": ["jest"], "delegated": false}
+{"full": "azl397985856/leetcode", "lang": "JavaScript", "stars": 55706, "test": null}
+{"full": "mozilla/pdf.js", "lang": "JavaScript", "stars": 54162, "test": null}
+{"full": "poteto/hiring-without-whiteboards", "lang": "JavaScript", "stars": 53448, "test": "node ./node_modules/remark-cli/cli.js README.md -f -q", "hits": [], "delegated": false}
+{"full": "prettier/prettier", "lang": "JavaScript", "stars": 52421, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "DavidHDev/react-bits", "lang": "JavaScript", "stars": 52302, "test": null}
+{"full": "bigskysoftware/htmx", "lang": "JavaScript", "stars": 49651, "test": "npm run lint && npm run types-check && npm run test:chrome", "hits": [], "delegated": false}
+{"full": "iamkun/dayjs", "lang": "JavaScript", "stars": 48649, "test": "cross-env TZ=Pacific/Auckland npm run test-tz && cross-env TZ=Europe/London npm run test-tz && cross-env TZ=America/Whitehorse npm run test-tz && npm run test-tz && cross-env TZ=Europe/Paris npm run t", "hits": ["jest"], "delegated": false}
+{"full": "usebruno/bruno", "lang": "JavaScript", "stars": 48461, "test": null}
+{"full": "moment/moment", "lang": "JavaScript", "stars": 47871, "test": "node scripts/test.js", "hits": [], "delegated": false}
+{"full": "Asabeneh/30-Days-Of-JavaScript", "lang": "JavaScript", "stars": 47004, "test": null, "nopkg": true}
+{"full": "microsoft/monaco-editor", "lang": "JavaScript", "stars": 46987, "test": "ts-node ./build/check-samples && npm run test:grammars && npm run test:lsp-client", "hits": ["tsx", "ts_node"], "delegated": false}
+{"full": "serverless/serverless", "lang": "JavaScript", "stars": 46934, "test": "npm run test:unit -w @serverlessinc/sf-core -w @serverless/framework -w @serverless/mcp", "hits": [], "delegated": false}
+{"full": "LeCoupa/awesome-cheatsheets", "lang": "JavaScript", "stars": 46684, "test": null, "nopkg": true}
+{"full": "Leaflet/Leaflet", "lang": "JavaScript", "stars": 45954, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "google/zx", "lang": "JavaScript", "stars": 45857, "test": "npm run test:size && npm run fmt:check && npm run test:unit && npm run test:types && npm run test:license", "hits": [], "delegated": false}
+{"full": "sudheerj/reactjs-interview-questions", "lang": "JavaScript", "stars": 44910, "test": null}
+{"full": "NaiboWang/EasySpider", "lang": "JavaScript", "stars": 44799, "test": null, "nopkg": true}
+{"full": "meteor/meteor", "lang": "JavaScript", "stars": 44792, "test": null}
+{"full": "yangshun/front-end-interview-handbook", "lang": "JavaScript", "stars": 44000, "test": null}
+{"full": "Unitech/pm2", "lang": "JavaScript", "stars": 43340, "test": "bash test/unit.sh && bash test/e2e.sh", "hits": [], "delegated": false}
+{"full": "saadeghi/daisyui", "lang": "JavaScript", "stars": 42906, "test": "bun test --parallel=4", "hits": ["bun_test"], "delegated": false}
+{"full": "dcloudio/uni-app", "lang": "JavaScript", "stars": 41699, "test": null}
+{"full": "github/awesome-copilot", "lang": "JavaScript", "stars": 41351, "test": null}
+{"full": "remoteintech/remote-jobs", "lang": "JavaScript", "stars": 41184, "test": null}
+{"full": "nwjs/nw.js", "lang": "JavaScript", "stars": 41146, "test": null, "nopkg": true}
+{"full": "phaserjs/phaser", "lang": "JavaScript", "stars": 40744, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "hmjz100/LinkSwift", "lang": "JavaScript", "stars": 40562, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "drawdb-io/drawdb", "lang": "JavaScript", "stars": 40345, "test": null}
+{"full": "preactjs/preact", "lang": "JavaScript", "stars": 39010, "test": "npm-run-all build lint test:unit", "hits": [], "delegated": false}
+{"full": "maboloshi/github-chinese", "lang": "JavaScript", "stars": 38862, "test": "node --test test/", "hits": ["node_test"], "delegated": false}
+{"full": "Dogfalo/materialize", "lang": "JavaScript", "stars": 38773, "test": "grunt travis", "hits": [], "delegated": false}
+{"full": "denysdovhan/wtfjs", "lang": "JavaScript", "stars": 37693, "test": "prettier --check .", "hits": [], "delegated": false}
+{"full": "fastify/fastify", "lang": "JavaScript", "stars": 37442, "test": "npm run lint && npm run unit && npm run test:types", "hits": ["node_test"], "delegated": false}
+{"full": "gchq/CyberChef", "lang": "JavaScript", "stars": 36482, "test": "npx grunt configTests && node --no-warnings --no-deprecation --openssl-legacy-provider tests/node/index.mjs && node --no-warnings --no-deprecation --openssl-legacy-provider --trace-uncaught tests/oper", "hits": [], "delegated": false}
+{"full": "carbon-app/carbon", "lang": "JavaScript", "stars": 36148, "test": null}
+{"full": "freestylefly/awesome-gpt-image-2", "lang": "JavaScript", "stars": 35972, "test": "node --test api/_lib/*.test.js", "hits": ["node_test"], "delegated": false}
+{"full": "SillyTavern/SillyTavern", "lang": "JavaScript", "stars": 35832, "test": null}
+{"full": "koajs/koa", "lang": "JavaScript", "stars": 35681, "test": "node --test", "hits": ["node_test"], "delegated": false}
+{"full": "Anil-matcha/Open-Generative-AI", "lang": "JavaScript", "stars": 35375, "test": "node --test", "hits": ["node_test"], "delegated": false}
+{"full": "alvarotrigo/fullPage.js", "lang": "JavaScript", "stars": 35354, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "sahat/hackathon-starter", "lang": "JavaScript", "stars": 35261, "test": "c8 --temp-directory=tmp/coverage --reporter=html --reporter=text --reports-dir=tmp/coverage mocha --timeout=60000 --exit --exclude \"test/*links.test.js\"", "hits": ["mocha"], "delegated": false}
+{"full": "qishibo/AnotherRedisDesktopManager", "lang": "JavaScript", "stars": 34860, "test": null}
+{"full": "NginxProxyManager/nginx-proxy-manager", "lang": "JavaScript", "stars": 34797, "test": null, "nopkg": true}
+{"full": "vercel-labs/agent-skills", "lang": "JavaScript", "stars": 34517, "test": null}
+{"full": "mksglu/context-mode", "lang": "JavaScript", "stars": 34294, "test": null}
+{"full": "pcottle/learnGitBranching", "lang": "JavaScript", "stars": 34230, "test": "jasmine", "hits": ["jasmine"], "delegated": false}
+{"full": "OWASP/CheatSheetSeries", "lang": "JavaScript", "stars": 34134, "test": "npm run lint-markdown && npm run lint-terminology && npm run test:link-check && npm run test:workflow-approvals", "hits": ["node_test"], "delegated": false}
+{"full": "gethomepage/homepage", "lang": "JavaScript", "stars": 33735, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "lutzroeder/netron", "lang": "JavaScript", "stars": 33709, "test": "node package.js test", "hits": [], "delegated": false}
+{"full": "lovell/sharp", "lang": "JavaScript", "stars": 32862, "test": "npm run lint && npm run test-unit", "hits": [], "delegated": false}
+{"full": "decolua/9router", "lang": "JavaScript", "stars": 32631, "test": null}
+{"full": "docsifyjs/docsify", "lang": "JavaScript", "stars": 31604, "test": "run-s test:jest test:e2e test:consume-types", "hits": [], "delegated": false}
+{"full": "webtorrent/webtorrent", "lang": "JavaScript", "stars": 31480, "test": "npm run lint && npm run test-node && npm run test-browser", "hits": [], "delegated": false}
+{"full": "parallax/jsPDF", "lang": "JavaScript", "stars": 31316, "test": "yarpm run test-node && yarpm run test-ci", "hits": [], "delegated": false}
+{"full": "jackwener/OpenCLI", "lang": "JavaScript", "stars": 31186, "test": "vitest run --project unit --project extension --project adapter", "hits": ["vitest"], "delegated": false}
+{"full": "GoogleChrome/lighthouse", "lang": "JavaScript", "stars": 31160, "test": "yarn diff:sample-json && yarn lint --quiet && yarn unit && yarn type-check", "hits": ["mocha"], "delegated": false}
+{"full": "greensock/GSAP", "lang": "JavaScript", "stars": 30929, "test": null}
+{"full": "layui/layui", "lang": "JavaScript", "stars": 30587, "test": "node --disable-warning=ExperimentalWarning --experimental-vm-modules node_modules/jest/bin/jest.js --no-cache", "hits": [], "delegated": false}
+{"full": "sampotts/plyr", "lang": "JavaScript", "stars": 29986, "test": null}
+{"full": "foundation/yeti", "lang": "JavaScript", "stars": 29818, "test": "npm run validate && npm run test:tools && npm run test:browser", "hits": ["node_test", "playwright"], "delegated": false}
+{"full": "jarrodwatts/claude-hud", "lang": "JavaScript", "stars": 29255, "test": "node --import ./tests/clean-env.js --test", "hits": [], "delegated": false}
+{"full": "swagger-api/swagger-ui", "lang": "JavaScript", "stars": 29087, "test": "run-s lint-errors test:unit e2e", "hits": [], "delegated": false}
+{"full": "4ian/GDevelop", "lang": "JavaScript", "stars": 29071, "test": null, "nopkg": true}
+{"full": "immerjs/immer", "lang": "JavaScript", "stars": 29004, "test": "vitest run && yarn test:build && yarn test:flow", "hits": ["vitest"], "delegated": false}
+{"full": "youhunwl/TVAPP", "lang": "JavaScript", "stars": 28907, "test": null, "nopkg": true}
+{"full": "koodo-reader/koodo-reader", "lang": "JavaScript", "stars": 28907, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "fanmingming/live", "lang": "JavaScript", "stars": 28899, "test": null, "nopkg": true}
+{"full": "blackmatrix7/ios_rule_script", "lang": "JavaScript", "stars": 28707, "test": null, "nopkg": true}
+{"full": "Z-Siqi/Clash-for-Windows_Chinese", "lang": "JavaScript", "stars": 28658, "test": "node scripts/run-test-group.js all", "hits": [], "delegated": false}
+{"full": "kenwheeler/slick", "lang": "JavaScript", "stars": 28524, "test": null}
+{"full": "tj/commander.js", "lang": "JavaScript", "stars": 28462, "test": "node --test && npm run check:type:ts", "hits": ["node_test"], "delegated": false}
+{"full": "vernesong/OpenClash", "lang": "JavaScript", "stars": 28283, "test": null, "nopkg": true}
+{"full": "wheresryan22/anatomy", "lang": "JavaScript", "stars": 28208, "test": null, "nopkg": true}
+{"full": "caolan/async", "lang": "JavaScript", "stars": 28120, "test": "npm run lint && npm run mocha-node-test", "hits": ["mocha"], "delegated": false}
+{"full": "jashkenas/backbone", "lang": "JavaScript", "stars": 28078, "test": "karma start && coffee test/model.coffee && npm run lint", "hits": ["karma"], "delegated": false}
+{"full": "sudheerj/javascript-interview-questions", "lang": "JavaScript", "stars": 27677, "test": null}
+{"full": "eslint/eslint", "lang": "JavaScript", "stars": 27629, "test": "node Makefile.js test", "hits": [], "delegated": false}
+{"full": "Asabeneh/30-Days-Of-React", "lang": "JavaScript", "stars": 27527, "test": null, "nopkg": true}
+{"full": "Automattic/mongoose", "lang": "JavaScript", "stars": 27447, "test": "mocha --exit --ignore \"test/encryption/**/*.test.js\" \"./test/**/*.test.js\"", "hits": ["mocha"], "delegated": false}
+{"full": "badges/shields", "lang": "JavaScript", "stars": 27416, "test": "run-s --silent --continue-on-error lint test:package test:core test:entrypoint check-types:package prettier:check", "hits": [], "delegated": false}
+{"full": "jashkenas/underscore", "lang": "JavaScript", "stars": 27294, "test": "npm run lint && npm run prepare-tests && npm run test-node", "hits": [], "delegated": false}
+{"full": "quasarframework/quasar", "lang": "JavaScript", "stars": 27198, "test": "pnpm --filter quasar test", "hits": [], "delegated": true}
+{"full": "ai/nanoid", "lang": "JavaScript", "stars": 27140, "test": "pnpm run /^test:/", "hits": [], "delegated": false}
+{"full": "ajaxorg/ace", "lang": "JavaScript", "stars": 27135, "test": "mocha \"./src/**/*_test.js\"  --exit -p --color", "hits": ["mocha"], "delegated": false}
+{"full": "philc/vimium", "lang": "JavaScript", "stars": 27131, "test": null, "nopkg": true}
+{"full": "remy/nodemon", "lang": "JavaScript", "stars": 26667, "test": "npm run lint && npm run spec", "hits": ["mocha"], "delegated": false}
+{"full": "rollup/rollup", "lang": "JavaScript", "stars": 26308, "test": "npm run build && npm run test:all", "hits": [], "delegated": false}
+{"full": "simple-icons/simple-icons", "lang": "JavaScript", "stars": 26238, "test": "mocha tests --reporter tests/min-reporter.cjs --inline-diffs", "hits": ["mocha"], "delegated": false}
+{"full": "zhaoolee/ChromeAppHeroes", "lang": "JavaScript", "stars": 25956, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "select2/select2", "lang": "JavaScript", "stars": 25909, "test": null}
+{"full": "Modernizr/Modernizr", "lang": "JavaScript", "stars": 25679, "test": "gulp test", "hits": [], "delegated": false}
+{"full": "spicetify/cli", "lang": "JavaScript", "stars": 25566, "test": null}
+{"full": "zloirock/core-js", "lang": "JavaScript", "stars": 25516, "test": "run-s prepare test-raw", "hits": [], "delegated": false}
+{"full": "awesome-dsh-plugin/awesome-dsh-plugin", "lang": "JavaScript", "stars": 25170, "test": null}
+{"full": "highlightjs/highlight.js", "lang": "JavaScript", "stars": 25019, "test": "mocha test", "hits": ["mocha"], "delegated": false}
+{"full": "Gar-b-age/CookLikeHOC", "lang": "JavaScript", "stars": 24903, "test": null}
+{"full": "qeeqbox/social-analyzer", "lang": "JavaScript", "stars": 24591, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "timqian/chinese-independent-blogs", "lang": "JavaScript", "stars": 24527, "test": null}
+{"full": "processing/p5.js", "lang": "JavaScript", "stars": 24399, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "hammerjs/hammer.js", "lang": "JavaScript", "stars": 24319, "test": "npm run build && npm run jshint && npm run jscs && npm run qunit", "hits": [], "delegated": false}
+{"full": "MagicMirrorOrg/MagicMirror", "lang": "JavaScript", "stars": 24231, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "semantic-release/semantic-release", "lang": "JavaScript", "stars": 24183, "test": "npm-run-all --print-label --parallel lint:* --serial test:*", "hits": [], "delegated": false}
+{"full": "ramda/ramda", "lang": "JavaScript", "stars": 24053, "test": "npm-run-all --parallel spec lint", "hits": [], "delegated": false}
+{"full": "node-red/node-red", "lang": "JavaScript", "stars": 23863, "test": "run-s build verify-deps lint coverage", "hits": [], "delegated": false}
+{"full": "validatorjs/validator.js", "lang": "JavaScript", "stars": 23743, "test": "npm run test:ci", "hits": ["mocha"], "delegated": false}
+{"full": "copy/v86", "lang": "JavaScript", "stars": 23714, "test": null}
+{"full": "pure-css/pure", "lang": "JavaScript", "stars": 23714, "test": "npm run lint:css && tap test/*.mjs --disable-coverage", "hits": ["tap"], "delegated": false}
+{"full": "citrolabs/ego-lite", "lang": "JavaScript", "stars": 23713, "test": null, "nopkg": true}
+{"full": "shimohq/chinese-programmer-wrong-pronunciation", "lang": "JavaScript", "stars": 23372, "test": null, "nopkg": true}
+{"full": "chalk/chalk", "lang": "JavaScript", "stars": 23345, "test": "xo && c8 node --test 'test/[!_]*.js' && tsc --noEmit --types node source/index.d.ts", "hits": ["node_test"], "delegated": false}
+{"full": "be5invis/Iosevka", "lang": "JavaScript", "stars": 23299, "test": null}
+{"full": "dnshe/DNSHE-FreeDomains", "lang": "JavaScript", "stars": 23148, "test": null, "nopkg": true}
+{"full": "yjs/yjs", "lang": "JavaScript", "stars": 23083, "test": "NODE_ENV=development node ./tests/index.js --repetition-time 50", "hits": [], "delegated": false}
+{"full": "xifangczy/cat-catch", "lang": "JavaScript", "stars": 23038, "test": null, "nopkg": true}
+{"full": "gildas-lormeau/SingleFile", "lang": "JavaScript", "stars": 22962, "test": "node --test", "hits": ["node_test"], "delegated": false}
+{"full": "wwebjs/whatsapp-web.js", "lang": "JavaScript", "stars": 22931, "test": "mocha tests --recursive --timeout 5000", "hits": ["mocha"], "delegated": false}
+{"full": "mochajs/mocha", "lang": "JavaScript", "stars": 22910, "test": "run-s lint test-node test-browser", "hits": [], "delegated": false}
+{"full": "DuarteSantos8/openGym", "lang": "JavaScript", "stars": 22860, "test": null}
+{"full": "websockets/ws", "lang": "JavaScript", "stars": 22832, "test": "nyc --reporter=lcov --reporter=text mocha --throw-deprecation test/*.test.js", "hits": ["mocha"], "delegated": false}
+{"full": "svg/svgo", "lang": "JavaScript", "stars": 22830, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "tabler/tabler-icons", "lang": "JavaScript", "stars": 22716, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "js-cookie/js-cookie", "lang": "JavaScript", "stars": 22561, "test": "grunt test", "hits": [], "delegated": false}
+{"full": "jlmakes/scrollreveal", "lang": "JavaScript", "stars": 22472, "test": "./node_modules/karma/bin/karma start ./test/karma.conf.js", "hits": ["karma"], "delegated": false}
+{"full": "redux-saga/redux-saga", "lang": "JavaScript", "stars": 22408, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "liyupi/ai-guide", "lang": "JavaScript", "stars": 22230, "test": null}
+{"full": "postcss/autoprefixer", "lang": "JavaScript", "stars": 22197, "test": "pnpm run /^test:/", "hits": [], "delegated": false}
+{"full": "necolas/react-native-web", "lang": "JavaScript", "stars": 22163, "test": "npm run flow && npm run format && npm run lint && npm run unit -- --runInBand", "hits": ["jest"], "delegated": false}
+{"full": "EastWorld/wechat-app-mall", "lang": "JavaScript", "stars": 21935, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "jsdom/jsdom", "lang": "JavaScript", "stars": 21760, "test": "npm-run-all --continue-on-error test:*", "hits": [], "delegated": false}
+{"full": "git-tips/tips", "lang": "JavaScript", "stars": 21725, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "ruanyf/es6tutorial", "lang": "JavaScript", "stars": 21409, "test": null, "nopkg": true}
+{"full": "parse-community/parse-server", "lang": "JavaScript", "stars": 21395, "test": "cross-env MONGODB_VERSION=${MONGODB_VERSION:=8.0.4} MONGODB_TOPOLOGY=${MONGODB_TOPOLOGY:=standalone} mongodb-runner exec -t ${MONGODB_TOPOLOGY} --version ${MONGODB_VERSION} -- --port 27017 -- npm run ", "hits": ["jasmine"], "delegated": false}
+{"full": "wekan/wekan", "lang": "JavaScript", "stars": 21178, "test": "EMAIL_RECEIPT_SWEEP_INTERVAL_MS=1000 WRITABLE_PATH=${WRITABLE_PATH:-..} meteor test --full-app --once --driver-package meteortesting:mocha", "hits": [], "delegated": false}
+{"full": "hapijs/joi", "lang": "JavaScript", "stars": 21169, "test": "lab -t 100 -a @hapi/code -L -Y", "hits": [], "delegated": false}
+{"full": "sveltejs/kit", "lang": "JavaScript", "stars": 20921, "test": null}
+{"full": "avajs/ava", "lang": "JavaScript", "stars": 20827, "test": "./scripts/test.sh", "hits": [], "delegated": false}
+{"full": "motdotla/dotenv", "lang": "JavaScript", "stars": 20571, "test": "npm run build && npm run lint && npm run dts-check && tap run tests/**/*.js --allow-empty-coverage --disable-coverage --timeout=60000", "hits": ["tap"], "delegated": false}
+{"full": "krisk/Fuse", "lang": "JavaScript", "stars": 20535, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "datawhalechina/easy-vibe", "lang": "JavaScript", "stars": 20476, "test": "node --test $(find docs scripts -name '*.test.js' -print)", "hits": ["node_test"], "delegated": false}
+{"full": "dailydotdev/daily", "lang": "JavaScript", "stars": 20155, "test": null, "nopkg": true}
+{"full": "camsong/You-Dont-Need-jQuery", "lang": "JavaScript", "stars": 20119, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "whyour/qinglong", "lang": "JavaScript", "stars": 20111, "test": "TS_NODE_PROJECT=back/tsconfig.json node -r ts-node/register/transpile-only --test test/back/*.test.cjs test/front/*.test.cjs", "hits": ["ts_node"], "delegated": false}
+{"full": "11ty/buildawesome", "lang": "JavaScript", "stars": 20050, "test": "npm run test:types && npm run test:core && npm run test:browser", "hits": ["node_test"], "delegated": false}
+{"full": "dataelement/dsh-desktop", "lang": "JavaScript", "stars": 20036, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "basecamp/trix", "lang": "JavaScript", "stars": 20016, "test": "web-test-runner", "hits": [], "delegated": false}
+{"full": "mdx-js/mdx", "lang": "JavaScript", "stars": 19869, "test": "npm run build && npm run format && npm run test-coverage", "hits": [], "delegated": false}
+{"full": "testing-library/react-testing-library", "lang": "JavaScript", "stars": 19683, "test": "kcd-scripts test", "hits": [], "delegated": false}
+{"full": "decaporg/decap-cms", "lang": "JavaScript", "stars": 19493, "test": "pnpm run lint && pnpm run type-check && pnpm run test:cypress-runner && pnpm run test:unit", "hits": ["jest", "node_test"], "delegated": false}
+{"full": "amark/gun", "lang": "JavaScript", "stars": 19163, "test": "echo 'Did you run PANIC holy-grail, 1~X, on-recover, etc.?' && mocha", "hits": ["mocha"], "delegated": false}
+{"full": "browsh-org/browsh", "lang": "JavaScript", "stars": 19136, "test": null, "nopkg": true}
+{"full": "you-dont-need/You-Dont-Need-Lodash-Underscore", "lang": "JavaScript", "stars": 19109, "test": "istanbul cover tests", "hits": [], "delegated": false}
+{"full": "alyssaxuu/screenity", "lang": "JavaScript", "stars": 19003, "test": null}
+{"full": "framework7io/framework7", "lang": "JavaScript", "stars": 18787, "test": "npm run validate && npm run build:dev", "hits": [], "delegated": false}
+{"full": "hemanth/functional-programming-jargon", "lang": "JavaScript", "stars": 18746, "test": "eslint readme.md", "hits": [], "delegated": false}
+{"full": "handlebars-lang/handlebars.js", "lang": "JavaScript", "stars": 18697, "test": "pnpm run build && vitest run --project node --project tasks --project rspack --coverage", "hits": ["vitest"], "delegated": false}
+{"full": "liabru/matter-js", "lang": "JavaScript", "stars": 18660, "test": "pnpm run test-node", "hits": [], "delegated": false}
+{"full": "lemomo-ai/lemo-opuscar", "lang": "JavaScript", "stars": 18574, "test": null}
+{"full": "heydamir/unslop", "lang": "JavaScript", "stars": 18516, "test": null, "nopkg": true}
+{"full": "youzan/vant-weapp", "lang": "JavaScript", "stars": 18479, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "enyo/dropzone", "lang": "JavaScript", "stars": 18408, "test": "pnpm --filter dropzone run test", "hits": [], "delegated": true}
+{"full": "plotly/plotly.js", "lang": "JavaScript", "stars": 18384, "test": "npm run test-jasmine -- --nowatch && npm run test-bundle && npm run test-image && npm run test-export && npm run test-syntax && npm run lint", "hits": ["karma", "tsx"], "delegated": false}
+{"full": "overleaf/overleaf", "lang": "JavaScript", "stars": 18353, "test": null}
+{"full": "pinojs/pino", "lang": "JavaScript", "stars": 18311, "test": "npm run lint && npm run transpile && npm run borp && jest test/jest && npm run test-types", "hits": ["jest", "node_test", "ts_node"], "delegated": false}
+{"full": "mjmlio/mjml", "lang": "JavaScript", "stars": 18298, "test": "lerna run test", "hits": [], "delegated": true}
+{"full": "sweetalert2/sweetalert2", "lang": "JavaScript", "stars": 18102, "test": "cypress run --headless", "hits": ["cypress"], "delegated": false}
+{"full": "emotion-js/emotion", "lang": "JavaScript", "stars": 18030, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "GoogleChrome/chrome-extensions-samples", "lang": "JavaScript", "stars": 17885, "test": null}
+{"full": "JedWatson/classnames", "lang": "JavaScript", "stars": 17774, "test": "node --test ./tests/*.js", "hits": ["node_test"], "delegated": false}
+{"full": "apache/pouchdb", "lang": "JavaScript", "stars": 17634, "test": "./bin/run-test.sh", "hits": [], "delegated": false}
+{"full": "JoeanAmier/TikTokDownloader", "lang": "JavaScript", "stars": 17565, "test": null, "nopkg": true}
+{"full": "cure53/DOMPurify", "lang": "JavaScript", "stars": 17538, "test": "cross-env NODE_ENV=test npm run lint && npm run build && npm run test:jsdom && npm run test:browser -- --project=chromium", "hits": ["playwright"], "delegated": false}
+{"full": "commitizen/cz-cli", "lang": "JavaScript", "stars": 17504, "test": "nyc --require @babel/register npm run test-actual", "hits": ["mocha"], "delegated": false}
+{"full": "playcanvas/engine", "lang": "JavaScript", "stars": 17331, "test": "mocha --node-option expose-gc --ignore \"test/assets/scripts/*.js\" --ignore \"test/bundles/**\" --ignore test/webgpu-device.mjs --ignore test/webgpu-shims.mjs --recursive --require test/fixtures.mjs --ti", "hits": ["mocha"], "delegated": false}
+{"full": "less/less.js", "lang": "JavaScript", "stars": 17001, "test": "cd packages/less && npm test", "hits": [], "delegated": false}
+{"full": "yonggekkk/Cloudflare-vless-trojan", "lang": "JavaScript", "stars": 16815, "test": null, "nopkg": true}
+{"full": "hubotio/hubot", "lang": "JavaScript", "stars": 16796, "test": "node --test --test-timeout=40000", "hits": ["node_test"], "delegated": false}
+{"full": "forwardemail/superagent", "lang": "JavaScript", "stars": 16641, "test": "npm run build && npm run lint && make test", "hits": [], "delegated": false}
+{"full": "DIYgod/DPlayer", "lang": "JavaScript", "stars": 16546, "test": "", "hits": [], "delegated": false}
+{"full": "infernojs/inferno", "lang": "JavaScript", "stars": 16459, "test": "pnpm run test:demo && pnpm run test:node && pnpm run test:node-nodom && pnpm run test:browser", "hits": ["jest"], "delegated": false}
+{"full": "moment/luxon", "lang": "JavaScript", "stars": 16456, "test": "jest --coverage", "hits": ["jest"], "delegated": false}
+{"full": "maillab/cloud-mail", "lang": "JavaScript", "stars": 16446, "test": null, "nopkg": true}
+{"full": "huggingface/transformers.js", "lang": "JavaScript", "stars": 16429, "test": "pnpm -r test", "hits": [], "delegated": true}
+{"full": "alam00000/bentopdf", "lang": "JavaScript", "stars": 16403, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "pqina/filepond", "lang": "JavaScript", "stars": 16396, "test": "npx jest", "hits": ["jest"], "delegated": false}
+{"full": "OptimalBits/bull", "lang": "JavaScript", "stars": 16267, "test": "NODE_ENV=test nyc mocha -- 'test/test_*' --recursive --exit", "hits": ["mocha"], "delegated": false}
+{"full": "laoma528/awesome-zhuiju-free", "lang": "JavaScript", "stars": 15993, "test": null, "nopkg": true}
+{"full": "zotero/zotero", "lang": "JavaScript", "stars": 15992, "test": null}
+{"full": "CesiumGS/cesium", "lang": "JavaScript", "stars": 15969, "test": "gulp test", "hits": [], "delegated": false}
+{"full": "remarkjs/react-markdown", "lang": "JavaScript", "stars": 15939, "test": "npm run build && npm run format && npm run test-coverage", "hits": [], "delegated": false}
+{"full": "jasmine/jasmine", "lang": "JavaScript", "stars": 15812, "test": "node scripts/runSpecsInNode.js && npm run lint", "hits": [], "delegated": false}
+{"full": "yaronn/blessed-contrib", "lang": "JavaScript", "stars": 15774, "test": "npm run lint", "hits": [], "delegated": false}
+{"full": "avwo/whistle", "lang": "JavaScript", "stars": 15772, "test": "npm run lintfix && node test/index.test.js", "hits": [], "delegated": false}
+{"full": "kleampa/not-paid", "lang": "JavaScript", "stars": 15693, "test": null, "nopkg": true}
+{"full": "electerm/electerm", "lang": "JavaScript", "stars": 15662, "test": "npm run test1 && npm run test2", "hits": ["playwright"], "delegated": false}
+{"full": "CodeByZach/pace", "lang": "JavaScript", "stars": 15582, "test": "npm run test:syntax && npm run test:browsers", "hits": ["playwright"], "delegated": false}
+{"full": "gpujs/gpu.js", "lang": "JavaScript", "stars": 15535, "test": "qunit test/issues test/internal test/features", "hits": [], "delegated": false}
+{"full": "ConardLi/garden-skills", "lang": "JavaScript", "stars": 15483, "test": null}
+{"full": "jsdoc/jsdoc", "lang": "JavaScript", "stars": 15475, "test": "node_modules/.bin/hereby test", "hits": [], "delegated": false}
+{"full": "Fei-Away/Codex-Dream-Skin", "lang": "JavaScript", "stars": 15445, "test": null, "nopkg": true}
+{"full": "librespeed/speedtest", "lang": "JavaScript", "stars": 15313, "test": "echo \"No automated tests configured yet\" && exit 0", "hits": [], "delegated": false}
+{"full": "NodeBB/NodeBB", "lang": "JavaScript", "stars": 15253, "test": null, "nopkg": true}
+{"full": "paperjs/paper.js", "lang": "JavaScript", "stars": 15207, "test": "vitest run --project node --project browser", "hits": ["vitest"], "delegated": false}
+{"full": "apexcharts/apexcharts.js", "lang": "JavaScript", "stars": 15190, "test": "npm run e2e && npm run unit -- --coverage", "hits": ["vitest"], "delegated": false}
+{"full": "josdejong/mathjs", "lang": "JavaScript", "stars": 15107, "test": "npm run test:src && npm run lint", "hits": ["mocha"], "delegated": false}
+{"full": "frappe/charts", "lang": "JavaScript", "stars": 15101, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "advplyr/audiobookshelf", "lang": "JavaScript", "stars": 15061, "test": "npm run build:server && mocha dist-server/test", "hits": ["mocha"], "delegated": false}
+{"full": "stackryze/FreeDomains", "lang": "JavaScript", "stars": 14991, "test": null}
+{"full": "riot/riot", "lang": "JavaScript", "stars": 14926, "test": "make unit-test", "hits": [], "delegated": false}
+{"full": "ampproject/amphtml", "lang": "JavaScript", "stars": 14902, "test": null}
+{"full": "xcanwin/KeepChatGPT", "lang": "JavaScript", "stars": 14892, "test": "jest --verbose", "hits": ["jest"], "delegated": false}
+{"full": "showdownjs/showdown", "lang": "JavaScript", "stars": 14883, "test": "npm run lint && vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "hapijs/hapi", "lang": "JavaScript", "stars": 14800, "test": "lab -a @hapi/code -t 100 -L -m 5000 -Y", "hits": [], "delegated": false}
+{"full": "lint-staged/lint-staged", "lang": "JavaScript", "stars": 14765, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "browserify/browserify", "lang": "JavaScript", "stars": 14690, "test": "npm run tests-only", "hits": ["tap"], "delegated": false}
+{"full": "webrtc/samples", "lang": "JavaScript", "stars": 14646, "test": "npm run eslint && npm run stylelint", "hits": [], "delegated": false}
+{"full": "MithrilJS/mithril.js", "lang": "JavaScript", "stars": 14520, "test": "run-s test:js", "hits": [], "delegated": false}
+{"full": "marko-js/marko", "lang": "JavaScript", "stars": 14478, "test": "node scripts/test-parallel.js", "hits": [], "delegated": false}
+{"full": "forwardemail/supertest", "lang": "JavaScript", "stars": 14415, "test": "nyc --reporter=html --reporter=text mocha --exit --require should --reporter spec --check-leaks", "hits": ["mocha"], "delegated": false}
+{"full": "shelljs/shelljs", "lang": "JavaScript", "stars": 14402, "test": "ava", "hits": ["ava"], "delegated": false}
+{"full": "HabitRPG/habitica", "lang": "JavaScript", "stars": 14325, "test": "npm run lint && gulp test", "hits": [], "delegated": false}
+{"full": "novnc/noVNC", "lang": "JavaScript", "stars": 14224, "test": "karma start karma.conf.cjs", "hits": ["karma"], "delegated": false}
+{"full": "http-party/node-http-proxy", "lang": "JavaScript", "stars": 14119, "test": "nyc --reporter=text --reporter=lcov npm run mocha", "hits": ["mocha"], "delegated": false}
+{"full": "adobe-webplatform/Snap.svg", "lang": "JavaScript", "stars": 14002, "test": null}
+{"full": "rabbitmq/rabbitmq-server", "lang": "JavaScript", "stars": 13978, "test": null, "nopkg": true}
+{"full": "m3y54m/Embedded-Engineering-Roadmap", "lang": "JavaScript", "stars": 13948, "test": null, "nopkg": true}
+{"full": "mozilla-firefox/firefox", "lang": "JavaScript", "stars": 13877, "test": null}
+{"full": "Anarios/return-youtube-dislike", "lang": "JavaScript", "stars": 13855, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "shipshapecode/shepherd", "lang": "JavaScript", "stars": 13836, "test": null}
+{"full": "mnfst/awesome-free-llm-apis", "lang": "JavaScript", "stars": 13694, "test": null}
+{"full": "sql-js/sql.js", "lang": "JavaScript", "stars": 13689, "test": "npm run lint && npm run test-wasm && npm run test-wasm-debug && npm run test-wasm-browser && npm run test-wasm-inline && npm run test-wasm-inline-debug && npm run test-builds", "hits": [], "delegated": false}
+{"full": "codesandbox/codesandbox-client", "lang": "JavaScript", "stars": 13662, "test": "lerna run test --ignore codesandbox-browserfs", "hits": [], "delegated": true}
+{"full": "mholt/PapaParse", "lang": "JavaScript", "stars": 13598, "test": "npm run lint && npm run test-node && npm run test-mocha-headless-chrome", "hits": ["mocha"], "delegated": false}
+{"full": "browserslist/browserslist", "lang": "JavaScript", "stars": 13589, "test": "pnpm run /^test:/", "hits": [], "delegated": false}
+{"full": "fishjar/kiss-translator", "lang": "JavaScript", "stars": 13429, "test": "react-app-rewired test", "hits": [], "delegated": false}
+{"full": "graphql/dataloader", "lang": "JavaScript", "stars": 13396, "test": "npm run lint && npm run check && npm run testonly", "hits": ["jest"], "delegated": false}
+{"full": "projectdiscovery/nuclei-templates", "lang": "JavaScript", "stars": 13368, "test": null, "nopkg": true}
+{"full": "JoeanAmier/XHS-Downloader", "lang": "JavaScript", "stars": 13335, "test": null, "nopkg": true}
+{"full": "mayswind/AriaNg", "lang": "JavaScript", "stars": 13279, "test": "echo \"Error: no test specified\" && exit 0", "hits": [], "delegated": false}
+{"full": "TheOdinProject/curriculum", "lang": "JavaScript", "stars": 13269, "test": "node --test", "hits": ["node_test"], "delegated": false}
+{"full": "brianc/node-postgres", "lang": "JavaScript", "stars": 13240, "test": "yarn lerna exec --concurrency 1 yarn test", "hits": [], "delegated": false}
+{"full": "nasa/openmct", "lang": "JavaScript", "stars": 13223, "test": "karma start karma.conf.cjs", "hits": ["karma"], "delegated": false}
+{"full": "Piebald-AI/claude-code-system-prompts", "lang": "JavaScript", "stars": 13193, "test": null, "nopkg": true}
+{"full": "nock/nock", "lang": "JavaScript", "stars": 13143, "test": "c8 --reporter=lcov --reporter=text mocha --recursive tests", "hits": ["mocha"], "delegated": false}
+{"full": "DustinBrett/daedalOS", "lang": "JavaScript", "stars": 13102, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "PrismJS/prism", "lang": "JavaScript", "stars": 13074, "test": "npm-run-all test:*", "hits": [], "delegated": false}
+{"full": "qist/tvbox", "lang": "JavaScript", "stars": 13067, "test": null, "nopkg": true}
+{"full": "GoogleChrome/workbox", "lang": "JavaScript", "stars": 13061, "test": null}
+{"full": "be5invis/Sarasa-Gothic", "lang": "JavaScript", "stars": 13053, "test": null}
+{"full": "piskelapp/piskel", "lang": "JavaScript", "stars": 13001, "test": "npm run unit-tests; npm run e2e", "hits": ["karma", "playwright"], "delegated": false}
+{"full": "wanglin2/mind-map", "lang": "JavaScript", "stars": 12998, "test": null, "nopkg": true}
+{"full": "arkenfox/user.js", "lang": "JavaScript", "stars": 12995, "test": null, "nopkg": true}
+{"full": "fmhy/edit", "lang": "JavaScript", "stars": 12862, "test": "node --test", "hits": ["node_test"], "delegated": false}
+{"full": "Wei-Shaw/claude-relay-service", "lang": "JavaScript", "stars": 12822, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "HackTricks-wiki/hacktricks", "lang": "JavaScript", "stars": 12789, "test": null, "nopkg": true}
+{"full": "plankanban/planka", "lang": "JavaScript", "stars": 12696, "test": "npm run server:test && npm run client:test", "hits": [], "delegated": false}
+{"full": "openlayers/openlayers", "lang": "JavaScript", "stars": 12664, "test": "npm run test-browser && npm run test-node && npm run test-rendering -- --force", "hits": ["vitest"], "delegated": false}
+{"full": "webpack/webpack-bundle-analyzer", "lang": "JavaScript", "stars": 12656, "test": "NODE_OPTIONS=--openssl-legacy-provider jest --runInBand", "hits": ["jest"], "delegated": false}
+{"full": "lockfale/OSINT-Framework", "lang": "JavaScript", "stars": 12480, "test": null}
+{"full": "Jeffallan/claude-skills", "lang": "JavaScript", "stars": 12454, "test": null, "nopkg": true}
+{"full": "viarotel-org/escrcpy", "lang": "JavaScript", "stars": 12421, "test": null}
+{"full": "jason5ng32/MyIP", "lang": "JavaScript", "stars": 12397, "test": "node --import ./tests/setup.js --test tests/*.test.js", "hits": [], "delegated": false}
+{"full": "jo-inc/camofox-browser", "lang": "JavaScript", "stars": 12394, "test": "npm run test:unit && npm run test:e2e && npm run test:plugins", "hits": ["jest"], "delegated": false}
+{"full": "bpampuch/pdfmake", "lang": "JavaScript", "stars": 12366, "test": "run-s build mocha lint", "hits": ["mocha"], "delegated": false}
+{"full": "downshift-js/downshift", "lang": "JavaScript", "stars": 12305, "test": "kcd-scripts test", "hits": [], "delegated": false}
+{"full": "josdejong/jsoneditor", "lang": "JavaScript", "stars": 12267, "test": "mocha test --require @babel/register", "hits": ["mocha"], "delegated": false}
+{"full": "gruntjs/grunt", "lang": "JavaScript", "stars": 12230, "test": "eslint --cache . && qunit test/unit/ && node bin/grunt subgrunt", "hits": [], "delegated": false}
+{"full": "firebase/functions-samples", "lang": "JavaScript", "stars": 12215, "test": null}
+{"full": "spencermountain/compromise", "lang": "JavaScript", "stars": 12176, "test": "tape \"./tests/**/*.test.js\" | tap-dancer", "hits": [], "delegated": false}
+{"full": "expressjs/multer", "lang": "JavaScript", "stars": 12087, "test": "mocha --reporter spec --exit --check-leaks test/", "hits": ["mocha"], "delegated": false}
+{"full": "wix/Detox", "lang": "JavaScript", "stars": 12060, "test": null}
+{"full": "vega/vega", "lang": "JavaScript", "stars": 12051, "test": "npm run test:no-lint && npm run lint", "hits": [], "delegated": true}
+{"full": "horsicq/Detect-It-Easy", "lang": "JavaScript", "stars": 11973, "test": null, "nopkg": true}
+{"full": "svgdotjs/svg.js", "lang": "JavaScript", "stars": 11944, "test": "karma start .config/karma.conf.cjs", "hits": ["karma"], "delegated": false}
+{"full": "notionnext-org/NotionNext", "lang": "JavaScript", "stars": 11923, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "OpenWhispr/openwhispr", "lang": "JavaScript", "stars": 11872, "test": "node --import tsx --test \"test/**/*.test.js\"", "hits": ["tsx"], "delegated": false}
+{"full": "is-a-dev/register", "lang": "JavaScript", "stars": 11862, "test": "npx ava tests/*.test.js", "hits": ["ava"], "delegated": false}
+{"full": "reactjs/react.dev", "lang": "JavaScript", "stars": 11847, "test": null}
+{"full": "wenzhixin/bootstrap-table", "lang": "JavaScript", "stars": 11810, "test": "run-s test:*", "hits": [], "delegated": false}
+{"full": "Nozbe/WatermelonDB", "lang": "JavaScript", "stars": 11804, "test": "jest --config=./jest.config.js --forceExit", "hits": ["jest"], "delegated": false}
+{"full": "PipedreamHQ/pipedream", "lang": "JavaScript", "stars": 11792, "test": "jest --passWithNoTests components", "hits": ["jest"], "delegated": false}
+{"full": "open-gsd/gsd-core", "lang": "JavaScript", "stars": 11699, "test": "node scripts/run-tests.cjs", "hits": [], "delegated": false}
+{"full": "WhiskeySockets/Baileys", "lang": "JavaScript", "stars": 11671, "test": "node --experimental-vm-modules ./node_modules/.bin/jest --testMatch '**/*.test.ts'", "hits": ["jest"], "delegated": false}
+{"full": "BrasilAPI/BrasilAPI", "lang": "JavaScript", "stars": 11602, "test": "npm run concurrently -- --hide dev -- run", "hits": ["vitest"], "delegated": false}
+{"full": "wangrongding/wechat-bot", "lang": "JavaScript", "stars": 11562, "test": "node ./src/wechaty/testMessage.js", "hits": [], "delegated": false}
+{"full": "stylelint/stylelint", "lang": "JavaScript", "stars": 11555, "test": "node scripts/test.mjs", "hits": [], "delegated": false}
+{"full": "mozilla/readability", "lang": "JavaScript", "stars": 11551, "test": "mocha test/test-*.js", "hits": ["mocha"], "delegated": false}
+{"full": "serverless/examples", "lang": "JavaScript", "stars": 11518, "test": null}
+{"full": "mixmark-io/turndown", "lang": "JavaScript", "stars": 11515, "test": "npm run build && npm run build-test && standard ./src/**/*.js && node test/internals-test.js && node test/turndown-test.js", "hits": [], "delegated": false}
+{"full": "yargs/yargs", "lang": "JavaScript", "stars": 11509, "test": "c8 mocha --enable-source-maps ./test/*.mjs --require ./test/before.mjs --timeout=24000 --check-leaks", "hits": ["mocha"], "delegated": false}
+{"full": "pdone/lx-music-source", "lang": "JavaScript", "stars": 11508, "test": null, "nopkg": true}
+{"full": "acornjs/acorn", "lang": "JavaScript", "stars": 11479, "test": "node test/run.js", "hits": [], "delegated": false}
+{"full": "debug-js/debug", "lang": "JavaScript", "stars": 11460, "test": "npm run test:node && npm run test:browser && npm run lint", "hits": ["mocha", "karma"], "delegated": false}
+{"full": "meta/hermes", "lang": "JavaScript", "stars": 11447, "test": null, "nopkg": true}
+{"full": "XxHuberrr/Mineradio-paused", "lang": "JavaScript", "stars": 11445, "test": null}
+{"full": "electron/minimal-repro", "lang": "JavaScript", "stars": 11429, "test": null}
+{"full": "xinnan-tech/xiaozhi-esp32-server", "lang": "JavaScript", "stars": 11346, "test": null, "nopkg": true}
+{"full": "jquery/jquery-ui", "lang": "JavaScript", "stars": 11336, "test": "grunt && npm run test:unit -- --headless", "hits": [], "delegated": false}
+{"full": "GoogleChromeLabs/quicklink", "lang": "JavaScript", "stars": 11305, "test": "npm-run-all build-all --parallel --race start uvu", "hits": ["uvu"], "delegated": false}
+{"full": "cytoscape/cytoscape.js", "lang": "JavaScript", "stars": 11297, "test": "run-s test:js test:modules test:playwright lint", "hits": [], "delegated": false}
+{"full": "thedevs-network/kutt", "lang": "JavaScript", "stars": 11214, "test": null}
+{"full": "nicobailon/visual-explainer", "lang": "JavaScript", "stars": 11180, "test": null}
+{"full": "openspug/spug", "lang": "JavaScript", "stars": 11115, "test": null, "nopkg": true}
+{"full": "beefproject/beef", "lang": "JavaScript", "stars": 11100, "test": null}
+{"full": "awesome-opencode/awesome-opencode", "lang": "JavaScript", "stars": 11049, "test": null}
+{"full": "yokoffing/Betterfox", "lang": "JavaScript", "stars": 11000, "test": null, "nopkg": true}
+{"full": "dangrossman/daterangepicker", "lang": "JavaScript", "stars": 10970, "test": "node --test tests/*.test.cjs", "hits": ["node_test"], "delegated": false}
+{"full": "1c7/Crash-Course-Computer-Science-Chinese", "lang": "JavaScript", "stars": 10946, "test": null, "nopkg": true}
+{"full": "sub-store-org/Sub-Store", "lang": "JavaScript", "stars": 10942, "test": null, "nopkg": true}
+{"full": "Yu9191/wloc", "lang": "JavaScript", "stars": 10901, "test": null, "nopkg": true}
+{"full": "NaturalNode/natural", "lang": "JavaScript", "stars": 10884, "test": "cross-env NODE_PATH=. jasmine --random=false dist/cjs/spec/*_spec.js", "hits": ["jasmine"], "delegated": false}
+{"full": "chuspeeism/dashi-ppt-skill", "lang": "JavaScript", "stars": 10849, "test": null, "nopkg": true}
+{"full": "ChatGPTBox-dev/chatGPTBox", "lang": "JavaScript", "stars": 10780, "test": "node --import ./tests/setup/browser-shim.mjs --test", "hits": [], "delegated": false}
+{"full": "ryanburgess/engineer-manager", "lang": "JavaScript", "stars": 10739, "test": "gulp test", "hits": [], "delegated": false}
+{"full": "foliojs/pdfkit", "lang": "JavaScript", "stars": 10734, "test": "vitest --testTimeout 8000 run --exclude \"tests/tools/**\"", "hits": ["vitest"], "delegated": false}
+{"full": "jantimon/html-webpack-plugin", "lang": "JavaScript", "stars": 10723, "test": "npm run test:coverage", "hits": ["jest"], "delegated": false}
+{"full": "aandrew-me/ytDownloader", "lang": "JavaScript", "stars": 10710, "test": "playwright test", "hits": ["playwright"], "delegated": false}
+{"full": "Automattic/node-canvas", "lang": "JavaScript", "stars": 10698, "test": "mocha test/*.test.js", "hits": ["mocha"], "delegated": false}
+{"full": "restify/node-restify", "lang": "JavaScript", "stars": 10690, "test": "make prepush", "hits": [], "delegated": false}
+{"full": "leeoniya/uPlot", "lang": "JavaScript", "stars": 10660, "test": "node ./scripts/test.mjs \"test/*.mjs\" \"test/plugins/*.mjs\"", "hits": [], "delegated": false}
+{"full": "FredrikNoren/ungit", "lang": "JavaScript", "stars": 10616, "test": "npm run unittest && npm run clicktest", "hits": ["mocha"], "delegated": false}
+{"full": "protobufjs/protobuf.js", "lang": "JavaScript", "stars": 10611, "test": "npm run test:sources && npm run test:types", "hits": [], "delegated": false}
+{"full": "gka/chroma.js", "lang": "JavaScript", "stars": 10608, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "ckeditor/ckeditor5", "lang": "JavaScript", "stars": 10518, "test": "node scripts/test.mjs", "hits": [], "delegated": false}
+{"full": "meta/stylex", "lang": "JavaScript", "stars": 10512, "test": "npm run build && npm run flow && npm run test:packages && npm run prettier:report && npm run lint:report", "hits": [], "delegated": false}
+{"full": "kingcharleslzy-ai/dsh-purge", "lang": "JavaScript", "stars": 10510, "test": "node --test test/backup-refresh-guard.test.mjs test/plugin-request-host-fence.test.mjs test/community-route-admission.test.mjs test/skill-archive-import.test.mjs test/zip-extract-node-only.test.mjs te", "hits": ["node_test"], "delegated": false}
+{"full": "easydiffusion/easydiffusion", "lang": "JavaScript", "stars": 10480, "test": null}
+{"full": "Stuk/jszip", "lang": "JavaScript", "stars": 10400, "test": "npm run test-node && npm run test-browser && tsc", "hits": [], "delegated": false}
+{"full": "wonderwhy-er/DesktopCommanderMCP", "lang": "JavaScript", "stars": 10364, "test": "npm run build && node test/run-all-tests.js", "hits": [], "delegated": false}
+{"full": "WebKit/WebKit", "lang": "JavaScript", "stars": 10361, "test": null, "nopkg": true}
+{"full": "hackjutsu/Lepton", "lang": "JavaScript", "stars": 10348, "test": "npm run test:unit && npm run test:build", "hits": ["vitest"], "delegated": false}
+{"full": "jquery-validation/jquery-validation", "lang": "JavaScript", "stars": 10315, "test": "grunt", "hits": [], "delegated": false}
+{"full": "addyosmani/critical", "lang": "JavaScript", "stars": 10304, "test": "node --test", "hits": ["node_test"], "delegated": false}
+{"full": "npm/cli", "lang": "JavaScript", "stars": 10264, "test": "tap", "hits": ["tap"], "delegated": false}
+{"full": "XIU2/UserScript", "lang": "JavaScript", "stars": 10217, "test": null, "nopkg": true}
+{"full": "faisalman/ua-parser-js", "lang": "JavaScript", "stars": 10215, "test": "./script/test-all.sh", "hits": [], "delegated": false}
+{"full": "pmndrs/drei", "lang": "JavaScript", "stars": 10176, "test": "yarn eslint:ci && yarn typecheck && yarn prettier && (cd test/e2e; ./e2e.sh 0.180)", "hits": [], "delegated": false}
+{"full": "webtorrent/webtorrent-desktop", "lang": "JavaScript", "stars": 10151, "test": "standard && depcheck --ignores=standard,@babel/eslint-parser --ignore-dirs=build,dist", "hits": [], "delegated": false}
+{"full": "i18next/react-i18next", "lang": "JavaScript", "stars": 10069, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "meta/jscodeshift", "lang": "JavaScript", "stars": 10051, "test": "jest --bail", "hits": ["jest"], "delegated": false}
+{"full": "Hypfer/Valetudo", "lang": "JavaScript", "stars": 10013, "test": null}
+{"full": "evolus/pencil", "lang": "JavaScript", "stars": 9924, "test": null}
+{"full": "DevExpress/testcafe", "lang": "JavaScript", "stars": 9890, "test": "gulp travis", "hits": [], "delegated": false}
+{"full": "hiteshchoudhary/apihub", "lang": "JavaScript", "stars": 9870, "test": null}
+{"full": "upgundecha/howtheysre", "lang": "JavaScript", "stars": 9849, "test": null, "nopkg": true}
+{"full": "vercel/ncc", "lang": "JavaScript", "stars": 9842, "test": "node --expose-gc --max_old_space_size=4096 node_modules/jest/bin/jest.js", "hits": [], "delegated": false}
+{"full": "anvaka/city-roads", "lang": "JavaScript", "stars": 9829, "test": null}
+{"full": "streamaserver/streama", "lang": "JavaScript", "stars": 9825, "test": null, "nopkg": true}
+{"full": "sindresorhus/ora", "lang": "JavaScript", "stars": 9774, "test": "xo && NODE_ENV=test node --test test.js", "hits": ["node_test"], "delegated": false}
+{"full": "sinonjs/sinon", "lang": "JavaScript", "stars": 9752, "test": "npm run build-artifacts && npm run test-node && node ./scripts/run-browser-suite.mjs headless && node ./scripts/run-browser-suite.mjs webworker", "hits": ["mocha"], "delegated": false}
+{"full": "marcelscruz/public-apis", "lang": "JavaScript", "stars": 9750, "test": null}
+{"full": "bpmn-io/bpmn-js", "lang": "JavaScript", "stars": 9741, "test": "karma start test/config/karma.unit.js", "hits": ["karma"], "delegated": false}
+{"full": "codebymitch/TitanBot", "lang": "JavaScript", "stars": 9672, "test": null}
+{"full": "HarnessMD/munder-difflin", "lang": "JavaScript", "stars": 9633, "test": null}
+{"full": "jprichardson/node-fs-extra", "lang": "JavaScript", "stars": 9596, "test": "npm run lint && npm run unit && npm run unit-esm", "hits": [], "delegated": false}
+{"full": "dharmx/walls", "lang": "JavaScript", "stars": 9571, "test": null, "nopkg": true}
+{"full": "miqdadbadjuber/anti-slop", "lang": "JavaScript", "stars": 9556, "test": null}
+{"full": "WebGoat/WebGoat", "lang": "JavaScript", "stars": 9490, "test": null, "nopkg": true}
+{"full": "fenixsoft/awesome-fenix", "lang": "JavaScript", "stars": 9481, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "swagger-api/swagger-editor", "lang": "JavaScript", "stars": 9478, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "jgraph/drawio", "lang": "JavaScript", "stars": 9471, "test": null, "nopkg": true}
+{"full": "eduardolundgren/tracking.js", "lang": "JavaScript", "stars": 9465, "test": "gulp test", "hits": [], "delegated": false}
+{"full": "Orkas-AI/Orkas", "lang": "JavaScript", "stars": 9457, "test": "node scripts/run-tests.mjs suite", "hits": [], "delegated": false}
+{"full": "eze-is/web-access", "lang": "JavaScript", "stars": 9449, "test": null, "nopkg": true}
+{"full": "dessant/buster", "lang": "JavaScript", "stars": 9394, "test": null}
+{"full": "xanderfrangos/twinkle-tray", "lang": "JavaScript", "stars": 9373, "test": null}
+{"full": "terser/terser", "lang": "JavaScript", "stars": 9363, "test": "node test/compress.js && mocha test/mocha", "hits": ["mocha"], "delegated": false}
+{"full": "c3js/c3", "lang": "JavaScript", "stars": 9352, "test": "run-s build lint karma", "hits": [], "delegated": false}
+{"full": "bytedance/xgplayer", "lang": "JavaScript", "stars": 9314, "test": "jest --verbose", "hits": ["jest"], "delegated": false}
+{"full": "jsx-eslint/eslint-plugin-react", "lang": "JavaScript", "stars": 9293, "test": "npm run unit-test", "hits": ["mocha"], "delegated": false}
+{"full": "react-grid-layout/react-draggable", "lang": "JavaScript", "stars": 9291, "test": "vitest run --reporter=verbose", "hits": ["vitest"], "delegated": false}
+{"full": "grpc/grpc-web", "lang": "JavaScript", "stars": 9261, "test": null, "nopkg": true}
+{"full": "minbrowser/min", "lang": "JavaScript", "stars": 9258, "test": "standard --verbose js/**/*.js main/*.js", "hits": [], "delegated": false}
+{"full": "kpdecker/jsdiff", "lang": "JavaScript", "stars": 9222, "test": "c8 yarn _test", "hits": ["mocha"], "delegated": false}
+{"full": "violentmonkey/violentmonkey", "lang": "JavaScript", "stars": 9211, "test": "cross-env BABEL_ENV=test TEST=test jest test --maxWorkers=50%", "hits": ["jest"], "delegated": false}
+{"full": "node-schedule/node-schedule", "lang": "JavaScript", "stars": 9196, "test": "tape test/*.js", "hits": [], "delegated": false}
+{"full": "release-it/release-it", "lang": "JavaScript", "stars": 9086, "test": "node --env-file=.env.test --test && installed-check --no-workspaces", "hits": ["node_test"], "delegated": false}
+{"full": "rawgraphs/rawgraphs-app", "lang": "JavaScript", "stars": 9058, "test": null}
+{"full": "remarkjs/remark", "lang": "JavaScript", "stars": 9042, "test": "npm run build && npm run format && npm run test-coverage", "hits": [], "delegated": false}
+{"full": "beautifier/js-beautify", "lang": "JavaScript", "stars": 9014, "test": null}
+{"full": "mozilla/nunjucks", "lang": "JavaScript", "stars": 9008, "test": "npm run lint && npm run test:instrument && npm run test:runner", "hits": [], "delegated": false}
+{"full": "justlovemaki/AIClient2API", "lang": "JavaScript", "stars": 8992, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "idurar/idurar-erp-crm", "lang": "JavaScript", "stars": 8962, "test": null, "nopkg": true}
+{"full": "ljharb/qs", "lang": "JavaScript", "stars": 8949, "test": "npm run tests-only", "hits": [], "delegated": false}
+{"full": "porsager/postgres", "lang": "JavaScript", "stars": 8769, "test": "node tests/unit && node tests/index.js && node tests/simulate.js", "hits": [], "delegated": false}
+{"full": "Kenshin/simpread", "lang": "JavaScript", "stars": 8758, "test": null}
+{"full": "jonobr1/two.js", "lang": "JavaScript", "stars": 8752, "test": null}
+{"full": "HeyPuter/everything", "lang": "JavaScript", "stars": 8751, "test": null, "nopkg": true}
+{"full": "EvoMap/evolver", "lang": "JavaScript", "stars": 8747, "test": "node -e \"const fs=require('fs'),cp=require('child_process');const skip=new Set(['solidifyIntegration.test.js','proxyTracePlatformInstall.test.js','spawnReplacementProcess.test.js']);const all=fs.readd", "hits": ["node_test"], "delegated": false}
+{"full": "TiddlyWiki/TiddlyWiki5", "lang": "JavaScript", "stars": 8713, "test": "node ./tiddlywiki.js ./editions/test --verbose --version --build index", "hits": [], "delegated": false}
+{"full": "adrai/flowchart.js", "lang": "JavaScript", "stars": 8701, "test": "npm run lint", "hits": [], "delegated": false}
+{"full": "GoogleChrome/web-vitals", "lang": "JavaScript", "stars": 8696, "test": "npm-run-all build test:types test:unit -p -r test:e2e test:server", "hits": [], "delegated": false}
+{"full": "microsoft/TypeChat", "lang": "JavaScript", "stars": 8692, "test": null, "nopkg": true}
+{"full": "i18next/i18next", "lang": "JavaScript", "stars": 8667, "test": "vitest --run", "hits": ["vitest"], "delegated": false}
+{"full": "codecombat/codecombat", "lang": "JavaScript", "stars": 8586, "test": "COCO_TRAVIS_TEST=1 NODE_OPTIONS='--max-old-space-size=4096' npm run webpack && ./node_modules/.bin/karma start --single-run --reporters dots", "hits": ["karma"], "delegated": false}
+{"full": "cerebroapp/cerebro", "lang": "JavaScript", "stars": 8575, "test": "cross-env NODE_ENV=test CEREBRO_DATA_PATH=userdata jest", "hits": ["jest"], "delegated": false}
+{"full": "jnMetaCode/superpowers-zh", "lang": "JavaScript", "stars": 8570, "test": null}
+{"full": "mcollina/autocannon", "lang": "JavaScript", "stars": 8545, "test": "npm run lint && borp --no-timeout --concurrency 4", "hits": ["node_test"], "delegated": false}
+{"full": "NorthwoodsSoftware/GoJS", "lang": "JavaScript", "stars": 8505, "test": null}
+{"full": "sockjs/sockjs-client", "lang": "JavaScript", "stars": 8504, "test": "mocha tests/node.js", "hits": ["mocha"], "delegated": false}
+{"full": "tiagozip/cap", "lang": "JavaScript", "stars": 8485, "test": null, "nopkg": true}
+{"full": "eooce/nodejs-argo", "lang": "JavaScript", "stars": 8478, "test": null}
+{"full": "NomaDamas/k-skill", "lang": "JavaScript", "stars": 8470, "test": "node scripts/run-tests.js", "hits": [], "delegated": false}
+{"full": "NobyDa/Script", "lang": "JavaScript", "stars": 8443, "test": null, "nopkg": true}
+{"full": "Fei2411/DS-Bot", "lang": "JavaScript", "stars": 8435, "test": null, "nopkg": true}
+{"full": "pinokiocomputer/pinokio", "lang": "JavaScript", "stars": 8423, "test": null}
+{"full": "cporter202/API-mega-list", "lang": "JavaScript", "stars": 8401, "test": null, "nopkg": true}
+{"full": "DeanChensj/jiangshan-map", "lang": "JavaScript", "stars": 8400, "test": null, "nopkg": true}
+{"full": "isomorphic-git/isomorphic-git", "lang": "JavaScript", "stars": 8394, "test": "nps test", "hits": [], "delegated": false}
+{"full": "jerryc127/hexo-theme-butterfly", "lang": "JavaScript", "stars": 8367, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "grommet/grommet", "lang": "JavaScript", "stars": 8352, "test": "jest --runInBand && yarn test-timezones", "hits": ["jest"], "delegated": false}
+{"full": "shaka-project/shaka-player", "lang": "JavaScript", "stars": 8286, "test": null}
+{"full": "chaijs/chai", "lang": "JavaScript", "stars": 8267, "test": "npm run test-node && npm run test-chrome", "hits": ["mocha"], "delegated": false}
+{"full": "zumerlab/snapdom", "lang": "JavaScript", "stars": 8248, "test": "npm run check && REQUIRE_VISUAL=1 node scripts/vitest.mjs run --browser.headless --reporter=verbose", "hits": ["node_test"], "delegated": false}
+{"full": "fengyuanchen/viewerjs", "lang": "JavaScript", "stars": 8244, "test": "karma start", "hits": ["karma"], "delegated": false}
+{"full": "patch-gg/pixelfx", "lang": "JavaScript", "stars": 8243, "test": null}
+{"full": "lorien/awesome-web-scraping", "lang": "JavaScript", "stars": 8239, "test": null}
+{"full": "mruniquehacker/Knightbot-MD", "lang": "JavaScript", "stars": 8228, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "xixu-me/xget", "lang": "JavaScript", "stars": 8217, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "expressjs/morgan", "lang": "JavaScript", "stars": 8201, "test": "mocha --check-leaks --reporter spec test/morgan.js && mocha --check-leaks --reporter spec test/noColor.js", "hits": ["mocha"], "delegated": false}
+{"full": "RoutineMiku/apkstart", "lang": "JavaScript", "stars": 8156, "test": "node test/run-tests.js && node test/android-test.js && node test/range-validation-test.js && node test/display-scale-test.js && node test/resources-test.js && node test/drivers-test.js && node test/pr", "hits": [], "delegated": false}
+{"full": "mde/ejs", "lang": "JavaScript", "stars": 8136, "test": "npx jake test", "hits": [], "delegated": false}
+{"full": "nativewind/nativewind", "lang": "JavaScript", "stars": 8130, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "markodenic/web-development-resources", "lang": "JavaScript", "stars": 8100, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "cryptpad/cryptpad", "lang": "JavaScript", "stars": 8091, "test": "node scripts/TestSelenium.js", "hits": [], "delegated": false}
+{"full": "Axorax/awesome-free-apps", "lang": "JavaScript", "stars": 8076, "test": null, "nopkg": true}
+{"full": "collabnix/dockerlabs", "lang": "JavaScript", "stars": 8042, "test": null}
+{"full": "openai/plugins", "lang": "JavaScript", "stars": 8016, "test": null, "nopkg": true}
+{"full": "openwrt/luci", "lang": "JavaScript", "stars": 7985, "test": null}
+{"full": "elasticsearch-dump/elasticsearch-dump", "lang": "JavaScript", "stars": 7947, "test": "mocha", "hits": ["mocha"], "delegated": false}
+{"full": "mailcheck/mailcheck", "lang": "JavaScript", "stars": 7935, "test": "node script/test-all.js && npm run test:release", "hits": ["node_test"], "delegated": false}
+{"full": "SVG-Edit/svgedit", "lang": "JavaScript", "stars": 7903, "test": "vitest run --coverage && node scripts/run-e2e.mjs", "hits": ["vitest"], "delegated": false}
+{"full": "timqian/chart.xkcd", "lang": "JavaScript", "stars": 7875, "test": null}
+{"full": "firecrawl/firecrawl-mcp-server", "lang": "JavaScript", "stars": 7860, "test": "npm run build && node --test --test-concurrency=1 tests/*.test.mjs", "hits": ["node_test"], "delegated": false}
+{"full": "UnblockNeteaseMusic/server", "lang": "JavaScript", "stars": 7857, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "webpack/webpack-dev-server", "lang": "JavaScript", "stars": 7850, "test": "npm run test:coverage", "hits": [], "delegated": false}
+{"full": "verlok/vanilla-lazyload", "lang": "JavaScript", "stars": 7849, "test": "npm run test:unit && npm run test:e2e", "hits": ["jest", "playwright"], "delegated": false}
+{"full": "Acode-Foundation/Acode", "lang": "JavaScript", "stars": 7843, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "tabulator-tables/tabulator", "lang": "JavaScript", "stars": 7823, "test": "npm run test:unit && npm run test:e2e", "hits": ["jest", "playwright"], "delegated": false}
+{"full": "PrismarineJS/mineflayer", "lang": "JavaScript", "stars": 7783, "test": "npm run mocha_test", "hits": ["mocha"], "delegated": false}
+{"full": "ganeshrvel/openmtp", "lang": "JavaScript", "stars": 7749, "test": null}
+{"full": "nodejs/undici", "lang": "JavaScript", "stars": 7741, "test": "npm run test:javascript && cross-env NODE_V8_COVERAGE= npm run test:typescript", "hits": ["jest", "node_test"], "delegated": false}
+{"full": "Ylianst/MeshCentral", "lang": "JavaScript", "stars": 7733, "test": null}
+{"full": "sindresorhus/np", "lang": "JavaScript", "stars": 7717, "test": "FORCE_HYPERLINK=1 HOME=/tmp npm_config_cache=/tmp/.npm NODE_ENV=test GIT_AUTHOR_NAME=test GIT_COMMITTER_NAME=test GIT_AUTHOR_EMAIL=test@example.com GIT_COMMITTER_EMAIL=test@example.com sh -c 'xo && no", "hits": ["node_test"], "delegated": false}
+{"full": "google/closure-compiler", "lang": "JavaScript", "stars": 7707, "test": null}
+{"full": "plopjs/plop", "lang": "JavaScript", "stars": 7690, "test": "turbo run test --parallel", "hits": [], "delegated": true}
+{"full": "sindresorhus/execa", "lang": "JavaScript", "stars": 7647, "test": "npm run lint && npm run unit && npm run type", "hits": ["node_test"], "delegated": false}
+{"full": "WiseLibs/better-sqlite3", "lang": "JavaScript", "stars": 7556, "test": "mocha --exit --slow=75 --timeout=5000", "hits": ["mocha"], "delegated": false}
+{"full": "di-sukharev/opencommit", "lang": "JavaScript", "stars": 7554, "test": "node --no-warnings --experimental-vm-modules $( [ -f ./node_modules/.bin/jest ] && echo ./node_modules/.bin/jest || which jest ) test/unit", "hits": ["jest"], "delegated": false}
+{"full": "elysia395/dsh-wallpaper-engine", "lang": "JavaScript", "stars": 7542, "test": null}
+{"full": "clappr/clappr", "lang": "JavaScript", "stars": 7536, "test": "lerna run test --no-bail && vitest run --dir test --passWithNoTests --globals", "hits": ["vitest"], "delegated": false}
+{"full": "krausest/js-framework-benchmark", "lang": "JavaScript", "stars": 7505, "test": null}
+{"full": "sverweij/dependency-cruiser", "lang": "JavaScript", "stars": 7447, "test": "LANG=en_US.UTF-8 NODE_OPTIONS=--no-warnings NO_COLOR=1 mocha", "hits": ["mocha"], "delegated": false}
+{"full": "Ripple-TS/ripple", "lang": "JavaScript", "stars": 7410, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "hotwired/turbo", "lang": "JavaScript", "stars": 7405, "test": "yarn test:unit && yarn test:browser", "hits": ["playwright"], "delegated": false}
+{"full": "dbgate/dbgate", "lang": "JavaScript", "stars": 7390, "test": null}
+{"full": "MeteorNOX/DeepSeek-Balance-Whale-Widget", "lang": "JavaScript", "stars": 7355, "test": null}
+{"full": "OpenSignLabs/OpenSign", "lang": "JavaScript", "stars": 7305, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "AlaSQL/alasql", "lang": "JavaScript", "stars": 7301, "test": "yarn test-parser && sh build.sh && yarn test-only", "hits": ["bun_test"], "delegated": false}
+{"full": "postmanlabs/newman", "lang": "JavaScript", "stars": 7281, "test": "npm run test-lint && npm run test-system && npm run test-unit && npm run test-integration && npm run test-cli && npm run test-library", "hits": [], "delegated": false}
+{"full": "win12-online/win12", "lang": "JavaScript", "stars": 7276, "test": null, "nopkg": true}
+{"full": "MikeMcl/decimal.js", "lang": "JavaScript", "stars": 7273, "test": "node ./test/test.js", "hits": [], "delegated": false}
+{"full": "wechat-miniprogram/miniprogram-demo", "lang": "JavaScript", "stars": 7262, "test": null}
+{"full": "alchaincyf/huashu-art-motion", "lang": "JavaScript", "stars": 7248, "test": null, "nopkg": true}
+{"full": "uswds/uswds", "lang": "JavaScript", "stars": 7248, "test": "npm run lint && gulp typecheck && gulp test", "hits": [], "delegated": false}
+{"full": "jspreadsheet/ce", "lang": "JavaScript", "stars": 7247, "test": "npm run build && mocha --recursive --require=mocha.config.js", "hits": ["mocha"], "delegated": false}
+{"full": "tradesdontlie/tradingview-mcp", "lang": "JavaScript", "stars": 7242, "test": "node --test tests/e2e.test.js tests/pine_analyze.test.js", "hits": ["node_test"], "delegated": false}
+{"full": "bndw/wifi-card", "lang": "JavaScript", "stars": 7211, "test": null}
+{"full": "garris/BackstopJS", "lang": "JavaScript", "stars": 7205, "test": "node ./cli/index.js test", "hits": [], "delegated": false}
+{"full": "kenzok8/openwrt-packages", "lang": "JavaScript", "stars": 7202, "test": null, "nopkg": true}
+{"full": "json5/json5", "lang": "JavaScript", "stars": 7182, "test": "node --test --experimental-test-coverage --test-coverage-include='lib/**' --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100 test/*.test.js", "hits": ["node_test"], "delegated": false}
+{"full": "dataease/SQLBot", "lang": "JavaScript", "stars": 7179, "test": null, "nopkg": true}
+{"full": "node-formidable/formidable", "lang": "JavaScript", "stars": 7176, "test": "node --test ./test-node/**/*.test.js && pnpm run test-jest:ci", "hits": ["node_test"], "delegated": false}
+{"full": "zarazhangrui/follow-builders", "lang": "JavaScript", "stars": 7160, "test": null, "nopkg": true}
+{"full": "GoogleChrome/lighthouse-ci", "lang": "JavaScript", "stars": 7157, "test": "npm run test:typecheck && npm run test:lint && npm run test:unit", "hits": ["jest"], "delegated": false}
+{"full": "LaoFeng-mouse/flyingmouse-format", "lang": "JavaScript", "stars": 7146, "test": "node --test tests/agent-skill-installer.test.js tests/bmp-input.test.js tests/bmp-output.test.js tests/ci-engine-release.test.js tests/cli.test.js tests/conversion-preferences.test.js tests/conversion", "hits": ["node_test"], "delegated": false}
+{"full": "jaywcjlove/hotkeys-js", "lang": "JavaScript", "stars": 7138, "test": "jest --coverage --detectOpenHandles", "hits": ["jest"], "delegated": false}
+{"full": "xaboy/form-create", "lang": "JavaScript", "stars": 7119, "test": null}
+{"full": "sandstorm-io/sandstorm", "lang": "JavaScript", "stars": 7082, "test": null, "nopkg": true}
+{"full": "ai/size-limit", "lang": "JavaScript", "stars": 7052, "test": "oxlint && vitest run --coverage && sh scripts/max-listeners-check.sh", "hits": ["vitest"], "delegated": false}
+{"full": "marionettejs/marionette", "lang": "JavaScript", "stars": 7047, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "guoyue2010/lxmusic-", "lang": "JavaScript", "stars": 7046, "test": null, "nopkg": true}
+{"full": "cssinjs/jss", "lang": "JavaScript", "stars": 7041, "test": "pnpm run test:unit && pnpm run test:browser", "hits": ["vitest"], "delegated": false}
+{"full": "yjh051108/dsh-routing-suite", "lang": "JavaScript", "stars": 7028, "test": null}
+{"full": "mapbox/pixelmatch", "lang": "JavaScript", "stars": 7026, "test": "tsc && node --test", "hits": ["node_test"], "delegated": false}
+{"full": "openstyles/stylus", "lang": "JavaScript", "stars": 7019, "test": "run-p lint test-csslint test-beautify test-color", "hits": [], "delegated": false}
+{"full": "MikeMcl/bignumber.js", "lang": "JavaScript", "stars": 7013, "test": "node test/test.js", "hits": [], "delegated": false}
+{"full": "kaomei/stickman-video-director", "lang": "JavaScript", "stars": 7008, "test": null, "nopkg": true}
+{"full": "tobspr-games/shapez.io", "lang": "JavaScript", "stars": 7008, "test": null}
+{"full": "jsfiddle/togetherjs", "lang": "JavaScript", "stars": 7000, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "davidjbradshaw/iframe-resizer", "lang": "JavaScript", "stars": 6929, "test": "npm run test:jest && time npm run rollup:test && npm run test:int", "hits": ["karma"], "delegated": false}
+{"full": "MarSeventh/CloudFlare-ImgBed", "lang": "JavaScript", "stars": 6927, "test": "mocha", "hits": ["mocha"], "delegated": false}
+{"full": "sindresorhus/query-string", "lang": "JavaScript", "stars": 6919, "test": "xo && node --test && nz", "hits": ["node_test"], "delegated": false}
+{"full": "cazala/synaptic", "lang": "JavaScript", "stars": 6914, "test": "npm run test:mocha:src", "hits": ["mocha"], "delegated": false}
+{"full": "wilsonpage/fastdom", "lang": "JavaScript", "stars": 6912, "test": "npm run -s unit && npm run -s lint", "hits": [], "delegated": false}
+{"full": "RockstarLang/rockstar", "lang": "JavaScript", "stars": 6875, "test": null, "nopkg": true}
+{"full": "eternityspring/shuohao-skills", "lang": "JavaScript", "stars": 6842, "test": null, "nopkg": true}
+{"full": "outsourc-e/hermes-workspace", "lang": "JavaScript", "stars": 6833, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "deezertidal/shadowrocket-rules", "lang": "JavaScript", "stars": 6831, "test": null, "nopkg": true}
+{"full": "Choices-js/Choices", "lang": "JavaScript", "stars": 6825, "test": "run-s test:unit test:e2e:all", "hits": [], "delegated": false}
+{"full": "webhooksite/webhook.site", "lang": "JavaScript", "stars": 6809, "test": null}
+{"full": "Dooy/chatgpt-web-midjourney-proxy", "lang": "JavaScript", "stars": 6803, "test": null}
+{"full": "88lin/video_vip", "lang": "JavaScript", "stars": 6801, "test": null, "nopkg": true}
+{"full": "tensorflow/tfjs-examples", "lang": "JavaScript", "stars": 6784, "test": null}
+{"full": "rullerzhou-afk/clawd-on-desk", "lang": "JavaScript", "stars": 6781, "test": "node test/run-tests.js", "hits": [], "delegated": false}
+{"full": "shentao/vue-multiselect", "lang": "JavaScript", "stars": 6769, "test": "vue-cli-service test:unit", "hits": [], "delegated": false}
+{"full": "automerge/automerge", "lang": "JavaScript", "stars": 6742, "test": null, "nopkg": true}
+{"full": "rethinkdb/horizon", "lang": "JavaScript", "stars": 6739, "test": null, "nopkg": true}
+{"full": "golden-layout/golden-layout", "lang": "JavaScript", "stars": 6722, "test": "karma start --single-run --browsers ChromeHeadless", "hits": ["karma"], "delegated": false}
+{"full": "hovancik/stretchly", "lang": "JavaScript", "stars": 6657, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "crocodilestick/Calibre-Web-Automated", "lang": "JavaScript", "stars": 6639, "test": null, "nopkg": true}
+{"full": "dylang/npm-check", "lang": "JavaScript", "stars": 6634, "test": "npm run lint && ./bin/cli.js || echo Exit Status: $?.", "hits": [], "delegated": false}
+{"full": "ppoffice/hexo-theme-icarus", "lang": "JavaScript", "stars": 6632, "test": "npm run test:unit && npm run test:integration", "hits": ["mocha"], "delegated": false}
+{"full": "ipfs/ipfs-desktop", "lang": "JavaScript", "stars": 6619, "test": "cross-env NODE_ENV=test playwright test 'test/unit/.*.spec.js'", "hits": ["playwright"], "delegated": false}
+{"full": "truelockmc/streambert", "lang": "JavaScript", "stars": 6584, "test": null}
+{"full": "share/sharedb", "lang": "JavaScript", "stars": 6565, "test": "mocha", "hits": ["mocha"], "delegated": false}
+{"full": "anus-dev/ANUS", "lang": "JavaScript", "stars": 6560, "test": "node --test test/*.test.mjs", "hits": ["node_test"], "delegated": false}
+{"full": "QingYunA/answer-me-with-html", "lang": "JavaScript", "stars": 6554, "test": "node --test --test-timeout=120000 test/*.test.js", "hits": ["node_test"], "delegated": false}
+{"full": "neetcode-gh/leetcode", "lang": "JavaScript", "stars": 6515, "test": null}
+{"full": "imba/imba", "lang": "JavaScript", "stars": 6515, "test": null}
+{"full": "pshenok/server-survival", "lang": "JavaScript", "stars": 6511, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "melonjs/melonJS", "lang": "JavaScript", "stars": 6510, "test": "turbo build && vitest --config packages/melonjs/vitest.config.ts", "hits": ["vitest"], "delegated": false}
+{"full": "Neet-Nestor/Telegram-Media-Downloader", "lang": "JavaScript", "stars": 6485, "test": "node --test tests/*.test.cjs", "hits": ["node_test"], "delegated": false}
+{"full": "CareyWang/sub-web", "lang": "JavaScript", "stars": 6469, "test": null}
+{"full": "RobinHerbots/Inputmask", "lang": "JavaScript", "stars": 6451, "test": "npm run build && npm run types && npm run test:node && npm run lint && npm run test:jsdom", "hits": ["karma"], "delegated": false}
+{"full": "bfirsh/jsnes", "lang": "JavaScript", "stars": 6440, "test": "npm run typecheck && prettier --check '**/*.{js,jsx,css}' && node --test ./test/*.spec.js", "hits": ["node_test"], "delegated": false}
+{"full": "DavidAnson/markdownlint", "lang": "JavaScript", "stars": 6438, "test": "node --test --experimental-test-coverage --test-coverage-branches=100 --test-coverage-functions=100 --test-coverage-lines=100 --test-coverage-exclude=test/**/* test/markdownlint-test.mjs test/markdown", "hits": ["node_test"], "delegated": false}
+{"full": "node-config/node-config", "lang": "JavaScript", "stars": 6434, "test": "c8 node --no-experimental-strip-types --test", "hits": ["node_test"], "delegated": false}
+{"full": "jsdelivr/jsdelivr", "lang": "JavaScript", "stars": 6428, "test": null, "nopkg": true}
+{"full": "RichardLitt/standard-readme", "lang": "JavaScript", "stars": 6399, "test": null}
+{"full": "BrowserWorks/waterfox", "lang": "JavaScript", "stars": 6392, "test": null}
+{"full": "moleculerjs/moleculer", "lang": "JavaScript", "stars": 6386, "test": "jest --coverage --forceExit", "hits": ["jest"], "delegated": false}
+{"full": "expressjs/session", "lang": "JavaScript", "stars": 6358, "test": "./test/support/gencert.sh && mocha --require test/support/env --check-leaks --no-exit --reporter spec test/", "hits": ["mocha"], "delegated": false}
+{"full": "pixlcore/xyops", "lang": "JavaScript", "stars": 6350, "test": "pixl-unit test/test.js", "hits": [], "delegated": false}
+{"full": "mwilliamson/mammoth.js", "lang": "JavaScript", "stars": 6347, "test": "mocha 'test/**/*.tests.js'", "hits": ["mocha"], "delegated": false}
+{"full": "vvo/gifify", "lang": "JavaScript", "stars": 6333, "test": null}
+{"full": "cmliu/WorkerVless2sub", "lang": "JavaScript", "stars": 6331, "test": null, "nopkg": true}
+{"full": "deusyu/harness-engineering", "lang": "JavaScript", "stars": 6304, "test": null}
+{"full": "itorr/nbnhhsh", "lang": "JavaScript", "stars": 6289, "test": null, "nopkg": true}
+{"full": "antfu/eslint-config", "lang": "JavaScript", "stars": 6289, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "illuspas/Node-Media-Server", "lang": "JavaScript", "stars": 6241, "test": "node --test test/*.test.js", "hits": ["node_test"], "delegated": false}
+{"full": "instantpage/instant.page", "lang": "JavaScript", "stars": 6224, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "JannisX11/blockbench", "lang": "JavaScript", "stars": 6221, "test": null}
+{"full": "svaarala/duktape", "lang": "JavaScript", "stars": 6217, "test": null}
+{"full": "brookhong/Surfingkeys", "lang": "JavaScript", "stars": 6208, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "SocketCluster/socketcluster", "lang": "JavaScript", "stars": 6199, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "quarto-dev/quarto-cli", "lang": "JavaScript", "stars": 6194, "test": null, "nopkg": true}
+{"full": "gz-yami/mall4cloud", "lang": "JavaScript", "stars": 6177, "test": null, "nopkg": true}
+{"full": "module-federation/module-federation-examples", "lang": "JavaScript", "stars": 6148, "test": "jest --config=jest.config.cjs --maxWorkers=2", "hits": ["jest"], "delegated": false}
+{"full": "nodeca/pako", "lang": "JavaScript", "stars": 6140, "test": "npm run lint && npm run build && npm run type-check && node --test", "hits": ["node_test"], "delegated": false}
+{"full": "graphite-project/graphite-web", "lang": "JavaScript", "stars": 6139, "test": null, "nopkg": true}
+{"full": "OpenSenseNova/SenseNova-Skills", "lang": "JavaScript", "stars": 6095, "test": null, "nopkg": true}
+{"full": "FilipePS/Traduzir-paginas-web", "lang": "JavaScript", "stars": 6088, "test": null}
+{"full": "alexcasalboni/aws-lambda-power-tuning", "lang": "JavaScript", "stars": 6082, "test": "mocha", "hits": ["mocha"], "delegated": false}
+{"full": "css-doodle/css-doodle", "lang": "JavaScript", "stars": 6081, "test": "node --test --test-reporter dot 'test/{core,parser,generator,component,lib,fuzz}/*.js'", "hits": ["node_test"], "delegated": false}
+{"full": "zhongerxin/Cowart", "lang": "JavaScript", "stars": 6081, "test": null}
+{"full": "langren1353/GM_script", "lang": "JavaScript", "stars": 6056, "test": null, "nopkg": true}
+{"full": "rmusser01/Infosec_Reference", "lang": "JavaScript", "stars": 6047, "test": "node --test tests/navigation/*.test.mjs tests/archive/*.test.mjs", "hits": ["node_test"], "delegated": false}
+{"full": "up-for-grabs/up-for-grabs.net", "lang": "JavaScript", "stars": 6038, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "mindcraft-bots/mindcraft", "lang": "JavaScript", "stars": 6035, "test": null}
+{"full": "stdlib-js/stdlib", "lang": "JavaScript", "stars": 6031, "test": "make test", "hits": [], "delegated": false}
+{"full": "thoughtbot/administrate", "lang": "JavaScript", "stars": 6030, "test": null}
+{"full": "bitcoinjs/bitcoinjs-lib", "lang": "JavaScript", "stars": 6005, "test": "npm run build && npm run format:ci && npm run lint && npm run nobuild:coverage", "hits": ["mocha"], "delegated": false}
+{"full": "mongo-express/mongo-express", "lang": "JavaScript", "stars": 5982, "test": "cross-env NODE_ENV=test mocha", "hits": ["mocha"], "delegated": false}
+{"full": "openpgpjs/openpgpjs", "lang": "JavaScript", "stars": 5981, "test": "mocha --timeout 120000 test/unittests.js", "hits": ["mocha"], "delegated": false}
+{"full": "TheRealJoelmatic/RemoveAdblockThing", "lang": "JavaScript", "stars": 5969, "test": null, "nopkg": true}
+{"full": "import-js/eslint-plugin-import", "lang": "JavaScript", "stars": 5953, "test": "npm run tests-only", "hits": ["mocha"], "delegated": false}
+{"full": "vinvcn/mattpocock-skills-zh-CN", "lang": "JavaScript", "stars": 5950, "test": null, "nopkg": true}
+{"full": "fullstorydev/grpcui", "lang": "JavaScript", "stars": 5936, "test": null, "nopkg": true}
+{"full": "T-Auto/dsh-ops", "lang": "JavaScript", "stars": 5934, "test": "node test/run.mjs", "hits": [], "delegated": false}
+{"full": "Countly/countly-server", "lang": "JavaScript", "stars": 5932, "test": "grunt --verbose", "hits": [], "delegated": false}
+{"full": "isaacs/node-lru-cache", "lang": "JavaScript", "stars": 5920, "test": "tap", "hits": ["tap"], "delegated": false}
+{"full": "js-org/js.org", "lang": "JavaScript", "stars": 5906, "test": null, "nopkg": true}
+{"full": "matthewmueller/x-ray", "lang": "JavaScript", "stars": 5900, "test": "mocha", "hits": ["mocha"], "delegated": false}
+{"full": "hound-search/hound", "lang": "JavaScript", "stars": 5899, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "prettier/eslint-config-prettier", "lang": "JavaScript", "stars": 5897, "test": "yarn test:prettier && ESLINT_CONFIG_PRETTIER_NO_DEPRECATED=true yarn test:with-env && ESLINT_USE_FLAT_CONFIG=false yarn test:with-env", "hits": ["jest"], "delegated": false}
+{"full": "GoogleChrome/samples", "lang": "JavaScript", "stars": 5893, "test": null}
+{"full": "dotenvx/dotenvx", "lang": "JavaScript", "stars": 5883, "test": "tap run --test-env=DOTENVX_NO_ARMOR=true --allow-empty-coverage --allow-incomplete-coverage --disable-coverage --timeout=60000", "hits": ["tap"], "delegated": false}
+{"full": "jhuckaby/Cronicle", "lang": "JavaScript", "stars": 5879, "test": "pixl-unit lib/test.js", "hits": [], "delegated": false}
+{"full": "AhmadHassan-BTed/SilentSniffer", "lang": "JavaScript", "stars": 5860, "test": null}
+{"full": "jgraph/drawio-mcp", "lang": "JavaScript", "stars": 5858, "test": null, "nopkg": true}
+{"full": "mscdex/ssh2", "lang": "JavaScript", "stars": 5825, "test": "node test/test.js", "hits": [], "delegated": false}
+{"full": "log4js-node/log4js-node", "lang": "JavaScript", "stars": 5823, "test": "tap \"test/tap/**/*.js\" --cov --reporter=classic --coverage-report=text --coverage-report=html --timeout=45", "hits": ["tap"], "delegated": false}
+{"full": "Superalgos/Superalgos", "lang": "JavaScript", "stars": 5809, "test": null}
+{"full": "tape-testing/tape", "lang": "JavaScript", "stars": 5799, "test": "npm-run-posix-or-windows tests-only", "hits": [], "delegated": false}
+{"full": "fengyuanchen/compressorjs", "lang": "JavaScript", "stars": 5785, "test": "cross-env NODE_ENV=test karma start test/karma.conf.js", "hits": ["karma"], "delegated": false}
+{"full": "orestbida/cookieconsent", "lang": "JavaScript", "stars": 5773, "test": "jest --runInBand --coverage --silent ./tests", "hits": ["jest"], "delegated": false}
+{"full": "bowser-js/bowser", "lang": "JavaScript", "stars": 5765, "test": "nyc --reporter=html --reporter=text ava", "hits": ["ava"], "delegated": false}
+{"full": "GargantuaX/gemini-watermark-remover", "lang": "JavaScript", "stars": 5762, "test": "node --test tests/**/*.test.js", "hits": ["node_test"], "delegated": false}
+{"full": "nodegit/nodegit", "lang": "JavaScript", "stars": 5754, "test": "npm run lint && node --expose-gc test", "hits": [], "delegated": false}
+{"full": "Mailtrain-org/mailtrain", "lang": "JavaScript", "stars": 5750, "test": null, "nopkg": true}
+{"full": "conorbronsdon/avoid-ai-writing", "lang": "JavaScript", "stars": 5746, "test": "node scripts/run-tests.js", "hits": [], "delegated": false}
+{"full": "zxlie/FeHelper", "lang": "JavaScript", "stars": 5690, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "sohzm/cheating-daddy", "lang": "JavaScript", "stars": 5685, "test": null}
+{"full": "linuxmint/cinnamon", "lang": "JavaScript", "stars": 5663, "test": null, "nopkg": true}
+{"full": "react/metro", "lang": "JavaScript", "stars": 5661, "test": "yarn run typecheck && yarn run lint && yarn run lint-markdown && yarn run format-check && yarn run build && yarn run jest", "hits": ["jest"], "delegated": false}
+{"full": "haraka/Haraka", "lang": "JavaScript", "stars": 5640, "test": "sh ./run_tests", "hits": [], "delegated": false}
+{"full": "lebab/lebab", "lang": "JavaScript", "stars": 5630, "test": "mocha --require @babel/register \"./test/**/*Test.js\"", "hits": ["mocha"], "delegated": false}
+{"full": "sallar/github-contributions-chart", "lang": "JavaScript", "stars": 5616, "test": "playwright test", "hits": ["playwright"], "delegated": false}
+{"full": "moxiecode/plupload", "lang": "JavaScript", "stars": 5611, "test": null}
+{"full": "regl-project/regl", "lang": "JavaScript", "stars": 5601, "test": "standard | snazzy && tape test/index.js | tap-min", "hits": [], "delegated": false}
+{"full": "7Sageer/sublink-worker", "lang": "JavaScript", "stars": 5600, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "brianpetro/obsidian-smart-connections", "lang": "JavaScript", "stars": 5565, "test": "npx ava --verbose", "hits": ["ava"], "delegated": false}
+{"full": "dream7180/foobox-cn", "lang": "JavaScript", "stars": 5563, "test": null, "nopkg": true}
+{"full": "Dash-Industry-Forum/dash.js", "lang": "JavaScript", "stars": 5554, "test": "karma start test/unit/config/karma.unit.conf.cjs", "hits": ["karma"], "delegated": false}
+{"full": "chavyleung/scripts", "lang": "JavaScript", "stars": 5527, "test": null}
+{"full": "braziljs/eloquente-javascript", "lang": "JavaScript", "stars": 5521, "test": "make test", "hits": [], "delegated": false}
+{"full": "mmparko/dsh-purge", "lang": "JavaScript", "stars": 5519, "test": null}
+{"full": "expressjs/body-parser", "lang": "JavaScript", "stars": 5502, "test": "mocha --reporter spec --check-leaks test/", "hits": ["mocha"], "delegated": false}
+{"full": "nikkinikki-org/OpenWrt-nikki", "lang": "JavaScript", "stars": 5501, "test": null, "nopkg": true}
+{"full": "aimeos/aimeos", "lang": "JavaScript", "stars": 5476, "test": null}
+{"full": "npm/node-semver", "lang": "JavaScript", "stars": 5475, "test": "tap", "hits": ["tap"], "delegated": false}
+{"full": "CanadaHonk/porffor", "lang": "JavaScript", "stars": 5450, "test": null, "nopkg": true}
+{"full": "JuliaPluto/Pluto.jl", "lang": "JavaScript", "stars": 5409, "test": null, "nopkg": true}
+{"full": "clientIO/joint", "lang": "JavaScript", "stars": 5403, "test": "yarn workspaces foreach --all -tvv run test", "hits": [], "delegated": true}
+{"full": "qianjiachun/douyuEx", "lang": "JavaScript", "stars": 5367, "test": null}
+{"full": "MuiseDestiny/zotero-style", "lang": "JavaScript", "stars": 5355, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "digitalbazaar/forge", "lang": "JavaScript", "stars": 5353, "test": "npm run test-node", "hits": ["mocha"], "delegated": false}
+{"full": "asyncapi/spec", "lang": "JavaScript", "stars": 5343, "test": null, "nopkg": true}
+{"full": "CreditTone/hooker", "lang": "JavaScript", "stars": 5341, "test": null, "nopkg": true}
+{"full": "gz-yami/mall4j", "lang": "JavaScript", "stars": 5330, "test": null, "nopkg": true}
+{"full": "CCOSTAN/Home-AssistantConfig", "lang": "JavaScript", "stars": 5330, "test": null, "nopkg": true}
+{"full": "wesbos/awesome-uses", "lang": "JavaScript", "stars": 5308, "test": null}
+{"full": "frangoteam/FUXA", "lang": "JavaScript", "stars": 5305, "test": null, "nopkg": true}
+{"full": "a597873885/webfunny_monitor", "lang": "JavaScript", "stars": 5302, "test": null}
+{"full": "sindresorhus/eslint-plugin-unicorn", "lang": "JavaScript", "stars": 5294, "test": "npm-run-all --node-run --continue-on-error lint \"test:*\"", "hits": [], "delegated": false}
+{"full": "libnoname/noname", "lang": "JavaScript", "stars": 5288, "test": null}
+{"full": "Soundnode/soundnode-app", "lang": "JavaScript", "stars": 5287, "test": null}
+{"full": "darkzOGx/youtube-automation-agent", "lang": "JavaScript", "stars": 5280, "test": "node test.js", "hits": [], "delegated": false}
+{"full": "thinkjs/thinkjs", "lang": "JavaScript", "stars": 5262, "test": "pnpm -r --if-present --filter './packages/**' --filter '!think-cache-memcache' --filter '!think-memcache' --filter '!think-mongo' test", "hits": [], "delegated": true}
+{"full": "dherault/serverless-offline", "lang": "JavaScript", "stars": 5259, "test": "mocha --require ./tests/mochaHooks.cjs", "hits": ["mocha"], "delegated": false}
+{"full": "nateherkai/scroll-craft", "lang": "JavaScript", "stars": 5252, "test": null, "nopkg": true}
+{"full": "IsmaelMartinez/teams-for-linux", "lang": "JavaScript", "stars": 5245, "test": null}
+{"full": "json-schema-org/json-schema-spec", "lang": "JavaScript", "stars": 5225, "test": "vitest run --config=vitest-schema.config.js", "hits": ["vitest"], "delegated": false}
+{"full": "QLHazyCoder/FlowPilot", "lang": "JavaScript", "stars": 5188, "test": "node --test tests/*.test.js", "hits": ["node_test"], "delegated": false}
+{"full": "Sjj1024/PakePlus-Win7", "lang": "JavaScript", "stars": 5180, "test": null}
+{"full": "mermaid-js/mermaid-cli", "lang": "JavaScript", "stars": 5179, "test": "cross-env-shell NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest", "hits": ["jest"], "delegated": false}
+{"full": "Marak/colors.js", "lang": "JavaScript", "stars": 5158, "test": "node tests/basic-test.js && node tests/safe-test.js", "hits": [], "delegated": false}
+{"full": "certd/certd", "lang": "JavaScript", "stars": 5141, "test": null}
+{"full": "ClearURLs/Addon", "lang": "JavaScript", "stars": 5140, "test": null, "nopkg": true}
+{"full": "jquery-form/form", "lang": "JavaScript", "stars": 5140, "test": "npm run lint && npm run format:check && npm run build && vitest run --coverage", "hits": ["vitest"], "delegated": false}
+{"full": "gnmyt/Nexterm", "lang": "JavaScript", "stars": 5137, "test": null}
+{"full": "dariusk/corpora", "lang": "JavaScript", "stars": 5124, "test": "grunt --verbose", "hits": [], "delegated": false}
+{"full": "blocks/blocks", "lang": "JavaScript", "stars": 5097, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "PenglongHuang/chinese-novelist-skill", "lang": "JavaScript", "stars": 5062, "test": null, "nopkg": true}
+{"full": "unifiedjs/unified", "lang": "JavaScript", "stars": 5055, "test": "npm run build && npm run format && npm run test-coverage", "hits": [], "delegated": false}
+{"full": "sitespeedio/sitespeed.io", "lang": "JavaScript", "stars": 5054, "test": "ava", "hits": ["ava"], "delegated": false}
+{"full": "opentypejs/opentype.js", "lang": "JavaScript", "stars": 5049, "test": "npm run build && npm run dist && mocha --recursive && npm run lint", "hits": ["mocha"], "delegated": false}
+{"full": "sindresorhus/electron-store", "lang": "JavaScript", "stars": 5029, "test": "xo && node --test", "hits": ["node_test"], "delegated": false}
+{"full": "kangax/html-minifier", "lang": "JavaScript", "stars": 5024, "test": "grunt test", "hits": [], "delegated": false}
+{"full": "bootboxjs/bootbox", "lang": "JavaScript", "stars": 5011, "test": "karma start karma.conf.legacy.js && karma start karma.conf.js", "hits": ["karma"], "delegated": false}
+{"full": "apple/password-manager-resources", "lang": "JavaScript", "stars": 5008, "test": null, "nopkg": true}
+{"full": "brentvollebregt/auto-py-to-exe", "lang": "JavaScript", "stars": 5004, "test": null, "nopkg": true}
+{"full": "SwiftOldDriver/iOS-Weekly", "lang": "JavaScript", "stars": 4990, "test": null, "nopkg": true}
+{"full": "shoutem/ui", "lang": "JavaScript", "stars": 4981, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "coreui/coreui-free-react-admin-template", "lang": "JavaScript", "stars": 4972, "test": null}
+{"full": "harlan-zw/unlighthouse", "lang": "JavaScript", "stars": 4958, "test": "vitest --exclude test/ci.test.ts", "hits": ["vitest"], "delegated": false}
+{"full": "pablof7z/chardin.js", "lang": "JavaScript", "stars": 4952, "test": null}
+{"full": "apocas/dockerode", "lang": "JavaScript", "stars": 4951, "test": "./node_modules/mocha/bin/mocha.js -R spec --exit", "hits": [], "delegated": false}
+{"full": "hemanth/awesome-pwa", "lang": "JavaScript", "stars": 4948, "test": null, "nopkg": true}
+{"full": "eKoopmans/html2pdf.js", "lang": "JavaScript", "stars": 4938, "test": "npm run test:unit && npm run test:vdiff", "hits": [], "delegated": false}
+{"full": "Qix-/color", "lang": "JavaScript", "stars": 4934, "test": "xo && tsd && mocha", "hits": ["mocha"], "delegated": false}
+{"full": "mpetroff/pannellum", "lang": "JavaScript", "stars": 4928, "test": null}
+{"full": "anthropics/claude-plugins-community", "lang": "JavaScript", "stars": 4927, "test": null, "nopkg": true}
+{"full": "appbaseio/reactivesearch", "lang": "JavaScript", "stars": 4924, "test": null}
+{"full": "haydenschmitty/floorplan", "lang": "JavaScript", "stars": 4923, "test": "node --test", "hits": ["node_test"], "delegated": false}
+{"full": "TalAter/UpUp", "lang": "JavaScript", "stars": 4923, "test": "node --test", "hits": ["node_test"], "delegated": false}
+{"full": "its-a-feature/Mythic", "lang": "JavaScript", "stars": 4919, "test": null, "nopkg": true}
+{"full": "json-editor/json-editor", "lang": "JavaScript", "stars": 4904, "test": "karma start config/karma.conf.js --browsers Chrome --log-level debug", "hits": ["karma"], "delegated": false}
+{"full": "sgoudelis/ground-station", "lang": "JavaScript", "stars": 4897, "test": null, "nopkg": true}
+{"full": "style-dictionary/style-dictionary", "lang": "JavaScript", "stars": 4887, "test": "web-test-runner --coverage", "hits": [], "delegated": false}
+{"full": "shower/shower", "lang": "JavaScript", "stars": 4880, "test": "npm run lint && npm run test:cli && npm run test:core", "hits": [], "delegated": false}
+{"full": "cdk8s-team/cdk8s", "lang": "JavaScript", "stars": 4858, "test": "projen test", "hits": [], "delegated": false}
+{"full": "miroslavpejic85/mirotalk", "lang": "JavaScript", "stars": 4850, "test": "mocha tests/*.js", "hits": ["mocha"], "delegated": false}
+{"full": "globalizejs/globalize", "lang": "JavaScript", "stars": 4835, "test": "grunt", "hits": [], "delegated": false}
+{"full": "babel/babel-loader", "lang": "JavaScript", "stars": 4833, "test": "yarn run lint && yarn run build --source-maps && c8 yarn run test-only", "hits": ["node_test"], "delegated": false}
+{"full": "carloscuesta/gitmoji-cli", "lang": "JavaScript", "stars": 4830, "test": "FORCE_COLOR=1 jest", "hits": ["jest"], "delegated": false}
+{"full": "Studio-42/elFinder", "lang": "JavaScript", "stars": 4816, "test": null}
+{"full": "l0o0/translators_CN", "lang": "JavaScript", "stars": 4779, "test": "eslint .", "hits": [], "delegated": false}
+{"full": "xixu-me/awesome-persona-distill-skills", "lang": "JavaScript", "stars": 4754, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "obgnail/typora_plugin", "lang": "JavaScript", "stars": 4740, "test": null, "nopkg": true}
+{"full": "Clooos/Bubble-Card", "lang": "JavaScript", "stars": 4740, "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js", "hits": [], "delegated": false}
+{"full": "origin-brain/beat-ai", "lang": "JavaScript", "stars": 4740, "test": "react-scripts test", "hits": [], "delegated": false}
+{"full": "fent/node-ytdl-core", "lang": "JavaScript", "stars": 4733, "test": "nyc --reporter=lcov --reporter=text-summary npm run test:unit", "hits": ["mocha"], "delegated": false}
+{"full": "electerious/Ackee", "lang": "JavaScript", "stars": 4732, "test": "npm run lint && ava", "hits": ["ava"], "delegated": false}
+{"full": "AhmadHassan-BTed/SoulMatrix", "lang": "JavaScript", "stars": 4723, "test": null, "nopkg": true}
+{"full": "o2oa/o2oa", "lang": "JavaScript", "stars": 4722, "test": "type welcome", "hits": [], "delegated": false}
+{"full": "code-charity/youtube", "lang": "JavaScript", "stars": 4694, "test": "jest tests", "hits": ["jest"], "delegated": false}
+{"full": "BuilderIO/skills", "lang": "JavaScript", "stars": 4676, "test": "node --test scripts/check-skill-frontmatter.test.mjs", "hits": ["node_test"], "delegated": false}
+{"full": "react-syntax-highlighter/react-syntax-highlighter", "lang": "JavaScript", "stars": 4672, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "apostrophecms/apostrophe", "lang": "JavaScript", "stars": 4670, "test": "APOS_TEST_DB_PROTOCOL=postgres pnpm run test:main && APOS_TEST_DB_PROTOCOL=mongodb pnpm run test:main && APOS_TEST_DB_PROTOCOL=sqlite pnpm run test:main && APOS_TEST_DB_PROTOCOL=multipostgres pnpm run", "hits": [], "delegated": true}
+{"full": "fleetbase/fleetbase", "lang": "JavaScript", "stars": 4666, "test": null, "nopkg": true}
+{"full": "sagalbot/vue-select", "lang": "JavaScript", "stars": 4665, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "CarGuo/gsy_flutter_book", "lang": "JavaScript", "stars": 4661, "test": null}
+{"full": "knownsec/KCon", "lang": "JavaScript", "stars": 4653, "test": null, "nopkg": true}
+{"full": "mozilla/rhino", "lang": "JavaScript", "stars": 4645, "test": null, "nopkg": true}
+{"full": "gradio-app/fastrtc", "lang": "JavaScript", "stars": 4640, "test": null, "nopkg": true}
+{"full": "kunchenguid/lavish-axi", "lang": "JavaScript", "stars": 4626, "test": "node --test", "hits": ["node_test"], "delegated": false}
+{"full": "AhmadHassan-BTed/Noria", "lang": "JavaScript", "stars": 4623, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "mekos2772/ios-location-spoofer", "lang": "JavaScript", "stars": 4621, "test": null, "nopkg": true}
+{"full": "woniudiancang/bee", "lang": "JavaScript", "stars": 4615, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "VonChange/utao", "lang": "JavaScript", "stars": 4615, "test": null, "nopkg": true}
+{"full": "testing-library/jest-dom", "lang": "JavaScript", "stars": 4612, "test": "kcd-scripts test", "hits": [], "delegated": false}
+{"full": "amperser/proselint", "lang": "JavaScript", "stars": 4603, "test": null, "nopkg": true}
+{"full": "pa11y/pa11y", "lang": "JavaScript", "stars": 4603, "test": "npm run test-coverage && npm run verify-coverage && npm run test-integration", "hits": ["mocha"], "delegated": false}
+{"full": "hafrey1/LunaTV-config", "lang": "JavaScript", "stars": 4587, "test": null}
+{"full": "limbopro/Adblock4limbo", "lang": "JavaScript", "stars": 4585, "test": null, "nopkg": true}
+{"full": "moshang-ax/lottery", "lang": "JavaScript", "stars": 4578, "test": null, "nopkg": true}
+{"full": "stemdeckapp/stemdeck", "lang": "JavaScript", "stars": 4564, "test": null}
+{"full": "Minglink/dsh-infinite-gen-5", "lang": "JavaScript", "stars": 4563, "test": "node tools/ci/run-gate.mjs", "hits": [], "delegated": false}
+{"full": "michael-denyer/pstack-claude", "lang": "JavaScript", "stars": 4556, "test": null}
+{"full": "honestbleeps/Reddit-Enhancement-Suite", "lang": "JavaScript", "stars": 4554, "test": "rimraf dist/transpiled && flow-remove-types lib -q --out-dir dist/transpiled && cross-env NODE_ENV=test ava", "hits": ["ava"], "delegated": false}
+{"full": "gbdev/awesome-gbdev", "lang": "JavaScript", "stars": 4554, "test": null, "nopkg": true}
+{"full": "compat-table/compat-table", "lang": "JavaScript", "stars": 4507, "test": null}
+{"full": "Orz-3/QuantumultX", "lang": "JavaScript", "stars": 4499, "test": null, "nopkg": true}
+{"full": "simonwep/pickr", "lang": "JavaScript", "stars": 4495, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "igrigorik/videospeed", "lang": "JavaScript", "stars": 4484, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "home-sweet-gnome/dash-to-panel", "lang": "JavaScript", "stars": 4483, "test": null}
+{"full": "anc95/ChatGPT-CodeReview", "lang": "JavaScript", "stars": 4480, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "mdn/webextensions-examples", "lang": "JavaScript", "stars": 4477, "test": "eslint . && npm run validate", "hits": [], "delegated": false}
+{"full": "thlorenz/doctoc", "lang": "JavaScript", "stars": 4476, "test": "tap", "hits": ["tap"], "delegated": false}
+{"full": "iChochy/NCE", "lang": "JavaScript", "stars": 4476, "test": null, "nopkg": true}
+{"full": "hal9ai/awesome-dataviz", "lang": "JavaScript", "stars": 4467, "test": null, "nopkg": true}
+{"full": "dqzboy/Docker-Proxy", "lang": "JavaScript", "stars": 4464, "test": null, "nopkg": true}
+{"full": "vanjs-org/van", "lang": "JavaScript", "stars": 4464, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "wmariuss/awesome-devops", "lang": "JavaScript", "stars": 4460, "test": null, "nopkg": true}
+{"full": "CortexReach/memory-lancedb-pro", "lang": "JavaScript", "stars": 4447, "test": "node test/embedder-error-hints.test.mjs && node --test test/embedder-max-input-chars.test.mjs && node test/cjk-recursion-regression.test.mjs && node test/extraction-prompt-structural-noise.test.mjs &&", "hits": ["node_test"], "delegated": false}
+{"full": "Leonxlnx/unlazy", "lang": "JavaScript", "stars": 4438, "test": "node tests/run-tests.mjs && node tests/dispatch-tests.mjs && node tests/hardening-tests.mjs && node tests/stress-tests.mjs && node tests/lint-tests.mjs && node tests/contract-tests.mjs && node tests/s", "hits": [], "delegated": false}
+{"full": "goldbergyoni/nodejs-testing-best-practices", "lang": "JavaScript", "stars": 4413, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "ubuntu/dash-to-dock", "lang": "JavaScript", "stars": 4412, "test": null, "nopkg": true}
+{"full": "yuzutech/kroki", "lang": "JavaScript", "stars": 4408, "test": "node --test-force-exit ci/tests/smoke.js", "hits": [], "delegated": false}
+{"full": "nodejs/Release", "lang": "JavaScript", "stars": 4400, "test": null, "nopkg": true}
+{"full": "KilledByAPixel/LittleJS", "lang": "JavaScript", "stars": 4393, "test": "node --test --import ./test/setup.mjs \"test/**/*.test.mjs\"", "hits": ["node_test"], "delegated": false}
+{"full": "paperwm/PaperWM", "lang": "JavaScript", "stars": 4386, "test": null, "nopkg": true}
+{"full": "kanasimi/work_crawler", "lang": "JavaScript", "stars": 4385, "test": null}
+{"full": "faye/faye", "lang": "JavaScript", "stars": 4384, "test": "find spec -name '*_spec.js' | xargs jstest", "hits": [], "delegated": false}
+{"full": "hoothin/UserScripts", "lang": "JavaScript", "stars": 4378, "test": null, "nopkg": true}
+{"full": "lazy-luo/smarGate", "lang": "JavaScript", "stars": 4372, "test": null, "nopkg": true}
+{"full": "dankogai/js-base64", "lang": "JavaScript", "stars": 4363, "test": "npm run build && mocha && npm run test:types", "hits": ["mocha"], "delegated": false}
+{"full": "mdaines/viz-js", "lang": "JavaScript", "stars": 4361, "test": null, "nopkg": true}
+{"full": "golang-design/under-the-hood", "lang": "JavaScript", "stars": 4358, "test": null, "nopkg": true}
+{"full": "farzher/fuzzysort", "lang": "JavaScript", "stars": 4354, "test": "node test/test.js", "hits": [], "delegated": false}
+{"full": "EmulatorJS/EmulatorJS", "lang": "JavaScript", "stars": 4354, "test": null}
+{"full": "sindresorhus/file-type", "lang": "JavaScript", "stars": 4342, "test": "xo && node --test && nz", "hits": ["node_test"], "delegated": false}
+{"full": "vivek9patel/vivek9patel.github.io", "lang": "JavaScript", "stars": 4322, "test": null}
+{"full": "tighten/ziggy", "lang": "JavaScript", "stars": 4319, "test": "vitest --typecheck", "hits": ["vitest"], "delegated": false}
+{"full": "konstaui/konsta", "lang": "JavaScript", "stars": 4294, "test": null}
+{"full": "vogler/free-games-claimer", "lang": "JavaScript", "stars": 4290, "test": null}
+{"full": "adaltas/node-csv", "lang": "JavaScript", "stars": 4289, "test": "lerna run test", "hits": [], "delegated": true}
+{"full": "OhMyGuus/I-Still-Dont-Care-About-Cookies", "lang": "JavaScript", "stars": 4284, "test": null}
+{"full": "manuelbieh/geolib", "lang": "JavaScript", "stars": 4282, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "adlered/CSDNGreener", "lang": "JavaScript", "stars": 4281, "test": null, "nopkg": true}
+{"full": "nagix/mini-tokyo-3d", "lang": "JavaScript", "stars": 4261, "test": null}
+{"full": "InukaAsith/TwinDesk", "lang": "JavaScript", "stars": 4255, "test": null, "nopkg": true}
+{"full": "chaolucky18/xuexitongScript", "lang": "JavaScript", "stars": 4255, "test": null, "nopkg": true}
+{"full": "codeceptjs/CodeceptJS", "lang": "JavaScript", "stars": 4254, "test": "npm run test:unit && npm run test:rest && npm run test:runner", "hits": ["mocha"], "delegated": false}
+{"full": "scottbez1/splitflap", "lang": "JavaScript", "stars": 4220, "test": null, "nopkg": true}
+{"full": "RetireJS/retire.js", "lang": "JavaScript", "stars": 4216, "test": null, "nopkg": true}
+{"full": "mbloch/mapshaper", "lang": "JavaScript", "stars": 4210, "test": "mocha test", "hits": ["mocha"], "delegated": false}
+{"full": "pulsar-edit/pulsar", "lang": "JavaScript", "stars": 4206, "test": null}
+{"full": "iterative/cml", "lang": "JavaScript", "stars": 4194, "test": "jest --forceExit", "hits": ["jest"], "delegated": false}
+{"full": "dwyl/learn-json-web-tokens", "lang": "JavaScript", "stars": 4173, "test": "istanbul cover ./node_modules/tape/bin/tape ./example/test/functional.js", "hits": [], "delegated": false}
+{"full": "zhw2590582/ArtPlayer", "lang": "JavaScript", "stars": 4173, "test": null}
+{"full": "Leaflet/Leaflet.markercluster", "lang": "JavaScript", "stars": 4172, "test": "npm run lint && npm run test:types && vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "steveseguin/vdo.ninja", "lang": "JavaScript", "stars": 4166, "test": null, "nopkg": true}
+{"full": "AhmadHassan-BTed/JinaClip", "lang": "JavaScript", "stars": 4160, "test": "jest --passWithNoTests", "hits": ["jest"], "delegated": false}
+{"full": "Alex-D/Trumbowyg", "lang": "JavaScript", "stars": 4148, "test": null}
+{"full": "GoogleChromeLabs/ui-element-samples", "lang": "JavaScript", "stars": 4117, "test": null, "nopkg": true}
+{"full": "patriksimek/vm2", "lang": "JavaScript", "stars": 4117, "test": "mocha test --recursive --ignore test/compilers.js --require ./test/bun-setup.js", "hits": ["mocha"], "delegated": false}
+{"full": "jaywcjlove/free-font", "lang": "JavaScript", "stars": 4106, "test": null}
+{"full": "spencermountain/spacetime", "lang": "JavaScript", "stars": 4106, "test": "node --import tsx tests/_lib/run.ts tests | tap-dancer", "hits": ["tsx"], "delegated": false}
+{"full": "chartbrew/chartbrew", "lang": "JavaScript", "stars": 4097, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "rstudio/bookdown", "lang": "JavaScript", "stars": 4096, "test": null, "nopkg": true}
+{"full": "badrisnarayanan/antigravity-claude-proxy", "lang": "JavaScript", "stars": 4077, "test": "node tests/run-all.cjs", "hits": [], "delegated": false}
+{"full": "IonicaBizau/scrape-it", "lang": "JavaScript", "stars": 4070, "test": "node test", "hits": [], "delegated": false}
+{"full": "github/relative-time-element", "lang": "JavaScript", "stars": 4063, "test": "web-test-runner", "hits": [], "delegated": false}
+{"full": "uBlockOrigin/uBOL-home", "lang": "JavaScript", "stars": 4060, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "ipcjs/oh-my-userscripts", "lang": "JavaScript", "stars": 4058, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "mdn/dom-examples", "lang": "JavaScript", "stars": 4052, "test": null, "nopkg": true}
+{"full": "bee-queue/bee-queue", "lang": "JavaScript", "stars": 4041, "test": "npm run lint && ava", "hits": ["ava"], "delegated": false}
+{"full": "lirantal/dockly", "lang": "JavaScript", "stars": 4037, "test": "npm run lint", "hits": [], "delegated": false}
+{"full": "cporter202/scraping-apis-for-devs", "lang": "JavaScript", "stars": 4033, "test": null, "nopkg": true}
+{"full": "qunitjs/qunit", "lang": "JavaScript", "stars": 4031, "test": "npm run lint && npm run build && npm run test-main && npm run test-cli", "hits": [], "delegated": false}
+{"full": "lennney/stop-that-shit", "lang": "JavaScript", "stars": 4015, "test": "node scripts/test.cjs", "hits": [], "delegated": false}
+{"full": "jellyfin/jellyfin-web", "lang": "JavaScript", "stars": 3999, "test": "vitest --watch=false --config vite.config.ts", "hits": ["vitest"], "delegated": false}
+{"full": "duolahypercho/codex-router", "lang": "JavaScript", "stars": 3985, "test": "node --test --test-timeout=600000 test/*.test.mjs", "hits": ["node_test"], "delegated": false}
+{"full": "yeoman/yo", "lang": "JavaScript", "stars": 3966, "test": "c8 esmocha", "hits": [], "delegated": false}
+{"full": "senecajs/seneca", "lang": "JavaScript", "stars": 3956, "test": "npm run test-types && node --require ./test/stubs/gubu-shape/register.js --test --test-concurrency=1 --test-timeout=11111 --experimental-test-coverage --test-coverage-include=\"lib/*.js\" --test-coverag", "hits": [], "delegated": false}
+{"full": "didi/mpx", "lang": "JavaScript", "stars": 3953, "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests", "hits": ["jest"], "delegated": false}
+{"full": "jasondavies/d3-cloud", "lang": "JavaScript", "stars": 3949, "test": "node --test && npm run check:types", "hits": ["node_test"], "delegated": false}
+{"full": "open-duelyst/duelyst", "lang": "JavaScript", "stars": 3948, "test": "mocha -t 1000 --recursive test", "hits": ["mocha"], "delegated": false}
+{"full": "tw-in-js/twind", "lang": "JavaScript", "stars": 3943, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "ilysenko/codex-desktop-linux", "lang": "JavaScript", "stars": 3940, "test": null, "nopkg": true}
+{"full": "openstreetmap/iD", "lang": "JavaScript", "stars": 3931, "test": "npm-run-all -s lint build test:typecheck test:spec", "hits": [], "delegated": false}
+{"full": "mindskip/xzs", "lang": "JavaScript", "stars": 3920, "test": null, "nopkg": true}
+{"full": "americanexpress/jest-image-snapshot", "lang": "JavaScript", "stars": 3919, "test": "jest --ci=false", "hits": ["jest"], "delegated": false}
+{"full": "kalkih/mini-graph-card", "lang": "JavaScript", "stars": 3918, "test": null}
+{"full": "siteserver/cms", "lang": "JavaScript", "stars": 3916, "test": null}
+{"full": "gildas-lormeau/zip.js", "lang": "JavaScript", "stars": 3915, "test": "npm run test-ci && npm run test-bun && npm run test-bun-dist", "hits": ["bun_test", "deno_test"], "delegated": false}
+{"full": "DO-SAY-GO/tdf", "lang": "JavaScript", "stars": 3908, "test": null, "nopkg": true}
+{"full": "jquery/jquery-mousewheel", "lang": "JavaScript", "stars": 3907, "test": "npm run build && npm run lint && npm run test:browser", "hits": [], "delegated": false}
+{"full": "middyjs/middy", "lang": "JavaScript", "stars": 3905, "test": "npm run test:lint && npm run test:unit && npm run test:types && npm run test:sast && npm run test:bench && npm run test:dast", "hits": ["node_test"], "delegated": false}
+{"full": "EFForg/privacybadger", "lang": "JavaScript", "stars": 3892, "test": null}
+{"full": "HughYau/qiushi-skill", "lang": "JavaScript", "stars": 3891, "test": "node --test tests/*.test.mjs && node ./bin/qiushi-skill.mjs validate", "hits": ["node_test"], "delegated": false}
+{"full": "SchemaStore/schemastore", "lang": "JavaScript", "stars": 3890, "test": null}
+{"full": "webpack/sass-loader", "lang": "JavaScript", "stars": 3888, "test": "npm run test:base", "hits": [], "delegated": false}
+{"full": "moment/moment-timezone", "lang": "JavaScript", "stars": 3879, "test": "grunt", "hits": [], "delegated": false}
+{"full": "AsyncBanana/microdiff", "lang": "JavaScript", "stars": 3876, "test": "npm run build && node --harmony-temporal --test ./tests/*", "hits": ["node_test"], "delegated": false}
+{"full": "dillonzq/LoveIt", "lang": "JavaScript", "stars": 3870, "test": "node --test tests/*.test.mjs", "hits": ["node_test"], "delegated": false}
+{"full": "Script-Hub-Org/Script-Hub", "lang": "JavaScript", "stars": 3869, "test": null}
+{"full": "anvaka/VivaGraphJS", "lang": "JavaScript", "stars": 3869, "test": "tap test/*.js", "hits": ["tap"], "delegated": false}
+{"full": "webpack/tapable", "lang": "JavaScript", "stars": 3866, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "panva/node-oidc-provider", "lang": "JavaScript", "stars": 3859, "test": "node ./test/run", "hits": [], "delegated": false}
+{"full": "KyleAMathews/typography.js", "lang": "JavaScript", "stars": 3857, "test": "npm run build && npm run lint && npm run test-api", "hits": ["jest"], "delegated": false}
+{"full": "gijsroge/tilt.js", "lang": "JavaScript", "stars": 3854, "test": "node ./node_modules/jshint/bin/jshint src/tilt.jquery.js && gulp test --verbose --force", "hits": [], "delegated": false}
+{"full": "amqp-node/amqplib", "lang": "JavaScript", "stars": 3847, "test": "node --test --test-timeout=1000", "hits": ["node_test"], "delegated": false}
+{"full": "KartikTalwar/gmail.js", "lang": "JavaScript", "stars": 3845, "test": "jest --watchAll=false --reporters=default --reporters=jest-junit", "hits": ["jest"], "delegated": false}
+{"full": "zhblue/hustoj", "lang": "JavaScript", "stars": 3827, "test": null, "nopkg": true}
+{"full": "ReactTooltip/react-tooltip", "lang": "JavaScript", "stars": 3825, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "elvarofficial/teardown", "lang": "JavaScript", "stars": 3823, "test": null}
+{"full": "parse-community/parse-dashboard", "lang": "JavaScript", "stars": 3809, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "ThatGuySam/doesitarm", "lang": "JavaScript", "stars": 3802, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "LimeSurvey/LimeSurvey", "lang": "JavaScript", "stars": 3802, "test": null}
+{"full": "umijs/dumi", "lang": "JavaScript", "stars": 3796, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "dcodeIO/bcrypt.js", "lang": "JavaScript", "stars": 3795, "test": "npm run test:unit && npm run test:typescript", "hits": [], "delegated": false}
+{"full": "apache/cordova-android", "lang": "JavaScript", "stars": 3794, "test": "npm run lint && npm run cover && npm run java-unit-tests", "hits": ["jasmine"], "delegated": false}
+{"full": "hizzgdev/jsmind", "lang": "JavaScript", "stars": 3794, "test": "NODE_OPTIONS=--experimental-vm-modules jest tests/unit", "hits": ["jest"], "delegated": false}
+{"full": "piroor/treestyletab", "lang": "JavaScript", "stars": 3794, "test": null, "nopkg": true}
+{"full": "1186258278/OpenClawChineseTranslation", "lang": "JavaScript", "stars": 3792, "test": null}
+{"full": "rmm5t/jquery-timeago", "lang": "JavaScript", "stars": 3790, "test": null}
+{"full": "aquasecurity/cloudsploit", "lang": "JavaScript", "stars": 3789, "test": "mocha './**/*.spec.js'", "hits": ["mocha"], "delegated": false}
+{"full": "smallfawn/QLScriptPublic", "lang": "JavaScript", "stars": 3786, "test": null, "nopkg": true}
+{"full": "Rabbit-Spec/Surge", "lang": "JavaScript", "stars": 3786, "test": null, "nopkg": true}
+{"full": "spite/ccapture.js", "lang": "JavaScript", "stars": 3782, "test": "node test/TimeWarp.test.js && node test/FrameWrap.test.js && node test/CCapture.test.js && node test/WebCodecsEncoder.test.js && node test/MotionBlur.test.js && node test/Modular.test.js", "hits": [], "delegated": false}
+{"full": "composerize/composerize", "lang": "JavaScript", "stars": 3781, "test": null}
+{"full": "bigskysoftware/_hyperscript", "lang": "JavaScript", "stars": 3779, "test": "playwright test --config test/playwright.config.js --project=chromium", "hits": ["playwright"], "delegated": false}
+{"full": "fomantic/Fomantic-UI", "lang": "JavaScript", "stars": 3773, "test": null}
+{"full": "b-nnett/codex-plusplus", "lang": "JavaScript", "stars": 3769, "test": null, "nopkg": true}
+{"full": "mdiri-ai/SoduWork", "lang": "JavaScript", "stars": 3768, "test": null, "nopkg": true}
+{"full": "FastForwardTeam/FastForward", "lang": "JavaScript", "stars": 3768, "test": null}
+{"full": "GSConnect/gnome-shell-extension-gsconnect", "lang": "JavaScript", "stars": 3761, "test": null}
+{"full": "flow-typed/flow-typed", "lang": "JavaScript", "stars": 3760, "test": null, "nopkg": true}
+{"full": "rollup/plugins", "lang": "JavaScript", "stars": 3759, "test": null}
+{"full": "browserbase/skills", "lang": "JavaScript", "stars": 3756, "test": null}
+{"full": "Minidoracat/mcp-feedback-enhanced", "lang": "JavaScript", "stars": 3749, "test": null, "nopkg": true}
+{"full": "Javis603/token-monitor", "lang": "JavaScript", "stars": 3748, "test": "node --test \"tests/**/*.test.js\"", "hits": ["node_test"], "delegated": false}
+{"full": "webrtcHacks/adapter", "lang": "JavaScript", "stars": 3747, "test": "grunt && jest test/unit && karma start test/karma.conf.js", "hits": ["jest", "karma"], "delegated": false}
+{"full": "forwardemail/email-templates", "lang": "JavaScript", "stars": 3745, "test": "cross-env NODE_ENV=test nyc ava", "hits": ["ava"], "delegated": false}
+{"full": "microsoft/agent-academy", "lang": "JavaScript", "stars": 3743, "test": null}
+{"full": "mumuy/relationship", "lang": "JavaScript", "stars": 3740, "test": "node test/index.js", "hits": [], "delegated": false}
+{"full": "holistics/dbml", "lang": "JavaScript", "stars": 3727, "test": "npx lerna run test", "hits": [], "delegated": true}
+{"full": "mozilla/source-map", "lang": "JavaScript", "stars": 3725, "test": "git submodule update --init --recursive; node test/run-tests.js", "hits": [], "delegated": false}
+{"full": "xiaobright/dsh-anchored-standard", "lang": "JavaScript", "stars": 3714, "test": "node --test", "hits": ["node_test"], "delegated": false}
+{"full": "xmanrui/dsh-im", "lang": "JavaScript", "stars": 3712, "test": "node --test test/*.test.mjs test/channels/*/*.test.mjs", "hits": ["node_test"], "delegated": false}
+{"full": "fastify/fast-json-stringify", "lang": "JavaScript", "stars": 3709, "test": "npm run test:unit && npm run test:typescript", "hits": ["node_test"], "delegated": false}
+{"full": "panphora/overtype", "lang": "JavaScript", "stars": 3709, "test": "node scripts/run-tests.js && npm run test:types", "hits": [], "delegated": false}
+{"full": "jasonlong/isometric-contributions", "lang": "JavaScript", "stars": 3705, "test": "biome check && vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "BNDong/Cnblogs-Theme-SimpleMemory", "lang": "JavaScript", "stars": 3705, "test": "node --test tests/compatibility.test.cjs", "hits": ["node_test"], "delegated": false}
+{"full": "rgthree/rgthree-comfy", "lang": "JavaScript", "stars": 3677, "test": null}
+{"full": "getgauge/taiko", "lang": "JavaScript", "stars": 3671, "test": "npm run test --workspace=tests", "hits": [], "delegated": false}
+{"full": "micromodal/Micromodal", "lang": "JavaScript", "stars": 3662, "test": null}
+{"full": "Ebony-Vinyl/EAC-Desktop", "lang": "JavaScript", "stars": 3661, "test": null, "nopkg": true}
+{"full": "prettier/eslint-plugin-prettier", "lang": "JavaScript", "stars": 3658, "test": "yarn lint && mocha", "hits": ["mocha"], "delegated": false}
+{"full": "jslint-org/jslint", "lang": "JavaScript", "stars": 3656, "test": "node jslint.mjs v8_coverage_report=.artifact/coverage node test.mjs", "hits": [], "delegated": false}
+{"full": "open-xml-templating/docxtemplater", "lang": "JavaScript", "stars": 3654, "test": "npm run convertto:es5 && npm run mocha", "hits": ["mocha"], "delegated": false}
+{"full": "Dailin521/codex-provider-sync", "lang": "JavaScript", "stars": 3648, "test": "node scripts/run-root-tests.js", "hits": [], "delegated": false}
+{"full": "visjs/vis-network", "lang": "JavaScript", "stars": 3643, "test": "npm run test:unit && npm run test:e2e:functional && npm run test:e2e:visual", "hits": ["mocha", "cypress"], "delegated": false}
+{"full": "varkor/quiver", "lang": "JavaScript", "stars": 3642, "test": null, "nopkg": true}
+{"full": "awesome-scripts/awesome-userscripts", "lang": "JavaScript", "stars": 3622, "test": null}
+{"full": "nolimits4web/atropos", "lang": "JavaScript", "stars": 3616, "test": "npm run validate && npm run build:prod", "hits": [], "delegated": false}
+{"full": "mathiasbynens/he", "lang": "JavaScript", "stars": 3615, "test": "node --test \"tests/**/*.test.mjs\"", "hits": ["node_test"], "delegated": false}
+{"full": "animir/node-rate-limiter-flexible", "lang": "JavaScript", "stars": 3605, "test": "npm run prisma:postgres && npm run drizzle:postgres && nyc --reporter=html --reporter=text mocha \"test/**/*.test.js\" && npm run test:drizzle:postgres:v1", "hits": ["mocha"], "delegated": false}
+{"full": "mindskip/xzs-mysql", "lang": "JavaScript", "stars": 3603, "test": null, "nopkg": true}
+{"full": "webtorrent/instant.io", "lang": "JavaScript", "stars": 3597, "test": "standard", "hits": [], "delegated": false}
+{"full": "osano/cookieconsent", "lang": "JavaScript", "stars": 3591, "test": "jest ./src --verbose --coverage && rm -rf coverage/", "hits": ["jest"], "delegated": false}
+{"full": "mxschmitt/action-tmate", "lang": "JavaScript", "stars": 3591, "test": "GITHUB_EVENT_PATH= jest", "hits": ["jest"], "delegated": false}
+{"full": "dickwu/apple-design-skill", "lang": "JavaScript", "stars": 3582, "test": null, "nopkg": true}
+{"full": "JenkinWoo/sheeridVerify", "lang": "JavaScript", "stars": 3581, "test": "node --experimental-test-module-mocks --test", "hits": ["node_test"], "delegated": false}
+{"full": "react/react-strict-dom", "lang": "JavaScript", "stars": 3580, "test": "npm run flow && npm run lint:report && npm run jest:report", "hits": [], "delegated": false}
+{"full": "gkjohnson/three-mesh-bvh", "lang": "JavaScript", "stars": 3576, "test": "npm run build-silent && vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "web-push-libs/web-push", "lang": "JavaScript", "stars": 3576, "test": "c8 --reporter=lcov --reporter=text mocha -- --ui tdd test/test*", "hits": ["mocha"], "delegated": false}
+{"full": "himself65/finance-skills", "lang": "JavaScript", "stars": 3575, "test": null}
+{"full": "chrisvel/tududi", "lang": "JavaScript", "stars": 3565, "test": "npm run backend:test", "hits": ["jest"], "delegated": false}
+{"full": "limbopro/Profiles4limbo", "lang": "JavaScript", "stars": 3564, "test": null, "nopkg": true}
+{"full": "noflo/noflo", "lang": "JavaScript", "stars": 3558, "test": "npm run types --workspaces --if-present && npm run check:types && npm run test --workspaces --if-present && npm run test:scripts && npm run check:jsr && npm run check:browser", "hits": ["node_test"], "delegated": false}
+{"full": "franciscop/server", "lang": "JavaScript", "stars": 3552, "test": "jest --coverage --forceExit", "hits": ["jest"], "delegated": false}
+{"full": "huangxd-/danmu_api", "lang": "JavaScript", "stars": 3552, "test": "node --test --test-concurrency=1", "hits": ["node_test"], "delegated": false}
+{"full": "doramart/DoraCMS", "lang": "JavaScript", "stars": 3551, "test": null}
+{"full": "vitaly-t/pg-promise", "lang": "JavaScript", "stars": 3550, "test": "jasmine-node --captureExceptions test", "hits": [], "delegated": false}
+{"full": "liujuntao123/smart-excalidraw-next", "lang": "JavaScript", "stars": 3548, "test": null}
+{"full": "openseadragon/openseadragon", "lang": "JavaScript", "stars": 3541, "test": "grunt test", "hits": [], "delegated": false}
+{"full": "DhvanilPatel/swarm-cursors", "lang": "JavaScript", "stars": 3539, "test": null, "nopkg": true}
+{"full": "tkirda/jQuery-Autocomplete", "lang": "JavaScript", "stars": 3534, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "aliyun/ai-agent-handbook", "lang": "JavaScript", "stars": 3532, "test": "playwright test", "hits": ["playwright"], "delegated": false}
+{"full": "isaacs/minimatch", "lang": "JavaScript", "stars": 3531, "test": "tap", "hits": ["tap"], "delegated": false}
+{"full": "simple-statistics/simple-statistics", "lang": "JavaScript", "stars": 3530, "test": "npm run lint && node --test --experimental-test-isolation=none test/*.test.js", "hits": ["node_test"], "delegated": false}
+{"full": "wavedrom/wavedrom", "lang": "JavaScript", "stars": 3526, "test": "npm run eslint && npm run c8", "hits": ["mocha"], "delegated": false}
+{"full": "sindresorhus/open", "lang": "JavaScript", "stars": 3523, "test": "xo && tsd", "hits": [], "delegated": false}
+{"full": "mourner/suncalc", "lang": "JavaScript", "stars": 3516, "test": "node --test 'test/*.test.js'", "hits": ["node_test"], "delegated": false}
+{"full": "lbryio/lbry-desktop", "lang": "JavaScript", "stars": 3515, "test": null}
+{"full": "chuspeeism/dashi-taskboard", "lang": "JavaScript", "stars": 3509, "test": "node --test && npm run test:components", "hits": ["vitest", "node_test"], "delegated": false}
+{"full": "gokrazy/gokrazy", "lang": "JavaScript", "stars": 3507, "test": null, "nopkg": true}
+{"full": "pawelborkar/awesome-repos", "lang": "JavaScript", "stars": 3505, "test": "node --test tests/*.test.mjs && python3 -m unittest discover -s tests -p 'test_*.py'", "hits": ["node_test"], "delegated": false}
+{"full": "prometheus/client_js", "lang": "JavaScript", "stars": 3504, "test": "npm run lint && npm run check-prettier && npm run compile-typescript && npm run test-unit -- --coverage", "hits": ["jest"], "delegated": false}
+{"full": "paralleldrive/cuid", "lang": "JavaScript", "stars": 3502, "test": "npm run -s lint && npm run -s test:server && npm run -s test:random && npm run -s test:browser && npm run -s test:worker", "hits": [], "delegated": false}
+{"full": "viliusle/miniPaint", "lang": "JavaScript", "stars": 3501, "test": null}
+{"full": "google/earthengine-api", "lang": "JavaScript", "stars": 3498, "test": null, "nopkg": true}
+{"full": "collabnix/kubetools", "lang": "JavaScript", "stars": 3493, "test": null, "nopkg": true}
+{"full": "Anil-matcha/awesome-open-source-saas-alternatives", "lang": "JavaScript", "stars": 3490, "test": null, "nopkg": true}
+{"full": "bdlukaa/fluent_ui", "lang": "JavaScript", "stars": 3476, "test": null, "nopkg": true}
+{"full": "cypress-io/cypress-example-recipes", "lang": "JavaScript", "stars": 3475, "test": null}
+{"full": "2factorauth/twofactorauth", "lang": "JavaScript", "stars": 3469, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "arfct/itty-bitty", "lang": "JavaScript", "stars": 3466, "test": null}
+{"full": "Moli-X/Resources", "lang": "JavaScript", "stars": 3459, "test": null, "nopkg": true}
+{"full": "IRNova/Nova-Proxy", "lang": "JavaScript", "stars": 3455, "test": "npm run build && node --test", "hits": ["node_test"], "delegated": false}
+{"full": "gautamkrishnar/blog-post-workflow", "lang": "JavaScript", "stars": 3453, "test": "yarn run lint && start-server-and-test start-server http://localhost:8080 test-run", "hits": [], "delegated": false}
+{"full": "json-schema-faker/json-schema-faker", "lang": "JavaScript", "stars": 3450, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "jones2000/HQChart", "lang": "JavaScript", "stars": 3431, "test": null, "nopkg": true}
+{"full": "markdown-viewer/skills", "lang": "JavaScript", "stars": 3429, "test": null, "nopkg": true}
+{"full": "callmecavs/jump.js", "lang": "JavaScript", "stars": 3423, "test": null}
+{"full": "bbc/peaks.js", "lang": "JavaScript", "stars": 3414, "test": "karma start karma.conf.cjs", "hits": ["karma"], "delegated": false}
+{"full": "paralleldrive/cuid2", "lang": "JavaScript", "stars": 3410, "test": "NODE_ENV=test node src/index-test.js && NODE_ENV=test node src/bin-test.js", "hits": [], "delegated": false}
+{"full": "mdn/web-components-examples", "lang": "JavaScript", "stars": 3385, "test": null, "nopkg": true}
+{"full": "scurker/currency.js", "lang": "JavaScript", "stars": 3375, "test": "npm-run-all test:typescript test:flow test:js", "hits": [], "delegated": false}
+{"full": "KhronosGroup/Vulkan-Docs", "lang": "JavaScript", "stars": 3374, "test": null}
+{"full": "screeps/screeps", "lang": "JavaScript", "stars": 3362, "test": null}
+{"full": "FB208/OpenBidKit_Yibiao", "lang": "JavaScript", "stars": 3362, "test": null, "nopkg": true}
+{"full": "gongfuxiang/shopxo", "lang": "JavaScript", "stars": 3356, "test": null, "nopkg": true}
+{"full": "NeverDecaf/chromium-web-store", "lang": "JavaScript", "stars": 3351, "test": null, "nopkg": true}
+{"full": "rolling-scopes-school/tasks", "lang": "JavaScript", "stars": 3349, "test": null}
+{"full": "testing-library/dom-testing-library", "lang": "JavaScript", "stars": 3343, "test": "kcd-scripts test", "hits": [], "delegated": false}
+{"full": "dockersamples/docker-swarm-visualizer", "lang": "JavaScript", "stars": 3341, "test": "karma start", "hits": ["karma"], "delegated": false}
+{"full": "deezertidal/QuantumultX-Rewrite", "lang": "JavaScript", "stars": 3332, "test": null, "nopkg": true}
+{"full": "slevithan/xregexp", "lang": "JavaScript", "stars": 3326, "test": "jasmine JASMINE_CONFIG_PATH=tests/jasmine.json", "hits": ["jasmine"], "delegated": false}
+{"full": "UI5/openui5", "lang": "JavaScript", "stars": 3326, "test": "npm run lint", "hits": [], "delegated": false}
+{"full": "htmlhint/HTMLHint", "lang": "JavaScript", "stars": 3322, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "conversejs/converse.js", "lang": "JavaScript", "stars": 3309, "test": "vitest run --project main", "hits": ["vitest"], "delegated": false}
+{"full": "lackeyjb/playwright-skill", "lang": "JavaScript", "stars": 3307, "test": null, "nopkg": true}
+{"full": "rpamis/comet", "lang": "JavaScript", "stars": 3307, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "neomjs/neo", "lang": "JavaScript", "stars": 3304, "test": "playwright test -c test/playwright/playwright.config.mjs", "hits": ["playwright"], "delegated": false}
+{"full": "huilang-me/CF-Server-Monitor", "lang": "JavaScript", "stars": 3303, "test": "node --test test/auto-discovery.test.js test/admin-usage.test.js test/cron-notification.test.js test/dashboard-latency-window.test.js test/frontend-admin-entry-url.test.js test/frontend-api-base.test.", "hits": ["node_test"], "delegated": false}
+{"full": "github/hotkey", "lang": "JavaScript", "stars": 3301, "test": "npm run lint && vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "wangwangit/SubsTracker", "lang": "JavaScript", "stars": 3290, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "Pradumnasaraf/DevOps", "lang": "JavaScript", "stars": 3288, "test": null}
+{"full": "Automattic/juice", "lang": "JavaScript", "stars": 3286, "test": "vitest run --coverage && npm run test-typescript", "hits": ["vitest"], "delegated": false}
+{"full": "GladysAssistant/Gladys", "lang": "JavaScript", "stars": 3280, "test": "run-p test-server test-front", "hits": [], "delegated": false}
+{"full": "jscad/OpenJSCAD.org", "lang": "JavaScript", "stars": 3278, "test": "lerna run --stream test", "hits": [], "delegated": true}
+{"full": "guilhermerodz/input-otp", "lang": "JavaScript", "stars": 3276, "test": "turbo run test --filter=playground...", "hits": [], "delegated": true}
+{"full": "babygoton/WorkDaddy", "lang": "JavaScript", "stars": 3272, "test": null, "nopkg": true}
+{"full": "QwenAudio/qwen-audio-agent", "lang": "JavaScript", "stars": 3257, "test": "node --test test/*.test.mjs && npm run test --workspace server && npm run test --workspace web && npm run test --workspace tui && npm run test --workspace desktop && npm run test --workspace @qwen-aud", "hits": ["node_test"], "delegated": false}
+{"full": "Forward-Future/loopy", "lang": "JavaScript", "stars": 3250, "test": null, "nopkg": true}
+{"full": "zmister2016/MrDoc", "lang": "JavaScript", "stars": 3246, "test": null, "nopkg": true}
+{"full": "jcubic/jquery.terminal", "lang": "JavaScript", "stars": 3242, "test": "make test", "hits": [], "delegated": false}
+{"full": "parallel-js/parallel.js", "lang": "JavaScript", "stars": 3242, "test": "jasmine-node --verbose test/specs", "hits": [], "delegated": false}
+{"full": "play-with-docker/play-with-docker", "lang": "JavaScript", "stars": 3241, "test": null, "nopkg": true}
+{"full": "Agentchengfeng/chengfeng-videocut-skills", "lang": "JavaScript", "stars": 3240, "test": null}
+{"full": "NUKnightLab/TimelineJS3", "lang": "JavaScript", "stars": 3237, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "ember-cli/ember-cli", "lang": "JavaScript", "stars": 3234, "test": "node --unhandled-rejections=strict tests/runner", "hits": [], "delegated": false}
+{"full": "easychen/CookieCloud", "lang": "JavaScript", "stars": 3233, "test": null, "nopkg": true}
+{"full": "yanyiwu/nodejieba", "lang": "JavaScript", "stars": 3233, "test": "mocha --timeout 10s -R spec test/test.js && mocha --timeout 10s -R spec test/load_dict_test.js && mocha --timeout 10s -R spec test/missing_binding_test.js", "hits": ["mocha"], "delegated": false}
+{"full": "callstack/react-native-builder-bob", "lang": "JavaScript", "stars": 3231, "test": "yarn workspace react-native-builder-bob test", "hits": [], "delegated": false}
+{"full": "MaxBittker/sandspiel", "lang": "JavaScript", "stars": 3230, "test": null}
+{"full": "HiddenRamblings/TagMo", "lang": "JavaScript", "stars": 3225, "test": null, "nopkg": true}
+{"full": "learning-zone/nodejs-basics", "lang": "JavaScript", "stars": 3208, "test": null, "nopkg": true}

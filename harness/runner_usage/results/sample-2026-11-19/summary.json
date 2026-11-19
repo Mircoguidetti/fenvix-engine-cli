@@ -1,0 +1,1559 @@
+{
+ "summary": {
+  "Python": {
+   "analysed": 1000,
+   "counts": {
+    "pytest": 681,
+    "unittest": 88,
+    "django": 10,
+    "runtests_script": 10,
+    "doctest": 0,
+    "pytest_doctest": 39,
+    "nose2": 3,
+    "nose": 4,
+    "zope_testrunner": 0,
+    "ward": 0,
+    "hypothesis": 50,
+    "green": 0,
+    "stestr": 2,
+    "trial": 1
+   }
+  },
+  "JavaScript": {
+   "analysed": 1000,
+   "counts": {
+    "jest": 129,
+    "vitest": 114,
+    "mocha": 141,
+    "node_test": 191,
+    "ava": 15,
+    "jasmine": 12,
+    "tap": 18,
+    "uvu": 3,
+    "bun_test": 12,
+    "deno_test": 5,
+    "karma": 52,
+    "playwright": 80,
+    "cypress": 17,
+    "tsx": 33,
+    "ts_node": 21,
+    "swc_register": 0,
+    "esbuild_register": 0,
+    "strip_types": 9
+   }
+  },
+  "TypeScript": {
+   "analysed": 999,
+   "counts": {
+    "jest": 202,
+    "vitest": 542,
+    "mocha": 63,
+    "node_test": 237,
+    "ava": 8,
+    "jasmine": 4,
+    "tap": 5,
+    "uvu": 2,
+    "bun_test": 111,
+    "deno_test": 10,
+    "karma": 22,
+    "playwright": 299,
+    "cypress": 43,
+    "tsx": 366,
+    "ts_node": 116,
+    "swc_register": 4,
+    "esbuild_register": 5,
+    "strip_types": 68
+   }
+  },
+  "JavaScript + TypeScript": {
+   "analysed": 1999,
+   "counts": {
+    "jest": 331,
+    "vitest": 656,
+    "mocha": 204,
+    "node_test": 428,
+    "ava": 23,
+    "jasmine": 16,
+    "tap": 23,
+    "uvu": 5,
+    "bun_test": 123,
+    "deno_test": 15,
+    "karma": 74,
+    "playwright": 379,
+    "cypress": 60,
+    "tsx": 399,
+    "ts_node": 137,
+    "swc_register": 4,
+    "esbuild_register": 5,
+    "strip_types": 77
+   }
+  },
+  "root-test-TypeScript": {
+   "repos": 1000,
+   "with_test_script": 737,
+   "delegated": 156,
+   "counts": {
+    "vitest": 229,
+    "tsx": 32,
+    "node_test": 31,
+    "playwright": 18,
+    "jest": 66,
+    "bun_test": 26,
+    "swc_register": 1,
+    "mocha": 22,
+    "ts_node": 8,
+    "strip_types": 6,
+    "ava": 2,
+    "karma": 4,
+    "uvu": 1,
+    "cypress": 2,
+    "esbuild_register": 1,
+    "tap": 1
+   }
+  },
+  "root-test-JavaScript": {
+   "repos": 1000,
+   "with_test_script": 617,
+   "delegated": 15,
+   "counts": {
+    "node_test": 83,
+    "vitest": 71,
+    "mocha": 77,
+    "jest": 76,
+    "tsx": 4,
+    "ts_node": 3,
+    "bun_test": 5,
+    "jasmine": 5,
+    "playwright": 14,
+    "karma": 21,
+    "tap": 11,
+    "cypress": 2,
+    "ava": 9,
+    "uvu": 1,
+    "deno_test": 1
+   }
+  }
+ },
+ "examples": {
+  "pytest": [
+   [
+    "vinta/awesome-python",
+    335788,
+    "Makefile: uv run pytest website/tests/ -v"
+   ],
+   [
+    "NousResearch/hermes-agent",
+    264653,
+    "config optional-skills/creative/comfyui/tests/conftest.py"
+   ],
+   [
+    "TheAlgorithms/Python",
+    226295,
+    "config matrix/tests/pytest.ini"
+   ],
+   [
+    "yt-dlp/yt-dlp",
+    209103,
+    "config test/conftest.py"
+   ],
+   [
+    "microsoft/markitdown",
+    196892,
+    ".github/workflows/tests.yml: run: pip install ./packages/markitdown ./packages/markitdown-ocr pytest"
+   ],
+   [
+    "Significant-Gravitas/AutoGPT",
+    188101,
+    "config autogpt_platform/backend/backend/api/conftest.py"
+   ],
+   [
+    "huggingface/transformers",
+    169248,
+    "config conftest.py"
+   ],
+   [
+    "langgenius/dify",
+    161495,
+    "config api/conftest.py"
+   ],
+   [
+    "langflow-ai/langflow",
+    156774,
+    "config scripts/ci/conftest.py"
+   ],
+   [
+    "nextlevelbuilder/ui-ux-pro-max-skill",
+    151594,
+    ".github/workflows/tests.yml: - name: Install pytest"
+   ],
+   [
+    "github/spec-kit",
+    150618,
+    "config tests/conftest.py"
+   ],
+   [
+    "Graphify-Labs/graphify",
+    150418,
+    "config tests/conftest.py"
+   ]
+  ],
+  "unittest": [
+   [
+    "public-apis/public-apis",
+    500204,
+    ".github/workflows/test_of_validate_package.yml: python -m unittest discover tests/ --verbose"
+   ],
+   [
+    "langgenius/dify",
+    161495,
+    ".github/workflows/autofix.yml: run: python3 -m unittest discover -s docker/tests -p 'test_*.py'"
+   ],
+   [
+    "langchain-ai/langchain",
+    149887,
+    ".github/workflows/check_diffs.yml: python -m unittest discover -s .github/scripts -p test_check_diff.py"
+   ],
+   [
+    "django/django",
+    91824,
+    ".github/workflows/tests.yml: - run: python -m unittest discover -v -s scripts/"
+   ],
+   [
+    "666ghj/MiroFish",
+    85941,
+    ".github/workflows/update-star-history.yml: python3 -m unittest"
+   ],
+   [
+    "rohitg00/ai-engineering-from-scratch",
+    79565,
+    ".github/workflows/curriculum.yml: run: python3 -m unittest scripts.test_link_check"
+   ],
+   [
+    "ai-job-search-dev/ai-job-search",
+    72521,
+    ".github/workflows/ci.yml: - run: python -m unittest discover -s tests -t . -v"
+   ],
+   [
+    "mvanhorn/last30days-skill",
+    70531,
+    ".github/workflows/validate.yml: run: uv run python -m unittest tests.test_subproc -v"
+   ],
+   [
+    "ayghri/i-have-adhd",
+    61688,
+    ".github/workflows/plugin-load-check.yml: run: python -m unittest tests.test_always_on_hooks -v"
+   ],
+   [
+    "Gathin23/cleanyourtv",
+    59494,
+    ".github/workflows/ci.yml: run: tools/venv/bin/python -m unittest discover -s tests -v"
+   ],
+   [
+    "Imbad0202/academic-research-skills",
+    57709,
+    ".github/workflows/spec-consistency.yml: run: python3 -m unittest scripts.test_contamination_signals scripts.test_migrate_literature_corpus_to_v3_7_3 scripts.tes"
+   ],
+   [
+    "soimort/you-get",
+    56845,
+    "Makefile: (cd src; python -m unittest discover -s ../tests)"
+   ]
+  ],
+  "django": [
+   [
+    "goauthentik/authentik",
+    26386,
+    ".github/workflows/ci-main.yml: uv run coverage run manage.py test tests/integration"
+   ],
+   [
+    "MobSF/Mobile-Security-Framework-MobSF",
+    22261,
+    ".github/workflows/mobsf-test.yml: poetry run python manage.py test mobsf"
+   ],
+   [
+    "netbox-community/netbox",
+    21905,
+    ".github/workflows/ci.yml: run: python netbox/manage.py test netbox/ --parallel --keepdb --timing"
+   ],
+   [
+    "cvat-ai/cvat",
+    17171,
+    ".github/workflows/full.yml: -c 'python manage.py test cvat.apps -v 2'"
+   ],
+   [
+    "gunthercox/ChatterBot",
+    14525,
+    ".github/workflows/python-package.yml: python -Wonce examples/django_example/manage.py test examples/django_example/"
+   ],
+   [
+    "django-cms/django-cms",
+    10681,
+    ".github/workflows/test.yml: coverage run manage.py test"
+   ],
+   [
+    "healthchecks/healthchecks",
+    10533,
+    ".github/workflows/coverage.yml: run: coverage run --omit=*/tests/*,*/migrations/* --source=hc manage.py test"
+   ],
+   [
+    "django-commons/django-debug-toolbar",
+    8377,
+    "Makefile: python example/manage.py test example"
+   ],
+   [
+    "LibrePhotos/librephotos",
+    8178,
+    ".github/workflows/test-backend.yml: python manage.py test api.tests nextcloud"
+   ],
+   [
+    "liangliangyy/DjangoBlog",
+    7428,
+    ".github/workflows/django.yml: coverage run --source='.' --omit='*/venv/*,*/migrations/*,*/tests/*,manage.py' manage.py test --verbosity=2"
+   ]
+  ],
+  "runtests_script": [
+   [
+    "django/django",
+    91824,
+    ".github/workflows/coverage_tests.yml: python -Wall tests/runtests.py --settings=test_postgres -v2"
+   ],
+   [
+    "encode/django-rest-framework",
+    30243,
+    "tox.ini: commands = python -W error::DeprecationWarning -W error::PendingDeprecationWarning runtests.py --no-pkgroot --staticfiles {posargs}"
+   ],
+   [
+    "python/mypy",
+    20729,
+    "tox.ini: python runtests.py self"
+   ],
+   [
+    "wagtail/wagtail",
+    20715,
+    ".github/workflows/latest-deps.yml: python runtests.py --parallel"
+   ],
+   [
+    "spotify/luigi",
+    18793,
+    "tox.ini: contrib: {envpython} test/runtests.py test/contrib/ -m \"contrib or unmarked\" {posargs:}"
+   ],
+   [
+    "saltstack/salt",
+    15763,
+    "setup.py: (\"runtests-opts=\", \"R\", \"Command line options to pass to runtests.py\")"
+   ],
+   [
+    "coleifer/peewee",
+    12009,
+    ".github/workflows/tests.yaml: run: python runtests.py --mysql-user=root --mysql-password=peewee -v2"
+   ],
+   [
+    "spyder-ide/spyder",
+    9400,
+    ".github/workflows/test-linux-pyside6.yml: run: xvfb-run --auto-servernum gdb -return-child-result -batch -ex r -ex py-bt --args python runtests.py -s"
+   ],
+   [
+    "googleapis/google-api-python-client",
+    8976,
+    "Makefile: find tests -name \"test_*.py\" | xargs --max-args=1 coverage run -a runtests.py"
+   ],
+   [
+    "PyMySQL/PyMySQL",
+    7859,
+    ".github/workflows/django.yaml: DJANGO_SETTINGS_MODULE=test_mysql python runtests.py backends"
+   ]
+  ],
+  "doctest": [],
+  "pytest_doctest": [
+   [
+    "TheAlgorithms/Python",
+    226295,
+    ".github/workflows/project_euler.yml: - run: uv run pytest --doctest-modules --cov-report=term-missing:skip-covered --cov=project_euler/ project_euler/"
+   ],
+   [
+    "huggingface/transformers",
+    169248,
+    ".github/workflows/doctest_job.yml: python3 -m pytest -v --make-reports \"doc_tests_gpu_${split_keys}\" --doctest-modules $(cat doc_tests.txt) -sv --doctest-contin"
+   ],
+   [
+    "scikit-learn/scikit-learn",
+    68243,
+    ".github/workflows/cuda-ci.yml: SCIPY_ARRAY_API=1 pytest --doctest-modules modules/array_api.rst"
+   ],
+   [
+    "scrapy/scrapy",
+    65485,
+    "tox.ini: pytest {posargs:--cov-config=pyproject.toml --cov=scrapy --cov-report= --cov-report=term-missing --cov-report=xml --junitxml=testenv.junit.xml -o junit"
+   ],
+   [
+    "ultralytics/ultralytics",
+    63592,
+    "pyproject.toml: addopts = \"--doctest-modules --durations=30 --color=yes\""
+   ],
+   [
+    "pathwaycom/pathway",
+    61983,
+    ".github/workflows/package_test.yml: python -m pytest -v --confcutdir \"${ENV_NAME}\" --doctest-modules \"${PACKAGE_DIR}\" \"${TEST_ARGS[@]}\""
+   ],
+   [
+    "psf/requests",
+    54727,
+    "pyproject.toml: addopts = \"--doctest-modules\""
+   ],
+   [
+    "roboflow/supervision",
+    51674,
+    ".github/workflows/ci-github-tests.yml: run: uv run pytest .github/_tests .github/scripts --doctest-modules -q"
+   ],
+   [
+    "faif/python-patterns",
+    43112,
+    "config_backup/tox.ini: pytest --randomly-seed=1234 --doctest-modules patterns/"
+   ],
+   [
+    "ManimCommunity/manim",
+    42682,
+    ".github/workflows/ci.yml: uv run python -m pytest -v --cov-append --ignore-glob=\"*opengl*\" --doctest-modules manim"
+   ],
+   [
+    "jax-ml/jax",
+    36654,
+    ".github/workflows/documentation.yml: $PYTHON_BIN -m pytest -n auto --tb=short --doctest-glob='*.md' --doctest-glob='*.rst' docs --doctest-continue-on-failure --"
+   ],
+   [
+    "Lightning-AI/pytorch-lightning",
+    31451,
+    "pyproject.toml: \"--doctest-modules\","
+   ]
+  ],
+  "nose2": [
+   [
+    "pyecharts/pyecharts",
+    15780,
+    "pyproject.toml: \"nose2\","
+   ],
+   [
+    "gleitz/howdoi",
+    10843,
+    ".github/workflows/python-non-master.yml: nose2"
+   ],
+   [
+    "lutris/lutris",
+    10400,
+    "config unittest.cfg"
+   ]
+  ],
+  "nose": [
+   [
+    "ytdl-org/youtube-dl",
+    141607,
+    "Makefile: nosetests --verbose test"
+   ],
+   [
+    "seleniumbase/SeleniumBase",
+    13269,
+    ".github/workflows/python-nightly-mac.yml: - name: Make sure nosetests is working"
+   ],
+   [
+    "vaexio/vaex",
+    8519,
+    "Makefile: nosetests --with-coverage --cover-package=vaex --cover-html test/dataset.py"
+   ],
+   [
+    "ajenti/ajenti",
+    7972,
+    "Makefile: cd tests-nose && nosetests tests/"
+   ]
+  ],
+  "zope_testrunner": [],
+  "ward": [],
+  "hypothesis": [
+   [
+    "langgenius/dify",
+    161495,
+    "api/pyproject.toml: \"hypothesis>=6.170.13\","
+   ],
+   [
+    "langflow-ai/langflow",
+    156774,
+    "pyproject.toml: \"hypothesis>=6.123.17\","
+   ],
+   [
+    "Graphify-Labs/graphify",
+    150418,
+    "pyproject.toml: \"hypothesis>=6.152.7\","
+   ],
+   [
+    "pytorch/pytorch",
+    105682,
+    "pyproject.toml: \"hypothesis\","
+   ],
+   [
+    "bytedance/deer-flow",
+    85517,
+    "backend/pyproject.toml: \"hypothesis>=6.100,<7\","
+   ],
+   [
+    "python/cpython",
+    78371,
+    ".github/workflows/build.yml: - name: \"Create hypothesis venv\""
+   ],
+   [
+    "BerriAI/litellm",
+    63540,
+    "pyproject.toml: \"hypothesis==6.165.10\","
+   ],
+   [
+    "MemPalace/mempalace",
+    60619,
+    "pyproject.toml: \"hypothesis>=6.0\","
+   ],
+   [
+    "pandas-dev/pandas",
+    50567,
+    ".github/workflows/unit-tests.yml: python -m pip install --no-cache-dir numpy python-dateutil tzdata \"pytest>=8.3.4\" \"pytest-xdist>=3.6.1\" hypothesis"
+   ],
+   [
+    "mitmproxy/mitmproxy",
+    47087,
+    "pyproject.toml: \"hypothesis==6.130.6\","
+   ],
+   [
+    "streamlit/streamlit",
+    46431,
+    "pyproject.toml: \"hypothesis\","
+   ],
+   [
+    "psf/black",
+    42193,
+    "pyproject.toml: fuzz = [{ include-group = \"coverage\" }, \"hypothesis\", \"hypothesmith\"]"
+   ]
+  ],
+  "green": [],
+  "stestr": [
+   [
+    "PyCQA/bandit",
+    8396,
+    "tox.ini: stestr run {posargs}"
+   ],
+   [
+    "Qiskit/qiskit",
+    7983,
+    ".github/workflows/coverage.yml: stestr run"
+   ]
+  ],
+  "trial": [
+   [
+    "langchain-ai/deepagents",
+    31443,
+    ".github/workflows/_harbor_run.yml: echo \"- Configured retries per failed trial (--max-retries): ${HARBOR_N_RETRIES}\""
+   ]
+  ],
+  "jest": [
+   [
+    "react/react",
+    252761,
+    "config compiler/packages/babel-plugin-react-compiler/jest.config.js"
+   ],
+   [
+    "vercel/next.js",
+    143575,
+    "config .github/actions/pr-stack-ci-gate/jest.config.cjs"
+   ],
+   [
+    "nodejs/node",
+    123790,
+    "deps/undici/src/package.json script test:jest: cross-env NODE_V8_COVERAGE= jest"
+   ],
+   [
+    "angular/angular",
+    101460,
+    "config packages/zone.js/test/jest/jest.config.js"
+   ],
+   [
+    "ant-design/ant-design",
+    100285,
+    "package.json script test: jest --config .jest.ts --no-cache"
+   ],
+   [
+    "puppeteer/puppeteer",
+    95867,
+    "config packages/ng-schematics/src/schematics/ng-add/files/jest/e2e/jest.config.js"
+   ],
+   [
+    "storybookjs/storybook",
+    91647,
+    "config test-storybooks/portable-stories-kitchen-sink/nextjs/jest.config.js"
+   ],
+   [
+    "ChatGPTNextWeb/NextChat",
+    88981,
+    "config jest.config.ts"
+   ],
+   [
+    "hoppscotch/hoppscotch",
+    80849,
+    "packages/hoppscotch-backend/package.json script test: jest"
+   ],
+   [
+    "anuraghazra/github-readme-stats",
+    79836,
+    "config jest.config.js"
+   ],
+   [
+    "grafana/grafana",
+    77989,
+    "config jest.config.js"
+   ],
+   [
+    "strapi/strapi",
+    73518,
+    "config .github/actions/check-pr-status/jest.config.js"
+   ]
+  ],
+  "vitest": [
+   [
+    "morluto/rea",
+    469308,
+    "config vitest.config.ts"
+   ],
+   [
+    "freeCodeCamp/freeCodeCamp",
+    459326,
+    "config client/vitest.config.js"
+   ],
+   [
+    "openclaw/openclaw",
+    394801,
+    "config scripts/control-ui-parity/vitest.config.ts"
+   ],
+   [
+    "deepseek-ai/deepseek-harness",
+    284044,
+    "config vitest.config.ts"
+   ],
+   [
+    "n8n-io/n8n",
+    211388,
+    "config packages/@n8n/ai-node-sdk/vitest.config.ts"
+   ],
+   [
+    "firecrawl/firecrawl",
+    203641,
+    "config apps/api/vitest.config.ts"
+   ],
+   [
+    "microsoft/vscode",
+    195613,
+    "config extensions/copilot/chat-lib/vitest.config.ts"
+   ],
+   [
+    "iptv-org/iptv",
+    144339,
+    "package.json script test: npx vitest run --no-file-parallelism"
+   ],
+   [
+    "excalidraw/excalidraw",
+    135950,
+    "config vitest.config.mts"
+   ],
+   [
+    "Chalarangelo/30-seconds-of-code",
+    129567,
+    "package.json script test: vitest"
+   ],
+   [
+    "stablyai/orca",
+    129450,
+    "config cloud/apps/push/vitest.config.ts"
+   ],
+   [
+    "shadcn-ui/ui",
+    128559,
+    "config packages/helpers/vitest.config.ts"
+   ]
+  ],
+  "mocha": [
+   [
+    "n8n-io/n8n",
+    211388,
+    "packages/@n8n/codemirror-lang-html/package.json script grammar:test: mocha src/grammar/test/test-*.js"
+   ],
+   [
+    "microsoft/vscode",
+    195613,
+    "config extensions/copilot/.mocharc.js"
+   ],
+   [
+    "CyC2018/CS-Notes",
+    186549,
+    "docs/_style/prism-master/package.json script test: mocha tests/testrunner-tests.js && mocha tests/run.js"
+   ],
+   [
+    "nodejs/node",
+    123790,
+    "deps/v8/tools/clusterfuzz/js_fuzzer/package.json script test: APP_NAME=d8 mocha"
+   ],
+   [
+    "axios/axios",
+    109378,
+    "tests/module/cjs/package.json script test:module:cjs: mocha --timeout 10000 \"tests/**/*.module.test.cjs\""
+   ],
+   [
+    "puppeteer/puppeteer",
+    95867,
+    "config .mocharc.js"
+   ],
+   [
+    "koala73/worldmonitor",
+    90934,
+    "integrations/zapier/package.json script test: mocha --recursive test --timeout 10000"
+   ],
+   [
+    "juliangarnier/anime",
+    74900,
+    "package.json script test:node: node --allow-natives-syntax \"node_modules/.bin/mocha\" -u tdd --timeout 20000 \"./tests/suites/node.test.js\""
+   ],
+   [
+    "expressjs/express",
+    69665,
+    "package.json script test: mocha --require test/support/env --reporter spec --check-leaks test/ test/acceptance/"
+   ],
+   [
+    "nocodb/nocodb",
+    65576,
+    "packages/nc-secret-mgr/package.json script test: mocha --require ts-node/register src/**/*.spec.ts"
+   ],
+   [
+    "socketio/socket.io",
+    63255,
+    "packages/engine.io-client/package.json script test:node: mocha --bail --require test/support/hooks.js test/index.js test/webtransport.mjs"
+   ],
+   [
+    "h5bp/html5-boilerplate",
+    57690,
+    "package.json script test: gulp archive && mocha --reporter spec --timeout 5000"
+   ]
+  ],
+  "node_test": [
+   [
+    "openclaw/openclaw",
+    394801,
+    "crates/openclaw-iroh-node/package.json script test: node --test test/*.test.cjs"
+   ],
+   [
+    "affaan-m/ECC",
+    306961,
+    "docker/context-profiles/complex-eval/cases/incident-triage/files/package.json script test: node --test test/"
+   ],
+   [
+    "deepseek-ai/deepseek-harness",
+    284044,
+    "package.json script test:approval-policy: node --test .github/review-ownership/check-approval.test.mjs .github/review-ownership/blame-ownership.test.mjs .github"
+   ],
+   [
+    "n8n-io/n8n",
+    211388,
+    "package.json script seed:test: node --test scripts/instance-seeding/*.test.mjs"
+   ],
+   [
+    "firecrawl/firecrawl",
+    203641,
+    ".github/workflows/test-ci-scripts.yml: run: node --test \".github/scripts/**/*.test.mjs\""
+   ],
+   [
+    "microsoft/vscode",
+    195613,
+    "package.json script test-mobile: node --test build/next/test/mobile.test.ts"
+   ],
+   [
+    "DietrichGebert/ponytail",
+    194586,
+    "package.json script test: node --test tests/*.test.js && npm test --prefix pi-extension"
+   ],
+   [
+    "CyC2018/CS-Notes",
+    186549,
+    "website/deploy/package.json script test: node --test deploy.test.mjs"
+   ],
+   [
+    "vercel/next.js",
+    143575,
+    "packages/tracing-napi/package.json script test:unit: pnpm run build-native && pnpm run build && node --test test/unit.test.js"
+   ],
+   [
+    "nodejs/node",
+    123790,
+    "deps/amaro/package.json script test: node --test \"**/*.test.js\""
+   ],
+   [
+    "earendil-works/pi",
+    122872,
+    "package.json script test:scripts: node --test scripts/*.test.mjs scripts/*.test.ts"
+   ],
+   [
+    "addyosmani/agent-skills",
+    119087,
+    ".github/workflows/test-plugin-install.yml: run: node --test scripts/lib/skill-lint-test.js"
+   ]
+  ],
+  "ava": [
+   [
+    "toeverything/AFFiNE",
+    74845,
+    "config packages/backend/server/ava.config.js"
+   ],
+   [
+    "NervJS/taro",
+    37757,
+    "crates/native_binding/package.json script test: ava"
+   ],
+   [
+    "hasura/graphql-engine",
+    32129,
+    "contrib/metadata-types/package.json script test: ./node_modules/.bin/ava --verbose"
+   ],
+   [
+    "marmelab/react-admin",
+    26998,
+    "packages/create-react-admin/package.json script test: prettier --check . && xo && ava"
+   ],
+   [
+    "semantic-release/semantic-release",
+    24183,
+    "package.json script test:unit: c8 ava --verbose"
+   ],
+   [
+    "avajs/ava",
+    20827,
+    "config ava.config.js"
+   ],
+   [
+    "sindresorhus/ky",
+    17173,
+    "package.json script test: xo && npm run build && tsc --project tsconfig.test.json && ava"
+   ],
+   [
+    "forwardemail/superagent",
+    16641,
+    "package.json script nyc: cross-env NODE_ENV=test nyc ava"
+   ],
+   [
+    "omnivore-app/omnivore",
+    16422,
+    "packages/content/liqe/package.json script test: NODE_ENV=test ava --serial --verbose"
+   ],
+   [
+    "shelljs/shelljs",
+    14402,
+    "package.json script test: ava"
+   ],
+   [
+    "is-a-dev/register",
+    11862,
+    "package.json script test: npx ava tests/*.test.js"
+   ],
+   [
+    "telegraf/telegraf",
+    9208,
+    "package.json script test: ava"
+   ]
+  ],
+  "jasmine": [
+   [
+    "angular/angular",
+    101460,
+    "integration/animations/package.json script test: concurrently \"ng serve --port 4208\" \"jasmine --config=e2e/jasmine.json\" --kill-others --success first"
+   ],
+   [
+    "puppeteer/puppeteer",
+    95867,
+    ".github/workflows/ci.yml: - jasmine"
+   ],
+   [
+    "pcottle/learnGitBranching",
+    34230,
+    "config spec/support/jasmine.json"
+   ],
+   [
+    "parallax/jsPDF",
+    31316,
+    "package.json script test-node: jasmine --config=test/deployment/node/jasmine.json"
+   ],
+   [
+    "angular/angular-cli",
+    27019,
+    "packages/angular_devkit/schematics_cli/blank/project-files/package.json script test: npm run build && jasmine src/**/*_spec.js"
+   ],
+   [
+    "parse-community/parse-server",
+    21395,
+    "config spec/support/jasmine.json"
+   ],
+   [
+    "wekan/wekan",
+    21178,
+    "npm-packages/exceljs/package.json script test:jasmine: grunt jasmine"
+   ],
+   [
+    "plotly/plotly.js",
+    18384,
+    ".github/workflows/ci.yml: - name: Run jasmine tests (no-gl, shard ${{ matrix.shard }})"
+   ],
+   [
+    "jasmine/jasmine",
+    15812,
+    "config spec/support/jasmine.json"
+   ],
+   [
+    "NaturalNode/natural",
+    10884,
+    "config spec/support/jasmine.json"
+   ],
+   [
+    "webdriverio/webdriverio",
+    9885,
+    "package.json script test:typings:jasmine: cd tests/typings/jasmine && npx tsc --skipLibCheck"
+   ],
+   [
+    "grpc/grpc-web",
+    9261,
+    "packages/grpc-web/package.json script test-ts: tsc -p ../../src/typescript/tsconfig.json && NODE_PATH=./node_modules jasmine \"../../src/typescript/**/*_test.js\""
+   ]
+  ],
+  "tap": [
+   [
+    "nodejs/node",
+    123790,
+    "deps/npm/package.json script test: tap"
+   ],
+   [
+    "pure-css/pure",
+    23714,
+    "package.json script test: npm run lint:css && tap test/*.mjs --disable-coverage"
+   ],
+   [
+    "avajs/ava",
+    20827,
+    "config .taprc"
+   ],
+   [
+    "motdotla/dotenv",
+    20571,
+    "package.json script test: npm run build && npm run lint && npm run dts-check && tap run tests/**/*.js --allow-empty-coverage --disable-coverage --timeout=60000"
+   ],
+   [
+    "pinojs/pino",
+    18311,
+    "package.json script cov-ui: tap --ts --coverage-report=html"
+   ],
+   [
+    "hapijs/hapi",
+    14800,
+    "package.json script test-tap: lab -a @hapi/code -r tap -o tests.tap -m 5000"
+   ],
+   [
+    "browserify/browserify",
+    14690,
+    "package.json script tests-only: tap test/*.js"
+   ],
+   [
+    "vercel/micro",
+    10634,
+    "test/package.json script test: tap --ts suite/"
+   ],
+   [
+    "oramasearch/orama",
+    10614,
+    "packages/orama/package.json script test: c8 -c tests/config/c8-local.json tap tests/*.test.ts"
+   ],
+   [
+    "npm/cli",
+    10264,
+    "package.json script test: tap"
+   ],
+   [
+    "sinonjs/sinon",
+    9752,
+    "docs/package.json script test:docs: tap 'tests/**/*.test.js' --disable-coverage"
+   ],
+   [
+    "isaacs/node-glob",
+    8711,
+    "config .taprc"
+   ]
+  ],
+  "uvu": [
+   [
+    "postcss/postcss",
+    28968,
+    "package.json script unit: uvu -r ts-node/register/transpile-only test \"\\.test\\.(ts|js)$\""
+   ],
+   [
+    "postcss/autoprefixer",
+    22197,
+    "package.json script unit: uvu . '\\.test\\.js$'"
+   ],
+   [
+    "QwikDev/partytown",
+    13827,
+    "package.json script test.unit: uvu -r tsm tests/unit"
+   ],
+   [
+    "browserslist/browserslist",
+    13589,
+    "package.json script unit: NODE_ENV=test uvu test .test.js"
+   ],
+   [
+    "GoogleChromeLabs/quicklink",
+    11305,
+    "package.json script uvu: uvu test"
+   ]
+  ],
+  "bun_test": [
+   [
+    "anomalyco/opencode",
+    227955,
+    "packages/ai/package.json script test: bun test --timeout 30000 --only-failures"
+   ],
+   [
+    "garrytan/gstack",
+    142073,
+    "package.json script test:cso:docker: bun test --max-concurrency 1 test/cso-docker-integration.test.ts test/cso-node-lifecycle-integration.test.ts test/cso-stack"
+   ],
+   [
+    "thedotmack/claude-mem",
+    118337,
+    "package.json script test:sqlite: bun test tests/sqlite/"
+   ],
+   [
+    "axios/axios",
+    109378,
+    "package.json script test:smoke:bun: bun test --cwd tests/smoke/bun"
+   ],
+   [
+    "cheaper-inference/OmniRoute",
+    88813,
+    "package.json script test:bun:db: bun test tests/unit/db-adapters/bunSqliteAdapter.test.ts tests/unit/db-adapters/driverFactory.test.ts tests/unit/db-adapters/cl"
+   ],
+   [
+    "heygen-com/hyperframes",
+    86800,
+    "packages/aws-lambda/package.json script test: bun test"
+   ],
+   [
+    "lobehub/lobehub",
+    85847,
+    "e2e/package.json script test:ci: bun run build && bun run test"
+   ],
+   [
+    "ruvnet/ruflo",
+    82080,
+    "v3/package.json script bun:test: bun test"
+   ],
+   [
+    "remotion-dev/remotion",
+    74277,
+    "packages/agent-plugin/package.json script test: bun build.mts && SKILLS_ROOT=skills bun ../skills/scripts/validate-links.ts && bun test test"
+   ],
+   [
+    "cline/cline",
+    71764,
+    "apps/vscode-rollout/package.json script test: bun test src scripts"
+   ],
+   [
+    "code-yeongyu/oh-my-openagent",
+    70997,
+    "package.json script test:model-capabilities: bun test --timeout 20000 packages/model-core/src/model-capability-aliases.test.ts packages/model-core/src/model-cap"
+   ],
+   [
+    "pingdotgg/t3code",
+    65942,
+    ".repos/alchemy-effect/package.json script test:dev: cd ./examples/dev-stress && bun test"
+   ]
+  ],
+  "deno_test": [
+   [
+    "google/zx",
+    45857,
+    "package.json script test:smoke:deno: deno test ./test/smoke/deno.test.js --allow-read --allow-sys --allow-env --allow-run"
+   ],
+   [
+    "honojs/hono",
+    32984,
+    "package.json script test:deno: deno test --allow-read --allow-env --allow-write --allow-net -c runtime-tests/deno/deno.json runtime-tests/deno && deno test --no"
+   ],
+   [
+    "wechaty/wechaty",
+    23596,
+    "package.json script test:unit:deno: env -i PATH=\"$PATH\" HOME=\"$HOME\" CI=\"${CI:-}\" NODE_BINARY=\"${NODE_BINARY:-$(command -v node)}\" deno test --no-check --allow-"
+   ],
+   [
+    "SBoudrias/Inquirer.js",
+    21645,
+    "integration/deno/package.json script test:deno: deno test --allow-env --allow-run=deno integration.test.mjs"
+   ],
+   [
+    "feathersjs/feathers",
+    15260,
+    "package.json script test:deno: deno test --config deno/tsconfig.json deno/test.ts"
+   ],
+   [
+    "freshframework/fresh",
+    13788,
+    "deno.json"
+   ],
+   [
+    "modelcontextprotocol/typescript-sdk",
+    13787,
+    "test/integration/package.json script test:integration:deno: deno test --no-check --allow-net --allow-read --allow-env test/server/deno.test.ts"
+   ],
+   [
+    "vrtmrz/obsidian-livesync",
+    13018,
+    "package.json script test:browser-apps:pages: deno test -A --no-check --frozen --config test/browser-apps/deno.json --lock test/browser-apps/deno.lock test/brows"
+   ],
+   [
+    "yargs/yargs",
+    11509,
+    ".github/workflows/ci.yaml: deno test --allow-read test/deno/*"
+   ],
+   [
+    "mcp-use/mcp-use",
+    10993,
+    ".github/workflows/typescript-pr-preview.yml: deno test --no-check --allow-read --allow-env --allow-net"
+   ],
+   [
+    "getsentry/sentry-javascript",
+    8779,
+    "dev-packages/deno-integration-tests/package.json script test:unit: deno test --allow-net --allow-read --allow-run --allow-env --no-check suites"
+   ],
+   [
+    "Floorp-Projects/Floorp",
+    8499,
+    ".github/workflows/colocated_runner_test.yml: deno test --no-config tools/workspace-development/harness.test.ts"
+   ]
+  ],
+  "karma": [
+   [
+    "angular/angular",
+    101460,
+    "config integration/animations/karma.conf.js"
+   ],
+   [
+    "chartjs/Chart.js",
+    67810,
+    "config karma.conf.cjs"
+   ],
+   [
+    "iamkun/dayjs",
+    48649,
+    "package.json script sauce: npx karma start karma.sauce.conf.js"
+   ],
+   [
+    "ReactiveX/rxjs",
+    31719,
+    "config apps/rxjs.dev/src/karma.conf.js"
+   ],
+   [
+    "parallax/jsPDF",
+    31316,
+    "config test/deployment/amd/karma.conf.js"
+   ],
+   [
+    "4ian/GDevelop",
+    29071,
+    "config GDJS/tests/karma.conf.js"
+   ],
+   [
+    "fingerprintjs/fingerprintjs",
+    28773,
+    "config karma.conf.ts"
+   ],
+   [
+    "caolan/async",
+    28120,
+    "config karma.conf.js"
+   ],
+   [
+    "jashkenas/backbone",
+    28078,
+    "config karma.conf.js"
+   ],
+   [
+    "jashkenas/underscore",
+    27294,
+    "config karma.conf.js"
+   ],
+   [
+    "angular/angular-cli",
+    27019,
+    "config modules/testing/builder/projects/hello-world-app/karma.conf.js"
+   ],
+   [
+    "zloirock/core-js",
+    25516,
+    "config tests/unit-karma/karma.conf.js"
+   ]
+  ],
+  "playwright": [
+   [
+    "freeCodeCamp/freeCodeCamp",
+    459326,
+    "config e2e/playwright.config.ts"
+   ],
+   [
+    "react/react",
+    252761,
+    "config compiler/apps/playground/playwright.config.js"
+   ],
+   [
+    "anomalyco/opencode",
+    227955,
+    "config packages/app/e2e/reproduction/timeline-suspense/playwright.config.ts"
+   ],
+   [
+    "n8n-io/n8n",
+    211388,
+    "config packages/quality/efficiency/playwright.config.ts"
+   ],
+   [
+    "microsoft/vscode",
+    195613,
+    "config test/componentFixtures/playwright/playwright.config.ts"
+   ],
+   [
+    "vercel/next.js",
+    143575,
+    "config evals/evals/agent-050-optimize-static-shell/playwright.config.ts"
+   ],
+   [
+    "stablyai/orca",
+    129450,
+    "config tests/component-fixtures/playwright.config.ts"
+   ],
+   [
+    "immich-app/immich",
+    119631,
+    "config e2e/playwright.config.ts"
+   ],
+   [
+    "supabase/supabase",
+    115154,
+    "config e2e/docs/playwright.config.ts"
+   ],
+   [
+    "paperclipai/paperclip",
+    114984,
+    "config packages/paperclip-runner/devtools/browser/playwright.config.ts"
+   ],
+   [
+    "nexu-io/open-design",
+    108448,
+    "config e2e/playwright.config.ts"
+   ],
+   [
+    "microsoft/playwright",
+    100576,
+    "config packages/html-reporter/playwright.config.ts"
+   ]
+  ],
+  "cypress": [
+   [
+    "angular/angular",
+    101460,
+    "config devtools/cypress/cypress.config.js"
+   ],
+   [
+    "storybookjs/storybook",
+    91647,
+    "config test-storybooks/portable-stories-kitchen-sink/react/cypress.config.ts"
+   ],
+   [
+    "gatsbyjs/gatsby",
+    55914,
+    "config e2e-tests/adapters/cypress.config.ts"
+   ],
+   [
+    "ionic-team/ionic-framework",
+    52762,
+    "config packages/react-router/test/base/cypress.config.ts"
+   ],
+   [
+    "cypress-io/cypress",
+    51033,
+    "config npm/grep/cypress.config.ts"
+   ],
+   [
+    "slidevjs/slidev",
+    49567,
+    "config cypress.config.ts"
+   ],
+   [
+    "appsmithorg/appsmith",
+    41279,
+    "config app/client/cypress.config.ts"
+   ],
+   [
+    "mattermost/mattermost",
+    39653,
+    "config e2e-tests/cypress/cypress.config.ts"
+   ],
+   [
+    "carbon-app/carbon",
+    36148,
+    "package.json script cy:run: cypress run --config-file cypress/config.json"
+   ],
+   [
+    "refinedev/refine",
+    36055,
+    "config cypress/cypress.config.ts"
+   ],
+   [
+    "NginxProxyManager/nginx-proxy-manager",
+    34797,
+    "test/package.json script cypress:headless: HTTP_PROXY=127.0.0.1:8128 HTTPS_PROXY=127.0.0.1:8128 cypress run --config-file=cypress/config/ci.mjs"
+   ],
+   [
+    "hasura/graphql-engine",
+    32129,
+    "config frontend/apps/console-ce-e2e/cypress.config.ts"
+   ]
+  ],
+  "tsx": [
+   [
+    "freeCodeCamp/freeCodeCamp",
+    459326,
+    "package.json script i18n-sync: tsx ./tools/scripts/sync-i18n.ts"
+   ],
+   [
+    "openclaw/openclaw",
+    394801,
+    ".github/workflows/authorized-beta-focused-validation.yml: node --import tsx scripts/validate-authorized-beta-focused-evidence.mts create \\"
+   ],
+   [
+    "nilbuild/developer-roadmap",
+    372349,
+    "package.json script sync:content-to-repo: tsx ./scripts/sync-content-to-repo.ts"
+   ],
+   [
+    "deepseek-ai/deepseek-harness",
+    284044,
+    "package.json script prepare:primary-runtime: tsx scripts/primary-runtime/prepare.ts"
+   ],
+   [
+    "n8n-io/n8n",
+    211388,
+    "packages/@n8n/agents/package.json script fixtures:generate: tsx src/__tests__/fixtures/generate-bulk-vector-fixture.ts"
+   ],
+   [
+    "firecrawl/firecrawl",
+    203641,
+    "apps/api/package.json script dev: tsx src/main.ts harness --start"
+   ],
+   [
+    "microsoft/vscode",
+    195613,
+    "extensions/copilot/package.json script postinstall: tsx ./script/postinstall.ts"
+   ],
+   [
+    "iptv-org/iptv",
+    144339,
+    "package.json script api:load: tsx scripts/commands/api/load.ts"
+   ],
+   [
+    "vercel/next.js",
+    143575,
+    "package.json script bench:render-pipeline: tsx bench/render-pipeline/benchmark.ts"
+   ],
+   [
+    "stablyai/orca",
+    129450,
+    "cloud/package.json script test:runner: node --import tsx --conditions=orca-source --test dev/scripts/run-relay-tests.test.mjs \"../.github/actions/cloud-sql-roll"
+   ],
+   [
+    "shadcn-ui/ui",
+    128559,
+    "apps/v4/package.json script icons:dev: tsx --tsconfig ./tsconfig.scripts.json ./scripts/build-icons.ts --watch"
+   ],
+   [
+    "immich-app/immich",
+    119631,
+    "packages/e2e-auth-server/package.json script start: tsx startup.ts"
+   ]
+  ],
+  "ts_node": [
+   [
+    "react/react",
+    252761,
+    ".github/workflows/runtime_release_from_ci.yml: key: release-scripts-node_modules-v1-${{ runner.arch }}-${{ runner.os }}-${{ hashFiles('.nvmrc', 'scripts/release"
+   ],
+   [
+    "yangshun/tech-interview-handbook",
+    143332,
+    "apps/portal/package.json script seed: ts-node prisma/seed.ts"
+   ],
+   [
+    "louislam/uptime-kuma",
+    94629,
+    "extra/push-examples/typescript-fetch/package.json script ts-node: ts-node index.ts"
+   ],
+   [
+    "hoppscotch/hoppscotch",
+    80849,
+    "packages/hoppscotch-backend/package.json script test:debug: node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+   ],
+   [
+    "coder/code-server",
+    79911,
+    "package.json script watch: VSCODE_DEV=1 VSCODE_IPC_HOOK_CLI= NODE_OPTIONS='--max_old_space_size=32384 --trace-warnings' ts-node ./ci/dev/watch.ts"
+   ],
+   [
+    "nestjs/nest",
+    77107,
+    "sample/22-graphql-prisma/package.json script generate:typings: ts-node generate-typings.ts"
+   ],
+   [
+    "nocodb/nocodb",
+    65576,
+    "packages/nc-secret-mgr/package.json script dev: cross-env NC_DB=\"pg://localhost:5432?u=postgres&p=password&d=meta_2024_09_07\" nodemon --watch 'src/**/*.ts' --ex"
+   ],
+   [
+    "socketio/socket.io",
+    63255,
+    "packages/socket.io-client/package.json script test:browser: ts-node test/browser-runner.ts"
+   ],
+   [
+    "twentyhq/twenty",
+    61191,
+    ".github/workflows/ci-ai-catalog-sync.yaml: npx nx run twenty-server:ts-node-no-deps-transpile-only -- \\"
+   ],
+   [
+    "laurent22/joplin",
+    57247,
+    "packages/default-plugins/package.json script patch-plugin: ts-node build.ts patch-plugin"
+   ],
+   [
+    "gatsbyjs/gatsby",
+    55914,
+    "benchmarks/markdown_id/package.json script data-update: ts-node scripts/data-update.ts"
+   ],
+   [
+    "cypress-io/cypress",
+    51033,
+    "packages/data-context/package.json script build:schema: ts-node ./scripts/build.ts"
+   ]
+  ],
+  "swc_register": [
+   [
+    "nocodb/nocodb",
+    65576,
+    "packages/nocodb/package.json script test:debug: node --inspect-brk -r @swc-node/register node_modules/.bin/jest --runInBand"
+   ],
+   [
+    "payloadcms/payload",
+    45916,
+    "package.json script runts: cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" node --no-deprecation --no-experimental-strip-types --import "
+   ],
+   [
+    "emberjs/ember.js",
+    22571,
+    "smoke-tests/scenarios/package.json script test: qunit --require @swc-node/register *-test.ts"
+   ],
+   [
+    "growthbook/growthbook",
+    8625,
+    "packages/shared/package.json script generate-sdk-report: node -r @swc-node/register ./src/sdk-versioning/sdk-report.ts ./src/sdk-versioning/CAPABILITIES.md"
+   ]
+  ],
+  "esbuild_register": [
+   [
+    "tamagui/tamagui",
+    14319,
+    "package.json script scripts:format: node -r esbuild-register ./scripts/format.ts"
+   ],
+   [
+    "react-icons/react-icons",
+    12702,
+    "packages/react-icons/package.json script ts: node -r esbuild-register"
+   ],
+   [
+    "software-mansion/react-native-reanimated",
+    11084,
+    "docs/docs-reanimated/package.json script build: yarn fetch-typescript && docusaurus build && node -r esbuild-register scripts/build-og-images.jsx"
+   ],
+   [
+    "pastelsky/bundlephobia",
+    9623,
+    "package.json script sitemap: node -r esbuild-register bin/generate-sitemap.ts"
+   ],
+   [
+    "mqttjs/MQTT.js",
+    9131,
+    "package.json script unit-test:node: node -r esbuild-register --test-concurrency 4 --test-reporter=junit --test-reporter-destination=junit.xml --test-reporter=sp"
+   ]
+  ],
+  "strip_types": [
+   [
+    "microsoft/vscode",
+    195613,
+    "package.json script precommit: node --experimental-strip-types build/hygiene.ts"
+   ],
+   [
+    "vercel/next.js",
+    143575,
+    ".github/workflows/build_and_test.yml: NEXT_TEST_MODE=dev NODE_OPTIONS=--experimental-transform-types exec node run-tests.js test/e2e/app-dir/next-config-ts-nati"
+   ],
+   [
+    "earendil-works/pi",
+    122872,
+    "packages/durable/package.json script bench:storage:memory: node --conditions=source --experimental-strip-types test/storage-memory.ts"
+   ],
+   [
+    "thedotmack/claude-mem",
+    118337,
+    "integrations/eve/provider/package.json script test: node --test --experimental-strip-types test/*.test.ts"
+   ],
+   [
+    "supabase/supabase",
+    115154,
+    "e2e/docs/package.json script e2e:docs: node --experimental-strip-types scripts/run-e2e-docs.ts"
+   ],
+   [
+    "nexu-io/open-design",
+    108448,
+    "package.json script sync:community-pets: node --experimental-strip-types scripts/sync-community-pets.ts"
+   ],
+   [
+    "puppeteer/puppeteer",
+    95867,
+    "package.json script validate-licenses: node --experimental-strip-types tools/third_party/validate-licenses.ts"
+   ],
+   [
+    "career-ops-hq/career-ops",
+    83700,
+    "web/package.json script test: node --experimental-strip-types --test \"tests/**/*.test.mjs\""
+   ],
+   [
+    "ruvnet/ruflo",
+    82080,
+    "plugins/ruflo-arena/package.json script demo: node --experimental-strip-types src/cli.ts demo"
+   ],
+   [
+    "grafana/grafana",
+    77989,
+    "e2e-playwright/test-plugins/grafana-test-app/package.json script build: NODE_OPTIONS='--experimental-strip-types --no-warnings=ExperimentalWarning' webpack -c ."
+   ],
+   [
+    "Eugeny/tabby",
+    75492,
+    "package.json script test:ssh-term: node --experimental-strip-types --test tabby-ssh/test/*.test.ts"
+   ],
+   [
+    "strapi/strapi",
+    73518,
+    ".github/scripts/package.json script test: node --experimental-strip-types --test issue-template-check.test.ts"
+   ]
+  ]
+ }
+}

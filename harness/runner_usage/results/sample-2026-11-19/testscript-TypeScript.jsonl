@@ -1,0 +1,1000 @@
+{"full": "morluto/rea", "lang": "TypeScript", "stars": 469308, "test": "npm run test:with-build", "hits": ["vitest"], "delegated": false}
+{"full": "freeCodeCamp/freeCodeCamp", "lang": "TypeScript", "stars": 459326, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "openclaw/openclaw", "lang": "TypeScript", "stars": 394801, "test": "node scripts/test-projects.mts", "hits": [], "delegated": false}
+{"full": "nilbuild/developer-roadmap", "lang": "TypeScript", "stars": 372349, "test": null}
+{"full": "deepseek-ai/deepseek-harness", "lang": "TypeScript", "stars": 284044, "test": "pnpm run build:native-system && vitest run", "hits": ["vitest", "tsx"], "delegated": false}
+{"full": "anomalyco/opencode", "lang": "TypeScript", "stars": 227955, "test": "echo 'do not run tests from root' && exit 1", "hits": [], "delegated": false}
+{"full": "n8n-io/n8n", "lang": "TypeScript", "stars": 211388, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "firecrawl/firecrawl", "lang": "TypeScript", "stars": 203641, "test": null, "nopkg": true}
+{"full": "microsoft/vscode", "lang": "TypeScript", "stars": 195613, "test": "node -e \"console.error('Run a test script from the scripts folder, for example: ./scripts/test.sh --run <file>.'); process.exit(1)\"", "hits": [], "delegated": false}
+{"full": "anthropics/claude-code", "lang": "TypeScript", "stars": 156271, "test": null, "nopkg": true}
+{"full": "iptv-org/iptv", "lang": "TypeScript", "stars": 144339, "test": "npx vitest run --no-file-parallelism", "hits": ["vitest"], "delegated": false}
+{"full": "yangshun/tech-interview-handbook", "lang": "TypeScript", "stars": 143332, "test": null}
+{"full": "garrytan/gstack", "lang": "TypeScript", "stars": 142073, "test": "bun run scripts/test-free-shards.ts", "hits": [], "delegated": false}
+{"full": "excalidraw/excalidraw", "lang": "TypeScript", "stars": 135950, "test": "yarn test:app", "hits": ["vitest"], "delegated": false}
+{"full": "stablyai/orca", "lang": "TypeScript", "stars": 129450, "test": "node config/scripts/workspace-package-build/build-workspace-packages.mjs && node config/scripts/native-build/node-addons/ensure-native-runtime.mjs --runtime=node && node config/scripts/test-runtime/ex", "hits": [], "delegated": false}
+{"full": "shadcn-ui/ui", "lang": "TypeScript", "stars": 128559, "test": "pnpm --filter=v4 registry:build && start-server-and-test v4:dev http://localhost:4000 test:dev", "hits": [], "delegated": true}
+{"full": "earendil-works/pi", "lang": "TypeScript", "stars": 122872, "test": "npm run test:scripts && npm run test --workspace packages --if-present", "hits": ["node_test"], "delegated": false}
+{"full": "immich-app/immich", "lang": "TypeScript", "stars": 119631, "test": null}
+{"full": "thedotmack/claude-mem", "lang": "TypeScript", "stars": 118337, "test": "bun scripts/test-lanes.ts fast", "hits": [], "delegated": false}
+{"full": "supabase/supabase", "lang": "TypeScript", "stars": 115154, "test": null}
+{"full": "paperclipai/paperclip", "lang": "TypeScript", "stars": 114984, "test": "pnpm run test:run", "hits": [], "delegated": false}
+{"full": "google-gemini/gemini-cli", "lang": "TypeScript", "stars": 108939, "test": "npm run test --workspaces --if-present && npm run test:sea-launch", "hits": ["vitest"], "delegated": false}
+{"full": "nexu-io/open-design", "lang": "TypeScript", "stars": 108448, "test": null}
+{"full": "angular/angular", "lang": "TypeScript", "stars": 101460, "test": "bazelisk test", "hits": [], "delegated": false}
+{"full": "microsoft/playwright", "lang": "TypeScript", "stars": 100576, "test": "playwright test --config=tests/library/playwright.config.ts", "hits": ["playwright"], "delegated": false}
+{"full": "ant-design/ant-design", "lang": "TypeScript", "stars": 100285, "test": "jest --config .jest.ts --no-cache", "hits": ["jest"], "delegated": false}
+{"full": "OpenCut-app/OpenCut", "lang": "TypeScript", "stars": 98909, "test": null, "nopkg": true}
+{"full": "tailwindlabs/tailwindcss", "lang": "TypeScript", "stars": 98649, "test": "cargo test && vitest run --hideSkippedTests", "hits": ["vitest"], "delegated": false}
+{"full": "Stirling-Tools/Stirling-PDF", "lang": "TypeScript", "stars": 96999, "test": null, "nopkg": true}
+{"full": "puppeteer/puppeteer", "lang": "TypeScript", "stars": 95867, "test": "wireit", "hits": [], "delegated": true}
+{"full": "OpenHands/OpenHands", "lang": "TypeScript", "stars": 93824, "test": "npm run make-i18n && vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "Egonex-AI/Understand-Anything", "lang": "TypeScript", "stars": 93257, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "modelcontextprotocol/servers", "lang": "TypeScript", "stars": 92101, "test": "npm run test --workspaces", "hits": [], "delegated": false}
+{"full": "storybookjs/storybook", "lang": "TypeScript", "stars": 91647, "test": "NODE_OPTIONS=--max_old_space_size=4096 vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "mermaid-js/mermaid", "lang": "TypeScript", "stars": 91163, "test": "pnpm lint && vitest run", "hits": ["vitest", "tsx"], "delegated": false}
+{"full": "koala73/worldmonitor", "lang": "TypeScript", "stars": 90934, "test": null}
+{"full": "ChatGPTNextWeb/NextChat", "lang": "TypeScript", "stars": 88981, "test": "node --no-warnings --experimental-vm-modules $(yarn bin jest) --watch", "hits": [], "delegated": false}
+{"full": "cheaper-inference/OmniRoute", "lang": "TypeScript", "stars": 88813, "test": "cross-env DISABLE_SQLITE_AUTO_BACKUP=true node --max-old-space-size=8192 --import tsx/esm --import ./open-sse/utils/setupPolyfill.ts --import ./tests/_setup/isolateDataDir.ts --test --test-force-exit ", "hits": ["tsx"], "delegated": false}
+{"full": "heygen-com/hyperframes", "lang": "TypeScript", "stars": 86800, "test": "bun run test:unit", "hits": [], "delegated": false}
+{"full": "lobehub/lobehub", "lang": "TypeScript", "stars": 85847, "test": "npm run test-app && npm run test-server", "hits": ["vitest"], "delegated": false}
+{"full": "realworld-apps/realworld", "lang": "TypeScript", "stars": 84390, "test": null, "nopkg": true}
+{"full": "vitejs/vite", "lang": "TypeScript", "stars": 83970, "test": "pnpm test-unit && pnpm test-e2e", "hits": ["vitest"], "delegated": false}
+{"full": "ruvnet/ruflo", "lang": "TypeScript", "stars": 82080, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "hoppscotch/hoppscotch", "lang": "TypeScript", "stars": 80849, "test": "pnpm -r do-test", "hits": [], "delegated": true}
+{"full": "coder/code-server", "lang": "TypeScript", "stars": 79911, "test": "echo 'Run npm run test:unit or npm run test:e2e' && exit 1", "hits": [], "delegated": false}
+{"full": "colbymchenry/codegraph", "lang": "TypeScript", "stars": 78073, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "grafana/grafana", "lang": "TypeScript", "stars": 77989, "test": "jest --watch", "hits": ["jest"], "delegated": false}
+{"full": "nestjs/nest", "lang": "TypeScript", "stars": 77107, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "Eugeny/tabby", "lang": "TypeScript", "stars": 75492, "test": null}
+{"full": "Fission-AI/OpenSpec", "lang": "TypeScript", "stars": 75253, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "toeverything/AFFiNE", "lang": "TypeScript", "stars": 74845, "test": "vitest --run", "hits": ["vitest"], "delegated": false}
+{"full": "remotion-dev/remotion", "lang": "TypeScript", "stars": 74277, "test": "turbo run lint test --no-update-notifier", "hits": [], "delegated": true}
+{"full": "strapi/strapi", "lang": "TypeScript", "stars": 73518, "test": null}
+{"full": "cline/cline", "lang": "TypeScript", "stars": 71764, "test": "bun --parallel -F './sdk/packages/**' -F @cline/cli -F @cline/cline-hub -F @cline/vscode test", "hits": [], "delegated": false}
+{"full": "code-yeongyu/oh-my-openagent", "lang": "TypeScript", "stars": 70997, "test": "bun test --timeout 20000", "hits": ["bun_test"], "delegated": false}
+{"full": "apache/echarts", "lang": "TypeScript", "stars": 67756, "test": "npx jest --config test/ut/jest.config.cjs", "hits": ["jest"], "delegated": false}
+{"full": "meta/docusaurus", "lang": "TypeScript", "stars": 66766, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "pingdotgg/t3code", "lang": "TypeScript", "stars": 65942, "test": "vp run -r test", "hits": [], "delegated": false}
+{"full": "nocodb/nocodb", "lang": "TypeScript", "stars": 65576, "test": null}
+{"full": "upstash/context7", "lang": "TypeScript", "stars": 65108, "test": "pnpm -r run test", "hits": [], "delegated": true}
+{"full": "marktext/marktext", "lang": "TypeScript", "stars": 64184, "test": "pnpm --filter marktext test", "hits": [], "delegated": true}
+{"full": "withastro/astro", "lang": "TypeScript", "stars": 64055, "test": "pnpm run test:astro && pnpm run test:integrations && pnpm run test:language-tools", "hits": [], "delegated": true}
+{"full": "socketio/socket.io", "lang": "TypeScript", "stars": 63255, "test": null}
+{"full": "makeplane/plane", "lang": "TypeScript", "stars": 62776, "test": null}
+{"full": "reduxjs/redux", "lang": "TypeScript", "stars": 61434, "test": "vitest --run --typecheck", "hits": ["vitest"], "delegated": false}
+{"full": "twentyhq/twenty", "lang": "TypeScript", "stars": 61191, "test": null}
+{"full": "nuxt/nuxt", "lang": "TypeScript", "stars": 61079, "test": "pnpm test:prepare && vitest run && pnpm test:types && pnpm typecheck", "hits": ["vitest"], "delegated": false}
+{"full": "pmndrs/zustand", "lang": "TypeScript", "stars": 58947, "test": "pnpm run \"/^test:.*/\"", "hits": [], "delegated": false}
+{"full": "agalwood/Motrix", "lang": "TypeScript", "stars": 58528, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "appwrite/appwrite", "lang": "TypeScript", "stars": 58390, "test": null}
+{"full": "ChromeDevTools/chrome-devtools-mcp", "lang": "TypeScript", "stars": 58304, "test": "npm run build && node scripts/test.js", "hits": [], "delegated": false}
+{"full": "laurent22/joplin", "lang": "TypeScript", "stars": 57247, "test": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --jobs 2 run test", "hits": [], "delegated": true}
+{"full": "remix-run/react-router", "lang": "TypeScript", "stars": 56642, "test": "node --experimental-vm-modules --no-warnings=ExperimentalWarning ./node_modules/jest/bin/jest.js", "hits": [], "delegated": false}
+{"full": "TryGhost/Ghost", "lang": "TypeScript", "stars": 55864, "test": "pnpm nx run-many -t test:unit test:types", "hits": [], "delegated": true}
+{"full": "lyswhut/lx-music-desktop", "lang": "TypeScript", "stars": 55486, "test": null}
+{"full": "vuejs/core", "lang": "TypeScript", "stars": 55043, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "tashfeenahmed/freellmapi", "lang": "TypeScript", "stars": 54992, "test": "npm run test:bootstrap && npm run test:hooks && npm run test -w server && npm run test -w cli && npm run test -w client --if-present", "hits": ["node_test"], "delegated": false}
+{"full": "CherryHQ/cherry-studio", "lang": "TypeScript", "stars": 53657, "test": "vitest run --silent", "hits": ["vitest"], "delegated": false}
+{"full": "expo/expo", "lang": "TypeScript", "stars": 53656, "test": "./bin/expo-turbo test", "hits": [], "delegated": true}
+{"full": "upscayl/upscayl", "lang": "TypeScript", "stars": 52920, "test": null}
+{"full": "ionic-team/ionic-framework", "lang": "TypeScript", "stars": 52762, "test": null}
+{"full": "KeygraphHQ/shannon", "lang": "TypeScript", "stars": 52072, "test": null}
+{"full": "moeru-ai/airi", "lang": "TypeScript", "stars": 51570, "test": "vitest --coverage", "hits": ["vitest"], "delegated": false}
+{"full": "tldraw/tldraw", "lang": "TypeScript", "stars": 51493, "test": "pnpm exec vitest", "hits": ["vitest"], "delegated": false}
+{"full": "DefinitelyTyped/DefinitelyTyped", "lang": "TypeScript", "stars": 51485, "test": "node --enable-source-maps node_modules/@definitelytyped/dtslint/ types", "hits": [], "delegated": false}
+{"full": "justjavac/wechat-miniapp-radar", "lang": "TypeScript", "stars": 51144, "test": null}
+{"full": "chenglou/pretext", "lang": "TypeScript", "stars": 51071, "test": null}
+{"full": "cypress-io/cypress", "lang": "TypeScript", "stars": 51033, "test": "yarn lerna exec yarn test --scope=cypress --scope=@packages/{agent-info,config,data-context,driver,electron,errors,example,extension,https-proxy,icons,launcher,net-stubbing,network-interception,networ", "hits": [], "delegated": false}
+{"full": "TanStack/query", "lang": "TypeScript", "stars": 50581, "test": "pnpm run test:ci", "hits": [], "delegated": true}
+{"full": "calcom/cal.diy", "lang": "TypeScript", "stars": 50203, "test": "TZ=UTC vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "slidevjs/slidev", "lang": "TypeScript", "stars": 49567, "test": "vitest test", "hits": ["vitest"], "delegated": false}
+{"full": "pixijs/pixijs", "lang": "TypeScript", "stars": 48830, "test": "node ./scripts/test.mts", "hits": [], "delegated": false}
+{"full": "abhigyanpatwari/GitNexus", "lang": "TypeScript", "stars": 48657, "test": null}
+{"full": "type-challenges/type-challenges", "lang": "TypeScript", "stars": 48574, "test": null}
+{"full": "prisma/orm", "lang": "TypeScript", "stars": 47681, "test": "turbo run test --continue", "hits": [], "delegated": true}
+{"full": "LibreChat-AI/LibreChat", "lang": "TypeScript", "stars": 47340, "test": null}
+{"full": "siyuan-note/siyuan", "lang": "TypeScript", "stars": 47286, "test": null, "nopkg": true}
+{"full": "DIYgod/RSSHub", "lang": "TypeScript", "stars": 47110, "test": "npm run format:check && npm run vitest:coverage", "hits": ["vitest"], "delegated": false}
+{"full": "typescript-cheatsheets/react", "lang": "TypeScript", "stars": 47093, "test": null}
+{"full": "RocketChat/Rocket.Chat", "lang": "TypeScript", "stars": 46498, "test": null}
+{"full": "fastapi/full-stack-fastapi-template", "lang": "TypeScript", "stars": 46293, "test": "bun run --filter frontend test", "hits": [], "delegated": false}
+{"full": "mifi/lossless-cut", "lang": "TypeScript", "stars": 46193, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "reactive-resume/reactive-resume", "lang": "TypeScript", "stars": 45917, "test": "turbo run test --concurrency=1", "hits": [], "delegated": true}
+{"full": "payloadcms/payload", "lang": "TypeScript", "stars": 45916, "test": "pnpm test:int && pnpm test:components && pnpm test:e2e", "hits": ["vitest", "swc_register"], "delegated": false}
+{"full": "jestjs/jest", "lang": "TypeScript", "stars": 45480, "test": "yarn lint && yarn jest", "hits": ["jest"], "delegated": false}
+{"full": "react-hook-form/react-hook-form", "lang": "TypeScript", "stars": 44925, "test": "jest --config ./scripts/jest/jest.config.js", "hits": ["jest"], "delegated": false}
+{"full": "AykutSarac/jsoncrack.com", "lang": "TypeScript", "stars": 44601, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "colinhacks/zod", "lang": "TypeScript", "stars": 44356, "test": "nub exec --node vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "HeyPuter/puter", "lang": "TypeScript", "stars": 44209, "test": null}
+{"full": "babel/babel", "lang": "TypeScript", "stars": 44069, "test": "make test", "hits": [], "delegated": false}
+{"full": "Crosstalk-Solutions/project-nomad", "lang": "TypeScript", "stars": 43991, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "THU-MAIC/OpenMAIC", "lang": "TypeScript", "stars": 43945, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "FuelLabs/fuels-ts", "lang": "TypeScript", "stars": 42884, "test": "vitest --run --coverage --config vitest.node.config.mts --project node $(scripts/tests-find.sh --node)", "hits": ["vitest"], "delegated": false}
+{"full": "chatboxai/chatbox", "lang": "TypeScript", "stars": 42431, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "lfnovo/open-notebook", "lang": "TypeScript", "stars": 42081, "test": null, "nopkg": true}
+{"full": "gitroomhq/postiz-app", "lang": "TypeScript", "stars": 41966, "test": "jest --coverage --detectOpenHandles --reporters=default --reporters=jest-junit", "hits": ["jest"], "delegated": false}
+{"full": "linshenkx/prompt-optimizer", "lang": "TypeScript", "stars": 41956, "test": "pnpm test:unit", "hits": [], "delegated": true}
+{"full": "nolimits4web/swiper", "lang": "TypeScript", "stars": 41908, "test": "npm run validate && npm run build:prod && npm run contract-test && npm run dist-types-test && npm run consumer-types-test && npm run ssr-test && npm run element-dom-test && npm run loop-warning-test &", "hits": [], "delegated": false}
+{"full": "hexojs/hexo", "lang": "TypeScript", "stars": 41782, "test": "mocha test/scripts/**/*.ts --require ts-node/register", "hits": ["mocha", "ts_node"], "delegated": false}
+{"full": "outline/outline", "lang": "TypeScript", "stars": 41307, "test": "TZ=UTC vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "appsmithorg/appsmith", "lang": "TypeScript", "stars": 41279, "test": null, "nopkg": true}
+{"full": "styled-components/styled-components", "lang": "TypeScript", "stars": 41050, "test": "pnpm --filter styled-components test", "hits": [], "delegated": true}
+{"full": "vuetifyjs/vuetify", "lang": "TypeScript", "stars": 41045, "test": null}
+{"full": "Yeachan-Heo/oh-my-claudecode", "lang": "TypeScript", "stars": 40951, "test": "vitest --exclude \"tests/perf/**\"", "hits": ["vitest"], "delegated": false}
+{"full": "trpc/trpc", "lang": "TypeScript", "stars": 40822, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "chakra-ui/chakra-ui", "lang": "TypeScript", "stars": 40738, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "novuhq/novu", "lang": "TypeScript", "stars": 40374, "test": null}
+{"full": "vadimdemedes/ink", "lang": "TypeScript", "stars": 40304, "test": "npm run typecheck && npm run lint && node --env-file=test/test.env --import=tsx --test --test-concurrency=1 --test-timeout=60000 --test-force-exit \"test/*.{ts,tsx}\"", "hits": ["node_test", "tsx"], "delegated": false}
+{"full": "umami-software/umami", "lang": "TypeScript", "stars": 40229, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "videojs/video.js", "lang": "TypeScript", "stars": 40226, "test": "vp run --fail-if-no-match --filter='./packages/**' test:ci", "hits": [], "delegated": false}
+{"full": "Kong/insomnia", "lang": "TypeScript", "stars": 40168, "test": "npm run test --workspaces --if-present", "hits": [], "delegated": false}
+{"full": "vercel-labs/skills", "lang": "TypeScript", "stars": 40040, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "microsoft/playwright-mcp", "lang": "TypeScript", "stars": 39889, "test": "playwright test", "hits": ["playwright"], "delegated": false}
+{"full": "mattermost/mattermost", "lang": "TypeScript", "stars": 39653, "test": null, "nopkg": true}
+{"full": "JCodesMore/ai-website-cloner-template", "lang": "TypeScript", "stars": 39493, "test": null}
+{"full": "can1357/oh-my-pi", "lang": "TypeScript", "stars": 39462, "test": "bun scripts/ci-test-ts.ts local", "hits": [], "delegated": false}
+{"full": "RSSNext/Folo", "lang": "TypeScript", "stars": 39321, "test": "cross-env CI=1 pnpm --recursive run test", "hits": [], "delegated": true}
+{"full": "xyflow/xyflow", "lang": "TypeScript", "stars": 39087, "test": null}
+{"full": "ueberdosis/tiptap", "lang": "TypeScript", "stars": 39084, "test": "vp run -r build && vp run test:unit", "hits": [], "delegated": false}
+{"full": "TriliumNext/Trilium", "lang": "TypeScript", "stars": 39008, "test": null}
+{"full": "ant-design/ant-design-pro", "lang": "TypeScript", "stars": 38976, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "portainer/portainer", "lang": "TypeScript", "stars": 38857, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "CopilotKit/CopilotKit", "lang": "TypeScript", "stars": 38817, "test": "nx run-many -t test --projects=packages/** --exclude=runtime-python,runtime-go,runtime-ruby,runtime-dotnet,intelligence-delivery-python-core,intelligence-langgraph-python,intelligence-adk-python,intel", "hits": [], "delegated": true}
+{"full": "directus/directus", "lang": "TypeScript", "stars": 38692, "test": "pnpm --recursive test", "hits": [], "delegated": true}
+{"full": "Dokploy/dokploy", "lang": "TypeScript", "stars": 38609, "test": "pnpm --filter=dokploy run test", "hits": [], "delegated": true}
+{"full": "AdguardTeam/AdGuardHome", "lang": "TypeScript", "stars": 38574, "test": null, "nopkg": true}
+{"full": "ItzCrazyKns/Vane", "lang": "TypeScript", "stars": 38256, "test": null}
+{"full": "musistudio/claude-code-router", "lang": "TypeScript", "stars": 38233, "test": "npm run test:packages && npm run test:architecture", "hits": [], "delegated": false}
+{"full": "NervJS/taro", "lang": "TypeScript", "stars": 37757, "test": "pnpm --if-present -r --aggregate-output --filter=./packages/* --filter=./tests test:ci", "hits": [], "delegated": false}
+{"full": "langfuse/langfuse", "lang": "TypeScript", "stars": 37626, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "medusajs/medusa", "lang": "TypeScript", "stars": 37324, "test": "turbo run test --no-daemon --no-cache --force", "hits": [], "delegated": true}
+{"full": "markedjs/marked", "lang": "TypeScript", "stars": 37318, "test": "npm run build:reset && npm run build:docs && npm run test:specs && npm run test:unit && npm run test:umd && npm run test:cjs && npm run test:types && npm run test:lint", "hits": ["node_test"], "delegated": false}
+{"full": "webadderallorg/Recordly", "lang": "TypeScript", "stars": 37082, "test": "vitest --run", "hits": ["vitest"], "delegated": false}
+{"full": "DayuanJiang/next-ai-draw-io", "lang": "TypeScript", "stars": 37073, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "solidjs/solid", "lang": "TypeScript", "stars": 36756, "test": "turbo run test test-types typecheck --filter=!test-integration --filter=!@solidjs/compiler", "hits": [], "delegated": true}
+{"full": "typeorm/typeorm", "lang": "TypeScript", "stars": 36680, "test": "pnpm --filter typeorm run test", "hits": [], "delegated": true}
+{"full": "date-fns/date-fns", "lang": "TypeScript", "stars": 36657, "test": null}
+{"full": "continuedev/continue", "lang": "TypeScript", "stars": 36518, "test": null}
+{"full": "anywhere-labs/dsh-desktop", "lang": "TypeScript", "stars": 36414, "test": "yarn workspace dsh-plugin-desktop-beta test && yarn workspace dsh-community-market test && yarn workspace @agents-anywhere/dsh-tokens-anywhere test && yarn workspace dsh-desktop-next test && yarn test", "hits": [], "delegated": false}
+{"full": "drizzle-team/drizzle-orm", "lang": "TypeScript", "stars": 36302, "test": "turbo run test --color", "hits": [], "delegated": true}
+{"full": "refinedev/refine", "lang": "TypeScript", "stars": 36055, "test": "lerna run test --stream", "hits": [], "delegated": true}
+{"full": "lerna/lerna", "lang": "TypeScript", "stars": 36033, "test": "nx run-many -t test", "hits": [], "delegated": true}
+{"full": "lissy93/web-check", "lang": "TypeScript", "stars": 35549, "test": null}
+{"full": "motiondivision/motion", "lang": "TypeScript", "stars": 35359, "test": "turbo run test --filter='./packages/*' && turbo run typecheck --filter='./packages/*'", "hits": [], "delegated": true}
+{"full": "backstage/backstage", "lang": "TypeScript", "stars": 34883, "test": "NODE_OPTIONS='--experimental-vm-modules' backstage-cli repo test", "hits": [], "delegated": false}
+{"full": "balena-io/etcher", "lang": "TypeScript", "stars": 34743, "test": "echo 'Only use custom tests; if you want to test locally, use `npm run wdio`' && exit 0", "hits": [], "delegated": false}
+{"full": "Twigpine/openclaude", "lang": "TypeScript", "stars": 34426, "test": "bun run scripts/run-tests.ts --feature=UNATTENDED_RETRY --max-concurrency=1", "hits": [], "delegated": false}
+{"full": "iOfficeAI/AionUi", "lang": "TypeScript", "stars": 34379, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "pear-devs/pear-desktop", "lang": "TypeScript", "stars": 34092, "test": "pnpm playwright test", "hits": ["playwright"], "delegated": false}
+{"full": "vbenjs/vue-vben-admin", "lang": "TypeScript", "stars": 33832, "test": null}
+{"full": "pmndrs/react-three-fiber", "lang": "TypeScript", "stars": 33829, "test": "jest --coverage", "hits": ["jest"], "delegated": false}
+{"full": "Yeachan-Heo/oh-my-codex", "lang": "TypeScript", "stars": 33819, "test": "npm run build && npm run build:runtime && npm run verify:native-agents && npm run verify:plugin-bundle && npm run verify:capabilities-lock && npm run verify:prompt-guidance && npm run test:node && nod", "hits": [], "delegated": false}
+{"full": "remix-run/remix", "lang": "TypeScript", "stars": 33463, "test": "pnpm --recursive --no-sort --workspace-concurrency=4 --stream run test", "hits": [], "delegated": true}
+{"full": "garrytan/gbrain", "lang": "TypeScript", "stars": 33302, "test": "bash scripts/run-unit-parallel.sh", "hits": [], "delegated": false}
+{"full": "immutable-js/immutable-js", "lang": "TypeScript", "stars": 33016, "test": "run-s format lint type-check build test:*", "hits": [], "delegated": false}
+{"full": "honojs/hono", "lang": "TypeScript", "stars": 32984, "test": "tsc -p tsconfig.spec.json && vp test --run", "hits": [], "delegated": false}
+{"full": "floating-ui/floating-ui", "lang": "TypeScript", "stars": 32818, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "SigNoz/signoz", "lang": "TypeScript", "stars": 32683, "test": null, "nopkg": true}
+{"full": "refined-github/refined-github", "lang": "TypeScript", "stars": 32513, "test": "run-p vitest lint:* build:* --continue-on-error", "hits": ["vitest"], "delegated": false}
+{"full": "vercel/swr", "lang": "TypeScript", "stars": 32492, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "hasura/graphql-engine", "lang": "TypeScript", "stars": 32129, "test": null, "nopkg": true}
+{"full": "codex-team/editor.js", "lang": "TypeScript", "stars": 32005, "test": null}
+{"full": "mantinedev/mantine", "lang": "TypeScript", "stars": 31955, "test": "npm run format:test && npm run syncpack && npm run typecheck && npm run lint && npm run docs:links && npm run jest", "hits": ["jest", "tsx"], "delegated": false}
+{"full": "ianstormtaylor/slate", "lang": "TypeScript", "stars": 31750, "test": "yarn run test:mocha && yarn run test:jest && yarn run test:docs", "hits": ["jest", "mocha"], "delegated": false}
+{"full": "ReactiveX/rxjs", "lang": "TypeScript", "stars": 31719, "test": null}
+{"full": "supermemoryai/supermemory", "lang": "TypeScript", "stars": 31672, "test": null}
+{"full": "fabricjs/fabric.js", "lang": "TypeScript", "stars": 31562, "test": null}
+{"full": "heroui-inc/heroui", "lang": "TypeScript", "stars": 31262, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "tobi/qmd", "lang": "TypeScript", "stars": 31236, "test": "node scripts/test-all.mjs", "hits": [], "delegated": false}
+{"full": "ComposioHQ/composio", "lang": "TypeScript", "stars": 31178, "test": "pnpm run test:toolchain && pnpm run test:install-sh && pnpm run test:release-workflow && pnpm run test:issue-triage && pnpm run test:provider-compatibility && pnpm run test:context7 && turbo test --fi", "hits": ["node_test", "bun_test", "tsx"], "delegated": false}
+{"full": "the1812/Bilibili-Evolved", "lang": "TypeScript", "stars": 31154, "test": null}
+{"full": "nanocoai/nanoclaw", "lang": "TypeScript", "stars": 31125, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "transloadit/uppy", "lang": "TypeScript", "stars": 31083, "test": "turbo run test --concurrency=1 --filter='./packages/@uppy/*' --filter='./packages/uppy' --filter='./private/tsconfig' --filter='./examples/{react,vue,sveltekit}' -- --browser.headless", "hits": [], "delegated": true}
+{"full": "TencentCloud/TencentDB-Agent-Memory", "lang": "TypeScript", "stars": 31032, "test": null, "nopkg": true}
+{"full": "meta/astryx", "lang": "TypeScript", "stars": 30800, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "better-auth/better-auth", "lang": "TypeScript", "stars": 30783, "test": "turbo test --continue --filter=./packages/* --filter=./test/*", "hits": [], "delegated": true}
+{"full": "QwenLM/qwen-code", "lang": "TypeScript", "stars": 30781, "test": "cross-env NODE_OPTIONS=\"--max-old-space-size=3072\" npm run test --workspaces --if-present", "hits": [], "delegated": false}
+{"full": "hypit-ai/hypit", "lang": "TypeScript", "stars": 30703, "test": "node test/run.mjs", "hits": [], "delegated": false}
+{"full": "karakeep-app/karakeep", "lang": "TypeScript", "stars": 30690, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "Infisical/infisical", "lang": "TypeScript", "stars": 30611, "test": null}
+{"full": "cheeriojs/cheerio", "lang": "TypeScript", "stars": 30552, "test": "npm run lint && npm run test:vi", "hits": ["vitest"], "delegated": false}
+{"full": "statelyai/xstate", "lang": "TypeScript", "stars": 30520, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "rohitg00/agentmemory", "lang": "TypeScript", "stars": 30462, "test": "vitest run --exclude test/integration.test.ts", "hits": ["vitest"], "delegated": false}
+{"full": "dream-num/univer", "lang": "TypeScript", "stars": 30383, "test": "turbo test -- --passWithNoTests", "hits": [], "delegated": true}
+{"full": "actualbudget/actual", "lang": "TypeScript", "stars": 30354, "test": "lage test --continue", "hits": [], "delegated": false}
+{"full": "sequelize/sequelize", "lang": "TypeScript", "stars": 30346, "test": null}
+{"full": "jitsi/jitsi-meet", "lang": "TypeScript", "stars": 30265, "test": null}
+{"full": "simstudioai/sim", "lang": "TypeScript", "stars": 30162, "test": "bun run test:scripts && turbo run test", "hits": ["vitest"], "delegated": false}
+{"full": "labring/FastGPT", "lang": "TypeScript", "stars": 30075, "test": "node ./scripts/test/run.mjs", "hits": [], "delegated": false}
+{"full": "alibaba/page-agent", "lang": "TypeScript", "stars": 29718, "test": "npm test --workspaces --if-present", "hits": [], "delegated": false}
+{"full": "mastra-ai/mastra", "lang": "TypeScript", "stars": 29642, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "nrwl/nx", "lang": "TypeScript", "stars": 29480, "test": "nx run-many -t test", "hits": [], "delegated": true}
+{"full": "slymnoyann/hey.xyz", "lang": "TypeScript", "stars": 29343, "test": null}
+{"full": "yamadashy/repomix", "lang": "TypeScript", "stars": 29336, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "requarks/wiki", "lang": "TypeScript", "stars": 29334, "test": null, "nopkg": true}
+{"full": "pmndrs/react-spring", "lang": "TypeScript", "stars": 29318, "test": "pnpm test:unit && pnpm test:types && pnpm test:e2e", "hits": ["vitest"], "delegated": false}
+{"full": "invoke-ai/InvokeAI", "lang": "TypeScript", "stars": 29121, "test": null, "nopkg": true}
+{"full": "GitbookIO/gitbook", "lang": "TypeScript", "stars": 29102, "test": null}
+{"full": "postcss/postcss", "lang": "TypeScript", "stars": 28968, "test": "FORCE_COLOR=1 pnpm run /^test:/", "hits": [], "delegated": false}
+{"full": "google-labs-code/design.md", "lang": "TypeScript", "stars": 28959, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "firecrawl/open-lovable", "lang": "TypeScript", "stars": 28930, "test": null}
+{"full": "getredash/redash", "lang": "TypeScript", "stars": 28890, "test": "run-s type-check jest", "hits": ["jest"], "delegated": false}
+{"full": "fingerprintjs/fingerprintjs", "lang": "TypeScript", "stars": 28773, "test": null}
+{"full": "HumanSignal/label-studio", "lang": "TypeScript", "stars": 28731, "test": null, "nopkg": true}
+{"full": "maotoumao/MusicFree", "lang": "TypeScript", "stars": 28702, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "TanStack/table", "lang": "TypeScript", "stars": 28585, "test": "pnpm run test:ci", "hits": [], "delegated": true}
+{"full": "Budibase/budibase", "lang": "TypeScript", "stars": 28428, "test": "lerna run --concurrency 1 --stream test", "hits": [], "delegated": true}
+{"full": "yikart/AiToEarn", "lang": "TypeScript", "stars": 28406, "test": null, "nopkg": true}
+{"full": "every-app/open-seo", "lang": "TypeScript", "stars": 28317, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "mobxjs/mobx", "lang": "TypeScript", "stars": 28215, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "hcengineering/platform", "lang": "TypeScript", "stars": 28149, "test": null, "nopkg": true}
+{"full": "vercel/ai", "lang": "TypeScript", "stars": 28085, "test": "turbo test --concurrency 16 --filter=!@example/*", "hits": [], "delegated": true}
+{"full": "Kilo-Org/kilocode", "lang": "TypeScript", "stars": 28052, "test": "echo 'do not run tests from root' && exit 1", "hits": [], "delegated": false}
+{"full": "virattt/dexter", "lang": "TypeScript", "stars": 27903, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "element-plus/element-plus", "lang": "TypeScript", "stars": 27862, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "recharts/recharts", "lang": "TypeScript", "stars": 27722, "test": "vitest run --config vitest.config.mts --project unit:*", "hits": ["vitest"], "delegated": false}
+{"full": "JimLiu/baoyu-skills", "lang": "TypeScript", "stars": 27704, "test": "node ./scripts/run-node-tests.mjs", "hits": [], "delegated": false}
+{"full": "wg-easy/wg-easy", "lang": "TypeScript", "stars": 27517, "test": null}
+{"full": "Molunerfinn/PicGo", "lang": "TypeScript", "stars": 27507, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "promptfoo/promptfoo", "lang": "TypeScript", "stars": 27453, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "oldj/SwitchHosts", "lang": "TypeScript", "stars": 27434, "test": "npm run test:all", "hits": ["vitest", "playwright"], "delegated": false}
+{"full": "onlook-dev/onlook", "lang": "TypeScript", "stars": 27266, "test": "bun run test:unit && bun run test:pty", "hits": [], "delegated": false}
+{"full": "mihomo-party-org/clash-party", "lang": "TypeScript", "stars": 27266, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "OI-wiki/OI-wiki", "lang": "TypeScript", "stars": 27206, "test": null}
+{"full": "nilbuild/driver.js", "lang": "TypeScript", "stars": 27142, "test": "pnpm --dir packages/driver test", "hits": [], "delegated": false}
+{"full": "bvaughn/react-virtualized", "lang": "TypeScript", "stars": 27071, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "angular/angular-cli", "lang": "TypeScript", "stars": 27019, "test": "bazel test //packages/...", "hits": [], "delegated": false}
+{"full": "marmelab/react-admin", "lang": "TypeScript", "stars": 26998, "test": "yarn test-unit && yarn test-e2e", "hits": ["jest"], "delegated": false}
+{"full": "discordjs/discord.js", "lang": "TypeScript", "stars": 26841, "test": "turbo run test --concurrency=4", "hits": [], "delegated": true}
+{"full": "apify/crawlee", "lang": "TypeScript", "stars": 26503, "test": "vitest run --silent", "hits": ["vitest"], "delegated": false}
+{"full": "readest/readest", "lang": "TypeScript", "stars": 26467, "test": "pnpm --filter @readest/readest-app test", "hits": [], "delegated": true}
+{"full": "anomalyco/sst", "lang": "TypeScript", "stars": 26452, "test": null}
+{"full": "GrapesJS/grapesjs", "lang": "TypeScript", "stars": 26426, "test": "pnpm -r run test", "hits": [], "delegated": true}
+{"full": "BabylonJS/Babylon.js", "lang": "TypeScript", "stars": 26403, "test": "vitest run --project=unit", "hits": ["vitest"], "delegated": false}
+{"full": "GoogleChromeLabs/squoosh", "lang": "TypeScript", "stars": 26209, "test": null}
+{"full": "EveryInc/compound-engineering-plugin", "lang": "TypeScript", "stars": 26155, "test": "bun run scripts/run-tests.ts", "hits": [], "delegated": false}
+{"full": "browserbase/stagehand", "lang": "TypeScript", "stars": 26094, "test": "turbo run test:unit test:browser", "hits": [], "delegated": true}
+{"full": "Redocly/redoc", "lang": "TypeScript", "stars": 26020, "test": "npm run lint && npm run ts:check && npm run unit && npm run e2e", "hits": ["vitest", "playwright"], "delegated": false}
+{"full": "lucide-icons/lucide", "lang": "TypeScript", "stars": 25863, "test": "pnpm -r --filter './packages/**' test", "hits": [], "delegated": true}
+{"full": "NativeScript/NativeScript", "lang": "TypeScript", "stars": 25707, "test": null}
+{"full": "milind-soni/OpenMausBot", "lang": "TypeScript", "stars": 25647, "test": "vitest run && pnpm broker:test && pnpm test:electron && pnpm test:packaged-server", "hits": ["vitest", "node_test"], "delegated": false}
+{"full": "toon-format/toon", "lang": "TypeScript", "stars": 25642, "test": "pnpm -r test", "hits": [], "delegated": true}
+{"full": "activepieces/activepieces", "lang": "TypeScript", "stars": 25619, "test": null}
+{"full": "pascalorg/editor", "lang": "TypeScript", "stars": 25617, "test": "turbo run test && bun test scripts/i18n.test.ts scripts/i18n-provider.test.ts scripts/i18n-literals.test.ts apps/editor/proxy.test.ts", "hits": ["bun_test"], "delegated": false}
+{"full": "agentsmd/agents.md", "lang": "TypeScript", "stars": 25600, "test": null}
+{"full": "responsively-org/responsively-app", "lang": "TypeScript", "stars": 25574, "test": null, "nopkg": true}
+{"full": "bendlang/bend", "lang": "TypeScript", "stars": 25564, "test": null, "nopkg": true}
+{"full": "homebridge/homebridge", "lang": "TypeScript", "stars": 25554, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "walkinglabs/learn-harness-engineering", "lang": "TypeScript", "stars": 25534, "test": null}
+{"full": "LibreSpark/LibreTV", "lang": "TypeScript", "stars": 25375, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "dubinc/dub.link", "lang": "TypeScript", "stars": 25201, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "neoclide/coc.nvim", "lang": "TypeScript", "stars": 25137, "test": "node scripts/test/cli.mjs", "hits": [], "delegated": false}
+{"full": "nextai-translator/nextai-translator", "lang": "TypeScript", "stars": 25069, "test": "vitest test", "hits": ["vitest"], "delegated": false}
+{"full": "angular/components", "lang": "TypeScript", "stars": 25047, "test": "node --no-warnings=ExperimentalWarning --loader ts-node/esm/transpile-only ./scripts/run-component-tests.mts", "hits": ["ts_node"], "delegated": false}
+{"full": "nocobase/nocobase", "lang": "TypeScript", "stars": 24971, "test": "pnpm scripts:test && pnpm -r --if-present test && pnpm db:test", "hits": ["vitest", "tsx"], "delegated": false}
+{"full": "louislam/dockge", "lang": "TypeScript", "stars": 24857, "test": null}
+{"full": "different-ai/openwork", "lang": "TypeScript", "stars": 24568, "test": null}
+{"full": "react-navigation/react-navigation", "lang": "TypeScript", "stars": 24529, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "getpaseo/paseo", "lang": "TypeScript", "stars": 24448, "test": "npm run test --workspaces --if-present", "hits": [], "delegated": false}
+{"full": "youzan/vant", "lang": "TypeScript", "stars": 24429, "test": "pnpm --dir ./packages/vant test", "hits": [], "delegated": false}
+{"full": "felixrieseberg/windows95", "lang": "TypeScript", "stars": 24316, "test": null}
+{"full": "electron-react-boilerplate/electron-react-boilerplate", "lang": "TypeScript", "stars": 24251, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "meta/lexical", "lang": "TypeScript", "stars": 24035, "test": null}
+{"full": "coleam00/Archon", "lang": "TypeScript", "stars": 23952, "test": "bun run scripts/repo-tests.ts", "hits": [], "delegated": false}
+{"full": "deepseek-ai/dsh-superagent-prototype", "lang": "TypeScript", "stars": 23932, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "beekeeper-studio/beekeeper-studio", "lang": "TypeScript", "stars": 23908, "test": null}
+{"full": "fosrl/pangolin", "lang": "TypeScript", "stars": 23873, "test": "node scripts/run-tests.mjs", "hits": [], "delegated": false}
+{"full": "super-productivity/super-productivity", "lang": "TypeScript", "stars": 23833, "test": "npm run packages:test && npm run release-notes:test && node tools/test-shards.js berlin la-subset", "hits": ["node_test"], "delegated": false}
+{"full": "RealKai42/qwerty-learner", "lang": "TypeScript", "stars": 23820, "test": "echo \"No tests\"", "hits": [], "delegated": false}
+{"full": "kriasoft/react-starter-kit", "lang": "TypeScript", "stars": 23724, "test": "bun --bun vitest", "hits": ["vitest"], "delegated": false}
+{"full": "jquense/yup", "lang": "TypeScript", "stars": 23650, "test": "yarn lint && yarn testonly", "hits": ["vitest"], "delegated": false}
+{"full": "wechaty/wechaty", "lang": "TypeScript", "stars": 23596, "test": "npm run lint && npm run test:unit", "hits": ["node_test"], "delegated": false}
+{"full": "usablica/intro.js", "lang": "TypeScript", "stars": 23459, "test": "run-p test:prettier test:jest test:cypress", "hits": [], "delegated": false}
+{"full": "pubkey/rxdb", "lang": "TypeScript", "stars": 23442, "test": "npm run test:node && npm run test:browser", "hits": ["mocha"], "delegated": false}
+{"full": "reduxjs/react-redux", "lang": "TypeScript", "stars": 23421, "test": "vitest --run --typecheck", "hits": ["vitest"], "delegated": false}
+{"full": "winboat-org/winboat", "lang": "TypeScript", "stars": 23405, "test": null}
+{"full": "claude-code-best/claude-code", "lang": "TypeScript", "stars": 23386, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "conwnet/github1s", "lang": "TypeScript", "stars": 23309, "test": "cd tests && npm install && npx playwright install && npm run test", "hits": [], "delegated": false}
+{"full": "czlonkowski/n8n-mcp", "lang": "TypeScript", "stars": 23283, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "renovatebot/renovate", "lang": "TypeScript", "stars": 23181, "test": "run-s lint test-schema jest", "hits": ["jest"], "delegated": false}
+{"full": "chartdb/chartdb", "lang": "TypeScript", "stars": 23140, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "openobserve/openobserve", "lang": "TypeScript", "stars": 23115, "test": null, "nopkg": true}
+{"full": "NVIDIA/NemoClaw", "lang": "TypeScript", "stars": 23052, "test": "npm run clean:cli && npm --prefix nemoclaw run clean && npm run build:cli && npm --prefix nemoclaw run build && vitest run --project cli --project integration --project installer-integration --project", "hits": ["vitest"], "delegated": false}
+{"full": "lissy93/personal-security-checklist", "lang": "TypeScript", "stars": 22831, "test": null, "nopkg": true}
+{"full": "wandb/openui", "lang": "TypeScript", "stars": 22768, "test": null, "nopkg": true}
+{"full": "react-bootstrap/react-bootstrap", "lang": "TypeScript", "stars": 22616, "test": "npm run lint && npm run test-browser -- --browser=chromium", "hits": ["vitest"], "delegated": false}
+{"full": "darkreader/darkreader", "lang": "TypeScript", "stars": 22602, "test": "npm run test:unit", "hits": ["jest"], "delegated": false}
+{"full": "emberjs/ember.js", "lang": "TypeScript", "stars": 22571, "test": "testem ci -f testem.cjs --host 127.0.0.1 --port 13141", "hits": [], "delegated": false}
+{"full": "newsnext/newsnow", "lang": "TypeScript", "stars": 22514, "test": "vitest -c vitest.config.ts", "hits": ["vitest"], "delegated": false}
+{"full": "react-grid-layout/react-grid-layout", "lang": "TypeScript", "stars": 22496, "test": "make test", "hits": [], "delegated": false}
+{"full": "jhipster/generator-jhipster", "lang": "TypeScript", "stars": 22463, "test": "exnode --forbid-only", "hits": [], "delegated": false}
+{"full": "winfunc/opcode", "lang": "TypeScript", "stars": 22452, "test": null}
+{"full": "vueuse/vueuse", "lang": "TypeScript", "stars": 22400, "test": "nr test:unit --project=server", "hits": [], "delegated": false}
+{"full": "docmost/docmost", "lang": "TypeScript", "stars": 22382, "test": null}
+{"full": "dyad-sh/dyad", "lang": "TypeScript", "stars": 22332, "test": "node --test scripts/hydrate-electron.test.mjs scripts/pnpm-install-retry.test.mjs scripts/prepare-safe-storage-baseline.test.mjs scripts/promote-previous-beta.test.mjs scripts/start-supervisor.test.mj", "hits": ["vitest", "node_test"], "delegated": false}
+{"full": "HBAI-Ltd/Toonflow-app", "lang": "TypeScript", "stars": 22269, "test": null}
+{"full": "appium/appium", "lang": "TypeScript", "stars": 22240, "test": "run-s test:quick", "hits": [], "delegated": false}
+{"full": "palantir/blueprint", "lang": "TypeScript", "stars": 22220, "test": "nx run-many -t test", "hits": [], "delegated": true}
+{"full": "desktop/desktop", "lang": "TypeScript", "stars": 22121, "test": "node script/test.mjs", "hits": [], "delegated": false}
+{"full": "handsontable/handsontable", "lang": "TypeScript", "stars": 22084, "test": "npm run all test -- -e=examples", "hits": [], "delegated": false}
+{"full": "QwikDev/qwik", "lang": "TypeScript", "stars": 22077, "test": "pnpm build.full && pnpm test.unit && pnpm test.e2e", "hits": ["vitest", "playwright"], "delegated": false}
+{"full": "markdown-it/markdown-it", "lang": "TypeScript", "stars": 22052, "test": "npm run lint && npm run build && npm run type-check && npm run test:cmspec && npm run test:markdown-it && npm run test:build", "hits": ["node_test"], "delegated": false}
+{"full": "teableio/teable", "lang": "TypeScript", "stars": 22004, "test": null}
+{"full": "lit/lit", "lang": "TypeScript", "stars": 21899, "test": "npm run test:not-starter-kits && npm run test:lit-starter-js && npm run test:lit-starter-ts", "hits": [], "delegated": true}
+{"full": "aidenybai/react-scan", "lang": "TypeScript", "stars": 21883, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "eclipse-theia/theia", "lang": "TypeScript", "stars": 21774, "test": "npm run -s test:theia && npm run -s electron test && npm run -s browser test", "hits": [], "delegated": false}
+{"full": "nashsu/llm_wiki", "lang": "TypeScript", "stars": 21769, "test": "npm run test:mocks && npm run test:llm", "hits": ["vitest"], "delegated": false}
+{"full": "Open-Dev-Society/OpenStock", "lang": "TypeScript", "stars": 21764, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "SBoudrias/Inquirer.js", "lang": "TypeScript", "stars": 21645, "test": "vitest --run packages && jest && turbo test", "hits": ["vitest", "jest"], "delegated": false}
+{"full": "Vincentwei1021/video-shotcraft", "lang": "TypeScript", "stars": 21571, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "github/docs", "lang": "TypeScript", "stars": 21502, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "elastic/kibana", "lang": "TypeScript", "stars": 21381, "test": null}
+{"full": "xtermjs/xterm.js", "lang": "TypeScript", "stars": 21368, "test": "npm run test-unit", "hits": [], "delegated": false}
+{"full": "pmndrs/jotai", "lang": "TypeScript", "stars": 21321, "test": "pnpm run \"/^test:.*/\"", "hits": [], "delegated": false}
+{"full": "vercel/chatbot", "lang": "TypeScript", "stars": 21065, "test": "export PLAYWRIGHT=True && pnpm exec playwright test", "hits": ["playwright"], "delegated": false}
+{"full": "monkeytypegame/monkeytype", "lang": "TypeScript", "stars": 21064, "test": "turbo run test integration-test", "hits": [], "delegated": true}
+{"full": "game1024/OpenSpeedy", "lang": "TypeScript", "stars": 21039, "test": null}
+{"full": "birobirobiro/awesome-shadcn-ui", "lang": "TypeScript", "stars": 20838, "test": null}
+{"full": "fullcalendar/fullcalendar", "lang": "TypeScript", "stars": 20781, "test": "standard-scripts test", "hits": [], "delegated": false}
+{"full": "kortix-ai/CompanyOS", "lang": "TypeScript", "stars": 20769, "test": "bun tests/bin/local.ts", "hits": [], "delegated": false}
+{"full": "voyager-crew/voyager", "lang": "TypeScript", "stars": 20674, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "refactoringhq/tolaria", "lang": "TypeScript", "stars": 20586, "test": "vitest run && node --test scripts/release-version.test.mjs scripts/appimage-launcher-tools.test.mjs && bash scripts/verify-pages-site.test.sh && pnpm test:web-config && pnpm test:server && pnpm test:d", "hits": ["vitest", "node_test", "strip_types"], "delegated": false}
+{"full": "ag-ui-protocol/ag-ui", "lang": "TypeScript", "stars": 20563, "test": "nx run-many -t test", "hits": [], "delegated": true}
+{"full": "KaTeX/KaTeX", "lang": "TypeScript", "stars": 20528, "test": "pnpm test:lint && pnpm test:ts && pnpm test:jest", "hits": ["jest"], "delegated": false}
+{"full": "bokeh/bokeh", "lang": "TypeScript", "stars": 20481, "test": null, "nopkg": true}
+{"full": "linkwarden/linkwarden", "lang": "TypeScript", "stars": 20476, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "microsoft/fluentui", "lang": "TypeScript", "stars": 20417, "test": null}
+{"full": "rrweb-io/rrweb", "lang": "TypeScript", "stars": 20398, "test": "yarn turbo run test --concurrency=1 --continue", "hits": [], "delegated": true}
+{"full": "graphql/graphql-js", "lang": "TypeScript", "stars": 20346, "test": "npm run lint && npm run check && npm run testonly:cover && npm run prettier:check && npm run testonly:examples && npm run prettier:examples:check && npm run check:spelling && npm run check:integration", "hits": ["node_test", "strip_types"], "delegated": false}
+{"full": "pluja/awesome-privacy", "lang": "TypeScript", "stars": 20327, "test": null}
+{"full": "resend/react-email", "lang": "TypeScript", "stars": 19975, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "infinitered/ignite", "lang": "TypeScript", "stars": 19955, "test": "TS_JEST_DISABLE_VER_CHECKER=true jest", "hits": ["jest"], "delegated": false}
+{"full": "danielmiessler/LifeOS", "lang": "TypeScript", "stars": 19940, "test": null, "nopkg": true}
+{"full": "elizaOS/eliza", "lang": "TypeScript", "stars": 19904, "test": "bun run test:e2e", "hits": [], "delegated": false}
+{"full": "apollographql/apollo-client", "lang": "TypeScript", "stars": 19779, "test": "node --expose-gc --experimental-import-meta-resolve --disable-warning=ExperimentalWarning ./node_modules/jest/bin/jest.js --config ./config/jest.config.ts", "hits": [], "delegated": false}
+{"full": "vercel-labs/json-render", "lang": "TypeScript", "stars": 19775, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "C4illin/ConvertX", "lang": "TypeScript", "stars": 19748, "test": "bun test --path-ignore-patterns=tests/integration", "hits": ["bun_test"], "delegated": false}
+{"full": "radix-ui/primitives", "lang": "TypeScript", "stars": 19528, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "lyswhut/lx-music-mobile", "lang": "TypeScript", "stars": 19458, "test": null}
+{"full": "genlayerlabs/genlayer-project-boilerplate", "lang": "TypeScript", "stars": 19398, "test": null}
+{"full": "mlc-ai/web-llm", "lang": "TypeScript", "stars": 19390, "test": "jest --coverage", "hits": ["jest"], "delegated": false}
+{"full": "elysiajs/elysia", "lang": "TypeScript", "stars": 19369, "test": "bun run test:functionality && bun run test:types && bun run test:node", "hits": ["bun_test"], "delegated": false}
+{"full": "compiler-explorer/compiler-explorer", "lang": "TypeScript", "stars": 19200, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "adonisjs/core", "lang": "TypeScript", "stars": 19188, "test": "cross-env NODE_DEBUG=adonisjs:core npm run quick:test", "hits": [], "delegated": false}
+{"full": "ahmedkhaleel2004/gitdiagram", "lang": "TypeScript", "stars": 19004, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "reduxjs/reselect", "lang": "TypeScript", "stars": 18999, "test": "vitest --run && pnpm type-check", "hits": ["vitest"], "delegated": false}
+{"full": "eggjs/egg", "lang": "TypeScript", "stars": 18993, "test": "vitest run --bail 1 --retry 2 --testTimeout 20000 --hookTimeout 20000", "hits": ["vitest"], "delegated": false}
+{"full": "unocss/unocss", "lang": "TypeScript", "stars": 18991, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "nukeop/nuclear", "lang": "TypeScript", "stars": 18970, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "Renhuai123/ziwei-doushu", "lang": "TypeScript", "stars": 18849, "test": "tsx scripts/regression/pan-integrity.test.ts && tsx scripts/regression/dst-cn.test.ts && tsx scripts/regression/clock-adjust.test.ts && tsx scripts/regression/sizhu-lichun-boundary.test.ts && tsx scri", "hits": ["tsx"], "delegated": false}
+{"full": "conventional-changelog/commitlint", "lang": "TypeScript", "stars": 18832, "test": "vitest run --coverage", "hits": ["vitest"], "delegated": false}
+{"full": "wasp-lang/wasp", "lang": "TypeScript", "stars": 18811, "test": null}
+{"full": "subquery/subql", "lang": "TypeScript", "stars": 18713, "test": "TZ=utc jest --coverage", "hits": ["jest"], "delegated": false}
+{"full": "lidge-jun/opencodex", "lang": "TypeScript", "stars": 18657, "test": "bun scripts/test.ts", "hits": [], "delegated": false}
+{"full": "ether/etherpad", "lang": "TypeScript", "stars": 18629, "test": "pnpm --filter ep_etherpad-lite run test", "hits": [], "delegated": true}
+{"full": "tusen-ai/naive-ui", "lang": "TypeScript", "stars": 18611, "test": "tsrs -p tsconfig.test.json --noEmit --pretty false --fast && vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "getmaxun/maxun", "lang": "TypeScript", "stars": 18521, "test": null}
+{"full": "vuejs/vitepress", "lang": "TypeScript", "stars": 18513, "test": "pnpm --aggregate-output --reporter=append-only '/^test:(types|unit|e2e|init|base)$/'", "hits": [], "delegated": false}
+{"full": "teambit/bit", "lang": "TypeScript", "stars": 18508, "test": null}
+{"full": "bluesky-social/social-app", "lang": "TypeScript", "stars": 18398, "test": "NODE_ENV=test jest --forceExit --testTimeout=20000 --bail", "hits": ["jest"], "delegated": false}
+{"full": "mswjs/msw", "lang": "TypeScript", "stars": 18356, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "langchain-ai/langchainjs", "lang": "TypeScript", "stars": 18353, "test": "pnpm test:unit && pnpm test:exports:docker", "hits": [], "delegated": true}
+{"full": "rowboatlabs/rowboat", "lang": "TypeScript", "stars": 18299, "test": null, "nopkg": true}
+{"full": "langchain-ai/openwiki", "lang": "TypeScript", "stars": 18022, "test": "pnpm run typecheck && pnpm run build && pnpm run coverage", "hits": ["vitest"], "delegated": false}
+{"full": "Foundry376/Mailspring", "lang": "TypeScript", "stars": 18017, "test": "node scripts/test.js --test", "hits": [], "delegated": false}
+{"full": "verdaccio/verdaccio", "lang": "TypeScript", "stars": 17997, "test": "pnpm --filter \"./packages/**\" test", "hits": [], "delegated": true}
+{"full": "oblador/react-native-vector-icons", "lang": "TypeScript", "stars": 17931, "test": "nx run-many -t test", "hits": [], "delegated": true}
+{"full": "tradingview/lightweight-charts", "lang": "TypeScript", "stars": 17902, "test": "esno --import ./tests/unittests/setup.units.mjs --test './tests/unittests/**/*.spec.ts' './packages/*/tests/unit/**/*.spec.ts'", "hits": [], "delegated": false}
+{"full": "clauderic/dnd-kit", "lang": "TypeScript", "stars": 17814, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "hydralauncher/hydra", "lang": "TypeScript", "stars": 17781, "test": "node --import ./scripts/register-ts-node.mjs --test \"src/**/*.test.ts\" \"src/**/*.test.cjs\" \"scripts/*.test.mjs\"", "hits": ["ts_node"], "delegated": false}
+{"full": "algerkong/AlgerMusicPlayer", "lang": "TypeScript", "stars": 17727, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "chatfire-AI/huobao-drama", "lang": "TypeScript", "stars": 17726, "test": null}
+{"full": "nodemailer/nodemailer", "lang": "TypeScript", "stars": 17718, "test": "node --import tsx --test --test-concurrency=1 $(find test \\( -name '*-test.ts' -o -name '*.test.ts' \\))", "hits": ["tsx"], "delegated": false}
+{"full": "leon-ai/leon", "lang": "TypeScript", "stars": 17693, "test": "pnpm run test:unit && pnpm run test:integration && pnpm run test:controlled:e2e", "hits": ["vitest"], "delegated": false}
+{"full": "a2ui-project/a2ui", "lang": "TypeScript", "stars": 17646, "test": null}
+{"full": "Effect-TS/effect", "lang": "TypeScript", "stars": 17620, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "redis/node-redis", "lang": "TypeScript", "stars": 17597, "test": "npm run cleanup && npm run test --workspaces --if-present", "hits": [], "delegated": false}
+{"full": "redwoodjs/graphql", "lang": "TypeScript", "stars": 17589, "test": "nx run-many -t test -- --minWorkers=1 --maxWorkers=4", "hits": [], "delegated": true}
+{"full": "sindresorhus/type-fest", "lang": "TypeScript", "stars": 17548, "test": "run-p test:*", "hits": [], "delegated": false}
+{"full": "foambubble/foam", "lang": "TypeScript", "stars": 17493, "test": "lerna run test", "hits": [], "delegated": true}
+{"full": "cursor/plugins", "lang": "TypeScript", "stars": 17433, "test": null, "nopkg": true}
+{"full": "vitest-dev/vitest", "lang": "TypeScript", "stars": 17398, "test": "pnpm --filter test-unit test:threads", "hits": [], "delegated": true}
+{"full": "darkroomengineering/lenis", "lang": "TypeScript", "stars": 17368, "test": "vp test run", "hits": [], "delegated": false}
+{"full": "lottie-react-native/lottie-react-native", "lang": "TypeScript", "stars": 17217, "test": null}
+{"full": "bvaughn/react-window", "lang": "TypeScript", "stars": 17212, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "sindresorhus/ky", "lang": "TypeScript", "stars": 17173, "test": "xo && npm run build && tsc --project tsconfig.test.json && ava", "hits": ["ava"], "delegated": false}
+{"full": "ionic-team/capacitor", "lang": "TypeScript", "stars": 17121, "test": null}
+{"full": "video-dev/hls.js", "lang": "TypeScript", "stars": 17060, "test": "npm run test:unit && npm run test:func", "hits": ["mocha", "karma"], "delegated": false}
+{"full": "rmyndharis/OpenWA", "lang": "TypeScript", "stars": 17058, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "suitenumerique/docs", "lang": "TypeScript", "stars": 17000, "test": null, "nopkg": true}
+{"full": "apify/apify-mcp-server", "lang": "TypeScript", "stars": 16994, "test": "pnpm run test:unit", "hits": ["vitest"], "delegated": false}
+{"full": "graphql/graphiql", "lang": "TypeScript", "stars": 16941, "test": "pnpm test:scripts && turbo run test --filter='./packages/*'", "hits": ["node_test"], "delegated": false}
+{"full": "gendotnew/ai", "lang": "TypeScript", "stars": 16872, "test": null, "nopkg": true}
+{"full": "diegomura/react-pdf", "lang": "TypeScript", "stars": 16860, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "carloscuesta/gitmoji", "lang": "TypeScript", "stars": 16818, "test": null}
+{"full": "satnaing/shadcn-admin", "lang": "TypeScript", "stars": 16814, "test": "vitest run --browser.headless", "hits": ["vitest"], "delegated": false}
+{"full": "triggerdotdev/trigger.dev", "lang": "TypeScript", "stars": 16782, "test": "turbo run test --concurrency=1 -- --run", "hits": [], "delegated": true}
+{"full": "signalapp/Signal-Desktop", "lang": "TypeScript", "stars": 16726, "test": "run-s test-node test:axo test-electron test-lint-intl test-oxlint", "hits": [], "delegated": false}
+{"full": "udecode/plate", "lang": "TypeScript", "stars": 16709, "test": "bun tooling/scripts/test-suite.mjs", "hits": [], "delegated": false}
+{"full": "umijs/qiankun", "lang": "TypeScript", "stars": 16707, "test": "pnpm run test:release-scripts && pnpm -r run test", "hits": ["node_test"], "delegated": false}
+{"full": "vercel/vercel", "lang": "TypeScript", "stars": 16628, "test": "vitest run --config vitest.config.mts --dir test", "hits": ["vitest"], "delegated": false}
+{"full": "zhaoolee/ChineseBQB", "lang": "TypeScript", "stars": 16609, "test": null, "nopkg": true}
+{"full": "typescript-eslint/typescript-eslint", "lang": "TypeScript", "stars": 16471, "test": "nx run-many -t test --exclude integration-tests website website-eslint", "hits": [], "delegated": true}
+{"full": "scalar/scalar", "lang": "TypeScript", "stars": 16430, "test": "turbo --filter './packages/**' --filter './integrations/**' --filter './projects/**' --filter './tooling/**' test", "hits": [], "delegated": true}
+{"full": "omnivore-app/omnivore", "lang": "TypeScript", "stars": 16422, "test": "lerna run --stream test", "hits": [], "delegated": true}
+{"full": "ParadevAI/Paradev", "lang": "TypeScript", "stars": 16402, "test": "turbo test --concurrency=2", "hits": [], "delegated": true}
+{"full": "electric-sql/pglite", "lang": "TypeScript", "stars": 16348, "test": null}
+{"full": "javascript-obfuscator/javascript-obfuscator", "lang": "TypeScript", "stars": 16335, "test": "yarn run test:full", "hits": ["mocha", "ts_node"], "delegated": false}
+{"full": "tinymce/tinymce", "lang": "TypeScript", "stars": 16331, "test": "run-s headless-test browser-test", "hits": [], "delegated": false}
+{"full": "VERT-sh/VERT", "lang": "TypeScript", "stars": 16277, "test": null}
+{"full": "GLips/Figma-Context-MCP", "lang": "TypeScript", "stars": 16263, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "hicccc77/WeFlow", "lang": "TypeScript", "stars": 16139, "test": null}
+{"full": "Termix-SSH/Termix", "lang": "TypeScript", "stars": 16073, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "umijs/umi", "lang": "TypeScript", "stars": 16055, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "adobe/react-spectrum", "lang": "TypeScript", "stars": 16051, "test": "cross-env STRICT_MODE=1 VIRT_ON=1 yarn jest", "hits": ["jest"], "delegated": false}
+{"full": "YishenTu/claudian", "lang": "TypeScript", "stars": 16030, "test": "node scripts/run-tests.js", "hits": [], "delegated": false}
+{"full": "react-native-maps/react-native-maps", "lang": "TypeScript", "stars": 16015, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "rjsf-team/react-jsonschema-form", "lang": "TypeScript", "stars": 15944, "test": "nx run-many --parallel=2 --target=test", "hits": [], "delegated": true}
+{"full": "eigent-ai/eigent", "lang": "TypeScript", "stars": 15850, "test": "vitest run --config vitest.config.ts", "hits": ["vitest"], "delegated": false}
+{"full": "documenso/documenso", "lang": "TypeScript", "stars": 15836, "test": null}
+{"full": "Koenkk/zigbee2mqtt", "lang": "TypeScript", "stars": 15835, "test": "vitest run --config ./test/vitest.config.mts", "hits": ["vitest"], "delegated": false}
+{"full": "open-metadata/OpenMetadata", "lang": "TypeScript", "stars": 15817, "test": null, "nopkg": true}
+{"full": "liketrek/TREK", "lang": "TypeScript", "stars": 15814, "test": "npm run test --workspace=shared && npm run test --workspace=server && npm run test --workspace=client", "hits": [], "delegated": false}
+{"full": "miuuyy/codex-chatgpt-web", "lang": "TypeScript", "stars": 15788, "test": "bun test ./tests", "hits": ["bun_test"], "delegated": false}
+{"full": "yc-software/qm", "lang": "TypeScript", "stars": 15745, "test": "node scripts/run-pg-tests.mjs test/*.test.ts", "hits": [], "delegated": false}
+{"full": "ag-grid/ag-grid", "lang": "TypeScript", "stars": 15689, "test": null}
+{"full": "apitable/apitable", "lang": "TypeScript", "stars": 15670, "test": "nx run-many -t test --exclude @apitable/cypress", "hits": [], "delegated": true}
+{"full": "web-infra-dev/midscene", "lang": "TypeScript", "stars": 15649, "test": "pnpm run test:scripts && nx run-many --target=test --verbose", "hits": [], "delegated": true}
+{"full": "corsairdev/corsair", "lang": "TypeScript", "stars": 15640, "test": "turbo --filter \"./packages/*\" --filter \"./adapters/*\" test", "hits": [], "delegated": true}
+{"full": "infinitered/reactotron", "lang": "TypeScript", "stars": 15600, "test": "npx nx run-many --target test", "hits": [], "delegated": true}
+{"full": "faker-js/faker", "lang": "TypeScript", "stars": 15557, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "NanmiCoder/cc-haha", "lang": "TypeScript", "stars": 15497, "test": null}
+{"full": "Chocobozzz/PeerTube", "lang": "TypeScript", "stars": 15415, "test": "bash ./scripts/test.sh", "hits": [], "delegated": false}
+{"full": "jupyterlab/jupyterlab", "lang": "TypeScript", "stars": 15411, "test": "npm run _each -- --include \"@jupyterlab/!(galata|template)*\" run test", "hits": [], "delegated": false}
+{"full": "sass/sass", "lang": "TypeScript", "stars": 15373, "test": "npm run deprecations-check && npm run tangle && gts lint && tsc --noEmit && npm run toc-check && npm run link-check && npm run js-api-doc-check && npm run typedoc", "hits": ["ts_node"], "delegated": false}
+{"full": "oblien/openship", "lang": "TypeScript", "stars": 15368, "test": "turbo run test --filter=!@repo/email --concurrency=1", "hits": [], "delegated": true}
+{"full": "redis/ioredis", "lang": "TypeScript", "stars": 15358, "test": "npm run test:js && npm run test:tsd", "hits": ["mocha"], "delegated": false}
+{"full": "soybeanjs/soybean-admin", "lang": "TypeScript", "stars": 15352, "test": null}
+{"full": "uuidjs/uuid", "lang": "TypeScript", "stars": 15345, "test": "node --test --enable-source-maps dist-node/test/*.js", "hits": ["node_test"], "delegated": false}
+{"full": "thesysdev/openui", "lang": "TypeScript", "stars": 15343, "test": "pnpm -r run test", "hits": [], "delegated": true}
+{"full": "TanStack/router", "lang": "TypeScript", "stars": 15326, "test": "pnpm run test:ci", "hits": [], "delegated": true}
+{"full": "microsoft/playwright-cli", "lang": "TypeScript", "stars": 15305, "test": "playwright test", "hits": ["playwright"], "delegated": false}
+{"full": "feathersjs/feathers", "lang": "TypeScript", "stars": 15260, "test": "npm run lint && npm run compile && c8 lerna run test --ignore @feathersjs/tests", "hits": [], "delegated": true}
+{"full": "VSCodeVim/Vim", "lang": "TypeScript", "stars": 15231, "test": "node ./out/test/runTest.js", "hits": [], "delegated": false}
+{"full": "gvergnaud/ts-pattern", "lang": "TypeScript", "stars": 15223, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "caprover/caprover", "lang": "TypeScript", "stars": 15210, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "Stremio/stremio-web", "lang": "TypeScript", "stars": 15189, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "millionco/react-doctor", "lang": "TypeScript", "stars": 15161, "test": "turbo run test --filter=react-doctor --filter=@react-doctor/core --filter=@react-doctor/api --filter=oxlint-plugin-react-doctor --filter=eslint-plugin-react-doctor --filter=@react-doctor/fuzz --filter", "hits": [], "delegated": true}
+{"full": "mindfold-ai/Trellis", "lang": "TypeScript", "stars": 15157, "test": "pnpm --filter @mindfoldhq/trellis-core test && pnpm --filter @mindfoldhq/trellis test", "hits": [], "delegated": true}
+{"full": "google/brotli", "lang": "TypeScript", "stars": 15122, "test": null, "nopkg": true}
+{"full": "plait-board/drawnix", "lang": "TypeScript", "stars": 15095, "test": "nx run-many -t=test", "hits": [], "delegated": true}
+{"full": "botpress/botpress", "lang": "TypeScript", "stars": 15005, "test": "turbo test && pnpm test:scripts", "hits": ["vitest"], "delegated": false}
+{"full": "konvajs/konva", "lang": "TypeScript", "stars": 15004, "test": "npm run test:types && npm run test:browser && npm run test:node && npm run test:import", "hits": ["mocha", "tsx"], "delegated": false}
+{"full": "alibaba/hooks", "lang": "TypeScript", "stars": 14983, "test": "pnpm --filter=./packages/* test", "hits": [], "delegated": true}
+{"full": "sindresorhus/got", "lang": "TypeScript", "stars": 14966, "test": "xo && tsc --noEmit && NODE_OPTIONS='--import=tsx/esm' node --test --test-timeout=60000 'test/*.ts'", "hits": ["node_test", "tsx"], "delegated": false}
+{"full": "janpaepke/ScrollMagic", "lang": "TypeScript", "stars": 14965, "test": "npm run typecheck && vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "logto-io/logto", "lang": "TypeScript", "stars": 14955, "test": null}
+{"full": "streetwriters/notesnook", "lang": "TypeScript", "stars": 14953, "test": null}
+{"full": "Tonejs/Tone.js", "lang": "TypeScript", "stars": 14933, "test": "tsc && web-test-runner --config=./test/web-test-runner.config.js --coverage ${npm_config_group:+--group ${npm_config_group}}", "hits": [], "delegated": false}
+{"full": "OrchestratorInc/agent-orchestrator", "lang": "TypeScript", "stars": 14914, "test": null}
+{"full": "waooAI/waoowaoo", "lang": "TypeScript", "stars": 14886, "test": null}
+{"full": "ajv-validator/ajv", "lang": "TypeScript", "stars": 14882, "test": "npm run json-tests && npm run prettier:check && npm run eslint && npm link && npm link --legacy-peer-deps ajv && npm run test-cov", "hits": ["mocha", "ts_node"], "delegated": false}
+{"full": "visgl/deck.gl", "lang": "TypeScript", "stars": 14775, "test": "ocular-test node headless render", "hits": [], "delegated": false}
+{"full": "vuejs/pinia", "lang": "TypeScript", "stars": 14768, "test": "pnpm run -r dev:prepare && pnpm run test:types && pnpm run test:vitest run && pnpm run build && pnpm test:dts && pnpm test:dist", "hits": ["vitest"], "delegated": false}
+{"full": "formatjs/formatjs", "lang": "TypeScript", "stars": 14753, "test": "lefthook run pre-commit --all-files && bazel test //...", "hits": [], "delegated": false}
+{"full": "bytebase/bytebase", "lang": "TypeScript", "stars": 14723, "test": null, "nopkg": true}
+{"full": "electron-userland/electron-builder", "lang": "TypeScript", "stars": 14722, "test": null}
+{"full": "siteboon/claudecodeui", "lang": "TypeScript", "stars": 14693, "test": "tsx --tsconfig server/tsconfig.json --test \"server/**/*.test.ts\" \"server/**/*.test.js\"", "hits": ["tsx"], "delegated": false}
+{"full": "dexie/Dexie.js", "lang": "TypeScript", "stars": 14690, "test": "pnpm run build && pnpm run test:typings && pnpm run test:unit", "hits": ["karma"], "delegated": false}
+{"full": "fathah/hermes-desktop", "lang": "TypeScript", "stars": 14606, "test": "vitest run --maxWorkers=4", "hits": ["vitest"], "delegated": false}
+{"full": "Vendicated/Vencord", "lang": "TypeScript", "stars": 14543, "test": "pnpm test:ts && pnpm buildStandalone && pnpm buildWebStandalone && pnpm lint && pnpm fmt:check && pnpm generatePluginJson", "hits": ["tsx"], "delegated": false}
+{"full": "emdash-cms/emdash", "lang": "TypeScript", "stars": 14504, "test": "pnpm run --filter {./packages/*} test", "hits": [], "delegated": false}
+{"full": "callstack/react-native-paper", "lang": "TypeScript", "stars": 14504, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "rstacruz/cheatsheets", "lang": "TypeScript", "stars": 14490, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "juice-shop/juice-shop", "lang": "TypeScript", "stars": 14482, "test": "npm run test:frontend && npm run test:server && npm run test:api", "hits": ["tsx"], "delegated": false}
+{"full": "BuilderIO/mitosis", "lang": "TypeScript", "stars": 14474, "test": null}
+{"full": "FaridSafi/react-native-gifted-chat", "lang": "TypeScript", "stars": 14451, "test": "TZ=Europe/Paris jest --no-watchman", "hits": ["jest"], "delegated": false}
+{"full": "krillinai/OpenCreator", "lang": "TypeScript", "stars": 14431, "test": "pnpm -r test", "hits": [], "delegated": true}
+{"full": "reduxjs/redux-devtools", "lang": "TypeScript", "stars": 14374, "test": "vitest --run", "hits": ["vitest"], "delegated": false}
+{"full": "seanprashad/leetcode-patterns", "lang": "TypeScript", "stars": 14372, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "kysely-org/kysely", "lang": "TypeScript", "stars": 14370, "test": "pnpm run build && pnpm run test:node:build && pnpm run test:node:run && pnpm run test:typings && pnpm run test:esmimports && pnpm run test:exports", "hits": ["mocha"], "delegated": false}
+{"full": "nanobrowser/nanobrowser", "lang": "TypeScript", "stars": 14346, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "Unleash/unleash", "lang": "TypeScript", "stars": 14339, "test": "PORT=4243 vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "tamagui/tamagui", "lang": "TypeScript", "stars": 14319, "test": "CLEANUP=1 turbo run --concurrency=1 test", "hits": [], "delegated": true}
+{"full": "bitwarden/clients", "lang": "TypeScript", "stars": 14274, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "CodebuffAI/freebuff", "lang": "TypeScript", "stars": 14236, "test": null}
+{"full": "vercel/satori", "lang": "TypeScript", "stars": 14206, "test": "NODE_ENV=test vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "openai/codex-security", "lang": "TypeScript", "stars": 14174, "test": null}
+{"full": "ajayyy/SponsorBlock", "lang": "TypeScript", "stars": 14126, "test": "npm run build:chrome && npx jest", "hits": ["jest"], "delegated": false}
+{"full": "yoavbls/pretty-ts-errors", "lang": "TypeScript", "stars": 14100, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "e2e-inc/e2e", "lang": "TypeScript", "stars": 14046, "test": "pnpm run build && pnpm --filter @e2e-dev/core run test && pnpm --filter e2e run test && pnpm --filter @e2e-dev/web run test && pnpm --filter @e2e-dev/mobile run test && pnpm --filter @e2e-dev/github r", "hits": ["node_test"], "delegated": false}
+{"full": "formkit/auto-animate", "lang": "TypeScript", "stars": 13977, "test": null}
+{"full": "apollographql/apollo-server", "lang": "TypeScript", "stars": 13961, "test": "jest --verbose", "hits": ["jest"], "delegated": false}
+{"full": "browserless/browserless", "lang": "TypeScript", "stars": 13949, "test": "npm run build:tests && cross-env DEBUG=quiet mocha", "hits": ["mocha"], "delegated": false}
+{"full": "shikijs/shiki", "lang": "TypeScript", "stars": 13940, "test": "FORCE_COLOR=3 && vitest", "hits": ["vitest"], "delegated": false}
+{"full": "Zettlr/Zettlr", "lang": "TypeScript", "stars": 13937, "test": "mocha --inline-diffs", "hits": ["mocha"], "delegated": false}
+{"full": "fengyuanchen/cropperjs", "lang": "TypeScript", "stars": 13922, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "glideapps/quicktype", "lang": "TypeScript", "stars": 13917, "test": "npm run test:unit && npm run test:fixtures", "hits": ["vitest"], "delegated": false}
+{"full": "tinacms/tinacms", "lang": "TypeScript", "stars": 13884, "test": "turbo run test --filter=\"./packages/**\"", "hits": [], "delegated": true}
+{"full": "anomalyco/opentui", "lang": "TypeScript", "stars": 13854, "test": "bun run --filter '@opentui/native' --filter '@opentui/core' --filter '@opentui/qrcode' --filter '@opentui/three' --filter '@opentui/solid' --filter '@opentui/react' --filter '@opentui/keymap' --filter", "hits": [], "delegated": false}
+{"full": "ikatyang/emoji-cheat-sheet", "lang": "TypeScript", "stars": 13835, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "QwikDev/partytown", "lang": "TypeScript", "stars": 13827, "test": "npm run test.unit && npm run test.chromium", "hits": ["uvu", "playwright"], "delegated": false}
+{"full": "YouMind-OpenLab/awesome-nano-banana-pro-prompts", "lang": "TypeScript", "stars": 13824, "test": null}
+{"full": "gitpod-io/gitpod", "lang": "TypeScript", "stars": 13798, "test": null}
+{"full": "XiaomiMiMo/MiMo-Code", "lang": "TypeScript", "stars": 13794, "test": "bun run --cwd packages/cli test", "hits": [], "delegated": false}
+{"full": "freshframework/fresh", "lang": "TypeScript", "stars": 13788, "test": null, "nopkg": true}
+{"full": "modelcontextprotocol/typescript-sdk", "lang": "TypeScript", "stars": 13787, "test": null}
+{"full": "puckeditor/puck", "lang": "TypeScript", "stars": 13738, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "lokesh/color-thief", "lang": "TypeScript", "stars": 13671, "test": "mocha && cypress run --config video=false", "hits": ["mocha", "cypress"], "delegated": false}
+{"full": "fuma-nama/fumadocs", "lang": "TypeScript", "stars": 13668, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "element-hq/element-web", "lang": "TypeScript", "stars": 13665, "test": null}
+{"full": "sirmalloc/ccstatusline", "lang": "TypeScript", "stars": 13644, "test": null}
+{"full": "RaspberryPiFoundation/blockly", "lang": "TypeScript", "stars": 13618, "test": "npx nx run-many -t test", "hits": [], "delegated": true}
+{"full": "jackyzha0/quartz", "lang": "TypeScript", "stars": 13611, "test": "tsx --test", "hits": ["tsx"], "delegated": false}
+{"full": "backnotprop/plannotator", "lang": "TypeScript", "stars": 13585, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "doocs/md", "lang": "TypeScript", "stars": 13552, "test": "pnpm --filter @md/shared test && pnpm --filter @md/core test && pnpm --filter @md/web test && pnpm --filter @md/api test", "hits": [], "delegated": true}
+{"full": "chartist-js/chartist", "lang": "TypeScript", "stars": 13469, "test": null}
+{"full": "fkhadra/react-toastify", "lang": "TypeScript", "stars": 13443, "test": "cypress open --component", "hits": [], "delegated": false}
+{"full": "crimx/ext-saladict", "lang": "TypeScript", "stars": 13437, "test": "jest --testTimeout 20000", "hits": ["jest"], "delegated": false}
+{"full": "InsForge/InsForge", "lang": "TypeScript", "stars": 13347, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "rybbit-io/rybbit", "lang": "TypeScript", "stars": 13339, "test": "pnpm --filter @rybbit/shared build && pnpm -r --workspace-concurrency=1 --if-present run test:run --maxWorkers=4", "hits": [], "delegated": true}
+{"full": "assistant-ui/assistant-ui", "lang": "TypeScript", "stars": 13334, "test": "turbo test && pnpm test:react-compiler && pnpm typecheck", "hits": [], "delegated": true}
+{"full": "seerr-team/seerr", "lang": "TypeScript", "stars": 13289, "test": "node server/test/index.mts", "hits": [], "delegated": false}
+{"full": "Tencent/omi", "lang": "TypeScript", "stars": 13284, "test": null, "nopkg": true}
+{"full": "markmap/markmap", "lang": "TypeScript", "stars": 13269, "test": "vitest --run", "hits": ["vitest"], "delegated": false}
+{"full": "formbricks/formbricks", "lang": "TypeScript", "stars": 13268, "test": "turbo run test test:root --no-cache", "hits": [], "delegated": true}
+{"full": "NangoHQ/nango", "lang": "TypeScript", "stars": 13267, "test": "concurrently --kill-others \"npm run test:unit\" \"npm run test:integration\" \"npm run test:cli\"", "hits": ["vitest"], "delegated": false}
+{"full": "MetaMask/metamask-extension", "lang": "TypeScript", "stars": 13260, "test": "yarn lint && yarn test:unit", "hits": ["tsx"], "delegated": false}
+{"full": "emilkowalski/sonner", "lang": "TypeScript", "stars": 13238, "test": "playwright test", "hits": ["playwright"], "delegated": false}
+{"full": "PlasmoHQ/plasmo", "lang": "TypeScript", "stars": 13182, "test": null}
+{"full": "wechat-article/wechat-article-exporter", "lang": "TypeScript", "stars": 13168, "test": null}
+{"full": "openreplay/openreplay", "lang": "TypeScript", "stars": 13163, "test": null, "nopkg": true}
+{"full": "stenciljs/core", "lang": "TypeScript", "stars": 13155, "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --coverage", "hits": [], "delegated": false}
+{"full": "hotwired/stimulus", "lang": "TypeScript", "stars": 13103, "test": "yarn build:test && karma start karma.conf.cjs", "hits": ["karma"], "delegated": false}
+{"full": "ixartz/Next-js-Boilerplate", "lang": "TypeScript", "stars": 13095, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "majodev/google-webfonts-helper", "lang": "TypeScript", "stars": 13087, "test": "grunt test", "hits": [], "delegated": false}
+{"full": "microsoft/language-server-protocol", "lang": "TypeScript", "stars": 13085, "test": null, "nopkg": true}
+{"full": "chthollyphile/folia-major", "lang": "TypeScript", "stars": 13075, "test": "vitest run -c vitest.config.ts", "hits": ["vitest"], "delegated": false}
+{"full": "elie222/inbox-zero", "lang": "TypeScript", "stars": 13068, "test": "turbo run test --filter=./apps/web -- --run", "hits": [], "delegated": true}
+{"full": "openchamber/openchamber", "lang": "TypeScript", "stars": 13053, "test": "node scripts/run-isolated-tests.mjs scripts && bun run --cwd packages/sdk test && bun run --cwd packages/ui test && bun run --cwd packages/vscode test && bun run --cwd packages/electron test && bun ru", "hits": [], "delegated": false}
+{"full": "codexu/note-gen", "lang": "TypeScript", "stars": 13033, "test": null}
+{"full": "vrtmrz/obsidian-livesync", "lang": "TypeScript", "stars": 13018, "test": null}
+{"full": "aws/aws-cdk", "lang": "TypeScript", "stars": 12987, "test": null}
+{"full": "dsh-market/dsh-market", "lang": "TypeScript", "stars": 12959, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "endograph/redux-persist", "lang": "TypeScript", "stars": 12951, "test": "tsc -p tsconfig.test.json --noEmit && vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "taye/interact.js", "lang": "TypeScript", "stars": 12946, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "graphile/crystal", "lang": "TypeScript", "stars": 12938, "test": "NODE_ENV=test yarn workspaces foreach --all --topological-dev run test", "hits": [], "delegated": true}
+{"full": "CopilotKit/OpenBot", "lang": "TypeScript", "stars": 12930, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "vercel-labs/portless", "lang": "TypeScript", "stars": 12927, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "humanlayer/humanlayer", "lang": "TypeScript", "stars": 12915, "test": "bun run scripts/run-silent.ts 'tests passed' bun run test:local", "hits": ["vitest"], "delegated": false}
+{"full": "GoogleChromeLabs/comlink", "lang": "TypeScript", "stars": 12812, "test": "npm run fmt_test && npm run build && npm run test:types && npm run test:unit && npm run test:node", "hits": ["mocha", "karma"], "delegated": false}
+{"full": "convex/convex-backend", "lang": "TypeScript", "stars": 12806, "test": null, "nopkg": true}
+{"full": "atlassian/pragmatic-drag-and-drop", "lang": "TypeScript", "stars": 12797, "test": "jest --forceExit", "hits": ["jest"], "delegated": false}
+{"full": "marp-team/marp", "lang": "TypeScript", "stars": 12767, "test": null}
+{"full": "zilliztech/claude-context", "lang": "TypeScript", "stars": 12706, "test": null}
+{"full": "react-icons/react-icons", "lang": "TypeScript", "stars": 12702, "test": null}
+{"full": "webpro-nl/knip", "lang": "TypeScript", "stars": 12695, "test": "pnpm run --dir packages/knip test", "hits": [], "delegated": false}
+{"full": "antvis/G2", "lang": "TypeScript", "stars": 12670, "test": "cross-env TZ=Asia/Shanghai vitest --coverage", "hits": ["vitest"], "delegated": false}
+{"full": "Automattic/wp-calypso", "lang": "TypeScript", "stars": 12653, "test": "run-s -s test-client test-client:vitest test-dashboard test-packages test-server test-build-tools", "hits": [], "delegated": false}
+{"full": "Heroic-Games-Launcher/HeroicGamesLauncher", "lang": "TypeScript", "stars": 12651, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "genspark-ai/genoffice", "lang": "TypeScript", "stars": 12640, "test": "npm run test -w @genoffice/i18n && npm run test -w @genoffice/electron-utils && npm run test -w @genoffice/font-metrics && npm run test -w @genoffice/zip-gate && npm run test -w @genoffice/docx-engine", "hits": [], "delegated": false}
+{"full": "getumbrel/umbrel", "lang": "TypeScript", "stars": 12591, "test": null}
+{"full": "changesets/changesets", "lang": "TypeScript", "stars": 12586, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "highcharts/highcharts", "lang": "TypeScript", "stars": 12504, "test": "npx playwright test --project=setup-highcharts --project=setup-dashboards --project=setup-grid-lite --project=setup-grid-pro --project=highcharts --project=dashboards --project=grid-lite --project=gri", "hits": ["playwright"], "delegated": false}
+{"full": "boardgameio/boardgame.io", "lang": "TypeScript", "stars": 12497, "test": "cross-env NODE_ENV=test jest", "hits": ["jest"], "delegated": false}
+{"full": "mapbox/mapbox-gl-js", "lang": "TypeScript", "stars": 12496, "test": "run-s lint lint-css test-typings test-unit", "hits": [], "delegated": false}
+{"full": "primefaces/primeng", "lang": "TypeScript", "stars": 12486, "test": null}
+{"full": "MemTensor/MemOS", "lang": "TypeScript", "stars": 12451, "test": null, "nopkg": true}
+{"full": "James-Yu/LaTeX-Workshop", "lang": "TypeScript", "stars": 12417, "test": "node ./out/test/runTest.js", "hits": [], "delegated": false}
+{"full": "AnmolSaini16/mapcn", "lang": "TypeScript", "stars": 12400, "test": null}
+{"full": "antvis/G6", "lang": "TypeScript", "stars": 12397, "test": null}
+{"full": "illacloud/illa-builder", "lang": "TypeScript", "stars": 12357, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "callstack/linaria", "lang": "TypeScript", "stars": 12353, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "invertase/react-native-firebase", "lang": "TypeScript", "stars": 12329, "test": null}
+{"full": "windingwind/zotero-pdf-translate", "lang": "TypeScript", "stars": 12319, "test": "zotero-plugin test", "hits": [], "delegated": false}
+{"full": "retejs/rete", "lang": "TypeScript", "stars": 12318, "test": "rete test", "hits": [], "delegated": false}
+{"full": "Vinzent03/obsidian-git", "lang": "TypeScript", "stars": 12301, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "actions/starter-workflows", "lang": "TypeScript", "stars": 12298, "test": null, "nopkg": true}
+{"full": "googleapis/google-api-nodejs-client", "lang": "TypeScript", "stars": 12291, "test": "c8 mocha build/test", "hits": ["mocha"], "delegated": false}
+{"full": "paulmillr/chokidar", "lang": "TypeScript", "stars": 12271, "test": "node index.test.js", "hits": [], "delegated": false}
+{"full": "jacomyal/sigma.js", "lang": "TypeScript", "stars": 12247, "test": "npm run test:unit && npm run test:type && npm run test:e2e", "hits": ["vitest"], "delegated": false}
+{"full": "nexu-io/openmotion", "lang": "TypeScript", "stars": 12224, "test": "node --experimental-strip-types --test tests/*.test.ts", "hits": ["node_test", "strip_types"], "delegated": false}
+{"full": "privatenumber/tsx", "lang": "TypeScript", "stars": 12198, "test": "pnpm build && node ./dist/cli.mjs tests/index.ts", "hits": [], "delegated": false}
+{"full": "trycompai/crm", "lang": "TypeScript", "stars": 12178, "test": "turbo run test --concurrency=1", "hits": [], "delegated": true}
+{"full": "dreamhunter2333/cloudflare_temp_email", "lang": "TypeScript", "stars": 12144, "test": null, "nopkg": true}
+{"full": "maplibre/maplibre-gl-js", "lang": "TypeScript", "stars": 12131, "test": "run-p lint lint-css test-render test-unit test-integration test-build", "hits": [], "delegated": false}
+{"full": "gristlabs/grist-core", "lang": "TypeScript", "stars": 12116, "test": "./test/test_env.sh mocha ${DEBUG:+-b --no-exit} --slow 8000 $([ -z $DEBUG ] && echo --forbid-only) -g \"${GREP_TESTS}\" '_build/test/common/*.js' '_build/test/client/*.js' '_build/test/nbrowser/*.js' '_", "hits": ["mocha"], "delegated": false}
+{"full": "ant-design/ant-design-mobile", "lang": "TypeScript", "stars": 12102, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "keplergl/kepler.gl", "lang": "TypeScript", "stars": 12102, "test": "yarn test-jest && yarn test-tape", "hits": ["jest"], "delegated": false}
+{"full": "szimek/signature_pad", "lang": "TypeScript", "stars": 12080, "test": "node --import ./tests/setup.ts --test", "hits": [], "delegated": false}
+{"full": "Milkdown/milkdown", "lang": "TypeScript", "stars": 12076, "test": "pnpm test:lint && pnpm test:unit", "hits": ["vitest"], "delegated": false}
+{"full": "presenton/presenton", "lang": "TypeScript", "stars": 11976, "test": "npm run test:template-converter && node --test scripts/package-metadata.test.mjs scripts/desktop-export.test.mjs scripts/sync-presentation-export.test.mjs scripts/user-config-env.test.mjs scripts/expo", "hits": ["node_test"], "delegated": false}
+{"full": "zaidmukaddam/scira", "lang": "TypeScript", "stars": 11952, "test": null}
+{"full": "getagentseal/codeburn", "lang": "TypeScript", "stars": 11865, "test": "vitest run tests --exclude \"tests/cache-refresh-lock*\"", "hits": ["vitest"], "delegated": false}
+{"full": "cloudflare/cloudflare-os", "lang": "TypeScript", "stars": 11828, "test": "node scripts/vp/run.ts --filter=!cloudflare-os --cache test", "hits": [], "delegated": false}
+{"full": "simplifaisoul/osiris", "lang": "TypeScript", "stars": 11808, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "mehdihadeli/awesome-software-architecture", "lang": "TypeScript", "stars": 11807, "test": null, "nopkg": true}
+{"full": "cobusgreyling/loop-engineering", "lang": "TypeScript", "stars": 11807, "test": null}
+{"full": "WordPress/gutenberg", "lang": "TypeScript", "stars": 11798, "test": "npm run lint && npm run test:unit", "hits": [], "delegated": false}
+{"full": "EKKOLearnAI/ekko-studio", "lang": "TypeScript", "stars": 11795, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "didi/LogicFlow", "lang": "TypeScript", "stars": 11786, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "AnInsomniacy/rayburst", "lang": "TypeScript", "stars": 11628, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "JOYCEQL/magic-resume", "lang": "TypeScript", "stars": 11491, "test": null}
+{"full": "mui/base-ui", "lang": "TypeScript", "stars": 11457, "test": "pnpm test:chromium", "hits": ["vitest"], "delegated": false}
+{"full": "Vanessa219/vditor", "lang": "TypeScript", "stars": 11450, "test": "jest --coverage", "hits": ["jest"], "delegated": false}
+{"full": "holaboss-ai/holaOS", "lang": "TypeScript", "stars": 11423, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "misskey-dev/misskey", "lang": "TypeScript", "stars": 11398, "test": "pnpm -r test", "hits": [], "delegated": true}
+{"full": "toss/es-toolkit", "lang": "TypeScript", "stars": 11397, "test": "vitest --coverage", "hits": ["vitest"], "delegated": false}
+{"full": "nitrojs/nitro", "lang": "TypeScript", "stars": 11388, "test": "pnpm lint && pnpm build && pnpm typecheck && pnpm test:rollup && pnpm test:rolldown && pnpm test:rspack", "hits": ["vitest"], "delegated": false}
+{"full": "spinabot/brigade", "lang": "TypeScript", "stars": 11387, "test": "node scripts/run-tests.mjs", "hits": [], "delegated": false}
+{"full": "captbaritone/webamp", "lang": "TypeScript", "stars": 11358, "test": "npx turbo test", "hits": [], "delegated": true}
+{"full": "trailhq/Trail-Code", "lang": "TypeScript", "stars": 11342, "test": "node scripts/run-tests.mjs", "hits": [], "delegated": false}
+{"full": "modelcontextprotocol/inspector", "lang": "TypeScript", "stars": 11334, "test": null}
+{"full": "Narcooo/inkos", "lang": "TypeScript", "stars": 11326, "test": "pnpm -r test", "hits": [], "delegated": true}
+{"full": "voxel51/fiftyone", "lang": "TypeScript", "stars": 11318, "test": null, "nopkg": true}
+{"full": "egoist/tsup", "lang": "TypeScript", "stars": 11317, "test": "pnpm run build && pnpm run test-only", "hits": ["vitest", "tsx"], "delegated": false}
+{"full": "openai/openai-node", "lang": "TypeScript", "stars": 11274, "test": "./scripts/test", "hits": [], "delegated": false}
+{"full": "dotansimha/graphql-code-generator", "lang": "TypeScript", "stars": 11270, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "reduxjs/redux-toolkit", "lang": "TypeScript", "stars": 11248, "test": "pnpm test:packages", "hits": [], "delegated": true}
+{"full": "blinkospace/blinko", "lang": "TypeScript", "stars": 11232, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "tambo-ai/tambo", "lang": "TypeScript", "stars": 11224, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "ibelick/ui-skills", "lang": "TypeScript", "stars": 11211, "test": "node --import tsx --test tests/*.test.ts", "hits": ["tsx"], "delegated": false}
+{"full": "wojtekmaj/react-pdf", "lang": "TypeScript", "stars": 11202, "test": "yarn workspaces foreach --all run test", "hits": [], "delegated": true}
+{"full": "CyberTimon/RapidRAW", "lang": "TypeScript", "stars": 11189, "test": null}
+{"full": "nexmoe/VidBee", "lang": "TypeScript", "stars": 11177, "test": null}
+{"full": "chimurai/http-proxy-middleware", "lang": "TypeScript", "stars": 11132, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "doocs/jvm", "lang": "TypeScript", "stars": 11128, "test": null}
+{"full": "hectorqin/reader", "lang": "TypeScript", "stars": 11111, "test": null, "nopkg": true}
+{"full": "software-mansion/react-native-reanimated", "lang": "TypeScript", "stars": 11084, "test": null}
+{"full": "NoeFabris/opencode-antigravity-auth", "lang": "TypeScript", "stars": 11073, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "bluewave-labs/Checkmate", "lang": "TypeScript", "stars": 11071, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "KKKKhazix/AIHOT", "lang": "TypeScript", "stars": 11062, "test": "node --test-global-setup=tests/databases.ts --import ./tests/databases.ts --test --test-concurrency=6 --test-timeout=120000 \"tests/*.test.ts\" \"modules/*/tests/*.test.ts\"", "hits": [], "delegated": false}
+{"full": "huggingface/chat-ui", "lang": "TypeScript", "stars": 11046, "test": "vitest --project=server --project=ssr", "hits": ["vitest"], "delegated": false}
+{"full": "FluentRead/FluentRead", "lang": "TypeScript", "stars": 11042, "test": "node scripts/testing/run-resource-safe.mjs -- vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "stevenjoezhang/live2d-widget", "lang": "TypeScript", "stars": 11031, "test": null}
+{"full": "react-dropzone/react-dropzone", "lang": "TypeScript", "stars": 11026, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "VoltAgent/voltagent", "lang": "TypeScript", "stars": 10997, "test": "lerna run test --stream", "hits": [], "delegated": true}
+{"full": "timolins/react-hot-toast", "lang": "TypeScript", "stars": 10993, "test": "jest --runInBand", "hits": ["jest"], "delegated": false}
+{"full": "mcp-use/mcp-use", "lang": "TypeScript", "stars": 10993, "test": null, "nopkg": true}
+{"full": "MoonTechLab/LunaTV", "lang": "TypeScript", "stars": 10982, "test": "jest --passWithNoTests", "hits": ["jest"], "delegated": false}
+{"full": "fluxerapp/fluxer", "lang": "TypeScript", "stars": 10944, "test": "tools/ci/run.sh ci --step test", "hits": [], "delegated": false}
+{"full": "47ng/nuqs", "lang": "TypeScript", "stars": 10911, "test": "turbo run test --log-order=stream", "hits": [], "delegated": true}
+{"full": "Mail-0/Zero", "lang": "TypeScript", "stars": 10897, "test": "pnpm --filter @zero/server exec vitest run src/lib && pnpm --filter @zero/mail test", "hits": ["vitest"], "delegated": false}
+{"full": "cosscom/ui", "lang": "TypeScript", "stars": 10873, "test": "bun test --pass-with-no-tests && bun test ./packages/ui/test/components/composer.dom.tsx", "hits": ["bun_test"], "delegated": false}
+{"full": "freemocap/freemocap", "lang": "TypeScript", "stars": 10853, "test": null, "nopkg": true}
+{"full": "unovue/shadcn-vue", "lang": "TypeScript", "stars": 10832, "test": "pnpm --filter shadcn-vue test && pnpm --filter v4 test", "hits": [], "delegated": true}
+{"full": "a16z-infra/ai-town", "lang": "TypeScript", "stars": 10830, "test": "NODE_OPTIONS=--experimental-vm-modules jest --verbose", "hits": ["jest"], "delegated": false}
+{"full": "Akryum/vue-virtual-scroller", "lang": "TypeScript", "stars": 10796, "test": "pnpm run lint && pnpm run typecheck && pnpm run test:unit && pnpm run test:e2e", "hits": ["playwright"], "delegated": false}
+{"full": "microsoft/inshellisense", "lang": "TypeScript", "stars": 10780, "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js", "hits": [], "delegated": false}
+{"full": "wxt-dev/wxt", "lang": "TypeScript", "stars": 10757, "test": "bun run --workspaces test run", "hits": [], "delegated": false}
+{"full": "iib0011/omni-tools", "lang": "TypeScript", "stars": 10753, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "helmetjs/helmet", "lang": "TypeScript", "stars": 10750, "test": "run-p --aggregate-output test:*", "hits": [], "delegated": false}
+{"full": "ecomfe/vue-echarts", "lang": "TypeScript", "stars": 10748, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "mobile-next/mobile-mcp", "lang": "TypeScript", "stars": 10717, "test": "c8 playwright test", "hits": ["playwright"], "delegated": false}
+{"full": "popcorntime/popcorntime", "lang": "TypeScript", "stars": 10708, "test": "turbo run test --no-daemon", "hits": [], "delegated": true}
+{"full": "playcanvas/supersplat", "lang": "TypeScript", "stars": 10684, "test": "tsc -p test/tsconfig.json && node --import ./test/register.mjs test/queue-ordering.mjs", "hits": [], "delegated": false}
+{"full": "chathub-dev/chathub", "lang": "TypeScript", "stars": 10667, "test": null}
+{"full": "akveo/react-native-ui-kitten", "lang": "TypeScript", "stars": 10667, "test": "jest --runInBand", "hits": ["jest"], "delegated": false}
+{"full": "lnkiai/m3e-canvas", "lang": "TypeScript", "stars": 10648, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "baptisteArno/typebot.io", "lang": "TypeScript", "stars": 10638, "test": null}
+{"full": "vercel/micro", "lang": "TypeScript", "stars": 10634, "test": "pnpm --dir test run test", "hits": [], "delegated": false}
+{"full": "oramasearch/orama", "lang": "TypeScript", "stars": 10614, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "google-labs-code/stitch-skills", "lang": "TypeScript", "stars": 10586, "test": null, "nopkg": true}
+{"full": "Tencent/BrowserSkill", "lang": "TypeScript", "stars": 10584, "test": null}
+{"full": "instantdb/instant", "lang": "TypeScript", "stars": 10582, "test": null, "nopkg": true}
+{"full": "evershopcommerce/evershop", "lang": "TypeScript", "stars": 10565, "test": "ALLOW_CONFIG_MUTATIONS=true NODE_OPTIONS=--experimental-vm-modules node_modules/jest/bin/jest.js", "hits": [], "delegated": false}
+{"full": "jnsahaj/tweakcn", "lang": "TypeScript", "stars": 10559, "test": null}
+{"full": "Turfjs/turf", "lang": "TypeScript", "stars": 10553, "test": "pnpm run lint && pnpm -r run test", "hits": [], "delegated": true}
+{"full": "zhu1090093659/dsh-web", "lang": "TypeScript", "stars": 10538, "test": "node scripts/host-sdk-link.mjs --check && pnpm -r test", "hits": [], "delegated": true}
+{"full": "chaitin/PandaWiki", "lang": "TypeScript", "stars": 10511, "test": null, "nopkg": true}
+{"full": "basketikun/infinite-canvas", "lang": "TypeScript", "stars": 10496, "test": null, "nopkg": true}
+{"full": "DouyinFE/semi-design", "lang": "TypeScript", "stars": 10496, "test": "cross-env NODE_ENV=test type=unit rstest --silent", "hits": [], "delegated": false}
+{"full": "mengxi-ream/read-frog", "lang": "TypeScript", "stars": 10485, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "katspaugh/wavesurfer.js", "lang": "TypeScript", "stars": 10482, "test": "cypress run --browser ${CYPRESS_BROWSER:-chromium}", "hits": ["cypress"], "delegated": false}
+{"full": "vanilla-extract-css/vanilla-extract", "lang": "TypeScript", "stars": 10452, "test": null}
+{"full": "jeffvli/feishin", "lang": "TypeScript", "stars": 10446, "test": null}
+{"full": "lucia-auth/lucia", "lang": "TypeScript", "stars": 10444, "test": null, "nopkg": true}
+{"full": "VickScarlet/remake", "lang": "TypeScript", "stars": 10441, "test": "pnpm --filter @remake/web test", "hits": [], "delegated": true}
+{"full": "neondatabase/electric", "lang": "TypeScript", "stars": 10433, "test": null}
+{"full": "amosblomqvist/learnharness", "lang": "TypeScript", "stars": 10406, "test": "NODE_ENV=test tsx --test tests/*.test.ts tests/*.test.tsx", "hits": ["tsx"], "delegated": false}
+{"full": "OpenCTI-Platform/opencti", "lang": "TypeScript", "stars": 10399, "test": "nx run-many --tuiAutoExit --target test,e2e", "hits": [], "delegated": true}
+{"full": "rolling-scopes/rsschool-app", "lang": "TypeScript", "stars": 10392, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "TypeCellOS/BlockNote", "lang": "TypeScript", "stars": 10386, "test": "vp run --filter \"@blocknote/*\" --filter \"docs\" test", "hits": [], "delegated": false}
+{"full": "gibbok/typescript-book", "lang": "TypeScript", "stars": 10371, "test": null, "nopkg": true}
+{"full": "tonyantony300/dashbeam", "lang": "TypeScript", "stars": 10362, "test": null}
+{"full": "raineorshine/npm-check-updates", "lang": "TypeScript", "stars": 10331, "test": "npm run lint:types && npm run test:unit && npm run test:e2e", "hits": ["vitest"], "delegated": false}
+{"full": "wix/react-native-calendars", "lang": "TypeScript", "stars": 10326, "test": "yarn lint && yarn unit", "hits": ["jest"], "delegated": false}
+{"full": "YouMind-OpenLab/awesome-gpt-image-2", "lang": "TypeScript", "stars": 10311, "test": null}
+{"full": "makecindy/cindy", "lang": "TypeScript", "stars": 10302, "test": null}
+{"full": "pixel-agents-hq/pixel-agents", "lang": "TypeScript", "stars": 10294, "test": "npm run test:webview && npm run test:server && npm run test:package-contract", "hits": ["node_test"], "delegated": false}
+{"full": "cookpete/react-player", "lang": "TypeScript", "stars": 10294, "test": "tester test/*.tsx test/*/*.tsx test/*.js test/*/*.js --outdir=disttest --platform=node --format=esm --bundle --external:sinon --external:zora --target=esnext --sourcemap=inline", "hits": [], "delegated": false}
+{"full": "alvinunreal/oh-my-opencode-slim", "lang": "TypeScript", "stars": 10292, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "kern/filepizza", "lang": "TypeScript", "stars": 10290, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "pmndrs/valtio", "lang": "TypeScript", "stars": 10249, "test": "pnpm run \"/^test:.*/\"", "hits": [], "delegated": false}
+{"full": "Albert-Weasker/niubigeo", "lang": "TypeScript", "stars": 10221, "test": "npm run self-check", "hits": ["node_test"], "delegated": false}
+{"full": "reconurge/flowsint", "lang": "TypeScript", "stars": 10218, "test": null}
+{"full": "microsoft/vscode-extension-samples", "lang": "TypeScript", "stars": 10207, "test": null}
+{"full": "FormidableLabs/spectacle", "lang": "TypeScript", "stars": 10197, "test": "wireit", "hits": [], "delegated": true}
+{"full": "mongodb/node-mongodb-native", "lang": "TypeScript", "stars": 10173, "test": "npm run check:lint && npm run test:all", "hits": ["mocha"], "delegated": false}
+{"full": "tweenjs/tween.js", "lang": "TypeScript", "stars": 10159, "test": "npm run build && npm run test-lint && npm run test-unit && npm run test-e2e", "hits": ["playwright"], "delegated": false}
+{"full": "evolution-foundation/evolution-api", "lang": "TypeScript", "stars": 10155, "test": "tsx watch ./test/all.test.ts", "hits": ["tsx"], "delegated": false}
+{"full": "Companion-Inc/feynman", "lang": "TypeScript", "stars": 10134, "test": "node --import tsx --import ./tests/isolate-tmpdir.ts --test --test-concurrency=1 tests/*.test.ts", "hits": ["tsx"], "delegated": false}
+{"full": "kepano/defuddle", "lang": "TypeScript", "stars": 10109, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "ClickHouse/ClickStack", "lang": "TypeScript", "stars": 10056, "test": null}
+{"full": "anthropics/claude-code-action", "lang": "TypeScript", "stars": 10017, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "keystonejs/keystone", "lang": "TypeScript", "stars": 9995, "test": null}
+{"full": "gitkraken/vscode-gitlens", "lang": "TypeScript", "stars": 9981, "test": null, "nopkg": true}
+{"full": "cordiverse/cordis", "lang": "TypeScript", "stars": 9978, "test": "yarn yakumo vitest --import tsx", "hits": ["vitest", "tsx"], "delegated": false}
+{"full": "open-pencil/open-pencil", "lang": "TypeScript", "stars": 9957, "test": "OPENPENCIL_TEST_SERVER=app playwright test --project=openpencil --grep-invert @real-llm", "hits": ["playwright"], "delegated": false}
+{"full": "cloudflare/computer", "lang": "TypeScript", "stars": 9936, "test": "npm test --workspaces --if-present", "hits": [], "delegated": false}
+{"full": "vercel/serve", "lang": "TypeScript", "stars": 9918, "test": "pnpm test:tsc && pnpm test:unit", "hits": ["vitest"], "delegated": false}
+{"full": "webdriverio/webdriverio", "lang": "TypeScript", "stars": 9885, "test": "run-s test:oxlint test:ejslint test:browser-lib test:typings test:unit:run test:smoke test:component", "hits": [], "delegated": false}
+{"full": "PDFCraftTool/pdfcraft", "lang": "TypeScript", "stars": 9865, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "modem-dev/hunk", "lang": "TypeScript", "stars": 9852, "test": "bun run ./scripts/test/run-test-suite.ts", "hits": [], "delegated": false}
+{"full": "usekaneo/kaneo", "lang": "TypeScript", "stars": 9845, "test": "vp run -r test", "hits": [], "delegated": false}
+{"full": "FailproofAI/failproofai", "lang": "TypeScript", "stars": 9814, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "open-slide/open-slide", "lang": "TypeScript", "stars": 9810, "test": "vitest run --project unit", "hits": ["vitest"], "delegated": false}
+{"full": "yang991178/fluent-reader", "lang": "TypeScript", "stars": 9801, "test": null}
+{"full": "mulaRahul/keyviz", "lang": "TypeScript", "stars": 9795, "test": null}
+{"full": "zuiidea/antd-admin", "lang": "TypeScript", "stars": 9771, "test": null}
+{"full": "star-history/star-history", "lang": "TypeScript", "stars": 9750, "test": null}
+{"full": "runtipi/runtipi", "lang": "TypeScript", "stars": 9748, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "bluesky-social/atproto", "lang": "TypeScript", "stars": 9733, "test": "LOG_ENABLED=false ./packages/dev-infra/with-test-redis-and-db.sh pnpm --recursive --stream test", "hits": [], "delegated": true}
+{"full": "ghostfolio/ghostfolio", "lang": "TypeScript", "stars": 9725, "test": "npx dotenv-cli -e .env.example -- npx nx run-many --target=test --all --parallel=4", "hits": [], "delegated": true}
+{"full": "modelcontextprotocol/modelcontextprotocol", "lang": "TypeScript", "stars": 9722, "test": null}
+{"full": "microsoft/fast", "lang": "TypeScript", "stars": 9692, "test": "lage test:node test:playwright --verbose --concurrency 1", "hits": [], "delegated": false}
+{"full": "GoogleCloudPlatform/knowledge-catalog", "lang": "TypeScript", "stars": 9691, "test": null, "nopkg": true}
+{"full": "BartoszJarocki/cv", "lang": "TypeScript", "stars": 9677, "test": null}
+{"full": "margelo/react-native-vision-camera", "lang": "TypeScript", "stars": 9665, "test": null}
+{"full": "probot/probot", "lang": "TypeScript", "stars": 9641, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "carbon-design-system/carbon", "lang": "TypeScript", "stars": 9630, "test": "cross-env BABEL_ENV=test jest", "hits": ["jest"], "delegated": false}
+{"full": "unicity-sphere/sphere", "lang": "TypeScript", "stars": 9627, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "pastelsky/bundlephobia", "lang": "TypeScript", "stars": 9623, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "withastro/starlight", "lang": "TypeScript", "stars": 9621, "test": null}
+{"full": "oclif/oclif", "lang": "TypeScript", "stars": 9613, "test": "nyc mocha --forbid-only \"test/unit/*.test.ts\"", "hits": ["mocha"], "delegated": false}
+{"full": "taskforcesh/bullmq", "lang": "TypeScript", "stars": 9611, "test": "vitest run --no-file-parallelism", "hits": ["vitest"], "delegated": false}
+{"full": "a-ghorbani/pocketpal-ai", "lang": "TypeScript", "stars": 9600, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "voidcosmos/npkill", "lang": "TypeScript", "stars": 9596, "test": "node --experimental-vm-modules --disable-warning=ExperimentalWarning node_modules/jest/bin/jest.js", "hits": [], "delegated": false}
+{"full": "aws-amplify/amplify-js", "lang": "TypeScript", "stars": 9557, "test": "yarn test:no-datastore && yarn test:datastore && yarn test:license && yarn test:github-actions && yarn test:tsc-compliance", "hits": [], "delegated": true}
+{"full": "openclaw/clawhub", "lang": "TypeScript", "stars": 9557, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "hediet/vscode-drawio", "lang": "TypeScript", "stars": 9515, "test": null}
+{"full": "unicity-sphere/sphere-sdk-connect-example", "lang": "TypeScript", "stars": 9501, "test": null, "nopkg": true}
+{"full": "galaxy-s10/billd-desk", "lang": "TypeScript", "stars": 9485, "test": null}
+{"full": "crynta/terax-ai", "lang": "TypeScript", "stars": 9483, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "l0ng-ai/openidea", "lang": "TypeScript", "stars": 9477, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "chrismaltby/gb-studio", "lang": "TypeScript", "stars": 9466, "test": "jest --maxWorkers=2", "hits": ["jest"], "delegated": false}
+{"full": "antfu-collective/vitesse", "lang": "TypeScript", "stars": 9436, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "papermark/papermark", "lang": "TypeScript", "stars": 9416, "test": null}
+{"full": "mediago-dev/mediago", "lang": "TypeScript", "stars": 9402, "test": null}
+{"full": "missive/emoji-mart", "lang": "TypeScript", "stars": 9396, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "cloudflare/vinext", "lang": "TypeScript", "stars": 9392, "test": "vp test run", "hits": [], "delegated": false}
+{"full": "highlight/highlight", "lang": "TypeScript", "stars": 9392, "test": null}
+{"full": "berty/berty", "lang": "TypeScript", "stars": 9360, "test": null, "nopkg": true}
+{"full": "miurla/morphic", "lang": "TypeScript", "stars": 9341, "test": "NODE_ENV=test vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "BetterDiscord/BetterDiscord", "lang": "TypeScript", "stars": 9334, "test": "bun test tests/", "hits": ["bun_test"], "delegated": false}
+{"full": "tryatlas/atlas", "lang": "TypeScript", "stars": 9329, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "databasus/databasus", "lang": "TypeScript", "stars": 9302, "test": null, "nopkg": true}
+{"full": "OutlineFoundation/outline-apps", "lang": "TypeScript", "stars": 9290, "test": null}
+{"full": "bigbluebutton/bigbluebutton", "lang": "TypeScript", "stars": 9285, "test": null, "nopkg": true}
+{"full": "openstatusHQ/openstatus", "lang": "TypeScript", "stars": 9276, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "mikro-orm/mikro-orm", "lang": "TypeScript", "stars": 9275, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "huntabyte/shadcn-svelte", "lang": "TypeScript", "stars": 9269, "test": "pnpm --color --reporter append-only -F \"./packages/*\" -F \"./sv-addons/*\" test", "hits": [], "delegated": false}
+{"full": "ritz078/transform", "lang": "TypeScript", "stars": 9260, "test": null}
+{"full": "gridstack/gridstack.js", "lang": "TypeScript", "stars": 9259, "test": "yarn lint && vitest run && cd react && yarn vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "strands-agents/harness-sdk", "lang": "TypeScript", "stars": 9254, "test": "npm run test -w strands-ts", "hits": [], "delegated": false}
+{"full": "yagop/node-telegram-bot-api", "lang": "TypeScript", "stars": 9216, "test": "bun test test/unit", "hits": ["bun_test"], "delegated": false}
+{"full": "telegraf/telegraf", "lang": "TypeScript", "stars": 9208, "test": "ava", "hits": ["ava"], "delegated": false}
+{"full": "elie222/rakazo", "lang": "TypeScript", "stars": 9197, "test": "node --test scripts/pnpm.test.mjs scripts/setup-worktree.test.mjs && vitest run", "hits": ["vitest", "node_test"], "delegated": false}
+{"full": "NG-ZORRO/ng-zorro-antd", "lang": "TypeScript", "stars": 9195, "test": "nx run ng-zorro-antd-lib:test --watch=false --coverage", "hits": [], "delegated": true}
+{"full": "webstudio-is/webstudio", "lang": "TypeScript", "stars": 9178, "test": null}
+{"full": "maotoumao/MusicFreeDesktop", "lang": "TypeScript", "stars": 9177, "test": null}
+{"full": "mattpocock/sandcastle", "lang": "TypeScript", "stars": 9176, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "CoreBunch/Instatic", "lang": "TypeScript", "stars": 9141, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "mqttjs/MQTT.js", "lang": "TypeScript", "stars": 9131, "test": "npm run test:node", "hits": ["esbuild_register"], "delegated": false}
+{"full": "Nutlope/aicommits", "lang": "TypeScript", "stars": 9131, "test": "tsx tests", "hits": ["tsx"], "delegated": false}
+{"full": "homarr-labs/dashboard-icons", "lang": "TypeScript", "stars": 9124, "test": null}
+{"full": "nightly-labs/openbot", "lang": "TypeScript", "stars": 9124, "test": "bun run test:desktop && bun run test:api", "hits": ["vitest"], "delegated": false}
+{"full": "artilleryio/artillery", "lang": "TypeScript", "stars": 9121, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "tsparticles/tsparticles", "lang": "TypeScript", "stars": 9118, "test": null}
+{"full": "anyproto/anytype-ts", "lang": "TypeScript", "stars": 9118, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "HerbertHe/iptv-sources", "lang": "TypeScript", "stars": 9085, "test": null}
+{"full": "heyform/heyform", "lang": "TypeScript", "stars": 9081, "test": null}
+{"full": "lencx/Noi", "lang": "TypeScript", "stars": 9076, "test": null, "nopkg": true}
+{"full": "open-circle/valibot", "lang": "TypeScript", "stars": 9076, "test": "pnpm -r run test", "hits": [], "delegated": true}
+{"full": "uber/baseweb", "lang": "TypeScript", "stars": 9032, "test": null}
+{"full": "infinitered/nsfwjs", "lang": "TypeScript", "stars": 9031, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "actions/checkout", "lang": "TypeScript", "stars": 9026, "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js", "hits": [], "delegated": false}
+{"full": "GoogleChrome/modern-web-guidance-src", "lang": "TypeScript", "stars": 9015, "test": "node --test --test-reporter ${TEST_REPORTER:-dot} \"src/**/*.test.ts\"", "hits": ["node_test"], "delegated": false}
+{"full": "urql-graphql/urql", "lang": "TypeScript", "stars": 8987, "test": "test -z $CI && vitest || vitest", "hits": ["vitest"], "delegated": false}
+{"full": "rockbenben/ChatGPT-Shortcut", "lang": "TypeScript", "stars": 8962, "test": null}
+{"full": "kelektiv/node-cron", "lang": "TypeScript", "stars": 8956, "test": "cross-env TZ='Europe/Paris' jest --coverage", "hits": ["jest"], "delegated": false}
+{"full": "Nutlope/logocreator", "lang": "TypeScript", "stars": 8950, "test": null}
+{"full": "redis/RedisInsight", "lang": "TypeScript", "stars": 8936, "test": "jest -w 1", "hits": ["jest"], "delegated": false}
+{"full": "locomotivemtl/locomotive-scroll", "lang": "TypeScript", "stars": 8897, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "mvschwarz/openrig", "lang": "TypeScript", "stars": 8895, "test": "npm run test:repo && npm run test:workspaces", "hits": ["node_test", "tsx"], "delegated": false}
+{"full": "BuilderIO/builder", "lang": "TypeScript", "stars": 8892, "test": null}
+{"full": "ever-co/ever-gauzy", "lang": "TypeScript", "stars": 8866, "test": "yarn run postinstall.web && yarn run config:dev && yarn ng test", "hits": ["ts_node"], "delegated": false}
+{"full": "primer/octicons", "lang": "TypeScript", "stars": 8786, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "wcandillon/react-native-skia", "lang": "TypeScript", "stars": 8785, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "getsentry/sentry-javascript", "lang": "TypeScript", "stars": 8779, "test": "nx run-many -t test --exclude=@sentry-internal/browser-integration-tests --exclude=@sentry-internal/bun-integration-tests --exclude=@sentry-internal/deno-integration-tests --exclude=@sentry-internal/e", "hits": [], "delegated": true}
+{"full": "zai-org/ZCode", "lang": "TypeScript", "stars": 8778, "test": null}
+{"full": "opengeos/GeoLibre", "lang": "TypeScript", "stars": 8741, "test": "npm run test:frontend", "hits": ["tsx"], "delegated": false}
+{"full": "founded-labs/react-native-reusables", "lang": "TypeScript", "stars": 8738, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "lightningpixel/modly", "lang": "TypeScript", "stars": 8718, "test": "npm run test:py && npm run test:node", "hits": ["node_test", "strip_types"], "delegated": false}
+{"full": "isaacs/node-glob", "lang": "TypeScript", "stars": 8711, "test": "tap", "hits": ["tap"], "delegated": false}
+{"full": "react-cosmos/react-cosmos", "lang": "TypeScript", "stars": 8699, "test": "vitest -c vitest.config.js", "hits": ["vitest"], "delegated": false}
+{"full": "Snouzy/workout-cool", "lang": "TypeScript", "stars": 8698, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "rsuite/rsuite", "lang": "TypeScript", "stars": 8697, "test": "npm run test:component", "hits": ["vitest"], "delegated": false}
+{"full": "withastro/flue", "lang": "TypeScript", "stars": 8680, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "floccusaddon/floccus", "lang": "TypeScript", "stars": 8673, "test": "node --unhandled-rejections=strict test/selenium-runner.js", "hits": [], "delegated": false}
+{"full": "ariakit/ariakit", "lang": "TypeScript", "stars": 8641, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "x-extends/vxe-table", "lang": "TypeScript", "stars": 8635, "test": null}
+{"full": "Vencord/Vesktop", "lang": "TypeScript", "stars": 8635, "test": "pnpm lint && pnpm fmt:check && pnpm testTypes", "hits": [], "delegated": false}
+{"full": "growthbook/growthbook", "lang": "TypeScript", "stars": 8625, "test": "pnpm -r --workspace-concurrency=1 run test", "hits": [], "delegated": true}
+{"full": "pillarjs/path-to-regexp", "lang": "TypeScript", "stars": 8617, "test": "ts-scripts test && npm run size", "hits": [], "delegated": false}
+{"full": "vendurehq/vendure", "lang": "TypeScript", "stars": 8609, "test": "lerna run test --stream --no-bail", "hits": [], "delegated": true}
+{"full": "react-toolbox/react-toolbox", "lang": "TypeScript", "stars": 8604, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "bytedance/flowgram.ai", "lang": "TypeScript", "stars": 8593, "test": null, "nopkg": true}
+{"full": "graphql-hive/graphql-yoga", "lang": "TypeScript", "stars": 8541, "test": null}
+{"full": "conventional-changelog/conventional-changelog", "lang": "TypeScript", "stars": 8534, "test": "run -p lint test:types test:unit", "hits": [], "delegated": false}
+{"full": "margelo/react-native-mmkv", "lang": "TypeScript", "stars": 8530, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "markdoc/markdoc", "lang": "TypeScript", "stars": 8528, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "NomicFoundation/hardhat", "lang": "TypeScript", "stars": 8523, "test": "pnpm run --recursive --if-present test", "hits": [], "delegated": false}
+{"full": "visgl/react-map-gl", "lang": "TypeScript", "stars": 8514, "test": "ocular-test node headless", "hits": [], "delegated": false}
+{"full": "Floorp-Projects/Floorp", "lang": "TypeScript", "stars": 8499, "test": null}
+{"full": "mockoon/mockoon", "lang": "TypeScript", "stars": 8495, "test": null}
+{"full": "davidjerleke/embla-carousel", "lang": "TypeScript", "stars": 8483, "test": "yarn workspaces foreach -v --exclude \"{embla-carousel-monorepo,embla-carousel-playground-vanilla,embla-carousel-playground-react,embla-carousel-playground-solid,embla-carousel-playground-vue,embla-car", "hits": [], "delegated": true}
+{"full": "windingwind/zotero-better-notes", "lang": "TypeScript", "stars": 8466, "test": "zotero-plugin test  --abort-on-fail --exit-on-finish", "hits": [], "delegated": false}
+{"full": "openfilm/openfilm", "lang": "TypeScript", "stars": 8461, "test": "pnpm -r --workspace-concurrency=1 --if-present test", "hits": [], "delegated": true}
+{"full": "vercel-labs/deepsec", "lang": "TypeScript", "stars": 8445, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "openapi-ts/openapi-typescript", "lang": "TypeScript", "stars": 8440, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "DylanVann/react-native-fast-image", "lang": "TypeScript", "stars": 8417, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "JetBrains/thinkrail", "lang": "TypeScript", "stars": 8357, "test": "bun test ./scripts/ && turbo run test --continue", "hits": ["bun_test"], "delegated": false}
+{"full": "google/model-viewer", "lang": "TypeScript", "stars": 8349, "test": "npm run test --workspaces", "hits": [], "delegated": false}
+{"full": "n4ze3m/page-assist", "lang": "TypeScript", "stars": 8348, "test": null}
+{"full": "ngrx/platform", "lang": "TypeScript", "stars": 8346, "test": "nx run-many --target=test --all", "hits": [], "delegated": true}
+{"full": "agegr/pi-web", "lang": "TypeScript", "stars": 8324, "test": "node --experimental-strip-types --test \"app/**/*.test.mjs\" \"components/**/*.test.mjs\" \"hooks/**/*.test.mjs\" \"lib/**/*.test.mjs\" \"public/**/*.test.mjs\"", "hits": ["node_test", "strip_types"], "delegated": false}
+{"full": "antfu-collective/ni", "lang": "TypeScript", "stars": 8319, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "pqoqubbw/icons", "lang": "TypeScript", "stars": 8303, "test": null}
+{"full": "jackocnr/intl-tel-input", "lang": "TypeScript", "stars": 8263, "test": "npm run test:js && npm run test:e2e", "hits": ["vitest", "playwright"], "delegated": false}
+{"full": "MoonshotAI/kimi-code", "lang": "TypeScript", "stars": 8259, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "davebcn87/pi-autoresearch", "lang": "TypeScript", "stars": 8247, "test": "node --experimental-strip-types --test tests/*.test.mjs", "hits": ["node_test", "strip_types"], "delegated": false}
+{"full": "OpenCoworkAI/open-codesign", "lang": "TypeScript", "stars": 8242, "test": "pnpm test:scripts && turbo run test", "hits": ["node_test"], "delegated": false}
+{"full": "vudovn/ag-kit", "lang": "TypeScript", "stars": 8225, "test": null}
+{"full": "podman-desktop/podman-desktop", "lang": "TypeScript", "stars": 8187, "test": "pnpm run test:unit && pnpm run test:e2e", "hits": ["vitest"], "delegated": false}
+{"full": "tutao/tutanota", "lang": "TypeScript", "stars": 8182, "test": "cd test && node --enable-source-maps test", "hits": [], "delegated": false}
+{"full": "fonoster/fonoster", "lang": "TypeScript", "stars": 8167, "test": "cross-env LOGS_LEVEL=none NODE_ENV=development mocha --timeout 30000 --ignore 'mods/**/*.integration.test.ts' 'mods/!(dashboard)/**/*.test.ts' 'ops/**/*.test.ts'", "hits": ["mocha"], "delegated": false}
+{"full": "thewh1teagle/vibe", "lang": "TypeScript", "stars": 8165, "test": null}
+{"full": "inorganik/countUp.js", "lang": "TypeScript", "stars": 8150, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "inertiajs/inertia", "lang": "TypeScript", "stars": 8146, "test": null}
+{"full": "bombshell-dev/clack", "lang": "TypeScript", "stars": 8141, "test": "pnpm --color -r run test", "hits": [], "delegated": false}
+{"full": "yarnpkg/berry", "lang": "TypeScript", "stars": 8132, "test": null}
+{"full": "MichalLytek/type-graphql", "lang": "TypeScript", "stars": 8095, "test": "npx jest --verbose --coverage", "hits": ["jest"], "delegated": false}
+{"full": "astrid-runtime/sdk-js", "lang": "TypeScript", "stars": 8087, "test": "npm run test --workspaces --if-present", "hits": [], "delegated": false}
+{"full": "vastsa/PI-Desktop", "lang": "TypeScript", "stars": 8080, "test": "pnpm build:js && pnpm -r --if-present test && cargo test -p host-core", "hits": [], "delegated": true}
+{"full": "FullHuman/purgecss", "lang": "TypeScript", "stars": 8055, "test": "pnpm -r run test", "hits": [], "delegated": true}
+{"full": "webiny/webiny-js", "lang": "TypeScript", "stars": 8053, "test": "vitest --config testing/vitest.config.ts --run", "hits": ["vitest"], "delegated": false}
+{"full": "logancyang/obsidian-copilot", "lang": "TypeScript", "stars": 8021, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "penrose/penrose", "lang": "TypeScript", "stars": 8016, "test": "nx run-many --target=test --verbose", "hits": [], "delegated": true}
+{"full": "software-mansion/react-native-svg", "lang": "TypeScript", "stars": 8013, "test": "npm run lint && npm run tsc", "hits": [], "delegated": false}
+{"full": "tamaratran/fast-jev-compaction", "lang": "TypeScript", "stars": 8000, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "xojs/xo", "lang": "TypeScript", "stars": 7997, "test": "npm run build && npm run lint && npm run test:setup && node --enable-source-maps --test \"dist/test/**/*.test.js\"", "hits": ["node_test"], "delegated": false}
+{"full": "bvaughn/react-error-boundary", "lang": "TypeScript", "stars": 7996, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "ParthJadhav/app-store-screenshots", "lang": "TypeScript", "stars": 7991, "test": null, "nopkg": true}
+{"full": "steel-dev/steel-browser", "lang": "TypeScript", "stars": 7989, "test": "npm run test -w api", "hits": [], "delegated": false}
+{"full": "ccch1mneyyy/dsh-TUI", "lang": "TypeScript", "stars": 7982, "test": null}
+{"full": "Rich-Harris/degit", "lang": "TypeScript", "stars": 7975, "test": "vitest run --exclude test/integration/private.test.ts", "hits": ["vitest"], "delegated": false}
+{"full": "total-typescript/beginners-typescript-tutorial", "lang": "TypeScript", "stars": 7968, "test": null}
+{"full": "garethgeorge/backrest", "lang": "TypeScript", "stars": 7940, "test": null, "nopkg": true}
+{"full": "ranxianglei/billion-context", "lang": "TypeScript", "stars": 7923, "test": "node scripts/test-suite-lock.mjs run", "hits": [], "delegated": false}
+{"full": "molefrog/wouter", "lang": "TypeScript", "stars": 7921, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "yaklang/yakit", "lang": "TypeScript", "stars": 7906, "test": null}
+{"full": "arktypeio/arktype", "lang": "TypeScript", "stars": 7894, "test": "pnpm testTyped --skipTypes", "hits": ["mocha"], "delegated": false}
+{"full": "tsconfig/bases", "lang": "TypeScript", "stars": 7892, "test": null, "nopkg": true}
+{"full": "panva/jose", "lang": "TypeScript", "stars": 7888, "test": "bash -c 'source .node_flags.sh && node tools/test.js \"$@\"' --", "hits": [], "delegated": false}
+{"full": "zsviczian/obsidian-excalidraw-plugin", "lang": "TypeScript", "stars": 7882, "test": null}
+{"full": "octokit/octokit.js", "lang": "TypeScript", "stars": 7881, "test": "vitest run --coverage", "hits": ["vitest"], "delegated": false}
+{"full": "Conway-Research/automaton", "lang": "TypeScript", "stars": 7879, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "open-cli-tools/concurrently", "lang": "TypeScript", "stars": 7872, "test": "vitest --project unit", "hits": ["vitest"], "delegated": false}
+{"full": "teamchong/pxpipe", "lang": "TypeScript", "stars": 7870, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "juliencrn/usehooks-ts", "lang": "TypeScript", "stars": 7863, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "devlikeapro/waha", "lang": "TypeScript", "stars": 7856, "test": "yarn test:unit", "hits": ["jest"], "delegated": false}
+{"full": "raycast/extensions", "lang": "TypeScript", "stars": 7846, "test": null, "nopkg": true}
+{"full": "phosphor-icons/homepage", "lang": "TypeScript", "stars": 7831, "test": null}
+{"full": "OneUptime/oneuptime", "lang": "TypeScript", "stars": 7827, "test": null}
+{"full": "barvian/number-flow", "lang": "TypeScript", "stars": 7822, "test": "pnpm -r --workspace-concurrency=1 test", "hits": [], "delegated": true}
+{"full": "redux-observable/redux-observable", "lang": "TypeScript", "stars": 7804, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "electron/fiddle", "lang": "TypeScript", "stars": 7799, "test": "yarn generate && vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "4gray/iptvnator", "lang": "TypeScript", "stars": 7798, "test": null}
+{"full": "gaozhangmin/boxplayer", "lang": "TypeScript", "stars": 7796, "test": "vitest run electron/main/aria/__tests__ src/down/motrix-integration src/utils/__tests__/aria2EnginePolicy.test.ts src/utils/__tests__/aria2Rpc.test.ts", "hits": ["vitest"], "delegated": false}
+{"full": "angular/angularfire", "lang": "TypeScript", "stars": 7794, "test": "npm run build:jasmine && npm run test:node-esm && npm run test:chrome-headless", "hits": [], "delegated": false}
+{"full": "googleapis/release-please", "lang": "TypeScript", "stars": 7789, "test": "cross-env ENVIRONMENT=test LC_ALL=en c8 mocha --recursive --timeout=5000 build/test", "hits": ["mocha"], "delegated": false}
+{"full": "dramaclaw/dramaclaw", "lang": "TypeScript", "stars": 7768, "test": null, "nopkg": true}
+{"full": "vscode-neovim/vscode-neovim", "lang": "TypeScript", "stars": 7761, "test": "npm run test:unit && npm run test:integration", "hits": ["mocha"], "delegated": false}
+{"full": "lijigang/ljg-skills", "lang": "TypeScript", "stars": 7756, "test": null, "nopkg": true}
+{"full": "TheWidlarzGroup/react-native-video", "lang": "TypeScript", "stars": 7756, "test": "bun test e2e scripts test-app packages/react-native-video/__tests__", "hits": ["bun_test"], "delegated": false}
+{"full": "midwayjs/midway", "lang": "TypeScript", "stars": 7755, "test": "lerna run test", "hits": [], "delegated": true}
+{"full": "ilyhalight/voice-over-translation", "lang": "TypeScript", "stars": 7739, "test": "run-s test:unit test:ui", "hits": [], "delegated": false}
+{"full": "aidenybai/react-grab", "lang": "TypeScript", "stars": 7730, "test": "turbo run test", "hits": [], "delegated": true}
+{"full": "BuilderIO/agent-native", "lang": "TypeScript", "stars": 7724, "test": "node scripts/agent-friction-report.mjs --self-test && tsx scripts/workspace-run.ts test && pnpm test:core-package-reachability && pnpm test:toolkit-must-not-import-core", "hits": ["tsx"], "delegated": false}
+{"full": "XiaoDuoYa/codex-with-chatgpt", "lang": "TypeScript", "stars": 7723, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "Comcast/react-data-grid", "lang": "TypeScript", "stars": 7691, "test": null}
+{"full": "agmmnn/awesome-blender", "lang": "TypeScript", "stars": 7690, "test": null, "nopkg": true}
+{"full": "anomalyco/models.dev", "lang": "TypeScript", "stars": 7689, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "ChatLab/ChatLab", "lang": "TypeScript", "stars": 7670, "test": "node scripts/run-tests.mjs", "hits": [], "delegated": false}
+{"full": "kubernetes-sigs/headlamp", "lang": "TypeScript", "stars": 7652, "test": "npm run backend:test && npm run frontend:test", "hits": [], "delegated": false}
+{"full": "nanostores/nanostores", "lang": "TypeScript", "stars": 7649, "test": "pnpm run /^test:/", "hits": [], "delegated": false}
+{"full": "mnfst/llm-gateway", "lang": "TypeScript", "stars": 7644, "test": "turbo test", "hits": [], "delegated": true}
+{"full": "0xGF/boneyard", "lang": "TypeScript", "stars": 7617, "test": null}
+{"full": "ValueCell-ai/ClawX", "lang": "TypeScript", "stars": 7593, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "leerob/next-mdx-blog", "lang": "TypeScript", "stars": 7581, "test": null}
+{"full": "getopenscreen/openscreen", "lang": "TypeScript", "stars": 7563, "test": "vitest --run", "hits": ["vitest"], "delegated": false}
+{"full": "colyseus/colyseus", "lang": "TypeScript", "stars": 7561, "test": "pnpm -r --filter '!./packages/better-call/**' run test", "hits": [], "delegated": true}
+{"full": "nolly-studio/cult-ui", "lang": "TypeScript", "stars": 7559, "test": "turbo run test --force", "hits": [], "delegated": true}
+{"full": "refly-ai/refly", "lang": "TypeScript", "stars": 7555, "test": "pnpm -r --if-present test", "hits": [], "delegated": true}
+{"full": "MuiseDestiny/zotero-gpt", "lang": "TypeScript", "stars": 7536, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "remotion-dev/skills", "lang": "TypeScript", "stars": 7534, "test": null}
+{"full": "Vanilagy/mediabunny", "lang": "TypeScript", "stars": 7518, "test": "npm run pre-test && npx vitest --run", "hits": ["vitest", "tsx"], "delegated": false}
+{"full": "hedgedoc/hedgedoc", "lang": "TypeScript", "stars": 7518, "test": "dotenv -c test -- turbo run test --concurrency 1", "hits": [], "delegated": true}
+{"full": "Devin-AXIS/iPolloWork", "lang": "TypeScript", "stars": 7511, "test": "node --test integrations/tooling/tests/*.test.mjs", "hits": ["node_test"], "delegated": false}
+{"full": "SteamDeckHomebrew/decky-loader", "lang": "TypeScript", "stars": 7507, "test": null, "nopkg": true}
+{"full": "binaricat/Netcatty", "lang": "TypeScript", "stars": 7506, "test": "node --test --import tsx electron/*.test.cjs electron/preload/*.test.cjs electron/mcp/*.test.cjs electron/shared/*Privacy*.test.cjs electron/scripts/*.test.cjs electron/terminalWorker/*.test.cjs elect", "hits": ["node_test", "tsx"], "delegated": false}
+{"full": "ixartz/SaaS-Boilerplate", "lang": "TypeScript", "stars": 7495, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "TraderAlice/OpenAlice", "lang": "TypeScript", "stars": 7471, "test": "vp test run --config vitest.config.ts", "hits": [], "delegated": false}
+{"full": "Blazity/next-enterprise", "lang": "TypeScript", "stars": 7471, "test": "cross-env FORCE_COLOR=1 vitest", "hits": ["vitest"], "delegated": false}
+{"full": "anomalyco/openauth", "lang": "TypeScript", "stars": 7451, "test": null}
+{"full": "xushengfeng/eSearch", "lang": "TypeScript", "stars": 7445, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "sindresorhus/modern-normalize", "lang": "TypeScript", "stars": 7445, "test": "npm run test:stylelint", "hits": [], "delegated": false}
+{"full": "jakearchibald/idb", "lang": "TypeScript", "stars": 7444, "test": null}
+{"full": "MrLesk/Backlog.md", "lang": "TypeScript", "stars": 7433, "test": "bun test --timeout=10000", "hits": ["bun_test"], "delegated": false}
+{"full": "Lin-arm/GKD_subscription", "lang": "TypeScript", "stars": 7432, "test": null}
+{"full": "DIYgod/RSSHub-Radar", "lang": "TypeScript", "stars": 7421, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "rancher-sandbox/rancher-desktop", "lang": "TypeScript", "stars": 7419, "test": "yarn lint:nofix && yarn test:unit && yarn test:extra", "hits": [], "delegated": false}
+{"full": "EutropicAI/Final2x", "lang": "TypeScript", "stars": 7412, "test": "vitest run --coverage", "hits": ["vitest"], "delegated": false}
+{"full": "sb2nov/mac-setup", "lang": "TypeScript", "stars": 7390, "test": null}
+{"full": "BrowserMCP/mcp", "lang": "TypeScript", "stars": 7385, "test": "pnpm -r test", "hits": [], "delegated": true}
+{"full": "nicotsx/zerobyte", "lang": "TypeScript", "stars": 7382, "test": "dotenv run -f .env.test -- bunx --bun vitest run && bun run --cwd apps/agent test && bun run --cwd packages/core test", "hits": ["vitest"], "delegated": false}
+{"full": "l0o0/jasminum", "lang": "TypeScript", "stars": 7377, "test": "echo \"Error: no test specified\" && exit 1", "hits": [], "delegated": false}
+{"full": "ubuwaits/beautiful-web-type", "lang": "TypeScript", "stars": 7349, "test": "pnpm test:unit && pnpm test:e2e", "hits": ["vitest", "playwright"], "delegated": false}
+{"full": "unjs/consola", "lang": "TypeScript", "stars": 7347, "test": "pnpm lint && pnpm vitest run --coverage", "hits": ["vitest"], "delegated": false}
+{"full": "AgentDeskAI/browser-tools-mcp", "lang": "TypeScript", "stars": 7343, "test": "vitest run --project unit --project integration", "hits": ["vitest"], "delegated": false}
+{"full": "craft-ai-agents/craft-agents-oss", "lang": "TypeScript", "stars": 7336, "test": "bun test && for f in $(find . -name '*.isolated.ts' -not -path './node_modules/*'); do bun test \"$f\" || exit 1; done", "hits": ["bun_test"], "delegated": false}
+{"full": "civitai/civitai", "lang": "TypeScript", "stars": 7325, "test": "cross-env NODE_ENV=development npx playwright test", "hits": ["playwright"], "delegated": false}
+{"full": "anhao/ai-pose-gallery-zh", "lang": "TypeScript", "stars": 7322, "test": "tsx --test tests/*.test.ts tests/*.test.mjs", "hits": ["tsx"], "delegated": false}
+{"full": "retorquere/zotero-better-bibtex", "lang": "TypeScript", "stars": 7316, "test": "./test/behave --stop", "hits": [], "delegated": false}
+{"full": "Openpanel-dev/openpanel", "lang": "TypeScript", "stars": 7310, "test": "bun run test:core && bun run test:rest", "hits": ["vitest", "bun_test"], "delegated": false}
+{"full": "Done-0/fuck-u-code", "lang": "TypeScript", "stars": 7296, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "Kiranism/next-shadcn-dashboard-starter", "lang": "TypeScript", "stars": 7290, "test": null}
+{"full": "miantiao-me/Sink", "lang": "TypeScript", "stars": 7288, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "bubkoo/html-to-image", "lang": "TypeScript", "stars": 7275, "test": "pnpm run test:coverage && pnpm run test:browser:source", "hits": ["vitest"], "delegated": false}
+{"full": "gaearon/overreacted.io", "lang": "TypeScript", "stars": 7275, "test": null}
+{"full": "hydro-dev/Hydro", "lang": "TypeScript", "stars": 7254, "test": "node -r @hydrooj/register packages/common/tests/subtask.spec.ts && node test/entry.js", "hits": [], "delegated": false}
+{"full": "Shopify/flash-list", "lang": "TypeScript", "stars": 7249, "test": "jest", "hits": ["jest"], "delegated": false}
+{"full": "tensorflow/tensorboard", "lang": "TypeScript", "stars": 7245, "test": "ibazel test //...", "hits": [], "delegated": false}
+{"full": "hieunc229/mailflare", "lang": "TypeScript", "stars": 7214, "test": null}
+{"full": "TanStack/virtual", "lang": "TypeScript", "stars": 7201, "test": "pnpm run test:ci", "hits": [], "delegated": true}
+{"full": "Finsys/dockhand", "lang": "TypeScript", "stars": 7200, "test": "bun test tests/", "hits": ["bun_test"], "delegated": false}
+{"full": "react-native-webview/react-native-webview", "lang": "TypeScript", "stars": 7199, "test": "bun run --cwd packages/react-native-webview test", "hits": [], "delegated": false}
+{"full": "anthropics/sandbox-runtime", "lang": "TypeScript", "stars": 7188, "test": "bun test", "hits": ["bun_test"], "delegated": false}
+{"full": "tech-leads-club/agent-skills", "lang": "TypeScript", "stars": 7179, "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' nx run-many -t test", "hits": [], "delegated": true}
+{"full": "deepstreamIO/deepstream.io", "lang": "TypeScript", "stars": 7179, "test": "mocha 'src/**/*.spec.ts'", "hits": ["mocha"], "delegated": false}
+{"full": "eclipse-che/che", "lang": "TypeScript", "stars": 7175, "test": null, "nopkg": true}
+{"full": "electron/forge", "lang": "TypeScript", "stars": 7175, "test": "xvfb-maybe vitest run --project fast --project slow --project slow-verdaccio", "hits": ["vitest"], "delegated": false}
+{"full": "plasmicapp/plasmic", "lang": "TypeScript", "stars": 7170, "test": "vitest run --config vitest.root.ts $TEST_CWD", "hits": ["vitest"], "delegated": false}
+{"full": "enricoros/big-AGI", "lang": "TypeScript", "stars": 7169, "test": "cross-env NODE_ENV=development tsx --test \"src/**/*.test.ts\"", "hits": ["tsx"], "delegated": false}
+{"full": "Nutlope/llamacoder", "lang": "TypeScript", "stars": 7167, "test": "tsx --test \"lib/**/*.test.ts\"", "hits": ["tsx"], "delegated": false}
+{"full": "microsoft/SandDance", "lang": "TypeScript", "stars": 7162, "test": "npm run eslint && npm run test --workspaces --if-present", "hits": [], "delegated": false}
+{"full": "wix/react-native-ui-lib", "lang": "TypeScript", "stars": 7158, "test": "yarn workspace react-native-ui-lib test", "hits": [], "delegated": false}
+{"full": "gitalk/gitalk", "lang": "TypeScript", "stars": 7154, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "internet-court/internet-court-skill", "lang": "TypeScript", "stars": 7140, "test": null, "nopkg": true}
+{"full": "tailwindlabs/prettier-plugin-tailwindcss", "lang": "TypeScript", "stars": 7131, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "evidence-dev/evidence", "lang": "TypeScript", "stars": 7131, "test": "pnpm -r test", "hits": [], "delegated": true}
+{"full": "guess-js/guess", "lang": "TypeScript", "stars": 7119, "test": "ts-node infra/test.ts --watch", "hits": ["ts_node"], "delegated": false}
+{"full": "stalniy/casl", "lang": "TypeScript", "stars": 7117, "test": null}
+{"full": "antvis/Infographic", "lang": "TypeScript", "stars": 7114, "test": "vitest --run --coverage", "hits": ["vitest"], "delegated": false}
+{"full": "massCodeIO/massCode", "lang": "TypeScript", "stars": 7113, "test": "vitest run", "hits": ["vitest"], "delegated": false}
+{"full": "nuxt/ui", "lang": "TypeScript", "stars": 7094, "test": "vitest", "hits": ["vitest"], "delegated": false}
+{"full": "elder-plinius/T3MP3ST", "lang": "TypeScript", "stars": 7079, "test": "vitest run src && node scripts/test-ops-preflight.mjs && node scripts/test-model-matrix.mjs && node scripts/refusal-frontier.mjs --self-test", "hits": ["vitest"], "delegated": false}
+{"full": "kulshekhar/ts-jest", "lang": "TypeScript", "stars": 7074, "test": "jest -c=jest.config.ts", "hits": ["jest"], "delegated": false}
+{"full": "open-multi-agent/open-multi-agent", "lang": "TypeScript", "stars": 7069, "test": "npm run test --workspaces --if-present && npm run bench:ab:test", "hits": ["tsx"], "delegated": false}
