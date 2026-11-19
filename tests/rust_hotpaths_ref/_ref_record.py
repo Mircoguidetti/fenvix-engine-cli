@@ -15,6 +15,66 @@ from detpy import _core, _state
 from _ref_pc_helpers import _GLOBAL_CTX, _ctx_file, _encodable, _final, _module_of, _uncacheable  # (were in detpy.proofcache)
 
 
+_INFRA_TOP = {"pytest", "_pytest", "pluggy", "xdist", "execnet", "detpy", "iniconfig", "__future__"}
+
+
+def _reference_closure(fnames, imports):
+    """``detpy_core::record::reference_closure`` (-1 stands for ``LIB_NODE``)."""
+    by_name: dict = {}
+    for fid, rel in enumerate(fnames):
+        if not rel.endswith(".py"):
+            continue
+        stem = rel[:-3]
+        if stem.endswith("/__init__"):
+            stem = stem[: -len("/__init__")]
+        parts = stem.split("/")
+        for k in range(len(parts)):
+            e = by_name.setdefault(".".join(parts[k:]), [[], False])
+            e[0].append(fid)
+            e[1] = e[1] or k == 0
+    direct = []
+    for fid in range(len(fnames)):
+        out = set()
+        names = imports[fid] if fid < len(imports) else None
+        if names is None:
+            out.add(-1)
+        else:
+            for name in names:
+                if name.split(".")[0] in _INFRA_TOP:
+                    continue
+                full = False
+                n = name
+                first = True
+                while True:
+                    e = by_name.get(n)
+                    if e is not None:
+                        out.update(e[0])
+                        if first and e[1]:
+                            full = True
+                    first = False
+                    if "." not in n:
+                        break
+                    n = n.rsplit(".", 1)[0]
+                if not full:
+                    out.add(-1)
+        out.discard(fid)
+        direct.append(out)
+    clos = []
+    for fid in range(len(fnames)):
+        seen = {fid}
+        stack = [fid]
+        while stack:
+            f = stack.pop()
+            if f == -1:
+                continue
+            for g in direct[f]:
+                if g not in seen:
+                    seen.add(g)
+                    stack.append(g)
+        clos.append(seen)
+    return clos
+
+
 def record_reference(self, store) -> None:
     """Old ``_record_all`` body with ``store`` as the plugin's store (``self.store`` is swapped by the caller)."""
     cap = self.cap
@@ -145,6 +205,18 @@ def record_reference(self, store) -> None:
             return set()
         return {v >> 32 for v in per[c][0]} | {int(v) for v in per[c][1]}
 
+    # reference closure (coordinator's third-party memo attack): nodes each executed repository file can reach
+    # by import, transitively; -1 for every module outside the repository
+    clos = _reference_closure(list(rels), [None if fcache.get(r) is None else store.file_facts(fcache[r])[5]
+                                           for r in rels])
+    rev: dict = {}
+    for fid, ns in enumerate(clos):
+        for n in ns:
+            rev.setdefault(n, []).append(fid)
+
+    def nodes_of(f):
+        return clos[f] if 0 <= f < len(clos) else ()
+
     fixtures_of: dict = {}
     for n in self.ran:
         tc = ctx_of.get("t|" + n)
@@ -177,30 +249,37 @@ def record_reference(self, store) -> None:
         # parallel-proof round 3, carried-set rule: only earlier contexts connected to the test through shared
         # executed repository files (closure), plus earlier contexts that ran no repository code
         reach = set()
+        visited = set()
         queue = []
         for c in own_ctxs:
             for f in files_of(c):
-                if f not in reach:
-                    reach.add(f)
-                    queue.append(f)
+                for n in nodes_of(f):
+                    if n not in reach:
+                        reach.add(n)
+                        queue.append(n)
         sel = set()
         while queue:
-            f = queue.pop()
-            for k, c in by_file.get(f, ()):
-                if k >= tpos or c in own_ctxs or (k, c) in sel:
+            n = queue.pop()
+            for f in rev.get(n, ()):
+                if f in visited:
                     continue
-                sel.add((k, c))
-                group = [c]
-                for fc in fixtures_of.get(c, ()):  # an earlier test comes with its wider-scoped fixtures
-                    fk = first.get(fc)
-                    if fk is not None and fk < tpos and fc not in own_ctxs and fc not in g_set and (fk, fc) not in sel:
-                        sel.add((fk, fc))
-                        group.append(fc)
-                for g in group:
-                    for f2 in files_of(g):
-                        if f2 not in reach:
-                            reach.add(f2)
-                            queue.append(f2)
+                visited.add(f)
+                for k, c in by_file.get(f, ()):
+                    if k >= tpos or c in own_ctxs or (k, c) in sel:
+                        continue
+                    sel.add((k, c))
+                    group = [c]
+                    for fc in fixtures_of.get(c, ()):  # an earlier test comes with its wider-scoped fixtures
+                        fk = first.get(fc)
+                        if fk is not None and fk < tpos and fc not in own_ctxs and fc not in g_set and (fk, fc) not in sel:
+                            sel.add((fk, fc))
+                            group.append(fc)
+                    for g in group:
+                        for f2 in files_of(g):
+                            for n2 in nodes_of(f2):
+                                if n2 not in reach:
+                                    reach.add(n2)
+                                    queue.append(n2)
         for k, c in no_code:
             if k < tpos and c not in own_ctxs:
                 sel.add((k, c))

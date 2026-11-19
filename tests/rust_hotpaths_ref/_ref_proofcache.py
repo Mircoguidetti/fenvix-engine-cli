@@ -837,13 +837,6 @@ class Capture:
                 if is_uri and mode != 2:
                     files.append(_sqlite_file(db, True))
                 self._sql_database([f for f in files if f is not None])
-        elif event == "ctypes.dlopen":
-            # LIMITS A2: a library opened through ctypes names its path
-            name = args[0] if args else None
-            if name is not None and "/" in str(name):
-                p = self._abs(name)
-                if p is not None and not self._ignored(p):
-                    self._native(self._cur(), p)
         elif event in ("os.listdir", "os.scandir"):
             if self._caller_kind() != "user":
                 return
@@ -879,7 +872,13 @@ class Capture:
             self.flag(self._cur(), "dns", f"{event} {host} at {_first_user_site()}")
         elif event == "ctypes.dlopen":
             name = args[0] if args else None
-            if name is None or self._caller_kind() != "user":
+            if name is None:
+                return
+            if "/" in str(name):  # LIMITS A2/K2: a library opened by path is an input by content, whoever opens it
+                p = self._abs(name)
+                if p is not None and not self._ignored(p):
+                    self._native(self._cur(), p)
+            if self._caller_kind() != "user":
                 return
             n = os.fsdecode(name) if isinstance(name, (str, bytes)) else None
             if n is None:

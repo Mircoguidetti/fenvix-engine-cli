@@ -291,6 +291,91 @@ fn basename(rel: &str) -> &str {
     rel.rsplit('/').next().unwrap_or(rel)
 }
 
+/// The node standing for every module outside the repository (site-packages, the standard library, extension
+/// modules) in the carried-set rule's connectivity.
+pub const LIB_NODE: u32 = u32::MAX;
+
+/// Test infrastructure: modules whose state is the harness's, not a test input (as everywhere else in the engine).
+const INFRA_TOP: &[&str] = &["pytest", "_pytest", "pluggy", "xdist", "execnet", "detpy", "iniconfig", "__future__"];
+
+/// The carried-set rule's reference closure (coordinator's attack: memoised state in a third-party library). A
+/// context can read state an earlier context left in any module it can reach by reference, not only in files it
+/// executed: an `lru_cache` hit runs no Python code of its module, a module dict is read by attribute access. For
+/// each repository file (by file id), the nodes reachable through its static imports, transitively: repository
+/// files (every file whose dotted path ends with the imported name or one of its parent packages) and
+/// [`LIB_NODE`] for any import that is not resolved to a repository file by its full dotted path (a library, the
+/// standard library; a name matched only as a suffix may be a library too). Infrastructure modules are no node.
+/// `imports[fid]` is `None` for a file without facts (not Python): it reaches [`LIB_NODE`] (unknown references).
+pub fn reference_closure(fnames: &[String], imports: &[Option<&[String]>]) -> Vec<Vec<u32>> {
+    let mut by_name: HashMap<String, (Vec<u32>, bool)> = HashMap::new();
+    for (fid, rel) in fnames.iter().enumerate() {
+        let Some(stem) = rel.strip_suffix(".py") else { continue };
+        let stem = stem.strip_suffix("/__init__").unwrap_or(stem);
+        let parts: Vec<&str> = stem.split('/').collect();
+        for k in 0..parts.len() {
+            let e = by_name.entry(parts[k..].join(".")).or_default();
+            e.0.push(fid as u32);
+            e.1 |= k == 0;
+        }
+    }
+    let direct: Vec<Vec<u32>> = (0..fnames.len())
+        .map(|fid| {
+            let mut out: BTreeSet<u32> = BTreeSet::new();
+            match imports.get(fid).copied().flatten() {
+                None => {
+                    out.insert(LIB_NODE);
+                }
+                Some(names) => {
+                    for name in names {
+                        let top = name.split('.').next().unwrap_or(name);
+                        if INFRA_TOP.contains(&top) {
+                            continue;
+                        }
+                        let mut full = false;
+                        let mut n = name.as_str();
+                        let mut first = true;
+                        loop {
+                            if let Some((fids, exact)) = by_name.get(n) {
+                                out.extend(fids.iter().copied());
+                                if first && *exact {
+                                    full = true;
+                                }
+                            }
+                            first = false;
+                            match n.rsplit_once('.') {
+                                Some((p, _)) => n = p,
+                                None => break,
+                            }
+                        }
+                        if !full {
+                            out.insert(LIB_NODE);
+                        }
+                    }
+                }
+            }
+            out.remove(&(fid as u32));
+            out.into_iter().collect()
+        })
+        .collect();
+    (0..fnames.len())
+        .map(|fid| {
+            let mut seen: BTreeSet<u32> = BTreeSet::from([fid as u32]);
+            let mut stack = vec![fid as u32];
+            while let Some(f) = stack.pop() {
+                if f == LIB_NODE {
+                    continue;
+                }
+                for &g in &direct[f as usize] {
+                    if seen.insert(g) {
+                        stack.push(g);
+                    }
+                }
+            }
+            seen.into_iter().collect()
+        })
+        .collect()
+}
+
 /// Record every test of the plan in `store` (and drop the stale reuses and the
 /// not-cacheable tests' previous entries). The store is not saved.
 pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
@@ -611,6 +696,17 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             Some((c, t.fixtures.iter().filter_map(|f| ctx_of.get(f.as_str()).copied()).collect()))
         })
         .collect();
+    // reference closure of every executed repository file (the coordinator's third-party memo attack)
+    let imports: Vec<Option<&[String]>> =
+        fix.iter().map(|ix| ix.and_then(|ix| store.files.get(ix as usize)).map(|f| f.imports.as_slice())).collect();
+    let closure = reference_closure(&plan.fnames, &imports);
+    let mut rev: HashMap<u32, Vec<u32>> = HashMap::new();
+    for (fid, ns) in closure.iter().enumerate() {
+        for &n in ns {
+            rev.entry(n).or_default().push(fid as u32);
+        }
+    }
+    let nodes_of = |f: u32| -> &[u32] { closure.get(f as usize).map(|v| v.as_slice()).unwrap_or(&[]) };
     let mut by_file: HashMap<u32, Vec<(usize, u32)>> = HashMap::new();
     let mut no_code: Vec<(usize, u32)> = Vec::new();
     for &(p, c) in &carry_order {
@@ -685,41 +781,55 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         }
         // parallel-proof round 3, carried-set rule (coordinator decision on R-020 + parallel): an earlier context of
         // this process is carried into the test only if it can have left state the test consumed: it is connected
-        // to the test through repository files both executed (directly, or through a chain of earlier contexts:
-        // the closure over shared files, order among the earlier contexts ignored, which only carries more). An
-        // earlier context that executed no repository code cannot be classified and is always carried (the
-        // placement-aware fallback, for this context only). A test that shares no code with what ran before it
-        // carries nothing, so its key is the same in any process (serial, any worker, another machine).
+        // to the test through the modules both can reach: the repository files they executed and everything those
+        // files reference by import, transitively (`reference_closure`: repository modules, and one node for every
+        // module outside the repository, since a library's memo is reached without running its code, e.g. an
+        // lru_cache hit); directly, or through a chain of earlier contexts (order among them ignored, which only
+        // carries more). An earlier context that executed no repository code cannot be classified and is always
+        // carried (the placement-aware fallback, for this context only). A test that can reach nothing an earlier
+        // context reached carries nothing, so its key is the same in any process.
         let mut sel: BTreeSet<(usize, u32)> = BTreeSet::new();
         {
+            // reach: nodes (repository files, LIB_NODE) the test's contexts and the selected ones can reference;
+            // an earlier context is connected when one of its executed files references a node in reach
             let mut reach: HashSet<u32> = HashSet::new();
+            let mut visited: HashSet<u32> = HashSet::new();
             let mut queue: Vec<u32> = Vec::new();
             for &c in &ctxs {
                 for f in files_of(c) {
-                    if reach.insert(f) {
-                        queue.push(f);
+                    for &n in nodes_of(f) {
+                        if reach.insert(n) {
+                            queue.push(n);
+                        }
                     }
                 }
             }
-            while let Some(f) = queue.pop() {
-                for &(p, c) in by_file.get(&f).into_iter().flatten() {
-                    if p >= tpos || ctxs.contains(&c) || !sel.insert((p, c)) {
+            while let Some(n) = queue.pop() {
+                for &f in rev.get(&n).into_iter().flatten() {
+                    if !visited.insert(f) {
                         continue;
                     }
-                    // an earlier test comes with the wider-scoped fixtures it used (it consumed their values
-                    // without running their code)
-                    let mut group = vec![c];
-                    for &fc in fixtures_of.get(&c).into_iter().flatten() {
-                        if let Some(&fp) = first.get(&fc) {
-                            if fp < tpos && !ctxs.contains(&fc) && !g_set.contains(&fc) && sel.insert((fp, fc)) {
-                                group.push(fc);
+                    for &(p, c) in by_file.get(&f).into_iter().flatten() {
+                        if p >= tpos || ctxs.contains(&c) || !sel.insert((p, c)) {
+                            continue;
+                        }
+                        // an earlier test comes with the wider-scoped fixtures it used (it consumed their values
+                        // without running their code)
+                        let mut group = vec![c];
+                        for &fc in fixtures_of.get(&c).into_iter().flatten() {
+                            if let Some(&fp) = first.get(&fc) {
+                                if fp < tpos && !ctxs.contains(&fc) && !g_set.contains(&fc) && sel.insert((fp, fc)) {
+                                    group.push(fc);
+                                }
                             }
                         }
-                    }
-                    for g in group {
-                        for f2 in files_of(g) {
-                            if reach.insert(f2) {
-                                queue.push(f2);
+                        for g in group {
+                            for f2 in files_of(g) {
+                                for &n2 in nodes_of(f2) {
+                                    if reach.insert(n2) {
+                                        queue.push(n2);
+                                    }
+                                }
                             }
                         }
                     }
@@ -933,6 +1043,37 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn reference_closure_reaches_imported_repository_modules_and_the_library_node() {
+        let fnames: Vec<String> =
+            ["test_b.py", "pkg/__init__.py", "pkg/memo.py", "pkg/deep.py", "data.txt", "test_c.py", "src/lib2/x.py"]
+                .iter()
+                .map(|s| s.to_string())
+                .collect();
+        let v = |xs: &[&str]| xs.iter().map(|s| s.to_string()).collect::<Vec<String>>();
+        let b = v(&["pkg.memo"]);
+        let memo = v(&["pkg.deep"]);
+        let deep = v(&["json"]);
+        let c = v(&["pytest", "_pytest.fixtures"]);
+        let x = v(&[]);
+        let t2 = v(&["lib2.x"]);
+        let imports: Vec<Option<&[String]>> =
+            vec![Some(&b), Some(&[]), Some(&memo), Some(&deep), None, Some(&c), Some(&x)];
+        let mut imports = imports;
+        imports.push(Some(&t2));
+        let mut fnames = fnames;
+        fnames.push("test_d.py".into());
+        let cl = reference_closure(&fnames, &imports);
+        // test_b -> pkg.memo (and its package) -> pkg.deep -> json (outside the repository)
+        assert_eq!(cl[0], vec![0, 1, 2, 3, LIB_NODE]);
+        // a file without facts references what it likes
+        assert_eq!(cl[4], vec![4, LIB_NODE]);
+        // infrastructure is no node
+        assert_eq!(cl[5], vec![5]);
+        // a name matched only as a suffix (src layout) may be a library too
+        assert_eq!(cl[7], vec![6, 7, LIB_NODE]);
+    }
 
     #[test]
     fn test_badenv_is_uncacheable() {

@@ -1308,7 +1308,15 @@ impl CaptureCore {
                 // (the mapped-files scan). A bare name is looked up by the dynamic loader: the cache file and the
                 // LD_LIBRARY_PATH candidates are inputs.
                 let Some(name) = arg(0) else { return Ok(()) };
-                if name.is_none() || self.caller_kind(py)? != Caller::User {
+                if name.is_none() {
+                    return Ok(());
+                }
+                // LIMITS K2 (claude/dep-verdict-abjcfw): a library opened by path is an input by content even when it
+                // is unloaded again before the next scan of the mappings (whoever opens it)
+                if name.str().map(|x| x.to_string_lossy().contains('/')).unwrap_or(false) {
+                    self.native_path(py, &name)?;
+                }
+                if self.caller_kind(py)? != Caller::User {
                     return Ok(());
                 }
                 let n: W = if let Ok(s) = name.cast::<PyString>() {
@@ -1368,19 +1376,6 @@ impl CaptureCore {
                     files.extend(crate::sqlcap::sqlite_file_str(py, &w_of(dec.cast::<PyString>()?)?, true)?);
                 }
                 self.sql_database(py, &files)
-            }
-            "ctypes.dlopen" => {
-                // LIMITS K2: a library opened through ctypes names its path here, even when it is unloaded again
-                // before the next scan of the mappings; one from the project root is the repository's native code
-                let Some(a) = arg(0) else { return Ok(()) };
-                if a.is_none() {
-                    return Ok(());
-                }
-                let named = a.str().map(|x| x.to_string_lossy().contains('/')).unwrap_or(false);
-                if named {
-                    self.native_path(py, &a)?;
-                }
-                Ok(())
             }
             "os.listdir" | "os.scandir" => {
                 if self.caller_kind(py)? != Caller::User {
