@@ -477,9 +477,31 @@ final class CallSiteRewriter implements ClassFileTransformer {
             super.visitLineNumber(l, start);
         }
 
+        /**
+         * The read of an enum's {@code $VALUES} outside its initialiser: the field is private, final and
+         * synthetic, so no source code can name it, and javac reads it only in {@code values()}, which
+         * returns a clone. The array itself never reaches other code; its elements are checked at run time.
+         */
+        boolean enumValuesCopy(String fowner, String name) {
+            if (!name.equals("$VALUES") || !fowner.equals(owner.cls) || !"java/lang/Enum".equals(owner.superName)) return false;
+            int need = Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL | Opcodes.ACC_SYNTHETIC;
+            for (String f : owner.fields) {
+                int t = f.indexOf('\t');
+                if (f.substring(0, t).equals(name)) return (Integer.parseInt(f.substring(t + 1)) & need) == need;
+            }
+            return false;
+        }
+
         @Override
         public void visitFieldInsn(int op, String fowner, String name, String desc) {
             super.visitFieldInsn(op, fowner, name, desc);
+            if (Det.DEPS && op == Opcodes.GETSTATIC && fowner.equals("java/lang/System")
+                    && (name.equals("out") || name.equals("err") || name.equals("in"))) {
+                // the standard streams: JVM-global state that System.setOut/setErr/setIn change (R-022b S13)
+                push(6); // Deps.CH_STDIO
+                super.visitMethodInsn(Opcodes.INVOKESTATIC, "dev/fenvix/rt/Deps", "gr", "(I)V", false);
+                owner.changed = true;
+            }
             if (Det.DEPS && (op == Opcodes.GETSTATIC || op == Opcodes.PUTSTATIC) && !jdkOwner(fowner) && !fowner.startsWith("dev/fenvix/")
                     && !Boolean.TRUE.equals(Infra.knownInfra(fowner))) {
                 boolean clinitSelf = method.equals("<clinit>") && fowner.equals(owner.cls);
@@ -487,6 +509,7 @@ final class CallSiteRewriter implements ClassFileTransformer {
                     // after the access: the owner (and the declaring class) are loaded and initialised, so
                     // the site resolves the field like the JVM does (inherited statics, R-022 S3)
                     int sid = Deps.staticSite(fowner, name, desc, op == Opcodes.PUTSTATIC);
+                    if (op == Opcodes.GETSTATIC && enumValuesCopy(fowner, name)) Deps.copyReadSite(sid);
                     if (op == Opcodes.PUTSTATIC) {
                         push(sid);
                         super.visitMethodInsn(Opcodes.INVOKESTATIC, DET, "staticWrite", "(I)V", false);

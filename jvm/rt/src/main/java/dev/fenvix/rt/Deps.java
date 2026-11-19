@@ -189,16 +189,81 @@ public final class Deps {
     }
 
     static boolean immutableValue(Object v) {
+        return deepImmutable(v, 0, new java.util.IdentityHashMap<Object, Boolean>());
+    }
+
+    /** JDK bases without instance fields: a user class extending them is checked over its own fields. */
+    static boolean fieldlessJdkBase(Class<?> k) {
+        return k == java.util.AbstractCollection.class || k == java.util.AbstractSet.class || k == Number.class;
+    }
+
+    /**
+     * The object graph of a value cannot change (R-022b §3, narrowed without losing soundness): a
+     * primitive wrapper or another immutable JDK value type; an empty array; a JDK enum constant;
+     * a JDK immutable collection ({@code List/Set/Map.of}, {@code Map.entry}) or {@code Optional}
+     * whose elements are again immutable; an object of a user class (whatever its declared finality:
+     * the runtime class is known) whose instance fields, its own and its superclasses', are all
+     * final and hold immutable values, checked on the value itself (non-capturing lambdas included).
+     * Any other JDK class is mutable, even one with only final fields (a {@code ThreadLocal}, an
+     * {@code AtomicInteger}): its state lives outside its fields. Bounded: deeper or larger graphs
+     * count as mutable.
+     */
+    static boolean deepImmutable(Object v, int depth, java.util.IdentityHashMap<Object, Boolean> seen) {
         if (v == null) return true;
         Class<?> c = v.getClass();
         if (c.isArray()) return java.lang.reflect.Array.getLength(v) == 0;
         if (IMMUTABLE_CLASS.contains(c.getName())) return true;
+        if (depth > 8 || seen.size() > 256) return false;
+        if (seen.put(v, Boolean.TRUE) != null) return true; // a cycle: decided by the rest of the graph
         if (Infra.isJdk(c)) {
             // a JDK enum constant
-            return c.isEnum() || (c.getSuperclass() != null && c.getSuperclass().isEnum());
+            if (c.isEnum() || (c.getSuperclass() != null && c.getSuperclass().isEnum())) return true;
+            String n = c.getName();
+            if (n.startsWith("java.util.ImmutableCollections$") || n.equals("java.util.KeyValueHolder")) {
+                if (v instanceof java.util.Map) {
+                    for (Map.Entry<?, ?> e : ((Map<?, ?>) v).entrySet()) {
+                        if (!deepImmutable(e.getKey(), depth + 1, seen) || !deepImmutable(e.getValue(), depth + 1, seen)) return false;
+                    }
+                    return true;
+                }
+                if (v instanceof java.util.Collection) {
+                    for (Object e : (java.util.Collection<?>) v) if (!deepImmutable(e, depth + 1, seen)) return false;
+                    return true;
+                }
+                if (v instanceof Map.Entry) {
+                    Map.Entry<?, ?> e = (Map.Entry<?, ?>) v;
+                    return deepImmutable(e.getKey(), depth + 1, seen) && deepImmutable(e.getValue(), depth + 1, seen);
+                }
+                return false;
+            }
+            if (n.equals("java.util.Optional")) return deepImmutable(((java.util.Optional<?>) v).orElse(null), depth + 1, seen);
+            return false;
         }
-        // the runtime class is known: its finality does not matter, its fields do
-        return instancesImmutable(c.getName().replace('.', '/'), 0);
+        for (Class<?> k = c; k != null && k != Object.class && k != Enum.class && !k.getName().equals("java.lang.Record"); k = k.getSuperclass()) {
+            if (Infra.isJdk(k) && !fieldlessJdkBase(k)) return false;
+            for (Field f : k.getDeclaredFields()) {
+                if (Modifier.isStatic(f.getModifiers())) continue;
+                if (!Modifier.isFinal(f.getModifiers())) return false;
+                if (f.getType().isPrimitive()) continue;
+                Object x;
+                try {
+                    f.setAccessible(true);
+                    x = f.get(v);
+                } catch (Throwable t) {
+                    return false;
+                }
+                if (!deepImmutable(x, depth + 1, seen)) return false;
+            }
+        }
+        return true;
+    }
+
+    /** An enum's {@code $VALUES} read by {@code values()} (a clone is returned): immutable when its elements are. */
+    static boolean elementsImmutable(Object v) {
+        if (!(v instanceof Object[])) return false;
+        java.util.IdentityHashMap<Object, Boolean> seen = new java.util.IdentityHashMap<>();
+        for (Object e : (Object[]) v) if (!deepImmutable(e, 1, seen)) return false;
+        return true;
     }
 
     // --------------------------------------------------------- static sites
@@ -213,6 +278,8 @@ public final class Deps {
         boolean infra;
         /** final field holding an immutable value (decided once: the value never changes) */
         Boolean constant;
+        /** an enum's $VALUES read by values(): only a copy of the array leaves the class */
+        volatile boolean copyRead;
 
         Site(String owner, String name, String desc, boolean put) {
             this.owner = owner;
@@ -231,6 +298,11 @@ public final class Deps {
         SITES.add(new Site(owner, name, desc, put));
         if (id >= SITE_EPOCH.length) SITE_EPOCH = Arrays.copyOf(SITE_EPOCH, Math.max(id + 1, SITE_EPOCH.length * 2));
         return id;
+    }
+
+    /** Agent, at rewrite time: the site reads an enum's $VALUES inside values() (see CallSiteRewriter.enumValuesCopy). */
+    public static void copyReadSite(int sid) {
+        site(sid).copyRead = true;
     }
 
     static synchronized Site site(int id) {
@@ -318,19 +390,30 @@ public final class Deps {
         Site s = site(sid);
         resolve(s);
         if (s.infra) return;
-        if (s.constant == null) {
+        boolean mutable;
+        if (s.constant != null) {
+            mutable = !s.constant;
+        } else if (value == null) {
+            // a final field read as null: either it holds null for good, or its class is still being
+            // initialised (a read in <clinit> before the assignment, R-022b clinit-null-read). This read
+            // saw nothing another test could change; the decision is not cached
+            mutable = false;
+        } else {
             boolean c;
             try {
-                c = immutableValue(value);
+                c = s.copyRead ? elementsImmutable(value) : immutableValue(value);
             } catch (Throwable t) {
                 c = false;
             }
             // a final field's value does not change once its class is initialised
             s.constant = c;
+            mutable = !c;
         }
+        boolean undecided = s.constant == null;
         synchronized (L) {
-            if (sid < SITE_EPOCH.length) SITE_EPOCH[sid] = EPOCH;
-            readInto(s, !s.constant);
+            // an undecided (null) read does not stand for the later reads of this site
+            if (!undecided && sid < SITE_EPOCH.length) SITE_EPOCH[sid] = EPOCH;
+            readInto(s, mutable);
         }
     }
 
@@ -432,6 +515,7 @@ public final class Deps {
         t.mut |= s.mut;
         t.mutClasses.addAll(s.mutClasses);
         t.swrite |= s.swrite;
+        t.gread.addAll(s.gread);
     }
 
     // --------------------------------------------------------------- scopes
@@ -451,6 +535,9 @@ public final class Deps {
         final TreeSet<String> nat = new TreeSet<>();
         /** classes whose mutable static state was read (why mut is set) */
         final TreeSet<Integer> mutClasses = new TreeSet<>();
+        /** JDK global / runner-thread state read and written through JDK methods (channel indexes, see CH) */
+        final TreeSet<Integer> gread = new TreeSet<>();
+        final TreeSet<Integer> gwrite = new TreeSet<>();
         boolean written;
         boolean mut;
         boolean swrite;
@@ -523,6 +610,12 @@ public final class Deps {
     static void endTest(String outcome) {
         Scope s = CUR;
         if (!s.kind.equals("test")) return;
+        // the runner thread left interrupted: every later test on it starts interrupted
+        if (Thread.currentThread().isInterrupted()) {
+            synchronized (L) {
+                s.gwrite.add(CH_INTERRUPT);
+            }
+        }
         write(s, outcome);
         setScope(s.parent);
     }
@@ -958,6 +1051,214 @@ public final class Deps {
         }
     }
 
+    // ------------------------------------------- JDK global and runner-thread state
+    /**
+     * Channels of JVM-global (and runner-thread) state that tests reach only through JDK methods,
+     * never through a GETSTATIC in code under test: a setter call is a write, a getter call (by any
+     * code, the JDK included) inside a test or class scope is a read. The decider orders every reader
+     * of a channel behind the tests that wrote it (R-022b S13, S14).
+     */
+    static final String[] CH = {"locale", "timezone", "tccl", "thread.name", "uncaught-handler", "jul", "stdio", "security",
+        "url-handlers", "net-defaults", "jdbc", "interrupt"};
+    public static final int CH_LOCALE = 0, CH_TZ = 1, CH_TCCL = 2, CH_THREAD_NAME = 3, CH_UEH = 4, CH_JUL = 5, CH_STDIO = 6,
+            CH_SECURITY = 7, CH_URL = 8, CH_NET = 9, CH_JDBC = 10, CH_INTERRUPT = 11;
+    /**
+     * Reads that count only when made by code under test: the runner's own logging (JUL level checks)
+     * and its thread names only shape its output, never a test's outcome.
+     */
+    static final boolean[] CH_USER_ONLY = {false, false, false, true, false, true, false, false, false, false, false, false};
+    static volatile int[] GR_EPOCH = new int[CH.length];
+
+    /** A read of channel {@code ch} (JDK hook, or a GETSTATIC of System.out/err/in in code under test). */
+    public static void gr(int ch) {
+        if (!Det.DEPS) return;
+        if (GR_EPOCH[ch] == EPOCH) return;
+        if (CUR == SESSION && FRAMES.get().isEmpty()) return; // session reads are not keyed
+        if (!Det.enter()) return;
+        try {
+            if (CH_USER_ONLY[ch] && Caller.kind() != Caller.USER) return;
+            synchronized (L) {
+                GR_EPOCH[ch] = EPOCH;
+                for (Scope s : targets()) s.gread.add(ch);
+            }
+        } finally {
+            Det.exit();
+        }
+    }
+
+    /** A write of channel {@code ch}. Outside every test and class only code under test counts (not the runner's set-up). */
+    public static void gw(int ch) {
+        if (!Det.DEPS) return;
+        if (!Det.enter()) return;
+        try {
+            gwrite(ch);
+        } finally {
+            Det.exit();
+        }
+    }
+
+    /**
+     * LogManager applying its own configuration: lazy initialisation, the global handlers, a new
+     * logger getting its configured level and handlers. The result does not depend on which test
+     * triggers it (the configuration changes only through readConfiguration / updateConfiguration /
+     * reset called by a test, which are writes, or through system properties, which are shared state).
+     */
+    static final Set<String> JUL_SELF = new HashSet<>(Arrays.asList("ensureLogManagerInitialized", "readPrimordialConfiguration",
+            "initializeGlobalHandlers", "addLogger", "demandLogger", "demandSystemLogger", "addLocalLogger", "loadLoggerHandlers",
+            "processParentHandlers", "setLevelsOnExistingLoggers"));
+
+    static boolean julSelf() {
+        for (StackTraceElement e : new Throwable().getStackTrace()) {
+            if (e.getClassName().startsWith("java.util.logging.LogManager") && JUL_SELF.contains(e.getMethodName())) return true;
+        }
+        return false;
+    }
+
+    /** Caller holds the hook guard. */
+    static void gwrite(int ch) {
+        if (CUR == SESSION && FRAMES.get().isEmpty() && Caller.kind() != Caller.USER) return;
+        if (ch == CH_JUL && julSelf()) return;
+        synchronized (L) {
+            for (Scope s : targets()) s.gwrite.add(ch);
+        }
+    }
+
+    /** Locale.setDefault(Locale): a write unless every default (and both categories) already is this locale. */
+    public static void localeSet(java.util.Locale l) {
+        if (!Det.DEPS) return;
+        if (!Det.enter()) return;
+        try {
+            if (l != null && l.equals(java.util.Locale.getDefault()) && l.equals(java.util.Locale.getDefault(java.util.Locale.Category.FORMAT))
+                    && l.equals(java.util.Locale.getDefault(java.util.Locale.Category.DISPLAY))) {
+                return;
+            }
+            gwrite(CH_LOCALE);
+        } finally {
+            Det.exit();
+        }
+    }
+
+    public static void localeSetCat(java.util.Locale.Category c, java.util.Locale l) {
+        if (!Det.DEPS) return;
+        if (!Det.enter()) return;
+        try {
+            if (c != null && l != null && l.equals(java.util.Locale.getDefault(c))) return;
+            gwrite(CH_LOCALE);
+        } finally {
+            Det.exit();
+        }
+    }
+
+    public static void tzSet(java.util.TimeZone tz) {
+        if (!Det.DEPS) return;
+        if (!Det.enter()) return;
+        try {
+            if (tz != null && tz.equals(java.util.TimeZone.getDefault())) return;
+            gwrite(CH_TZ);
+        } finally {
+            Det.exit();
+        }
+    }
+
+    /**
+     * Thread.setContextClassLoader: a write unless the thread has not started (nothing can have seen
+     * it; a pool thread created by a test is reachable only through state the test left, which the
+     * shared-state rule covers) or the loader is the one it already has.
+     */
+    public static void tcclSet(Thread t, ClassLoader l) {
+        if (!Det.DEPS || t == null) return;
+        if (!Det.enter()) return;
+        try {
+            if (t.getState() == Thread.State.NEW || t.getContextClassLoader() == l) return;
+            gwrite(CH_TCCL);
+        } finally {
+            Det.exit();
+        }
+    }
+
+    public static void threadNameSet(Thread t, String name) {
+        if (!Det.DEPS || t == null) return;
+        if (!Det.enter()) return;
+        try {
+            if (t.getState() == Thread.State.NEW || (name != null && name.equals(t.getName()))) return;
+            gwrite(CH_THREAD_NAME);
+        } finally {
+            Det.exit();
+        }
+    }
+
+    public static void threadUehSet(Thread t) {
+        if (!Det.DEPS || t == null) return;
+        if (!Det.enter()) return;
+        try {
+            if (t.getState() == Thread.State.NEW) return;
+            gwrite(CH_UEH);
+        } finally {
+            Det.exit();
+        }
+    }
+
+    /** System.setOut / setErr / setIn (0, 1, 2): a write unless the stream is the current one. */
+    public static void stdioSet(int which, Object stream) {
+        if (!Det.DEPS) return;
+        if (!Det.enter()) return;
+        try {
+            Object cur = which == 0 ? System.out : which == 1 ? System.err : System.in;
+            if (cur == stream) return;
+            gwrite(CH_STDIO);
+        } finally {
+            Det.exit();
+        }
+    }
+
+    // ------------------------------------------------------- JDK caches
+    /**
+     * JDK caches that hide inputs (R-022b S12): a call of {@code ResourceBundle.getBundle},
+     * {@code Introspector.getBeanInfo} or {@code ObjectStreamClass.lookup} runs inside a frame like a
+     * static initialiser. What the call that filled the cache entry depended on (resources, class
+     * lookups, reflected classes, ...) is stored per key and added to every scope that calls it
+     * later, hit or miss. Keys are coarser than the JDK's (a ResourceBundle key leaves out the locale
+     * and the caller module, whose entries share parent bundles): a coarser key only adds inputs.
+     */
+    static final Map<String, Scope> MEMO = new HashMap<>();
+
+    public static void memoEnter(String tag, Object a, Object b) {
+        if (!Det.DEPS) return;
+        String key = tag + "|" + keyPart(a) + "|" + keyPart(b);
+        synchronized (L) {
+            FRAMES.get().add(new Scope(key, "memo", null));
+            EPOCH++;
+        }
+    }
+
+    static String keyPart(Object o) {
+        if (o == null) return "-";
+        if (o instanceof String) return (String) o;
+        if (o instanceof Class) return ((Class<?>) o).getName() + "@" + System.identityHashCode(o);
+        return o.getClass().getName() + "@" + System.identityHashCode(o);
+    }
+
+    public static void memoExit() {
+        if (!Det.DEPS) return;
+        synchronized (L) {
+            ArrayList<Scope> f = FRAMES.get();
+            for (int i = f.size() - 1; i >= 0; i--) {
+                Scope s = f.get(i);
+                if (!s.kind.equals("memo")) continue;
+                while (f.size() > i) f.remove(f.size() - 1);
+                Scope stored = MEMO.get(s.id);
+                if (stored == null) {
+                    stored = new Scope(s.id, "memo", null);
+                    MEMO.put(s.id, stored);
+                }
+                merge(stored, s);
+                for (Scope t : targets()) merge(t, stored);
+                break;
+            }
+            EPOCH++;
+        }
+    }
+
     // --------------------------------------------------------------- output
     static String outPath() {
         String mod = Det.MODULE.isEmpty() ? "root" : Det.MODULE.replaceAll("[^A-Za-z0-9_.-]", "_");
@@ -965,6 +1266,13 @@ public final class Deps {
     }
 
     static void write(Scope s, String outcome) {
+        // other threads may still record into the scope (it is CUR until the caller moves on)
+        synchronized (L) {
+            writeLocked(s, outcome);
+        }
+    }
+
+    static void writeLocked(Scope s, String outcome) {
         StringBuilder sb = new StringBuilder(1024);
         sb.append("{\"type\":\"").append(s.kind).append("\",\"id\":");
         Json.str(sb, s.id);
@@ -1019,6 +1327,14 @@ public final class Deps {
         }
         sb.append(",\"mut_classes\":");
         Json.strs(sb, mc);
+        List<String> gr = new ArrayList<>();
+        for (int c : s.gread) gr.add(CH[c]);
+        sb.append(",\"gread\":");
+        Json.strs(sb, gr);
+        List<String> gw = new ArrayList<>();
+        for (int c : s.gwrite) gw.add(CH[c]);
+        sb.append(",\"gwrite\":");
+        Json.strs(sb, gw);
         if (s.kind.equals("container")) sb.append(",\"shared\":").append(s.shared);
         sb.append("}\n");
         emit(sb.toString());

@@ -36,7 +36,8 @@ jvm/agent                -javaagent (ASM 9.8, shaded), JUnit listener/orderers, 
   RunnerHooks            JUnit 4: RunNotifier (brackets), ParentRunner (seeded children order)
 jvm/gradle/fenvix.init.gradle   Gradle wiring (an init-script Plugin<Gradle>)
 jvm/maven-ext            Maven core extension (rewrites the Surefire configuration)
-jvm/skip/fenvix_skip.py  proof rule: decides reuse from a capture and the current state
+crates/fenvix-skip       proof rule (Rust): decides reuse from a capture and the current state
+jvm/skip/fenvix_skip.py  its Python interface
 jvm/test                 control tests, skip-key tests, Level 1 measurement
 jvm/harness              IDoFT round, skip walk (GitHub Actions)
 ```
@@ -108,30 +109,63 @@ in Level 0's scope.
 
 ## Skip with proof (`--deps`)
 
-Per test the key is (`jvm/rt/Deps.java`, decided by `jvm/skip/fenvix_skip.py`):
+The capture is `jvm/rt/Deps.java` (+ `JdkHooks`, `CallSiteRewriter`); the decision is Rust,
+`crates/fenvix-skip` (binary `fenvix-skip`, built by `jvm/build.sh`); `jvm/skip/fenvix_skip.py` is only
+its Python interface. A test of run A is reused in the current state B when **all** of the following
+hold (the decider's doc comment, `crates/fenvix-skip/src/lib.rs`, is the reference):
 
-* **code executed**: every class one of whose methods ran during the test (probe at method entry)
-  or whose static fields it read or wrote, plus those of its class container (`@BeforeAll`) and of
-  the JVM session (static initialisers, discovery), with the BLAKE3 digest of the class-file bytes
-  as loaded; classes generated at run time (proxies, mocks: no code source) are not in the key;
-* **static-field dependencies**: a test that reads static fields last written by an earlier test
-  depends on that test (reused only if that test is reusable);
-* **files read** (content digest at first open), **files probed** (existence/type: `File.exists` and
-  friends, `Files.exists`, `readAttributes`, `checkAccess`), **directories listed** (digest of the
-  names), **classpath resources** looked up (location and content); files under the JDK and the
-  temporary directory are not in the key; a file opened for writing makes the test not reusable;
-* **environment variables** and **system properties** read (value digests; reading the whole
-  environment or all properties compares all of them);
-* **external network** attempted: not reusable; **failures**: never reused;
-* **runtime identity** (per JVM): JDK vendor and version, digests of `lib/modules` and `libjvm.so`,
-  JVM flags (user `-D` properties excluded: they count where read), native libraries mapped outside
-  the JDK and the system, default charset/time zone/locale, build tool and version, Maven plugin
-  versions;
-* **configuration** (per JVM): `junit-platform.properties`, class path order (dependency jars by
-  path, which carries the version), Gradle test-task settings (JVM args, heap, framework).
+* it **passed** in A, wrote no file it could read back, made no external network attempt;
+* **child processes and native code**: a test that started a child process (`ProcessBuilder.start`),
+  loaded a native library from non-JDK code or called a native method of the project is not reusable
+  (their inputs are invisible to the capture);
+* **code**: every class one of whose methods ran, whose static fields it read or wrote (owner and
+  declaring class, resolved like the JVM does), whose static initialiser it depended on (what a
+  `<clinit>` read is added to every later scope that touches the class) or whose reflective metadata
+  it read (`getAnnotation*`, `getDeclared*`, `MethodHandles.Lookup.find*`, annotation types parsed for
+  it) has the same class-file digest (BLAKE3) in B; also those of its class container (`@BeforeAll`);
+* **class lookups** by name (`Class.forName`, `ClassLoader.loadClass`): still found, or still absent;
+* **classpath resources**: every `getResource` resolves to the same first location and content (or is
+  still absent), every `getResources` (ServiceLoader, factories) returns the same locations in the
+  same order; lookups through another class loader are not keyable (never reused);
+* **files** read (content digest), probed (existence/type), listed (names); reads made by the test
+  infrastructure inside a test (`@CsvFileSource`, ...) count;
+* **environment variables and system properties** read: same value (properties no test writes are
+  compared at JVM start; properties tests write are shared state, below);
+* **JDK caches**: a call of `ResourceBundle.getBundle`, `Introspector.getBeanInfo` or
+  `ObjectStreamClass.lookup` runs inside a frame; what the call that filled the cache entry depended
+  on (the bundle's resources and class lookups, the bean's reflected classes) is added to every test
+  that makes the call later, cache hit or miss;
+* **runtime identity and configuration** of its JVM are the same (JDK, flags, build tool, plugins,
+  JUnit configuration parameters, class path order);
+* **shared state** (the order rule). A test that read *mutable static state* (`mut`: a non-final static
+  field, or a final one whose value is not deeply immutable) or a system property some test writes,
+  is reused only if every test before it in its JVM in B is reused or, rerun or new, touched no shared
+  static state when it ran in B, and the state-touching tests before it are the same, in the same
+  order, as in A. The decision is taken at the test's position in B. Tests of a class with one shared
+  instance (Jupiter `PER_CLASS`, TestNG, other engines) depend on every earlier test of the class.
+  A final static counts as immutable when its value is: a primitive wrapper, `String` and other
+  immutable JDK value types, an empty array, a JDK enum constant, `List/Set/Map.of` and `Optional` of
+  immutable elements, or an object of a user class whose instance fields are all final and again hold
+  immutable values (checked on the value, so a non-final class, a record or a non-capturing lambda
+  qualifies); an enum's `values()` reads its private synthetic `$VALUES` and returns a copy, so it is
+  immutable when the constants are; any other JDK object (`ThreadLocal`, atomics, collections) is mutable;
+* **JDK global and runner-thread state** (the same order rule, per channel). JVM-global state that tests
+  reach only through JDK methods is keyed by channel: `locale` (`Locale.setDefault`/`getDefault`),
+  `timezone`, `tccl` (`Thread.set/getContextClassLoader`), `thread.name`, `uncaught-handler`, `jul`
+  (`Logger`/`Handler`/`LogManager` levels, handlers, configuration), `stdio` (`System.setOut/setErr/setIn`;
+  reads are `System.out/err/in` in code under test), `security` (providers and security properties;
+  every `getInstance` reads the provider list), `url-handlers`, `net-defaults` (`Authenticator`,
+  `ProxySelector`, `CookieHandler`, `ResponseCache`, `SSLContext`, redirects, HTTPS defaults), `jdbc`
+  (`DriverManager` drivers), and `interrupt` (a test that leaves the runner thread interrupted; every
+  test reads it). A setter that changes the value is a write; a getter called inside a test or class
+  scope, by any code (the JDK and the runner included, except the runner's own JUL level checks and
+  thread names), is a read. A reader of a channel is reused only if the tests before it that wrote the
+  channel are reused and the same, in the same order, as in A, and no rerun or new test before it wrote
+  it in B. Writes by code under test outside every test (a static initialiser at discovery) make every
+  reader of the channel rerun.
 
-Class loading triggered by the test reads class files and jars: those reads are not recorded as
-file reads (the class digests cover them).
+The decider runs in measurement mode: it reads B's capture of the tests rerun before a test, which an
+online decider in the runner has at that test's position (not built yet).
 
 ## Known limits
 
@@ -157,6 +191,8 @@ Found by the tests (**T**), by the harness (**H**) or by design (**D**).
 | V8 | Fingerprints of timer-driven tests depend on the per-test virtual clock; a background thread left running by an earlier test that reads the clock during a later test changes that test's clock values (found by the control tests: a preemptive-timeout thread that kept sleeping). | T |
 | V9 | `SecureRandom` subclasses that override `nextBytes` without calling `SecureRandom.nextBytes` (third-party providers) are not seeded. | D |
 | V10 | Identity hash codes are not controlled (see above). | D,T |
+| V19 | **D5, Level 1**: the virtual scheduler fires a timer whose virtual due time has not come only when the pool is idle and the run is quiet; otherwise it waits in real-time slices and then fires (real-time fallback, needed for busy-wait code, V16). Under heavy load a test thread descheduled for that real time lets an extra periodic tick fire, so the fingerprint of a fixed-rate timer test can differ between two runs (`SchedControlTest::fixedRateTicksWithoutWaiting`: 1 of 5 loaded pairs, `jvm/test/run_d5_load.py`). Not fixable at Level 0. | T |
+| V20 | **Skip with proof, inputs not keyed** (a test reading only these can be reused wrongly): objects shared through JUnit extension stores; writes to static fields through `Unsafe` or `VarHandle`; type annotations (`TypeAnnotationParser`); JDK caches other than resource bundles, bean infos and serialization descriptors (`MethodType`, `ClassValue` inside the JDK, locale service providers, `FileSystems` providers, `PropertyEditorManager`, the JUL configuration file read once at `LogManager` start-up); JDK code reading `System.out/err` (prints, which do not change outcomes); thread priority and daemon flag, `ThreadLocal` values left on the runner thread by JDK code; `ClassLoader` assertion status, the security manager, `Charset` providers; system properties read by JDK code (not through code under test); a static initialiser racing another thread's first use of a class (the epoch fast path); state written asynchronously by a thread an earlier test left running (attributed to whichever test is current). JDK global state in this list but changed and not restored is still seen at the end of the JVM by the runtime identity (`locale`, `tz`), which reruns every test (sound, costly). | D |
 
 ## Tests
 
@@ -167,6 +203,12 @@ Found by the tests (**T**), by the harness (**H**) or by design (**D**).
   gives the same order twice and a different order from seed 0.
 * `python3 jvm/test/run_skipkeys.py`: fixture `jvm/fixtures/skipkeys`, one change per key input;
   the tests that read it must run again, the others must be reused.
+* Reviews: `run_review_r022.py` (fixture `review-r022`, S1–S11), `run_review_r022_det.py` (D1–D5),
+  `run_review_r022b.py` (fixture `review-r022b`: JDK caches, JDK global state, runner-thread state;
+  `PlainTest` must stay reused), `run_r022b_narrowing.py` (each immutability refinement: a probe that
+  reads only immutable state is not `mut`, and its mutating twin still reruns its reader),
+  `run_w1_verifier.py`, `check_report2_numbers.py`, `check_r022b_docs.py`.
+* `cargo test -p fenvix-skip` (decider rules, including the per-channel global-state rule).
 * `python3 jvm/test/run_l1_measure.py`: thread races and Kotlin coroutines, measured.
 * `cargo test -p fenvix-jvm`.
 * CI: `.github/workflows/jvm-tests.yml` (JDK 8, 11, 17, 21).

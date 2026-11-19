@@ -580,6 +580,54 @@ fn touches_shared(m: &Module, t: &Test) -> bool {
     chain(m, t).iter().any(|s| s.get("type").and_then(Value::as_str) != Some("session") && (flag(s, "mut") || flag(s, "swrite")))
 }
 
+/// JDK global / runner-thread state channels a test (or its class scope) read (R-022b S13, S14). Every
+/// test reads `interrupt`: a runner thread left interrupted makes any later blocking call throw.
+fn global_reads(m: &Module, t: &Test) -> Vec<String> {
+    let mut out: Vec<String> = chain(m, t)
+        .iter()
+        .filter(|s| s.get("type").and_then(Value::as_str) != Some("session"))
+        .flat_map(|s| strs(s, "gread"))
+        .collect();
+    out.push("interrupt".to_string());
+    out.sort();
+    out.dedup();
+    out
+}
+
+/// Per module, per test: the channels the test (or its class scope) wrote, i.e. changed (setters that
+/// leave the value as it was are not recorded).
+pub type GlobalWrites = HashMap<String, HashMap<String, Vec<String>>>;
+
+pub fn global_writes(mods: &Mods) -> GlobalWrites {
+    let mut out: GlobalWrites = HashMap::new();
+    for (mn, m) in mods {
+        let mm = out.entry(mn.clone()).or_default();
+        for (tid, t) in &m.tests {
+            let mut w: Vec<String> = chain(m, t)
+                .iter()
+                .filter(|s| s.get("type").and_then(Value::as_str) != Some("session"))
+                .flat_map(|s| strs(s, "gwrite"))
+                .collect();
+            w.sort();
+            w.dedup();
+            if !w.is_empty() {
+                mm.insert(tid.clone(), w);
+            }
+        }
+    }
+    out
+}
+
+fn writes_global(gw: &GlobalWrites, mn: &str, tid: &str, c: &str) -> bool {
+    gw.get(mn).and_then(|m| m.get(tid)).map(|w| w.iter().any(|x| x == c)).unwrap_or(false)
+}
+
+/// Channel `c` written outside every test and class scope by code under test (when, relative to the
+/// tests, is unknown).
+fn session_writes(m: &Module, t: &Test, c: &str) -> bool {
+    m.jvms[t.jvm].scopes.get("<session>").map(|s| strs(s, "gwrite").iter().any(|x| x == c)).unwrap_or(false)
+}
+
 /// Containers of a test whose tests share one test instance (old captures without the flag: shared).
 fn shared_containers(m: &Module, t: &Test) -> Vec<String> {
     strs(&t.rec, "scopes")
@@ -612,6 +660,7 @@ pub fn decide(mods_a: &Mods, b: &mut State) -> Decisions {
         }
     }
     let mods_b = b.mods;
+    let (gw_a, gw_b) = (global_writes(mods_a), global_writes(mods_b));
     loop {
         let mut changed = false;
         for (mn, m) in mods_a {
@@ -620,7 +669,7 @@ pub fn decide(mods_a: &Mods, b: &mut State) -> Decisions {
                 if clean[&(mn.clone(), tid.clone())].is_some() {
                     continue;
                 }
-                let r = order_reason(mn, m, mb, tid, t, &clean);
+                let r = order_reason(mn, m, mb, tid, t, &clean, (&gw_a, &gw_b));
                 if r.is_some() {
                     clean.insert((mn.clone(), tid.clone()), r);
                     changed = true;
@@ -651,7 +700,7 @@ pub fn decide(mods_a: &Mods, b: &mut State) -> Decisions {
 }
 
 /// Dependencies through shared state and order (None when there is none that blocks reuse).
-fn order_reason(mn: &str, m: &Module, mb: Option<&Module>, tid: &str, t: &Test, fin: &Decisions) -> Reason {
+fn order_reason(mn: &str, m: &Module, mb: Option<&Module>, tid: &str, t: &Test, fin: &Decisions, gw: (&GlobalWrites, &GlobalWrites)) -> Reason {
     // static fields written by earlier tests of A (transitive)
     for dep in strs(&t.rec, "after") {
         match fin.get(&(mn.to_string(), dep.clone())) {
@@ -691,6 +740,40 @@ fn order_reason(mn: &str, m: &Module, mb: Option<&Module>, tid: &str, t: &Test, 
         (Some(ja), Some(jb)) => props_written(ja, jb),
         _ => HashSet::new(),
     };
+    // JDK global and runner-thread state (locale, time zone, context class loader, JUL, standard
+    // streams, security providers, ...): reached through JDK methods, so no static field read marks
+    // the reader `mut`. Per channel the reader reads, the same rule as for shared static state: every
+    // test before it in B that writes the channel is reused (and wrote it in A too) or, rerun or new,
+    // did not write it in B; the writers before it are the same, in the same order, as in A.
+    for c in global_reads(m, t) {
+        if session_writes(m, t, &c) || session_writes(mb, tb, &c) {
+            return why("global", format!("<session> [{}]", c));
+        }
+        let any = |g: &GlobalWrites| g.get(mn).map(|x| x.values().any(|w| w.iter().any(|y| *y == c))).unwrap_or(false);
+        if !any(gw.0) && !any(gw.1) {
+            continue; // no test of the module writes it, in A or in B
+        }
+        let mut eff_b: Vec<&String> = Vec::new();
+        for e in &prefix_b {
+            let clean = m.tests.contains_key(*e) && reusable(e);
+            if clean {
+                if writes_global(gw.0, mn, e, &c) {
+                    eff_b.push(*e);
+                }
+                continue;
+            }
+            if writes_global(gw.1, mn, e, &c) {
+                let code = if m.tests.contains_key(*e) { "after" } else { "after-new" };
+                return why(code, format!("{} [{}]", e, c));
+            }
+        }
+        let eff_a: Vec<&String> = prefix_a.iter().copied().filter(|e| writes_global(gw.0, mn, e, &c)).collect();
+        if eff_a != eff_b {
+            let d = eff_a.iter().zip(eff_b.iter()).find(|(x, y)| x != y).map(|(x, _)| (*x).clone());
+            let d = d.or_else(|| eff_a.get(eff_b.len()).map(|x| (*x).clone())).or_else(|| eff_b.get(eff_a.len()).map(|x| (*x).clone()));
+            return why("order", format!("{} [{}]", d.unwrap_or_default(), c));
+        }
+    }
     if reads_shared(m, t, &written) {
         // The decision is taken at the test's position, after the tests before it have run: a test
         // rerun (or new) before it either touched no shared static state when it ran in B (its
@@ -995,6 +1078,86 @@ mod tests {
         // r.txt shadowed by an earlier entry with other content
         std::fs::write(c1.join("r.txt"), b"one").unwrap();
         assert_eq!(get(&run(&a, &a, root.path()), "T").as_ref().map(|r| r.0.as_str()), Some("resource"));
+    }
+
+    fn code_change(root: &Path) -> (Value, Value) {
+        let ja = jvm_rec(root, json!({"W": format!("{} root:W.class", short(b"v1"))}), vec![]);
+        let jb = jvm_rec(root, json!({"W": format!("{} root:W.class", short(b"v2"))}), vec![]);
+        (ja, jb)
+    }
+
+    #[test]
+    fn a_rerun_writer_of_jdk_global_state_reruns_its_readers_only() {
+        // R-022b S13/S14: the writer changed (code) and now sets the default locale; the reader of the
+        // locale runs again, a reader of another channel and a test reading nothing global do not
+        let root = tempfile::tempdir().unwrap();
+        let (ja, jb) = code_change(root.path());
+        let own = |c: &str| json!([c, "<session>"]);
+        let w_a = test_rec("W", json!({"classes": ["W"], "scopes": own("WC")}));
+        let w_b = test_rec("W", json!({"classes": ["W"], "scopes": own("WC"), "gwrite": ["locale"]}));
+        let reader = test_rec("Reader", json!({"gread": ["locale"], "scopes": own("RC")}));
+        let other = test_rec("Other", json!({"gread": ["tccl"], "scopes": own("OC")}));
+        let plain = test_rec("Plain", json!({"scopes": own("PC")}));
+        let mut a = vec![w_a, reader.clone(), other.clone(), plain.clone(), ja];
+        a.extend(scopes());
+        let mut b = vec![w_b, reader, other, plain, jb];
+        b.extend(scopes());
+        let d = run(&a, &b, root.path());
+        assert_eq!(get(&d, "W").as_ref().map(|r| r.0.as_str()), Some("code"));
+        assert_eq!(get(&d, "Reader").as_ref().map(|r| r.0.as_str()), Some("after"));
+        assert_eq!(get(&d, "Other"), &None);
+        assert_eq!(get(&d, "Plain"), &None);
+    }
+
+    #[test]
+    fn a_global_writer_in_a_only_or_moved_reruns_the_reader() {
+        let root = tempfile::tempdir().unwrap();
+        let (ja, jb) = code_change(root.path());
+        let own = |c: &str| json!([c, "<session>"]);
+        // in A the writer changed the time zone; in B (rerun) it no longer does: the reader saw the
+        // changed zone in A, the start zone in B
+        let w_a = test_rec("W", json!({"classes": ["W"], "scopes": own("WC"), "gwrite": ["timezone"]}));
+        let w_b = test_rec("W", json!({"classes": ["W"], "scopes": own("WC")}));
+        let reader = test_rec("Reader", json!({"gread": ["timezone"], "scopes": own("RC")}));
+        let mut a = vec![w_a, reader.clone(), ja.clone()];
+        a.extend(scopes());
+        let mut b = vec![w_b, reader.clone(), jb];
+        b.extend(scopes());
+        assert_eq!(get(&run(&a, &b, root.path()), "Reader").as_ref().map(|r| r.0.as_str()), Some("order"));
+        // an unchanged writer (reused) moved after the reader: the reader saw its write in A only
+        let w = test_rec("W", json!({"scopes": own("WC"), "gwrite": ["timezone"]}));
+        let mut a = vec![w.clone(), reader.clone(), ja.clone()];
+        a.extend(scopes());
+        let mut b = vec![reader.clone(), w.clone(), ja.clone()];
+        b.extend(scopes());
+        assert_eq!(get(&run(&a, &b, root.path()), "Reader").as_ref().map(|r| r.0.as_str()), Some("order"));
+        // unchanged writer before the reader in both runs: reused
+        let mut b = vec![w, reader, ja];
+        b.extend(scopes());
+        assert_eq!(get(&run(&a, &b, root.path()), "Reader"), &None);
+    }
+
+    #[test]
+    fn a_runner_thread_left_interrupted_reruns_every_later_test_and_session_writes_are_not_placed() {
+        let root = tempfile::tempdir().unwrap();
+        let (ja, jb) = code_change(root.path());
+        let own = |c: &str| json!([c, "<session>"]);
+        let w_a = test_rec("W", json!({"classes": ["W"], "scopes": own("WC")}));
+        let w_b = test_rec("W", json!({"classes": ["W"], "scopes": own("WC"), "gwrite": ["interrupt"]}));
+        let plain = test_rec("Plain", json!({"scopes": own("PC")}));
+        let mut a = vec![w_a.clone(), plain.clone(), ja.clone()];
+        a.extend(scopes());
+        let mut b = vec![w_b, plain.clone(), jb.clone()];
+        b.extend(scopes());
+        assert_eq!(get(&run(&a, &b, root.path()), "Plain").as_ref().map(|r| r.0.as_str()), Some("after"));
+        // code under test outside every test (a static initialiser run at discovery) set the locale
+        let reader = test_rec("Reader", json!({"gread": ["locale"], "scopes": own("RC")}));
+        let mut a = vec![reader.clone(), plain.clone(), ja.clone()];
+        a.push(json!({"type": "container", "id": "C", "module": "", "scopes": ["<session>"], "classes": []}));
+        a.push(json!({"type": "session", "id": "<session>", "module": "", "scopes": [], "classes": [], "gwrite": ["locale"]}));
+        let d = run(&a, &a, root.path());
+        assert_eq!(get(&d, "Reader").as_ref().map(|r| r.0.as_str()), Some("global"));
+        assert_eq!(get(&d, "Plain"), &None);
     }
 
     #[test]
