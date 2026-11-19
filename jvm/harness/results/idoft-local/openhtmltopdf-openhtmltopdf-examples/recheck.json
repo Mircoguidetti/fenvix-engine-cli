@@ -1,0 +1,12 @@
+{
+ "name": "openhtmltopdf-openhtmltopdf-examples",
+ "before": 1,
+ "after": 1,
+ "broken_now": [
+  {
+   "test": "com.openhtmltopdf.freemarker.FreeMarkerGeneratorTest::testFreeMarkerGenerator",
+   "baseline": "1F/9P",
+   "det_now": "10F/10"
+  }
+ ]
+}

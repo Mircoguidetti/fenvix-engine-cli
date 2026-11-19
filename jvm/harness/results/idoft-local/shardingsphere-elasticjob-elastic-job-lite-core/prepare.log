@@ -1,0 +1,14 @@
+$ git clone -q --filter=blob:none https://github.com/apache/shardingsphere-elasticjob /tmp/jvm-work2/shardingsphere-elasticjob-elastic-job-lite-core
+
+[rc=0 2.1s]
+$ git fetch -q origin b022898ef1b8c984e17efb2a422ee45f6b13e46e
+
+[rc=0 0.4s]
+$ git checkout -q -f b022898ef1b8c984e17efb2a422ee45f6b13e46e
+
+[rc=0 0.8s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install -pl elastic-job-lite-core -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+[rc=0 9.7s]

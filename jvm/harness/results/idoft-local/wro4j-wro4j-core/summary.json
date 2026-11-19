@@ -1,0 +1,43 @@
+{
+ "name": "wro4j-wro4j-core",
+ "url": "https://github.com/wro4j/wro4j",
+ "sha": "185ab607f1d649ca38b4a772831ee754cd4649fb",
+ "module": "wro4j-core",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 850,
+ "documented": 15,
+ "documented_present": 15,
+ "documented_categories": {
+  "OD-Vic": 15
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 3,
+ "broken_tests": [
+  "ro.isdc.wro.cache.support.TestDefaultSynchronizedCacheStrategyDecorator::shouldCheckOnlyAfterTimeout",
+  "ro.isdc.wro.model.resource.processor.TestCssImportPreProcessor::testFromFolder",
+  "ro.isdc.wro.model.resource.processor.TestLessCssImportPreProcessor::testFromFolder"
+ ],
+ "fingerprint_coverage": "838/850",
+ "fingerprint_covered": 838,
+ "fingerprinted": 850,
+ "timing_base_s": [
+  11.237000000000002,
+  10.863,
+  11.005999999999998
+ ],
+ "timing_det_s": [
+  11.396999999999995,
+  11.983000000000004,
+  10.549999999999994
+ ],
+ "slowdown": 0.0355,
+ "seconds": 751.6
+}

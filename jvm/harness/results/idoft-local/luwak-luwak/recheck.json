@@ -1,0 +1,17 @@
+{
+ "name": "luwak-luwak",
+ "before": 2,
+ "after": 2,
+ "broken_now": [
+  {
+   "test": "uk.co.flax.luwak.TestCachePurging::testBackgroundPurges",
+   "baseline": "0F/10P",
+   "det_now": "10F/10"
+  },
+  {
+   "test": "uk.co.flax.luwak.TestCachePurging::testConcurrentPurges",
+   "baseline": "0F/10P",
+   "det_now": "2F/10"
+  }
+ ]
+}

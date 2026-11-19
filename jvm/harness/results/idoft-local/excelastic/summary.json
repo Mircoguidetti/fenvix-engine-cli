@@ -1,0 +1,41 @@
+{
+ "name": "excelastic",
+ "url": "https://github.com/codingchili/excelastic",
+ "sha": "6bb7884b1e70f9e588d75bdaf132a84f6e896a7a",
+ "module": ".",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 12,
+ "documented": 1,
+ "documented_present": 1,
+ "documented_categories": {
+  "NDOD;OD-Vic;NOD": 1
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 1,
+ "unstable_baseline": 1,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 1,
+ "broken_tests": [
+  "com.codingchili.TestWriter::shouldWriteToElasticPort"
+ ],
+ "fingerprint_coverage": "9/12",
+ "fingerprint_covered": 9,
+ "fingerprinted": 12,
+ "timing_base_s": [
+  3.0300000000000002,
+  2.568,
+  1.974
+ ],
+ "timing_det_s": [
+  8.05,
+  7.596,
+  9.691
+ ],
+ "slowdown": 2.1347,
+ "seconds": 571.0
+}

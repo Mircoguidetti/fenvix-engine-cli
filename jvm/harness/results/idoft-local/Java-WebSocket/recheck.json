@@ -1,0 +1,12 @@
+{
+ "name": "Java-WebSocket",
+ "before": 5,
+ "after": 1,
+ "broken_now": [
+  {
+   "test": "org.java_websocket.issues.Issue256Test::runReconnectBlockingScenario6",
+   "baseline": "1F/9P",
+   "det_now": "3F/10"
+  }
+ ]
+}

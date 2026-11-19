@@ -1,0 +1,12 @@
+{
+ "name": "biojava-biojava-structure",
+ "before": 1,
+ "after": 1,
+ "broken_now": [
+  {
+   "test": "org.biojava.nbio.structure.io.TestNonDepositedFiles::testStructureWithBranchedEntities",
+   "baseline": "0F/10P",
+   "det_now": "10F/10"
+  }
+ ]
+}

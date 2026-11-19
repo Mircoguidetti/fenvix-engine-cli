@@ -1,0 +1,12 @@
+{
+ "name": "fastjson",
+ "before": 1,
+ "after": 1,
+ "broken_now": [
+  {
+   "test": "com.alibaba.json.bvt.bug.Bug_for_cnhans::test_iso_format",
+   "baseline": "0F/10P",
+   "det_now": "10F/10"
+  }
+ ]
+}

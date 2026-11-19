@@ -1,0 +1,508 @@
+$ git clone -q --filter=blob:none https://github.com/apache/servicecomb-java-chassis /tmp/jvm-work2/servicecomb-java-chassis-generator-core
+
+[rc=0 2.7s]
+$ git fetch -q origin ec76b1a15704c15bab437e64739e6d483562850d
+
+[rc=0 0.4s]
+$ git checkout -q -f ec76b1a15704c15bab437e64739e6d483562850d
+
+[rc=0 0.5s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install -pl swagger/swagger-generator/generator-core -am
+ryToInitializableAdapter.java:57)
+    at com.google.inject.internal.ProviderInternalFactory$1.call (ProviderInternalFactory.java:67)
+    at com.google.inject.internal.ProvisionListenerStackCallback$Provision.provision (ProvisionListenerStackCallback.java:109)
+    at com.google.inject.internal.ProvisionListenerStackCallback$Provision.provision (ProvisionListenerStackCallback.java:124)
+    at com.google.inject.internal.ProvisionListenerStackCallback.provision (ProvisionListenerStackCallback.java:66)
+    at com.google.inject.internal.ProviderInternalFactory.circularGet (ProviderInternalFactory.java:62)
+    at com.google.inject.internal.InternalFactoryToInitializableAdapter.get (InternalFactoryToInitializableAdapter.java:47)
+    at com.google.inject.internal.InjectorImpl$1.get (InjectorImpl.java:1101)
+    at org.eclipse.sisu.inject.Guice4$2.get (Guice4.java:235)
+    at org.eclipse.sisu.inject.LazyBeanEntry.getValue (LazyBeanEntry.java:83)
+    at org.eclipse.sisu.plexus.LazyPlexusBean.getValue (LazyPlexusBean.java:53)
+    at org.codehaus.plexus.DefaultPlexusContainer.lookup (DefaultPlexusContainer.java:267)
+    at org.codehaus.plexus.DefaultPlexusContainer.lookup (DefaultPlexusContainer.java:259)
+    at org.apache.maven.plugin.internal.DefaultMavenPluginManager.getConfiguredMojo (DefaultMavenPluginManager.java:491)
+    at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo (DefaultBuildPluginManager.java:114)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute2 (MojoExecutor.java:328)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute (MojoExecutor.java:316)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:212)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:174)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.access$000 (MojoExecutor.java:75)
+    at org.apache.maven.lifecycle.internal.MojoExecutor$1.run (MojoExecutor.java:162)
+    at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute (DefaultMojosExecutionStrategy.java:39)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:159)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.executeForkedExecutions (MojoExecutor.java:448)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute (MojoExecutor.java:311)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:212)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:174)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.access$000 (MojoExecutor.java:75)
+    at org.apache.maven.lifecycle.internal.MojoExecutor$1.run (MojoExecutor.java:162)
+    at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute (DefaultMojosExecutionStrategy.java:39)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:159)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:105)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:73)
+    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:53)
+    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:118)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:261)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:173)
+    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:101)
+    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:906)
+    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:283)
+    at org.apache.maven.cli.MavenCli.main (MavenCli.java:206)
+    at sun.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)
+    at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke (Method.java:498)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:255)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:201)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:361)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:314)
+Caused by: java.lang.UnsupportedClassVersionError: org/codehaus/mojo/spotbugs/SpotBugsMojo has been compiled by a more recent version of the Java Runtime (class file version 55.0), this version of the Java Runtime only recognizes class file versions up to 52.0
+    at java.lang.ClassLoader.defineClass1 (Native Method)
+    at java.lang.ClassLoader.defineClass (ClassLoader.java:756)
+    at java.security.SecureClassLoader.defineClass (SecureClassLoader.java:142)
+    at java.net.URLClassLoader.defineClass (URLClassLoader.java:473)
+    at java.net.URLClassLoader.access$100 (URLClassLoader.java:74)
+    at java.net.URLClassLoader$1.run (URLClassLoader.java:369)
+    at java.net.URLClassLoader$1.run (URLClassLoader.java:363)
+    at java.security.AccessController.doPrivileged (Native Method)
+    at java.net.URLClassLoader.findClass (URLClassLoader.java:362)
+    at org.codehaus.plexus.classworlds.realm.ClassRealm.findClassInternal (ClassRealm.java:256)
+    at org.codehaus.plexus.classworlds.realm.ClassRealm.loadClassFromSelf (ClassRealm.java:351)
+    at org.codehaus.plexus.classworlds.strategy.SelfFirstStrategy.loadClass (SelfFirstStrategy.java:36)
+    at org.codehaus.plexus.classworlds.realm.ClassRealm.unsynchronizedLoadClass (ClassRealm.java:225)
+    at org.codehaus.plexus.classworlds.realm.ClassRealm.loadClass (ClassRealm.java:210)
+    at org.codehaus.plexus.classworlds.realm.ClassRealm.loadClass (ClassRealm.java:205)
+    at org.eclipse.sisu.space.URLClassSpace.loadClass (URLClassSpace.java:141)
+    at org.eclipse.sisu.space.NamedClass.load (NamedClass.java:48)
+    at org.eclipse.sisu.space.AbstractDeferredClass.get (AbstractDeferredClass.java:50)
+    at com.google.inject.internal.ProviderInternalFactory.provision (ProviderInternalFactory.java:86)
+    at com.google.inject.internal.InternalFactoryToInitializableAdapter.provision (InternalFactoryToInitializableAdapter.java:57)
+    at com.google.inject.internal.ProviderInternalFactory$1.call (ProviderInternalFactory.java:67)
+    at com.google.inject.internal.ProvisionListenerStackCallback$Provision.provision (ProvisionListenerStackCallback.java:109)
+    at com.google.inject.internal.ProvisionListenerStackCallback$Provision.provision (ProvisionListenerStackCallback.java:124)
+    at com.google.inject.internal.ProvisionListenerStackCallback.provision (ProvisionListenerStackCallback.java:66)
+    at com.google.inject.internal.ProviderInternalFactory.circularGet (ProviderInternalFactory.java:62)
+    at com.google.inject.internal.InternalFactoryToInitializableAdapter.get (InternalFactoryToInitializableAdapter.java:47)
+    at com.google.inject.internal.InjectorImpl$1.get (InjectorImpl.java:1101)
+    at org.eclipse.sisu.inject.Guice4$2.get (Guice4.java:235)
+    at org.eclipse.sisu.inject.LazyBeanEntry.getValue (LazyBeanEntry.java:83)
+    at org.eclipse.sisu.plexus.LazyPlexusBean.getValue (LazyPlexusBean.java:53)
+    at org.codehaus.plexus.DefaultPlexusContainer.lookup (DefaultPlexusContainer.java:267)
+    at org.codehaus.plexus.DefaultPlexusContainer.lookup (DefaultPlexusContainer.java:259)
+    at org.apache.maven.plugin.internal.DefaultMavenPluginManager.getConfiguredMojo (DefaultMavenPluginManager.java:491)
+    at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo (DefaultBuildPluginManager.java:114)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute2 (MojoExecutor.java:328)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute (MojoExecutor.java:316)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:212)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:174)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.access$000 (MojoExecutor.java:75)
+    at org.apache.maven.lifecycle.internal.MojoExecutor$1.run (MojoExecutor.java:162)
+    at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute (DefaultMojosExecutionStrategy.java:39)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:159)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.executeForkedExecutions (MojoExecutor.java:448)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute (MojoExecutor.java:311)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:212)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:174)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.access$000 (MojoExecutor.java:75)
+    at org.apache.maven.lifecycle.internal.MojoExecutor$1.run (MojoExecutor.java:162)
+    at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute (DefaultMojosExecutionStrategy.java:39)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:159)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:105)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:73)
+    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:53)
+    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:118)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:261)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:173)
+    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:101)
+    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:906)
+    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:283)
+    at org.apache.maven.cli.MavenCli.main (MavenCli.java:206)
+    at sun.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)
+    at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke (Method.java:498)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:255)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:201)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:361)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:314)
+[ERROR] Failed to execute goal com.github.spotbugs:spotbugs-maven-plugin:4.9.4.0:spotbugs (spotbugs) on project java-chassis: Execution spotbugs of goal com.github.spotbugs:spotbugs-maven-plugin:4.9.4.0:spotbugs failed: Unable to load the mojo 'spotbugs' in the plugin 'com.github.spotbugs:spotbugs-maven-plugin:4.9.4.0' due to an API incompatibility: org.codehaus.plexus.component.repository.exception.ComponentLookupException: org/codehaus/mojo/spotbugs/SpotBugsMojo has been compiled by a more recent version of the Java Runtime (class file version 55.0), this version of the Java Runtime only recognizes class file versions up to 52.0
+[ERROR] -----------------------------------------------------
+[ERROR] realm =    plugin>com.github.spotbugs:spotbugs-maven-plugin:4.9.4.0
+[ERROR] strategy = org.codehaus.plexus.classworlds.strategy.SelfFirstStrategy
+[ERROR] urls[0] = file:/root/.m2/repository/com/github/spotbugs/spotbugs-maven-plugin/4.9.4.0/spotbugs-maven-plugin-4.9.4.0.jar
+[ERROR] urls[1] = file:/root/.m2/repository/com/github/spotbugs/spotbugs-annotations/4.9.4/spotbugs-annotations-4.9.4.jar
+[ERROR] urls[2] = file:/root/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar
+[ERROR] urls[3] = file:/root/.m2/repository/com/github/spotbugs/spotbugs/4.9.4/spotbugs-4.9.4.jar
+[ERROR] urls[4] = file:/root/.m2/repository/org/ow2/asm/asm/9.8/asm-9.8.jar
+[ERROR] urls[5] = file:/root/.m2/repository/org/ow2/asm/asm-analysis/9.8/asm-analysis-9.8.jar
+[ERROR] urls[6] = file:/root/.m2/repository/org/ow2/asm/asm-commons/9.8/asm-commons-9.8.jar
+[ERROR] urls[7] = file:/root/.m2/repository/org/ow2/asm/asm-tree/9.8/asm-tree-9.8.jar
+[ERROR] urls[8] = file:/root/.m2/repository/org/ow2/asm/asm-util/9.8/asm-util-9.8.jar
+[ERROR] urls[9] = file:/root/.m2/repository/org/apache/bcel/bcel/6.10.0/bcel-6.10.0.jar
+[ERROR] urls[10] = file:/root/.m2/repository/com/github/stephenc/jcip/jcip-annotations/1.0-1/jcip-annotations-1.0-1.jar
+[ERROR] urls[11] = file:/root/.m2/repository/org/dom4j/dom4j/2.2.0/dom4j-2.2.0.jar
+[ERROR] urls[12] = file:/root/.m2/repository/org/apache/commons/commons-lang3/3.18.0/commons-lang3-3.18.0.jar
+[ERROR] urls[13] = file:/root/.m2/repository/org/apache/commons/commons-text/1.14.0/commons-text-1.14.0.jar
+[ERROR] urls[14] = file:/root/.m2/repository/com/google/code/gson/gson/2.13.1/gson-2.13.1.jar
+[ERROR] urls[15] = file:/root/.m2/repository/com/google/errorprone/error_prone_annotations/2.38.0/error_prone_annotations-2.38.0.jar
+[ERROR] urls[16] = file:/root/.m2/repository/jaxen/jaxen/2.0.0/jaxen-2.0.0.jar
+[ERROR] urls[17] = file:/root/.m2/repository/net/sf/saxon/Saxon-HE/12.8/Saxon-HE-12.8.jar
+[ERROR] urls[18] = file:/root/.m2/repository/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3.jar
+[ERROR] urls[19] = file:/root/.m2/repository/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3-data.jar
+[ERROR] urls[20] = file:/root/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.25.1/log4j-to-slf4j-2.25.1.jar
+[ERROR] urls[21] = file:/root/.m2/repository/org/apache/logging/log4j/log4j-api/2.25.1/log4j-api-2.25.1.jar
+[ERROR] urls[22] = file:/root/.m2/repository/org/slf4j/slf4j-simple/2.0.17/slf4j-simple-2.0.17.jar
+[ERROR] urls[23] = file:/root/.m2/repository/commons-io/commons-io/2.20.0/commons-io-2.20.0.jar
+[ERROR] urls[24] = file:/root/.m2/repository/org/apache/groovy/groovy/4.0.28/groovy-4.0.28.jar
+[ERROR] urls[25] = file:/root/.m2/repository/org/apache/groovy/groovy-ant/4.0.28/groovy-ant-4.0.28.jar
+[ERROR] urls[26] = file:/root/.m2/repository/org/apache/ant/ant/1.10.15/ant-1.10.15.jar
+[ERROR] urls[27] = file:/root/.m2/repository/org/apache/ant/ant-launcher/1.10.15/ant-launcher-1.10.15.jar
+[ERROR] urls[28] = file:/usr/lib/jvm/java-8-openjdk-amd64/jre/../lib/tools.jar
+[ERROR] urls[29] = file:/root/.m2/repository/org/apache/groovy/groovy-groovydoc/4.0.28/groovy-groovydoc-4.0.28.jar
+[ERROR] urls[30] = file:/root/.m2/repository/org/apache/groovy/groovy-docgenerator/4.0.28/groovy-docgenerator-4.0.28.jar
+[ERROR] urls[31] = file:/root/.m2/repository/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1.jar
+[ERROR] urls[32] = file:/root/.m2/repository/org/apache/groovy/groovy-json/4.0.28/groovy-json-4.0.28.jar
+[ERROR] urls[33] = file:/root/.m2/repository/org/apache/groovy/groovy-templates/4.0.28/groovy-templates-4.0.28.jar
+[ERROR] urls[34] = file:/root/.m2/repository/org/apache/groovy/groovy-xml/4.0.28/groovy-xml-4.0.28.jar
+[ERROR] urls[35] = file:/root/.m2/repository/com/github/javaparser/javaparser-core/3.27.0/javaparser-core-3.27.0.jar
+[ERROR] urls[36] = file:/root/.m2/repository/org/apache/maven/reporting/maven-reporting-impl/4.0.0/maven-reporting-impl-4.0.0.jar
+[ERROR] urls[37] = file:/root/.m2/repository/org/apache/maven/reporting/maven-reporting-api/4.0.0/maven-reporting-api-4.0.0.jar
+[ERROR] urls[38] = file:/root/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar
+[ERROR] urls[39] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-site-model/2.0.0/doxia-site-model-2.0.0.jar
+[ERROR] urls[40] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-module-apt/2.0.0/doxia-module-apt-2.0.0.jar
+[ERROR] urls[41] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-module-xdoc/2.0.0/doxia-module-xdoc-2.0.0.jar
+[ERROR] urls[42] = file:/root/.m2/repository/org/apache/maven/maven-archiver/3.6.2/maven-archiver-3.6.2.jar
+[ERROR] urls[43] = file:/root/.m2/repository/org/codehaus/plexus/plexus-archiver/4.9.2/plexus-archiver-4.9.2.jar
+[ERROR] urls[44] = file:/root/.m2/repository/org/codehaus/plexus/plexus-io/3.4.2/plexus-io-3.4.2.jar
+[ERROR] urls[45] = file:/root/.m2/repository/org/apache/commons/commons-compress/1.26.1/commons-compress-1.26.1.jar
+[ERROR] urls[46] = file:/root/.m2/repository/commons-codec/commons-codec/1.19.0/commons-codec-1.19.0.jar
+[ERROR] urls[47] = file:/root/.m2/repository/org/iq80/snappy/snappy/0.4/snappy-0.4.jar
+[ERROR] urls[48] = file:/root/.m2/repository/org/tukaani/xz/1.9/xz-1.9.jar
+[ERROR] urls[49] = file:/root/.m2/repository/com/github/luben/zstd-jni/1.5.5-11/zstd-jni-1.5.5-11.jar
+[ERROR] urls[50] = file:/root/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M3/org.eclipse.sisu.inject-0.9.0.M3.jar
+[ERROR] urls[51] = file:/root/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.2.0/plexus-component-annotations-2.2.0.jar
+[ERROR] urls[52] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-core/2.0.0/doxia-core-2.0.0.jar
+[ERROR] urls[53] = file:/root/.m2/repository/org/codehaus/plexus/plexus-xml/3.0.2/plexus-xml-3.0.2.jar
+[ERROR] urls[54] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-sink-api/2.0.0/doxia-sink-api-2.0.0.jar
+[ERROR] urls[55] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-site-renderer/2.0.0/doxia-site-renderer-2.0.0.jar
+[ERROR] urls[56] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-skin-model/2.0.0/doxia-skin-model-2.0.0.jar
+[ERROR] urls[57] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-module-xhtml5/2.0.0/doxia-module-xhtml5-2.0.0.jar
+[ERROR] urls[58] = file:/root/.m2/repository/org/codehaus/plexus/plexus-velocity/2.2.1/plexus-velocity-2.2.1.jar
+[ERROR] urls[59] = file:/root/.m2/repository/org/apache/velocity/velocity-engine-core/2.4/velocity-engine-core-2.4.jar
+[ERROR] urls[60] = file:/root/.m2/repository/org/apache/velocity/tools/velocity-tools-generic/3.1/velocity-tools-generic-3.1.jar
+[ERROR] urls[61] = file:/root/.m2/repository/commons-beanutils/commons-beanutils/1.11.0/commons-beanutils-1.11.0.jar
+[ERROR] urls[62] = file:/root/.m2/repository/commons-logging/commons-logging/1.3.5/commons-logging-1.3.5.jar
+[ERROR] urls[63] = file:/root/.m2/repository/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar
+[ERROR] urls[64] = file:/root/.m2/repository/org/apache/commons/commons-digester3/3.2/commons-digester3-3.2.jar
+[ERROR] urls[65] = file:/root/.m2/repository/com/github/cliftonlabs/json-simple/3.0.2/json-simple-3.0.2.jar
+[ERROR] urls[66] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-integration-tools/2.0.0/doxia-integration-tools-2.0.0.jar
+[ERROR] urls[67] = file:/root/.m2/repository/org/codehaus/plexus/plexus-i18n/1.0-beta-10/plexus-i18n-1.0-beta-10.jar
+[ERROR] urls[68] = file:/root/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.27/plexus-interpolation-1.27.jar
+[ERROR] urls[69] = file:/root/.m2/repository/org/codehaus/plexus/plexus-resources/1.3.0/plexus-resources-1.3.0.jar
+[ERROR] urls[70] = file:/root/.m2/repository/org/codehaus/plexus/plexus-utils/4.0.2/plexus-utils-4.0.2.jar
+[ERROR] urls[71] = file:/root/.m2/repository/org/checkerframework/checker-qual/3.49.3/checker-qual-3.49.3.jar
+[ERROR] Number of foreign imports: 1
+[ERROR] import: Entry[import  from realm ClassRealm[project>org.apache.servicecomb:java-chassis:3.4.0-SNAPSHOT, parent: ClassRealm[maven.api, parent: null]]]
+[ERROR] 
+[ERROR] -----------------------------------------------------
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginContainerException
+
+[rc=1 10.1s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= install -pl swagger/swagger-generator/generator-core -am
+ryToInitializableAdapter.java:57)
+    at com.google.inject.internal.ProviderInternalFactory$1.call (ProviderInternalFactory.java:67)
+    at com.google.inject.internal.ProvisionListenerStackCallback$Provision.provision (ProvisionListenerStackCallback.java:109)
+    at com.google.inject.internal.ProvisionListenerStackCallback$Provision.provision (ProvisionListenerStackCallback.java:124)
+    at com.google.inject.internal.ProvisionListenerStackCallback.provision (ProvisionListenerStackCallback.java:66)
+    at com.google.inject.internal.ProviderInternalFactory.circularGet (ProviderInternalFactory.java:62)
+    at com.google.inject.internal.InternalFactoryToInitializableAdapter.get (InternalFactoryToInitializableAdapter.java:47)
+    at com.google.inject.internal.InjectorImpl$1.get (InjectorImpl.java:1101)
+    at org.eclipse.sisu.inject.Guice4$2.get (Guice4.java:235)
+    at org.eclipse.sisu.inject.LazyBeanEntry.getValue (LazyBeanEntry.java:83)
+    at org.eclipse.sisu.plexus.LazyPlexusBean.getValue (LazyPlexusBean.java:53)
+    at org.codehaus.plexus.DefaultPlexusContainer.lookup (DefaultPlexusContainer.java:267)
+    at org.codehaus.plexus.DefaultPlexusContainer.lookup (DefaultPlexusContainer.java:259)
+    at org.apache.maven.plugin.internal.DefaultMavenPluginManager.getConfiguredMojo (DefaultMavenPluginManager.java:491)
+    at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo (DefaultBuildPluginManager.java:114)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute2 (MojoExecutor.java:328)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute (MojoExecutor.java:316)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:212)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:174)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.access$000 (MojoExecutor.java:75)
+    at org.apache.maven.lifecycle.internal.MojoExecutor$1.run (MojoExecutor.java:162)
+    at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute (DefaultMojosExecutionStrategy.java:39)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:159)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.executeForkedExecutions (MojoExecutor.java:448)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute (MojoExecutor.java:311)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:212)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:174)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.access$000 (MojoExecutor.java:75)
+    at org.apache.maven.lifecycle.internal.MojoExecutor$1.run (MojoExecutor.java:162)
+    at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute (DefaultMojosExecutionStrategy.java:39)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:159)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:105)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:73)
+    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:53)
+    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:118)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:261)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:173)
+    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:101)
+    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:906)
+    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:283)
+    at org.apache.maven.cli.MavenCli.main (MavenCli.java:206)
+    at sun.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)
+    at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke (Method.java:498)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:255)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:201)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:361)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:314)
+Caused by: java.lang.UnsupportedClassVersionError: org/codehaus/mojo/spotbugs/SpotBugsMojo has been compiled by a more recent version of the Java Runtime (class file version 55.0), this version of the Java Runtime only recognizes class file versions up to 52.0
+    at java.lang.ClassLoader.defineClass1 (Native Method)
+    at java.lang.ClassLoader.defineClass (ClassLoader.java:756)
+    at java.security.SecureClassLoader.defineClass (SecureClassLoader.java:142)
+    at java.net.URLClassLoader.defineClass (URLClassLoader.java:473)
+    at java.net.URLClassLoader.access$100 (URLClassLoader.java:74)
+    at java.net.URLClassLoader$1.run (URLClassLoader.java:369)
+    at java.net.URLClassLoader$1.run (URLClassLoader.java:363)
+    at java.security.AccessController.doPrivileged (Native Method)
+    at java.net.URLClassLoader.findClass (URLClassLoader.java:362)
+    at org.codehaus.plexus.classworlds.realm.ClassRealm.findClassInternal (ClassRealm.java:256)
+    at org.codehaus.plexus.classworlds.realm.ClassRealm.loadClassFromSelf (ClassRealm.java:351)
+    at org.codehaus.plexus.classworlds.strategy.SelfFirstStrategy.loadClass (SelfFirstStrategy.java:36)
+    at org.codehaus.plexus.classworlds.realm.ClassRealm.unsynchronizedLoadClass (ClassRealm.java:225)
+    at org.codehaus.plexus.classworlds.realm.ClassRealm.loadClass (ClassRealm.java:210)
+    at org.codehaus.plexus.classworlds.realm.ClassRealm.loadClass (ClassRealm.java:205)
+    at org.eclipse.sisu.space.URLClassSpace.loadClass (URLClassSpace.java:141)
+    at org.eclipse.sisu.space.NamedClass.load (NamedClass.java:48)
+    at org.eclipse.sisu.space.AbstractDeferredClass.get (AbstractDeferredClass.java:50)
+    at com.google.inject.internal.ProviderInternalFactory.provision (ProviderInternalFactory.java:86)
+    at com.google.inject.internal.InternalFactoryToInitializableAdapter.provision (InternalFactoryToInitializableAdapter.java:57)
+    at com.google.inject.internal.ProviderInternalFactory$1.call (ProviderInternalFactory.java:67)
+    at com.google.inject.internal.ProvisionListenerStackCallback$Provision.provision (ProvisionListenerStackCallback.java:109)
+    at com.google.inject.internal.ProvisionListenerStackCallback$Provision.provision (ProvisionListenerStackCallback.java:124)
+    at com.google.inject.internal.ProvisionListenerStackCallback.provision (ProvisionListenerStackCallback.java:66)
+    at com.google.inject.internal.ProviderInternalFactory.circularGet (ProviderInternalFactory.java:62)
+    at com.google.inject.internal.InternalFactoryToInitializableAdapter.get (InternalFactoryToInitializableAdapter.java:47)
+    at com.google.inject.internal.InjectorImpl$1.get (InjectorImpl.java:1101)
+    at org.eclipse.sisu.inject.Guice4$2.get (Guice4.java:235)
+    at org.eclipse.sisu.inject.LazyBeanEntry.getValue (LazyBeanEntry.java:83)
+    at org.eclipse.sisu.plexus.LazyPlexusBean.getValue (LazyPlexusBean.java:53)
+    at org.codehaus.plexus.DefaultPlexusContainer.lookup (DefaultPlexusContainer.java:267)
+    at org.codehaus.plexus.DefaultPlexusContainer.lookup (DefaultPlexusContainer.java:259)
+    at org.apache.maven.plugin.internal.DefaultMavenPluginManager.getConfiguredMojo (DefaultMavenPluginManager.java:491)
+    at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo (DefaultBuildPluginManager.java:114)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute2 (MojoExecutor.java:328)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute (MojoExecutor.java:316)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:212)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:174)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.access$000 (MojoExecutor.java:75)
+    at org.apache.maven.lifecycle.internal.MojoExecutor$1.run (MojoExecutor.java:162)
+    at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute (DefaultMojosExecutionStrategy.java:39)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:159)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.executeForkedExecutions (MojoExecutor.java:448)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.doExecute (MojoExecutor.java:311)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:212)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:174)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.access$000 (MojoExecutor.java:75)
+    at org.apache.maven.lifecycle.internal.MojoExecutor$1.run (MojoExecutor.java:162)
+    at org.apache.maven.plugin.DefaultMojosExecutionStrategy.execute (DefaultMojosExecutionStrategy.java:39)
+    at org.apache.maven.lifecycle.internal.MojoExecutor.execute (MojoExecutor.java:159)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:105)
+    at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject (LifecycleModuleBuilder.java:73)
+    at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build (SingleThreadedBuilder.java:53)
+    at org.apache.maven.lifecycle.internal.LifecycleStarter.execute (LifecycleStarter.java:118)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:261)
+    at org.apache.maven.DefaultMaven.doExecute (DefaultMaven.java:173)
+    at org.apache.maven.DefaultMaven.execute (DefaultMaven.java:101)
+    at org.apache.maven.cli.MavenCli.execute (MavenCli.java:906)
+    at org.apache.maven.cli.MavenCli.doMain (MavenCli.java:283)
+    at org.apache.maven.cli.MavenCli.main (MavenCli.java:206)
+    at sun.reflect.NativeMethodAccessorImpl.invoke0 (Native Method)
+    at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke (Method.java:498)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced (Launcher.java:255)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.launch (Launcher.java:201)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode (Launcher.java:361)
+    at org.codehaus.plexus.classworlds.launcher.Launcher.main (Launcher.java:314)
+[ERROR] Failed to execute goal com.github.spotbugs:spotbugs-maven-plugin:4.9.4.0:spotbugs (spotbugs) on project java-chassis: Execution spotbugs of goal com.github.spotbugs:spotbugs-maven-plugin:4.9.4.0:spotbugs failed: Unable to load the mojo 'spotbugs' in the plugin 'com.github.spotbugs:spotbugs-maven-plugin:4.9.4.0' due to an API incompatibility: org.codehaus.plexus.component.repository.exception.ComponentLookupException: org/codehaus/mojo/spotbugs/SpotBugsMojo has been compiled by a more recent version of the Java Runtime (class file version 55.0), this version of the Java Runtime only recognizes class file versions up to 52.0
+[ERROR] -----------------------------------------------------
+[ERROR] realm =    plugin>com.github.spotbugs:spotbugs-maven-plugin:4.9.4.0
+[ERROR] strategy = org.codehaus.plexus.classworlds.strategy.SelfFirstStrategy
+[ERROR] urls[0] = file:/root/.m2/repository/com/github/spotbugs/spotbugs-maven-plugin/4.9.4.0/spotbugs-maven-plugin-4.9.4.0.jar
+[ERROR] urls[1] = file:/root/.m2/repository/com/github/spotbugs/spotbugs-annotations/4.9.4/spotbugs-annotations-4.9.4.jar
+[ERROR] urls[2] = file:/root/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar
+[ERROR] urls[3] = file:/root/.m2/repository/com/github/spotbugs/spotbugs/4.9.4/spotbugs-4.9.4.jar
+[ERROR] urls[4] = file:/root/.m2/repository/org/ow2/asm/asm/9.8/asm-9.8.jar
+[ERROR] urls[5] = file:/root/.m2/repository/org/ow2/asm/asm-analysis/9.8/asm-analysis-9.8.jar
+[ERROR] urls[6] = file:/root/.m2/repository/org/ow2/asm/asm-commons/9.8/asm-commons-9.8.jar
+[ERROR] urls[7] = file:/root/.m2/repository/org/ow2/asm/asm-tree/9.8/asm-tree-9.8.jar
+[ERROR] urls[8] = file:/root/.m2/repository/org/ow2/asm/asm-util/9.8/asm-util-9.8.jar
+[ERROR] urls[9] = file:/root/.m2/repository/org/apache/bcel/bcel/6.10.0/bcel-6.10.0.jar
+[ERROR] urls[10] = file:/root/.m2/repository/com/github/stephenc/jcip/jcip-annotations/1.0-1/jcip-annotations-1.0-1.jar
+[ERROR] urls[11] = file:/root/.m2/repository/org/dom4j/dom4j/2.2.0/dom4j-2.2.0.jar
+[ERROR] urls[12] = file:/root/.m2/repository/org/apache/commons/commons-lang3/3.18.0/commons-lang3-3.18.0.jar
+[ERROR] urls[13] = file:/root/.m2/repository/org/apache/commons/commons-text/1.14.0/commons-text-1.14.0.jar
+[ERROR] urls[14] = file:/root/.m2/repository/com/google/code/gson/gson/2.13.1/gson-2.13.1.jar
+[ERROR] urls[15] = file:/root/.m2/repository/com/google/errorprone/error_prone_annotations/2.38.0/error_prone_annotations-2.38.0.jar
+[ERROR] urls[16] = file:/root/.m2/repository/jaxen/jaxen/2.0.0/jaxen-2.0.0.jar
+[ERROR] urls[17] = file:/root/.m2/repository/net/sf/saxon/Saxon-HE/12.8/Saxon-HE-12.8.jar
+[ERROR] urls[18] = file:/root/.m2/repository/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3.jar
+[ERROR] urls[19] = file:/root/.m2/repository/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3-data.jar
+[ERROR] urls[20] = file:/root/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.25.1/log4j-to-slf4j-2.25.1.jar
+[ERROR] urls[21] = file:/root/.m2/repository/org/apache/logging/log4j/log4j-api/2.25.1/log4j-api-2.25.1.jar
+[ERROR] urls[22] = file:/root/.m2/repository/org/slf4j/slf4j-simple/2.0.17/slf4j-simple-2.0.17.jar
+[ERROR] urls[23] = file:/root/.m2/repository/commons-io/commons-io/2.20.0/commons-io-2.20.0.jar
+[ERROR] urls[24] = file:/root/.m2/repository/org/apache/groovy/groovy/4.0.28/groovy-4.0.28.jar
+[ERROR] urls[25] = file:/root/.m2/repository/org/apache/groovy/groovy-ant/4.0.28/groovy-ant-4.0.28.jar
+[ERROR] urls[26] = file:/root/.m2/repository/org/apache/ant/ant/1.10.15/ant-1.10.15.jar
+[ERROR] urls[27] = file:/root/.m2/repository/org/apache/ant/ant-launcher/1.10.15/ant-launcher-1.10.15.jar
+[ERROR] urls[28] = file:/usr/lib/jvm/java-8-openjdk-amd64/jre/../lib/tools.jar
+[ERROR] urls[29] = file:/root/.m2/repository/org/apache/groovy/groovy-groovydoc/4.0.28/groovy-groovydoc-4.0.28.jar
+[ERROR] urls[30] = file:/root/.m2/repository/org/apache/groovy/groovy-docgenerator/4.0.28/groovy-docgenerator-4.0.28.jar
+[ERROR] urls[31] = file:/root/.m2/repository/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1.jar
+[ERROR] urls[32] = file:/root/.m2/repository/org/apache/groovy/groovy-json/4.0.28/groovy-json-4.0.28.jar
+[ERROR] urls[33] = file:/root/.m2/repository/org/apache/groovy/groovy-templates/4.0.28/groovy-templates-4.0.28.jar
+[ERROR] urls[34] = file:/root/.m2/repository/org/apache/groovy/groovy-xml/4.0.28/groovy-xml-4.0.28.jar
+[ERROR] urls[35] = file:/root/.m2/repository/com/github/javaparser/javaparser-core/3.27.0/javaparser-core-3.27.0.jar
+[ERROR] urls[36] = file:/root/.m2/repository/org/apache/maven/reporting/maven-reporting-impl/4.0.0/maven-reporting-impl-4.0.0.jar
+[ERROR] urls[37] = file:/root/.m2/repository/org/apache/maven/reporting/maven-reporting-api/4.0.0/maven-reporting-api-4.0.0.jar
+[ERROR] urls[38] = file:/root/.m2/repository/org/apache/maven/shared/maven-shared-utils/3.4.2/maven-shared-utils-3.4.2.jar
+[ERROR] urls[39] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-site-model/2.0.0/doxia-site-model-2.0.0.jar
+[ERROR] urls[40] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-module-apt/2.0.0/doxia-module-apt-2.0.0.jar
+[ERROR] urls[41] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-module-xdoc/2.0.0/doxia-module-xdoc-2.0.0.jar
+[ERROR] urls[42] = file:/root/.m2/repository/org/apache/maven/maven-archiver/3.6.2/maven-archiver-3.6.2.jar
+[ERROR] urls[43] = file:/root/.m2/repository/org/codehaus/plexus/plexus-archiver/4.9.2/plexus-archiver-4.9.2.jar
+[ERROR] urls[44] = file:/root/.m2/repository/org/codehaus/plexus/plexus-io/3.4.2/plexus-io-3.4.2.jar
+[ERROR] urls[45] = file:/root/.m2/repository/org/apache/commons/commons-compress/1.26.1/commons-compress-1.26.1.jar
+[ERROR] urls[46] = file:/root/.m2/repository/commons-codec/commons-codec/1.19.0/commons-codec-1.19.0.jar
+[ERROR] urls[47] = file:/root/.m2/repository/org/iq80/snappy/snappy/0.4/snappy-0.4.jar
+[ERROR] urls[48] = file:/root/.m2/repository/org/tukaani/xz/1.9/xz-1.9.jar
+[ERROR] urls[49] = file:/root/.m2/repository/com/github/luben/zstd-jni/1.5.5-11/zstd-jni-1.5.5-11.jar
+[ERROR] urls[50] = file:/root/.m2/repository/org/eclipse/sisu/org.eclipse.sisu.inject/0.9.0.M3/org.eclipse.sisu.inject-0.9.0.M3.jar
+[ERROR] urls[51] = file:/root/.m2/repository/org/codehaus/plexus/plexus-component-annotations/2.2.0/plexus-component-annotations-2.2.0.jar
+[ERROR] urls[52] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-core/2.0.0/doxia-core-2.0.0.jar
+[ERROR] urls[53] = file:/root/.m2/repository/org/codehaus/plexus/plexus-xml/3.0.2/plexus-xml-3.0.2.jar
+[ERROR] urls[54] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-sink-api/2.0.0/doxia-sink-api-2.0.0.jar
+[ERROR] urls[55] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-site-renderer/2.0.0/doxia-site-renderer-2.0.0.jar
+[ERROR] urls[56] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-skin-model/2.0.0/doxia-skin-model-2.0.0.jar
+[ERROR] urls[57] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-module-xhtml5/2.0.0/doxia-module-xhtml5-2.0.0.jar
+[ERROR] urls[58] = file:/root/.m2/repository/org/codehaus/plexus/plexus-velocity/2.2.1/plexus-velocity-2.2.1.jar
+[ERROR] urls[59] = file:/root/.m2/repository/org/apache/velocity/velocity-engine-core/2.4/velocity-engine-core-2.4.jar
+[ERROR] urls[60] = file:/root/.m2/repository/org/apache/velocity/tools/velocity-tools-generic/3.1/velocity-tools-generic-3.1.jar
+[ERROR] urls[61] = file:/root/.m2/repository/commons-beanutils/commons-beanutils/1.11.0/commons-beanutils-1.11.0.jar
+[ERROR] urls[62] = file:/root/.m2/repository/commons-logging/commons-logging/1.3.5/commons-logging-1.3.5.jar
+[ERROR] urls[63] = file:/root/.m2/repository/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar
+[ERROR] urls[64] = file:/root/.m2/repository/org/apache/commons/commons-digester3/3.2/commons-digester3-3.2.jar
+[ERROR] urls[65] = file:/root/.m2/repository/com/github/cliftonlabs/json-simple/3.0.2/json-simple-3.0.2.jar
+[ERROR] urls[66] = file:/root/.m2/repository/org/apache/maven/doxia/doxia-integration-tools/2.0.0/doxia-integration-tools-2.0.0.jar
+[ERROR] urls[67] = file:/root/.m2/repository/org/codehaus/plexus/plexus-i18n/1.0-beta-10/plexus-i18n-1.0-beta-10.jar
+[ERROR] urls[68] = file:/root/.m2/repository/org/codehaus/plexus/plexus-interpolation/1.27/plexus-interpolation-1.27.jar
+[ERROR] urls[69] = file:/root/.m2/repository/org/codehaus/plexus/plexus-resources/1.3.0/plexus-resources-1.3.0.jar
+[ERROR] urls[70] = file:/root/.m2/repository/org/codehaus/plexus/plexus-utils/4.0.2/plexus-utils-4.0.2.jar
+[ERROR] urls[71] = file:/root/.m2/repository/org/checkerframework/checker-qual/3.49.3/checker-qual-3.49.3.jar
+[ERROR] Number of foreign imports: 1
+[ERROR] import: Entry[import  from realm ClassRealm[project>org.apache.servicecomb:java-chassis:3.4.0-SNAPSHOT, parent: ClassRealm[maven.api, parent: null]]]
+[ERROR] 
+[ERROR] -----------------------------------------------------
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/PluginContainerException
+
+[rc=1 3.3s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install -pl swagger/swagger-generator/generator-core -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.14.0:compile (default-compile) on project foundation-spi: Fatal error compiling: error: release version 17 not supported -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :foundation-spi
+
+[rc=1 8.7s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= install -pl swagger/swagger-generator/generator-core -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] COMPILATION ERROR : 
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/bootstrap/BootStrapService.java:[21,36] cannot access org.springframework.core.env.Environment
+  bad class file: /root/.m2/repository/org/springframework/spring-core/6.2.9/spring-core-6.2.9.jar(/org/springframework/core/env/Environment.class)
+    class file has wrong version 61.0, should be 55.0
+    Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/common/utils/SPIOrder.java:[20,32] cannot access org.springframework.core.Ordered
+  bad class file: /root/.m2/repository/org/springframework/spring-core/6.2.9/spring-core-6.2.9.jar(/org/springframework/core/Ordered.class)
+    class file has wrong version 61.0, should be 55.0
+    Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/common/utils/SPIOrder.java:[22,35] cannot find symbol
+  symbol: class Ordered
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/bootstrap/BootStrapService.java:[34,16] cannot find symbol
+  symbol:   class Environment
+  location: interface org.apache.servicecomb.foundation.bootstrap.BootStrapService
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/common/utils/SPIServiceUtils.java:[36,32] cannot access org.springframework.util.ReflectionUtils
+  bad class file: /root/.m2/repository/org/springframework/spring-core/6.2.9/spring-core-6.2.9.jar(/org/springframework/util/ReflectionUtils.class)
+    class file has wrong version 61.0, should be 55.0
+    Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/common/utils/SPIServiceUtils.java:[65,25] cannot find symbol
+  symbol:   variable ReflectionUtils
+  location: class org.apache.servicecomb.foundation.common.utils.SPIServiceUtils
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/common/utils/SPIServiceUtils.java:[67,30] cannot find symbol
+  symbol:   variable ReflectionUtils
+  location: class org.apache.servicecomb.foundation.common.utils.SPIServiceUtils
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.14.0:compile (default-compile) on project foundation-spi: Compilation failure: Compilation failure: 
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/bootstrap/BootStrapService.java:[21,36] cannot access org.springframework.core.env.Environment
+[ERROR]   bad class file: /root/.m2/repository/org/springframework/spring-core/6.2.9/spring-core-6.2.9.jar(/org/springframework/core/env/Environment.class)
+[ERROR]     class file has wrong version 61.0, should be 55.0
+[ERROR]     Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/common/utils/SPIOrder.java:[20,32] cannot access org.springframework.core.Ordered
+[ERROR]   bad class file: /root/.m2/repository/org/springframework/spring-core/6.2.9/spring-core-6.2.9.jar(/org/springframework/core/Ordered.class)
+[ERROR]     class file has wrong version 61.0, should be 55.0
+[ERROR]     Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/common/utils/SPIOrder.java:[22,35] cannot find symbol
+[ERROR]   symbol: class Ordered
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/bootstrap/BootStrapService.java:[34,16] cannot find symbol
+[ERROR]   symbol:   class Environment
+[ERROR]   location: interface org.apache.servicecomb.foundation.bootstrap.BootStrapService
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/common/utils/SPIServiceUtils.java:[36,32] cannot access org.springframework.util.ReflectionUtils
+[ERROR]   bad class file: /root/.m2/repository/org/springframework/spring-core/6.2.9/spring-core-6.2.9.jar(/org/springframework/util/ReflectionUtils.class)
+[ERROR]     class file has wrong version 61.0, should be 55.0
+[ERROR]     Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/common/utils/SPIServiceUtils.java:[65,25] cannot find symbol
+[ERROR]   symbol:   variable ReflectionUtils
+[ERROR]   location: class org.apache.servicecomb.foundation.common.utils.SPIServiceUtils
+[ERROR] /tmp/jvm-work2/servicecomb-java-chassis-generator-core/foundations/foundation-spi/src/main/java/org/apache/servicecomb/foundation/common/utils/SPIServiceUtils.java:[67,30] cannot find symbol
+[ERROR]   symbol:   variable ReflectionUtils
+[ERROR]   location: class org.apache.servicecomb.foundation.common.utils.SPIServiceUtils
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :foundation-spi
+
+[rc=1 4.2s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install -pl swagger/swagger-generator/generator-core -am
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+[rc=0 22.6s]

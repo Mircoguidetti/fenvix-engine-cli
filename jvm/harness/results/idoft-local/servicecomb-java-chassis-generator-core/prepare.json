@@ -1,0 +1,35 @@
+{
+ "name": "servicecomb-java-chassis-generator-core",
+ "url": "https://github.com/apache/servicecomb-java-chassis",
+ "sha": "ec76b1a15704c15bab437e64739e6d483562850d",
+ "module": "swagger/swagger-generator/generator-core",
+ "status": "ok",
+ "build_jdk8_install": {
+  "rc": 1,
+  "seconds": 10.1
+ },
+ "build_jdk8_install_compat": {
+  "rc": 1,
+  "seconds": 3.3
+ },
+ "build_jdk11_install": {
+  "rc": 1,
+  "seconds": 8.7
+ },
+ "build_jdk11_install_compat": {
+  "rc": 1,
+  "seconds": 4.2
+ },
+ "build_jdk17_install": {
+  "rc": 0,
+  "seconds": 22.6
+ },
+ "jdk": "17",
+ "first_run": {
+  "wall": 8.5,
+  "test_seconds": 6.2,
+  "tests": 50,
+  "failed": 0
+ },
+ "documented_present": 15
+}

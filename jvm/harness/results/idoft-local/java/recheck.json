@@ -1,0 +1,57 @@
+{
+ "name": "java",
+ "before": 10,
+ "after": 10,
+ "broken_now": [
+  {
+   "test": "com.jsoniter.TestAnnotationJsonIgnore::test_json_ignore_with_creator",
+   "baseline": "0F/10P",
+   "det_now": "10F/10"
+  },
+  {
+   "test": "com.jsoniter.TestAnnotationJsonProperty::test_creator_with_json_property",
+   "baseline": "0F/10P",
+   "det_now": "10F/10"
+  },
+  {
+   "test": "com.jsoniter.TestAnnotationJsonWrapper::test_key_value",
+   "baseline": "0F/10P",
+   "det_now": "10F/10"
+  },
+  {
+   "test": "com.jsoniter.TestObject::test_inheritance",
+   "baseline": "0F/10P",
+   "det_now": "10F/10"
+  },
+  {
+   "test": "com.jsoniter.TestObject::test_private_ref",
+   "baseline": "0F/10P",
+   "det_now": "10F/10"
+  },
+  {
+   "test": "com.jsoniter.output.TestFloat::test_infinity",
+   "baseline": "0F/10P",
+   "det_now": "10F/10"
+  },
+  {
+   "test": "com.jsoniter.output.TestObject::test_omit_default",
+   "baseline": "0F/10P",
+   "det_now": "10F/10"
+  },
+  {
+   "test": "com.jsoniter.output.TestObject::test_omit_selft_defined",
+   "baseline": "0F/10P",
+   "det_now": "10F/10"
+  },
+  {
+   "test": "com.jsoniter.output.TestObject::test_transient_field_getter",
+   "baseline": "0F/10P",
+   "det_now": "10F/10"
+  },
+  {
+   "test": "com.jsoniter.suite.StreamingTests::com.jsoniter.suite.StreamingTests",
+   "baseline": "0F/0P",
+   "det_now": "10F/10"
+  }
+ ]
+}

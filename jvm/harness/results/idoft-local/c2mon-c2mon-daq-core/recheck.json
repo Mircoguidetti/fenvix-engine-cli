@@ -1,0 +1,17 @@
+{
+ "name": "c2mon-c2mon-daq-core",
+ "before": 2,
+ "after": 2,
+ "broken_now": [
+  {
+   "test": "cern.c2mon.daq.common.messaging.impl.AliveTimerTest::testAliveTimer",
+   "baseline": "0F/10P",
+   "det_now": "1F/10"
+  },
+  {
+   "test": "cern.c2mon.daq.filter.dynamic.DiffMovingAverageTest::testAverage",
+   "baseline": "0F/10P",
+   "det_now": "2F/10"
+  }
+ ]
+}
