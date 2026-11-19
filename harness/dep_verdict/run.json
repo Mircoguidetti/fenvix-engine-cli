@@ -1,8 +1,8 @@
 {
- "run_id": "dv4",
+ "run_id": "dv5",
  "ci": false,
  "plan": "harness/dep_verdict/plan-report2.json",
- "note": "REPORT-2: the 130 pairs of the first report with the R-020 fixes; moto and community-general run in the session container (results/local4/)",
+ "note": "REPORT-2: the 130 pairs of the first report with the R-020 fixes (dv4 cancelled while queued: engine fix 9e0d005); moto and community.general run in the session container (results/local5/)",
  "pairs": [
   {
    "spec": "airflow",
