@@ -356,7 +356,8 @@ async function main(argv) {
     capture.items.push(...auditCheck(auditOf(r.index), capture, root, skipDirs()));
   };
   const code = await common.runFiles({
-    runner: 'deno', runnerVersion: version, root, opts, run, pc, fileIds: order, spawnFile, extra: pc ? extra : null,
+    runner: 'deno', runnerVersion: version, root, opts, run, pc, fileIds: order, spawnFile,
+    extra: pc && process.env.DETJS_RUNTIME_NAIVE !== '1' ? extra : null,
     isolation: 'deno test: one process per test file (detjs order)', isolationShort: 'process per file', cliArgs: rest,
     afterRun: () => { if (junitPath) common.mergeJunit(junitParts, path.resolve(root, junitPath), 'deno test'); },
   });

@@ -478,9 +478,11 @@ function installResolver(cap, bracket) {
       }
       const ok = [...new Set(targets.filter((x) => typeof x === 'string' && path.isAbsolute(x)))];
       if (!ok.length) {
-        // installed packages: their own optional imports are covered by the runtime identity; the JSX runtime import
-        // is implied by the scanner's default JSX settings (the project's are in tsconfig, a configuration file)
-        if (project && !/\/jsx-(dev-)?runtime$/.test(spec)) cap.resolveFailed(spec, file);
+        // installed packages: their own optional imports are covered by the runtime identity; a specifier that is
+        // not in the source is the scanner's own (JSX runtime imports it adds with its default JSX settings; the
+        // project's settings are in tsconfig, a configuration file)
+        const literal = src.includes(`'${spec}'`) || src.includes(`"${spec}"`) || src.includes(`\`${spec}\``);
+        if (project && literal) cap.resolveFailed(spec, file);
         continue;
       }
       for (const x of ok) {

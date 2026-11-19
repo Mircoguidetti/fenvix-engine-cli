@@ -31,7 +31,8 @@ if (c.active && fileId) {
   const bracket = new Bracket(fileId, cap);
   bracket.doneStyle = true;
   bracket.runtimeName = `bun ${Bun.version}`;
-  if (cap) {
+  // DETJS_RUNTIME_NAIVE=1 (tests only): the shared Node capture alone, to measure what Bun's own capture adds
+  if (cap && process.env.DETJS_RUNTIME_NAIVE !== '1') {
     runtime.installCapture(cap, bracket, notes);
     // toMatchSnapshot reads the file's snapshot file natively
     cap.read(runtime.snapshotPath(path.resolve(c.root, fileId)), 'f');

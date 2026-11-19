@@ -125,7 +125,7 @@ function installLevel0(cfg, notes) {
  */
 const explained = { paths: new Set(), env: new Set(), sys: new Set(), any: false };
 
-function installCapture(cap, notes) {
+function installCapture(cap, notes, { wrappers = true } = {}) {
   const cfg = require('../controls').cfg();
   const closed = cfg.controls.has('net') && cfg.netMode !== 'record';
   const abs = (p) => { try { const t = require('../cache/capture').toPath(p); return t; } catch { return null; } };
@@ -140,6 +140,7 @@ function installCapture(cap, notes) {
   cap.flag = (kind, detail) => { explained.any = true; return realFlag(kind, detail); };
 
   const wrap = (obj, key, before, after) => {
+    if (!wrappers) return false; // DETJS_DENO_WRAPPERS=off (tests: the audit cross-check alone)
     const real = obj[key];
     if (typeof real !== 'function' || real.__detjsCache) return false;
     const w = new Proxy(real, {
@@ -230,12 +231,12 @@ function installCapture(cap, notes) {
   }
   // environment
   const E = Deno.env;
-  for (const k of ['get', 'has']) {
+  for (const k of wrappers ? ['get', 'has'] : []) {
     const real = E[k];
     E[k] = function (name) { if (cap.active && !cap.busy && typeof name === 'string') cap.env(name); return real.call(this, name); };
   }
   const realToObject = E.toObject;
-  E.toObject = function toObject() { if (cap.active && !cap.busy) cap.env('*'); return realToObject.call(this); };
+  if (wrappers) E.toObject = function toObject() { if (cap.active && !cap.busy) cap.env('*'); return realToObject.call(this); };
   // machine facts (same names as the shared capture's `~os.<name>`, digested by the main process)
   const fact = (k, name) => wrap(Deno, k, () => { explained.sys.add(k); cap.env(`~os.${name}`); });
   fact('hostname', 'hostname');
@@ -275,6 +276,16 @@ function installCapture(cap, notes) {
     wrap(globalThis, 'WebSocket', (a) => { const h = hostOf(a[0]); if (!(h && closed && !localHost(h.host))) cap.flag('connect', 'WebSocket'); });
   }
   if (typeof globalThis.Worker === 'function') wrap(globalThis, 'Worker', (a) => cap.flag('worker', `Worker ${String(a[0]).slice(0, 160)}`));
+  // storage that persists between runs (Deno keeps it per origin under DENO_DIR)
+  for (const k of ['localStorage', 'sessionStorage', 'caches']) {
+    const d = Object.getOwnPropertyDescriptor(globalThis, k);
+    if (!d || !d.configurable) continue;
+    Object.defineProperty(globalThis, k, {
+      configurable: true,
+      enumerable: d.enumerable,
+      get() { if (cap.active && !cap.busy) cap.flag('runtime-api', `${k} (persistent storage)`); return d.get ? d.get.call(this) : d.value; },
+    });
+  }
   // every other function of the namespace
   for (const k of Object.getOwnPropertyNames(Deno)) {
     if (PURE.has(k) || HANDLED.has(k)) continue;

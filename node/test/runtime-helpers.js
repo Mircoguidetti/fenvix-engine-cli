@@ -24,7 +24,9 @@ function fixture(rt, name, files) {
   const dir = path.join(TMP, `runner-${rt}`, name);
   fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(dir, { recursive: true });
-  write(dir, { 'package.json': JSON.stringify({ name: `fx-${name}`, private: true }) });
+  // Deno: a package.json would switch it to a node_modules project (type checks then want @types/node installed)
+  if (rt === 'deno') write(dir, { 'deno.json': '{}\n' });
+  else write(dir, { 'package.json': JSON.stringify({ name: `fx-${name}`, private: true }) });
   write(dir, files);
   return dir;
 }
@@ -108,8 +110,20 @@ function neverReused(rt, dir, file, change, why, opts = {}) {
   return r2;
 }
 
+/** A configuration input that does not flip the outcome: after the change the file must run again (not be reused). */
+function rerunsAfter(rt, dir, file, change, opts = {}) {
+  const r1 = crun(rt, dir, { env: opts.env1, args: opts.args1 });
+  assert.equal(r1.status, 0, `run 1 must pass\n${show(r1)}`);
+  const r2 = crun(rt, dir, { env: opts.env1, args: opts.args1 });
+  assert.ok(reused(r2).includes(file), `run 2 must reuse ${file}\n${show(r2)}`);
+  apply(dir, change);
+  const r3 = crun(rt, dir, { env: opts.env2 || opts.env1, args: opts.args2 || opts.args1 });
+  assert.ok(!reused(r3).includes(file), `${file} reused after a configuration change\n${show(r3)}`);
+  return r3;
+}
+
 function fingerprints(r) {
   return Object.fromEntries(((r.trace && r.trace.tests) || []).map((t) => [t.nodeid, `${t.outcome}:${t.fingerprint}`]));
 }
 
-module.exports = { BINARY, fixture, write, crun, show, reused, noWrongReuse, neverReused, fingerprints, TMP };
+module.exports = { BINARY, fixture, write, crun, show, reused, noWrongReuse, neverReused, rerunsAfter, fingerprints, TMP };

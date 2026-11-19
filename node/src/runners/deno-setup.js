@@ -25,7 +25,8 @@ if (c.active && fileId && !globalThis[Symbol.for('detjs.deno.setup')]) {
   if (process.env.DETJS_CACHE === '1') {
     cap = require('../cache/capture').CAPTURE;
     cap.install({ role: 'worker', root: c.root, mainAnyReads: false });
-    runtime.installCapture(cap, notes);
+    // DETJS_RUNTIME_NAIVE=1 (tests only): the shared Node capture alone, to measure what Deno's own capture adds
+    if (process.env.DETJS_RUNTIME_NAIVE !== '1') runtime.installCapture(cap, notes, { wrappers: process.env.DETJS_DENO_WRAPPERS !== 'off' });
     for (const n of notes) cap.notes.add(n);
   }
   for (const n of notes) controls.STATE.notes.push(n);
