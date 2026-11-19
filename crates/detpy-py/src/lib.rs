@@ -25,6 +25,10 @@ mod fsorder;
 mod seeds;
 mod standin;
 
+// rust-hotpaths-2: repro / reexec decisions
+mod reexec;
+mod repro;
+
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     // A panic while holding the lock must not make every later call fail.
     m.lock().unwrap_or_else(|e| e.into_inner())
@@ -189,7 +193,7 @@ impl Cassette {
     }
 }
 
-fn trace_err(e: trace::TraceError) -> PyErr {
+pub(crate) fn trace_err(e: trace::TraceError) -> PyErr {
     match e {
         trace::TraceError::Io(e) => e.into(),
         other => PyValueError::new_err(other.to_string()),
@@ -281,5 +285,8 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     standin::register(m)?;
     seeds::register(m)?;
     fsorder::register(m)?;
+    // rust-hotpaths-2: repro / reexec decisions
+    reexec::register(m)?;
+    repro::register(m)?;
     Ok(())
 }
