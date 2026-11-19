@@ -447,3 +447,118 @@ func TestR025b_A4_ModuleGraph(t *testing.T) {
 		})
 	}
 }
+
+// ---------------------------------------------------------------------------
+// Commit 480498f (coordinator scope addition): virtual /proc/1/stat.
+
+// V1. Readers of the changing fields: plain go test passes; under fenvix the
+// constants (utime = stime = 0, vsize = 0) make them fail (an integer
+// division by zero for the ratio). Deterministic, so no wrong reuse: broken
+// by fenvix (skip mode and --det).
+func TestR025b_V1_VirtualStatBreaksReaders(t *testing.T) {
+	if _, err := os.ReadFile("/proc/1/stat"); err != nil {
+		t.Skip(err)
+	}
+	dir := copyFixture(t, "review-r025b")
+	plain := exec.Command("go", "test", "-count=1", "-v", "./procv")
+	plain.Dir = dir
+	plain.Env = append(os.Environ(), "GOFLAGS=")
+	pout, perr := plain.CombinedOutput()
+	if perr != nil {
+		t.Skipf("plain go test does not pass here:\n%s", pout)
+	}
+	r := &r025{t: t, dir: dir, cache: filepath.Join(t.TempDir(), "cache"), env: []string{"GOFLAGS="}, pkg: "procv"}
+	got := r.run()
+	for _, n := range []string{"TestPid1UsedCPU", "TestPid1MemoryRatio"} {
+		if d := got[n]; d.Fresh != "passed" {
+			t.Errorf("%s passes plain and is %q under fenvix skip mode: broken by the virtual /proc/1/stat", n, d.Fresh)
+		}
+	}
+	out, code := runFenvix(t, dir, []string{"GOFLAGS="}, "test", "--det", "-run", "TestPid1UsedCPU", "./procv")
+	if code != 0 {
+		t.Errorf("TestPid1UsedCPU passes plain and fails under --det (exit %d):\n%s", code, lastLines(out, 6))
+	}
+}
+
+func lastLines(s string, n int) string {
+	l := strings.Split(strings.TrimSpace(s), "\n")
+	if len(l) > n {
+		l = l[len(l)-n:]
+	}
+	return strings.Join(l, "\n")
+}
+
+// V2. /proc/self/stat is not virtualised and is dropped as process-private:
+// the nice value the run inherits (field 19) is in no key.
+func TestR025b_V2_SelfStatNice(t *testing.T) {
+	if _, err := exec.LookPath("nice"); err != nil {
+		t.Skip("nice not installed")
+	}
+	r := newR025b(t, "procself")
+	r.record([]string{"TestNotNiced"})
+	r.mustReuse("TestNotNiced")
+	r.noWrongReuseVia("started at nice 5", "TestNotNiced", []string{"nice", "-n", "5"})
+}
+
+// V3. Aliases under /proc/self: a path through /proc/self/cwd or
+// /proc/self/root names an ordinary file, but the classifier drops everything
+// under /proc/self (and the os hook matches /proc/1/stat by its exact name).
+func TestR025b_V3_ProcSelfAliases(t *testing.T) {
+	t.Run("cwd alias", func(t *testing.T) {
+		r := newR025b(t, "cwdalias")
+		r.record([]string{"TestValueThroughCwdAlias"})
+		r.mustReuse("TestValueThroughCwdAlias")
+		os.WriteFile(r.path("cwdalias/testdata/value.txt"), []byte("v2\n"), 0o644)
+		r.noWrongReuse("testdata/value.txt v1 -> v2", "TestValueThroughCwdAlias")
+	})
+	t.Run("root alias of /proc/1/stat", func(t *testing.T) {
+		r := newR025b(t, "byalias")
+		r.record([]string{"TestRootAlias"})
+		d := r.run()["TestRootAlias"]
+		t.Logf("reuse=%v why=%q", d.Reuse, d.Why)
+		if d.Reuse {
+			t.Errorf("TestRootAlias read the real /proc/1/stat (changing fields included) through /proc/self/root and is reused: the read is in no key")
+		}
+	})
+}
+
+// V4 (held if not reused). Reads of /proc/1/stat that bypass os.OpenFile:
+// syscall.Open, os.Root. strace sees them; the path is volatile.
+func TestR025b_V4_BypassesAreVolatile(t *testing.T) {
+	for _, c := range []struct{ pkg, test string }{{"bysys", "TestSyscallOpen"}, {"byroot", "TestRootOpen"}} {
+		t.Run(c.pkg, func(t *testing.T) {
+			r := newR025b(t, c.pkg)
+			r.record([]string{c.test})
+			d := r.run()[c.test]
+			t.Logf("reuse=%v why=%q", d.Reuse, d.Why)
+			if d.Reuse {
+				t.Errorf("%s read the real /proc/1/stat below the hook and is reused", c.test)
+			}
+		})
+	}
+}
+
+// X1. A test that panics is recorded as passed: the decision report says
+// fresh "passed" while go test prints --- FAIL and exits 1, the cache stores
+// "passed", and the next ordinary run (no --skip-verify) reuses it and exits
+// 0. The walk's verification reads the same decision file, so it cannot see
+// this either. Held: log.Fatal in a test, a panic in a goroutine (both
+// recorded "interrupted").
+func TestR025b_X1_PanicRecordedAsPassed(t *testing.T) {
+	for _, pkg := range []string{"panicky", "crashexit", "crashgo"} {
+		t.Run(pkg, func(t *testing.T) {
+			r := newR025b(t, pkg)
+			report := filepath.Join(t.TempDir(), "d1.jsonl")
+			out, code := runFenvix(t, r.dir, r.env, "test", "--skip-cache="+r.cache, "--skip-report="+report, "./"+pkg)
+			b, _ := os.ReadFile(report)
+			t.Logf("record run: exit %d, decisions %s", code, b)
+			if code == 0 {
+				t.Fatalf("the record run passed:\n%s", out)
+			}
+			out, code = runFenvix(t, r.dir, r.env, "test", "--skip-cache="+r.cache, "./"+pkg)
+			if code == 0 {
+				t.Errorf("a failing test (%s), unchanged, is reused and the run exits 0:\n%s", pkg, lastLines(out, 4))
+			}
+		})
+	}
+}

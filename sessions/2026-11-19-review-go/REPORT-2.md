@@ -1,19 +1,21 @@
-FIX 16
+FIX 19
 
-# R-025b · Last review of the Go track (P-021, branch `claude/go-l0` at 05a7dfa)
+# R-025b · Last review of the Go track (P-021, branch `claude/go-l0` at 05a7dfa and 480498f)
 
-Reviewer session, 2026-11-19 (runs between 22:29 and 23:00 UTC). Target: `claude/go-l0` at 05a7dfa, report `sessions/2026-11-18-go-l0/REPORT-2.md`, which answers R-025 (`sessions/2026-11-19-review-go/REPORT.md`, FIX 17). Branch of this review: `claude/review-r025b` = target + review tests + this file.
+Reviewer session, 2026-11-19 (runs between 22:29 and 23:05 UTC). Target: `claude/go-l0` at 05a7dfa, and, at the coordinator's request (scope addition received during this review), commit 480498f on top of it (virtual `/proc/1/stat`, section 7). Report under review: `sessions/2026-11-18-go-l0/REPORT-2.md`, which answers R-025 (`sessions/2026-11-19-review-go/REPORT.md`, FIX 17). Branch of this review: `claude/review-r025b` = 05a7dfa + review tests + this file, then 480498f merged in (5f7d5bc) so the tests also run against it. Every finding below except V1 reproduces on both commits (MEASURED: the full `TestR025b` run was repeated on the merged tree at 23:01 UTC with the same results).
 
 Environment: this session's container (4 CPUs, Linux 6.18, Go 1.24.7, go1.22.12 through `GOTOOLCHAIN`, strace, gcc, cargo, taskset, prlimit, unshare, root). Labels: MEASURED / ESTIMATED / DECLARED / UNKNOWN.
 
-## Verdict: FIX 16
+## Verdict: FIX 19
 
+- **The worst finding is old and simple (X1): a test that panics is cached as passed.** The next ordinary run reuses it and exits 0. It is present on 05a7dfa and 480498f. The walks' verification reads the same mis-recorded outcome, so the walks cannot have seen it.
 - **All 17 R-025 findings are fixed** (MEASURED: every `TestR025` test passes, `review_r025_check.py` exits 0). R1 is mostly done (one new boundary finding, R2).
-- **Skip with proof still gives wrong reuses: 9 new ways** (C1-C3, P1, A1, F1b, F2b, F5b; one robustness hang, R1b). Each is a test that fails on 05a7dfa: the key says "reuse with proof" and the fresh run of the same state fails. Four of them come from the new virtual-day clock: the key holds the day, but real time still reaches the test inside the day.
+- **Skip with proof still gives wrong reuses: 10 new ways** (C1-C3, P1, A1, F1b, F2b, F5b, V3; one robustness hang, R1b). Each is a test that fails on 05a7dfa: the key says "reuse with proof" and the fresh run of the same state fails. Four of them come from the new virtual-day clock: the key holds the day, but real time still reaches the test inside the day.
 - **Skip mode breaks tests, MEASURED in the walks (S1):** 8 tests fail in fenvix's own fresh run in 15 to 50 of 50 commits under skip-r5 (0 to 1 of 50 under skip-r4) and pass alone under plain `go test`. REPORT-2 does not mention them; the walk classifies them as "flaky".
 - **`--det`: 2 findings** (D2b, D3b): two more idioms broken by `--det`, two more uncontrolled entropy sources, and a start message that contradicts the report.
 - **Numbers: 2 findings** (N4, N5). The telegraf rows cover 33.2% of telegraf's test time. The coverage gain 56.0% → 70.0% is 62.7% → 70.0% like for like; the rest comes from quic-go losing 139 `--det` results to a `--det` timeout, which the aggregate mislabels as "both arms stopped".
 - **Rust boundary (R2)** and **the nightly real-clock run (NC)**: one finding each.
+- **480498f (virtual `/proc/1/stat`): sound for reads through `os.OpenFile`**. Reads that bypass the hook (`syscall.Open`, `os.Root`) are volatile, which holds. Two findings: V1 (constants break readers of the changing fields, under skip mode and `--det`) and V3 (`/proc/self/root` and `/proc/self/cwd` aliases: real content, no key).
 - **Held:** every absent-input attack (14 cases), TZ and `/etc/localtime`, `init()` clock, static helpers, `GOFLAGS`, module graph, abstract unix sockets, two D1 variants.
 
 "0 wrong reuses in every walk" is correct as a count (re-derived). It does not cover the clock findings, for two reasons:
@@ -55,10 +57,11 @@ Tests: `go/cmd/fenvix-go/review_r025b_test.go`, `review_r025b_det_test.go`. The 
 
 | # | test (`review_r025b_test.go`) | change between record and check | wrongly reused (fresh outcome) | why the key misses it |
 |---|---|---|---|---|
+| X1 | `TestR025b_X1_PanicRecordedAsPassed` | none: the record run itself. `TestPanics` assigns to a nil map | `TestPanics`. Record run: `--- FAIL`, exit 1, but the decision says `fresh: passed`. Second, ordinary run: `reuse: true`, `ok`, **exit 0** | A panic in the test goroutine is recovered and re-raised by `testing.tRunner`, and fenvix's end-of-test hook records the outcome as passed. `log.Fatal` in a test and a panic in another goroutine are recorded `interrupted` (held). Same on 05a7dfa (MEASURED with both binaries). |
 | C1 | `TestR025b_C1_FileAgeIsRealTime` | none: 4 s pass, same UTC day. The test checks `time.Since(stat(testdata/stamp).ModTime()) < 3s` (a TTL, lock or freshness check) | `TestStampIsFresh` (failed) | D2's mtime shift adds (virtual − real) **at test start**, so the age the test sees is real elapsed time. The key holds the mtime and the day, and neither moves. |
 | C2 | `TestR025b_C2_RealClockBesideVirtual` / `TestGoHelperClock` | none: the tolerance is exceeded 2 s after record, same day | `TestGoHelperClock` (failed) | A Go helper built with cgo is dynamically linked, so `dynamically_linked()` keys it as a reusable child. But the Go runtime reads the clock through the vDSO, not libc: `LD_PRELOAD` does not reach it, and its clock is real (MEASURED: `child go (dyn) 1795127385…` = 22:29:45 while the test's clock read 00:00:00). Any Go tool built with cgo (or with `-linkmode=external`) behaves like this. |
 | C3 | same test / `TestCgoClock`, `TestRawSyscallClock` | same | both (failed) | `clock_gettime` called from C (cgo), and a raw `SYS_clock_gettime`, read the real clock inside the test process. Skip mode no longer treats any clock read as an input (only the day), so these reads reach the outcome with nothing in the key. Plain `go test` passes all three with a tolerance of seconds. Under fenvix they pass only up to that tolerance after 00:00 UTC (broken the rest of the day), and are reused all day. |
-| P1 | `TestR025b_P_ProcessAttributes` (3 cases) | started through `taskset -c 0`; `umask 002`; `prlimit --nofile=1024:1024` | `TestTwoCPUs`, `TestCreatedMode`, `TestOpenFilesLimit` (all failed) | Process attributes the binary inherits are in no key: CPU affinity (`runtime.NumCPU`, the default GOMAXPROCS), umask and rlimits. Neither is uid. `/proc/self/limits`, `/status`, `/cgroup` and `/mountinfo` carry them, and `classify` drops all of `/proc/self` as process-private. This covers a restored or shared cache on another runner type, and any CI change of container settings. |
+| P1 | `TestR025b_P_ProcessAttributes` (3 cases), `TestR025b_V2_SelfStatNice` | started through `taskset -c 0`; `umask 002`; `prlimit --nofile=1024:1024`; `nice -n 5` (read from `/proc/self/stat` field 19) | `TestTwoCPUs`, `TestCreatedMode`, `TestOpenFilesLimit`, `TestNotNiced` (all failed) | Process attributes the binary inherits are in no key: CPU affinity (`runtime.NumCPU`, the default GOMAXPROCS), umask and rlimits. Neither is uid. `/proc/self/limits`, `/status`, `/cgroup` and `/mountinfo` carry them, and `classify` drops all of `/proc/self` as process-private. This covers a restored or shared cache on another runner type, and any CI change of container settings. |
 | A1 | `TestR025b_A1_CgoGetenv` | `R25B_CMODE=1` set; the variable is read by C `getenv` | `TestDefaultMode` (failed) | F7 keyed only the `LD_`, `GLIBC_` and `MALLOC_` families. Any C library reads its own variables below the `os.Getenv` hook (`OPENSSL_CONF`, `PGHOST`, `KRB5_CONFIG`…). `e:*` (the whole environment) is keyed only when the test starts a program. |
 | F1b | `TestR025b_F1b_WriteByAnotherPackage` | package `a` rewrites `../shared/state.txt` v1→v2 while package `b`'s test runs (skip mode keeps `go test`'s parallel packages); the next commit has v2 | `TestReadsShared` (failed) | F1's fix applies to inputs a previous entry recorded. An input first seen takes its value after the run when **its own** strace log saw no change. Another process (a sibling package, a daemon, a container) can change it in between: b's entry holds v2, a content b never read. |
 | F2b | `TestR025b_F2b_FileOwner` | `chown nobody testdata/conf` | `TestConfigOwnedByMe` (failed) | The metadata value is type, mode, size and mtime; uid and gid are not in it. |
@@ -66,6 +69,7 @@ Tests: `go/cmd/fenvix-go/review_r025b_test.go`, `review_r025b_det_test.go`. The 
 | R1b | `TestR025b_R1b_FifoInputHangs` (robustness) | none: the record run itself | — | The test polls a named pipe with `O_NONBLOCK` and passes at once. `content_value` then does `std::fs::read` on the FIFO (after the run for a first-seen input, before the binary for a recorded one), which blocks with no writer: fenvix-go never finishes (killed after 60 s). The same applies to any FIFO or character device an input path names outside `/dev`. |
 
 Fix directions:
+- **X1:** take the outcome from what `go test` reports for the test (the `--- FAIL`/`panic:` lines or test2json), not from the hook's view when the goroutine unwinds. Add a panicking test to the engine's own skip tests.
 - **C1:** shift only mtimes at or after the test's real start (files the run wrote, which are outputs, not inputs). Leave pre-existing inputs unshifted: their age against the fixed virtual day is then a function of keyed values.
 - **C2:** a Go program is "static" for the clock whatever its linking: detect `.go.buildinfo` and keep `exec:`.
 - **C3:**
@@ -175,7 +179,7 @@ Re-derived and correct: every skip-r4/r5/r6 cell, the wrong and flaky counts, 0 
 |---|---|
 | 1. All 17 R-025 findings fixed | **holds** (MEASURED: 36 R-025 tests pass, check exits 0). New variants: F1 → F1b, F2 → F2b, F3 → P1 (`/proc/self` dropped), F5 → F5b, F6 → C1-C3, F7 → A1 found; F4 → F4b (abstract unix socket), F8 (`GOFLAGS=-timeout`), F9 held; D1 variants held, D2 → D2b, D3 → D3b found; D4 holds (nit 1) |
 | 2. Virtual-day clock in skip mode | **does not hold as sound**: C1, C2, C3 wrong reuses within the day; S1 breaks 8 real tests. Held: `init()` clock (virtual: `00:00:00.000001`), TZ and `/etc/localtime` (keyed), static Go helper (`exec:`), monotonic clock (virtual, `time.Since` = 1 µs). F6 trade-off: as stated, but the nightly run does not exist and bounds less (NC) |
-| 3. `/proc/1/stat` "cannot be keyed soundly" | see section 4: true of keying the bytes, not a reason to leave it volatile |
+| 3. `/proc/1/stat` "cannot be keyed soundly" | true of keying the bytes, not a reason to leave it volatile (section 4). 480498f now virtualises it: sound through `os.OpenFile`; V1 and V3 (section 7) |
 | 4. Absent inputs | **holds**. All 14 cases are refused (`TestR025b_A2`/`A3`/`A4`): `os.Stat` of a missing file, glob gaining a match, missing directory created, `os.Root` and `os.DirFS` stats, a tool appearing on PATH (`LookPath`), a child's `test -e`, `LookupEnv`, a file in the package directory, a user config file, a go:embed pattern gaining a file, a new `_test.go`, a `//go:build` file, `GOFLAGS=-timeout=1s`, a replace directive, a new `go.work`. Many are caught by the listing of `testdata` (sound, coarse). The absent-input hole is the cgo `getenv` (A1) |
 | 5. MEASURED numbers | reproduced, except N4 (label) and N5 (comparison and label); nits 3-4 |
 | 6. Non-interface logic in Rust or the overlay | **mostly**; R2 |
@@ -217,6 +221,7 @@ Re-derived and correct: every skip-r4/r5/r6 cell, the wrong and flaky counts, 0 
 
 | test | result on 05a7dfa | finding |
 |---|---|---|
+| `TestR025b_X1_PanicRecordedAsPassed` (3 cases) | 1 FAIL, 2 PASS | X1 |
 | `TestR025b_C1_FileAgeIsRealTime` | FAIL | C1 |
 | `TestR025b_C2_RealClockBesideVirtual` | FAIL (3 tests) | C2, C3 (`TestInitClock` held) |
 | `TestR025b_C6_StaticHelperNotReused` | PASS | held |
@@ -233,6 +238,35 @@ Re-derived and correct: every skip-r4/r5/r6 cell, the wrong and flaky counts, 0 
 | `TestR025b_R1b_FifoInputHangs` | FAIL (60 s bound) | R1b |
 | `TestR025b_D1_BrokenByDet` | 2 PASS, 2 FAIL | D2b |
 | `TestR025b_D3_UncontrolledEntropy` | 2 PASS, 2 FAIL | D3b |
+| `TestR025b_V1_VirtualStatBreaksReaders` | FAIL (480498f only) | V1 |
+| `TestR025b_V2_SelfStatNice` | FAIL | P1 |
+| `TestR025b_V3_ProcSelfAliases` (cwd, root) | FAIL ×2 | V3 |
+| `TestR025b_V4_BypassesAreVolatile` (`syscall.Open`, `os.Root`) | PASS | held |
 | `harness/go/review_r025b_check.py` | exit 1 | N4, N5, S1 (+ Q3 estimate) |
 
-The 16 findings: C1, C2, C3, P1, A1, F1b, F2b, F5b, R1b, S1, D2b, D3b, N4, N5, R2, NC.
+The 19 findings: X1, C1, C2, C3, P1, A1, F1b, F2b, F5b, V3, R1b, S1, V1, D2b, D3b, N4, N5, R2, NC.
+
+## 7. Commit 480498f: virtual `/proc/1/stat` (scope addition)
+
+What it does:
+- the core builds a copy of `/proc/1/stat` (`virtual_proc_stat`): fields fixed for PID 1's lifetime are kept, changing fields become constants;
+- the shell writes the copy to `~/.cache/fenvix-go-virtual/proc-1-stat`, a keyed path;
+- the `os.OpenFile` hook serves the copy when any control is on (skip mode and `--det`);
+- plain `go test` and `--skip-real-clock` read the real file.
+
+| attack | result (MEASURED) | test |
+|---|---|---|
+| soundness of the copy | **holds**. What a test sees is the copy's content, and the copy is keyed by content, so the outcome is a function of the key whichever fields the reader uses. `TestSkipVirtualProcStat` passes | — |
+| `syscall.Open("/proc/1/stat")`; `os.Root("/proc").Open("1/stat")` | **held**: real file read, strace sees it, `volatile:/proc/1/stat`, not reused. cgo `fopen` makes the same `openat` (by construction, not run separately). `os.ReadFile` and `os.DirFS` go through `os.OpenFile` and get the copy | `TestR025b_V4` |
+| **V3.** `/proc/self/root/proc/1/stat` | **finding**: the hook matches the exact name, so the real file is read (MEASURED: utime `14`, threads `14` through the alias, `0` and `1` in the copy). `classify` drops every path under `/proc/self`, so the read is in no key and the test is reused. Same hole for any file: `/proc/self/cwd/testdata/value.txt` changed v1→v2 is a **wrong reuse** (also on 05a7dfa) | `TestR025b_V3` |
+| **V1.** readers of the changing fields | **finding (broken by fenvix, not a wrong reuse)**: on both runs a constant replaces the real value. `utime + stime > 0` for PID 1 passes plain and fails under skip mode and `--det`. `rss*100/vsize` panics with an integer divide by zero (vsize = 0), and X1 then records that panic as passed. Pool sizes or rates computed from these fields get 0 or 1. The report's "a test that depends on a changing field sees the constant" understates it: such a test is broken by fenvix | `TestR025b_V1` |
+| other `/proc` files | `/proc/stat`, `/proc/loadavg`, `/proc/meminfo`, `/proc/<pid>/*`: volatile, not reused (safe; no gain). `/proc/self/stat`, `status`, `statm`, `limits`, `cgroup`, `mountinfo`: **dropped, not virtualised**, so inherited state in them is in no key (P1: nice, nofile, affinity). cgroup files under `/sys/fs/cgroup` are keyed by content | `TestR025b_V2`, P1 |
+| is keying starttime enough? | **Yes for soundness**: the whole copy is keyed, and the test can see nothing else of `/proc/1/stat`. In this container the address fields read as 0/1 (hidden without ptrace), so the kept content is pid, comm, ppid, pgrp, session, tty, flags, priority, nice, starttime (61 ticks here), rsslim, exit signal and policy. Fresh runners of one image whose PID 1 starts at the same tick get the same copy, and can share results soundly. A renice of PID 1 changes the copy, and the tests rerun (safe) | — |
+| gain | UNKNOWN as MEASURED: skip-r7 was dispatched (`harness/go/RUN`) and no data is committed at 480498f. Upper bound ESTIMATED in section 4: telegraf 86% / 73% on 5 of 6 shards | — |
+
+Fix directions:
+- **V3:** classify `/proc/self/{cwd,root,fd,...}` aliases by their target (strace `-y` prints the resolved path of the returned fd), and match the hook on the cleaned and resolved path.
+- **V1:** pick constants a reader can use (non-zero vsize and rss, plausible CPU times), or key the real values of a field at coarse resolution.
+- **V1, at least:** list "broken by virtual process state" in the report, and say it at start when the copy is served.
+
+Nit 5: the copy lives at `UserCacheDir()/fenvix-go-virtual`. If `FENVIX_GO_CACHE` points at `UserCacheDir()` itself, the copy falls under a dropped directory and its kept fields are no longer keyed. This is DECLARED by reading `classify` and the drop list; it was not run.
